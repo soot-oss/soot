@@ -60,7 +60,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
    *
-   * @param dg a CompleteUnitGraph.
+   * @param dg a ExceptionalUnitGraph.
    * @param unitToGen the equivalentValue of each unit.
    * @param sideEffect the SideEffectTester that performs kills.
    */
@@ -77,7 +77,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    * as sets-operations are usually more efficient, if the original set comes
    * from the same source, this allows to share sets.
    *
-   * @param dg a CompleteUnitGraph.
+   * @param dg a ExceptionalUnitGraph.
    * @param unitToGen the equivalentValue of each unit.
    * @param sideEffect the SideEffectTester that performs kills.
    * @param BoundedFlowSet the shared set.

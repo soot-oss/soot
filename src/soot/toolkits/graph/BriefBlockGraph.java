@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -32,20 +32,43 @@ import soot.*;
 
 
 /**
- *  Represents a CFG for a Body instance where the nodes are Block 
- *  instances, and where control flow associated with exceptions is ignored.
- *  Hence the graph will in fact be a forest where each exception handler will
- *  constitute a disjoint subgraph.
+ *  <p>Represents a CFG for a {@link Body} where the nodes are {@link
+ *  Block}s and edges are derived from control flow.  Control flow
+ *  associated with exceptions is ignored, so the graph will be a
+ *  forest where each exception handler constitutes a disjoint
+ *  subgraph.</p>
  */
 public class BriefBlockGraph extends BlockGraph 
 {
     /**
-     *  Constructs a BriefBlockGraph from a given Body instance.
-     *  @param the Body instance from which the graph is built.
+     *  Constructs a {@link BriefBlockGraph} from a given {@link Body}.
+     *
+     *   <p> Note that this constructor builds a {@link
+     *   BriefUnitGraph} internally when splitting <tt>body</tt>'s
+     *   {@link Unit}s into {@link Block}s.  Callers who already have
+     *   a {@link BriefUnitGraph} to hand can use the constructor
+     *   taking a <tt>CompleteUnitGraph</tt> as a parameter, as a
+     *   minor optimization.
+     *
+     *  @param body the {@link Body} for which to build a graph.
      */
-    public  BriefBlockGraph(Body body)
-    {
-        super(body, BRIEF);
+    public  BriefBlockGraph(Body body) {
+        this(new BriefUnitGraph(body));
+    }
+
+
+    /**
+     *  Constructs a {@link BriefBlockGraph} representing the
+     *  <tt>Unit</tt>-level control flow represented by the passed
+     *  {@link BriefUnitGraph}.
+     *
+     *  @param unitGraph the {@link Body} for which to build a graph.
+     */
+    public  BriefBlockGraph(BriefUnitGraph unitGraph) {
+        super(unitGraph);
+
+	if (DEBUG)
+	    soot.util.PhaseDumper.v().dumpGraph(this, mBody);
     }
 }
 

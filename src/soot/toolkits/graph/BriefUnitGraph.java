@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -30,8 +30,7 @@ package soot.toolkits.graph;
 import soot.*;
 import soot.util.*;
 import java.util.*;
-
-
+import soot.options.Options;
 
 
 /**
@@ -44,7 +43,6 @@ import java.util.*;
  */
 public class BriefUnitGraph extends UnitGraph
 {
-
     /**
      *   Constructs a BriefUnitGraph given a Body instance.
      *   @param body The underlying body we want to make a 
@@ -52,7 +50,25 @@ public class BriefUnitGraph extends UnitGraph
      */
     public BriefUnitGraph(Body body)
     {
-        super(body, false);
+        super(body);
+	int size = unitChain.size();
+
+        if(Options.v().time())
+            Timers.v().graphTimer.start();
+
+	unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
+	unitToPreds = new HashMap(size * 2 + 1, 0.7f);
+	buildUnexceptionalEdges(unitToSuccs, unitToPreds);
+	makeMappedListsUnmodifiable(unitToSuccs);
+	makeMappedListsUnmodifiable(unitToPreds);
+
+	buildHeadsAndTails();
+
+        if(Options.v().time())
+            Timers.v().graphTimer.end();
+
+	if (DEBUG)
+	    soot.util.PhaseDumper.v().dumpGraph(this, body);
     }
 }
 

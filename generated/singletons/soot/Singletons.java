@@ -82,6 +82,8 @@ import soot.util.queue.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
 import soot.relations.*;
+import soot.util.cfgcmd.*;
+import soot.toolkits.exceptions.*;
 
 /** A class to group together all the global variables in Soot. */
 public class Singletons {
@@ -1054,6 +1056,42 @@ public class Singletons {
     public CFGPrinter CFGPrinter() {
         if( instanceCFGPrinter == null ) instanceCFGPrinter = new CFGPrinter( g );
         return instanceCFGPrinter;
+    }
+
+    private PhaseDumper instancePhaseDumper;
+    public PhaseDumper PhaseDumper() {
+        if( instancePhaseDumper == null ) instancePhaseDumper = new PhaseDumper( g );
+        return instancePhaseDumper;
+    }
+
+    private AltClassLoader instanceAltClassLoader;
+    public AltClassLoader AltClassLoader() {
+        if( instanceAltClassLoader == null ) instanceAltClassLoader = new AltClassLoader( g );
+        return instanceAltClassLoader;
+    }
+
+    private ThrowableSet.Manager instanceThrowableSetManager;
+    public ThrowableSet.Manager ThrowableSetManager() {
+        if( instanceThrowableSetManager == null ) instanceThrowableSetManager = new ThrowableSet.Manager( g );
+        return instanceThrowableSetManager;
+    }
+
+    private UnitThrowAnalysis instanceUnitThrowAnalysis;
+    public UnitThrowAnalysis UnitThrowAnalysis() {
+        if( instanceUnitThrowAnalysis == null ) instanceUnitThrowAnalysis = new UnitThrowAnalysis( g );
+        return instanceUnitThrowAnalysis;
+    }
+
+    private PedanticThrowAnalysis instancePedanticThrowAnalysis;
+    public PedanticThrowAnalysis PedanticThrowAnalysis() {
+        if( instancePedanticThrowAnalysis == null ) instancePedanticThrowAnalysis = new PedanticThrowAnalysis( g );
+        return instancePedanticThrowAnalysis;
+    }
+
+    private TrapTightener instanceTrapTightener;
+    public TrapTightener TrapTightener() {
+        if( instanceTrapTightener == null ) instanceTrapTightener = new TrapTightener( g );
+        return instanceTrapTightener;
     }
 
 }

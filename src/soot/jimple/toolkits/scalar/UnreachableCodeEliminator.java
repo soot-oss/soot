@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -40,7 +40,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
     public UnreachableCodeEliminator( Singletons.Global g ) {}
     public static UnreachableCodeEliminator v() { return G.v().UnreachableCodeEliminator(); }
 
-    CompleteUnitGraph stmtGraph;
+    ExceptionalUnitGraph stmtGraph;
     HashSet visited;
     int numPruned;
 
@@ -52,15 +52,46 @@ public class UnreachableCodeEliminator extends BodyTransformer
             G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 
         numPruned = 0;
-        stmtGraph = new CompleteUnitGraph(body);
+        stmtGraph = new ExceptionalUnitGraph(body);
         visited = new HashSet();
 
         // Used to be: "mark first statement and all its successors, recursively"
         // Bad idea! Some methods are extremely long. It broke because the recursion reached the
         // 3799th level.
 
-        if (!body.getUnits().isEmpty())
-            visitStmts((Stmt)body.getUnits().getFirst());
+	// We need a map from Units that handle Traps, to a Set of their
+	// Traps, so we can remove the Traps should we remove the handler.
+	Map handlerToTraps = new HashMap();
+
+        if (!body.getUnits().isEmpty()) {
+	    LinkedList startPoints = new LinkedList();
+	    startPoints.addLast(body.getUnits().getFirst());
+
+	    // Add trap handlers to startPoints unless we are removing
+	    // unreachable traps.
+	    boolean addHandlersToStart = 
+		(! PhaseOptions.getBoolean(options, "remove-unreachable-traps"));
+
+	    for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
+		Trap trap = (Trap) it.next();
+		Unit handler = trap.getHandlerUnit();
+		if (addHandlersToStart) {
+		    // Don't add handlers for empty traps to the starting
+		    // points, since we're about to remove those traps anyway.
+		    if (trap.getBeginUnit() != trap.getEndUnit()) {
+			startPoints.addLast(handler);
+		    }
+		}
+		Set handlersTraps = (Set) handlerToTraps.get(handler);
+		if (handlersTraps == null) {
+		    handlersTraps = new ArraySet(3);
+		    handlerToTraps.put(handler, handlersTraps);
+		}
+		handlersTraps.add(trap);
+	    }
+
+            visitStmts(startPoints);
+	}
 
         Iterator stmtIt = body.getUnits().snapshotIterator();
         while (stmtIt.hasNext()) 
@@ -71,7 +102,13 @@ public class UnreachableCodeEliminator extends BodyTransformer
             if (!visited.contains(stmt)) 
             {
                 body.getUnits().remove(stmt);
-		stmt.clearUnitBoxes();
+		Set traps = (Set) handlerToTraps.get(stmt);
+		if (traps != null) {
+		    for (Iterator it = traps.iterator(); it.hasNext(); ) {
+			Trap trap = (Trap) it.next();
+			body.getTraps().remove(trap);
+		    }
+		}
                 numPruned++;
             }
         }
@@ -86,21 +123,16 @@ public class UnreachableCodeEliminator extends BodyTransformer
             {
                 Trap t = (Trap) trapIt.next();
                 
-                if(t.getBeginUnit() == t.getEndUnit()){
-                    t.clearUnitBoxes();
+                if(t.getBeginUnit() == t.getEndUnit())
                     trapIt.remove();
-                }
             }
         }
         
   } // pruneUnreachables
 
-    private void visitStmts(Stmt head) {
+    private void visitStmts(LinkedList st) {
 
-        // Do DFS of the unit graph, starting at the head node.
-
-        LinkedList st = new LinkedList();
-        st.addLast(head);
+        // Do DFS of the unit graph, starting from the passed nodes.
 
         while (!st.isEmpty()) {
             Object stmt = st.removeLast();

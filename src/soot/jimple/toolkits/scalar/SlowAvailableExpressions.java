@@ -46,7 +46,7 @@ public class SlowAvailableExpressions implements AvailableExpressions
     public SlowAvailableExpressions(Body b)
     {
         SlowAvailableExpressionsAnalysis analysis = 
-            new SlowAvailableExpressionsAnalysis(new CompleteUnitGraph(b));
+            new SlowAvailableExpressionsAnalysis(new ExceptionalUnitGraph(b));
 
         // Build unitToExprs map
         {

@@ -72,7 +72,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             G.v().out.println("[" + sb.getMethod().getName() +
                               "] Propagating and folding constants (SSA)...");
 
-        SCPFAnalysis scpf = new SCPFAnalysis(new CompleteUnitGraph(sb));
+        SCPFAnalysis scpf = new SCPFAnalysis(new ExceptionalUnitGraph(sb));
 
         propagateResults(scpf.getResults());
         if(pruneCFG){

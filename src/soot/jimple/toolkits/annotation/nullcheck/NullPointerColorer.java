@@ -34,7 +34,7 @@ public class NullPointerColorer extends BodyTransformer {
 	protected void internalTransform (Body b, String phaseName, Map options) {
 		
 		BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis (
-				new CompleteUnitGraph(b));
+				new ExceptionalUnitGraph(b));
 
 		Iterator it = b.getUnits().iterator();
 

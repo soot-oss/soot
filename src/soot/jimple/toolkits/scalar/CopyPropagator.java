@@ -98,7 +98,7 @@ public class CopyPropagator extends BodyTransformer
         
 //            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(G.v().out, true));
             
-        CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
+        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
 
         LocalDefs localDefs;
         

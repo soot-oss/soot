@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -34,6 +34,7 @@ import soot.options.Options;
  * transformation. */
 public class Transform implements HasPhaseOptions
 {
+    final private boolean DEBUG = true;
     String phaseName;
     Transformer t;
     
@@ -76,7 +77,13 @@ public class Transform implements HasPhaseOptions
                 G.v().out.println( "Applying phase "+phaseName+" to the scene." );
             }
         }
+	if (DEBUG)
+	    PhaseDumper.v().dumpBefore(getPhaseName());
+
         ((SceneTransformer) t).transform( phaseName, options );
+
+	if (DEBUG)
+	    PhaseDumper.v().dumpAfter(getPhaseName());
     }
     public void apply(Body b) {
         Map options = PhaseOptions.v().getPhaseOptions( phaseName );
@@ -85,6 +92,12 @@ public class Transform implements HasPhaseOptions
                 G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
             }
         }
+	if (DEBUG)
+	    PhaseDumper.v().dumpBefore(b, getPhaseName());
+
         ((BodyTransformer) t).transform( b, phaseName, options );
+
+	if (DEBUG)
+	    PhaseDumper.v().dumpAfter(b, getPhaseName());
     }
 }

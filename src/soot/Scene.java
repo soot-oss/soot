@@ -34,6 +34,9 @@ import java.util.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
+import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.UnitThrowAnalysis;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
@@ -71,7 +74,7 @@ public class Scene  //extends AbstractHost
     private PointsToAnalysis activePointsToAnalysis;
     private SideEffectAnalysis activeSideEffectAnalysis;
     private List entryPoints;
-    
+
     boolean allowsPhantomRefs = false;
 
     public ArrayList cfgList = new ArrayList();
@@ -79,6 +82,10 @@ public class Scene  //extends AbstractHost
     SootClass mainClass;
     String sootClassPath = null;
 
+    // Two default values for constructing ExceptionalUnitGraphs:
+    private ThrowAnalysis defaultThrowAnalysis = null;
+    private boolean alwaysAddEdgesFromExceptingUnits = false;
+    
     public void setMainClass(SootClass m)
     {
         mainClass = m;
@@ -571,6 +578,42 @@ public class Scene  //extends AbstractHost
     public Numberer getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public Numberer getLocalNumberer() { return localNumberer; }
+
+    /**
+     * Returns the {@link ThrowAnalysis} to be used by default when
+     * constructing CFGs which include exceptional control flow.
+     *
+     * @return the default {@link ThrowAnalysis}
+     */
+    public ThrowAnalysis getDefaultThrowAnalysis() 
+    {
+	if( defaultThrowAnalysis == null ) {
+	    int optionsThrowAnalysis = Options.v().throw_analysis();
+	    switch (optionsThrowAnalysis) {
+	    case Options.throw_analysis_pedantic:
+		defaultThrowAnalysis = PedanticThrowAnalysis.v();
+		break;
+	    case Options.throw_analysis_unit:
+		defaultThrowAnalysis = UnitThrowAnalysis.v();
+		break;
+	    default:
+		throw new IllegalStateException("Options.v().throw_analysi() == " +
+						Options.v().throw_analysis());
+	    }
+	}
+	return defaultThrowAnalysis;
+    }
+
+    /**
+     * Sets the {@link ThrowAnalysis} to be used by default when
+     * constructing CFGs which include exceptional control flow.
+     *
+     * @param the default {@link ThrowAnalysis}.
+     */
+    public void setDefaultThrowAnalysis(ThrowAnalysis ta) 
+    {
+	defaultThrowAnalysis = ta;
+    }
 
     private void setReservedNames()
     {

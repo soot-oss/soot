@@ -94,7 +94,7 @@ class ArrayBoundsCheckerAnalysis
         if (Options.v().debug()) 
             G.v().out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
 
-        ailanalysis = new ArrayIndexLivenessAnalysis(new CompleteUnitGraph(body), fieldin, arrayin, csin, rectarray);
+        ailanalysis = new ArrayIndexLivenessAnalysis(new ExceptionalUnitGraph(body), fieldin, arrayin, csin, rectarray);
         
         if (fieldin)
         {

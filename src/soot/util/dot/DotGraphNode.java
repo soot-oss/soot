@@ -66,7 +66,15 @@ public class DotGraphNode implements Renderable{
       this.attributes = new LinkedList();
     }
     
-    this.attributes.add(new DotGraphAttribute(id, value));    
+    this.setAttribute(new DotGraphAttribute(id, value));    
+  }
+
+  public void setAttribute(DotGraphAttribute attr) {
+    if (this.attributes == null) {
+      this.attributes = new LinkedList();
+    }
+    
+    this.attributes.add(attr);    
   }
 
   public void render(OutputStream out, int indent) throws IOException {

@@ -17,3 +17,8 @@ release.loc=/tmp
 ## Location of JFlex classes jar file
 jflex.jar=${user.home}/JFlex.jar
 
+## URL for Java API documentation, for resolving things like
+## {@link Iterator} when generating documentation from 
+## javadoc comments.
+javaapi.url=http://java.sun.com/j2se/1.4.2/docs/api/
+

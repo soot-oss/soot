@@ -75,7 +75,7 @@ public class NullPointerChecker extends BodyTransformer
 				   +" started on "+start);
 		
 	    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(
-	    					new CompleteUnitGraph(body));
+	    					new ExceptionalUnitGraph(body));
 
 	    SootClass counterClass = null;
 	    SootMethod increase = null;

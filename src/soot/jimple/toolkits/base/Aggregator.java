@@ -107,11 +107,11 @@ public class Aggregator extends BodyTransformer
       Iterator stmtIt;
       LocalUses localUses;
       LocalDefs localDefs;
-      CompleteUnitGraph graph;
+      ExceptionalUnitGraph graph;
       boolean hadAggregation = false;
       Chain units = body.getUnits();
       
-      graph = new CompleteUnitGraph(body);
+      graph = new ExceptionalUnitGraph(body);
       localDefs = new SimpleLocalDefs(graph);
       localUses = new SimpleLocalUses(graph, localDefs);
           

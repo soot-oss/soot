@@ -138,6 +138,8 @@ Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 
 Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 
+Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
+
 Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
 
 Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
@@ -460,7 +462,19 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jb", "jb.uce", getjbjb_uceenabled_widget(), "enabled");
 		
+		addToEnableGroup("jb", "jb.uce", getjbjb_uceremove_unreachable_traps_widget(), "remove-unreachable-traps");
+		
 		getjbjb_uceenabled_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_uceremove_unreachable_traps_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jb", "jb.tt");
+		
+		
+		addToEnableGroup("jb", "jb.tt", getjbjb_ttenabled_widget(), "enabled");
+		
+		getjbjb_ttenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jj");
@@ -1112,7 +1126,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jop", "jop.uce1", getjopjop_uce1enabled_widget(), "enabled");
 		
+		addToEnableGroup("jop", "jop.uce1", getjopjop_uce1remove_unreachable_traps_widget(), "remove-unreachable-traps");
+		
 		getjopjop_uce1enabled_widget().getButton().addSelectionListener(this);
+		
+		getjopjop_uce1remove_unreachable_traps_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jop", "jop.ubf1");
@@ -1128,7 +1146,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2enabled_widget(), "enabled");
 		
+		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2remove_unreachable_traps_widget(), "remove-unreachable-traps");
+		
 		getjopjop_uce2enabled_widget().getButton().addSelectionListener(this);
+		
+		getjopjop_uce2remove_unreachable_traps_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jop", "jop.ubf2");
@@ -1659,6 +1681,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getOutput_Optionsxml_attributes_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getOutput_Optionsshow_exception_dests_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsshow_exception_dests_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
 		
 		defStringRes = "./sootOutput";
@@ -1666,6 +1698,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getOutput_Optionsoutput_dir_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getOutput_Optionsdump_body_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getOutput_Optionsdump_body_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getOutput_Optionsdump_cfg_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getOutput_Optionsdump_cfg_widget().getAlias(), stringRes);
 		}
 		 
 		stringRes = getOutput_Optionsoutput_format_widget().getSelectedAlias();
@@ -1716,6 +1766,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsvia_shimple_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getProcessing_Optionsalways_add_edges_from_excepting_units_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionsalways_add_edges_from_excepting_units_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
+
+		
+		defStringRes = "pedantic";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getProcessing_Optionsthrow_analysis_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getjbenabled_widget().getButton().getSelection();
@@ -1926,6 +1996,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_uceenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_uceremove_unreachable_traps_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_uceremove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_ttenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_ttenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjjenabled_widget().getButton().getSelection();
@@ -3255,6 +3345,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_uce1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjopjop_uce1remove_unreachable_traps_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_uce1remove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjopjop_ubf1enabled_widget().getButton().getSelection();
 		
 		
@@ -3273,6 +3373,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uce2enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_uce2remove_unreachable_traps_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_uce2remove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_ubf2enabled_widget().getButton().getSelection();
@@ -4152,6 +4262,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jb_jb_uce_branch;
+			
+			
+			SootOption jb_jb_tt_branch = new SootOption("Trap Tightener", "jbjb_tt");
+			subParent.addChild(jb_jb_tt_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_tt_branch;
 			
 			
 			//Java To Jimple Body Creation
@@ -5076,6 +5196,40 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Output_Optionsxml_attributes_widget;
 	}	
 	
+	private BooleanOptionWidget Output_Optionsshow_exception_dests_widget;
+	
+	private void setOutput_Optionsshow_exception_dests_widget(BooleanOptionWidget widget) {
+		Output_Optionsshow_exception_dests_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsshow_exception_dests_widget() {
+		return Output_Optionsshow_exception_dests_widget;
+	}	
+	
+
+	private ListOptionWidget Output_Optionsdump_body_widget;
+	
+	private void setOutput_Optionsdump_body_widget(ListOptionWidget widget) {
+		Output_Optionsdump_body_widget = widget;
+	}
+	
+	public ListOptionWidget getOutput_Optionsdump_body_widget() {
+		return Output_Optionsdump_body_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Output_Optionsdump_cfg_widget;
+	
+	private void setOutput_Optionsdump_cfg_widget(ListOptionWidget widget) {
+		Output_Optionsdump_cfg_widget = widget;
+	}
+	
+	public ListOptionWidget getOutput_Optionsdump_cfg_widget() {
+		return Output_Optionsdump_cfg_widget;
+	}	
+	
+	
 	
 	private StringOptionWidget Output_Optionsoutput_dir_widget;
 	
@@ -5139,6 +5293,28 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getProcessing_Optionsvia_shimple_widget() {
 		return Processing_Optionsvia_shimple_widget;
 	}	
+	
+	private BooleanOptionWidget Processing_Optionsalways_add_edges_from_excepting_units_widget;
+	
+	private void setProcessing_Optionsalways_add_edges_from_excepting_units_widget(BooleanOptionWidget widget) {
+		Processing_Optionsalways_add_edges_from_excepting_units_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionsalways_add_edges_from_excepting_units_widget() {
+		return Processing_Optionsalways_add_edges_from_excepting_units_widget;
+	}	
+	
+	
+	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
+	
+	private void setProcessing_Optionsthrow_analysis_widget(MultiOptionWidget widget) {
+		Processing_Optionsthrow_analysis_widget = widget;
+	}
+	
+	public MultiOptionWidget getProcessing_Optionsthrow_analysis_widget() {
+		return Processing_Optionsthrow_analysis_widget;
+	}	
+	
 	
 	private BooleanOptionWidget jbenabled_widget;
 	
@@ -5348,6 +5524,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbjb_uceenabled_widget() {
 		return jbjb_uceenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_uceremove_unreachable_traps_widget;
+	
+	private void setjbjb_uceremove_unreachable_traps_widget(BooleanOptionWidget widget) {
+		jbjb_uceremove_unreachable_traps_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_uceremove_unreachable_traps_widget() {
+		return jbjb_uceremove_unreachable_traps_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_ttenabled_widget;
+	
+	private void setjbjb_ttenabled_widget(BooleanOptionWidget widget) {
+		jbjb_ttenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_ttenabled_widget() {
+		return jbjb_ttenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jjenabled_widget;
@@ -6704,6 +6900,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_uce1enabled_widget;
 	}	
 	
+	private BooleanOptionWidget jopjop_uce1remove_unreachable_traps_widget;
+	
+	private void setjopjop_uce1remove_unreachable_traps_widget(BooleanOptionWidget widget) {
+		jopjop_uce1remove_unreachable_traps_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopjop_uce1remove_unreachable_traps_widget() {
+		return jopjop_uce1remove_unreachable_traps_widget;
+	}	
+	
 	private BooleanOptionWidget jopjop_ubf1enabled_widget;
 	
 	private void setjopjop_ubf1enabled_widget(BooleanOptionWidget widget) {
@@ -6722,6 +6928,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjopjop_uce2enabled_widget() {
 		return jopjop_uce2enabled_widget;
+	}	
+	
+	private BooleanOptionWidget jopjop_uce2remove_unreachable_traps_widget;
+	
+	private void setjopjop_uce2remove_unreachable_traps_widget(BooleanOptionWidget widget) {
+		jopjop_uce2remove_unreachable_traps_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopjop_uce2remove_unreachable_traps_widget() {
+		return jopjop_uce2remove_unreachable_traps_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_ubf2enabled_widget;
@@ -7776,6 +7992,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"show-exception-dests";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination edges as well as \ncontrol flow edges in dumps of exceptional control flow graphs. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Jimple File",
@@ -7870,6 +8102,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getOutput_Optionsoutput_format_widget().setDef(defaultString);
 		}
 		
+		
+
+		defKey = ""+" "+""+" "+"dump-body";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME is one of the phases to be dumped. For \nexample -dump-body jb -dump-body jb.a would dump each method \nbefore and after the jb and jb.a phases. The pseudo phase name \n``ALL'' causes all phases to be dumped.For this option to have \nany effect, the soot.Pack and soot.SceneTransformer classes must \nhave been compiled with debugging enabled. Output files appear \nin subdirectories under the soot output directory, with names \nlike className/methodSignature/phasename-graphType-number.in and \nclassName/methodSignature/phasename-graphType-number.out. The \n``in'' and ``out'' suffixes distinguish the internal \nrepresentations of the method before and after the phase \nexecuted.", defaultString)));
+		
+
+		defKey = ""+" "+""+" "+"dump-cfg";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped.This option has no effect \nif the CFG constructing classes were compiled with debugging \ndisabled.The control flow graphs are dumped in the form of a \nfile containing input to dot graph visualization tool. Output \ndot files are stored beneath the soot output directory, in files \nwith names like: \nclassName/methodSignature/phasename-graphType-number.dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"d";
@@ -7978,6 +8240,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This generates \nShimple bodies for the application classes, optionally \ntransforms them with analyses that run on SSA form, then turns \nthem back into Jimple for processing by the rest of Soot. For \nmore information, see the documentation for the shimp, stp, and \nsop phases. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"always-add-edges-from-excepting-units";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setProcessing_Optionsalways_add_edges_from_excepting_units_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Always Add Edges from Excepting Units", "", "","always-add-edges-from-excepting-units", "\nIf this option is true, then when an instruction may throw an \nexception that would be caught by a handler in the same method, \nthe CFGs produced by Soot's ExceptionalUnitGraph and \nExceptionalBlockGraph classes will always include an edge to the \nhandler from the excepting instruction itself, as well as from \nthe instruction's predecessors. If this option is false, the \nexceptional CFGs will include an edge to the handler from the \nexcepting unit itself only if that unit has potential side \neffects. Omitting edges from excepting units allows more \naccurate flow analyses (since if an instruction without side \neffects throws an exception, it has not changed the state of the \ncomputation). This accuracy, though, could cause optimizations \nto generate unverifiable code, since the dataflow analyses \nperformed by bytecode verifiers might include paths to exception \nhandlers from all protected instructions, regardless of whether \nthe instructions have side effects. (In practice, the pedantic \nthrow analysis suffices to pass verification in all VMs we have \ntested, but the JVM specification does allow for less \ndiscriminating verifiers which would reject some code that could \nbe generated using the pedantic throw analysis without also \nadding edges from all excepting units.)", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Pedantic",
+		"pedantic",
+		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, because the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
+		
+		true),
+		
+		new OptionData("Unit",
+		"unit",
+		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
+		
+		false),
+		
+		};
+		
+										
+		setProcessing_Optionsthrow_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Default ThrowAnalysis", "", "","throw-analysis", "\nThis option specifies how to estimate the exceptions which each \nstatement may throw when constructing exceptional CFGs. ")));
+		
+		defKey = ""+" "+""+" "+"throw-analysis";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getProcessing_Optionsthrow_analysis_widget().setDef(defaultString);
+		}
 		
 		
 
@@ -8706,9 +9014,71 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Enabled", "p", "jb.uce","enabled", "\n", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"jb.uce"+" "+"remove-unreachable-traps";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_uceremove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jb.uce","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
+		
+		
 
 		
 		return editGroupjbjb_uce;
+	}
+
+
+
+	private Composite jbjb_ttCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_tt = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_tt.setLayout(layout);
+	
+	 	editGroupjbjb_tt.setText("Trap Tightener");
+	 	
+		editGroupjbjb_tt.setData("id", "jbjb_tt");
+		
+		String descjbjb_tt = "Trap Tightener";	
+		if (descjbjb_tt.length() > 0) {
+			Label descLabeljbjb_tt = new Label(editGroupjbjb_tt, SWT.WRAP);
+			descLabeljbjb_tt.setText(descjbjb_tt);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jb.tt"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_ttenabled_widget(new BooleanOptionWidget(editGroupjbjb_tt, SWT.NONE, new OptionData("Enabled", "p", "jb.tt","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjbjb_tt;
 	}
 
 
@@ -12607,6 +12977,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Enabled", "p", "jop.uce1","enabled", "\n", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"jop.uce1"+" "+"remove-unreachable-traps";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjopjop_uce1remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce1","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
+		
+		
 
 		
 		return editGroupjopjop_uce1;
@@ -12697,6 +13083,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Enabled", "p", "jop.uce2","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jop.uce2"+" "+"remove-unreachable-traps";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjopjop_uce2remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce2","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
 		
 		
 

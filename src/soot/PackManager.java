@@ -75,6 +75,7 @@ public class PackManager {
         // Jimple body creation
         addPack(p = new JimpleBodyPack());
         {
+            p.add(new Transform("jb.tt", soot.toolkits.exceptions.TrapTightener.v()));
             p.add(new Transform("jb.ls", LocalSplitter.v()));
             p.add(new Transform("jb.a", Aggregator.v()));
             p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
@@ -287,6 +288,8 @@ public class PackManager {
     }
 
     public void writeOutput() {
+	if(Options.v().verbose())
+	    PhaseDumper.v().dumpBefore("output");
         if( Options.v().output_format() == Options.output_format_dava ) {
             postProcessDAVA();
         } else {
@@ -294,6 +297,8 @@ public class PackManager {
         }
         postProcessXML( reachableClasses() );
         releaseBodies( reachableClasses() );
+	if(Options.v().verbose())
+	    PhaseDumper.v().dumpAfter("output");
     }
 
     private void runWholeProgramPacks() {

@@ -255,7 +255,7 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that each use in this Body has a def. */
     public void validateUses()
     {
-        LocalDefs ld = new SimpleLocalDefs(new CompleteUnitGraph(this));
+        LocalDefs ld = new SimpleLocalDefs(new ExceptionalUnitGraph(this));
 
         Iterator unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())

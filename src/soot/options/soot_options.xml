@@ -484,6 +484,70 @@ which can display the annotations together with the program
 source, to aid program understanding.
 </long_desc>
 		</boolopt>
+	<listopt>
+	  <name>Body Dumping Phases</name>
+	  <alias>dump-body</alias>
+	  <set_arg_label>phaseName</set_arg_label>
+	  <short_desc>Dump the internal representation of each method before and after phase <use_arg_label/></short_desc>
+	  <long_desc>
+<p>
+Specify that <use_arg_label/> is one of the phases to be dumped.
+For example <code>-dump-body jb -dump-body jb.a</code> would dump each
+method before and after the <code>jb</code> and <code>jb.a</code>
+phases.  The pseudo phase name ``<code>ALL</code>''
+causes all phases to be dumped.</p>
+<p>For this option to have any effect, the <code>soot.Pack</code>
+and <code>soot.SceneTransformer</code> classes must have been compiled
+with debugging enabled.</p> 
+<p>
+Output files appear in subdirectories under the
+soot output directory, with names like
+<var>className</var><code>/</code><var>methodSignature</var><code>/</code><var>phasename</var><code>-</code><var>graphType</var><code>-</code><var>number</var><code>.in</code>
+and
+<var>className</var><code>/</code><var>methodSignature</var><code>/</code><var>phasename</var><code>-</code><var>graphType</var><code>-</code><var>number</var><code>.out</code>.
+The ``<code>in</code>'' and
+``<code>out</code>'' suffixes distinguish the internal
+representations of the method before and after the phase
+executed.</p>
+</long_desc>
+	</listopt>
+	<listopt>
+	  <name>CFG Dumping Phases</name>
+	  <alias>dump-cfg</alias>
+	  <set_arg_label>phaseName</set_arg_label>
+	  <short_desc>Dump the internal representation of each CFG constructed during phase <use_arg_label/></short_desc>
+	  <long_desc>
+<p>
+Specify that any control flow graphs constructed during the
+<use_arg_label/> phases should be dumped.
+For example <code>-dump-cfg jb -dump-cfg bb.lso</code> would dump
+all
+CFGs constructed during the <code>jb</code> and <code>bb.lso</code>
+phases.  The pseudo phase name ``<code>ALL</code>''
+causes CFGs constructed in all phases to be dumped.</p>
+<p>This option has no effect if the CFG constructing classes were compiled
+with debugging disabled.</p> 
+<p>The control flow graphs are dumped in the form
+of a file containing input to <code>dot</code> graph visualization
+tool.  Output <code>dot</code> files are stored beneath the soot
+output directory, in files with names like:
+<var>className</var><code>/</code><var>methodSignature</var><code>/</code><var>phasename</var><code>-</code><var>graphType</var><code>-</code><var>number</var><code>.dot</code>,
+where <var>number</var> serves to distinguish graphs in phases
+that produce more than one (for example, the Aggregator may
+produce multiple <code>ExceptionalUnitGraph</code>s).</p>
+</long_desc>
+	</listopt>
+	<boolopt>
+	  <name>Show Exception Destinations</name>
+	  <alias>show-exception-dests</alias>
+	  <default>true</default>
+	  <short_desc>Include exception destination edges as well as CFG edges in dumped CFG.</short_desc>
+	  <long_desc>
+Indicate whether to show exception destination edges as
+well as control flow edges in
+dumps of exceptional control flow graphs.
+</long_desc>
+	</boolopt>
 	</section>
 	<section>
 		<name>Processing Options</name>
@@ -812,6 +876,34 @@ traps whose catch blocks are empty.
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>Remove unreachable traps</name>
+						<alias>remove-unreachable-traps</alias>
+                                                <default>false</default>
+	  					<long_desc>
+Remove exception table entries when none of the protected instructions can
+throw the exception being caught.
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Trap Tightener</name>
+					<alias>jb.tt</alias>
+					<short_desc>Trap Tightener</short_desc>
+					<long_desc>
+The Trap Tightener changes the area protected by each exception handler,
+so that it begins with the first instruction in the old protected
+area which is actually capable of throwing the exception caught by the
+handler, and ends just after the last instruction in the old
+protected area which can throw an exception caught by the
+handler.  This reduces the chance of producing unverifiable code
+as a byproduct of pruning exceptional control flow within CFGs.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>false</default>
 					</boolopt>
 				</sub_phase>
 			</phase>
@@ -3065,6 +3157,15 @@ traps whose catch blocks are empty.
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
+					<boolopt>
+						<name>Remove unreachable traps</name>
+						<alias>remove-unreachable-traps</alias>
+                                                <default>false</default>
+	  					<long_desc>
+Remove exception table entries when none of the protected instructions can
+throw the exception being caught.
+</long_desc>
+					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Unconditional Branch Folder 1</name>
@@ -3108,6 +3209,15 @@ Another iteration of the Unreachable Code Eliminator.
                                                 <default>true</default>
 						<short_desc/>
 						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Remove unreachable traps</name>
+						<alias>remove-unreachable-traps</alias>
+                                                <default>false</default>
+	  					<long_desc>
+Remove exception table entries when none of the protected instructions can
+throw the exception being caught.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -4077,6 +4187,73 @@ Jimple for processing by the rest of Soot. For more information,
 see the documentation for the <tt>shimp</tt>, <tt>stp</tt>, and
 <tt>sop</tt> phases.
 </long_desc>
+		</boolopt>
+						<multiopt>
+							<name>Default ThrowAnalysis</name>
+							<alias>throw-analysis</alias>
+							<long_desc>
+This option specifies how to estimate the exceptions which each statement
+may throw when constructing exceptional CFGs.
+        </long_desc>
+							<value>
+								<name>Pedantic</name>
+								<alias>pedantic</alias>
+								<default/>
+								<short_desc>Pedantically conservative throw analysis</short_desc>
+								<long_desc>
+Says that any instruction may throw any
+<code>Throwable</code> whatsoever. Strictly speaking this is
+correct, because the Java libraries include the
+<code>Thread.stop(Throwable)</code>
+method, which allows other threads to cause arbitrary exceptions
+to occur at arbitrary points in the execution of a victim thread.
+</long_desc>
+							</value>
+							<value>
+								<name>Unit</name>
+								<alias>unit</alias>
+								<short_desc>Unit Throw Analysis</short_desc>
+								<long_desc>
+Says that each statement in the intermediate representation
+may throw those exception types associated with the corresponding
+Java bytecode instructions in the JVM Specification.  The
+analysis deals with each statement in isolation, without regard
+to the surrounding program.
+</long_desc>
+							</value>
+						</multiopt>
+		<boolopt>
+			<name>Always Add Edges from Excepting Units</name>
+			<alias>always-add-edges-from-excepting-units</alias>
+			<short_desc>Always add CFG edges from an exceptioning unit itself as well as its predecessors.</short_desc>
+			<long_desc>
+<p>
+If this option is true, then when an instruction may throw an
+exception that would be caught by a handler in the
+same method, the CFGs produced by Soot's
+<code>ExceptionalUnitGraph</code> and
+<code>ExceptionalBlockGraph</code> classes will always include an
+edge to the handler from the excepting instruction itself, as
+well as from the instruction's predecessors.  If this option is
+false, the exceptional CFGs will include an edge to the handler
+from the excepting unit itself only if that unit has potential
+side effects.</p>
+<p>
+Omitting edges from excepting units allows more accurate flow
+analyses (since if an instruction without side effects throws an
+exception, it has not changed the state of the computation). This
+accuracy, though, could cause optimizations to generate
+unverifiable code, since the dataflow analyses performed by
+bytecode verifiers might include paths to exception handlers from
+all protected instructions, regardless of whether the
+instructions have side effects.  (In practice, the pedantic throw
+analysis suffices to pass verification in all VMs we have tested,
+but the JVM specification does allow for less discriminating
+verifiers which would reject some code that could be generated using the
+pedantic throw analysis without also adding edges from
+all excepting units.)</p>
+</long_desc>
+			<default>true</default>
 		</boolopt>
 	</section>
 	<section>

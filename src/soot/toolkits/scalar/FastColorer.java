@@ -43,7 +43,7 @@ public class FastColorer
                                                    Map localToColor, 
                                                    Map groupToColorCount)
     {
-        CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
+        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
 
         LiveLocals liveLocals;        
         liveLocals = new SimpleLiveLocals(unitGraph);
@@ -181,7 +181,7 @@ public class FastColorer
     public static void assignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-        CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
+        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
         LiveLocals liveLocals;
        
         liveLocals = new SimpleLiveLocals(unitGraph);

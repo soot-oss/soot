@@ -18,23 +18,23 @@ public class CFGPrinter extends BodyTransformer {
         
         CFGOutputOptions opts = new CFGOutputOptions(options);
         if (opts.graph_type() == CFGOutputOptions.graph_type_complete_block_graph){
-            graph = new BlockGraph(b, BlockGraph.COMPLETE);   
+            graph = new CompleteBlockGraph(b);   
         }
         else if (opts.graph_type() == CFGOutputOptions.graph_type_brief_block_graph){
-            graph = new BlockGraph(b, BlockGraph.BRIEF);   
+            graph = new BriefBlockGraph(b);   
         }
         else if (opts.graph_type() == CFGOutputOptions.graph_type_array_block_graph){
-            graph = new BlockGraph(b, BlockGraph.ARRAYREF);   
+            graph = new ArrayRefBlockGraph(b);   
         }
         else if (opts.graph_type() == CFGOutputOptions.graph_type_complete_unit_graph){
-            graph = new UnitGraph(b, true);   
+            graph = new CompleteUnitGraph(b);   
         }
         else{
+        //G.v().out.println("running cfg printer");
+            graph = new BriefUnitGraph(b);
+        }
         // for now just make complete block graph (but use options to 
         // change this later)
-        //G.v().out.println("running cfg printer");
-            graph = new UnitGraph(b, false);
-        }
         //graph = new BlockGraph(b, BlockGraph.COMPLETE);
         soot.Scene.v().cfgList.add(graph);
     }

@@ -159,3 +159,9 @@ TightestQualifiersTagger
 ParameterAliasTagger
 ReachingDefsTagger
 CFGPrinter
+PhaseDumper
+AltClassLoader
+ThrowableSet.Manager
+UnitThrowAnalysis
+PedanticThrowAnalysis
+TrapTightener

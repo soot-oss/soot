@@ -124,7 +124,16 @@ public class PatchingChain extends AbstractCollection implements Chain
             Unit successor;
             
             if((successor = (Unit)getSuccOf(obj)) == null)
-                successor = (Unit)getPredOf(obj);
+                successor = (Unit)getPredOf(obj); 
+		// Note that redirecting to the last unit in the method 
+		// like this is probably incorrect when dealing with a Trap.
+	        // I.e., let's say that the final unit in the method used to
+	        // be U10, preceded by U9, and that there was a Trap which
+	        // returned U10 as getEndUnit(). I.e., before the trap covered U9.
+	        // When we redirect the Trap's end unit to U9, the trap will no
+	        // longer cover U9. I know this is incorrect, but I'm not sure how
+	        // to fix it, so I'm leaving this comment in the hopes that some
+	        // future maintainer will see the right course to take.
             
             res = innerChain.remove(obj);
 
@@ -196,7 +205,16 @@ public class PatchingChain extends AbstractCollection implements Chain
             Unit successor;
             
               if((successor = (Unit)getSuccOf(lastObject)) == null)
-                  successor = (Unit)getPredOf(lastObject);
+		  successor = (Unit)getPredOf(lastObject);
+		  // Note that redirecting to the last unit in the method 
+		  // like this is probably incorrect when dealing with a Trap.
+		  // I.e., let's say that the final unit in the method used to
+		  // be U10, preceded by U9, and that there was a Trap which
+		  // returned U10 as getEndUnit(). I.e., before the trap covered U9.
+		  // When we redirect the Trap's end unit to U9, the trap will no
+		  // longer cover U9. I know this is incorrect, but I'm not sure how
+		  // to fix it, so I'm leaving this comment in the hopes that some
+		  // future maintainer will see the right course to take.
             
             innerIterator.remove();
 

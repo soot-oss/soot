@@ -18,35 +18,38 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 
 package soot.toolkits.graph;
-import soot.options.*;
 
 
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
-
-
+import soot.options.Options;
 
 
 /**
- *  Represents a CFG where the nodes are Unit instances.
+ *  <p>
+ *  Represents a CFG where the nodes are {@link Unit} instances and
+ *  edges represent unexceptional and (possibly) exceptional control
+ *  flow between <tt>Unit</tt>s.</p>
  *
- *  @see Unit
- *  @see BriefUnitGraph
+ *  <p>
+ *  This is an abstract class, providing the facilities used to build
+ *  CFGs for specific purposes.</p>
  */
 
-/* Updated by Marc Berndl (berndl@sable.mcgill.ca) May 13, 2001 */
-
-public class UnitGraph implements DirectedGraph
+public abstract class UnitGraph implements DirectedGraph
 {
+    protected boolean DEBUG = true; // Controls whether subclass
+				    // constructors dump a representation
+				    // of the graph they build.
     List heads;
     List tails;
 
@@ -57,263 +60,240 @@ public class UnitGraph implements DirectedGraph
     protected Chain unitChain;
 
     /**
-     *   Constructs  a graph for the units found in the provided
-     *   Body instance. Each node in the graph corresponds to
-     *   a unit. The edges are derived from the control flow.
-     *   
-     *   @param body               The underlying body we want to make a
-     *                             graph for.
-     *   @param addExceptionEdges  If true then the control flow edges associated with
-     *                             exceptions are added.
-     *   @see Body
-     *   @see Unit
-     */
-    public UnitGraph( Body unitBody, boolean addExceptionEdges) {
-        this( unitBody, addExceptionEdges, false);
-    }
-
-    
-    /**
-     *   Constructs  a graph for the units found in the provided
-     *   Body instance. Each node in the graph corresponds to
-     *   a unit. The edges are derived from the control flow.
-     *   
-     *   @param body               The underlying body we want to make a
-     *                             graph for.
-     *   @param addExceptionEdges  If true then the control flow edges associated with
-     *                             exceptions are added.
-     *   @param dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock This was added for Dava.
-     *                             If true, edges are not added from statement before area of
-     *                             protection to catch. If false, edges ARE added. For Dava,
-     *                             it should be true. For flow analyses, it should be false.
-     *   @see Body
-     *   @see Unit
-     */
-    public UnitGraph(Body unitBody, 
-		     boolean addExceptionEdges, 
-		     boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
-        body = unitBody;
-        unitChain = body.getUnits();
-	int size = unitChain.size();
-        method = getBody().getMethod();
-        
-        if(Options.v().verbose())
-            G.v().out.println("[" + method.getName() + 
-                               "]     Constructing UnitGraph...");
-      
-        if(Options.v().time())
-            Timers.v().graphTimer.start();
-      
-        
-        // Build successors
-        {
-            unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
-
-            // Add regular successors
-            {
-                Iterator unitIt = unitChain.iterator();
-                Unit currentUnit, nextUnit;
-                
-                nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
-                
-                while(nextUnit != null) {
-                    currentUnit = nextUnit;
-                    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
-                    
-                    List successors = new ArrayList();
-                    
-                    
-                    // Put the next statement as the successor
-                    if( currentUnit.fallsThrough() ) {
-                        if(nextUnit != null)
-                            successors.add(nextUnit);
-                    }
-                        
-                    if( currentUnit.branches() ) {
-                        Iterator targetIt = currentUnit.getUnitBoxes().iterator();
-                        while(targetIt.hasNext()) {
-                            successors.add(((UnitBox) targetIt.next()).getUnit());
-                        }
-                    }
-                    
-
-                    // Store away successors
-                    unitToSuccs.put(currentUnit, successors);
-                }
-            }
-
-            // Add exception based successors
-            if(addExceptionEdges) {
-	      Map beginToHandler = new HashMap();
-                    
-	      Iterator trapIt = body.getTraps().iterator();
-                    
-	      while(trapIt.hasNext()) {                        
-		Trap trap = (Trap) trapIt.next();
-
-		Unit beginUnit = (Unit) trap.getBeginUnit();
-		Unit handlerUnit = (Unit) trap.getHandlerUnit();
-		Unit endUnit = (Unit) trap.getEndUnit();
-		Iterator unitIt = unitChain.iterator(beginUnit);
-                        
-		List handlersStartingHere = (List) beginToHandler.get(beginUnit);
-		if (handlersStartingHere == null) {
-		  handlersStartingHere = new LinkedList();
-		  beginToHandler.put(beginUnit, handlersStartingHere);
-		}
-		handlersStartingHere.add(handlerUnit);
-
-		for (Unit u = (Unit) unitIt.next(); 
-		     u != endUnit; 
-		     u = (Unit) unitIt.next())
-		  ((List) unitToSuccs.get(u)).add(handlerUnit);
-	      }
-           
-                    // Add edges from the predecessors of begin statements directly to the handlers
-                    // This is necessary because sometimes the first statement of try block
-                    // is not even fully executed before an exception is thrown
-                    // WARNING: double negative!
-		    if (!dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock)
-                    {
-                        Iterator unitIt = body.getUnits().iterator();
-                        
-                        while(unitIt.hasNext())
-                        {
-                            Unit u = (Unit) unitIt.next();
-                            
-                            List succs = ((List) unitToSuccs.get(u));
-                            
-                            List succsClone = new ArrayList();
-                            succsClone.addAll(succs);
-                                // need to clone it because you are potentially 
-                                // modifying it
-                                
-                            Iterator succIt = succsClone.iterator();
-                                
-                            while(succIt.hasNext())
-                            {
-                                Unit succ = (Unit) succIt.next();
-
-                                List handlers = (List) beginToHandler.get(succ);
-                                if(handlers != null)
-                                {
-                                    // Add an edge from u to each of succ's handlers.
-				    Iterator handlerIt = handlers.iterator();
-				    while (handlerIt.hasNext()) {
-					Unit handler = (Unit) handlerIt.next();
-                                    
-					if(!succs.contains(handler))
-					    succs.add(handler);
-				    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-            // Make successors unmodifiable
-            {
-                Iterator unitIt = body.getUnits().iterator();
-                while(unitIt.hasNext())
-                {
-                    Unit s = (Unit) unitIt.next();
-        
-                    unitToSuccs.put(s, Collections.unmodifiableList((List) unitToSuccs.get(s)));
-                }
-            }
-        }
-
-        // Build predecessors
-        {
-            unitToPreds = new HashMap(size * 2 + 1, 0.7f);
-
-            // initialize the pred sets to empty
-            {
-                Iterator unitIt = body.getUnits().iterator();
-
-                while(unitIt.hasNext())
-                {
-                    unitToPreds.put(unitIt.next(), new ArrayList());
-                }
-            }
-
-            {
-                Iterator unitIt = body.getUnits().iterator();
-
-                while(unitIt.hasNext())
-                {
-                    Unit s = (Unit) unitIt.next();
-
-		    // Modify preds set for each successor for this statement
-                    Iterator succIt = ((List) unitToSuccs.get(s)).iterator();
-
-                    while(succIt.hasNext())
-                    {
-                        Unit successor = (Unit) succIt.next();
-                        List predList = (List) unitToPreds.get(successor);
-                        try {
-                            predList.add(s);
-                        } catch(NullPointerException e) {
-                            G.v().out.println(s + "successor: " + successor);
-                            throw e;
-                        }
-                    }
-                }
-            }
-
-            // Make pred lists unmodifiable.
-            {
-                Iterator unitIt = body.getUnits().iterator();
-
-                while(unitIt.hasNext())
-                {
-                    Unit s = (Unit) unitIt.next();
-
-                    List predList = (List) unitToPreds.get(s);
-                    unitToPreds.put(s, Collections.unmodifiableList(predList));
-                }
-            }
-
-        }
-
-        // Build heads and tails
-        {
-            List tailList = new ArrayList();
-            List headList = new ArrayList();
-
-            // Build the sets
-            {
-                Iterator unitIt = body.getUnits().iterator();
-
-                while(unitIt.hasNext())
-                {
-                    Unit s = (Unit) unitIt.next();
-
-                    List succs = (List) unitToSuccs.get(s);
-                    if(succs.size() == 0)
-                        tailList.add(s);
-
-                    List preds = (List) unitToPreds.get(s);
-                    if(preds.size() == 0)
-                        headList.add(s);
-                }
-            }
-
-            tails = Collections.unmodifiableList(tailList);
-            heads = Collections.unmodifiableList(headList);
-        }
-
-        if(Options.v().time())
-            Timers.v().graphTimer.end();        
-    }
-
-
-    
-    /**
-     *   @return The underlying body instance this UnitGraph was built
-     *           from.
+     *   Performs the work that is required to construct any sort of 
+     *   <tt>UnitGraph</tt>.
      *
-     *  @see UnitGraph
+     *   @param body The body of the method for which to construct a 
+     *               control flow graph.
+     */
+    protected UnitGraph( Body body) {
+	this.body = body;
+	unitChain = body.getUnits();
+        method = body.getMethod();
+        if(Options.v().verbose())
+	    G.v().out.println("[" + method.getName() + "]     Constructing " + 
+			      this.getClass().getName() + "...");
+      
+    }
+    
+
+    /**
+     * Utility method for <tt>UnitGraph</tt> constructors. It computes
+     * the edges corresponding to unexceptional control flow.
+     *
+     * @param unitToSuccs A {@link Map} from {@link Unit}s to 
+     *                    {@link List}s of {@link Unit}s. This is
+     *	                  an ``out parameter''; callers must pass an empty
+     *                    {@link Map}. <tt>buildUnexceptionalEdges</tt> will
+     *                    add a mapping for every <tt>Unit</tt> in the
+     *                    body to a list of its unexceptional successors.
+     *
+     * @param unitToPreds A {@link Map} from {@link Unit}s to 
+     *                    {@link List}s of {@link Unit}s. This is an 
+     *                    ``out parameter''; callers must pass an empty 
+     *                    {@link Map}. <tt>buildUnexceptionalEdges</tt> will
+     *                    add a mapping for every <tt>Unit</tt> in the body
+     *                    to a list of its unexceptional predecessors.
+     */
+    protected void buildUnexceptionalEdges(Map unitToSuccs, Map unitToPreds) {
+
+	// Initialize the predecessor sets to empty
+	for (Iterator unitIt = unitChain.iterator(); unitIt.hasNext(); ) {
+	    unitToPreds.put(unitIt.next(), new ArrayList());
+	}
+	
+	Iterator unitIt = unitChain.iterator();
+	Unit currentUnit, nextUnit;
+                
+	nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
+                
+	while(nextUnit != null) {
+	    currentUnit = nextUnit;
+	    nextUnit = unitIt.hasNext() ? (Unit) unitIt.next(): null;
+                    
+	    List successors = new ArrayList();
+                    
+	    if( currentUnit.fallsThrough() ) {
+		// Add the next unit as the successor
+		if(nextUnit != null) {
+		    successors.add(nextUnit);
+		    ((List) unitToPreds.get(nextUnit)).add(currentUnit);
+		}
+	    }
+                        
+	    if( currentUnit.branches() ) {
+		for (Iterator targetIt = currentUnit.getUnitBoxes().iterator();
+		     targetIt.hasNext(); ) {
+		    Unit target = ((UnitBox) targetIt.next()).getUnit();
+		    // Arbitrary bytecode can branch to the same
+		    // target it falls through to, so we screen for duplicates:
+		    if (! successors.contains(target)) {
+			successors.add(target);
+			((List) unitToPreds.get(target)).add(currentUnit);
+		    }
+		}
+	    }
+
+	    // Store away successors
+	    unitToSuccs.put(currentUnit, successors);
+	}
+    }
+
+
+    /**
+     * Utility method used in the construction of {@link UnitGraph}s, to be
+     * called only after the unitToPreds and unitToSuccs maps have
+     * been built. It defines the graph's set of heads to include the
+     * first {@link Unit} in the graph's body, together with any other
+     * <tt>Unit</tt> which has no predecessor.  It defines the graph's
+     * set of tails to include all <tt>Unit</tt>s with no successors.
+     */
+    protected void buildHeadsAndTails() {
+	List tailList = new ArrayList();
+	List headList = new ArrayList();
+
+	for (Iterator unitIt = unitChain.iterator(); unitIt.hasNext(); ) {
+	    Unit s = (Unit) unitIt.next();
+	    List succs = (List) unitToSuccs.get(s);
+	    if(succs.size() == 0) {
+		tailList.add(s);
+	    }
+	    List preds = (List) unitToPreds.get(s);
+	    if(preds.size() == 0) {
+		headList.add(s);
+	    }
+	}
+
+	// Add the first Unit, even if it is the target of
+	// a branch.
+	Unit entryPoint = (Unit) unitChain.getFirst();
+	if (! headList.contains(entryPoint)) {
+	    headList.add(entryPoint);
+	}
+
+	tails = Collections.unmodifiableList(tailList);
+	heads = Collections.unmodifiableList(headList);
+    }
+
+
+    /**
+     * Utility method that replaces the values of a {@link Map}, 
+     * which must be instances of {@link List}, with unmodifiable
+     * equivalents.
+     * 
+     * @param map      The map whose values are to be made unmodifiable.
+     */
+    protected static void makeMappedListsUnmodifiable(Map map) {
+	for (Iterator it = map.entrySet().iterator(); it.hasNext(); ) {
+	    Map.Entry entry = (Map.Entry) it.next();
+	    List value = (List) entry.getValue();
+	    if (value.size() == 0) {
+		entry.setValue(Collections.EMPTY_LIST);
+	    } else {
+		entry.setValue(Collections.unmodifiableList(value));
+	    }
+	}
+    }
+
+
+    /**
+     * Utility method that produces a new map from the {@link Unit}s
+     * of this graph's body to the union of the values stored in the
+     * two argument {link Map}s, used to combine the maps of
+     * exceptional and unexceptional predecessors and successors into
+     * maps of all predecessors and successors. The values stored in
+     * both argument maps must be {@link List}s of {@link Unit}s,
+     * which are assumed not to contain any duplicate <tt>Unit</tt>s.
+     * 
+     * @param mapA      The first map to be combined. 
+     *
+     * @param mapB	The second map to be combined.
+     */
+    protected Map combineMapValues(Map mapA, Map mapB) {
+	// The duplicate screen 
+	Map result = new HashMap(mapA.size() * 2 + 1, 0.7f);
+	for (Iterator chainIt = unitChain.iterator(); chainIt.hasNext(); ) {
+	    Unit unit = (Unit) chainIt.next();
+	    List listA = (List) mapA.get(unit);
+	    if (listA == null) {
+		listA = Collections.EMPTY_LIST;
+	    }
+	    List listB = (List) mapB.get(unit);
+	    if (listB == null) {
+		listB = Collections.EMPTY_LIST;
+	    }
+
+	    int resultSize = listA.size() + listB.size();
+	    if (resultSize == 0) {
+		result.put(unit, Collections.EMPTY_LIST);
+	    } else {
+		List resultList = new ArrayList(resultSize);
+		Iterator listIt = null;
+		// As a minor optimization of the duplicate screening, 
+		// copy the longer list first.
+		if (listA.size() >= listB.size()) {
+		    resultList.addAll(listA);
+		    listIt = listB.iterator();
+		} else {
+		    resultList.addAll(listB);
+		    listIt = listA.iterator();
+		}
+		while (listIt.hasNext()) {
+		    Object element = listIt.next();
+		    // It is possible for there to be both an exceptional
+		    // and an unexceptional edge connecting two Units
+		    // (though probably not in a class generated by
+		    // javac), so we need to screen for duplicates. On the
+		    // other hand, we expect most of these lists to have
+		    // only one or two elements, so it doesn't seem worth
+		    // the cost to build a Set to do the screening.
+		    if (! resultList.contains(element)) {
+			resultList.add(element);
+		    }
+		}
+		result.put(unit, Collections.unmodifiableList(resultList));
+	    }
+	}
+	return result;
+    }
+
+
+    /**
+     * Utility method for adding an edge to maps representing the CFG.
+     * 
+     * @param unitToSuccs The {@link Map} from {@link Unit}s to {@link List}s
+     *                    of their successors.
+     *
+     * @param unitToPreds The {@link Map} from {@link Unit}s to {@link List}s
+     *                    of their successors.
+     *
+     * @param head     The {@link Unit} from which the edge starts.
+     *
+     * @param tail     The {@link Unit} to which the edge flows.
+     */
+    protected void addEdge(Map unitToSuccs, Map unitToPreds,
+			   Unit head, Unit tail) {
+	List headsSuccs = (List) unitToSuccs.get(head);
+	if (headsSuccs == null) {
+	    headsSuccs = new ArrayList(3); // We expect this list to
+					   // remain short.
+	    unitToSuccs.put(head, headsSuccs);
+	}
+	if (! headsSuccs.contains(tail)) {
+	    headsSuccs.add(tail);
+	    List tailsPreds = (List) unitToPreds.get(tail);
+	    if (tailsPreds == null) {
+		tailsPreds = new ArrayList();
+		unitToPreds.put(tail, tailsPreds);
+	    }
+	    tailsPreds.add(head);
+	}
+    }
+
+
+    /**
+     *   @return The body from which this UnitGraph was built.
+     *
      *  @see Body
      */
     public Body getBody()
@@ -394,7 +374,6 @@ public class UnitGraph implements DirectedGraph
     }       
 
 
-    
     /* DirectedGraph implementation */
     public List getHeads()
     {
@@ -406,22 +385,22 @@ public class UnitGraph implements DirectedGraph
         return tails;
     }
 
-    public List getPredsOf(Object s)
+    public List getPredsOf(Object u)
     {
-        if(!unitToPreds.containsKey(s))
-            throw new RuntimeException("Invalid stmt" + s);
+        if(!unitToSuccs.containsKey(u)) 
+	    throw new RuntimeException("Invalid unit " + u);
 
-        return (List) unitToPreds.get(s);
+        return (List) unitToPreds.get(u);
     }
 
-    public List getSuccsOf(Object s)
+    public List getSuccsOf(Object u)
     {
-        if(!unitToSuccs.containsKey(s))
-            throw new RuntimeException("Invalid stmt" + s);
+        if(!unitToSuccs.containsKey(u)) 
+	    throw new RuntimeException("Invalid unit " + u);
 
-        return (List) unitToSuccs.get(s);
+        return (List) unitToSuccs.get(u);
     }
-    
+
     public int size()
     {
         return unitChain.size();
@@ -438,14 +417,10 @@ public class UnitGraph implements DirectedGraph
         StringBuffer buf = new StringBuffer();
         while(it.hasNext()) {
             Unit u = (Unit) it.next();
-            
-            List l = new ArrayList(); l.addAll(getPredsOf(u));
-            buf.append("// preds "+l+"\n");
+            buf.append("// preds: "+getPredsOf(u)+"\n");
             buf.append(u.toString() + '\n');
-            l = new ArrayList(); l.addAll(getSuccsOf(u));
-            buf.append("// succs "+l+"\n");
+            buf.append("// succs "+getSuccsOf(u)+"\n");
         }
-        
         return buf.toString();
     }
 }

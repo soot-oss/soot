@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 2002-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -26,242 +26,244 @@
 
 package soot.tools;
 
-import soot.util.dot.*;
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import java.lang.reflect.Method;
 import java.util.*;
-import soot.shimple.*;
+
+import soot.*;
+import soot.baf.Baf;
+import soot.toolkits.exceptions.*;
+import soot.jimple.JimpleBody;
+import soot.grimp.Grimp;
+import soot.shimple.Shimple;
+import soot.toolkits.graph.*;
+import soot.util.dot.DotGraph;
+import soot.util.cfgcmd.AltClassLoader;
+import soot.util.cfgcmd.CFGGraphType;
+import soot.util.cfgcmd.CFGIntermediateRep;
+import soot.util.cfgcmd.CFGOptionMatcher;
+import soot.util.cfgcmd.CFGToDotGraph;
+import soot.util.*;
 
 /**
  * A utility class for generating dot graph file for a control flow graph
  *
  * @author Feng Qian
  */
-public class CFGViewer {
+public class CFGViewer extends BodyTransformer {
 
-  /* make all control fields public, allow other soot class dump 
-   * the graph in the middle */
-  
-  public final static int UNITGRAPH  = 0;
-  public final static int BLOCKGRAPH = 1;
-  public final static int ARRAYBLOCK = 2;
+  /**
+   * An enumeration type for representing the ThrowAnalysis to use. 
+   */
+  abstract class ThrowAnalysisOption extends CFGOptionMatcher.CFGOption {
+    ThrowAnalysisOption(String name) {
+      super(name);
+    }
+    abstract ThrowAnalysis getAnalysis();
+  }
 
-  public int graphtype = UNITGRAPH;
+  private final ThrowAnalysisOption PEDANTIC_THROW_ANALYSIS = 
+    new ThrowAnalysisOption("pedantic") {
+    ThrowAnalysis getAnalysis() { 
+      return PedanticThrowAnalysis.v(); 
+    }
+  };
 
-  public String clsname;
-  public String methname;
+  private final ThrowAnalysisOption UNIT_THROW_ANALYSIS = new ThrowAnalysisOption("unit") {
+    ThrowAnalysis getAnalysis() { 
+      return UnitThrowAnalysis.v(); 
+    }
+  };
 
-  public boolean isBrief      = false;
- 
-  private int meth_count = 0;
+  private final CFGOptionMatcher throwAnalysisOptions = 
+    new CFGOptionMatcher(new ThrowAnalysisOption[] {    
+      PEDANTIC_THROW_ANALYSIS,
+      UNIT_THROW_ANALYSIS,
+    });
+  private ThrowAnalysis getThrowAnalysis(String option) {
+    return ((ThrowAnalysisOption) 
+	    throwAnalysisOptions.match(option)).getAnalysis();
+  }
 
-  /* in one page or several pages of 8.5x11 */
-  public boolean onepage      = true;
+  private CFGGraphType graphtype = CFGGraphType.BRIEF_UNIT_GRAPH;
+  private CFGIntermediateRep ir = CFGIntermediateRep.JIMPLE_IR;
+  private ThrowAnalysis throwAnalysis = UNIT_THROW_ANALYSIS.getAnalysis();
+  private CFGToDotGraph drawer = new CFGToDotGraph();
+  private Map methodsToPrint = null; // If the user specifies particular
+				     // methods to print, this is a map
+				     // from method name to the class
+				     // name declaring the method.
 
-  /* build CFG for Shimple */
-  public static boolean shimple = false;
-  /* build CFG for Jimple->Shimple->Jimple */
-  public static boolean viaShimple = false;
 
-  /* build complete CFG graphs */
-  public static boolean complete = false;
-    
-    
+  protected void internalTransform(Body b, String phaseName, Map options) {
+    SootMethod meth = b.getMethod();
+
+    if ((methodsToPrint == null) ||
+	(meth.getDeclaringClass().getName() ==
+	 methodsToPrint.get(meth.getName()))) {
+      Body body = ir.getBody((JimpleBody) b);
+      print_cfg(body);
+    }
+  }
+
+
   public static void main(String[] args) {
       new CFGViewer().run( args );
   }
 
+
   public void run(String[] args) {
 
-    /* check the arguments */
-    if (args.length ==0) {
+    /* process options */
+    args = parse_options(args);
+for (int i = 0; i < args.length; i++) System.err.println(args[i]);
+    if (args.length == 0) {
       usage();
       return;
     }
 
-    /* process options */
-    parse_options(args);
+    AltClassLoader.v().setAltClasses(new String[] {
+      "soot.toolkits.graph.ArrayRefBlockGraph",
+      "soot.toolkits.graph.Block",
+      "soot.toolkits.graph.Block$AllMapTo",
+      "soot.toolkits.graph.BlockGraph",
+      "soot.toolkits.graph.BriefBlockGraph",
+      "soot.toolkits.graph.BriefUnitGraph",
+      "soot.toolkits.graph.CompleteBlockGraph",
+      "soot.toolkits.graph.CompleteUnitGraph",
+      "soot.toolkits.graph.TrapUnitGraph",
+      "soot.toolkits.graph.UnitGraph",
+      "soot.toolkits.graph.ZonedBlockGraph",
+    });
 
-    /* load and support classes manually */
-    SootClass cls = Scene.v().loadClassAndSupport(clsname);
-    cls.setApplicationClass();
-    
-    /* iterate each method and call print_cfg */
-    Iterator methodIt = cls.methodIterator();
-    while (methodIt.hasNext()) {
-      SootMethod meth = (SootMethod)methodIt.next();
-      
-      if ((methname == null) 
-	  || (methname.equals(meth.getName()))) {
-	if (meth.isConcrete()) {
-	  Body body = meth.retrieveActiveBody();
+    Pack jtp = PackManager.v().getPack("jtp");
+    jtp.add(new Transform("jtp.printcfg", this));
 
-	  if(shimple || viaShimple)
-	     body = Shimple.v().newBody(body);
-
-	  if(viaShimple && !shimple)
-             body = Shimple.v().newJimpleBody((ShimpleBody)body);
-
-	  print_cfg(body);
-	}
-      }
-    }
+    soot.Main.main(args);
   }
+
 
   private void usage(){
-      G.v().out.println("Usage:");
-      G.v().out.println("   java soot.util.CFGViewer [options] class[:method]");
-      G.v().out.println("   options:");
-      G.v().out.println("       --unit|block|array : produces the unit(default)/block graph.");
-      G.v().out.println("       --brief : uses the unit/block index as the label.");
-      G.v().out.println("       --soot-classpath PATHs : specifies the soot class pathes.");
-      G.v().out.println("       --multipages : produces the dot file sets multi pages (8.5x11).");
-      G.v().out.println("                      By default, the graph is in one page.");
+      G.v().out.println(
+"Usage:\n" +
+"   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n" +
+"   CFGViewer options:\n" +
+"      (When specifying the value for an '=' option, you only\n" +
+"       need to type enough characters to specify the choice\n" +
+"       unambiguously, and case is ignored.)\n" +
+"\n" +
+"       --alt-classpath PATH :\n" +
+"                specifies the classpath from which to load classes\n" +
+"                that implement graph types whose names begin with 'Alt'.\n" +
+"       --graph={" +
+CFGGraphType.help(0, 70, 
+"                ".length()) + "} :\n" +
+"                show the specified type of graph.\n" +
+"                Defaults to BriefUnitGraph.\n" +
+"       --ir={" +
+CFGIntermediateRep.help(0, 70, 
+"                ".length()) + "} :\n" +
+"                create the CFG from the specified intermediate\n" +
+"                representation. The default is jimple.\n" +
+"       --brief :\n" +
+"                label nodes with the unit or block index,\n" +
+"                instead of the text of their statements.\n" +
+"       --throwAnalysis={" +
+throwAnalysisOptions.help(0, 70,
+"              ".length()) + "} :\n" +
+"                use the specified throw analysis when creating Exceptional\n" +
+"                graphs (UnitThrowAnalysis is the default).\n" +
+"       --showExceptions :\n" +
+"                in Exceptional graphs, include edges showing the path of\n" +
+"                exceptions from thrower to catcher, labeled with the\n" +
+"                possible exception types.\n" +
+"       --multipages :\n" +
+"                produce dot file output for multiple 8.5x11\" pages.\n" +
+"                By default, a single page is produced.\n" +
+"       --help :\n" +
+"                print this message.\n"
+);
   }
 
+  /**
+   * Parse the command line arguments specific to CFGViewer,
+   * @return an array of arguments to pass on to Soot.Main.main().
+   */
+  private String[] parse_options(String[] args){
+    List sootArgs = new ArrayList(args.length);
 
-  private void parse_options(String[] args){
+    drawer.setBriefLabels(false);
+    drawer.setOnePage(true);
+    drawer.setShowExceptions(false);
+    drawer.setUnexceptionalControlFlowAttr("color", "black");
+    drawer.setExceptionalControlFlowAttr("color", "red");
+    drawer.setExceptionEdgeAttr("color", "lightgray");
+
     for (int i=0, n=args.length; i<n; i++) {
-      if (args[i].equals("--unit")) {
-	graphtype = UNITGRAPH;
-      } else if (args[i].equals("--block")) {
-	graphtype = BLOCKGRAPH;
-      } else if (args[i].equals("--array")) {
-	graphtype = ARRAYBLOCK;
-      } else if (args[i].equals("--brief")) {
-	isBrief = true;
-      } else if (args[i].equals("--soot-classpath")) {
+      if (args[i].equals("--soot-classpath") ||
+	  args[i].equals("--soot-class-path")) {
 	Scene.v().setSootClassPath(args[++i]);
+      } else if (args[i].equals("--alt-classpath") ||
+	  args[i].equals("--alt-class-path")) {
+	AltClassLoader.v().setAltClassPath(args[++i]);
+      } else if (args[i].startsWith("--graph=")) {
+	graphtype = 
+	  CFGGraphType.getGraphType(args[i].substring("--graph=".length()));
+      } else if (args[i].startsWith("--ir=")) {
+	ir = 
+	  CFGIntermediateRep.getIR(args[i].substring("--ir=".length()));
+      } else if (args[i].equals("--brief")) {
+	drawer.setBriefLabels(true);
+      } else if (args[i].startsWith("--throwAnalysis=")) {
+	throwAnalysis = 
+	  getThrowAnalysis(args[i].substring("--throwAnalysis=".length()));
+      } else if (args[i].equals("--showExceptions")) {
+	drawer.setShowExceptions(true);
       } else if (args[i].equals("--multipages")) {
-	onepage = false;
-      } else if (args[i].equals("--shimple")) {
-	shimple = true;
-      } else if (args[i].equals("--via-shimple")) {
-	viaShimple = true;
-      } else if (args[i].equals("--complete")) {
-        complete = true;
+	drawer.setOnePage(false);
+      } else if (args[i].equals("--help")) {
+	return new String[0];	// This is a cheesy method to inveigle
+				// our caller into printing the help
+				// and exiting.
+      } else if (args[i].equals("-p") ||
+		 args[i].equals("--phase-option") ||
+		 args[i].equals("-phase-option")) {
+	// Pass the phase option right away, so the colon doesn't look
+	// like a method specifier.
+	sootArgs.add(args[i]);
+	sootArgs.add(args[++i]);
+	sootArgs.add(args[++i]);
       } else {
 	int smpos = args[i].indexOf(':');
 	if (smpos == -1) {
-	  clsname = args[i]; 
+	  sootArgs.add(args[i]); 
 	} else {
-	  clsname  = args[i].substring(0, smpos);
-	  methname = args[i].substring(smpos+1);
+	  String clsname  = args[i].substring(0, smpos);
+	  sootArgs.add(clsname);
+	  String methname = args[i].substring(smpos+1);
+	  if (methodsToPrint == null) {
+	    methodsToPrint = new HashMap();
+	  }
+	  methodsToPrint.put(methname, clsname);
 	}
       }
     }
+    String[] sootArgsArray = new String[sootArgs.size()];
+    return (String[]) sootArgs.toArray(sootArgsArray);
   }
 
   protected void print_cfg(Body body) {
-    SootMethod method = body.getMethod();
-    SootClass  sclass = method.getDeclaringClass();
+    DirectedGraph graph = graphtype.buildGraph(body);
+    DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
 
-    DirectedGraph graph = null;
-
-    switch (graphtype) {
-    case UNITGRAPH:
-      graph = new UnitGraph(body, complete);
-      break;
-    case BLOCKGRAPH:
-      if(complete)
-        graph = new BlockGraph(body, BlockGraph.COMPLETE);
-      else
-        graph = new BlockGraph(body, BlockGraph.BRIEF);
-      break;
-    case ARRAYBLOCK:
-      graph = new BlockGraph(body, BlockGraph.ARRAYREF);
-      break;
+    String methodname = body.getMethod().getSubSignature();
+    String filename = soot.util.SourceLocator.v().getOutputDir();
+    if (filename.length() > 0) {
+	filename = filename + java.io.File.separator;
     }
+    filename = filename + 
+      methodname.replace(java.io.File.separatorChar, '.') + 
+      DotGraph.DOT_EXTENSION;
 
-    String methodname = method.getName()+"-"+meth_count++;
-    String graphname = sclass.getName()+":"+method.getName();
-    toDotFile(methodname, graph, graphname); 
-  }
-
-
-  private int nodecount = 0;
-
-  /**
-   * Generates a dot format file for a DirectedGraph
-   * @param methodname, the name of generated dot file
-   * @param graph, a directed control flow graph (UnitGraph, BlockGraph ...)
-   * @param graphname, the title of the graph
-   */
-  public void toDotFile(String methodname, 
-				DirectedGraph graph, 
-				String graphname) {
-
-    // this makes the node name unique
-    nodecount = 0; // reset node counter first.
-    Hashtable nodeindex = new Hashtable(graph.size());
-
-    // file name is the method name + .dot
-    DotGraph canvas = new DotGraph(methodname);
-
-    if (!onepage) {
-      canvas.setPageSize(8.5, 11.0);
-    }
-
-    if (isBrief) {
-      canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_CIRCLE);
-    } else {
-      canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
-    }
-    canvas.setGraphLabel(graphname);
-
-    Iterator nodesIt = graph.iterator();
-    while (nodesIt.hasNext()) {
-      Object node = nodesIt.next();
-
-      Iterator succsIt = graph.getSuccsOf(node).iterator();
-      while (succsIt.hasNext()) {
-        Object succ = succsIt.next();
-
-        canvas.drawEdge(makeNodeName(getNodeOrder(nodeindex, node)), 
-			makeNodeName(getNodeOrder(nodeindex, succ)));
-      }
-    }
-
-    // make the entry and exit node filled.
-    Iterator headsIt = graph.getHeads().iterator();
-    while (headsIt.hasNext()) {
-      Object head = headsIt.next();
-      DotGraphNode headNode = canvas.getNode(makeNodeName(getNodeOrder(nodeindex, head)));
-      headNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-
-    Iterator tailsIt = graph.getTails().iterator();
-    while (tailsIt.hasNext()) {
-      Object tail = tailsIt.next();
-      DotGraphNode tailNode = canvas.getNode(makeNodeName(getNodeOrder(nodeindex, tail)));
-      tailNode.setStyle(DotGraphConstants.NODE_STYLE_FILLED);
-    }
-
-    // set node label
-    if (!isBrief) {
-      nodesIt = nodeindex.keySet().iterator();
-      while (nodesIt.hasNext()) {
-	Object node = nodesIt.next();
-	String nodename = makeNodeName(getNodeOrder(nodeindex, node));
-	DotGraphNode dotnode = canvas.getNode(nodename);
-	dotnode.setLabel(node.toString());
-      }
-    }
-
-    canvas.plot();
-  } 
-
-  private int getNodeOrder(Hashtable nodeindex, Object node){
-    Integer index = (Integer)nodeindex.get(node);
-    if (index == null) {
-      index = new Integer(nodecount++);
-      nodeindex.put(node, index);
-    }
-    return index.intValue();
-  }
-
-  private String makeNodeName(int index){
-    return "N"+index;
+    canvas.plot(filename);
   }
 }

@@ -34,7 +34,7 @@ import java.io.*;
 
 public class DotGraphUtility {
 
-  /* repalce any " to \" in the string */
+  /* replace any " to \" in the string */
   public static String replaceQuotes(String original){
     byte[] ord = original.getBytes();
     int quotes = 0;

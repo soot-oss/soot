@@ -18,42 +18,49 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2004.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
- 
-
-
-
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-
-
+import soot.Body;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 
 /**
- *  Represents a CFG for a Body instance where the nodes are Unit
- *  instances, and where control flow associated with exceptions is taken into 
- *  account. That is all units covered by an exception handler will have edges 
- *  to the exception handler.
+ *  <p>Represents a CFG for a {@link Body} instance where the nodes
+ *  are {@link Unit} instances, and where control flow associated with
+ *  exceptions is taken into account. In a
+ *  <code>CompleteUnitGraph</code>, every {@link Unit} covered by a
+ *  {@link Trap} is considered to have the potential to throw an
+ *  exception caught by the {@link Trap}, so there are edges to the
+ *  {@link Trap}'s handler from every trapped {@link Unit} , as well
+ *  as from all the predecessors of the trapped {@link Unit}s.
+ *
+ *  <p>This implementation of <code>CompleteUnitGraph</code> is included
+ *  for backwards compatibility, but the graphs it produces are not
+ *  necessarily identical to the graphs produced by the implementation of
+ *  <code>CompleteUnitGraph</code> provided by versions of Soot
+ *  up to and including release 2.0.1.  The known differences include:
+ *
+ *  <ul>
+ * 
+ *  <li>If a {@link Body} includes {@link Unit}s which branch into the
+ *  middle of the region protected by a {@link Trap} this 
+ *  implementation of <code>CompleteUnitGraph</code> will include
+ *  edges from those branching {@link Unit}s to the {@link Trap}'s
+ *  handler (since the branches are predecessors of an instruction which may
+ *  throw an exception caught by the {@link Trap}.  The 2.0.1
+ *  implementation of {@link CompleteUnitGraph} mistakenly omitted
+ *  these edges.
+ *
+ *  </ul></p>
  */
-public class CompleteUnitGraph extends UnitGraph
+public class CompleteUnitGraph extends ExceptionalUnitGraph 
 {
-
-    /**
-     *  Constructs the graph from a given Body instance.
-     *  @param the Body instance from which the graph is built.
-     */
-    public CompleteUnitGraph(Body body)
-    {
-        super(body, true);
+    public CompleteUnitGraph(Body b) {
+	super(b, PedanticThrowAnalysis.v(), true);
     }
-
 }
-
-

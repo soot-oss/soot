@@ -56,6 +56,8 @@ public class JimpleBodyPack extends BodyPack
         
         if(Options.v().time()) Timers.v().splitTimer.start();
 
+        PackManager.v().getTransform( "jb.tt" ).apply( b );
+
         PackManager.v().getTransform( "jb.ls" ).apply( b );
 
         if(Options.v().time()) Timers.v().splitTimer.end();

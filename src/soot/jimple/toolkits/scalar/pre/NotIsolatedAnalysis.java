@@ -65,7 +65,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param latest the latest-computation of the same graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
@@ -83,7 +83,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
    * the shared set allows more efficient set-operations, when this analysis is
    * joined with other analyses/computations.
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param latest the latest-computation of the same graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    * @param set the shared set.

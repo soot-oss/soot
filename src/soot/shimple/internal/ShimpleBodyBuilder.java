@@ -95,11 +95,14 @@ public class ShimpleBodyBuilder
     
     public void initialize()
     {
-        cfg = new CompleteBlockGraph(body);
+	// Compute a UnitGraph first, so we can feed it to the
+	// BlockGraph constructor and use it ourselves later.
+	ExceptionalUnitGraph ucfg = new ExceptionalUnitGraph(body);
+        cfg = new ExceptionalBlockGraph(ucfg);
         OneHeadBlockGraph.convert(cfg);
 
         dt = new DominatorTree(cfg, true);
-        gd = new GuaranteedDefs(new CompleteUnitGraph(body));
+        gd = new GuaranteedDefs(ucfg);
         origLocals = new ArrayList(body.getLocals());
         newPhiNodes = new HashSet();
     }

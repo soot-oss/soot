@@ -136,7 +136,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             }
         }
 
-        CompleteUnitGraph graph = new CompleteUnitGraph(b);
+        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(b);
         LocalDefs defs = new SimpleLocalDefs(graph);
         LocalUses uses = new SimpleLocalUses(graph, defs);
         

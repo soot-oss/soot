@@ -18,48 +18,37 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.graph;
 
-import java.util.*;
-import soot.*;
-import java.io.*;
+import soot.Body;
+import soot.toolkits.graph.ExceptionalBlockGraph;
+import soot.toolkits.graph.CompleteUnitGraph;
 
 /**
- *  Represents a CFG where the nodes are Block instances, and
- *  where control flow associated with exceptions is taken into account.
- *  That is, given a list of Units that have an exception handler in scope,
- *  each one of these units will be considered a Block as control can jump to 
- *  an exception handler at any point while going through the units.
+ *  <p>Represents a CFG for a {@link Body} instance where the nodes
+ *  are {@link Block} instances, and where control flow associated with
+ *  exceptions is taken into account. When dividing the {@link Body} into
+ *  basic blocks, 
+ *  <code>CompleteBlockGraph</code> assumes that every {@link Unit} covered by a
+ *  {@link Trap} has the potential to throw an
+ *  exception caught by the {@link Trap}.  This generally has the effect of 
+ *  separating every covered {@link Unit} into a separate block.
  *
- *  @see Unit
- *  @see Block
- *  @see BlockGraph
- *  @see ZonedBlockGraph
+ *  <p>This implementation of <code>CompleteBlockGraph</code> is included
+ *  for backwards compatibility, but the graphs it produces are not
+ *  necessarily identical to the graphs produced by the implementation of
+ *  <code>CompleteBlockGraph</code> See the documentation for 
+ *  {@link CompleteUnitGraph} for details of the incompatibilities.
+ *  </p>
  */
-
-public class CompleteBlockGraph extends BlockGraph 
+public class CompleteBlockGraph extends ExceptionalBlockGraph 
 {
-
-
-    /**
-     *   Constructs  a graph for the blocks found by partitioning the 
-     *   the unit chain of  the provided
-     *   Body instance. Each node in the graph corresponds to
-     *   a block. The edges are derived from the control flow.
-     *
-     *   @param body               The underlying body we want to make a
-     *                             graph for.
-     */
-    public CompleteBlockGraph(Body body)
-    {
-        super(body, COMPLETE);
+    public CompleteBlockGraph(Body b) {
+	super(new CompleteUnitGraph(b));
     }
 }
-
-

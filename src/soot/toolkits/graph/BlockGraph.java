@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-2003.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -29,557 +29,295 @@ package soot.toolkits.graph;
 import java.util.*;
 
 import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.util.Chain;
 
-import soot.jimple.*;
 
-/**
- *  Implements a CFG for a Body instance where the nodes are Block
- *  instances. It is a generic implementation used by more specific
- *   classes such as BriefBlockGraph.
- *   @see BriefBlockGraph
- *   @see CompleteBlockGraph
- *   @see ZonedBlockGraph
- *   @see ArrayRefBlockGraph
- */
-
-public class BlockGraph implements DirectedGraph 
+    /**
+     *  <p>
+     *  Represents the control flow graph of a {@link Body} at the basic
+     *  block level. Each node of the graph is a {@link Block} while the
+     *  edges represent the flow of control from one basic block to 
+     *  the next.</p>
+     *
+     *  <p> This is an abstract base class for different variants of
+     *  {@link BlockGraph}, where the variants differ in how they
+     *  analyze the control flow between individual units (represented
+     *  by passing different variants of {@link UnitGraph} to the
+     *  <tt>BlockGraph</tt> constructor) and in how they identify
+     *  block leaders (represented by overriding <tt>BlockGraph</tt>'s
+     *  definition of {@link computeLeaders()}.
+     */
+public abstract class BlockGraph implements DirectedGraph 
 {
+    protected boolean DEBUG = true; // Controls whether subclass
+				    // constructors dump a representation
+				    // of the graph they build.
     Body mBody;
     Chain mUnits;
     List mBlocks;
     List mHeads = new ArrayList();
     List mTails = new ArrayList();
 
-    public static final int COMPLETE = 0;
-    public static final int BRIEF = 1;
-    public static final int ZONED = 2;
-
-    public static final int ARRAYREF = 99;
-
    
     /**
-     *  Constructs a BlockGraph from a given Body instance.
+     *  Create a <tt>BlockGraph</tt> representing at the basic block
+     *  level the control flow specified, at the <tt>Unit</tt> level,
+     *  by a given {@link UnitGraph}.
      *
-     *   @param aBody  The Body instance we want a graph for.
-     *   @param type   Specifies the type of graph to build. 
-     *                 This can be  BRIEF, ZONED, COMPLETE, or
-     *		       ARRAYREF.
-     *   @see CompleteBlockGraph
-     *   @see BriefBlockGraph
-     *   @see ZonedBlockGraph
-     *   @see ArrayRefBlockGraph 
+     *   @param unitGraph  A representation of the control flow at
+     *                     the level of individual {@link Unit}s.
      */
-    public BlockGraph(Body aBody, int type) 
+    protected BlockGraph(UnitGraph unitGraph) 
     {
-        /* Algorithm used to compute basic blocks:
-         * 1) Identify basic block leaders: these are the units that mark
-         *    the start of a basic block (ex: target of branches)
-         * 2) Use the leaders found in step 1 to slice the linear chain of 
-         *    units into basic blocks, with the leaders as delimiters.
-         */ 
-
-        mBody = aBody;
-        mUnits = aBody.getUnits();
-        
-
-        Map trapBeginUnits = new HashMap(); // Maps a unit to a list of traps whose scopes start at that unit.
-        List trapsInScope = null;           //  List of Traps that can catch an exception at a given unit.
-        Chain traps = null;                 // All traps for this Body
-        List handlerList = new ArrayList(); // list of handler units
-
-        /*
-         *  Compute basic block leaders.
-         */
-        Map leaders = new HashMap();
-        
-                    
-        // Get the list of all traps for this Body
-        traps = mBody.getTraps();
-        trapsInScope = new ArrayList(traps.size());   // no more than traps.size() traps can be in scope for any given unit.
-            
-        // Populate the trapBeginUnits Map and handler list
-        Iterator trapIt = traps.iterator();
-        while(trapIt.hasNext()) {
-            Trap someTrap = (Trap) trapIt.next();
-            Unit firstUnit = someTrap.getBeginUnit();
-
-            handlerList.add(someTrap.getHandlerUnit());
-
-            List trapList = (List) trapBeginUnits.get(firstUnit);
-            if(trapList == null) {
-                trapList = new ArrayList(4);
-                trapList.add(someTrap);
-                trapBeginUnits.put(firstUnit, trapList);
-            } else {
-                trapList.add(someTrap);
-            }
-            
-
-            // Get the leaders that bound exception contexts.
-            if(type == ZONED) {              
-              List predList = new ArrayList();
-              predList.add(mUnits.getPredOf(someTrap.getBeginUnit()));
-              leaders.put(someTrap.getBeginUnit(), predList);
-
-              predList = new ArrayList();
-              predList.add(mUnits.getPredOf(someTrap.getEndUnit()));
-              leaders.put(someTrap.getEndUnit(), predList);                    
-            }            
-        }
-        
-
-        /*            
-        List trapHeads = new ArrayList();
-        trapIt = trapBeginUnits.values().iterator();
-        while(trapIt.hasNext() ) {
-            List l = (List) trapIt.next();
-            // if(l.size() != 1) {throw new RuntimeException("size != 1");}
-            Trap someTrap = (Trap) l.get(0);
-            trapHeads.add(someTrap.getHandlerUnit());
-            trapHeads.add(someTrap.getBeginUnit());
-        }        
-        */      
+        mBody = unitGraph.getBody();
+        mUnits = mBody.getUnits();
+	Set leaders = computeLeaders(unitGraph);
+	buildBlocks(leaders, unitGraph);
+    }
 
 
+    /**
+     * <p>Utility method for computing the basic block leaders for a
+     * {@link Body}, given its {@link UnitGraph} (i.e., the
+     * instructions which begin new basic blocks).</p>
+     *
+     * <p> This implementation designates as basic block leaders :
+     *
+     * <ul>
+     *
+     * <li>Any <tt>Unit</tt> which has zero predecessors (e.g. the
+     * <tt>Unit</tt> following a return or unconditional branch) or
+     * more than one predecessor (e.g. a merge point).</li>
+     *
+     * <li><tt>Unit</tt>s which are the target of any branch (even if
+     * they have no other predecessors and the branch has no other
+     * successors, which is possible for the targets of unconditional
+     * branches or degenerate conditional branches which both branch
+     * and fall through to the same <tt>Unit</tt>).</li>
+     *
+     * <li>All successors of any <tt>Unit</tt> which has more than one
+     * successor (this includes the successors of <tt>Unit</tt>s which
+     * may throw an exception that gets caught within the
+     * <tt>Body</tt>, as well the successors of conditional
+     * branches).</li>
+     *
+     * <li>The first <tt>Unit</tt> in any <tt>Trap</tt> handler.
+     * (Strictly speaking, if <tt>unitGraph</tt> were a
+     * <tt>CompleteUnitGraph</tt> that included only a single
+     * unexceptional predecessor for some handler---because no trapped
+     * unit could possibly throw the exception that the handler
+     * catches, while the code preceding the handler fell through to
+     * the handler's code---then you could merge the handler into the
+     * predecessor's basic block; but such situations occur only in
+     * carefully contrived bytecode.)
+     *
+     * </ul></p>
+     *
+     * @param unitGraph is the <tt>Unit</tt>-level CFG which is to be split
+     * into basic blocks.
+     *
+     * @return the {@link Set} of {@link Unit}s in <tt>unitGraph</tt> which
+     * are block leaders.
+     */
+    protected Set computeLeaders(UnitGraph unitGraph) {
+	Body body = unitGraph.getBody();
+	if (body != mBody) {
+	    throw new RuntimeException("BlockGraph.computeLeaders() called with a UnitGraph that doesn't match its mBody.");
+	}
+        Set leaders = new HashSet();
 
-        {
-            // Iterate over the Body searching for leaders.
-            Iterator it = mUnits.iterator();
-            Unit currentUnit, nextUnit; 
-            nextUnit = it.hasNext() ? (Unit) it.next(): null;
+	// Trap handlers start new basic blocks, no matter how many
+	// predecessors they have.
+	Chain traps = body.getTraps();
+	for (Iterator trapIt = traps.iterator(); trapIt.hasNext(); ) {
+	    Trap trap = (Trap) trapIt.next();
+	    leaders.add(trap.getHandlerUnit());
+	}
 
-            while(nextUnit != null) {  //
-                currentUnit = nextUnit;
-                nextUnit = it.hasNext() ? (Unit) it.next(): null;
-                
+	for (Iterator unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
+	    Unit u = (Unit) unitIt.next();
+	    List predecessors = unitGraph.getPredsOf(u);
+	    int predCount = predecessors.size();
+	    List successors = unitGraph.getSuccsOf(u);
+	    int succCount = successors.size();
 
-                // for a COMPLETE graph only, get the traps beginning at the currentUnit
-                // and add them to the trapsInScope list
-                if(type == COMPLETE) {
-                    List trapsBeginningHere = (List) trapBeginUnits.get(currentUnit);
-                    
-                    if(trapsBeginningHere != null) {
-                        Iterator iter = trapsBeginningHere.iterator();
-                        if(iter != null) {
-                            while(iter.hasNext()) {
-                                trapsInScope.add(iter.next());
-                            }
-                        }
-                    } 
-                }
-                
-               
-                if(currentUnit.branches()) {
+	    if (predCount != 1) { // If predCount == 1 but the predecessor
+		leaders.add(u);	  // is a branch, u will get added by that
+	    }                     // branch's successor test.
+	    if ((succCount > 1) || (u.branches())) {
+		for (Iterator it = successors.iterator(); it.hasNext(); ) {
+		    leaders.add((Unit) it.next()); // The cast is an
+		}				   // assertion check.
+	    }
+	}
+	return leaders;
+    }
 
-                    // iterate over the targets of the branch for this Unit (should only be one right?)
-                    Iterator targetIt = currentUnit.getUnitBoxes().iterator();
-                    if(!targetIt.hasNext())
-                        throw new RuntimeException("error: branching instruction has no target.");
-                    
-                    while(targetIt.hasNext()) {
 
-                        Unit target = ((UnitBox) targetIt.next()).getUnit();
-                        List predecessors;
-                      
-                        // the target is a leader; add it to the leaders list if it isn't already there;
-                        // add the current unit to it's predecessors list.
-                        if(!leaders.containsKey(target)) {
-                            predecessors= new LinkedList();
-                            predecessors.add(currentUnit);
-                            Unit targetPred = (Unit) mUnits.getPredOf(target);
-                            if(targetPred.fallsThrough())
-                                predecessors.add(targetPred);
-                                
-                            leaders.put(target, predecessors);
-                        } else {
-                            predecessors = (List) leaders.get(target);
-                            predecessors.add(currentUnit);
-                        }            
-                    }
-                
+    /**
+     * A utility method that does most of the work of constructing
+     * basic blocks, once the set of block leaders has been
+     * determined.  It splits the {@link Unit}s in the <tt>Body</tt>
+     * so that each <tt>Unit</tt> in the passed set of block leaders
+     * is the first unit in a block.
+     *
+     * @param leaders Contains {@link Unit}s which are
+     *                to be block leaders.
+     *
+     * @param unitGraph   Provides information about the predecessors and
+     *                successors of each <tt>Unit</tt> in the <tt>Body</tt>,
+     *                for determining the predecessors and successors of
+     *                each created {@link Block}.
+     *
+     * @return a {@link List} of {@link Block}s.
+     */
+    protected void buildBlocks(Set leaders, UnitGraph unitGraph) {
+	List blockList = new ArrayList(leaders.size());
+	Map unitToBlock = new HashMap(); // Maps head and tail units to 
+					 // their blocks, for building
+					 // predecessor and successor lists.
+	Unit blockHead = null;
+	int blockLength = 0;
+	Iterator unitIt = mUnits.iterator();
+	if (unitIt.hasNext()) {
+	    blockHead = (Unit) unitIt.next();
+	    if (! leaders.contains(blockHead)) {
+		throw new RuntimeException("BlockGraph: first unit not a leader!");
+	    }
+	    blockLength++;
+	}
+	Unit blockTail = blockHead;
+	int indexInMethod = 0;
 
-                    // current unit is a branch; this should not happen
-                    //  if(nextUnit == null)
-                    //throw new RuntimeException("error:  this can only happen if we are a return statement.");
+	while (unitIt.hasNext()) {
+	    Unit u = (Unit) unitIt.next();
+	    if (leaders.contains(u)) {
+		addBlock(blockHead, blockTail, indexInMethod, blockLength,
+			 blockList, unitToBlock);
+		indexInMethod++;
+		blockHead = u;
+		blockLength = 0;
+	    }
+	    blockTail = u;
+	    blockLength++;
+	}
+	if (blockLength > 0) {
+	    // Add final block.
+	    addBlock(blockHead, blockTail, indexInMethod, blockLength, 
+		     blockList, unitToBlock);
+	}
 
-                    
-                    // A unit following a branch is a leader.
-                    List predecessors;
-                    if(!leaders.containsKey(nextUnit)) {
-                        predecessors= new LinkedList();
-                        leaders.put(nextUnit, predecessors);
-                    }
-                    // if this branch falls through, add currentUnit to nextUnit's predecessors list
-                    if(currentUnit.fallsThrough()) {
-                        predecessors = (List) leaders.get(nextUnit);
-                        predecessors.add(currentUnit);
-                    }
-                    
+	// The underlying UnitGraph defines heads and tails.
+	for (Iterator it = unitGraph.getHeads().iterator(); it.hasNext(); ) {
+	    Unit headUnit = (Unit) it.next();
+	    Block headBlock = (Block) unitToBlock.get(headUnit);
+	    if (headBlock.getHead() == headUnit) {
+		mHeads.add(headBlock);
+	    } else {
+		throw new RuntimeException("BlockGraph(): head Unit is not the first unit in the corresponding Block!");
+	    }
+	}
+	for (Iterator it = unitGraph.getTails().iterator(); it.hasNext(); ) {
+	    Unit tailUnit = (Unit) it.next();
+	    Block tailBlock = (Block) unitToBlock.get(tailUnit);
+	    if (tailBlock.getTail() == tailUnit) {
+		mTails.add(tailBlock);
+	    } else {
+		throw new RuntimeException("BlockGraph(): tail Unit is not the last unit in the corresponding Block!");
+	    }
+	}
+	
+	for (Iterator blockIt = blockList.iterator(); blockIt.hasNext(); ) {
+	    Block block = (Block) blockIt.next();
 
-                    
-                }
-
-                // A unit following a return unit is a leader. (note !branches && !fallsThrough => return)
-                else if(!currentUnit.branches() && !currentUnit.fallsThrough()) {
-                    if(nextUnit != null) {
-                        if(!leaders.containsKey(nextUnit)) {
-                            leaders.put(nextUnit, new LinkedList());
-                        } 
-                    }
-
-                }
-
-   		// For array reference graph only:
-		if (type == ARRAYREF)
-		{
-		    Stmt stmt = (Stmt)nextUnit;
-
-		    if ((nextUnit != null) &&(stmt.containsArrayRef()))
-		    {
-			if (!leaders.containsKey(nextUnit))
-		        {
-			    List predicessors = new LinkedList();
-			    predicessors.add(currentUnit);
-
-			    leaders.put(nextUnit, predicessors);
-			}
-		    }
+	    List predUnits = unitGraph.getPredsOf(block.getHead());
+	    List predBlocks = new ArrayList(predUnits.size());
+	    for (Iterator predIt = predUnits.iterator(); predIt.hasNext(); ) {
+		Unit predUnit = (Unit) predIt.next();
+		Block predBlock = (Block) unitToBlock.get(predUnit);
+		if (predBlock == null) {
+		    throw new RuntimeException("BlockGraph(): block head mapped to null block!");
 		}
-                
-             
-                // For complete graphs only:
-                if(type ==COMPLETE) {
-                    if(trapsInScope.size() != 0 ){
-                                       
-                        List predecessors;
-                        Iterator trapScopeIt = trapsInScope.iterator();
-                        while(trapScopeIt.hasNext()) {
-                            Trap someTrap = (Trap) trapScopeIt.next();
+		predBlocks.add(predBlock);
+	    }
 
-                                // 1) The first unit of the trap handler is a leader.                            
-                            Unit target = someTrap.getHandlerUnit();
-                            if(!leaders.containsKey(target)) {
-                                predecessors= new LinkedList();
-                                predecessors.add(currentUnit);
-                                Unit targetPred = (Unit) mUnits.getPredOf(target);
-                                if(targetPred.fallsThrough())
-                                    predecessors.add(targetPred);
-                            
-                                leaders.put(target, predecessors);
-                            } else {
-                                predecessors = (List) leaders.get(target);
-                                predecessors.add(currentUnit);
-                            }                    
-                            
-                                // 2) A unit following a unit having exception handlers in it's scope is a leader.
-                            if(nextUnit != null) {
-                                if(!leaders.containsKey(nextUnit)) {
-                                    predecessors= new LinkedList();
-                                    leaders.put(nextUnit, predecessors);
-                                }
-                                if(currentUnit.fallsThrough()) {
-                                    predecessors = (List) leaders.get(nextUnit);
-                                    
-                                    if(!predecessors.contains(currentUnit))
-                                        predecessors.add(currentUnit);
-                                }
-                            }
-                            
-                                // 3) A unit having exception handlers in it's scope is a leader.
-                            if(!leaders.containsKey(currentUnit)) {
-                                predecessors= new LinkedList();
-                                leaders.put(currentUnit, predecessors);
-                            }
-                            
-                            predecessors =(List) leaders.get(currentUnit);
-                            Unit targetPred = (Unit) mUnits.getPredOf(currentUnit);
-                            if(targetPred != null && targetPred.fallsThrough())
-                                if(!predecessors.contains(targetPred))
-                                    predecessors.add(targetPred);
-                        }
-                    }
-                    
- 
-                    // Remove traps that go out of scope after the current unit
-                    Iterator trapScopeIt = trapsInScope.iterator();
-                    while(trapScopeIt.hasNext()) {
-                        Trap trap = (Trap) trapScopeIt.next();
-                        if(trap.getEndUnit() == nextUnit)
-                            trapScopeIt.remove();
-                    }
-                }  
-                
-                
-            }
-        }
-    
-        
-        
-        
+	    if (predBlocks.size() == 0) {
+		block.setPreds(Collections.EMPTY_LIST);
 
-        /* 
-         * Build basic block list
-         */
-        {
-            List basicBlockList = new ArrayList(16);
-            Unit blockHead, blockTail;    // points to first unit in block
-            Block block;
-            int indexInMethod = 0;
+		// If the UnreachableCodeEliminator is not eliminating
+		// unreachable handlers, then they will have no
+		// predecessors, yet not be heads.
+		/* if (! mHeads.contains(block)) {
+		    throw new RuntimeException("Block with no predecessors is not a head!");
 
-            Iterator it = mUnits.iterator();
-            blockHead = (Unit) mUnits.getFirst();
-            int blockLength = 1;
-            boolean isHandler = false;
+		    // Note that a block can be a head even if it has
+		    // predecessors: a handler that might catch an exception
+		    // thrown by the first Unit in the method.
+		} 
+		*/
+	    } else {
+		block.setPreds(Collections.unmodifiableList(predBlocks));
+		if (block.getHead() == mUnits.getFirst()) {
+		    mHeads.add(block); // Make the first block a head
+				       // even if the Body is one huge loop.
+		}
+	    }
 
-            if(it.hasNext())
-                it.next();
-            
-            while(it.hasNext()) {
-                Unit  unit = (Unit) it.next();
-                blockLength++;
+	    List succUnits = unitGraph.getSuccsOf(block.getTail());
+	    List succBlocks = new ArrayList(succUnits.size());
+	    for (Iterator succIt = succUnits.iterator(); succIt.hasNext(); ) {
+		Unit succUnit = (Unit) succIt.next();
+		Block succBlock = (Block) unitToBlock.get(succUnit);
+		if (succBlock == null) {
+		    throw new RuntimeException("BlockGraph(): block tail mapped to null block!");
+		}
+		succBlocks.add(succBlock);
+	    }
+	    if (succBlocks.size() == 0) {
+		block.setSuccs(Collections.EMPTY_LIST);
+		if (! mTails.contains(block)) {
+		    throw new RuntimeException("Block with no successors is not a tail!: " + block.toString());
+		    // Note that a block can be a tail even if it has
+		    // successors: a return that throws a caught exception.
+		}
+	    } else {
+		block.setSuccs(Collections.unmodifiableList(succBlocks));
+	    }
+	}
+	mBlocks = Collections.unmodifiableList(blockList);
+	mHeads = Collections.unmodifiableList(mHeads);
+	if (mTails.size() == 0) {
+	    mTails = Collections.EMPTY_LIST;
+	} else {
+	    mTails = Collections.unmodifiableList(mTails);
+	}
+    }
 
-                if(leaders.containsKey(unit)){
-                    blockTail = (Unit) mUnits.getPredOf(unit);
-                    block = new Block(blockHead, blockTail, mBody, indexInMethod++, blockLength -1, this);
-                    block.setPreds((List) leaders.get(blockHead));
-                    basicBlockList.add(block);
-                    blockHead = unit;
-                    blockLength = 1;
-                }                
-            }
-            
-            block = new Block(blockHead, (Unit) mUnits.getLast(),mBody, indexInMethod++, blockLength, this);
-            block.setPreds((List) leaders.get(blockHead));
-            basicBlockList.add(block);
-            
-            // Important: the predecessor list built previously for
-            // each bb, contains the tail unit of each predecessor
-            // block for a given bb. We need to replace each of these
-            // unit references by a reference to the unit's enclosing
-            // bb.
-            it = basicBlockList.iterator();
-            while(it.hasNext() ) {
-                List newl = new ArrayList();
-                Block bb = (Block) it.next();
-                List l = bb.getPreds();
-                if(l != null) {
-                    Iterator predIt = l.iterator();
-                    while(predIt.hasNext()) {
-                        Unit u = (Unit) predIt.next();
-                        Iterator it2 = basicBlockList.iterator();
-                        while(it2.hasNext() ) {
-                            Block b2 = (Block)it2.next();
-
-                            if(u == b2.getTail()){
-                                if(!newl.contains(b2))
-                                    newl.add(b2);
-                            }
-                        }
-                    }
-                    bb.setPreds(newl);
-                }
-                else
-                {
-                    // Hmm.  This BB has no preds.
-                    // It must be a head!
-                    // Clearly we don't want BB's with no preds around.
-
-                    bb.setPreds(new ArrayList());
-                }
-            }
-                            
-
-
-
-            // now compute successors from the predecessor data
-            it = basicBlockList.iterator();
-            while(it.hasNext()) {
-                Block b = (Block) it.next();
-                List successorList = new ArrayList(4);
-                Iterator it2 = basicBlockList.iterator();
-                
-                while(it2.hasNext() ) {
-                    Block maybeASuccessor = (Block) it2.next();
-
-                        List predecessors = maybeASuccessor.getPreds();
-                        if(predecessors!= null && predecessors.contains(b)) {
-                            successorList.add(maybeASuccessor);
-
-                    }
-                }
-                b.setSuccs(successorList);
-            }
-            
-            
-
-            // temporary check on the structure of the code
-            // (ie catch goto's pointing to goto's) 
-            // check if block A  has a unique sucessor B, which itself 
-            // has, as a unique predecessor, block A 
-            // Can be deleted in time.
-
-
-	    /*
-	    it = basicBlockList.iterator();
-	    while(it.hasNext()) {
-		Block currentBlock = (Block) it.next();
-		G.v().out.println(currentBlock);
-		List blockSuccsList = currentBlock.getSuccs();
-		if(blockSuccsList.size() == 1) {
-                    Block succBlock = (Block)  blockSuccsList.get(0);
-                    if(succBlock.getPreds().size() == 1) {
-			if(succBlock.getSuccs().size() == 1 || succBlock.getSuccs().size()==0) { 
-
-			    if(succBlock.getSuccs().size() == 1) {
-				Block succBlock2 = (Block)  blockSuccsList.get(0);
-				if(mUnits.getSuccOf(currentBlock.getTail()) == succBlock2.getHead() ) {
-                                    
-				    
-				    G.v().out.println("Code structure error dump:");
-				    G.v().out.println("Current block: " + currentBlock.toString());
-				    G.v().out.println("Succ block: " + succBlock.toString());
-				    G.v().out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
-                                
-				    mBlocks = basicBlockList;
-				    G.v().out.println("Printing basic blocks ...");
-				    it = basicBlockList.iterator();
-				    while(it.hasNext()) {
-					G.v().out.println(((Block)it.next()).toString());
-				    }
-				    throw new RuntimeException("Code structure error");
-				}
-			    }
-			    G.v().out.println("Code structure error detected .");
-                            
-			}
-
-                                
-			else { 
-
-			    G.v().out.println("Code structure error dump:");
-			    G.v().out.println("Current block: " + currentBlock.toString());
-			    G.v().out.println("Succ block: " + succBlock.toString());
-			    G.v().out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
-                            
-			    mBlocks = basicBlockList;
-			    G.v().out.println("Printing basic blocks ...");
-			    it = basicBlockList.iterator();
-			    while(it.hasNext()) {
-				G.v().out.println(((Block)it.next()).toString());
-			    }
-			    throw new RuntimeException("Code structure error (interesting case)");      
-			}
-
-
-                    }
-                    }
-                    }
-	    */
-
-            mBlocks = basicBlockList;
-            
-            // build head and tail list
-            {
-                Iterator blockIt =  mBlocks.iterator();
-                while(blockIt.hasNext()) {
-                    Block b = (Block) blockIt.next();
-
-                    if(b.getHead() == mUnits.getFirst() ||
-                       (type != COMPLETE && handlerList.contains(b.getHead())))
-                        mHeads.add(b);
-                    else{
-                        List preds = b.getPreds();
-                        if(preds == null)
-                            mHeads.add(b);
-                        else if(preds.isEmpty())
-                            mHeads.add(b);
-                    }
-                    
-                    {
-                        List succs = b.getSuccs();
-                        if(succs == null)
-                            mTails.add(b);
-                        else if(succs.isEmpty())
-                            mTails.add(b);
-                    }
-                }
-                /*
-                Iterator ittt = mHeads.iterator();
-                G.v().out.println("Heads are:");
-                while(ittt.hasNext()) {
-                    G.v().out.println("next head: ");
-                    G.v().out.println(ittt.next());
-                }
-                G.v().out.println("done heads");
-                */
-            }
-        }
-
-        // Add edges from the predecessors of trapped blocks directly
-        // to the handlers. This is necessary because sometimes the
-        // first statement of a trapped block is not even fully
-        // executed before an exception is thrown.  Directly
-        // inspired/copied from code in UnitGraph. (applicable to
-        // complete graph only)
-        if(type == COMPLETE){
-            Iterator blockIt = mBlocks.iterator();
-            while(blockIt.hasNext()){
-                Block block = (Block) blockIt.next();
-                Unit head = block.getHead();
-                List preds;
-                
-                // are we in a catch block? 
-                if(!handlerList.contains(head))
-                    continue;
-
-                // no preds to add
-                preds = block.getPreds();
-                if(preds == null || preds.isEmpty())
-                    continue;
-                
-                // need to clone preds since we are potentially
-                // modifying it
-                List predsClone = new ArrayList();
-                predsClone.addAll(preds);
-
-                // iterate through the trapped blocks
-                Iterator predsIt = predsClone.iterator();
-                while(predsIt.hasNext()){
-                    Block trapped = (Block) predsIt.next();
-
-                    List newPreds = trapped.getPreds();
-                    if(newPreds == null)
-                        continue;
-
-                    Iterator newPredsIt = newPreds.iterator();
-
-                    // Add an edge from each predecessor of the try
-                    // block to the catch block and vice-versa
-                    while(newPredsIt.hasNext()){
-                        Block newPred = (Block) newPredsIt.next();
-                        if(!preds.contains(newPred)){
-                            // from block to newPred
-                            preds.add(0, newPred);
-
-                            // from newPred to block
-                            List newPredSuccs = newPred.getSuccs();
-                            newPredSuccs.add(newPredSuccs.size(), block);
-                        }
-                    }
-                }
-            }
-        }
-    }   
-    
-
+    /**
+     * A utility method which creates a new block and adds information about
+     * it to data structures used to build the graph.
+     *
+     * @param head The first unit in the block.
+     * @param tail The last unit in the block.
+     * @param index The index of this block this {@link Body}.
+     * @param length The number of units in this block.
+     * @param blockList The list of blocks for this method. <tt>addBlock()</tt>
+     *                  will add the newly created block to this list.
+     * @param unitToBlock A map from units to blocks. <tt>addBlock()</tt> will
+     *                    add mappings from <tt>head</tt> and <tt>tail</tt>
+     *                    to the new block
+     */
+    private void addBlock(Unit head, Unit tail, int index, int length, 
+			  List blockList, Map unitToBlock) {
+	Block block = new Block(head, tail, mBody, index, length, this);
+	blockList.add(block);
+	unitToBlock.put(tail, block);
+	unitToBlock.put(head, block);
+    }
      
     /**
-     *  Returns the underlying Body instance this BlockGraph is derived from.
-     *  @return The underlying Body instance this BlockGraph is derived from.
-     *  @see BlockGraph
-     *  @see Body
+     *  Returns the {@link Body}  this {@link BlockGraph} is derived from.
+     *  @return The {@link Body}  this {@link BlockGraph} is derived from.
      */
     public Body getBody()
     {
@@ -590,7 +328,7 @@ public class BlockGraph implements DirectedGraph
      *   Returns a list of the Blocks composing this graph.
      *   @return A list of the blocks composing this graph
      *           in the same order as they partition underlying Body instance's
-     *           unitchain.
+     *           unit chain.
      *  @see Block
      */
     public List getBlocks()
@@ -620,18 +358,18 @@ public class BlockGraph implements DirectedGraph
 
     public List getTails()
     {
-        return mTails;
+	return mTails;
     }
 
-    public List getPredsOf(Object s)
+    public List getPredsOf(Object o)
     {
-        Block b = (Block) s;
+        Block b = (Block) o;
         return b.getPreds();
     }
 
-    public List getSuccsOf(Object s)
+    public List getSuccsOf(Object o)
     {
-        Block b = (Block) s;
+        Block b = (Block) o;
         return b.getSuccs();
     }
 
@@ -645,11 +383,3 @@ public class BlockGraph implements DirectedGraph
         return mBlocks.iterator();
     }
 }
-
-    
-
-    
-
-
-
-

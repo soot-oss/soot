@@ -102,11 +102,11 @@ public class XMLPrinter {
         Chain units = body.getUnits();
 
         //UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph( body );
-        CompleteUnitGraph completeUnitGraph =
-            new soot.toolkits.graph.CompleteUnitGraph(body);
+        ExceptionalUnitGraph exceptionalUnitGraph =
+            new soot.toolkits.graph.ExceptionalUnitGraph(body);
 
         // include any analysis which will be used in the xml output
-        SimpleLiveLocals sll = new SimpleLiveLocals(completeUnitGraph);
+        SimpleLiveLocals sll = new SimpleLiveLocals(exceptionalUnitGraph);
 
         // iterate through each statement
         String cleanMethodName = cleanMethod(body.getMethod().getName());

@@ -101,7 +101,7 @@ These concepts should now be understood.
 
 Soot provides the {\tt UnitGraph} class to describe the notion of
 a control-flow graph.  There are two types of {\tt UnitGraphs}:
-{\tt CompleteUnitGraph} and {\tt BriefUnitGraph}.  The complete graph
+{\tt ExceptionalUnitGraph} and {\tt BriefUnitGraph}.  The exceptional graph
 contains all of the edges in the brief graph, plus edges corresponding
 to potential exceptions being thrown.  It should be used for analysis.
 
@@ -110,7 +110,7 @@ which captures the essential features of directed graphs (on {\tt Directed}
 objects).
 
 Given a {\tt Body}, say {\tt b}, we can create a {\tt
-CompleteUnitGraph} by invoking {\tt new CompleteUnitGraph(b)}.
+ExceptionalUnitGraph} by invoking {\tt new ExceptionalUnitGraph(b)}.
 
 \section{Flow Analysis}
 
@@ -327,7 +327,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
     {
         return emptySet.clone();
     }
-	
+        
     protected void flowThrough(Object inValue, Directed unit, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
@@ -447,7 +447,7 @@ public class SimpleLiveLocals implements LiveLocals
     Map unitToLocalsAfter;
     Map unitToLocalsBefore;
 
-    public SimpleLiveLocals(CompleteUnitGraph graph)
+    public SimpleLiveLocals(ExceptionalUnitGraph graph)
     {                        
         SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 

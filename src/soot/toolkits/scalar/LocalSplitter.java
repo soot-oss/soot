@@ -75,7 +75,7 @@ public class LocalSplitter extends BodyTransformer
 
         // Go through the definitions, building the webs
         {
-            CompleteUnitGraph graph = new CompleteUnitGraph(body);
+            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
 
             LocalDefs localDefs;
             

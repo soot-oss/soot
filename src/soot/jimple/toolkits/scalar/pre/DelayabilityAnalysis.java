@@ -61,7 +61,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param earliest the earliest-computation of the <b>same</b> graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    */
@@ -80,7 +80,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
    * source, sets should be shared around analyses, if the analyses are to be
    * combined.
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param earliest the earliest-computation of the <b>same</b> graph.
    * @param equivRhsMap the rhs of each unit (if assignment-stmt).
    * @param set the shared set.

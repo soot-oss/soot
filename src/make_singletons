@@ -37,10 +37,12 @@ echo '    private Global g = new Global();'
 echo
 
 for class in `cat singletons.list`; do
-    echo "    private $class instance$class;"
-    echo "    public $class $class() {"
-    echo "        if( instance$class == null ) instance$class = new $class( g );"
-    echo "        return instance$class;"
+    undottedClass="`echo $class | tr -d .`"
+    instanceName="instance$undottedClass"
+    echo "    private $class $instanceName;"
+    echo "    public $class $undottedClass() {"
+    echo "        if( $instanceName == null ) $instanceName = new $class( g );"
+    echo "        return $instanceName;"
     echo "    }"
     echo
 done

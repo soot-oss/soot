@@ -60,10 +60,13 @@
 
     <target name="javadoc">
         <javadoc
-            sourcepath="src"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            sourcepath="src:generated/singletons:generated/sablecc:generated/options:generated/jedd:generated/jj"
             destdir="doc"
             maxmemory="200m"
+            link="${javaapi.url}"
             windowtitle="Soot API"
+            verbose="true"
         >
             <fileset dir="src" includes="**/*.java"/>
         </javadoc>

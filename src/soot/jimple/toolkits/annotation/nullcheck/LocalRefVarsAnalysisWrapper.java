@@ -86,7 +86,7 @@ public class LocalRefVarsAnalysisWrapper
 
 
     // constructor, where we do all our computations
-    public LocalRefVarsAnalysisWrapper(CompleteUnitGraph graph)
+    public LocalRefVarsAnalysisWrapper(ExceptionalUnitGraph graph)
     {
         analysis = new BranchedRefVarsAnalysis(graph);
         

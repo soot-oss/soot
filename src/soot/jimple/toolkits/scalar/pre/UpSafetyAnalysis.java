@@ -60,7 +60,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param unitToGen the EquivalentValue of each unit.
    * @param sideEffect the SideEffectTester that will be used to perform kills.
    */
@@ -77,7 +77,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
    * As usually flowset-operations are more efficient if shared, this allows to
    * share sets over several analyses.
    *
-   * @param dg a CompleteUnitGraph
+   * @param dg a ExceptionalUnitGraph
    * @param unitToGen the EquivalentValue of each unit.
    * @param sideEffect the SideEffectTester that will be used to perform kills.
    * @param set a bounded flow-set.

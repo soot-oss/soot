@@ -45,7 +45,7 @@ import soot.jimple.internal.*;
  * the loop-body is only executed once (and hence suitable for LCM) and we can
  * be sure, that the loop-body will get executed.<br>
  * Exceptions are ignored (the transformation is done on a
- * <code>BriefUnitGraph</code>.
+ * <code>BriefBlockGraph</code>.
  */
 public class LoopConditionUnroller extends BodyTransformer {
   /**
@@ -80,8 +80,6 @@ public class LoopConditionUnroller extends BodyTransformer {
     Iterator headIter = bg.getHeads().iterator();
     while (headIter.hasNext())
       unrollConditions((Block)headIter.next());
-
-    UnitGraph cug = new CompleteUnitGraph(body);
 
     if(Options.v().verbose())
       G.v().out.println("[" + body.getMethod().getName() +

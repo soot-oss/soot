@@ -453,7 +453,10 @@ public class JasminClass
 
 
 
-        // Emit the exceptions
+        // Emit the exceptions, recording the Units at the beginning
+	// of handlers so that later on we can recognize blocks that 
+	// begin with an exception on the stack.
+	Set handlerUnits = new ArraySet(body.getTraps().size());
         {
             Iterator trapIt = body.getTraps().iterator();
 
@@ -461,10 +464,12 @@ public class JasminClass
             {
                 Trap trap = (Trap) trapIt.next();
 
-                if(trap.getBeginUnit() != trap.getEndUnit())
+                if(trap.getBeginUnit() != trap.getEndUnit()) {
                     emit(".catch " + slashify(trap.getException().getName()) + " from " +
                         instToLabel.get(trap.getBeginUnit()) + " to " + instToLabel.get(trap.getEndUnit()) +
                         " using " + instToLabel.get(trap.getHandlerUnit()));
+		    handlerUnits.add(trap.getHandlerUnit());
+		}
             }
         }
 
@@ -583,7 +588,7 @@ public class JasminClass
 
             isEmittingMethodCode = false;
             
-            // calcualte max stack height
+            // calculate max stack height
             {
                 maxStackHeight = 0;
                 if(activeBody.getUnits().size() !=  0 ) {
@@ -594,18 +599,16 @@ public class JasminClass
                 
 
                     if(blocks.size() != 0) {
-                        Block b = (Block) blocks.get(0);                
-                    
                         // set the stack height of the entry points
                         List entryPoints = ((DirectedGraph)blockGraph).getHeads();                
                         Iterator entryIt = entryPoints.iterator();
                         while(entryIt.hasNext()) {
                             Block entryBlock = (Block) entryIt.next();
                             Integer initialHeight;
-                            if(entryBlock == b) {
-                                initialHeight = new Integer(0);
-                            } else {
+                            if(handlerUnits.contains(entryBlock.getHead())) {
                                 initialHeight = new Integer(1);
+                            } else {
+                                initialHeight = new Integer(0);
                             }                                                
                             blockToStackHeight.put(entryBlock, initialHeight);
                             blockToLogicalStackHeight.put(entryBlock, initialHeight); 
@@ -2103,7 +2106,7 @@ public class JasminClass
             Integer i = (Integer) blockToStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
-                    throw new RuntimeException("incoherent stack height at block merge point " + b + aBlock);
+                    throw new RuntimeException("incoherent stack height at block merge point " + b + aBlock + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
                 }
                 
             } else {

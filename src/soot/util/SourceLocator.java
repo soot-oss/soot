@@ -336,44 +336,74 @@ public class SourceLocator
     }
 
     public List getClassesUnder(String aPath) {
-        File file = new File(aPath);
         List fileNames = new ArrayList();
 
-        File[] files = file.listFiles();
-        if (files == null) {
-            files = new File[1];
-            files[0] = file;
-        }
+	if (isArchive(aPath)) {
+	    List inputExtensions = new ArrayList(2);
+            inputExtensions.add(ClassInputRep.v().getFileExtension());
+            inputExtensions.add(JimpleInputRep.v().getFileExtension());
+            inputExtensions.add(JavaInputRep.v().getFileExtension());
 
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isDirectory()) {
-                List l =
-                    getClassesUnder(
-                        aPath + fileSeparator + files[i].getName());
-                Iterator it = l.iterator();
-                while (it.hasNext()) {
-                    String s = (String) it.next();
-                    fileNames.add(files[i].getName() + "." + s);
-                }
-            } else {
-                String fileName = files[i].getName();
+	    try {
+		ZipFile archive = new ZipFile(aPath);
+		for (Enumeration entries = archive.entries(); 
+		     entries.hasMoreElements(); ) {
+		    ZipEntry entry = (ZipEntry) entries.nextElement();
+		    String entryName = entry.getName();
+		    int extensionIndex = entryName.lastIndexOf('.');
+		    if (extensionIndex >= 0) {
+			String entryExtension = entryName.substring(extensionIndex);
+			if (inputExtensions.contains(entryExtension)) {
+			    entryName = entryName.substring(0, extensionIndex);
+			    entryName = entryName.replace(fileSeparator, '.');
+			    fileNames.add(entryName);
+			}
+		    }
+		}
+	    } catch(IOException e) {
+		G.v().out.println("Error reading " + aPath + ": " 
+				  + e.toString());
+		throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+	    }
+	} else {
+	    File file = new File(aPath);
 
-                if (fileName.endsWith(".class")) {
-                    int index = fileName.lastIndexOf(".class");
-                    fileNames.add(fileName.substring(0, index));
-                }
+	    File[] files = file.listFiles();
+	    if (files == null) {
+		files = new File[1];
+		files[0] = file;
+	    }
 
-                if (fileName.endsWith(".jimple")) {
-                    int index = fileName.lastIndexOf(".jimple");
-                    fileNames.add(fileName.substring(0, index));
-                }
-                
-                if (fileName.endsWith(".java")) {
-                    int index = fileName.lastIndexOf(".java");
-                    fileNames.add(fileName.substring(0, index));
-                }
-            }
-        }
+	    for (int i = 0; i < files.length; i++) {
+		if (files[i].isDirectory()) {
+		    List l =
+			getClassesUnder(
+					aPath + fileSeparator + files[i].getName());
+		    Iterator it = l.iterator();
+		    while (it.hasNext()) {
+			String s = (String) it.next();
+			fileNames.add(files[i].getName() + "." + s);
+		    }
+		} else {
+		    String fileName = files[i].getName();
+
+		    if (fileName.endsWith(".class")) {
+			int index = fileName.lastIndexOf(".class");
+			fileNames.add(fileName.substring(0, index));
+		    }
+
+		    if (fileName.endsWith(".jimple")) {
+			int index = fileName.lastIndexOf(".jimple");
+			fileNames.add(fileName.substring(0, index));
+		    }
+
+		    if (fileName.endsWith(".java")) {
+			int index = fileName.lastIndexOf(".java");
+			fileNames.add(fileName.substring(0, index));
+		    }
+		}
+	    }
+	}
         return fileNames;
     }
 
