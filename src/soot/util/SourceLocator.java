@@ -67,8 +67,7 @@ public class SourceLocator
 
     /** Sets the source precedence. */
     public static void setSrcPrecedence(int precedence)
-    {
-	if(precedence == PRECEDENCE_CLASS) throw new RuntimeException();
+    {	
         srcPrecedence = precedence;
     }    
 

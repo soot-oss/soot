@@ -63,6 +63,10 @@ public class Scene extends AbstractHost
 
     private Vector classesToResolve = new Vector();
 
+    public static void reset()
+    {
+	constant = new Scene();
+    }
 
     public void addClassToResolve(String c) 
     {

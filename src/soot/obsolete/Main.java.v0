@@ -215,8 +215,8 @@ public class Main implements Runnable, ICompilationListener
     static private SootClass mainClass = null;        
     
     static public long stmtCount;
-    static int finalRep = BAF;
-      // The final rep to be used is Baf; conclusion of our CC2000 paper!
+    static int finalRep = GRIMP;
+
 
     private static List sTagFileList = new ArrayList();
  
