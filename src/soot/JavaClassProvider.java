@@ -29,23 +29,7 @@ public class JavaClassProvider implements ClassProvider
      * or null if it was not found. */
     public ClassSource find( String className ) {
 
-        String javaClassName = className;
-        if (className.indexOf("$") != -1) {
-            // class is an inner class and will be in
-            // Outer of Outer$Inner
-            javaClassName = className.substring(0, className.indexOf("$"));
-
-            
-            //System.out.println("java class name: "+javaClassName); 
-        }
-        // always do this because an inner class could be in a class
-        // thats in the map
-        if (SourceLocator.v().getSourceToClassMap() != null) {
-            if (SourceLocator.v().getSourceToClassMap().get(javaClassName) != null) {
-                javaClassName = (String)SourceLocator.v().getSourceToClassMap().get(javaClassName);
-            }
-        }
-
+        String javaClassName = SourceLocator.v().getSourceForClass(className);
         String fileName = javaClassName.replace('.', '/') + ".java";
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);

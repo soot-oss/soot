@@ -404,5 +404,23 @@ public class SourceLocator
     public void addToSourceToClassMap(String key, String val) {
         sourceToClassMap.put(key, val);
     }
+    /** Returns the name of the class in which the (possibly inner) class
+     * className appears. */
+    public String getSourceForClass( String className ) {
+        String javaClassName = className;
+        if (className.indexOf("$") != -1) {
+            // class is an inner class and will be in
+            // Outer of Outer$Inner
+            javaClassName = className.substring(0, className.indexOf("$"));
+        }
+        // always do this because an inner class could be in a class
+        // thats in the map
+        if (sourceToClassMap != null) {
+            if (sourceToClassMap.get(javaClassName) != null) {
+                javaClassName = (String)sourceToClassMap.get(javaClassName);
+            }
+        }
+        return javaClassName;
+    }
 }
 
