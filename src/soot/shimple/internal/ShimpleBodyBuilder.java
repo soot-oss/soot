@@ -321,7 +321,7 @@ public class ShimpleBodyBuilder
      *    done
      *  done (end of fourth loop)
      *  end
-     * <pre>
+     * </pre>
      **/
     public void renameLocals()
     {
@@ -689,6 +689,38 @@ public class ShimpleBodyBuilder
                 }
             }
         }
+
+        /*
+        {
+            List preds = phiExpr.getPreds();
+
+            for(int i = 0; i < phiExpr.getArgCount(); i++){
+                ValueUnitPair vup = phiExpr.getArgBox(i);
+                Value value = vup.getValue();
+                Unit unit = vup.getUnit();
+
+                PhiExpr innerPhi = Shimple.getPhiExpr(unit);
+                if(innerPhi == null)
+                    continue;
+                
+                Value innerValue = Shimple.getLhsLocal(unit);
+                if(!innerValue.equals(value))
+                    continue;
+
+                boolean canRemove = true;
+                for(int j = 0; j < innerPhi.getArgCount(); j++){
+                    Unit innerPred = innerPhi.getPred(j);
+                    if(!preds.contains(innerPred)){
+                        canRemove = false;
+                        break;
+                    }
+                }
+
+                if(canRemove)
+                    phiExpr.removeArg(vup);
+            }
+        }
+        */
     }
     
     protected Map unitToBlock;
