@@ -28,6 +28,7 @@ import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.options.SparkOptions;
+import soot.tagkit.*;
 
 /** Pointer assignment graph.
  * @author Ondrej Lhotak
@@ -101,6 +102,9 @@ public class PAG implements PointsToAnalysis {
             default:
                 throw new RuntimeException();
         }
+        if( opts.add_tags() ) {
+            nodeToTag = new HashMap();
+        }
     }
 
     /** Returns the set of objects pointed to by variable l. */
@@ -157,12 +161,24 @@ public class PAG implements PointsToAnalysis {
     public SparkOptions getOpts() { return opts; }
     /** Finds or creates the AllocNode for the new expression newExpr,
      * of type type. */
+    private void addNodeTag( Node node, SootMethod m ) {
+        if( nodeToTag != null ) {
+            Tag tag;
+            if( m == null ) {
+                tag = new StringTag( node.toString() );
+            } else {
+                tag = new LinkTag( node.toString(), m, m.getDeclaringClass().getName() );
+            }
+            nodeToTag.put( node, tag );
+        }
+    }
     public AllocNode makeAllocNode( Object newExpr, Type type, SootMethod m ) {
         if( opts.types_for_sites() || opts.vta() ) newExpr = type;
 	AllocNode ret = (AllocNode) valToAllocNode.get( newExpr );
 	if( ret == null ) {
 	    valToAllocNode.put( newExpr, ret = new AllocNode( this, newExpr, type, m ) );
             newAllocNodes.add( ret );
+            addNodeTag( ret, m );
 	} else if( !( ret.getType().equals( type ) ) ) {
 	    throw new RuntimeException( "NewExpr "+newExpr+" of type "+type+
 		    " previously had type "+ret.getType() );
@@ -177,6 +193,7 @@ public class PAG implements PointsToAnalysis {
 	if( ret == null ) {
 	    valToAllocNode.put( s, ret = new StringConstantNode( this, s ) );
             newAllocNodes.add( ret );
+            addNodeTag( ret, null );
 	}
 	return ret;
     }
@@ -188,6 +205,7 @@ public class PAG implements PointsToAnalysis {
 	if( ret == null ) {
 	    valToAllocNode.put( "$$"+s, ret = new ClassConstantNode( this, s ) );
             newAllocNodes.add( ret );
+            addNodeTag( ret, null );
 	}
 	return ret;
     }
@@ -217,6 +235,7 @@ public class PAG implements PointsToAnalysis {
             if( ret == null ) {
                 localToNodeMap.put( (Local) value,
                     ret = new VarNode( this, value, type, method ) );
+                addNodeTag( ret, method );
             } else if( !( ret.getType().equals( type ) ) ) {
                 throw new RuntimeException( "Value "+value+" of type "+type+
                         " previously had type "+ret.getType() );
@@ -227,6 +246,7 @@ public class PAG implements PointsToAnalysis {
         if( ret == null ) {
             valToVarNode.put( value, 
                     ret = new VarNode( this, value, type, method ) );
+            addNodeTag( ret, method );
         } else if( !( ret.getType().equals( type ) ) ) {
             throw new RuntimeException( "Value "+value+" of type "+type+
                     " previously had type "+ret.getType() );
@@ -254,6 +274,7 @@ public class PAG implements PointsToAnalysis {
 	FieldRefNode ret = base.dot( field );
 	if( ret == null ) {
 	    ret = new FieldRefNode( this, base, field );
+            addNodeTag( ret, base.getMethod() );
 	}
 	return ret;
     }
@@ -407,6 +428,10 @@ public class PAG implements PointsToAnalysis {
     /** Returns list of dereferences variables. */
     public List getDereferences() {
         return dereferences;
+    }
+
+    public Map getNodeTags() {
+        return nodeToTag;
     }
 
     /*
@@ -608,5 +633,6 @@ public class PAG implements PointsToAnalysis {
     private TypeManager typeManager;
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
+    private Map nodeToTag;
 }
 

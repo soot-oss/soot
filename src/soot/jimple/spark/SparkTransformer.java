@@ -19,17 +19,16 @@
 
 package soot.jimple.spark;
 import soot.*;
-import soot.util.queue.*;
 import soot.jimple.spark.builder.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.solver.*;
 import soot.jimple.spark.sets.*;
-import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.options.SparkOptions;
+import soot.tagkit.*;
 
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
@@ -159,7 +158,13 @@ public class SparkTransformer extends SceneTransformer
         }
     }
 
+    protected void addTag( Host h, Node n, Map nodeToTag, Tag unknown ) {
+        if( nodeToTag.containsKey( n ) ) h.addTag( (Tag) nodeToTag.get(n) );
+        else h.addTag( unknown );
+    }
     protected void addTags( PAG pag ) {
+        final Tag unknown = new StringTag( "Untagged Spark node" );
+        final Map nodeToTag = pag.getNodeTags();
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
             for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
@@ -180,16 +185,19 @@ public class SparkTransformer extends SceneTransformer
                             PointsToSetInternal p2set = v.getP2Set();
                             p2set.forall( new P2SetVisitor() {
                             public final void visit( Node n ) {
-                                s.addTag( new soot.tagkit.StringTag( n.toString() ) );
+                                addTag( s, n, nodeToTag, unknown );
                             }} );
-                            s.addTag( new soot.tagkit.StringTag( v.toString() ) );
                             Node[] simpleSources = pag.simpleInvLookup(v);
                             for( int i=0; i < simpleSources.length; i++ ) {
-                                s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                                addTag( s, simpleSources[i], nodeToTag, unknown );
                             }
                             simpleSources = pag.allocInvLookup(v);
                             for( int i=0; i < simpleSources.length; i++ ) {
-                                s.addTag( new soot.tagkit.StringTag( simpleSources[i].toString() ) );
+                                addTag( s, simpleSources[i], nodeToTag, unknown );
+                            }
+                            simpleSources = pag.loadInvLookup(v);
+                            for( int i=0; i < simpleSources.length; i++ ) {
+                                addTag( s, simpleSources[i], nodeToTag, unknown );
                             }
                         }
                     }
