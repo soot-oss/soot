@@ -51,6 +51,9 @@ public class BlockGraphConverter
         {
             List heads = graph.getHeads();
 
+            if(heads.size() == 0)
+                break ADDSTART;
+            
             if((heads.size() == 1) && (heads.get(0) instanceof DummyBlock))
                 break ADDSTART;
 
@@ -78,6 +81,9 @@ public class BlockGraphConverter
         {
             List tails = graph.getTails();
 
+            if(tails.size() == 0)
+                break ADDSTOP;
+            
             if((tails.size() == 1) && (tails.get(0) instanceof DummyBlock))
                 break ADDSTOP;
 

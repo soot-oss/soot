@@ -88,10 +88,12 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             }
         }
 
+        List tails = graph.getTails();
+        
         // Feng Qian: March 07, 2002
         // init entry points
         {
-            Iterator it = graph.getTails().iterator();
+            Iterator it = tails.iterator();
             
             while (it.hasNext()) {
                 Object s = it.next();
@@ -110,8 +112,8 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 Object afterFlow;
 
                 Object s = changedUnits.first();
-
                 changedUnits.remove(s);
+                boolean isTail = tails.contains(s);
 
                 copy(unitToBeforeFlow.get(s), previousBeforeFlow);
 
@@ -134,6 +136,9 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                             Object otherBranchFlow = unitToBeforeFlow.get(succIt.next());
                             merge(afterFlow, otherBranchFlow);
                         }
+
+                        if(isTail && succs.size() != 0)
+                            merge(afterFlow, entryInitialFlow());
                     }
                 }
 

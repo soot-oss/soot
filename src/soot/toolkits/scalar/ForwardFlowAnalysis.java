@@ -70,6 +70,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             }
         } );
 
+        List heads = graph.getHeads();
         int numNodes = graph.size();
         int numComputations = 0;
         
@@ -91,7 +92,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         // Feng Qian: March 07, 2002
         // Set initial values for entry points
         {
-            Iterator it = graph.getHeads().iterator();
+            Iterator it = heads.iterator();
             
             while (it.hasNext()) {
                 Object s = it.next();
@@ -112,6 +113,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                 Object s = changedUnits.first();
                 changedUnits.remove(s);
+                boolean isHead = heads.contains(s);
 
                 copy(unitToAfterFlow.get(s), previousAfterFlow);
 
@@ -136,6 +138,9 @@ next());
                             merge(beforeFlow, otherBranchFlow);
                         }
                     }
+
+                    if(isHead && preds.size() != 0)
+                        merge(beforeFlow, entryInitialFlow());
                 }
 
                 // Compute afterFlow and store it.

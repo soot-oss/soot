@@ -112,7 +112,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         } );
 
         Map unitToIncomingFlowSets = new HashMap(graph.size() * 2 + 1, 0.7f);
-
+        List heads = graph.getHeads();
         int numNodes = graph.size();
         int numComputations = 0;
         int maxBranchSize = 0;
@@ -191,7 +191,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         // Feng Qian: March 07, 2002
         // init entry points
         {
-            Iterator it = graph.getHeads().iterator();
+            Iterator it = heads.iterator();
 
             while (it.hasNext()) {
                 Object s = it.next();
@@ -227,8 +227,8 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 Object beforeFlow;
 
                 Unit s = (Unit) changedUnits.first();
-
-                changedUnits.remove(s);                
+                changedUnits.remove(s);
+                boolean isHead = heads.contains(s);
 
                 accumulateAfterFlowSets(s, previousFlowRepositories, previousAfterFlows);
 
@@ -254,6 +254,9 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                             copy(newBeforeFlow, beforeFlow);
                         }
                     }
+
+                    if(isHead && preds.size() != 0)
+                        merge(beforeFlow, entryInitialFlow());
                 }
 
                 // Compute afterFlow and store it.
