@@ -47,6 +47,13 @@ public class BDDVirtualCalls extends AbsVirtualCalls
                         m=>method };
             }
         }
+        for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
+            final SootClass cls = (SootClass) clsIt.next();
+            for( Iterator clinitIt = EntryPoints.v().clinitsOf(cls).iterator(); clinitIt.hasNext(); ) {
+                final SootMethod clinit = (SootMethod) clinitIt.next();
+                dynamicClinits |= new{clinit=>tgtm};
+            }
+        }
     }
 
     private int lastVarNode = 1;
@@ -95,6 +102,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         
     private <obj, tgtm> stringConstants = 0B;
     private <obj:H1> nonStringConstants = 0B;
+    private <tgtm> dynamicClinits = 0B;
     private final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
     
@@ -137,12 +145,14 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     private void updateClinits() {
         clinits |= (signature=>) newRcv{kind} >< new{Kind.CLINIT=>kind}{kind};
 
+        <obj, tgtm> clinitTargets =
+            stringConstants | (nonStringConstants{} >< dynamicClinits{});
         <srcc, var, tgtm> tgtMethods =
-            (ctxt=>srcc) newPt{obj} <> stringConstants{obj};
+            (ctxt=>srcc) newPt{obj} <> clinitTargets{obj};
 
         <srcc, srcm, stmt, kind, tgtc, tgtm> newStatics =
             tgtMethods{var} <> clinits{var}{} 
-                            >< new{null=>tgtc}{};
+                         >< new{null=>tgtc}{};
         statics.add( newStatics );
         if( newStatics != 0B ) change = true;
     }

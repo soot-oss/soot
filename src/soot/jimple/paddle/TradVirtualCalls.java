@@ -137,10 +137,24 @@ public class TradVirtualCalls extends AbsVirtualCalls
             Rvar_srcm_stmt_signature_kind.Tuple site ) {
         AllocNode obj = ptpair.obj();
         if( !( obj instanceof StringConstantNode ) ) {
-            if( PaddleScene.v().options().verbose() ) {
+            for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
+                final SootClass cls = (SootClass) clsIt.next();
+                for( Iterator clinitIt = EntryPoints.v().clinitsOf(cls).iterator(); clinitIt.hasNext(); ) {
+                    final SootMethod clinit = (SootMethod) clinitIt.next();
+                    change = true;
+                    statics.add(ptpair.varc(),
+                                site.srcm(),
+                                site.stmt(),
+                                Kind.CLINIT,
+                                null,
+                                clinit );
+                }
+            }
+            if( PaddleScene.v().options().verbose() && Scene.v().dynamicClasses().isEmpty()) {
                 G.v().out.println( "Warning: Method "+site.srcm()+
                     " is reachable, and calls Class.forName on a"+
-                    " non-constant String; graph will be incomplete!"+
+                    " non-constant String and you didn't specify"+
+                    " and dynamic classe; graph may be incomplete!"+
                     " Use safe-forname option for a conservative result." );
             }
         } else {

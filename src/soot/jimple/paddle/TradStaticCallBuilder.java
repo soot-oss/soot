@@ -122,10 +122,17 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                             addEdge( source, s, tgt, Kind.NEWINSTANCE );
                         }
                     } else {
-                        if( options.verbose() ) {
+                        for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
+                            final SootClass cls = (SootClass) clsIt.next();
+                            if( cls.declaresMethod(sigInit) ) {
+                                addEdge( source, s, cls.getMethod(sigInit), Kind.NEWINSTANCE );
+                            }
+                        }
+                        if( options.verbose() && Scene.v().dynamicClasses().isEmpty()) {
                             G.v().out.println( "Warning: Method "+source+
-                                " is reachable, and calls Class.newInstance;"+
-                                " graph will be incomplete!"+
+                                " is reachable, and calls Class.newInstance,"+
+                                " and you didn't specify any dynamic classes;"+
+                                " graph may be incomplete!"+
                                 " Use safe-newinstance option for a conservative result." );
                         }
                     } 
@@ -251,6 +258,8 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
         findOrAdd( "void finalize()" );
     protected final NumberedString sigExit = Scene.v().getSubSigNumberer().
         findOrAdd( "void exit()" );
+    protected final NumberedString sigInit = Scene.v().getSubSigNumberer().
+        findOrAdd( "void <init>()" );
     protected final NumberedString sigClinit = Scene.v().getSubSigNumberer().
         findOrAdd( "void <clinit>()" );
     protected final NumberedString sigStart = Scene.v().getSubSigNumberer().

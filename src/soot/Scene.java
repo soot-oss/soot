@@ -839,11 +839,17 @@ public class Scene  //extends AbstractHost
 
     }
 
+    private List dynamicClasses;
+    public Collection dynamicClasses() {
+        return dynamicClasses;
+    }
+
     /** Load the set of classes that soot needs, including those specified on the
      *  command-line. This is the standard way of initialising the list of
      *  classes soot should use.
      */
     public void loadNecessaryClasses() {
+        dynamicClasses = new ArrayList();
 	loadBasicClasses();
 
         Iterator it = Options.v().classes().iterator();
@@ -879,7 +885,7 @@ public class Scene  //extends AbstractHost
         for( Iterator classNameIt = dynClasses.iterator(); classNameIt.hasNext(); ) {
 
             final String className = (String) classNameIt.next();
-            Scene.v().loadClassAndSupport(className);
+            dynamicClasses.add( Scene.v().loadClassAndSupport(className) );
         }
 
         for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
