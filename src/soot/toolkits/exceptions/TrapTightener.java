@@ -116,7 +116,7 @@ public final class TrapTightener extends BodyTransformer {
 	for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 	    ExceptionalUnitGraph.ExceptionDest dest = 
 		(ExceptionalUnitGraph.ExceptionDest) destIt.next();
-	    if (dest.trap() == t) {
+	    if (dest.getTrap() == t) {
 		return true;
 	    }
 	}

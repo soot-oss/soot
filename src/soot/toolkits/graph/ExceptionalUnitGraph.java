@@ -50,20 +50,32 @@ import soot.jimple.NewExpr;
 
 
 /**
- *  <p>Represents a CFG for a {@link Body} instance where the nodes are
- *  {@link Unit} instances, and where control flow associated with
- *  exceptions is taken into account.</p> 
+ *  <p>Represents a control flow graph for a {@link Body} instance
+ *  where the nodes are {@link Unit} instances, and where control flow
+ *  associated with exceptions is taken into account.</p>
  *
- *  <p>For every <code>Unit</code> which may throw an exception that
- *  could be caught by a {@link Trap} in the <code>Body</code>, there
- *  will be an edge from each of the excepting <code>Unit</code>'s
- *  predecessors to the <code>Trap</code> handler's first
- *  <code>Unit</code> (since any of those predecessors may have been
- *  the last <code>Unit</code> to complete execution before the
- *  handler). If the excepting <code>Unit</code> is a
- *  <code>throw</code> or if it might have the side effect of changing
- *  some fields, then there will be an edge from the excepting
- *  <code>Unit</code> itself to its handlers, since the side effects
+ *  <p>To describe precisely the circumstances under which exceptional
+ *  edges are added to the graph, we need to distinguish 
+ *  exceptions thrown explicitly by a <code>throw</code> instruction
+ *  from exceptions which are thrown implicitly as a result of some
+ *  error arising during the execution of any instruction.</p>
+ *  
+ *  <p>For every {@link ThrowInst} or {@link ThrowStmt}
+ *  <code>Unit</code> which may explicitly throw an exception that
+ *  would be caught by a {@link Trap} in the <code>Body</code>, there
+ *  will be an edge from the <code>throw</code> <code>Unit</code> to
+ *  the <code>Trap</code> handler's first <code>Unit</code>.</p>
+ *
+ *  <p>For every <code>Unit</code> which may implicitly throw an
+ *  exception that could be caught by a <code>Trap</code> in the
+ *  <code>Body</code>, there will be an edge from each of the
+ *  excepting <code>Unit</code>'s predecessors to the
+ *  <code>Trap</code> handler's first <code>Unit</code> (since any of
+ *  those predecessors may have been the last <code>Unit</code> to
+ *  complete execution before the handler starts execution). If the
+ *  excepting <code>Unit</code> might have the side effect of changing
+ *  some field, then there will be an edge from the excepting
+ *  <code>Unit</code> itself to its handlers, since the side effect
  *  might occur before the exception is raised. If the excepting
  *  <code>Unit</code> has no side effects, then parameters passed to
  *  the <code>ExceptionalUnitGraph</code> constructor determine
@@ -89,7 +101,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 
 
     /**
-     *  Constructs the graph from a given Body instance.
+     *  Constructs the graph for a given Body instance, using the
+     *  <code>ThrowAnalysis</code> and <code>omitExceptingUnitEdges</code>
+     *  value that are passed as parameters.
      *
      *  @param body the <code>Body</code> from which to build a graph.
      *
@@ -98,13 +112,13 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
      *
      *  @param omitExceptingUnitEdges indicates whether the CFG should
      *			     omit edges to a handler from trapped
-     *			     <code>Unit</code>s which may throw an
+     *			     <code>Unit</code>s which may implicitly throw an
      *			     exception which the handler catches but
      *			     which have no potential side effects.
      *			     The CFG will contain edges to the handler
-     *			     from all predecessors of the
-     *			     <code>Unit</code>s which may throw a caught
-     *			     exception regardless of the setting for
+     *			     from all predecessors of 
+     *			     <code>Unit</code>s which may implicitly throw
+     *			     a caught exception regardless of the setting for
      *			     this parameter. If this parameter is
      *			     <code>false</code>, there will also be
      *			     edges to the handler from all the
@@ -134,9 +148,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 
 
     /**
-     *  Constructs the graph from a given Body instance.  This
-     *  constructor variant uses a default value, provided by the
-     *  {@link Options} class, for the
+     *  Constructs the graph from a given Body instance using the
+     *  passed {@link ThrowAnalysis} and a default value, provided by
+     *  the {@link Options} class, for the
      *  <code>omitExceptingUnitEdges</code> parameter.
      *
      *  @param body the {@link Body} from which to build a graph.
@@ -168,7 +182,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 
     /**
      *  <p>Allocates an <code>ExceptionalUnitGraph</code> object
-     *  without actually initializing it.  This &ldquo;partial
+     *  without initializing it.  This &ldquo;partial
      *  constructor&rdquo; is provided for the benefit of subclasses
      *  whose constructors need to perform some subclass-specific
      *  processing before actually creating the graph edges (because,
@@ -585,9 +599,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 
 	    for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 		ExceptionDest dest = (ExceptionDest) destIt.next();
-		if (dest.trap() != null) {
-		    Unit catcher = dest.trap().getHandlerUnit();
-		    RefType trapsType = dest.trap().getException().getType();
+		if (dest.getTrap() != null) {
+		    Unit catcher = dest.getTrap().getHandlerUnit();
+		    RefType trapsType = dest.getTrap().getException().getType();
 		    if (predThrowables == null ||
 			predThrowables.catchableAs(trapsType)) {
 			// Add edges from the thrower's predecessors to the catcher.
@@ -684,8 +698,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	    Collection throwerDests = getExceptionDests(thrower);
 	    for (Iterator i = throwerDests.iterator(); i.hasNext(); ) {
 		ExceptionDest dest = (ExceptionDest) i.next();
-		if (dest.trap() != null) {
-		    Unit handlerStart = dest.trap().getHandlerUnit();
+		if (dest.getTrap() != null) {
+		    Unit handlerStart = dest.getTrap().getHandlerUnit();
 		    boolean edgeAdded = false;
 		    if (pred == null) {
 			if (! trapsThatAreHeads.contains(handlerStart)) {
@@ -759,7 +773,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	Collection dests = getExceptionDests(u);
 	for (Iterator i = dests.iterator(); i.hasNext(); ) {
 	    ExceptionDest dest = (ExceptionDest) i.next();
-	    if (dest.trap() != null) {
+	    if (dest.getTrap() != null) {
 		return true;
 	    }
 	}
@@ -798,7 +812,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 		int escapeMethodCount = 0;
 		for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
 		    ExceptionDest dest = (ExceptionDest) destIt.next();
-		    if (dest.trap() == null) {
+		    if (dest.getTrap() == null) {
 			escapeMethodCount++;
 		    }
 		}
@@ -852,11 +866,11 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	    this.throwables = throwables;
 	}
 	
-	public Trap trap() {
+	public Trap getTrap() {
 	    return trap;
 	}
 
-	public ThrowableSet throwables() {
+	public ThrowableSet getThrowables() {
 	    return throwables;
 	}
 

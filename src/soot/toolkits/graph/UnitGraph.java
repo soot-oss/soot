@@ -196,7 +196,7 @@ public abstract class UnitGraph implements DirectedGraph
     /**
      * Utility method that produces a new map from the {@link Unit}s
      * of this graph's body to the union of the values stored in the
-     * two argument {link Map}s, used to combine the maps of
+     * two argument {@link Map}s, used to combine the maps of
      * exceptional and unexceptional predecessors and successors into
      * maps of all predecessors and successors. The values stored in
      * both argument maps must be {@link List}s of {@link Unit}s,

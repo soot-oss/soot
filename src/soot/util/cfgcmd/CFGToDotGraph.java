@@ -256,7 +256,7 @@ public class CFGToDotGraph {
 	  DotGraphEdge edge = canvas.drawEdge(namer.getName(node),
 					      namer.getName(handlerStart));
 	  edge.setAttribute(exceptionEdgeAttr);
-	  edge.setLabel(formatThrowableSet(dest.throwables()));
+	  edge.setLabel(formatThrowableSet(dest.getThrowables()));
 	}
       }
     }

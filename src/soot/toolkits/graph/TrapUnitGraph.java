@@ -34,38 +34,45 @@ import soot.options.Options;
 
 /**
  *  <p>
- *  Represents a CFG for a Body instance where the nodes are {@link
- *  Unit} instances, and where, in additional to unexceptional control
- *  flow edges, edges are added from every trapped {@link Unit} to the
- *  {@link Trap}'s handler <tt>Unit</tt>, regardless of whether the
- *  trapped <tt>Unit</tt>s may actually throw the exception caught by
- *  the <tt>Trap</tt>.</p>
+ *  Represents a CFG for a {@link Body} instance where the nodes are
+ *  {@link Unit} instances, and where, in additional to unexceptional
+ *  control flow edges, edges are added from every trapped {@link
+ *  Unit} to the {@link Trap}'s handler <code>Unit</code>, regardless
+ *  of whether the trapped <code>Unit</code>s may actually throw the
+ *  exception caught by the <code>Trap</code>.</p>
  *
  *  <p>
  *  There are three distinctions between the exceptional edges added 
- *  in <tt>TrapUnitGraph</tt> and the exceptional edges added in
- *  {@link CompleteUnitGraph}:
+ *  in <code>TrapUnitGraph</code> and the exceptional edges added in
+ *  {@link ExceptionalUnitGraph}:
  *  <ol>
  *  <li>
- *  In <tt>CompleteUnitGraph</tt>, the edges to <tt>Trap</tt>s are 
- *  associated with <tt>Unit</tt>s which may actually throw an 
- *  exception which the <tt>Trap</tt> catches. In <tt>TrapUnitGraph</tt>,
- *  there are edges from every trapped <tt>Unit</tt> to the <tt>Trap</tt>,
- *  regardless of whether it can throw an exception caught by the <tt>Trap</tt>
+ *  In <code>ExceptionalUnitGraph</code>, the edges to
+ *  <code>Trap</code>s are associated with <code>Unit</code>s which
+ *  may actually throw an exception which the <code>Trap</code>
+ *  catches (according to the {@link
+ *  soot.toolkits.exceptions.ThrowAnalysis ThrowAnalysis} used in the
+ *  construction of the graph). In <code>TrapUnitGraph</code>, there
+ *  are edges from every trapped <code>Unit</code> to the
+ *  <code>Trap</code>, regardless of whether it can throw an exception
+ *  caught by the <code>Trap</code>.
  *  </li>
  *  <li>
- *  In <tt>CompleteUnitGraph</tt>, when a <tt>Unit</tt> may throw
- *  an exception that is caught by a <tt>Trap</tt>, there are edges from	
- *  every predecessor of the excepting <tt>Unit</tt> to the <tt>Trap</tt>'s
- *  handler. In <tt>TrapUnitGraph</tt>, edges are not added from the 
- *  predecessors of excepting <tt>Unit</tt>s</li>.
+ *  In <code>ExceptionalUnitGraph</code>, when a <code>Unit</code> may
+ *  throw an exception that is caught by a <code>Trap</code> there
+ *  are edges from every predecessor of the excepting
+ *  <code>Unit</code> to the <code>Trap</code>'s handler. In
+ *  <code>TrapUnitGraph</code>, edges are not added from the
+ *  predecessors of excepting <code>Unit</code>s.</li>
  *  <li>
- *  In <tt>CompleteUnitGraph</tt>, when a <tt>Unit</tt> may throw an
- *  exception that is caught by a <tt>Trap</tt>, there is no edge from
- *  the excepting <tt>Unit</tt> itself to the <tt>Trap</tt> if
- *  the excepting <tt>Unit</tt> has no side effects. In
- *  <tt>TrapUnitGraph</tt>, there is always an edge from the excepting
- *  <tt>Unit</tt> to the <tt>Trap</tt>.</li>
+ *  In <code>ExceptionalUnitGraph</code>, when a <code>Unit</code> may
+ *  throw an exception that is caught by a <code>Trap</code>, there
+ *  may be no edge from the excepting <code>Unit</code> itself to the
+ *  <code>Trap</code> (depending on the possibility of side effects
+ *  and the setting of the <code>omitExceptingUnitEdges</code>
+ *  parameter). In <code>TrapUnitGraph</code>, there is always an edge
+ *  from the excepting <code>Unit</code> to the
+ *  <code>Trap</code>.</li>
  *  </ol>
  */
 public class TrapUnitGraph extends UnitGraph
@@ -102,21 +109,21 @@ public class TrapUnitGraph extends UnitGraph
      * Method to compute the edges corresponding to exceptional
      * control flow. 
      *
-     * @param unitToSuccs A {@link Map} from {@link Unit}s to {@link
-     *                    List}s of {@link Unit}s. This is * an ``out
-     *                    parameter''; <tt>buildExceptionalEdges</tt>
-     *                    will add a mapping for every <tt>Unit</tt>
+     * @param unitToSuccs A <code>Map</code> from {@link Unit}s to {@link
+     *                    List}s of <code>Unit</code>s. This is an &ldquo;out
+     *                    parameter&rdquo;; <code>buildExceptionalEdges</code>
+     *                    will add a mapping for every <code>Unit</code>
      *                    within the scope of one or more {@link
-     *                    Trap}s to a <tt>List</tt> of the handler
-     *                    units of those <tt>Trap</tt>s.
+     *                    Trap}s to a <code>List</code> of the handler
+     *                    units of those <code>Trap</code>s.
      *
-     * @param unitToPreds A {@link Map} from {@link Unit}s to 
-     *                    {@link List}s of {@link Unit}s. This is an
-     *                    ``out parameter'';
-     *                    <tt>buildExceptionalEdges</tt> will add a
-     *                    mapping for every {@link Trap} handler to
-     *                    all the <tt>Unit</tt>s within the scope of
-     *                    that <tt>Trap</tt>.
+     * @param unitToPreds A <code>Map</code> from <code>Unit</code>s to 
+     *                    <code>List</code>s of <code>Unit</code>s. This is an
+     *                    &ldquo;out parameter&rdquo;;
+     *                    <code>buildExceptionalEdges</code> will add a
+     *                    mapping for every <code>Trap</code> handler to
+     *                    all the <code>Unit</code>s within the scope of
+     *                    that <code>Trap</code>.
      */
     protected void buildExceptionalEdges(Map unitToSuccs, Map unitToPreds) {
 	for (Iterator trapIt = body.getTraps().iterator(); 

@@ -239,19 +239,19 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    for (Iterator destIt = unitDests.iterator(); destIt.hasNext(); ) {
 		ExceptionalUnitGraph.ExceptionDest unitDest 
 		    = (ExceptionalUnitGraph.ExceptionDest) destIt.next();
-		if (unitDest.trap() == null) {
-		    escapingThrowables = escapingThrowables.add(unitDest.throwables());
+		if (unitDest.getTrap() == null) {
+		    escapingThrowables = escapingThrowables.add(unitDest.getThrowables());
 		} else {
 		    caughtCount++;
 		    if (trapToThrowables == null) {
 			trapToThrowables = new HashMap(unitDests.size() * 2);
 		    }
-		    Trap trap = unitDest.trap();
+		    Trap trap = unitDest.getTrap();
 		    ThrowableSet throwables = (ThrowableSet) trapToThrowables.get(trap);
 		    if (throwables == null) {
-			throwables = unitDest.throwables();
+			throwables = unitDest.getThrowables();
 		    } else {
-			throwables = throwables.add(unitDest.throwables());
+			throwables = throwables.add(unitDest.getThrowables());
 		    }
 		    trapToThrowables.put(trap, throwables);
 		}
@@ -364,11 +364,11 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    this.handler = handler;
 	}
 	
-	public Trap trap() {
+	public Trap getTrap() {
 	    return trap;
 	}
 
-	public ThrowableSet throwables() {
+	public ThrowableSet getThrowables() {
 	    return throwables;
 	}
 

@@ -72,7 +72,7 @@ public interface ExceptionalGraph extends DirectedGraph
 	 * handler and the exceptions cause the method to terminate
 	 * abruptly.
 	 */
-	public Trap trap();
+	public Trap getTrap();
 
 	/**
 	 * Returns the exceptions thrown to this destination.
@@ -81,12 +81,12 @@ public interface ExceptionalGraph extends DirectedGraph
 	 * the exceptions which may be caught by this 
 	 * <code>ExceptionDest</code>'s trap.
 	 */
-	public ThrowableSet throwables();
+	public ThrowableSet getThrowables();
 
 	/**
 	 * Returns the CFG node corresponding to the beginning of
 	 * the exception handler that catches the exceptions (that is,
-	 * the node that includes {@link trap().getBeginUnit()})).
+	 * the node that includes {@link trap().getBeginUnit()}).
 	 *
 	 * @return the node in this graph which represents the
 	 * beginning of the handler which catches these exceptions, or
