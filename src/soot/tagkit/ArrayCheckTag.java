@@ -5,9 +5,7 @@ import soot.*;
 import java.util.*;
 import java.io.*;
 
-
-
-public class ArrayCheckTag implements Tag
+public class ArrayCheckTag implements OneByteCodeTag
 {
     private final static String NAME = "ArrayCheckTag";
 
@@ -19,11 +17,27 @@ public class ArrayCheckTag implements Tag
 	lowerCheck = lower;
 	upperCheck = upper;
     }
-           
+    
+    public byte[] getValue()
+    {
+        byte[] value = new byte[1];
+
+	value[0] = 0;
+	
+	if (lowerCheck)
+	    value[0] |= 0x01;
+	
+	if (upperCheck)
+	    value[0] |= 0x02;
+
+	return value;
+    }
+    
     public boolean isCheckUpper()
     {
 	return upperCheck;
     }
+    
     public boolean isCheckLower()
     {
 	return lowerCheck;
@@ -37,6 +51,6 @@ public class ArrayCheckTag implements Tag
 
     public String toString()
     {
-	return   (lowerCheck ? "": "[safe lower bound]") +" " +  (upperCheck ? "":"[safe upper bound]");
+	return   (lowerCheck ? "": "[safe lower bound]") +"" +  (upperCheck ? "":"[safe upper bound]");
     }
 }

@@ -1,4 +1,5 @@
-package soot.tagkit;import soot.*;
+package soot.tagkit;
+import soot.*;
 
 
 import java.util.*;

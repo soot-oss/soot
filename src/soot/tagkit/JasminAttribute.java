@@ -60,13 +60,18 @@ public abstract class JasminAttribute implements Attribute
 		    throw new RuntimeException();
 
 		pcArray = new byte[2];
-		pcArray[0] = 0;
-		pcArray[1] = 1;
+
+		pcArray[1] = (byte)(pcvalue&0x0FF);
+				
+		pcArray[0] = (byte)((pcvalue>>8)&0x0FF);
+
 		attributeHunks.add(pcArray);
 		attributeSize += 2;
 	    } else {
+
 		byte[] hunk = Base64.decode(token.toCharArray());		
 		attributeSize += hunk.length;
+
 		attributeHunks.add(hunk);
 	    }
 	    isLabel = !isLabel;	  

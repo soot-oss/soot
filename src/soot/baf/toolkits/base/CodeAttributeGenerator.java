@@ -47,19 +47,20 @@ public class  CodeAttributeGenerator extends BodyTransformer
     public  void internalTransform(Body b, String phaseName, Map options) 
     {
         BafBody body = (BafBody) b;
-        
+       
         if (soot.Main.isVerbose) 
             System.out.println("[" + body.getMethod().getName() + "] Aggregating Unit Tags...");
 	
 	List tagAggregators = new LinkedList();
 	tagAggregators.add(new ArrayCheckTagAggregator());
+	tagAggregators.add(new NullCheckTagAggregator());
 	
         Iterator unitIt = body.getUnits().iterator();
         while (unitIt.hasNext()) 
         {
             Unit unit = (Unit) unitIt.next();
 	    List l = unit.getTags();
-	    
+	   
 	    Iterator tagIt = l.iterator();
 	    while(tagIt.hasNext()) {
 		Tag t = (Tag) tagIt.next();		
@@ -71,7 +72,7 @@ public class  CodeAttributeGenerator extends BodyTransformer
 		}
 	    }         
         }        
-	
+
 	Iterator it = tagAggregators.iterator();
 	while(it.hasNext()) {
 	    TagAggregator ta = (TagAggregator) it.next();

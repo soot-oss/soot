@@ -9,14 +9,14 @@ import java.util.*;
 public class ArrayCheckTagAggregator implements TagAggregator
 {    
 
-    private List arrayCheckTags = new LinkedList();
+    private List tags = new LinkedList();
     private List units = new LinkedList();
 
     public void aggregateTag(Tag t, Unit u)
     {
 	if(t instanceof ArrayCheckTag) {	  
 	    units.add(u);
-	    arrayCheckTags.add((ArrayCheckTag) t);
+	    tags.add(t);
 	}
     }
     
@@ -25,6 +25,6 @@ public class ArrayCheckTagAggregator implements TagAggregator
 	if(units.size() == 0)
 	    return null;
 	else
-	    return new ArrayCheckAttribute(arrayCheckTags, units);
+	    return new CodeAttribute("ArrayCheckAttribute", units, tags);
     }
 }
