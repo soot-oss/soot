@@ -130,10 +130,7 @@ public class SourceLocator
 	    reps.add(ClassInputRep.v());
 	    reps.add(JimpleInputRep.v());
 
-	    if(srcPrecedence == PRECEDENCE_NONE) {
-		return getFileInputStream(locations, reps, className);
-	    }
-	    else if(srcPrecedence == PRECEDENCE_CLASS) {
+	    if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {
 		List lst = new LinkedList();
 		lst.add(ClassInputRep.v());
 		if( (res = getFileInputStream(locations, lst, className)) != null)

@@ -49,7 +49,7 @@ public class LongConstant extends ArithmeticConstant implements Switchable, ToBr
 
     public boolean equals(Object c)
     {
-        return c instanceof IntConstant && ((IntConstant) c).value == this.value;
+        return c instanceof LongConstant && ((LongConstant) c).value == this.value;
     }
 
     /** Returns a hash code for this DoubleConstant object. */

@@ -444,7 +444,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.18");
+            System.out.println("Soot version 1.beta.6.dev.19");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

@@ -186,7 +186,7 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
     {
         return emptySet.clone();
     }
-
+	
     protected void flowThrough(Object inValue, Directed unit, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;

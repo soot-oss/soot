@@ -160,6 +160,8 @@ public class Scene extends AbstractHost
 
         // Grimp optimization pack
         packNameToPack.put("gop", p = new Pack());
+
+        PackAdjuster.adjustPacks(this);
     }
 
     public Pack getPack(String phaseName)

@@ -51,7 +51,7 @@ public class SootResolver
 	    try {
 		is = SourceLocator.getInputStreamOf(className);
 	    } catch(ClassNotFoundException e) {
-		throw new RuntimeException("couldn't find type: ##" + className + "###");
+		throw new RuntimeException("couldn't find type: " + className + " (is your soot-class-path set properly?)");
 	    }
 		
 	    Set s = null;

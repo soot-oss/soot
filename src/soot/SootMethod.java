@@ -34,8 +34,7 @@ import java.util.*;
 import soot.baf.*;
 import soot.jimple.*;
 
-public class SootMethod extends AbstractHost implements ClassMember,
-Directed
+public class SootMethod extends AbstractHost implements ClassMember, Directed
 {
     /** Name of the current method. */
     String name;

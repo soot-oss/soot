@@ -48,7 +48,7 @@ import soot.baf.internal.*;
 
 public class PeepholeOptimizer extends BodyTransformer
 {
-    private final String peepholeListing = "/localhome/patrice/soot/src/soot/baf/toolkits/base/peephole.dat"; //xxx should be made a ressource
+    private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";
 
     private static Map peepholeMap = new HashMap();
@@ -74,14 +74,8 @@ public class PeepholeOptimizer extends BodyTransformer
 	boolean changed = true;
 	BufferedReader reader = null;
 	
-	try {
-	    reader = new BufferedReader(new FileReader(peepholeListing));
-	} catch (FileNotFoundException e) {
-	    return ;
-	    /*	    throw new RuntimeException("Could not find file:  " +
-		    peepholeListing + System.getProperty("line.separator") + e);*/
-	}
-	
+        peepholeListingStream = PeepholeOptimizer.class.getResourceAsStream("peephole.dat");
+        reader = new BufferedReader(new InputStreamReader(peepholeListingStream));	
 
 	String line = null;
 	List peepholes = new LinkedList();
