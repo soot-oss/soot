@@ -8,6 +8,7 @@
 <FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>java</FONT>.<FONT COLOR=CadetBlue>util</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
 
 <FONT COLOR=Firebrick>/** Tracks which locals are definitely non-null.
+ * Author: Patrick Lam (plam@sable.mcgill.ca)
  * Based on BranchedRefVarsAnalysis by Janus Godard (janus@place.org). */</FONT>
 <FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>NullnessAnalysis</FONT> <FONT COLOR=Purple>extends</FONT> <FONT COLOR=ForestGreen>ForwardBranchedFlowAnalysis</FONT>
 {
@@ -36,110 +37,110 @@
     <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>flowThrough</FONT>(<FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=DarkGoldenrod>srcValue</FONT>, <FONT COLOR=ForestGreen>Unit</FONT> <FONT COLOR=DarkGoldenrod>unit</FONT>,
                                <FONT COLOR=ForestGreen>List</FONT> <FONT COLOR=DarkGoldenrod>fallOut</FONT>, <FONT COLOR=ForestGreen>List</FONT> <FONT COLOR=DarkGoldenrod>branchOuts</FONT>)
     {
-        FlowSet dest;
-        FlowSet src  = (FlowSet) srcValue;
-        Unit    s    = (Unit)    unit;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>dest</FONT>;
+        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>src</FONT>  = (<FONT COLOR=ForestGreen>FlowSet</FONT>) srcValue;
+        <FONT COLOR=ForestGreen>Unit</FONT>    <FONT COLOR=DarkGoldenrod>s</FONT>    = (<FONT COLOR=ForestGreen>Unit</FONT>)    unit;
 
-        // Create working set.
-        dest = (FlowSet)src.clone();
+        <FONT COLOR=Firebrick>// Create working set.
+</FONT>        dest = (<FONT COLOR=ForestGreen>FlowSet</FONT>)src.clone();
 
-        // Take out kill set.
-        Iterator boxIt = s.getDefBoxes().iterator();
-        while (boxIt.hasNext()) {
-            ValueBox box = (ValueBox) boxIt.next();
-            Value value = box.getValue();
-            if (value instanceof Local &amp;&amp; 
-                    isRefOrArrayType(value.getType()))
+        <FONT COLOR=Firebrick>// Take out kill set.
+</FONT>        <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>boxIt</FONT> = s.getDefBoxes().iterator();
+        <FONT COLOR=Purple>while</FONT> (boxIt.hasNext()) {
+            <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>box</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>value</FONT> = box.getValue();
+            <FONT COLOR=Purple>if</FONT> (value <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; 
+                    value.getType() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>RefLikeType</FONT>)
                 dest.remove(value);
         }
 
-        // Perform gen.
-        dest.union((FlowSet)unitToGenerateSet.get(unit), dest);
+        <FONT COLOR=Firebrick>// Perform gen.
+</FONT>        dest.union((<FONT COLOR=ForestGreen>FlowSet</FONT>)unitToGenerateSet.get(unit), dest);
 
-        // Handle copy statements: 
-        //    x = y &amp;&amp; 'y' in src =&gt; add 'x' to dest
-        if (s instanceof DefinitionStmt)
+        <FONT COLOR=Firebrick>// Handle copy statements: 
+</FONT>        <FONT COLOR=Firebrick>//    x = y &amp;&amp; 'y' in src =&gt; add 'x' to dest
+</FONT>        <FONT COLOR=Purple>if</FONT> (s <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>DefinitionStmt</FONT>)
         {
-            DefinitionStmt as = (DefinitionStmt) s;
+            <FONT COLOR=ForestGreen>DefinitionStmt</FONT> <FONT COLOR=DarkGoldenrod>as</FONT> = (<FONT COLOR=ForestGreen>DefinitionStmt</FONT>) s;
 
-            Value ro = as.getRightOp();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>ro</FONT> = as.getRightOp();
 
-            // extract cast argument
-            if (ro instanceof CastExpr)
-                ro = ((CastExpr) ro).getOp();
+            <FONT COLOR=Firebrick>// extract cast argument
+</FONT>            <FONT COLOR=Purple>if</FONT> (ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>CastExpr</FONT>)
+                ro = ((<FONT COLOR=ForestGreen>CastExpr</FONT>) ro).getOp();
         
-            if (src.contains(ro) &amp;&amp;
-                  as.getLeftOp() instanceof Local)
+            <FONT COLOR=Purple>if</FONT> (src.contains(ro) &amp;&amp;
+                  as.getLeftOp() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT>)
                 dest.add(as.getLeftOp());
         }
 
-        // Copy the out value to all branch boxes.
-        {
-            Iterator it = fallOut.iterator();
-            while (it.hasNext()) {
-                FlowSet fs = (FlowSet) (it.next());
+        <FONT COLOR=Firebrick>// Copy the out value to all branch boxes.
+</FONT>        {
+            <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = fallOut.iterator();
+            <FONT COLOR=Purple>while</FONT> (it.hasNext()) {
+                <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>fs</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) (it.next());
                 copy(dest, fs);
             }
         }
         
-        // Copy the out value to the fallthrough box (don't need iterator)
-        {
-            Iterator it = branchOuts.iterator();
-            while (it.hasNext()) {
-                FlowSet fs = (FlowSet) (it.next());
+        <FONT COLOR=Firebrick>// Copy the out value to the fallthrough box (don't need iterator)
+</FONT>        {
+            <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = branchOuts.iterator();
+            <FONT COLOR=Purple>while</FONT> (it.hasNext()) {
+                <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>fs</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) (it.next());
                 copy(dest, fs);
             }
         }
 
-        // Handle if statements by patching dest sets.
-        if (unit instanceof IfStmt)
+        <FONT COLOR=Firebrick>// Handle if statements by patching dest sets.
+</FONT>        <FONT COLOR=Purple>if</FONT> (unit <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>IfStmt</FONT>)
         {
-            Value cond = ((IfStmt)unit).getCondition();
-            Value op1 = ((BinopExpr) cond).getOp1();
-            Value op2 = ((BinopExpr) cond).getOp2();
-            boolean isNeg = cond instanceof NeExpr;
-            Value toGen = null;
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>cond</FONT> = ((<FONT COLOR=ForestGreen>IfStmt</FONT>)unit).getCondition();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>op1</FONT> = ((<FONT COLOR=ForestGreen>BinopExpr</FONT>) cond).getOp1();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>op2</FONT> = ((<FONT COLOR=ForestGreen>BinopExpr</FONT>) cond).getOp2();
+            <FONT COLOR=ForestGreen>boolean</FONT> <FONT COLOR=DarkGoldenrod>isNeg</FONT> = cond <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NeExpr</FONT>;
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>toGen</FONT> = <FONT COLOR=CadetBlue>null</FONT>;
 
-            // case 1: opN is a local and opM is NullConstant
-            //          =&gt; opN nonnull on ne branch.
-            if (op1 instanceof Local &amp;&amp; op2 instanceof NullConstant)
+            <FONT COLOR=Firebrick>// case 1: opN is a local and opM is NullConstant
+</FONT>            <FONT COLOR=Firebrick>//          =&gt; opN nonnull on ne branch.
+</FONT>            <FONT COLOR=Purple>if</FONT> (op1 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; op2 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NullConstant</FONT>)
                 toGen = op1;
 
-            if (op2 instanceof Local &amp;&amp; op1 instanceof NullConstant)
+            <FONT COLOR=Purple>if</FONT> (op2 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; op1 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NullConstant</FONT>)
                 toGen = op2;
 
-            if (toGen != null)
+            <FONT COLOR=Purple>if</FONT> (toGen != <FONT COLOR=CadetBlue>null</FONT>)
             {
-                Iterator it = null;
+                <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = <FONT COLOR=CadetBlue>null</FONT>;
 
-                // if (toGen != null) goto l1: on branch, toGen nonnull.
-                if (isNeg)
+                <FONT COLOR=Firebrick>// if (toGen != null) goto l1: on branch, toGen nonnull.
+</FONT>                <FONT COLOR=Purple>if</FONT> (isNeg)
                     it = branchOuts.iterator();
-                else
+                <FONT COLOR=Purple>else</FONT>
                     it = fallOut.iterator();
 
-                while(it.hasNext()) {
-                    FlowSet fs = (FlowSet) (it.next());
+                <FONT COLOR=Purple>while</FONT>(it.hasNext()) {
+                    <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>fs</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) (it.next());
                     fs.add(toGen);
                 }
             }
 
-            // case 2: both ops are local and one op is non-null and testing equality
-            if (op1 instanceof Local &amp;&amp; op2 instanceof Local &amp;&amp; 
-                cond instanceof EqExpr)
+            <FONT COLOR=Firebrick>// case 2: both ops are local and one op is non-null and testing equality
+</FONT>            <FONT COLOR=Purple>if</FONT> (op1 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; op2 <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; 
+                cond <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>EqExpr</FONT>)
             {
-                toGen = null;
+                toGen = <FONT COLOR=CadetBlue>null</FONT>;
 
-                if (src.contains(op1))
+                <FONT COLOR=Purple>if</FONT> (src.contains(op1))
                     toGen = op2;
-                if (src.contains(op2))
+                <FONT COLOR=Purple>if</FONT> (src.contains(op2))
                     toGen = op1;
 
-                if (toGen != null)
+                <FONT COLOR=Purple>if</FONT> (toGen != <FONT COLOR=CadetBlue>null</FONT>)
                 {
-                    Iterator branchIt = branchOuts.iterator();
-                    while (branchIt.hasNext()) {
-                        FlowSet fs = (FlowSet) (branchIt.next());
+                    <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>branchIt</FONT> = branchOuts.iterator();
+                    <FONT COLOR=Purple>while</FONT> (branchIt.hasNext()) {
+                        <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>fs</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>) (branchIt.next());
                         fs.add(toGen);
                     }
                 }
@@ -147,109 +148,104 @@
         }
     }
 
-    protected Object newInitialFlow()
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>newInitialFlow</FONT>()
     {
-        return fullSet.clone();
+        <FONT COLOR=Purple>return</FONT> fullSet.clone();
     }
 
-    protected Object entryInitialFlow()
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>entryInitialFlow</FONT>()
     {
-        // everything could be null
-        return emptySet.clone();
+        <FONT COLOR=Firebrick>// everything could be null
+</FONT>        <FONT COLOR=Purple>return</FONT> emptySet.clone();
     }
 
-    private void addGen(Unit u, Value v)
+    <FONT COLOR=Purple>private</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>addGen</FONT>(<FONT COLOR=ForestGreen>Unit</FONT> <FONT COLOR=DarkGoldenrod>u</FONT>, <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>v</FONT>)
     {
-        ArraySparseSet l = (ArraySparseSet)unitToGenerateSet.get(u);
+        <FONT COLOR=ForestGreen>ArraySparseSet</FONT> <FONT COLOR=DarkGoldenrod>l</FONT> = (<FONT COLOR=ForestGreen>ArraySparseSet</FONT>)unitToGenerateSet.get(u);
         l.add(v);
     }
 
-    private void addGensFor(DefinitionStmt u)
+    <FONT COLOR=Purple>private</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>addGensFor</FONT>(<FONT COLOR=ForestGreen>DefinitionStmt</FONT> <FONT COLOR=DarkGoldenrod>u</FONT>)
     {
-        Value lo = u.getLeftOp();
-        Value ro = u.getRightOp();
+        <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>lo</FONT> = u.getLeftOp();
+        <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>ro</FONT> = u.getRightOp();
 
-        if (ro instanceof NewExpr ||
-             ro instanceof NewArrayExpr ||
-             ro instanceof NewMultiArrayExpr ||
-             ro instanceof ThisRef ||
-             ro instanceof CaughtExceptionRef)
+        <FONT COLOR=Purple>if</FONT> (ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NewExpr</FONT> ||
+             ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NewArrayExpr</FONT> ||
+             ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>NewMultiArrayExpr</FONT> ||
+             ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>ThisRef</FONT> ||
+             ro <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>CaughtExceptionRef</FONT>)
             addGen(u, lo);
     }
 
-    public NullnessAnalysis(UnitGraph g)
+    <FONT COLOR=Purple>public</FONT> <FONT COLOR=ForestGreen>NullnessAnalysis</FONT>(<FONT COLOR=ForestGreen>UnitGraph</FONT> <FONT COLOR=DarkGoldenrod>g</FONT>)
     {
-        super(g);
+        <FONT COLOR=Purple>super</FONT>(g);
 
-        unitToGenerateSet = new HashMap();
+        unitToGenerateSet = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>HashMap</FONT>();
 
-        Body b = g.getBody();
+        <FONT COLOR=ForestGreen>Body</FONT> <FONT COLOR=DarkGoldenrod>b</FONT> = g.getBody();
 
-        List refLocals = new LinkedList();
+        <FONT COLOR=ForestGreen>List</FONT> <FONT COLOR=DarkGoldenrod>refLocals</FONT> = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>LinkedList</FONT>();
 
-        // set up universe, empty, full sets.
+        <FONT COLOR=Firebrick>// set up universe, empty, full sets.
+</FONT>
+        emptySet = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
+        fullSet = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
 
-        emptySet = new ArraySparseSet();
-        fullSet = new ArraySparseSet();
-
-        // Find all locals in body.
-        Iterator localIt = b.getLocals().iterator();
-        while (localIt.hasNext())
+        <FONT COLOR=Firebrick>// Find all locals in body.
+</FONT>        <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>localIt</FONT> = b.getLocals().iterator();
+        <FONT COLOR=Purple>while</FONT> (localIt.hasNext())
         {
-            Local l = (Local)localIt.next();
-            if (isRefOrArrayType(l.getType()))
+            <FONT COLOR=ForestGreen>Local</FONT> <FONT COLOR=DarkGoldenrod>l</FONT> = (<FONT COLOR=ForestGreen>Local</FONT>)localIt.next();
+            <FONT COLOR=Purple>if</FONT> (l.getType() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>RefLikeType</FONT>)
                 fullSet.add(l);
         }
 
-        // Create gen sets.
-        Iterator unitIt = b.getUnits().iterator();
-        while (unitIt.hasNext())
+        <FONT COLOR=Firebrick>// Create gen sets.
+</FONT>        <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>unitIt</FONT> = b.getUnits().iterator();
+        <FONT COLOR=Purple>while</FONT> (unitIt.hasNext())
         {
-            Unit u = (Unit)unitIt.next();
-            unitToGenerateSet.put(u, new ArraySparseSet());
+            <FONT COLOR=ForestGreen>Unit</FONT> <FONT COLOR=DarkGoldenrod>u</FONT> = (<FONT COLOR=ForestGreen>Unit</FONT>)unitIt.next();
+            unitToGenerateSet.put(u, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>());
 
-            if (u instanceof DefinitionStmt)
+            <FONT COLOR=Purple>if</FONT> (u <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>DefinitionStmt</FONT>)
             {
-                Value lo = ((DefinitionStmt)u).getLeftOp();
-                if (lo instanceof Local &amp;&amp; 
-                       isRefOrArrayType(lo.getType()))
-                    addGensFor((DefinitionStmt)u);
+                <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>lo</FONT> = ((<FONT COLOR=ForestGreen>DefinitionStmt</FONT>)u).getLeftOp();
+                <FONT COLOR=Purple>if</FONT> (lo <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; 
+                       lo.getType() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>RefLikeType</FONT>)
+                    addGensFor((<FONT COLOR=ForestGreen>DefinitionStmt</FONT>)u);
             }
 
-            Iterator boxIt = u.getUseAndDefBoxes().iterator();
-            while (boxIt.hasNext())
+            <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>boxIt</FONT> = u.getUseAndDefBoxes().iterator();
+            <FONT COLOR=Purple>while</FONT> (boxIt.hasNext())
             {
-                Value boxValue = ((ValueBox) boxIt.next()).getValue();
-                Value base = null;
+                <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>boxValue</FONT> = ((<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next()).getValue();
+                <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>base</FONT> = <FONT COLOR=CadetBlue>null</FONT>;
                     
-                if(boxValue instanceof InstanceFieldRef) {
-                    base = ((InstanceFieldRef) (boxValue)).getBase();
-                } else if (boxValue instanceof ArrayRef) {
-                    base = ((ArrayRef) (boxValue)).getBase();
-                } else if (boxValue instanceof InstanceInvokeExpr) {
-                    base = ((InstanceInvokeExpr) boxValue).getBase();
-                } else if (boxValue instanceof LengthExpr) {
-                    base = ((LengthExpr) boxValue).getOp();
-                } else if (u instanceof ThrowStmt) {
-                    base = ((ThrowStmt)u).getOp();
-                } else if (u instanceof MonitorStmt) {
-                    base = ((MonitorStmt)u).getOp();
+                <FONT COLOR=Purple>if</FONT>(boxValue <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>InstanceFieldRef</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>InstanceFieldRef</FONT>) (boxValue)).getBase();
+                } <FONT COLOR=Purple>else</FONT> <FONT COLOR=Purple>if</FONT> (boxValue <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>ArrayRef</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>ArrayRef</FONT>) (boxValue)).getBase();
+                } <FONT COLOR=Purple>else</FONT> <FONT COLOR=Purple>if</FONT> (boxValue <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>InstanceInvokeExpr</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>InstanceInvokeExpr</FONT>) boxValue).getBase();
+                } <FONT COLOR=Purple>else</FONT> <FONT COLOR=Purple>if</FONT> (boxValue <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>LengthExpr</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>LengthExpr</FONT>) boxValue).getOp();
+                } <FONT COLOR=Purple>else</FONT> <FONT COLOR=Purple>if</FONT> (u <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>ThrowStmt</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>ThrowStmt</FONT>)u).getOp();
+                } <FONT COLOR=Purple>else</FONT> <FONT COLOR=Purple>if</FONT> (u <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>MonitorStmt</FONT>) {
+                    base = ((<FONT COLOR=ForestGreen>MonitorStmt</FONT>)u).getOp();
                 }
 
-                if (base != null &amp;&amp; 
-                      base instanceof Local &amp;&amp; 
-                      isRefOrArrayType(base.getType()))
+                <FONT COLOR=Purple>if</FONT> (base != <FONT COLOR=CadetBlue>null</FONT> &amp;&amp; 
+                      base <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT> &amp;&amp; 
+                      base.getType() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>RefLikeType</FONT>)
                     addGen(u, base);
             }
         }
 
-        // Call superclass method to do work.
-        doAnalysis();
-    }
-
-    private boolean isRefOrArrayType(Type t)
-    {
-        return t instanceof RefType || t instanceof ArrayType;
+        <FONT COLOR=Firebrick>// Call superclass method to do work.
+</FONT>        doAnalysis();
     }
 }
 

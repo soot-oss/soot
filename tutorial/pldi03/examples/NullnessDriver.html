@@ -15,8 +15,9 @@
 {
     <FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>static</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>main</FONT>(<FONT COLOR=ForestGreen>String</FONT>[] <FONT COLOR=DarkGoldenrod>argv</FONT>)
     {
-        <FONT COLOR=ForestGreen>Pack</FONT> <FONT COLOR=DarkGoldenrod>jtp</FONT> = soot.G.v().<FONT COLOR=ForestGreen>PackManager</FONT>().v().getPack(<FONT COLOR=RosyBrown>"jtp"</FONT>);
-        jtp.add(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"jtp"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullTransformer</FONT>()));
+        <FONT COLOR=ForestGreen>Pack</FONT> <FONT COLOR=DarkGoldenrod>jtp</FONT> = soot.G.v().<FONT COLOR=ForestGreen>PackManager</FONT>().getPack(<FONT COLOR=RosyBrown>"jtp"</FONT>);
+        jtp.add(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"jtp.nt"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullTransformer</FONT>()));
+        jtp.add(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>Transform</FONT>(<FONT COLOR=RosyBrown>"jtp.nac"</FONT>, <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullnessAnalysisColorer</FONT>()));
 
         soot.Main.main(argv);
     }

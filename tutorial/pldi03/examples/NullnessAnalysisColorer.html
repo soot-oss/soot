@@ -1,0 +1,64 @@
+<HTML> <HEAD> <TITLE>NullnessAnalysisColorer.java</TITLE> </HEAD> <BODY> <PRE> 
+<FONT COLOR=Firebrick>/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */</FONT>
+
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>tagkit</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>graph</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>java</FONT>.<FONT COLOR=CadetBlue>util</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>toolkits</FONT>.<FONT COLOR=CadetBlue>scalar</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+<FONT COLOR=Purple>import</FONT> <FONT COLOR=CadetBlue>soot</FONT>.<FONT COLOR=CadetBlue>jimple</FONT>.<FONT COLOR=CadetBlue>*</FONT>;
+
+<FONT COLOR=Purple>public</FONT> <FONT COLOR=Purple>class</FONT> <FONT COLOR=ForestGreen>NullnessAnalysisColorer</FONT> <FONT COLOR=Purple>extends</FONT> <FONT COLOR=ForestGreen>BodyTransformer</FONT> {
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>internalTransform</FONT> (<FONT COLOR=ForestGreen>Body</FONT> <FONT COLOR=DarkGoldenrod>b</FONT>, <FONT COLOR=ForestGreen>String</FONT> <FONT COLOR=DarkGoldenrod>phaseName</FONT>, <FONT COLOR=ForestGreen>Map</FONT> <FONT COLOR=DarkGoldenrod>options</FONT>) {
+        <FONT COLOR=ForestGreen>NullnessAnalysis</FONT> <FONT COLOR=DarkGoldenrod>analysis</FONT> = <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>NullnessAnalysis</FONT>
+            (<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>CompleteUnitGraph</FONT>(b));
+
+        <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>it</FONT> = b.getUnits().iterator();
+
+        <FONT COLOR=Purple>while</FONT> (it.hasNext()) {
+            <FONT COLOR=ForestGreen>Stmt</FONT> <FONT COLOR=DarkGoldenrod>s</FONT> = (<FONT COLOR=ForestGreen>Stmt</FONT>)it.next();
+            
+            <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>usesIt</FONT> = s.getUseBoxes().iterator();
+            <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>beforeSet</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>)analysis.getFlowBefore(s);
+                
+            <FONT COLOR=Purple>while</FONT> (usesIt.hasNext()) {
+                <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>vBox</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>)usesIt.next();
+                addColorTags(vBox, beforeSet, s, analysis);
+            }
+
+            <FONT COLOR=ForestGreen>Iterator</FONT> <FONT COLOR=DarkGoldenrod>defsIt</FONT> = s.getDefBoxes().iterator();
+            <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>afterSet</FONT> = (<FONT COLOR=ForestGreen>FlowSet</FONT>)analysis.getFallFlowAfter(s);
+
+            <FONT COLOR=Purple>while</FONT> (defsIt.hasNext()){
+                <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>vBox</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>)defsIt.next();
+                addColorTags(vBox, afterSet, s, analysis);
+            }
+        }
+    }
+    
+    <FONT COLOR=Purple>private</FONT> <FONT COLOR=ForestGreen>void</FONT> <FONT COLOR=Blue>addColorTags</FONT>(<FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>vBox</FONT>, <FONT COLOR=ForestGreen>FlowSet</FONT> <FONT COLOR=DarkGoldenrod>set</FONT>, 
+                              <FONT COLOR=ForestGreen>Stmt</FONT> <FONT COLOR=DarkGoldenrod>s</FONT>, <FONT COLOR=ForestGreen>NullnessAnalysis</FONT> <FONT COLOR=DarkGoldenrod>analysis</FONT>) {
+        <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>val</FONT> = vBox.getValue();
+        <FONT COLOR=Purple>if</FONT> (val.getType() <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>RefLikeType</FONT> &amp;&amp;
+                ((<FONT COLOR=ForestGreen>ArraySparseSet</FONT>)set).contains(val))
+            vBox.addTag(<FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ColorTag</FONT>(ColorTag.GREEN));
+    }
+}
+</PRE> </BODY> </HTML>

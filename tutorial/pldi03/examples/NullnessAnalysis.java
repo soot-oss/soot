@@ -7,7 +7,7 @@ import soot.util.*;
 import java.util.*;
 
 /** Tracks which locals are definitely non-null.
- * @author Patrick Lam (plam@sable.mcgill.ca)
+ * Author: Patrick Lam (plam@sable.mcgill.ca)
  * Based on BranchedRefVarsAnalysis by Janus Godard (janus@place.org). */
 class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 {

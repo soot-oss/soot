@@ -40,33 +40,33 @@
         <FONT COLOR=Purple>while</FONT> (boxIt.hasNext()) {
             <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>box</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next();
             <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>value</FONT> = box.getValue();
-            if (value instanceof Local)
+            <FONT COLOR=Purple>if</FONT> (value <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT>)
                 dest.remove(value);
         }
 
-        // Add gen set
-        boxIt = s.getUseBoxes().iterator();
-        while (boxIt.hasNext()) {
-            ValueBox box = (ValueBox) boxIt.next();
-            Value value = box.getValue();
-            if (value instanceof Local)
+        <FONT COLOR=Firebrick>// Add gen set
+</FONT>        boxIt = s.getUseBoxes().iterator();
+        <FONT COLOR=Purple>while</FONT> (boxIt.hasNext()) {
+            <FONT COLOR=ForestGreen>ValueBox</FONT> <FONT COLOR=DarkGoldenrod>box</FONT> = (<FONT COLOR=ForestGreen>ValueBox</FONT>) boxIt.next();
+            <FONT COLOR=ForestGreen>Value</FONT> <FONT COLOR=DarkGoldenrod>value</FONT> = box.getValue();
+            <FONT COLOR=Purple>if</FONT> (value <FONT COLOR=Purple>instanceof</FONT> <FONT COLOR=ForestGreen>Local</FONT>)
                 dest.add(value);
         }
     }
 
-    protected Object entryInitialFlow()
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>entryInitialFlow</FONT>()
     {
-        return new ArraySparseSet();
+        <FONT COLOR=Purple>return</FONT> <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
     }
         
-    protected Object newInitialFlow()
+    <FONT COLOR=Purple>protected</FONT> <FONT COLOR=ForestGreen>Object</FONT> <FONT COLOR=Blue>newInitialFlow</FONT>()
     {
-        return new ArraySparseSet();
+        <FONT COLOR=Purple>return</FONT> <FONT COLOR=Purple>new</FONT> <FONT COLOR=ForestGreen>ArraySparseSet</FONT>();
     }
 
-    LiveVariablesAnalysis(DirectedGraph g)
+    <FONT COLOR=ForestGreen>LiveVariablesAnalysis</FONT>(<FONT COLOR=ForestGreen>DirectedGraph</FONT> <FONT COLOR=DarkGoldenrod>g</FONT>)
     {
-        super(g);
+        <FONT COLOR=Purple>super</FONT>(g);
 
         doAnalysis();
     }
