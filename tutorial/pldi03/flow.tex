@@ -7,15 +7,14 @@ Will describe how to implement a flow analysis in Soot and present examples:
 \end{slide}
 
 \begin{slide}{Running Example: Live Variables}
-\vspace*{-0.2in}
-For a statement $s$, want to know which local variables
-are {\green live} at $s$.
+\vspace*{-0.2in} 
+A local variable {\tt v} is {\red live} at $s$ if there exists some
+statement $s'$ using {\tt v} and a control-flow path from $s$ to $s'$.
 
-A local variable {\tt v} is live at $s$ if there exists some statement
-$s'$ using {\tt v} and a control-flow path from $s$ to $s'$.
+\quad
 
 \begin{center}
-%\input{rd-example.eepic}
+\input{lv-example.eepic}
 \end{center}
 \end{slide}
 
@@ -35,7 +34,24 @@ $s'$ using {\tt v} and a control-flow path from $s$ to $s'$.
 \end{enumerate}
 \end{slide}
 
-% slide: abstraction domain
+\begin{slide}{Step 1: Abstraction domain}
+\vspace*{-0.2in}
+
+Domain for Live Variables: sets of {\tt Local}s\\
+Partial order is subset inclusion
+
+\begin{center}
+\scalebox{0.95}{
+\input{lv.eepic}}
+\mbox{\qquad }
+\end{center}
+\vspace*{-0.1in}
+
+In Soot, we use a {\tt BoundedFlowSet}:
+\begin{center}
+{\tt soot.toolkits.scalar.ArraySparseSet} 
+\end{center}
+\end{slide}
 
 \begin{slide}{Step 1b: Abstraction Implementation}
 Need to implement {\tt copy()}, {\tt merge()} methods:
@@ -87,7 +103,19 @@ Use {\tt FlowSet}'s implementation of {\tt copy()}.
 We'll do {\tt merge()} later.
 \end{slide}
 
-% step 2: problem statement
+\begin{slide}{Step 2: Live Locals Problem Stmt}
+
+A variable {\tt v} is live at a statement $s$ if there exists
+a statement $s'$ with a use of {\tt v} and a
+definition-free control-flow path from $s'$ to $s$.
+
+\begin{center}
+\input{lv-example-specific.eepic}
+\end{center}
+
+(No Soot magic here.)
+
+\end{slide}
 
 \begin{slide}{Step 3: Forward or Backward?}
 
@@ -122,15 +150,15 @@ Like {\tt copy()}, use {\tt FlowSet}'s {\tt union}:
 
 \vspace*{0.1in}
 
-Could also use {\tt intersection()}, or implement a more exotic merge.
+One could also use {\tt intersection()}, or implement a more exotic merge.
 
 \end{slide}
 
 \begin{slide}{Step 5: Flow equations}
 \vspace*{-0.1in}
 
-Goal: At a def'n stmt {\tt x = y + z}, remove {\tt x} from the
-flow set and add {\tt y} and {\tt z}.
+Goal: At a stmt like {\tt x = y + z}, remove def {\tt x} from the
+flow set and add uses {\tt y} and {\tt z}.
 
 \vspace*{0.1in}
 
@@ -199,7 +227,7 @@ in {\tt ut}, a {\tt Unit}.
 
 \begin{itemize}
 \item {\tt getValue()}: Dereferencing a pointer.\\
-\qquad \qquad \qquad \qquad \fbox{\tt x} $\rightarrow$ {\tt x}
+\qquad \qquad \qquad \qquad \fbox{\tt x} $\to$ {\tt x}
 \end{itemize}
 
 \verb+if (value instanceof Local) {+
@@ -270,7 +298,7 @@ $\bullet$ Soundly initialize IN, OUT sets prior to analysis.
 Usually {\tt newInitialFlow()} returns the \\ \quad most aggressive result
 $\top$; {\tt entryInitialFlow()} \\ \quad assigns
  $\mbox{\tt OUT}(\mbox{start}) 
-\leftarrow\ \perp$.
+\gets\ \perp$.
 \end{itemize}
 \end{slide}
 

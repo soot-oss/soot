@@ -1,5 +1,7 @@
-tutorial.pdf: tutorial.tex flow.tex rd.eepic rd-example.eepic rd-example-specific.eepic copy.eepic merge.eepic vocab.tex ecosystem.eepic body-ecosystem.eepic intra.tex
+tutorial.pdf: tutorial.tex flow.tex figs
 	latex tutorial && latex tutorial && ./dvi2pdf.pl tutorial
+
+figs:  rd.eepic rd-example.eepic rd-example-specific.eepic copy.eepic merge.eepic vocab.tex ecosystem.eepic body-ecosystem.eepic intra.tex lv.eepic lv-example.eepic lv-example-specific.eepic
 
 %.eepic: %.fig
 	fig2dev -L eepic $< > $@
