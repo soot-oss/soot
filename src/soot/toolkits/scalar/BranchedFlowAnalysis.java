@@ -72,6 +72,11 @@ public abstract class BranchedFlowAnalysis
 
     protected abstract Object newInitialFlow();
 
+  /**
+   * For back compatibility, use the initial value of other nodes.
+   */
+  protected Object entryInitialFlow() { return newInitialFlow(); }
+
     protected abstract boolean isForward();
 
     protected abstract void flowThrough(Object in, Unit s, List fallOut, List branchOuts);

@@ -167,6 +167,19 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             }
         }
 
+	// Feng Qian: March 07, 2002
+	// init entry points
+	{
+	  Iterator it = graph.getHeads().iterator();
+	  
+	  while (it.hasNext()) {
+	    Object s = it.next();
+	    // this is a forward flow analysis
+	    unitToBeforeFlow.put(s, entryInitialFlow());
+	  }
+	}
+
+	// optional 	
 	customizeInitialFlowGraph();
 
         // Perform fixed point flow analysis

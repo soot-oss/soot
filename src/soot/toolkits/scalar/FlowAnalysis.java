@@ -55,8 +55,20 @@ public abstract class FlowAnalysis
         this.graph = graph;
     }
 
-    /** Returns the flow object corresponding to the initial values for each graph node. */
+    /** 
+     * Returns the flow object corresponding to the initial values for
+     * each graph node. 
+     */
     protected abstract Object newInitialFlow();
+
+  /**
+   * Returns the initial flow values for entry/exit graph nodes.
+   * This is intended to replace customizeFlowGraph is a unified way.
+   *
+   * For back compatibility, we use newInitialFlow value, but 
+   * it should be overrided by an analysis.
+   */
+  protected Object entryInitialFlow() { return newInitialFlow(); };
 
     /** Returns true if this analysis is forwards. */
     protected abstract boolean isForward();
@@ -78,7 +90,9 @@ public abstract class FlowAnalysis
     protected abstract void doAnalysis();
 
     /** Customize the initial flow graph.  May be called from a concrete
-     * FlowAnalysis constructor to adjust, for instance, the value for the initial node. */
+     * FlowAnalysis constructor to adjust, for instance, the value for 
+     * the initial node. 
+     */
     protected void customizeInitialFlowGraph()
     {
     }

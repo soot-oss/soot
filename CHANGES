@@ -42,7 +42,18 @@ Improvements in current version
      the --xml command option will generate an XML version of the 
      class based on the Jimple statements and extended with static
      program data and transformation/analysis results. (deng)
-    
+15. Added entryInitialFlow method in FlowAnalysis, which allows a 
+    new analysis just return flow object for entry points. 
+	The customizeFlowGraph is still called. Currently it is 
+	compatible with old analyses, but new analysis should override
+	entryInitialFlow method rather than customizeFlowGraph.
+    Forward and backward flow analyses are changed respectively.
+	                                                (fqian)
+16. Fixed local variable name problem in coffi.LocalVariable....
+    reported by Nathan Kitchen. See fix 12 also.    (fqian)
+
+
+
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
 1. added \t case for soot.util.StringTools.getQuotedStringOf.

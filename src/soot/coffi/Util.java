@@ -1039,11 +1039,15 @@ public class Util
         {
             if(activeOriginalIndex != -1)
             {
+
+	      // Feng asks: why this is necessary? it does wrong thing
+	      //            for searching local variable names.
+	      // It is going to be verified with plam.
                 if(isLocalStore)
                     activeOriginalIndex++;
                 if(isWideLocalStore)
                     activeOriginalIndex++;
-                    
+
                 name = activeVariableTable.getLocalVariableName(activeConstantPool,
                     index, activeOriginalIndex);
                
