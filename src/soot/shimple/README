@@ -332,6 +332,7 @@ navindra@cs.mcgill.ca <mailto:navindra@cs.mcgill.ca>.
 
 (a) Partial To-Do List
 
+    * Implement more SSA-based analyses.
     * Make internal analyses more useful and generic for external use.
     * Adopt an Strategy-type pattern for SSA builder modules, etc.
     * Implement a Shimple parser.
