@@ -138,7 +138,7 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     
     public  Object clone()
     {
-	throw new RuntimeException();
+	throw new RuntimeException("undefined clone for: " + this.toString());
     }
    
     

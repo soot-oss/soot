@@ -113,5 +113,12 @@ public class BEnterMonitorInst extends AbstractInst implements EnterMonitorInst
     public void apply(Switch sw)
     {
         ((InstSwitch) sw).caseEnterMonitorInst(this);
-    }   
+    }
+
+
+    public Object clone() 
+    {
+	return new BEnterMonitorInst();
+    }
+   
 }

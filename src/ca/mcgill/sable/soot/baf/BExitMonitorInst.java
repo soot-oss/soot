@@ -114,4 +114,10 @@ public class BExitMonitorInst extends AbstractInst implements ExitMonitorInst
     {
         ((InstSwitch) sw).caseExitMonitorInst(this);
     }   
+    
+    public Object clone() 
+    {
+	return new BExitMonitorInst();
+    }
+   
 }

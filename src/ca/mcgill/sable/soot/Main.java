@@ -222,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.58");
+            System.out.println("Soot version 1.beta.4.dev.59");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -676,7 +676,11 @@ public class Main
                 else if(produceBaf)
                 {   
                      m.setActiveBody(new BafBody((JimpleBody) m.getActiveBody()));
-                }
+		     
+		     if(isOptimizing)
+			 m.setActiveBody(new BafBody (new UnitBody(m.getActiveBody())));
+                } 
+	       
                     
             }
         }

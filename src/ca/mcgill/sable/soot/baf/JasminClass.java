@@ -492,7 +492,7 @@ public class JasminClass
         if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
             ca.mcgill.sable.soot.Main.buildJasminTimer.start();
         
-        InstList instList = (InstList)(body.getUnitList());
+        List instList = body.getUnitList();
 
         // let's create a u-d web for the ++ peephole optimization.
 

@@ -94,7 +94,7 @@ package ca.mcgill.sable.soot;
    First internal release (Version 0.1).
 */
 
-
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
@@ -121,19 +121,30 @@ public class UnitBody
         return localChain.size();
     }
 
-
-    public UnitBody(JimpleBody jBody, SootMethod method) 
+    
+    public UnitBody(Body body) 
     {	
 	localChain = new HashChain();
 	trapChain = new HashChain();
 	unitChain = new HashChain();
 
-	this.method = method;
-	List list = jBody.getStmtList();
+	this.method = body.getMethod();
+	List list;
+	
+
+	list = null;
+	if(body instanceof JimpleBody)
+	    list = ((JimpleBody)body).getStmtList();
+	else if (body instanceof BafBody) 
+	    list = ((BafBody)body).getUnitList();
+	else
+	    throw new RuntimeException("this should not be.");
+
+
 	Iterator it = list.iterator();
 	HashMap bindings = new HashMap();
 
-	// Clone units in jBody's statement list 
+	// Clone units in body's statement list 
 	while(it.hasNext()) {
 	    Unit original = (Unit) it.next();
 	    Unit copy = (Unit) original.clone();
@@ -149,7 +160,7 @@ public class UnitBody
 	}
 
 	// Clone trap units.
-	list = jBody.getTraps();
+	list = body.getTraps();
 	it = list.iterator();
 	while(it.hasNext()) {
 	    Trap original = (Trap) it.next();
@@ -164,7 +175,7 @@ public class UnitBody
 
 	
 	// Clone local units.
-	list = jBody.getLocals();
+	list = body.getLocals();
 	it = list.iterator();
 	while(it.hasNext()) {
 	    Value original = (Value) it.next();
@@ -192,8 +203,39 @@ public class UnitBody
 		box.setUnit(newObject);
 		
 	}	
+
+
+
+	// backpatching all local variables.
+	list = getUseAndDefBoxes();
+	it = list.iterator();
+	while(it.hasNext()) {
+	    ValueBox vb = (ValueBox) it.next();
+	    if(vb.getValue() instanceof Local) 
+		vb.setValue((Value) bindings.get(vb.getValue()));
+	}
+
+	validateLocals();
     }
     
+    public void validateLocals()
+    {
+	Iterator it =  getUseAndDefBoxes().iterator();
+	
+	while(it.hasNext()){
+	    ValueBox vb = (ValueBox) it.next();
+	    Value value;
+	    if( (value = vb.getValue()) instanceof Local) {
+		if(!localChain.contains(value))
+		    throw new RuntimeException("not in chain");
+		
+	    }
+	}
+       
+	
+    }
+    
+        
     public Chain getLocals() {return localChain;} 
     public Chain getTraps() {return trapChain;}
     public Chain getUnits() {return unitChain;}
@@ -213,15 +255,51 @@ public class UnitBody
 	    Trap item = (Trap) it.next();
 	    unitBoxList.addAll(item.getUnitBoxes());  
 	}
-
-	it = localChain.iterator();
-	while(it.hasNext()) {
-	    Local item = (Local) it.next();
-	    unitBoxList.addAll(item.getUseBoxes());  
-	}
-
+	
 	return unitBoxList;
     }
+
+    
+    public List getUseBoxes()
+    {
+	ArrayList useBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    useBoxList.addAll(item.getUseBoxes());  
+	}
+	return useBoxList;
+    }
+
+
+    public List getDefBoxes()
+    {
+	ArrayList defBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    defBoxList.addAll(item.getDefBoxes());  
+	}
+	return defBoxList;
+    }
+
+    public List getUseAndDefBoxes()
+    {	
+	ArrayList useAndDefBoxList = new ArrayList();
+	
+	Iterator it = unitChain.iterator();
+	while(it.hasNext()) {
+	    Unit item = (Unit) it.next();
+	    useAndDefBoxList.addAll(item.getUseAndDefBoxes());  
+	}
+	return useAndDefBoxList;
+    }
+
+    
+    
+
 
      public void printTo(java.io.PrintWriter out)
     {

@@ -100,9 +100,6 @@ public class HashChain extends AbstractCollection
 	    chain.addLast(copy);
 	}
 
-
-	
-
 	return chain;
     }
 

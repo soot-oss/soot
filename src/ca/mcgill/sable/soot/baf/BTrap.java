@@ -91,4 +91,12 @@ public class BTrap extends AbstractTrap
               Baf.v().newInstBox(endStmt),
               Baf.v().newInstBox(handlerStmt));
     }
+    
+    public Object clone() 
+    {
+	return new BTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+    }
+    
+    
+    
 }

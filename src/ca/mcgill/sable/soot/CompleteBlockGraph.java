@@ -8,7 +8,7 @@ import java.io.*;
 public class CompleteBlockGraph extends BlockGraph 
 {
 
-    CompleteBlockGraph(UnitBody body)
+    public CompleteBlockGraph(UnitBody body)
     {
 	super(body, COMPLETE);
     }

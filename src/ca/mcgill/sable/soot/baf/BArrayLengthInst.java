@@ -115,5 +115,11 @@ public class BArrayLengthInst extends AbstractOpTypeInst implements ArrayLengthI
     {
         ((InstSwitch) sw).caseArrayLengthInst(this);
     }   
+
+    public Object clone() 
+    {
+       return new BArrayLengthInst(opType);
+    }
+
 }
 

@@ -84,6 +84,17 @@ public class BafBody implements Body
     List instList;
     List traps = new ArrayList();
 
+
+
+    public BafBody(UnitBody body)
+    {
+	method = body.getMethod();
+	locals = HashChain.hashChainToList((HashChain) body.getLocals());
+	instList = HashChain.hashChainToList((HashChain)body.getUnits());
+	traps = HashChain.hashChainToList((HashChain) body.getTraps());
+    }
+
+
     public BafBody(Body body)
     {
         JimpleBody jimpleBody;
@@ -96,8 +107,9 @@ public class BafBody implements Body
               + " from JimpleBody's.");
        
         this.method = method;
-        instList = new InstList(this);
-     
+        instList = new ArrayList();
+	
+	
         JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
            
         // Convert all locals

@@ -85,13 +85,17 @@ import java.util.*;
 
 public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 {
-    Local local;
-       
+   
+    ValueBox localBox;
+    List defBoxes;
+   
     BStoreInst(Type opType, Local local)
     {
-        super(opType);
-        
-        this.local = local;
+        super(opType);      
+	localBox = new BafLocalBox(local);
+	defBoxes = new ArrayList();
+	defBoxes.add(localBox);
+	defBoxes = Collections.unmodifiableList(defBoxes);
     }
 
     public int getInCount()
@@ -121,20 +125,30 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
 
     final String getName() { return "store"; }
     final String getParameters(boolean isBrief, Map unitToName)
-        { return " " + local.toString(); }
-    
+    { return " " + localBox.getValue().toString(); }
+
     public void apply(Switch sw)
     {
         ((InstSwitch) sw).caseStoreInst(this);
     }   
  
+   
+
     public void setLocal(Local l)
     {
-        this.local = l;
+        localBox.setValue(l);
     }   
     
     public Local getLocal()
     {
-        return this.local;
+        return (Local) localBox.getValue();
     }
+
+
+    public List getDefBoxes() 
+    {
+	return defBoxes;
+    }
+
+    
 }

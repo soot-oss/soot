@@ -114,4 +114,9 @@ public class BThrowInst extends AbstractInst implements ThrowInst
     {
         ((InstSwitch) sw).caseThrowInst(this);
     }   
+
+    public Object clone() 
+    {
+	return new BThrowInst();
+    }
 }

@@ -36,6 +36,19 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
         }
     }
 
+    public Object clone() 
+    {	
+	List list = new ArrayList();
+	for(int i =0; i< targetBoxes.length; i++) {
+
+	    list.add(targetBoxes[i].getUnit());
+	}
+
+	
+	return new  BLookupSwitchInst(defaultTargetBox.getUnit(), lookupValues, list);
+    }
+
+
     public int getInCount()
     {
         return 1;

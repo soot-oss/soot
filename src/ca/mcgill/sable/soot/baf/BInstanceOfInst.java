@@ -121,5 +121,12 @@ public class BInstanceOfInst extends AbstractOpTypeInst
     {
         ((InstSwitch) sw).caseInstanceOfInst(this);
     }   
+
+
+    public Object clone() 
+    {
+	return new BInstanceOfInst(opType); 
+    }
+
 }
 

@@ -85,20 +85,23 @@ import java.util.*;
 
 public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 {
-    Local local;
+    ValueBox localBox;
+    List useBoxes;
+    
        
     BLoadInst(Type opType, Local local)
     {
         super(opType);
-        
-        this.local = local;
+        localBox = new BafLocalBox(local);
+	useBoxes = new ArrayList();
+	useBoxes.add(localBox);
+	useBoxes = Collections.unmodifiableList(useBoxes);
     }
+
     public int getInCount()
     {
         return 0;
     }
-
-
 
     public Object clone() 
     {
@@ -125,7 +128,7 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 
     final String getName() { return "load"; }
     final String getParameters(boolean isBrief, Map unitToName) 
-        { return " "+local.toString(); }
+    { return " "+ localBox.getValue().toString(); }
     
     public void apply(Switch sw)
     {
@@ -134,11 +137,20 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
  
     public void setLocal(Local l)
     {
-        this.local = l;
+        localBox.setValue(l);
     }   
     
     public Local getLocal()
     {
-        return this.local;
+        return (Local) localBox.getValue();
     }
+
+    public List getUseBoxes() 
+    {
+	return useBoxes;
+    }
+
+    
+    
+
 }
