@@ -292,7 +292,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 
 	private Composite <xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/>Create(Composite parent) {
 		String defKey;
-		String defaulString;
+		String defaultString;
 		boolean defaultBool = false;
 		
 		Group editGroup = new Group(parent, SWT.NONE);
@@ -305,7 +305,9 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 <!--Boolean and Macro Widget-->		
 		<xsl:for-each select="boolopt|macroopt">
 		
-		defKey = "<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>";
+		defKey = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		defKey = defKey.trim();
+
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
 		}
@@ -346,13 +348,46 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		
 <!--Path Widget-->
 		<xsl:for-each select="listopt">
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new ListOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", <xsl:if test="default">"<xsl:value-of select="default"/>"</xsl:if><xsl:if test="not(default)">""</xsl:if>)));
+
+		defKey = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			<xsl:if test="default">
+			defaultString = "<xsl:value-of select="default"/>";
+			</xsl:if>
+			<xsl:if test="not(default)">
+			defaultString = "";
+			</xsl:if>
+		}
+
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new ListOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", defaultString)));
 		</xsl:for-each>
 		
 <!--String, Int and Float Widget-->
 		<xsl:for-each select="stropt|intopt|flopt">
-		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", <xsl:if test="default">"<xsl:value-of select="default"/>"</xsl:if><xsl:if test="not(default)">""</xsl:if>)));
+		
+		defKey = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			<xsl:if test="default">
+			defaultString = "<xsl:value-of select="default"/>";
+			</xsl:if>
+			<xsl:if test="not(default)">
+			defaultString = "";
+			</xsl:if>
+		}
+
+		set<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>",  "<xsl:value-of select="$parentAlias"/>", "<xsl:value-of select="$subParentAlias"/>","<xsl:value-of select="alias"/>", "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="(short_desc|long_desc)"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>", defaultString)));
 		</xsl:for-each>
+
 		
 		return editGroup;
 	}
