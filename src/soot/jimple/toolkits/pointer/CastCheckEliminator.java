@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,8 +41,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
     /** Put the results of the analysis into tags in cast statements. */
     protected void tagCasts() {
-        for( Iterator it = ((UnitGraph)graph).getBody().getUnits().iterator(); it.hasNext(); ) {
-            Stmt s = (Stmt) it.next();
+        for( Iterator sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
                 Value rhs = as.getRightOp();
@@ -50,10 +50,15 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
                     CastExpr cast = (CastExpr) rhs;
                     Type t = cast.getCastType();
                     if( t instanceof RefType ) {
-                        Local l = (Local) cast.getOp(); 
-                        LocalTypeSet set = (LocalTypeSet) unitToBeforeFlow.get(s);
-                        s.addTag( new CastCheckTag( set.get( set.indexOf(
-                                                                         l, (RefType) t ) ) ) );
+                        if( cast.getOp() instanceof Local ) {
+                            Local l = (Local) cast.getOp(); 
+                            LocalTypeSet set = (LocalTypeSet) unitToBeforeFlow.get(s);
+                            s.addTag( new CastCheckTag( set.get( set.indexOf(
+                                    l, (RefType) t ) ) ) );
+                        } else {
+                            NullConstant nc = (NullConstant) cast.getOp();
+                            s.addTag( new CastCheckTag( true ) );
+                        }
                     }
                 }
             }
@@ -67,8 +72,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
         // Find all locals of reference type
         Chain locals = ((UnitGraph)graph).getBody().getLocals();
         List refLocals = new ArrayList();
-        for( Iterator it = locals.iterator(); it.hasNext(); ) {
-            Local l = (Local) it.next();
+        for( Iterator lIt = locals.iterator(); lIt.hasNext(); ) {
+            final Local l = (Local) lIt.next();
             if( l.getType() instanceof RefType ) {
                 refLocals.add( l );
             }
@@ -76,8 +81,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
         // Find types of all casts
         List types = new ArrayList();
-        for( Iterator it = ((UnitGraph)graph).getBody().getUnits().iterator(); it.hasNext(); ) {
-            Stmt s = (Stmt) it.next();
+        for( Iterator sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
                 Value rhs = as.getRightOp();
@@ -111,8 +116,8 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
         final Stmt stmt = (Stmt) unit;
         
         // First kill all locals defined in this statement
-        for( Iterator it = stmt.getDefBoxes().iterator(); it.hasNext(); ) {
-            ValueBox b = (ValueBox) it.next();
+        for( Iterator bIt = stmt.getDefBoxes().iterator(); bIt.hasNext(); ) {
+            final ValueBox b = (ValueBox) bIt.next();
             Value v = b.getValue();
             if( v instanceof Local && v.getType() instanceof RefType ) {
                 out.killLocal( (Local) v );
@@ -131,11 +136,13 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
                 } else if( rhs instanceof CastExpr ) {
                     CastExpr cast = (CastExpr) rhs;
                     Type castType = cast.getCastType();
-                    if( castType instanceof RefType ) {
-                        out.localCopy( l, (Local) cast.getOp() );
-                        out.localMustBeSubtypeOf( l, (RefType) castType );
-                        out.localMustBeSubtypeOf( (Local) cast.getOp(),
-                                                  (RefType) castType );
+                    if( castType instanceof RefType 
+                    &&  cast.getOp() instanceof Local ) {
+                        RefType refType = (RefType) castType;
+                        Local opLocal = (Local) cast.getOp();
+                        out.localCopy( l, opLocal );
+                        out.localMustBeSubtypeOf( l, refType );
+                        out.localMustBeSubtypeOf( opLocal, refType );
                     }
                 } else if( rhs instanceof Local ) {
                     out.localCopy( l, (Local) rhs );
@@ -157,6 +164,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
                 if( !(pred.getRightOp() instanceof InstanceOfExpr ) ) break;
                 InstanceOfExpr iofexpr = (InstanceOfExpr) pred.getRightOp();
                 if( !(iofexpr.getCheckType() instanceof RefType ) ) break;
+                if( !(iofexpr.getOp() instanceof Local ) ) break;
                 ConditionExpr c = (ConditionExpr) ifstmt.getCondition();
                 if( !c.getOp1().equals( pred.getLeftOp() ) ) break;
                 if( !( c.getOp2() instanceof IntConstant ) ) break;
