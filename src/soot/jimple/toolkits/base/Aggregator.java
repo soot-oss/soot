@@ -314,6 +314,12 @@ public class Aggregator extends BodyTransformer
               units.remove(s);
               hadAggregation = true;
               aggrCount++;
+              // clean up the tags. If s was not a simple copy, the new statement should get
+              // the tags of s.
+              if( !( aggregatee instanceof Local ) ) {
+                  usepair.unit.removeAllTags();
+                  usepair.unit.addAllTagsOf( s );
+              }
             }
           else
             {/*

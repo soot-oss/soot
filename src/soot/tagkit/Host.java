@@ -57,6 +57,12 @@ public interface Host
    
     /** Returns true if this host has a tag with the given name. */
     public boolean hasTag(String aName);
+
+    /** Removes all the tags from this host. */
+    public void removeAllTags();
+
+    /** Adds all the tags from h to this host. */
+    public void addAllTagsOf( Host h );
 }
 
 

@@ -96,6 +96,19 @@ public  class AbstractHost implements Host
             mTagList = new ArrayList(1);
         mTagList.add(t);
     }
+
+    /** Removes all the tags from this host. */
+    public void removeAllTags() {
+        mTagList = emptyList;
+    }
+
+    /** Adds all the tags from h to this host. */
+    public void addAllTagsOf( Host h ) {
+        for( Iterator tIt = h.getTags().iterator(); tIt.hasNext(); ) {
+            final Tag t = (Tag) tIt.next();
+            addTag( t );
+        }
+    }
 }
 
 
