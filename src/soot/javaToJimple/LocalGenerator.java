@@ -1,12 +1,21 @@
 package soot.javaToJimple;
 
 import soot.*;
+import java.util.*;
 
 public class LocalGenerator{
 
     private soot.Body body;
     public LocalGenerator(Body b){
           body = b;
+    }
+    
+    private boolean bodyContainsLocal(String name){
+        Iterator it = body.getLocals().iterator();
+        while (it.hasNext()){
+            if (((soot.Local)it.next()).getName().equals(name)) return true;
+        }
+        return false;
     }
     
     /**
@@ -16,35 +25,65 @@ public class LocalGenerator{
         
 		String name = "v";
 		if (type instanceof soot.IntType) {
-			name = nextIntName();
+            while (true){
+			    name = nextIntName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.ByteType) {
-			name = nextByteName();
+            while (true){
+			    name = nextByteName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.ShortType) {
-			name = nextShortName();
+            while (true){
+			    name = nextShortName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.BooleanType) {
-			name = nextBooleanName();
+            while (true){
+			    name = nextBooleanName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.VoidType) {
-			name = nextVoidName();
+            while (true){
+			    name = nextVoidName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.CharType) {
-            name = nextIntName();
+            while (true){
+                name = nextIntName();
+                if (!bodyContainsLocal(name)) break;
+            }
             type = soot.IntType.v();
         }
 		else if (type instanceof soot.DoubleType) {
-			name = nextDoubleName();
+            while (true){
+			    name = nextDoubleName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
 		else if (type instanceof soot.FloatType) {
-			name = nextFloatName();
+            while (true){
+			    name = nextFloatName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
 		else if (type instanceof soot.LongType) {
-			name = nextLongName();
+            while (true){
+			    name = nextLongName();
+                if (!bodyContainsLocal(name)) break;
+            }
 		}
         else if (type instanceof soot.RefLikeType) {
-            name = nextRefLikeTypeName();
+            while (true){
+                name = nextRefLikeTypeName();
+                if (!bodyContainsLocal(name)) break;
+            }
         }
         else {
             throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
