@@ -1,6 +1,5 @@
 package soot.jimple.toolkits.pointer;
 import soot.tagkit.*;
-import soot.jimple.toolkits.pointer.kloj.*;
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;

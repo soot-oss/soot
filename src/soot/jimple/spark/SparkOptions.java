@@ -17,6 +17,10 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/* THIS FILE IS AUTO-GENERATED FROM options. DO NOT MODIFY */
+
+
+
 package soot.jimple.spark;
 import java.util.*;
 import soot.Options;

@@ -52,6 +52,12 @@ public class ClassHierarchyAnalysis
 
     FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
+    // This is still here only because other analyses expect a Hierarchy
+    // to exist in the Scene. The Hierarchy is not used in this class.
+    if( !Scene.v().hasActiveHierarchy() ) {
+        Scene.v().setActiveHierarchy( new Hierarchy() );
+    }
+
     InvokeGraph g = new InvokeGraph();
 
     Iterator classesIt = appAndLibClasses.iterator();

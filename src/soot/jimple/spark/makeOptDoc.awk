@@ -19,11 +19,26 @@
 # */
 
 BEGIN {
+    print "% THIS FILE IS AUTO-GENERATED FROM THE FILE options."
+    print "% DO NOT MODIFY"
     print "\\documentclass{article}"
     print "\\title{Spark Options}"
     print "\\author{Ond\\v{r}ej Lhot\'ak}"
     print "\\begin{document}"
     print "\\maketitle"
+    print "This documents describes the command-line options to Spark."
+    print "Values for options are specified on the Soot command-line, following"
+    print "the switch \\texttt{-p wjtp.Spark}. For example:"
+    print ""
+    print "\\noindent \\texttt{java soot.Main -a --app -p wjtp.Spark disabled:false,verbose:true hello}"
+    print ""
+    print "Spark is still under active development, so these options are subject"
+    print "to change. For the most current, automatically generated version of"
+    print "this document, please see the file"
+    print "\\texttt{src/soot/jimple/spark/opts.ps}"
+    print "in your Soot directory."
+    print "\\tableofcontents"
+
 }
 END {
     print "\\end{document}"

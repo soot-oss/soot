@@ -50,10 +50,8 @@ public class PAG2HTML {
                 VarNode v = (VarNode) it.next();
                 dumpVarNode( v, jarOut );
             }
-            System.out.println( ""+methodToNodes.keySet() );
             for( Iterator it = methodToNodes.keySet().iterator(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
-                System.out.println( "Processing method "+m.getSignature() );
                 dumpMethod( m, jarOut );
             }
             addSymLinks( allNodes, jarOut );
@@ -174,6 +172,8 @@ public class PAG2HTML {
             char c = s.charAt( i );
             if( Character.isLetterOrDigit( c ) ) {
                 ret.append( c );
+            } else {
+                ret.append( "__array__" );
             }
         }
         return ret.toString();
