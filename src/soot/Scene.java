@@ -751,40 +751,75 @@ public class Scene  //extends AbstractHost
 	rn.add("to");
     }
 
-    private Set/*<String>*/ basicclasses=new HashSet();
+    private Set[]/*<String>*/ basicclasses=new Set[4];
+
     private void addSootBasicClasses() {
-	basicclasses.add("java.lang.Object");
-	basicclasses.add("java.lang.Class");
+        basicclasses[SootClass.HIERARCHY] = new HashSet();
+        basicclasses[SootClass.SIGNATURES] = new HashSet();
+        basicclasses[SootClass.BODIES] = new HashSet();
 
-	basicclasses.add("java.lang.Void");
-	basicclasses.add("java.lang.Boolean");
-	basicclasses.add("java.lang.Byte");
-	basicclasses.add("java.lang.Character");
-	basicclasses.add("java.lang.Short");
-	basicclasses.add("java.lang.Integer");
-	basicclasses.add("java.lang.Long");
-	basicclasses.add("java.lang.Float");
-	basicclasses.add("java.lang.Double");
+	addBasicClass("java.lang.Object");
+	addBasicClass("java.lang.Class");
 
-	basicclasses.add("java.lang.String");
-	basicclasses.add("java.lang.StringBuffer");
+	addBasicClass("java.lang.Void");
+	addBasicClass("java.lang.Boolean");
+	addBasicClass("java.lang.Byte");
+	addBasicClass("java.lang.Character");
+	addBasicClass("java.lang.Short");
+	addBasicClass("java.lang.Integer");
+	addBasicClass("java.lang.Long");
+	addBasicClass("java.lang.Float");
+	addBasicClass("java.lang.Double");
 
-	basicclasses.add("java.lang.Error");
-	basicclasses.add("java.lang.RuntimeException");
-	basicclasses.add("java.lang.AssertionError");
-	basicclasses.add("java.lang.Throwable");
-	basicclasses.add("java.lang.NoClassDefFoundError");
-	basicclasses.add("java.lang.ExceptionInInitializerError");
+	addBasicClass("java.lang.String");
+	addBasicClass("java.lang.StringBuffer");
 
-	basicclasses.add("java.lang.Thread");
-	basicclasses.add("java.lang.Runnable");
-	basicclasses.add("java.lang.Cloneable");
+	addBasicClass("java.lang.Error");
+	addBasicClass("java.lang.RuntimeException");
+	addBasicClass("java.lang.AssertionError");
+	addBasicClass("java.lang.Throwable");
+	addBasicClass("java.lang.NoClassDefFoundError");
+	addBasicClass("java.lang.ExceptionInInitializerError");
+	addBasicClass("java.lang.RuntimeException");
+	addBasicClass("java.lang.ClassNotFoundException");
+	addBasicClass("java.lang.ArithmeticException");
+	addBasicClass("java.lang.ArrayStoreException");
+	addBasicClass("java.lang.ClassCastException");
+	addBasicClass("java.lang.IllegalMonitorStateException");
+	addBasicClass("java.lang.IndexOutOfBoundsException");
+	addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
+	addBasicClass("java.lang.NegativeArraySizeException");
+	addBasicClass("java.lang.NullPointerException");
+	addBasicClass("java.lang.InstantiationError");
+	addBasicClass("java.lang.InternalError");
+	addBasicClass("java.lang.OutOfMemoryError");
+	addBasicClass("java.lang.StackOverflowError");
+	addBasicClass("java.lang.UnknownError");
+	addBasicClass("java.lang.ThreadDeath");
+	addBasicClass("java.lang.ClassCircularityError");
+	addBasicClass("java.lang.ClassFormatError");
+	addBasicClass("java.lang.IllegalAccessError");
+	addBasicClass("java.lang.IncompatibleClassChangeError");
+	addBasicClass("java.lang.LinkageError");
+	addBasicClass("java.lang.VerifyError");
+	addBasicClass("java.lang.NoSuchFieldError");
+	addBasicClass("java.lang.AbstractMethodError");
+	addBasicClass("java.lang.NoSuchMethodError");
+	addBasicClass("java.lang.UnsatisfiedLinkError");
 
-	basicclasses.add("java.io.Serializable");	
+	addBasicClass("java.lang.Thread");
+	addBasicClass("java.lang.Runnable");
+	addBasicClass("java.lang.Cloneable");
+
+	addBasicClass("java.io.Serializable");	
+    }
+
+    public void addBasicClass(String name) {
+	addBasicClass(name,SootClass.HIERARCHY);
     }
     
-    public void addBasicClass(String name) {
-	basicclasses.add(name);
+    public void addBasicClass(String name,int level) {
+	basicclasses[level].add(name);
     }
 
     /** Load just the set of basic classes soot needs, ignoring those
@@ -792,11 +827,16 @@ public class Scene  //extends AbstractHost
      *  loadNecessaryClasses, though it will only waste time.
      */
     public void loadBasicClasses() {
-	Iterator it = basicclasses.iterator();
-	while(it.hasNext()) {
-	    String name=(String) it.next();
-	    tryLoadClass(name, SootClass.SIGNATURES);
+	Iterator it;
+
+	for(int i=SootClass.BODIES;i>=SootClass.HIERARCHY;i--) {
+	    it = basicclasses[i].iterator();
+	    while(it.hasNext()) {
+		String name=(String) it.next();
+		tryLoadClass(name,i);
+	    }
 	}
+
     }
 
     /** Load the set of classes that soot needs, including those specified on the
