@@ -41,7 +41,6 @@ import soot.dava.toolkits.base.misc.*;
 import soot.grimp.*;
 import soot.grimp.internal.*;
 import soot.grimp.toolkits.base.*;
-import soot.gui.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
 import soot.jimple.parser.*;

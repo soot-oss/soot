@@ -27,7 +27,6 @@ package soot;
 import soot.*;
 
 import soot.util.*;
-import soot.gui.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.grimp.*;
@@ -52,7 +51,7 @@ import java.io.*;
 import java.text.*;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
-public class Main implements Runnable
+public class Main
 {   
     public Main( Singletons.Global g ) {}
     public static Main v() { return G.v().Main(); }
@@ -66,11 +65,6 @@ public class Main implements Runnable
     private Date start;
     private Date finish;
 
-    private List compilationListeners = new ArrayList(1);
-    public void addCompilationListener(ICompilationListener l)
-    {
-        compilationListeners.add(l);
-    }
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEDED = 1;
     
@@ -398,11 +392,6 @@ public class Main implements Runnable
     private void exitCompilation(int status, String msg)
     {
 	G.v().reset();
-        Iterator it = compilationListeners.iterator();
-	while(it.hasNext()) 
-	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);
-				
-				
     }
 
     private void postCmdLineCheck()
@@ -431,19 +420,17 @@ public class Main implements Runnable
     {
         Main.v().go( args );
     }
-    public void go( String[] args ) {
+    public int go( String[] args ) {
         cmdLineArgs = args;
-        ConsoleCompilationListener ccl = new ConsoleCompilationListener();
-        addCompilationListener(ccl);
-        run();
+        return run();
     }
     /**
      *   Entry point for Eclipse line invocation of soot.
      */
-    public static void main(String[] args, PrintStream out)
+    public static int main(String[] args, PrintStream out)
     {
         G.v().out = out;
-        Main.v().go( args );
+        return Main.v().go( args );
     }
 
   /** 
@@ -452,7 +439,7 @@ public class Main implements Runnable
    *
    *  @see #setCmdLineArgs
    */
-  public void run() {   
+  public int run() {   
     start = new Date();
 
     try {
@@ -479,7 +466,7 @@ public class Main implements Runnable
     } catch (CompilationDeathException e) {
       Timers.v().totalTimer.end();            
       exitCompilation(e.getStatus(), e.getMessage());
-      return;
+      return e.getStatus();
     }   
 				
     finish = new Date();
@@ -491,6 +478,7 @@ public class Main implements Runnable
 		       +((runtime%60000)/1000)+" sec.");
      
     exitCompilation(COMPILATION_SUCCEDED);            
+    return COMPILATION_SUCCEDED;
   }        
 
   private void runPacks() {
