@@ -264,8 +264,8 @@ So, what good is Shimple?
 If you were paying attention, you may have noticed that despite the
 control flow and different assignments to {\tt x}, {\tt x} is in fact
 a constant 100 and is only ever used by a single return statement.  In
-other words, {\tt x} all the computations are quite useless.  Obviously, 
-this needs to be optimized away.
+other words, all the computations are quite useless and need to be
+optimized away.
 
 Let's try to apply Jimple's Constant Propagator and Folder.  In fact,
 to be fair, let's try all the available  Jimple optimizations activated
