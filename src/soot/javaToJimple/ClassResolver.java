@@ -414,45 +414,110 @@ public class ClassResolver {
             }
             sootClass.setModifiers(modifiers);
         }
+
+        private soot.SootClass getSpecialInterfaceAnonClass(soot.SootClass addToClass){
+            // check to see if there is already a special anon class for this
+            // interface
+            if ((InitialResolver.v().specialAnonMap() != null) && (InitialResolver.v().specialAnonMap().containsKey(addToClass))){
+                return (soot.SootClass)InitialResolver.v().specialAnonMap().get(addToClass);
+            }
+            else {
+                String specialClassName = addToClass.getName()+"$"+InitialResolver.v().getNextAnonNum();
+                // add class to scene and other maps and lists as needed
+                soot.SootClass specialClass = new soot.SootClass(specialClassName);
+                soot.Scene.v().addClass(specialClass);
+                specialClass.setApplicationClass();
+                specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+                Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
+                Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
+                InitialResolver.v().addNameToAST(specialClassName);
+                references.add(specialClassName);    
+                if (InitialResolver.v().specialAnonMap() == null){
+                    InitialResolver.v().setSpecialAnonMap(new HashMap());
+                }
+                InitialResolver.v().specialAnonMap().put(addToClass, specialClass);
+                return specialClass;
+            }
+        }
+        
     /**
      * Handling for assert stmts - extra fields and methods are needed
      * in the Jimple 
      */
     private void handleAssert(polyglot.ast.ClassBody cBody){
+        
+        // find any asserts in class body but not in inner class bodies
         AssertStmtChecker asc = new AssertStmtChecker();
         cBody.visit(asc);
         if (!asc.isHasAssert()) return;
+        
         // two extra fields
-        if (!sootClass.declaresField("$assertionsDisabled", soot.BooleanType.v())){
-            sootClass.addField(new soot.SootField("$assertionsDisabled", soot.BooleanType.v(), soot.Modifier.STATIC | soot.Modifier.FINAL));
+
+        // $assertionsDisabled field is added to the actual class where the
+        // assert is found (even if its an inner class - interfaces cannot
+        // have asserts stmts directly contained within them)
+        String fieldName = "$assertionsDisabled";
+        soot.Type fieldType = soot.BooleanType.v();
+        if (!sootClass.declaresField(fieldName, fieldType)){
+            sootClass.addField(new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL));
         }
-        soot.SootClass addClassToClass = sootClass;
-        while ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(addClassToClass))){
-            addClassToClass = ((InnerClassInfo)InitialResolver.v().getInnerClassInfoMap().get(addClassToClass)).getOuterClass();
+
+        // class$ field is added to the outer most class if sootClass 
+        // containing the assert is inner - if the outer most class is 
+        // an interface - add instead to special interface anon class
+        soot.SootClass addToClass = sootClass;
+        while ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(addToClass))){
+            addToClass = ((InnerClassInfo)InitialResolver.v().getInnerClassInfoMap().get(addToClass)).getOuterClass();
         }
-        if (!addClassToClass.declaresField("class$"+soot.util.StringTools.replaceAll(addClassToClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"))){
-            addClassToClass.addField(new soot.SootField("class$"+soot.util.StringTools.replaceAll(addClassToClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
+        
+        // this field is named after the outer class even if the outer
+        // class is an interface and will be actually added to the
+        // special interface anon class
+        fieldName = "class$"+soot.util.StringTools.replaceAll(addToClass.getName(), ".", "$");
+        if ((InitialResolver.v().getInterfacesList() != null) && (InitialResolver.v().getInterfacesList().contains(addToClass.getName()))) {
+            addToClass = getSpecialInterfaceAnonClass(addToClass);
         }
+        
+        fieldType = soot.RefType.v("java.lang.Class"); 
+        
+        if (!addToClass.declaresField(fieldName, fieldType)){
+            addToClass.addField(new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC));
+        }
+        
         // two extra methods
+        
+        // class$ method is added to the outer most class if sootClass 
+        // containing the assert is inner - if the outer most class is 
+        // an interface - add instead to special interface anon class
         String methodName = "class$";
         soot.Type methodRetType = soot.RefType.v("java.lang.Class");
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(soot.RefType.v("java.lang.String"));
-        if (!addClassToClass.declaresMethod(methodName, paramTypes, methodRetType)){
-            soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
-            AssertClassMethodSource mSrc = new AssertClassMethodSource();
-            sootMethod.setSource(mSrc);
-            addClassToClass.addMethod(sootMethod);
+        
+        // make meth
+        soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+        AssertClassMethodSource assertMSrc = new AssertClassMethodSource();
+        sootMethod.setSource(assertMSrc);
+        
+        if (!addToClass.declaresMethod(methodName, paramTypes, methodRetType)){
+            addToClass.addMethod(sootMethod);
         }
+
+        // clinit method is added to actual class where assert is found
+        // if the class already has a clinit method its method source is
+        // informed of an assert
         methodName = "<clinit>";
         methodRetType = soot.VoidType.v();
         paramTypes = new ArrayList();
+        
+        // make meth
+        sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+        PolyglotMethodSource mSrc = new PolyglotMethodSource();
+        mSrc.setJBB(InitialResolver.v().getJBBFactory().createJimpleBodyBuilder());
+        mSrc.hasAssert(true);
+        sootMethod.setSource(mSrc);
+        
         if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
-            soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
-            PolyglotMethodSource mSrc = new PolyglotMethodSource();
-            mSrc.setJBB(InitialResolver.v().getJBBFactory().createJimpleBodyBuilder());
-            mSrc.hasAssert(true);
-            sootMethod.setSource(mSrc);
             sootClass.addMethod(sootMethod);
         }
         else {
@@ -535,11 +600,19 @@ public class ClassResolver {
     }
     private void handleClassLiteral(polyglot.ast.ClassBody cBody){
     
+        // check for class lits whose type is not primitive
         ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
         cBody.visit(classLitChecker);
         ArrayList classLitList = classLitChecker.getList();
-        String specialClassName = null;    
-        if (!classLitList.isEmpty()) {
+        
+        if (!classLitList.isEmpty()){
+
+            soot.SootClass addToClass = sootClass;
+            if (addToClass.isInterface()) {
+                addToClass = getSpecialInterfaceAnonClass(addToClass);
+            }
+            
+            // add class$ meth
             String methodName = "class$";
             soot.Type methodRetType = soot.RefType.v("java.lang.Class");
             ArrayList paramTypes = new ArrayList();
@@ -547,52 +620,27 @@ public class ClassResolver {
             soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
             ClassLiteralMethodSource mSrc = new ClassLiteralMethodSource();
             sootMethod.setSource(mSrc);
-            if (sootClass.isInterface()) {
-                // have to create a I$1 class
-                
-                specialClassName = sootClass.getName()+"$"+InitialResolver.v().getNextAnonNum();    
-                InitialResolver.v().addNameToAST(specialClassName);
-                references.add(specialClassName);    
-                // add meth to newly created class not this current one
-                soot.SootClass specialClass = soot.Scene.v().getSootClass(specialClassName);
-                if (InitialResolver.v().specialAnonMap() == null){
-                    InitialResolver.v().setSpecialAnonMap(new HashMap());
-                }
-                InitialResolver.v().specialAnonMap().put(sootClass, specialClass);
-                
-                if (!specialClass.declaresMethod(methodName, paramTypes, methodRetType)){
-                    specialClass.addMethod(sootMethod);
-                }
             
+            if (!addToClass.declaresMethod(methodName, paramTypes, methodRetType)){
+                addToClass.addMethod(sootMethod);
             }
-            else {
-                if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
-                    sootClass.addMethod(sootMethod);
+            
+
+            // add fields for all non prim class lits
+            Iterator classLitIt = classLitList.iterator();
+            while (classLitIt.hasNext()) {
+                polyglot.ast.ClassLit classLit = (polyglot.ast.ClassLit)classLitIt.next();
+        
+                // field
+                String fieldName = Util.getFieldNameForClassLit(classLit.typeNode().type());
+                soot.Type fieldType = soot.RefType.v("java.lang.Class");
+                
+                soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+                if (!addToClass.declaresField(fieldName, fieldType)){
+                    addToClass.addField(sootField);
                 }
             }
-        }
-        Iterator classLitIt = classLitList.iterator();
-        while (classLitIt.hasNext()) {
-            polyglot.ast.ClassLit classLit = (polyglot.ast.ClassLit)classLitIt.next();
-    
-            // field
-            String fieldName = Util.getFieldNameForClassLit(classLit.typeNode().type());
-            soot.Type fieldType = soot.RefType.v("java.lang.Class");
-            soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
-            if (sootClass.isInterface()){
-                soot.SootClass specialClass = soot.Scene.v().getSootClass(specialClassName);
-                if (!specialClass.declaresField(fieldName, fieldType)){
-                    specialClass.addField(sootField);
-                }
-            }
-            else {
-                if (!sootClass.declaresField(fieldName, fieldType)){
-                    sootClass.addField(sootField);
-                }
-            }
-    
-        }
-    
+        } 
     }
     /**
      * returns the name of the class without the package part
@@ -666,8 +714,9 @@ public class ClassResolver {
                 }                    
                 else {
                     // could be an anon class that was created out of thin air 
-                    // for handling class lits in interfaces
-                    sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+                    // for handling class lits (and asserts) in interfaces
+                    // this is now done on creation of this special class
+                    //sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
                 }
             }
         }

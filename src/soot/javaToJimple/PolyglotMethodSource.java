@@ -113,9 +113,16 @@ public class PolyglotMethodSource implements MethodSource {
         while ((innerMap != null) && (innerMap.containsKey(assertStatusClass))){
             assertStatusClass = ((InnerClassInfo)innerMap.get(assertStatusClass)).getOuterClass();
         }
-       
+
+        String paramName = assertStatusClass.getName();
+        String fieldName = "class$"+soot.util.StringTools.replaceAll(assertStatusClass.getName(), ".", "$");
+        
+        if (assertStatusClass.isInterface()){
+            assertStatusClass = (soot.SootClass)InitialResolver.v().specialAnonMap().get(assertStatusClass);
+        }
+        
         // field ref
-        soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, "class$"+soot.util.StringTools.replaceAll(assertStatusClass.getName(), ".", "$"), soot.RefType.v("java.lang.Class"), true);
+        soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, fieldName, soot.RefType.v("java.lang.Class"), true);
 
         soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal("$r0", soot.RefType.v("java.lang.Class"));
 
@@ -146,7 +153,7 @@ public class PolyglotMethodSource implements MethodSource {
         soot.SootMethodRef methodToInvoke = soot.Scene.v().makeMethodRef(assertStatusClass, "class$", paramTypes, soot.RefType.v("java.lang.Class"), true);
 
         ArrayList params = new ArrayList();
-        params.add(soot.jimple.StringConstant.v(assertStatusClass.getName()));
+        params.add(soot.jimple.StringConstant.v(paramName));
         soot.jimple.StaticInvokeExpr invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(methodToInvoke, params);
         soot.jimple.AssignStmt invokeAssign = soot.jimple.Jimple.v().newAssignStmt(invokeLocal, invoke);
         

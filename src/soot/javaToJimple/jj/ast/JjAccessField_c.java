@@ -32,7 +32,7 @@ public class JjAccessField_c extends Expr_c implements Expr {
     private Call setMeth;
     private Field field;
     
-    public JjAccessField_c(Position pos, Call getMeth, Call setMeth, Field field ){
+    public JjAccessField_c(Position pos, Call getMeth, Call setMeth, Field field){
         super(pos);
         this.getMeth = getMeth;
         this.setMeth = setMeth;
@@ -49,6 +49,10 @@ public class JjAccessField_c extends Expr_c implements Expr {
 
     public Field field() {
         return field;
+    }
+    
+    public String toString(){
+        return field+" "+getMeth+" "+setMeth;
     }
     
     public List acceptCFG(CFGBuilder v, List succs)

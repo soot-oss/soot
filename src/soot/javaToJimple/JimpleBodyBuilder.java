@@ -453,6 +453,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Local Retreival
      */
     private soot.Local getLocal(polyglot.types.LocalInstance li) {
+        
         if (localsMap.containsKey(new polyglot.util.IdentityKey(li))){
             soot.Local sootLocal = (soot.Local)localsMap.get(new polyglot.util.IdentityKey(li));
             return sootLocal;
@@ -477,7 +478,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             
             while (!fieldFound){
                 if (!currentClass.declaresFieldByName("this$0")){
-                    throw new RuntimeException("Trying to get field val$"+li.name()+" from some outer class but can't access the outer class of: "+currentClass.getName()+"!");
+                    throw new RuntimeException("Trying to get field val$"+li.name()+" from some outer class but can't access the outer class of: "+currentClass.getName()+"!"+" current class contains fields: "+currentClass.getFields());
                 }
                 soot.SootClass outerClass = ((soot.RefType)currentClass.getFieldByName("this$0").getType()).getSootClass();
                 // look for field of type li.type and name val$li.name in outer 
@@ -1653,6 +1654,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
 
     protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign){
+        //System.out.println("assign.left(): "+assign.left().getClass());
         polyglot.ast.Field fLeft = (polyglot.ast.Field)assign.left();
         //soot.Value right = createExpr(assign.right());
 
@@ -1663,13 +1665,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // as it has to be a lhs
         soot.Value right;
         if (assign.operator() == polyglot.ast.Assign.ASSIGN){
-            right = getSimpleAssignRightLocal(assign);
+            right = base().getSimpleAssignRightLocal(assign);
         }
         else if ((assign.operator() == polyglot.ast.Assign.ADD_ASSIGN) && assign.type().toString().equals("java.lang.String")){
             right = getStringConcatAssignRightLocal(assign);
         }
         else {
-            soot.Local leftLocal = (soot.Local)createExpr(fLeft);
+            soot.Local leftLocal = (soot.Local)base().createExpr(fLeft);
             right = base().getAssignRightLocal(assign, leftLocal);
         }
        
@@ -1780,7 +1782,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     protected soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
     
         if (assign.operator() == polyglot.ast.Assign.ASSIGN){
-            return getSimpleAssignRightLocal(assign);
+            return base().getSimpleAssignRightLocal(assign);
         }
         else if (assign.operator() == polyglot.ast.Assign.ADD_ASSIGN && assign.type().toString().equals("java.lang.String")){
             return getStringConcatAssignRightLocal(assign);
@@ -1790,7 +1792,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
     }
 
-    private soot.Value getSimpleAssignRightLocal(polyglot.ast.Assign assign){
+    protected soot.Value getSimpleAssignRightLocal(polyglot.ast.Assign assign){
         soot.Value right = base().createExpr(assign.right());
         if (right instanceof soot.jimple.ConditionExpr) {
             right = handleCondBinExpr((soot.jimple.ConditionExpr)right);
@@ -1859,9 +1861,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     private soot.Value getSimpleAssignLocal(polyglot.ast.Assign assign){
         soot.jimple.AssignStmt stmt;
-        soot.Value left = createLHS(assign.left());
+        soot.Value left = base().createLHS(assign.left());
         
-        soot.Value right = getSimpleAssignRightLocal(assign);
+        soot.Value right = base().getSimpleAssignRightLocal(assign);
         stmt = soot.jimple.Jimple.v().newAssignStmt(left, right);
         body.getUnits().add(stmt);
         Util.addLnPosTags(stmt, assign.position());
@@ -1878,7 +1880,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     
     private soot.Value getStrConAssignLocal(polyglot.ast.Assign assign){
         soot.jimple.AssignStmt stmt;
-        soot.Value left = createLHS(assign.left());
+        soot.Value left = base().createLHS(assign.left());
         
         soot.Value right = getStringConcatAssignRightLocal(assign);
         stmt = soot.jimple.Jimple.v().newAssignStmt(left, right);
@@ -1920,7 +1922,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         
         soot.jimple.AssignStmt stmt;
-        soot.Value left = createLHS(assign.left());
+        soot.Value left = base().createLHS(assign.left());
         soot.Value left2 = (soot.Value)left.clone();
         
         soot.Local leftLocal;
@@ -1973,7 +1975,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Field Expression Creation
      */
     private soot.Value getFieldLocal(polyglot.ast.Field field){
-    
+   
+        //System.out.println("getting field: "+field);
+        //System.out.println("field container: "+field.fieldInstance().container());
+        //System.out.println("field flags: "+field.fieldInstance().flags());
+        
         polyglot.ast.Receiver receiver = field.target();
         soot.javaToJimple.PolyglotMethodSource ms = (soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource();
         
@@ -2161,7 +2167,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     /**
      *  creates a field ref
      */
-    private soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
+    protected soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
        
         soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.target().type())).getSootClass();
         soot.SootFieldRef receiverField = soot.Scene.v().makeFieldRef(receiverClass, field.name(), Util.getSootType(field.type()), field.flags().isStatic());
@@ -3085,11 +3091,12 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private  soot.Local getUnaryLocal(polyglot.ast.Unary unary) {
         
+        //System.out.println("unary: "+unary);
         polyglot.ast.Expr expr = unary.expr();
         polyglot.ast.Unary.Operator op = unary.operator();
 
         if (op == polyglot.ast.Unary.POST_INC || op == polyglot.ast.Unary.PRE_INC || op == polyglot.ast.Unary.POST_DEC || op == polyglot.ast.Unary.PRE_DEC) {
-            soot.Value left = createLHS(unary.expr());
+            soot.Value left = base().createLHS(unary.expr());
     
             soot.Local tmp = lg.generateLocal(left.getType());
             soot.jimple.AssignStmt stmt1 = soot.jimple.Jimple.v().newAssignStmt(tmp, left);
@@ -3110,9 +3117,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(tmp2, binExpr);
             body.getUnits().add(assign);
                 
-            if (needsAccessor(unary.expr())){
-                System.out.println("thinks accessor is needed");
-                handlePrivateFieldSet(unary.expr(), tmp2);
+            if (base().needsAccessor(unary.expr())){
+                //System.out.println("thinks accessor is needed");
+                base().handlePrivateFieldSet(unary.expr(), tmp2);
             }
             else {  
                 soot.jimple.AssignStmt stmt3 = soot.jimple.Jimple.v().newAssignStmt(left, tmp2);
@@ -3691,13 +3698,32 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
 
     protected soot.SootMethodRef getSootMethodRef(polyglot.ast.Call call){
-        soot.Type sootRecType = Util.getSootType(call.target().type());
-        soot.SootClass receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
-        if (sootRecType instanceof soot.RefType){
-             receiverTypeClass = ((soot.RefType)sootRecType).getSootClass();
+        soot.Type sootRecType;
+        soot.SootClass receiverTypeClass;
+        if (Util.getSootType(call.methodInstance().container()).equals(soot.RefType.v("java.lang.Object"))){
+            sootRecType = soot.RefType.v("java.lang.Object");
+            receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+        }
+        else {
+            //System.out.println("call: "+call+" target: "+call.target()+" type: "+call.target().type());
+            if (call.target().type() == null){
+                sootRecType = Util.getSootType(call.methodInstance().container());
+            }
+            else {
+                sootRecType = Util.getSootType(call.target().type());
+            }
+            if (sootRecType instanceof soot.RefType){
+                 receiverTypeClass = ((soot.RefType)sootRecType).getSootClass();
+            }
+            else if (sootRecType instanceof soot.ArrayType){
+                receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+            }
+            else {
+                throw new RuntimeException("call target problem: "+call);
+            }
         }
         
-		polyglot.types.MethodInstance methodInstance = call.methodInstance();
+        polyglot.types.MethodInstance methodInstance = call.methodInstance();
         soot.Type sootRetType = Util.getSootType(methodInstance.returnType());
         ArrayList sootParamsTypes = getSootParamsTypes(call);
      
@@ -3727,10 +3753,29 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         soot.SootMethodRef callMethod = base().getSootMethodRef(call);
         
-        soot.Type sootRecType = Util.getSootType(receiver.type());
-        soot.SootClass receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
-        if (sootRecType instanceof soot.RefType){
-             receiverTypeClass = ((soot.RefType)sootRecType).getSootClass();
+        soot.Type sootRecType;
+        soot.SootClass receiverTypeClass;
+        if (Util.getSootType(call.methodInstance().container()).equals(soot.RefType.v("java.lang.Object"))){
+            sootRecType = soot.RefType.v("java.lang.Object");
+            receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+        }
+        else {
+            //System.out.println("call: "+call+" target: "+call.target());
+            if (call.target().type() == null){
+                sootRecType = Util.getSootType(call.methodInstance().container());
+            }
+            else {
+                sootRecType = Util.getSootType(call.target().type());
+            }
+            if (sootRecType instanceof soot.RefType){
+                 receiverTypeClass = ((soot.RefType)sootRecType).getSootClass();
+            }
+            else if (sootRecType instanceof soot.ArrayType){
+                receiverTypeClass = soot.Scene.v().getSootClass("java.lang.Object");
+            }
+            else {
+                throw new RuntimeException("call target problem: "+call);
+            }
         }
         
 		polyglot.types.MethodInstance methodInstance = call.methodInstance();
@@ -3963,7 +4008,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     /**
      * create LHS expressions
      */
-    private soot.Value createLHS(polyglot.ast.Expr expr) {
+    protected soot.Value createLHS(polyglot.ast.Expr expr) {
         if (expr instanceof polyglot.ast.Local) {
             return getLocal((polyglot.ast.Local)expr);
         }
@@ -4223,7 +4268,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     /**
      * Extra Local Variables Generation
      */
-    private soot.Local generateLocal(polyglot.types.Type polyglotType) {
+    protected soot.Local generateLocal(polyglot.types.Type polyglotType) {
 		soot.Type type = Util.getSootType(polyglotType);
         return lg.generateLocal(type);
     }

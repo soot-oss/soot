@@ -43,7 +43,8 @@ public class InitialResolver {
     private HashMap privateFieldGetAccessMap;
     private HashMap privateFieldSetAccessMap;
     private HashMap privateMethodGetAccessMap;
-    
+    private ArrayList interfacesList;
+
     private FastHierarchy hierarchy;
 
     private AbstractJBBFactory jbbFactory = new JimpleBodyBuilderFactory();
@@ -114,7 +115,15 @@ public class InitialResolver {
         astNode.visit(finder);
         Iterator it = finder.declsFound().iterator();
         while (it.hasNext()){
-            addNameToAST(Util.getSootType(((polyglot.ast.ClassDecl)it.next()).type()).toString());
+            polyglot.ast.ClassDecl decl = (polyglot.ast.ClassDecl)it.next();
+            polyglot.types.ClassType type = (polyglot.types.ClassType)decl.type();
+            if (type.flags().isInterface()){
+                if (interfacesList ==  null){
+                    interfacesList = new ArrayList();
+                }
+                interfacesList.add(Util.getSootType(type).toString());
+            }
+            addNameToAST(Util.getSootType(type).toString());
         }
     }
     
@@ -477,5 +486,9 @@ public class InitialResolver {
     public HashMap getPrivateMethodGetAccessMap(){
         return privateMethodGetAccessMap;
     }
+
+    public ArrayList getInterfacesList() {
+        return interfacesList;
+    } 
 }
 
