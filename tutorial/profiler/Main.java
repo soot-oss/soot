@@ -47,6 +47,9 @@ public class Main
         }            
         
         PackManager.v().getPack("jtp").add(new Transform("jtp.instrumenter", GotoInstrumenter.v()));
+
+	// Just in case, resolve the PrintStream SootClass.
+	Scene.v().addBasicClass("java.io.PrintStream",SootClass.SIGNATURES);
         soot.Main.main(args);
     }
 }
@@ -127,8 +130,6 @@ class GotoInstrumenter extends BodyTransformer
                                                 Modifier.STATIC);
                 Scene.v().getMainClass().addField(gotoCounter);
 
-                // Just in case, resolve the PrintStream SootClass.
-                Scene.v().loadClassAndSupport("java.io.PrintStream");
                 javaIoPrintStream = Scene.v().getSootClass("java.io.PrintStream");
 
                 addedFieldToMainClassAndLoadedPrintStream = true;
@@ -197,17 +198,3 @@ class GotoInstrumenter extends BodyTransformer
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
