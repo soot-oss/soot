@@ -9,7 +9,7 @@ public class InitialResolver {
     private ArrayList staticFieldInits; 
     private ArrayList fieldInits;
     private HashMap fieldMap;  // maps field instances to soot fields
-    private HashMap sourceToClassMap; // is used 
+    //private HashMap sourceToClassMap; // is used 
     private ArrayList initializerBlocks;
     private ArrayList staticInitializerBlocks;
 	private polyglot.frontend.Compiler compiler; 
@@ -26,7 +26,9 @@ public class InitialResolver {
   
     private HashMap sootNameToAST = null;
     private ArrayList hasOuterRefInInit; // list of sootclass types that need an outer class this param in for init
-    
+   
+    private HashMap classToSourceMap;
+
     /**
      * returns true if there is an AST avail for given soot class
      */
@@ -84,12 +86,17 @@ public class InitialResolver {
         String name = Util.getSourceFileOfClass(sc);
 
 
+        if (classToSourceMap != null){
+            if (classToSourceMap.containsKey(name)){
+                name = (String)classToSourceMap.get(name);
+            }
+        }
         // all classes may be in map 
-        if (soot.SourceLocator.v().getSourceToClassMap() != null) {
+        /*if (soot.SourceLocator.v().getSourceToClassMap() != null) {
             if (soot.SourceLocator.v().getSourceToClassMap().get(name) != null) {
                 name = (String)soot.SourceLocator.v().getSourceToClassMap().get(name);
             }
-        }
+        }*/
 
         // add file extension
         name += ".java";
@@ -202,7 +209,7 @@ public class InitialResolver {
         sootClass = sc;
         //System.out.println("resolving sc: "+sc.getName()+" is interface: "+soot.Modifier.isInterface(sc.getModifiers()));
         // add sourcefile tag to Soot class
-        addSourceFileTag(sc);
+        //addSourceFileTag(sc);
         
         // get types and resolve them in the Scene
         resolveTypes();
@@ -251,10 +258,33 @@ public class InitialResolver {
         // create class to source map first 
         // create source file
         if (astNode instanceof polyglot.ast.SourceFile) {
+            createClassToSourceMap((polyglot.ast.SourceFile)astNode);
             createSource((polyglot.ast.SourceFile)astNode);
         }
         
+        addSourceFileTag(sc);
+        
 
+    }
+
+    private void createClassToSourceMap(polyglot.ast.SourceFile src){
+        polyglot.ast.ClassDecl publicDecl = null;
+        ArrayList list = new ArrayList();
+        Iterator it = src.decls().iterator();
+        while (it.hasNext()){
+            polyglot.ast.ClassDecl nextDecl = (polyglot.ast.ClassDecl)it.next();
+            if (nextDecl.flags().isPublic()){
+                publicDecl = nextDecl;
+            }
+            else {
+                list.add(nextDecl);
+            }
+        }
+
+        Iterator it2 = list.iterator();
+        while (it2.hasNext()){
+            addToClassToSourceMap(Util.getSootType(((polyglot.ast.ClassDecl)it2.next()).type()).toString(), Util.getSootType(publicDecl.type()).toString()); 
+        }
     }
 
 
@@ -450,15 +480,16 @@ public class InitialResolver {
 				    createClassDecl((polyglot.ast.ClassDecl)next);
                     found = true;
                 }
-                else {
+                /*else {
                     // if not already there put cdecl name in class to source file map
                     // its actually a map from class names to the corresponding source file
                     if (((polyglot.ast.ClassDecl)next).type().isTopLevel() && !((polyglot.ast.ClassDecl)next).flags().isPublic()){                    
                         if (sootClass.getName().indexOf("$") == -1){
+                          
                             addToClassToSourceMap(((polyglot.ast.ClassDecl)next).type().fullName(), sootClass.getName());                
                         }
                     }
-                }
+                }*/
 		    }
 		}
 
@@ -509,7 +540,11 @@ public class InitialResolver {
      */
     private void addToClassToSourceMap(String className, String sourceName) {
             
-        if (sourceToClassMap == null) {
+        if (classToSourceMap == null){
+            classToSourceMap = new HashMap();
+        }
+        classToSourceMap.put(className, sourceName);
+        /*if (sourceToClassMap == null) {
             sourceToClassMap = new HashMap();
         }
             
@@ -518,8 +553,9 @@ public class InitialResolver {
         }
             
         if (!soot.SourceLocator.v().getSourceToClassMap().containsKey(className)) {
+            System.out.println("adding to source to class map class: "+className+" src: "+sourceName);
             soot.SourceLocator.v().addToSourceToClassMap(className, sourceName);
-        }
+        }*/
     }
     
     /**
