@@ -29,48 +29,58 @@ import soot.tagkit.*;
 */
 public class AttributesUnitPrinter extends NormalUnitPrinter {
 
-	private int offset = 1;
+	//private int offset = 1;
 	private int startOffset;
+	private int endOffset;
+	private int endLn;
 	
 	AttributesUnitPrinter( Map labels, String indent) {
         super(labels, indent);
     }
 
-    public void startUnit( Unit u ) {
+    /*public void startUnit( Unit u ) {
 		super.startUnit(u);
-		offset = 1;
-		offset = offset + indent.length();
+		//offset = 1;
+		//offset = output.length();
 	}
     public void endUnit( Unit u ) {}
     public void startUnitBox( UnitBox u ) {}
-    public void endUnitBox( UnitBox u ) {}
+    public void endUnitBox( UnitBox u ) {}*/
     public void startValueBox( ValueBox u ) {
-		startOffset = offset;
+		startOffset = output.length() - output.lastIndexOf("\n");
 	}
     public void endValueBox( ValueBox u ) {
-		u.addTag(new PositionTag(startOffset, offset));
+		endOffset = output.length() - output.lastIndexOf("\n");
+		u.addTag(new PositionTag(startOffset, endOffset));
 		
 	}
 
-    public void literal( String s ) { 
+	public void setEndLn(int ln){
+		endLn = ln;
+	}
+	public int getEndLn() {
+		return endLn;
+	}
+   /* public void literal( String s ) { 
 		super.literal(s);
-		offset = offset + s.length(); 
-	}
+		offset = output.length(); 
+	}*/
     public void newline() { 
+		//G.v().out.println("newline printed");
+		endLn++;
 		super.newline();
-		offset = offset + "\n".length() + indent.length();
 	}
-    public void local( Local l ) { 
+    /*public void local( Local l ) { 
 		super.local(l);
-		offset = offset + l.getName().length();
+		offset = output.length();
 	}
     public void type( Type t ) { 
 		super.type(t);
-		offset = offset + t.toString().length();
+		offset = output.length();
 	}
     public void method( SootMethod m ) { 
 		super.method(m);
-		offset = offset + m.getSignature().length();
+		offset = output.length();
 	}
     public void constant( Constant c ) { 
 		super.constant(c);
@@ -101,7 +111,7 @@ public class AttributesUnitPrinter extends NormalUnitPrinter {
         String ret = output.toString();
         output = new StringBuffer();
         return ret;
-    }
+    }*/
 }
 
 

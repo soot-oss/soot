@@ -402,6 +402,9 @@ public class Printer {
             }
 
             up.startUnit(currentStmt);
+			if (addJimpleLn()){
+				((AttributesUnitPrinter)up).setEndLn(getJimpleLnNum());
+			}
             currentStmt.toString(up);
             up.endUnit(currentStmt);
 
@@ -409,7 +412,7 @@ public class Printer {
             up.newline();
 
             if (addJimpleLn()) {
-                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt));
+                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt, ((AttributesUnitPrinter)up).getEndLn()));
             }
 
             // only print them if not generating attributes files 
@@ -457,10 +460,20 @@ public class Printer {
 
     }
 
-    private int addJimpleLnTags(int lnNum, Unit stmt) {
-        stmt.addTag(new JimpleLineNumberTag(lnNum));
-        lnNum++;
-        return lnNum;
+    private int addJimpleLnTags(int lnNum, Unit stmt, int endLn) {
+		
+		if (endLn-lnNum <= 1) {
+        	stmt.addTag(new JimpleLineNumberTag(lnNum));
+			//G.v().out.println(stmt.getClass().toString());
+        	lnNum++;
+        	return lnNum;
+		}
+		else {
+			stmt.addTag(new JimpleLineNumberTag(lnNum, endLn));
+			//G.v().out.println("multi-line: "+stmt.getClass().toString());
+			endLn++;
+			return endLn;
+		}
     }
 
     private int addJimpleLnTags(int lnNum, SootMethod meth) {

@@ -100,9 +100,9 @@ public class XMLAttributesPrinter {
 					  printTextAttr(formatForXML(((StringTag)t).toString()));
 					}
 					else {
-					  if (!t.toString().equals("[Unknown]")){
+					  //if (!t.toString().equals("[Unknown]")){
 						printTextAttr(t.toString());
-					  }
+					  //}
 					}
 				}
 				Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
