@@ -348,86 +348,8 @@ public class JimpleBody extends StmtBody
         throw new RuntimeException("couldn't find parameterref!");
     }
 
-    /** Prints contents of current body to out, with given options. */
-    public void printTo(PrintWriter out, int printBodyOptions)
-    {
-        validate();
-
-        boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
-        boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
-        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-	String decl = getMethod().getDeclaration();
-
-        out.println("    " + decl);        
-        out.println("    {");
-
-        // Print out local variables
-        {
-            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
-
-            // Collect locals
-            {
-                Iterator localIt = this.getLocals().iterator();
-
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-
-                    List localList;
- 
-		    String typeName;
-		    Type t = local.getType();
-		    if(Jimple.isJavaKeywordType(t))		   
-		      typeName = (isPrecise) ? "." + t.toString() : "." + t.toBriefString();
-                    else
-		      typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
-
-                    if(typeToLocals.containsKey(typeName))
-                        localList = (List) typeToLocals.get(typeName);
-                    else
-                    {
-                        localList = new ArrayList();
-                        typeToLocals.put(typeName, localList);
-                    }
-
-                    localList.add(local);
-                }
-            }
-
-            // Print locals
-            {
-                Iterator typeIt = typeToLocals.keySet().iterator();
-
-                while(typeIt.hasNext())
-                {
-                    String type = (String) typeIt.next();
-
-                    List localList = (List) typeToLocals.get(type);
-                    Object[] locals = localList.toArray();
-                    out.print("        "  + type + " ");
-		    
-                    for(int k = 0; k < locals.length; k++)
-                    {
-                        if(k != 0)
-                            out.print(", ");
-
-                        out.print(((Local) locals[k]).getName());
-                    }
-
-                    out.println(";");
-                }
-            }
-
-
-            if(!typeToLocals.isEmpty())
-                out.println();
-        }
-
-        // Print out statements
-        // Use an external class so that it can be overridden.
-	StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
-	
-        out.println("    }");
-    }
+    
 }
+
+
 

@@ -414,15 +414,37 @@ public abstract class Body
      *   @param printBodyOptions options for printing.
      *
      *   @see PrintJimpleBodyOption
-     */
+     */   
     public void printTo(PrintWriter out, int printBodyOptions)
     {
+	printToImpl(out, printBodyOptions, false);
+    }
+
+    
+    /**
+     *   Prints out the method corresponding to this Body, (declaration and body),
+     *   in the textual format corresponding to the IR used to encode this body. Includes
+     *   extra debugging information.
+     *
+     *   @param out a PrintWriter instance to print to.
+     *   @param printBodyOptions options for printing.
+     *
+     *   @see PrintJimpleBodyOption
+     */
+    public void printDebugTo(PrintWriter out, int printBodyOptions)
+    {
+	printToImpl(out, printBodyOptions, true);
+    }	
+
+    
+
+    private void printToImpl(PrintWriter out, int printBodyOptions, boolean debug)
+    {
         validate();
-      	
+
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-
 	String decl = getMethod().getDeclaration();
 
         out.println("    " + decl);        
@@ -442,8 +464,13 @@ public abstract class Body
 
                     List localList;
  
-                    String typeName = (isPrecise) ? local.getType().toString() : local.getType().toBriefString();
-                    
+		    String typeName;
+		    Type t = local.getType();
+		    if(Jimple.isJavaKeywordType(t))		   
+		      typeName = (isPrecise) ? "." + t.toString() : "." + t.toBriefString();
+                    else
+		      typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
+
                     if(typeToLocals.containsKey(typeName))
                         localList = (List) typeToLocals.get(typeName);
                     else
@@ -486,295 +513,22 @@ public abstract class Body
         }
 
         // Print out statements
-	printStatementsInBody(out, isPrecise, isNumbered);
-
+        // Use an external class so that it can be overridden.
+	if(debug) {
+	    // StmtPrinter.printDebugStatementsInBody(this, out, isPrecise, isNumbered);
+	} else {
+	    StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
+	}
 	
         out.println("    }");
     }
     
-
-    void printStatementsInBody(java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
-    {
-
-        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-        soot.toolkits.graph.UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(this);
-
-
-        // Create statement name table
-        {
-            Iterator boxIt = this.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                if(!isNumbered)
-                    while(boxIt.hasNext())
-                    {
-                        UnitBox box = (UnitBox) boxIt.next();
-                        Unit stmt = (Unit) box.getUnit();
-    
-                        labelStmts.add(stmt);
-                    }
-                else
-                    labelStmts.addAll(unitChain);
-
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = unitChain.iterator();
-		
-		
-                while(stmtIt.hasNext())
-                {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                    {
-                        if(isNumbered)
-                            stmtToName.put(s, new Integer(labelCount++).toString());
-                        else
-                            stmtToName.put(s, "label" + (labelCount++));
-                    }
-                }
-            }
-        }	
-
-
-        
-        Iterator unitIt = unitChain.iterator();
-        Unit currentStmt = null, previousStmt;
-        String indent = (isNumbered) ? "    " : "        ";
-        
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            // Print appropriate header.
-                if(isNumbered)
-                    out.print("  " + stmtToName.get(currentStmt) + ":");
-                else            
-                {
-                    // Put an empty line if the previous node was a branch node, the current node is a join node
-                    //   or the previous statement does not have this statement as a successor, or if
-                    //   this statement has a label on it
-
-		    if(currentStmt != unitChain.getFirst()) 
-                        {       
-                            if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
-                               unitGraph.getPredsOf(currentStmt).size() != 1 ||
-                               stmtToName.containsKey(currentStmt))
-                                out.println();
-                            else {
-                                // Or if the previous node does not have this statement as a successor.
-                                
-                                List succs = unitGraph.getSuccsOf(previousStmt);
-                                
-                                if(succs.get(0) != currentStmt)
-                                    out.println();
-                            }
-                        }
-                    
-                     if(stmtToName.containsKey(currentStmt))
-			 out.println("     " + stmtToName.get(currentStmt) + ":");
-                }
-                   
-              
-		if(isPrecise)
-		    out.print(currentStmt.toString(stmtToName, indent));
-            else
-                out.print(currentStmt.toBriefString(stmtToName, indent));
-
-            out.print(";"); 
-            out.println();
-        }
-	
-
-
-        // Print out exceptions
-        {
-            Iterator trapIt = this.getTraps().iterator();
-
-            if(trapIt.hasNext())
-                out.println();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
-                out.println("        .catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
-            }
-        }
-
-    }
-
-
-
-    /**
-     *   Prints out the method corresponding to this Body, (declaration and body),
-     *   in the textual format corresponding to the IR used to encode this body. Includes
-     *   extra debugging information.
-     *
-     *   @param out a PrintWriter instance to print to.
-     *   @param printBodyOptions options for printing.
-     *
-     *   @see PrintJimpleBodyOption
-     */
-    public void printDebugTo(PrintWriter out, int printBodyOptions)
-    {
-        boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
- 
-
-        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-
-        out.println("    " + getMethod().getDeclaration());        
-        out.println("    {");
-
-
-        // Print out local variables
-        {
-            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
-
-            // Collect locals
-            {
-                Iterator localIt = this.getLocals().iterator();
-
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-
-                    List localList;
- 
-                    String typeName = (isPrecise) ? local.getType().toString() : local.getType().toBriefString();
-                    
-                    if(typeToLocals.containsKey(typeName))
-                        localList = (List) typeToLocals.get(typeName);
-                    else
-                    {
-                        localList = new ArrayList();
-                        typeToLocals.put(typeName, localList);
-                    }
-
-                    localList.add(local);
-                }
-            }
-
-            // Print locals
-            {
-                Iterator typeIt = typeToLocals.keySet().iterator();
-
-                while(typeIt.hasNext())
-                {
-                    String type = (String) typeIt.next();
-
-                    List localList = (List) typeToLocals.get(type);
-                    Object[] locals = localList.toArray();
-
-                    out.print("        " + type + " ");
-
-                    for(int k = 0; k < locals.length; k++)
-                    {
-                        if(k != 0)
-                            out.print(", ");
-
-                        out.print(((Local) locals[k]).getName());
-                    }
-
-                    out.println(";");
-                }
-            }
-
-
-            if(!typeToLocals.isEmpty())
-                out.println();
-        }
-
-        // Print out statements
-            printDebugStatementsInBody(out, isPrecise);
-
-        out.println("    }");
-    }
-
-    void printDebugStatementsInBody(java.io.PrintWriter out, boolean isPrecise)
-    {
-        
-        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-
-        // Create statement name table
-        {
-            Iterator boxIt = this.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                while(boxIt.hasNext())
-                {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
-
-                    labelStmts.add(stmt);
-                }
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = unitChain.iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                        stmtToName.put(s, "label" + (labelCount++));
-                }
-            }
-        }
-
-        
-        Iterator unitIt = unitChain.iterator();
-        Unit currentStmt = null, previousStmt;
-
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            if(stmtToName.containsKey(currentStmt))
-                out.println("     " + stmtToName.get(currentStmt) + ":");
-
-            if(isPrecise)
-                out.print(currentStmt.toString(stmtToName, "        "));
-            else
-                out.print(currentStmt.toBriefString(stmtToName, "        "));
-
-            out.print(";"); 
-            out.println();
-        }
-
-        // Print out exceptions
-        {
-            Iterator trapIt = this.getTraps().iterator();
-
-            if(trapIt.hasNext())
-                out.println();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
-                out.println("        catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
-            }
-        }
-    }
 }
+
+
+
+
+
+
+
+

@@ -38,10 +38,10 @@ import soot.toolkits.graph.*;
   * Users may choose to replace this class with another soot.jimple.StmtPrinter
   * class closer to the beginning of their CLASSPATH in order to provide
   * custom printing of .jimple files, for instance to include analysis results. */
-class StmtPrinter
+public class StmtPrinter
 {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    static void printStatementsInBody(JimpleBody body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
+    public  static void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
         Chain units = body.getUnits();
 
@@ -159,4 +159,87 @@ class StmtPrinter
         }
 
     }
+
+
+
+    // moved here from body ; should be factorized with the above
+    public static void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
+    {
+        
+        Map stmtToName = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
+
+        // Create statement name table
+        {
+            Iterator boxIt = b.getUnitBoxes().iterator();
+
+            Set labelStmts = new HashSet();
+
+            // Build labelStmts
+            {
+                while(boxIt.hasNext())
+                {
+                    UnitBox box = (UnitBox) boxIt.next();
+                    Unit stmt = (Unit) box.getUnit();
+
+                    labelStmts.add(stmt);
+                }
+            }
+
+            // Traverse the stmts and assign a label if necessary
+            {
+                int labelCount = 0;
+
+                Iterator stmtIt = b.getUnits().iterator();
+
+                while(stmtIt.hasNext())
+                {
+                    Unit s = (Unit) stmtIt.next();
+
+                    if(labelStmts.contains(s))
+                        stmtToName.put(s, "label" + (labelCount++));
+                }
+            }
+        }
+
+        
+        Iterator unitIt = b.getUnits().iterator();
+        Unit currentStmt = null, previousStmt;
+
+        while(unitIt.hasNext()) {
+            
+            previousStmt = currentStmt;
+            currentStmt = (Unit) unitIt.next();
+            
+            if(stmtToName.containsKey(currentStmt))
+                out.println("     " + stmtToName.get(currentStmt) + ":");
+
+            if(isPrecise)
+                out.print(currentStmt.toString(stmtToName, "        "));
+            else
+                out.print(currentStmt.toBriefString(stmtToName, "        "));
+
+            out.print(";"); 
+            out.println();
+        }
+
+        // Print out exceptions
+        {
+            Iterator trapIt = b.getTraps().iterator();
+
+            if(trapIt.hasNext())
+                out.println();
+
+            while(trapIt.hasNext())
+            {
+                Trap trap = (Trap) trapIt.next();
+
+                out.println("        catch " + trap.getException().getName() + " from " +
+                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
+            }
+        }
+    }
+
 }
+
+
