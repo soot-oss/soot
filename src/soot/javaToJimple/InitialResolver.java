@@ -36,7 +36,7 @@ public class InitialResolver {
         if (!hasASTForSootName(name)) {
             throw new RuntimeException("Can only set AST for name if it exists. You should probably not be calling this method unless you know what you're doing1!");
         }
-        System.out.println("sootNameToAST name: "+name+" ast: "+sootNameToAST.get(name));
+        //System.out.println("sootNameToAST name: "+name+" ast: "+sootNameToAST.get(name));
         setAst((polyglot.ast.Node)sootNameToAST.get(name));
     }
     
@@ -212,7 +212,7 @@ public class InitialResolver {
     }
     // resolves all types and deals with .class literals and asserts
     public void resolveFromJavaFile(soot.SootClass sc) {
-        System.out.println("processing: "+sc.getName());
+        //System.out.println("processing: "+sc.getName());
         sootClass = sc;
 
         // add sourcefile tag to Soot class
@@ -471,7 +471,7 @@ public class InitialResolver {
             }
 
             if (!localTypeMap.isEmpty()){
-                System.out.println("lcoal type map: "+localTypeMap);
+                //System.out.println("lcoal type map: "+localTypeMap);
                 Iterator matchIt = localTypeMap.keySet().iterator();
                 while (matchIt.hasNext()){
                     polyglot.types.ClassType pType = (polyglot.types.ClassType)((polyglot.util.IdentityKey)matchIt.next()).object();
@@ -1233,7 +1233,7 @@ public class InitialResolver {
         if (finalLocalInfo == null){
             finalLocalInfo = new HashMap();
         }
-        System.out.println("inners : "+mfc.inners());
+        //System.out.println("inners : "+mfc.inners());
         Iterator it = mfc.inners().iterator();
         while (it.hasNext()){
             finalLocalInfo.put(it.next(), alci);
