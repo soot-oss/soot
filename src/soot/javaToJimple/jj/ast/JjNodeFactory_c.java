@@ -40,6 +40,11 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
         JjComma_c n = new JjComma_c(pos, first, second);
         return n;
     }
+   
+    public JjAccessField_c JjAccessField(Position pos, Call getMeth, Call setMeth, Field field){
+        JjAccessField_c n = new JjAccessField_c(pos, getMeth, setMeth, field);
+        return n;
+    }
     
     public Unary Unary(Position pos, Unary.Operator op, Expr expr) {
         Unary n = new JjUnary_c(pos, op, expr);
