@@ -46,7 +46,7 @@ public class DotGraphUtility {
     byte[] newsrc = new byte[ord.length+quotes];
     for (int i=0, j=0, n=ord.length; i<n; i++, j++){
       if (ord[i] == '\"') {
-	newsrc[j++] = '\\';
+	newsrc[j++] = (byte) '\\';
       }
       newsrc[j] = ord[i];
     }
@@ -72,8 +72,8 @@ public class DotGraphUtility {
     byte[] newsrc = new byte[ord.length+quotes];
     for (int i=0, j=0, n=ord.length; i<n; i++, j++){
       if (ord[i] == '\n') {
-	newsrc[j++] = '\\';
-	newsrc[j] = 'n';
+	newsrc[j++] = (byte) '\\';
+	newsrc[j] = (byte) 'n';
       } else {
 	newsrc[j] = ord[i];
       }
