@@ -50,8 +50,6 @@ public class ClassFieldAnalysis
  
     private static Map classToFieldInfoMap = new HashMap();	
   
-    static boolean debug = soot.Main.isInDebugMode;
-
     public void internalTransform(SootClass c)
     {
  	if (classToFieldInfoMap.containsKey(c))
@@ -260,7 +258,7 @@ public class ClassFieldAnalysis
 			{
 			    usestmt = (DefinitionStmt)defs.get(0);
 
-			    if (debug)
+			    if (soot.Main.isInDebugMode)
 				G.v().out.println("        "+usestmt);
 
 			    Value tmp_rhs = usestmt.getRightOp();

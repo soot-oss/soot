@@ -40,7 +40,7 @@ public class LoadStoreOptimizer extends BodyTransformer
     public static LoadStoreOptimizer v() { return G.v().LoadStoreOptimizer(); }
 
     // Constants
-    static  boolean debug = false;
+    boolean debug = false;
     
     // constants returned by the stackIndependent function.
     final static private int FAILURE = 0;
@@ -140,9 +140,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
         gOptions = options;
         
-        if(PackManager.getBoolean(gOptions, "debug")) {
-            debug = true;
-        }
+        debug = PackManager.getBoolean(gOptions, "debug");
         
         if(soot.Main.opts.verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");

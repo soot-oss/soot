@@ -39,12 +39,10 @@ public class UnconditionalBranchFolder extends BodyTransformer
     public UnconditionalBranchFolder( Singletons.Global g ) {}
     public static UnconditionalBranchFolder v() { return G.v().UnconditionalBranchFolder(); }
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     static final int JUMPOPT_TYPES = 6;
-    static int numFound[], numFixed[];
+    int numFound[], numFixed[];
 
-    static HashMap stmtMap;
+    HashMap stmtMap;
     
     protected void internalTransform(Body b, String phaseName, Map options) 
     {
@@ -119,7 +117,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
                                
     } // optimizeJumps
 
-    private static void updateCounters(int type, boolean fixed) {
+    private void updateCounters(int type, boolean fixed) {
 
         if ((type < 0) || (type > JUMPOPT_TYPES))
             return;
@@ -132,7 +130,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
         }
     }
         
-    private static Stmt getFinalTarget(Stmt stmt) {
+    private Stmt getFinalTarget(Stmt stmt) {
         Stmt finalTarget=null, target;
         
         // if not a goto, this is the final target

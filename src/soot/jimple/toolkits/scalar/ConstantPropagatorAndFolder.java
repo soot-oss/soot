@@ -43,8 +43,6 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
     public ConstantPropagatorAndFolder( Singletons.Global g ) {}
     public static ConstantPropagatorAndFolder v() { return G.v().ConstantPropagatorAndFolder(); }
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)b;

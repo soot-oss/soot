@@ -40,8 +40,6 @@ import soot.*;
 public class Parse 
 {
     private static final String EXT = ".jimple";
-    private static boolean debug = false;
-    private static boolean verbose = false;
     
     private static final String USAGE = "usage: java Parse [options] " +
         "jimple_file [jimple_file ...]";
@@ -89,6 +87,8 @@ public class Parse
               
 
     {
+    boolean debug = false;
+    boolean verbose = false;
         InputStream inFile;
         
         // check arguments

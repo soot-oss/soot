@@ -70,8 +70,6 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     private boolean rectarray;
     HashSet multiarraylocals;
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     public ArrayIndexLivenessAnalysis(DirectedGraph dg, 
 				      boolean takeFieldRef, 
 				      boolean takeArrayRef,
@@ -85,7 +83,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 	csin = takeCSE;
 	rectarray = takeRectArray;
 
-	if (debug) 
+	if (soot.Main.isInDebugMode) 
 	    G.v().out.println("Enter ArrayIndexLivenessAnalysis");
 
 	cug = (CompleteUnitGraph)dg;
@@ -128,11 +126,9 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 
 	getGenAndKillSet(cug.getBody(), absGenOfUnit, genOfUnit, killOfUnit, conditionOfGen);
 
-	// debugAll();
-
       	doAnalysis();
 
-	if (debug) 
+	if (soot.Main.isInDebugMode) 
 	    G.v().out.println("Leave ArrayIndexLivenessAnalysis");
     }
 
@@ -827,61 +823,6 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 	destSet.addAll(sourceSet);
     }
 
-    private void debugAll()
-    {
-	Iterator graphIt = cug.iterator();
-
-	while (graphIt.hasNext())
-	{
-	    Object node = graphIt.next();
-
-	    G.v().out.println(node);
-
-	    HashSet genset = (HashSet)genOfUnit.get(node);
-	    if (genset != null)
-	    {
-		Iterator genIt = genset.iterator();
-
-		while (genIt.hasNext())
-		{
-		    G.v().out.print(genIt.next()+" | ");
-		}
-	    }
-	    else
-		G.v().out.print("null");
-
-	    G.v().out.print(" /// ");
-
-	    HashSet killset = (HashSet)killOfUnit.get(node);
-	    if (killset != null)
-	    {
-		Iterator killIt = killset.iterator();
-		
-		while (killIt.hasNext())
-		{
-		    G.v().out.print(killIt.next()+" | ");
-		}
-	    }
-	    else
-		G.v().out.print("null");
-	    
-	    G.v().out.print(" /// ");
-
-	    HashSet condset = (HashSet)conditionOfGen.get(node);
-	    if (condset != null)
-	    {
-		Iterator condIt = condset.iterator();
-		while (condIt.hasNext())
-		{
-		    G.v().out.print(condIt.next()+" | ");
-		}
-	    }
-	    else
-		G.v().out.print("null");
-
-	    G.v().out.println();
-	}
-    }
 }
 
 

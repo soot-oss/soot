@@ -43,10 +43,6 @@ public class ProfilingGenerator extends BodyTransformer
 
     //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 
-    static boolean debug = soot.Main.isInDebugMode;
-
-    //    static boolean debug = true;
-
     public String getDeclaredOptions()
     {
 	return super.getDeclaredOptions()+" enable notmainentry";

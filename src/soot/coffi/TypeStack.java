@@ -42,8 +42,6 @@ import soot.*;
 
 class TypeStack
 {
-    private static Scene cm;
-
     private Type[] types;
 
     private TypeStack()
@@ -51,16 +49,10 @@ class TypeStack
         // no constructor
     }
 
-    public static void setClassManager(Scene cm)
-    {
-        TypeStack.cm = cm;
-    }
-
     public Object clone()
     {
         TypeStack newTypeStack = new TypeStack();
 
-        newTypeStack.cm = this.cm;
         newTypeStack.types = (Type[]) types.clone();
 
         return newTypeStack;

@@ -53,7 +53,6 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private static boolean enable = false;
 
-    static boolean debug = soot.Main.isInDebugMode;
 
     public String getDeclaredOptions()
     {
@@ -227,7 +226,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	/* For verification, print out true set and false set. */
 	
-	if (debug)
+	if (soot.Main.isInDebugMode)
 	{
 	    G.v().out.println("Rectangular Array :");
 	    {

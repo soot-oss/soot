@@ -36,7 +36,6 @@ import java.util.*;
 
 public class Evaluator {
 
-    static boolean debug = soot.Main.isInDebugMode;
     static boolean verbose = soot.Main.opts.verbose();
 
     public static boolean isValueConstantValued(Value op) {

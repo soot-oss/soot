@@ -39,8 +39,6 @@ public class UnreachableCodeEliminator extends BodyTransformer
     public UnreachableCodeEliminator( Singletons.Global g ) {}
     public static UnreachableCodeEliminator v() { return G.v().UnreachableCodeEliminator(); }
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     static CompleteUnitGraph stmtGraph;
     static HashSet visited;
     static int numPruned;

@@ -49,7 +49,7 @@ public class CoffiMethodSource implements MethodSource
         boolean useOriginalNames = PackManager.getBoolean(options, "use-original-names");
 
         if(useOriginalNames)
-            soot.coffi.Util.setFaithfulNaming(true);
+            soot.coffi.Util.v().setFaithfulNaming(true);
 
         /*
             I need to set these to null to free Coffi structures.

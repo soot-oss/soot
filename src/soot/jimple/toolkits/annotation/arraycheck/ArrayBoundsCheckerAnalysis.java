@@ -72,8 +72,6 @@ class ArrayBoundsCheckerAnalysis
 
     private ArrayIndexLivenessAnalysis ailanalysis;
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     /* A little bit different from ForwardFlowAnalysis */
     public ArrayBoundsCheckerAnalysis(Body body, 
 				   boolean takeClassField, 
@@ -92,7 +90,7 @@ class ArrayBoundsCheckerAnalysis
 
 	SootMethod thismethod = body.getMethod();
 
-	if (debug) 
+	if (soot.Main.isInDebugMode) 
 	    G.v().out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
 	
 	ailanalysis = new ArrayIndexLivenessAnalysis(new CompleteUnitGraph(body), fieldin, arrayin, csin, rectarray);
@@ -150,7 +148,7 @@ class ArrayBoundsCheckerAnalysis
 	
 	convertToUnitEntry();
 
-	if (debug) 
+	if (soot.Main.isInDebugMode) 
 	    G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
 
     }
@@ -269,7 +267,7 @@ class ArrayBoundsCheckerAnalysis
     private void doAnalysis()
     {
 	Date start = new Date();
-	if (debug)
+	if (soot.Main.isInDebugMode)
 	    G.v().out.println("Building PseudoTopological order list on "+start);
 
         LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph);
@@ -280,7 +278,7 @@ class ArrayBoundsCheckerAnalysis
 	//       	LinkedList changedUnits = new LinkedList(allUnits);	
 
 	Date finish = new Date();
-	if (debug)
+	if (soot.Main.isInDebugMode)
 	{
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;
@@ -290,7 +288,7 @@ class ArrayBoundsCheckerAnalysis
 	}
 
 	start = new Date();
-	if (debug)
+	if (soot.Main.isInDebugMode)
 	    G.v().out.println("Doing analysis started on "+start);
 
 	{
@@ -303,7 +301,7 @@ class ArrayBoundsCheckerAnalysis
 		    HashSet livelocals = (HashSet)ailanalysis.getFlowAfter(tail);
 	
 		    /*	
-		    if (debug)
+		    if (soot.Main.isInDebugMode)
 		    {
 			G.v().out.println(tail);
 			G.v().out.println(livelocals);
@@ -500,7 +498,7 @@ class ArrayBoundsCheckerAnalysis
         }
 
 	finish = new Date();
-	if (debug)
+	if (soot.Main.isInDebugMode)
 	{
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;

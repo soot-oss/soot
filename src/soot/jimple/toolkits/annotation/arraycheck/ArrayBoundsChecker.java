@@ -48,8 +48,6 @@ public class ArrayBoundsChecker extends BodyTransformer
 
     private boolean isProfiling = false;
 
-    static boolean debug = soot.Main.isInDebugMode;
-
     public String getDeclaredOptions()
     {
 	return super.getDeclaredOptions()+" with-all with-fieldref with-arrayref"
@@ -132,7 +130,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 			boolean uppercheck = true;
 	    
 			{
-			    if (debug)
+			    if (soot.Main.isInDebugMode)
 			    {
 				if (!vgraph.makeShortestPathGraph())
 				{

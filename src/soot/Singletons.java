@@ -84,6 +84,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private Util instanceUtil;
+    public Util Util() {
+        if( instanceUtil == null ) instanceUtil = new Util( g );
+        return instanceUtil;
+    }
+
     private AbruptEdgeFinder instanceAbruptEdgeFinder;
     public AbruptEdgeFinder AbruptEdgeFinder() {
         if( instanceAbruptEdgeFinder == null ) instanceAbruptEdgeFinder = new AbruptEdgeFinder( g );

@@ -36,14 +36,7 @@ import soot.*;
 
 class TypeArray
 {
-    private static Scene cm;
-
     private Type[] types;
-
-    public static void setClassManager(Scene cm)
-    {
-        TypeArray.cm = cm;
-    }
 
     private TypeArray()
     {

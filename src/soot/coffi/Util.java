@@ -41,27 +41,31 @@ import soot.*;
 
 public class Util
 {
-    static Map classNameToAbbreviation;
-    static Scene scene;
-    static Set markedClasses;
-    static LinkedList classesToResolve;
+    public Util( Singletons.Global g ) {}
+    public static Util v() { return G.v().Util(); }
 
-    static int activeOriginalIndex = -1;
-    static cp_info[] activeConstantPool = null;
-    static LocalVariableTable_attribute activeVariableTable;
-    static boolean useFaithfulNaming = false;
-    static boolean isLocalStore = false;  // global variable used 
-    static boolean isWideLocalStore = false;
-    public static void setFaithfulNaming(boolean v)
+
+    Map classNameToAbbreviation;
+    Scene scene;
+    Set markedClasses;
+    LinkedList classesToResolve;
+
+    int activeOriginalIndex = -1;
+    cp_info[] activeConstantPool = null;
+    LocalVariableTable_attribute activeVariableTable;
+    boolean useFaithfulNaming = false;
+    boolean isLocalStore = false;  // global variable used 
+    boolean isWideLocalStore = false;
+    public void setFaithfulNaming(boolean v)
     {
         useFaithfulNaming = v;
     }    
-    static void setActiveClassManager(Scene manager)
+    void setActiveClassManager(Scene manager)
     {
         scene = manager;
     }
 
-    public static void assertResolvedClass(String className)
+    public void assertResolvedClass(String className)
     {
         if(!scene.containsClass(className))
         {
@@ -74,7 +78,7 @@ public class Util
         }
     }
 
-    public static void assertResolvedClassForType(Type type)
+    public void assertResolvedClassForType(Type type)
     {
         if(type instanceof RefType)
             assertResolvedClass(((RefType) type).getClassName());
@@ -82,7 +86,7 @@ public class Util
             assertResolvedClassForType(((ArrayType) type).baseType);
     }
     
-    public static SootClass getResolvedClass(String className)
+    public SootClass getResolvedClass(String className)
     {
         if(scene.containsClass(className))
             return scene.getSootClass(className);
@@ -97,7 +101,7 @@ public class Util
         return newClass;
     }
 
-    public static SootClass getResolvedClass2(String className)
+    public SootClass getResolvedClass2(String className)
     {
         if(scene.containsClass(className))
             return scene.getSootClass(className);
@@ -110,7 +114,7 @@ public class Util
     }
 
     
-    public static SootClass resolveClassAndSupportClasses2(String className, InputStream is)
+    public SootClass resolveClassAndSupportClasses2(String className, InputStream is)
     {
         SootClass newClass = null;
         Scene cm = Scene.v();
@@ -319,7 +323,7 @@ public class Util
     }
     
 
-    public static void resolveFromClassFile(SootClass aClass, InputStream is, soot.SootResolver sootResolver, Scene cm)
+    public void resolveFromClassFile(SootClass aClass, InputStream is, soot.SootResolver sootResolver, Scene cm)
     {
         SootClass bclass = aClass;                
         String className = bclass.getName();
@@ -511,7 +515,7 @@ public class Util
 
 
 
-    public static SootClass resolveClassAndSupportClasses(String className, Scene cm)
+    public SootClass resolveClassAndSupportClasses(String className, Scene cm)
     {
         soot.Timer timer = new soot.Timer("timer");
         soot.Timer buildTimer = new soot.Timer("build");
@@ -731,7 +735,7 @@ public class Util
 
 
 
-    static Type jimpleReturnTypeOfMethodDescriptor(Scene cm,
+    Type jimpleReturnTypeOfMethodDescriptor(Scene cm,
         String descriptor)
     {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm, descriptor);
@@ -739,9 +743,9 @@ public class Util
         return types[types.length - 1];
     }
 
-    static private ArrayList conversionTypes = new ArrayList();
+    private ArrayList conversionTypes = new ArrayList();
     
-    static public Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
+    public Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
         String descriptor)
     {
         conversionTypes.clear();
@@ -843,7 +847,7 @@ public class Util
         return (Type[]) conversionTypes.toArray(new Type[0]);
     }
 
-    public static Type jimpleTypeOfFieldDescriptor(Scene cm,
+    public Type jimpleTypeOfFieldDescriptor(Scene cm,
         String descriptor)
     {
         boolean isArray = false;
@@ -896,14 +900,14 @@ public class Util
                 return baseType;
     }
 
-    static int nextEasyNameIndex;
+    int nextEasyNameIndex;
 
-    static void resetEasyNames()
+    void resetEasyNames()
     {
         nextEasyNameIndex = 0;
     }
 
-    static String getNextEasyName()
+    String getNextEasyName()
     {
         final String[] easyNames =
             {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
@@ -917,12 +921,12 @@ public class Util
             return easyNames[justifiedIndex];
     }
 
-    static void setClassNameToAbbreviation(Map map)
+    void setClassNameToAbbreviation(Map map)
     {
         classNameToAbbreviation = map;
     }
 
-    static Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
+    Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
         int index)
     {
         if(typeStack.get(index).equals(Double2ndHalfType.v()) ||
@@ -934,7 +938,7 @@ public class Util
         return getLocalCreatingIfNecessary(listBody, "$stack" + index, UnknownType.v());
     }
 
-    static String getAbbreviationOfClassName(String className)
+    String getAbbreviationOfClassName(String className)
     {
         StringBuffer buffer = new StringBuffer(new Character(className.charAt(0)).toString());
         int periodIndex = 0;
@@ -952,7 +956,7 @@ public class Util
         return buffer.toString();
     }
 
-    static String getNormalizedClassName(String className)
+    String getNormalizedClassName(String className)
     {
         className = className.replace('/', '.');
 
@@ -983,7 +987,7 @@ public class Util
         return className;
     }
 
-    static public Local getLocal(Body b, String name) 
+    public Local getLocal(Body b, String name) 
         throws soot.jimple.NoSuchLocalException
     {
         Iterator localIt = b.getLocals().iterator();
@@ -1000,7 +1004,7 @@ public class Util
     }
 
 
-    static public boolean declaresLocal(Body b, String localName)
+    public boolean declaresLocal(Body b, String localName)
     {
         Iterator localIt = b.getLocals().iterator();
 
@@ -1015,7 +1019,7 @@ public class Util
         return false;
     }
 
-     static Local
+     Local
         getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {
         if(declaresLocal(listBody, name))
@@ -1030,7 +1034,7 @@ public class Util
         }
     }
 
-    static Local getLocalForIndex(JimpleBody listBody, int index)
+    Local getLocalForIndex(JimpleBody listBody, int index)
     {
         String name = null;
         boolean assignedName = false;
@@ -1072,7 +1076,7 @@ public class Util
     }
 
     /*
-    static void setLocalType(Local local, List locals,
+    void setLocalType(Local local, List locals,
         int localIndex, Type type)
     {
         if(local.getType().equals(UnknownType.v()) ||
@@ -1123,7 +1127,7 @@ public class Util
      *
      * @author Patrick Lam
      */
-    static boolean isValidJimpleName(String prospectiveName) {
+    boolean isValidJimpleName(String prospectiveName) {
 	for (int i = 0; i < prospectiveName.length(); i++) {
 	    char c = prospectiveName.charAt(i);
 	    if (i == 0 && c >= '0' && c <= '9')
