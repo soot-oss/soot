@@ -32,26 +32,55 @@ import java.util.*;
 /** Methods for checking safety requirements for inlining. */
 public class InlinerSafetyManager
 {
-    /** Returns true if this method can be inlined at the given site.
-        Will try as hard as it can to change things to allow
-        inlining (modifierOptions controls what it's allowed to do:
-        safe, unsafe and nochanges)
-        
-        Returns false otherwise.
-    */
-      
-    public static boolean ensureInlinability(SootMethod target,
-                                             Stmt toInline,
-                                             SootMethod container, 
-                                             String modifierOptions)
-    {
-        if(!InlinerSafetyManager.canSafelyInlineInto(target, toInline, container))
-            return false;
+	// true if safe to inline
+	public static boolean checkSpecialInlineRestrictions(SootMethod container, SootMethod target, String options) {
+	 // Check the body of the method to inline for specialinvoke's 
     
-        if(!AccessManager.ensureAccess(container, target, modifierOptions))
-            return false;
-            
-        // Check the body of the method to inline for specialinvoke's or
+    	boolean accessors=options.equals("accessors");
+    	
+        Body inlineeBody = (JimpleBody) target.getActiveBody();
+        
+        Iterator unitsIt = inlineeBody.getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Stmt st = (Stmt)unitsIt.next();
+            if (st.containsInvokeExpr())
+            {
+                InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
+                
+                if (ie1 instanceof SpecialInvokeExpr) 
+                {
+                    if((InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
+                      InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
+                    {                    	
+                        return false;
+                        
+                    }
+                 
+                    SootMethod specialTarget = ie1.getMethod();
+                    
+                    if(specialTarget.isPrivate())
+                    {
+                        if(specialTarget.getDeclaringClass() != container.getDeclaringClass())
+                        {
+                            // Do not inline a call which contains a specialinvoke call to a private method outside
+                            // the current class.  This avoids a verifier error and we assume will not have a big
+                            // impact because we are inlining methods bottom-up, so such a call will be rare
+                        	  
+                        	if (!accessors)
+                        		return false;
+                        }
+                    }
+                }
+              }               
+        }
+    
+        
+        return true;
+	}
+	
+	public static boolean checkAccessRestrictions(SootMethod container, SootMethod target, String modifierOptions) {
+//		 Check the body of the method to inline for
         //   method or field access restrictions
         {
             Body inlineeBody = (JimpleBody) target.getActiveBody();
@@ -62,31 +91,7 @@ public class InlinerSafetyManager
                 Stmt st = (Stmt)unitsIt.next();
                 if (st.containsInvokeExpr())
                 {
-                    InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
-                    
-                    if (ie1 instanceof SpecialInvokeExpr) 
-                    {
-                        if((InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
-                          InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
-                        {
-                            return false;
-                            
-                        }
-                     
-                        SootMethod specialTarget = ie1.getMethod();
-                        
-                        if(specialTarget.isPrivate())
-                        {
-                            if(specialTarget.getDeclaringClass() != container.getDeclaringClass())
-                            {
-                                // Do not inline a call which contains a specialinvoke call to a private method outside
-                                // the current class.  This avoids a verifier error and we assume will not have a big
-                                // impact because we are inlining methods bottom-up, so such a call will be rare
-                                
-                                return false;
-                            }
-                        }
-                    }
+                    InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();                
                     
                     if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
                         return false;
@@ -110,6 +115,43 @@ public class InlinerSafetyManager
                         
                 }
             }
+        }
+        
+        return true;
+		 
+	}
+	
+    /** Returns true if this method can be inlined at the given site.
+        Will try as hard as it can to change things to allow
+        inlining (modifierOptions controls what it's allowed to do:
+        safe, unsafe and nochanges)
+        
+        Returns false otherwise.
+    */
+	
+    public static boolean ensureInlinability(SootMethod target,
+                                             Stmt toInline,
+                                             SootMethod container, 
+                                             String modifierOptions)
+    {
+        if(!InlinerSafetyManager.canSafelyInlineInto(target, toInline, container)) {
+        	//System.out.println("canSafelyInlineInto failed");
+            return false;
+        }
+    
+        if(!AccessManager.ensureAccess(container, target, modifierOptions)) {
+        	//System.out.println("ensure access failed");
+            return false;
+        }
+            
+        if (!checkSpecialInlineRestrictions(container, target, modifierOptions)) {
+        	//System.out.println("checkSpecialInlineRestrictions failed");
+        	return false;
+        }
+        
+        if (!checkAccessRestrictions(container, target, modifierOptions)) {
+        	//System.out.println("checkAccessRestrictions failed");
+        	return false;
         }
         
         return true;
