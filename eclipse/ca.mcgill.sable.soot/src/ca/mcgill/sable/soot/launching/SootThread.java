@@ -60,11 +60,12 @@ public class SootThread extends Thread {
 	private String mainClass;
 	private ArrayList cfgList;
 	private IInteractionListener listener;
-
+	private SootRunner parent;
+	
 	/**
 	 * Constructor for SootThread.
 	 */
-	public SootThread(Display display, String mainClass) {
+	public SootThread(Display display, String mainClass, SootRunner parent) {
 		super();
 		setDisplay(display);
 		setMainClass(mainClass);
@@ -73,6 +74,8 @@ public class SootThread extends Thread {
        	controller.setDisplay(getDisplay());
         controller.setSootThread(this);
         setListener(controller);
+        
+        setParent(parent);
         this.setName("soot thread");
         //controller.setParent(this);
         	
@@ -102,6 +105,7 @@ public class SootThread extends Thread {
 			
 			soot.G.v().reset();
 			soot.G.v().out = sootOutFinal;
+           
             InteractionHandler.v().setInteractionListener(getListener());
             
 			Class toRun = Class.forName(getMainClass());
@@ -118,7 +122,9 @@ public class SootThread extends Thread {
 					}
 				}
 			}
-			setCfgList(soot.Scene.v().cfgList);
+			setCfgList(soot.Scene.v().getPkgList());
+			//System.out.println("Soot Thread: call graph list: "+getCfgList());
+			getParent().setCfgList(getCfgList());
 			
 			//Main.main(cmdFinal, sootOutFinal);
 		}
@@ -216,6 +222,20 @@ public class SootThread extends Thread {
 	 */
 	public void setListener(IInteractionListener listener) {
 		this.listener = listener;
+	}
+
+	/**
+	 * @return
+	 */
+	public SootRunner getParent() {
+		return parent;
+	}
+
+	/**
+	 * @param runner
+	 */
+	public void setParent(SootRunner runner) {
+		parent = runner;
 	}
 
 }

@@ -37,7 +37,11 @@ public abstract class AbstractAttributesColorer {
             if (getEditorPart().getEditorInput() != null){
                 getDisplay().syncExec(new Runnable(){
                     public void run() {
+                    	IRegion reg = ((AbstractTextEditor)getEditorPart()).getHighlightRange();
                         ((AbstractTextEditor)getEditorPart()).setInput(getEditorPart().getEditorInput());
+                        if (reg != null){
+                        	((AbstractTextEditor)getEditorPart()).setHighlightRange(reg.getOffset(), reg.getLength(), true);
+                        }
                     };
                 });
             }

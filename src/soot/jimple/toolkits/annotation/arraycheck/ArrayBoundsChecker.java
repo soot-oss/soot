@@ -161,16 +161,16 @@ public class ArrayBoundsChecker extends BodyTransformer
                             while (keysIt.hasNext()){
                                 Object next = keysIt.next();
                                 if (next instanceof KeyTag){
-                                    if (((KeyTag)next).analysisType().equals("Array Bounds Analysis")){
+                                    if (((KeyTag)next).analysisType().equals("ArrayCheckTag")){
                                         keysAdded = true;
                                     }
                                 }
                             }
                             if (!keysAdded){
-                                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper", "Array Bounds Analysis"));
-                                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper", "Array Bounds Analysis"));
-                                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper", "Array Bounds Analysis"));
-                                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper", "Array Bounds Analysis"));
+                                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper", "ArrayCheckTag"));
+                                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper", "ArrayCheckTag"));
+                                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper", "ArrayCheckTag"));
+                                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper", "ArrayCheckTag"));
                             }
                         }
 

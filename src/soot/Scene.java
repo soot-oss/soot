@@ -773,4 +773,16 @@ public class Scene  //extends AbstractHost
             }
         }
     }
+
+    ArrayList pkgList;
+
+    public void setPkgList(ArrayList list){
+        pkgList = list;
+    }
+
+    public ArrayList getPkgList(){
+        return pkgList;
+    }
+    
 }
+

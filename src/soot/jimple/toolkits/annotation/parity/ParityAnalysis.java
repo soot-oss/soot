@@ -174,7 +174,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
         else if (val instanceof IntConstant) {
 	        int value = ((IntConstant)val).value;
 	        if ((value % 2) == 0) {
-	            return EVEN;
+                return EVEN;
 	        }
 	        else {
 	            return ODD;
@@ -206,24 +206,34 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
         HashMap out = (HashMap) outValue;
         Stmt    s   = (Stmt)    unit;
 
-	// copy in to out 
-	out.putAll(in);
+	    // copy in to out 
+	    out.putAll(in);
 	
         // for each stmt where leftOp is defintionStmt find the parity
-	// of rightOp and update parity to EVEN, ODD or TOP
+	    // of rightOp and update parity to EVEN, ODD or TOP
 
-	if (s instanceof DefinitionStmt) {
-	  Value left = ((DefinitionStmt)s).getLeftOp();
-	  if (left instanceof Local) {
-	  	Value right = ((DefinitionStmt)s).getRightOp();
-		out.put(left, getParity(out, right));
-        //System.out.println("local val: "+left+" parity: "+out.get(left));
-	  }
-	  /*else {
-	    out.put(left, TOP);
-	  }*/
-	}
+	    if (s instanceof DefinitionStmt) {
+	        Value left = ((DefinitionStmt)s).getLeftOp();
+	        if (left instanceof Local) {
+                if ((left.getType() instanceof IntegerType) || (left.getType() instanceof LongType)){
+	  	            Value right = ((DefinitionStmt)s).getRightOp();
+		            out.put(left, getParity(out, right));
+                }
+	        }
+	    }
 
+        // get all use and def boxes of s 
+        // if use or def is int or long constant add their parity
+        Iterator it = s.getUseAndDefBoxes().iterator();
+        while (it.hasNext()){
+            Object next = it.next();
+            Value val = ((ValueBox)next).getValue();
+            //System.out.println("val: "+val.getClass());
+            if (val instanceof ArithmeticConstant){
+                out.put(val, getParity(out, (ArithmeticConstant)val));
+                //System.out.println("out map: "+out);
+            }
+        }
     }
 
 // STEP 6: Determine value for start/end node, and
@@ -233,25 +243,38 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 // initial approximation: locals with BOTTOM
     protected Object entryInitialFlow()
     {
-	HashMap initMap = new HashMap();
+	/*HashMap initMap = new HashMap();
 	
 	Chain locals = g.getBody().getLocals();
 	Iterator it = locals.iterator();
 	while (it.hasNext()) {
 	  initMap.put(it.next(), BOTTOM);
 	}
-        return initMap;
+        return initMap;*/
+        return newInitialFlow();
     }
         
     protected Object newInitialFlow()
     {
-	HashMap initMap = new HashMap();
+	    HashMap initMap = new HashMap();
 	
-	Chain locals = g.getBody().getLocals();
-	Iterator it = locals.iterator();
-	while (it.hasNext()) {
-	  initMap.put(it.next(), BOTTOM);
-	}
+	    Chain locals = g.getBody().getLocals();
+	    Iterator it = locals.iterator();
+	    while (it.hasNext()) {
+            Local next = (Local)it.next();
+            System.out.println("next local: "+next);
+            if ((next.getType() instanceof IntegerType) || (next.getType() instanceof LongType)){
+	            initMap.put(next, BOTTOM);
+            }
+	    }
+    
+        Iterator boxIt = g.getBody().getUseAndDefBoxes().iterator();
+        while (boxIt.hasNext()){
+            Value val = ((ValueBox)boxIt.next()).getValue();
+            if (val instanceof ArithmeticConstant) {
+                initMap.put(val, getParity(initMap, val));
+            }
+        }
         return initMap;
 
     }

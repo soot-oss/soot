@@ -31,7 +31,8 @@ public abstract class AbstractAttributesComputer {
 	 */
 	protected ArrayList computeFiles(ArrayList names){
 		ArrayList fileList = new ArrayList();
-		IContainer con = (IContainer)getProj().getFolder("sootOutput/attributes/");
+		String sep = System.getProperty("file.separator");
+		IContainer con = (IContainer)getProj().getFolder("sootOutput"+sep+"attributes"+sep);
 		try {
 			IResource [] files = con.members();
 			for (int i = 0; i < files.length; i++){

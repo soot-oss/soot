@@ -26,6 +26,8 @@ import org.eclipse.core.resources.*;
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.resource.*;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.graphics.*;
+import org.eclipse.swt.*;
 
 import java.net.*;
 import java.util.*;
@@ -35,24 +37,7 @@ import ca.mcgill.sable.soot.launching.*;
 import ca.mcgill.sable.soot.resources.*;
 import ca.mcgill.sable.soot.interaction.*;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+
 
 /**
  * The main plugin class to be used in the desktop.
@@ -77,6 +62,9 @@ public class SootPlugin extends AbstractUIPlugin {
 	private ColorManager colorManager;
 	
 	private DataKeeper dataKeeper;
+	
+	private Font sootFont = new Font(null, "Arial", 8, SWT.NORMAL);
+	
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -286,6 +274,20 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setDataKeeper(DataKeeper keeper) {
 		dataKeeper = keeper;
+	}
+
+	/**
+	 * @return
+	 */
+	public Font getSootFont() {
+		return sootFont;
+	}
+
+	/**
+	 * @param font
+	 */
+	public void setSootFont(Font font) {
+		sootFont = font;
 	}
 
 }

@@ -32,6 +32,7 @@
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.draw2d"/>
       <import plugin="org.eclipse.gef"/>
+      <import plugin="ca.mcgill.sable.graph"/>
    </requires>
 
 	

@@ -184,10 +184,10 @@ public class SootPartManager {
 		// area (bring to top if necessary - make list of keys
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart viewPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ISootConstants.ANALYSIS_KEY_VIEW_ID);
-		if ((handler.getKeyList() == null) || handler.getKeyList().isEmpty()){
+		/*if ((handler.getKeyList() == null) || handler.getKeyList().isEmpty()){
 			page.hideView(viewPart);
 		}
-		else { 
+		else {*/ 
 			try {
 				if (viewPart == null) {
 					//System.out.println("view part was null");
@@ -216,7 +216,7 @@ public class SootPartManager {
 			if (viewPart != null){
 				((AnalysisKeyView)viewPart).setInputKeys(handler.getKeyList());
 			}
-		}
+		//}
 	}
 	/**
 	 * @return

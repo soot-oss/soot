@@ -149,10 +149,15 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		fileNames = new ArrayList();
 		StringBuffer sb = new StringBuffer();
 		sb.append(SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getLocation().toOSString());
-		sb.append("/sootOutput/attributes/");
+		sb.append(sep);
+		sb.append("sootOutput");
+		sb.append(sep);
+		sb.append("attributes");
+		sb.append(sep);
+		//sb.append("/sootOutput/attributes/");
 		//System.out.println(sb.toString());
 		String dir = sb.toString();
-		IContainer c = (IContainer)SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getFolder("sootOutput/attributes/");
+		IContainer c = (IContainer)SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getFolder("sootOutput"+sep+"attributes"+sep);
 		try {
 		
 			IResource [] files = c.members();

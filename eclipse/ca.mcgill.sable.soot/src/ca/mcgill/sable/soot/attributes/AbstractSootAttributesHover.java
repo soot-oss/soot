@@ -43,7 +43,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	private IResource rec;
 	private ITextViewer viewer;
 	private IDocument document;
-	
+	public static final String sep = System.getProperty("file.separator");
 	
 	/**
 	 * Method setEditor.

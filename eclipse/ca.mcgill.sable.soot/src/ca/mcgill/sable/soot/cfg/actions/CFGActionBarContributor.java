@@ -46,10 +46,11 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		flowSelect = new FlowSelectAction(null);
 		addAction(flowSelect);
 		
-		stepForward = new StepForwardAction(null);
-		addAction(stepForward);
 		stepBackward = new StepBackwardAction(null);
 		addAction(stepBackward);
+		stepForward = new StepForwardAction(null);
+		addAction(stepForward);
+		
 		finishMethod = new FinishMethodAction(null);
 		addAction(finishMethod);
 		nextMethod = new NextMethodAction(null);
@@ -70,8 +71,9 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		super.contributeToToolBar(toolBarManager);
 		
 		toolBarManager.add(new Separator());
-		toolBarManager.add(getAction(StepForwardAction.STEP_FORWARD));
 		toolBarManager.add(getAction(StepBackwardAction.STEP_BACKWARD));
+		
+		toolBarManager.add(getAction(StepForwardAction.STEP_FORWARD));
 		toolBarManager.add(getAction(FinishMethodAction.FINISH_METHOD));	
 		toolBarManager.add(getAction(NextMethodAction.NEXT_METHOD));	
 

@@ -49,6 +49,7 @@ public class SootRunner implements IRunnableWithProgress {
 		setDisplay(display);
 		setCmd(cmd);
 		setMainClass(mainClass);
+		
 	}
 
 	/**
@@ -71,7 +72,7 @@ public class SootRunner implements IRunnableWithProgress {
         	//controller.setDisplay(getDisplay());
         	//controller.setParent(this);
         	
-            SootThread sootThread = new SootThread(getDisplay(), getMainClass());
+            SootThread sootThread = new SootThread(getDisplay(), getMainClass(), this);
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
             //sootThread.setListener(controller);
@@ -88,9 +89,13 @@ public class SootRunner implements IRunnableWithProgress {
         	//InteractionController controller = new InteractionController();
         	//controller.run();
         	
+        	//cfgList = sootThread.getCfgList();
+            //System.out.println("CFG List: "+getCfgList());
+      	
         	sootThread.join();
-        	setCfgList(sootThread.getCfgList());
-            System.out.println("CFG List: "+getCfgList());
+        	//System.out.println("Soot Runner: Call graph list: "+getCfgList());
+        	getParent().setCfgList(getCfgList());
+            //System.out.println("CFG List: "+getCfgList());
       	}
       	catch (Exception e) {
       		System.out.println(e.getStackTrace());

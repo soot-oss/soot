@@ -50,8 +50,9 @@ public class SootAttributesJavaColorer extends AbstractAttributesColorer impleme
 		
 		getDisplay().asyncExec( new Runnable() {
 			public void run() {
-
-                setBgColor(getViewer().getTextWidget().getBackground());
+				if ((getViewer() != null) && (getViewer().getTextWidget() != null)){
+                	setBgColor(getViewer().getTextWidget().getBackground());
+				}
 			};
 		});
 		

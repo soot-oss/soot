@@ -119,6 +119,12 @@ public class CFGNodeEditPart
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart arg0) {
 		// TODO Auto-generated method stub
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
+		Point p = new Point(x+width/2, y+height);
+		return new XYAnchor(p);*/
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -127,6 +133,12 @@ public class CFGNodeEditPart
 	 */
 	public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart arg0) {
 		// TODO Auto-generated method stub
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
+		Point p = new Point(x+width/2, y);
+		return new XYAnchor(p);*/
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -135,6 +147,13 @@ public class CFGNodeEditPart
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(Request arg0) {
 		// TODO Auto-generated method stub
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
+		Point p = new Point(x+width/2, y+height);
+		return new XYAnchor(p);*/
+		
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -143,6 +162,12 @@ public class CFGNodeEditPart
 	 */
 	public ConnectionAnchor getTargetConnectionAnchor(Request arg0) {
 		// TODO Auto-generated method stub
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
+		Point p = new Point(x+width/2, y);
+		return new XYAnchor(p);*/
 		return new ChopboxAnchor(getFigure());
 	}
 

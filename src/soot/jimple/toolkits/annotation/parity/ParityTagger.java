@@ -51,10 +51,15 @@ public class ParityTagger extends BodyTransformer
             while( it.hasNext() ) {
 			
                 final Value variable = (Value) it.next();
-
-                StringTag t = new StringTag(
-                        "Parity variable: "+variable+" "+parityVars.get(variable) , "Parity Analysis");
-                s.addTag( t );
+                if ((variable instanceof IntConstant) || (variable instanceof LongConstant)){
+                    // don't add string tags (just color tags)
+                }
+                else{
+                    StringTag t = new StringTag(
+                        "Parity variable: "+variable+" "+
+                        parityVars.get(variable) , "Parity Analysis");
+                    s.addTag( t );
+                }
             }
 
 			HashMap parityVarsUses = (HashMap) a.getFlowBefore( s );

@@ -17,7 +17,10 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.swt.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.callgraph.*;
 import ca.mcgill.sable.soot.cfg.*;
+import soot.jimple.toolkits.annotation.callgraph.*;
+import soot.*;
 
 /**
  * @author jlhotak
@@ -35,6 +38,7 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	private SootRunner parent;
 	private soot.toolkits.graph.DirectedGraph currentGraph;
 	private ModelCreator mc;
+	private CallGraphGenerator generator;
 	
 	/**
 	 * 
@@ -100,7 +104,17 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 			handleReplaceEvent(getEvent().info());
 		}
 		
+		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_START){
+			handleCallGraphStartEvent(getEvent().info());
+		}
 		
+		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_NEXT_METHOD){
+			handleCallGraphNextMethodEvent(getEvent().info());
+		}
+		
+		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_PART){
+			handleCallGraphPartEvent(getEvent().info());
+		}
 	}	
 	
 	private Shell getShell(){
@@ -244,6 +258,39 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		//waitForContinue();
 	}
 	
+	
+	private void handleCallGraphStartEvent(Object info){
+		setGenerator(new CallGraphGenerator());
+		getGenerator().setInfo((CallGraphInfo)info);
+		getGenerator().setController(this);
+		final CallGraphGenerator cgg = getGenerator();
+		getDisplay().syncExec(new Runnable(){
+			public void run(){
+				cgg.run();
+			}
+		});
+		waitForContinue();
+	}
+	
+	private void handleCallGraphNextMethodEvent(Object info){
+		SootMethod meth = (SootMethod)info;
+		InteractionHandler.v().setNextMethod(meth);
+		System.out.println("next meth: "+meth.getName());
+		InteractionHandler.v().setInteractionCon();
+	}
+	
+	private void handleCallGraphPartEvent(Object info){
+		final CallGraphGenerator cgg = getGenerator();
+		final Object cgInfo = info;
+		getDisplay().syncExec(new Runnable(){
+			public void run(){
+				System.out.println("received next meth");
+				cgg.addToGraph(cgInfo);
+		}
+		});
+		waitForContinue();
+	}
+	
 	/**
 	 * @return
 	 */
@@ -349,6 +396,20 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	 */
 	public void setMc(ModelCreator creator) {
 		mc = creator;
+	}
+
+	/**
+	 * @return
+	 */
+	public CallGraphGenerator getGenerator() {
+		return generator;
+	}
+
+	/**
+	 * @param generator
+	 */
+	public void setGenerator(CallGraphGenerator generator) {
+		this.generator = generator;
 	}
 
 }

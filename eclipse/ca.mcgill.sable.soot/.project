@@ -3,6 +3,7 @@
 	<name>ca.mcgill.sable.soot</name>
 	<comment></comment>
 	<projects>
+		<project>ca.mcgill.sable.graph</project>
 		<project>org.eclipse.core.boot</project>
 		<project>org.eclipse.core.resources</project>
 		<project>org.eclipse.core.runtime</project>

@@ -2635,6 +2635,23 @@ Checker.</p>
 						<default>false</default>
 					</boolopt>
                 </sub_phase>
+                <sub_phase>
+					<name>Call Graph Grapher</name>
+					<class>CGGOptions</class>
+                    <alias>wjap.cgg</alias>
+					<short_desc>Creates graphical call graph.</short_desc>
+					<long_desc><p>Creates graphical call graph.</p></long_desc> 
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+					<boolopt>
+						<name>Show Library Methods</name>
+						<alias>show-lib-meths</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
       <phase>
         <name>Shimple Control</name>

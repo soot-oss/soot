@@ -40,12 +40,12 @@ import ca.mcgill.sable.soot.editors.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.jdt.core.*;
 import ca.mcgill.sable.soot.cfg.*;
-
-import com.sun.rsasign.o;
-
+import ca.mcgill.sable.graph.testing.*;
+import ca.mcgill.sable.graph.*;
 
 import java.util.*;
-
+import soot.jimple.toolkits.annotation.callgraph.*;
+			
 /**
  * Main Soot Launcher. Handles running Soot directly (or as a 
  * process) 
@@ -135,7 +135,7 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
             op = new SootRunner(temp, Display.getCurrent(), mainClass);
            	((SootRunner)op).setParent(this);
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
-            setCfgList(((SootRunner)op).getCfgList());
+            //setCfgList(((SootRunner)op).getCfgList());
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
@@ -288,9 +288,21 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
             }
 		}*/
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
+		//System.out.println("after update part");
 		// run cfgviewer
+		//System.out.println("call graph list: "+getCfgList());
 		if (getCfgList() != null){
-			Iterator it = getCfgList().iterator();
+			// currently this is the call graph list of pkgs
+			//System.out.println("callgraph list not null");
+			GraphGenerator generator = new GraphGenerator();
+			//System.out.println("new generator made");
+			generator.setChildren(convertPkgList(getCfgList()));
+			GraphPlugin.getDefault().setGenerator(generator);
+		
+			generator.run(null);
+			
+			
+			/*Iterator it = getCfgList().iterator();
 			while (it.hasNext()){
 				ModelCreator mc = new ModelCreator();
 				System.out.println("struct: "+getStructured().getFirstElement().getClass());
@@ -299,7 +311,7 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 				//mc.createModel();
 				mc.displayModel();
 			
-			}
+			}*/
 		}
 		//CFGViewer cv;
 		//Iterator it = getCfgList().iterator();
@@ -307,6 +319,37 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		//	cv = new CFGViewer();
 		//	cv.run(it.next());
 		//}
+	}
+	
+	HashMap alreadyDone = new HashMap();
+	
+	private ArrayList convertPkgList(ArrayList pkgList){
+		ArrayList conList = new ArrayList();
+		Iterator it = pkgList.iterator();
+		while(it.hasNext()){
+			CallData cd = (CallData)it.next();
+			System.out.println("cd: "+cd);
+			TestNode tn = null;
+			if (alreadyDone.containsKey(cd)){
+				System.out.println("already done: "+cd);
+				tn = (TestNode)alreadyDone.get(cd);
+			}
+			else {
+				tn = new TestNode();
+				tn.setData(cd.getData());
+				alreadyDone.put(cd, tn);
+				if (cd.getChildren().size() != 0){
+					tn.setChildren(convertPkgList(cd.getChildren()));
+				}
+				if (cd.getOutputs().size() != 0){
+					tn.setOutputs(convertPkgList(cd.getOutputs()));
+				}
+			}
+			conList.add(tn);
+			
+		}
+		
+		return conList;
 	}
 	
 

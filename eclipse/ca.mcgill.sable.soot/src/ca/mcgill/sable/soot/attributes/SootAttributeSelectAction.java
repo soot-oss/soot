@@ -116,13 +116,15 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 						PopupListSelector popup = new PopupListSelector(window.getShell());
 						popup.setItems(list);
 						
+						int listWidth = getListWidth(list);
+						
 						if (getEditor() instanceof JimpleEditor){
 							int topIndex = ((JimpleEditor)getEditor()).getViewer().getTopIndex();
                             //System.out.println("Marker Offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
                             //System.out.println("Top Inset: "+((JimpleEditor)getEditor()).getViewer().getTopInset());
                             //System.out.println("Document First Visible Line Offset: "+getDocument().getLineOffset(topIndex));
                             //System.out.println("Document Line Offset: "+getDocument().getLineOffset(getLineNumber()+1));
-							Rectangle rect = new Rectangle(400, (getLineNumber()+1-topIndex), 650, 45 );
+							Rectangle rect = new Rectangle(320, (getLineNumber()+1-topIndex), listWidth, 45 );
 							
 							popup.open(rect);
                             //System.out.println("popup open");
@@ -134,7 +136,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 							//System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
 							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
 							pos = pos / getLineNumber();
-							Rectangle rect = new Rectangle(320, getLineNumber()+1-topIndex, 660, 45 );
+							Rectangle rect = new Rectangle(320, getLineNumber()+1-topIndex, listWidth, 45 );
 							//System.out.println("popup open");
 							popup.open(rect);
 
@@ -154,6 +156,16 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		
 	}
 	
+	public int getListWidth(String[] list){
+		int width = 0;
+		for (int i = 0; i < list.length; i++){
+		
+			String next = list[i];
+			width = next.length() > width ? next.length() : width;
+		}
+		
+		return width * 6;
+	}
 	
 	public void handleSelection(String selected, ArrayList links){
 		if (selected == null) return;
@@ -183,11 +195,17 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 					
 					((JimpleEditor)getLinkToEditor()).getViewer().setRangeIndication(selOffset, 1, true);
 					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
-			
+					
 				}
 				else {
-					getLinkToEditor().selectAndReveal(selOffset, 0);
 					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).selectAndReveal(selOffset, 0);
+					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).setHighlightRange(selOffset, 1, true);
+					
+					//getLinkToEditor().selectAndReveal(selOffset, 0);
+					
+					//getLinkToEditor().selectAndReveal(selOffset, 0);
+					//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
 			
 				}
 			}
