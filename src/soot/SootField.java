@@ -75,12 +75,15 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
         return name;
     }
 
-    public String getSignature()
+    public String getSignature() {
+        return getSignature(declaringClass, getName(), getType());
+    }
+    public static String getSignature(SootClass cl, String name, Type type)
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
-        buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()) + ">");
+        buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
+        buffer.append(type + " " + Scene.v().quotedNameOf(name) + ">");
 
         // space optimizations due to Michael Pan.
         // works because of implementation details of Sun's JDK.

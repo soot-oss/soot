@@ -868,4 +868,65 @@ public class Jimple
     {
         return new JimpleBody();
     }
+
+    public StaticFieldRef newStaticFieldRef(SootFieldRef f) {
+        return newStaticFieldRef(f.resolve());
+    }
+    public InstanceFieldRef newInstanceFieldRef(Value base, SootFieldRef f) {
+        return newInstanceFieldRef(base, f.resolve());
+    }
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, List args) {
+        return newStaticInvokeExpr(method.resolve(), args);
+    }
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, List args) {
+        return newSpecialInvokeExpr(base, method.resolve(), args);
+    }
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, List args) {
+        return newVirtualInvokeExpr(base, method.resolve(), args);
+    }
+
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, List args) {
+        return newInterfaceInvokeExpr(base, method.resolve(), args);
+    }
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method) {
+        return newStaticInvokeExpr(method.resolve());
+    }
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method) {
+        return newSpecialInvokeExpr(base, method.resolve());
+    }
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method) {
+        return newVirtualInvokeExpr(base, method.resolve());
+    }
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method) {
+        return newInterfaceInvokeExpr(base, method.resolve());
+    }
+
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg) {
+        return newStaticInvokeExpr(method.resolve(), arg);
+    } 
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg) {
+        return newSpecialInvokeExpr(base, method.resolve(), arg);
+    }
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg) {
+        return newVirtualInvokeExpr(base, method.resolve(), arg);
+    }
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg) {
+        return newInterfaceInvokeExpr(base, method.resolve(), arg);
+    }
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethodRef method, Value arg1, Value arg2) {
+        return newStaticInvokeExpr(method.resolve(), arg1, arg2);
+    }
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
+        return newSpecialInvokeExpr(base, method.resolve(), arg1, arg2);
+    }
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
+        return newVirtualInvokeExpr(base, method.resolve(), arg1, arg2);
+    }
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethodRef method, Value arg1, Value arg2) {
+        return newInterfaceInvokeExpr(base, method, arg1, arg2);
+    }
 }

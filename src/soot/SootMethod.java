@@ -445,13 +445,12 @@ public class SootMethod
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.
      */
     public String getSignature() {
-        String name = getName();
-        List params = getParameterTypes();
-        Type returnType = getReturnType();
-
+        return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
+    }
+    public static String getSignature(SootClass cl, String name, List params, Type returnType) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(
-            "<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
+            "<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
         buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
 

@@ -815,6 +815,23 @@ public class Scene  //extends AbstractHost
     public ArrayList getPkgList(){
         return pkgList;
     }
-    
+
+    /** Create an unresolved reference to a method. */
+    public SootMethodRef makeMethodRef( 
+            SootClass declaringClass,
+            String name,
+            List/*Type*/ parameterTypes,
+            Type returnType ) {
+        return new AbstractSootMethodRef(declaringClass, name, parameterTypes,
+                returnType);
+    }
+
+    /** Create an unresolved reference to a field. */
+    public SootFieldRef makeFieldRef( 
+            SootClass declaringClass,
+            String name,
+            Type type ) {
+        return new AbstractSootFieldRef(declaringClass, name, type);
+    }
 }
 
