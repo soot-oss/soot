@@ -26,7 +26,7 @@ public class Hierarchy
         // Well, this used to be describable by 'Duh'.
         // Construct the subclasses hierarchy and the subinterfaces hierarchy.
         {
-            List allClasses = sc.getClasses();
+            Chain allClasses = sc.getClasses();
 
             classToSubclasses = new HashMap(allClasses.size() * 2 + 1, 0.7f);
             interfaceToSubinterfaces = new HashMap(allClasses.size() * 2 + 1, 0.7f);

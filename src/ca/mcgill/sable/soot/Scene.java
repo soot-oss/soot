@@ -84,12 +84,16 @@ public class Scene
 {
     private static Scene constant = new Scene();
     
-    List classes = new ArrayList();
+    Chain classes = new HashChain();
+    Chain applicationClasses = new HashChain();
+    Chain libraryClasses = new HashChain();
+    Chain contextClasses = new HashChain();
+    Chain signatureClasses = new HashChain();
     
     Map nameToClass = new HashMap();
     Map methodSignatureToMethod = new HashMap();
     Map fieldSignatureToField = new HashMap();
-    
+
     public static Scene v()
     {
         return constant;
@@ -188,11 +192,63 @@ public class Scene
     }
 
     /**
-     * Returns an unbacked list of the classes in this manager.
+     * Returns an backed chain of the classes in this manager.
      */
      
-    public List getClasses()
+    public Chain getClasses()
     {
-        return Collections.unmodifiableList(classes);
+        return classes;
+    }
+
+    /* The four following chains are mutually disjoint. */
+
+    /**
+     * Returns a chain of the application classes in this scene.
+     * These classes are the ones which can be freely analysed & modified.
+     */
+    public Chain getApplicationClasses()
+    {
+        return applicationClasses;
+    }
+
+    /**
+     * Returns a chain of the library classes in this scene.
+     * These classes can be analysed but not modified.
+     */
+    public Chain getLibraryClasses()
+    {
+        return libraryClasses;
+    }
+
+    /**
+     * Returns a chain of the context classes in this scene.
+     * These classes may not be analysed, typically for speed reasons.
+     */
+    public Chain getContextClasses()
+    {
+        return contextClasses;
+    }
+
+    /**
+     * Returns a chain of the signature classes in this scene.
+     * These classes are referred to by other classes, but cannot be loaded.
+     */
+    public Chain getSignatureClasses()
+    {
+        return signatureClasses;
+    }
+
+    Chain getContainingChain(SootClass c)
+    {
+        if (c.isApplicationClass())
+            return getApplicationClasses();
+        else if (c.isLibraryClass())
+            return getLibraryClasses();
+        else if (c.isContextClass())
+            return getContextClasses();
+        else if (c.isSignatureClass())
+            return getSignatureClasses();
+
+        return null;
     }
 }

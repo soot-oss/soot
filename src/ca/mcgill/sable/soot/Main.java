@@ -215,14 +215,24 @@ public class Main
         int firstNonOption = 0;
     
         boolean isRecursing = false;
-        List excludingPackages = new ArrayList();
-        List classesToTransform;
+        boolean isAnalyzingLibraries = false;
+
+        // The following lists are paired.  false is exclude in the first list.
+        List packageInclusionFlags = new ArrayList();
+        List packageInclusionMasks = new ArrayList();
+
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("java");
+
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("sun");
+
         totalTimer.start();
 
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.96");
+            System.out.println("Soot version 1.beta.4.dev.97");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -242,13 +252,16 @@ public class Main
             System.out.println("  -J, --jimple               produce .jimple code");
             System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
             System.out.println("  -G, --grimple              produce .grimple files");
-            System.out.println("  -a, --jasmin               produce .jasmin files");
+            System.out.println("  -s, --jasmin               produce .jasmin files");
             System.out.println("  -c, --class                produce .class files");
             System.out.println("");
             System.out.println("  -d PATH                    store produced files in PATH");
             System.out.println("  -r, --recurse              process dependent classfiles as well");
-            System.out.println("  -x, --exclude PACKAGE      exclude classfiles in PACKAGE (e.g. java)"); 
-            System.out.println("                             from transformation");
+            System.out.println("  -x, --exclude PACKAGE      marks classfiles in PACKAGE (e.g. java)"); 
+            System.out.println("                             as library classes");
+            System.out.println("  -i, --include PACKAGE      marks classfiles in PACKAGE (e.g. java.util)");
+            System.out.println("                             as application classes");
+            System.out.println("  -a, --analyze-libraries    permit analysis of library classes");
             System.out.println("");
             System.out.println("Construction options:");
             System.out.println("  --jasmin-source REP        produce jasmin from REP (jasmin, grimp, or baf)");
@@ -289,7 +302,7 @@ public class Main
                 
                 if(arg.equals("-j") || arg.equals("--jimp"))
                     targetExtension = ".jimp";
-                else if(arg.equals("-a") || arg.equals("--jasmin"))
+                else if(arg.equals("-s") || arg.equals("--jasmin"))
                     targetExtension = ".jasmin";
                 else if(arg.equals("-J") || arg.equals("--jimple"))
                     targetExtension = ".jimple";
@@ -356,8 +369,21 @@ public class Main
                 else if(arg.equals("-x") || arg.equals("--exclude"))
                 {
                     if(++i < args.length)
-                        excludingPackages.add(args[i]);
+                    {
+                        packageInclusionFlags.add(new Boolean(false));
+                        packageInclusionMasks.add(args[i]);
+                    }
                 }
+                else if(arg.equals("-i") || arg.equals("--include"))
+                {
+                    if(++i < args.length)
+                    {
+                        packageInclusionFlags.add(new Boolean(true));
+                        packageInclusionMasks.add(args[i]);
+                    }
+                }
+                else if(arg.equals("-A") || arg.equals("--analyze-libraries"))
+                    isAnalyzingLibraries = true;
                 else if(arg.equals("--jasmin-source"))
                 {
                     if(++i < args.length)
@@ -390,42 +416,63 @@ public class Main
         
         // Generate classes to process
         {
-            classesToTransform = new LinkedList();
-            
             for(int i = firstNonOption; i < args.length; i++)
             {
                 SootClass c = cm.loadClassAndSupport(args[i]);
                 
                 if(mainClass == null)
-                    mainClass = c;
+                    mainClass = c;               
                     
-                classesToTransform.add(c);
+                c.setApplicationClass(); 
             }
             
             if(isRecursing)
             {
-                classesToTransform = new LinkedList();
-                classesToTransform.addAll(cm.getClasses());
-             }   
+                List cc = new ArrayList(); cc.addAll(cm.getContextClasses());
+                Iterator contextClassesIt = cc.iterator();
+                while (contextClassesIt.hasNext())
+                    ((SootClass)contextClassesIt.next()).setApplicationClass();
+            }   
                          
-            // Remove all classes from excludingPackages
+            // Remove/add all classes from packageInclusionMask as per piFlag
             {
-                Iterator classIt = classesToTransform.iterator();
+                List applicationPlusContextClasses = new ArrayList();
+                applicationPlusContextClasses.addAll(cm.getApplicationClasses());
+                applicationPlusContextClasses.addAll(cm.getContextClasses());
+
+                Iterator classIt = applicationPlusContextClasses.iterator();
                 
                 while(classIt.hasNext())
                 {
                     SootClass s = (SootClass) classIt.next();
                     
-                    Iterator packageIt = excludingPackages.iterator();
+                    Iterator packageCmdIt = packageInclusionFlags.iterator();
+                    Iterator packageMaskIt = packageInclusionMasks.iterator();
                     
-                    while(packageIt.hasNext())
+                    while(packageCmdIt.hasNext())
                     {
-                        String pkg = (String) packageIt.next();
+                        boolean pkgFlag = ((Boolean) packageCmdIt.next()).booleanValue();
+                        String pkgMask = (String) packageMaskIt.next();
                         
-                        if(s.getPackageName().startsWith(pkg))
-                            classIt.remove();
+                        if (pkgFlag)
+                        {
+                            if (s.isContextClass() && s.getPackageName().startsWith(pkgMask))
+                                s.setApplicationClass();
+                        }
+                        else
+                        {
+                            if (s.isApplicationClass() && s.getPackageName().startsWith(pkgMask))
+                                s.setContextClass();
+                        }
                     }
                 }
+            }
+
+            if (isAnalyzingLibraries)
+            {
+                Iterator contextClassesIt = cm.getContextClasses().iterator();
+                while (contextClassesIt.hasNext())
+                    ((SootClass)contextClassesIt.next()).setLibraryClass();
             }
         }
         
@@ -456,7 +503,7 @@ public class Main
         
         // Handle each class individually
         {
-            Iterator classIt = classesToTransform.iterator();
+            Iterator classIt = cm.getApplicationClasses().iterator();
             
             while(classIt.hasNext())
             {

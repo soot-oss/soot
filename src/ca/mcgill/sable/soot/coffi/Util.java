@@ -141,6 +141,7 @@ public class Util
         {
             SootClass newClass = new SootClass(className);
             scene.addClass(newClass);
+            newClass.setContextClass();
             
             markedClasses.add(newClass);
             classesToResolve.addLast(newClass);
@@ -162,6 +163,7 @@ public class Util
             
         SootClass newClass = new SootClass(className);
         scene.addClass(newClass);
+        newClass.setContextClass();
         
         markedClasses.add(newClass);
         classesToResolve.addLast(newClass);

@@ -227,6 +227,9 @@ public class SootMethod
 
     public Body getActiveBody() 
     {
+        if (declaringClass.isContextClass() || declaringClass.isSignatureClass())
+            throw new RuntimeException("cannot get active body for context or signature class!");
+
         if(!hasActiveBody())
             throw new RuntimeException("no active body present for method " + getSignature());
             
@@ -239,6 +242,9 @@ public class SootMethod
      
     public void setActiveBody(Body body)
     {
+        if (declaringClass.isContextClass() || declaringClass.isSignatureClass())
+            throw new RuntimeException("cannot set active body for context or signature class!");
+
         activeBody = body;
     }
 

@@ -114,9 +114,9 @@ public class SootClass
 
     String name;
     int modifiers;
-    List fields = new ArrayList();
-    List methods = new ArrayList();
-    List interfaces = new ArrayList();
+    Chain fields = new HashChain();
+    Chain methods = new HashChain();
+    Chain interfaces = new HashChain();
 
     Scene scene;
     boolean isInScene;
@@ -163,10 +163,10 @@ public class SootClass
     }
 
     /**
-     * Returns a backed list of fields.
+     * Returns a backed Chain of fields.
      */
 
-    public List getFields()
+    public Chain getFields()
     {
         return fields;
     }
@@ -367,10 +367,10 @@ public class SootClass
     }
 
     /**
-     * Returns a backed list of methods.
+     * Returns a backed Chain of methods.
      */
 
-    public List getMethods()
+    public Chain getMethods()
     {
         return methods;
     }
@@ -610,10 +610,10 @@ public class SootClass
     }
 
     /**
-     * Returns a backed list of the  interfaces that are direclty implemented by this class. (see getInterfaceCount())
+     * Returns a backed Chain of the interfaces that are directly implemented by this class. (see getInterfaceCount())
      */
 
-    public List getInterfaces()
+    public Chain getInterfaces()
     {
         return interfaces;
     }
@@ -992,9 +992,55 @@ public class SootClass
         }
     }
 
+    public boolean isApplicationClass()
+    {
+        return Scene.v().getApplicationClasses().contains(this);
+    }
+
+    public void setApplicationClass()
+    {
+        Chain c = Scene.v().getContainingChain(this);
+        if (c != null)
+            c.remove(this);
+        Scene.v().getApplicationClasses().add(this);
+    }
+
+    public boolean isLibraryClass()
+    {
+        return Scene.v().getLibraryClasses().contains(this);
+    }
+
+    public void setLibraryClass()
+    {
+        Chain c = Scene.v().getContainingChain(this);
+        if (c != null)
+            c.remove(this);
+        Scene.v().getLibraryClasses().add(this);
+    }
+
+    public boolean isContextClass()
+    {
+        return Scene.v().getContextClasses().contains(this);
+    }
+
+    public void setContextClass()
+    {
+        Chain c = Scene.v().getContainingChain(this);
+        if (c != null)
+            c.remove(this);
+        Scene.v().getContextClasses().add(this);
+    }
+
+    public boolean isSignatureClass()
+    {
+        return Scene.v().getSignatureClasses().contains(this);
+    }
+
+    public void setSignatureClass()
+    {
+        Chain c = Scene.v().getContainingChain(this);
+        if (c != null)
+            c.remove(this);
+        Scene.v().getSignatureClasses().add(this);
+    }
 }
-
-
-
-
-

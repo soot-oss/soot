@@ -368,12 +368,16 @@ public class HashChain extends AbstractCollection
             if(a == null) {
                 if(b != null)
                     firstItem = b.getItem();
+                else
+                    firstItem = null;
             } else 
                 a.setNext(b);
           
             if(b == null){
                 if(a != null)
                     lastItem = a.getItem();
+                else
+                    lastItem = null;
             }
             else
                 b.setPrevious(a);
