@@ -28,7 +28,7 @@
  * DotGraph provides an interface to SOOT for generating DOT language
  * for graphviz from ATT research lab.
  *
- * Intended ussage: virtualize CFG, graphes, etc...
+ * Intended usage: virtualize CFG, graphes, etc...
  *
  * @author Feng Qian
  */
@@ -86,25 +86,16 @@ public class DotGraph implements Renderable{
   }
 
   /**
-   * Draws a directed edge
+   * Draws a directed edge (including the source and end nodes,
+   * if they have not already been drawn).
    * @param from, the source node
    * @param to, the end node
    * @return a graph edge
    */
   public DotGraphEdge drawEdge(String from, String to) {
 
-    DotGraphNode src = (DotGraphNode)nodes.get(from);
-    if (src == null) {
-      src = new DotGraphNode(from);
-      nodes.put(from, src);
-    } 
-
-    DotGraphNode dst = (DotGraphNode)nodes.get(to);
-    if (dst == null) {
-      dst = new DotGraphNode(to);
-      nodes.put(to, dst);
-    }
-
+    DotGraphNode src = drawNode(from);
+    DotGraphNode dst = drawNode(to);
     DotGraphEdge edge = new DotGraphEdge(src, dst);
     
     this.drawElements.add(edge);
@@ -113,16 +104,29 @@ public class DotGraph implements Renderable{
   }
 
   /**
-   * Gets the graph node by name.
-   * @param name, unique name of the node.
+   * Draws a node.
+   * @param name, the node to draw.
+   * @return the {@link DotGraphNode} corresponding to the 
+   * specified name.
    */
-  public DotGraphNode getNode(String name){
+  public DotGraphNode drawNode(String name){
     DotGraphNode node = (DotGraphNode)nodes.get(name);
     if (node == null) {
       node = new DotGraphNode(name);
       nodes.put(name, node);
+      this.drawElements.add(node);
     }
     return node;
+  }
+
+  /**
+   * Gets the graph node by name.
+   * @param name, unique name of the node.
+   * @return the node with the specified name, or <code>null</code>
+   * if there is no such node.
+   */
+  public DotGraphNode getNode(String name){
+    return (DotGraphNode)nodes.get(name);
   }
 
   /**

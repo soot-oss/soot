@@ -94,9 +94,6 @@ public class DotGraphEdge implements Renderable {
   }
 
   public void render(OutputStream out, int indent) throws IOException {
-    this.start.render(out, indent);
-    this.end.render(out, indent);
-
     StringBuffer line = new StringBuffer(start.getName());
     line.append((this.isDirected)?"->":"--");
     line.append(end.getName());

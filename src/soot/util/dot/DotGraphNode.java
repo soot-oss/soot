@@ -69,23 +69,17 @@ public class DotGraphNode implements Renderable{
     this.attributes.add(new DotGraphAttribute(id, value));    
   }
 
-  /* only when node's attributes are not empty, render the node */
   public void render(OutputStream out, int indent) throws IOException {
-    if (this.attributes == null) {
-      return;
-    }
-
     StringBuffer line = new StringBuffer(this.getName());
-
-    line.append(" [");
-    Iterator attrIt = this.attributes.iterator();
-    while (attrIt.hasNext()) {
-      DotGraphAttribute attr = (DotGraphAttribute)attrIt.next();
-      line.append(attr.toString());
-      line.append(",");
+    if (this.attributes != null) {
+      line.append(" [");
+      for (Iterator attrIt = this.attributes.iterator(); attrIt.hasNext(); ) {
+	DotGraphAttribute attr = (DotGraphAttribute)attrIt.next();
+	line.append(attr.toString());
+	line.append(",");
+      }
+      line.append("];");
     }
-    line.append("];");
-
     DotGraphUtility.renderLine(out, new String(line), indent);
   }
 }
