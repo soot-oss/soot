@@ -28,17 +28,33 @@ public class SootProjectLauncher extends SootLauncher {
 
 	//private String output_location;
 	private String process_path;
+	private String classpathAppend = null;
 	
 	public void run(IAction action) {
 		super.run(action);
 		//super.resetSootOutputFolder();
 		try {
 			setProcess_path(platform_location+getSootSelection().getJavaProject().getOutputLocation().toOSString());
+			addJars();
 		}
 		catch(Exception e1) {
 			System.out.println(e1.getMessage());
 		}
 		//setOutput_location(platform_location+getSootOutputFolder().getFullPath().toOSString());
+	}
+	
+	/**
+	 * Sets the classpathAppend.
+	 * @param classpathAppend The classpathAppend to set
+	 */
+	public void setClasspathAppend(String ca) {
+		if (this.classpathAppend == null){
+			this.classpathAppend = ca;
+		}
+		else {
+			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
+		}
+		System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
 	/**
@@ -71,6 +87,13 @@ public class SootProjectLauncher extends SootLauncher {
 	 */
 	public void setProcess_path(String process_path) {
 		this.process_path = process_path;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getClasspathAppend() {
+		return classpathAppend;
 	}
 
 }

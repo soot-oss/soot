@@ -42,7 +42,7 @@ public class DavaDecompileProjectLauncher extends SootProjectLauncher {
 		
 		ArrayList commands = new ArrayList();
 		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
-		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend()+getSootClasspath().getSeparator()+getProcess_path());
 		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 			
 				/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);

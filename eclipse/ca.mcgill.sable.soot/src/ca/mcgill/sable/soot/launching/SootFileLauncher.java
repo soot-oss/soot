@@ -64,6 +64,23 @@ public class SootFileLauncher extends SootLauncher {
 		//handleFiles();
     }
     
+    /*private void addJars(){
+    	try {
+    	
+    		IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
+    		for (int i = 0; i < roots.length; i++){
+    			if (roots[i].isArchive()){
+    				System.out.println("Jar File: "+roots[i].getPath().toOSString());
+    				if (roots[i].getRawClasspathEntry().getEntryKind() == IClasspathEntry.CPE_LIBRARY){
+						setClasspathAppend(platform_location+roots[i].getPath().toOSString());
+    				}
+    			}
+    		}
+    	}
+    	catch (JavaModelException e){
+    	}
+    }*/
+    
     public void handleFiles(){
         
 		//super.resetSootOutputFolder();
@@ -75,6 +92,7 @@ public class SootFileLauncher extends SootLauncher {
 			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 			IPackageFragment pf = (IPackageFragment) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 			setClasspathAppend(platform_location+pfr.getPath().toOSString());
+			addJars();
 			if (pf.isDefaultPackage()) {
 				setToProcess(removeFileExt(cf.getElementName()));
 			}
@@ -105,6 +123,7 @@ public class SootFileLauncher extends SootLauncher {
 			ICompilationUnit cu = getSootSelection().getJavaFile();
 			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 			IPackageFragment pf = (IPackageFragment) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+            addJars();
             if (isSrcPrec() && getSrcPrec().equals("java")){
                 setClasspathAppend(platform_location+pfr.getPath().toOSString());    
             }
@@ -223,8 +242,14 @@ public class SootFileLauncher extends SootLauncher {
 	 * Sets the classpathAppend.
 	 * @param classpathAppend The classpathAppend to set
 	 */
-	public void setClasspathAppend(String classpathAppend) {
-		this.classpathAppend = classpathAppend;
+	public void setClasspathAppend(String ca) {
+		if (this.classpathAppend == null){
+			this.classpathAppend = ca;
+		}
+		else {
+			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
+		}
+		System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
 	/**

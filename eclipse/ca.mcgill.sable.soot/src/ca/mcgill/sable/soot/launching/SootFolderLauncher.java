@@ -27,6 +27,7 @@ import org.eclipse.jface.action.*;
 public class SootFolderLauncher extends SootLauncher {
 
 	private String processPath;
+	private String classpathAppend = null;
 	//private String outputLocation;
 
 	public void run(IAction action) {
@@ -36,8 +37,23 @@ public class SootFolderLauncher extends SootLauncher {
 		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
 		
 		if (getSootSelection().getType() == SootSelection.PACKAGEROOT_SELECTED_TYPE){
+			addJars();
 			setProcessPath(platform_location+getSootSelection().getPackageFragmentRoot().getPath().toOSString());
 		}
+	}
+	
+	/**
+	 * Sets the classpathAppend.
+	 * @param classpathAppend The classpathAppend to set
+	 */
+	public void setClasspathAppend(String ca) {
+		if (this.classpathAppend == null){
+			this.classpathAppend = ca;
+		}
+		else {
+			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
+		}
+		System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
 	/**
@@ -70,6 +86,13 @@ public class SootFolderLauncher extends SootLauncher {
 	 */
 	public void setProcessPath(String processPath) {
 		this.processPath = processPath;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getClasspathAppend() {
+		return classpathAppend;
 	}
 
 }

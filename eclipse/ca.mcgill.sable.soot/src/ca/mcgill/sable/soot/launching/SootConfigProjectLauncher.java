@@ -80,7 +80,7 @@ public class SootConfigProjectLauncher extends SootProjectLauncher {
 		//System.out.println("setting eclipse defs");
 		//System.out.println(getOutputLocation());
 		
-		defs.put(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		defs.put(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend()+getSootClasspath().getSeparator()+getProcess_path());
 		//System.out.println(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 		
 		defs.put(LaunchCommands.PROCESS_PATH, getProcess_path());

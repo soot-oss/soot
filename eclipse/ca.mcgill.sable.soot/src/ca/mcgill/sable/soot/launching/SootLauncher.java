@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.*;
 import java.lang.reflect.InvocationTargetException;
 import ca.mcgill.sable.soot.*;
 import org.eclipse.swt.widgets.*;
+import org.eclipse.jdt.core.*;
 
 
 import java.util.*;
@@ -37,7 +38,7 @@ import java.util.*;
  * Main Soot Launcher. Handles running Soot directly (or as a 
  * process) 
  */
-public class SootLauncher  implements IWorkbenchWindowActionDelegate {
+public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	private IWorkbenchPart part;
  	protected IWorkbenchWindow window;
@@ -199,6 +200,25 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		setOutputLocation(platform_location+getFileHandler().getSootOutputFolder().getFullPath().toOSString());
 		
 	}
+	
+	protected void addJars(){
+		try {
+	
+			IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
+			for (int i = 0; i < roots.length; i++){
+				if (roots[i].isArchive()){
+					System.out.println("Jar File: "+roots[i].getPath().toOSString());
+					if (roots[i].getRawClasspathEntry().getEntryKind() == IClasspathEntry.CPE_LIBRARY){
+						setClasspathAppend(platform_location+roots[i].getPath().toOSString());
+					}
+				}
+			}
+		}
+		catch (JavaModelException e){
+		}
+	}
+	
+	public abstract void setClasspathAppend(String ca);
 	
 	public void runFinish() {
 		getFileHandler().refreshFolder();
