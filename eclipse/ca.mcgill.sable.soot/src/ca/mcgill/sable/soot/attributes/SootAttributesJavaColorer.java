@@ -30,6 +30,7 @@ import org.eclipse.swt.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
+import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.editors.*;
 
 public class SootAttributesJavaColorer implements Runnable{
@@ -43,18 +44,15 @@ public class SootAttributesJavaColorer implements Runnable{
     private Display display;
     private ArrayList styleList;
     private SootAttributesHandler handler;
-	
+	private ColorManager colorManager;
 		
 	public void run(){
 		computeColors();
 	}
 	
 	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
-		
-		//System.out.println("Start Coloring: "+System.currentTimeMillis());
-		
-		//setViewer(viewer);
-		//setEditorPart(editorPart);
+	
+		colorManager = SootPlugin.getDefault().getColorManager();
 		setDisplay(getEditorPart().getSite().getShell().getDisplay());
 		clearPres();
 		if ((getHandler() == null) || (getHandler().getAttrList() == null)) return;
@@ -63,25 +61,6 @@ public class SootAttributesJavaColorer implements Runnable{
 		TextPresentation tp = new TextPresentation();
 		
 		styleList = new ArrayList();
-		//final ArrayList temp = new ArrayList();
-		//final TextPresentation tempTp = new TextPresentation();
-		/*getDisplay().asyncExec(new Runnable() {
-			public void run(){
-		StyleRange [] sr = getViewer().getTextWidget().getStyleRanges();
-		for (int i = 0; i < sr.length; i++){
-			System.out.println("sr fg color: "+sr[i].foreground+" bg color: "+sr[i].background+" font: "+sr[i].fontStyle+" start: "+sr[i].start+" length: "+sr[i].length);
-			styleList.add(sr[i]);
-		}
-			};
-		})*/
-		
-		//tp = tempTp;
-		//if (tp.isEmpty()){
-		//	tp.addStyleRange(tp.getDefaultStyleRange());
-		//	System.out.println("tp has no default");
-		//}
-		//Color bgColor
-		//Display display = getEditorPart().getSite().getShell().getDisplay();
 		
 		getDisplay().asyncExec( new Runnable() {
 			public void run() {
@@ -89,9 +68,7 @@ public class SootAttributesJavaColorer implements Runnable{
 			setBgColor(bgColor);
 			};
 		});
-		//setBgColor(bgColor);
-        //textPresList = newArrayList();
-		//System.out.println("computing colors");
+		
 		while (it.hasNext()) {
 			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
@@ -115,37 +92,9 @@ public class SootAttributesJavaColorer implements Runnable{
 					}
 				}
 			}
-			// sets colors for valueboxes
-			/*if (sa.getValueAttrs() != null){
-				Iterator valIt = sa.getValueAttrs().iterator();
-				while (valIt.hasNext()){
-					PosColAttribute vba = (PosColAttribute)valIt.next();
-					
-					if (vba.getSourceStartOffset() == 0 && vba.getSourceEndOffset() == 0){
-						
-					}
-					else {
-					
-						if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
-						}
-						else {
-							//System.out.println("java line: "+sa.getJava_ln()+" start: "+vba.getSourceStartOffset()+1+" end: "+ vba.getSourceEndOffset()+1);
-						
-                     	   	boolean fg = false;
-                        	if (vba.getFg() == 1) {
-                            	fg = true;
-                        	}
-                        	setAttributeTextColor(tp, sa.getJavaStartLn(), sa.getJavaEndLn(), vba.getSourceStartOffset()+1, vba.getSourceEndOffset()+1, vba.getRGBColor(), fg);//, tp);
-						}
-					}
-				}
-			}*/
+	
 		}
-		/*Iterator tempIt = temp.iterator();
-				while (tempIt.hasNext()){
-					tp.addStyleRange((StyleRange)tempIt.next());
-				}
-		changeTextPres(tp);*/
+		
 		final StyleRange [] srs = new StyleRange[styleList.size()];
 		styleList.toArray(srs);
 		
@@ -163,23 +112,13 @@ public class SootAttributesJavaColorer implements Runnable{
 				}
 			};
 		});	
-		//return tp;
-		//System.out.println("Stop Coloring: "+System.currentTimeMillis());
 		
-					
+		//colorManager.dispose();			
 	}
 	
 	private void setAttributeTextColor(TextPresentation tp, int sline, int eline, int start, int end, RGB colorKey, boolean fg) {//, TextPresentation tp){
-		//System.out.println("startline: "+sline+" soffset: "+start+" endoffset: "+end);
-		//System.out.println("setting text color");
-        Display display = getEditorPart().getSite().getShell().getDisplay();
-		//Color backgroundColor = getEditorPart().getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND);
-		//TextPresentation tp = new TextPresentation();
-        //if (getTextPresList() == null) {
-            //setTextPresList(new ArrayList());
-        //}
-        //getTextPresList().add(tp);
-		ColorManager colorManager = new ColorManager();
+		Display display = getEditorPart().getSite().getShell().getDisplay();
+		
 		int sLineOffset = 0;
 		int eLineOffset = 0;
 		int [] offsets = new int[eline-sline+1];
@@ -210,15 +149,7 @@ public class SootAttributesJavaColorer implements Runnable{
 				longest = lengths[i];
 			}
 		}
-		//System.out.println("style range: ");
-        //System.out.println("start: "+start);
-        //System.out.println("end: "+end);
-        
-        //StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(colorKey), getViewer().get.getTextWidget().getBackground());
-		//tp.addStyleRange(sr);
-		//Color c = tp.getFirstStyleRange().background;
 		
-		//final TextPresentation newPresentation = tp;
         final boolean foreground = fg;
 		final int s = sLineOffset + start - 1;
 		//System.out.println("start offset: "+s);
@@ -229,11 +160,7 @@ public class SootAttributesJavaColorer implements Runnable{
 		final Color ck = colorManager.getColor(colorKey);
         final Color oldBgC = colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT);
       
-		//display.asyncExec( new Runnable() {
-		//	public void run() {
-		//		TextPresentation tp = new TextPresentation();
-		//System.out.println("about to create style range");
-                StyleRange sr;
+		          StyleRange sr;
                 //System.out.println("line: "+sline+" start: "+s+" length: "+l);
                 if (l > 0){
                 if (sline == eline){
@@ -262,33 +189,8 @@ public class SootAttributesJavaColorer implements Runnable{
                 	}
 					
                 }
-                
-                /*for (int j = 1; j < offsets.length; j++){
-                	
-                	StyleRange lineBegin = new StyleRange(offsets[j], unColLen, oldBgC, getBgColor());
-                	styleList.add(lineBegin);
-                }*/
-                //if (count == 0 | count == 1){
-        		//getViewer().getTextWidget().replaceStyleRanges(s, l, sr);        
-				//	tp.addStyleRange(sr);
-					//tp.addStyleRange(tp.getDefaultStyleRange());			
-                //styleList.add(sr);
-                }
-            //}
-				//count++;
-				//try {
-				
-		//getViewer().changeTextPresentation(tp, true);
-				//}
-				//catch (Exception e){
-				/*	System.out.println(e.getMessage());
-						//getViewer().setTextColor(ck, s, l, false);
-				}
-			};
-		});*/
-		
-		//tp.clear();
-			
+             }
+          
 		
 	}
 	private ArrayList sortAttrsByLength(ArrayList attrs){
@@ -356,17 +258,7 @@ public class SootAttributesJavaColorer implements Runnable{
     		});
     	}
     }
-    /*public void clearTextPresentations(){
-        if (getTextPresList() == null) return;
-        
-        Iterator it = getTextPresList().iterator();
-        while (it.hasNext()){
-            TextPresentation tp = (TextPresentation)it.next();
-            tp.clear();
-            //System.out.println("cleared TextPresentation");
-        }
-        
-    }*/
+
 	
 
 	/**

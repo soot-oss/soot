@@ -1,5 +1,7 @@
 package soot.xml;
 
+import java.io.*;
+
 public class Key {
 
     private int red;
@@ -30,4 +32,8 @@ public class Key {
         return key;
     }
 
+    public void print(PrintWriter writerOut){
+        writerOut.println("<key red=\""+red()+"\" green=\""+green()+"\" blue=\""+blue()+"\" key=\""+key()+"\"/>");
+    }
+    
 }

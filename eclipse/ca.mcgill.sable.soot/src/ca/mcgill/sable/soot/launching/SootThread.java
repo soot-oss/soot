@@ -92,6 +92,7 @@ public class SootThread extends Thread {
 					Class [] fields = meths[i].getParameterTypes();
 					if (fields.length == 1){
 					meths[i].invoke(toRun, args);
+					System.out.println("Soot runs");
 					}
 				}
 			}

@@ -57,6 +57,19 @@ public class NullPointerColorer extends BodyTransformer {
 				addColorTags(vBox, afterSet, s, analysis);
 			}
 		}
+
+        Iterator keysIt = b.getMethod().getDeclaringClass().getTags().iterator();
+        boolean keysAdded = false;
+        while (keysIt.hasNext()){
+            if (keysIt.next() instanceof KeyTag){
+                keysAdded = true;  
+            }
+        }
+        if (!keysAdded){
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.RED, "Nullness: Null"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown"));
+        }
 	}
 	
 	private void addColorTags(ValueBox vBox, FlowSet set, Stmt s, BranchedRefVarsAnalysis analysis){

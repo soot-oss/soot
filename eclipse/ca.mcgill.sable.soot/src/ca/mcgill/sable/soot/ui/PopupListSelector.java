@@ -45,6 +45,8 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.*;
 
+import ca.mcgill.sable.soot.SootPlugin;
+
 
 public class PopupListSelector {
 	private Shell shell;
@@ -58,7 +60,7 @@ public class PopupListSelector {
 		shell = new Shell(parent, 0);
 	
 		list = new List(shell, SWT.SINGLE | SWT.V_SCROLL);	
-		list.setBackground(new Color(Display.getCurrent(), new RGB(255, 255, 255)));
+		list.setBackground(SootPlugin.getDefault().getColorManager().getColor(new RGB(255, 255, 255)));
 	
 		// close dialog if user selects outside of the shell
 		shell.addListener(SWT.Deactivate, new Listener() {

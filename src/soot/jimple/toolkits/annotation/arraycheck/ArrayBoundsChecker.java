@@ -155,6 +155,20 @@ public class ArrayBoundsChecker extends BodyTransformer
                             else if (res == 3) {
                                 aref.getIndexBox().addTag(new ColorTag(45, 255, 84, false));
                             }
+                            SootClass bodyClass = body.getMethod().getDeclaringClass();
+                            Iterator keysIt = bodyClass.getTags().iterator();
+                            boolean keysAdded = false;
+                            while (keysIt.hasNext()){
+                                if (keysIt.next() instanceof KeyTag){
+                                    keysAdded = true;
+                                }
+                            }
+                            if (!keysAdded){
+                                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper"));
+                                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper"));
+                                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper"));
+                                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper"));
+                            }
                         }
 
                         /*

@@ -64,7 +64,7 @@ public class JimpleEditor extends TextEditor {
 	 */
 	public JimpleEditor() {
 		super();
-		colorManager = new ColorManager();
+		colorManager = SootPlugin.getDefault().getColorManager();
 		setSourceViewerConfiguration(new JimpleConfiguration(colorManager, this));
 		setDocumentProvider(new JimpleDocumentProvider());
 		setViewer(this.getSourceViewer());

@@ -36,6 +36,27 @@ public class TagCollector {
         }
     }
 
+    public void collectKeyTags(SootClass sc){
+        Iterator it = sc.getTags().iterator();
+        while (it.hasNext()){
+            Object next = it.next();
+            if (next instanceof KeyTag){
+                KeyTag kt = (KeyTag)next;
+                Key k = new Key(kt.red(), kt.green(), kt.blue(), kt.key());
+                keys.add(k);
+            }
+        }
+    }
+
+    public void printKeys(PrintWriter writerOut){
+        Iterator it = keys.iterator();
+        while (it.hasNext()){
+            Key k = (Key)it.next();
+            k.print(writerOut);
+        }
+    }
+    
+            
     public void collectFieldTags(SootField sf){
         Iterator fTags = sf.getTags().iterator();
         Attribute fa = new Attribute();

@@ -55,4 +55,7 @@ public interface ISootConstants {
 	public static final String JAVA_EXT = "java";
 	
 	public static final String ICON_PATH = "icons/";
+	
+	public static final String ANALYSIS_KEY_VIEW_ID =
+		"ca.mcgill.sable.soot.ui.analysiskeyview.view";
 }

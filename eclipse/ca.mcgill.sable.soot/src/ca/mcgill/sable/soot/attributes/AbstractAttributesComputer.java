@@ -70,6 +70,7 @@ public abstract class AbstractAttributesComputer {
 			AttributeDomProcessor adp = safr.readFile(fileName);
 			if (adp != null) {	
 				sah.setAttrList(adp.getAttributes());
+				sah.setKeyList(adp.getKeys());
 			}
 		}
 		sah.setValuesSetTime(System.currentTimeMillis());

@@ -29,6 +29,7 @@ public class SootAttributesHandler {
 	private HashMap projList;
 	private long valuesSetTime;
 	private boolean update = true;
+	private ArrayList keyList;
 
 	private static final String NEWLINE = "\n\r";
 	
@@ -174,6 +175,20 @@ public class SootAttributesHandler {
 	 */
 	public void setUpdate(boolean b) {
 		update = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getKeyList() {
+		return keyList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setKeyList(ArrayList list) {
+		keyList = list;
 	}
 
 }

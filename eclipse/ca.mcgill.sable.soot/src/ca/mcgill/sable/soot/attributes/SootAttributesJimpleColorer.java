@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
+import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.editors.*;
 
 public class SootAttributesJimpleColorer implements Runnable{
@@ -40,6 +41,7 @@ public class SootAttributesJimpleColorer implements Runnable{
     private ArrayList textPresList;
     private SootAttributesHandler handler;
 	private Display display;
+	private ColorManager colorManager;
 	
 	public void run(){
 		computeColors();	
@@ -48,6 +50,8 @@ public class SootAttributesJimpleColorer implements Runnable{
 	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		//setViewer(viewer);
 		//setEditorPart(editorPart);
+		colorManager = SootPlugin.getDefault().getColorManager();
+		
 		setDisplay(getEditorPart().getSite().getShell().getDisplay());
 		clearPres();
 		
@@ -87,7 +91,6 @@ public class SootAttributesJimpleColorer implements Runnable{
             setTextPresList(new ArrayList());
         }
         getTextPresList().add(tp);
-		ColorManager colorManager = new ColorManager();
 		int sLineOffset = 0;
 		int eLineOffset = 0;
 		//System.out.println("line: "+line+" eline: "+eline+" spos: "+start+" epos: "+end);
@@ -112,22 +115,11 @@ public class SootAttributesJimpleColorer implements Runnable{
 		});
 		
 		//tp.clear();
-			
+		
 		
 	}
     
-    /*public void clearTextPresentations(){
-        if (getTextPresList() == null) return;
-        
-        Iterator it = getTextPresList().iterator();
-        while (it.hasNext()){
-            TextPresentation tp = (TextPresentation)it.next();
-            tp.clear();
-            //System.out.println("cleared TextPresentation");
-        }
-        
-    }
-    */
+    
 	private void clearPres(){
 		if (getEditorPart() == null) return;
 		if (getEditorPart().getEditorInput() != null){
@@ -141,6 +133,7 @@ public class SootAttributesJimpleColorer implements Runnable{
 		}
 	}
 
+	
 	/**
 	 * @return
 	 */

@@ -32,6 +32,7 @@ public class EditorActivationListener implements IPartListener {
 	 * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
 	 */
 	public void partActivated(IWorkbenchPart part) {
+		System.out.println("part activated");
 		//System.out.println("part activated: "+part.getTitle());
 		if (!(part instanceof IEditorPart)) return;
 		IEditorPart activeEdPart = (IEditorPart)part;
@@ -64,6 +65,8 @@ public class EditorActivationListener implements IPartListener {
 	 */
 	public void partOpened(IWorkbenchPart part) {
 		// maybe need to handle this as well
+		System.out.println("part opened");
+		SootPlugin.getDefault().getPartManager().setUpdateForOpen(true);
 	}
 
 }

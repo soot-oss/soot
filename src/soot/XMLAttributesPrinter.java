@@ -71,6 +71,7 @@ public class XMLAttributesPrinter {
     
 	public void printAttrs(SootClass c, soot.xml.TagCollector tc) {
 	
+        tc.collectKeyTags(c);
         Iterator fIt = c.getFields().iterator();
         while (fIt.hasNext()){
             SootField sf = (SootField)fIt.next();
@@ -82,14 +83,17 @@ public class XMLAttributesPrinter {
             tc.collectMethodTags(sm);
         }
         tc.printTags(writerOut);
+        tc.printKeys(writerOut);
 		finishFile();
 	}
     
 	public void printAttrs(SootClass c) {
 	
         soot.xml.TagCollector tc = new soot.xml.TagCollector();
+        tc.collectKeyTags(c);
         tc.collectTags(c);
         tc.printTags(writerOut);
+        tc.printKeys(writerOut);
 		finishFile();
 	}
 

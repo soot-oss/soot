@@ -29,6 +29,7 @@ public class AttributeDomProcessor {
 
 	Document domDoc;
 	ArrayList attributes;
+	private ArrayList keys;
 	private SootAttribute current;
 	
 	
@@ -73,6 +74,18 @@ public class AttributeDomProcessor {
 					processAttributeNode(current, children.item(i));
 				}
 				getAttributes().add(current);
+			}
+			else if (node.getNodeName().equals("key")){
+				if (keys == null){
+					keys = new ArrayList();
+				}
+				NamedNodeMap map = node.getAttributes();
+				AnalysisKey key = new AnalysisKey();
+				key.setRed((new Integer(map.getNamedItem("red").getNodeValue())).intValue());
+				key.setGreen((new Integer(map.getNamedItem("green").getNodeValue())).intValue());
+				key.setBlue((new Integer(map.getNamedItem("blue").getNodeValue())).intValue());
+				key.setKey(map.getNamedItem("key").getNodeValue());
+				keys.add(key);
 			}
 			else {
 				NodeList children = node.getChildNodes();
@@ -288,6 +301,20 @@ public class AttributeDomProcessor {
 	 */
 	public void setCurrent(SootAttribute current) {
 		this.current = current;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getKeys() {
+		return keys;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setKeys(ArrayList list) {
+		keys = list;
 	}
 
 }

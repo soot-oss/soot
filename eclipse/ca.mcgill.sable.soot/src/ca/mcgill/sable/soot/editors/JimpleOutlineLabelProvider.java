@@ -44,6 +44,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 //import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import ca.mcgill.sable.soot.SootPlugin;
 

@@ -51,15 +51,18 @@ public class ColorManager {
 	protected Map fColorTable = new HashMap(10);
 
 	public void dispose() {
+		if (fColorTable.values() == null) return;
 		Iterator e= fColorTable.values().iterator();
 		while (e.hasNext())
 			((Color) e.next()).dispose();
 	}
 	public Color getColor(RGB rgb) {
+		System.out.println("rgb: "+rgb.red+" "+rgb.green+" "+rgb.blue);
 		Color color= (Color) fColorTable.get(rgb);
 		
 		if (color == null) {
 			color= new Color(Display.getCurrent(), rgb);
+			System.out.println("creating new color");
 			fColorTable.put(rgb, color);
 		}
 		return color;

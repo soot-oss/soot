@@ -30,6 +30,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import java.net.*;
 import java.util.*;
 
+import ca.mcgill.sable.soot.editors.ColorManager;
 import ca.mcgill.sable.soot.launching.*;
 import ca.mcgill.sable.soot.resources.*;
 
@@ -71,6 +72,8 @@ public class SootPlugin extends AbstractUIPlugin {
 	private ArrayList editorViewers = new ArrayList();
 	
 	private SootPartManager partManager;
+	
+	private ColorManager colorManager;
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -249,6 +252,23 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setPartManager(SootPartManager manager) {
 		partManager = manager;
+	}
+
+	/**
+	 * @return
+	 */
+	public ColorManager getColorManager() {
+		if (colorManager == null ){
+			colorManager = new ColorManager();
+		}
+		return colorManager;
+	}
+
+	/**
+	 * @param manager
+	 */
+	public void setColorManager(ColorManager manager) {
+		colorManager = manager;
 	}
 
 }
