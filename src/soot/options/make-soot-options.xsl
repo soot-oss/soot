@@ -45,6 +45,8 @@ public class Options extends OptionsBase {
 <xsl:apply-templates mode="constants" select="/options/section"/>
 
     public boolean parse( String[] argv ) {
+        LinkedList phaseOptions = new LinkedList();
+
         for( int i = argv.length; i > 0; i-- ) {
             pushOptions( argv[i-1] );
         }
@@ -64,8 +66,24 @@ public class Options extends OptionsBase {
                 return false;
             }
         }
+
+        Iterator it = phaseOptions.iterator();
+        while( it.hasNext() ) {
+            String phaseName = (String) it.next();
+            String phaseOption = (String) it.next();
+            if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
+        }
+
+        it = phaseOptions.iterator();
+        while( it.hasNext() ) {
+            String phaseName = (String) it.next();
+            String phaseOption = (String) it.next();
+            if( !setPhaseOption( phaseName, phaseOption ) ) return false;
+        }
+
         return true;
     }
+
 <xsl:apply-templates mode="vars" select="/options/section"/>
 
     public String getUsage() {
@@ -171,8 +189,8 @@ public class Options extends OptionsBase {
                 }
                 String phaseOption = nextOption();
     <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
-                if( !setPhaseOption( phaseName, phaseOption ) )
-                    return false;
+                phaseOptions.add( phaseName );
+                phaseOptions.add( phaseOption );
             }
   </xsl:template>
 

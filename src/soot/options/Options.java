@@ -64,6 +64,8 @@ public class Options extends OptionsBase {
     public static final int output_format_dava = 13;
 
     public boolean parse( String[] argv ) {
+        LinkedList phaseOptions = new LinkedList();
+
         for( int i = argv.length; i > 0; i-- ) {
             pushOptions( argv[i-1] );
         }
@@ -413,8 +415,8 @@ public class Options extends OptionsBase {
                 }
                 String phaseOption = nextOption();
     
-                if( !setPhaseOption( phaseName, phaseOption ) )
-                    return false;
+                phaseOptions.add( phaseName );
+                phaseOptions.add( phaseOption );
             }
   
             else if( false
@@ -629,8 +631,24 @@ public class Options extends OptionsBase {
                 return false;
             }
         }
+
+        Iterator it = phaseOptions.iterator();
+        while( it.hasNext() ) {
+            String phaseName = (String) it.next();
+            String phaseOption = (String) it.next();
+            if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
+        }
+
+        it = phaseOptions.iterator();
+        while( it.hasNext() ) {
+            String phaseName = (String) it.next();
+            String phaseOption = (String) it.next();
+            if( !setPhaseOption( phaseName, phaseOption ) ) return false;
+        }
+
         return true;
     }
+
 
     public boolean help() { return help; }
     private boolean help = false;
