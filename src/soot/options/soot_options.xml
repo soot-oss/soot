@@ -671,6 +671,10 @@ This option has no effect unless simplifySCCs is true.
 								<default/>
 							</value>
 							<value>
+								<name>Cycle</name>
+								<alias>cycle</alias>
+							</value>
+							<value>
 								<name>Merge</name>
 								<alias>merge</alias>
 							</value>

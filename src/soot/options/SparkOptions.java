@@ -169,9 +169,10 @@ public class SparkOptions
     
     public static final int propagator_iter = 1;
     public static final int propagator_worklist = 2;
-    public static final int propagator_merge = 3;
-    public static final int propagator_alias = 4;
-    public static final int propagator_none = 5;
+    public static final int propagator_cycle = 3;
+    public static final int propagator_merge = 4;
+    public static final int propagator_alias = 5;
+    public static final int propagator_none = 6;
     /** Propagator --  */
     public int propagator() {
         String s = soot.PackManager.getString( options, "propagator" );
@@ -181,6 +182,9 @@ public class SparkOptions
         
         if( s.equalsIgnoreCase( "worklist" ) )
             return propagator_worklist;
+        
+        if( s.equalsIgnoreCase( "cycle" ) )
+            return propagator_cycle;
         
         if( s.equalsIgnoreCase( "merge" ) )
             return propagator_merge;

@@ -114,6 +114,9 @@ public class SparkTransformer extends SceneTransformer
             case SparkOptions.propagator_worklist:
                 propagator[0] = new PropWorklist( pag );
                 break;
+            case SparkOptions.propagator_cycle:
+                propagator[0] = new PropCycle( pag );
+                break;
             case SparkOptions.propagator_merge:
                 propagator[0] = new PropMerge( pag );
                 break;
@@ -137,7 +140,7 @@ public class SparkTransformer extends SceneTransformer
                     +b.getCallGraph().numReachableMethods() );
         }
 
-        //findSetMass( pag, b );
+        findSetMass( pag, b );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
