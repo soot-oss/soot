@@ -328,7 +328,7 @@ class TypeNode
 	      }
 	    catch(TypeException e)
 	      {
-		e.printStackTrace();
+                if(DEBUG) e.printStackTrace();
 		throw e;
 	      }
 	  }
