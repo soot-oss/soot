@@ -64,6 +64,31 @@ public class TypeAssigner extends BodyTransformer
 	long secs = (runtime%60000)/1000;
 	G.v().out.println("[TypeAssigner] typing system ended. It took "+mins+" mins and "+secs+" secs.");
       }
+
+    if(typingFailed((JimpleBody) b))
+      throw new RuntimeException("type inference failed!");
   }
+    private boolean typingFailed(JimpleBody b)
+    {
+        // Check to see if any locals are untyped
+        {
+            Iterator localIt = b.getLocals().iterator();
+
+            while(localIt.hasNext())
+            {
+                Local l = (Local) localIt.next();
+
+                  if(l.getType().equals(UnknownType.v()) ||
+                    l.getType().equals(ErroneousType.v()))
+                {
+		  return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+
 }
 

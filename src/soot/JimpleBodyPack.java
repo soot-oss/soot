@@ -69,9 +69,6 @@ public class JimpleBodyPack extends BodyPack
         
         if(Options.v().time()) Timers.v().assignTimer.end();
 
-        if(typingFailed(b))
-          throw new RuntimeException("type inference failed!");
-        
         if(options.use_original_names())
         {   
             PackManager.v().getTransform( "jb.ulp" ).apply( b );
@@ -87,28 +84,6 @@ public class JimpleBodyPack extends BodyPack
         if(Options.v().time())
             Timers.v().stmtCount += b.getUnits().size();
     }
-
-    private boolean typingFailed(JimpleBody b)
-    {
-        // Check to see if any locals are untyped
-        {
-            Iterator localIt = b.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local l = (Local) localIt.next();
-
-                  if(l.getType().equals(UnknownType.v()) ||
-                    l.getType().equals(ErroneousType.v()))
-                {
-		  return true;
-                }
-            }
-        }
-        
-        return false;
-    }
-
 
 
     protected void internalApply(Body b)
