@@ -229,11 +229,14 @@ public class Util {
         
         // if this for type already created return it from map
         if (getThisMap.containsKey(sootType)){
+            //System.out.println("map contains this");
             return (soot.Local)getThisMap.get(sootType);
         }
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
         if (specialThisLocal.getType().equals(sootType)) {
+            //System.out.println("thinks it this");
+           
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
         }
@@ -242,12 +245,14 @@ public class Util {
         // if its an initializer - then ust use it)
         // here we need an exact type I think
         if (bodyHasLocal(body, sootType)){
+            //System.out.println("body has local");
             soot.Local l = getLocalOfType(body, sootType);
             getThisMap.put(sootType, l);
             return l;
         }
         
         // otherwise get this$0 for one level up
+        //System.out.println("should be getting this$0");
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
         soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
         soot.Local t1 = lg.generateLocal(outerThisField.getType());
@@ -283,14 +288,22 @@ public class Util {
     
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
-        Iterator it = body.getLocals().iterator();
+        Iterator it = body.getDefBoxes().iterator();
+        while (it.hasNext()){
+            soot.ValueBox vb = (soot.ValueBox)it.next();
+            if ((vb.getValue() instanceof soot.Local) && (vb.getValue().getType().equals(type))){
+                return true;
+            }
+        }
+        return false;
+        /*Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
             if (l.getType().equals(type)){
                 return true;
             }
         }
-        return false;
+        return false;*/
     }
 
     
