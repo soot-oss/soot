@@ -16,7 +16,7 @@ public class HierarchyBrowser
     public static void doCommand(Hierarchy h, String command, String className)
     {
         List target = null;
-        SootClass c = Scene.v().getClass(className);
+        SootClass c = Scene.v().getSootClass(className);
 
         if (command.equals("subc_i"))
             target = h.getSubclassesOfIncluding(c);

@@ -159,7 +159,7 @@ public class Util
     public static SootClass getResolvedClass(String className)
     {
         if(scene.containsClass(className))
-            return scene.getClass(className);
+            return scene.getSootClass(className);
             
         SootClass newClass = new SootClass(className);
         scene.addClass(newClass);

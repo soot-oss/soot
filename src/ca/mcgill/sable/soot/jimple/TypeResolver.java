@@ -851,7 +851,7 @@ class TypeResolver
             return false;
         }
         
-        SootClass sClass = classHierarchy.scene.getClass(
+        SootClass sClass = classHierarchy.scene.getSootClass(
             ((RefType) type).className);
             
         if(Modifier.isInterface(sClass.getModifiers()))
@@ -867,7 +867,7 @@ class TypeResolver
         // Get the assigned type node
         ClassHierarchy.TypeNode node = var.getEcrTypeNode();
         Type type = node.getType();
-        SootClass sClass = classHierarchy.scene.getClass(
+        SootClass sClass = classHierarchy.scene.getSootClass(
             ((RefType) type).className);
         if(sClass.hasSuperclass())
         {

@@ -106,9 +106,9 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
         {
             // Return least common superclass
 
-            SootClass thisClass = cm.getClass(((RefType) this).className);
-            SootClass otherClass = cm.getClass(((RefType) other).className);
-            SootClass javalangObject = cm.getClass("java.lang.Object");
+            SootClass thisClass = cm.getSootClass(((RefType) this).className);
+            SootClass otherClass = cm.getSootClass(((RefType) other).className);
+            SootClass javalangObject = cm.getSootClass("java.lang.Object");
 
             LinkedList thisHierarchy = new LinkedList();
             LinkedList otherHierarchy = new LinkedList();

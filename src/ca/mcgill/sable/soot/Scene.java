@@ -77,6 +77,7 @@
 
 package ca.mcgill.sable.soot;
 
+import ca.mcgill.sable.soot.jimple.toolkit.invoke.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -93,6 +94,9 @@ public class Scene
     Map nameToClass = new HashMap();
     Map methodSignatureToMethod = new HashMap();
     Map fieldSignatureToField = new HashMap();
+
+    Hierarchy activeHierarchy;
+    InvokeGraph activeInvokeGraph;
 
     public static Scene v()
     {
@@ -181,7 +185,7 @@ public class Scene
      * Returns the SootClass with the given className.  
      */
 
-    public SootClass getClass(String className) throws ClassFileNotFoundException
+    public SootClass getSootClass(String className) throws ClassFileNotFoundException
     {   
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
@@ -250,5 +254,67 @@ public class Scene
             return getSignatureClasses();
 
         return null;
+    }
+
+    /**
+        Retrieves the active hierarchy for this method.
+     */
+
+    public Hierarchy getActiveHierarchy() 
+    {
+        if(!hasActiveHierarchy())
+            throw new RuntimeException("no active Hierarchy present for scene");
+            
+        return activeHierarchy;
+    }
+    
+    /**
+        Sets the active hierarchy for this method. 
+     */
+     
+    public void setActiveHierarchy(Hierarchy hierarchy)
+    {
+        activeHierarchy = hierarchy;
+    }
+
+    public boolean hasActiveHierarchy()
+    {
+        return activeHierarchy != null;
+    }
+    
+    public void releaseActiveHierarchy()
+    {
+        activeHierarchy = null;
+    }
+
+    /**
+        Retrieves the active invokeGraph for this method.
+     */
+
+    public InvokeGraph getActiveInvokeGraph() 
+    {
+        if(!hasActiveInvokeGraph())
+            throw new RuntimeException("no active InvokeGraph present for scene");
+            
+        return activeInvokeGraph;
+    }
+    
+    /**
+        Sets the active invokeGraph for this method. 
+     */
+     
+    public void setActiveInvokeGraph(InvokeGraph invokeGraph)
+    {
+        activeInvokeGraph = invokeGraph;
+    }
+
+    public boolean hasActiveInvokeGraph()
+    {
+        return activeInvokeGraph != null;
+    }
+    
+    public void releaseActiveInvokeGraph()
+    {
+        activeInvokeGraph = null;
     }
 }

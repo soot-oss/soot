@@ -87,7 +87,7 @@ public class Main
            
            sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
            
-           sClass.setSuperclass(Scene.v().getClass("java.lang.Object"));
+           sClass.setSuperclass(Scene.v().getSootClass("java.lang.Object"));
            Scene.v().addClass(sClass);
            
         // Create the method

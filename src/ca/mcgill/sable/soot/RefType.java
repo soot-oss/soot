@@ -81,9 +81,7 @@ public class RefType extends BaseType implements ToBriefString
 {
     public final String className;
 
-
     private static RefType singleton = new RefType("");
-
 
     private RefType(String className)
     {
@@ -100,6 +98,10 @@ public class RefType extends BaseType implements ToBriefString
         return singleton;
     }
 
+    public SootClass getSootClass()
+    {
+        return Scene.v().getSootClass(className);
+    }
 
     public boolean equals(Object t)
     {
@@ -126,4 +128,3 @@ public class RefType extends BaseType implements ToBriefString
         ((TypeSwitch) sw).caseRefType(this);
     }
 }
-

@@ -274,7 +274,7 @@ class ClassHierarchy
         {
             this((Type) type);
 
-            SootClass sClass = scene.getClass(type.className);
+            SootClass sClass = scene.getSootClass(type.className);
             if(sClass.hasSuperclass())
             {
                 parents.set(getTypeNode(RefType.v(sClass.getSuperclass().getName())).id);
@@ -317,7 +317,7 @@ class ClassHierarchy
             {
                 RefType baseType = (RefType) type.baseType;
 
-                SootClass sClass = scene.getClass(baseType.className);
+                SootClass sClass = scene.getSootClass(baseType.className);
                 if(sClass.hasSuperclass())
                 {
                     parents.set(getTypeNode(ArrayType.v(RefType.v(

@@ -1758,10 +1758,10 @@ public class CFG {
                                 convert();
                             name = name.replace('/', '.');
 
-                            exception = cm.getClass(name);
+                            exception = cm.getSootClass(name);
                         }
                         else
-                            exception = cm.getClass("java.lang.Throwable");
+                            exception = cm.getSootClass("java.lang.Throwable");
 
                         handlerInstructionToException.put(handlerIns, exception);
                     }
@@ -2126,10 +2126,10 @@ public class CFG {
                                 convert();
                             name = name.replace('/', '.');
 
-                            exception = cm.getClass(name);
+                            exception = cm.getSootClass(name);
                         }
                         else
-                            exception = cm.getClass("java.lang.Throwable");
+                            exception = cm.getSootClass("java.lang.Throwable");
 
                     }
 
@@ -4784,7 +4784,7 @@ public class CFG {
 
             Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
                 
-            SootClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getSootClass(className);
 
             SootField field = bclass.getField(fieldName, fieldType);
 
@@ -4817,7 +4817,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
-            SootClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getSootClass(className);
 
             
             Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
@@ -4854,7 +4854,7 @@ public class CFG {
 
             Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
             
-            SootClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getSootClass(className);
             SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newStaticFieldRef(field);
@@ -4886,7 +4886,7 @@ public class CFG {
 
             Type fieldType = Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
             
-            SootClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getSootClass(className);
             SootField field = bclass.getField(fieldName, fieldType);
 
             fr = Jimple.v().newStaticFieldRef(field);
@@ -4920,7 +4920,7 @@ public class CFG {
             String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
 
-            SootClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getSootClass(className);
 
             Local[] parameters;
             List parameterTypes;
@@ -4994,7 +4994,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
 
-                SootClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getSootClass(className);
 
                 Local[] parameters;
                 List parameterTypes;
@@ -5068,7 +5068,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
 
-                SootClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getSootClass(className);
 
                 Local[] parameters;
                 List parameterTypes;
@@ -5149,7 +5149,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
 
-                SootClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getSootClass(className);
 
                 Local[] parameters;
                 List parameterTypes;
@@ -5207,7 +5207,7 @@ public class CFG {
 
          case ByteCode.NEW:
          {
-            SootClass bclass = cm.getClass(getClassName(constant_pool,
+            SootClass bclass = cm.getSootClass(getClassName(constant_pool,
                 ((Instruction_New)ins).arg_i));
 
             stmt = Jimple.v().newAssignStmt(Util.getLocalForStackOp(listBody, postTypeStack,
