@@ -5,6 +5,7 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
 
     //private ArrayList localDecls;
     private ArrayList locals;
+    private ArrayList news;
     /*private HashMap map;
     
     public ArrayList getLocalDecls(){
@@ -15,10 +16,15 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
         return locals;
     }
 
+    public ArrayList getNews(){
+        return news;
+    }
+
     public LocalUsesChecker(){
         //map = new HashMap();
         //localDecls = new ArrayList();
         locals = new ArrayList();
+        news = new ArrayList();
     }
 
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
@@ -37,6 +43,10 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
             //System.out.println("adding a formal: "+n);
             localDecls.add(new polyglot.util.IdentityKey(((polyglot.ast.Formal)n).localInstance()));
         }*/
+
+        if (n instanceof polyglot.ast.New){
+            news.add(n);
+        }
         return n;
     }
 }

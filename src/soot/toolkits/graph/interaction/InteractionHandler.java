@@ -3,12 +3,24 @@ package soot.toolkits.graph.interaction;
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.toolkits.annotation.callgraph.*;
+import java.util.*;
 
 public class InteractionHandler {
    
     public InteractionHandler(Singletons.Global g){}
     public static InteractionHandler v() { return G.v().soot_toolkits_graph_interaction_InteractionHandler();}
 
+    private ArrayList stopUnitList;
+    public ArrayList getStopUnitList(){
+        return stopUnitList;
+    }
+    public void addToStopUnitList(Object elem){
+        if (stopUnitList == null){
+            stopUnitList = new ArrayList();
+        }
+        stopUnitList.add(elem);
+    }
+    
     public void handleNewAnalysis(Transform t, Body b){
         // here save current phase name and only send if actual data flow analysis exists
         if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions( t.getPhaseName()), "enabled")){
@@ -33,6 +45,12 @@ public class InteractionHandler {
         }
     }
 
+    public void handleStopAtNodeEvent(Object u){
+        if (isInteractThisAnalysis()){
+            doInteraction(new InteractionEvent(IInteractionConstants.STOP_AT_NODE, u));
+        }
+    }
+    
     public void handleBeforeAnalysisEvent(Object beforeFlow){
         if (isInteractThisAnalysis()){
             if (autoCon()){

@@ -56,7 +56,7 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, paramCounter);
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
             body.getUnits().add(stmt);
-            System.out.println("next paramType: "+paramLocal.getType());
+            //System.out.println("next paramType: "+paramLocal.getType());
             if (!isCallParamType(sootType)){
                 base = paramLocal;
             }
@@ -76,7 +76,7 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
             body.getLocals().add(returnLocal);
         }
 
-        System.out.println("meth param types: "+methParamsTypes);
+        //System.out.println("meth param types: "+methParamsTypes);
         // assign local to meth
         soot.SootMethod meth = ((soot.RefType)Util.getSootType(methodInst.container())).getSootClass().getMethod(methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()));
 

@@ -221,7 +221,7 @@ public class JasminClass
             int modifiers = sootClass.getModifiers();
 
             
-            if ((sootClass.getTag("SourceFileTag") != null) && (Options.v().output_source_file_attribute())){
+            if ((sootClass.getTag("SourceFileTag") != null)){// && (Options.v().output_source_file_attribute())){
                 String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
                 emit(".source "+srcName);
             }

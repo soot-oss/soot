@@ -15,7 +15,8 @@ public interface IInteractionConstants{
     public static final int REPLACE = 10;
     public static final int NEW_BEFORE_ANALYSIS_INFO_AUTO = 11;
     public static final int NEW_AFTER_ANALYSIS_INFO_AUTO = 12;
-
+    public static final int STOP_AT_NODE = 13;
+    
     public static final int CALL_GRAPH_START = 50;
     public static final int CALL_GRAPH_NEXT_METHOD = 51;
     public static final int CALL_GRAPH_PART = 52;

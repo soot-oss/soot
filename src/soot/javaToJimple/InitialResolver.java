@@ -662,27 +662,52 @@ public class InitialResolver {
             polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)localsNeededIt.next()).object();
             if (finalLocals.contains(new polyglot.util.IdentityKey(li))){
                 
-                // add as param for init
-                Iterator it = sootClass.getMethods().iterator();
-                while (it.hasNext()){
-                    soot.SootMethod meth = (soot.SootMethod)it.next();
-                    if (meth.getName().equals("<init>")){
-                        meth.getParameterTypes().add(Util.getSootType(li.type()));
-                    }
-                }
-                
-                // add field
-                soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
-                sootClass.addField(sf);
-                finalFields.add(sf);
+                addFinals(li,finalFields);
                 
                 localsUsed.add(new polyglot.util.IdentityKey(li));
+            }
+        }
+        Iterator newsIt = luc.getNews().iterator();
+        while (newsIt.hasNext()){
+            polyglot.ast.New tempNew = (polyglot.ast.New)newsIt.next();
+            //System.out.println("new used: "+tempNew);
+            //System.out.println("finalLocalInfo: "+finalLocalInfo);
+            polyglot.types.ClassType tempNewType = (polyglot.types.ClassType)tempNew.objectType().type();
+            if (finalLocalInfo.containsKey(new polyglot.util.IdentityKey(tempNewType))){
+                AnonLocalClassInfo lInfo = (AnonLocalClassInfo)finalLocalInfo.get(new polyglot.util.IdentityKey(tempNewType));
+                //System.out.println("anon local class info: "+lInfo); 
+                Iterator it = lInfo.finalLocals().iterator();
+                while (it.hasNext()){
+                    polyglot.types.LocalInstance li2 = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
+                    //System.out.println("li for new: "+li2);
+                    if (!sootClass.declaresField("val$"+li2.name(), Util.getSootType(li2.type()))){
+                        addFinals(li2, finalFields);
+                        localsUsed.add(new polyglot.util.IdentityKey(li2));
+                    }
+                }
             }
         }
     
         info.finalLocals(localsUsed);
         finalLocalInfo.put(new polyglot.util.IdentityKey(nodeKeyType), info);
         return finalFields;
+    }
+
+    private void addFinals(polyglot.types.LocalInstance li, ArrayList finalFields){
+        // add as param for init
+        Iterator it = sootClass.getMethods().iterator();
+        while (it.hasNext()){
+            soot.SootMethod meth = (soot.SootMethod)it.next();
+            if (meth.getName().equals("<init>")){
+                meth.getParameterTypes().add(Util.getSootType(li.type()));
+            }
+        }
+                
+        // add field
+        soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
+        sootClass.addField(sf);
+        finalFields.add(sf);
+               
     }
     
     /**
