@@ -37,8 +37,9 @@ import soot.baf.internal.*;
 public class LoadStoreOptimizer extends BodyTransformer
 {
     // Constants
-    static  boolean debug = false;
-    
+    static  boolean debug = true;
+   int ggg = 0;
+  int sss = 0;
     // constants returned by the stackIndependent function.
     final static private int FAILURE = 0;
     final static private int SUCCESS = 1;
@@ -83,7 +84,10 @@ public class LoadStoreOptimizer extends BodyTransformer
      */    
     private  void buildUnitToBlockMap()
     {
-        BlockGraph blockGraph = new BriefBlockGraph(mBody);        
+        BlockGraph blockGraph = new BriefBlockGraph(mBody);  
+	if(mBody.getMethod().getName().equals("aM")) {
+	    System.out.println(blockGraph);
+	}
         List blocks = blockGraph.getBlocks();
         mUnitToBlockMap = new HashMap();
         
@@ -126,7 +130,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
   public String getDefaultOptions() 
   {
-    return "sl sll inter:false sl2:false sll2:false";
+    return "sl sll inter sl2 sll2 iinc";
   }
  
 
@@ -176,6 +180,10 @@ public class LoadStoreOptimizer extends BodyTransformer
 	if(Options.getBoolean(options, "sl2") || Options.getBoolean(options, "sll2")  ) {	
 	    gPass2 = true;
 	    optimizeLoadStores();    if(debug)             System.out.println("pass 7"); 
+	}
+	
+	if(Options.getBoolean(options, "iinc")) {
+	  //doIinc();
 	}
     }
     
@@ -246,10 +254,11 @@ public class LoadStoreOptimizer extends BodyTransformer
   {
     if(debug) {
       System.out.println("xxxxxxxxxx>> " + mBody.getMethod().getName());}
-    //if(mBody.getMethod().getName().equals("aM")) {
+    if(mBody.getMethod().getName().equals("aM")) {
         Chain units  = mUnits;
         List storeList;
         
+	
 	
         // build a list of all store units in mUnits
         storeList = buildStoreList();        
@@ -329,10 +338,14 @@ public class LoadStoreOptimizer extends BodyTransformer
                                     
                             case 1:
 			      if(Options.getBoolean(gOptions, "sl")) {
-				  if(!gPass2 || Options.getBoolean(gOptions, "sl2")) {
+				if(!gPass2 || Options.getBoolean(gOptions, "sl2")) {
                                 // try to eliminate store/load pair
                                 Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 block =  (Block) mUnitToBlockMap.get(unit);
+				if((ggg +1)%4  == 0) {
+				  
+				  if( (sss  >=  13 && sss < 16) || (sss >=20 && sss < 30) || (sss==10)|| (sss==11) 
+				      || (sss==12) || (sss==19) || (sss==18) || (sss==17) || (sss==16)) {
                                 int test = stackIndependent(unit, loadUnit , block, STORE_LOAD_ELIMINATION);
 				
 				//xxx 
@@ -354,12 +367,18 @@ public class LoadStoreOptimizer extends BodyTransformer
 				    } 
 				    }*/
 				  }
+				  sss++;
+				}
+				ggg++;
+				}
 			      }
 			      break;
                                 
                             case 2:
 				if(Options.getBoolean(gOptions, "sll")) {
 				    if(!gPass2 || Options.getBoolean(gOptions, "sll2")) {
+
+				      if(/*(sss +1)%4*/ 1  == 0) {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                 Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();
@@ -425,6 +444,9 @@ public class LoadStoreOptimizer extends BodyTransformer
 					hasChanged = true;
 				    } 
 				}
+
+				      }
+				      sss++;
 				    }
 				    
 				}
@@ -435,12 +457,75 @@ public class LoadStoreOptimizer extends BodyTransformer
 	    }
 	}                    
     }
+  }
   
     
-    
+    void doIinc() {
+      Iterator unitIt = mUnits.iterator();
+      List addList = new ArrayList();
+      
+      while(unitIt.hasNext()) {
+	Unit u = (Unit) unitIt.next();
+	if(u instanceof AddInst) {
+	  addList.add(u);
+	}
+      }
+
+      unitIt = addList.iterator();
+      while(unitIt.hasNext()) {
+	Unit u = (Unit) unitIt.next();
+	Block  block = (Block) mUnitToBlockMap.get(u);
+	Unit pred, predPred;
+	  
+	pred = (Unit) block.getPredOf(u);	  
+	if(pred != null) {
+	    predPred = (Unit) block.getPredOf(pred);
+	  
+	  
+	    if(predPred !=  null) {
+	    	
+	      Unit succ = (Unit) block.getSuccOf(u);
+	      if(succ instanceof StoreInst) {
+		if((pred instanceof PushInst && predPred instanceof LoadInst)) {
+		  if( ((StoreInst)succ).getLocal() == ((LoadInst)predPred).getLocal()) {
+		    block.insertAfter(Baf.v().newIncInst(((LoadInst)predPred).getLocal(), ((PushInst) pred).getConstant()),u);
+		    block.remove(u);
+		    block.remove(pred);
+		    block.remove(predPred);
+		    block.remove(succ);
+		  }
+		  
+		}
+		else if (pred instanceof LoadInst && predPred instanceof PushInst) {
+		  if( ((StoreInst)succ).getLocal() == ((LoadInst)pred).getLocal()) {
+		    block.insertAfter(Baf.v().newIncInst(((LoadInst)pred).getLocal(), ((PushInst) predPred).getConstant()), u);
+		    block.remove(u);
+		    block.remove(pred);
+		    block.remove(predPred);
+		    block.remove(succ);
+		  }
+		}
+	      }
+	    }
+	}
+      }	  
+      
+
+
+
+    }
+      
+
+
+
+
+
+
+
+
     
        
-    /** 
+  /** 
      *  Checks if the units occuring between [from, to] consume 
      *. stack items not produced by these interval units. (ie if the
      *  stack height ever goes negative between from and to, assuming the 
@@ -624,10 +709,10 @@ public class LoadStoreOptimizer extends BodyTransformer
             if(aContext == STORE_LOAD_ELIMINATION) {                
                 if(stackHeight == 0 && minStackHeightAttained == 0){
                     if(debug) { System.out.println("xxx: success due: 0, SUCCESS ");}
-                    return SUCCESS;
+		    return SUCCESS;
                 }
                 else if (minStackHeightAttained == -1 && stackHeight == -1) { // try to make it more generic
-                    Unit u = (Unit) block.getPredOf(from);
+		    /*   Unit u = (Unit) block.getPredOf(from);
                     if(u instanceof FieldGetInst)
                         if(block.getPredOf(u) instanceof Dup1Inst) {
                             block.remove(u);
@@ -636,11 +721,13 @@ public class LoadStoreOptimizer extends BodyTransformer
 			    block.insertBefore(from, to);
                             if(debug) { System.out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
                             return SPECIAL_SUCCESS2;
-                        }                    
+			    }     */
+		    return FAILURE;
                 }
-                else if (minStackHeightAttained < 0){
-                    return   pushStoreToLoad(from , to, block);
-                }                  
+                else if (minStackHeightAttained < 0){//xxx fixme
+		    // return   pushStoreToLoad(from , to, block);
+		    return FAILURE;
+                } 
             }        
             
 
@@ -698,7 +785,8 @@ public class LoadStoreOptimizer extends BodyTransformer
                 u =  (Unit) it.next();
             }
         }
-
+	
+	/*
         if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
             if(aContext == STORE_LOAD_ELIMINATION && stackHeight == 1 && minStackHeightAttained == 0) {
                 if(debug) { System.out.println("xxx: commutative ");}
@@ -715,10 +803,11 @@ public class LoadStoreOptimizer extends BodyTransformer
                 return HAS_CHANGED; // return has changed
                 } 
             else return FAILURE;
-        }
-        if (aContext == STORE_LOAD_ELIMINATION)
+	    }
+	    if (aContext == STORE_LOAD_ELIMINATION)
             return   pushStoreToLoad(from , to, block);
-        
+	*/
+	
         return res;
     }
 

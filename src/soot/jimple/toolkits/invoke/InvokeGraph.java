@@ -54,14 +54,74 @@ public class InvokeGraph
             return new ArrayList();
     }
 
+    /** Returns the list of targets of SootMethod */
     public List getTargetsOf(SootMethod m) 
     {
-        throw new RuntimeException("not implemented yet!");
+	if ((!m.isConcrete()) || (!m.hasActiveBody()))
+	{
+	    // No body to look at so no targets
+	    return new ArrayList();
+	}
+
+	Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+
+	// Use a set as temporary structure to ensure unique targets
+	Set targets = new HashSet();
+
+	// The targets of a method is the union of the targets
+	// for all invoke expressions in the method
+	while (unitsIt.hasNext())
+        {
+	    Stmt s = (Stmt)unitsIt.next();
+	    if (s.containsInvokeExpr())
+	    {
+		InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
+
+		try {
+		    targets.addAll(getTargetsOf(ie));
+		}
+		catch (java.lang.RuntimeException e) {}
+	    }
+	}
+
+	// Transfer the results to a list to match return type 
+	ArrayList retList = new ArrayList();
+	retList.addAll(targets);
+	return retList;
     }
 
     public List getTransitiveTargetsOf(SootMethod m) 
     {
-        throw new RuntimeException("not implemented yet!");
+	Set workList  = new HashSet();
+	Set processed = new HashSet();
+	Set targets   = new HashSet();
+
+	// Start with just this method
+	workList.add(m);
+	
+	while(!workList.isEmpty())
+	{
+	    SootMethod cur = (SootMethod) workList.iterator().next();
+
+	    // Pop a method from the worklist, add it to the processed set
+	    workList.remove(cur);
+	    processed.add(cur);
+
+	    // Find the targets of this method that are not 
+	    // already in the processed set
+	    List curTargets = getTargetsOf(cur);
+	    curTargets.removeAll(processed);
+
+	    // Add these targets to the result set
+	    // and to the worklist
+	    targets.addAll(curTargets);
+	    workList.addAll(curTargets);
+	}
+	
+	// Transfer the results to a list to match return type 
+	ArrayList toReturn = new ArrayList();
+	toReturn.addAll(targets);
+	return toReturn;
     }
 
     public List getTargetsOf(InvokeExpr ie) 
