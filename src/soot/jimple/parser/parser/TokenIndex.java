@@ -279,198 +279,213 @@ class TokenIndex extends AnalysisAdapter
         index = 53;
     }
 
-    public void caseTComma(TComma node)
+    public void caseTFrom(TFrom node)
     {
         index = 54;
     }
 
-    public void caseTLBrace(TLBrace node)
+    public void caseTTo(TTo node)
     {
         index = 55;
     }
 
-    public void caseTRBrace(TRBrace node)
+    public void caseTWith(TWith node)
     {
         index = 56;
     }
 
-    public void caseTSemicolon(TSemicolon node)
+    public void caseTComma(TComma node)
     {
         index = 57;
     }
 
-    public void caseTLBracket(TLBracket node)
+    public void caseTLBrace(TLBrace node)
     {
         index = 58;
     }
 
-    public void caseTRBracket(TRBracket node)
+    public void caseTRBrace(TRBrace node)
     {
         index = 59;
     }
 
-    public void caseTLParen(TLParen node)
+    public void caseTSemicolon(TSemicolon node)
     {
         index = 60;
     }
 
-    public void caseTRParen(TRParen node)
+    public void caseTLBracket(TLBracket node)
     {
         index = 61;
     }
 
-    public void caseTColon(TColon node)
+    public void caseTRBracket(TRBracket node)
     {
         index = 62;
     }
 
-    public void caseTDot(TDot node)
+    public void caseTLParen(TLParen node)
     {
         index = 63;
     }
 
-    public void caseTQuote(TQuote node)
+    public void caseTRParen(TRParen node)
     {
         index = 64;
     }
 
-    public void caseTColonEquals(TColonEquals node)
+    public void caseTColon(TColon node)
     {
         index = 65;
     }
 
-    public void caseTEquals(TEquals node)
+    public void caseTDot(TDot node)
     {
         index = 66;
     }
 
-    public void caseTAnd(TAnd node)
+    public void caseTQuote(TQuote node)
     {
         index = 67;
     }
 
-    public void caseTOr(TOr node)
+    public void caseTColonEquals(TColonEquals node)
     {
         index = 68;
     }
 
-    public void caseTXor(TXor node)
+    public void caseTEquals(TEquals node)
     {
         index = 69;
     }
 
-    public void caseTMod(TMod node)
+    public void caseTAnd(TAnd node)
     {
         index = 70;
     }
 
-    public void caseTCmpeq(TCmpeq node)
+    public void caseTOr(TOr node)
     {
         index = 71;
     }
 
-    public void caseTCmpne(TCmpne node)
+    public void caseTXor(TXor node)
     {
         index = 72;
     }
 
-    public void caseTCmpgt(TCmpgt node)
+    public void caseTMod(TMod node)
     {
         index = 73;
     }
 
-    public void caseTCmpge(TCmpge node)
+    public void caseTCmpeq(TCmpeq node)
     {
         index = 74;
     }
 
-    public void caseTCmplt(TCmplt node)
+    public void caseTCmpne(TCmpne node)
     {
         index = 75;
     }
 
-    public void caseTCmple(TCmple node)
+    public void caseTCmpgt(TCmpgt node)
     {
         index = 76;
     }
 
-    public void caseTShl(TShl node)
+    public void caseTCmpge(TCmpge node)
     {
         index = 77;
     }
 
-    public void caseTShr(TShr node)
+    public void caseTCmplt(TCmplt node)
     {
         index = 78;
     }
 
-    public void caseTUshr(TUshr node)
+    public void caseTCmple(TCmple node)
     {
         index = 79;
     }
 
-    public void caseTPlus(TPlus node)
+    public void caseTShl(TShl node)
     {
         index = 80;
     }
 
-    public void caseTMinus(TMinus node)
+    public void caseTShr(TShr node)
     {
         index = 81;
     }
 
-    public void caseTMult(TMult node)
+    public void caseTUshr(TUshr node)
     {
         index = 82;
     }
 
-    public void caseTDiv(TDiv node)
+    public void caseTPlus(TPlus node)
     {
         index = 83;
     }
 
-    public void caseTFullIdentifier(TFullIdentifier node)
+    public void caseTMinus(TMinus node)
     {
         index = 84;
     }
 
-    public void caseTQuotedName(TQuotedName node)
+    public void caseTMult(TMult node)
     {
         index = 85;
     }
 
-    public void caseTIdentifier(TIdentifier node)
+    public void caseTDiv(TDiv node)
     {
         index = 86;
     }
 
-    public void caseTAtIdentifier(TAtIdentifier node)
+    public void caseTFullIdentifier(TFullIdentifier node)
     {
         index = 87;
     }
 
-    public void caseTBoolConstant(TBoolConstant node)
+    public void caseTQuotedName(TQuotedName node)
     {
         index = 88;
     }
 
-    public void caseTIntegerConstant(TIntegerConstant node)
+    public void caseTIdentifier(TIdentifier node)
     {
         index = 89;
     }
 
-    public void caseTFloatConstant(TFloatConstant node)
+    public void caseTAtIdentifier(TAtIdentifier node)
     {
         index = 90;
     }
 
-    public void caseTStringConstant(TStringConstant node)
+    public void caseTBoolConstant(TBoolConstant node)
     {
         index = 91;
     }
 
-    public void caseEOF(EOF node)
+    public void caseTIntegerConstant(TIntegerConstant node)
     {
         index = 92;
+    }
+
+    public void caseTFloatConstant(TFloatConstant node)
+    {
+        index = 93;
+    }
+
+    public void caseTStringConstant(TStringConstant node)
+    {
+        index = 94;
+    }
+
+    public void caseEOF(EOF node)
+    {
+        index = 95;
     }
 }

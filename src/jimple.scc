@@ -103,6 +103,9 @@ Tokens
   throws = '.throws';
   virtualinvoke = '.virtualinvoke';
   null = '.null';
+  from = '.from';
+  to = '.to';
+  with = '.with';
 
   comma = ',';
   l_brace = '{';
@@ -298,7 +301,7 @@ class_name_list =
     goto label_name semicolon;
 
   catch_clause =
-    catch [name]:class_name [from_id]:identifier [from_label]:label_name [to_id]:identifier [to_label]:label_name [with_id]:identifier [with_label]:label_name semicolon;
+    catch [name]:class_name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
 
   expression =
     {new}         new_expr |

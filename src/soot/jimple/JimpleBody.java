@@ -570,9 +570,9 @@ public class JimpleBody extends StmtBody
             {
                 Trap trap = (Trap) trapIt.next();
 
-                out.println("        .catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
+                out.println("        .catch " + trap.getException().getName() + " .from " +
+                    stmtToName.get(trap.getBeginUnit()) + " .to " + stmtToName.get(trap.getEndUnit()) +
+                    " .with " + stmtToName.get(trap.getHandlerUnit()) + ";");
             }
         }
 

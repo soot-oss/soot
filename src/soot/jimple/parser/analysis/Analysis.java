@@ -216,6 +216,9 @@ public interface Analysis extends Switch
     void caseTThrows(TThrows node);
     void caseTVirtualinvoke(TVirtualinvoke node);
     void caseTNull(TNull node);
+    void caseTFrom(TFrom node);
+    void caseTTo(TTo node);
+    void caseTWith(TWith node);
     void caseTComma(TComma node);
     void caseTLBrace(TLBrace node);
     void caseTRBrace(TRBrace node);

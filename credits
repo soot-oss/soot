@@ -1,0 +1,68 @@
+                      Soot Credits
+                 
+                 
+      Soot Maintainers: Raja Vallee-Rai, Patrick Lam
+    
+    
+-------------------- Soot Contributors ------------------------
+                  (in alphabetical order)
+
+Phong Co (phong@hasc.com)
+    - Jimple scalar optimizations
+
+Etienne Gagnon (gagnon@sable.mcgill.ca)
+    - Jimple typing algorithm
+      
+Laurie Hendren (hendren@sable.mcgill.ca)
+    - project advisor
+       
+Patrick Lam (plam@sable.mcgill.ca)
+    - general Soot hacker
+    - Grimp
+    - Baf implementation
+    - Aggregation
+    - second implementation of inlining and devirtualization
+    
+Patrice Pominville (patrice@sable.mcgill.ca)
+    - Soot infrastructure
+    - Baf implementation & optimizations
+    - Jimple parser
+    
+Vijay Sundaresan (vijay@sable.mcgill.ca)
+    - first implementation of inlining and devirtualization
+    
+Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+    - general Soot hacker    
+    - API freak
+    
+Clark Verbrugge (clarkv@ca.ibm.com)
+    - coffi hacker
+    - original Jimple hacker   
+
+    
+-------------------- Funding Acknowledgements ------------------
+                    
+Funding support provided by:
+    - IBM's Centre for Advanced Studies 
+      http://cas.ibm.com
+
+    - Le Fonds pour la Formation de Chercheurs et l'Aide a la 
+      Recherche (Fonds FCAR)
+      http://www.fcar.qc.ca
+
+    - Natural Sciences and Engineering Research Council of 
+      Canada (NSERC)
+      http://www.nserc.ca
+
+
+------------------------- Special Thanks -----------------------
+
+To:
+
+    - Jonathan Meyer for providing the free software community 
+      with Jasmin, a Java bytecode assembler. 
+
+    - Our users for their patience and continuing support! 
+
+
+

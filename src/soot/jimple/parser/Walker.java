@@ -632,18 +632,11 @@ public class Walker extends DepthFirstAdapter
 	withUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), withUnit);
 
-	
-	 mProductions.pop(); // pop dummy "with" string (see jimple.scc)
-
 	toUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), toUnit);
 
-	mProductions.pop();  // pop dummy "to" string (see jimple.scc)
-
 	fromUnit = Jimple.v().newStmtBox(null);
 	addBoxToPatch((String) mProductions.pop(), fromUnit);
-
-	mProductions.pop();   // pop dummy "from" string (see jimple.scc)
 
 	exceptionName = (String) mProductions.pop();
 				

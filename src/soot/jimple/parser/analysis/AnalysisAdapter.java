@@ -1083,6 +1083,21 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseTFrom(TFrom node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTTo(TTo node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTWith(TWith node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTComma(TComma node)
     {
         defaultCase(node);
