@@ -36,10 +36,14 @@ public class BDDCflowStack
         this.cflow = cflow;
         for( Iterator sIt = isValids.iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
+            Scene.v().getUnitNumberer().add(s);
             this.isValids |= new {s=>stmt};
         }
         for( Iterator sIt = shadows.iterator(); sIt.hasNext(); ) {
             final Shadow s = (Shadow) sIt.next();
+            ShadowNumberer.v().add(s);
+            Scene.v().getUnitNumberer().add(s.pushStmt());
+            Scene.v().getUnitNumberer().add(s.popStmt());
             this.shadows |= new {s=>shadow};
         }
     }

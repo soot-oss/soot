@@ -31,8 +31,8 @@ public final class Qctxt_methodBDD extends Qctxt_method {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_methodBDD reader = (Rctxt_methodBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
-                                                           new PhysicalDomain[] { MS.v(), C1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
+                                                           new PhysicalDomain[] { C1.v(), MS.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                             "oot/jimple/paddle/queue/Qctxt_methodBDD.jedd:40,12-18"),
                                                            in));

@@ -17,13 +17,15 @@ public class BDDNodeInfo extends AbsNodeInfo {
     public boolean update() {
         boolean ret = false;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(localMap),
-                                           localMap.eqUnion(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(locals.get(),
-                                                                                                                          new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                          new jedd.PhysicalDomain[] { V2.v() }),
-                                                                                           new jedd.PhysicalDomain[] { T1.v() }))))
+                                           localMap.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(locals.get(),
+                                                                                                                          new jedd.PhysicalDomain[] { T1.v() }),
+                                                                                           new jedd.PhysicalDomain[] { V1.v() },
+                                                                                           new jedd.PhysicalDomain[] { V2.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(globalSet),
-                                           globalSet.eqUnion(jedd.internal.Jedd.v().project(globals.get(),
+                                           globalSet.eqUnion(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(globals.get(),
+                                                                                                                           new jedd.PhysicalDomain[] { V1.v() },
+                                                                                                                           new jedd.PhysicalDomain[] { V2.v() }),
                                                                                             new jedd.PhysicalDomain[] { T1.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(localallocMap),
@@ -48,7 +50,7 @@ public class BDDNodeInfo extends AbsNodeInfo {
     
     private final jedd.internal.RelationContainer globalSet =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                          new jedd.PhysicalDomain[] { V1.v() },
+                                          new jedd.PhysicalDomain[] { V2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var> globalSet = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /home/research/ccl/olhota/s" +
                                            "oot-trunk/src/soot/jimple/paddle/BDDNodeInfo.jedd:54,12-17"),
@@ -82,15 +84,15 @@ public class BDDNodeInfo extends AbsNodeInfo {
     
     public jedd.internal.RelationContainer globalSet() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                                   new jedd.PhysicalDomain[] { V1.v() },
+                                                   new jedd.PhysicalDomain[] { V2.v() },
                                                    ("return globalSet; at /home/research/ccl/olhota/soot-trunk/sr" +
                                                     "c/soot/jimple/paddle/BDDNodeInfo.jedd:59,31-37"),
                                                    globalSet);
     }
     
     public jedd.internal.RelationContainer localallocMap() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), method.v() },
-                                                   new jedd.PhysicalDomain[] { H1.v(), MS.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), obj.v() },
+                                                   new jedd.PhysicalDomain[] { MS.v(), H1.v() },
                                                    ("return localallocMap; at /home/research/ccl/olhota/soot-trun" +
                                                     "k/src/soot/jimple/paddle/BDDNodeInfo.jedd:60,43-49"),
                                                    localallocMap);

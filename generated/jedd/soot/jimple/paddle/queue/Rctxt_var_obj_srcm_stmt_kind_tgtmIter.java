@@ -59,8 +59,8 @@ public class Rctxt_var_obj_srcm_stmt_kind_tgtmIter extends Rctxt_var_obj_srcm_st
                                                        new Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() },
                                                        new PhysicalDomain[] { C2.v(), V1.v(), H1.v(), MS.v(), ST.v(), KD.v(), MT.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), obj.v(), tgtm.v(), stmt.v(), ctxt.v(), var.v() },
-                                                   new PhysicalDomain[] { MS.v(), KD.v(), H1.v(), MT.v(), ST.v(), C2.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), tgtm.v(), srcm.v(), var.v(), kind.v(), stmt.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), MT.v(), MS.v(), V1.v(), KD.v(), ST.v(), H1.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Rctxt_var_obj_srcm_stmt_kind_tgtmIter.j" +
                                                     "edd:50,8-14"),

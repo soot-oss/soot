@@ -24,8 +24,8 @@ public class Qvarc_var_objc_objTrad extends Qvarc_var_objc_obj {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { varc.v(), objc.v(), obj.v(), var.v() },
-                                              new PhysicalDomain[] { C1.v(), C2.v(), H1.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), var.v(), obj.v() },
+                                              new PhysicalDomain[] { C2.v(), C1.v(), V1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvarc_var_objc" +
                                                "_objTrad.jedd:41,22-24"),

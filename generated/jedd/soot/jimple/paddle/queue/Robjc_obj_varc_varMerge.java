@@ -39,8 +39,8 @@ public final class Robjc_obj_varc_varMerge extends Robjc_obj_varc_var {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { varc.v(), objc.v(), obj.v(), var.v() },
-                                                   new PhysicalDomain[] { C1.v(), C2.v(), H1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), var.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), C1.v(), V1.v(), H1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
                                                     "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
                                                     "t-trunk/src/soot/jimple/paddle/queue/Robjc_obj_varc_varMerge" +

@@ -31,8 +31,8 @@ public final class Qvar_typeBDD extends Qvar_type {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_typeBDD reader = (Rvar_typeBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
-                                                           new PhysicalDomain[] { T1.v(), V1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
+                                                           new PhysicalDomain[] { V1.v(), T1.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                             "oot/jimple/paddle/queue/Qvar_typeBDD.jedd:40,12-18"),
                                                            in));

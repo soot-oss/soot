@@ -26,8 +26,8 @@ public class BDDContextStripper extends AbsContextStripper {
                                                                                                          new jedd.Attribute[] { ctxt.v() },
                                                                                                          new jedd.PhysicalDomain[] { C1.v() }),
                                                                           new jedd.PhysicalDomain[] {  }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), ctxt.v() },
-                                                    new jedd.PhysicalDomain[] { MS.v(), C1.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
+                                                    new jedd.PhysicalDomain[] { C1.v(), MS.v() },
                                                     ("out.add(answer) at /home/research/ccl/olhota/soot-trunk/src/" +
                                                      "soot/jimple/paddle/BDDContextStripper.jedd:36,8-11"),
                                                     answer));

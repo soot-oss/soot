@@ -31,8 +31,8 @@ public final class Qvar_srcm_stmt_signature_kindBDD extends Qvar_srcm_stmt_signa
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_signature_kindBDD reader = (Rvar_srcm_stmt_signature_kindBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), kind.v(), stmt.v(), var.v(), signature.v() },
-                                                           new PhysicalDomain[] { MS.v(), KD.v(), ST.v(), V1.v(), SG.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { signature.v(), srcm.v(), var.v(), kind.v(), stmt.v() },
+                                                           new PhysicalDomain[] { SG.v(), MS.v(), V1.v(), KD.v(), ST.v() },
                                                            ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
                                                             "oot/jimple/paddle/queue/Qvar_srcm_stmt_signature_kindBDD.jed" +
                                                             "d:40,12-18"),

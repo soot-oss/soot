@@ -19,11 +19,13 @@ public class BDDP2Sets extends AbsP2Sets {
                                                                       ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/research" +
                                                                        "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDP2Sets.jedd" +
                                                                        ":39,15-18"),
-                                                                      jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pt),
-                                                                                                     jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
-                                                                                                                                    new jedd.Attribute[] { varc.v(), var.v() },
-                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), V1.v() }),
-                                                                                                     new jedd.PhysicalDomain[] { C1.v(), V1.v() })));
+                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pt),
+                                                                                                                                    jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
+                                                                                                                                                                   new jedd.Attribute[] { varc.v(), var.v() },
+                                                                                                                                                                   new jedd.PhysicalDomain[] { C1.v(), V2.v() }),
+                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), V2.v() }),
+                                                                                                     new jedd.PhysicalDomain[] { H2.v() },
+                                                                                                     new jedd.PhysicalDomain[] { H1.v() })));
     }
     
     public PointsToSetReadOnly get(Context ctxt, AllocDotField adf) {

@@ -46,8 +46,8 @@ public class Rsrc_dst_fldIter extends Rsrc_dst_fld {
                                                        new Attribute[] { src.v(), dst.v(), fld.v() },
                                                        new PhysicalDomain[] { V1.v(), V2.v(), FD.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v(), fld.v() },
-                                                   new PhysicalDomain[] { V1.v(), V2.v(), FD.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { fld.v(), src.v(), dst.v() },
+                                                   new PhysicalDomain[] { FD.v(), V1.v(), V2.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Rsrc_dst_fldIter.jedd:50,8-14"),
                                                    ret);

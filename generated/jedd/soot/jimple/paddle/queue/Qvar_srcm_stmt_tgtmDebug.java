@@ -24,8 +24,8 @@ public class Qvar_srcm_stmt_tgtmDebug extends Qvar_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), tgtm.v(), stmt.v(), var.v() },
-                                              new PhysicalDomain[] { MS.v(), MT.v(), ST.v(), V1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), var.v(), stmt.v() },
+                                              new PhysicalDomain[] { MT.v(), MS.v(), V1.v(), ST.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
                                                "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
                                                "_tgtmDebug.jedd:40,22-24"),

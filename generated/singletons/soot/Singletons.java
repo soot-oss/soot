@@ -1066,4 +1066,10 @@ public class Singletons {
         return instance_soot_jimple_paddle_queue_Readers;
     }
 
+    private soot.jimple.paddle.ShadowNumberer instance_soot_jimple_paddle_ShadowNumberer;
+    public soot.jimple.paddle.ShadowNumberer soot_jimple_paddle_ShadowNumberer() {
+        if( instance_soot_jimple_paddle_ShadowNumberer == null ) instance_soot_jimple_paddle_ShadowNumberer = new soot.jimple.paddle.ShadowNumberer( g );
+        return instance_soot_jimple_paddle_ShadowNumberer;
+    }
+
 }

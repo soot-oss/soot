@@ -50,8 +50,8 @@ public class Robjc_obj_varc_varIter extends Robjc_obj_varc_var {
                                                        new Attribute[] { objc.v(), obj.v(), varc.v(), var.v() },
                                                        new PhysicalDomain[] { C2.v(), H1.v(), C1.v(), V1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { varc.v(), objc.v(), obj.v(), var.v() },
-                                                   new PhysicalDomain[] { C1.v(), C2.v(), H1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), var.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), C1.v(), V1.v(), H1.v() },
                                                    ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
                                                     "/jimple/paddle/queue/Robjc_obj_varc_varIter.jedd:50,8-14"),
                                                    ret);
