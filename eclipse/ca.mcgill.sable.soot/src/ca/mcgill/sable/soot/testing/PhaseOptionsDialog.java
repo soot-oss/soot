@@ -609,22 +609,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("shimple", getshimpleenabled_widget(), "enabled");
 		
 		
-		addToEnableGroup("shimple", getshimplenaive_phi_elimination_widget(), "naive-phi-elimination");
-		
-		
-		addToEnableGroup("shimple", getshimplepre_optimize_phi_elimination_widget(), "pre-optimize-phi-elimination");
-		
-		
-		addToEnableGroup("shimple", getshimplepost_optimize_phi_elimination_widget(), "post-optimize-phi-elimination");
+		addToEnableGroup("shimple", getshimplephi_elim_opt_widget(), "phi-elim-opt");
 		
 		
 		getshimpleenabled_widget().getButton().addSelectionListener(this);
-		
-		getshimplenaive_phi_elimination_widget().getButton().addSelectionListener(this);
-		
-		getshimplepre_optimize_phi_elimination_widget().getButton().addSelectionListener(this);
-		
-		getshimplepost_optimize_phi_elimination_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("stp");
@@ -1117,6 +1105,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getGeneral_Optionshelp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsphase_list_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsphase_list_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionsversion_widget().getButton().getSelection();
 		
 		
@@ -1165,6 +1163,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsdebug_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getGeneral_Optionsphase_help_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getGeneral_Optionsphase_help_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
@@ -1991,35 +1998,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
+		 
+		stringRes = getshimplephi_elim_opt_widget().getSelectedAlias();
+
 		
-		boolRes = getshimplenaive_phi_elimination_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
+		defStringRes = "post";
 		
 
-		if (boolRes != defBoolRes) {
-			getConfig().put(getshimplenaive_phi_elimination_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getshimplepre_optimize_phi_elimination_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getshimplepre_optimize_phi_elimination_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getshimplepost_optimize_phi_elimination_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getshimplepost_optimize_phi_elimination_widget().getAlias(), new Boolean(boolRes));
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getshimplephi_elim_opt_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getstpenabled_widget().getButton().getSelection();
@@ -3551,6 +3538,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return General_Optionshelp_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsphase_list_widget;
+	
+	private void setGeneral_Optionsphase_list_widget(BooleanOptionWidget widget) {
+		General_Optionsphase_list_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsphase_list_widget() {
+		return General_Optionsphase_list_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsversion_widget;
 	
 	private void setGeneral_Optionsversion_widget(BooleanOptionWidget widget) {
@@ -3600,6 +3597,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getGeneral_Optionsdebug_widget() {
 		return General_Optionsdebug_widget;
 	}	
+	
+
+	private ListOptionWidget General_Optionsphase_help_widget;
+	
+	private void setGeneral_Optionsphase_help_widget(ListOptionWidget widget) {
+		General_Optionsphase_help_widget = widget;
+	}
+	
+	public ListOptionWidget getGeneral_Optionsphase_help_widget() {
+		return General_Optionsphase_help_widget;
+	}	
+	
 	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
 	
@@ -4457,35 +4466,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return shimpleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget shimplenaive_phi_elimination_widget;
 	
-	private void setshimplenaive_phi_elimination_widget(BooleanOptionWidget widget) {
-		shimplenaive_phi_elimination_widget = widget;
+	private MultiOptionWidget shimplephi_elim_opt_widget;
+	
+	private void setshimplephi_elim_opt_widget(MultiOptionWidget widget) {
+		shimplephi_elim_opt_widget = widget;
 	}
 	
-	public BooleanOptionWidget getshimplenaive_phi_elimination_widget() {
-		return shimplenaive_phi_elimination_widget;
+	public MultiOptionWidget getshimplephi_elim_opt_widget() {
+		return shimplephi_elim_opt_widget;
 	}	
 	
-	private BooleanOptionWidget shimplepre_optimize_phi_elimination_widget;
-	
-	private void setshimplepre_optimize_phi_elimination_widget(BooleanOptionWidget widget) {
-		shimplepre_optimize_phi_elimination_widget = widget;
-	}
-	
-	public BooleanOptionWidget getshimplepre_optimize_phi_elimination_widget() {
-		return shimplepre_optimize_phi_elimination_widget;
-	}	
-	
-	private BooleanOptionWidget shimplepost_optimize_phi_elimination_widget;
-	
-	private void setshimplepost_optimize_phi_elimination_widget(BooleanOptionWidget widget) {
-		shimplepost_optimize_phi_elimination_widget = widget;
-	}
-	
-	public BooleanOptionWidget getshimplepost_optimize_phi_elimination_widget() {
-		return shimplepost_optimize_phi_elimination_widget;
-	}	
 	
 	private BooleanOptionWidget stpenabled_widget;
 	
@@ -5382,6 +5373,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"pl";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nThis option causes Soot to print a list of the available phases \nand sub-phases, and exit.", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"version";
 		defKey = defKey.trim();
 
@@ -5460,6 +5467,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nThis option causes Soot to print various debugging information, \nparticularly from the Baf Body Phase and the Jimple Annotation \nPack Phase.", defaultBool)));
 		
+		
+
+		defKey = ""+" "+""+" "+"ph";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nThis option causes Soot to print a help message about the phase \nor sub-phase specified by its argument, and exit. \n", defaultString)));
 		
 
 		
@@ -7902,7 +7924,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupshimple.setData("id", "shimple");
 		
-		String descshimple = "Miscellaneous Shimple Options.";	
+		String descshimple = "General Shimple options.";	
 		if (descshimple.length() > 0) {
 			Label descLabelshimple = new Label(editGroupshimple, SWT.WRAP);
 			descLabelshimple.setText(descshimple);
@@ -7927,51 +7949,45 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"shimple"+" "+"naive-phi-elimination";
+		data = new OptionData [] {
+		
+		new OptionData("Naive Phi Node Elimination",
+		"none",
+		"\nIf enabled, neither pre-optimization nor \npost-optimization will be applied to the Phi elimination \nprocess. This is useful for monitoring and understanding \nthe behaviour of Shimple optimizations or \ntransformations.",
+		
+		false),
+		
+		new OptionData("Pre-optimize Phi Elimination",
+		"pre",
+		"\nIf enabled, some recommended optimizations such as \ndead code elimination and local packing are applied \nbefore Phi node elimination. This does not appear to be as \neffective as post-optimization, but the option is \nprovided for future testing and investigation.",
+		
+		false),
+		
+		new OptionData("Post-optimize Phi Elimination",
+		"post",
+		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local packing after Phi \nnode elimination. This appears to be more effective than \npre-optimization.",
+		
+		true),
+		
+		new OptionData("Pre- and Post- Optimize Phi Elimination",
+		"pre-and-post",
+		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local packing both \nbefore and after Phi node elimination. Provided for \nexperimentation.",
+		
+		false),
+		
+		};
+		
+										
+		setshimplephi_elim_opt_widget(new MultiOptionWidget(editGroupshimple, SWT.NONE, data, new OptionData("Phi Node Elimination Optimizations", "p", "shimple","phi-elim-opt", "\nThese options control Shimple's behaviour when \neliminating Phi nodes.")));
+		
+		defKey = "p"+" "+"shimple"+" "+"phi-elim-opt";
 		defKey = defKey.trim();
-
+		
 		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setshimplenaive_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Naive Phi Node Elimination", "p", "shimple","naive-phi-elimination", "\nIf set to true, neither pre-optimization nor \npost-optimization will be applied to the Phi elimination \nprocess. This is useful for monitoring and understanding \nthe behaviour of Shimple optimizations or transformations. \nNote that setting this option to true takes precedence \nover other Phi elimination options.", defaultBool)));
+			defaultString = getStringDef(defKey);
 		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"pre-optimize-phi-elimination";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
+			getshimplephi_elim_opt_widget().setDef(defaultString);
 		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setshimplepre_optimize_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Pre-optimize Phi Elimination", "p", "shimple","pre-optimize-phi-elimination", "\nIf set to true, some recommended optimizations such as \ndead code elimination and local packing are applied \nbefore Phi node elimination. This does not appear to be as \neffective as post-optimization, but the option is provided \nfor future testing and investigation.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"post-optimize-phi-elimination";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setshimplepost_optimize_phi_elimination_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Post-optimize Phi Elimination", "p", "shimple","post-optimize-phi-elimination", "\nApplies recommended optimizations such as dead code \nelimination and local packing after Phi node \nelimination. This appears to be more effective than \npre-optimization.", defaultBool)));
 		
 		
 

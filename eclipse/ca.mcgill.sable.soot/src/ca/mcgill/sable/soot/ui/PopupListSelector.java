@@ -87,7 +87,7 @@ public class PopupListSelector {
 	public String open (Rectangle rect) {
 
 		Point listSize = getList().computeSize (rect.width, SWT.DEFAULT);
-		/*Rectangle screenSize = getShell().getDisplay().getBounds();
+		Rectangle screenSize = getShell().getDisplay().getBounds();
 
 		// Position the dialog so that it does not run off the screen and the largest number of items are visible
 		int spaceBelow = screenSize.height - (rect.y + rect.height) - 30;
@@ -132,8 +132,9 @@ public class PopupListSelector {
 			y = rect.y - spaceBelow;
 			System.out.println(spaceAbove - spaceAbove);
 		}
-		*/
-		int y = (rect.y * 16) + 85;
+		
+		y = (rect.y * 16) + 85;
+
 	
 	
 		getShell().setBounds(rect.x, y, listSize.x, listSize.y);

@@ -108,7 +108,8 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 30 ));
 						}	
 						else {
-							popup.open(new Rectangle(400, 200, 600, 30 ));
+							popup.open(new Rectangle(380, 200, 600, 35 ));
+
 						}
 						
 						handleSelection(popup.getSelected(), links);
@@ -165,9 +166,11 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		String resource = removeExt(getResource(getEditor()).getName());
 		System.out.println(resource);
 		
+		String ext = getResource(getEditor()).getFileExtension();
+		
 		if (!resource.equals(className)){
 			IContainer parent = getResource(getEditor()).getParent();
-			IResource file = parent.findMember(className+".jimple");
+			IResource file = parent.findMember(className+"."+ext);
 			if (file == null){
 				// link to file doesn't exist
 				setLinkToEditor(getEditor());
