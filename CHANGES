@@ -1,3 +1,24 @@
+Improvements in Release 1 (version 1.0.0)
+
+Some of these changes occured earlier but are only mentioned now.
+
+1. Changed the version numbering scheme to follow the Linux
+version numbering scheme.
+
+2. Added warning for unconsumed phase options.
+
+3. Fixed bug with original name recovery.
+
+4. Added documentation.
+
+5. Fixed another aggregation bug where multiple field refs between
+def, use were not correctly handled.
+
+6. Added static class synchronizer.
+
+7. Changed format of Jimple source again, now removing the dots
+for keywords.
+
 Improvements in 021400
 
 1. Fixed the SootResolver so that it displays the name of
