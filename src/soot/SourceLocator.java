@@ -77,6 +77,9 @@ public class SourceLocator
 
     private List classPath;
     public List classPath() { return classPath; }
+    public void invalidateClassPath() {
+        classPath = null;
+    }
 
     private List sourcePath;
     public List sourcePath() {

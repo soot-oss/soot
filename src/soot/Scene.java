@@ -143,6 +143,7 @@ public class Scene  //extends AbstractHost
     public void setSootClassPath(String p)
     {
         sootClassPath = p;
+        SourceLocator.v().invalidateClassPath();
     }
     
     public String getSootClassPath()
