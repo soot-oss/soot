@@ -105,6 +105,13 @@ public class SootField extends AbstractHost implements ClassMember, SparkField
     
     public void setPhantom(boolean value)
     {
+        if( value ) {
+            if( !Scene.v().allowsPhantomRefs() ) 
+                throw new RuntimeException( "Phantom refs not allowed" );
+            if( declaringClass != null && !declaringClass.isPhantom() )
+                throw new 
+                    RuntimeException( "Declaring class would have to be phantom" );
+        }
         isPhantom = value;
     }
 

@@ -192,6 +192,13 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Sets the phantom flag on this method. */
     public void setPhantom(boolean value)
     {
+        if( value ) {
+            if( !Scene.v().allowsPhantomRefs() ) 
+                throw new RuntimeException( "Phantom refs not allowed" );
+            if( declaringClass != null && !declaringClass.isPhantom() )
+                throw new 
+                    RuntimeException( "Declaring class would have to be phantom" );
+        }
         isPhantom = value;
     }
 

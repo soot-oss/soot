@@ -172,27 +172,43 @@ public class SootClass extends AbstractHost
         Returns the field of this class with the given name and type. 
     */
 
-    public SootField getField(String name, Type type) 
-    {
-        Iterator fieldIt = getFields().iterator();
-
-        while(fieldIt.hasNext())
-        {
-            SootField field = (SootField) fieldIt.next();
-
+    private SootField findFieldInClass( String name, Type type ) {
+        for( Iterator fieldIt = this.getFields().iterator(); fieldIt.hasNext(); ) {
+            final SootField field = (SootField) fieldIt.next();
             if(field.name.equals(name) && field.type.equals(type))
                 return field;
         }
+        return null;
+    }
+    /**
+        Returns the field of this class with the given name and type. 
+    */
 
-        if(Scene.v().allowsPhantomRefs())
+    public SootField getField(String name, Type type) 
+    {
+        SootField ret = null;
+        ret = findFieldInClass( name, type );
+        if( ret != null ) return ret;
+
+        if(Scene.v().allowsPhantomRefs() && this.isPhantom())
         {
             SootField f = new SootField(name, type);
             f.setPhantom(true);
             addField(f);
             return f;
-        }
-        else
+        } else {
+            LinkedList queue = new LinkedList();
+            queue.addAll( this.getInterfaces() );
+            while( !queue.isEmpty() ) {
+                SootClass iface = (SootClass) queue.removeFirst();
+                ret = iface.findFieldInClass( name, type );
+                if( ret != null ) return ret;
+                queue.addAll( iface.getInterfaces() );
+            }
+            if( this.hasSuperclass() ) 
+                return this.getSuperclass().getField( name, type );
             throw new RuntimeException("No field " + name + " in class " + getName());
+        }
     }
 
     
@@ -339,19 +355,11 @@ public class SootClass extends AbstractHost
         return methods;
     }
 
-    /**
-        Attempts to retrieve the method with the given name, parameters and return type.  
-    */
-
-    public SootMethod getMethod(String name, List parameterTypes, Type returnType) 
+    private SootMethod findMethodInClass( String name, List parameterTypes,
+            Type returnType )
     {
-
-        Iterator methodIt = getMethods().iterator();
-
-        while(methodIt.hasNext())
-        {
-            SootMethod method = (SootMethod) methodIt.next();
-
+        for( Iterator methodIt = this.getMethods().iterator(); methodIt.hasNext(); ) {
+            final SootMethod method = (SootMethod) methodIt.next();
             if(method.getName().equals(name) &&
                 parameterTypes.equals(method.getParameterTypes()) &&
                 returnType.equals(method.getReturnType()))
@@ -359,18 +367,46 @@ public class SootClass extends AbstractHost
                 return method;
             }
         }
+        return null;
+    }
+    /**
+        Attempts to retrieve the method with the given name, parameters and return type.  
+    */
 
-        if(Scene.v().allowsPhantomRefs())
-        {
-            SootMethod m = new SootMethod(name, parameterTypes, returnType);
-            m.setPhantom(true);
-            this.addMethod(m);
-            return m;
+    public SootMethod getMethod(String name, List parameterTypes, Type returnType) 
+    {
+        SootMethod ret = null;
+        SootClass cl = this;
+        while(true) {
+            ret = cl.findMethodInClass( name, parameterTypes, returnType );
+            if( ret != null ) return ret;
+            if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
+            {
+                SootMethod m = new SootMethod(name, parameterTypes, returnType);
+                m.setPhantom(true);
+                cl.addMethod(m);
+                return m;
+            }
+            if( cl.hasSuperclass() ) cl = cl.getSuperclass();
+            else break;
         }
-        else
-            throw new RuntimeException("couldn't find method: "+getName() + "." + name + "(" + 
-                     parameterTypes + ")" + " : " + returnType);
-        
+        cl = this;
+        while(true) {
+            LinkedList queue = new LinkedList();
+            queue.addAll( cl.getInterfaces() );
+            while( !queue.isEmpty() ) {
+                SootClass iface = (SootClass) queue.removeFirst();
+                ret = iface.findMethodInClass( name, parameterTypes, returnType );
+                if( ret != null ) return ret;
+                queue.addAll( iface.getInterfaces() );
+            }
+            if( cl.hasSuperclass() ) cl = cl.getSuperclass();
+            else break;
+        }
+        throw new RuntimeException(
+                "Class "+getName()+" doesn't have method "+
+            name + "(" + parameterTypes + ")" + " : " + returnType +
+            "; failed to resolve in superclasses and interfaces" );
     }
 
     /**
