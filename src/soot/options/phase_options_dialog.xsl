@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
+import java.util.HashMap;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
@@ -114,6 +115,36 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		super.okPressed();
 				
 	}
+
+	protected HashMap savePressed() {
+		HashMap config = new HashMap();
+		<xsl:apply-templates mode="savePressed" select="/options/section"/>
+
+		<xsl:for-each select="section">
+		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>-->
+		<xsl:for-each select="phaseopt">
+		<xsl:apply-templates mode="savePressed" select="phase"/>
+		<xsl:for-each select="phase">
+		<xsl:apply-templates mode="savePressed" select="sub_phase">
+		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
+		</xsl:apply-templates>
+		
+		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="savePressed" select="section">
+		<xsl:with-param name="parent" select="$sectionParent"/>
+		</xsl:apply-templates>
+		
+		
+		</xsl:for-each>
+
+		</xsl:for-each>
+		</xsl:for-each>
+		</xsl:for-each>
+		
+		return config;
+	}
+	
 
 
 	/**
@@ -252,6 +283,30 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child = <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Create(getPageContainer());
 </xsl:template>
 		
+<!--SAVE PRESSED TEMPLATE-->
+
+<xsl:template mode="savePressed" match="section|phase|sub_phase">
+<xsl:param name="parent"/>
+<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
+
+
+		<xsl:for-each select="boolopt|macroopt">
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new Boolean(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection()));
+		</xsl:for-each>
+		
+		<xsl:for-each select="listopt">
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
+		</xsl:for-each>
+		
+		<xsl:for-each select="stropt|intopt|flopt">
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
+		</xsl:for-each>
+		
+		<xsl:for-each select="multiopt"> 
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias());
+		</xsl:for-each>
+</xsl:template>	
+
 	
 <!--OK PRESSED TEMPLATE-->
 
