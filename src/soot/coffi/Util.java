@@ -513,8 +513,8 @@ public class Util
 
     public static SootClass resolveClassAndSupportClasses(String className, Scene cm)
     {
-        Timer timer = new Timer("timer");
-        Timer buildTimer = new Timer("build");
+        soot.Timer timer = new soot.Timer("timer");
+        soot.Timer buildTimer = new soot.Timer("build");
 
         soot.Main.resolverTimer.start();
         

@@ -27,7 +27,7 @@ package soot.dava;
 
 import java.util.*;
 import soot.*;
-import soot.dava.internal.*;
+// import soot.dava.internal.*;
 import soot.jimple.*;
 
 

@@ -29,7 +29,7 @@ import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.grimp.*;
-import soot.dava.internal.*;
+//import soot.dava.internal.*;
 import soot.dava.toolkits.base.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
