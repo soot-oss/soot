@@ -81,8 +81,10 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 
-public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
+public class JExitMonitorStmt extends AbstractStmt 
+    implements ExitMonitorStmt, ConvertToBaf
 {
     ValueBox opBox;
 
@@ -133,4 +135,10 @@ public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);
     }    
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+        out.add(Baf.v().newExitMonitorInst());
+    }
 }

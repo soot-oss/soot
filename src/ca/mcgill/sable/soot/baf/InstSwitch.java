@@ -83,7 +83,7 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.*;
 
-public interface InstSwitch 
+public interface InstSwitch extends Switch
 {
     public void caseReturnVoidInst(ReturnVoidInst i);
     public void caseReturnInst(ReturnInst i);
@@ -113,4 +113,38 @@ public interface InstSwitch
     public void caseStaticPutInst(StaticPutInst i);
     public void caseFieldGetInst(FieldGetInst i);
     public void caseFieldPutInst(FieldPutInst i);
+    public void caseInstanceCastInst(InstanceCastInst i);
+    public void caseInstanceOfInst(InstanceOfInst i);
+    public void casePrimitiveCastInst(PrimitiveCastInst i);
+    public void caseStaticInvokeInst(StaticInvokeInst i);
+    public void caseVirtualInvokeInst(VirtualInvokeInst i);
+    public void caseInterfaceInvokeInst(InterfaceInvokeInst i);
+    public void caseSpecialInvokeInst(SpecialInvokeInst i);
+    public void caseThrowInst(ThrowInst i);
+    public void caseAddInst(AddInst i);
+    public void caseAndInst(AndInst i);
+    public void caseOrInst(OrInst i);
+    public void caseXorInst(XorInst i);
+    public void caseArrayLengthInst(ArrayLengthInst i);
+    public void caseCmpInst(CmpInst i);
+    public void caseCmpgInst(CmpgInst i);
+    public void caseCmplInst(CmplInst i);
+    public void caseDivInst(DivInst i);
+    public void caseIncInst(IncInst i);
+    public void caseMulInst(MulInst i);
+    public void caseRemInst(RemInst i);
+    public void caseSubInst(SubInst i);
+    public void caseShlInst(ShlInst i);
+    public void caseShrInst(ShrInst i);
+    public void caseUshrInst(UshrInst i);
+    public void caseNewInst(NewInst i);
+    public void caseNegInst(NegInst i);
+    public void caseSwapInst(SwapInst i);
+    public void caseDupInst(DupInst i);
+    public void caseNewArrayInst(NewArrayInst i);
+    public void caseNewMultiArrayInst(NewMultiArrayInst i);
+    public void caseLookupSwitchInst(LookupSwitchInst i);
+    public void caseTableSwitchInst(TableSwitchInst i);
+    public void caseEnterMonitorInst(EnterMonitorInst i);
+    public void caseExitMonitorInst(ExitMonitorInst i);
 }

@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -87,5 +88,6 @@ class JShrExpr extends AbstractJimpleIntLongBinopExpr implements ShrExpr
     JShrExpr(Value op1, Value op2) { super(op1, op2); }
     public String getSymbol() { return " >> "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseShrExpr(this); }
+    Object makeBafInst(Type opType) { return Baf.v().newShrInst(this.getOp1().getType()); }
 }
 

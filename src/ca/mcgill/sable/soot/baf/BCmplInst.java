@@ -91,14 +91,30 @@ public class BCmplInst extends AbstractOpTypeInst implements CmplInst
     
     public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return 2;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1;
     }
 
     public final String getName() { return "cmpl"; }
+
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseCmplInst(this);
+    }
 }
 

@@ -94,12 +94,22 @@ public class BInstanceCastInst extends AbstractOpTypeInst
     
     public int getInCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getInMachineCount()
+    {
+        return 1;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1;
     }
     
 
@@ -107,5 +117,10 @@ public class BInstanceCastInst extends AbstractOpTypeInst
 
     public Type getCastType() { return opType; }
     public void setCastType(Type t) { opType = t; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseInstanceCastInst(this);
+    }   
 }
 

@@ -76,22 +76,141 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public interface DefinitionStmt extends Stmt
+public class InstList extends ArrayList
 {
-    public Value getLeftOp();
-    public Value getRightOp();
-    public ValueBox getLeftOpBox();
-    public ValueBox getRightOpBox();
+    BafBody body;
+
+    public InstList(BafBody body)
+    {
+        super();
+
+        this.body = body;
+    }
+
+    public BafBody getBody()
+    {
+        return body;
+    }
+
+    public boolean remove(Object obj)
+    {
+        boolean toReturn = false;
+
+        if(contains(obj))
+        {
+            int index = indexOf(obj);
+            Inst successor;
+
+            if(index + 1 < size())
+                successor = (Inst) get(index + 1);
+            else if(size() >= 2)
+                successor = (Inst) get(index - 1);
+            else
+                successor = null;
+
+            toReturn = super.remove(obj);
+//              body.redirectJumps((Inst) obj, successor);
+//              body.eliminateBackPointersTo((Inst) obj);
+        }
+
+        return toReturn;
+    }
+
+    public Object remove(int index)
+    {
+        Object obj = get(index);
+        Object toReturn = null;
+
+        if(contains(obj))
+        {
+            Inst successor;
+
+            if(index + 1 < size())
+                successor = (Inst) get(index + 1);
+            else if(size() >= 2)
+                successor = (Inst) get(index - 1);
+            else
+                successor = null;
+
+            toReturn = super.remove(index);
+
+//              body.redirectJumps((Inst) obj, successor);
+//              body.eliminateBackPointersTo((Inst) obj);
+
+        }
+
+        return toReturn;
+    }
+
+    public boolean removeAll(Collection c)
+    {
+        throw new UnsupportedOperationException();
+    }
+
+    public void testIntegrity(String message)
+    {
+        Iterator instIt = iterator();
+
+        while(instIt.hasNext())
+        {
+            Inst s = (Inst) instIt.next();
+            Iterator boxIt = s.getUnitBoxes().iterator();
+
+            while(boxIt.hasNext())
+            {
+                InstBox box = (InstBox) boxIt.next();
+                Inst pointed = (Inst) box.getUnit();
+
+                if(!contains(pointed))
+                    throw new RuntimeException(message + "Statement no longer contained");
+
+                if(!pointed.getBoxesPointingToThis().contains(box))
+                    throw new RuntimeException(message + "back pointer not set");
+            }
+        }
+
+        instIt = iterator();
+
+        while(instIt.hasNext())
+        {
+            Inst s = (Inst) instIt.next();
+            List boxes = s.getBoxesPointingToThis();
+
+            Iterator it = boxes.iterator();
+
+            while(it.hasNext())
+            {
+                InstBox box = (InstBox) it.next();
+
+                if(box.getUnit() != s)
+                    throw new RuntimeException(message + "back pointer still set");
+            }
+        }
+
+        instIt = iterator();
+
+        while(instIt.hasNext())
+        {
+            Inst s = (Inst) instIt.next();
+            Iterator boxIt = s.getUnitBoxes().iterator();
+
+            while(boxIt.hasNext())
+            {
+                InstBox box = (InstBox) boxIt.next();
+
+                if(indexOf(box.getUnit()) == -1)
+                {
+                    System.out.println("looking for: " + box.getUnit());
+                    throw new RuntimeException(message + "[failed integrity test for: " + s + "]");
+                }
+            }
+        }
+    }
 }
-
-
-
-
-
 

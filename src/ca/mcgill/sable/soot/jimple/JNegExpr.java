@@ -79,13 +79,21 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-class JNegExpr extends AbstractNegExpr implements NegExpr
+class JNegExpr extends AbstractNegExpr implements NegExpr, ConvertToBaf
 {
     JNegExpr(Value op)
     {
         super(Jimple.v().newImmediateBox(op));
+    }
+
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+        out.add(Baf.v().newNegInst(getType()));
     }
 }

@@ -8,6 +8,7 @@ public interface TableSwitchInst extends Inst
 {
     public Unit getDefaultTarget();
     public void setDefaultTarget(Unit defTarget);
+    public UnitBox getDefaultTargetBox();
     
     public int getLowIndex();
     public void setLowIndex(int index);
@@ -16,5 +17,8 @@ public interface TableSwitchInst extends Inst
     public void setHighIndex(int index);
     
     public List getTargets();
+    public Unit getTarget(int index);
+    public void setTarget(int index, Unit target);
     public void setTargets(List targets);
+    public UnitBox getTargetBox(int index);
 }

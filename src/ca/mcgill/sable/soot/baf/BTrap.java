@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -79,26 +79,16 @@
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class BLengthInst extends AbstractOpTypeInst implements LengthInst
+public class BTrap extends AbstractTrap
 {
-    public BLengthInst(Type opType)
+    BTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
-        super(opType);
+        super(exception, Baf.v().newInstBox(beginStmt),
+              Baf.v().newInstBox(endStmt),
+              Baf.v().newInstBox(handlerStmt));
     }
-
-    public int getInCount()
-    {
-	return 1;
-    }
-    
-    public int getOutCount()
-    {
-	return 1;
-    }
-    
-    public final String getName() { return "length"; }
 }
-

@@ -79,10 +79,12 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
+public class JTableSwitchStmt extends AbstractStmt 
+    implements TableSwitchStmt, ConvertToBaf
 {
     UnitBox defaultTargetBox;
     ValueBox keyBox;
@@ -254,7 +256,22 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
     {
         ((StmtSwitch) sw).caseTableSwitchStmt(this);
     }    
+
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ArrayList targetPlaceholders = new ArrayList();
+
+        ((ConvertToBaf)(getKey())).convertToBaf(context, out);
+
+        for (int i = 0; i < targetBoxes.length; i++)
+        {
+            targetPlaceholders.add(Baf.v().newPlaceholderInst
+                                   (getTarget(i)));
+        }
+
+        out.add(Baf.v().newTableSwitchInst
+                (Baf.v().newPlaceholderInst(getDefaultTarget()),
+                 lowIndex, highIndex, targetPlaceholders));
+    }
 }
-
-
-

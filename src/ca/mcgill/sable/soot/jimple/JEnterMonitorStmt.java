@@ -81,10 +81,12 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
+public class JEnterMonitorStmt extends AbstractStmt 
+    implements EnterMonitorStmt, ConvertToBaf
 {
     ValueBox opBox;
 
@@ -134,6 +136,11 @@ public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseEnterMonitorStmt(this);
-    }    
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+        out.add(Baf.v().newEnterMonitorInst());
+    }
 }
-

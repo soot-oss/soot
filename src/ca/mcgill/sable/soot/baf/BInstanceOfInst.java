@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -76,63 +76,50 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JGotoStmt extends AbstractStmt implements GotoStmt
+public class BInstanceOfInst extends AbstractOpTypeInst 
+                            implements InstanceOfInst
 {
-    UnitBox targetBox;
-
-    List targetBoxes;
-
-    JGotoStmt(Unit target)
-    {
-        this.targetBox = Jimple.v().newStmtBox(target);
-
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
-    }
-
-    protected String toString(boolean isBrief, Map stmtToName, String indentation)
-    {
-        return indentation + "goto " + (String) stmtToName.get(getTarget());
+    public BInstanceOfInst(Type opType) 
+    { 
+        super(opType); 
+        if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
+            throw new RuntimeException("invalid InstanceOfInst: "+ opType);
     }
     
-    public Unit getTarget()
+    public int getInCount()
     {
-        return targetBox.getUnit();
+        return 1;
     }
 
-    public void setTarget(Unit target)
+    public int getInMachineCount()
     {
-        targetBox.setUnit(target);
+        return 1;
+    }
+    
+    public int getOutCount()
+    {
+        return 1;
     }
 
-    public UnitBox getTargetBox()
+    public int getOutMachineCount()
     {
-        return targetBox;
+        return 1;
     }
+    
+    final String getName() { return "instanceof"; }
 
-    public List getUnitBoxes()
-    {
-        return targetBoxes;
-    }
+    public Type getCheckType() { return opType; }
+    public void setCheckType(Type t) { opType = t; }
 
     public void apply(Switch sw)
     {
-        ((StmtSwitch) sw).caseGotoStmt(this);
-    }    
+        ((InstSwitch) sw).caseInstanceOfInst(this);
+    }   
 }
-
-
-
-
-
-
-
-
 

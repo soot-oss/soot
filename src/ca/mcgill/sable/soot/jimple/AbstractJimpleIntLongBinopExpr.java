@@ -82,11 +82,21 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr
+abstract class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr implements ConvertToBaf
 {
     protected AbstractJimpleIntLongBinopExpr(Value op1, Value op2)
     {
         this.op1Box = Jimple.v().newArgBox(op1);
         this.op2Box = Jimple.v().newArgBox(op2);
     }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
+        ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
+        
+        out.add(makeBafInst(this.getOp1().getType()));
+    }
+
+    abstract Object makeBafInst(Type opType);
 }

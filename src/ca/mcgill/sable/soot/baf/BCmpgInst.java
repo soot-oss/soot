@@ -91,14 +91,29 @@ public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst
 
     public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return 2;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1;
     }
     
     public final String getName() { return "cmpg"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseCmpgInst(this);
+    }
 }
 

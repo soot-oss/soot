@@ -83,17 +83,21 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
 class JInstanceOfExpr extends AbstractInstanceOfExpr
-  implements InstanceOfExpr
+  implements InstanceOfExpr, ConvertToBaf
 {
-    ValueBox opBox;
-    Type checkType;
-
     JInstanceOfExpr(Value op, Type checkType)
     {
         super(Jimple.v().newImmediateBox(op), checkType);
+    }
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
+        out.add(Baf.v().newInstanceOfInst(getCheckType()));
     }
 }

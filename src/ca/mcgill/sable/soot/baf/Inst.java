@@ -8,6 +8,12 @@ public interface Inst extends Unit
 {    
     public int getInCount();
     public int getOutCount();
+    public int getNetCount();
+    
+    public int getInMachineCount();
+    public int getOutMachineCount();
+    public int getNetMachineCount();
+    
 
     public String toBriefString();
     public String toBriefString(Map stmtToName);

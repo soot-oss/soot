@@ -94,14 +94,24 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
     
     public int getInCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getInMachineCount()
+    {
+        return 1;
     }
     
     public int getOutCount()
     {
-	return 0;
+        return 0;
     }
-	
+
+    public int getOutMachineCount()
+    {
+        return 0;
+    }
+        
 
     final String getName() { return "put"; }
     final String getParameters(boolean isBrief, Map unitToName) 

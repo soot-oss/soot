@@ -92,19 +92,35 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
 
     public int getInCount()
     {
-	throw new RuntimeException("undefined"+ toString() + "!" );
+        throw new RuntimeException("undefined"+ toString() + "!" );
     }
     
     public int getOutCount()
     {
-	throw new RuntimeException("undefined" + toString() + "!");
+        throw new RuntimeException("undefined" + toString() + "!");
     }
 
     public int getNetCount()
     {
-	return getOutCount() - getInCount();
+        return getOutCount() - getInCount();
+    }
+
+    public int getInMachineCount()
+    {
+        throw new RuntimeException("undefined"+ toString() + "!" );
+    }
+    
+    public int getOutMachineCount()
+    {
+        throw new RuntimeException("undefined" + toString() + "!");
+    }
+
+    public int getNetMachineCount()
+    {
+        return getOutMachineCount() - getInMachineCount();
     }
    
+    
     abstract String getName();
     String getParameters(boolean isBrief, Map unitToName) { return ""; }    
 }

@@ -1,5 +1,5 @@
 package ca.mcgill.sable.soot.baf;
 
-public interface IfCmpLeInst extends TargetArgInst
+public interface IfCmpLeInst extends TargetArgInst, OpTypeArgInst
 {
 }

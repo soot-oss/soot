@@ -91,12 +91,22 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
     
     public int getInCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getInMachineCount()
+    {
+        return 1;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1;
     }
     
 
@@ -104,5 +114,11 @@ public class BNewArrayInst extends AbstractOpTypeInst implements NewArrayInst
 
     public Type getBaseType() { return opType; }
     public void setBaseType(Type type) { this.opType = type; }
+
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseNewArrayInst(this);
+    }
 }
 

@@ -133,6 +133,3 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         out.add(Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));
     }
 }
-
-
-

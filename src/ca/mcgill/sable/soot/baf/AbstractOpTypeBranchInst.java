@@ -92,6 +92,16 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
         this.opType = opType;
     }
 
+    public int getInCount()
+    {
+            return 2;
+    }
+    
+    public int getOutCount()
+    {
+            return 0;
+    }
+
     public Type getOpType()
     {
         return opType;

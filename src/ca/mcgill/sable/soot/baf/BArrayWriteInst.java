@@ -93,12 +93,22 @@ public class BArrayWriteInst extends AbstractOpTypeInst
 
     public int getInCount()
     {
-	return 3;
+        return 3;
+    }
+
+    public int getInMachineCount()
+    {
+        return 3;
     }
     
     public int getOutCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 0;
     }
 
     final String getName() { return "arraywrite"; }

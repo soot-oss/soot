@@ -98,6 +98,34 @@ public class Baf implements BodyRepresentation
         return new BafLocal(name, t);
     }
 
+    /**
+        Constructs a new BTrap for the given exception on the given Unit range with the given Unit handler.
+    */
+
+    public Trap newTrap(SootClass exception, Unit beginUnit, Unit endUnit, Unit handlerUnit)
+    {
+        return new BTrap(exception, beginUnit, endUnit, handlerUnit);
+    }
+
+    /**
+        Constructs a ExitMonitorInst() grammar chunk
+     */
+
+    public ExitMonitorInst newExitMonitorInst()
+    {
+        return new BExitMonitorInst();
+    }
+
+
+    /**
+        Constructs a EnterMonitorInst() grammar chunk.
+     */
+
+    public EnterMonitorInst newEnterMonitorInst()
+    {
+        return new BEnterMonitorInst();
+    }
+
     public ReturnVoidInst newReturnVoidInst()
     {
         return new BReturnVoidInst();
@@ -237,9 +265,9 @@ public class Baf implements BodyRepresentation
         return new BAndInst(opType);
     }
 
-    public LengthInst newLengthInst(Type opType)
+    public ArrayLengthInst newArrayLengthInst(Type opType)
     {
-        return new BLengthInst(opType);
+        return new BArrayLengthInst(opType);
     }
 
     public NegInst newNegInst(Type opType)
@@ -280,6 +308,11 @@ public class Baf implements BodyRepresentation
     public InstanceCastInst newInstanceCastInst(Type opType)
     {
         return new BInstanceCastInst(opType);
+    }
+
+    public InstanceOfInst newInstanceOfInst(Type opType)
+    {
+        return new BInstanceOfInst(opType);
     }
 
     public PrimitiveCastInst newPrimitiveCastInst(Type fromType, Type toType)
@@ -411,6 +444,22 @@ public class Baf implements BodyRepresentation
     {
         return new BIfNonNullInst(unit);
     }
+
+    public ThrowInst newThrowInst()
+    {
+        return new BThrowInst();
+    }
+
+    public LookupSwitchInst newLookupSwitchInst(Unit defaultTarget, 
+                             List lookupValues, List targets)
+    {
+        return new BLookupSwitchInst(defaultTarget, lookupValues, targets);
+    }
+
+    public TableSwitchInst newTableSwitchInst(Unit defaultTarget, 
+                             int lowIndex, int highIndex, List targets)
+    {
+        return new BTableSwitchInst(defaultTarget, lowIndex,
+                                     highIndex, targets);
+    }
 }
-
-

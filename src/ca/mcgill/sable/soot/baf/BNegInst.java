@@ -91,14 +91,29 @@ public class BNegInst extends AbstractOpTypeInst implements NegInst
 
     public int getInCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getInMachineCount()
+    {
+        return JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return JasminClass.sizeOfType(getOpType());
     }
        
     public final String getName() { return "neg"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseNegInst(this);
+    }   
 }
 

@@ -87,16 +87,33 @@ public class BOrInst extends AbstractOpTypeInst implements OrInst
     public BOrInst(Type opType)
     {
         super(opType);
-    }public int getInCount()
+    }
+
+    public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return 2 * JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1 * JasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "or"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseOrInst(this);
+    }
 }
 

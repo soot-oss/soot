@@ -91,14 +91,29 @@ public class BMulInst extends AbstractOpTypeInst implements MulInst
 
     public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return 2 * JasminClass.sizeOfType(getOpType());
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1 * JasminClass.sizeOfType(getOpType());
     }
     
     public final String getName() { return "mul"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseMulInst(this);
+    }
 }
 

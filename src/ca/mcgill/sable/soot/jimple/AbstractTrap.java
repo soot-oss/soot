@@ -79,14 +79,87 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-class JUshrExpr extends AbstractJimpleIntLongBinopExpr implements UshrExpr
+public class AbstractTrap implements Trap
 {
-    JUshrExpr(Value op1, Value op2) { super(op1, op2); }
-    public final String getSymbol() { return " >>> "; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseUshrExpr(this); }
-    Object makeBafInst(Type opType) { return Baf.v().newUshrInst(this.getOp1().getType()); }
+    protected SootClass exception;
+    protected UnitBox beginUnitBox;
+    protected UnitBox endUnitBox;
+    protected UnitBox handlerUnitBox;
+    protected List unitBoxes;
+
+    protected AbstractTrap(SootClass exception, UnitBox beginUnitBox,
+                   UnitBox endUnitBox, UnitBox handlerUnitBox)
+    {
+        this.exception = exception; this.beginUnitBox = beginUnitBox;
+        this.endUnitBox = endUnitBox; this.handlerUnitBox = handlerUnitBox;
+
+        unitBoxes = new ArrayList();
+        unitBoxes.add(beginUnitBox);
+        unitBoxes.add(endUnitBox);
+        unitBoxes.add(handlerUnitBox);
+        unitBoxes = Collections.unmodifiableList(unitBoxes);
+    }
+
+    public Unit getBeginUnit()
+    {
+        return  beginUnitBox.getUnit();
+    }
+
+    public Unit getEndUnit()
+    {
+        return endUnitBox.getUnit();
+    }
+
+    public Unit getHandlerUnit()
+    {
+        return handlerUnitBox.getUnit();
+    }
+
+    public UnitBox getHandlerUnitBox()
+    {
+        return beginUnitBox;
+    }
+
+    public UnitBox getBeginUnitBox()
+    {
+        return beginUnitBox;
+    }
+
+    public UnitBox getEndUnitBox()
+    {
+        return endUnitBox;
+    }
+
+    public List getUnitBoxes()
+    {
+        return unitBoxes;
+    }
+
+    public SootClass getException()
+    {
+        return exception;
+    }
+
+    public void setBeginUnit(Unit beginUnit)
+    {
+        beginUnitBox.setUnit(beginUnit);
+    }
+
+    public void setEndUnit(Unit endUnit)
+    {
+        endUnitBox.setUnit(endUnit);
+    }
+
+    public void setHandlerUnit(Unit handlerUnit)
+    {
+        handlerUnitBox.setUnit(handlerUnit);
+    }
+
+    public void setException(SootClass exception)
+    {
+        this.exception = exception;
+    }
 }

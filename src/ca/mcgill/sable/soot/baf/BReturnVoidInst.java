@@ -91,12 +91,22 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
 
     public int getInCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getInMachineCount()
+    {
+        return 0;
     }
     
     public int getOutCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 0;
     }
     
     final String getName() { return "return"; }

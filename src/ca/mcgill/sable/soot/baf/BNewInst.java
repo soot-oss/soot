@@ -90,14 +90,29 @@ public class BNewInst extends AbstractRefTypeInst implements NewInst
     }
     public int getInCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getInMachineCount()
+    {
+        return 0;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 1;
     }
     
     final String getName() { return "new"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseNewInst(this);
+    }
 }
 

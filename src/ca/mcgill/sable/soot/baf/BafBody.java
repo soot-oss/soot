@@ -96,7 +96,7 @@ public class BafBody implements Body
               + " from JimpleBody's.");
        
         this.method = method;
-        instList = new ArrayList();
+        instList = new InstList(this);
      
         JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
            
@@ -133,10 +133,7 @@ public class BafBody implements Body
                 Stmt s = (Stmt) stmtIt.next();
                 List conversionList = new ArrayList();
 
-                System.out.println("converting: " + s);                
                 ((ConvertToBaf) s).convertToBaf(context, conversionList);
-                
-                System.out.println("become: " + conversionList);
                 
                 stmtToFirstInstruction.put(s, conversionList.get(0));
                 instList.addAll(conversionList);
@@ -156,6 +153,20 @@ public class BafBody implements Body
                     Unit source = ((PlaceholderInst) box.getUnit()).getSource();
                     box.setUnit((Unit) stmtToFirstInstruction.get(source));
                 }
+            }
+        }
+
+        // Convert all traps
+        {
+            Iterator trapIt = jimpleBody.getTraps().iterator();
+            while (trapIt.hasNext())
+            {
+                Trap trap = (Trap) trapIt.next();
+
+                traps.add(Baf.v().newTrap(trap.getException(),
+                     (Unit)stmtToFirstInstruction.get(trap.getBeginUnit()),
+                     (Unit)stmtToFirstInstruction.get(trap.getEndUnit()),
+                     (Unit)stmtToFirstInstruction.get(trap.getHandlerUnit())));
             }
         }
     }

@@ -91,12 +91,22 @@ public class BIfGtInst extends AbstractBranchInst implements IfGtInst
 
     public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return 2;
     }
     
     public int getOutCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 0;
     }
 
     String getName() { return "ifgt"; }

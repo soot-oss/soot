@@ -89,19 +89,31 @@ public class BShlInst extends AbstractOpTypeInst implements ShlInst
         super(opType);
     }
  
-    
     public int getInCount()
     {
-	return 2;
+        return 2;
+    }
+
+    public int getInMachineCount()
+    {
+        return JasminClass.sizeOfType(getOpType()) + 1;
     }
     
     public int getOutCount()
     {
-	return 1;
+        return 1;
     }
 
-
+    public int getOutMachineCount()
+    {
+        return 1 * JasminClass.sizeOfType(getOpType());
+    }
     
     public final String getName() { return "shl"; }
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseShlInst(this);
+    }
 }
 

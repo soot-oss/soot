@@ -100,5 +100,11 @@ public class BNewMultiArrayInst extends AbstractOpTypeInst implements NewMultiAr
 
     public int getDimensionCount() { return dimensionCount; }
     public void setDimensionCount(int x) { x = dimensionCount; }
+
+
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseNewMultiArrayInst(this);
+    }
 }
 

@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 import java.util.*;
 
 public class JThrowStmt extends AbstractStmt implements ThrowStmt
@@ -133,4 +134,10 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     {
         ((StmtSwitch) sw).caseThrowStmt(this);
     }    
+
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf)getOp()).convertToBaf(context, out);
+        out.add(Baf.v().newThrowInst());
+    }
 }

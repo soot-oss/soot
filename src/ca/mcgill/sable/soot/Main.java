@@ -222,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.49");
+            System.out.println("Soot version 1.beta.4.dev.50");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -664,7 +664,7 @@ public class Main
         }
             
         if(targetExtension.equals(".jasmin"))
-            new JasminClass(c).print(writerOut);
+            new ca.mcgill.sable.soot.jimple.JasminClass(c).print(writerOut);
         else if(targetExtension.equals(".jimp"))
             c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".b"))

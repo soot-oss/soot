@@ -91,12 +91,22 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
     
     public int getInCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getInMachineCount()
+    {
+        return 0;
     }
     
     public int getOutCount()
     {
-	return 0;
+        return 0;
+    }
+
+    public int getOutMachineCount()
+    {
+        return 0;
     }
 
     String getName() { return "goto"; }

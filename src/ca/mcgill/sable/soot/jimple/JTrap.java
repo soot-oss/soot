@@ -82,91 +82,12 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JTrap implements Trap
+public class JTrap extends AbstractTrap
 {
-    protected SootClass exception;
-    protected UnitBox beginStmtBox;
-    protected UnitBox endStmtBox;
-    protected UnitBox handlerStmtBox;
-    protected List stmtBoxes;
-
     JTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
-        this(exception, Jimple.v().newStmtBox(beginStmt),
+        super(exception, Jimple.v().newStmtBox(beginStmt),
               Jimple.v().newStmtBox(endStmt),
               Jimple.v().newStmtBox(handlerStmt));
-    }
-
-    protected JTrap(SootClass exception, UnitBox beginStmtBox,
-                   UnitBox endStmtBox, UnitBox handlerStmtBox)
-    {
-        this.exception = exception; this.beginStmtBox = beginStmtBox;
-        this.endStmtBox = endStmtBox; this.handlerStmtBox = handlerStmtBox;
-
-        stmtBoxes = new ArrayList();
-        stmtBoxes.add(beginStmtBox);
-        stmtBoxes.add(endStmtBox);
-        stmtBoxes.add(handlerStmtBox);
-        stmtBoxes = Collections.unmodifiableList(stmtBoxes);
-    }
-
-    public Unit getBeginUnit()
-    {
-        return  beginStmtBox.getUnit();
-    }
-
-    public Unit getEndUnit()
-    {
-        return endStmtBox.getUnit();
-    }
-
-    public Unit getHandlerUnit()
-    {
-        return handlerStmtBox.getUnit();
-    }
-
-    public UnitBox getHandlerUnitBox()
-    {
-        return beginStmtBox;
-    }
-
-    public UnitBox getBeginUnitBox()
-    {
-        return beginStmtBox;
-    }
-
-    public UnitBox getEndUnitBox()
-    {
-        return endStmtBox;
-    }
-
-    public List getUnitBoxes()
-    {
-        return stmtBoxes;
-    }
-
-    public SootClass getException()
-    {
-        return exception;
-    }
-
-    public void setBeginUnit(Unit beginUnit)
-    {
-        beginStmtBox.setUnit(beginUnit);
-    }
-
-    public void setEndUnit(Unit endUnit)
-    {
-        endStmtBox.setUnit(endUnit);
-    }
-
-    public void setHandlerUnit(Unit handlerUnit)
-    {
-        handlerStmtBox.setUnit(handlerUnit);
-    }
-
-    public void setException(SootClass exception)
-    {
-        this.exception = exception;
     }
 }

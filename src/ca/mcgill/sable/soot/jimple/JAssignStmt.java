@@ -181,7 +181,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     ((ConvertToBaf)(v.getIndex())).convertToBaf(context, out);
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
                     
-                    out.add(Baf.v().newArrayWriteInst(v.getBase().getType()));
+                    out.add(Baf.v().newArrayWriteInst(v.getType()));
                 }
                 
                 public void defaultCase(Value v)
