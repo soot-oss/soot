@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -79,109 +79,33 @@
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class AbstractOpTypeInst extends AbstractInst
+abstract class AbstractInvokeInst extends AbstractInst
 {
-    protected Type opType;
+    SootMethod method;
 
-    protected AbstractOpTypeInst(Type opType)
+    public SootMethod getMethod()
     {
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
-        
-        this.opType = opType;
-    }
-    
-    public Type getOpType()
-    {
-        return opType;
-    }
-    
-    public void setOpType(Type t)
-    {
-        opType = t;
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
+        return method;
     }
 
-    private static String bafDescriptorOf(Type type)
+    public void setMethod(SootMethod m)
     {
-        TypeSwitch sw;
-
-        type.apply(sw = new TypeSwitch()
-        {
-            public void caseBooleanType(BooleanType t)
-            {
-                setResult("b");
-            }
-
-            public void caseByteType(ByteType t)
-            {
-                setResult("b");
-            }
-
-            public void caseCharType(CharType t)
-            {
-                setResult("c");
-            }
-
-            public void caseDoubleType(DoubleType t)
-            {
-                setResult("d");
-            }
-
-            public void caseFloatType(FloatType t)
-            {
-                setResult("f");
-            }
-
-            public void caseIntType(IntType t)
-            {
-                setResult("i");
-            }
-
-            public void caseLongType(LongType t)
-            {
-                setResult("l");
-            }
-
-            public void caseShortType(ShortType t)
-            {
-                setResult("s");
-            }
-
-            
-            public void defaultCase(Type t)
-            {
-                throw new RuntimeException("Invalid type: " + t);
-            }
-
-            public void caseRefType(RefType t)
-            {
-                setResult("r");
-            }
-
-
-        });
-
-        return (String) sw.getResult();
-
+        method = m;
     }
 
-    /* override AbstractInst's toString with our own, including types */
+    public Type getType()
+    {
+        return method.getReturnType();
+    }
+
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return indentation + getName() + "." + 
-          Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
+        return indentation + getName() + getParameters(isBrief, unitToName);
     }
 
-    public int getOutMachineCount()
-    {
-        return JasminClass.sizeOfType(getOpType());
-    } 
-
-
-
+    abstract String getName();
+    String getParameters(boolean isBrief, Map unitToName)
+        { return " " + (isBrief ? method.getName() : method.getSignature()); }
 }

@@ -79,109 +79,78 @@
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class AbstractOpTypeInst extends AbstractInst
+public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 {
-    protected Type opType;
-
-    protected AbstractOpTypeInst(Type opType)
+    ValueBox localBox;
+    List useBoxes;
+    
+       
+    BLoadInst(Type opType, Local local)
     {
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
-        
-        this.opType = opType;
+        super(opType);
+        localBox = new BafLocalBox(local);
+        useBoxes = new ArrayList();
+        useBoxes.add(localBox);
+        useBoxes = Collections.unmodifiableList(useBoxes);
+    }
+
+    public int getInCount()
+    {
+        return 0;
+    }
+
+    public Object clone() 
+    {
+        return new  BLoadInst(getOpType(), getLocal());
+    }
+
+    public int getInMachineCount()
+    {
+        return 0;
     }
     
-    public Type getOpType()
+    public int getOutCount()
     {
-        return opType;
-    }
-    
-    public void setOpType(Type t)
-    {
-        opType = t;
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
-    }
-
-    private static String bafDescriptorOf(Type type)
-    {
-        TypeSwitch sw;
-
-        type.apply(sw = new TypeSwitch()
-        {
-            public void caseBooleanType(BooleanType t)
-            {
-                setResult("b");
-            }
-
-            public void caseByteType(ByteType t)
-            {
-                setResult("b");
-            }
-
-            public void caseCharType(CharType t)
-            {
-                setResult("c");
-            }
-
-            public void caseDoubleType(DoubleType t)
-            {
-                setResult("d");
-            }
-
-            public void caseFloatType(FloatType t)
-            {
-                setResult("f");
-            }
-
-            public void caseIntType(IntType t)
-            {
-                setResult("i");
-            }
-
-            public void caseLongType(LongType t)
-            {
-                setResult("l");
-            }
-
-            public void caseShortType(ShortType t)
-            {
-                setResult("s");
-            }
-
-            
-            public void defaultCase(Type t)
-            {
-                throw new RuntimeException("Invalid type: " + t);
-            }
-
-            public void caseRefType(RefType t)
-            {
-                setResult("r");
-            }
-
-
-        });
-
-        return (String) sw.getResult();
-
-    }
-
-    /* override AbstractInst's toString with our own, including types */
-    protected String toString(boolean isBrief, Map unitToName, String indentation)
-    {
-        return indentation + getName() + "." + 
-          Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
+        return 1;
     }
 
     public int getOutMachineCount()
     {
-        return JasminClass.sizeOfType(getOpType());
-    } 
+        return 1;
+    }
+    
+    
 
 
+    final String getName() { return "load"; }
+    final String getParameters(boolean isBrief, Map unitToName) 
+    { return " "+ localBox.getValue().toString(); }
+    
+    public void apply(Switch sw)
+    {
+        ((InstSwitch) sw).caseLoadInst(this);
+    }   
+ 
+    public void setLocal(Local l)
+    {
+        localBox.setValue(l);
+    }   
+    
+    public Local getLocal()
+    {
+        return (Local) localBox.getValue();
+    }
+
+    public List getUseBoxes() 
+    {
+        return useBoxes;
+    }
+
+    
+    
 
 }

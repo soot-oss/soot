@@ -118,12 +118,8 @@ public class BLoadInst extends AbstractOpTypeInst implements LoadInst
         return 1;
     }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
     
-    
+       
 
 
     final String getName() { return "load"; }

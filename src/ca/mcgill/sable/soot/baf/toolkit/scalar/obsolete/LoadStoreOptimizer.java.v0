@@ -110,8 +110,6 @@ public class LoadStoreOptimizer
         propagateLoadsForward();
 	propagateBackwardsIndependentHunk(); 
 	optimizeLoadStores();
-	//	pushLoadsUp();
-	//	superDuper();
     }
 
 
@@ -626,43 +624,31 @@ public class LoadStoreOptimizer
             }
         }
         
-        /*
-        if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
-            Unit succ = (Unit) block.getSuccOf(to);
-            if(succ != null) {
-                if(isCommutativeBinOp(succ)) {
-                    if(debug) { System.out.println("xxx: commutative ");}
-                    return SUCCESS;
-                }
-            }
-            } 
         
-        else if (aThreshold == 0)
-            return   pushStoreToLoad(from , to, block);
-        */
-
+        
         if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
-	    if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
-		if(debug) { System.out.println("xxx: commutative ");}
-		return SPECIAL_SUCCESS;
-	    }
-	    else if( ((AbstractInst) to).getOutCount()  == 1 &&
-		     ((AbstractInst) to).getInCount() == 0  &&
-		     ((AbstractInst) mUnits.getPredOf(to)).getOutCount() == 1 &&
-		     ((AbstractInst) mUnits.getPredOf(to)).getInCount() == 0) {
+            if(aThreshold == 0 && stackHeight == 1 && minStackHeightAttained == 0) {
+                if(debug) { System.out.println("xxx: commutative ");}
+                return SUCCESS;
+            } 
+            
+            /*else if( ((AbstractInst) to).getOutCount()  == 1 &&
+                       ((AbstractInst) to).getInCount() == 0  &&
+                       ((AbstractInst) mUnits.getPredOf(to)).getOutCount() == 1 &&
+                       ((AbstractInst) mUnits.getPredOf(to)).getInCount() == 0) {
                 
-		Object toPred =  mUnits.getPredOf(to);
-		block.remove(toPred);
-		block.insertAfter(toPred, to);
-		return HAS_CHANGED; // return has changed
-	    }
+                Object toPred =  mUnits.getPredOf(to);
+                block.remove(toPred);
+                block.insertAfter(toPred, to);
+                return FAILURE; // return has changed
+            }*/
+            
         }
-        if (aThreshold == 0)
-	    return   pushStoreToLoad(from , to, block);
-
+//        if (aThreshold == 0)
+//            return   pushStoreToLoad(from , to, block);
 
         
-  if(debug) { System.out.println("xxx: end of method faillure ");}
+    if(debug) { System.out.println("xxx: end of method faillure ");}
         return res;
     }
 
@@ -1172,7 +1158,7 @@ public class LoadStoreOptimizer
             return false;
     }
 
-    protected boolean propagateLoadForward(Unit aInst) 
+    protected void propagateLoadForward(Unit aInst) 
     {
         Unit currentUnit;
         Local loadLocal = ((LoadInst)aInst).getLocal();
@@ -1180,20 +1166,20 @@ public class LoadStoreOptimizer
         boolean res = false;
         int h = 0;
         Unit candidate = null;
-	
+
 	if(aInst == block.getTail())
-	  return false;
+	  return;
 	
         currentUnit = (Unit) block.getSuccOf(aInst);
        
         while( currentUnit != block.getTail()) {
-	    
-            if(!canMoveUnitOver(aInst,  currentUnit)){ if(debug) { System.out.println("can't go over: " + currentUnit);}
-                break;}
+
+            if(!canMoveUnitOver(aInst,  currentUnit))
+                break;
             
 
             h -= ((AbstractInst)currentUnit).getInCount();                
-            if(h < 0){ if(debug) { System.out.println("breaking at: " + currentUnit);}
+            if(h < 0){
                 break;
             }            
             h += ((AbstractInst)currentUnit).getOutCount();
@@ -1214,38 +1200,29 @@ public class LoadStoreOptimizer
                     throw new RuntimeException();
             }
             block.insertAfter(aInst, candidate);            
-	    return true;
         }
-	
-	return false;
     }
 
 
+
+    
     
     protected void propagateLoadsForward()
     { 
         buildStoreListAndUnitToBlockMap();
-        boolean hasChanged = true;
-
-        while(hasChanged) {
-	    hasChanged = false;
-	    List tempList = new ArrayList();
-	    tempList.addAll(mUnits);
-	    Iterator it = tempList.iterator();
-	    
+        List tempList = new ArrayList();
+        tempList.addAll(mUnits);
+        Iterator it = tempList.iterator();
+        
         while(it.hasNext()) {
             Unit u = (Unit) it.next();
             if( u instanceof LoadInst) {
-		if(debug) { System.out.println("trying to push:"  + u);}
-                boolean res =propagateLoadForward(u);
-		if(!hasChanged)
-		    hasChanged = res;
+                propagateLoadForward(u);
             } else if(u instanceof NopInst) {
 		Block block  = (Block) mUnitToBlockMap.get(u);
 		block.remove(u);
 	    }
         }
-	}
     }
 
 
@@ -1283,91 +1260,9 @@ public class LoadStoreOptimizer
 	    } 
 	}
     }
-    
-    void superDuper() {
-    	// compress a serie of loads using dup2's and dup's
-	{
-	    List tempList = new ArrayList();
-	    tempList.addAll(mUnits);
-	    Iterator it = tempList.iterator();
-	    while(it.hasNext()) {
-		Unit currentInst = (Unit) it.next();
-		   
-		if(currentInst instanceof LoadInst) {
-		    Block block = (Block) mUnitToBlockMap.get(currentInst);
-		    
-		    int loadCount = 1;
-		    Local local = ((LoadInst)currentInst).getLocal();
-		    
-		    // count the number of identical loads
-		    
-		    Unit u;
-		    for(;;){
-			u = (Unit) it.next();
-			if(mUnitToBlockMap.get(u) != block)
-			    break;
-			
-			if(u instanceof LoadInst) {
-			    if(((LoadInst)u).getLocal() == local)
-				loadCount++;
-			    else
-				break;
-			} else {
-			    break;
-			}
-		    }
-		    
 
-		    if(loadCount > 1) {
-			Type loadType = ((LoadInst)currentInst).getOpType();
-	
-			// must leave at least one load on stack before dupping
-			Unit currentLoad = (Unit) mUnits.getSuccOf(currentInst);
-			loadCount--; 
-		  
-			if(loadType instanceof LongType || loadType instanceof DoubleType) {
-				
-			 
-				
-			    while(loadCount > 0) {
-				Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
-				replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
-				    
-				currentLoad = nextLoad;				 
-				loadCount--;
-			    }				
-			} else {
-			    boolean canMakeDup2 = false;
-			    if(loadCount >= 3) {
-				canMakeDup2 = true;
-				currentLoad = (Unit) mUnits.getSuccOf(currentLoad);
-				loadCount--;
-			    }
-			    
-			    while(loadCount > 0) {
-				
-				if(loadCount == 1 || !canMakeDup2) {
-				    Unit nextLoad = (Unit) mUnits.getSuccOf(currentLoad); 
-				    replaceUnit(currentLoad,  Baf.v().newDup1Inst(loadType));						
-				    
-				    currentLoad = nextLoad;
-				    loadCount--;	
-				} else {
-				    if(canMakeDup2) {
-					Unit nextLoad = (Unit) mUnits.getSuccOf(mUnits.getSuccOf(currentLoad));
-					replaceUnit(currentLoad, (Unit) mUnits.getSuccOf(currentLoad),  Baf.v().newDup2Inst(loadType, loadType));  		  
-					currentLoad = nextLoad;
-					loadCount -= 2;	
-				    }
-				}			    				
-			    }
-			}
-		    }		    
-		    currentInst = u;
-		}		
-	    }
-	}
-    }
+
+
 
     
     

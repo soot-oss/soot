@@ -112,10 +112,6 @@ public class BArrayReadInst extends AbstractOpTypeInst implements ArrayReadInst
         return 1;
     }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
     
 
     final String getName() { return "arrayread"; }

@@ -122,7 +122,10 @@ public class BPushInst extends AbstractInst implements PushInst
 
     public int getOutMachineCount()
     {
-        return 1;
+	if(constant instanceof LongConstant || constant instanceof DoubleConstant)
+	    return 2;
+	else 
+	    return 1;
     }
 
 
