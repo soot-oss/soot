@@ -30,13 +30,13 @@ public class ExceptionChecker extends BodyTransformer{
 
     FastHierarchy hierarchy;
     ExceptionCheckerErrorReporter reporter;
-    
+
     public ExceptionChecker(ExceptionCheckerErrorReporter r){
         this.reporter = r;
     }
-    
+
     protected void internalTransform(Body b, String phaseName, Map options){
-        
+
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
             Stmt s = (Stmt)it.next();
@@ -120,19 +120,50 @@ public class ExceptionChecker extends BodyTransformer{
         checkInvokeExpr(b, is.getInvokeExpr(), is);
     }
 
+    // Given a method signature, see if it is declared in the given interface.
+    // If so, return the exceptions thrown by the declaration. Otherwise,
+    // Do the same thing recursively on superinterfaces and Object
+    // and return the intersection. This gives
+    // the maximal set of exceptions that could be declared to be thrown if the
+    // interface had declared the method. Returns null if no supertype declares
+    // the method.
+    private List getExceptionSpec(SootClass intrface,NumberedString sig) {
+        if(intrface.declaresMethod(sig)) return intrface.getMethod(sig).getExceptions();
+        List result=null;
+        SootClass obj=Scene.v().getSootClass("java.lang.Object");
+        if(obj.declaresMethod(sig)) result=new Vector(obj.getMethod(sig).getExceptions());
+        Iterator intrfacesit=intrface.getInterfaces().iterator();
+        while(intrfacesit.hasNext()) {
+            SootClass suprintr=(SootClass) intrfacesit.next();
+            List other=getExceptionSpec(suprintr,sig);
+            if(other!=null)
+                if(result==null) result=other;
+                else result.retainAll(other);
+        }
+        return result;
+    }
+
+
     protected void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
-	if(ie instanceof InstanceInvokeExpr &&
-	   ((InstanceInvokeExpr) ie).getBase().getType() instanceof ArrayType &&
-	   ie.getMethodRef().name().equals("clone") && 
-	   ie.getMethodRef().parameterTypes().size()==0) 
-	    return;  // the call is to the clone() method of an array type, which
-	             // is defined not to throw any exceptions; if we left this to
+        if(ie instanceof InstanceInvokeExpr &&
+           ((InstanceInvokeExpr) ie).getBase().getType() instanceof ArrayType &&
+           ie.getMethodRef().name().equals("clone") &&
+           ie.getMethodRef().parameterTypes().size()==0)
+            return;  // the call is to the clone() method of an array type, which
+                     // is defined not to throw any exceptions; if we left this to
                      // normal resolution we'd get the method in Object which does
                      // throw CloneNotSupportedException
 
-        SootMethod meth = ie.getMethod();
-
-        Iterator it = meth.getExceptions().iterator();
+        List exceptions=ie instanceof InterfaceInvokeExpr
+            // For an invokeinterface, there is no unique resolution for the
+            // method reference that will get the "correct" exception spec. We
+            // actually need to look at the intersection of all declarations of
+            // the method in supertypes.
+            ? getExceptionSpec(ie.getMethodRef().declaringClass(),
+                               ie.getMethodRef().getSubSignature())
+            // Otherwise, we just do normal resolution.
+            : ie.getMethod().getExceptions();
+        Iterator it = exceptions.iterator();
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();
             if (isThrowDeclared(b, sc) || isExceptionCaught(b, s, sc.getType())) continue;
