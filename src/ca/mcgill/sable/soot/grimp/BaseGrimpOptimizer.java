@@ -76,6 +76,6 @@ public class BaseGrimpOptimizer
 {
     public static void optimize(GrimpBody body)
     {
-        ConstantFolder.foldConstants(body);
+        // ConstantFolder.foldConstants(body);
     }
 }

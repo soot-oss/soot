@@ -82,7 +82,7 @@ public class BaseJimpleOptimizer
 
         ConstantAndCopyPropagator.propagateConstantsAndCopies(body);
         DeadCodeEliminator.eliminateDeadCode(body);
-	JumpOptimizer.optimizeJumps(body);
-	UnreachablePruner.pruneUnreachables(body);
+//	    JumpOptimizer.optimizeJumps(body);
+//	    UnreachablePruner.pruneUnreachables(body);
     }
 }
