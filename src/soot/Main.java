@@ -176,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.37");
+            System.out.println("Soot version 1.beta.5.dev.38");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -804,7 +804,7 @@ public class Main
         else if(targetExtension.equals(".baf") || targetExtension.equals(".jimple") || targetExtension.equals(".grimple"))
             c.printTo(writerOut);
         else if(targetExtension.equals(".dava"))
-            c.printTo(writerOut);
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".grimp"))
             c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".class"))

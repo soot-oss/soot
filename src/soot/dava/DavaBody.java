@@ -4,6 +4,7 @@ import soot.*;
 import java.util.*;
 import soot.grimp.*;
 import soot.dava.internal.*;
+import soot.dava.toolkits.base.*;
 
 public class DavaBody extends Body
 {
@@ -106,8 +107,14 @@ public class DavaBody extends Body
             }
         }    
     
+        // Call transformers to recover structure
+        {
+            BlockStructurer.v().transform(this, "db.bs");
+            IfThenElseMatcher.v().transform(this, "db.item");
+        }
     }
 }
+
 
 
 
