@@ -33,6 +33,11 @@ import soot.util.*;
 
 public class SiteInliner
 {
+    public String getDefaultOptions() 
+    {
+        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
+    }
+
     public static void inlineSites(List sites)
     {
         inlineSites(sites, new HashMap());
@@ -64,7 +69,13 @@ public class SiteInliner
         // DEBUG
 //          System.out.println("inlining: "+inlinee + " into "+container);
 
-        Body containerB = (JimpleBody)container.getActiveBody();
+        boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
+        String modifierOptions = Options.getString(options, "allowed-modifier-changes");
+
+        Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+
+        JimpleBody containerB = (JimpleBody)container.getActiveBody();
         Chain containerUnits = containerB.getUnits();
 
         if (!(inlinee.getDeclaringClass().isApplicationClass() ||
@@ -74,12 +85,88 @@ public class SiteInliner
         Body inlineeB = (JimpleBody)inlinee.getActiveBody();
         Chain inlineeUnits = inlineeB.getUnits();
 
+        InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
+
+        Value thisToAdd = null;
+        if (ie instanceof InstanceInvokeExpr)
+            thisToAdd = ((InstanceInvokeExpr)ie).getBase();
+
+        // Insert casts to please the verifier.
+        {
+            boolean targetUsesThis = true;
+            if (enableRedundantCastInsertion && ie instanceof InstanceInvokeExpr && targetUsesThis)
+            {
+                // The verifier will complain if targetUsesThis, and:
+                //    the argument passed to the method is not the same type.
+                // For instance, Bottle.price_static takes a cost.
+                // Cost is an interface implemented by Bottle.
+                SootClass localType, parameterType;
+                localType = ((RefType)((InstanceInvokeExpr)ie).getBase().getType()).getSootClass();
+                parameterType = inlinee.getDeclaringClass();
+
+                if (localType.isInterface() ||
+                    hierarchy.isClassSuperclassOf(localType, parameterType))
+                {
+                    Local castee = Jimple.v().newLocal("__castee", parameterType.getType());
+                    containerB.getLocals().add(castee);
+                    containerB.getUnits().insertBefore(Jimple.v().newAssignStmt(castee,
+                                  Jimple.v().newCastExpr(((InstanceInvokeExpr)ie).getBase(),
+                                                         parameterType.getType())), toInline);
+                    thisToAdd = castee;
+                }
+            }
+        }
+
+        // (If enabled), add a null pointer check.
+        {
+            if (enableNullPointerCheckInsertion && ie instanceof InstanceInvokeExpr)
+            {
+                boolean caught = TrapManager.isExceptionCaughtAt
+                    (Scene.v().getSootClass("java.lang.NullPointerException"), toInline, containerB);
+
+                /* Ah ha.  Caught again! */
+                if (caught)
+                {
+                    /* In this case, we don't use throwPoint;
+                     * instead, put the code right there. */
+                    Stmt insertee = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr)ie).getBase(), 
+                                                  NullConstant.v()), toInline);
+
+                    containerB.getUnits().insertBefore(insertee, toInline);
+
+                    // This sucks (but less than before).
+                    ((IfStmt)insertee).setTarget(toInline);
+
+                    ThrowManager.addThrowAfter(containerB, insertee);
+                }
+                else
+                {
+                    Stmt throwPoint = 
+                        ThrowManager.getNullPointerExceptionThrower(containerB);
+                    containerB.getUnits().insertBefore
+                        (Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr)ie).getBase(), 
+                                         NullConstant.v()), throwPoint), toInline);
+                }
+            }
+        }
+                    
+        // Add synchronizing stuff.
+        {
+            if (inlinee.isSynchronized())
+            {
+                // Need to get the class object if ie is a static invoke.
+                if (ie instanceof InstanceInvokeExpr)
+                    SynchronizerManager.synchronizeStmtOn(toInline, containerB, (Local)((InstanceInvokeExpr)ie).getBase());
+                else
+                    ; // QUACK
+            }
+        }
+
         Stmt exitPoint = (Stmt)containerUnits.getSuccOf(toInline);
 
+        // First, clone all of the inlinee's units & locals.
         HashMap oldLocalsToNew = new HashMap();
         HashMap oldUnitsToNew = new HashMap();
-
-        // First, clone all of the inlinee's units & locals.
         {
             Stmt cursor = toInline;
             for (Iterator it = inlineeUnits.iterator();
@@ -87,6 +174,8 @@ public class SiteInliner
             {
                 Stmt curr = (Stmt)it.next();
                 Stmt currPrime = (Stmt)curr.clone();
+                if (currPrime == null)
+                    throw new RuntimeException("getting null from clone!");
 
                 containerUnits.insertAfter(currPrime, cursor);
                 cursor = currPrime;
@@ -99,6 +188,8 @@ public class SiteInliner
             {
                 Local l = (Local)it.next();
                 Local lPrime = (Local)l.clone();
+                if (lPrime == null)
+                    throw new RuntimeException("getting null from local clone!");
 
                 containerB.getLocals().add(lPrime);
                 oldLocalsToNew.put(l, lPrime);
@@ -119,9 +210,14 @@ public class SiteInliner
                 while (duBoxes.hasNext())
                 {
                     ValueBox box = (ValueBox)duBoxes.next();
+                    if (!(box.getValue() instanceof Local))
+                        continue;
+
                     Local lPrime = (Local)(oldLocalsToNew.get(box.getValue()));
                     if (lPrime != null)
                         box.setValue(lPrime);
+                    else
+                        throw new RuntimeException("local has no clone!");
                 }
 
                 Iterator unitBoxes = patchee.getUnitBoxes().iterator();
@@ -134,6 +230,26 @@ public class SiteInliner
                     else
                         throw new RuntimeException("inlined stmt has no clone!");
                 }                
+            }
+        }
+
+        // Copy & backpatch the traps.
+        {
+            Iterator trapsIt = inlineeB.getTraps().iterator();
+
+            while (trapsIt.hasNext())
+            {
+                Trap t = (Trap)trapsIt.next();
+                Stmt newBegin = (Stmt)oldUnitsToNew.get(t.getBeginUnit()),
+                    newEnd = (Stmt)oldUnitsToNew.get(t.getEndUnit()),
+                    newHandler = (Stmt)oldUnitsToNew.get(t.getHandlerUnit());
+
+                if (newBegin == null || newEnd == null || newHandler == null)
+                    throw new RuntimeException("couldn't map trap!");
+
+                containerB.getTraps().addFirst(Jimple.v().newTrap
+                                               (t.getException(),
+                                                newBegin, newEnd, newHandler));
             }
         }
 
@@ -161,17 +277,15 @@ public class SiteInliner
                         continue;
                     else if (rhs instanceof ThisRef)
                     {
-                        InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
                         if (!(ie instanceof InstanceInvokeExpr))
                             throw new RuntimeException("thisref with no receiver!");
 
                         containerUnits.swapWith(s, Jimple.v().newAssignStmt(((IdentityStmt)s).getLeftOp(),
-                                                                            ((InstanceInvokeExpr)ie).getBase()));
+                                                                            thisToAdd));
                     }
                     else if (rhs instanceof ParameterRef)
                     {
                         ParameterRef pref = (ParameterRef)rhs;
-                        InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
                         containerUnits.swapWith(s, Jimple.v().newAssignStmt(((IdentityStmt)s).getLeftOp(),
                                                                             ie.getArg(pref.getIndex())));
                     }
@@ -196,22 +310,6 @@ public class SiteInliner
                 }
                 else if (s instanceof ReturnVoidStmt)
                     containerUnits.swapWith(s, Jimple.v().newGotoStmt(exitPoint));
-            }
-        }
-
-        // Copy the traps.
-        {
-            Iterator trapsIt = inlineeB.getTraps().iterator();
-
-            while (trapsIt.hasNext())
-            {
-                Trap t = (Trap)trapsIt.next();
-
-                containerB.getTraps().addFirst(Jimple.v().newTrap
-                                               (t.getException(),
-                                                (Stmt)oldUnitsToNew.get(t.getBeginUnit()),
-                                                (Stmt)oldUnitsToNew.get(t.getEndUnit()),
-                                                (Stmt)oldUnitsToNew.get(t.getHandlerUnit())));
             }
         }
 

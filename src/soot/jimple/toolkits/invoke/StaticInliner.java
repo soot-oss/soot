@@ -41,7 +41,8 @@ public class StaticInliner extends SceneTransformer
 
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
+        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe "+
+            "expansion-factor:3 max-container-size:5000 inlinee-size-factor:1";
     }
     
     protected void internalTransform(String phaseName, Map options)
@@ -51,6 +52,9 @@ public class StaticInliner extends SceneTransformer
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
+        float expansionFactor = Options.getFloat(options, "expansion-factor");
+        int maxContainerSize = Options.getInt(options, "max-container-size");
+        float inlineeFactor = Options.getFloat(options, "inlinee-size-factor");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -77,6 +81,7 @@ public class StaticInliner extends SceneTransformer
             List unitList = new ArrayList(); unitList.addAll(b.getUnits());
             Iterator unitIt = unitList.iterator();
 
+            nextSite:
             while (unitIt.hasNext())
             {
                 Stmt s = (Stmt)unitIt.next();
@@ -92,11 +97,55 @@ public class StaticInliner extends SceneTransformer
 
                 SootMethod target = (SootMethod)targets.get(0);
 
+                if (!InlinerSafetyManager.canSafelyInlineInto(target, s, container, graph))
+                    continue;
+
                 if (!AccessManager.ensureAccess(container, target, modifierOptions))
                     continue;
 
                 if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                     continue;
+
+                // check method & field accesses
+                {
+                    Iterator unitsIt = b.getUnits().iterator();
+                    while (unitsIt.hasNext())
+                    {
+                        Stmt st = (Stmt)unitsIt.next();
+                        if (st.containsInvokeExpr())
+                        {
+                            InvokeExpr ie1 = (InvokeExpr)st.getInvokeExpr();
+                            if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
+                                continue nextSite;
+if (ie1 instanceof SpecialInvokeExpr) {System.out.println("!!!"); 
+                            System.out.println(InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()));
+                            System.out.println(InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass()));}
+                            if ((ie1 instanceof SpecialInvokeExpr) && 
+                                  (InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, container.getDeclaringClass()) ||
+                                  InlinerSafetyManager.specialInvokePerformsLookupIn(ie1, target.getDeclaringClass())))
+                                {
+System.out.println("skip!");
+                                continue nextSite;
+                                }
+                        }
+
+                        if (st instanceof AssignStmt)
+                        {
+                            Value lhs = ((AssignStmt)st).getLeftOp();
+                            Value rhs = ((AssignStmt)st).getRightOp();
+
+                            if (lhs instanceof FieldRef && 
+                                !AccessManager.ensureAccess(container, ((FieldRef)lhs).getField(), 
+                                                            modifierOptions))
+                                continue nextSite;
+                                                                                       
+                            if (rhs instanceof FieldRef &&
+                                !AccessManager.ensureAccess(container, ((FieldRef)rhs).getField(), 
+                                                            modifierOptions))
+                                continue nextSite;
+                        }
+                    }
+                }
 
                 List l = new ArrayList();
                 l.add(target); l.add(s); l.add(container);
@@ -104,7 +153,63 @@ public class StaticInliner extends SceneTransformer
             }
         }
 
-        SiteInliner.inlineSites(sitesToInline, options);
+        // Proceed to inline the sites.
+        {
+            computeAverageMethodSizeAndSaveOriginalSizes();
+
+            Iterator sitesIt = sitesToInline.iterator();
+            while (sitesIt.hasNext())
+            {
+                List l = (List)sitesIt.next();
+                SootMethod inlinee = (SootMethod)l.get(0);
+                int inlineeSize = ((JimpleBody)(inlinee.getActiveBody())).getUnits().size();
+                Stmt toInline = (Stmt)l.get(1);
+                SootMethod container = (SootMethod)l.get(2);
+                int containerSize = ((JimpleBody)(container.getActiveBody())).getUnits().size();
+
+                if (inlineeSize > avgSize * inlineeFactor)
+                    continue;
+
+                if (inlineeSize + containerSize > maxContainerSize)
+                    continue;
+
+                if (inlineeSize + containerSize > 
+                         expansionFactor * ((Integer)methodToOriginalSize.get(container)).intValue())
+                    continue;
+
+                SiteInliner.inlineSite(inlinee, toInline, container, options);
+            }
+        }
+    }
+
+    private HashMap methodToOriginalSize = new HashMap();
+    private int avgSize = 0;
+
+    private void computeAverageMethodSizeAndSaveOriginalSizes()
+    {
+        long sum = 0, count = 0;
+        Iterator classesIt = Scene.v().getApplicationClasses().iterator();
+
+        while (classesIt.hasNext())
+        {
+            SootClass c = (SootClass) classesIt.next();
+
+            Iterator methodsIt = c.getMethods().iterator();
+            while (methodsIt.hasNext())
+            {
+                SootMethod m = (SootMethod) methodsIt.next();
+                if (m.isConcrete())
+                {
+                    int size = ((JimpleBody)m.getActiveBody()).getUnits().size();
+                    sum += size;
+                    methodToOriginalSize.put(m, new Integer(size));
+                    count++;
+                }
+            }
+        }
+        if (count == 0)
+            return;
+        avgSize = (int)(sum/count);
     }
 }
 

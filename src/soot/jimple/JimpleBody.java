@@ -209,8 +209,9 @@ public class JimpleBody extends StmtBody
         Right now, performs only a handful of checks.
       */
       
-    public void assertStaticConstraints()
+    public void validate()
     {
+        super.validate();
         // Check validity of traps.
         {
             Iterator it = getTraps().iterator();

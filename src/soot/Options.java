@@ -45,4 +45,20 @@ public class Options
         return options.containsKey(name) ?
             (String)options.get(name) : "";
     }
+
+    /** This method returns the float value of "name" in options 
+        or 1.0 if "name" is not found. */
+    public static float getFloat(Map options, String name)
+    {
+        return options.containsKey(name) ?
+            new Float((String)options.get(name)).floatValue() : 1.0f;
+    }
+
+    /** This method returns the integer value of "name" in options 
+        or 0 if "name" is not found. */
+    public static int getInt(Map options, String name)
+    {
+        return options.containsKey(name) ?
+            new Integer((String)options.get(name)).intValue() : 0;
+    }
 }

@@ -67,7 +67,7 @@ public class BafBody extends Body
             throw new RuntimeException("Can only construct BafBody's directly"
               + " from JimpleBody's.");
 
-        jimpleBody.assertStaticConstraints();
+        jimpleBody.validate();
                
         JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
            

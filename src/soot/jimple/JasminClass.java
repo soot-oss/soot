@@ -402,8 +402,7 @@ public class JasminClass
         
         StmtBody body = (StmtBody) activeBody;
         
-        if(body instanceof JimpleBody)
-            ((JimpleBody) body).assertStaticConstraints();
+        body.validate();
             
         if(body == null)
             

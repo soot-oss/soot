@@ -14,6 +14,10 @@ public class InlinerSafetyManager
     {
         /* first, check the simple (one-line) safety criteria. */
 
+        // Rule 0: Don't inline constructors.
+        if (inlinee.getName().equals("<init>"))
+            return false;
+
         // Rule 1: There is exactly one possible target for toInline.
 //          if (g.getTargetsOf((InvokeExpr)toInline.getInvokeExpr()).size() != 1)
 //              return false;
@@ -33,12 +37,13 @@ public class InlinerSafetyManager
         //         source code (e.g. by moving a call to a private method
         //         *from* a bad class *to* a good class) occuring in the
         //         toInline statement.
+        // Does not occur for static methods, because there is no base?
 
         InvokeExpr ie = (InvokeExpr)toInline.getInvokeExpr();
         Value base = (ie instanceof InstanceInvokeExpr) ? 
             ((InstanceInvokeExpr)ie).getBase() : null;
 
-        if (invokeOfThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
+        if (base != null && invokeOfThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
             return false;
 
         // Rule 5: Don't inline away any class, method or field access 
@@ -54,8 +59,9 @@ public class InlinerSafetyManager
 
         // Rule 7: Don't change semantics of program by moving 
         //         an invokespecial.
-        if (specialInvokeOfInPerformsLookup(inlinee, inlinee.getDeclaringClass()) ||
-                specialInvokeOfInPerformsLookup(inlinee, container.getDeclaringClass()))
+        if (ie instanceof SpecialInvokeExpr && 
+                (specialInvokePerformsLookupIn(ie, inlinee.getDeclaringClass()) ||
+                specialInvokePerformsLookupIn(ie, container.getDeclaringClass())))
             return false;
 
         return true;
@@ -116,18 +122,33 @@ public class InlinerSafetyManager
 
     // m is the method being called; container is the class from which m
     // is being called.
-    private static boolean specialInvokeOfInPerformsLookup
-        (SootMethod m, SootClass containerClass)
+    static boolean specialInvokePerformsLookupIn
+        (InvokeExpr ie, SootClass containerClass)
     {
         // If all of the conditions are true, a lookup is performed.
+        SootMethod m = ie.getMethod();
+
+System.out.println("?!?");
+        System.out.println(m.getDeclaringClass());
+        System.out.println(containerClass);
+System.out.println("!?!");
 
         if (m.getName().equals("<init>"))
+            {
+System.out.println("init!");
             return false;
+            }
 
         if (m.isPrivate())
+            {
+System.out.println("private");
             return false;
+            }
 
         Hierarchy h = Scene.v().getActiveHierarchy();
+
+        System.out.println(h.isClassSuperclassOf(m.getDeclaringClass(), 
+                                   containerClass));
 
         if (!h.isClassSuperclassOf(m.getDeclaringClass(), 
                                    containerClass))

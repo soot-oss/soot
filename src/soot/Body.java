@@ -141,15 +141,18 @@ public abstract class Body
             if(vb.getValue() instanceof Local) 
                 vb.setValue((Value) bindings.get(vb.getValue()));
         }
-
-        validateLocals();
-
-
     }
     
+    public void validate()
+    {
+        validateLocals();
+        validateTraps();
+        validateUnitBoxes();
+    }
+
     public void validateLocals()
     {
-        Iterator it =  getUseAndDefBoxes().iterator();
+        Iterator it = getUseAndDefBoxes().iterator();
         
         while(it.hasNext()){
             ValueBox vb = (ValueBox) it.next();
@@ -160,10 +163,36 @@ public abstract class Body
                 
             }
         }
-       
-        
     }
-        
+
+    public void validateTraps()
+    {
+        Iterator it = getTraps().iterator();
+        while (it.hasNext())
+        {
+            Trap t = (Trap)it.next();
+            if (!unitChain.contains(t.getBeginUnit()))
+                throw new RuntimeException("begin not in chain");
+
+            if (!unitChain.contains(t.getEndUnit()))
+                throw new RuntimeException("end not in chain");
+
+            if (!unitChain.contains(t.getHandlerUnit()))
+                throw new RuntimeException("handler not in chain");
+        }
+    }
+
+    public void validateUnitBoxes()
+    {
+        Iterator it = getUnitBoxes().iterator();
+        while (it.hasNext())
+        {
+            UnitBox ub = (UnitBox)it.next();
+            if (!unitChain.contains(ub.getUnit()))
+                throw new RuntimeException("unitbox points outside unitChain!");
+        }
+    }
+
     public Chain getLocals() {return localChain;} 
     public Chain getTraps() {return trapChain;}
     public PatchingChain getUnits() {return unitChain;}

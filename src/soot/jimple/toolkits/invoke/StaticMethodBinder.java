@@ -109,8 +109,8 @@ public class StaticMethodBinder extends SceneTransformer
                     if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
                         continue;
 
-                    boolean targetUsesThis = methodUsesThis(target);
-                    targetUsesThis = true;
+                    boolean targetUsesThis = true; //methodUsesThis(target);
+                    //                    targetUsesThis = true;
 
                     if (!instanceToStaticMap.containsKey(target))
                     {

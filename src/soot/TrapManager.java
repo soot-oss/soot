@@ -102,7 +102,6 @@ public class TrapManager
             while (it.hasNext())
                 trapsSet.add(it.next());
         }
-
         return trapsSet;
     }
 
