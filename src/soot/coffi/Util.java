@@ -770,6 +770,7 @@ public class Util
      * @author Patrick Lam
      */
     boolean isValidJimpleName(String prospectiveName) {
+        if(prospectiveName == null) return false;
 	for (int i = 0; i < prospectiveName.length(); i++) {
 	    char c = prospectiveName.charAt(i);
 	    if (i == 0 && c >= '0' && c <= '9')
