@@ -39,17 +39,16 @@ public class Options extends OptionsBase {
     public static final int src_prec_class = 1;
     public static final int src_prec_jimple = 2;
     public static final int output_format_jimp = 1;
-    public static final int output_format_njimple = 2;
-    public static final int output_format_jimple = 3;
-    public static final int output_format_baf = 4;
-    public static final int output_format_b = 5;
-    public static final int output_format_grimp = 6;
-    public static final int output_format_grimple = 7;
-    public static final int output_format_xml = 8;
-    public static final int output_format_none = 9;
-    public static final int output_format_jasmin = 10;
-    public static final int output_format_class = 11;
-    public static final int output_format_dava = 12;
+    public static final int output_format_jimple = 2;
+    public static final int output_format_baf = 3;
+    public static final int output_format_b = 4;
+    public static final int output_format_grimp = 5;
+    public static final int output_format_grimple = 6;
+    public static final int output_format_xml = 7;
+    public static final int output_format_none = 8;
+    public static final int output_format_jasmin = 9;
+    public static final int output_format_class = 10;
+    public static final int output_format_dava = 11;
 
     public boolean parse() {
         while( hasMoreOptions() ) {
@@ -193,17 +192,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_jimp;
-                }
-    
-                else if( false
-                || value.equals( "njimple" )
-                ) {
-                    if( output_format != 0
-                    && output_format != output_format_njimple ) {
-                        G.v().out.println( "Multiple values given for option "+option );
-                        return false;
-                    }
-                    output_format = output_format_njimple;
                 }
     
                 else if( false
@@ -607,25 +595,24 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )
 +padOpt(" -src-prec ARG", "sets the source precedence for Soot" )
-+padVal(" c class", "Class File" )
-+padVal(" J jimple", "Jimple File" )
++padVal(" c class", "" )
++padVal(" J jimple", "" )
 +padOpt(" -allow-phantom-refs", "allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "store produced files in PATH" )
 +padOpt(" -o ARG -output-format ARG", "sets the source precedence for Soot" )
-+padVal(" j jimp", "Jimp File" )
-+padVal(" njimple", "Njimple File" )
-+padVal(" J jimple", "Jimple File" )
-+padVal(" B baf", "Baf File" )
-+padVal(" b", "Aggregated Baf File" )
-+padVal(" g grimp", "Grimp File" )
-+padVal(" G grimple", "Grimple File" )
-+padVal(" X xml", "Xml File" )
-+padVal(" n none", "No Output File" )
-+padVal(" s jasmin", "Jasmin File" )
-+padVal(" c class", "Class File" )
-+padVal(" d dava", "Dava Decompiled File" )
++padVal(" j jimp", "" )
++padVal(" J jimple", "" )
++padVal(" B baf", "" )
++padVal(" b", "" )
++padVal(" g grimp", "" )
++padVal(" G grimple", "" )
++padVal(" X xml", "" )
++padVal(" n none", "" )
++padVal(" s jasmin", "" )
++padVal(" c class", "" )
++padVal(" d dava", "" )
 +padOpt(" -via-grimp", "convert jimple to bytecode via grimp instead of via baf" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"

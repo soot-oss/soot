@@ -37,22 +37,22 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "disabled" );
     }
     
-    /** verbose --  */
+    /** Verbose --  */
     public boolean verbose() {
         return soot.PackManager.getBoolean( options, "verbose" );
     }
     
-    /** ignoreTypesEntirely --  */
+    /** Ignore Types Entirely --  */
     public boolean ignoreTypesEntirely() {
         return soot.PackManager.getBoolean( options, "ignoreTypesEntirely" );
     }
     
-    /** forceGCs --  */
+    /** Force Garbages Collections --  */
     public boolean forceGCs() {
         return soot.PackManager.getBoolean( options, "forceGCs" );
     }
     
-    /** preJimplify --  */
+    /** Pre Jimplify --  */
     public boolean preJimplify() {
         return soot.PackManager.getBoolean( options, "preJimplify" );
     }
@@ -67,102 +67,102 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "RTA" );
     }
     
-    /** ignoreBaseObjects --  */
+    /** Ignore Base Objects --  */
     public boolean ignoreBaseObjects() {
         return soot.PackManager.getBoolean( options, "ignoreBaseObjects" );
     }
     
-    /** typesForSites --  */
+    /** Types For Sites --  */
     public boolean typesForSites() {
         return soot.PackManager.getBoolean( options, "typesForSites" );
     }
     
-    /** mergeStringBuffer --  */
+    /** Merge String Buffer --  */
     public boolean mergeStringBuffer() {
         return soot.PackManager.getBoolean( options, "mergeStringBuffer" );
     }
     
-    /** simulateNatives --  */
+    /** Simulate Natives --  */
     public boolean simulateNatives() {
         return soot.PackManager.getBoolean( options, "simulateNatives" );
     }
     
-    /** simpleEdgesBidirectional --  */
+    /** Simple Edges Bidirectional --  */
     public boolean simpleEdgesBidirectional() {
         return soot.PackManager.getBoolean( options, "simpleEdgesBidirectional" );
     }
     
-    /** onFlyCallGraph --  */
+    /** On Fly Call Graph --  */
     public boolean onFlyCallGraph() {
         return soot.PackManager.getBoolean( options, "onFlyCallGraph" );
     }
     
-    /** parmsAsFields --  */
+    /** Parms As Fields --  */
     public boolean parmsAsFields() {
         return soot.PackManager.getBoolean( options, "parmsAsFields" );
     }
     
-    /** returnsAsFields --  */
+    /** Returns As Fields --  */
     public boolean returnsAsFields() {
         return soot.PackManager.getBoolean( options, "returnsAsFields" );
     }
     
-    /** simplifyOffline --  */
+    /** Simplify Offline --  */
     public boolean simplifyOffline() {
         return soot.PackManager.getBoolean( options, "simplifyOffline" );
     }
     
-    /** simplifySCCs --  */
+    /** Simplify SCCs --  */
     public boolean simplifySCCs() {
         return soot.PackManager.getBoolean( options, "simplifySCCs" );
     }
     
-    /** ignoreTypesForSCCs --  */
+    /** Ignore Types For SCCs --  */
     public boolean ignoreTypesForSCCs() {
         return soot.PackManager.getBoolean( options, "ignoreTypesForSCCs" );
     }
     
-    /** dumpHTML --  */
+    /** Dump HTML --  */
     public boolean dumpHTML() {
         return soot.PackManager.getBoolean( options, "dumpHTML" );
     }
     
-    /** dumpPAG --  */
+    /** Dump PAG --  */
     public boolean dumpPAG() {
         return soot.PackManager.getBoolean( options, "dumpPAG" );
     }
     
-    /** dumpSolution --  */
+    /** Dump Solution --  */
     public boolean dumpSolution() {
         return soot.PackManager.getBoolean( options, "dumpSolution" );
     }
     
-    /** topoSort --  */
+    /** Topological Sort --  */
     public boolean topoSort() {
         return soot.PackManager.getBoolean( options, "topoSort" );
     }
     
-    /** dumpTypes --  */
+    /** Dump Types --  */
     public boolean dumpTypes() {
         return soot.PackManager.getBoolean( options, "dumpTypes" );
     }
     
-    /** classMethodVar --  */
+    /** Class Method Var --  */
     public boolean classMethodVar() {
         return soot.PackManager.getBoolean( options, "classMethodVar" );
     }
     
-    /** dumpAnswer --  */
+    /** Dump Answer --  */
     public boolean dumpAnswer() {
         return soot.PackManager.getBoolean( options, "dumpAnswer" );
     }
     
-    /** trimInvokeGraph --  */
+    /** Trim Invoke Graph --  */
     public boolean trimInvokeGraph() {
         return soot.PackManager.getBoolean( options, "trimInvokeGraph" );
     }
     
-    /** addTags --  */
+    /** Add Tags --  */
     public boolean addTags() {
         return soot.PackManager.getBoolean( options, "addTags" );
     }
@@ -172,7 +172,7 @@ public class SparkOptions
     public static final int propagator_merge = 3;
     public static final int propagator_alias = 4;
     public static final int propagator_none = 5;
-    /** propagator --  */
+    /** Propagator --  */
     public int propagator() {
         String s = soot.PackManager.getString( options, "propagator" );
         
@@ -199,7 +199,7 @@ public class SparkOptions
     public static final int setImpl_hybrid = 3;
     public static final int setImpl_array = 4;
     public static final int setImpl_double = 5;
-    /** setImpl --  */
+    /** Set Implementation --  */
     public int setImpl() {
         String s = soot.PackManager.getString( options, "setImpl" );
         
@@ -225,7 +225,7 @@ public class SparkOptions
     public static final int doubleSetOld_bit = 2;
     public static final int doubleSetOld_hybrid = 3;
     public static final int doubleSetOld_array = 4;
-    /** doubleSetOld --  */
+    /** Double Set Old --  */
     public int doubleSetOld() {
         String s = soot.PackManager.getString( options, "doubleSetOld" );
         
@@ -248,7 +248,7 @@ public class SparkOptions
     public static final int doubleSetNew_bit = 2;
     public static final int doubleSetNew_hybrid = 3;
     public static final int doubleSetNew_array = 4;
-    /** doubleSetNew --  */
+    /** Double Set New --  */
     public int doubleSetNew() {
         String s = soot.PackManager.getString( options, "doubleSetNew" );
         

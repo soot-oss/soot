@@ -1,498 +1,587 @@
 <?xml version = '1.0' encoding = 'ISO-8859-1' ?>
-<?xml-stylesheet type="text/xsl" href="soot_options.xsl" ?>
+<?xml-stylesheet type="text/xsl" href="soot_options.xsl"  ?>
 <options>
-    <section>
-        <name>General Options</name>
-        <boolopt>
-            <name>Help</name>
-            <alias>h</alias>
-            <alias>help</alias>
-            <short_desc>display help and exit</short_desc>
-            <long_desc>This option displays the textual help message and exits immediately without doing any further processing</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Version</name>
-            <alias>version</alias>
-            <short_desc>output version information and exit</short_desc>
-            <long_desc>This option outputs the Soot version information and exits immediately without doing any further processing</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Verbose</name>
-            <alias>v</alias>
-            <alias>verbose</alias>
-            <short_desc>verbose mode</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Application Mode</name>
-            <alias>app</alias>
-            <short_desc>runs in application mode</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-    </section>
-    <section>
-        <name>Input Options</name>
-        <stropt>
-            <name>Soot Classpath</name>
-            <alias>cp</alias>
-            <alias>soot-classpath</alias>
-            <short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
-            <long_desc>This option ...</long_desc>
-        </stropt>
-        <multiopt>
-            <name>Input Source Precedence</name>
-            <alias>src-prec</alias>
-            <value>
-                <name>Class File</name>
-                <alias>c</alias>
-                <alias>class</alias>
-                <short_desc>Use class for source of Soot</short_desc>
-                <default/>
-            </value>
-            <value>
-                <name>Jimple File</name>
-                <alias>J</alias>
-                <alias>jimple</alias>
-                <short_desc>Use Jimple for source of Soot</short_desc>
-            </value>
-            <short_desc>sets the source precedence for Soot</short_desc>
-            <long_desc>This option ...</long_desc>
-        </multiopt>
-        <boolopt>
-            <name>Allow Phantom References</name>
-            <alias>allow-phantom-refs</alias>
-            <short_desc>allow unresolved classes; may cause errors</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-    </section>
-    <section>
-        <name>Output Options</name>
-        <stropt>
-            <name>Output Directory</name>
-            <alias>d</alias>
-            <alias>output-dir</alias>
-            <short_desc>store produced files in PATH</short_desc>
-            <long_desc>This option ...</long_desc>
-        </stropt>
-        <multiopt>
-            <name>Output Format</name>
-            <alias>o</alias>
-            <alias>output-format</alias>
-            <value>
-                <name>Jimp File</name>
-                <alias>j</alias>
-                <alias>jimp</alias>
-                <short_desc>produce .jimp (abbreviated .jimple) files</short_desc>
-            </value>
-            <value>
-                <name>Jimple File</name>
-                <alias>J</alias>
-                <alias>jimple</alias>
-                <short_desc>produce .jimple code</short_desc>
-            </value>
-            <value>
-                <name>Baf File</name>
-                <alias>B</alias>
-                <alias>baf</alias>
-                <short_desc>produce .baf code</short_desc>
-            </value>
-            <value>
-                <name>Aggregated Baf File</name>
-                <alias>b</alias>
-                <short_desc>produce .b (abbreviated .baf) files</short_desc>
-            </value>
-            <value>
-                <name>Grimp File</name>
-                <alias>g</alias>
-                <alias>grimp</alias>
-                <short_desc>produce .grimp (abbreviated .grimple) files</short_desc>
-            </value>
-            <value>
-                <name>Grimple File</name>
-                <alias>G</alias>
-                <alias>grimple</alias>
-                <short_desc>produce .grimple files</short_desc>
-            </value>
-            <value>
-                <name>Xml File</name>
-                <alias>X</alias>
-                <alias>xml</alias>
-                <short_desc>produce .xml files</short_desc>
-            </value>
-            <value>
-                <name>No Output File</name>
-                <alias>n</alias>
-                <alias>none</alias>
-                <short_desc>produces no output</short_desc>
-            </value>
-            <value>
-                <name>Jasmin File</name>
-                <alias>s</alias>
-                <alias>jasmin</alias>
-                <short_desc>produce .jasmin files</short_desc>
-            </value>
-            <value>
-                <name>Class File</name>
-                <alias>c</alias>
-                <alias>class</alias>
-                <default/>
-                <short_desc>produce .class files</short_desc>
-            </value>
-            <value>
-                <name>Dava Decompiled File</name>
-                <alias>d</alias>
-                <alias>dava</alias>
-                <short_desc>produce dava decompiled .java files</short_desc>
-            </value>
-            <short_desc>sets the source precedence for Soot</short_desc>
-            <long_desc>This option ...</long_desc>
-        </multiopt>
-        <boolopt>
-            <name>Via Grimp</name>
-            <alias>via-grimp</alias>
-            <short_desc>convert jimple to bytecode via grimp instead of via baf</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Save Tags to XML</name>
-            <alias>xml-attributes</alias>
-            <short_desc>Save tags to XML attributes for Eclipse</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-    </section>
-    <section>
-        <name>Processing Options</name>
-        <phaseopt>
-            <name>Phase Options</name>
-            <alias>p</alias>
-            <alias>phase-option</alias>
-            <short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
-            <long_desc>This option ...</long_desc>
-            <phase>
-                <name>Jimple Body Creation</name>
-                <alias>jb</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Splitting</name>
-                    <alias>no-splitting</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Typing</name>
-                    <alias>no-typing</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>Aggregate All Locals</name>
-                    <alias>aggregate-all-locals</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Aggregating</name>
-                    <alias>no-aggregating</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>Use Original Names</name>
-                    <alias>use-original-names</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>Pack Locals</name>
-                    <alias>pack-locals</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Copy Propogator</name>
-                    <alias>no-cp</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Nop Elimination</name>
-                    <alias>no-nop-elimination</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Unreachable Code Elimination</name>
-                    <alias>no-unreachable-code-elimination</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>Verbatim</name>
-                    <alias>verbatim</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <sub_phase>
-                    <name>Stack Variable Aggregation</name>
-                    <alias>jb.asv</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unsplit-originals Local Packer</name>
-                    <alias>jb.ulp</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Unsplit Original Locals</name>
-                        <alias>unsplit-original-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Local Name Standardizer</name>
-                    <alias>jb.lns</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Copy Propagator</name>
-                    <alias>jb.cp</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Regular Locals</name>
-                        <alias>only-regular-locals</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Dead Assignment Eliminator</name>
-                    <alias>jb.dae</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Local Splitter</name>
-                    <alias>jb.ls</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Aggregator</name>
-                    <alias>jb.a</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unused Local Eliminator</name>
-                    <alias>jb.ule</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Type Assigner</name>
-                    <alias>jb.tr</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unused Local Eliminator</name>
-                    <alias>jb.cp-ule</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Local Packer</name>
-                    <alias>jb.lp</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Unsplit Original Locals</name>
-                        <alias>unsplit-original-locals</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Nop Eliminator</name>
-                    <alias>jb.ne</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unreachable Code Eliminator</name>
-                    <alias>jb.uce</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Call Graph</name>
-                <alias>cg</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Whole Shimple Transformation Pack</name>
-                <alias>wstp</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Whole Shimple Optimization Pack</name>
-                <alias>wsop</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Whole-Jimple Transformation Pack</name>
-                <alias>wjtp</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                    <default>true</default>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <sub_phase>
-                    <name>Spark</name>
-                    <phaseopt_class>SparkOptions</phaseopt_class>
-                    <alias>wjtp.Spark</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <section>
-                        <name>Spark General Options</name>
-                        <boolopt>
-                            <name>Verbose</name>
-                            <alias>verbose</alias>
-                            <default>false</default>
-                            <long_desc>
+	<section>
+		<name>General Options</name>
+		<boolopt>
+			<name>Help</name>
+			<alias>h</alias>
+			<alias>help</alias>
+			<short_desc>display help and exit</short_desc>
+			<long_desc>This option displays the textual help message and exits immediately without doing any further processing</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Version</name>
+			<alias>version</alias>
+			<short_desc>output version information and exit</short_desc>
+			<long_desc>This option outputs the Soot version information and exits immediately without doing any further processing</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Verbose</name>
+			<alias>v</alias>
+			<alias>verbose</alias>
+			<short_desc>verbose mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Application Mode</name>
+			<alias>app</alias>
+			<short_desc>runs in application mode</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+	</section>
+	<section>
+		<name>Input Options</name>
+		<stropt>
+			<name>Soot Classpath</name>
+			<alias>cp</alias>
+			<alias>soot-classpath</alias>
+			<short_desc>uses given PATH as the classpath for finding classes for Soot processing</short_desc>
+			<long_desc>This option ...</long_desc>
+		</stropt>
+		<multiopt>
+			<name>Input Source Precedence</name>
+			<alias>src-prec</alias>
+			<value>
+				<name>Class File</name>
+				<alias>c</alias>
+				<alias>class</alias>
+				<short_desc>Use class for source of Soot</short_desc>
+				<default/>
+			</value>
+			<value>
+				<name>Jimple File</name>
+				<alias>J</alias>
+				<alias>jimple</alias>
+				<short_desc>Use Jimple for source of Soot</short_desc>
+			</value>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multiopt>
+		<boolopt>
+			<name>Allow Phantom References</name>
+			<alias>allow-phantom-refs</alias>
+			<short_desc>allow unresolved classes; may cause errors</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+	</section>
+	<section>
+		<name>Output Options</name>
+		<stropt>
+			<name>Output Directory</name>
+			<alias>d</alias>
+			<alias>output-dir</alias>
+			<short_desc>store produced files in PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</stropt>
+		<multiopt>
+			<name>Output Format</name>
+			<alias>o</alias>
+			<alias>output-format</alias>
+			<value>
+				<name>Jimp File</name>
+				<alias>j</alias>
+				<alias>jimp</alias>
+				<short_desc>produce .jimp (abbreviated .jimple) files</short_desc>
+			</value>
+			<value>
+				<name>Jimple File</name>
+				<alias>J</alias>
+				<alias>jimple</alias>
+				<short_desc>produce .jimple code</short_desc>
+			</value>
+			<value>
+				<name>Baf File</name>
+				<alias>B</alias>
+				<alias>baf</alias>
+				<short_desc>produce .baf code</short_desc>
+			</value>
+			<value>
+				<name>Aggregated Baf File</name>
+				<alias>b</alias>
+				<short_desc>produce .b (abbreviated .baf) files</short_desc>
+			</value>
+			<value>
+				<name>Grimp File</name>
+				<alias>g</alias>
+				<alias>grimp</alias>
+				<short_desc>produce .grimp (abbreviated .grimple) files</short_desc>
+			</value>
+			<value>
+				<name>Grimple File</name>
+				<alias>G</alias>
+				<alias>grimple</alias>
+				<short_desc>produce .grimple files</short_desc>
+			</value>
+			<value>
+				<name>Xml File</name>
+				<alias>X</alias>
+				<alias>xml</alias>
+				<short_desc>produce .xml files</short_desc>
+			</value>
+			<value>
+				<name>No Output File</name>
+				<alias>n</alias>
+				<alias>none</alias>
+				<short_desc>produces no output</short_desc>
+			</value>
+			<value>
+				<name>Jasmin File</name>
+				<alias>s</alias>
+				<alias>jasmin</alias>
+				<short_desc>produce .jasmin files</short_desc>
+			</value>
+			<value>
+				<name>Class File</name>
+				<alias>c</alias>
+				<alias>class</alias>
+				<default/>
+				<short_desc>produce .class files</short_desc>
+			</value>
+			<value>
+				<name>Dava Decompiled File</name>
+				<alias>d</alias>
+				<alias>dava</alias>
+				<short_desc>produce dava decompiled .java files</short_desc>
+			</value>
+			<short_desc>sets the source precedence for Soot</short_desc>
+			<long_desc>This option ...</long_desc>
+		</multiopt>
+		<boolopt>
+			<name>Via Grimp</name>
+			<alias>via-grimp</alias>
+			<short_desc>convert jimple to bytecode via grimp instead of via baf</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Save Tags to XML</name>
+			<alias>xml-attributes</alias>
+			<short_desc>Save tags to XML attributes for Eclipse</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+	</section>
+	<section>
+		<name>Processing Options</name>
+		<phaseopt>
+			<name>Phase Options</name>
+			<alias>p</alias>
+			<alias>phase-option</alias>
+			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
+			<long_desc>This option ...</long_desc>
+			<phase>
+				<name>Jimple Body Creation</name>
+				<alias>jb</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<boolopt>
+					<name>No Splitting</name>
+					<alias>no-splitting</alias>
+					<short_desc/>
+					<long_desc>
+                    Soot will not split the 
+locals by use-def webs while generating the 
+Jimple body. 
+</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>No Typing</name>
+					<alias>no-typing</alias>
+					<short_desc/>
+					<long_desc>
+                   Soot will not resolve 
+the types of local variables.
+ </long_desc>
+				</boolopt>
+				<boolopt>
+					<name>Aggregate All Locals</name>
+					<alias>aggregate-all-locals</alias>
+					<short_desc/>
+					<long_desc>Soot will aggregate
+both regular locals and stack locals.
+(See the {\tt jop.cp}    phase for more information). 
+This options will suppress the `no-aggregating&apos; 
+option.
+</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>No Aggregating</name>
+					<alias>no-aggregating</alias>
+					<short_desc/>
+					<long_desc> If {\tt `aggregate-all-locals&apos;} is not
+specified, then disable the aggregation of locals for Jimple
+Body&apos;s. This subsumes {\tt `only-stack-locals&apos;} in the `jb.asv&apos;
+phase.
+</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>Use Original Names</name>
+					<alias>use-original-names</alias>
+					<short_desc/>
+					<long_desc>  Soot attempts to find and use the original
+names from the method source.  If this is not specified, Soot gives
+standard names to local variables, according to the variable type.
+</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>Pack Locals</name>
+					<alias>pack-locals</alias>
+					<short_desc/>
+					<long_desc>Soot will pack local 
+names tightly, using a graph coloring algorithm. 
+</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>No Copy Propogator</name>
+					<alias>no-cp</alias>
+					<short_desc/>
+					<long_desc>Soot will not apply the copy propagator to Jimple Body&apos;s.</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>No Nop Elimination</name>
+					<alias>no-nop-elimination</alias>
+					<short_desc/>
+					<long_desc>Soot will not remove nop instructions.</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>No Unreachable Code Elimination</name>
+					<alias>no-unreachable-code-elimination</alias>
+					<short_desc/>
+					<long_desc>Soot will not remove unreachable code.</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>Verbatim</name>
+					<alias>verbatim</alias>
+					<short_desc/>
+					<long_desc>Do not apply any options.</long_desc>
+				</boolopt>
+				<sub_phase>
+					<name>Stack Variable Aggregation</name>
+					<alias>jb.asv</alias>
+					<long_desc>
+This phase handles the aggregation of stack variables for Jimple.
+For a full description of aggregation, see \cite{ccPaper}.  Briefly, 
+aggregation finds instances where some expression has a single use; it replaces
+the use with the expression itself.
+
+This phase is deactivated by the {\tt `no-aggregating&apos;} option in the {\tt jb} 
+phase.
+                        
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unsplit-originals Local Packer</name>
+					<alias>jb.ulp</alias>
+					<long_desc>
+This phase only executes when the `use-original-names&apos; option is chosen
+for the `jb&apos; phase.  It unsplits the locals according to the original names
+found for them.</long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Unsplit Original Locals</name>
+						<alias>unsplit-original-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+Calls the LocalPacker to implement 
+the use-original-names option.
+
+                        </long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Name Standardizer</name>
+					<alias>jb.lns</alias>
+					<long_desc>
+This phase assigns standard names to local variables.  It only
+executes when `use-original-names&apos; is not chosen.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<short_desc/>
+						<long_desc>Standardizes only stack local variables&apos; names.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Copy Propagator</name>
+					<alias>jb.cp</alias>
+					<long_desc>
+This phase provides a cascaded copy propagator.  It is executed only
+when `{\tt no-cp}&apos; is not chosen in the `{\tt jb}&apos; phase.
+    
+If it encounters situations of the form: A: a = ...; B: ... x = a;
+C:... use (x); where a has only one definition, and x has only one
+definition (B), then it can propagate immediately without checking
+between B and C for redefinitions of a (namely A) because they cannot
+occur.  In this case the propagator is global.
+        
+Otherwise, if a has multiple definitions then it only checks for
+redefinitions of constants and copies in extended basic blocks.
+        
+From bytecode, we get some number of declared locals; we call these
+``regular locals&apos;&apos;.  In Jimple, we have converted the stack elements
+to locals.  The new locals thus introduced are called ``stack
+locals&apos;&apos;. These locals have names which usually begin with \$.  
+
+The default behaviour in this phase is to propagate only on the
+`stack&apos; locals.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Regular Locals</name>
+						<alias>only-regular-locals</alias>
+						<short_desc/>
+						<long_desc>Copy propagation only occurs on the ``regular&apos;&apos; locals.</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Copy propagation only occurs on the ``stack&apos;&apos; locals.
+                        </long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Dead Assignment Eliminator</name>
+					<alias>jb.dae</alias>
+					<boolopt>
+						<long_desc>
+This phase eliminates assignment statements (to locals) with no uses.
+                        </long_desc>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Only eliminates dead assignments to stack locals.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Splitter</name>
+					<alias>jb.ls</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Aggregator</name>
+					<alias>jb.a</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>jb.ule</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Type Assigner</name>
+					<alias>jb.tr</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>jb.cp-ule</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Packer</name>
+					<alias>jb.lp</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Unsplit Original Locals</name>
+						<alias>unsplit-original-locals</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Nop Eliminator</name>
+					<alias>jb.ne</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unreachable Code Eliminator</name>
+					<alias>jb.uce</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Call Graph</name>
+				<alias>cg</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Whole Shimple Transformation Pack</name>
+				<alias>wstp</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Whole Shimple Optimization Pack</name>
+				<alias>wsop</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Whole-Jimple Transformation Pack</name>
+				<alias>wjtp</alias>
+				<long_desc>
+Soot can do whole-program analyses.  For the current version of Soot,
+this means that Jimple bodies are created for each method in the
+application, and analyses run on this set of Jimple bodies.  The
+application consists of one class, specified on the command-line, plus
+all classes referenced (directly or indirectly) by it.  It excludes
+classes in {\tt java.*}, {\tt javax.*}, and {\tt sun.*}.  This mode is
+triggered by the {\tt -}{\tt -app} option.
+
+In whole-program mode, Soot will always apply the contents of the
+Whole-Jimple transformation pack to each method under analysis.  This
+occurs after all Jimple bodies have been created.  This pack is called
+{\tt wjtp}.  In an
+unmodified version of Soot, the only transformation in {\tt wjtp} is the
+Spark pointer analysis kit. Spark has many options, which are
+listed at \htmladdnormallink{http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps}{spark.ps}.
+
+                        </long_desc>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<default>true</default>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<sub_phase>
+					<name>Spark</name>
+					<phaseopt_class>SparkOptions</phaseopt_class>
+					<alias>wjtp.Spark</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<section>
+						<name>Spark General Options</name>
+						<boolopt>
+							<name>Verbose</name>
+							<alias>verbose</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, Spark prints detailed information.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Ignore Types Entirely</name>
-                            <alias>ignoreTypesEntirely</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Ignore Types Entirely</name>
+							<alias>ignoreTypesEntirely</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, all parts of Spark completely ignore
 declared types of variables and casts.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Force Garbages Collections</name>
-                            <alias>forceGCs</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Force Garbages Collections</name>
+							<alias>forceGCs</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, calls to System.gc() will be made at
 various points to allow memory usage to be measured.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Pre Jimplify</name>
-                            <alias>preJimplify</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Pre Jimplify</name>
+							<alias>preJimplify</alias>
+							<default>false</default>
+							<long_desc>
         When this option is set to true, convert all available methods to Jimple
 before starting the points-to analysis. This allows the Jimplification
 time to be separated from the points-to time. However, it increases the
 total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </long_desc>
-                        </boolopt>
-                    </section>
-                    <section>
-                        <name>Spark Pointer Assignment Graph Building Options</name>
-                        <boolopt>
-                            <name>VTA</name>
-                            <alias>VTA</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Pointer Assignment Graph Building Options</name>
+						<boolopt>
+							<name>VTA</name>
+							<alias>VTA</alias>
+							<default>false</default>
+							<long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
 typesForSites, and simplifySCCs to true to simulate Variable Type
 Analysis, described in~\cite{sund.hend.ea00}. Note that the
@@ -500,125 +589,125 @@ algorithm differs from the original VTA in that it handles array
 elements more precisely. To use the results of the analysis to trim the
 invoke graph, set the trimInvokeGraph option to true as well.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>RTA</name>
-                            <alias>RTA</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>RTA</name>
+							<alias>RTA</alias>
+							<default>false</default>
+							<long_desc>
 Setting RTA to true sets typesForSites to true, and causes Spark to use
 a single points-to set for all variables, giving Rapid Type
 Analysis~\cite{baco.swee96}.
 To use the results of the analysis to trim the invoke graph, set the
 trimInvokeGraph option to true as well.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Ignore Base Objects</name>
-                            <alias>ignoreBaseObjects</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Ignore Base Objects</name>
+							<alias>ignoreBaseObjects</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, fields are represented by variable
 (Green) nodes, and the object that the field belongs to is ignored
 (all objects are lumped together). Otherwise, fields are represented by
 field reference (Red) nodes, and the objects that they belong to are
 distinguished.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Types For Sites</name>
-                            <alias>typesForSites</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Types For Sites</name>
+							<alias>typesForSites</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, types rather than allocation sites are
 used as the elements of the points-to sets.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Merge String Buffer</name>
-                            <alias>mergeStringBuffer</alias>
-                            <default>true</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Merge String Buffer</name>
+							<alias>mergeStringBuffer</alias>
+							<default>true</default>
+							<long_desc>
 When this option is set to true, all allocation sites creating
 {\tt java.lang.StringBuffer} objects are grouped together as a single
 allocation site.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Simulate Natives</name>
-                            <alias>simulateNatives</alias>
-                            <default>true</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simulate Natives</name>
+							<alias>simulateNatives</alias>
+							<default>true</default>
+							<long_desc>
 When this option is set to true, effects of native methods are simulated.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Simple Edges Bidirectional</name>
-                            <alias>simpleEdgesBidirectional</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simple Edges Bidirectional</name>
+							<alias>simpleEdgesBidirectional</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, all edges connecting variable (Green)
 nodes are made bidirectional, as in Steensgaard&apos;s analysis~\cite{stee96*1}.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>On Fly Call Graph</name>
-                            <alias>onFlyCallGraph</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>On Fly Call Graph</name>
+							<alias>onFlyCallGraph</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, the call graph is computed on-the-fly
 as points-to information is computed. Otherwise, an initial
 approximation to the call graph is used.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Parms As Fields</name>
-                            <alias>parmsAsFields</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Parms As Fields</name>
+							<alias>parmsAsFields</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, parameters to methods are represented
 as fields (Red nodes) of the this object; otherwise, parameters are
 represented as variable (Green) nodes.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Returns As Fields</name>
-                            <alias>returnsAsFields</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Returns As Fields</name>
+							<alias>returnsAsFields</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, return values from methods are
 represented as fields (Red nodes) of the this object; otherwise,
 return values are represented as variable (Green) nodes.
         </long_desc>
-                        </boolopt>
-                    </section>
-                    <section>
-                        <name>Spark Pointer Assignment Graph Simplification Options</name>
-                        <boolopt>
-                            <name>Simplify Offline</name>
-                            <alias>simplifyOffline</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Pointer Assignment Graph Simplification Options</name>
+						<boolopt>
+							<name>Simplify Offline</name>
+							<alias>simplifyOffline</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, variable (Green) nodes which are
 connected by simple paths (so they must have the same points-to set) are
 merged together.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Simplify SCCs</name>
-                            <alias>simplifySCCs</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Simplify SCCs</name>
+							<alias>simplifySCCs</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, variable (Green) nodes which form
 strongly-connected components (so they must have the same points-to set)
 are merged together.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Ignore Types For SCCs</name>
-                            <alias>ignoreTypesForSCCs</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Ignore Types For SCCs</name>
+							<alias>ignoreTypesForSCCs</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, when collapsing strongly-connected
 components, nodes forming SCCs are collapsed regardless of their type.
 The collapsed SCC is given the most general type of all the nodes in the
@@ -629,35 +718,35 @@ same type are considered when detecting SCCs.
 
 This option has no effect unless simplifySCCs is true.
         </long_desc>
-                        </boolopt>
-                    </section>
-                    <section>
-                        <name>Spark Points-To Set Flowing Options</name>
-                        <multiopt>
-                            <name>Propagator</name>
-                            <alias>propagator</alias>
-                            <value>
-                                <name>Iter</name>
-                                <alias>iter</alias>
-                            </value>
-                            <value>
-                                <name>Worklist</name>
-                                <alias>worklist</alias>
-                                <default/>
-                            </value>
-                            <value>
-                                <name>Merge</name>
-                                <alias>merge</alias>
-                            </value>
-                            <value>
-                                <name>Alias</name>
-                                <alias>alias</alias>
-                            </value>
-                            <value>
-                                <name>None</name>
-                                <alias>none</alias>
-                            </value>
-                            <long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Spark Points-To Set Flowing Options</name>
+						<multiopt>
+							<name>Propagator</name>
+							<alias>propagator</alias>
+							<value>
+								<name>Iter</name>
+								<alias>iter</alias>
+							</value>
+							<value>
+								<name>Worklist</name>
+								<alias>worklist</alias>
+								<default/>
+							</value>
+							<value>
+								<name>Merge</name>
+								<alias>merge</alias>
+							</value>
+							<value>
+								<name>Alias</name>
+								<alias>alias</alias>
+							</value>
+							<value>
+								<name>None</name>
+								<alias>none</alias>
+							</value>
+							<long_desc>
 This option tells Spark which propagation algorithm to use.
 
 Iter is a simple, iterative algorithm, which propagates everything until the
@@ -676,32 +765,32 @@ red nodes. This algorithm is not yet finished.
 None means that propagation is not done; the graph is only built and
 simplified.
         </long_desc>
-                        </multiopt>
-                        <multiopt>
-                            <name>Set Implementation</name>
-                            <alias>setImpl</alias>
-                            <value>
-                                <name>Hash</name>
-                                <alias>hash</alias>
-                            </value>
-                            <value>
-                                <name>Bit</name>
-                                <alias>bit</alias>
-                            </value>
-                            <value>
-                                <name>Hybrid</name>
-                                <alias>hybrid</alias>
-                            </value>
-                            <value>
-                                <name>Array</name>
-                                <alias>array</alias>
-                            </value>
-                            <value>
-                                <name>Double</name>
-                                <alias>double</alias>
-                                <default/>
-                            </value>
-                            <long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Set Implementation</name>
+							<alias>setImpl</alias>
+							<value>
+								<name>Hash</name>
+								<alias>hash</alias>
+							</value>
+							<value>
+								<name>Bit</name>
+								<alias>bit</alias>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+							</value>
+							<value>
+								<name>Array</name>
+								<alias>array</alias>
+							</value>
+							<value>
+								<name>Double</name>
+								<alias>double</alias>
+								<default/>
+							</value>
+							<long_desc>
 Selects an implementation of a points-to set that Spark should use.
 
 Hash is an implementation based on Java&apos;s built-in hash-set.
@@ -724,122 +813,122 @@ old pointed-to objects that have been propagated and need not be
 reconsidered. This allows the propagation algorithms to be incremental,
 often speeding them up significantly.
         </long_desc>
-                        </multiopt>
-                        <multiopt>
-                            <name>Double Set Old</name>
-                            <alias>doubleSetOld</alias>
-                            <value>
-                                <name>Hash</name>
-                                <alias>hash</alias>
-                            </value>
-                            <value>
-                                <name>Bit</name>
-                                <alias>bit</alias>
-                            </value>
-                            <value>
-                                <name>Hybrid</name>
-                                <alias>hybrid</alias>
-                                <default/>
-                            </value>
-                            <value>
-                                <name>Array</name>
-                                <alias>array</alias>
-                            </value>
-                            <long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set Old</name>
+							<alias>doubleSetOld</alias>
+							<value>
+								<name>Hash</name>
+								<alias>hash</alias>
+							</value>
+							<value>
+								<name>Bit</name>
+								<alias>bit</alias>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+								<default/>
+							</value>
+							<value>
+								<name>Array</name>
+								<alias>array</alias>
+							</value>
+							<long_desc>
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
 
 This option has no effect unless setImpl is set to double.
         </long_desc>
-                        </multiopt>
-                        <multiopt>
-                            <name>Double Set New</name>
-                            <alias>doubleSetNew</alias>
-                            <value>
-                                <name>Hash</name>
-                                <alias>hash</alias>
-                            </value>
-                            <value>
-                                <name>Bit</name>
-                                <alias>bit</alias>
-                            </value>
-                            <value>
-                                <name>Hybrid</name>
-                                <alias>hybrid</alias>
-                                <default/>
-                            </value>
-                            <value>
-                                <name>Array</name>
-                                <alias>array</alias>
-                            </value>
-                            <long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set New</name>
+							<alias>doubleSetNew</alias>
+							<value>
+								<name>Hash</name>
+								<alias>hash</alias>
+							</value>
+							<value>
+								<name>Bit</name>
+								<alias>bit</alias>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+								<default/>
+							</value>
+							<value>
+								<name>Array</name>
+								<alias>array</alias>
+							</value>
+							<long_desc>
 Selects an implementation for the sets of new objects in the double
 points-to set implementation.
 
 This option has no effect unless setImpl is set to double.
         </long_desc>
-                        </multiopt>
-                    </section>
-                    <section>
-                        <name>Spark Output Options</name>
-                        <boolopt>
-                            <name>Dump HTML</name>
-                            <alias>dumpHTML</alias>
-                            <default>false</default>
-                            <long_desc>
+						</multiopt>
+					</section>
+					<section>
+						<name>Spark Output Options</name>
+						<boolopt>
+							<name>Dump HTML</name>
+							<alias>dumpHTML</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, a browseable HTML representation of the
 pointer assignment graph is output after the analysis completes. Note
 that this representation is typically very large.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Dump PAG</name>
-                            <alias>dumpPAG</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump PAG</name>
+							<alias>dumpPAG</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, a representation of the pointer assignment graph
 suitable for processing with other solvers (such as the BDD-based solver) is
 output before the analysis begins.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Dump Solution</name>
-                            <alias>dumpSolution</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Solution</name>
+							<alias>dumpSolution</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, a representation of the resulting points-to
 sets is dumped. The format is similar to that of the dumpPAG
 option, and is therefore suitable for comparison with the results of other
 solvers.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Topological Sort</name>
-                            <alias>topoSort</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Topological Sort</name>
+							<alias>topoSort</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 is dumped with the green nodes in (pseudo-)topological order.
 
 This option has no effect unless dumpPAG is true.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Dump Types</name>
-                            <alias>dumpTypes</alias>
-                            <default>true</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Types</name>
+							<alias>dumpTypes</alias>
+							<default>true</default>
+							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 includes type information for all nodes.
 
 This option has no effect unless dumpPAG is true.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Class Method Var</name>
-                            <alias>classMethodVar</alias>
-                            <default>true</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Class Method Var</name>
+							<alias>classMethodVar</alias>
+							<default>true</default>
+							<long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 represents nodes by numbering each class, method, and variable within
 the method separately, rather than assigning a single integer to each
@@ -848,558 +937,1102 @@ node.
 This option has no effect unless dumpPAG is true.
 Setting classMethodVar to true has the effect of setting topoSort to false.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Dump Answer</name>
-                            <alias>dumpAnswer</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Dump Answer</name>
+							<alias>dumpAnswer</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, the computed reaching types for each variable are
 dumped to a file, so that they can be compared with the results of
 other analyses (such as the old VTA).
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Trim Invoke Graph</name>
-                            <alias>trimInvokeGraph</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Trim Invoke Graph</name>
+							<alias>trimInvokeGraph</alias>
+							<default>false</default>
+							<long_desc>
 When this option is set to true, the results of the analysis are used to make the invoke graph
 more precise after the analysis completes.
         </long_desc>
-                        </boolopt>
-                        <boolopt>
-                            <name>Add Tags</name>
-                            <alias>addTags</alias>
-                            <default>false</default>
-                            <long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Add Tags</name>
+							<alias>addTags</alias>
+							<default>false</default>
+							<long_desc>
         When this option is set to true, the results of the analysis are encoded inside
 tags, and printed with the resulting Jimple code.
 
         </long_desc>
-                        </boolopt>
-                    </section>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Whole-Jimple Optimization Pack</name>
-                <alias>wjop</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                    <default>true</default>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <sub_phase>
-                    <name>Static Method Binding</name>
-                    <phaseopt_class>SMBOptions</phaseopt_class>
-                    <alias>wjop.smb</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Insert Null Checks</name>
-                        <alias>insert-null-checks</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Insert Redundant Casts</name>
-                        <alias>insert-redundant-casts</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <multiopt>
-                        <name>Allow Modifier Changes</name>
-                        <alias>allowed-modifier-changes</alias>
-                        <value>
-                            <name>Unsafe</name>
-                            <alias>unsafe</alias>
-                            <short_desc/>
-                            <default/>
-                        </value>
-                        <value>
-                            <name>Safe</name>
-                            <alias>safe</alias>
-                            <short_desc/>
-                        </value>
-                        <value>
-                            <name>None</name>
-                            <alias>none</alias>
-                            <short_desc/>
-                        </value>
-                        <short_desc/>
-                        <long_desc/>
-                    </multiopt>
-                    <intopt>
-                        <name>VTA Passes</name>
-                        <alias>VTA-passes</alias>
-                        <default>0</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </intopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Static Inlining</name>
-                    <phaseopt_class>SIOptions</phaseopt_class>
-                    <alias>wjop.si</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Insert Null Checks</name>
-                        <alias>insert-null-checks</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Insert Redundant Casts</name>
-                        <alias>insert-redundant-casts</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <multiopt>
-                        <name>Allow Modifier Changes</name>
-                        <alias>allowed-modifier-changes</alias>
-                        <value>
-                            <name>Unsafe</name>
-                            <alias>unsafe</alias>
-                            <short_desc/>
-                            <default/>
-                        </value>
-                        <value>
-                            <name>Safe</name>
-                            <alias>safe</alias>
-                            <short_desc/>
-                        </value>
-                        <value>
-                            <name>None</name>
-                            <alias>none</alias>
-                            <short_desc/>
-                        </value>
-                        <short_desc/>
-                        <long_desc/>
-                    </multiopt>
-                    <flopt>
-                        <name>Expansion Factor</name>
-                        <alias>expansion-factor</alias>
-                        <default>3</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </flopt>
-                    <intopt>
-                        <name>Max Container Size</name>
-                        <alias>max-container-size</alias>
-                        <default>5000</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </intopt>
-                    <intopt>
-                        <name>Max Inline Size</name>
-                        <alias>max-inlinee-size</alias>
-                        <default>20</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </intopt>
-                    <intopt>
-                        <name>VTA Passes</name>
-                        <alias>VTA-passes</alias>
-                        <default>0</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </intopt>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Whole Jimple Transformation Pack 2</name>
-                <alias>wjtp2</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-                <sub_phase>
-                    <name>Rectangular Array Finder</name>
-                    <phaseopt_class>RAOptions</phaseopt_class>
-                    <alias>wjtp2.ra</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>With Whole Application</name>
-                        <alias>with-wholeapp</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Shimple Transformation Pack</name>
-                <alias>stp</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Shimple Optimization Pack</name>
-                <alias>sop</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Jimple Transformations Pack</name>
-                <alias>jtp</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Grimp Body Creation</name>
-                <alias>gb</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>No Aggregating</name>
-                    <alias>no-aggregating</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <boolopt>
-                    <name>Aggregate All Locals</name>
-                    <alias>aggregate-all-locals</alias>
-                    <short_desc/>
-                    <long_desc/>
-                </boolopt>
-                <sub_phase>
-                    <name>Aggregator</name>
-                    <alias>gb.a</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Aggregate Stack Variables 1</name>
-                    <alias>gb.asv1</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Aggregate Stack Variables 2</name>
-                    <alias>gb.asv2</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                    <boolopt>
-                        <name>Only Stack Locals</name>
-                        <alias>only-stack-locals</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Constructor Folder</name>
-                    <alias>gb.cf</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unused Local Eliminator</name>
-                    <alias>gb.ule</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Grimp Optimization Pack</name>
-                <alias>gop</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Baf Body Creation</name>
-                <alias>bb</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-                <sub_phase>
-                    <name>Load Store Optimizer</name>
-                    <alias>bb.lso</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Debug</name>
-                        <alias>debug</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Inter</name>
-                        <alias>inter</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>sl</name>
-                        <alias>sl</alias>
-                        <default>true</default>
-                    </boolopt>
-                    <boolopt>
-                        <name>sl2</name>
-                        <alias>sl2</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>sll</name>
-                        <alias>sll</alias>
-                        <default>true</default>
-                    </boolopt>
-                    <boolopt>
-                        <name>sll2</name>
-                        <alias>sll2</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Peephole Optimizer</name>
-                    <alias>bb.pho</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Unused Local Eliminator</name>
-                    <alias>bb.ule</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Local Packer</name>
-                    <alias>bb.lp</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                    </boolopt>
-                    <boolopt>
-                        <name>Unsplit Original Locals</name>
-                        <alias>unsplit-original-locals</alias>
-                    </boolopt>
-                </sub_phase>
-            </phase>
-            <phase>
-                <name>Baf Optimization Pack</name>
-                <alias>bop</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-            </phase>
-            <phase>
-                <name>Tag</name>
-                <alias>tag</alias>
-                <boolopt>
-                    <name>Disabled</name>
-                    <alias>disabled</alias>
-                </boolopt>
-                <sub_phase>
-                    <name>Line Number Tag Aggregator</name>
-                    <alias>tag.ln</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Array Bounds and Null Pointer Check Tag Aggregator</name>
-                    <alias>tag.an</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-                <sub_phase>
-                    <name>Dependence Tag Aggregator</name>
-                    <alias>tag.dep</alias>
-                    <boolopt>
-                        <name>Disabled</name>
-                        <alias>disabled</alias>
-                        <default>true</default>
-                        <short_desc/>
-                        <long_desc/>
-                    </boolopt>
-                </sub_phase>
-            </phase>
-        </phaseopt>
-        <macroopt>
-            <name>Optimize</name>
-            <alias>O</alias>
-            <alias>optimize</alias>
-            <expansion>-p jop enabled:true</expansion>
-            <short_desc>perform scalar optimizations on the classfiles</short_desc>
-            <long_desc>This option ...</long_desc>
-        </macroopt>
-        <macroopt>
-            <name>Whole Program Optimize</name>
-            <alias>W</alias>
-            <alias>whole-optimize</alias>
-            <expansion>-p wjop enabled:true</expansion>
-            <short_desc>perform whole program optimizations on the classfiles</short_desc>
-            <long_desc>This option ...</long_desc>
-        </macroopt>
-    </section>
-    <section>
-        <name>Single File Mode Options</name>
-        <listopt>
-            <name>Process Path</name>
-            <alias>process-path</alias>
-            <short_desc>process all classes on the PATH</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-    </section>
-    <section>
-        <name>Application Mode Options</name>
-        <listopt>
-            <name>Include Package</name>
-            <alias>i</alias>
-            <alias>include</alias>
-            <short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-        <listopt>
-            <name>Exclude Package</name>
-            <alias>x</alias>
-            <alias>exclude</alias>
-            <short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-        <boolopt>
-            <name>Analyze Context</name>
-            <alias>a</alias>
-            <alias>analyze-context</alias>
-            <short_desc>label context classes as library</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-        <listopt>
-            <name>Dynamic Classes</name>
-            <alias>dynamic-classes</alias>
-            <short_desc>marks CLASSES (separated by colons) as potentially dynamic classes</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-        <listopt>
-            <name>Dynamic Path</name>
-            <alias>dynamic-path</alias>
-            <short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-        <listopt>
-            <name>Dynamic Package</name>
-            <alias>dynamic-package</alias>
-            <short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
-            <long_desc>This option ...</long_desc>
-        </listopt>
-    </section>
-    <section>
-        <name>Input Attribute Options</name>
-        <boolopt>
-            <name>Keep Line Number</name>
-            <alias>keep-line-number</alias>
-            <short_desc>keep line number tables</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Keep Bytecode Offset</name>
-            <alias>keep-bytecode-offset</alias>
-            <alias>keep-offset</alias>
-            <short_desc>attach bytecode offset to jimple statement</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-    </section>
-    <section>
-        <name>Annotation Options</name>
-        <macroopt>
-            <name>Null Pointer Annotation</name>
-            <alias>annot-nullpointer</alias>
-            <expansion>-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
-            <short_desc>turn on the annotation for null pointer</short_desc>
-            <long_desc>This option ...</long_desc>
-        </macroopt>
-        <macroopt>
-            <name>Array Bounds Annotation</name>
-            <alias>annot-arraybounds</alias>
-            <expansion>-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
-            <short_desc>turn on the annotation for array bounds check</short_desc>
-            <long_desc>This option ...</long_desc>
-        </macroopt>
-    </section>
-    <section>
-        <name>Miscellaneous Options</name>
-        <boolopt>
-            <name>Time</name>
-            <alias>time</alias>
-            <short_desc>print out time statistics about tranformations</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-        <boolopt>
-            <name>Subtract Garbage Collection Time</name>
-            <alias>subtract-gc</alias>
-            <short_desc>attempt to subtract the gc from the time stats</short_desc>
-            <long_desc>This option ...</long_desc>
-        </boolopt>
-    </section>
+						</boolopt>
+					</section>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Whole-Jimple Optimization Pack</name>
+				<alias>wjop</alias>
+				<long_desc>
+To run optimizing transformations on the whole program, use the {\tt -W}
+command-line option.  This tells Soot that the whole-jimple
+optimization pack is to be applied (phase name {\tt wjop}).
+
+The default behaviour of this Pack has static method binding disabled
+and static inlining enabled.  To reverse this, give the options
+{\tt -p wjop.smb disabled:false -p wjop.si disabled}.
+
+By default, static method binding  and static inlining uses Class
+Hierarchy Analysis (CHA) to identify monomophic call sites. Changing
+the {\tt VTA-passes} option can cause them to use Variable-Type 
+Analysis (VTA) once or several times rather than CHA.
+
+                        </long_desc>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<default>true</default>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<sub_phase>
+					<name>Static Method Binding</name>
+					<phaseopt_class>SMBOptions</phaseopt_class>
+					<alias>wjop.smb</alias>
+					<long_desc>
+Static method binding uses CHA or VTA to statically bind 
+monomorphic call sites. That is, smb takes the call graph returned
+by CHA or VTA; if the analysis result shows that any virtual invoke
+statement in the Jimple bodies actually only calls one method, then a
+static copy of the method is made, and the virtual invoke is changed
+to a static invoke.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Insert Null Checks</name>
+						<alias>insert-null-checks</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+The receiver object is checked for nullness before the
+target method is invoked.  If the target is null, then a NullPointer
+exception is thrown.
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Insert Redundant Casts</name>
+						<alias>insert-redundant-casts</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+Inserts extra casts for the verifier.  The verifier will
+complain if the target uses `this&apos; (so we have to pass an extra
+parameter), and the argument passed to the method is not the same
+type.  For instance, {\tt Bottle.price\_static} is a method which takes a
+Cost object, and Cost is an interface implemented by Bottle.  We must
+then cast the Cost to a Bottle before passing it to {\tt price\_static}.
+                        </long_desc>
+					</boolopt>
+					<multiopt>
+						<name>Allow Modifier Changes</name>
+						<alias>allowed-modifier-changes</alias>
+						<value>
+							<name>Unsafe</name>
+							<alias>unsafe</alias>
+							<short_desc/>
+							<default/>
+						</value>
+						<value>
+							<name>Safe</name>
+							<alias>safe</alias>
+							<short_desc/>
+						</value>
+						<value>
+							<name>None</name>
+							<alias>none</alias>
+							<short_desc/>
+						</value>
+						<short_desc/>
+						<long_desc>
+Determines what changes in visibility modifiers
+are allowed.  ``unsafe&apos;&apos; modifies the visibility on code so that
+all inlining is permitted; some IllegalAccessErrors may be missed.
+``safe&apos;&apos; preserves the exact meaning of the analysed program, 
+and ``none&apos;&apos; changes no modifiers whatsoever.
+                        </long_desc>
+					</multiopt>
+					<intopt>
+						<name>VTA Passes</name>
+						<alias>VTA-passes</alias>
+						<default>0</default>
+						<short_desc/>
+						<long_desc>
+By defult, static method binding uses CHA. This option can cause
+VTA to run one or more times as specified by the parameter. 
+                        </long_desc>
+					</intopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Static Inlining</name>
+					<phaseopt_class>SIOptions</phaseopt_class>
+					<alias>wjop.si</alias>
+					<long_desc>
+The StaticInliner talkes an call graph returned by CHA or VTA and visits
+all call sites in the application in a bottom-up fashion, inlining 
+invoke statements which is determined to be monomorphic by analysis result.
+Note that the modifier ``static&apos;&apos; is supposed to be compared to a
+(not-currently-implemented) profile-guided inliner.
+ 
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Insert Null Checks</name>
+						<alias>insert-null-checks</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Insert Redundant Casts</name>
+						<alias>insert-redundant-casts</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+					</boolopt>
+					<multiopt>
+						<name>Allow Modifier Changes</name>
+						<alias>allowed-modifier-changes</alias>
+						<value>
+							<name>Unsafe</name>
+							<alias>unsafe</alias>
+							<short_desc/>
+							<default/>
+						</value>
+						<value>
+							<name>Safe</name>
+							<alias>safe</alias>
+							<short_desc/>
+						</value>
+						<value>
+							<name>None</name>
+							<alias>none</alias>
+							<short_desc/>
+						</value>
+						<short_desc/>
+						<long_desc>As in {\tt StaticMethodBinder}.</long_desc>
+					</multiopt>
+					<flopt>
+						<name>Expansion Factor</name>
+						<alias>expansion-factor</alias>
+						<default>3</default>
+						<short_desc/>
+						<long_desc>
+Determines the maximum allowed expansion of a method.  Inlining
+will cause the method to grow by a factor of no more than
+expansion-factor.
+                        </long_desc>
+					</flopt>
+					<intopt>
+						<name>Max Container Size</name>
+						<alias>max-container-size</alias>
+						<default>5000</default>
+						<short_desc/>
+						<long_desc>
+Determines the maximum number of Jimple statements for a container
+method.  If a method has more than this number of Jimple statements,
+then no methods will be inlined into it.
+                        </long_desc>
+					</intopt>
+					<intopt>
+						<name>Max Inline Size</name>
+						<alias>max-inlinee-size</alias>
+						<default>20</default>
+						<short_desc/>
+						<long_desc>
+Determines the maximum number of Jimple statements for an inlinee
+method.  If a method has more than this number of Jimple statements,
+then it will not be inlined into other methods.
+                        </long_desc>
+					</intopt>
+					<intopt>
+						<name>VTA Passes</name>
+						<alias>VTA-passes</alias>
+						<default>0</default>
+						<short_desc/>
+						<long_desc>
+This option can cause VTA to run one or more times as specified by 
+the parameter.
+                        </long_desc>
+					</intopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Whole Jimple Transformation Pack 2</name>
+				<alias>wjtp2</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+				<sub_phase>
+					<name>Rectangular Array Finder</name>
+					<phaseopt_class>RAOptions</phaseopt_class>
+					<alias>wjtp2.ra</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>With Whole Application</name>
+						<alias>with-wholeapp</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Shimple Transformation Pack</name>
+				<alias>stp</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Shimple Optimization Pack</name>
+				<alias>sop</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Jimple Transformations Pack</name>
+				<alias>jtp</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<short_desc/>
+					<long_desc>
+Soot will always apply the contents of the Jimple transformation pack
+to each method under analysis.  This pack is called {\tt jtp}.  There are
+no transformations in this pack in an unmodified version of Soot.
+
+                    </long_desc>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Jimple Optimizations Pack</name>
+				<alias>jop</alias>
+				<long_desc>
+When Soot is given the {\tt -O} command-line option, the {\tt
+JimpleOptimizationPack} is applied to every JimpleBody in an
+application class.  This section lists the default transformations in
+the {\tt JimpleOptimizationPack}.
+                        </long_desc>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<sub_phase>
+					<name>Common Subexpression Elimination</name>
+					<alias>jop.cse</alias>
+					<long_desc>
+Runs an available expressions analysis on a body, then eliminates
+common subexpressions.
+
+This implementation is especially slow, as it does not run on basic
+blocks.  A better implementation (which wouldn&apos;t catch every single
+common subexpression, but would get most) would use basic blocks
+instead.
+
+It is also slow because the flow universe is explicitly created; it
+need not be.  A better implementation would implicitly compute the kill
+sets at every node.
+
+Because of the current slowness, this transformation is not enabled in
+the default settings.  To enable it, specify {\tt -p jop.cse
+disabled:false} on the command line.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Naive Side Effect Tester</name>
+						<alias>naive-side-effect</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Busy Code Motion</name>
+					<alias>jop.bcm</alias>
+					<long_desc>
+Busy Code Motion is a straightforward implementation of Partial
+Redundancy Elimination. This implementation is not very aggressive.
+The Lazy Code Motion, described in section \ref{sec:lcm}
+is an improved version of the Busy Code Motion, and should be used
+instead of it.
+
+Busy Code Motion is not enabled by default. To enable it, specify
+{\tt -p jop.bcm disabled:false} on the command line.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Naive Side Effect Tester</name>
+						<alias>naive-side-effect</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Lazy Code Motion</name>
+					<phaseopt_class>LCMOptions</phaseopt_class>
+					<alias>jop.lcm</alias>
+					<long_desc>
+Lazy Code Motion is the enhanced version of the Busy Code Motion, a
+Partial Redundancy Eliminator. Before doing Partial Redundancy Elimination,
+this optimization performs loop inversion (turning {\tt while} loops
+into {\tt do while} loops inside an {\tt if} statement).
+This allows the Partial Redundancy Eliminator
+to optimize loop invariants of {\tt while} loops.
+
+By default, this transformation is disabled. To enable it, specify
+{\tt -p jop.lcm disabled:false} on the command line.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<multiopt>
+						<name>Safe</name>
+						<alias>safe</alias>
+						<value>
+							<name>Safe</name>
+							<alias>safe</alias>
+							<short_desc/>
+							<default/>
+						</value>
+						<value>
+							<name>Medium</name>
+							<alias>medium</alias>
+							<short_desc/>
+						</value>
+						<value>
+							<name>Unsafe</name>
+							<alias>unsafe</alias>
+							<short_desc/>
+						</value>
+						<short_desc/>
+						<long_desc>This option
+controls how fields and exception-throwing statements are
+treated.
+\begin{itemize}
+\item {\tt safe} is safe, but only considers additions,
+subtractions and multiplications.
+\item {\tt medium} is unsafe in multi-threaded environment, as
+already performed field accesses are reused.
+\item {\tt unsafe} moves exception-throwing statements, and
+reorders them. They are potentially moved out of
+{\tt try-catch}-blocks.
+\end{itemize}
+</long_desc>
+					</multiopt>
+					<boolopt>
+						<name>Unroll</name>
+						<alias>unroll</alias>
+						<short_desc/>
+						<long_desc>if {\tt true},
+loop inversion is performed before doing the
+transformation.
+</long_desc>
+						<default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>Naive Side Effect Tester</name>
+						<alias>naive-side-effect</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Copy Propogator</name>
+					<phaseopt_class>CPOptions</phaseopt_class>
+					<alias>jop.cp</alias>
+					<long_desc>
+The default behaviour here is to propagate on all locals.
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Regular Locals</name>
+						<alias>only-regular-locals</alias>
+						<short_desc/>
+						<long_desc>Copy propagation only occurs on the ``regular&apos;&apos; locals.</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<short_desc/>
+						<long_desc>Copy propagation only occurs on the ``stack&apos;&apos; locals.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Constant Propagator and Folder</name>
+					<alias>jop.cpf</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc>
+This phase does constant propagation and folding.
+Constant folding is the compile-time evaluation of constant
+expressions (i.e. 2 * 3). 
+                        </long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Conditional Branch Folder</name>
+					<alias>jop.cbf</alias>
+					<long_desc>
+Statically evaluates the condition-expression of Jimple {\tt
+IfStmt}s.  If the condition is identically `true&apos; or `false&apos;,
+changes the conditional branch instruction to a `goto&apos; statement.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Dead Assignment Eliminator</name>
+					<alias>jop.dae</alias>
+					<long_desc>
+This phase eliminates assignment statements (to locals) with no uses.
+See section \ref{dae}.
+
+In this incarnation, the default value for {\tt only-stack-locals}
+is {\tt false}.
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unreachable Code Eliminator 1</name>
+					<alias>jop.uce1</alias>
+					<long_desc>
+Removes unreachable codes and empty traps.
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unreachable Code Eliminator 2</name>
+					<alias>jop.uce2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unconditional Branch Folder 1</name>
+					<alias>jop.ubf1</alias>
+					<long_desc>
+Removes unnecessary `goto&apos; statements from a JimpleBody.
+
+If a {\tt GotoStmt}&apos;s target is the next instruction, then it is
+removed.  If a {\tt GotoStmt} {\tt x}&apos;s target is another {\tt GotoStmt},
+with target {\tt y}, then {\tt x}&apos;s target can be changed to {\tt y}&apos;s target.
+
+If some {\tt IfStmt}&apos;s target is a {\tt GotoStmt}, then the
+{\tt IfStmt}&apos;s target can be updated to the {\tt GotoStmt}&apos;s target.
+        
+(These situations could result from other optimizations; after folding
+branches, we might generate more unreachable code.)
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unconditional Branch Folder 2</name>
+					<alias>jop.ubf2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>jop.ule</alias>
+					<long_desc>
+Removes locals with no uses in the method body.
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Jimple Annotation Pack</name>
+				<alias>jap</alias>
+				<long_desc>
+Soot has a number of phase options to configure the annotation process.
+Array bounds check and null pointer check detection have 
+separate phases and phase options.
+                        </long_desc>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+				<sub_phase>
+					<name>Null Pointer Check Options</name>
+					<phaseopt_class>NPCOptions</phaseopt_class>
+					<alias>jap.npc</alias>
+					<long_desc>
+The null pointer check analysis has the phase name {\tt jtp.npc}. 
+It has one phase option (aside from the default {\tt disabled} option). 
+
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Array Ref</name>
+						<alias>only-array-ref</alias>
+						<short_desc/>
+						<long_desc>
+  By default, all bytecodes that need null pointer checks 
+  are annotated with the analysis result. When this option 
+  is set to true, Soot will annotate only array-referencing 
+  bytecodes with null pointer check information; other bytecodes, 
+  such as {\tt getfield} and {\tt putfield}, will not be annotated. 
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Profiling</name>
+						<alias>profiling</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Array Bound Check Options</name>
+					<phaseopt_class>ABCOptions</phaseopt_class>
+					<alias>jap.abc</alias>
+					<long_desc>
+The array bounds check analysis has the phase name {\tt jtp.abc}. 
+If whole-program analysis is required, an extra
+phase {\tt wjtp2.ra} for finding rectangular arrays occurs.
+                        </long_desc>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>With All</name>
+						<alias>with-all</alias>
+						<short_desc/>
+						<long_desc>
+A macro.  Instead of typing a long string of phase options, this option 
+will turn on all options of the phase ``{\tt jtp.abc}&apos;&apos;.
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>With Field References</name>
+						<alias>with-fieldref</alias>
+						<short_desc/>
+						<long_desc>
+The analysis treats field references (static and instance) as common
+subexpressions. The restrictions from the `{\tt with-arrayref}&apos; option also
+apply. 
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>With Array References</name>
+						<alias>with-arrayref</alias>
+						<short_desc/>
+						<long_desc>
+With this option enabled, array
+references can be considered as common subexpressions; however, we are
+more conservative when writing into an array, because array
+objects may be aliased. NOTE: We also assume that the application in a
+single-threaded program or in a synchronized block. That is, an
+array element may not be changed by other threads between two array
+references.
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>With Common Sub-expressions</name>
+						<alias>with-cse</alias>
+						<short_desc/>
+						<long_desc>
+The analysis will consider common subexpressions.  For example,
+  consider the situation where {\tt r1} is assigned {\tt a*b}; later,
+  {\tt r2} is assigned {\tt a*b}, where both {\tt a} and {\tt b} have
+  not been changed between the two statements. The analysis can
+  conclude that {\tt r2} has the same value as {\tt r1}. Experiments
+  show that this option can improve the result slightly.
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>With Class Field</name>
+						<alias>with-classfield</alias>
+						<short_desc/>
+						<long_desc>
+This option makes the analysis work on the class level. The algorithm 
+analyzes `final&apos; or `private&apos; class fields first. It can recognize
+the fields that hold array objects with constant length.  In an application 
+using lots of array fields, this option can improve the analysis results 
+dramatically. 
+
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>With Rectangular Array</name>
+						<alias>with-rectarray</alias>
+						<short_desc/>
+						<long_desc>
+This option is used together with wjtp2.ra with-wholeapp to make Soot run the whole-program
+analysis for rectangular array objects. This analysis is based on the
+call graph, and it usually takes a long time. If the application uses
+rectangular arrays, these options can improve the analysis
+result.
+                        </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Profiling</name>
+						<alias>profiling</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Profiling Generator</name>
+					<alias>jap.profiling</alias>
+					<phaseopt_class>ProfilingOptions</phaseopt_class>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Enable</name>
+						<alias>enable</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Not Main Entry</name>
+						<alias>notmainentry</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Grimp Body Creation</name>
+				<alias>gb</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<boolopt>
+					<name>No Aggregating</name>
+					<alias>no-aggregating</alias>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<boolopt>
+					<name>Aggregate All Locals</name>
+					<alias>aggregate-all-locals</alias>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<sub_phase>
+					<name>Aggregator</name>
+					<alias>gb.a</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Aggregate Stack Variables 1</name>
+					<alias>gb.asv1</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Aggregate Stack Variables 2</name>
+					<alias>gb.asv2</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Constructor Folder</name>
+					<alias>gb.cf</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>gb.ule</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Grimp Optimization Pack</name>
+				<alias>gop</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Baf Body Creation</name>
+				<alias>bb</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+				<sub_phase>
+					<name>Load Store Optimizer</name>
+					<alias>bb.lso</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Debug</name>
+						<alias>debug</alias>
+					</boolopt>
+					<boolopt>
+						<name>Inter</name>
+						<alias>inter</alias>
+					</boolopt>
+					<boolopt>
+						<name>sl</name>
+						<alias>sl</alias>
+						<default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>sl2</name>
+						<alias>sl2</alias>
+					</boolopt>
+					<boolopt>
+						<name>sll</name>
+						<alias>sll</alias>
+						<default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>sll2</name>
+						<alias>sll2</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Peephole Optimizer</name>
+					<alias>bb.pho</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>bb.ule</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Packer</name>
+					<alias>bb.lp</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+					</boolopt>
+					<boolopt>
+						<name>Unsplit Original Locals</name>
+						<alias>unsplit-original-locals</alias>
+					</boolopt>
+				</sub_phase>
+			</phase>
+			<phase>
+				<name>Baf Optimization Pack</name>
+				<alias>bop</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+			</phase>
+			<phase>
+				<name>Tag</name>
+				<alias>tag</alias>
+				<boolopt>
+					<name>Disabled</name>
+					<alias>disabled</alias>
+				</boolopt>
+				<sub_phase>
+					<name>Line Number Tag Aggregator</name>
+					<alias>tag.ln</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Array Bounds and Null Pointer Check Tag Aggregator</name>
+					<alias>tag.an</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Dependence Tag Aggregator</name>
+					<alias>tag.dep</alias>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+			</phase>
+		</phaseopt>
+		<macroopt>
+			<name>Optimize</name>
+			<alias>O</alias>
+			<alias>optimize</alias>
+			<expansion>-p jop enabled:true</expansion>
+			<short_desc>perform scalar optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+		<macroopt>
+			<name>Whole Program Optimize</name>
+			<alias>W</alias>
+			<alias>whole-optimize</alias>
+			<expansion>-p wjop enabled:true</expansion>
+			<short_desc>perform whole program optimizations on the classfiles</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+	</section>
+	<section>
+		<name>Single File Mode Options</name>
+		<listopt>
+			<name>Process Path</name>
+			<alias>process-path</alias>
+			<short_desc>process all classes on the PATH</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+	</section>
+	<section>
+		<name>Application Mode Options</name>
+		<listopt>
+			<name>Include Package</name>
+			<alias>i</alias>
+			<alias>include</alias>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.util.)as application classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+		<listopt>
+			<name>Exclude Package</name>
+			<alias>x</alias>
+			<alias>exclude</alias>
+			<short_desc>marks classfiles in PACKAGE (e.g. java.) as context classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+		<boolopt>
+			<name>Analyze Context</name>
+			<alias>a</alias>
+			<alias>analyze-context</alias>
+			<short_desc>label context classes as library</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+		<listopt>
+			<name>Dynamic Classes</name>
+			<alias>dynamic-classes</alias>
+			<short_desc>marks CLASSES (separated by colons) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+		<listopt>
+			<name>Dynamic Path</name>
+			<alias>dynamic-path</alias>
+			<short_desc>marks all class files in PATH as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+		<listopt>
+			<name>Dynamic Package</name>
+			<alias>dynamic-package</alias>
+			<short_desc>marks classfiles in PACKAGES (separated by commas) as potentially dynamic classes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</listopt>
+	</section>
+	<section>
+		<name>Input Attribute Options</name>
+		<boolopt>
+			<name>Keep Line Number</name>
+			<alias>keep-line-number</alias>
+			<short_desc>keep line number tables</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Keep Bytecode Offset</name>
+			<alias>keep-bytecode-offset</alias>
+			<alias>keep-offset</alias>
+			<short_desc>attach bytecode offset to jimple statement</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+	</section>
+	<section>
+		<name>Annotation Options</name>
+		<macroopt>
+			<name>Null Pointer Annotation</name>
+			<alias>annot-nullpointer</alias>
+			<expansion>-p jtp.npc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for null pointer</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+		<macroopt>
+			<name>Array Bounds Annotation</name>
+			<alias>annot-arraybounds</alias>
+			<expansion>-p wjtp2.ra enabled:true -p jtp.abc enabled:true -p jtp.profiling enabled:true -p agg.an enabled:true</expansion>
+			<short_desc>turn on the annotation for array bounds check</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+	</section>
+	<section>
+		<name>Miscellaneous Options</name>
+		<boolopt>
+			<name>Time</name>
+			<alias>time</alias>
+			<short_desc>print out time statistics about tranformations</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Subtract Garbage Collection Time</name>
+			<alias>subtract-gc</alias>
+			<short_desc>attempt to subtract the gc from the time stats</short_desc>
+			<long_desc>This option ...</long_desc>
+		</boolopt>
+	</section>
 </options>
