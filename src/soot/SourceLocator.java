@@ -183,13 +183,19 @@ public class SourceLocator
 
         StringBuffer b = new StringBuffer();
 
-        b.append(getOutputDir());
+        if( !Options.v().output_jar() ) {
+            b.append(getOutputDir());
+        }
 
         if ((b.length() > 0) && (b.charAt(b.length() - 1) != File.separatorChar))
             b.append(File.separatorChar);
 
         if (rep != Options.output_format_dava) {
-            b.append(c.getName());
+            if(rep == Options.output_format_class) {
+                b.append(c.getName().replace('.', File.separatorChar));
+            } else {
+                b.append(c.getName());
+            }
             b.append(getExtensionFor(rep));
 
             return b.toString();
@@ -295,7 +301,9 @@ public class SourceLocator
 
         if (!dir.exists()) {
             try {
-                dir.mkdirs();
+                if( !Options.v().output_jar() ) {
+                    dir.mkdirs();
+                }
             } catch (SecurityException se) {
                 G.v().out.println("Unable to create " + ret);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);

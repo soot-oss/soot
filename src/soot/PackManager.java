@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -309,18 +309,29 @@ public class PackManager {
         handleInnerClasses();
     }
 
+    private ZipOutputStream jarFile = null;
     public void writeOutput() {
-	if(Options.v().verbose())
-	    PhaseDumper.v().dumpBefore("output");
-        if( Options.v().output_format() == Options.output_format_dava ) {
-            postProcessDAVA();
+        if( Options.v().output_jar() ) {
+            String outFileName = SourceLocator.v().getOutputDir();
+            try {
+                jarFile = new ZipOutputStream(new FileOutputStream(outFileName));
+            } catch( FileNotFoundException e ) {
+                throw new CompilationDeathException("Cannot open output Jar file " + outFileName);
+            }
         } else {
-            writeOutput( reachableClasses() );
+            jarFile = null;
         }
-        postProcessXML( reachableClasses() );
-        releaseBodies( reachableClasses() );
-	if(Options.v().verbose())
-	    PhaseDumper.v().dumpAfter("output");
+        if(Options.v().verbose())
+            PhaseDumper.v().dumpBefore("output");
+            if( Options.v().output_format() == Options.output_format_dava ) {
+                postProcessDAVA();
+            } else {
+                writeOutput( reachableClasses() );
+            }
+            postProcessXML( reachableClasses() );
+            releaseBodies( reachableClasses() );
+        if(Options.v().verbose())
+            PhaseDumper.v().dumpAfter("output");
     }
 
     private void runWholeProgramPacks() {
@@ -364,6 +375,11 @@ public class PackManager {
             SootClass cl = (SootClass) classes.next();
             writeClass( cl );
         }
+        try {
+            if(jarFile != null) jarFile.close();
+        } catch( IOException e ) {
+            throw new CompilationDeathException( "Error closing output jar: "+e );
+        }
     }
 
     private void releaseBodies( Iterator classes ) {
@@ -406,13 +422,19 @@ public class PackManager {
             if( Options.v().gzip() ) fileName = fileName+".gz";
 
             try {
-                streamOut = new FileOutputStream(fileName);
+                if( jarFile != null ) {
+                    ZipEntry entry = new ZipEntry(fileName);
+                    jarFile.putNextEntry(entry);
+                    streamOut = jarFile;
+                } else {
+                    streamOut = new FileOutputStream(fileName);
+                }
                 if( Options.v().gzip() ) 
                     streamOut = new GZIPOutputStream(streamOut);
                 writerOut =
                     new PrintWriter(new OutputStreamWriter(streamOut));
             } catch (IOException e) {
-                G.v().out.println("Cannot output file " + fileName);
+                throw new CompilationDeathException("Cannot output file " + fileName);
             }
 
             G.v().out.print("Generating " + fileName + "... ");
@@ -426,10 +448,9 @@ public class PackManager {
             {
                 try {
                     writerOut.flush();
-                    streamOut.close();
+                    if(jarFile == null) streamOut.close();
                 } catch (IOException e) {
-                    G.v().out.println(
-                        "Cannot close output file " + fileName);
+                    throw new CompilationDeathException("Cannot close output file " + fileName);
                 }
             }
         }
@@ -569,22 +590,32 @@ public class PackManager {
         String fileName = SourceLocator.v().getFileNameFor(c, format);
         if( Options.v().gzip() ) fileName = fileName+".gz";
 
-        if (format != Options.output_format_class) {
-            try {
+        try {
+            if( jarFile != null ) {
+                ZipEntry entry = new ZipEntry(fileName);
+                jarFile.putNextEntry(entry);
+                streamOut = jarFile;
+            } else {
+                new File(fileName).getParentFile().mkdirs();
                 streamOut = new FileOutputStream(fileName);
-                if( Options.v().gzip() ) 
-                    streamOut = new GZIPOutputStream(streamOut);
-                writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-                G.v().out.println( "Writing to "+fileName );
-            } catch (IOException e) {
-                G.v().out.println("Cannot output file " + fileName);
             }
+            if( Options.v().gzip() ) {
+                streamOut = new GZIPOutputStream(streamOut);
+            }
+            if(format == Options.output_format_class) {
+                streamOut = new JasminOutputStream(streamOut);
+            }
+            writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+            G.v().out.println( "Writing to "+fileName );
+        } catch (IOException e) {
+            throw new CompilationDeathException("Cannot output file " + fileName);
         }
 
         if (Options.v().xml_attributes()) {
             Printer.v().setOption(Printer.ADD_JIMPLE_LN);
         }
         switch (format) {
+            case Options.output_format_class :
             case Options.output_format_jasmin :
                 if (c.containsBafBody())
                     new soot.baf.JasminClass(c).print(writerOut);
@@ -607,9 +638,6 @@ public class PackManager {
                         new EscapedWriter(new OutputStreamWriter(streamOut)));
                 Printer.v().printTo(c, writerOut);
                 break;
-            case Options.output_format_class :
-                Printer.v().write(c, SourceLocator.v().getOutputDir());
-                break;
             case Options.output_format_xml :
                 writerOut =
                     new PrintWriter(
@@ -620,13 +648,11 @@ public class PackManager {
                 throw new RuntimeException();
         }
 
-        if (format != Options.output_format_class) {
-            try {
-                writerOut.flush();
-                streamOut.close();
-            } catch (IOException e) {
-                G.v().out.println("Cannot close output file " + fileName);
-            }
+        try {
+            writerOut.flush();
+            streamOut.close();
+        } catch (IOException e) {
+            throw new CompilationDeathException("Cannot close output file " + fileName);
         }
     }
 

@@ -29,11 +29,11 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper {
                                                "at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDEdgeCo" +
                                                "ntextStripper.jedd:35,33-41"),
                                               jedd.internal.Jedd.v().project(in.get(),
-                                                                             new jedd.PhysicalDomain[] { C1.v(), C2.v() }));
+                                                                             new jedd.PhysicalDomain[] { C2.v(), C1.v() }));
         newEdges.eqMinus(seen);
         seen.eqUnion(newEdges);
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), stmt.v(), kind.v(), srcc.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { MT.v(), MS.v(), ST.v(), KD.v(), C1.v(), C2.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), tgtm.v(), stmt.v(), tgtc.v(), srcc.v() },
+                                                    new jedd.PhysicalDomain[] { KD.v(), MS.v(), MT.v(), ST.v(), C2.v(), C1.v() },
                                                     ("out.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
                                                      "ead(newEdges), jedd.internal.Jedd.v().literal(new java.lang." +
                                                      "Object[...], new jedd.Attribute[...], new jedd.PhysicalDomai" +

@@ -72,7 +72,7 @@ public class BDDCflow {
                                                                                                           new jedd.Attribute[] { kind.v() },
                                                                                                           new jedd.PhysicalDomain[] { KD.v() })));
         callGraph.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(PaddleScene.v().cg.edges().get(),
-                                                                                                               new jedd.PhysicalDomain[] { C1.v(), C2.v() })),
+                                                                                                               new jedd.PhysicalDomain[] { C2.v(), C1.v() })),
                                                     wantedKinds,
                                                     new jedd.PhysicalDomain[] { KD.v() }));
     }
@@ -101,8 +101,8 @@ public class BDDCflow {
                                            "DCflow.jedd:61,12-30"));
     
     jedd.internal.RelationContainer callGraph() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), stmt.v() },
-                                                   new jedd.PhysicalDomain[] { MT.v(), MS.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), tgtm.v(), stmt.v() },
+                                                   new jedd.PhysicalDomain[] { MS.v(), MT.v(), ST.v() },
                                                    ("return callGraph; at /home/olhotak/soot-trunk/src/soot/jimpl" +
                                                     "e/paddle/BDDCflow.jedd:62,37-43"),
                                                    callGraph);

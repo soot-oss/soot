@@ -56,12 +56,10 @@ public class BDDTypeManager extends AbsTypeManager {
                                                "ains.V2, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                "le.bdddomains.T2> newVars; at /home/olhotak/soot-trunk/src/s" +
                                                "oot/jimple/paddle/BDDTypeManager.jedd:46,20-27"));
-        newVars.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(locals.get(),
-                                                                                                                new PhysicalDomain[] { MS.v() }),
-                                                                                 new PhysicalDomain[] { V1.v() },
-                                                                                 new PhysicalDomain[] { V2.v() }),
-                                                  new PhysicalDomain[] { T1.v() },
-                                                  new PhysicalDomain[] { T2.v() }));
+        newVars.eq(jedd.internal.Jedd.v().project(jedd.internal.Jedd.v().replace(locals.get(),
+                                                                                 new PhysicalDomain[] { V1.v(), T1.v() },
+                                                                                 new PhysicalDomain[] { V2.v(), T2.v() }),
+                                                  new PhysicalDomain[] { MS.v() }));
         newVars.eqUnion(jedd.internal.Jedd.v().replace(globals.get(),
                                                        new PhysicalDomain[] { V1.v(), T1.v() },
                                                        new PhysicalDomain[] { V2.v(), T2.v() }));

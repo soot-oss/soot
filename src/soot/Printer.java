@@ -254,7 +254,8 @@ public class Printer {
     /**
         Writes the class out to a file.
      */
-    public void write(SootClass cl, String outputDir) {
+    // This method is deprecated. Use soot.util.JasminOutputStream instead.
+    public void writeXXXDeprecated(SootClass cl, String outputDir) {
         String outputDirWithSep = "";
 
         if (!outputDir.equals(""))
@@ -328,8 +329,7 @@ public class Printer {
     
         // only print tags if not printing attributes in a file 
         if (!addJimpleLn()) {
-            /*for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-                final Tag t = (Tag) tIt.next();
+            /*for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {    final Tag t = (Tag) tIt.next();
                 out.println(t);
                 incJimpleLnNum();
 

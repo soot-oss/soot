@@ -35,8 +35,8 @@ public final class Qctxt_var_obj_srcm_stmt_kind_tgtmBDD extends Qctxt_var_obj_sr
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_var_obj_srcm_stmt_kind_tgtmBDD reader = (Rctxt_var_obj_srcm_stmt_kind_tgtmBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), var.v(), ctxt.v(), stmt.v(), kind.v(), obj.v() },
-                                                           new PhysicalDomain[] { MT.v(), MS.v(), V1.v(), C2.v(), ST.v(), KD.v(), H1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), obj.v(), tgtm.v(), ctxt.v(), stmt.v() },
+                                                           new PhysicalDomain[] { KD.v(), MS.v(), V1.v(), H1.v(), MT.v(), C2.v(), ST.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qctxt_var_obj_srcm_stmt_kind_tgtmBDD.jedd:39,12-" +
                                                             "18"),

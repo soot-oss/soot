@@ -49,8 +49,8 @@ public class Rvar_srcm_stmt_tgtmIter extends Rvar_srcm_stmt_tgtm {
                                                        new Attribute[] { var.v(), srcm.v(), stmt.v(), tgtm.v() },
                                                        new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), MT.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), var.v(), stmt.v() },
-                                                   new PhysicalDomain[] { MT.v(), MS.v(), V1.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), var.v(), tgtm.v(), stmt.v() },
+                                                   new PhysicalDomain[] { MS.v(), V1.v(), MT.v(), ST.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rvar_srcm_stmt_tgtmIter.jedd:50,8-14"),
                                                    ret);
