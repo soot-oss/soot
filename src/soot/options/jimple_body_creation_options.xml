@@ -4,7 +4,13 @@
 	<phase_name>Jimple Body Creation</phase_name>
 	<phase_java_name>jimpleBodyCreation</phase_java_name>
 	<phase_alias>jb</phase_alias>
-	<phase_opts>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
 		<boolean_option>
 			<name>No Splitting</name>
 			<java_name>noSplitting</java_name>
@@ -75,12 +81,18 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-	</phase_opts>
 	<sub_phase>
 		<sub_phase_name>Stack Variable Aggregation</sub_phase_name>
 		<sub_phase_java_name>stackVariableAggregation</sub_phase_java_name>
 		<sub_phase_alias>jb.asv</sub_phase_alias>
-		<sub_phase_opts>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
 			<boolean_option>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
@@ -88,13 +100,19 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-		</sub_phase_opts>
-	</sub_phase>
+			</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Unsplit-originals Local Packer</sub_phase_name>
-		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_java_name>unsplitOrigLocalPacker</sub_phase_java_name>
 		<sub_phase_alias>jb.ulp</sub_phase_alias>
-		<sub_phase_opts>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
 			<boolean_option>
 			<name>Unsplit Original Locals</name>
 			<java_name>unsplitOrigLocals</java_name>
@@ -102,27 +120,40 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-		</sub_phase_opts>
+		
 	</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Local Name Standardizer</sub_phase_name>
-		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_java_name>localNameStandardizer</sub_phase_java_name>
 		<sub_phase_alias>jb.lns</sub_phase_alias>
-		<sub_phase_opts>
-			<boolean_option>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
+		<boolean_option>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
 			<alias_name>only-stack-locals</alias_name>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-		</sub_phase_opts>
-	</sub_phase>
+		</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Copy Propagator</sub_phase_name>
-		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_java_name>copyPropagator</sub_phase_java_name>
 		<sub_phase_alias>jb.cp</sub_phase_alias>
-		<sub_phase_opts>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
 		<boolean_option>
 			<name>Only Regular Locals</name>
 			<java_name>onlyRegLocals</java_name>
@@ -137,13 +168,19 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-		</sub_phase_opts>
 	</sub_phase>
 	<sub_phase>
 		<sub_phase_name>Dead Assignment Eliminator</sub_phase_name>
-		<sub_phase_java_name></sub_phase_java_name>
+		<sub_phase_java_name>deadAssignElimin</sub_phase_java_name>
 		<sub_phase_alias>jb.dae</sub_phase_alias>
-		<sub_phase_opts>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+
 		<boolean_option>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
@@ -151,6 +188,5 @@
 			<short_desc></short_desc>
 			<long_desc></long_desc>
 		</boolean_option>
-		</sub_phase_opts>
 	</sub_phase>
 </phase>

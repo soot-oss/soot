@@ -14,11 +14,11 @@ Soot Command Line Options
 <body>
 <xsl:for-each select="options/section">
 <hr />
+
 <h2><xsl:value-of select="section_name"/></h2>
+
 <xsl:for-each select="boolean_option">
-<table border="1"><tr><td>
-<xsl:value-of select="name"/>
-</td><td>
+<table><col width="300"/><col width="350"/><tr><td>
 <xsl:for-each select="alias_name">
 <xsl:value-of select="."/>&#160;
 </xsl:for-each>
@@ -28,10 +28,9 @@ Soot Command Line Options
 <xsl:value-of select="long_desc"/>
 </td></tr></table>
 </xsl:for-each>
+
 <xsl:for-each select="path_option">
-<table border="1"><tr><td>
-<xsl:value-of select="name"/>
-</td><td>
+<table><col width="300"/><col width="350"/><tr><td>
 <xsl:for-each select="alias_name">
 <xsl:value-of select="."/>&#160;
 </xsl:for-each>
@@ -41,10 +40,9 @@ Soot Command Line Options
 <xsl:value-of select="long_desc"/>
 </td></tr></table>
 </xsl:for-each>
+
 <xsl:for-each select="string_option">
-<table border="1"><tr><td>
-<xsl:value-of select="name"/>
-</td><td>
+<table><col width="300"/><col width="350"/><tr><td>
 <xsl:for-each select="alias_name">
 <xsl:value-of select="."/>&#160;
 </xsl:for-each>
@@ -54,36 +52,29 @@ Soot Command Line Options
 <xsl:value-of select="long_desc"/>
 </td></tr></table>
 </xsl:for-each>
+
 <xsl:for-each select="macro_option">
-<table border="1"><tr><td>
-<xsl:value-of select="name"/>
-</td><td>
+<table><col width="300"/><col width="350"/><tr><td>
 <xsl:for-each select="alias_name">
 <xsl:value-of select="."/>&#160;
-</xsl:for-each>
-</td><td>
-<xsl:value-of select="expansion"/>
+</xsl:for-each> (<xsl:value-of select="expansion"/>)
 </td><td>
 <xsl:value-of select="short_desc"/>
 </td><td>
 <xsl:value-of select="long_desc"/>
 </td></tr></table>
 </xsl:for-each>
+
 <xsl:for-each select="multi_option">
-<table border="1"><tr><td>
-<xsl:value-of select="name"/>
-</td><td>
+<table><col width="300"/><col width="350"/><tr><td>
 <xsl:for-each select="alias_name">
 <xsl:value-of select="."/>&#160;
 </xsl:for-each>
-</td><td>
-<xsl:for-each select="values/value">
-<xsl:value-of select="value_name"/><br />
+(<xsl:for-each select="value">
 <xsl:for-each select="alias">
-<xsl:value-of select="."/><br />
+<xsl:value-of select="."/>&#160;
 </xsl:for-each>
-<br />
-</xsl:for-each>
+</xsl:for-each>)
 </td><td>
 <xsl:value-of select="short_desc"/>
 </td><td>

@@ -59,7 +59,12 @@ public class TestOptionsDialogHandler {
 		StringBuffer cmd = new StringBuffer();
 		String path = null;
 		String defaultVal = null;
+		String phaseOptsAlias = null;
+		String phaseAlias = null;
+		String subPhaseAlias = null;
+		String key = null;
 		boolean value = false;
+		HashMap phasePairs = new HashMap();
 		
 		<xsl:for-each select="section"> 
 		
@@ -123,6 +128,22 @@ public class TestOptionsDialogHandler {
 			cmd.append(path);
 			cmd.append(SPACE);
 		}
+
+		<xsl:for-each select="phase_option">
+		phaseOptsAlias = "<xsl:variable name="phaseOptAlias" select="alias_name"/>";
+		
+		<xsl:for-each select="phase">
+		phaseAlias = <xsl:variable name="phaseAlias" select="phase_alias"/>
+		phasePairs = new HashMap();
+		
+		<xsl:for-each select="boolean_option"> 
+		key = phaseOptsAlias+" "+"phaseAlias+" "+<xsl:value-of select="alias_name"/>
+		path = 
+		</xsl:for-each>
+		
+		</xsl:for-each>
+		
+		</xsl:for-each>
 				
 		</xsl:for-each>
 		

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<?xml-stylesheet type="text/xsl" href="soot_options.xsl"?>
+<!--<?xml-stylesheet type="text/xsl" href="soot_options.xsl"?>-->
+<!DOCTYPE options [
+<!ENTITY jimple_body SYSTEM "jimple_body_creation_options.xml">
+<!ENTITY jimple_trans SYSTEM "jimple_transformation_pack_options.xml">
+<!ENTITY jimple_opt SYSTEM "jimple_optimization_pack_options.xml">
+<!ENTITY whole_jimple_trans SYSTEM "whole_jimple_transformation_pack_options.xml">
+<!ENTITY whole_jimple_opt SYSTEM "whole_jimple_optimization_pack_options.xml">
+<!ENTITY gen_jasmin SYSTEM "generating_jasmin_options.xml">
+]>
 
 <options>
 
@@ -234,6 +242,12 @@
 			<alias_name>phase-option</alias_name>
 			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
 			<long_desc>This option ...</long_desc>
+			&jimple_body;
+			&jimple_trans;
+			&jimple_opt;
+			&whole_jimple_trans;
+			&whole_jimple_opt;
+			&gen_jasmin;
 		</phase_option>
 		
 		<macro_option>
@@ -258,6 +272,7 @@
 
 			
 	</section>
+
 	
 	<section>
 		
