@@ -50,7 +50,7 @@ public class ExceptionChecker extends BodyTransformer{
             hierarchy = new FastHierarchy();
         }
         if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException")) || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) return true;
-        if (hierarchy.getSubclassesOf(Scene.v().getSootClass("java.lang.RuntimeException")).contains(throwClass) || hierarchy.getSubclassesOf(Scene.v().getSootClass("java.lang.Error")).contains(throwClass)) return true;
+        if (hierarchy.isSubclass(throwClass, Scene.v().getSootClass("java.lang.RuntimeException")) || hierarchy.isSubclass(throwClass, Scene.v().getSootClass("java.lang.Error"))) return true;
         if (b.getMethod().throwsException(throwClass)) return true;
         return false;
     }
@@ -69,7 +69,7 @@ public class ExceptionChecker extends BodyTransformer{
         Iterator it = b.getTraps().iterator();
         while (it.hasNext()){
             Trap trap = (Trap)it.next();
-            if (trap.getException().getType().equals(throwType) || hierarchy.getSubclassesOf(((RefType)trap.getException().getType()).getSootClass()).contains(throwType.getSootClass())){
+            if (trap.getException().getType().equals(throwType) || hierarchy.isSubclass(throwType.getSootClass(), ((RefType)trap.getException().getType()).getSootClass())){
                 if (isThrowInStmtRange(b, (Stmt)trap.getBeginUnit(), (Stmt)trap.getEndUnit(), s)) return true;
             }
         }

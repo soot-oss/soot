@@ -134,7 +134,7 @@ public class FastHierarchy
 
     /** Return true if class child is a subclass of class parent, neither of
      * them being allowed to be interfaces. */
-    protected boolean isSubclass( SootClass child, SootClass parent ) {
+    public boolean isSubclass( SootClass child, SootClass parent ) {
 	Interval parentInterval = (Interval) classToInterval.get( parent );
 	Interval childInterval = (Interval) classToInterval.get( child );
 	return parentInterval.isSubrange( childInterval );

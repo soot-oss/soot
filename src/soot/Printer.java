@@ -156,14 +156,16 @@ public class Printer {
                     if (f.isPhantom())
                         continue;
 
-                    out.println("    " + f.getDeclaration() + ";");
-                    /*if (!addJimpleLn()) {
-                        Iterator fieldTagsIt = f.getTags().iterator();
-                        while (fieldTagsIt.hasNext()) {
-                            final Tag t = (Tag)fieldTagsIt.next();
-                            out.println(t);
+                    if (Options.v().print_tags_in_output()){
+                        Iterator fTagIterator = f.getTags().iterator();
+                        while (fTagIterator.hasNext()) {
+                            Tag t = (Tag) fTagIterator.next();
+                            out.print("/*");
+                            out.print(t.toString());
+                            out.println("*/");
                         }
-                    }*/
+                    }
+                    out.println("    " + f.getDeclaration() + ";");
                     if (addJimpleLn()) {
                         setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), f));		
                     }
@@ -197,6 +199,15 @@ public class Printer {
                                     + method.getName()
                                     + " has no active body!");
                         else
+                            if (Options.v().print_tags_in_output()){
+                                Iterator mTagIterator = method.getTags().iterator();
+                                while (mTagIterator.hasNext()) {
+                                    Tag t = (Tag) mTagIterator.next();
+                                    out.print("/*");
+                                    out.print(t.toString());
+                                    out.println("*/");
+                                }
+                            }
                             printTo(method.getActiveBody(), out);
 
                         if (methodIt.hasNext()) {
@@ -204,6 +215,17 @@ public class Printer {
                             incJimpleLnNum();
                         }
                     } else {
+                           
+                        if (Options.v().print_tags_in_output()){
+                            Iterator mTagIterator = method.getTags().iterator();
+                            while (mTagIterator.hasNext()) {
+                                Tag t = (Tag) mTagIterator.next();
+                                out.print("/*");
+                                out.print(t.toString());
+                                out.println("*/");
+                            }
+                        }
+                        
                         out.print("    ");
                         out.print(method.getDeclaration());
                         out.println(";");
@@ -391,7 +413,9 @@ public class Printer {
                 while (tagIterator.hasNext()) {
                     Tag t = (Tag) tagIterator.next();
                     up.noIndent();
+                    up.literal("/*");
                     up.literal(t.toString());
+                    up.literal("*/");
                     up.newline();
                 }
                 /*Iterator udIt = currentStmt.getUseAndDefBoxes().iterator();

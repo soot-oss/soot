@@ -28,7 +28,8 @@ public class InitialResolver {
     private ArrayList hasOuterRefInInit; // list of sootclass types that need an outer class this param in for init
    
     private HashMap classToSourceMap;
-
+    private HashMap specialAnonMap;
+    
     /**
      * returns true if there is an AST avail for given soot class
      */
@@ -320,6 +321,7 @@ public class InitialResolver {
         if (!sootClass.declaresField("$assertionsDisabled", soot.BooleanType.v())){
             sootClass.addField(new soot.SootField("$assertionsDisabled", soot.BooleanType.v(), soot.Modifier.STATIC | soot.Modifier.FINAL));
         }
+        //System.out.println("adding class$ field to : "+sootClass+" from assert");
         if (!sootClass.declaresField("class$"+sootClass.getName(), soot.RefType.v("java.lang.Class"))){
             sootClass.addField(new soot.SootField("class$"+sootClass.getName(), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
         }
@@ -349,34 +351,75 @@ public class InitialResolver {
         }
     }
 
+    private int getNextAnonNum(){
+        if (anonTypeMap == null) return 1;
+        else return anonTypeMap.size()+1;
+    }
+    
     private void handleClassLiteral(polyglot.ast.ClassBody cBody){
+       
         ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
         cBody.visit(classLitChecker);
         ArrayList classLitList = classLitChecker.getList();
+        //System.out.println("current class: "+sootClass);
+        //System.out.println("class lit list: "+classLitList);
+        String specialClassName = null;    
         if (!classLitList.isEmpty()) {
             String methodName = "class$";
             soot.Type methodRetType = soot.RefType.v("java.lang.Class");
             ArrayList paramTypes = new ArrayList();
             paramTypes.add(soot.RefType.v("java.lang.String"));
-            if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
-                soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
-                ClassLiteralMethodSource mSrc = new ClassLiteralMethodSource();
-                sootMethod.setSource(mSrc);
-                sootClass.addMethod(sootMethod);
+            soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
+            ClassLiteralMethodSource mSrc = new ClassLiteralMethodSource();
+            sootMethod.setSource(mSrc);
+            if (sootClass.isInterface()) {
+                // have to create a I$1 class
+                
+                specialClassName = sootClass.getName()+"$"+getNextAnonNum();    
+                addNameToAST(specialClassName);
+                soot.SootResolver.v().assertResolvedClass(specialClassName);    
+                // add meth to newly created class not this current one
+                soot.SootClass specialClass = soot.Scene.v().getSootClass(specialClassName);
+                if (specialAnonMap == null){
+                    specialAnonMap = new HashMap();
+                }
+                specialAnonMap.put(sootClass, specialClass);
+                
+                if (!specialClass.declaresMethod(methodName, paramTypes, methodRetType)){
+                    specialClass.addMethod(sootMethod);
+                }
+            
+            }
+            else {
+                if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
+                    sootClass.addMethod(sootMethod);
+                }
             }
         }
         Iterator classLitIt = classLitList.iterator();
         while (classLitIt.hasNext()) {
             polyglot.ast.ClassLit classLit = (polyglot.ast.ClassLit)classLitIt.next();
+            //System.out.println("next class lit: "+classLit);
+
             // field
             String fieldName = "class$";
             String type = Util.getSootType(classLit.typeNode().type()).toString();
             type = soot.util.StringTools.replaceAll(type, ".", "$");
             fieldName = fieldName+type;
             soot.Type fieldType = soot.RefType.v("java.lang.Class");
-            if (!sootClass.declaresField(fieldName, fieldType)){
-                soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
-                sootClass.addField(sootField);
+            soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+            if (sootClass.isInterface()){
+                soot.SootClass specialClass = soot.Scene.v().getSootClass(specialClassName);
+                //System.out.println("special class fields before: "+specialClass.getFields());
+                if (!specialClass.declaresField(fieldName, fieldType)){
+                    specialClass.addField(sootField);
+                }
+                //System.out.println("special class fields after: "+specialClass.getFields());
+            }
+            else {
+                if (!sootClass.declaresField(fieldName, fieldType)){
+                    sootClass.addField(sootField);
+                }
             }
 
         }
@@ -578,7 +621,7 @@ public class InitialResolver {
             if (!found) {
                 // assume its anon class (only option left) 
                 //
-                if (anonClassMap.containsVal(simpleName)){
+                if ((anonClassMap != null) && anonClassMap.containsVal(simpleName)){
                     
                     polyglot.ast.New aNew = (polyglot.ast.New)anonClassMap.getKey(simpleName);
                     createAnonClassDecl(aNew);
@@ -586,7 +629,11 @@ public class InitialResolver {
                     handleFieldInits();
 
                 }                    
-                    
+                else {
+                    // could be an anon class that was created out of thin air 
+                    // for handling class lits in interfaces
+                    sootClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
+                }
             }
         }
 
@@ -1262,6 +1309,7 @@ public class InitialResolver {
         String name = field.fieldInstance().name();
         soot.Type sootType = Util.getSootType(field.fieldInstance().type());
         soot.SootField sootField = new soot.SootField(name, sootType, modifiers);
+        //System.out.println("adding field: "+name+" to class: "+sootClass);
         sootClass.addField(sootField);
 
         if (fieldMap == null) {
@@ -1363,5 +1411,9 @@ public class InitialResolver {
 
     public ArrayList getHasOuterRefInInit(){
         return hasOuterRefInInit;
+    }
+
+    public HashMap specialAnonMap(){
+        return specialAnonMap;
     }
 }
