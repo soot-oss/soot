@@ -133,6 +133,8 @@ Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
 
 Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
 
+Composite cgcg_bddChild = cgcg_bddCreate(getPageContainer());
+
 Composite cgSpark_General_OptionsChild = cgSpark_General_OptionsCreate(getPageContainer());
 
 Composite cgSpark_Pointer_Assignment_Graph_Building_OptionsChild = cgSpark_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
@@ -142,6 +144,14 @@ Composite cgSpark_Pointer_Assignment_Graph_Simplification_OptionsChild = cgSpark
 Composite cgSpark_Points_To_Set_Flowing_OptionsChild = cgSpark_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
 
 Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageContainer());
+
+Composite cgBDD_Spark_General_OptionsChild = cgBDD_Spark_General_OptionsCreate(getPageContainer());
+
+Composite cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsChild = cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
+
+Composite cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsChild = cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
+
+Composite cgBDD_Spark_Output_OptionsChild = cgBDD_Spark_Output_OptionsCreate(getPageContainer());
 
 Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 
@@ -246,6 +256,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_sparkenabled_widget());	
 			getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
+		}
+
+			
+		if (isEnableButton("enabled")) {
+			buttonList.add(getcgcg_bddenabled_widget());	
+			getcgcg_bddenabled_widget().getButton().addSelectionListener(this);
 		}
 
 		
@@ -544,6 +560,92 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		
+		makeNewEnableGroup("cg", "cg.bdd");
+		
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddenabled_widget(), "enabled");
+		
+		getcgcg_bddenabled_widget().getButton().addSelectionListener(this);
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddverbose_widget(), "verbose");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddignore_types_widget(), "ignore-types");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddforce_gc_widget(), "force-gc");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddpre_jimplify_widget(), "pre-jimplify");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddvta_widget(), "vta");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddrta_widget(), "rta");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddfield_based_widget(), "field-based");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddtypes_for_sites_widget(), "types-for-sites");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddmerge_stringbuffer_widget(), "merge-stringbuffer");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimulate_natives_widget(), "simulate-natives");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddon_fly_cg_widget(), "on-fly-cg");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddparms_as_fields_widget(), "parms-as-fields");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddreturns_as_fields_widget(), "returns-as-fields");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimplify_offline_widget(), "simplify-offline");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimplify_sccs_widget(), "simplify-sccs");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddignore_types_for_sccs_widget(), "ignore-types-for-sccs");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_html_widget(), "dump-html");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_pag_widget(), "dump-pag");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_solution_widget(), "dump-solution");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddtopo_sort_widget(), "topo-sort");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_types_widget(), "dump-types");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddclass_method_var_widget(), "class-method-var");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_answer_widget(), "dump-answer");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddadd_tags_widget(), "add-tags");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddset_mass_widget(), "set-mass");
+
+		
+		
 		makeNewEnableGroup("wjtp");
 		
 		
@@ -633,9 +735,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("shimple", getshimplestandard_local_names_widget(), "standard-local-names");
 		
 		
+		addToEnableGroup("shimple", getshimpledebug_widget(), "debug");
+		
+		
 		getshimpleenabled_widget().getButton().addSelectionListener(this);
 		
 		getshimplestandard_local_names_widget().getButton().addSelectionListener(this);
+		
+		getshimpledebug_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("stp");
@@ -661,7 +768,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("sop", "sop.cpf", getsopsop_cpfenabled_widget(), "enabled");
 		
+		addToEnableGroup("sop", "sop.cpf", getsopsop_cpfprune_cfg_widget(), "prune-cfg");
+		
 		getsopsop_cpfenabled_widget().getButton().addSelectionListener(this);
+		
+		getsopsop_cpfprune_cfg_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jtp");
@@ -1920,6 +2031,276 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_bddenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddverbose_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddverbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddignore_types_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddignore_types_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddforce_gc_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddforce_gc_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddpre_jimplify_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddpre_jimplify_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddvta_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddvta_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddrta_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddrta_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddfield_based_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddfield_based_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddtypes_for_sites_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddtypes_for_sites_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddmerge_stringbuffer_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddsimulate_natives_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddsimulate_natives_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddsimple_edges_bidirectional_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddsimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddon_fly_cg_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddon_fly_cg_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddparms_as_fields_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddparms_as_fields_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddreturns_as_fields_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddreturns_as_fields_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddsimplify_offline_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddsimplify_offline_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddsimplify_sccs_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddsimplify_sccs_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddignore_types_for_sccs_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bdddump_html_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bdddump_html_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bdddump_pag_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bdddump_pag_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bdddump_solution_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bdddump_solution_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddtopo_sort_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddtopo_sort_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bdddump_types_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bdddump_types_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddclass_method_var_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddclass_method_var_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bdddump_answer_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bdddump_answer_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddadd_tags_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddadd_tags_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddset_mass_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddset_mass_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getwjtpenabled_widget().getButton().getSelection();
 		
 		
@@ -2086,6 +2467,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimplestandard_local_names_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		boolRes = getshimpledebug_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getshimpledebug_widget().getAlias(), new Boolean(boolRes));
+		}
 		 
 		stringRes = getshimplephi_elim_opt_widget().getSelectedAlias();
 
@@ -2125,6 +2516,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getsopsop_cpfenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getsopsop_cpfprune_cfg_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getsopsop_cpfprune_cfg_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjtpenabled_widget().getButton().getSelection();
@@ -2816,6 +3217,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getApplication_Mode_Optionsinclude_all_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getApplication_Mode_Optionsinclude_all_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
 		
 		defStringRes = "";
@@ -3163,6 +3574,32 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			SootOption cg_Spark_Output_Options_branch = new SootOption("Spark Output Options", "cgSpark_Output_Options");
 
 			subSectParent.addChild(cg_Spark_Output_Options_branch);
+			
+			SootOption cg_cg_bdd_branch = new SootOption("Spark", "cgcg_bdd");
+			subParent.addChild(cg_cg_bdd_branch);
+
+
+			
+
+			
+			subSectParent = cg_cg_bdd_branch;
+			
+			
+			SootOption cg_BDD_Spark_General_Options_branch = new SootOption("BDD Spark General Options", "cgBDD_Spark_General_Options");
+
+			subSectParent.addChild(cg_BDD_Spark_General_Options_branch);
+			
+			SootOption cg_BDD_Spark_Pointer_Assignment_Graph_Building_Options_branch = new SootOption("BDD Spark Pointer Assignment Graph Building Options", "cgBDD_Spark_Pointer_Assignment_Graph_Building_Options");
+
+			subSectParent.addChild(cg_BDD_Spark_Pointer_Assignment_Graph_Building_Options_branch);
+			
+			SootOption cg_BDD_Spark_Pointer_Assignment_Graph_Simplification_Options_branch = new SootOption("BDD Spark Pointer Assignment Graph Simplification Options", "cgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options");
+
+			subSectParent.addChild(cg_BDD_Spark_Pointer_Assignment_Graph_Simplification_Options_branch);
+			
+			SootOption cg_BDD_Spark_Output_Options_branch = new SootOption("BDD Spark Output Options", "cgBDD_Spark_Output_Options");
+
+			subSectParent.addChild(cg_BDD_Spark_Output_Options_branch);
 			
 			//Whole-Jimple Transformation Pack
 			SootOption wjtp_branch = new SootOption("Whole-Jimple Transformation Pack", "wjtp");
@@ -4455,6 +4892,276 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkset_mass_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_bddenabled_widget;
+	
+	private void setcgcg_bddenabled_widget(BooleanOptionWidget widget) {
+		cgcg_bddenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddenabled_widget() {
+		return cgcg_bddenabled_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddverbose_widget;
+	
+	private void setcgcg_bddverbose_widget(BooleanOptionWidget widget) {
+		cgcg_bddverbose_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddverbose_widget() {
+		return cgcg_bddverbose_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddignore_types_widget;
+	
+	private void setcgcg_bddignore_types_widget(BooleanOptionWidget widget) {
+		cgcg_bddignore_types_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddignore_types_widget() {
+		return cgcg_bddignore_types_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddforce_gc_widget;
+	
+	private void setcgcg_bddforce_gc_widget(BooleanOptionWidget widget) {
+		cgcg_bddforce_gc_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddforce_gc_widget() {
+		return cgcg_bddforce_gc_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddpre_jimplify_widget;
+	
+	private void setcgcg_bddpre_jimplify_widget(BooleanOptionWidget widget) {
+		cgcg_bddpre_jimplify_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddpre_jimplify_widget() {
+		return cgcg_bddpre_jimplify_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddvta_widget;
+	
+	private void setcgcg_bddvta_widget(BooleanOptionWidget widget) {
+		cgcg_bddvta_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddvta_widget() {
+		return cgcg_bddvta_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddrta_widget;
+	
+	private void setcgcg_bddrta_widget(BooleanOptionWidget widget) {
+		cgcg_bddrta_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddrta_widget() {
+		return cgcg_bddrta_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddfield_based_widget;
+	
+	private void setcgcg_bddfield_based_widget(BooleanOptionWidget widget) {
+		cgcg_bddfield_based_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddfield_based_widget() {
+		return cgcg_bddfield_based_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddtypes_for_sites_widget;
+	
+	private void setcgcg_bddtypes_for_sites_widget(BooleanOptionWidget widget) {
+		cgcg_bddtypes_for_sites_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddtypes_for_sites_widget() {
+		return cgcg_bddtypes_for_sites_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddmerge_stringbuffer_widget;
+	
+	private void setcgcg_bddmerge_stringbuffer_widget(BooleanOptionWidget widget) {
+		cgcg_bddmerge_stringbuffer_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddmerge_stringbuffer_widget() {
+		return cgcg_bddmerge_stringbuffer_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddsimulate_natives_widget;
+	
+	private void setcgcg_bddsimulate_natives_widget(BooleanOptionWidget widget) {
+		cgcg_bddsimulate_natives_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddsimulate_natives_widget() {
+		return cgcg_bddsimulate_natives_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddsimple_edges_bidirectional_widget;
+	
+	private void setcgcg_bddsimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
+		cgcg_bddsimple_edges_bidirectional_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddsimple_edges_bidirectional_widget() {
+		return cgcg_bddsimple_edges_bidirectional_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddon_fly_cg_widget;
+	
+	private void setcgcg_bddon_fly_cg_widget(BooleanOptionWidget widget) {
+		cgcg_bddon_fly_cg_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddon_fly_cg_widget() {
+		return cgcg_bddon_fly_cg_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddparms_as_fields_widget;
+	
+	private void setcgcg_bddparms_as_fields_widget(BooleanOptionWidget widget) {
+		cgcg_bddparms_as_fields_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddparms_as_fields_widget() {
+		return cgcg_bddparms_as_fields_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddreturns_as_fields_widget;
+	
+	private void setcgcg_bddreturns_as_fields_widget(BooleanOptionWidget widget) {
+		cgcg_bddreturns_as_fields_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddreturns_as_fields_widget() {
+		return cgcg_bddreturns_as_fields_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddsimplify_offline_widget;
+	
+	private void setcgcg_bddsimplify_offline_widget(BooleanOptionWidget widget) {
+		cgcg_bddsimplify_offline_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddsimplify_offline_widget() {
+		return cgcg_bddsimplify_offline_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddsimplify_sccs_widget;
+	
+	private void setcgcg_bddsimplify_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_bddsimplify_sccs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddsimplify_sccs_widget() {
+		return cgcg_bddsimplify_sccs_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddignore_types_for_sccs_widget;
+	
+	private void setcgcg_bddignore_types_for_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_bddignore_types_for_sccs_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddignore_types_for_sccs_widget() {
+		return cgcg_bddignore_types_for_sccs_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bdddump_html_widget;
+	
+	private void setcgcg_bdddump_html_widget(BooleanOptionWidget widget) {
+		cgcg_bdddump_html_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bdddump_html_widget() {
+		return cgcg_bdddump_html_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bdddump_pag_widget;
+	
+	private void setcgcg_bdddump_pag_widget(BooleanOptionWidget widget) {
+		cgcg_bdddump_pag_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bdddump_pag_widget() {
+		return cgcg_bdddump_pag_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bdddump_solution_widget;
+	
+	private void setcgcg_bdddump_solution_widget(BooleanOptionWidget widget) {
+		cgcg_bdddump_solution_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bdddump_solution_widget() {
+		return cgcg_bdddump_solution_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddtopo_sort_widget;
+	
+	private void setcgcg_bddtopo_sort_widget(BooleanOptionWidget widget) {
+		cgcg_bddtopo_sort_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddtopo_sort_widget() {
+		return cgcg_bddtopo_sort_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bdddump_types_widget;
+	
+	private void setcgcg_bdddump_types_widget(BooleanOptionWidget widget) {
+		cgcg_bdddump_types_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bdddump_types_widget() {
+		return cgcg_bdddump_types_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddclass_method_var_widget;
+	
+	private void setcgcg_bddclass_method_var_widget(BooleanOptionWidget widget) {
+		cgcg_bddclass_method_var_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddclass_method_var_widget() {
+		return cgcg_bddclass_method_var_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bdddump_answer_widget;
+	
+	private void setcgcg_bdddump_answer_widget(BooleanOptionWidget widget) {
+		cgcg_bdddump_answer_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bdddump_answer_widget() {
+		return cgcg_bdddump_answer_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddadd_tags_widget;
+	
+	private void setcgcg_bddadd_tags_widget(BooleanOptionWidget widget) {
+		cgcg_bddadd_tags_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddadd_tags_widget() {
+		return cgcg_bddadd_tags_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddset_mass_widget;
+	
+	private void setcgcg_bddset_mass_widget(BooleanOptionWidget widget) {
+		cgcg_bddset_mass_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddset_mass_widget() {
+		return cgcg_bddset_mass_widget;
+	}	
+	
 	private BooleanOptionWidget wjtpenabled_widget;
 	
 	private void setwjtpenabled_widget(BooleanOptionWidget widget) {
@@ -4635,6 +5342,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return shimplestandard_local_names_widget;
 	}	
 	
+	private BooleanOptionWidget shimpledebug_widget;
+	
+	private void setshimpledebug_widget(BooleanOptionWidget widget) {
+		shimpledebug_widget = widget;
+	}
+	
+	public BooleanOptionWidget getshimpledebug_widget() {
+		return shimpledebug_widget;
+	}	
+	
 	
 	private MultiOptionWidget shimplephi_elim_opt_widget;
 	
@@ -4675,6 +5392,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getsopsop_cpfenabled_widget() {
 		return sopsop_cpfenabled_widget;
+	}	
+	
+	private BooleanOptionWidget sopsop_cpfprune_cfg_widget;
+	
+	private void setsopsop_cpfprune_cfg_widget(BooleanOptionWidget widget) {
+		sopsop_cpfprune_cfg_widget = widget;
+	}
+	
+	public BooleanOptionWidget getsopsop_cpfprune_cfg_widget() {
+		return sopsop_cpfprune_cfg_widget;
 	}	
 	
 	private BooleanOptionWidget jtpenabled_widget;
@@ -5371,6 +6098,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return tagtag_fieldrwenabled_widget;
 	}	
 	
+	private BooleanOptionWidget Application_Mode_Optionsinclude_all_widget;
+	
+	private void setApplication_Mode_Optionsinclude_all_widget(BooleanOptionWidget widget) {
+		Application_Mode_Optionsinclude_all_widget = widget;
+	}
+	
+	public BooleanOptionWidget getApplication_Mode_Optionsinclude_all_widget() {
+		return Application_Mode_Optionsinclude_all_widget;
+	}	
+	
 
 	private ListOptionWidget Application_Mode_Optionsinclude_widget;
 	
@@ -5715,7 +6452,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Jimple File",
 		"J",
-		"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .class file. ",
+		"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .jimple file. ",
 		
 		false),
 		
@@ -7706,6 +8443,578 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
+	private Composite cgcg_bddCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupcgcg_bdd = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgcg_bdd.setLayout(layout);
+	
+	 	editGroupcgcg_bdd.setText("Spark");
+	 	
+		editGroupcgcg_bdd.setData("id", "cgcg_bdd");
+		
+		String desccgcg_bdd = "BDD Spark points-to analysis framework";	
+		if (desccgcg_bdd.length() > 0) {
+			Label descLabelcgcg_bdd = new Label(editGroupcgcg_bdd, SWT.WRAP);
+			descLabelcgcg_bdd.setText(desccgcg_bdd);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddenabled_widget(new BooleanOptionWidget(editGroupcgcg_bdd, SWT.NONE, new OptionData("Enabled", "p", "cg.bdd","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupcgcg_bdd;
+	}
+
+
+
+	private Composite cgBDD_Spark_General_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupcgBDD_Spark_General_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgBDD_Spark_General_Options.setLayout(layout);
+	
+	 	editGroupcgBDD_Spark_General_Options.setText("BDD Spark General Options");
+	 	
+		editGroupcgBDD_Spark_General_Options.setData("id", "cgBDD_Spark_General_Options");
+		
+		String desccgBDD_Spark_General_Options = "";	
+		if (desccgBDD_Spark_General_Options.length() > 0) {
+			Label descLabelcgBDD_Spark_General_Options = new Label(editGroupcgBDD_Spark_General_Options, SWT.WRAP);
+			descLabelcgBDD_Spark_General_Options.setText(desccgBDD_Spark_General_Options);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"verbose";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddverbose_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.bdd","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"ignore-types";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddignore_types_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.bdd","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"force-gc";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddforce_gc_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.bdd","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"pre-jimplify";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddpre_jimplify_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.bdd","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		
+		
+
+		
+		return editGroupcgBDD_Spark_General_Options;
+	}
+
+
+
+	private Composite cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setLayout(layout);
+	
+	 	editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setText("BDD Spark Pointer Assignment Graph Building Options");
+	 	
+		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setData("id", "cgBDD_Spark_Pointer_Assignment_Graph_Building_Options");
+		
+		String desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options = "";	
+		if (desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options.length() > 0) {
+			Label descLabelcgBDD_Spark_Pointer_Assignment_Graph_Building_Options = new Label(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.WRAP);
+			descLabelcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setText(desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"vta";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddvta_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.bdd","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"rta";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddrta_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.bdd","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"field-based";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddfield_based_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.bdd","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"types-for-sites";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddtypes_for_sites_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.bdd","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"merge-stringbuffer";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_bddmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.bdd","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"simulate-natives";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_bddsimulate_natives_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.bdd","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"simple-edges-bidirectional";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddsimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.bdd","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"on-fly-cg";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_bddon_fly_cg_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.bdd","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"parms-as-fields";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddparms_as_fields_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Parms As Fields", "p", "cg.bdd","parms-as-fields", "\nWhen this option is set to true, parameters to methods are \nrepresented as fields (Red nodes) of the this object; otherwise, \nparameters are represented as variable (Green) nodes. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"returns-as-fields";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddreturns_as_fields_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.bdd","returns-as-fields", "\nWhen this option is set to true, return values from methods are \nrepresented as fields (Red nodes) of the this object; otherwise, \nreturn values are represented as variable (Green) nodes. \n", defaultBool)));
+		
+		
+
+		
+		return editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options;
+	}
+
+
+
+	private Composite cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
+	
+	 	editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setText("BDD Spark Pointer Assignment Graph Simplification Options");
+	 	
+		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setData("id", "cgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options");
+		
+		String desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = "";	
+		if (desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.length() > 0) {
+			Label descLabelcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = new Label(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.WRAP);
+			descLabelcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setText(desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"simplify-offline";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddsimplify_offline_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.bdd","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"simplify-sccs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddsimplify_sccs_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.bdd","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"ignore-types-for-sccs";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.bdd","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
+		
+		
+
+		
+		return editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options;
+	}
+
+
+
+	private Composite cgBDD_Spark_Output_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupcgBDD_Spark_Output_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgBDD_Spark_Output_Options.setLayout(layout);
+	
+	 	editGroupcgBDD_Spark_Output_Options.setText("BDD Spark Output Options");
+	 	
+		editGroupcgBDD_Spark_Output_Options.setData("id", "cgBDD_Spark_Output_Options");
+		
+		String desccgBDD_Spark_Output_Options = "";	
+		if (desccgBDD_Spark_Output_Options.length() > 0) {
+			Label descLabelcgBDD_Spark_Output_Options = new Label(editGroupcgBDD_Spark_Output_Options, SWT.WRAP);
+			descLabelcgBDD_Spark_Output_Options.setText(desccgBDD_Spark_Output_Options);
+		}
+		OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"dump-html";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bdddump_html_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.bdd","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"dump-pag";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bdddump_pag_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.bdd","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"dump-solution";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bdddump_solution_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.bdd","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"topo-sort";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddtopo_sort_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.bdd","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"dump-types";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_bdddump_types_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.bdd","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"class-method-var";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_bddclass_method_var_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.bdd","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"dump-answer";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bdddump_answer_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.bdd","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"add-tags";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddadd_tags_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.bdd","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"set-mass";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddset_mass_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.bdd","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
+		
+		
+
+		
+		return editGroupcgBDD_Spark_Output_Options;
+	}
+
+
+
 	private Composite wjtpCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -8201,7 +9510,23 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied \nafter Shimple creates new locals. Normally, Shimple \nwill retain the original local names as far as \npossible and use an underscore notation to denote \nSSA subscripts. This transformation does not \notherwise affect Shimple behaviour. ", defaultBool)));
+		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied \nwhenever Shimple creates new locals. Normally, \nShimple will retain the original local names as far \nas possible and use an underscore notation to denote \nSSA subscripts. This transformation does not \notherwise affect Shimple behaviour. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"shimple"+" "+"debug";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p", "shimple","debug", "\nIf enabled, Soot may print out warnings and \nmessages useful for debugging the Shimple module. \nAutomatically enabled by the global debug switch. \n", defaultBool)));
 		
 		
 		
@@ -8376,6 +9701,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p", "sop.cpf","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"sop.cpf"+" "+"prune-cfg";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setsopsop_cpfprune_cfg_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Prune Control Flow Graph", "p", "sop.cpf","prune-cfg", "\nConditional branching statements that are found \nto branch unconditionally (or fall through) are \nreplaced with unconditional branches (or \nremoved). This transformation exposes more \nopportunities for dead code removal. \n", defaultBool)));
 		
 		
 
@@ -10649,6 +11990,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		OptionData [] data;	
 		
 
+		
+		defKey = ""+" "+""+" "+"include-all";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setApplication_Mode_Optionsinclude_all_widget(new BooleanOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include All Packages", "", "","include-all", "\nSoot uses a default list of packages (such as java.) which are \ndeemed to contain library classes. This switch removes the \ndefault packages from the list of packages containing library \nclasses. Individual packages can then be added using the exclude \noption. ", defaultBool)));
+		
+		
 
 		defKey = ""+" "+""+" "+"i";
 		defKey = defKey.trim();

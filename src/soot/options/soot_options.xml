@@ -1473,7 +1473,7 @@ cryptic statistics about the size of the points-to sets computed.
 						<long_desc/>
 					</boolopt>
 					<section>
-						<name>Spark General Options</name>
+						<name>BDD Spark General Options</name>
 						<boolopt>
 							<name>Verbose</name>
 							<alias>verbose</alias>
@@ -1518,7 +1518,7 @@ rather than only those deemed reachable by the points-to analysis.
 						</boolopt>
 					</section>
 					<section>
-						<name>Spark Pointer Assignment Graph Building Options</name>
+						<name>BDD Spark Pointer Assignment Graph Building Options</name>
 						<boolopt>
 							<name>VTA</name>
 							<alias>vta</alias>
@@ -1632,7 +1632,7 @@ return values are represented as variable (Green) nodes.
 						</boolopt>
 					</section>
 					<section>
-						<name>Spark Pointer Assignment Graph Simplification Options</name>
+						<name>BDD Spark Pointer Assignment Graph Simplification Options</name>
 						<boolopt>
 							<name>Simplify Offline</name>
 							<alias>simplify-offline</alias>
@@ -1674,10 +1674,7 @@ This option has no effect unless <tt>simplify-sccs</tt> is true.
 						</boolopt>
 					</section>
 					<section>
-						<name>Spark Points-To Set Flowing Options</name>
-					</section>
-					<section>
-						<name>Spark Output Options</name>
+						<name>BDD Spark Output Options</name>
 						<boolopt>
 							<name>Dump HTML</name>
 							<alias>dump-html</alias>
