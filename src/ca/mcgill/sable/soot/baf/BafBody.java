@@ -73,6 +73,9 @@ package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
+import ca.mcgill.sable.soot.baf.toolkit.scalar.*;
+import ca.mcgill.sable.soot.toolkit.scalar.*;
+
 import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
@@ -161,6 +164,13 @@ public class BafBody extends Body
                      (Unit)stmtToFirstInstruction.get(trap.getEndUnit()),
                      (Unit)stmtToFirstInstruction.get(trap.getHandlerUnit())));
             }
+        }
+        
+        // Perform some optimizations on the naive baf code
+        {
+             LoadStoreOptimizer.v().optimize(this);
+             UnusedLocalRemover.removeUnusedLocals(this);
+             UnitLocalPacker.packLocals(this);
         }
     }
 }

@@ -222,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.72");
+            System.out.println("Soot version 1.beta.4.dev.73");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -676,22 +676,14 @@ public class Main
                         m.setActiveBody(new GrimpBody(m.getActiveBody()));
                         
                     if(isOptimizing)
-                    
                       BaseGrimpOptimizer.optimize((GrimpBody) m.getActiveBody());
                 }
                 else if(produceBaf)
                 {   
                      m.setActiveBody(new BafBody((JimpleBody) m.getActiveBody()));
 
-                       if(isOptimizing) {
-                         Body b = m.getActiveBody();
-                         
-                         LoadStoreOptimizer.v().optimize(b);// new Body(new BafBody (new Body(m.getActiveBody()))));
-                         //UnusedLocalRemover.removeUnusedLocals(b);
-                         //UnitLocalPacker.packLocals(b);
-                         b.printTo(new PrintWriter(System.out, true));                         
-                     }
-
+                     if(isOptimizing) 
+                        ;
                 } 
             }
         }
