@@ -1901,9 +1901,17 @@ public class CFG {
             String name = ((CONSTANT_Utf8_info) (constant_pool[c.name_index])).convert();
             name = name.replace('/', '.');
 
+            Type baseType;
+
+            if(name.startsWith("[")) {
+                String baseName = getClassName(constant_pool, ((Instruction_Anewarray)ins).arg_i);
+                baseType = Util.v().jimpleTypeOfFieldDescriptor(baseName);
+            } else {
+                baseType = RefType.v(name);
+            }
+
             typeStack = popSafe(typeStack, IntType.v());
-            typeStack = typeStack.push(ArrayType.v(
-                RefType.v(name), 1));
+            typeStack = typeStack.push(baseType.makeArrayType());
             break;
         }
 
