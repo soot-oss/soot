@@ -51,6 +51,7 @@ public class RefType extends RefLikeType implements Comparable
 
     private RefType(String className)
     {
+        if( className.startsWith("[") ) throw new RuntimeException("Attempt to create RefType whose name starts with [");
         this.className = className;
     }
 
