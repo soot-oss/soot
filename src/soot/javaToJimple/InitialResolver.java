@@ -109,9 +109,8 @@ public class InitialResolver {
         astNode = ast;
     }
 
-    private void makeASTMap(List classTypesFound){
+    private void makeASTMap() {
         ClassDeclFinder finder = new ClassDeclFinder();
-        finder.typesToFind(classTypesFound);
         astNode.visit(finder);
         Iterator it = finder.declsFound().iterator();
         while (it.hasNext()){
@@ -150,7 +149,7 @@ public class InitialResolver {
         
         cr.addSourceFileTag(sc);
         
-        makeASTMap(references);
+        makeASTMap();
         
         return references;
     }
