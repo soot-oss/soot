@@ -61,22 +61,16 @@ import soot.jimple.*;
 */
 public class SootClass extends AbstractHost implements Numberable
 {
-    String name, shortName, fixedShortName, packageName, fixedPackageName;
-    int modifiers;
-    Chain fields = new HashChain();
-    SmallNumberedMap subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
-    Chain interfaces = new HashChain();
+    protected String name, shortName, fixedShortName, packageName, fixedPackageName;
+    protected int modifiers;
+    protected Chain fields = new HashChain();
+    protected SmallNumberedMap subSigToMethods = new SmallNumberedMap( Scene.v().getSubSigNumberer() );
+    protected Chain interfaces = new HashChain();
 
-    boolean isInScene;
-    SootClass superClass;
+    protected boolean isInScene;
+    protected SootClass superClass;
 
-    boolean isPhantom;
-    
-    
-    boolean addJimpleLn;	// if true jimple line number tags are 
-    				// added to each statement
-				
-    int jimpleLnNum = 0;	// actual line number
+    protected boolean isPhantom;
     
     
     /**
