@@ -87,10 +87,8 @@ public class Printer
     public void printJimpleStyleTo(SootClass cl, PrintWriter out )
     {
 	// add jimple line number tags
-	if (addJimpleLn()) {
-		incJimpleLnNum();
-	}
-	
+        incJimpleLnNum();
+    
        // Print class name + modifiers
         {
             StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers()));
@@ -133,14 +131,9 @@ public class Printer
         }
         
         out.println();
-	
-	if (addJimpleLn()) {
-		incJimpleLnNum();
-	}
+        incJimpleLnNum();
         out.println("{");
-	if (addJimpleLn()) {
-		incJimpleLnNum();
-	}
+        incJimpleLnNum();
         
         // Print fields
         {
@@ -156,9 +149,7 @@ public class Printer
                         continue;
                     
                     out.println("    " + f.getDeclaration() + ";");
-		    if (addJimpleLn()) {
-			    incJimpleLnNum();
-	 	    }
+                    incJimpleLnNum();
                 }
             }
         }
@@ -171,9 +162,7 @@ public class Printer
             {
                 if(cl.getMethodCount() != 0) {
                     out.println();
-		    if (addJimpleLn()) {
-			    incJimpleLnNum();  	
-	            }
+                    incJimpleLnNum();  	
 		}
                 
                 while(methodIt.hasNext())
@@ -193,9 +182,7 @@ public class Printer
 
                         if(methodIt.hasNext()){
                             out.println();
-			    if (addJimpleLn()) {
-				    incJimpleLnNum();
-		            }		    
+                            incJimpleLnNum();
 			}
                     }
                     else 
@@ -203,23 +190,17 @@ public class Printer
                         out.print("    ");
                         out.print(method.getDeclaration());
                         out.println(";");
-                        if (addJimpleLn()) {
-				incJimpleLnNum();
-			}
+                        incJimpleLnNum();
                         if(methodIt.hasNext()) {
                             out.println();
-			    if (addJimpleLn()) {
-				    incJimpleLnNum();
-			    }
+                            incJimpleLnNum();
 			}
                     }
                 }
             }
         }
         out.println("}");
-	if (addJimpleLn()) {
-		incJimpleLnNum();
-	}	
+        incJimpleLnNum();
     }
     
     public void printTo( SootClass cl, PrintWriter out )
@@ -401,21 +382,15 @@ public class Printer
 
 	{
 		out.println("    " + decl);        
-		if (addJimpleLn()) {
-			incJimpleLnNum();
-		}
+                incJimpleLnNum();
 			for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {        
 				final Tag t = (Tag) tIt.next();
 				out.println(t);
-		if (addJimpleLn()) {
-			incJimpleLnNum();
-		}
+                incJimpleLnNum();
 				    
 			}
 		out.println("    {");
-		if (addJimpleLn()) {
-			incJimpleLnNum();
-		}
+                incJimpleLnNum();
 			    
 	
 		printLocalsInBody( b, out, isPrecise);
@@ -424,8 +399,7 @@ public class Printer
 			printStatementsInBody(b, out);
         
 		out.println("    }");
-		if (addJimpleLn()) {
-			incJimpleLnNum();
+                incJimpleLnNum();
 			    
 	}
 	}
@@ -503,9 +477,7 @@ public class Printer
                                unitGraph.getPredsOf(currentStmt).size() != 1 ||
                                stmtToName.containsKey(currentStmt)) {
                                 out.println();
-				if (addJimpleLn()) {
-                            		incJimpleLnNum();
-				}
+                                incJimpleLnNum();
 			    }
                             else {
                                 // Or if the previous node does not have body statement as a successor.
@@ -514,9 +486,7 @@ public class Printer
                                 
                                 if(succs.get(0) != currentStmt) {
                                     out.println();
-				    if (addJimpleLn()) {
-					incJimpleLnNum();
-				    }
+                                    incJimpleLnNum();
 				    
 				}
                             }
@@ -524,9 +494,7 @@ public class Printer
                     
                      if(stmtToName.containsKey(currentStmt)) {
                          out.println("     " + stmtToName.get(currentStmt) + ":");
-			 if (addJimpleLn()) {
-				incJimpleLnNum();
-			 }
+                         incJimpleLnNum();
 			 
 		     }
 		     
@@ -561,9 +529,7 @@ public class Printer
 
             if(trapIt.hasNext()) {
                 out.println();
-		if (addJimpleLn()) {
-	  		incJimpleLnNum();
-		}
+                incJimpleLnNum();
 	    }
 
             while(trapIt.hasNext())
@@ -574,9 +540,7 @@ public class Printer
                     stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
                     " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
 		
-		if (addJimpleLn()) {
-			incJimpleLnNum();
-		}
+                incJimpleLnNum();
 						
             }
         }
@@ -644,18 +608,14 @@ public class Printer
                     }
 
                     out.println(";");
-		    if (addJimpleLn()) {
-		    	incJimpleLnNum();
-		    }
+                    incJimpleLnNum();
                 }
             }
 
 
             if(!typeToLocals.isEmpty()){
                 out.println();
-		if (addJimpleLn()) {
-	        	incJimpleLnNum();
-		}				    
+                incJimpleLnNum();
 	    }
         }
     }
