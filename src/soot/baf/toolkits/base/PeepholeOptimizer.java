@@ -130,6 +130,12 @@ public class PeepholeOptimizer extends BodyTransformer
                     }
                 }
             }
-        }            
+        }
+        try
+        {
+            peepholeListingStream.close();
+        }
+        catch (IOException e)
+            {}
     }
 }
