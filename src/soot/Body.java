@@ -321,7 +321,6 @@ public abstract class Body
 
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
-		    System.out.println("type: " + type);
                     out.print("        "  + type + " ");
 		    
                     for(int k = 0; k < locals.length; k++)

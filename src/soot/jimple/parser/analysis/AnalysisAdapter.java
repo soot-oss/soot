@@ -808,6 +808,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseTIgnored(TIgnored node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTAbstract(TAbstract node)
     {
         defaultCase(node);
@@ -1264,16 +1269,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTStringConstant(TStringConstant node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTBlank(TBlank node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTComment(TComment node)
     {
         defaultCase(node);
     }

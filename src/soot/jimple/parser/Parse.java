@@ -29,15 +29,13 @@ public class Parse
     */
     static public SootClass parse(InputStream istream, SootClass sc) 
     {  
-	
 	Start tree = null;
-	
 	
 	Parser p = 
 		new Parser(new Lexer(
-		      new PushbackReader(new EscapedReader(
-			      new InputStreamReader(istream)), 1024)));	
-	
+		      new PushbackReader(new EscapedReader(new BufferedReader(
+			      new InputStreamReader(istream))), 1024)));	
+
 	try {
 	    tree = p.parse();
 	} catch(ParserException e) {

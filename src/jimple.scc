@@ -23,11 +23,9 @@ Helpers
   not_cr_lf = [all - [10 + 13]];
   not_star = [all - '*'];
   not_star_slash = [not_star - '/'];
-  
 
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
-
   simple_id_char = alpha_char | dec_digit | '_' | '$';
 
   first_id_char = alpha_char | '_' | '$';
@@ -36,12 +34,17 @@ Helpers
 
   // string_char = [not_cr_lf - '"'];
 
-  string_char = escape_char |  [0 .. 33] | [35 .. 91] | [93 ..127] ;  // escapes and any char except '\' (92) or '"' (34). 
+  // escapes and any char except '\' (92) or '"' (34). 
+  string_char = escape_char | [0 .. 33] | [35 .. 91] | [93 ..127] ;  
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
+
+  blank = (' ' | 9 | 13 | 10)+;  
+  ignored_helper = (blank | line_comment | long_comment)+;
  
 Tokens
+  ignored = ignored_helper;
   abstract = '.abstract';
   final = '.final';
   native = '.native';
@@ -132,13 +135,11 @@ Tokens
   mult = '*';
   div = '/';
 
-
-full_identifier = ((first_id_char | escape_char) (simple_id_char | escape_char)* '.')+  (first_id_char | escape_char) (simple_id_char | escape_char)*; 
-quoted_name = quote quotable_char+ quote;
-identifier = (first_id_char | escape_char) (simple_id_char | escape_char)* | '<clinit>' | '<init>';
-
-
-
+  full_identifier = 
+      ((first_id_char | escape_char) (simple_id_char | escape_char)* '.')+  (first_id_char | escape_char) (simple_id_char | escape_char)*; 
+  quoted_name = quote quotable_char+ quote;
+  identifier = 
+      (first_id_char | escape_char) (simple_id_char | escape_char)* | '<clinit>' | '<init>';
  
   at_identifier = '@' (('parameter' dec_digit+ ':') | 'this' ':' | 'caughtexception');
 	
@@ -147,14 +148,8 @@ identifier = (first_id_char | escape_char) (simple_id_char | escape_char)* | '<c
   float_constant = ((dec_constant '.' dec_constant) (('e'|'E') ('+'|'-')? dec_constant)? ('f'|'F')?)  | ('#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')? ) ; 
   string_constant = '"' string_char* '"';
 
-  blank = (' ' | 9 | 13 | 10)+;  
-  comment = line_comment | long_comment; 
-
-
-
-
 Ignored Tokens
-  blank, comment;
+  ignored;
 
 Productions
   file = 

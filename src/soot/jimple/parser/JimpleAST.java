@@ -59,6 +59,7 @@ public class JimpleAST
       argument the SootClass you want method bodies for.
       If you want to create a SootClass for the inputStream set the 2nd arg to null.
     */
+
     public SootClass getMethodsForClass(SootClass sc) 
     {  	
 	Walker w;
@@ -99,8 +100,8 @@ public class JimpleAST
     {	
 	Parser p =
 	    new Parser(new Lexer(
-		    new PushbackReader(new EscapedReader(
-                    new InputStreamReader(istream)), 1024)));			
+		    new PushbackReader(new EscapedReader(new BufferedReader(
+                    new InputStreamReader(istream))), 1024)));
 	try {
 	    mTree = p.parse();
 	} catch(ParserException e) {

@@ -161,6 +161,7 @@ public interface Analysis extends Switch
     void caseAQuotedName(AQuotedName node);
     void caseAIdentName(AIdentName node);
 
+    void caseTIgnored(TIgnored node);
     void caseTAbstract(TAbstract node);
     void caseTFinal(TFinal node);
     void caseTNative(TNative node);
@@ -253,7 +254,5 @@ public interface Analysis extends Switch
     void caseTIntegerConstant(TIntegerConstant node);
     void caseTFloatConstant(TFloatConstant node);
     void caseTStringConstant(TStringConstant node);
-    void caseTBlank(TBlank node);
-    void caseTComment(TComment node);
     void caseEOF(EOF node);
 }

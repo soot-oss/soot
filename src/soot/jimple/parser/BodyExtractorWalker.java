@@ -126,9 +126,11 @@ public class BodyExtractorWalker extends Walker
 	SootMethod sm = null;
 	try {	
 	  sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
-	  System.out.println(" << " + SootMethod.getSubSignature(name, parameterList, type));
+          if (soot.Main.isVerbose)
+              System.out.println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
 	} catch (soot.NoSuchMethodException e) {
-	    System.out.println(" >> " + SootMethod.getSubSignature(name, parameterList, type));
+	    System.out.println("[!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
+            System.out.println("[!] Methods in class are:");
 	    Iterator it = mSootClass.getMethods().iterator();
 	    while(it.hasNext()) {
 		SootMethod next = (SootMethod) it.next();
@@ -137,14 +139,17 @@ public class BodyExtractorWalker extends Walker
 	    
 	}
 
-	if(sm.isConcrete()) {
-	  System.out.println(sm.getDeclaration());
-	  methodBody.setMethod(sm);
+	if(sm.isConcrete()) 
+        {
+	  if (soot.Main.isVerbose)
+              System.out.println("[Parsed] "+sm.getDeclaration());
 
-	    sm.setActiveBody(methodBody);
-	} else if(node.getMethodBody() instanceof AFullMethodBody) {
-	    if(sm.isPhantom() )
-	       System.out.println("Is phantom...");
+	  methodBody.setMethod(sm);
+          sm.setActiveBody(methodBody);
+	} 
+        else if(node.getMethodBody() instanceof AFullMethodBody) {
+	    if(sm.isPhantom() && soot.Main.isVerbose)
+	       System.out.println("[jimple parser] phantom method!");
 	    throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName() );	
 	}
     }
