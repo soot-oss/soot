@@ -303,8 +303,18 @@ public class PackManager {
                     +" phase "+phaseName );
             return false;
         }
-        optionMap.put( getKey( option ), getValue( option ) );
-        return true;
+        HasPhaseOptions phase = getPhase( phaseName );
+        String declareds = phase.getDeclaredOptions();
+        String key = getKey( option );
+        for( StringTokenizer st = new StringTokenizer( declareds );
+                st.hasMoreTokens(); ) {
+            if( st.nextToken().equals( key ) ) {
+                optionMap.put( key, getValue( option ) );
+                return true;
+            }
+        }
+        G.v().out.println( "Invalid option "+option+" for phase "+phaseName );
+        return false;
     }
 
     public void setPhaseOptionIfUnset( String phaseName, String option ) {

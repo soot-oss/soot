@@ -92,8 +92,7 @@ abstract class OptionsBase {
     public LinkedList classes() { return classes; }
 
     protected boolean setPhaseOption( String phase, String option ) {
-        PackManager.v().processPhaseOptions( phase, option );
-        return true;
+        return PackManager.v().processPhaseOptions( phase, option );
     }
 
 }
