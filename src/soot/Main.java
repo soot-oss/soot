@@ -626,13 +626,14 @@ public class Main {
         for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
             final SootClass s = (SootClass) sIt.next();
             if( s.isPhantom() ) continue;
+            if(Options.v().app()) {
+                s.setApplicationClass();
+            }
             if (Options.v().classes().contains(s.getName())) {
                 s.setApplicationClass();
                 continue;
             }
-
             for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
-
                 final String pkg = (String) pkgIt.next();
                 if (s.isApplicationClass()
                 && s.getPackageName().startsWith(pkg)) {
