@@ -480,7 +480,7 @@ public class BlockGraph implements DirectedGraph
 
             mBlocks = basicBlockList;
             
-            // build head list
+            // build head and tail list
             {
                 Iterator blockIt =  mBlocks.iterator();
                 while(blockIt.hasNext()) {
@@ -495,6 +495,14 @@ public class BlockGraph implements DirectedGraph
                             mHeads.add(b);
                         else if(preds.isEmpty())
                             mHeads.add(b);
+                    }
+                    
+                    {
+                        List succs = b.getSuccs();
+                        if(succs == null)
+                            mTails.add(b);
+                        else if(succs.isEmpty())
+                            mTails.add(b);
                     }
                 }
                 /*
@@ -612,8 +620,7 @@ public class BlockGraph implements DirectedGraph
 
     public List getTails()
     {
-      return new LinkedList();
-      //        throw new RuntimeException("not yet implemented");
+        return mTails;
     }
 
     public List getPredsOf(Object s)
