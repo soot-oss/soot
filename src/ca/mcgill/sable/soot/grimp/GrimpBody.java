@@ -293,6 +293,7 @@ public class GrimpBody extends AbstractBody implements StmtBody
                             (Unit)(oldToNew.get(oldTrap.getHandlerUnit()))));
         }
 
+        
         if(BuildGrimpBodyOption.aggressiveAggregating(buildOptions))
         {
             Aggregator.aggregate(this);

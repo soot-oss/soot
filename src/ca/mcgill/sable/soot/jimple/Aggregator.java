@@ -170,6 +170,8 @@ public class Aggregator
             if(Main.isVerbose)
                 System.out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
+            // body.printTo(new java.io.PrintWriter(System.out, true));
+            
             changed = internalAggregate(body, isConservative);
             
             aggregateCount++;

@@ -120,6 +120,7 @@ import java.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.grimp.*;
 import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.jimple.toolkit.invoke.*;
 
 import java.io.*;
 
@@ -201,7 +202,8 @@ public class Main
     static private String outputDir = "";
 
     static private boolean isOptimizing;
-        
+    static private boolean isOptimizingWhole;
+            
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
@@ -216,7 +218,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.27");
+            System.out.println("Soot version 1.beta.4.dev.28");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -253,6 +255,8 @@ public class Main
             System.out.println("");
             System.out.println("Optimization options:");
             System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
+            System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
+            System.out.println("                             classfiles");
             System.out.println("");
             System.out.println("Misc. options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
@@ -294,6 +298,8 @@ public class Main
                     targetExtension = ".class";
                 else if(arg.equals("-O") || arg.equals("--optimize"))
                     isOptimizing = true;
+                else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+                    isOptimizingWhole = true;
                             
                 else if(arg.equals("--no-typing"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_TYPING;
@@ -346,7 +352,8 @@ public class Main
             }
 
         SootClassManager cm = new SootClassManager();
-
+        SootClass mainClass = null;
+        
         // Generate classes to process
         {
             classesToProcess = new LinkedList();
@@ -354,6 +361,10 @@ public class Main
             for(int i = firstNonOption; i < args.length; i++)
             {
                 SootClass c = cm.loadClassAndSupport(args[i]);
+                
+                if(mainClass == null)
+                    mainClass = c;
+                    
                 classesToProcess.add(c);
             }
             
@@ -384,7 +395,20 @@ public class Main
             }
         }
         
-        // Handle each class
+        if(isOptimizingWhole)
+        {
+            System.out.print("Building InvokeGraph...");
+            System.out.flush();
+            InvokeGraph invokeGraph = ClassHierarchyAnalysis.newInvokeGraph(mainClass); 
+            System.out.println();
+            
+            System.out.print("Inlining invokes...");
+            System.out.flush();
+            GlobalInvokeInliner.inlineInvokes(invokeGraph, classesToProcess);
+            System.out.println();
+        }
+        
+        // Handle each class individually
         {
             Iterator classIt = classesToProcess.iterator();
             
@@ -392,14 +416,11 @@ public class Main
             {
                 SootClass s = (SootClass) classIt.next();
                 
-                PrintWriter writerOut = null;
-                FileOutputStream streamOut = null;
-
                 System.out.print("Transforming " + s.getName() + "... " );
                 System.out.flush();
-       
+                
                 if(!isInDebugMode)
-                {
+                 {
                     try {
                         handleClass(s);
                     }
@@ -414,7 +435,8 @@ public class Main
                 
                 System.out.println();
             }
-            
+        }
+                    
         // Print out time stats.
             if(isProfilingOptimization)
             {
@@ -510,9 +532,8 @@ public class Main
         
                 }
             }
-        }
-    }
-
+    }        
+    
     private static String toTimeString(Timer timer, long totalTime)
     {
         DecimalFormat format = new DecimalFormat("00.0");
@@ -564,38 +585,66 @@ public class Main
             {   
                 SootMethod m = (SootMethod) methodIt.next();
                    
-                if(targetExtension.equals(".jimp") || targetExtension.equals(".jimple"))
+                if(!isOptimizingWhole)
                 {
-                    JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
-                    
-                    if(isOptimizing) 
-                        BaseJimpleOptimizer.optimize(jimpleBody);
-                    
-                    m.setActiveBody(jimpleBody);
+                    if(targetExtension.equals(".jimp") || targetExtension.equals(".jimple"))
+                    {
+                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
+                        
+                        if(isOptimizing) 
+                            BaseJimpleOptimizer.optimize(jimpleBody);
+                        
+                        m.setActiveBody(jimpleBody);
+                    }
+                    else if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
+                    {
+                        m.setActiveBody(new BafBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions)));
+                    }
+                    else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || 
+                        targetExtension.equals(".class") || targetExtension.equals(".jasmin"))
+                    {
+                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
+                        
+                        if(isOptimizing) 
+                            BaseJimpleOptimizer.optimize(jimpleBody);
+                        
+                        GrimpBody grimpBody;
+                        
+                        if(isOptimizing)
+                            grimpBody = new GrimpBody(jimpleBody, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
+                        else
+                            grimpBody = new GrimpBody(jimpleBody);
+                             
+                        if(isOptimizing)
+                            BaseGrimpOptimizer.optimize(grimpBody);
+                        
+                        m.setActiveBody(grimpBody);
+                    }
                 }
-                else if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
-                {
-                    m.setActiveBody(new BafBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions)));
-                }
-                else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || targetExtension.equals(".class") || 
-                    targetExtension.equals(".jasmin"))
-                {
-                    JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
-                    
-                    if(isOptimizing) 
-                        BaseJimpleOptimizer.optimize(jimpleBody);
-                    
-                    GrimpBody grimpBody;
-                    
-                    if(isOptimizing)
-                        grimpBody = new GrimpBody(jimpleBody, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
-                    else
-                        grimpBody = new GrimpBody(jimpleBody);
+                else
+                {   
+                    if(!m.hasActiveBody())
+                        m.setActiveBody(new JimpleBody(new ClassFileBody(m)));
                          
-                    if(isOptimizing)
-                        BaseGrimpOptimizer.optimize(grimpBody);
+                    Body body = m.getActiveBody();
+
+                    body.printTo(new PrintWriter(System.out, true));
+                                           
+                    BaseJimpleOptimizer.optimize((JimpleBody) body);
                     
-                    m.setActiveBody(grimpBody);
+                    if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
+                    {
+                        m.setActiveBody(new BafBody(body));
+                    }
+                    else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || 
+                        targetExtension.equals(".class") || targetExtension.equals(".jasmin"))
+                    {
+                        GrimpBody grimpBody = new GrimpBody((JimpleBody) body, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
+                             
+                        BaseGrimpOptimizer.optimize(grimpBody);
+                        
+                        m.setActiveBody(grimpBody);
+                    }
                 }
             }
         }
@@ -624,18 +673,18 @@ public class Main
                 System.out.println("Cannot close output file " + fileName);
             }
         }
-        
-        
-        // Release bodies       
-        {
-            Iterator methodIt = c.getMethods().iterator();
-            
-            while(methodIt.hasNext())
-            {   
-                SootMethod m = (SootMethod) methodIt.next();
-                m.releaseActiveBody();
+
+        // Release bodies, if not performing whole program optimizations
+            if(!isOptimizingWhole)
+            {
+                Iterator methodIt = c.getMethods().iterator();
+                
+                while(methodIt.hasNext())
+                {   
+                    SootMethod m = (SootMethod) methodIt.next();
+                    m.releaseActiveBody();
+                }
             }
-        }
     }
     
     public static double truncatedOf(double d, int numDigits)

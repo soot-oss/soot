@@ -227,6 +227,9 @@ public class SootMethod
 
     public Body getActiveBody() 
     {
+        if(!hasActiveBody())
+            throw new RuntimeException("no active body present for method " + getSignature());
+            
         return activeBody;
     }
     
