@@ -449,7 +449,8 @@ public class XMLPrinter {
 
             // parse any info from the statement code
             String jimpleStr = currentStmt.toString(stmtToName, indent).trim();
-            if (jimpleStr.indexOf("@parameter") != -1) {
+            if (currentStmt instanceof soot.jimple.IdentityStmt &&
+		jimpleStr.indexOf(":= @parameter") != -1) {
                 // this line is a use of a parameter                
                 String tempStr =
                     jimpleStr.substring(jimpleStr.indexOf("@parameter") + 10);
@@ -736,6 +737,7 @@ public class XMLPrinter {
 
     private String toCDATA(String str) {
         // wrap a string in CDATA markup - str can contain anything and will pass XML validation
+	str = str.replaceAll("]]>", "]]&gt;");
         return "<![CDATA[" + str + "]]>";
     }
 
