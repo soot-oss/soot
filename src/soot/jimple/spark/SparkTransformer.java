@@ -28,6 +28,7 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.options.SparkOptions;
+import soot.options.Options;
 import soot.tagkit.*;
 
 /** Main entry point for Spark.
@@ -41,6 +42,7 @@ public class SparkTransformer extends AbstractSparkTransformer
     protected void internalTransform( String phaseName, Map options )
     {
         SparkOptions opts = new SparkOptions( options );
+        final String output_dir = Options.v().output_dir();
 
         // Build pointer assignment graph
         ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
@@ -88,7 +90,7 @@ public class SparkTransformer extends AbstractSparkTransformer
         // Dump pag
         PAGDumper dumper = null;
         if( opts.dump_pag() || opts.dump_solution() ) {
-            dumper = new PAGDumper( pag );
+            dumper = new PAGDumper( pag, output_dir );
         }
         if( opts.dump_pag() ) dumper.dump();
 
@@ -142,9 +144,9 @@ public class SparkTransformer extends AbstractSparkTransformer
         }
         */
 
-        if( opts.dump_answer() ) new ReachingTypeDumper( pag ).dump();
+        if( opts.dump_answer() ) new ReachingTypeDumper( pag, output_dir ).dump();
         if( opts.dump_solution() ) dumper.dumpPointsToSets();
-        if( opts.dump_html() ) new PAG2HTML( pag ).dump();
+        if( opts.dump_html() ) new PAG2HTML( pag, output_dir ).dump();
         Scene.v().setPointsToAnalysis( pag );
         if( opts.add_tags() ) {
             addTags( pag );

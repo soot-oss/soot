@@ -28,13 +28,14 @@ import java.io.*;
  * @author Ondrej Lhotak
  */
 public class ReachingTypeDumper {
-    public ReachingTypeDumper( PointsToAnalysis pa ) {
+    public ReachingTypeDumper( PointsToAnalysis pa, String output_dir ) {
         this.pa = pa;
+        this.output_dir = output_dir;
     }
     public void dump() {
         try {
             PrintWriter file = new PrintWriter(
-                new FileOutputStream( "types" ) );
+                new FileOutputStream( new File(output_dir, "types") ) );
             for( Iterator it = Scene.v().getApplicationClasses().iterator();
                     it.hasNext(); ) {
                 handleClass( file, (SootClass) it.next() );
@@ -54,6 +55,7 @@ public class ReachingTypeDumper {
     /* End of package methods. */
 
     protected PointsToAnalysis pa;
+    protected String output_dir;
 
     protected void handleClass( PrintWriter out, SootClass c ) {
         for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {

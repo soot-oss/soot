@@ -31,8 +31,9 @@ import java.util.zip.*;
  * @author Ondrej Lhotak
  */
 public class PAG2HTML {
-    public PAG2HTML( PAG pag ) {
+    public PAG2HTML( PAG pag, String output_dir ) {
         this.pag = pag;
+        this.output_dir = output_dir;
     }
     public void dump() {
         for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
@@ -44,7 +45,7 @@ public class PAG2HTML {
         }
         try {
             JarOutputStream jarOut = new JarOutputStream(
-                    new FileOutputStream( "pag.jar" ) );
+                    new FileOutputStream( new File(output_dir, "pag.jar") ) );
             for( Iterator vIt = mergedNodes.keySet().iterator(); vIt.hasNext(); ) {
                 final VarNode v = (VarNode) vIt.next();
                 dumpVarNode( v, jarOut );
@@ -65,6 +66,7 @@ public class PAG2HTML {
     /* End of package methods. */
 
     protected PAG pag;
+    protected String output_dir;
     protected MultiMap mergedNodes = new HashMultiMap();
     protected MultiMap methodToNodes = new HashMultiMap();
 
