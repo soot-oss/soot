@@ -301,6 +301,80 @@ public class JimpleBody extends StmtBody
         return false;
     }
 
+    public void insertIdentityStmts()
+    {
+        int i = 0;
+
+        if (!getMethod().isStatic())
+         {
+             Local l = Jimple.v().newLocal("this", 
+                                           RefType.v(getMethod().getDeclaringClass()));
+             getLocals().add(l);
+             getUnits().add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
+         }
+
+        Iterator parIt = getMethod().getParameterTypes().iterator();
+        while (parIt.hasNext())
+        {
+            Type t = (Type)parIt.next();
+            Local l = Jimple.v().newLocal("parameter"+i, t);
+            getLocals().add(l);
+            getUnits().add(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
+            i++;
+        }
+    }
+
+    public Stmt getFirstNonIdentityStmt()
+    {
+        Iterator it = getUnits().iterator();
+        Object o = null;
+        while (it.hasNext())
+            if (!((o = it.next()) instanceof IdentityStmt))
+                break;
+        if (o == null)
+            throw new RuntimeException("no non-id statements!");
+        return (Stmt)o;
+    }
+
+    public Local getThisLocal()
+    {
+        // Look for the first identity stmt assigning from @this.
+        {
+            Iterator unitsIt = getUnits().iterator();
+            while (unitsIt.hasNext())
+            {
+                Stmt s = (Stmt)unitsIt.next();
+                if (s instanceof IdentityStmt && 
+                    ((IdentityStmt)s).getRightOp() instanceof ThisRef)
+                    return (Local)(((IdentityStmt)s).getLeftOp());
+            }
+        }
+
+        throw new RuntimeException("couldn't find identityref!");
+    }
+
+    public Local getParameterLocal(int i)
+    {
+        // Look for the first identity stmt assigning from @this.
+        {
+            Iterator unitsIt = getUnits().iterator();
+            while (unitsIt.hasNext())
+            {
+                Stmt s = (Stmt)unitsIt.next();
+                if (s instanceof IdentityStmt && 
+                    ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
+                {
+                    IdentityStmt is = (IdentityStmt)s;
+                    ParameterRef pr = (ParameterRef)is.getRightOp();
+                    if (pr.getIndex() == i)
+                        return (Local)is.getLeftOp();
+                }
+            }
+        }
+
+        throw new RuntimeException("couldn't find parameterref!");
+    }
+
 //      public void printDebugTo(java.io.PrintWriter out)
 //      {   
 //          StmtBody stmtBody = this; 

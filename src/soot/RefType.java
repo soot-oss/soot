@@ -48,6 +48,11 @@ public class RefType extends BaseType implements ToBriefString
         return new RefType(className);
     }
 
+    public static RefType v(SootClass c)
+    {
+        return v(c.getName());
+    }
+
     public static RefType v()
     {
         return singleton;

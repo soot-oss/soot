@@ -255,7 +255,7 @@ public class SootClass extends AbstractHost
         SootMethod toReturn = (SootMethod) scene.methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
         
         if(toReturn == null)
-            throw new soot.NoSuchMethodException("No method " + name + " in class " + getName());
+            throw new soot.NoSuchMethodException("No method " + subsignature + " in class " + getName());
         else
             return toReturn;
     }
