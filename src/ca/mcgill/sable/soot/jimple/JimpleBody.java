@@ -244,7 +244,7 @@ public class JimpleBody extends StmtBody
             Transformations.standardizeLocalNames(this);
         else
         {   
-            LocalPacker.unsplitOriginalLocals(this);
+            UnitLocalPacker.unsplitOriginalLocals(this);
             Transformations.standardizeStackLocalNames(this);
         }
         
@@ -252,7 +252,7 @@ public class JimpleBody extends StmtBody
         
         if(BuildJimpleBodyOption.usePacking(buildOptions))
         {
-            LocalPacker.packLocals(this);
+            UnitLocalPacker.packLocals(this);
         }
 
         if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
