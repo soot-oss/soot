@@ -3,7 +3,7 @@
  * Copyright (C) 1998, 1999 Etienne Gagnon (gagnon@sable.mcgill.ca). *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Raja Vallee-Rai (kor@sable.mcgill.ca) are       *
+ * Modifications by Raja Vallee-Rai (rvallerai@sable.mcgill.ca) are  *
  * Copyright (C) 1998 Raja Vallee-Rai.  All rights reserved.         *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *

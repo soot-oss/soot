@@ -72,7 +72,6 @@
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
-import ca.mcgill.sable.soot.*;
 
 public interface ToBriefString
 {

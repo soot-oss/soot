@@ -150,6 +150,7 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
             }
 
             FlowUniverse copiesUniverse = new FlowUniverse(copiesList.toArray());
+            
             emptySet = PackSet.v(copiesUniverse);
         }
 

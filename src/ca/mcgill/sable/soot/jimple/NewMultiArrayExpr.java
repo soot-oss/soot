@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on January 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   NewMultiArrayExpr implements ToBriefString now.
+    
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,7 +77,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewMultiArrayExpr implements Expr
+public class NewMultiArrayExpr implements Expr, ToBriefString
 {
     ArrayType baseType;
     ValueBox[] sizeBoxes;

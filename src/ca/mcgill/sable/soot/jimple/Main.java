@@ -134,7 +134,9 @@ public class Main
         graphTimer = new Timer(),
         assignTimer = new Timer(),
         resolveTimer = new Timer(),
-        totalTimer = new Timer();
+        totalTimer = new Timer(),
+        splitPhase1Timer = new Timer(),
+        splitPhase2Timer = new Timer();
 
     static int conversionLocalCount,
         cleanup1LocalCount,
@@ -164,7 +166,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.1.dev.5");
+            System.out.println("Jimple version 1.beta.1.dev.6");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -340,9 +342,10 @@ public class Main
             }
         }
 
-            /*
+            
             if(isProfilingOptimization)
             {
+                /*
                 System.out.println("Successfully jimplified " + numSuccess + " classfiles; failed on " + numFailed + ".");
 
                 // Count number of statements stored
@@ -359,62 +362,70 @@ public class Main
                     System.out.println("Confirmed " + storedStmtCount + " stored statements.");
                     System.out.println();
                 }
-
-                System.out.println("graphTimer: " + graphTimer.getTime());
-                System.out.println("defsTimer: " + defsTimer.getTime());
-                System.out.println("usesTimer: " + usesTimer.getTime());
-                System.out.println("cleanupAlgorithmTimer: " + cleanupAlgorithmTimer.getTime());
-                System.out.println("copiesTimer: " + copiesTimer.getTime());
-                System.out.println("liveTimer: " + liveTimer.getTime());
-                System.out.println("resolveTimer: " + resolveTimer.getTime());
+                */
+                totalTimer.end();
+                    
+                long totalTime = totalTimer.getTime();
+                    
+                System.out.println("Time measurements");
+                System.out.println();
+                
+                System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
+                System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+                System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+                System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
+                System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
+                System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+                System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
                 System.out.println();
 
                 // Print out time stats.
                 {
-                    long conversionTime = conversionTimer.getTime();
-                    long cleanup1Time = cleanup1Timer.getTime();
-                    long splitTime = splitTimer.getTime();
-                    long assignTime = assignTimer.getTime();
-                    long packTime = packTimer.getTime();
-                    long cleanup2Time = cleanup2Timer.getTime();
-
-                    totalTimer.end();
-                    long totalTime = totalTimer.getTime();
                     float timeInSecs;
 
-                    System.out.println("conversionTimer: " + conversionTime +
-                        "(" + (conversionTime * 100 / totalTime) + "%) " +
-                        conversionLocalCount + " locals  " + conversionStmtCount + " stmts");
-                    System.out.println("cleanup1Timer:   " + cleanup1Time +
-                        "(" + (cleanup1Time * 100 / totalTime) + "%) " +
-                        cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
-                    System.out.println("splitTimer:      " + splitTime +
-                        "(" + (splitTime * 100 / totalTime) + "%) " +
-                        splitLocalCount + " locals  " + splitStmtCount + " stmts");
-                    System.out.println("assignTimer:     " + assignTime +
-                        "(" + (assignTime * 100 / totalTime) + "%) " +
-                        assignLocalCount + " locals  " + assignStmtCount + " stmts");
-                    System.out.println("packTimer:       " + packTime +
-                        "(" + (packTime * 100 / totalTime) + "%) " +
-                        packLocalCount + " locals  " + packStmtCount + " stmts");
+                    System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime) + 
+                        "\t" + conversionLocalCount + " locals  " + conversionStmtCount + " stmts");
+                        
+                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
+                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
+                        
+                    System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime) + 
+                        "\t" + splitLocalCount + " locals  " + splitStmtCount + " stmts");
+                        
+                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
+                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
+                    
+                    System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime) +
+                        "\t" + assignLocalCount + " locals  " + assignStmtCount + " stmts");
+                    System.out.println("             Packing locals: " + toTimeString(packTimer, totalTime) + 
+                        "\t" + packLocalCount + " locals  " + packStmtCount + " stmts");
+                
+                        /*
                     System.out.println("cleanup2Timer:   " + cleanup2Time +
                         "(" + (cleanup2Time * 100 / totalTime) + "%) " +
                         cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
+*/
 
                     timeInSecs = (float) totalTime / 1000.0f;
-                    float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+//                    float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
 
-                    System.out.println("stmts created: " + stmtCount);
-
-                    System.out.println("totalTime:" + timeInSecs + "s  " + (float) stmtCount / timeInSecs + " (stmts/sec)");
-                    System.out.println("totalMemory:" + memoryUsed + "k  " + (float) memoryUsed / stmtCount+ " (k/stmt)");
+                    System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+//                    System.out.println("totalMemory:" + memoryUsed + "k  " + (float) memoryUsed / stmtCount+ " (k/stmt)");
 
                 }
-            }*/
+            }
 
     }
 
+    private static String toTimeString(Timer timer, long totalTime)
+    {
+        long time = timer.getTime();
+        String timeString = paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
+        
+        return (timeString + "s" + paddedLeftOf(" (" + (time * 100 / totalTime) + "%" + ")", 5));   
+    }
+    
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
@@ -428,4 +439,30 @@ public class Main
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
                 writerOut);
     }
+    
+    public static double truncatedOf(double d, int numDigits)
+    {
+        double multiplier = 1;
+        
+        for(int i = 0; i < numDigits; i++)
+            multiplier *= 10;
+            
+        return ((long) (d * multiplier)) / multiplier;
+    }
+    
+    public static String paddedLeftOf(String s, int length)
+    {
+        if(s.length() >= length)
+            return s;
+        else {
+            int diff = length - s.length();
+            char[] padding = new char[diff];
+            
+            for(int i = 0; i < diff; i++)
+                padding[i] = ' ';
+            
+            return new String(padding) + s;
+        }    
+    }
+
 }

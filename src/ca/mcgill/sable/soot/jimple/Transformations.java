@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on January 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
+   Moved packLocals method to ChaitinAllocator.java
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -172,6 +175,9 @@ class Transformations
 
         Map boxToSet = new HashMap(stmtList.size() * 2 + 1, 0.7f);
 
+        if(Main.isProfilingOptimization)
+                Main.splitPhase1Timer.start();
+
         // Go through the definitions, building the boxToSet 
         {
             List code = stmtList;
@@ -274,6 +280,12 @@ class Transformations
             }
         }
 
+        if(Main.isProfilingOptimization)
+            Main.splitPhase1Timer.end();
+
+        if(Main.isProfilingOptimization)
+            Main.splitPhase2Timer.start();
+
         // Assign locals appropriately.
         {
             Map localToUseCount = new HashMap(listBody.getLocalCount() * 2 + 1, 0.7f);
@@ -322,6 +334,10 @@ class Transformations
                 }
             }
         }
+        
+        if(Main.isProfilingOptimization)
+            Main.splitPhase2Timer.end();
+
     }
 
     public static void removeUnusedLocals(JimpleBody listBody)
@@ -380,210 +396,6 @@ class Transformations
                 listBody.removeLocal(local);
             }
         }
-    }
-
-    public static void packLocals(JimpleBody body)
-    {
-        StmtList stmtList = body.getStmtList();
-
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
-
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.start();
-
-        // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
-
-        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
-
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.start();
-
-        LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.end();
-
-        Set types;
-
-        // Construct different types available
-        {
-            Iterator localIt = body.getLocals().iterator();
-
-            types = new ArraySet();
-
-            while(localIt.hasNext())
-                types.add(((Local) localIt.next()).getType());
-        }
-
-        // Perform one packing per type
-        {
-            Iterator typeIt = types.iterator();
-
-            while(typeIt.hasNext())
-            {
-                Type type = (Type) typeIt.next();
-
-                InterferenceGraph originalGraph;
-                InterferenceGraph workingGraph;
-                LinkedList localQueue;
-                Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-                Set usedColors = new HashSet();
-
-                // Build graphs
-                    originalGraph = new InterferenceGraph(body, type, liveLocals);
-                    workingGraph = new InterferenceGraph(body, type, liveLocals);
-                        // should really be a clone
-
-                // Color parameter locals first
-                {
-                    Iterator codeIt = stmtList.iterator();
-
-                    while(codeIt.hasNext())
-                    {
-                        Stmt s = (Stmt) codeIt.next();
-
-                        if(s instanceof IdentityStmt &&
-                            ((IdentityStmt) s).getLeftOp() instanceof Local)
-                        {
-
-                            Local l = (Local) ((IdentityStmt) s).getLeftOp();
-
-                            if(l.getType().equals(type))
-                            {
-                                Local color = new Local("", type);
-
-                                localToColor.put(l, color);
-                                usedColors.add(color);
-
-                                workingGraph.removeLocal(l);
-                            }
-                        }
-                    }
-                }
-
-                // Construct queue
-                    localQueue = new LinkedList();
-
-                    // Put in queue in decreasing interference order
-                    while(!workingGraph.isEmpty())
-                        localQueue.addFirst(workingGraph.removeMostInterferingLocal());
-
-                // Assign colors for each local in queue
-                    while(!localQueue.isEmpty())
-                    {
-                        Local local = (Local) localQueue.removeFirst();
-                        Set workingColors;
-
-                        // Clone currentColors
-                        {
-                            workingColors = new HashSet();
-                            Iterator colorIt = usedColors.iterator();
-
-                            while(colorIt.hasNext())
-                                workingColors.add(colorIt.next());
-                        }
-
-                        // Remove unavailable colors for this local
-                        {
-                            Local[] interferences = originalGraph.getInterferencesOf(local);
-
-                            for(int i = 0; i < interferences.length; i++)
-                            {
-                                if(localToColor.containsKey(interferences[i]))
-                                    workingColors.remove(localToColor.get(interferences[i]));
-                            }
-                        }
-
-                        // Assign a color
-                        {
-                            Local assignedColor;
-
-                            if(workingColors.isEmpty())
-                            {
-                                assignedColor = new Local("", type);
-                                usedColors.add(assignedColor);
-                            }
-                            else
-                                assignedColor = (Local) workingColors.iterator().next();
-
-                            localToColor.put(local, assignedColor);
-                        }
-                    }
-
-                // Perform changes on method
-                {
-                    Set originalLocals = new HashSet();
-
-                    // Remove all locals with this type.
-                    {
-                        Iterator localIt = body.getLocals().iterator();
-
-                        while(localIt.hasNext())
-                        {
-                            Local l = (Local) localIt.next();
-
-                            if(l.getType().equals(type))
-                            {
-                                body.removeLocal(l);
-                                originalLocals.add(l);
-                            }
-                        }
-                    }
-
-                    // Give names to the new locals
-                    {
-                        Iterator itr = originalLocals.iterator();
-
-                        while(itr.hasNext())
-                        {
-                            Local original = (Local) itr.next();
-                            Local color = (Local) localToColor.get(original);
-
-                            if(color.getName().equals(""))
-                                color.setName(original.getName());
-                        }
-                    }
-
-                    // Add new locals to the method
-                    {
-                        Iterator itr = usedColors.iterator();
-
-                        while(itr.hasNext())
-                            body.addLocal((Local) itr.next());
-                    }
-
-                    // Go through all valueBoxes of this method and perform changes
-                    {
-                        Iterator codeIt = stmtList.iterator();
-
-                        while(codeIt.hasNext())
-                        {
-                            Stmt s = (Stmt) codeIt.next();
-
-                            Iterator boxIt = s.getUseAndDefBoxes().iterator();
-
-                            while(boxIt.hasNext())
-                            {
-                                ValueBox box = (ValueBox) boxIt.next();
-
-                                if(box.getValue() instanceof Local)
-                                {
-                                    Local l = (Local) box.getValue();
-
-                                    if(l.getType().equals(type))
-                                        box.setValue((Local) localToColor.get(l));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
     }
 
     public static void cleanupCode(JimpleBody stmtBody)
@@ -647,9 +459,18 @@ class Transformations
 
             LocalCopies localCopies = new SimpleLocalCopies(graph);
 
+            
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.end();
 
+            if(Main.isProfilingOptimization)
+                Main.liveTimer.start();
+
+            new SimpleLiveLocals(graph);
+
+            if(Main.isProfilingOptimization)
+                Main.liveTimer.end();
+            
             if(Main.isProfilingOptimization)
                 Main.cleanupAlgorithmTimer.start();
 

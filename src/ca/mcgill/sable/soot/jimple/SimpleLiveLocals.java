@@ -88,6 +88,8 @@ public class SimpleLiveLocals implements LiveLocals
 
         // Build stmtToLocals map
         {
+            // long liveCount = 0;
+            
             stmtToLocals = new HashMap(graph.size() * 2 + 1, 0.7f);
 
             Iterator stmtIt = graph.iterator();
@@ -97,9 +99,14 @@ public class SimpleLiveLocals implements LiveLocals
                 Stmt s = (Stmt) stmtIt.next();
 
                 FlowSet set = (FlowSet) analysis.getFlowBeforeStmt(s);
+                //List localList = set.toList();
+                
+                //liveCount += localList.size();
+                
                 stmtToLocals.put(s, Collections.unmodifiableList(set.toList()));
-
             }
+            
+            // System.out.println((((double) liveCount) / graph.size()) + " live locals per stmt on avg" + (graph.size())); 
         }
 
     }

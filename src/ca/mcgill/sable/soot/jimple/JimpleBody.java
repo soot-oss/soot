@@ -260,7 +260,7 @@ public class JimpleBody implements Body
                 if(Main.isProfilingOptimization)
                     Main.packTimer.start();
 
-                Transformations.packLocals(this);
+                FastAllocator.packLocals(this);
                 Transformations.removeUnusedLocals(this);
 
                 if(Main.isProfilingOptimization)
