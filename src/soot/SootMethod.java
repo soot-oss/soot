@@ -472,9 +472,8 @@ public class SootMethod extends AbstractHost implements ClassMember
     {
         StringBuffer buffer = new StringBuffer();
         Type t = returnType;
-	if (t != null) // This is needed for Dava constructors.
-	    buffer.append(t.toString());
-        buffer.append(" " + Scene.v().quotedNameOf(name) + "(");
+
+        buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name) + "(");
         
         Iterator typeIt = params.iterator();
 
@@ -528,9 +527,7 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         // return type
         Type t = this.getReturnType();
-	
-	if (t != null) // Again, needed for Dava constructors.
-	    buffer.append(t + " ");
+	buffer.append(t + " ");
 
         // name
         buffer.append(Scene.v().quotedNameOf(this.getName()) + "(");            

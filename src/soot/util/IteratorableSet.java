@@ -4,8 +4,16 @@ import java.util.*;
 
 public class IteratorableSet extends HashChain implements Set
 {
-    public boolean equals( IteratorableSet other)
+    public boolean equals( Object o)
     {
+	if (this == o)
+	    return true;
+
+	if ((o instanceof IteratorableSet) == false)
+	    return false;
+
+	IteratorableSet other = (IteratorableSet) o;
+
 	if (size() != other.size())
 	    return false;
 	

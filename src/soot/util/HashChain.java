@@ -302,10 +302,24 @@ public class HashChain extends AbstractCollection
     
     public Iterator snapshotIterator() 
     {
-        List l = new ArrayList(); l.addAll(this);
+	List l = new ArrayList( map.size()); 
+	
+	l.addAll(this);
+
         return l.iterator();
     }
    
+    public Iterator snapshotIterator( Object item)
+    {
+        List l = new ArrayList( map.size());
+	
+        Iterator it = new LinkIterator( item);
+        while (it.hasNext())
+            l.add( it.next());
+	
+        return l.iterator();
+    }
+
     public Iterator iterator(){ return new LinkIterator(firstItem); }
     public Iterator iterator(Object item) 
     {
