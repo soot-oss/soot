@@ -33,8 +33,9 @@ package soot.util;
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter
 {	
-	// version
-	public static final String XML_PRINTER_VERSION = "1.0";
+	// xml and dtd header
+        public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
+	public static final String dtdHeader = "<!DOCTYPE jil SYSTEM \"http://www.sable.mcgill.ca/~flynn/jil/jil10.dtd\">\n";
 	
 	// xml constants
 	private static final String indent = "  ";

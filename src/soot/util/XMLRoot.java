@@ -33,8 +33,6 @@ package soot.util;
 /** XML helper */
 public class XMLRoot
 {
-	public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
-
 	public String name;			// <NAME attr1="val1" attr2="val2"...>val</NAME>
 	public String value;			// <name attr1="val1" attr2="val2"...>VAL</name>
 	public String[] attributes;		// <name ATTR1="val1" ATTR2="val2"...>val</name>
@@ -42,18 +40,13 @@ public class XMLRoot
 
 	protected XMLNode child = null;	// -> to child node
 	
-	XMLRoot()
-	{
-		name = "root";
-		value = "";
-		attributes = new String[] { "generator", "version" };
-		//values = new String[] { this.getClass().getName().toString(), XMLPrinter.XML_PRINTER_VERSION };
-		values = new String[] { this.getClass().getName().toString(), "1.0" };		
-	}
-	
+	XMLRoot() {}
+
 	public String toString()
 	{
-		return XMLNode.xmlHeader + this.child.toPostString();
+		return  XMLPrinter.xmlHeader + 
+		        XMLPrinter.dtdHeader +
+			this.child.toPostString();
 	}
 
 	// add element to end of tree

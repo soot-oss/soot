@@ -104,8 +104,8 @@ public class XMLStmtPrinter implements StmtPrinter{
 
 	// iterate through each statement
         String cleanMethodName = body.getMethod().getName();        
-	cleanMethodName = cleanMethodName.replace( '<', '[' );
-        cleanMethodName = cleanMethodName.replace( '>', ']' );		        
+	cleanMethodName = cleanMethodName.replace( '<', '_' );
+        cleanMethodName = cleanMethodName.replace( '>', '_' );		        
 	Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
         String indent = ( isNumbered ) ? "    " : "        ";
@@ -129,9 +129,14 @@ public class XMLStmtPrinter implements StmtPrinter{
         methodNode.addChild( "declaration", "<![CDATA[" + body.getMethod().getDeclaration().toString().trim() + "]]>" );
 
         // create references to parameters, locals, labels, stmts nodes
-        XMLNode parametersNode = methodNode.addChild( "parameters", new String[] { "method" }, new String[] { cleanMethodName } );	  XMLNode localsNode = methodNode.addChild( "locals" );	  XMLNode labelsNode = methodNode.addChild( "labels" );	  XMLNode stmtsNode = methodNode.addChild( "statements" );	  // create default label
+        XMLNode parametersNode = methodNode.addChild( "parameters", new String[] { "method" }, new String[] { cleanMethodName } );
+	XMLNode localsNode = methodNode.addChild( "locals" );	  
+	XMLNode labelsNode = methodNode.addChild( "labels" );	  
+	XMLNode stmtsNode = methodNode.addChild( "statements" );
+	  
+	// create default label
         XMLLabel xmlLabel = new XMLLabel( labelCount, cleanMethodName, currentLabel );
-        labelsNode.addChild( "label", currentLabel, new String[] { "id", "method" }, new String[] { (labelCount++)+"", cleanMethodName } );								
+        labelsNode.addChild( "label", new String[] { "id", "name", "method" }, new String[] { (labelCount++)+"", currentLabel, cleanMethodName } );
 
         // for each statement...
         while( unitIt.hasNext() )         
@@ -161,13 +166,14 @@ public class XMLStmtPrinter implements StmtPrinter{
                 //xmlLabel.clear();				                
 
                 xmlLabel = new XMLLabel( labelCount, cleanMethodName, currentLabel );                
-                labelsNode.addChild( "label", currentLabel, new String[] { "id", "method" }, new String[] { labelCount+"", cleanMethodName } );
+                labelsNode.addChild( "label", new String[] { "id", "name", "method" }, new String[] { labelCount+"", currentLabel, cleanMethodName } );
                 labelCount++;		                
                 labelID = 0;
             }
             			            
             // examine each statement
-            XMLNode stmtNode = stmtsNode.addChild( "statement", new String[] { "id", "label", "method", "labelid", "branches", "fallsthrough" }, new String[] { statementCount+"", currentLabel, cleanMethodName, labelID+"", boolToString( currentStmt.branches() ), boolToString( currentStmt.fallsThrough() ) } );
+            XMLNode stmtNode = stmtsNode.addChild( "statement", new String[] { "id", "label", "method", "labelid" }, new String[] { statementCount+"", currentLabel, cleanMethodName, labelID+"" } );
+	    XMLNode sootstmtNode = stmtNode.addChild( "soot_statement", new String[] { "branches", "fallsthrough" }, new String[] {  boolToString( currentStmt.branches() ), boolToString( currentStmt.fallsThrough() ) } );
 			
             // uses for each statement            
             int j = 0;
@@ -178,7 +184,7 @@ public class XMLStmtPrinter implements StmtPrinter{
                 if( box.getValue() instanceof Local )
                 {
                     String local = ( ( Local )box.getValue() ).toBriefString();
-                    stmtNode.addChild( "uses", local, new String[] { "id", "method" }, new String[] { j+"", cleanMethodName } );
+                    sootstmtNode.addChild( "uses", new String[] { "id", "local", "method" }, new String[] { j+"", local, cleanMethodName } );
                     j++;
 
                     Vector tempVector = null;
@@ -212,7 +218,7 @@ public class XMLStmtPrinter implements StmtPrinter{
                 if( box.getValue() instanceof Local )
                 {
                     String local = ( ( Local )box.getValue() ).toBriefString();
-                    stmtNode.addChild( "defines", local, new String[] { "id", "method" }, new String[] { j+"", cleanMethodName } );
+                    sootstmtNode.addChild( "defines", new String[] { "id", "local", "method" }, new String[] { j+"", local, cleanMethodName } );
                     j++;
 					
                     Vector tempVector = null;
@@ -258,14 +264,14 @@ public class XMLStmtPrinter implements StmtPrinter{
             // simple live locals            
             List liveLocalsIn = sll.getLiveLocalsBefore( currentStmt );
             List liveLocalsOut = sll.getLiveLocalsAfter( currentStmt );
-            XMLNode livevarsNode = stmtNode.addChild( "livevariables", new String[] { "incount", "outcount" }, new String[] { liveLocalsIn.size()+"", liveLocalsOut.size()+"" } );
+            XMLNode livevarsNode = sootstmtNode.addChild( "livevariables", new String[] { "incount", "outcount" }, new String[] { liveLocalsIn.size()+"", liveLocalsOut.size()+"" } );
             for( int i = 0; i < liveLocalsIn.size(); i++ )
             {
-                livevarsNode.addChild( "in", liveLocalsIn.get( i ).toString(), new String[] { "id", "method" }, new String[] { i+"", cleanMethodName } );
+                livevarsNode.addChild( "in", new String[] { "id", "local", "method" }, new String[] { i+"", liveLocalsIn.get( i ).toString(), cleanMethodName } );
             }            
             for( int i = 0; i < liveLocalsOut.size(); i++ )            
             {
-                livevarsNode.addChild( "out", liveLocalsOut.get( i ).toString(), new String[] { "id", "method" }, new String[] { i+"", cleanMethodName } );
+                livevarsNode.addChild( "out", new String[] { "id", "local", "method" }, new String[] { i+"", liveLocalsOut.get( i ).toString(), cleanMethodName } );
             }
 			
             // parameters            
@@ -293,7 +299,7 @@ public class XMLStmtPrinter implements StmtPrinter{
             }
 			
             // add plain jimple representation of each statement
-            stmtNode.addChild( "jimple", "<![CDATA[" + jimpleStr + ";]]>", new String[] { "length" }, new String[] { (jimpleStr.length()+1)+"" } );
+            sootstmtNode.addChild( "jimple", "<![CDATA[" + jimpleStr + ";]]>", new String[] { "length" }, new String[] { (jimpleStr.length()+1)+"" } );
             
             // increment statement counters
             labelID++;
@@ -307,12 +313,15 @@ public class XMLStmtPrinter implements StmtPrinter{
         parametersNode.addAttribute( "count", body.getMethod().getParameterCount()+"" );
         for( int i = 0; i < body.getMethod().getParameterTypes().size(); i++ )
         {
-            XMLNode paramNode = parametersNode.addChild( "parameter", new String[] { "id", "type", "method", "name" }, new String[] { i+"", body.getMethod().getParameterTypes().get( i ).toString(), cleanMethodName, "@parameter"+i } );
+            XMLNode paramNode = parametersNode.addChild( "parameter", new String[] { "id", "type", "method", "name" }, new String[] { i+"", body.getMethod().getParameterTypes().get( i ).toString(), cleanMethodName, "_parameter"+i } );
+	    XMLNode sootparamNode = paramNode.addChild( "soot_parameter" );
+
             Vector tempVec = ( Vector )paramData.elementAt( i );
             for( int k = 0; k < tempVec.size(); k++ )
             {
-                paramNode.addChild( "use", String.valueOf( tempVec.elementAt( k ) )+"", new String[] { "id", "method" }, new String[] { k+"", cleanMethodName } );
+                sootparamNode.addChild( "use", new String[] { "id", "line", "method" }, new String[] { k+"", String.valueOf( tempVec.elementAt( k ) )+"", cleanMethodName } );
             }
+	    sootparamNode.addAttribute( "uses", tempVec.size()+"" );
         }
 
 		/*		
@@ -325,7 +334,9 @@ public class XMLStmtPrinter implements StmtPrinter{
 		*/
 		
         xmlLabel.stmtCount = labelID;
-	xmlLabel.stmtPercentage = new Float( ( new Float( labelID ).floatValue() / new Float( units.size() ).floatValue() ) * 100.0 ).longValue();		if( xmlLabel.stmtPercentage > maxStmtCount )			maxStmtCount = xmlLabel.stmtPercentage;
+	xmlLabel.stmtPercentage = new Float( ( new Float( labelID ).floatValue() / new Float( units.size() ).floatValue() ) * 100.0 ).longValue();
+        if( xmlLabel.stmtPercentage > maxStmtCount )
+	    maxStmtCount = xmlLabel.stmtPercentage;
 	xmlLabelsList.addElement( xmlLabel );
         
         // print out locals
@@ -344,6 +355,7 @@ public class XMLStmtPrinter implements StmtPrinter{
             int defineCount = 0;
             Local localData = ( Local )localsIterator.next();			
             String local = ( String )localData.toString().trim();
+	    local = local.replace( '$', '_' );
             String localType = localData.getType().toBriefString();
 
             // collect the local types			
@@ -355,7 +367,8 @@ public class XMLStmtPrinter implements StmtPrinter{
             }
 
             // create a reference to the local node
-            XMLNode localNode = new XMLNode( "local", "", new String[] { "id", "method", "name", "class" }, new String[] { j+"", cleanMethodName, local, localType } );
+            XMLNode localNode = new XMLNode( "local", "", new String[] { "id", "method", "name", "type" }, new String[] { j+"", cleanMethodName, local, localType } );
+	    XMLNode sootlocalNode = localNode.addChild( "soot_local" );
             currentType = 0;
 
             for( int k = 0; k < localTypes.size(); k++ )
@@ -379,7 +392,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 					
                     for( int i = 0; i < tempVector.size(); i++ )
 		    {
-                        localNode.addChild( "use", ( ( Long )tempVector.elementAt( i ) ).toString(), new String[] { "id", "method" }, new String[] { i+"", cleanMethodName } );
+                        sootlocalNode.addChild( "use", new String[] { "id", "line", "method" }, new String[] { i+"", ( ( Long )tempVector.elementAt( i ) ).toString(), cleanMethodName } );
                     }
                     useCount = tempVector.size();					
                     break;
@@ -396,22 +409,25 @@ public class XMLStmtPrinter implements StmtPrinter{
     
                     for( int i = 0; i < tempVector.size(); i++ )
                     {
-                        localNode.addChild( "definition", ( ( Long )tempVector.elementAt( i ) ).toString(), new String[] { "id", "method" }, new String[] { i+"", cleanMethodName } );					}					defineCount = tempVector.size();					break;
-                    }
-                }
+                        sootlocalNode.addChild( "definition", new String[] { "id", "line", "method" }, new String[] { i+"", ( ( Long )tempVector.elementAt( i ) ).toString(), cleanMethodName } );
+                    }					
+		    defineCount = tempVector.size();					
+		    break;
+		}
+	    }
 						
-                // add number of uses and defines to this local
-                localNode.addAttribute( "uses", useCount+"" );
-                localNode.addAttribute( "defines", defineCount+"" );
-			
-                //create a list of locals sorted by type
-		Vector list = ( Vector )typedLocals.elementAt( currentType );			
-                list.addElement( localNode );
-                typedLocals.setElementAt( list, currentType );
-			
-                // add local to locals node			
-                localsNode.addChild( ( XMLNode )localNode.clone() );
-                j++;
+	    // add number of uses and defines to this local
+	    sootlocalNode.addAttribute( "uses", useCount+"" );
+	    sootlocalNode.addAttribute( "defines", defineCount+"" );
+		    
+	    //create a list of locals sorted by type
+	    Vector list = ( Vector )typedLocals.elementAt( currentType );			
+	    list.addElement( localNode );
+	    typedLocals.setElementAt( list, currentType );
+		    
+	    // add local to locals node			
+	    localsNode.addChild( ( XMLNode )localNode.clone() );
+	    j++;
                 		
         }
         							
@@ -424,7 +440,7 @@ public class XMLStmtPrinter implements StmtPrinter{
         for( int i = 0; i < localTypes.size(); i++ )
         {
             String type = ( String )localTypes.elementAt( i );
-            XMLNode typeNode = typesNode.addChild( "type", new String[] { "id", "class", "count" }, new String[] { i+"", type, ( Integer )typeCounts.elementAt( i )+"" } );
+            XMLNode typeNode = typesNode.addChild( "type", new String[] { "id", "type", "count" }, new String[] { i+"", type, ( Integer )typeCounts.elementAt( i )+"" } );
 
             Vector list = ( Vector )typedLocals.elementAt( i );			
             for( j = 0; j < list.size(); j++ )
@@ -460,138 +476,45 @@ public class XMLStmtPrinter implements StmtPrinter{
                 Trap trap = ( Trap )trapIt.next();
 
 		// catch java.io.IOException from label0 to label1 with label2;				
-                XMLNode catchNode = exceptionsNode.addChild( "catch", new String[] { "id", "method", "class" }, new String[] { (statementCount++)+"", cleanMethodName, Scene.v().quotedNameOf(trap.getException().getName()) } );
+                XMLNode catchNode = exceptionsNode.addChild( "exception", new String[] { "id", "method", "type" }, new String[] { (statementCount++)+"", cleanMethodName, Scene.v().quotedNameOf(trap.getException().getName()) } );
                 catchNode.addChild( "begin", new String[] { "label" }, new String[] { stmtToName.get(trap.getBeginUnit()).toString() } );
                 catchNode.addChild( "end" , new String[] { "label" }, new String[] { stmtToName.get(trap.getEndUnit()).toString() } );
-                catchNode.addChild( "handle", new String[] { "label" }, new String[] { stmtToName.get(trap.getHandlerUnit()).toString() } );
+                catchNode.addChild( "handler", new String[] { "label" }, new String[] { stmtToName.get(trap.getHandlerUnit()).toString() } );
             }
         }
         		
         exceptionsNode.addAttribute( "count", exceptionsNode.getNumberOfChildren()+"" );
+
+	return;
     }
 
     // moved here from body ; should be factorized with the above
     public void printDebugStatementsInBody( Body b, java.io.PrintWriter out, boolean isPrecise )
     {
-/*
-        Map stmtToName = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-
-        // Create statement name table
-        {
-            Iterator boxIt = b.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                while(boxIt.hasNext())
-                {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
-
-                    labelStmts.add(stmt);
-                }
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = b.getUnits().iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if(labelStmts.contains(s))
-                        stmtToName.put(s, "label" + (labelCount++));
-                }
-            }
-        }
-
-        
-        Iterator unitIt = b.getUnits().iterator();
-        Unit currentStmt = null, previousStmt;
-
-        while(unitIt.hasNext()) {
-            
-            previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
-            
-            if(stmtToName.containsKey(currentStmt))
-                out.println("     " + stmtToName.get(currentStmt) + ":");
-
-            if(isPrecise)
-                out.print(currentStmt.toString(stmtToName, "        "));
-            else
-                out.print(currentStmt.toBriefString(stmtToName, "        "));
-
-            out.print(";"); 
-            out.println();
-        }
-
-        // Print out exceptions
-        {
-            Iterator trapIt = b.getTraps().iterator();
-
-            if(trapIt.hasNext())
-                out.println();
-
-            while(trapIt.hasNext())
-            {
-               Trap trap = (Trap) trapIt.next();
-
-                out.println("        catch " + trap.getException().getName() + " from " +
-                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
-            }
-        }
-*/
-	}		
+    }		
     
-	private String boolToString( boolean bool )	
+    private String boolToString( boolean bool )	
+    {
+	if( bool )
+	    return "true";
+	return "false";
+    }	
+
+    class XMLLabel
+    {
+	public long id;
+	public String methodName;
+	public String label;
+	public long stmtCount;
+	public long stmtPercentage;
+	    
+	public XMLLabel( long in_id, String in_methodName, String in_label )
 	{
-	    if( bool )
-	        return "true";
-            return "false";
-	}	
-
-
-        class XMLLabel
-        {
-            public long id;
-            public String methodName;
-            public String label;
-            public long stmtCount;
-            public long stmtPercentage;
-        	
-            public XMLLabel( long in_id, String in_methodName, String in_label )
-            {
-                id = in_id;
-                methodName = in_methodName;
-                label = in_label;
-            }			  
-
-        /*	
-        	public String toString()
-        	{
-        		//XMLPrinter xmlOut = new soot.util.XMLPrinter();
-        		//xmlOut.addElement( "label", label, new String[] { "id", "method", "stmtcount", "stmtpercentage" }, new String[] { id+"", methodName, stmtCount+"", stmtPercentage+"" } );
-        		//return xmlOut.toString();
-        		return "TODO!!!!! get rid of this Label class!!!!!";
-        	}	
-        */
-                /*
-        	public void clear()
-        	{
-        		id = 0;
-        		methodName = "";
-        		label = "";
-        		stmtCount = 0;
-        		stmtPercentage = 0;
-        	} 
-                */      
-        }
+	    id = in_id;
+	    methodName = in_methodName;
+	    label = in_label;
+	}			       
+    }
 
 }
 

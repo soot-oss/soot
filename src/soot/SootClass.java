@@ -766,17 +766,26 @@ public class SootClass extends AbstractHost
         printTo(out, 0);
     }
 	
-
     public void printXMLTo(PrintWriter out)
     {
         XMLPrinter xmlOut = new XMLPrinter();
+	XMLNode xmlRootNode = null;
+	XMLNode xmlHistoryNode = null;
         XMLNode xmlClassNode = null;
         XMLNode xmlTempNode = null;
 
         // Print XML class output
         {
+	    // add header nodes
+	    xmlRootNode = xmlOut.root.addElement("jil");
+
+	    // add history node
+	    // TODO: grab the software version and command line
+	    xmlHistoryNode = xmlRootNode.addChild("history");
+	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {"1.2.2", "unknown", new Date().toString()});
+            
 	    // add class root node
-            xmlClassNode = xmlOut.root.addElement("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(this.getName()).toString()});   
+            xmlClassNode = xmlRootNode.addChild("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(this.getName()).toString()});
             if(this.getPackageName().length()>0)
                 xmlClassNode.addAttribute("package",this.getPackageName());
             if(this.hasSuperclass())
@@ -786,31 +795,27 @@ public class SootClass extends AbstractHost
             xmlTempNode = xmlClassNode.addChild("modifiers");
             StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
             while(st.hasMoreTokens())
-                xmlTempNode.addChild("modifier",st.nextToken()+"");
+		xmlTempNode.addChild("modifier",new String[] {"name"},new String[] {st.nextToken()+""});
             xmlTempNode.addAttribute("count",xmlTempNode.getNumberOfChildren()+"");		
         } 
 
         // Print interfaces
-        {            
-            Iterator interfaceIt = this.getInterfaces().iterator();
-            
-                xmlTempNode = xmlClassNode.addChild("interfaces","",new String[] {"count"},new String[] {this.getInterfaceCount()+""});
-   
+        {
+            xmlTempNode = xmlClassNode.addChild("interfaces","",new String[] {"count"},new String[] {this.getInterfaceCount()+""});
+
+	    Iterator interfaceIt = this.getInterfaces().iterator();
             if(interfaceIt.hasNext())
             {
-                {		    
-                    while(interfaceIt.hasNext())
-		        xmlTempNode.addChild("implements","",new String[] {"class"},new String[] {Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()).toString()});		    
-                }
+                while(interfaceIt.hasNext())
+		    xmlTempNode.addChild("implements","",new String[] {"class"},new String[] {Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()).toString()});
             }
         }
         
         // Print fields
-        {
-            Iterator fieldIt = this.getFields().iterator();
-        
-		xmlTempNode = xmlClassNode.addChild( "fields", "", new String[] { "count" }, new String[] { this.getFieldCount()+"" } );
+        {   
+	    xmlTempNode = xmlClassNode.addChild( "fields", "", new String[] { "count" }, new String[] { this.getFieldCount()+"" } );
                 
+	    Iterator fieldIt = this.getFields().iterator();
             if(fieldIt.hasNext())
             {
                 int i = 0;
@@ -831,9 +836,7 @@ public class SootClass extends AbstractHost
 							
                     StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers()));
                     while(st.hasMoreTokens())
-                    {
-                        xmlModifiersNode.addChild( "modifier", st.nextToken()+"" );
-                    }
+                        xmlModifiersNode.addChild( "modifier", new String[] {"name"},new String[]{st.nextToken()+""} );
 			
                     xmlModifiersNode.addAttribute( "count", xmlModifiersNode.getNumberOfChildren()+"" );
                 }
