@@ -146,7 +146,12 @@ public class CopyPropagator extends BodyTransformer
 
                                 if(l != m)
                                 {   
-                                    int defCount = ((Integer) localToDefCount.get(m)).intValue();
+                                    Object dcObj = localToDefCount.get(m);
+
+                                    if (dcObj == null)
+                                        throw new RuntimeException("Variable " + m + " used without definition!");
+
+                                    int defCount = ((Integer)dcObj).intValue();
                                     
                                     if(defCount == 0)
                                         throw new RuntimeException("Variable " + m + " used without definition!");
