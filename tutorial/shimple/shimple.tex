@@ -348,6 +348,11 @@ To really understand what is going on, you can look at the output from
 --via-shimple -p shimple phi-elim-opt:none -p sop on} on this and
 other examples.
 
+Although this example isn't sufficiently complex to be all that
+interesting (a Jimple-based analysis could easily detect and handle
+this particular case), once control flow gets more elaborate, the
+SSA-based analysis will really start to win out.
+
 \section{Thanks and Credits}
 
 Thanks and credits go alphabetically to Laurie Hendren, John

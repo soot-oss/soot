@@ -300,6 +300,11 @@ To really understand what is going on, you can look at the output from
 "soot.Main -f shimple -p sop on" and "soot.Main -f jimple -via-shimple
 -p shimple phi-elim-opt:none -p sop on" on this and other examples.
 
+Although this example isn't sufficiently complex to be all that 
+interesting (a Jimple-based analysis could easily detect this
+particular case), once control flow gets more elaborate, the SSA-based
+analysis will really start to win out.
+
 
 Thanks and Credits
 ==================
