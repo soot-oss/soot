@@ -23,7 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
- 
+
 
 
 
@@ -38,7 +38,7 @@ import soot.jimple.toolkits.base.*;
 import soot.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
-
+import soot.jimple.*;
 
 /*
  * Incomplete and inefficient implementation.
@@ -765,10 +765,123 @@ public class SootClass extends AbstractHost
     {
         printTo(out, 0);
     }
+	
+
+    public void printXMLTo(PrintWriter out)
+    {
+        XMLPrinter xmlOut = new XMLPrinter();
+        XMLNode xmlClassNode = null;
+        XMLNode xmlTempNode = null;
+
+        // Print XML class output
+        {
+	    // add class root node
+            xmlClassNode = xmlOut.root.addElement("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(this.getName()).toString()});   
+            if(this.getPackageName().length()>0)
+                xmlClassNode.addAttribute("package",this.getPackageName());
+            if(this.hasSuperclass())
+                xmlClassNode.addAttribute("extends",Scene.v().quotedNameOf(this.getSuperclass().getName()).toString());
+
+            // add modifiers subnode
+            xmlTempNode = xmlClassNode.addChild("modifiers");
+            StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
+            while(st.hasMoreTokens())
+                xmlTempNode.addChild("modifier",st.nextToken()+"");
+            xmlTempNode.addAttribute("count",xmlTempNode.getNumberOfChildren()+"");		
+        } 
+
+        // Print interfaces
+        {            
+            Iterator interfaceIt = this.getInterfaces().iterator();
+            
+                xmlTempNode = xmlClassNode.addChild("interfaces","",new String[] {"count"},new String[] {this.getInterfaceCount()+""});
+   
+            if(interfaceIt.hasNext())
+            {
+                {		    
+                    while(interfaceIt.hasNext())
+		        xmlTempNode.addChild("implements","",new String[] {"class"},new String[] {Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()).toString()});		    
+                }
+            }
+        }
+        
+        // Print fields
+        {
+            Iterator fieldIt = this.getFields().iterator();
+        
+		xmlTempNode = xmlClassNode.addChild( "fields", "", new String[] { "count" }, new String[] { this.getFieldCount()+"" } );
+                
+            if(fieldIt.hasNext())
+            {
+                int i = 0;
+                while(fieldIt.hasNext())
+                {
+                    SootField f = (SootField) fieldIt.next();
+                    
+                    if(f.isPhantom())
+                        continue;
+                    
+                    String type = f.getType().toString();
+                    String name = f.getName().toString();
+                    String decl = f.getDeclaration();
+							
+                    // add the field node
+                    XMLNode xmlFieldNode = xmlTempNode.addChild( "field", "", new String[] { "id", "name", "type" }, new String[] { (i++)+"", name, type } );
+                    XMLNode xmlModifiersNode = xmlFieldNode.addChild( "modifiers" );
+							
+                    StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers()));
+                    while(st.hasMoreTokens())
+                    {
+                        xmlModifiersNode.addChild( "modifier", st.nextToken()+"" );
+                    }
+			
+                    xmlModifiersNode.addAttribute( "count", xmlModifiersNode.getNumberOfChildren()+"" );
+                }
+            }
+        }
+
+        // Print methods
+        {
+            Iterator methodIt = this.getMethods().iterator();
+
+            if( Scene.v().getJimpleStmtPrinter() instanceof XMLStmtPrinter )
+            {
+                XMLStmtPrinter xmlStmtPrinter = ( XMLStmtPrinter )Scene.v().getJimpleStmtPrinter();
+                xmlStmtPrinter.setXMLNode( xmlClassNode.addChild( "methods", new String[] { "count" }, new String[] { this.getMethodCount()+"" } ) );
+            }
+
+            while(methodIt.hasNext())
+            {
+                SootMethod method = (SootMethod) methodIt.next();
+
+                if(method.isPhantom())
+		        continue;
+					    
+                if(!Modifier.isAbstract(method.getModifiers()) && 
+		   !Modifier.isNative(method.getModifiers()))
+                {
+                    if(!method.hasActiveBody())
+                        throw new RuntimeException("method " + method.getName() + " has no active body!");
+                    else
+                        method.getActiveBody().printTo(out, PrintJimpleBodyOption.XML_OUTPUT);
+                }
+            }
+        }
+        out.println(xmlOut.toString());
+    }
+  
 
     public void printJimpleStyleTo(PrintWriter out, int printBodyOptions)
     {
-        // Print class name + modifiers
+        // write this class as XML
+        boolean xmlOutput = PrintJimpleBodyOption.xmlOutput(printBodyOptions);
+        if(xmlOutput)
+        {
+            this.printXMLTo(out);
+            return;
+        }
+
+       // Print class name + modifiers
         {
             StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
             while(st.hasMoreTokens())

@@ -17,13 +17,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
-
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
+
+
+
+
 
 package soot;
 
@@ -458,13 +460,17 @@ public abstract class Body extends AbstractHost implements Serializable
 
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
+	boolean xmlOutput = PrintJimpleBodyOption.xmlOutput(printBodyOptions);
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
         String decl = getMethod().getDeclaration();
 
-        out.println("    " + decl);        
-        out.println("    {");
-
-	Scene.v().getLocalPrinter().printLocalsInBody( this, out, isPrecise);
+        if(!xmlOutput)
+	{
+	    out.println("    " + decl);        
+	    out.println("    {");
+	
+	    Scene.v().getLocalPrinter().printLocalsInBody( this, out, isPrecise);
+	}
 
         // Print out statements
         // Use an external class so that it can be overridden.
@@ -474,7 +480,8 @@ public abstract class Body extends AbstractHost implements Serializable
             Scene.v().getJimpleStmtPrinter().printStatementsInBody(this, out, isPrecise, isNumbered);
         }
         
-        out.println("    }");
+        if(!xmlOutput)
+	    out.println("    }");
     }
     
 }

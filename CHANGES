@@ -38,6 +38,10 @@ Improvements in current version
 13. Fixed bug reported by Sten Andrew Neuendorffer where CopyPropagator
      doesn't quite fail in the expected way when there's a variable used
      without definition (plam)
+14. Added basic XML support in the form of an XMLStmtPrinter. Using
+     the --xml command option will generate an XML version of the 
+     class based on the Jimple statements and extended with static
+     program data and transformation/analysis results. (deng)
     
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

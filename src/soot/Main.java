@@ -15,13 +15,16 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- *
+ */
 
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
+
+
+
 
 
 package soot;
@@ -102,6 +105,7 @@ public class Main implements Runnable
     public static final int DAVA = 8;
     public static final int JASMIN = 9;
 
+    public static final int XML = 10;
 
     public static String getExtensionFor(int rep)
     {
@@ -140,6 +144,10 @@ public class Main implements Runnable
             break;
         case JASMIN:
             str = ".jasmin";
+            break;
+             
+       case XML:
+            str = ".xml";
             break;
         default:
             throw new RuntimeException();
@@ -230,8 +238,6 @@ public class Main implements Runnable
     static boolean isSubtractingGC;
    
     static private int targetExtension = CLASS;
-    static private String xmlInputFile = null;
-    static private boolean produceXmlOutput = false;
     static private boolean withCache = false;
     static private String cacheDir = null;
     static private boolean useJavaStyle = false;
@@ -670,7 +676,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.44)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.45)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -701,6 +707,7 @@ public class Main implements Runnable
 	System.out.println("  -G, --grimple                produce .grimple files");
 	System.out.println("  -s, --jasmin                 produce .jasmin files");
 	System.out.println("  -c, --class                  produce .class files");
+	System.out.println("  -X, --xml                    produce .xml files");
 	System.out.println("  -d PATH                      store produced files in PATH");
 	System.out.println("");
 	System.out.println("Application mode options:");
@@ -816,8 +823,10 @@ public class Main implements Runnable
 	    setTargetRep(DAVA);
 	}
 				
-	while (cl.contains("X") || cl.contains("xml"))
-	    produceXmlOutput = true;
+	while (cl.contains("X") || cl.contains("xml")) {
+	    Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
+	    setTargetRep(XML);
+	}
 				
 	while (cl.contains("O") || cl.contains("optimize"))
 	    setOptimizing(true);
@@ -1075,7 +1084,8 @@ public class Main implements Runnable
 		setTargetRep(DAVA);
 		break;
 	    case 'X':
-		produceXmlOutput = true;
+		Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
+		setTargetRep(XML);
 		break;
 	    case 'O':
 		setOptimizing(true);
@@ -1256,8 +1266,10 @@ public class Main implements Runnable
 		Scene.v().setLocalPrinter( soot.dava.DavaLocalPrinter.v());
 		setTargetRep(DAVA);
 	    }
-	    else if(arg.equals("-X") || arg.equals("--xml"))
-		produceXmlOutput = true;
+	    else if(arg.equals("-X") || arg.equals("--xml")) {
+		Scene.v().setJimpleStmtPrinter( soot.jimple.XMLStmtPrinter.v());
+		setTargetRep(XML);
+	    }
 	    else if(arg.equals("-O") || arg.equals("--optimize"))
 		setOptimizing(true);
 	    else if(arg.equals("-W") || arg.equals("--whole-optimize"))
@@ -2065,6 +2077,8 @@ public class Main implements Runnable
     case B:
       produceBaf = true;
       break;
+    case XML:
+      break;
     default:
       switch( finalRep) {
       case DAVA:
@@ -2188,6 +2202,11 @@ public class Main implements Runnable
       break;
     case CLASS:
       c.write(outputDir);
+      break;    
+    case XML:
+      writerOut = 
+	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
+      c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.XML_OUTPUT);
       break;
     default:
       throw new RuntimeException();

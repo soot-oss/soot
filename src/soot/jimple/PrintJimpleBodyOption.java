@@ -38,7 +38,8 @@ public class PrintJimpleBodyOption
 {
     public static final int USE_ABBREVIATIONS = 0x0001,
                             DEBUG_MODE        = 0x0002,
-                            NUMBERED          = 0x0004;
+                            NUMBERED          = 0x0004,
+			    XML_OUTPUT	      = 0x0008;
 
     protected PrintJimpleBodyOption()
     {
@@ -58,14 +59,15 @@ public class PrintJimpleBodyOption
     {
         return (m & DEBUG_MODE) != 0;
     }
+
+    public static boolean xmlOutput(int m)
+    {
+	return (m & XML_OUTPUT) != 0;
+    }
 }
 
 
-
-
-
-
-
+    
 
 
 
