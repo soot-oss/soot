@@ -60,8 +60,11 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		setSootCommandList(new SootCommandList());
 	}
 	
+	protected void runSootDirectly(){
+		runSootDirectly("soot.Main");
+	}
 	
-	protected void runSootDirectly() {
+	protected void runSootDirectly(String mainClass) {
 		
 		int length = getSootCommandList().getList().size();
 		//Object [] temp = getSootCommandList().getList().toArray();
@@ -80,7 +83,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		IRunnableWithProgress op; 
 		try {   
         	newProcessStarting();
-            op = new SootRunner(temp, Display.getCurrent());
+            op = new SootRunner(temp, Display.getCurrent(), mainClass);
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
             
  		} 

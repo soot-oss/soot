@@ -42,7 +42,7 @@ public class SootConfigProjectLauncher extends SootProjectLauncher {
 		
 	}
 	
-	public void launch(String name) {
+	public void launch(String name, String mainClass) {
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
@@ -58,7 +58,13 @@ public class SootConfigProjectLauncher extends SootProjectLauncher {
 		getSootCommandList().addSingleOpt(ssc.toRunArray());
 		//getSootCommandList().addSingleOpt(ssc.toRunString());
 		//System.out.println("set SootCommandList");
-		runSootDirectly();
+		
+		if ((mainClass == null) || (mainClass.length() == 0)){
+			runSootDirectly();
+		}
+		else {
+			runSootDirectly(mainClass);
+		}
 		runFinish();
 	}
 	
@@ -79,6 +85,8 @@ public class SootConfigProjectLauncher extends SootProjectLauncher {
 		//getSdc().setKeepLineNum();
 		//System.out.println("presetting keep line num");
 		defs.put(LaunchCommands.XML_ATTRIBUTES, new Boolean(true));
+		
+		
 		//getSdc().setPrintTags();	
 		//System.out.println("presetting print tags");
 		

@@ -54,7 +54,13 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
       		setCmd(ssc.toRunArray());
       		//setCmd(ssc.toRunString());
       		//System.out.println("to run String: "+ssc.toRunString());
-			runSootDirectly();
+			String mainClass = dialog.getSootMainClass();
+			if ((mainClass == null) || (mainClass.length() == 0)){
+				runSootDirectly();
+			}
+			else {
+				runSootDirectly(mainClass);
+			}
 			runFinish();
 			
 			// save config if nessesary
@@ -94,6 +100,7 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 		}
 		getSdc().setKeepLineNum();
 		getSdc().setPrintTags();	
+		getSdc().setSootMainClass();
 	}
 	
 	// TODO use this instead of String one

@@ -32,12 +32,12 @@
       <import plugin="org.eclipse.swt"/>
    </requires>
 
-   <extension point = "org.eclipse.ui.preferencePages">
+   <!--<extension point = "org.eclipse.ui.preferencePages">
        <page id="ca.mcgill.sable.soot.ui.SootPreference.Page1"
 	    class="ca.mcgill.sable.soot.ui.SootMainClassPreferencePage"
             name="Soot Main Class">
        </page>
-   </extension>
+   </extension>-->
 <!--<extension point="org.eclipse.jdt.ui.javaElementFilters">
       <filter
          id="org.eclipse.jdt.ui.PackageExplorer.showclasses"

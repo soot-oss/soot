@@ -337,6 +337,7 @@ public class SootSavedConfiguration {
 			switch(st.countTokens()) {
 				case 1: {
 					String aliasName = st.nextToken();
+					if (aliasName.equals("sootMainClass")) continue;
 					getSaveArray().add(DASH+aliasName);
 					//toSave.append(DASH);
 					//String aliasName = st.nextToken();

@@ -33,12 +33,15 @@ import ca.mcgill.sable.soot.SootPlugin;
 public class SootThread extends Thread {
 
 	private Display display;
+	private String mainClass;
+	
 	/**
 	 * Constructor for SootThread.
 	 */
-	public SootThread(Display display) {
+	public SootThread(Display display, String mainClass) {
 		super();
 		setDisplay(display);
+		setMainClass(mainClass);
 	}
 
 	
@@ -48,10 +51,10 @@ public class SootThread extends Thread {
 
 	
 	public void run() {
-		IPreferenceStore store = SootPlugin.getDefault().getPreferenceStore();
-		String className = store.getString("selected");
+		//IPreferenceStore store = SootPlugin.getDefault().getPreferenceStore();
+		//String className = store.getString("selected");
 		
-		System.out.println("about to run: "+className);
+		//System.out.println("about to run: "+className);
 		
 		final String [] cmdFinal = getCmd();
 		final PrintStream sootOutFinal = getSootOut();
@@ -59,7 +62,7 @@ public class SootThread extends Thread {
 			
 			soot.G.v().reset();
 			
-			Class toRun = Class.forName(className);
+			Class toRun = Class.forName(getMainClass());
 			Method [] meths = toRun.getDeclaredMethods();
 			Object [] args = new Object [2];
 			args[0] = cmdFinal;
@@ -125,6 +128,20 @@ public class SootThread extends Thread {
 	 */
 	public void setDisplay(Display display) {
 		this.display = display;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMainClass() {
+		return mainClass;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setMainClass(String string) {
+		mainClass = string;
 	}
 
 }

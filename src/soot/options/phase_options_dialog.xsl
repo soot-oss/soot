@@ -84,6 +84,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		</xsl:for-each>
 		</xsl:for-each>
 
+		addOtherPages(getPageContainer());
 		initializeRadioGroups();
 		initializeEnableGroups();
 		
@@ -222,7 +223,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		</xsl:for-each>
 		</xsl:for-each>
 		
-				
+		setSootMainClass(getSootMainClassWidget().getText().getText());			
 	}
 
 	protected HashMap savePressed() {
@@ -292,6 +293,8 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		</xsl:for-each>
 		
 		</xsl:for-each>
+
+		addOtherBranches(root);
 		return root;
 	
 	}

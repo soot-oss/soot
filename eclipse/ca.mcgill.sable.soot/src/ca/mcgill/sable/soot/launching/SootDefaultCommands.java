@@ -55,6 +55,10 @@ public class SootDefaultCommands {
 		getDialog().addToEclipseDefList(LaunchCommands.SRC_PREC, val);
 	}
 	
+	public void setSootMainClass(){
+		getDialog().addToEclipseDefList("sootMainClass", "soot.Main");
+	}
+	
 	
 
 	

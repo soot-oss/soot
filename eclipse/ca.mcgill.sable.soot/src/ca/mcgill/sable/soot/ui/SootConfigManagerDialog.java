@@ -5,7 +5,6 @@ import java.util.*;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -24,7 +23,6 @@ import org.eclipse.jface.dialogs.*;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.*;
-import org.eclipse.ui.dialogs.ListDialog;
 
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.launching.*;
@@ -68,9 +66,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		}
 	}
 	
+	private void setMainClassInDialog(PhaseOptionsDialog dialog, String mainClass){
+		dialog.addToEclipseDefList("sootMainClass", mainClass);	
+	}
+	
 	private HashMap eclipseDefList;
-	
-	
 
 	/**
 	 * Returns the eclipseDefList.
@@ -369,16 +369,15 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		
 		if (nameDialog.getReturnCode() == Dialog.OK) {
 			setEditDefs(null);
-			int returnCode = displayOptions(nameDialog.getValue());
-			System.out.println("return code: "+returnCode); //$NON-NLS-1$
+			int returnCode = displayOptions(nameDialog.getValue(), "soot.Main");
+			//System.out.println("return code: "+returnCode); //$NON-NLS-1$
 			//handle selection of main class here
-			String mainClass = getMainClass(nameDialog.getValue(), false);
+			
 			if (returnCode != Dialog.CANCEL) {
 				getTreeRoot().addChild(new SootConfiguration(nameDialog.getValue()));
 				refreshTree();
-				saveMainClass(nameDialog.getValue(), mainClass);
 				
-				System.out.println("updated tree"); //$NON-NLS-1$
+				//System.out.println("updated tree"); //$NON-NLS-1$
 			}
 		
 		}
@@ -392,48 +391,19 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		settings.put(configName+"_mainClass", mainClass);	
 	}
+	
+	//	returns the main class to run with this configuration
+	private String getMainClass(String configName){
+		 IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		 String mainClass = settings.get(configName+"_mainClass");
+		 if ((mainClass == null) || (mainClass.length() == 0)){
+		 	return "soot.Main";
+		 }
+		 else {
+		 	return mainClass;
+		 }	
+	 }
 		
-	private String getMainClass(String configName, boolean isEdit){
-		// if only one main class in list return it
-		// else display list and return selected (do not
-		// store selected at this point)
-		IPreferenceStore store = SootPlugin.getDefault().getPreferenceStore();
-		ArrayList classesList = stringToList(store.getString("classes"));
-		
-		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		String className;
-		if (isEdit){
-			className = settings.get(configName+"_mainClass");
-		}
-		else {
-			className = store.getString("selected");
-		}
-		
-		if (classesList.size() == 1) return className;
-		
-		else {
-			ListDialog listD = new ListDialog(this.getShell());
-			listD.setTitle("Soot Main Class Selection");
-			listD.setContentProvider(new SootPrefContentProvider());
-			listD.setLabelProvider(new SootPrefLabelProvider());
-			listD.setInput(new SootPrefData(store.getString("classes"), className));
-			ArrayList initSel = new ArrayList();
-			initSel.add(className);
-			listD.setInitialElementSelections(initSel);
-			listD.open();
-			
-			Object [] res = listD.getResult();
-			if (res == null) {
-				return className;
-			}
-			else {
-				System.out.println("selected: "+(String)res[0]);
-				return (String)res[0];
-			}
-				
-		}
-		
-	}
 	
 	private ArrayList stringToList(String string){
 		StringTokenizer st = new StringTokenizer(string, ",");
@@ -449,18 +419,16 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		getTreeViewer().setExpandedState(getTreeRoot(), true);
 		getTreeViewer().refresh(getTreeRoot(), false);
 	}
+	
 	private int displayOptions(String name) {
-		/*Object [] temp = this.getSelectedElements();
-		String result = (String)temp[0];
-		System.out.println("result selected: "+result);
-		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		String saved = settings.get(result);
-		System.out.println("saved: "+saved);
-		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saved);
-		HashMap structConfig = ssc.toHashMap();*/
+		return displayOptions(name, "soot.Main");
+	}
+	
+	private int displayOptions(String name, String mainClass) {
+		
 		PhaseOptionsDialog dialog = new PhaseOptionsDialog(getShell());
 		addEclipseDefsToDialog(dialog);
-		
+		setMainClassInDialog(dialog, mainClass);
 		System.out.println("created dialog"); //$NON-NLS-1$
 		if (getEditDefs() != null) {
 			Iterator it = getEditDefs().keySet().iterator();
@@ -476,16 +444,20 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			}
 		}
 		
-		System.out.println("added defaults to dialog"); //$NON-NLS-1$
-		//dialog.setConfigName(result);
+		//System.out.println("added defaults to dialog"); //$NON-NLS-1$
+		
 		dialog.setConfigName(name);
 		dialog.setCanRun(false);
-		System.out.println("about to open dialog"); //$NON-NLS-1$
+		//System.out.println("about to open dialog"); //$NON-NLS-1$
 		dialog.open();
+		if (dialog.getReturnCode() == Dialog.OK){
+			//save main class
+			saveMainClass(name, dialog.getSootMainClass());
+		}
 		return dialog.getReturnCode();
 			// saved - should show up in tree
 			
-		//setEditMap(dialog.getEditMap());
+		
 	}
 		
 	// same as newPressed except does not ask for name
@@ -496,21 +468,15 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		String result = this.getSelected();
 		System.out.println("result selected: "+result); //$NON-NLS-1$
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		// TODO switch these 2 lines 
+		
 		String [] saveArray = settings.getArray(result);
-		//String saved = settings.get(result);
-		//System.out.println("saved: "+saved);
-		// TODO switch these 2 lines
+		
 		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saveArray);
-		//SootSavedConfiguration ssc = new SootSavedConfiguration(result, saved);
 		
-		// TODO switch these 2 lines
 		setEditDefs(ssc.toHashMapFromArray());
-		//setEditDefs(ssc.toHashMap());
-		displayOptions(result);
 		
-		String mainClass = getMainClass(result, true);
-		saveMainClass(result, mainClass);
+		displayOptions(result, getMainClass(result));
+		
 				
 	}
 	
@@ -519,7 +485,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (getSelected() == null) return;
 		
 		String result = this.getSelected();
-		System.out.println("will remove: "+result); //$NON-NLS-1$
+		//System.out.println("will remove: "+result); //$NON-NLS-1$
 		
 		// maybe ask if they are sure here first
 		MessageDialog msgDialog = new MessageDialog(this.getShell(), Messages.getString("SootConfigManagerDialog.Soot_Configuration_Remove_Message"), null, Messages.getString("SootConfigManagerDialog.Are_you_sure_you_want_to_remove_this_configuration"), 0, new String [] {Messages.getString("SootConfigManagerDialog.Yes"), Messages.getString("SootConfigManagerDialog.No")}, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -536,9 +502,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			// remove also from tree
 			getTreeRoot().removeChild(result);
 			refreshTree();
-			//getTreeViewer().setInput(getTreeRoot());
-			//getTreeViewer().setExpandedState(getTreeRoot(), true);
-			//getTreeViewer().refresh(getTreeRoot(), false);
 		}
 		
 		
@@ -639,29 +602,14 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		String mainClass = settings.get(getSelected()+"_mainClass");
-		IPreferenceStore store = SootPlugin.getDefault().getPreferenceStore();
-		String originalMain = store.getString("selected");
-		
-		if (store.getString("selected").equals(mainClass)){
-			// do nothing
-		}
-		else {
-			store.setValue("selected", mainClass);
-		}
-		
+			
 		if (getLauncher() instanceof SootConfigProjectLauncher) {
-			((SootConfigProjectLauncher)getLauncher()).launch(getSelected());
+			((SootConfigProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		else if (getLauncher() instanceof SootConfigFileLauncher) {
-			((SootConfigFileLauncher)getLauncher()).launch(getSelected());
+			((SootConfigFileLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		
-		store.setValue("selected", originalMain);
-		
-		
-		// only necessary for viewing code while running
-		// i.e. for demos??
-		//this.close();
 		
 	}	
 	

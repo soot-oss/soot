@@ -45,6 +45,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	private ArrayList enableGroups;
 	private HashMap eclipseDefList;
 	private HashMap defList;
+	private CheckboxTableViewer tableViewer;
+	private	Button addButton;
+	private	Button removeButton;
+	private String sootMainClass;
 	
 	/**
 	 * Constructor for AbstractOptionsDialog.
@@ -59,7 +63,9 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			setEclipseDefList(new HashMap());
 		}
 		getEclipseDefList().put(key, val);
+		
 		addToDefList(key, val);
+		
 	}
 	
 	public void addToDefList(String key, Object val) {
@@ -68,6 +74,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		}
 		System.out.println("adding to defList: key: "+key+" val: "+val); //$NON-NLS-1$ //$NON-NLS-2$
 		getDefList().put(key, val);
+		
 	} 
 
 	public boolean isInDefList(String key) {
@@ -529,7 +536,49 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			}
 		}
 	}
+	
+	public void addOtherBranches(SootOption root){
+		SootOption sootMainClassBranch = new SootOption("Soot Main Class", "sootMainClass");
+		root.addChild(sootMainClassBranch);		
+	}
+	
+	public void addOtherPages(Composite parent){
+		Composite mainClassChild = sootMainClassCreate(parent);
+	}
+	
+	private Composite sootMainClassCreate(Composite parent) {
+		
+		Group editGroupSootMainClass = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupSootMainClass.setLayout(layout);
 
+		editGroupSootMainClass.setText("Soot Main Class Manager");
+
+		editGroupSootMainClass.setData("id", "sootMainClass");
+
+		String desc = "Specify main class to run.";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroupSootMainClass, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+	
+		String defKey = "sootMainClass";
+		String defaultString;
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			defaultString = "";
+		}
+		setSootMainClassWidget(new StringOptionWidget(editGroupSootMainClass, SWT.NONE, new OptionData("Soot Main Class",  "", "","sootMainClass", "\nUses specified main class to run Soot.", defaultString)));
+
+		return editGroupSootMainClass;
+	}
+	
+	
+	
+	private StringOptionWidget sootMainClassWidget;
 
 	private void setPageContainer(Composite comp) {
 		pageContainer = comp;
@@ -731,6 +780,76 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	 */
 	public void setEnableGroups(ArrayList list) {
 		enableGroups = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public Button getAddButton() {
+		return addButton;
+	}
+
+	/**
+	 * @return
+	 */
+	public Button getRemoveButton() {
+		return removeButton;
+	}
+
+	/**
+	 * @param button
+	 */
+	public void setAddButton(Button button) {
+		addButton = button;
+	}
+
+	/**
+	 * @param button
+	 */
+	public void setRemoveButton(Button button) {
+		removeButton = button;
+	}
+
+	/**
+	 * @return
+	 */
+	public CheckboxTableViewer getTableViewer() {
+		return tableViewer;
+	}
+
+	/**
+	 * @param viewer
+	 */
+	public void setTableViewer(CheckboxTableViewer viewer) {
+		tableViewer = viewer;
+	}
+
+	/**
+	 * @return
+	 */
+	public StringOptionWidget getSootMainClassWidget() {
+		return sootMainClassWidget;
+	}
+
+	/**
+	 * @param widget
+	 */
+	public void setSootMainClassWidget(StringOptionWidget widget) {
+		sootMainClassWidget = widget;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getSootMainClass() {
+		return sootMainClass;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setSootMainClass(String string) {
+		sootMainClass = string;
 	}
 
 }

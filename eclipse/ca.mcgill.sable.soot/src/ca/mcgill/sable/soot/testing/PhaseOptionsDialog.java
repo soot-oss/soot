@@ -214,6 +214,7 @@ Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
 Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
+		addOtherPages(getPageContainer());
 		initializeRadioGroups();
 		initializeEnableGroups();
 		
@@ -2843,7 +2844,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		
 		
-				
+		setSootMainClass(getSootMainClassWidget().getText().getText());			
 	}
 
 	protected HashMap savePressed() {
@@ -3523,6 +3524,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		root.addChild(Miscellaneous_Options_branch);
 		parent = Miscellaneous_Options_branch;		
 		
+
+		addOtherBranches(root);
 		return root;
 	
 	}

@@ -31,13 +31,15 @@ public class SootRunner implements IRunnableWithProgress {
 
 	Display display;
 	String [] cmd;
+	String mainClass;
 	
 	/**
 	 * Constructor for SootRunner.
 	 */
-	public SootRunner(String [] cmd, Display display ) {
+	public SootRunner(String [] cmd, Display display , String mainClass) {
 		setDisplay(display);
 		setCmd(cmd);
+		setMainClass(mainClass);
 	}
 
 	/**
@@ -65,7 +67,7 @@ public class SootRunner implements IRunnableWithProgress {
             
             //try {
             	
-            SootThread sootThread = new SootThread(getDisplay());
+            SootThread sootThread = new SootThread(getDisplay(), getMainClass());
             sootThread.setCmd(cmdFinal);
             sootThread.setSootOut(sootOut);
             System.out.println("About to start sootThread");
@@ -161,6 +163,20 @@ public class SootRunner implements IRunnableWithProgress {
 	 */
 	public void setDisplay(Display display) {
 		this.display = display;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getMainClass() {
+		return mainClass;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setMainClass(String string) {
+		mainClass = string;
 	}
 
 }

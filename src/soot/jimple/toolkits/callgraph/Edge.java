@@ -98,12 +98,17 @@ public final class Edge
         return isInstance() || isStatic();
     }
 
+	
     /** Returns true if the call is due to an explicit instance invoke
      * statement. */
     public boolean isInstance() {
         return kind == VIRTUAL || kind == INTERFACE || kind == SPECIAL;
     }
 
+    /** Returns true if the call is to static initializer. */
+    public boolean isClinit() {
+        return kind == CLINIT;
+    }
     /** Returns true if the call is due to an explicit static invoke
      * statement. */
     public boolean isStatic() {

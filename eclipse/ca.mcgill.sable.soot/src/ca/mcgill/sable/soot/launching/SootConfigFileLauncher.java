@@ -44,7 +44,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		
 	}
 	
-	public void launch(String name) {
+	public void launch(String name, String mainClass) {
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
@@ -61,7 +61,12 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		//getSootCommandList().addSingleOpt(ssc.toRunString());
 		getSootCommandList().addSingleOpt(getToProcess());
 		//System.out.println("set SootCommandList");
-		runSootDirectly();
+		if ((mainClass == null) || (mainClass.length() == 0)){
+			runSootDirectly();
+		}
+		else {
+			runSootDirectly(mainClass);
+		}
 		runFinish();
 	}
 	

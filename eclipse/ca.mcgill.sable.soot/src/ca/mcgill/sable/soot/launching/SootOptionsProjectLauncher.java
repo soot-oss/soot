@@ -77,8 +77,15 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
       		
       		setCmd(ssc.toRunArray());
       		//setCmd(ssc.toRunString());
-      		//System.out.println("to run String: "+ssc.toRunString());
-			runSootDirectly();
+      		//System.out.println("to run soot main class "+dialog.getSootMainClass());
+      		String mainClass = dialog.getSootMainClass();
+      		System.out.println("mainClass: "+mainClass);
+      		if ((mainClass == null) || (mainClass.length() == 0)){
+      			runSootDirectly();
+      		}
+      		else {
+      			runSootDirectly(mainClass);
+      		}
 			runFinish();
 			
 			// save config if nessesary
@@ -100,6 +107,7 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
 		System.out.println("presetting keep line num");
 		getSdc().setPrintTags();	
 		System.out.println("presetting print tags");
+		getSdc().setSootMainClass();
 	}
 	
 	// TODO use this method instaed of one with String
