@@ -24,21 +24,22 @@
  */
 
 
-
-
-
 package soot.util;
 
 
 /** XML helper */
 public class XMLNode extends XMLRoot
-{	
-	public XMLNode next = null;	// -> to next node
-	public XMLNode prev = null;	// -> to previous node
+{
+	// constants
+	public static final int TAG_STRING_BUFFER = 4096;
+
+	// node pointers
+	public XMLNode next = null;		// -> to next node
+	public XMLNode prev = null;		// -> to previous node
 	public XMLNode parent = null;	// -> to parent node
 	public XMLNode child = null;	// -> to child node	
-	public XMLRoot root = null;
-	
+	public XMLRoot root = null;		// -> to root node
+
 	public XMLNode( String in_name, String in_value, String[] in_attributes, String[] in_values )
 	{
 		name = in_name;
@@ -46,7 +47,7 @@ public class XMLNode extends XMLRoot
 		attributes = in_attributes;
 		values = in_values;
 	}
-	
+
 	public XMLNode( XMLNode node )
 	{
 		if( node != null )
@@ -55,32 +56,19 @@ public class XMLNode extends XMLRoot
 			value = node.value;
 			attributes = node.attributes;
 			values = node.values;
-		
+
 			if( node.child != null )
 				this.child = ( XMLNode )node.child.clone();
 			if( node.next != null )
 				this.next = ( XMLNode )node.next.clone();
-			/*
-			if( node.prev != null )
-				this.prev = node.prev;
-			*/
 		}
 	}
-	
+
 	public Object clone()
 	{
-		return new XMLNode( this );	
+		return new XMLNode( this ); 
 	}
 
-	/*
-	public String toPreString()
-	{
-		if( prev != null )
-			return prev.toPreString() + this.toString();
-		else
-			return this.toString();
-	}*/
-	
 	public String toPostString()
 	{
 		return toPostString( "" );
@@ -92,7 +80,7 @@ public class XMLNode extends XMLRoot
 		else
 			return this.toString( indent );
 	}
-	
+
 	// returns the number of children
 	public int getNumberOfChildren()
 	{
@@ -108,10 +96,10 @@ public class XMLNode extends XMLRoot
 		}
 		return count;
 	}
-	
+
 	// adds an attribute to an element
 	public XMLNode addAttribute( String attribute, String value )
-	{		
+	{
 		// check if this attribute already exists
 		String[] tempAttributes = this.attributes;
 		String[] tempValues = this.values;
@@ -129,22 +117,22 @@ public class XMLNode extends XMLRoot
 		this.values[ tempValues.length ] = value.trim();
 		return this;
 	}
-	
+
 	// XML Printing and formatting
 	// 
 	public String toString()
 	{
 		return toString( "" );
-	}	
+	}   
 	public String toString( String indent )
 	{
 		// <tag		
-		StringBuffer beginTag = new StringBuffer( 4096 );
-		StringBuffer endTag = new StringBuffer( 4096 );
+		StringBuffer beginTag = new StringBuffer( TAG_STRING_BUFFER );
+		StringBuffer endTag = new StringBuffer( TAG_STRING_BUFFER );
 		String xmlName = eliminateSpaces( name );
-		
+
 		beginTag.append( "<" + xmlName );
-				
+
 		if( attributes != null )
 		{
 			for( int i = 0; i < attributes.length; i++ )
@@ -155,7 +143,7 @@ public class XMLNode extends XMLRoot
 					String attributeName = eliminateSpaces( attributes[ i ].toString().trim() );
 					// TODO: attribute name should be one word! squish it?
 					beginTag.append( " " + attributeName + "=\"" );
-								  
+
 					// <tag attr="val"
 					// if there is no value associated with this attribute, 
 					// consider it a <hr NOSHADE> style attribute;
@@ -169,24 +157,24 @@ public class XMLNode extends XMLRoot
 						else
 						{
 							beginTag.append( attributeName.trim() + "\"" );
-						}			
+						}           
 					}
 				}
 			}
-		}		
-		
+		}
+
 		// <tag attr="val"...> or <tag attr="val".../>
 		// if there is no value in this element AND this element has no children, it can be a single tag <.../>
 		if( value.length() < 1 && child == null )
-		{			
+		{
 			beginTag.append( " />\n" );
 			endTag.setLength( 0 );
 		}
 		else
-		{			
+		{
 			beginTag.append( ">" );
 			endTag.append( "</" + xmlName + ">\n" );
-		}		
+		}       
 
 		//return ( prev.toString() + beginTag.toString() + value.toString() + child.toString() + endTag.toString() + next.toString() );		
 		String returnStr = indent + beginTag.toString();
@@ -200,28 +188,38 @@ public class XMLNode extends XMLRoot
 			returnStr += endTag.toString();
 		return( returnStr );
 	}
-	
-	
-	
-	
+
+
+
+
 	// CONSTRUCTION ROUTINES
 	//
 	//
-	
-	
+
+
 	// insert element before the node here
 	public XMLNode insertElement( String name ) 
-		{ return insertElement( name, "", "", "" ); }
+	{
+		return insertElement( name, "", "", "" );
+	}
 	public XMLNode insertElement( String name, String value ) 
-		{ return insertElement( name, value, "", "" ); }
+	{
+		return insertElement( name, value, "", "" );
+	}
 	public XMLNode insertElement( String name, String value, String[] attributes ) 
-		{ return insertElement( name, value, attributes, null ); }
+	{
+		return insertElement( name, value, attributes, null );
+	}
 	public XMLNode insertElement( String name, String[] attributes, String[] values )
-		{ return insertElement( name, "", attributes, values ); }
+	{
+		return insertElement( name, "", attributes, values );
+	}
 	public XMLNode insertElement( String name, String value, String attribute, String attributeValue )
-		{ return insertElement( name, value, new String[] { attribute }, new String[] { attributeValue } ); }
+	{
+		return insertElement( name, value, new String[] { attribute}, new String[] { attributeValue} );
+	}
 	public XMLNode insertElement( String name, String value, String[] attributes, String[] values )
-	{	
+	{
 		XMLNode newnode = new XMLNode( name, value, attributes, values );
 
 		// check if this node is the first of a chain
@@ -229,7 +227,7 @@ public class XMLNode extends XMLRoot
 		{
 			if( this.parent.child.equals( this ) )
 			{
-				this.parent.child = newnode;	
+				this.parent.child = newnode;    
 			}
 		}
 		// if it has no parent it might be a root's child
@@ -237,59 +235,69 @@ public class XMLNode extends XMLRoot
 		{
 			if( this.prev == null )
 			{
-				this.root.child = newnode;			
+				this.root.child = newnode;          
 			}
 		}
-		
+
 		newnode.child = null;
 		newnode.parent = this.parent;
 		newnode.prev = this.prev;
 		if( newnode.prev != null )
-			newnode.prev.next = newnode;			
+			newnode.prev.next = newnode;
 		this.prev = newnode;
 		newnode.next = this;
 		return newnode;
 	}
-	
+
 
 	// add element to end of tree
 	public XMLNode addElement( String name ) 
-		{ return addElement( name, "", "", "" ); }
+	{
+		return addElement( name, "", "", "" );
+	}
 	public XMLNode addElement( String name, String value ) 
-		{ return addElement( name, value, "", "" ); }
+	{
+		return addElement( name, value, "", "" );
+	}
 	public XMLNode addElement( String name, String value, String[] attributes ) 
-		{ return addElement( name, value, attributes, null ); }
+	{
+		return addElement( name, value, attributes, null );
+	}
 	public XMLNode addElement( String name, String[] attributes, String[] values )
-		{ return addElement( name, "", attributes, values ); }
+	{
+		return addElement( name, "", attributes, values );
+	}
 	public XMLNode addElement( String name, String value, String attribute, String attributeValue )
-		{ return addElement( name, value, new String[] { attribute }, new String[] { attributeValue } ); }
+	{
+		return addElement( name, value, new String[] { attribute}, new String[] { attributeValue} );
+	}
 	public XMLNode addElement( String name, String value, String[] attributes, String[] values )
 	{
 		XMLNode newnode = new XMLNode( name, value, attributes, values);
 		return addElement( newnode );
 	}
 	public XMLNode addElement( XMLNode node )
-	{		
+	{
 		XMLNode current = this;
 		while( current.next != null )
 		{
 			current = current.next;
-		}			
-		current.next = node;		
+		}           
+		current.next = node;        
 		node.prev = current;
 		return node;
-	}	
+	}   
 
 	// add one level of children
 	public XMLNode addChildren( XMLNode children )
 	{
 		XMLNode current = children;
-		while( current != null )			
+		while( current != null )
 		{
 			current.parent = this;
 			current = current.next;
-		}			
-			
+		}           
+
 		if( this.child == null )
 		{
 			this.child = children;
@@ -305,25 +313,35 @@ public class XMLNode extends XMLRoot
 		}
 		return this;
 	}
-	
+
 	// add element to end of tree
 	public XMLNode addChild( String name ) 
-		{ return addChild( name, "", "", "" ); }
+	{
+		return addChild( name, "", "", "" );
+	}
 	public XMLNode addChild( String name, String value ) 
-		{ return addChild( name, value, "", "" ); }
+	{
+		return addChild( name, value, "", "" );
+	}
 	public XMLNode addChild( String name, String value, String[] attributes ) 
-		{ return addChild( name, value, attributes, null ); }
+	{
+		return addChild( name, value, attributes, null );
+	}
 	public XMLNode addChild( String name, String[] attributes, String[] values )
-		{ return addChild( name, "", attributes, values ); }
+	{
+		return addChild( name, "", attributes, values );
+	}
 	public XMLNode addChild( String name, String value, String attribute, String attributeValue )
-		{ return addChild( name, value, new String[] { attribute }, new String[] { attributeValue } ); }
+	{
+		return addChild( name, value, new String[] { attribute}, new String[] { attributeValue} );
+	}
 	public XMLNode addChild( String name, String value, String[] attributes, String[] values )
 	{
 		XMLNode newnode = new XMLNode( name, value, attributes, values );
 		return addChild( newnode );
 	}
 	public XMLNode addChild( XMLNode node )
-	{	
+	{
 		if( this.child == null )
 		{
 			this.child = node;
@@ -341,19 +359,12 @@ public class XMLNode extends XMLRoot
 			node.parent = this;
 		}
 		return node;
-	}	
+	}   
 
 	private String eliminateSpaces( String str )
 	{
-		//String temp = str.trim();
-		/*
-		int index = -1;
-		while( ( index = temp.indexOf( " " ) ) != -1 )
-		{
-			
-		}*/		
 		return str.trim().replace( ' ', '_' );
-	};	
+	}
 }
 
 

@@ -24,28 +24,18 @@
  */
 
 
-
-
-
 package soot.util;
 
 
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter
-{	
+{
 	// xml and dtd header
-        public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
+	public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
 	public static final String dtdHeader = "<!DOCTYPE jil SYSTEM \"http://www.sable.mcgill.ca/~flynn/jil/jil10.dtd\">\n";
-	
-	// xml constants
-	private static final String indent = "  ";
-	private static final int bufferCapacity = 1024;
-	
+
 	// xml tree
 	public XMLRoot root = new XMLRoot();
-
-	// output buffer
-	private StringBuffer buffer = new StringBuffer( bufferCapacity );
 
 	// returns the buffer - this is the XML output
 	public String toString()
@@ -53,36 +43,29 @@ public class XMLPrinter
 		if( root != null )
 			return root.toString();
 		else
-			return "XML Error!";
+			throw new RuntimeException("Error generating XML!");
 	}
-		
-	// printer init
-	public XMLPrinter newPrinter()
-	{
-		buffer = new StringBuffer( bufferCapacity );
-		//buffer.append( xmlHeader );
-		return this;
-	}
-	
-	// clear
-	public XMLPrinter clear()
-	{
-		buffer = new StringBuffer( bufferCapacity );
-		return this;
-	}
-		
+
 	// add single element <...>...</...>
 	public XMLNode addElement( String name ) 
-		{ return addElement( name, "", "", "" ); }
+	{
+		return addElement( name, "", "", "" );
+	}
 	public XMLNode addElement( String name, String value ) 
-		{ return addElement( name, value, "", "" ); }
+	{
+		return addElement( name, value, "", "" );
+	}
 	public XMLNode addElement( String name, String value, String[] attributes ) 
-		{ return addElement( name, value, attributes, null ); }
+	{
+		return addElement( name, value, attributes, null );
+	}
 	public XMLNode addElement( String name, String value, String attribute, String attributeValue )
-		{ return addElement( name, value, new String[] { attribute }, new String[] { attributeValue } ); }
+	{
+		return addElement( name, value, new String[] { attribute}, new String[] { attributeValue} );
+	}
 	public XMLNode addElement( String name, String value, String[] attributes, String[] values )
-	{	
+	{
 		return root.addElement( name, value, attributes, values );
-	}                                    		
+	}                                           
 }
 
