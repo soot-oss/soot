@@ -1,0 +1,49 @@
+.class  foo
+.super java/lang/Object
+
+.method  <init>()V
+    .limit stack 1
+    .limit locals 1
+    aload_0
+    invokespecial java/lang/Object/<init>()V
+    return
+.end method
+
+.method public sum([I)V
+    .limit stack 3
+    .limit locals 3
+    iconst_0
+    istore_0
+    iconst_0
+    istore_2
+    aload_1
+    iconst_0
+label2:
+    iaload
+    istore_2
+    iconst_0
+    istore_2
+    goto label0
+label1:
+    iload_0
+    aload_1
+    iload_2
+label3:
+    iaload
+    iadd
+    istore_0
+    iinc 2 1
+label0:
+    iload_2
+    aload_1
+    arraylength
+    if_icmplt label1
+    aload_1
+    iload_2
+label4:
+    iaload
+    istore_2
+    return
+.code_attribute NullCheckAttribute "%label2%BA==%label3%AA==%label4%AA=="
+.end method
+

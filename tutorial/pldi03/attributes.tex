@@ -48,7 +48,7 @@ attribute_info {
 
 %% a picture shows mapping between soot internal objects to class file structures
 \begin{slide}{Tags in Soot Internals}
-{\bf picture here}
+\epsfig{file=attr-map.eps,width=3.5in}
 \end{slide}
 
 \begin{slide}{Hosts}
@@ -83,30 +83,21 @@ public interface Tag {
 }
 \begin{itemize}
 \item {\red Attribute} attached to class file structures (class, field, method)
-\item Generic tags attached to {\em ValueBox}es
+\item Generic tags attached to {\em Unit}s or {\em ValueBox}es
 \end{itemize}
 \end{slide}
 
-
-
-\begin{slide}{Tags in Soot}
+\begin{slide}{Tag Hierarchy}
 \epsfig{file=tag-hierarchy.eps, width=4.2in}
 \end{slide}
 
 %% how does soot produce tags and attributes in class file
-\begin{slide}{From Soot Tags to Class File Attributes}
-{\bf diagram here}
-\end{slide}
-
-
 \begin{slide}{Special case: attributes of Code\_attribute}
+\epsfig{file=attr-flow.eps, width=4.2in}
+
 \begin{itemize}
-\item Tags are attached to units, mapped into a table of (pc, value) pairs
-      in class file
-\item {\red TagAggregator} collects (Unit, Tag) pairs from JimpleBody, and
-      produces an aggregated tag 
-\item {\tt JasminAttribute} can be attached to Body
-\item Soot has a default implementation: {\tt CodeAttribute}
+\item {\red TagAggregator} aggregates tags of Units/ValueBoxes to {\red CodeAttribute}
+\item CodeAttribute is a table of (pc, value) pairs in class file
 \end{itemize}
 \end{slide}
 
@@ -166,19 +157,19 @@ s.addTag(new NullCheckTag(needCheck));
 \end{slide}
 
 \begin{slide}{Example: nullness attribute}
-Step 3: create a tag aggregator, NullTagAggregator, and
-register it in ``{\em tag}'' pack with soot.PackManager
+Step 3: create a NullTagAggregator
 {\scriptsize \verb$ p.add(new Transform(``tag.null'',$
    \verb$         NullTagAggergator.v())); $}
 
-\scriptsize{
+{\scriptsize
 \begin{verbatim}
 class NullTagAggregator extends TagAggregator {
   public boolean watTag(Tag t) {
     return (t instanceof NullCheckTag);
   }
   public void considerTag(Tag t, Unit t) {
-    if ( ... ) return; // verify unit requires null check
+    // verify unit requires null check
+    if ( ... ) return; 
     super.units.add( u );
     super.tags.add ( t );
   }
@@ -187,13 +178,10 @@ class NullTagAggregator extends TagAggregator {
 }
 \end{slide}
 
-\begin{slide}{Control attributes format}
-\begin{itemize}
-\item Attributes of class, field and method provide raw data 
-      via {\em byte[] getValue()} method
-\item Attributes of Code\_attribute extends {\em JasminAttribute}
-      which generates textual representation of (label, value)
-      pairs:\\
+\begin{slide}{Code attribute format}
+Attributes of Code\_attribute extends {\em JasminAttribute}
+which generates textual representation of (label, value)
+pairs:\\
 \footnotesize{\verb$ String getJasminValue(Map instToLabel); $} \\
 e.g. "NullCheckAttribute":
 \footnotesize{
@@ -207,5 +195,4 @@ null_check_attribute {
 }
 \end{verbatim}
 }
-\end{itemize}
 \end{slide}
