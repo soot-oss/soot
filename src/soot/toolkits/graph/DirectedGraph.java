@@ -33,26 +33,26 @@ import soot.*;
 
 /**
  *   Interface to be implemented by classes that support the
- *   notion of a CFG.
+ *   notion of a directed graph.
  */
 public interface DirectedGraph
 {
     /** 
-     *  @return   A list of the entry points for this CFG.
+     *  @return   A list of the entry points for this graph.
      */
     public List getHeads();
 
-    /** @return  A list of the exit points for this CFG. */
+    /** @return  A list of the exit points for this graph. */
     public List getTails();
 
     /** 
-     *  @return  A list of the predessor for a node in the graph.
+     *  @return  A list of predecessors for a node in the graph.
      *  @see Directed
      */
     public List getPredsOf(Directed s);
 
     /**
-     *  @return  A list of the successor for a node in the graph.
+     *  @return  A list of successors for a node in the graph.
      *  @see Directed
      */
     public List getSuccsOf(Directed s);

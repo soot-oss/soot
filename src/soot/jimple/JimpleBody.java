@@ -427,8 +427,6 @@ public class JimpleBody extends StmtBody
 
                     List localList = (List) typeToLocals.get(type);
                     Object[] locals = localList.toArray();
-                    if (soot.Main.isVerbose)
-                        System.out.println("type: " + type);
                     out.print("        "  + type + " ");
 		    
                     for(int k = 0; k < locals.length; k++)

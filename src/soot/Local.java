@@ -33,9 +33,18 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** The Local interface describes a local variable, used within Body
+ * classes.  Intermediate representations must use an implementation
+ * of Local for their local variables.
+ *  */
 public interface Local extends Value, ToBriefString
 {
+    /** Returns the name of the current Local variable. */
     public String getName();
+
+    /** Sets the name of the current variable. */
     public void setName(String name);
+
+    /** Sets the type of the current variable. */
     public void setType(Type t);
 }

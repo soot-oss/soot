@@ -38,4 +38,5 @@ public class EquivalentValue
     }
     public int hashCode() { return e.equivHashCode(); }
     public String toString() { return e.toString(); }
+    public Value getValue() { return e; }
 }

@@ -32,7 +32,61 @@ import java.util.*;
 
 public class SynchronizerManager
 {
-    /** Wraps stmt around a monitor associated with local l. 
+    /** Finds a method which calls java.lang.Class.forName(String).
+     * Searches for names class$, _class$, __class$, etc. 
+     * If no such method is found, creates one and returns it.
+     *
+     * Uses dumb matching to do search.  Not worth doing symbolic
+     * analysis for this! */
+    public static SootMethod getClassFetcherFor(SootClass c)
+    {
+        String methodName = "class$";
+        for ( ; true; methodName = "_" + methodName)
+        {
+            if (!c.declaresMethodByName(methodName))
+                return createClassFetcherFor(c, methodName);
+
+            SootMethod m = c.getMethodByName(methodName);
+
+            // Check signature.
+            if (!m.getSignature().equals
+                     ("<"+c.getName()+": java.lang.Class "+
+                      methodName+"(java.lang.String)>"))
+                continue;
+
+            Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+
+            Stmt s = (Stmt)unitsIt.next();
+            if (!(s instanceof IdentityStmt))
+                continue;
+
+            IdentityStmt is = (IdentityStmt)s;
+            Value lo = is.getLeftOp(), ro = is.getRightOp();
+
+            if (!(ro instanceof ParameterRef))
+                continue;
+
+            ParameterRef pr = (ParameterRef)ro;
+            if (pr.getIndex() != 0)
+                continue;
+
+            s = (Stmt)unitsIt.next();
+            if (!(s instanceof ReturnStmt))
+                continue;
+
+            ReturnStmt rs = (ReturnStmt) s;
+
+        }
+    }
+
+    /** Creates a method which calls java.lang.Class.forName(String). */
+    public static SootMethod createClassFetcherFor(SootClass c, 
+                                                   String methodName)
+    {
+        return null;
+    }
+
+    /** Wraps stmt around a monitor associated with local lock. 
      * When inlining or static method binding, this is the former
      * base of the invoke expression. */
     public static void synchronizeStmtOn(Stmt stmt, JimpleBody b, Local lock)

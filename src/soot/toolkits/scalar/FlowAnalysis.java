@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.toolkits.scalar;
 
 import soot.*;
@@ -35,13 +31,22 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+/** An abstract class providing a framework for carrying out dataflow analysis.
+ * Subclassing either BackwardFlowAnalysis or ForwardFlowAnalysis and providing
+ * implementations for the abstract methods will allow Soot to compute the
+ * corresponding flow analysis. */
 public abstract class FlowAnalysis
 {
-    protected Map unitToAfterFlow,
-        unitToBeforeFlow;
+    /** Maps graph nodes to IN sets. */
+    protected Map unitToBeforeFlow;
 
+    /** Maps graph nodes to OUT sets. */
+    protected Map unitToAfterFlow;
+
+    /** The graph being analysed. */
     DirectedGraph graph;
 
+    /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public FlowAnalysis(DirectedGraph graph)
     {
         unitToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
@@ -50,27 +55,39 @@ public abstract class FlowAnalysis
         this.graph = graph;
     }
 
+    /** Returns the flow object corresponding to the initial values for each graph node. */
     protected abstract Object newInitialFlow();
 
+    /** Returns true if this analysis is forwards. */
     protected abstract boolean isForward();
 
     /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code>. */
     protected abstract void flowThrough(Object in, Directed d, Object out);
+
     /** Compute the merge of the <code>in1</code> and <code>in2</code> sets, putting the result into <code>out</code>. 
       * Used by the doAnalysis method. */
     protected abstract void merge(Object in1, Object in2, Object out);
+
+    /** Creates a copy of the <code>source</code> flow object in <code>dest</code>. */
     protected abstract void copy(Object source, Object dest);
+
+    /** Carries out the actual flow analysis.  
+     * Typically called from a concrete FlowAnalysis's constructor.*/
     protected abstract void doAnalysis();
 
+    /** Customize the initial flow graph.  May be called from a concrete
+     * FlowAnalysis constructor to adjust, for instance, the value for the initial node. */
     protected void customizeInitialFlowGraph()
     {
     }
 
+    /** Accessor function returning value of OUT set for s. */
     public Object getFlowAfter(Directed s)
     {
         return unitToAfterFlow.get(s);
     }
 
+    /** Accessor function returning value of IN set for s. */
     public Object getFlowBefore(Directed s)
     {
         return unitToBeforeFlow.get(s);

@@ -42,6 +42,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
     {
         return true;
     }
+
     protected void doAnalysis()
     {
         LinkedList changedUnits = new LinkedList();

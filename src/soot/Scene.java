@@ -132,17 +132,17 @@ public class Scene extends AbstractHost
         // Jimple optimization pack (-O)
         packNameToPack.put("jop", p = new Pack());
         {
-//              p.add(new Transform("jop.cp",   CopyPropagator.v()));
-//              p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
-//              p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
-//              p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
-//              p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v()));
-//              p.add(new Transform("jop.ubf1", UnconditionalBranchFolder.v()));
-//              p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v()));
-//              p.add(new Transform("jop.ubf2", UnconditionalBranchFolder.v()));
+            p.add(new Transform("jop.cp",   CopyPropagator.v()));
+            p.add(new Transform("jop.cpf",  ConstantPropagatorAndFolder.v()));
+            p.add(new Transform("jop.cbf",  ConditionalBranchFolder.v()));
+            p.add(new Transform("jop.dae",  DeadAssignmentEliminator.v()));
+            p.add(new Transform("jop.uce1", UnreachableCodeEliminator.v()));
+            p.add(new Transform("jop.ubf1", UnconditionalBranchFolder.v()));
+            p.add(new Transform("jop.uce2", UnreachableCodeEliminator.v()));
+            p.add(new Transform("jop.ubf2", UnconditionalBranchFolder.v()));
 
-//              p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
-            p.add(new Transform("jop.pre", PartialRedundancyEliminator.v()));
+            p.add(new Transform("jop.ule",  UnusedLocalEliminator.v()));
+//              p.add(new Transform("jop.pre", PartialRedundancyEliminator.v()));
         }
 
         // Whole-Jimple transformation pack (--app)

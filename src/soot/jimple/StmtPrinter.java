@@ -133,9 +133,9 @@ class StmtPrinter
                    
               
 		if(isPrecise)
-		  out.print(currentStmt.toString(stmtToName, indent));
-            else
-	      out.print(currentStmt.toBriefString(stmtToName, indent));
+                    out.print(currentStmt.toString(stmtToName, indent));
+                else
+                    out.print(currentStmt.toBriefString(stmtToName, indent));
 
             out.print(";"); 
             out.println();

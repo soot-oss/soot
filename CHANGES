@@ -1,3 +1,31 @@
+Improvements in 021400
+
+1. Fixed the SootResolver so that it displays the name of
+the missing classfile before quitting.
+
+2. Merged in partial code for Partial Redundancy Elimination
+(not working yet).
+
+3. Added more documentation comments.  (Thanks patrice!)
+
+4. Added EquivTo interface, made all Jimple Values implement 
+EquivTo, and provided EquivalentValue wrapper objects.  Using an
+EquivalentValue allows Collections to see structurally equal 
+Values as satisfying .equals().  This is not universally useful;
+for instance, the Units chain should not use EquivalentValues!
+
+5. Added jikes.def and javac.def files.  Invoking "jams foo"
+will copy the .dat files from the src/ directories to the classes/
+directories.
+
+6. Patrice added some support for a framework allowing Baf peephole
+optimizations to be added in a uniform manner.
+
+7. Added soot.PackAdjuster and soot.jimple.StmtPrinter classes.
+These classes can be overridden by placing custom classes with the 
+same names earlier in the CLASSPATH.  This permits external classes
+to be called by Soot at strategic moments in Soot's execution.
+
 Improvements in 1.beta.6
 
 1. A Jimple parser has been added to the Soot framework.  Soot can

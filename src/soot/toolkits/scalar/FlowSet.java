@@ -30,20 +30,51 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** Represents information for flow analysis.  
+ * A FlowSet is an element of a lattice; this lattice might be described by a FlowUniverse.
+ * If add, remove, size, isEmpty, toList and contains are implemented, the lattice must be the powerset of some set.
+ *
+ * @see: FlowUniverse
+ */
 public interface FlowSet 
 {
-    public int size();
-
+    /** Clones the current FlowSet. */
     public Object clone();
+
+    /** Copies the current FlowSet into dest. */
     public void copy(FlowSet dest);
-    public boolean isEmpty();
+
+    /** Sets this FlowSet to the empty set (more generally, the bottom element of the lattice.) */
     public void clear();
-    public List toList();
-    public void add(Object obj, FlowSet dest);
-    public void remove(Object obj, FlowSet dest);
+
+    /** Returns the union (join) of this FlowSet and <code>other</code>, putting result into <code>dest</code>. */
     public void union(FlowSet other, FlowSet dest);
+
+    /** Returns the intersection (meet) of this FlowSet and <code>other</code>, putting result into <code>dest</code>. */
     public void intersection(FlowSet other, FlowSet dest);
-    public void difference(FlowSet other, FlowSet dest);    
-    public boolean contains(Object obj);
+
+    /** Returns the set difference (this join ~other) of this FlowSet and 
+        <code>other</code>, putting result into <code>dest</code>. */
+    public void difference(FlowSet other, FlowSet dest);
+
+    /** Returns true if this FlowSet is the empty set. */
+    public boolean isEmpty();
+
+    /* The following methods force the FlowSet to be a powerset. */
+
+    /** Returns the size of the current FlowSet. (optional operation) */
+    public int size() throws UnsupportedOperationException;
+
+    /** Adds <code>obj</code> to <code>dest</code>. (optional operation) */
+    public void add(Object obj, FlowSet dest) throws UnsupportedOperationException;
+
+    /** Removes <code>obj</code> from <code>dest</code>. (optional operation) */
+    public void remove(Object obj, FlowSet dest) throws UnsupportedOperationException;
+
+    /** Returns true if this FlowSet contains <code>obj</code>. (optional operation) */
+    public boolean contains(Object obj) throws UnsupportedOperationException;
+
+    /** Returns an unbacked list of contained objects for this FlowSet. (optional operation) */
+    public List toList() throws UnsupportedOperationException;
 }
 
