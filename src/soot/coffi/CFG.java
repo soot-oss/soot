@@ -82,14 +82,17 @@ public class CFG {
 	this.sentinel.next = m.instructions;
 	m.instructions.prev = this.sentinel;
 
+	//	printInstructions();
+	//	printExceptionTable();
+
 	eliminateJsrRets();
 
-	// printInstructions();
+	//	printInstructions();
+	//	printExceptionTable();
 
 	buildBBCFG();
 
 	// printBBs();
-
 	// printBBCFGSucc();
 
 	cfg.beginCode = true;
@@ -101,7 +104,7 @@ public class CFG {
 	else
 	    firstInstruction = null;
 
-	/*
+	/*	
 	if (m.code_attr != null)
 	{
 	    for (int i=0; i<m.code_attr.attributes.length; i++)
@@ -199,10 +202,13 @@ public class CFG {
 	Code_attribute ca = this.method.locate_code_attribute();
 	
 	System.out.println("\nException table :");
+	System.out.println("start\tend\thandler");
 	for (int i=0; i<ca.exception_table.length; i++)
 	{
 	    exception_table_entry ete = ca.exception_table[i];
-	    System.out.println(ete.start_inst + " \t " + ete.end_inst + " \t "+ete.handler_inst);
+	    System.out.println(ete.start_inst.label + " \t " 
+			       + ete.end_inst.label + " \t "
+			       + ete.handler_inst.label);
 	}
     }
     // Constructs the actual control flow graph. Assumes the hash table
@@ -413,53 +419,36 @@ public class CFG {
     
     LinkedList jsrorder = new LinkedList();
 
-    /* Eliminate subroutines ( JSR/RET instructions ) by inlining the routine bodies. 
-     */
+    /* Eliminate subroutines ( JSR/RET instructions ) by inlining the 
+       routine bodies. */
     private boolean eliminateJsrRets()
     {
-	boolean unusual = false;
-
-	// go through instructions, find all jsr/astore/ret pair.
 	Instruction insn = this.sentinel;
-
-	do 
-	{
+	// find the last instruction, for copying blocks.
+	while (insn.next != null) {
 	    insn = insn.next;
-
-	    if (insn instanceof Instruction_Jsr
-		|| insn instanceof Instruction_Jsr_w)
-	    {
-		Instruction astore = ((Instruction_branch)insn).target;
-		if (! (astore instanceof Interface_Astore))
-		{
-		    unusual = true;
-		    break;
-		}
-		
-		if (!jsrorder.contains(insn))
-		    jsrorder.addFirst(insn);
-
-		Instruction ret = findMatchingRet(astore, insn);
-		if (ret == null)
-		{
-		    unusual = true;
-		    break;
-		}
-		
-		jsr2astore.put(insn, astore);
-		astore2ret.put(astore, ret);
-	    }
-	} while (insn.next != null);
-	
+	}
 	this.lastInstruction = insn;
 
-	if (unusual)
-	{
-	    System.err.println("Sorry, I cannot handle this method.");
-	    return false;
-	}
+	HashMap todoBlocks = new HashMap();
+	todoBlocks.put(this.sentinel.next, this.lastInstruction);
+	LinkedList todoList = new LinkedList();
+	todoList.add(this.sentinel.next);
 
-	inliningJsrTargets ();
+	while (!todoList.isEmpty()) {
+	    Instruction firstInsn = (Instruction)todoList.removeFirst();
+	    Instruction lastInsn  = (Instruction)todoBlocks.get(firstInsn);
+
+	    jsrorder.clear();
+	    jsr2astore.clear();
+	    astore2ret.clear();
+
+	    if (findOutmostJsrs(firstInsn, lastInsn)) {
+		HashMap newblocks = inliningJsrTargets();
+		todoBlocks.putAll(newblocks);
+		todoList.addAll(newblocks.keySet());
+	    }
+	}
 
 	/* patch exception table and others.*/
 	{
@@ -469,10 +458,71 @@ public class CFG {
       	    adjustLineNumberTable();
 	    adjustBranchTargets();
 	}
+
+	// we should prune the code and exception table here.
+	// remove any exception handler whose region is in a jsr/ret block.
+      	// pruneExceptionTable();
+
 	return true;
     }
 
-    private Instruction findMatchingRet(Instruction astore, Instruction jsr)
+    // find outmost jsr/ret pairs in a code area, all information is
+    // saved in jsr2astore, and astore2ret
+    // start : start instruction, inclusively.
+    // end   : the last instruction, inclusively.
+    // return the last instruction encounted ( before end )
+    // the caller cleans jsr2astore, astore2ret
+    private boolean findOutmostJsrs(Instruction start, Instruction end) {
+	// use to put innerJsrs.
+	HashSet innerJsrs = new HashSet();
+	boolean unusual = false;
+
+	Instruction insn = start;
+	do {
+	    if (insn instanceof Instruction_Jsr
+		|| insn instanceof Instruction_Jsr_w)
+	    {
+		if (innerJsrs.contains(insn)) {
+		    // skip it
+		    insn = insn.next;
+		    continue;
+		}    
+
+		Instruction astore = ((Instruction_branch)insn).target;
+		if (! (astore instanceof Interface_Astore))
+		{
+		    unusual = true;
+		    break;
+		}
+		
+		Instruction ret = findMatchingRet(astore, insn, innerJsrs);
+		if (ret == null)
+		{
+		    unusual = true;
+		    break;
+		}
+
+		jsrorder.addLast(insn);
+		jsr2astore.put(insn, astore);
+		astore2ret.put(astore, ret);
+	    }
+ 
+	    insn = insn.next;
+	   
+	} while (insn != end);
+
+	if (unusual)
+	{
+	    System.err.println("Sorry, I cannot handle this method.");
+	    return false;
+	}
+	
+	return true;
+    }
+
+    private Instruction findMatchingRet(Instruction astore, 
+					Instruction jsr,
+					HashSet     innerJsrs)
     {
 	int astorenum = ((Interface_Astore)astore).getLocalNumber();
 	
@@ -491,19 +541,7 @@ public class CFG {
 	    if (insn instanceof Instruction_Jsr
 		|| insn instanceof Instruction_Jsr_w)
 	    {
-		if (!jsrorder.contains(insn))
-		    jsrorder.addFirst(insn);
-		else
-		{
-		    int jindex = jsrorder.indexOf(jsr);
-		    int cindex = jsrorder.indexOf(insn);
-		    if (jindex < cindex)
-		    {
-			jsrorder.remove(jsr);
-			// because of removal of jsr, correct index should be cindex, not cindex-1
-			jsrorder.add(cindex, jsr);
-		    }
-		}
+		innerJsrs.add(insn);
 	    }
 
 	    insn = insn.next;
@@ -512,12 +550,25 @@ public class CFG {
 	return null;
     }
 
-    private void inliningJsrTargets()
+    // make copies of jsr/ret blocks
+    // return new blocks
+    private HashMap inliningJsrTargets()
     {
+	/*
+	for (int i=0, n=jsrorder.size(); i<n; i++) {
+	    Instruction jsr    = (Instruction)jsrorder.get(i);
+	    Instruction astore = (Instruction)jsr2astore.get(jsr);
+	    Instruction ret    = (Instruction)astore2ret.get(astore);
+	    System.out.println("jsr"+jsr.label+"\t"
+			       +"as"+astore.label+"\t"
+			       +"ret"+ret.label);
+	}
+	*/
+	HashMap newblocks = new HashMap();
+
 	while (!jsrorder.isEmpty())
 	{
-	    Instruction jsr = (Instruction)jsrorder.removeFirst();
-	    
+	    Instruction jsr = (Instruction)jsrorder.removeFirst();	    
 	    Instruction astore = (Instruction)jsr2astore.get(jsr);
 	    Instruction ret = (Instruction)astore2ret.get(astore);
 
@@ -538,7 +589,11 @@ public class CFG {
 	    togo.next.prev = togo;
 
 	    replacedInsns.put(jsr, togo); 
+
+	    newblocks.put(newhead, this.lastInstruction);
 	}
+
+	return newblocks;
     }
 
     /* make a copy of code between from and to exclusively, 
@@ -553,7 +608,8 @@ public class CFG {
 
 	int curlabel = this.lastInstruction.label;
 
-	HashMap insnmap = new HashMap(); // mapping from original instructions to new instructions.
+	// mapping from original instructions to new instructions.
+	HashMap insnmap = new HashMap(); 
 	Instruction insn = astore.next;
 	
 	while (insn != ret && insn != null)
@@ -589,7 +645,8 @@ public class CFG {
 	insnmap.put(astore, headbefore.next);
 	insnmap.put(ret, togo);
 
-	// fixup targets in new instruction (only in the scope of new instructions).
+	// fixup targets in new instruction (only in the scope of 
+	//  new instructions).
 	// do not forget set target labelled as TRUE
 	insn = headbefore.next;
 	while (insn != last)
@@ -602,7 +659,7 @@ public class CFG {
 		{
 		    ((Instruction_branch)insn).target = newtgt;
 		    newtgt.labelled = true;
-		}
+		} 
 	    }
 	    else
 	    if (insn instanceof Instruction_Lookupswitch)
@@ -655,7 +712,8 @@ public class CFG {
 	}
 	
 	// do we need to copy a new exception table entry? 
-	// new exception table has new exception range, and the new exception handler.
+	// new exception table has new exception range, 
+	// and the new exception handler.
 	{
 	    Code_attribute ca = method.locate_code_attribute();
 
@@ -701,6 +759,60 @@ public class CFG {
 	return headbefore.next;
     }
 
+    private void pruneExceptionTable() {
+	HashSet invalidInsns = new HashSet();
+	Instruction insn = this.sentinel.next;
+        do {
+	    if (insn instanceof Instruction_Jsr
+		|| insn instanceof Instruction_Jsr_w) {
+		Instruction astore = ((Instruction_branch)insn).target;
+		int astorenum = ((Interface_Astore)astore).getLocalNumber();
+		Instruction ret = astore.next;
+		do {
+		    invalidInsns.add(ret);
+		    if (ret instanceof Instruction_Ret
+			|| ret instanceof Instruction_Ret_w) {
+			int retnum = ((Interface_OneIntArg)ret).getIntArg();
+			if (astorenum == retnum) {
+			    insn = ret;
+			    break;
+			}
+		    }
+		    ret = ret.next;
+		} while (true);
+	    }
+	    insn = insn.next;
+	} while (insn != null);
+
+	Iterator it = invalidInsns.iterator();
+	while (it.hasNext()) {
+	    System.out.println(it.next());
+	}
+
+	// pruning exception table
+	LinkedList validEntries = new LinkedList();
+
+	Code_attribute codeAttribute = method.locate_code_attribute();
+	for(int i = 0; i < codeAttribute.exception_table_length; i++)
+	{
+	    exception_table_entry entry = codeAttribute.exception_table[i];
+
+	    if (!invalidInsns.contains(entry.start_inst)) {
+		validEntries.add(entry);
+	    }
+	}
+
+	if (validEntries.size() != codeAttribute.exception_table_length) {
+	    exception_table_entry newtable[] = 
+		new exception_table_entry[validEntries.size()];
+	    for (int i=0; i<newtable.length; i++) {
+		newtable[i] = 
+		    (exception_table_entry)validEntries.get(i);
+	    }
+	    codeAttribute.exception_table = newtable;
+	    codeAttribute.exception_table_length = newtable.length;
+	}
+    }
 
     /* if a jsr/astore/ret is replaced by some other instruction, it will be put on this table. */
     private Hashtable replacedInsns = new Hashtable();
