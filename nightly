@@ -124,14 +124,14 @@ function setUpSoot(){
     sed s/polyglotjar/autobuild\\/releases\\/polyglotclasses-$polyglotrev.jar/ $HOME/autobuild/settings/soot | sed s/jasminjar/autobuild\\/releases\\/jasminclasses-$rev.jar/ | sed s/sootversion/$rev/ > ant.settings;
        
     # update version in source in soot 
-    sed s/versionString' '=' '\"2.1.0\"/versionString' '=' '\"$rev\"/ src/soot/Main.java > version-temp;
+    sed s/versionString' '=' '\"2.2.0\"/versionString' '=' '\"$rev\"/ src/soot/Main.java > version-temp;
     mv version-temp src/soot/Main.java;
        
     # some care must be given to ensure the eclipse plugin.xml
     # file has the right jar file names for soot, jasmin and polyglot
     cd $HOME/autobuild/tmp/soot/eclipse/ca.mcgill.sable.soot/;
-    sed s/sootclasses-2.1.0-custom.jar/sootclasses-$rev.jar/ plugin.xml > temp1;
-    sed s/jasminclasses-sable-1.2.jar/jasminclasses-$rev.jar/ temp1 | sed s/polyglot_latest.jar/polyglotclasses-$polyglotrev.jar/  > plugin.xml
+    sed s/sootclasses-2.2.0-custom.jar/sootclasses-$rev.jar/ plugin.xml > temp1;
+    sed s/jasminclasses-2.2.0.jar/jasminclasses-$rev.jar/ temp1 | sed s/polyglotclasses-1.3.jar/polyglotclasses-$polyglotrev.jar/  > plugin.xml
     rm temp1;
 }
 

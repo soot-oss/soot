@@ -15,18 +15,10 @@
 
 <p>
 <a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
-<a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
-<a href="#svn"><font face="helvetica,arial" size="+0">Repository Access</font></a><br>
-<a href="#eclipse"><font face="helvetica,arial" size="+0">Eclipse Plugin</font></a><br>
-<a href="http://svn.sable.mcgill.ca/bugzilla"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
-<a href="http://svn.sable.mcgill.ca/wiki/index.php/SootProject"><font face="helvetica,arial" size="+0">Soot Wiki</font></a><br>
-<a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
-<a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
-<a href="#documentation"><font face="helvetica,arial" size="+0">Documentation</font></a><br>
-<a href="#mailingLists"><font face="helvetica,arial" size="+0">Mailing List</font></a><br>
+<a href="#obtaining"><font face="helvetica,arial" size="+0">Obtaining Soot</font></a><br>
+<a href="#resources"><font face="helvetica,arial" size="+0">Resources</font></a><br>
 <a href="#credits"><font face="helvetica,arial" size="+0">Credits</font></a><br>
 <a href="#users"><font face="helvetica,arial" size="+0">Soot Users</font></a><br>
-<a href="nightly.html"><font face="helvetica,arial" size="+0">Nightly Builds</font></a><br>
 
 <p><a href="http://www.sable.mcgill.ca">Sable Home</a>
 
@@ -76,165 +68,17 @@ License</a>.
 
 </blockquote>
 
-<br>
-
-<!--Status-->
-<a name="status"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Release Status</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
 <blockquote>
-
+<h4>Release Status:</h4>
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 robust, easy-to-use research framework for optimizing Java bytecode.  
 
 <!-- Release 2.2 --> <p>
-The latest release is version 2.2. The new features since 2.1 are described in  detail here: <a href="new_features.html">new features</a>.
-
-<!-- Release 2.0.1  <p>
-The latest release is version 2.0.1, 
-which contains only bug fixes and minor tweaks since version 2.0.
--->
-
-<!-- Release 2.0 --> <p>
-<!--The 2.0 version number indicates that some things may have changed, and
-code written to work with earlier versions of Soot may need some
-tweaking, but such changes should be minor.-->
-
-<!-- Release 1.2.5  <p>
-The latest release is version 1.2.5. This release contains mainly bug fixes
-and improvements to Spark, the Soot Pointer Analysis Research Kit,
-and bug fixes in general.
--->
-
-<!-- Release 1.2.4 <p>
-The latest release is version 1.2.4. The main change is the
-inclusion of development version of Spark: Soot Pointer Analysis
-Research Kit. Available documentation for Spark includes the 
-<a href="http://www.sable.mcgill.ca/publications/#poster-2002-1">Spark
-poster</a> 
-and the 
-<a href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">
-Spark options
-</a>, as well as a
-<a href="http://www.sable.mcgill.ca/publications/#report2002-9">
-technical report
-</a>.
-More detailed documentation in the form of a master's thesis is being
-written.
-
-<p>Soot should now also properly handle code compiled with 1.4.x version
-of javac.
-
-<p>A few bugs were also fixed.
--->
-
-<!-- Release 1.2.3 <p>
-The release 1.2.3 fixes a few bugs from release 1.2.2 and incorporates
-some improvements of memory usage. Some other enhancements are an option for preserving line
-number tables, re-implementation of partial redundency elimination, some utility classes for 
-viewing CFGs, and XML output of Jimple bodies. 
-Jasmin has been upgraded to sable-1.2, which allows the length of a token more than 64K 
-(this is often necessary for annotation).
- -->
-
-<!-- Release 1.2.2 <p>
-The release 1.2.2 fixes a few bugs from release
-1.2.1. It also improves its performance and stability over former versions.
-Jasmin has been upgraded to 1.06-s10, which fixes a bug in the grammar dealing
-with attribute data.
- -->
-
-<!-- Release 1.2.1 <p>
-The release 1.2.1 fixes a few bugs from
-release 1.2.0.  A big improvement is that the release 1.2.1 can accept
-.jar files in the --soot-classpath command option. Also Jasmin has
-been upgraded to 1.06-s9, which no longer depends on Soot.  (Note that
-versions prior to 1.06-s8 also did not depend on Soot.)
- -->
-
-<!-- Release 1.2.0 <p>
-The 1.2.0 release is our second official release. 
-The major new feature in 1.2.0 is support for classfile
-annotation (courtesy of Feng Qian and Patrice Pominville). There is
-also an improved typing system, due to Etienne Gagnon. Variable-Type
-Analysis was cleanly re-implemented by Felix Kwok and we have included
-it in our release of Soot for the first time.  We also fixed a few
-bugs reported against version 1.0.0.<p>
- -->
-
-<!--
-<p>
-We plan the following <b>releases</b> for the near future:
-<ul>
-<li>The Dava decompiler is planned to have separate releases. 
-</ul>
--->
-
-<!-- Release 1.0.0
-<p>This release is our first official release.  We believe it to be quite solid, and have tested it on a set of 266 benchmarks.
-
-<p>In the future, we hope to improve support for whole-program analysis.
-We will also develop more transformations for use with Soot.
--->
-
+The latest release is version 2.2.0 The new features since 2.1.0 are described in  detail here: <a href="http://svn.sable.mcgill.ca/wiki/index.php/SootTwoTwoZeroReleaseNotice">new features</a>.
 </blockquote>
 
-<br>
-
-<!--Repository access-->
-<a name="svn"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Repository Access</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
 <blockquote>
-<p>We are using <a href="http://subversion.tigris.org/">Subversion</a> for
-revision control.</p>
-
-<p>With a Subversion client, you can obtain a copy of the
-development version of Soot, as well as any old versions. To obtain the
-latest development version of Soot, use one of the following commands:<br>
-<tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt><br>
-<tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
-
-<p>The <tt>checkout</tt> version records additional information required
-to update your checked out version of Soot with the repository at a
-later time (with the <tt>svn update</tt> command). The <tt>export</tt>
-version provides a "clean" copy of only the Soot files themselves.</p>
-
-<p>In order to compile Soot from source, you will also need a copy of
-the Jasmin and Polyglot classes, available from the
-<a href="soot_download.html">download page</a>.</p>
-
-<p>From time to time we update Jasmin. If something Jasmin related seems broken you may need to get the latest Jasmin from the subversion repository:<br>
-<tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt><br>
-<tt>svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt></p>
-
-<!--<br><p>
-If you use the development version of Soot checked out from Subversion,
-you will need the <a href="http://www.sable.mcgill.ca/jedd">Jedd</a>
-runtime library to compile it. For your convenience, a precompiled
-jar file of the Jedd 0.2 runtime library is 
-available for download:<br>
-<b><a href="http://www.sable.mcgill.ca/software/jedd-runtime-0.2.jar">jedd-runtime-0.2.jar</a></b>
-</p>
-<br>-->
-
-
-<p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
-just a web browser. For further instructions, please see
-<a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
-</blockquote>
-
-<!--Eclipse-->
-<a name="eclipse"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Eclipse Plugin</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
-<blockquote>
+<h4>Eclipse Plugin:</h4>
 Since version 2.0, Soot includes a <a href="eclipse/index.html">plugin</a> that makes it
 possible to use Soot from <a href="http://www.eclipse.org">Eclipse</a>.
 We have a separate <a href="eclipse/index.html">web page with instructions for
@@ -243,16 +87,13 @@ installing and using the plugin.</a>
 <p> You may also want to develop Soot within the Eclipse environment. Instructions for setting up Soot within Eclipse can be found here: <a href="soot_in_eclipse_howto.html">Setting Up Soot in Eclipse</a>.</p>
 </blockquote>
 
-<br>
-
-
-<!--Download-->
-
-<a name="download"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Download and Installation</b></font></td></a>
+<a name="obtaining"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Obtaining Soot</b></font></td></a>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
 </table>
+
 <blockquote>
+<h4>Downloads:</h4>
 
 Get Soot from our download page a <a
 href="soot_download.html">Soot Downloads</a>.
@@ -275,68 +116,49 @@ java soot.Main --help
 Note that Soot requires at least JDK 1.3.
 The Eclipse plugin requires at least JDK 1.4.
 Soot does not yet support JDK 1.5. 
-<!-- old story
-We have experienced some problems with the sunwjit JIT compiler; we do
-not recommend the use of this JIT.  In particular, common subexpression 
-elimination has triggered JIT problems with sunwjit.
--->
-
 </blockquote>
 
-<br>
-
-<!--Compilation-->
-<a name="compilation"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Compilation</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
 <blockquote>
+<h4>Repository Access:</h4>
+<p>We are using <a href="http://subversion.tigris.org/">Subversion</a> for
+revision control.</p>
 
-Soot, Jasmin and Polyglot are already compiled in the distribution. Ant build files are included in the main directories of each of the three. To recompile Soot, Jasmin or Polyglot use the <tt>ant</tt> command.
+<p>With a Subversion client, you can obtain a copy of the
+development version of Soot, as well as any old versions. To obtain the
+latest development version of Soot, use one of the following commands:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
 
-<!--using the <tt>build.xml</tt>file in the main
-<tt>soot</tt> directory. Jasmin must be in your <tt>classpath</tt>
-to compile Soot. Jasmin can be recompiled by using <tt>ant</tt> with the <tt>build.xml</tt>  provided
-in the main Jasmin directory (you may need to type <tt>sh ./bin/compile_all.sh</tt>). -->
+<p>The <tt>checkout</tt> version records additional information required
+to update your checked out version of Soot with the repository at a
+later time (with the <tt>svn update</tt> command). The <tt>export</tt>
+version provides a "clean" copy of only the Soot files themselves.</p>
 
-<!-- 1.2.2
-Soot is already compiled in the distribution.  To recompile Soot, 
-we recommend the use of the <tt>SootCompiler</tt> class in the main <tt>soot/src</tt> directory.
-However, we use <tt>gmake</tt>(GNU make) using the <tt>Makefile</tt> in the main <tt>soot</tt> directory.
-Note that in either case, jasmin must be in your classpath to compile Soot.
-Release 1.2.2 uses a new version of Jasmin, 1.06-s10, which has no dependence on
-Soot.
--->
+<p>In order to compile Soot from source, you will also need a copy of
+the Jasmin and Polyglot classes, available from the
+<a href="soot_download.html">download page</a>.</p>
 
-<!--
-Invoking jams from the <tt>soot-1.2.1/soot</tt> will recompile Soot as necessary.
-It may be tricky to compile both Soot and jasmin at the same time
-because of dependences. An easy way is to use the compiled jasmin
-when compiling Soot. 
--->
-<!--<p>
-NOTE: The Jimple parser is generated by <a href="http://www.sable.mcgill.ca/sablecc">SableCC</a>.
-It requires <tt>lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
-they are provided in the src directory. Also, Soot uses peephole optimization to improve the
-generated bytecode. This requires that the <tt>peephole.dat</tt> file be copied to 
-the classes directory.  The provided <tt>Makefile</tt>
-automatically copies these files as needed.
--->
-<p>
-<!--If you have jams correctly set up, the `foo' target will copy these <tt>.dat</tt>
-files from the src/ directory to the classes/ directory. Use the command 
-<tt>jams foo</tt> in the main Soot directory.-->
+<p>From time to time we update Jasmin. If something Jasmin related seems broken you may need to get the latest Jasmin from the subversion repository:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt></p>
 
+<p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
+just a web browser. For further instructions, please see
+<a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
 </blockquote>
-<br>
+<blockquote>
+<h4>Nightly Builds:</h4>
+<p>With this release we started to build Soot and Jasmin every night. To get the latest nightly build see: <a href="nightly.html">Nightly Builds</a>.
+</blockquote>
 
 <!--Documentation-->
-<a name="documentation"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Documentation</b></font></td></a>
+<a name="resources"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Resources</b></font></td></a>
 <td width=3% align=left><font size="-2"><a href="#top">top</a></td>
 </table>
 
 <blockquote>
+<h4>Documentation:</h4>
 We have developed a number of documents describing Soot.  Your main
 current sources of information are:
 
@@ -353,21 +175,9 @@ distribution.
 
 <li>The Soot source itself.  It is full of examples on how to use the API.
 
-<li>The Soot mailing list.  You can browse the archive as well as
-posting new questions to the Soot user community.  </ul>
-
 </blockquote>
-
-<br>
-<!--Contacts-->
-
-<a name="mailingLists"> <table width=100%> <tr>
-<td width=97% align=left><b><font face="helvetica,arial" size="+1">Mailing List</b></font></td></a>
-<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
-</table>
-
 <blockquote>
-
+<h4>Mailing List:</h4>
 The mailing list 
 <tt><a href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</a></tt> 
 is the primary forum
@@ -389,7 +199,16 @@ in the body.
 <p>You can also <a href="http://www.sable.mcgill.ca/listarchives/soot-list">view the mailing list archive</a>.
 
 </blockquote>
-<br>
+<blockquote>
+<h4>Wiki:</h4>
+<li>See the new <a href="http://svn.sable.mcgill.ca/wiki/index.php/SootProject">Soot Wiki</a> for up-to-date information. The Soot team will be using this site for discussing upcoming work, so if you would like to know what is going on look there.
+
+</blockquote>
+<blockquote>
+<h4>Bugzilla:</h4>
+<li>Use new <a href="http://svn.sable.mcgill.ca/bugzilla/">Soot Bugzilla</a>. We encourage you to add any Soot bugs there.
+
+</blockquote>
 
 <!--Credits-->
 
@@ -400,16 +219,7 @@ in the body.
 
 <blockquote>
  
-<!--The official Soot maintainers are--> 
-<!-- Raja Vallee-Rai, -->
-<!--Patrick Lam,
-Feng Qian, and
-Ond&#345;ej Lhot&aacute;k.-->  
-For Soot support, write to the Soot mailing list at
-<A href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</A>.
-
-<br>
-<br><b>Click <a href="./credits">here</a> for the complete list of contributors and acknowledgements.</b>
+Click <a href="./credits">here</a> for the complete list of contributors and acknowledgements.
 </blockquote>
 
 <!--Soot Users-->
@@ -442,7 +252,7 @@ the description of your project updated.
 <center>
 <blockquote>
 
-<font face="Arial, Helvetica"> <i>Last updated on Aug 23, 2004</i><br></font>
+<font face="Arial, Helvetica"> <i>Last updated on Dec 17, 2004</i><br></font>
           
 </blockquote>
 
