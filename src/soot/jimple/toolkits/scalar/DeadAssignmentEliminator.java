@@ -95,14 +95,26 @@ public class DeadAssignmentEliminator extends BodyTransformer
                         isEssential = false;
 
                         if(rhs instanceof InvokeExpr ||
-                           rhs instanceof InstanceFieldRef ||
                            rhs instanceof ArrayRef)
                         {
-                           // Note that InstanceFieldRef, ArrayRef, InvokeExpr all can
+                           // Note that ArrayRef and InvokeExpr all can
                            // have side effects (like throwing a null pointer exception)
                     
                             isEssential = true;
                         }
+
+                        if(rhs instanceof InstanceFieldRef &&
+                           !(!b.getMethod().isStatic() && 
+                             ((InstanceFieldRef)rhs).getBase() == 
+                                    body.getThisLocal())) 
+                        {
+                            // Any InstanceFieldRef may have side effects,
+                            // unless the base is reading from 'this'
+                            // in a non-static method
+                            isEssential = true;
+                        }
+
+
                         else if(rhs instanceof DivExpr || 
                             rhs instanceof RemExpr)
                         {

@@ -20,6 +20,10 @@ Improvements in current version
 7. minor changes in HashChain (remove useless null checks, states increments
    and modified insertBefore(List) ) (fabien)
 8. fix to AbstractHost to avoid creation of thousands of empty lists (fabien)
+9. added patch by Stephen Andrew Neuendorffer <neuendor@eecs.berkeley.edu>
+     to make DeadAssignmentEliminator more aggressive: we no longer declare
+     InstanceFieldRefs which read from 'this' in a non-static method to be
+     'isEssential'. (plam)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 
