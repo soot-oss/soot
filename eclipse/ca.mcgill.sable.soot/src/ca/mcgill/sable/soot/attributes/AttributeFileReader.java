@@ -59,7 +59,7 @@ public class AttributeFileReader {
 	public String readFile() {
 		StringBuffer file = new StringBuffer();
 		try {
-			//System.out.println(getFilename());
+			System.out.println("reading file: "+getFilename());
 			BufferedReader br = new BufferedReader( new
 				FileReader(getFilename()));
 			while (true) {

@@ -1,29 +1,30 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 
 import java.util.*;
 public class PrivateMethodAccMethodSource implements soot.MethodSource {
 
-    /*private ArrayList formalTypes;
-    private soot.Type returnType;
-    private String name;
-    private int flags;
-
-    public void formalTypes(List list){
-        formalTypes = (ArrayList)list;
+    public PrivateMethodAccMethodSource(polyglot.types.MethodInstance methInst){
+        this.methodInst = methInst;
     }
-    
-    public void returnType(soot.Type t){
-        returnType = t;
-    }
-    
-    public void name(String s){
-        name = s;
-    }
-    
-    public void flags(int f){
-        flags = f;
-    }*/
-    
     private polyglot.types.MethodInstance methodInst;
 
     public void setMethodInst(polyglot.types.MethodInstance mi) {
@@ -40,8 +41,9 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
     }
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
-            
+           
         soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
+        LocalGenerator lg = new LocalGenerator(body);
         
         soot.Local base = null;
         ArrayList methParams = new ArrayList();
@@ -51,12 +53,11 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
         int paramCounter = 0;
         while (paramIt.hasNext()) {
             soot.Type sootType = (soot.Type)paramIt.next();
-            soot.Local paramLocal = generateLocal(sootType);
-            body.getLocals().add(paramLocal);
+            soot.Local paramLocal = lg.generateLocal(sootType);
+            //body.getLocals().add(paramLocal);
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, paramCounter);
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
             body.getUnits().add(stmt);
-            //System.out.println("next paramType: "+paramLocal.getType());
             if (!isCallParamType(sootType)){
                 base = paramLocal;
             }
@@ -72,11 +73,10 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
         
         soot.Local returnLocal = null;
         if (!(type instanceof soot.VoidType)){
-            returnLocal = generateLocal(type);
-            body.getLocals().add(returnLocal);
+            returnLocal = lg.generateLocal(type);
+            //body.getLocals().add(returnLocal);
         }
 
-        //System.out.println("meth param types: "+methParamsTypes);
         // assign local to meth
         soot.SootMethodRef meth = soot.Scene.v().makeMethodRef(((soot.RefType)Util.getSootType(methodInst.container())).getSootClass(), methodInst.name(), methParamsTypes, Util.getSootType(methodInst.returnType()));
 
@@ -111,102 +111,5 @@ public class PrivateMethodAccMethodSource implements soot.MethodSource {
      
     }
     
-    private soot.Local generateLocal(soot.Type type){
-        
-		String name = "v";
-		if (type instanceof soot.IntType) {
-			name = nextIntName();
-		}
-        else if (type instanceof soot.ByteType) {
-			name = nextByteName();
-		}
-        else if (type instanceof soot.ShortType) {
-			name = nextShortName();
-		}
-        else if (type instanceof soot.BooleanType) {
-			name = nextBooleanName();
-		}
-        else if (type instanceof soot.VoidType) {
-			name = nextVoidName();
-		}
-        else if (type instanceof soot.CharType) {
-            name = nextIntName();
-            type = soot.IntType.v();
-        }
-		else if (type instanceof soot.DoubleType) {
-			name = nextDoubleName();
-		}
-		else if (type instanceof soot.FloatType) {
-			name = nextFloatName();
-		}
-		else if (type instanceof soot.LongType) {
-			name = nextLongName();
-		}
-        else if (type instanceof soot.RefLikeType) {
-            name = nextRefLikeTypeName();
-        }
-        else {
-            //System.out.println("Unhandled Type of local to generate: "+type);
-            throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
-        }
-		
-		return soot.jimple.Jimple.v().newLocal(name, type);
-		
-	}
-
-	private int tempInt = -1;
-	private int tempVoid = -1;
-	private int tempBoolean = -1;
-	private int tempLong = -1;
-	private int tempDouble = -1;
-	private int tempFloat = -1;
-    private int tempRefLikeType = -1;
-    private int tempByte = -1;
-    private int tempShort = -1;
-	
-    private String nextIntName(){
-		tempInt++;
-		return "$i"+tempInt;
-	}
-
-	private String nextVoidName(){
-		tempVoid++;
-		return "$v"+tempVoid;
-	}
-
-	private String nextByteName(){
-		tempByte++;
-		return "$b"+tempByte;
-	}
-
-	private String nextShortName(){
-		tempShort++;
-		return "$s"+tempShort;
-	}
-
-	private String nextBooleanName(){
-		tempBoolean++;
-		return "$z"+tempBoolean;
-	}
-
-	private String nextDoubleName(){
-		tempDouble++;
-		return "$d"+tempDouble;
-	}
-    
-	private String nextFloatName(){
-		tempFloat++;
-		return "$f"+tempFloat;
-	}
-
-	private String nextLongName(){
-		tempLong++;
-		return "$l"+tempLong;
-	}
-
-    private String nextRefLikeTypeName(){
-        tempRefLikeType++;
-        return "$r"+tempRefLikeType;
-    }
 
 }

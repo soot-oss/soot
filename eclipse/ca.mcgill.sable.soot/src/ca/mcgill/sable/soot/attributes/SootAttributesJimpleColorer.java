@@ -42,7 +42,7 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
 	}
 	
 	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
-		
+		System.out.println("computing colors: handler: "+getHandler().getAttrList());
 		if ((getHandler() == null) || (getHandler().getAttrList() == null)) return;
         ArrayList sortedAttrs = sortAttrsByLength(getHandler().getAttrList());
 		Iterator it = getHandler().getAttrList().iterator();
@@ -58,6 +58,7 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
 		while (it.hasNext()) {
 			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
+            System.out.println("next sa: "+sa);
             if ((sa.getJimpleStartLn() != 0) && (sa.getJimpleEndLn() != 0)) {
                 if ((sa.getJimpleStartPos() != 0) && (sa.getJimpleEndPos() != 0)){
 			       if (sa.getColorList() != null){

@@ -1,33 +1,30 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 import java.util.*;
 
 public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
 
-    //private ArrayList classNames;
-    //private ArrayList locals;
-    //private HashMap map; 
-    //private String currentSootClass;
-    //private HashMap newToOuter;
-
     private ArrayList inners;
     private ArrayList finalLocals;
     
-    /*public void setCurrentSootClass(String name){
-        currentSootClass = name;
-    }
-
-    public HashMap getNewToOuter(){
-        return newToOuter;
-    }
-    
-    public ArrayList getClassNames(){
-        return classNames;
-    }
-    
-    public ArrayList getLocals() {
-        return locals;
-    }
-*/
     public ArrayList finalLocals(){
         return finalLocals;
     }
@@ -39,10 +36,6 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
     
     
     public MethodFinalsChecker(){
-        //map = new HashMap();
-        //newToOuter = new HashMap();
-        //classNames = new ArrayList();
-        //locals = new ArrayList();
         finalLocals = new ArrayList();
         inners = new ArrayList();
     }
@@ -67,8 +60,6 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
         if (n instanceof polyglot.ast.LocalDecl){
             polyglot.ast.LocalDecl ld = (polyglot.ast.LocalDecl)n;
             if (ld.flags().isFinal()){
-                //System.out.println("adding final local: "+ld.name());
-                //locals.add(new polyglot.util.IdentityKey(ld.localInstance()));
                 if (!finalLocals.contains(new polyglot.util.IdentityKey(ld.localInstance()))){
                     finalLocals.add(new polyglot.util.IdentityKey(ld.localInstance()));
                 }
@@ -77,47 +68,11 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
         if (n instanceof polyglot.ast.Formal){
             polyglot.ast.Formal ld = (polyglot.ast.Formal)n;
             if (ld.flags().isFinal()){
-                //System.out.println("adding final local: "+ld.name());
-                //locals.add(new polyglot.util.IdentityKey(ld.localInstance()));
                 if (!finalLocals.contains(new polyglot.util.IdentityKey(ld.localInstance()))){
                     finalLocals.add(new polyglot.util.IdentityKey(ld.localInstance()));
                 }
             }
         }
-        /*if (n instanceof polyglot.ast.New) {
-            //System.out.println("in mfc and parent is: "+parent+" parent type: "+parent.getClass());
-            //System.out.println("in mfc and n is: "+n);
-            //System.out.println("current outer class name is: "+currentSootClass);
-            if (((polyglot.ast.New)n).anonType() != null){
-                //inners.add(n);
-                inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
-            }
-        }*/
-
-        /*if (n instanceof polyglot.ast.LocalClassDecl){
-            inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
-        }*/
-          /*      polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
-                while (outerType.isNested()) {
-                    outerType = outerType.outer();
-                }
-                String anonClassName = outerType.toString();
-                if (map.containsKey(outerType)) {
-                    int count = ((Integer)map.get(outerType)).intValue();
-                    count++;
-                    map.put(outerType, new Integer(count));
-                    anonClassName = anonClassName+"$"+count;
-                }
-                else {
-                    map.put(outerType, new Integer(1));
-                    anonClassName = anonClassName+"$"+1;
-                }
-                //System.out.println("adding anon class name: "+anonClassName);
-                //System.out.println("adding new: "+((polyglot.ast.New)n).arguments());
-                classNames.add(n);
-                newToOuter.put(n, currentSootClass);
-            }
-        }*/
         return enter(n);
     }
 }

@@ -55,8 +55,8 @@ public class Rvar_srcm_stmt_signature_kindIter extends Rvar_srcm_stmt_signature_
                                                        new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() },
                                                        new PhysicalDomain[] { V1.v(), T1.v(), ST.v(), H2.v(), FD.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), signature.v(), var.v(), stmt.v(), srcm.v() },
-                                                   new PhysicalDomain[] { FD.v(), H2.v(), V1.v(), ST.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                   new PhysicalDomain[] { FD.v(), T1.v(), V1.v(), H2.v(), ST.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Rvar_srcm_stmt_signature_kindIter.jedd:50,8-14"),
                                                    ret);

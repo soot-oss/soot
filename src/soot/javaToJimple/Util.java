@@ -1,3 +1,22 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 
 import java.util.*;
@@ -211,13 +230,9 @@ public class Util {
         if (getThisMap.containsKey(sootType)){
             return (soot.Local)getThisMap.get(sootType);
         }
-        //System.out.println("getThis: type: "+sootType);
-        //System.out.println("special this local type: "+specialThisLocal.getType());
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
-        //if (fh.canStoreType(specialThisLocal.getType(), sootType)) {
         if (specialThisLocal.getType().equals(sootType)) {
-            //System.out.println("can just return this");
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
         }
@@ -234,7 +249,6 @@ public class Util {
         // otherwise get this$0 for one level up
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
         soot.SootField outerThisField = classToInvoke.XgetFieldByName("this$0");
-        //System.out.println("outer This field: "+outerThisField);
         soot.Local t1 = lg.generateLocal(outerThisField.getType());
         
         soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField.makeRef());
@@ -242,7 +256,6 @@ public class Util {
         body.getUnits().add(fieldAssignStmt);
         
         if (fh.canStoreType(t1.getType(), sootType)){
-            //System.out.println("can just return this$0 field");
             getThisMap.put(sootType, t1);
             return t1;            
         }
@@ -260,8 +273,6 @@ public class Util {
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
             if (l.getType().equals(type)){
-            //if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
-                //return l;
                 correctLocal = l;
             }
         }
@@ -273,21 +284,13 @@ public class Util {
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            //System.out.println("l type: "+l.getType()+" type: "+type);
             if (l.getType().equals(type)){
-            //if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
                 return true;
             }
         }
         return false;
     }
 
-    /*private static boolean bodyHasSubType(soot.Body body, soot.Type subType){
-        Iterator it = fs.getAllSubclassesOf(((soot.RefType)type).getSootClass()).iterator();
-        while (it.hasNext()){
-            
-        }
-    }*/
     
     public static soot.Local getThisGivenOuter(soot.Type sootType, HashMap getThisMap, soot.Body body, LocalGenerator lg, soot.Local t2){
         
@@ -298,7 +301,6 @@ public class Util {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         
         while (!fh.canStoreType(t2.getType(),sootType)){
-            //System.out.println("t2 type: "+t2.getType());
             soot.SootClass classToInvoke = ((soot.RefType)t2.getType()).getSootClass();
             // make an access method and add it to that class for accessing 
             // its private this$0 field
@@ -311,9 +313,7 @@ public class Util {
             soot.Local res = getPrivateAccessFieldInvoke(methToInvoke.makeRef(), methParams, body, lg);
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(t3, res);
             body.getUnits().add(assign);
-            //System.out.println("t3 type: "+t3.getType());
             t2 = t3;
-            //System.out.println("created acces meth and t2's type is: "+t2.getType());
         }
             
         getThisMap.put(sootType, t2);

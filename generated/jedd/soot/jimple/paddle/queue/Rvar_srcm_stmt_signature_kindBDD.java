@@ -26,8 +26,8 @@ public final class Rvar_srcm_stmt_signature_kindBDD extends Rvar_srcm_stmt_signa
     
     public Rvar_srcm_stmt_signature_kindBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { kind.v(), signature.v(), var.v(), stmt.v(), srcm.v() },
-                                                     new PhysicalDomain[] { FD.v(), H2.v(), V1.v(), ST.v(), T1.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                     new PhysicalDomain[] { FD.v(), T1.v(), V1.v(), H2.v(), ST.v() },
                                                      ("this.add(bdd) at /home/olhotak/soot-trunk2/src/soot/jimple/p" +
                                                       "addle/queue/Rvar_srcm_stmt_signature_kindBDD.jedd:33,128-131"),
                                                      bdd));
@@ -53,8 +53,8 @@ public final class Rvar_srcm_stmt_signature_kindBDD extends Rvar_srcm_stmt_signa
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { kind.v(), signature.v(), var.v(), stmt.v(), srcm.v() },
-                                                          new PhysicalDomain[] { FD.v(), H2.v(), V1.v(), ST.v(), T1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                          new PhysicalDomain[] { FD.v(), T1.v(), V1.v(), H2.v(), ST.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                            "trunk2/src/soot/jimple/paddle/queue/Rvar_srcm_stmt_signature" +
                                                            "_kindBDD.jedd:45,25-28"),
@@ -87,8 +87,8 @@ public final class Rvar_srcm_stmt_signature_kindBDD extends Rvar_srcm_stmt_signa
                                                "var_srcm_stmt_signature_kindBDD.jedd:55,58-61"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), signature.v(), var.v(), stmt.v(), srcm.v() },
-                                                   new PhysicalDomain[] { FD.v(), H2.v(), V1.v(), ST.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                   new PhysicalDomain[] { FD.v(), T1.v(), V1.v(), H2.v(), ST.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Rvar_srcm_stmt_signature_kindBDD.jedd:57,8-14"),
                                                    ret);

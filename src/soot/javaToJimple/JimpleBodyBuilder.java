@@ -1,3 +1,22 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 
 
 package soot.javaToJimple;
@@ -379,7 +398,6 @@ public class JimpleBodyBuilder {
 		}
 		else if (lit instanceof polyglot.ast.CharLit) {
 			char litValue = ((polyglot.ast.CharLit)lit).value();
-            //System.out.println("creating char lit: "+litValue);
             return soot.jimple.IntConstant.v(litValue);
 		}
 		else if (lit instanceof polyglot.ast.BooleanLit) {
@@ -1086,7 +1104,6 @@ public class JimpleBodyBuilder {
         soot.jimple.IfStmt testIf = soot.jimple.Jimple.v().newIfStmt(cond1, nop1);
         body.getUnits().add(testIf);
 
-        //System.out.println("Assert: cond"+assertStmt.cond().getClass());
         // actual cond test
         if ((assertStmt.cond() instanceof polyglot.ast.BooleanLit) && (!((polyglot.ast.BooleanLit)assertStmt.cond()).value())){
             // don't makeif
@@ -1122,10 +1139,6 @@ public class JimpleBodyBuilder {
         ArrayList params = new ArrayList();
         if (assertStmt.errorMessage() != null){
             soot.Value errorExpr = createExpr(assertStmt.errorMessage());
-            //System.out.println("essert error msg type: "+assertStmt.errorMessage().type());
-            //System.out.println("error Expr: "+errorExpr);
-            //System.out.println("error Expr: "+errorExpr.getClass());
-            //System.out.println("error Expr: "+errorExpr.getType());
             soot.Type errorType = errorExpr.getType();
            
             if (assertStmt.errorMessage().type().isChar()){
@@ -1179,6 +1192,7 @@ public class JimpleBodyBuilder {
      * Synchronized Stmt Creation
      */
     private void createSynchronized(polyglot.ast.Synchronized synchStmt) {
+        System.out.println("synchStmt pos: "+synchStmt.position());
         soot.Value sootExpr = createExpr(synchStmt.expr());
         
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
@@ -1670,6 +1684,9 @@ public class JimpleBodyBuilder {
     }
     
     private soot.SootMethod addSetAccessMeth(soot.SootClass conClass, polyglot.ast.Field field, soot.Value param){
+        if ((InitialResolver.v().getPrivateFieldSetAccessMap() != null) && (InitialResolver.v().getPrivateFieldSetAccessMap().containsKey(new polyglot.util.IdentityKey(field.fieldInstance())))){
+            return (soot.SootMethod)InitialResolver.v().getPrivateFieldSetAccessMap().get(new polyglot.util.IdentityKey(field.fieldInstance()));
+        }
         String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
         ArrayList paramTypes = new ArrayList();
         if (!field.flags().isStatic()){
@@ -1688,8 +1705,60 @@ public class JimpleBodyBuilder {
         conClass.addMethod(meth);
         meth.setActiveBody(pfsms.getBody(meth, null));
 
+        InitialResolver.v().addToPrivateFieldSetAccessMap(field, meth);
         return meth;
     }
+
+    private soot.SootMethod addGetFieldAccessMeth(soot.SootClass conClass, polyglot.ast.Field field){
+        if ((InitialResolver.v().getPrivateFieldGetAccessMap() != null) && (InitialResolver.v().getPrivateFieldGetAccessMap().containsKey(new polyglot.util.IdentityKey(field.fieldInstance())))){
+            return (soot.SootMethod)InitialResolver.v().getPrivateFieldGetAccessMap().get(new polyglot.util.IdentityKey(field.fieldInstance()));
+        }
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        if (!field.flags().isStatic()){
+            // add this param type
+            paramTypes.add(Util.getSootType(field.target().type()));
+        }
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, Util.getSootType(field.type()),  soot.Modifier.STATIC);
+        PrivateFieldAccMethodSource pfams = new PrivateFieldAccMethodSource(
+		    Util.getSootType(field.type()),
+		    field.name(),
+		    field.flags().isStatic(),
+		    conClass
+        );
+        
+        
+        conClass.addMethod(meth);
+        meth.setActiveBody(pfams.getBody(meth, null));
+
+        InitialResolver.v().addToPrivateFieldGetAccessMap(field, meth);
+        return meth;
+    }
+
+    private soot.SootMethod addGetMethodAccessMeth(soot.SootClass conClass, polyglot.ast.Call call){
+        if ((InitialResolver.v().getPrivateMethodGetAccessMap() != null) && (InitialResolver.v().getPrivateMethodGetAccessMap().containsKey(new polyglot.util.IdentityKey(call.methodInstance())))){
+            return (soot.SootMethod)InitialResolver.v().getPrivateMethodGetAccessMap().get(new polyglot.util.IdentityKey(call.methodInstance()));
+        }
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        if (!call.methodInstance().flags().isStatic()){
+            // add this param type
+            paramTypes.add(Util.getSootType(call.methodInstance().container()));
+        }
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, Util.getSootType(call.methodInstance().returnType()),  soot.Modifier.STATIC);
+        PrivateMethodAccMethodSource pmams = new PrivateMethodAccMethodSource(
+		    call.methodInstance()
+        );
+        
+        
+        conClass.addMethod(meth);
+        meth.setActiveBody(pmams.getBody(meth, null));
+
+        InitialResolver.v().addToPrivateMethodGetAccessMap(call, meth);
+        return meth;
+    }
+
+    
 
     private soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
     
@@ -1815,8 +1884,11 @@ public class JimpleBodyBuilder {
     private soot.Value getAssignLocal(polyglot.ast.Assign assign) {
         
         // handle private access field assigns
-        HashMap accessMap = ((PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
-        if ((assign.left() instanceof polyglot.ast.Field) && (accessMap != null) && accessMap.containsKey(((polyglot.ast.Field)assign.left()).fieldInstance()) && !body.getMethod().getDeclaringClass().XdeclaresField(((polyglot.ast.Field)assign.left()).name(), Util.getSootType(((polyglot.ast.Field)assign.left()).type())) ){
+        //HashMap accessMap = ((PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
+        // if assigning to a field and the field is private and its not in 
+        // this class (then it had better be in some outer class and will
+        // be handled as such)
+        if ((assign.left() instanceof polyglot.ast.Field) && ((polyglot.ast.Field)assign.left()).fieldInstance().flags().isPrivate() && !Util.getSootType(((polyglot.ast.Field)assign.left()).fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
             return handlePrivateFieldSet(assign);    
         }
 
@@ -1892,7 +1964,7 @@ public class JimpleBodyBuilder {
         else if (field.name().equals("class")){
             throw new RuntimeException("Should go through ClassLit");
         }
-        else if ((ms.getPrivateAccessMap() != null) && (ms.getPrivateAccessMap().containsKey(field.fieldInstance())) && !body.getMethod().getDeclaringClass().XdeclaresField(field.name(), Util.getSootType(field.type())) ){
+        else if (field.fieldInstance().flags().isPrivate() && !Util.getSootType(field.fieldInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
         
             return getPrivateAccessFieldLocal(field);
         }
@@ -1924,8 +1996,7 @@ public class JimpleBodyBuilder {
             boolean val = ((Boolean)field.constantValue()).booleanValue();
             return soot.jimple.IntConstant.v(val ? 1 : 0);
         }
-        else if (field.type().isChar()){//.constantValue() instanceof Character){
-           //System.out.println("filed cons class: "+field.constantValue().getClass());       
+        else if (field.type().isChar()){
             char val;
             if (field.constantValue() instanceof Integer){ 
                 val = (char)((Integer)field.constantValue()).intValue();
@@ -1935,7 +2006,7 @@ public class JimpleBodyBuilder {
             }
             return soot.jimple.IntConstant.v(val);
         }
-        else {//if (field.fieldInstance().constantValue() instanceof Number){
+        else {
             Number num = (Number)field.fieldInstance().constantValue();
             num = createConstantCast(field.type(), num);
             if (num instanceof Long) {
@@ -1953,8 +2024,7 @@ public class JimpleBodyBuilder {
             else if (num instanceof Short) {
                 return soot.jimple.IntConstant.v(((Short)num).shortValue());
             }
-            else {//if (num instanceof Long) {
-                //System.out.println("num class: "+num.getClass());
+            else {
                 return soot.jimple.IntConstant.v(((Integer)num).intValue());
             }
         }
@@ -1976,7 +2046,7 @@ public class JimpleBodyBuilder {
     }
     
     private boolean shouldReturnConstant(polyglot.ast.Field field){
-        if (field.fieldInstance().isConstant()) {// && (field.fieldInstance().constantValue() instanceof String)){
+        if (field.fieldInstance().isConstant()) {
             return true;
         }
         return false;
@@ -1988,7 +2058,6 @@ public class JimpleBodyBuilder {
     private soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
        
         soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
-	if(receiverClass==null) System.out.println("receiver of "+field+" is null");
         soot.SootFieldRef receiverField = soot.Scene.v().makeFieldRef(receiverClass, field.name(), Util.getSootType(field.type()));
          
         soot.jimple.FieldRef fieldRef;
@@ -2012,8 +2081,8 @@ public class JimpleBodyBuilder {
      */
     private soot.Local getPrivateAccessFieldLocal(polyglot.ast.Field field) {
     
-        HashMap paMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
-        soot.SootMethod toInvoke = (soot.SootMethod)paMap.get(field.fieldInstance());
+        // need to add access method
+        soot.SootMethod toInvoke = addGetFieldAccessMeth(((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass(), field);
 
         ArrayList params = new ArrayList();
         if (!field.fieldInstance().flags().isStatic()) {
@@ -2230,7 +2299,6 @@ public class JimpleBodyBuilder {
         else if (node instanceof polyglot.ast.Cast){
             polyglot.ast.Cast cast = (polyglot.ast.Cast)node;
             if (cast.isConstant()){
-                //System.out.println("cast const: "+cast.constantValue());
                 return true;
             }
             return false;
@@ -2291,7 +2359,7 @@ public class JimpleBodyBuilder {
                 char val = (char)((Integer)field.constantValue()).intValue();
                 s = "" + val;
             }
-            else {//if (field.fieldInstance().constantValue() instanceof Number){
+            else {
                 Number num = (Number)field.fieldInstance().constantValue();
                 num = createConstantCast(field.type(), num);
                 if (num instanceof Long) {
@@ -2309,7 +2377,7 @@ public class JimpleBodyBuilder {
                 else if (num instanceof Short) {
                     s = "" + ((Short)num).shortValue();
                 }
-                else {//if (num instanceof Long) {
+                else {
                     s = "" + ((Integer)num).intValue();
                 }
             }
@@ -2836,7 +2904,7 @@ public class JimpleBodyBuilder {
 
             soot.jimple.VirtualInvokeExpr appendInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(sb, methodToInvoke, params);
 
-
+            Util.addLnPosTags(appendInvoke.getArgBox(0), expr.position());
             soot.jimple.Stmt appendStmt = soot.jimple.Jimple.v().newInvokeStmt(appendInvoke);
 
             body.getUnits().add(appendStmt);
@@ -2856,7 +2924,6 @@ public class JimpleBodyBuilder {
         if (op == polyglot.ast.Unary.POST_INC){
             soot.Local retLocal = generateLocal(expr.type());
             soot.Value sootExpr = createExpr(expr);
-
             soot.jimple.AssignStmt preStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, sootExpr);
             body.getUnits().add(preStmt);
 
@@ -3153,7 +3220,11 @@ public class JimpleBodyBuilder {
      * Gets the Soot Method form the given Soot Class
      */
     private soot.SootMethodRef getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType) {
-            return soot.Scene.v().makeMethodRef(sootClass, name, paramTypes, returnType);
+        soot.SootMethodRef ref = soot.Scene.v().makeMethodRef(sootClass, name, paramTypes, returnType);
+        if (sootClass.isInterface()){
+            ref = ref.resolve().makeRef();
+        }
+        return ref;
     }
   
     /**
@@ -3256,13 +3327,9 @@ public class JimpleBodyBuilder {
             qVal = (soot.Local)createExpr(cCall.qualifier());
         }
         handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);
-        int index = classToInvoke.getName().lastIndexOf("$");
         sootParams.addAll(getSootParams(cCall));
         sootParamsTypes.addAll(getSootParamsTypes(cCall));
-        if (index != -1){
-            // fix this to send the final locals list instead of empty array
-            handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)cCall.constructorInstance().container());
-        }
+        handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)cCall.constructorInstance().container());
         
         soot.SootMethodRef methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
         
@@ -3273,6 +3340,8 @@ public class JimpleBodyBuilder {
         body.getUnits().add(invokeStmt);
         Util.addLnPosTags(invokeStmt, cCall.position());
 
+        // this is clearly broken if an outer class this ref was added as first
+        // param
         int numParams = 0;
         Iterator invokeParamsIt = cCall.arguments().iterator();
         while (invokeParamsIt.hasNext()) {
@@ -3419,10 +3488,12 @@ public class JimpleBodyBuilder {
      
         soot.SootMethodRef callMethod = soot.Scene.v().makeMethodRef(receiverTypeClass, methodInstance.name(), sootParamsTypes, sootRetType);
 
+        if (receiverTypeClass.isInterface()){
+            callMethod = callMethod.resolve().makeRef();
+        }
         boolean isPrivateAccess = false;
-        soot.javaToJimple.PolyglotMethodSource ms = (soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource();
-        if ((ms.getPrivateAccessMap() != null) && (ms.getPrivateAccessMap().containsKey(call.methodInstance()))){
-            callMethod = ((soot.SootMethod)ms.getPrivateAccessMap().get(call.methodInstance())).makeRef();
+        if (call.methodInstance().flags().isPrivate() && !Util.getSootType(call.methodInstance().container()).equals(body.getMethod().getDeclaringClass().getType())){
+            callMethod = addGetMethodAccessMeth(((soot.RefType)Util.getSootType(call.methodInstance().container())).getSootClass(), call).makeRef();
             if (!call.methodInstance().flags().isStatic()){
                 sootParams.add(baseLocal);
             }
@@ -3791,8 +3862,7 @@ public class JimpleBodyBuilder {
             polyglot.ast.Call methToAccess = (polyglot.ast.Call)memberToAccess;
             paramTypes.addAll(getSootParamsTypes(methToAccess));
             meth = new soot.SootMethod(name, paramTypes, Util.getSootType(methToAccess.methodInstance().returnType()), soot.Modifier.STATIC);
-            PrivateMethodAccMethodSource mSrc = new PrivateMethodAccMethodSource();
-            mSrc.setMethodInst(methToAccess.methodInstance());
+            PrivateMethodAccMethodSource mSrc = new PrivateMethodAccMethodSource(            methToAccess.methodInstance());
             src = mSrc;
         }
         else {

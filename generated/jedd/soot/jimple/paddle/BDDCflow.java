@@ -100,8 +100,8 @@ public class BDDCflow {
                                            "DDCflow.jedd:60,12-30"));
     
     jedd.internal.RelationContainer callGraph() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), srcm.v(), tgtm.v() },
-                                                   new jedd.PhysicalDomain[] { ST.v(), T1.v(), T2.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), stmt.v() },
+                                                   new jedd.PhysicalDomain[] { T2.v(), T1.v(), ST.v() },
                                                    ("return callGraph; at /home/olhotak/soot-trunk2/src/soot/jimp" +
                                                     "le/paddle/BDDCflow.jedd:61,37-43"),
                                                    callGraph);

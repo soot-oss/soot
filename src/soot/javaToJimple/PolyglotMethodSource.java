@@ -1,3 +1,22 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 
 import java.util.*;
@@ -12,9 +31,6 @@ public class PolyglotMethodSource implements MethodSource {
     private ArrayList initializerBlocks;
     private ArrayList staticInitializerBlocks;
     private soot.Local outerClassThisInit;
-    private HashMap privateAccessMap;
-    //private HashMap localClassMap;
-    //private HashMap anonClassMap;
     private boolean hasAssert = false;
     private ArrayList finalsList;
     private HashMap newToOuterMap;
@@ -30,11 +46,9 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
-        //System.out.println("getting body for method: "+sm.getName()+" in class: "+sm.getDeclaringClass().getName());
         JimpleBodyBuilder jbb = new JimpleBodyBuilder();
         soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
        
-        //PackManager.v().getTransform("jb.ne").apply(jb);
         PackManager.v().getPack("jj").apply(jb);
         return jb;
     }
@@ -79,30 +93,6 @@ public class PolyglotMethodSource implements MethodSource {
         return outerClassThisInit;
     }
 
-    public void setPrivateAccessMap(HashMap map){
-        privateAccessMap = map;
-    }
-
-    public HashMap getPrivateAccessMap() {
-        return privateAccessMap;
-    }
-
-    /*public void setLocalClassMap(HashMap map) {
-        localClassMap = map;
-    }
-
-    public HashMap getLocalClassMap(){
-        return localClassMap;
-    }
-    
-    public void setAnonClassMap(HashMap map) {
-        anonClassMap = map;
-    }
-
-    public HashMap getAnonClassMap(){
-        return anonClassMap;
-    }*/
-
     public boolean hasAssert(){
         return hasAssert;
     }
@@ -119,7 +109,6 @@ public class PolyglotMethodSource implements MethodSource {
             assertStatusClass = ((InnerClassInfo)innerMap.get(assertStatusClass)).getOuterClass();
         }
         
-        //System.out.println("needed assert method");
         // field ref
         soot.SootFieldRef field = soot.Scene.v().makeFieldRef(assertStatusClass, "class$"+assertStatusClass.getName(), soot.RefType.v("java.lang.Class"));
 
@@ -154,7 +143,6 @@ public class PolyglotMethodSource implements MethodSource {
         ArrayList params = new ArrayList();
         params.add(soot.jimple.StringConstant.v(assertStatusClass.getName()));
         soot.jimple.StaticInvokeExpr invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(methodToInvoke, params);
-        //soot.jimple.InvokeStmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
         soot.jimple.AssignStmt invokeAssign = soot.jimple.Jimple.v().newAssignStmt(invokeLocal, invoke);
         
         body.getUnits().add(invokeAssign);
@@ -188,7 +176,6 @@ public class PolyglotMethodSource implements MethodSource {
         soot.SootMethodRef vMethodToInvoke = Scene.v().makeMethodRef(soot.Scene.v().getSootClass("java.lang.Class"), "desiredAssertionStatus", new ArrayList(), soot.BooleanType.v());
         soot.jimple.VirtualInvokeExpr vInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(invokeLocal, vMethodToInvoke, new ArrayList());
 
-        //soot.jimple.InvokeStmt vInvokeStmt = soot.jimple.Jimple.v().newInvokeStmt(vInvoke);
         
         soot.jimple.AssignStmt testAssign = soot.jimple.Jimple.v().newAssignStmt(boolLocal1, vInvoke);
 

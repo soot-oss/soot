@@ -1,3 +1,22 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 
 import soot.*;
@@ -43,14 +62,12 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
             numFinals = fields.size();
         }
         
-        //System.out.println("fields : "+fields);
         int startFinals = numParams - numFinals;
         ArrayList paramsForFinals = new ArrayList();
 
         soot.Local outerLocal = null;
         soot.Local qualifierLocal = null;
        
-        //System.out.println("hasOuterRef: "+hasOuterRef+" hasQualifier: "+hasQualifier);
         // param
         Iterator fIt = sootMethod.getParameterTypes().iterator();
         int counter = 0;
@@ -66,35 +83,24 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
                 // in a non static method the first param is the outer ref
                 outerLocal = local;
                 realArgs = 1;
-                //invokeTypeList.add(outerLocal.getType());
-                //invokeList.add(outerLocal);
             }
             if ((hasOuterRef) && (hasQualifier) && (counter == 1)){
                 // here second param is qualifier if there is one
                 qualifierLocal = local;
                 realArgs = 2;
-                //invokeTypeList.add(qualifierLocal.getType());
                 invokeList.add(qualifierLocal);
                 
             }
             else if ((!hasOuterRef) && (hasQualifier) && (counter == 0)){
                 qualifierLocal = local;
                 realArgs = 1;
-                //invokeTypeList.add(qualifierLocal.getType());
                 invokeList.add(qualifierLocal);
             }
             
-            /*if (fType.equals(thisOuterType)){
-                outerLocal = local;
-            }
-            //System.out.println("counter: "+counter+" startFinals: "+startFinals);*/
             if ((counter >= realArgs) && (counter < startFinals)){
                 invokeTypeList.add(fType);
                 invokeList.add(local);
             }
-            /*else if ((counter == 0) && (!inStaticMethod)) {
-                outerLocal = local;   
-            }*/
             else if (counter >= startFinals) {
                 paramsForFinals.add(local);
             }
@@ -103,9 +109,6 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         }
         SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
 
-        /*if (hasOuterRef && !hasQualifier){
-            invokeTypeList.add(0, superOuterType);
-        }*/
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
         if ((needsRef != null) && (needsRef.contains(superClass.getType())) ){
             invokeTypeList.add(0, superOuterType);
@@ -116,14 +119,9 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
                 invokeList.add(0, outerLocal);
             }
             else {
-                //System.out.println("super outer type: "+superOuterType);
-                //System.out.println("outer local: "+outerLocal);
                 invokeList.add(0, Util.getThisGivenOuter(superOuterType, new HashMap(), body, new LocalGenerator(body), outerLocal));
             }
         }
-        //else {
-        //    invokeList.add(qualifierLocal);
-        //}
         soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(specialThisLocal, callMethod, invokeList);
 
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
@@ -167,7 +165,6 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         // return
         soot.jimple.ReturnVoidStmt retStmt = soot.jimple.Jimple.v().newReturnVoidStmt();
         body.getUnits().add(retStmt);
-        //PackManager.v().getTransform("jb.ne").apply(body);
         
     
         return body;

@@ -1,14 +1,33 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Jennifer Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
 package soot.javaToJimple;
 import java.util.*;
 
 public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
 
     //private polyglot.types.ClassType typeToFind;
-    private ArrayList typesToFind;
+    private List typesToFind;
     private ArrayList declsFound;
 
     
-    public void typesToFind(ArrayList types){
+    public void typesToFind(List types){
         typesToFind = types;
     }
     
@@ -24,7 +43,7 @@ public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     
         if (n instanceof polyglot.ast.ClassDecl) {
-            if (typesToFind.contains(((polyglot.ast.ClassDecl)n).type())){
+            if (typesToFind.contains(Util.getSootType(((polyglot.ast.ClassDecl)n).type()))){
                 declsFound.add((polyglot.ast.ClassDecl)n);
             }
         }
