@@ -240,7 +240,6 @@ public class JimpleBody implements StmtBody
                 }
             }
         }
-
         if(!BuildJimpleBodyOption.noCleanup(buildOptions))
         {
             Transformations.cleanupCode(this);

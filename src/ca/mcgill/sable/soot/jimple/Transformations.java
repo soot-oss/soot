@@ -365,7 +365,7 @@ public class Transformations
       localDefs = new SimpleLocalDefs(graph);
       localUses = new SimpleLocalUses(graph, localDefs);
           
-      stmtIt = stmtList.pseudoTopologicalOrderIterator();
+      stmtIt = graph.pseudoTopologicalOrderIterator();
       
       while (stmtIt.hasNext())
         {
