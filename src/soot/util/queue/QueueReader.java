@@ -46,6 +46,18 @@ public class QueueReader
         }
         return q[index++];
     }
+
+    /** Returns true iff there is currently another object in the queue. */
+    public final boolean hasNext() {
+        if (q[index] == null) return false;
+        if (index == q.length - 1) {
+            q = (Object[]) q[index];
+            index = 0;
+            if (q[index] == null) return false;
+        }
+        return true;
+    }
+
     public final Object clone() {
         return new QueueReader( q, index );
     }
