@@ -2966,7 +2966,7 @@ public class JimpleBodyBuilder {
         }
 
         // decide which invoke 
-	    System.out.println("meth inst name: "+methodInstance.name()+" flags: "+methodInstance.flags());	
+	    //System.out.println("meth inst name: "+methodInstance.name()+" flags: "+methodInstance.flags());	
         soot.jimple.InvokeExpr invokeExpr; 
         if (isPrivateAccess){
             // for accessing private methods in outer class -> always static
