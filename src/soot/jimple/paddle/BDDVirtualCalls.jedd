@@ -60,7 +60,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     private int lastAllocNode = 1;
     private <var:V1, type> varNodes;
     private <obj, type> allocNodes;
-    private <kind> virtual = new{Kind.VIRTUAL=>kind} | new{Kind.INTERFACE=>kind} | new{Kind.PRIVILEGED=>kind};
+    private <kind> virtual = new{Kind.VIRTUAL=>kind} | new{Kind.INTERFACE=>kind} | new{Kind.PRIVILEGED=>kind} | new{Kind.INVOKE_FINALIZE=>kind};
     private <type> threads = 0B;
     private void updateNodes() {
         // update varnodes

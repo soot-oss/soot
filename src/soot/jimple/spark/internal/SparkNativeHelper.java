@@ -48,6 +48,12 @@ public class SparkNativeHelper extends NativeHelper {
         }
         pag.addEdge( objNode, var );
     }
+    protected void throwExceptionImpl(AbstractObject obj) {
+	AllocNode objNode = pag.makeAllocNode( 
+		new Pair( "AbstractObject", obj.getType() ),
+		 obj.getType(), null );
+        pag.addEdge( objNode, pag.nodeFactory().caseThrow() );
+    }
     protected ReferenceVariable arrayElementOfImpl(ReferenceVariable base) {
         Node n = (Node) base;
         VarNode l;

@@ -102,6 +102,12 @@ public class Environment {
   private ConstantObject constructorobject =
     new GeneralConstObject(TypeConstants.v().CONSTRUCTORCLASS, "constructor");
 
+  /* represents the PrivilegedActionException thrown by
+   * AccessController.doPrivileged
+   */
+  private ConstantObject privilegedActionException =
+    new GeneralConstObject(TypeConstants.v().PRIVILEGEDACTIONEXCEPTION, "constructor");
+
   /********************* INTERFACE to NATIVE METHODS *******************/
   public ConstantObject getClassLoaderObject(){
     return clsloaders;
@@ -145,5 +151,9 @@ public class Environment {
 
   public ConstantObject getFileSystemObject(){
     return filesystem;
+  }
+
+  public ConstantObject getPrivilegedActionExceptionObject(){
+    return privilegedActionException;
   }
 }

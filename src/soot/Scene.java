@@ -61,6 +61,7 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.CLINIT );
         kindNumberer.add( Kind.THREAD );
         kindNumberer.add( Kind.FINALIZE );
+        kindNumberer.add( Kind.INVOKE_FINALIZE );
         kindNumberer.add( Kind.PRIVILEGED );
         kindNumberer.add( Kind.NEWINSTANCE );
 
@@ -812,6 +813,8 @@ public class Scene  //extends AbstractHost
 	addBasicClass("java.lang.Cloneable");
 
 	addBasicClass("java.io.Serializable");	
+
+	addBasicClass("java.lang.ref.Finalizer");
     }
 
     public void addBasicClass(String name) {

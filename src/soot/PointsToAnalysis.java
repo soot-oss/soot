@@ -68,6 +68,11 @@ public interface PointsToAnalysis {
     public static final String MAIN_CLASS_NAME_STRING_LOCAL = "MAIN_CLASS_NAME_STRING_LOCAL";
     public static final String DEFAULT_CLASS_LOADER = "DEFAULT_CLASS_LOADER";
     public static final String DEFAULT_CLASS_LOADER_LOCAL = "DEFAULT_CLASS_LOADER_LOCAL";
+    public static final String FINALIZE_QUEUE = "FINALIZE_QUEUE";
+    public static final String CANONICAL_PATH = "CANONICAL_PATH";
+    public static final String CANONICAL_PATH_LOCAL = "CANONICAL_PATH_LOCAL";
+    public static final String PRIVILEGED_ACTION_EXCEPTION = "PRIVILEGED_ACTION_EXCEPTION";
+    public static final String PRIVILEGED_ACTION_EXCEPTION_LOCAL = "PRIVILEGED_ACTION_EXCEPTION_LOCAL";
 
 }
 

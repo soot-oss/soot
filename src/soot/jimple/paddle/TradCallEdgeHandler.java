@@ -62,8 +62,12 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
                         AssignStmt as = (AssignStmt) t.stmt();
                         addRetEdge( t, tgtnf.caseRet(), srcnf.getNode(as.getLeftOp()) );
                     }
+                } else if( t.kind() == Kind.INVOKE_FINALIZE ) {
+                    addParmEdge( t, srcnf.caseParm(0), tgtnf.caseThis() );
                 } else if( t.kind() == Kind.FINALIZE ) {
-                    addParmEdge( t, srcnf.caseThis(), tgtnf.caseThis() );
+                    AssignStmt as = (AssignStmt) t.stmt();
+                    Local lhs = (Local) as.getLeftOp();
+                    addParmEdge( t, srcnf.getNode(lhs), tgtnf.caseParm(0) );
                 } else if( t.kind() == Kind.NEWINSTANCE ) {
                     Stmt s = (Stmt) t.stmt();
                     InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();

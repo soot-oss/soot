@@ -59,6 +59,13 @@ public abstract class NativeHelper {
   }
 
   /**
+   * Throw of an abstract object as an exception.
+   */
+  public static void throwException(AbstractObject obj){
+    G.v().NativeHelper_helper.throwExceptionImpl(obj);
+  }
+
+  /**
    * Returns a reference variable representing the array element of
    * this variable. Now it does not look at the array index.
    */
@@ -138,6 +145,8 @@ public abstract class NativeHelper {
     void assignImpl(ReferenceVariable lhs, ReferenceVariable rhs);
   protected abstract 
     void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj);
+  protected abstract 
+    void throwExceptionImpl(AbstractObject obj);
   protected abstract 
     ReferenceVariable arrayElementOfImpl(ReferenceVariable base);
   protected abstract 

@@ -22,6 +22,7 @@ import soot.jimple.*;
 import soot.*;
 import soot.util.*;
 import soot.toolkits.scalar.Pair;
+import java.util.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
@@ -213,8 +214,56 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
             gnf.addEdge( gnf.caseMainThreadGroup(), caseParm( 0 ) );
         }
 
-        if( method.getSubSignature().equals(
-            "java.lang.Class loadClass(java.lang.String)" ) ) {
+        if( method.getSignature().equals(
+                    "<java.lang.ref.Finalizer: void <init>(java.lang.Object)>") ) {
+            gnf.addEdge( caseThis(), gnf.caseFinalizeQueue() );
+        }
+        if( method.getSignature().equals(
+                    "<java.lang.ref.Finalizer: void runFinalizer()>") ) {
+            gnf.addEdge( gnf.caseFinalizeQueue(), caseThis() );
+        }
+
+        if( method.getSignature().equals(
+                    "<java.lang.ref.Finalizer: void access$100(java.lang.Object)>") ) {
+            gnf.addEdge( gnf.caseFinalizeQueue(), caseParm(0) );
+        }
+
+        if( method.getSignature().equals(
+                    "<java.lang.ClassLoader: void <init>()>") ) {
+            gnf.addEdge( gnf.caseDefaultClassLoader(), caseThis() );
+        }
+
+        if( method.getSignature().equals(
+                    "<java.lang.Thread: void exit()>") ) {
+            gnf.addEdge( gnf.caseMainThread(), caseThis() );
+        }
+
+        if( method.getSignature().equals(
+                    "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>") ) {
+            gnf.addEdge( gnf.caseThrow(), caseParm(0) );
+            gnf.addEdge( gnf.casePrivilegedActionException(), caseThis() );
+        }
+
+        if( method.getNumberedSubSignature().equals( sigCanonicalize ) ) {
+            SootClass cl = method.getDeclaringClass();
+            while(true) {
+                if( cl.equals( Scene.v().getSootClass("java.io.FileSystem") ) ) {
+                    gnf.addEdge( gnf.caseCanonicalPath(), caseRet() );
+                }
+                if( !cl.hasSuperclass() ) break;
+                cl = cl.getSuperclass();
+            }
+        }
+
+        boolean isImplicit = false;
+        for( Iterator implicitMethodIt = EntryPoints.v().implicit().iterator(); implicitMethodIt.hasNext(); ) {
+            final SootMethod implicitMethod = (SootMethod) implicitMethodIt.next();
+            if( implicitMethod.getNumberedSubSignature().equals(
+                        method.getNumberedSubSignature() ) ) {
+                isImplicit = true;
+            }
+        }
+        if( isImplicit ) {
             SootClass c = method.getDeclaringClass();
 outer:      do {
                 while( !c.getName().equals( "java.lang.ClassLoader" ) ) {
@@ -223,6 +272,7 @@ outer:      do {
                     }
                     c = c.getSuperclass();
                 }
+                if( method.getName().equals("<init>") ) continue;
                 gnf.addEdge( gnf.caseDefaultClassLoader(),
                         caseThis() );
                 gnf.addEdge( gnf.caseMainClassNameString(),
@@ -230,5 +280,7 @@ outer:      do {
             } while( false );
         }
     }
+    protected final NumberedString sigCanonicalize = Scene.v().getSubSigNumberer().
+        findOrAdd("java.lang.String canonicalize(java.lang.String)");
 }
 

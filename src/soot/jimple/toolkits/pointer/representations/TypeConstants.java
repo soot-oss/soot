@@ -58,4 +58,7 @@ public class TypeConstants {
 
   public Type FILESYSTEMCLASS =
     AnySubType.v( RefType.v("java.io.FileSystem") );
+
+  public Type PRIVILEGEDACTIONEXCEPTION =
+    AnySubType.v( RefType.v("java.security.PrivilegedActionException") );
 }

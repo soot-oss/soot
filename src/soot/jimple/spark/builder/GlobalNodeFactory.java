@@ -103,16 +103,17 @@ public class GlobalNodeFactory {
         pag.addEdge( site, local );
         return local;
     }
-    /* End of public methods. */
-    /* End of package methods. */
 
-    protected Node caseThrow() {
+    public Node caseThrow() {
 	VarNode ret = pag.makeGlobalVarNode( PointsToAnalysis.EXCEPTION_NODE,
 		    RefType.v("java.lang.Throwable") );
         ret.setInterProcTarget();
         ret.setInterProcSource();
         return ret;
     }
+    /* End of public methods. */
+    /* End of package methods. */
+
     protected PAG pag;
 }
 

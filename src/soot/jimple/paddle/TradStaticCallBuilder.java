@@ -40,19 +40,22 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
         for( Iterator tIt = in.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
             SootMethod m = t.method();
-            if( m.isNative() || m.isPhantom() ) continue;
-            processMethod( m );
+            if( m.isNative() ) processNativeMethod(m);
+            else if( !m.isPhantom() ) processMethod( m );
         }
         return change;
     }
 
+    protected void processNativeMethod( SootMethod source ) {
+        if( source.getSignature().equals( "<java.lang.ref.Finalizer: void invokeFinalizeMethod(java.lang.Object)>" )) {
+            VarNode receiver = (VarNode) new MethodNodeFactory(source).caseParm(0);
+            receivers.add( receiver, source, null, sigFinalize, Kind.INVOKE_FINALIZE );
+        }
+    }
     protected void processMethod( SootMethod source ) {
         MethodNodeFactory mnf = new MethodNodeFactory(source);
         final SootClass scl = source.getDeclaringClass();
         if( source.isNative() || source.isPhantom() ) return;
-        if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
-            handleInit(source, scl);
-        }
         
         Body b = source.retrieveActiveBody();
         boolean warnedAlready = false;
@@ -115,7 +118,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                 }
                 
                 // Deal with Class.newInstance() calls
-                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) { 
                     if( options.safe_newinstance() ) {
                         for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
                             final SootMethod tgt = (SootMethod) tgtIt.next();
@@ -184,6 +187,16 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                         final SootMethod clinit = (SootMethod) clinitIt.next();
                         addEdge( source, s, clinit, Kind.CLINIT );
                     }
+                    while(true) {
+                        if( !cl.hasSuperclass() ) break;
+                        if( cl.declaresMethod( sigFinalize ) ) {
+                            if( Scene.v().containsClass("java.lang.ref.Finalizer") ) {
+                                addEdge( source, s, Scene.v().getSootClass("java.lang.ref.Finalizer").getMethod(sigRegister), Kind.FINALIZE );
+                            }
+                            break;
+                        }
+                        cl = cl.getSuperclass();
+                    }
                 } else if( rhs instanceof NewArrayExpr || rhs instanceof NewMultiArrayExpr ) {
                     Type t = rhs.getType();
                     if( t instanceof ArrayType ) t = ((ArrayType)t).baseType;
@@ -203,11 +216,6 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
         Scene.v().getUnitNumberer().add(stmt);
         out.add( null, src, stmt, kind, null, tgt );
         change = true;
-    }
-
-    protected void handleInit(SootMethod source, final SootClass scl) {
-        addEdge( source, null, scl, sigFinalize, Kind.FINALIZE );
-        FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
     }
 
     protected void constantForName( String cls, SootMethod src, Stmt srcUnit ) {
@@ -270,5 +278,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
         findOrAdd( "java.lang.Object run()" );
     protected final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
+    protected final NumberedString sigRegister = Scene.v().getSubSigNumberer().
+        findOrAdd( "void register(java.lang.Object)" );
 }
 

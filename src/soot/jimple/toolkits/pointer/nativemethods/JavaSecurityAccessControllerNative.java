@@ -116,6 +116,7 @@ public class JavaSecurityAccessControllerNative extends NativeMethodClass {
     // No longer necessary since Spark handles it itself in a more precise
     // way.
     //NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastObject());
+    NativeHelper.throwException(Environment.v().getPrivilegedActionExceptionObject());
   }
 
   /**

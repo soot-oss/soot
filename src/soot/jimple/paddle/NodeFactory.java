@@ -44,6 +44,16 @@ public class NodeFactory {
     protected Qsrc_fld_dst store;
     protected Qobj_var alloc;
     
+    final public Node casePrivilegedActionException() {
+	AllocNode a = nm.makeGlobalAllocNode( 
+		PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION,
+		AnySubType.v( RefType.v( "java.security.PrivilegedActionException" ) ) );
+	VarNode v = nm.makeGlobalVarNode(
+		PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION_LOCAL,
+		RefType.v( "java.security.PrivilegedActionException" ) );
+	addEdge( a, v );
+	return v;
+    }
     final public Node caseDefaultClassLoader() {
 	AllocNode a = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.DEFAULT_CLASS_LOADER,
@@ -51,6 +61,19 @@ public class NodeFactory {
 	VarNode v = nm.makeGlobalVarNode(
 		PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL,
 		RefType.v( "java.lang.ClassLoader" ) );
+	addEdge( a, v );
+	return v;
+    }
+    final public Node caseFinalizeQueue() {
+        return nm.makeGlobalVarNode(PointsToAnalysis.FINALIZE_QUEUE, RefType.v("java.lang.Object"));
+    }
+    final public Node caseCanonicalPath() {
+	AllocNode a = nm.makeGlobalAllocNode( 
+		PointsToAnalysis.CANONICAL_PATH,
+		RefType.v( "java.lang.String" ) );
+	VarNode v = nm.makeGlobalVarNode(
+		PointsToAnalysis.CANONICAL_PATH_LOCAL,
+		RefType.v( "java.lang.String" ) );
 	addEdge( a, v );
 	return v;
     }

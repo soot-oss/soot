@@ -38,8 +38,10 @@ public final class Kind implements Numberable
     public static final Kind CLINIT = new Kind( "CLINIT" );
     /** Implicit call to Thread.run() due to Thread.start() call. */
     public static final Kind THREAD = new Kind( "THREAD" );
-    /** Implicit call to non-trivial finalizer from constructor. */
+    /** Implicit call to java.lang.ref.Finalizer.register from new bytecode. */
     public static final Kind FINALIZE = new Kind( "FINALIZE" );
+    /** Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod(). */
+    public static final Kind INVOKE_FINALIZE = new Kind( "INVOKE_FINALIZE" );
     /** Implicit call to run() through AccessController.doPrivileged(). */
     public static final Kind PRIVILEGED = new Kind( "PRIVILEGED" );
     /** Implicit call to constructor from java.lang.Class.newInstance(). */
@@ -59,7 +61,7 @@ public final class Kind implements Numberable
 
     public boolean passesParameters() {
         return isExplicit() || this == THREAD || this == FINALIZE ||
-            this == PRIVILEGED || this == NEWINSTANCE;
+            this == PRIVILEGED || this == NEWINSTANCE || this == INVOKE_FINALIZE;
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */
