@@ -59,21 +59,20 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
         // Set initial Flows and nodes to visit.
         {
             Iterator it = graph.iterator();
+
             while(it.hasNext())
             {
                 Object s = it.next();
 
-                unitToBeforeFlow.put(s, newInitialFlow());
-                unitToAfterFlow.put(s, newInitialFlow());
-            }
-
-            it = graph.getTails().iterator();
-            while (it.hasNext())
-            {
-                Object s = it.next();
-
+                /* although only a DFS could really give a good result, it is
+                 * probably wiser to do begin at the bottom for
+                 * Backwards-analysis*/
+                // Starting at the tails, though, probably slows things down.
                 changedUnits.addFirst(s);
                 changedUnitsSet.add(s);
+
+                unitToBeforeFlow.put(s, newInitialFlow());
+                unitToAfterFlow.put(s, newInitialFlow());
             }
         }
 
