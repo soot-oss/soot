@@ -49,8 +49,8 @@ public class Rsrcc_var_objc_objIter extends Rsrcc_var_objc_obj {
                                                        new Attribute[] { srcc.v(), var.v(), objc.v(), obj.v() },
                                                        new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), H1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), obj.v(), var.v(), objc.v() },
-                                                   new PhysicalDomain[] { C1.v(), H1.v(), V1.v(), C2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), var.v(), srcc.v() },
+                                                   new PhysicalDomain[] { C2.v(), H1.v(), V1.v(), C1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rsrcc_var_objc_objIter.jedd:50,8-14"),
                                                    ret);

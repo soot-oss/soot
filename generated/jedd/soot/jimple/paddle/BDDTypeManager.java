@@ -85,13 +85,13 @@ public class BDDTypeManager extends AbsTypeManager {
                                                                                      new PhysicalDomain[] { T2.v() },
                                                                                      new PhysicalDomain[] { T1.v() }),
                                                       new PhysicalDomain[] { T1.v() }));
-        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                 allVars,
+        result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
+                                                                                                                                                allVars,
+                                                                                                                                                new PhysicalDomain[] { T2.v() }),
+                                                                                                                 new PhysicalDomain[] { T1.v() },
                                                                                                                  new PhysicalDomain[] { T2.v() })),
-                                                      jedd.internal.Jedd.v().replace(newObjs,
-                                                                                     new PhysicalDomain[] { T2.v() },
-                                                                                     new PhysicalDomain[] { T1.v() }),
-                                                      new PhysicalDomain[] { T1.v() }));
+                                                      newObjs,
+                                                      new PhysicalDomain[] { T2.v() }));
     }
     
     public BitVector get(Type type) { throw new RuntimeException("Not implemented"); }

@@ -23,8 +23,8 @@ public class Qobj_method_typeDebug extends Qobj_method_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { method.v(), obj.v(), type.v() },
-                                              new PhysicalDomain[] { T1.v(), H1.v(), T2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
+                                              new PhysicalDomain[] { H1.v(), T1.v(), T2.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qobj_method_typeDebug.jedd" +
                                                ":39,22-24"),

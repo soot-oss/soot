@@ -384,7 +384,6 @@
   
     <target name="jedd" depends="settings,jedd-uptodate,options,sablecc,singletons" unless="jedd-uptodate">
         <apply executable="java" failonerror="true" parallel="true">
-            <arg value="-Xincgc"/>
             <arg value="-cp"/>
             <arg path="${jedd.translator.jar}:${polyglot.jedd.jar}"/>
             <arg value="-Xmx400m"/>

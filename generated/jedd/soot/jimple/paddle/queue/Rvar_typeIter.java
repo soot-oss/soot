@@ -45,8 +45,8 @@ public class Rvar_typeIter extends Rvar_type {
                                                        new Attribute[] { var.v(), type.v() },
                                                        new PhysicalDomain[] { V1.v(), T2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                                   new PhysicalDomain[] { V1.v(), T2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
+                                                   new PhysicalDomain[] { T2.v(), V1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
                                                     "le/queue/Rvar_typeIter.jedd:50,8-14"),
                                                    ret);

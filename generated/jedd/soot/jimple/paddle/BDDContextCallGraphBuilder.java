@@ -79,8 +79,8 @@ public class BDDContextCallGraphBuilder extends AbsContextCallGraphBuilder {
                                                                                                               new jedd.PhysicalDomain[] { V1.v() })),
                                                    methods,
                                                    new jedd.PhysicalDomain[] { T1.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), srcc.v(), tgtm.v(), kind.v(), stmt.v(), srcm.v() },
-                                                    new jedd.PhysicalDomain[] { V2.v(), V1.v(), T2.v(), FD.v(), ST.v(), T1.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), tgtm.v(), kind.v(), stmt.v(), srcc.v(), srcm.v() },
+                                                    new jedd.PhysicalDomain[] { V2.v(), T2.v(), FD.v(), ST.v(), V1.v(), T1.v() },
                                                     ("out.add(newOut) at /home/olhotak/soot-trunk/src/soot/jimple/" +
                                                      "paddle/BDDContextCallGraphBuilder.jedd:49,8-11"),
                                                     newOut));

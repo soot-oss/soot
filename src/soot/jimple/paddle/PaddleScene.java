@@ -312,7 +312,7 @@ public class PaddleScene
         cscgb = new BDDContextCallGraphBuilder( rcout.reader("cscgb"), cicgout.reader("cscgb"), staticcalls, cicg );
 
         mpb = new TradMethodPAGBuilder( rmout.reader("mpb"), simple, load, store, alloc );
-        mpc = new TradMethodPAGContextifier(
+        mpc = new BDDMethodPAGContextifier(
                 simple.reader("mpc"),
                 store.reader("mpc"),
                 load.reader("mpc"),

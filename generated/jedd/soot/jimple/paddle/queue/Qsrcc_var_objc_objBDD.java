@@ -29,8 +29,8 @@ public final class Qsrcc_var_objc_objBDD extends Qsrcc_var_objc_obj {
     public void add(final jedd.internal.RelationContainer in) {
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcc_var_objc_objBDD reader = (Rsrcc_var_objc_objBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), obj.v(), var.v(), objc.v() },
-                                                           new PhysicalDomain[] { C1.v(), H1.v(), V1.v(), C2.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), var.v(), srcc.v() },
+                                                           new PhysicalDomain[] { C2.v(), H1.v(), V1.v(), C1.v() },
                                                            ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
                                                             "addle/queue/Qsrcc_var_objc_objBDD.jedd:39,12-18"),
                                                            in));

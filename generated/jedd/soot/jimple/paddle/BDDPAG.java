@@ -22,98 +22,100 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator simpleSources() {
-        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
-                                                                              new PhysicalDomain[] { C2.v(), V2.v() },
+        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
+                                                                              new PhysicalDomain[] { V2.v(), C1.v() },
                                                                               ("new soot.jimple.paddle.BDDPAG.ContextVarNodeIterator(...) at" +
                                                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd" +
                                                                                ":44,15-18"),
                                                                               jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(simpleBDD,
-                                                                                                                                            new PhysicalDomain[] { C2.v(), V2.v() }),
-                                                                                                             new PhysicalDomain[] { C1.v(), V1.v() },
-                                                                                                             new PhysicalDomain[] { C2.v(), V2.v() })));
+                                                                                                                                            new PhysicalDomain[] { V2.v(), C2.v() }),
+                                                                                                             new PhysicalDomain[] { V1.v() },
+                                                                                                             new PhysicalDomain[] { V2.v() })));
     }
     
     public Iterator loadSources() {
-        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), fld.v(), var.v() },
-                                                                        new PhysicalDomain[] { C1.v(), FD.v(), V2.v() },
+        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { fld.v(), var.v(), varc.v() },
+                                                                        new PhysicalDomain[] { FD.v(), V1.v(), C1.v() },
                                                                         ("new soot.jimple.paddle.BDDPAG.FieldRefIterator(...) at /home" +
                                                                          "/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:47,15" +
                                                                          "-18"),
-                                                                        jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(loadBDD,
-                                                                                                                                      new PhysicalDomain[] { C2.v(), V2.v() }),
-                                                                                                       new PhysicalDomain[] { V1.v() },
-                                                                                                       new PhysicalDomain[] { V2.v() })));
+                                                                        jedd.internal.Jedd.v().project(loadBDD,
+                                                                                                       new PhysicalDomain[] { V2.v(), C2.v() })));
     }
     
     public Iterator storeSources() {
-        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
-                                                                              new PhysicalDomain[] { C2.v(), V2.v() },
+        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
+                                                                              new PhysicalDomain[] { V2.v(), C1.v() },
                                                                               ("new soot.jimple.paddle.BDDPAG.ContextVarNodeIterator(...) at" +
                                                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd" +
                                                                                ":50,15-18"),
                                                                               jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(storeBDD,
-                                                                                                                                            new PhysicalDomain[] { C2.v(), V2.v(), FD.v() }),
-                                                                                                             new PhysicalDomain[] { C1.v(), V1.v() },
-                                                                                                             new PhysicalDomain[] { C2.v(), V2.v() })));
+                                                                                                                                            new PhysicalDomain[] { V2.v(), FD.v(), C2.v() }),
+                                                                                                             new PhysicalDomain[] { V1.v() },
+                                                                                                             new PhysicalDomain[] { V2.v() })));
     }
     
     public Iterator allocSources() {
-        return new ContextAllocNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v() },
-                                                                                new PhysicalDomain[] { H1.v(), C2.v() },
+        return new ContextAllocNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
+                                                                                new PhysicalDomain[] { C2.v(), H1.v() },
                                                                                 ("new soot.jimple.paddle.BDDPAG.ContextAllocNodeIterator(...) " +
                                                                                  "at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.je" +
                                                                                  "dd:53,15-18"),
                                                                                 jedd.internal.Jedd.v().project(allocBDD,
-                                                                                                               new PhysicalDomain[] { V1.v(), C1.v() })));
+                                                                                                               new PhysicalDomain[] { C1.v(), V1.v() })));
     }
     
     public Iterator simpleInvSources() {
-        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
-                                                                              new PhysicalDomain[] { C2.v(), V2.v() },
+        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
+                                                                              new PhysicalDomain[] { V2.v(), C1.v() },
                                                                               ("new soot.jimple.paddle.BDDPAG.ContextVarNodeIterator(...) at" +
                                                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd" +
                                                                                ":56,15-18"),
-                                                                              jedd.internal.Jedd.v().project(simpleBDD,
-                                                                                                             new PhysicalDomain[] { C1.v(), V1.v() })));
+                                                                              jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(simpleBDD,
+                                                                                                                                            new PhysicalDomain[] { V1.v(), C1.v() }),
+                                                                                                             new PhysicalDomain[] { C2.v() },
+                                                                                                             new PhysicalDomain[] { C1.v() })));
     }
     
     public Iterator loadInvSources() {
-        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
-                                                                              new PhysicalDomain[] { C2.v(), V2.v() },
+        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
+                                                                              new PhysicalDomain[] { V2.v(), C1.v() },
                                                                               ("new soot.jimple.paddle.BDDPAG.ContextVarNodeIterator(...) at" +
                                                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd" +
                                                                                ":59,15-18"),
-                                                                              jedd.internal.Jedd.v().project(loadBDD,
-                                                                                                             new PhysicalDomain[] { C1.v(), FD.v(), V1.v() })));
+                                                                              jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(loadBDD,
+                                                                                                                                            new PhysicalDomain[] { FD.v(), V1.v(), C1.v() }),
+                                                                                                             new PhysicalDomain[] { C2.v() },
+                                                                                                             new PhysicalDomain[] { C1.v() })));
     }
     
     public Iterator storeInvSources() {
-        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), fld.v() },
-                                                                        new PhysicalDomain[] { C1.v(), V2.v(), FD.v() },
+        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), fld.v(), varc.v() },
+                                                                        new PhysicalDomain[] { V1.v(), FD.v(), C1.v() },
                                                                         ("new soot.jimple.paddle.BDDPAG.FieldRefIterator(...) at /home" +
                                                                          "/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:62,15" +
                                                                          "-18"),
                                                                         jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(storeBDD,
-                                                                                                                                      new PhysicalDomain[] { C1.v(), V1.v() }),
-                                                                                                       new PhysicalDomain[] { C2.v() },
-                                                                                                       new PhysicalDomain[] { C1.v() })));
+                                                                                                                                      new PhysicalDomain[] { V1.v(), C1.v() }),
+                                                                                                       new PhysicalDomain[] { V2.v(), C2.v() },
+                                                                                                       new PhysicalDomain[] { V1.v(), C1.v() })));
     }
     
     public Iterator allocInvSources() {
-        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
-                                                                              new PhysicalDomain[] { V2.v(), C2.v() },
+        return new ContextVarNodeIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
+                                                                              new PhysicalDomain[] { C1.v(), V2.v() },
                                                                               ("new soot.jimple.paddle.BDDPAG.ContextVarNodeIterator(...) at" +
                                                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd" +
                                                                                ":65,15-18"),
                                                                               jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(allocBDD,
-                                                                                                                                            new PhysicalDomain[] { H1.v(), C2.v() }),
-                                                                                                             new PhysicalDomain[] { V1.v(), C1.v() },
-                                                                                                             new PhysicalDomain[] { V2.v(), C2.v() })));
+                                                                                                                                            new PhysicalDomain[] { C2.v(), H1.v() }),
+                                                                                                             new PhysicalDomain[] { V1.v() },
+                                                                                                             new PhysicalDomain[] { V2.v() })));
     }
     
     public Iterator simpleLookup(Context ctxt, VarNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { dstc.v(), dst.v() },
-                                                   new PhysicalDomain[] { C2.v(), V2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), dstc.v() },
+                                                   new PhysicalDomain[] { V2.v(), C2.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(s" +
                                                     "impleBDD), jedd.internal.Jedd.v().literal(new java.lang.Obje" +
                                                     "ct[...], new jedd.Attribute[...], new jedd.PhysicalDomain[.." +
@@ -127,8 +129,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator loadLookup(Context ctxt, FieldRefNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { dstc.v(), dst.v() },
-                                                   new PhysicalDomain[] { C2.v(), V2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), dstc.v() },
+                                                   new PhysicalDomain[] { V2.v(), C2.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(l" +
                                                     "oadBDD), jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                     "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
@@ -142,8 +144,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator storeLookup(Context ctxt, VarNode key) {
-        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), fld.v() },
-                                                                        new PhysicalDomain[] { C1.v(), V2.v(), FD.v() },
+        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { var.v(), fld.v(), varc.v() },
+                                                                        new PhysicalDomain[] { V1.v(), FD.v(), C1.v() },
                                                                         ("new soot.jimple.paddle.BDDPAG.FieldRefIterator(...) at /home" +
                                                                          "/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:77,15" +
                                                                          "-18"),
@@ -152,13 +154,13 @@ public class BDDPAG extends AbsPAG {
                                                                                                                                                                      new Attribute[] { srcc.v(), src.v() },
                                                                                                                                                                      new PhysicalDomain[] { C1.v(), V1.v() }),
                                                                                                                                       new PhysicalDomain[] { C1.v(), V1.v() }),
-                                                                                                       new PhysicalDomain[] { C2.v() },
-                                                                                                       new PhysicalDomain[] { C1.v() })));
+                                                                                                       new PhysicalDomain[] { V2.v(), C2.v() },
+                                                                                                       new PhysicalDomain[] { V1.v(), C1.v() })));
     }
     
     public Iterator allocLookup(Context ctxt, AllocNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
-                                                   new PhysicalDomain[] { V1.v(), C1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
+                                                   new PhysicalDomain[] { C1.v(), V1.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(a" +
                                                     "llocBDD), jedd.internal.Jedd.v().literal(new java.lang.Objec" +
                                                     "t[...], new jedd.Attribute[...], new jedd.PhysicalDomain[..." +
@@ -172,8 +174,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator simpleInvLookup(Context ctxt, VarNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v() },
-                                                   new PhysicalDomain[] { C1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { src.v(), srcc.v() },
+                                                   new PhysicalDomain[] { V1.v(), C1.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(s" +
                                                     "impleBDD), jedd.internal.Jedd.v().literal(new java.lang.Obje" +
                                                     "ct[...], new jedd.Attribute[...], new jedd.PhysicalDomain[.." +
@@ -187,23 +189,21 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator loadInvLookup(Context ctxt, VarNode key) {
-        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { varc.v(), fld.v(), var.v() },
-                                                                        new PhysicalDomain[] { C1.v(), FD.v(), V2.v() },
+        return new FieldRefIterator(new jedd.internal.RelationContainer(new Attribute[] { fld.v(), var.v(), varc.v() },
+                                                                        new PhysicalDomain[] { FD.v(), V1.v(), C1.v() },
                                                                         ("new soot.jimple.paddle.BDDPAG.FieldRefIterator(...) at /home" +
                                                                          "/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:89,15" +
                                                                          "-18"),
-                                                                        jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(loadBDD),
-                                                                                                                                      jedd.internal.Jedd.v().literal(new Object[] { ctxt, key },
-                                                                                                                                                                     new Attribute[] { dstc.v(), dst.v() },
-                                                                                                                                                                     new PhysicalDomain[] { C2.v(), V2.v() }),
+                                                                        jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(loadBDD),
+                                                                                                       jedd.internal.Jedd.v().literal(new Object[] { ctxt, key },
+                                                                                                                                      new Attribute[] { dstc.v(), dst.v() },
                                                                                                                                       new PhysicalDomain[] { C2.v(), V2.v() }),
-                                                                                                       new PhysicalDomain[] { V1.v() },
-                                                                                                       new PhysicalDomain[] { V2.v() })));
+                                                                                                       new PhysicalDomain[] { C2.v(), V2.v() })));
     }
     
     public Iterator storeInvLookup(Context ctxt, FieldRefNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v() },
-                                                   new PhysicalDomain[] { C1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { src.v(), srcc.v() },
+                                                   new PhysicalDomain[] { V1.v(), C1.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(s" +
                                                     "toreBDD), jedd.internal.Jedd.v().literal(new java.lang.Objec" +
                                                     "t[...], new jedd.Attribute[...], new jedd.PhysicalDomain[..." +
@@ -217,8 +217,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Iterator allocInvLookup(Context ctxt, VarNode key) {
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v() },
-                                                   new PhysicalDomain[] { H1.v(), C2.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), H1.v() },
                                                    ("jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(a" +
                                                     "llocBDD), jedd.internal.Jedd.v().literal(new java.lang.Objec" +
                                                     "t[...], new jedd.Attribute[...], new jedd.PhysicalDomain[..." +
@@ -232,8 +232,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Rsrcc_src_dstc_dst allSimple() {
-        return new Rsrcc_src_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dstc.v(), dst.v(), src.v() },
-                                                                             new PhysicalDomain[] { C1.v(), C2.v(), V2.v(), V1.v() },
+        return new Rsrcc_src_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), dstc.v(), src.v(), srcc.v() },
+                                                                             new PhysicalDomain[] { V2.v(), C2.v(), V1.v(), C1.v() },
                                                                              ("new soot.jimple.paddle.queue.Rsrcc_src_dstc_dstBDD(...) at /" +
                                                                               "home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:1" +
                                                                               "03,51-54"),
@@ -242,8 +242,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Rsrcc_src_fld_dstc_dst allLoad() {
-        return new Rsrcc_src_fld_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dstc.v(), dst.v(), fld.v(), src.v() },
-                                                                                 new PhysicalDomain[] { C1.v(), C2.v(), V2.v(), FD.v(), V1.v() },
+        return new Rsrcc_src_fld_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), dstc.v(), src.v(), srcc.v() },
+                                                                                 new PhysicalDomain[] { V2.v(), FD.v(), C2.v(), V1.v(), C1.v() },
                                                                                  ("new soot.jimple.paddle.queue.Rsrcc_src_fld_dstc_dstBDD(...) " +
                                                                                   "at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.je" +
                                                                                   "dd:104,53-56"),
@@ -252,8 +252,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Rsrcc_src_fld_dstc_dst allStore() {
-        return new Rsrcc_src_fld_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), dstc.v(), dst.v(), fld.v(), src.v() },
-                                                                                 new PhysicalDomain[] { C1.v(), C2.v(), V2.v(), FD.v(), V1.v() },
+        return new Rsrcc_src_fld_dstc_dstBDD(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), dstc.v(), src.v(), srcc.v() },
+                                                                                 new PhysicalDomain[] { V2.v(), FD.v(), C2.v(), V1.v(), C1.v() },
                                                                                  ("new soot.jimple.paddle.queue.Rsrcc_src_fld_dstc_dstBDD(...) " +
                                                                                   "at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.je" +
                                                                                   "dd:105,54-57"),
@@ -262,8 +262,8 @@ public class BDDPAG extends AbsPAG {
     }
     
     public Robjc_obj_varc_var allAlloc() {
-        return new Robjc_obj_varc_varBDD(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
-                                                                             new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
+        return new Robjc_obj_varc_varBDD(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), varc.v(), obj.v(), var.v() },
+                                                                             new PhysicalDomain[] { C2.v(), C1.v(), H1.v(), V1.v() },
                                                                              ("new soot.jimple.paddle.queue.Robjc_obj_varc_varBDD(...) at /" +
                                                                               "home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDPAG.jedd:1" +
                                                                               "06,50-53"),
@@ -275,8 +275,8 @@ public class BDDPAG extends AbsPAG {
         FieldRefIterator(final jedd.internal.RelationContainer bdd) {
             super();
             this.it =
-              new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v(), fld.v() },
-                                                  new PhysicalDomain[] { V2.v(), C1.v(), FD.v() },
+              new jedd.internal.RelationContainer(new Attribute[] { fld.v(), varc.v(), var.v() },
+                                                  new PhysicalDomain[] { FD.v(), C1.v(), V1.v() },
                                                   ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                    "trunk/src/soot/jimple/paddle/BDDPAG.jedd:110,22-25"),
                                                   bdd).iterator(new Attribute[] { ctxt.v(), var.v(), fld.v() });
@@ -299,8 +299,8 @@ public class BDDPAG extends AbsPAG {
         ContextVarNodeIterator(final jedd.internal.RelationContainer bdd) {
             super();
             this.it =
-              new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v() },
-                                                  new PhysicalDomain[] { V2.v(), C2.v() },
+              new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v() },
+                                                  new PhysicalDomain[] { C1.v(), V2.v() },
                                                   ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                    "trunk/src/soot/jimple/paddle/BDDPAG.jedd:124,22-25"),
                                                   bdd).iterator(new Attribute[] { varc.v(), var.v() });
@@ -323,8 +323,8 @@ public class BDDPAG extends AbsPAG {
         ContextAllocNodeIterator(final jedd.internal.RelationContainer bdd) {
             super();
             this.it =
-              new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v() },
-                                                  new PhysicalDomain[] { H1.v(), C2.v() },
+              new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v() },
+                                                  new PhysicalDomain[] { C2.v(), H1.v() },
                                                   ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                    "trunk/src/soot/jimple/paddle/BDDPAG.jedd:137,22-25"),
                                                   bdd).iterator(new Attribute[] { objc.v(), obj.v() });

@@ -23,8 +23,8 @@ public class Qsrcc_var_objc_objTrad extends Qsrcc_var_objc_obj {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), obj.v(), var.v(), objc.v() },
-                                              new PhysicalDomain[] { C1.v(), H1.v(), V1.v(), C2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { objc.v(), obj.v(), var.v(), srcc.v() },
+                                              new PhysicalDomain[] { C2.v(), H1.v(), V1.v(), C1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk/src/soot/jimple/paddle/queue/Qsrcc_var_objc_objTrad.jed" +
                                                "d:40,22-24"),

@@ -88,7 +88,7 @@ public class BDDReachableMethods extends AbsReachableMethods {
                                                    "ak/soot-trunk/src/soot/jimple/paddle/BDDReachableMethods.jed" +
                                                    "d:55,27-37"),
                                                   jedd.internal.Jedd.v().project(newEdges,
-                                                                                 new jedd.PhysicalDomain[] { V1.v(), FD.v(), ST.v(), T1.v() }));
+                                                                                 new jedd.PhysicalDomain[] { ST.v(), FD.v(), V1.v(), T1.v() }));
             newTargets.eqMinus(reachables);
             out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), ctxt.v() },
                                                         new jedd.PhysicalDomain[] { T1.v(), V1.v() },
@@ -111,22 +111,22 @@ public class BDDReachableMethods extends AbsReachableMethods {
     boolean add(MethodOrMethodContext m) {
         final jedd.internal.RelationContainer newM =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
-                                              new jedd.PhysicalDomain[] { V1.v(), T2.v() },
+                                              new jedd.PhysicalDomain[] { V1.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
                                                "mains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
-                                               "addle.bdddomains.T2> newM = jedd.internal.Jedd.v().literal(n" +
+                                               "addle.bdddomains.T1> newM = jedd.internal.Jedd.v().literal(n" +
                                                "ew java.lang.Object[...], new jedd.Attribute[...], new jedd." +
                                                "PhysicalDomain[...]); at /home/olhotak/soot-trunk/src/soot/j" +
                                                "imple/paddle/BDDReachableMethods.jedd:66,23-27"),
                                               jedd.internal.Jedd.v().literal(new Object[] { m.context(), m.method() },
                                                                              new jedd.Attribute[] { ctxt.v(), method.v() },
-                                                                             new jedd.PhysicalDomain[] { V1.v(), T2.v() }));
+                                                                             new jedd.PhysicalDomain[] { V1.v(), T1.v() }));
         final jedd.internal.RelationContainer newReachables =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
-                                              new jedd.PhysicalDomain[] { V2.v(), T2.v() },
+                                              new jedd.PhysicalDomain[] { V2.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
                                                "mains.V2, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
-                                               "addle.bdddomains.T2> newReachables = jedd.internal.Jedd.v()." +
+                                               "addle.bdddomains.T1> newReachables = jedd.internal.Jedd.v()." +
                                                "replace(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v()." +
                                                "read(jedd.internal.Jedd.v().replace(reachables, new jedd.Phy" +
                                                "sicalDomain[...], new jedd.PhysicalDomain[...])), newM), new" +
@@ -134,22 +134,23 @@ public class BDDReachableMethods extends AbsReachableMethods {
                                                " /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDReachabl" +
                                                "eMethods.jedd:67,23-36"),
                                               jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(reachables,
-                                                                                                                                                                     new jedd.PhysicalDomain[] { V2.v() },
-                                                                                                                                                                     new jedd.PhysicalDomain[] { V1.v() })),
+                                                                                                                                                                     new jedd.PhysicalDomain[] { T2.v(), V2.v() },
+                                                                                                                                                                     new jedd.PhysicalDomain[] { T1.v(), V1.v() })),
                                                                                                           newM),
                                                                              new jedd.PhysicalDomain[] { V1.v() },
                                                                              new jedd.PhysicalDomain[] { V2.v() }));
-        if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newReachables), reachables)) {
-            reachables.eq(newReachables);
+        if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newReachables,
+                                                                                                      new jedd.PhysicalDomain[] { T1.v() },
+                                                                                                      new jedd.PhysicalDomain[] { T2.v() })),
+                                           reachables)) {
+            reachables.eq(jedd.internal.Jedd.v().replace(newReachables,
+                                                         new jedd.PhysicalDomain[] { T1.v() },
+                                                         new jedd.PhysicalDomain[] { T2.v() }));
             out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), ctxt.v() },
                                                         new jedd.PhysicalDomain[] { T1.v(), V1.v() },
-                                                        ("out.add(jedd.internal.Jedd.v().replace(newM, new jedd.Physic" +
-                                                         "alDomain[...], new jedd.PhysicalDomain[...])) at /home/olhot" +
-                                                         "ak/soot-trunk/src/soot/jimple/paddle/BDDReachableMethods.jed" +
-                                                         "d:70,12-15"),
-                                                        jedd.internal.Jedd.v().replace(newM,
-                                                                                       new jedd.PhysicalDomain[] { T2.v() },
-                                                                                       new jedd.PhysicalDomain[] { T1.v() })));
+                                                        ("out.add(newM) at /home/olhotak/soot-trunk/src/soot/jimple/pa" +
+                                                         "ddle/BDDReachableMethods.jedd:70,12-15"),
+                                                        newM));
             return true;
         }
         return false;
