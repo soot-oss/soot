@@ -52,7 +52,9 @@ public class Filter implements Iterator
         return next != null;
     }
     public Object next() {
-        return next;
+        Object ret = next;
+        advance();
+        return ret;
     }
     public void remove() {
         throw new UnsupportedOperationException(); 
