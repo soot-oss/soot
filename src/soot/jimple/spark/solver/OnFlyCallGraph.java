@@ -29,6 +29,7 @@ import java.util.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.options.SparkOptions;
+import soot.options.CGOptions;
 import soot.toolkits.scalar.Pair;
 
 
@@ -49,6 +50,13 @@ public class OnFlyCallGraph {
 
     public OnFlyCallGraph( PAG pag ) {
         this.pag = pag;
+        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+        if( options.all_reachable() ) {
+            List entryPoints = new ArrayList();
+            entryPoints.addAll( EntryPoints.v().all() );
+            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
+            Scene.v().setEntryPoints( entryPoints );
+        }
         callGraph = new CallGraph();
         Scene.v().setCallGraph( callGraph );
         ContextManager cm = CallGraphBuilder.makeContextManager(callGraph);
