@@ -38,17 +38,20 @@ public class PAGDumper {
         try {
             final PrintWriter file = new PrintWriter(
                     new FileOutputStream( "solution" ) );
+            file.println( "Solution:" );
             for( Iterator vnIt = pag.allVarNodes().iterator(); vnIt.hasNext(); ) {
                 final VarNode vn = (VarNode) vnIt.next();
-                if( vn.getReplacement() != vn ) continue;
-                file.print( "Node: " );
-                dumpNode( vn, file );
-                file.println( "" );
+                if( vn.getReplacement() != vn ) {
+                    System.out.println( "Skipping merged node" );
+                    continue;
+                }
                 PointsToSetInternal p2set = vn.getP2Set();
                 if( p2set == null ) continue;
                 p2set.forall( new P2SetVisitor() {
                 public final void visit( Node n ) {
                         try {
+                            dumpNode( vn, file );
+                            file.print( " " );
                             dumpNode( n, file );
                             file.println( "" );
                         } catch( IOException e ) {
@@ -57,6 +60,7 @@ public class PAGDumper {
                     }
                 } );
             }
+            file.close();
         } catch( IOException e ) {
             throw new RuntimeException( "Couldn't dump solution."+e );
         }

@@ -261,6 +261,63 @@ public class FastHierarchy
 	}
     }
 
+    public Collection resolveConcreteDispatchWithoutFailing(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
+
+	Set ret = new HashSet();
+	SootClass declaringClass = declaredTypeOfBase.getSootClass();
+	for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
+	    final Type t = (Type) tIt.next();
+	    if( t instanceof AnyType ) {
+		String methodSig = m.getSubSignature();
+		HashSet s = new HashSet();
+		s.add( declaringClass );
+		while( !s.isEmpty() ) {
+		    SootClass c = (SootClass) s.iterator().next();
+		    s.remove( c );
+		    if( !c.isInterface() && !c.isAbstract()
+                            && canStoreClass( c, declaringClass ) ) {
+			SootMethod concreteM = resolveConcreteDispatch( c, m );
+                        if( concreteM != null )
+                            ret.add( concreteM );
+		    }
+		    if( classToSubclasses.containsKey( c ) ) {
+			s.addAll( classToSubclasses.get( c ) );
+		    }
+		    if( interfaceToSubinterfaces.containsKey( c ) ) {
+			s.addAll( interfaceToSubinterfaces.get( c ) );
+		    }
+		    if( interfaceToImplementers.containsKey( c ) ) {
+			s.addAll( interfaceToImplementers.get( c ) );
+		    }
+		}
+		return ret;
+	    } else if( t instanceof RefType ) {
+		RefType concreteType = (RefType) t;
+		SootClass concreteClass = concreteType.getSootClass();
+		if( !canStoreClass( concreteClass, declaringClass ) ) {
+		    continue;
+		}
+                SootMethod concreteM = null;
+                try {
+                    concreteM = resolveConcreteDispatch( concreteClass, m );
+                } catch( Exception e ) {
+                    concreteM = null;
+                }
+                if( concreteM != null ) ret.add( concreteM );
+	    } else if( t instanceof ArrayType ) {
+                SootMethod concreteM = null;
+                try {
+                    concreteM = resolveConcreteDispatch( 
+			RefType.v( "java.lang.Object" ).getSootClass(), m );
+                } catch( Exception e ) {
+                    concreteM = null;
+                }
+                if( concreteM != null ) ret.add( concreteM );
+	    } else throw new RuntimeException( "Unrecognized reaching type "+t );
+	}
+	return ret;
+    }
+
     public Collection resolveConcreteDispatch(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
 
 	Set ret = new HashSet();

@@ -36,7 +36,10 @@ public class SparkNativeHelper extends NativeHelper {
     protected void assignObjectToImpl(ReferenceVariable lhs, AbstractObject obj) {
 	AllocNode objNode = pag.makeAllocNode( 
 		new Pair( "AbstractObject", obj.getType() ),
-		obj.getType().getType() );
+    //            AnyType.v() );
+		 obj.getType().getType() );
+                // OL: Types from native method simulator can't be used, because
+                // objects may actually be subtypes of them.
 
         VarNode var;
         if( lhs instanceof FieldRefNode ) {

@@ -45,6 +45,14 @@ public class AllocNode extends Node {
 
     AllocNode( PAG pag, Object newExpr, Type t ) {
 	super( pag, t );
+        /*
+        if( t instanceof RefType ) {
+            RefType rt = (RefType) t;
+            if( rt.getSootClass().isAbstract() ) {
+                throw new RuntimeException( "Attempt to create allocnode with abstract type "+t );
+            }
+        }
+        */
 	this.newExpr = newExpr;
     }
     /** Registers a AllocDotField as having this node as its base. */

@@ -91,7 +91,12 @@ public abstract class PointsToSetInternal implements PointsToSet {
         final HashSet ret = new HashSet();
         forall( new P2SetVisitor() {
             public void visit( Node n ) {
-                ret.add( n.getType() );
+                Type t = n.getType();
+                if( t instanceof RefType ) {
+                    RefType rt = (RefType) t;
+                    if( rt.getSootClass().isAbstract() ) return;
+                }
+                ret.add( t );
             }
         } );
         return ret;
