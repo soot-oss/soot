@@ -28,6 +28,7 @@ import org.eclipse.jface.text.source.IVerticalRulerInfo;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.part.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 
@@ -93,7 +94,7 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 			
 				if (!fileToFind.equals(resource)){
 					try {
-						setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)fileToFind));
+						setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput((IFile)fileToFind), fileToFind.getName()));
 						//System.out.println("after setting link to editor - diff file");
 					}
 					catch (PartInitException e){

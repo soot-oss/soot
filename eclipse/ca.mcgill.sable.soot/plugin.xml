@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="ca.mcgill.sable.soot"
    name="Soot Plug-in"
-   version="1.0.0"
+   version="2.0.0"
    provider-name=""
    class="ca.mcgill.sable.soot.SootPlugin">
 
    <runtime>
       <library name="soot-plugin.jar"/>
-      <library name="sootclasses-2.2.0-custom.jar"/>
+      <library name="sootclasses-2.1.0-custom.jar"/>
       <library name="soot/classes/"/>
       <library name="jasminclasses-2.2.0.jar"/>
       <library name="jasmin/classes/"/>
-      <library name="polyglotclasses-1.3.jar"/>
+      <library name="polyglot-1.3.jar"/>
+      <library name="polyglot/classes/"/>
       <library name="myclasses/"/>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
@@ -55,7 +59,7 @@
       </filter>
    </extension> -->
    <extension
-         point="org.eclipse.ui.markerImageProviders">
+         point="org.eclipse.ui.ide.markerImageProviders">
       <imageprovider
             markertype="ca.mcgill.sable.soot.sootattributemarker"
             icon="icons/soot_attribute.png"
@@ -79,7 +83,7 @@
             type="org.eclipse.core.resources.textmarker">
       </super>
    </extension>
-<!--<extension point="org.eclipse.ui.markerResolution"> 
+<!--<extension point="org.eclipse.ui.ide.markerResolution"> 
    	<markerResolutionGenerator 
       class="ca.mcgill.sable.soot.attributes.SootAttributeResolutionGenerator" 
       markerType="ca.mcgill.sable.soot.sootattributemarker"> 

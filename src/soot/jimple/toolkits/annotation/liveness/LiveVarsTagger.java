@@ -52,6 +52,13 @@ public class LiveVarsTagger extends BodyTransformer {
                         use.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
                     }
                 }
+                Iterator defsIt = s.getDefBoxes().iterator();
+                while (defsIt.hasNext()){
+                    ValueBox def = (ValueBox)defsIt.next();
+                    if (def.getValue().equals(v)){
+                        def.addTag(new ColorTag(ColorTag.GREEN, "Live Variable"));
+                    }
+                }
             }
         }
     }

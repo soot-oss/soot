@@ -976,6 +976,18 @@ public class Singletons {
         return instance_soot_toolkits_graph_interaction_InteractionHandler;
     }
 
+    private soot.jimple.toolkits.annotation.logic.LoopInvariantFinder instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder;
+    public soot.jimple.toolkits.annotation.logic.LoopInvariantFinder soot_jimple_toolkits_annotation_logic_LoopInvariantFinder() {
+        if( instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null ) instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder = new soot.jimple.toolkits.annotation.logic.LoopInvariantFinder( g );
+        return instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder;
+    }
+
+    private soot.jimple.toolkits.annotation.AvailExprTagger instance_soot_jimple_toolkits_annotation_AvailExprTagger;
+    public soot.jimple.toolkits.annotation.AvailExprTagger soot_jimple_toolkits_annotation_AvailExprTagger() {
+        if( instance_soot_jimple_toolkits_annotation_AvailExprTagger == null ) instance_soot_jimple_toolkits_annotation_AvailExprTagger = new soot.jimple.toolkits.annotation.AvailExprTagger( g );
+        return instance_soot_jimple_toolkits_annotation_AvailExprTagger;
+    }
+
     private soot.util.PhaseDumper instance_soot_util_PhaseDumper;
     public soot.util.PhaseDumper soot_util_PhaseDumper() {
         if( instance_soot_util_PhaseDumper == null ) instance_soot_util_PhaseDumper = new soot.util.PhaseDumper( g );

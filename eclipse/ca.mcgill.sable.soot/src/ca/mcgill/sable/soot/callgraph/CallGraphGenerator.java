@@ -43,6 +43,7 @@ import soot.toolkits.graph.interaction.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.ui.texteditor.*;
+import org.eclipse.ui.part.*;
 
 /**
  * @author jlhotak
@@ -266,7 +267,7 @@ public class CallGraphGenerator {
 		
 		try{
 			System.out.println("file to open: "+fileToOpen);
-			IEditorPart part = page.openEditor((IFile)fileToOpen);
+			IEditorPart part = page.openEditor(new FileEditorInput((IFile)fileToOpen), fileToOpen.getName());
 			SourceLnPosTag methTag = (SourceLnPosTag)meth.getTag("SourceLnPosTag");
 			if (methTag != null){
 				

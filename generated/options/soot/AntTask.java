@@ -1962,6 +1962,12 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setonly_tag(boolean arg) {
+            addArg("-p");
+            addArg("jop.dae");
+            addArg("only-tag:"+(arg?"true":"false"));
+          }
+      
           public void setonly_stack_locals(boolean arg) {
             addArg("-p");
             addArg("jop.dae");
@@ -2341,6 +2347,42 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jap.umt");
             addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jap_lit() {
+            Object ret = new PhaseOptjap_lit();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjap_lit {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jap.lit");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jap_aet() {
+            Object ret = new PhaseOptjap_aet();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjap_aet {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jap.aet");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setkind(String arg) {
+            addArg("-p");
+            addArg("jap.aet");
+            addArg("kind:"+arg);
           }
       
         }

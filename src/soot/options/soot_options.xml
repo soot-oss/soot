@@ -3687,6 +3687,15 @@ side-effects.
 						<long_desc/>
 					</boolopt>
 					<boolopt>
+						<name>Only Tag Dead Code</name>
+						<alias>only-tag</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc>
+Only tag dead assignment statements instead of eliminaing them.
+</long_desc>
+					</boolopt>
+					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
                                                 <default>false</default>
@@ -4200,6 +4209,42 @@ information in these tags.  For example, even variables (such as
 						<alias>enabled</alias>
 						<default>false</default>
 					</boolopt>
+                </sub_phase>
+                <sub_phase>
+					<name>Loop Invariant Tagger</name>
+					<alias>jap.lit</alias>
+					<short_desc>Tags loop invariants</short_desc>
+					<long_desc>An expression whose operands are constant or have reaching definitions from outside the loop body are tagged as loop invariant.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
+                <sub_phase>
+					<name>Available Expressions Tagger</name>
+					<class>AETOptions</class>
+                    <alias>jap.aet</alias>
+					<short_desc>Tags statements with sets of available expressions</short_desc>
+					<long_desc>A each statement a set of available expressions is after the statement is added as a tag.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                    <multiopt>
+						    <name>Kind</name>
+						    <alias>kind</alias>
+                            <value>
+						        <name>Optimistic</name>
+						        <alias>optimistic</alias>
+						        <default/>
+                            </value>
+                            <value>
+						        <name>Pessimistic</name>
+						        <alias>pessimistic</alias>
+                            </value>
+                    </multiopt>
                 </sub_phase>
 			</phase>
             <!--<phase>

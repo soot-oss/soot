@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.part.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 
@@ -114,7 +115,7 @@ public class SootOutputFilesHandler {
 							if (page == null ) {
 								//System.out.println("page is null");
 							}
-							getOldFilelist().add(page.openEditor((IFile)children[i]));
+							//getOldFilelist().add(page.openEditor(new FileEditorInput((IFile)children[i])), children[i].getName());
 						}
 					}
 				}

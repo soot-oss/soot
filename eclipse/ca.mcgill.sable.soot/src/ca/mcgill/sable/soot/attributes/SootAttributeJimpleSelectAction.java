@@ -31,7 +31,8 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import ca.mcgill.sable.soot.SootPlugin;
-
+import org.eclipse.ui.*;
+import org.eclipse.ui.part.*;
 
 /**
  * @author jlhotak
@@ -86,7 +87,7 @@ public class SootAttributeJimpleSelectAction
 			IResource file = parent.findMember(className+"."+ext);
 			//System.out.println("file: "+file);
 			try {
-				setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)file));
+				setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput((IFile)file), file.getName()));
 					//System.out.println("after setting link to editor - diff file");
 			}
 			catch (PartInitException e){

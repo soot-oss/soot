@@ -46,6 +46,7 @@ import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.annotation.defs.*;
 import soot.jimple.toolkits.annotation.liveness.*;
+import soot.jimple.toolkits.annotation.logic.*;
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -197,6 +198,8 @@ public class PackManager {
             p.add(new Transform("jap.lvtagger", LiveVarsTagger.v()));
             p.add(new Transform("jap.che", CastCheckEliminatorDumper.v()));
             p.add(new Transform("jap.umt", new UnreachableMethodTransformer()));
+            p.add(new Transform("jap.lit", LoopInvariantFinder.v()));
+            p.add(new Transform("jap.aet", AvailExprTagger.v()));
 	       
         }
 

@@ -254,6 +254,10 @@ Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
 
 Composite japjap_umtChild = japjap_umtCreate(getPageContainer());
 
+Composite japjap_litChild = japjap_litCreate(getPageContainer());
+
+Composite japjap_aetChild = japjap_aetCreate(getPageContainer());
+
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
 Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
@@ -1175,9 +1179,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jop", "jop.dae", getjopjop_daeenabled_widget(), "enabled");
 		
+		addToEnableGroup("jop", "jop.dae", getjopjop_daeonly_tag_widget(), "only-tag");
+		
 		addToEnableGroup("jop", "jop.dae", getjopjop_daeonly_stack_locals_widget(), "only-stack-locals");
 		
 		getjopjop_daeenabled_widget().getButton().addSelectionListener(this);
+		
+		getjopjop_daeonly_tag_widget().getButton().addSelectionListener(this);
 		
 		getjopjop_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
 		
@@ -1391,6 +1399,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jap", "jap.umt", getjapjap_umtenabled_widget(), "enabled");
 		
 		getjapjap_umtenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jap", "jap.lit");
+		
+		
+		addToEnableGroup("jap", "jap.lit", getjapjap_litenabled_widget(), "enabled");
+		
+		getjapjap_litenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jap", "jap.aet");
+		
+		
+		addToEnableGroup("jap", "jap.aet", getjapjap_aetenabled_widget(), "enabled");
+		
+		addToEnableGroup("jap", "jap.aet", getjapjap_aetkind_widget(), "kind");
+		
+		getjapjap_aetenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("gb");
@@ -3669,6 +3695,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjopjop_daeonly_tag_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_daeonly_tag_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjopjop_daeonly_stack_locals_widget().getButton().getSelection();
 		
 		
@@ -4016,6 +4052,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_umtenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapjap_litenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_litenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapjap_aetenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_aetenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getjapjap_aetkind_widget().getSelectedAlias();
+
+		
+		defStringRes = "optimistic";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getjapjap_aetkind_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getgbenabled_widget().getButton().getSelection();
@@ -5209,6 +5275,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jap_jap_umt_branch;
+			
+			
+			SootOption jap_jap_lit_branch = new SootOption("Loop Invariant Tagger", "japjap_lit");
+			subParent.addChild(jap_jap_lit_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_lit_branch;
+			
+			
+			SootOption jap_jap_aet_branch = new SootOption("Available Expressions Tagger", "japjap_aet");
+			subParent.addChild(jap_jap_aet_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_aet_branch;
 			
 			
 			//Grimp Body Creation
@@ -7527,6 +7613,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_daeenabled_widget;
 	}	
 	
+	private BooleanOptionWidget jopjop_daeonly_tag_widget;
+	
+	private void setjopjop_daeonly_tag_widget(BooleanOptionWidget widget) {
+		jopjop_daeonly_tag_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopjop_daeonly_tag_widget() {
+		return jopjop_daeonly_tag_widget;
+	}	
+	
 	private BooleanOptionWidget jopjop_daeonly_stack_locals_widget;
 	
 	private void setjopjop_daeonly_stack_locals_widget(BooleanOptionWidget widget) {
@@ -7878,6 +7974,38 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	public BooleanOptionWidget getjapjap_umtenabled_widget() {
 		return japjap_umtenabled_widget;
 	}	
+	
+	private BooleanOptionWidget japjap_litenabled_widget;
+	
+	private void setjapjap_litenabled_widget(BooleanOptionWidget widget) {
+		japjap_litenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_litenabled_widget() {
+		return japjap_litenabled_widget;
+	}	
+	
+	private BooleanOptionWidget japjap_aetenabled_widget;
+	
+	private void setjapjap_aetenabled_widget(BooleanOptionWidget widget) {
+		japjap_aetenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_aetenabled_widget() {
+		return japjap_aetenabled_widget;
+	}	
+	
+	
+	private MultiOptionWidget japjap_aetkind_widget;
+	
+	private void setjapjap_aetkind_widget(MultiOptionWidget widget) {
+		japjap_aetkind_widget = widget;
+	}
+	
+	public MultiOptionWidget getjapjap_aetkind_widget() {
+		return japjap_aetkind_widget;
+	}	
+	
 	
 	private BooleanOptionWidget gbenabled_widget;
 	
@@ -14257,6 +14385,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"jop.dae"+" "+"only-tag";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjopjop_daeonly_tag_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Tag Dead Code", "p", "jop.dae","only-tag", "\nOnly tag dead assignment statements instead of eliminaing them. \n", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"jop.dae"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
@@ -15388,6 +15532,128 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_umt;
+	}
+
+
+
+	private Composite japjap_litCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjapjap_lit = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_lit.setLayout(layout);
+	
+	 	editGroupjapjap_lit.setText("Loop Invariant Tagger");
+	 	
+		editGroupjapjap_lit.setData("id", "japjap_lit");
+		
+		String descjapjap_lit = "Tags loop invariants";	
+		if (descjapjap_lit.length() > 0) {
+			Label descLabeljapjap_lit = new Label(editGroupjapjap_lit, SWT.WRAP);
+			descLabeljapjap_lit.setText(descjapjap_lit);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.lit"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_litenabled_widget(new BooleanOptionWidget(editGroupjapjap_lit, SWT.NONE, new OptionData("Enabled", "p", "jap.lit","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_lit;
+	}
+
+
+
+	private Composite japjap_aetCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjapjap_aet = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_aet.setLayout(layout);
+	
+	 	editGroupjapjap_aet.setText("Available Expressions Tagger");
+	 	
+		editGroupjapjap_aet.setData("id", "japjap_aet");
+		
+		String descjapjap_aet = "Tags statements with sets of available expressions";	
+		if (descjapjap_aet.length() > 0) {
+			Label descLabeljapjap_aet = new Label(editGroupjapjap_aet, SWT.WRAP);
+			descLabeljapjap_aet.setText(descjapjap_aet);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.aet"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_aetenabled_widget(new BooleanOptionWidget(editGroupjapjap_aet, SWT.NONE, new OptionData("Enabled", "p", "jap.aet","enabled", "\n", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Optimistic",
+		"optimistic",
+		"\n",
+		
+		true),
+		
+		new OptionData("Pessimistic",
+		"pessimistic",
+		"\n",
+		
+		false),
+		
+		};
+		
+										
+		setjapjap_aetkind_widget(new MultiOptionWidget(editGroupjapjap_aet, SWT.NONE, data, new OptionData("Kind", "p", "jap.aet","kind", "\n")));
+		
+		defKey = "p"+" "+"jap.aet"+" "+"kind";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getjapjap_aetkind_widget().setDef(defaultString);
+		}
+		
+		
+
+		
+		return editGroupjapjap_aet;
 	}
 
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="ca.mcgill.sable.graph"
    name="Graph Plug-in"
@@ -12,6 +13,8 @@
        </library>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.boot"/>

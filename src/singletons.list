@@ -156,6 +156,8 @@ soot.jimple.toolkits.pointer.ParameterAliasTagger
 soot.jimple.toolkits.annotation.defs.ReachingDefsTagger
 soot.jimple.toolkits.annotation.liveness.LiveVarsTagger
 soot.toolkits.graph.interaction.InteractionHandler
+soot.jimple.toolkits.annotation.logic.LoopInvariantFinder
+soot.jimple.toolkits.annotation.AvailExprTagger
 soot.util.PhaseDumper
 soot.util.cfgcmd.AltClassLoader
 soot.toolkits.exceptions.ThrowableSet.Manager

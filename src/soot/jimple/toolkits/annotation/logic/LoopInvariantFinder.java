@@ -29,8 +29,14 @@ import soot.tagkit.*;
 public class LoopInvariantFinder extends BodyTransformer {
 
     private UnitGraph g;
+    private ArrayList constants; 
 
-    
+    public LoopInvariantFinder(Singletons.Global g){}
+    public static LoopInvariantFinder v() { return G.v().soot_jimple_toolkits_annotation_logic_LoopInvariantFinder();}
+
+    /**
+     *  this one uses the side effect tester
+     */
     protected void internalTransform (Body b, String phaseName, Map options){
    
         UnitGraph g = new ExceptionalUnitGraph(b);
@@ -41,7 +47,8 @@ public class LoopInvariantFinder extends BodyTransformer {
         lf.internalTransform(b, phaseName, options);
 
         HashMap loops = lf.loops();
-
+        constants = new ArrayList();
+        
         // no loop invariants if no loops
         if (loops.isEmpty()) return;
         
@@ -63,6 +70,19 @@ public class LoopInvariantFinder extends BodyTransformer {
         // need to do some checks for arrays - when there is an multi-dim array
         // --> for defs there is a get of one of the dims that claims to be 
         // loop invariant
+       
+        // handle constants
+        if (s instanceof DefinitionStmt) {
+            DefinitionStmt ds = (DefinitionStmt)s;
+            if (ds.getLeftOp() instanceof Local && ds.getRightOp() instanceof Constant){
+                if (!constants.contains(ds.getLeftOp())){
+                    constants.add(ds.getLeftOp());
+                }
+                else {
+                    constants.remove(ds.getLeftOp());
+                }
+            }
+        }
         
         // ignore goto stmts
         if (s instanceof GotoStmt) return;
@@ -70,7 +90,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         // ignore invoke stmts
         if (s instanceof InvokeStmt) return; 
        
-        //System.out.println("s : "+s+" use boxes: "+s.getUseBoxes());
+        G.v().out.println("s : "+s+" use boxes: "+s.getUseBoxes()+" def boxes: "+s.getDefBoxes());
         // just use boxes here 
         Iterator useBoxesIt = s.getUseBoxes().iterator();
         boolean result = true;
@@ -82,52 +102,33 @@ public class LoopInvariantFinder extends BodyTransformer {
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;
-                //System.out.println("break uses: due to new expr");
+                G.v().out.println("break uses: due to new expr");
                 break uses;
             }
             // invokes are not invariant
             if (v instanceof InvokeExpr) {
                 result = false;
-                //System.out.println("break uses: due to invoke expr");
+                G.v().out.println("break uses: due to invoke expr");
                 break uses;
             }
-            // array refs with non-constant indexes - need to check 
-            // index box
-            //.System.out.println("v : "+v+" is a "+v.getClass());
-            /*if (v instanceof ArrayRef){
-                System.out.println("loop stmts: "+loopStmts);
-                Iterator arrLoopStmtsIt = loopStmts.iterator();
-                while (arrLoopStmtsIt.hasNext()){
-                    Stmt next = (Stmt)arrLoopStmtsIt.next();
-                    System.out.println("testing array ref");
-                    System.out.println("next stmt: "+next+" and val: "+((ArrayRef)v).getIndexBox().getValue());
-                    if (nset.unitCanWriteTo(next, ((ArrayRef)v).getIndexBox().getValue())){
-                        result = false;
-                        //System.out.println("not loop invariant due to use: "+s);
-                        System.out.println("break uses: due to array ref");
-                        break uses;
-                    }
-                }
-            
-            }*/
             // side effect tester doesn't handle expr
             if (v instanceof Expr) continue;
-        
+            
+            G.v().out.println("test: "+v+" of kind: "+v.getClass());
             Iterator loopStmtsIt = loopStmts.iterator();
             while (loopStmtsIt.hasNext()){
                 Stmt next = (Stmt)loopStmtsIt.next();
                 if (nset.unitCanWriteTo(next, v)){
-                    result = false;
-                    //System.out.println("not loop invariant due to use: "+s);
-                    //System.out.println("break uses: due to side effect tester");
-                    break uses;
+                    if (!isConstant(next)){
+                        G.v().out.println("result = false unit can be written to by: "+next);
+                        result = false;
+                        break uses;
+                    }
                 }
             }
             
         }
 
-        //System.out.println("after uses: result: "+result);
-        // def boxes - don't check self
         Iterator defBoxesIt = s.getDefBoxes().iterator(); 
         defs: while (defBoxesIt.hasNext()){
             ValueBox vb = (ValueBox)defBoxesIt.next();
@@ -135,29 +136,35 @@ public class LoopInvariantFinder extends BodyTransformer {
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;
+                G.v().out.println("break defs due to new");
                 break defs;
             }
             // invokes are not invariant
             if (v instanceof InvokeExpr) {
                 result = false;
+                G.v().out.println("break defs due to invoke");
                 break defs;
             }
             // side effect tester doesn't handle expr
             if (v instanceof Expr) continue;
+            
+            G.v().out.println("test: "+v+" of kind: "+v.getClass());
         
             Iterator loopStmtsIt = loopStmts.iterator();
             while (loopStmtsIt.hasNext()){
                 Stmt next = (Stmt)loopStmtsIt.next();
                 if (next.equals(s)) continue;
                 if (nset.unitCanWriteTo(next, v)){
-                    result = false;
-                    //System.out.println("not loop invariant due to def: "+s);
-                    break defs;
+                    if (!isConstant(next)){
+                        G.v().out.println("result false: unit can be written to by: "+next);
+                        result = false;
+                        break defs;
+                    }
                 }
             }
             
         }
-        //System.out.println("result afte defs: "+result);
+        G.v().out.println("stmt: "+s+" result: "+result);
         if (result){
             s.addTag(new LoopInvariantTag("is loop invariant"));
             s.addTag(new ColorTag(ColorTag.RED, "Loop Invariant Analysis"));
@@ -165,10 +172,19 @@ public class LoopInvariantFinder extends BodyTransformer {
         else {
             // if loops are nested it might be invariant in one of them 
             // so remove tag
-            if (s.hasTag("LoopInvariantTag")) {
-                s.removeTag("LoopInvariantTag");
-            }
+            //if (s.hasTag("LoopInvariantTag")) {
+            //    s.removeTag("LoopInvariantTag");
+            //}
         }
     }
     
+    private boolean isConstant(Stmt s){
+        if (s instanceof DefinitionStmt){
+            DefinitionStmt ds = (DefinitionStmt)s;
+            if (constants.contains(ds.getLeftOp())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -28,203 +28,206 @@ rev=2.2.0;
 # use this if building and using most recent polyglot
 function getNightlyPolyglot(){
     # get polyglot from cvs
-    cvs -Q -d :pserver:anoncvs@source.cs.cornell.edu:/cvsroot checkout polyglot;
+    cvs -Q -d :pserver:anoncvs@source.cs.cornell.edu:/cvsroot checkout polyglot || return;
 }
 
 #use this if using stable, released polyglot
 function getReleasedPolyglot(){
     # get released polyglot from resources
-    cp -r $HOME/autobuild/resources/polyglot-1.3-src $HOME/autobuild/tmp/polyglot;
+    cp -r $HOME/autobuild/resources/polyglot-1.3-src $HOME/autobuild/tmp/polyglot || return;
 }
 
 # export jasmin and soot from subversion
 function getJasminAndSoot(){
     # get jasmin, soot in autobuild/tmp dir
-    svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin > jasmin_export; 
-    svn export -q https://svn.sable.mcgill.ca/soot/soot/trunk soot; 
+    svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin > jasmin_export || return; 
+    svn export -q https://svn.sable.mcgill.ca/soot/soot/trunk soot || return; 
 }
 
 # set up date and revision tags
 function getCurrentDate(){
-    polyglotrev=`date +%Y%m%d`;
-    echo "Date: $polyglotrev";
+    polyglotrev=`date +%Y%m%d` || return;
+    echo "Date: $polyglotrev" || return;
 }
 
 # get current jasmin/soot revision
 function getJasminSootRevision(){
-    rev=`tail -1 jasmin_export | sed s/Exported' 'revision' '// | sed s/\\\.//`;
-    rm jasmin_export;
-    echo "Revision $rev";
+    rev=`tail -1 jasmin_export | sed s/Exported' 'revision' '// | sed s/\\\.//` || return;
+    rm jasmin_export || return;
+    echo "Revision $rev" || return;
 }
 
 # build polyglot src jars
 function buildPolyglotBarebones(){
     # switch to tmp dir
-    cd $HOME/autobuild/tmp;
+    cd $HOME/autobuild/tmp || return;
 
     # make a polyglot barebones jar and tar
-    jar -cf $HOME/autobuild/releases/polyglotsrc-$polyglotrev.jar polyglot;
-    tar -czf $HOME/autobuild/releases/polyglotsrc-$polyglotrev.tar.gz polyglot;
+    jar -cf $HOME/autobuild/releases/polyglotsrc-$polyglotrev.jar polyglot || return;
+    tar -czf $HOME/autobuild/releases/polyglotsrc-$polyglotrev.tar.gz polyglot || return;
 
-    echo "Built polyglot src packages.";
+    echo "Built polyglot src packages." || return;
 }
 
 # build polyglot classes jars
 function buildPolyglotClasses(){
     # switch to polyglot dir and build it first
-    cd $HOME/autobuild/tmp/polyglot;
+    cd $HOME/autobuild/tmp/polyglot || return;
 
     if !(ant); then
         # if polyglot won't build send mail 
         # include date
-        echo "Polyglot will not build $polyglotrev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build";
-        echo "Polyglot will not build $polyglotrev";
+        echo "Polyglot will not build $polyglotrev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
+        echo "Polyglot will not build $polyglotrev" || return;
     else 
         # make polyglot jar out of classes and cup classes
-        cd $HOME/autobuild/tmp/polyglot/classes; 
-        jar -cf $HOME/autobuild/releases/polyglotclasses-$polyglotrev.jar *;
-        cd $HOME/autobuild/tmp/polyglot/cup-classes;
-        jar -uf $HOME/autobuild/releases/polyglotclasses-$polyglotrev.jar *;
+        cd $HOME/autobuild/tmp/polyglot/classes || return; 
+        jar -cf $HOME/autobuild/releases/polyglotclasses-$polyglotrev.jar * || return;
+        cd $HOME/autobuild/tmp/polyglot/cup-classes || return;
+        jar -uf $HOME/autobuild/releases/polyglotclasses-$polyglotrev.jar * || return;
     fi
 }
 
 # set up jasmin
 function setUpJasmin(){
     # switch to jasmin dir and set cup variable to polyglot jar and build
-    cd $HOME/autobuild/tmp/jasmin;
+    cd $HOME/autobuild/tmp/jasmin || return;
     # cp jasmin settings file
-    sed s/cup-classes\\//autobuild\\/releases\\/polyglotclasses-$polyglotrev.jar/ $HOME/autobuild/settings/jasmin | sed s/2.2.0/$rev/ > ant.settings;
+    sed s/cup-classes\\//autobuild\\/releases\\/polyglotclasses-$polyglotrev.jar/ $HOME/autobuild/settings/jasmin | sed s/2.2.0/$rev/ > ant.settings || return;
     
     # update version in source in jasmin 
-    sed s/version' '=' '\"2.2.0\"/version' '=' '\"$rev\"/ src/jasmin/Main.java > version-temp;
-    mv version-temp src/jasmin/Main.java;
+    sed s/version' '=' '\"2.2.0\"/version' '=' '\"$rev\"/ src/jasmin/Main.java > version-temp || return;
+    mv version-temp src/jasmin/Main.java || return;
 }
 
 # build the jasmin src jar and tar files
 function buildJasminBarebones(){
-    cd $HOME/autobuild/tmp/jasmin;
-    ant barebones;
+    cd $HOME/autobuild/tmp/jasmin || return;
+    ant barebones || return;
 }
  
 # build jasmin classes
 function buildJasminClasses(){
-    cd $HOME/autobuild/tmp/jasmin;
+    cd $HOME/autobuild/tmp/jasmin || return;
     if !(ant jasmin-jar); then
         # send mail if something is broken - add revision number
-        echo "Jasmin will not build $rev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build";
-        echo "Jasmin will not build $rev";
+        echo "Jasmin will not build $rev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
+        echo "Jasmin will not build $rev" || return;
     fi
 }
  
 # set up Soot
 function setUpSoot(){
     # switch to soot
-    cd $HOME/autobuild/tmp/soot;
+    cd $HOME/autobuild/tmp/soot || return;
     # cp soot settings file
-    sed s/polyglotjar/autobuild\\/releases\\/polyglotclasses-$polyglotrev.jar/ $HOME/autobuild/settings/soot | sed s/jasminjar/autobuild\\/releases\\/jasminclasses-$rev.jar/ | sed s/sootversion/$rev/ > ant.settings;
+    sed s/polyglotjar/autobuild\\/releases\\/polyglotclasses-$polyglotrev.jar/ $HOME/autobuild/settings/soot | sed s/jasminjar/autobuild\\/releases\\/jasminclasses-$rev.jar/ | sed s/sootversion/$rev/ > ant.settings || return;
        
     # update version in source in soot 
-    sed s/versionString' '=' '\"2.2.0\"/versionString' '=' '\"$rev\"/ src/soot/Main.java > version-temp;
-    mv version-temp src/soot/Main.java;
+    sed s/versionString' '=' '\"2.2.0\"/versionString' '=' '\"$rev\"/ src/soot/Main.java > version-temp || return;
+    mv version-temp src/soot/Main.java || return;
        
     # some care must be given to ensure the eclipse plugin.xml
     # file has the right jar file names for soot, jasmin and polyglot
-    cd $HOME/autobuild/tmp/soot/eclipse/ca.mcgill.sable.soot/;
-    sed s/sootclasses-2.2.0-custom.jar/sootclasses-$rev.jar/ plugin.xml > temp1;
-    sed s/jasminclasses-2.2.0.jar/jasminclasses-$rev.jar/ temp1 | sed s/polyglotclasses-1.3.jar/polyglotclasses-$polyglotrev.jar/  > plugin.xml
-    rm temp1;
+    cd $HOME/autobuild/tmp/soot/eclipse/ca.mcgill.sable.soot/ || return;
+    sed s/sootclasses-2.2.0-custom.jar/sootclasses-$rev.jar/ plugin.xml > temp1 || return;
+    sed s/jasminclasses-2.2.0.jar/jasminclasses-$rev.jar/ temp1 | sed s/polyglotclasses-1.3.jar/polyglotclasses-$polyglotrev.jar/  > plugin.xml || return;
+    rm temp1 || return;
 }
 
 # build soot src jars
 function buildSootBarebones(){
     # build soot src jar and tar files
-    cd $HOME/autobuild/tmp/soot;
-    ant barebones;
+    cd $HOME/autobuild/tmp/soot || return;
+    ant barebones || return;
 }
 
 # build soot classes
 function buildSootClasses(){
-    cd $HOME/autobuild/tmp/soot;
+    cd $HOME/autobuild/tmp/soot || return;
     if !(ant quickstart); then
         # if something is broken send mail
-        echo "Soot will not build $rev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build";
-        echo "Soot will not build $rev";
+        echo "Soot will not build $rev" | /usr/bin/mutt jlhotak@sable.mcgill.ca -e 'set from = jlhotak@sable.mcgill.ca' -s "Soot Automated Nightly Build" || return;
+        echo "Soot will not build $rev" || return;
     fi
 }
 
 # build soot javadoc
 function buildSootJavaDoc(){
-    cd $HOME/autobuild/tmp/soot;
-    ant javadoc;
+    cd $HOME/autobuild/tmp/soot || return;
+    ant javadoc || return;
 }
 
 # build soot tutorials
 function buildSootTutorials(){
-    cd $HOME/autobuild/tmp/soot/tutorial;
-    ./generate_tutorial;
-    jar -cf $HOME/autobuild/releases/soot-tutorial-$rev.jar *;
-    tar -czf $HOME/autobuild/releases/soot-tutorial-$rev.tar.gz *;
+    cd $HOME/autobuild/tmp/soot/tutorial || return;
+    ./generate_tutorial || return;
+    jar -cf $HOME/autobuild/releases/soot-tutorial-$rev.jar * || return;
+    tar -czf $HOME/autobuild/releases/soot-tutorial-$rev.tar.gz * || return;
 }
 
 # make complete jar includes src and classes for soot, jasmin, polyglot
 # includes src and classes for plugin and complete src and built tutorial
 # by this point in the script all of soot, jasmin and polyglot are built
 function buildComplete(){
-    cd $HOME/autobuild/tmp;
+    cd $HOME/autobuild/tmp || return;
 
-    mv soot soot-$rev;
-    mv jasmin jasmin-$rev;
-    mv polyglot polyglot-$polyglotrev;
+    mv soot soot-$rev || return;
+    mv jasmin jasmin-$rev || return;
+    mv polyglot polyglot-$polyglotrev || return;
 
-    jar -cf $HOME/autobuild/releases/sootall-$rev.jar soot-$rev jasmin-$rev polyglot-$polyglotrev;
-    tar -czf $HOME/autobuild/releases/sootall-$rev.tar.gz soot-$rev jasmin-$rev polyglot-$polyglotrev;
+    jar -cf $HOME/autobuild/releases/sootall-$rev.jar soot-$rev jasmin-$rev polyglot-$polyglotrev || return;
+    tar -czf $HOME/autobuild/releases/sootall-$rev.tar.gz soot-$rev jasmin-$rev polyglot-$polyglotrev || return;
 }
 
 # update nightly build html file
 function updateNightlyHtml(){
-    cd $HOME/autobuild/tmp/soot-$rev;
-    sed s/sootall/sootall-$rev/g nightly.html > temp1.html;
-    sed s/sootclasses/sootclasses-$rev/g temp1.html | sed s/jasminclasses/jasminclasses-$rev/g  | sed s/polyglotclasses/polyglotclasses-$polyglotrev/g | sed s/quickstart/soot-eclipse-quickstart-$rev/g | sed s/sootbarebones/sootsrc-$rev/g | sed s/jasminbarebones/jasminsrc-$rev/g  | sed s/polyglotbarebones/polyglotsrc-$polyglotrev/g > nightly.html;
+    cd $HOME/autobuild/tmp/soot-$rev || return;
+    sed s/sootall/sootall-$rev/g nightly.html > temp1.html || return;
+    sed s/sootclasses/sootclasses-$rev/g temp1.html | sed s/jasminclasses/jasminclasses-$rev/g  | sed s/polyglotclasses/polyglotclasses-$polyglotrev/g | sed s/quickstart/soot-eclipse-quickstart-$rev/g | sed s/sootbarebones/sootsrc-$rev/g | sed s/jasminbarebones/jasminsrc-$rev/g  | sed s/polyglotbarebones/polyglotsrc-$polyglotrev/g > nightly.html || return;
 
-    rm temp1.html;
+    rm temp1.html || return;
 
-    cp nightly.html $HOME/autobuild/releases/;
+    cp nightly.html $HOME/autobuild/releases/ || return;
+    cd $HOME/autobuild/releases/ || return;
+    chmod o+r nightly.html || return;
+    chmod g+r nightly.html || return;
 }
 
 function makeStable(){
-    getReleasedPolyglot;
-    getJasminAndSoot;
-    buildPolyglotBarebones;
-    buildPolyglotClasses;
-    setUpJasmin;
-    buildJasminBarebones;
-    buildJasminClasses;
-    setUpSoot;
-    buildSootBarebones;
-    buildSootClasses;
-    buildSootJavaDoc;
-    buildSootTutorials;
-    buildComplete;
-    updateNightlyHtml;
+    getReleasedPolyglot || exit;
+    getJasminAndSoot || exit;
+    buildPolyglotBarebones || exit;
+    buildPolyglotClasses || exit;
+    setUpJasmin || exit;
+    buildJasminBarebones || exit;
+    buildJasminClasses || exit;
+    setUpSoot || exit;
+    buildSootBarebones || exit;
+    buildSootClasses || exit;
+    buildSootJavaDoc || exit;
+    buildSootTutorials || exit;
+    buildComplete || exit;
+    updateNightlyHtml || exit;
 }
 
 function makeNightly(){
-    getReleasedPolyglot;
-    getJasminAndSoot;
+    getReleasedPolyglot || exit;
+    getJasminAndSoot || exit;
     #getCurrentDate;
-    getJasminSootRevision;
-    buildPolyglotBarebones;
-    buildPolyglotClasses;
-    setUpJasmin;
-    buildJasminBarebones;
-    buildJasminClasses;
-    setUpSoot;
-    buildSootBarebones;
-    buildSootClasses;
-    buildSootJavaDoc;
-    buildSootTutorials;
-    buildComplete;
-    updateNightlyHtml;
+    getJasminSootRevision || exit;
+    buildPolyglotBarebones || exit;
+    buildPolyglotClasses || exit;
+    setUpJasmin || exit;
+    buildJasminBarebones || exit;
+    buildJasminClasses || exit;
+    setUpSoot || exit;
+    buildSootBarebones || exit;
+    buildSootClasses || exit;
+    buildSootJavaDoc || exit;
+    buildSootTutorials || exit;
+    buildComplete || exit;
+    updateNightlyHtml || exit;
 }
 
 

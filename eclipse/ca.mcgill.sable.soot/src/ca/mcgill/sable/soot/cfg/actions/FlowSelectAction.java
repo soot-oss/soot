@@ -58,7 +58,7 @@ public class FlowSelectAction extends SelectionAction {
 	}
 	
 	public void setEditorPart(IEditorPart part){
-		super.setEditorPart(part);
+		//super.setEditorPart(part);
 	}
 	
 	protected void init() { 

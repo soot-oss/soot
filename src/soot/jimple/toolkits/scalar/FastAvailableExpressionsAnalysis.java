@@ -37,7 +37,7 @@ import soot.util.*;
  * The current implementation is slow but correct.
  * A better implementation would use an implicit universe and
  * the kill rule would be computed on-the-fly for each statement. */
-class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
+public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
     SideEffectTester st;
 

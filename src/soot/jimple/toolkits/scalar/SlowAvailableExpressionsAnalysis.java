@@ -38,7 +38,7 @@ import soot.util.*;
  * The current implementation is slow but correct.
  * A better implementation would use an implicit universe and
  * the kill rule would be computed on-the-fly for each statement. */
-class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
+public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
     Map unitToGenerateSet;
     Map unitToPreserveSet;

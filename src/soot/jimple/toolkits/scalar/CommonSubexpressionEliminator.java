@@ -34,6 +34,7 @@ import soot.jimple.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
+import soot.tagkit.*;
 
 /** Runs an available expressions analysis on a body, then
  * eliminates common subexpressions.
@@ -93,6 +94,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             if (s instanceof AssignStmt)
             {
                 Chain availExprs = ae.getAvailableEquivsBefore(s);
+                //G.v().out.println("availExprs: "+availExprs);
                 Value v = (Value)((AssignStmt)s).getRightOp();
                 EquivalentValue ev = new EquivalentValue(v);
 
@@ -100,7 +102,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                 {
                     // now we need to track down the containing stmt.
                     List availPairs = ae.getAvailablePairsBefore(s);
-
+                    //G.v().out.println("availPairs: "+availPairs);
                     Iterator availIt = availPairs.iterator();
                     while (availIt.hasNext())
                     {
@@ -132,6 +134,10 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                             units.insertAfter(copier, origCalc);
 
                             ((AssignStmt)s).setRightOp(l);
+                            copier.addTag(new StringTag("Common sub-expression"));
+                            s.addTag(new StringTag("Common sub-expression"));
+                            //G.v().out.println("added tag to : "+copier);
+                            //G.v().out.println("added tag to : "+s);
                         }
                     }
                 }
