@@ -1,1 +1,1 @@
-JC=javac -d classes
+JC=jikes -d classes
