@@ -32,7 +32,7 @@ public class LaunchCommands {
 	public static final String KEEP_LINE_NUMBER = "keep-line-number";
 	public static final String OUTPUT = "f ";
 	public static final String JIMPLE_OUT = "J";
-	public static final String PROCESS_PATH = "process-path";
+	public static final String PROCESS_PATH = "process-dir";
 	public static final String DAVA = "f dava";
 	public static final String APP = "app ";
 	public static final String OUTPUT_DIR = "d";

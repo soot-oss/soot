@@ -61,18 +61,19 @@ public class SootThread extends Thread {
 		try {
 			
 			soot.G.v().reset();
-			
+			soot.G.v().out = sootOutFinal;
+            
 			Class toRun = Class.forName(getMainClass());
 			Method [] meths = toRun.getDeclaredMethods();
-			Object [] args = new Object [2];
+			Object [] args = new Object [1];
 			args[0] = cmdFinal;
-			args[1] = sootOutFinal;
+			//args[1] = sootOutFinal;
 			for (int i = 0; i < meths.length; i++){
 				if (meths[i].getName().equals("main")){
 					Class [] fields = meths[i].getParameterTypes();
-					if (fields.length == 2){
-						meths[i].invoke(toRun, args);
-					}
+					//if (fields.length == 2){
+					meths[i].invoke(toRun, args);
+					//}
 				}
 			}
 			

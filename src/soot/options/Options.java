@@ -1358,13 +1358,13 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\n"
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (false)", "Produce LinkTags which target source and target methods." );
     
         if( phaseName.equals( "jap.parity" ) )
             return "Phase "+phaseName+":\n"+
                 "\n"
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (false)", "Produce StringTags and ColorTags indicating the parity of a variable." );
     
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+

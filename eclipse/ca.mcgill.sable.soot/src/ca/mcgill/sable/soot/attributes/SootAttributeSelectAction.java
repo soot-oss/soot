@@ -87,6 +87,8 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 			for (int i = 0; i < markers.length; i++){
 				setLineNumber(getDocument().getLineOfOffset(getModel().getMarkerPosition(markers[i]).getOffset()));
+  
+                
 				if (getLineNumber() == markerLine){
 					
 					System.out.println("just before getMarkerLinks()");
@@ -105,10 +107,15 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 						
 						if (getEditor() instanceof JimpleEditor){
 							int topIndex = ((JimpleEditor)getEditor()).getViewer().getTopIndex();
-							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 30 ));
+                            //System.out.println("Marker Offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
+                            //System.out.println("Top Inset: "+((JimpleEditor)getEditor()).getViewer().getTopInset());
+                            //System.out.println("Document First Visible Line Offset: "+getDocument().getLineOffset(topIndex));
+                            //System.out.println("Document Line Offset: "+getDocument().getLineOffset(getLineNumber()+1));
+							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 45 ));
+                            //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
 						}	
 						else {
-							popup.open(new Rectangle(380, 200, 600, 35 ));
+							popup.open(new Rectangle(380, 200, 600, 45 ));
 
 						}
 						

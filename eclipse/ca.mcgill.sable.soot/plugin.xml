@@ -245,14 +245,14 @@
                id="ca.mcgill.sable.soot.launching.action1">
          </action>-->
          <action
-               label="%PopupMenus.action3"
+               label="%PopupMenus.action31"
                class="ca.mcgill.sable.soot.launching.DavaDecompileProjectLauncher"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.launchingaction4">
          </action>
          <action
-               label="%PopupMenus.action2"
+               label="%PopupMenus.action30"
                class="ca.mcgill.sable.soot.launching.SootJimpleProjectLauncher"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"

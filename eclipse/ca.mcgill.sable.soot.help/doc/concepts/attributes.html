@@ -1,0 +1,43 @@
+<html>
+<title>
+Soot - Eclipse Plugin Help
+</title>
+<body>
+<h3>Attributes</h3>
+
+<p>This section describes the use of attributes in the Soot Eclipse Plugin.</p>
+
+<h4>Eclipse Related Attributes and Visual Representations</h4>
+
+<h4>Attributes:</h4>
+
+<b>JimpleLineNumberTag</b><br>
+<p>When xml-attributes option is selected a tag containing the jimple line number is added to the stmt or method automatically (contains start line and end line in case of multi-line stmt).</p>
+
+<b>PositionTag</b><br>
+<p>When xml-attributes option is selected a tag containing the the start position and end position of a stmt is added to the stmt and the start position and end position of a valueBox is added to the valueBox automatically.</p>
+
+<b>ColorTag</b><br>
+<p>This tag must be added manually to a stmt or valueBox. It has six predefined colors red, yellow, blue, green, orange and purple. You may use one of these or define your own using rgb color specification. Keep in mind that dark colors make text difficult to see.</p>
+
+<b>LinkTag</b><br>
+<p>This tag extends StringTag and takes a string for a label. It also needs a host (this is where the link is to) a className (the class that contains the host) and a packageName (the package that contains the class)</p>
+
+<br>
+<hr>
+<br>
+
+
+<h4>Visual Representations:</h4>
+
+When the Soot-Eclipse plugin encounters a String Tag or a Link Tag it generates a hoverHelp tooltip that becomes visible upon mousing over the corresponding line number. This occurs in JavaEditor and JimpleEditor.
+<br><br>
+When the Soot-Eclipse plugin encounters any attributes it places a SootAttribute marker int the vertical ruler of the editor at the corresponding line number. This occurs in JavaEditor and JimpleEditor.
+<br><br>
+When the Soot-Eclipse plugin encounters a Color Tag along with a Position Tag it colors the region specified in the Position Tag with the color specified in the Color Tag. This currently only works in JimpleEditor
+<br><br>
+When the Soot-Eclipse plugin encounters a Link Tag, not only does it display the string (label) as a tooltip but it creates a link that can be accessed by clicking on the marker at the corresponding line in the vertical ruler to the left of the editor. A popup list will popup with a list of links. Clicking on one of the links will move the focus to the link target.
+<br><br>
+<hr>
+</body>
+</html>

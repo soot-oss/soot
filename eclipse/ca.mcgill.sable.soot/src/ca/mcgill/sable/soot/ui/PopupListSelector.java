@@ -134,6 +134,8 @@ public class PopupListSelector {
 		}
 		
 		y = (rect.y * 16) + 85;
+        //y = rect.y - 80;
+        //System.out.println("y: "+y);
 
 	
 	

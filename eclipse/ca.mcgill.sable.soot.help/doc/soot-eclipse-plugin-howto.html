@@ -1,0 +1,106 @@
+<html>
+<title>
+Soot - Eclipse Plugin Usage
+</title>
+<body>
+<h4>Getting Started</h4>
+<p>
+Once you have installed the soot-eclipse plugin and restarted Eclipse you must make the menus available by the following:
+<p>
+<ul>
+<li>Select Window -- Customize Perspective</li>
+<li>Expand Other option in the tree</li>
+<li>Click on soot then OK</li>
+</ul>
+
+<p>
+Now under the Project menu there should be a Soot section (the menu items may be grayed out at this point)
+<p>
+
+<p>
+You must also switch to the Java Perspective in Eclipse:
+<br>
+Select Window -- Open Perspective -- Java
+<br>
+This isn't actually necessary to use Soot, but it is if you want to demonstrat that your Java class runs<br><p>
+
+<p>
+As Soot runs on java classes you must create or import some
+Follow the Eclipse guidelines on creating a Java Project found at www.eclipse.org (look for Online Help section)
+<br>
+One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. So don't do this.
+<p>
+
+<h4>
+Running Soot on all the classes in your project:
+</h4>
+
+<ul>
+<li>First build the classes.<li>
+<li>Then select any java file in the project.<li>
+<li>Then select Project -- Soot and any menu item under</li>
+
+
+<ul>
+<li><h5>There are currently four:</h5></li>
+<li>Create Jimple - creates Jimple files</li>
+<li>Dava Decompile - decompiles</li>
+<li>Soot Options - opens a dialog box containing all Soot options</li> 
+<li>Manage Configurations - opens a dialog where you can create and save, edit, remove and run different configurations of the Soot options</li>
+</ul>
+</ul>
+
+<h4>
+Running Soot on imported folder of classes:
+</h4>
+
+<ul>
+<li>
+Select any class file. Right click and select Soot -- and any menu item (they are similar to the project menu items)</li>
+
+<li>Select the foler. Right click and select Soot -- Dava Decompile (to decompile all the classes in your imported folder of classes)</li>
+</ul>
+
+<h4>
+Running Soot on files:</h4>
+
+<ul><li>
+Select the file. Right click and select Soot -- and any menu item (they ar
+e similar to the project menu items)</li>
+</ul>
+
+<h4>
+Attributes:
+</h4>
+
+<p>
+Selecting Output Options -- Output Format -- Jimple File
+and under Jimple Annotations Pack: <br>
+<br>
+Null Pointer Check Options<br>
+	-- unselect Disabled <br>
+	-- select Only Array Ref<br>
+<br>
+Array Bounds Check Options<br>
+	-- unselect Disabled<br>
+	-- select With All<br>
+<p>
+
+<p>
+Running this configuration causes a bunch of attribute tags to be generated.
+After running open a generated Jimple File and there should be markers in the file indicating attributes.
+Mouse over the line in the editor with a marker and you should see a tooltip with the attribute.
+Also these attributes tooltips should appear in the original Java source file.
+<p>
+
+<h4>Using a Different Main Class<h4>
+<a href="different-main.html">documentation and example</a>
+
+<h4>Note:</h4>
+<p>
+One other note: For long-running memory intensive Soot configurations Eclipse may run out of memory. To handle this start Eclipse with:<br>
+eclipse -vmargs -Xmx300M
+</p>
+
+</body>
+</html>

@@ -2586,8 +2586,8 @@ produced for it, in order to keep the size of the tags reasonable.
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Produce LinkTags which target source and target methods.</short_desc> 
+						<long_desc>Produces LinkTags based on the call graph. These tags and are used in the Eclipse plugin to produce linked popup lists which indicate the source and target methods of the statement. When a link is selected in the popup list the cursor repositions to the indicated method.</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -2597,8 +2597,8 @@ produced for it, in order to keep the size of the tags reasonable.
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Produce StringTags and ColorTags indicating the parity of a variable.</short_desc>
+						<long_desc>Produces StringTags and ColorTags indicating the parity of a variable (even, odd, top, bottom). These tags are used in the Eclipse plugin to show tooltips about parity information and to highlight the background tect color of the variables based on their parity. For example; even variables (eg: x = 2) are colored yellow.</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
