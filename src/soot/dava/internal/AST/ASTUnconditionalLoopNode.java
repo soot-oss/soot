@@ -2,7 +2,6 @@ package soot.dava.internal.AST;
 
 import java.util.*;
 import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
 
 public class ASTUnconditionalLoopNode extends ASTLabeledNode
 {

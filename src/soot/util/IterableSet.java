@@ -15,8 +15,30 @@ public class IterableSet extends HashChain implements Set
 	super();
     }
 
+    public boolean add( Object o)
+    {
+	if (o == null)
+	    throw new IllegalArgumentException( "Cannot add \"null\" to an IterableSet.");
+
+	if (contains( o))
+	    return false;
+
+	return super.add( o);
+    }
+
+    public boolean remove( Object o)
+    {
+	if ((o == null) || (contains( o) == false))
+	    return false;
+
+	return super.remove( o);
+    }
+    
     public boolean equals( Object o)
     {
+	if (o == null)
+	    return false;
+
 	if (this == o)
 	    return true;
 
@@ -45,6 +67,9 @@ public class IterableSet extends HashChain implements Set
 
     public boolean isSubsetOf( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
+
 	if (size() > other.size())
 	    return false;
 
@@ -58,6 +83,9 @@ public class IterableSet extends HashChain implements Set
     
     public boolean isSupersetOf( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
+
 	if (size() < other.size())
 	    return false;
 
@@ -71,6 +99,9 @@ public class IterableSet extends HashChain implements Set
 
     public boolean isStrictSubsetOf( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
+
 	if (size() >= other.size())
 	    return false;
 
@@ -79,6 +110,9 @@ public class IterableSet extends HashChain implements Set
     
     public boolean isStrictSupersetOf( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
+
 	if (size() <= other.size())
 	    return false;
 
@@ -88,6 +122,9 @@ public class IterableSet extends HashChain implements Set
 
     public boolean intersects( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set intersect an IterableSet with \"null\".");
+
 	if (other.size() < size()) {
 	    Iterator it = other.iterator();
 	    while (it.hasNext())
@@ -100,18 +137,22 @@ public class IterableSet extends HashChain implements Set
 		if (other.contains( it.next()))
 		    return true;
 	}
+
 	return false;
     }
 
     public IterableSet intersection( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set intersect an IterableSet with \"null\".");
+
 	IterableSet c = new IterableSet();
 
 	if (other.size() < size()) {
 	    Iterator it = other.iterator();
 	    while (it.hasNext()) {
 		Object o = it.next();
-
+		
 		if (contains( o))
 		    c.add( o);
 	    }
@@ -130,16 +171,13 @@ public class IterableSet extends HashChain implements Set
 
     public IterableSet union( IterableSet other)
     {
+	if (other == null)
+	    throw new IllegalArgumentException( "Cannot set union an IterableSet with \"null\".");
+
 	IterableSet c = new IterableSet();
+
 	c.addAll( this);
-
-	Iterator it = other.iterator();
-	while (it.hasNext()) {
-	    Object o = it.next();
-
-	    if (c.contains( o) == false)
-		c.add( o);
-	}
+	c.addAll( other);
 
 	return c;
     }

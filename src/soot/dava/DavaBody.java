@@ -172,12 +172,12 @@ public class DavaBody extends Body
 	do {
 	    ASTAnalysis.modified = false;
 
-	    AST.perform( UselessTryRemover.v());
+	    AST.perform_Analysis( UselessTryRemover.v());
 	    // AST.perform( UselessLabeledBlockRemover.v());
 	    // AST.perform( UselessBreakRemover.v());
 
 	} while (ASTAnalysis.modified);
-	
+
 	Dava.v().log( "end method " + body.getMethod().toString());
     }
 
@@ -373,10 +373,6 @@ public class DavaBody extends Body
 	 */
 
 	{
-	    boolean shortClassNames = Main.getShortClassNames();
-	    if (shortClassNames)
-		Main.setShortClassNames( false);
-	    
 	    Iterator it = getLocals().iterator();
 	    while (it.hasNext()) {
 		Type t = ((Local) it.next()).getType();
@@ -384,8 +380,7 @@ public class DavaBody extends Body
 		if (t instanceof RefType) {
 		    RefType rt = (RefType) t;
 
-		    addPackage( rt.getSootClass().getPackageName());
-		    rt.getSootClass().getShortName();
+		    addPackage( rt.getSootClass().getJavaPackageName());
 		}
 	    }
 
@@ -428,8 +423,6 @@ public class DavaBody extends Body
 		else if (s instanceof InvokeStmt)
 		    javafy( ((InvokeStmt) s).getInvokeExprBox());
 	    }
-
-	    Main.setShortClassNames( shortClassNames);
 	}
 
 
@@ -557,7 +550,7 @@ public class DavaBody extends Body
 	Ref r = (Ref) vb.getValue();
 
 	if (r instanceof StaticFieldRef)
-	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getName()));
+	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), getMethod().getDeclaringClass().getFullName()));
 
 	else if (r instanceof ArrayRef) {
 	    ArrayRef ar = (ArrayRef) r;
@@ -568,6 +561,8 @@ public class DavaBody extends Body
 
 	else if (r instanceof InstanceFieldRef) {
 	    InstanceFieldRef ifr = (InstanceFieldRef) r;
+
+	    javafy( ifr.getBaseBox());
 
 	    vb.setValue( new DInstanceFieldRef( ifr.getBase(), ifr.getField(), thisLocals));
 	}
@@ -605,14 +600,20 @@ public class DavaBody extends Body
 		javafy( leftOpBox);
 		leftOp = leftOpBox.getValue();
 
-		rightOpBox.setValue( DIntConstant.v( ((IntConstant) rightOp).value, leftOp.getType()));
+		if (boe instanceof ConditionExpr)
+		    rightOpBox.setValue( DIntConstant.v( ((IntConstant) rightOp).value, leftOp.getType()));
+		else
+		    rightOpBox.setValue( DIntConstant.v( ((IntConstant) rightOp).value, null));
 	    }
 	}
 	else if (leftOp instanceof IntConstant) {
 	    javafy( rightOpBox);
 	    rightOp = rightOpBox.getValue();
 
-	    leftOpBox.setValue( DIntConstant.v( ((IntConstant) leftOp).value, rightOp.getType()));
+	    if (boe instanceof ConditionExpr)
+		leftOpBox.setValue( DIntConstant.v( ((IntConstant) leftOp).value, rightOp.getType()));
+	    else 
+		leftOpBox.setValue( DIntConstant.v( ((IntConstant) leftOp).value, null));
 	}
 	else {
 	    javafy( rightOpBox);
@@ -680,8 +681,7 @@ public class DavaBody extends Body
     {
 	InvokeExpr ie = (InvokeExpr) vb.getValue();
 
-	addPackage( ie.getMethod().getDeclaringClass().getPackageName());
-	ie.getMethod().getDeclaringClass().getShortName();
+	addPackage( ie.getMethod().getDeclaringClass().getJavaPackageName());
 
 	for (int i=0; i<ie.getArgCount(); i++) {
 	    Value arg = ie.getArg( i);
@@ -725,8 +725,7 @@ public class DavaBody extends Body
 		NewInvokeExpr nie = (NewInvokeExpr) sie;
 		
 		RefType rt = nie.getBaseType();
-		addPackage( rt.getSootClass().getPackageName());
-		rt.getSootClass().getShortName();
+		addPackage( rt.getSootClass().getJavaPackageName());
 		
 		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethod(), nie.getArgs()));
 	    }
@@ -743,8 +742,7 @@ public class DavaBody extends Body
     {
 	NewExpr ne = (NewExpr) vb.getValue();
 
-	addPackage( ne.getBaseType().getSootClass().getPackageName());
-	ne.getBaseType().getSootClass().getShortName();
+	addPackage( ne.getBaseType().getSootClass().getJavaPackageName());
     }
 
     public void addPackage( String newPackage)

@@ -20,6 +20,11 @@ public class ASTMethodNode extends ASTNode
 	return new ASTMethodNode( body);
     }
 
+    public void perform_Analysis( ASTAnalysis a)
+    {
+	perform_AnalysisOnSubBodies( a);
+    }
+
     public String toString( Map stmtToName, String indentation)
     {
 	return body_toString( stmtToName, indentation, body);

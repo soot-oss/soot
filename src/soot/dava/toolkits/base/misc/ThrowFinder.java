@@ -32,7 +32,7 @@ public class ThrowFinder
 	    invokeGraph = ClassHierarchyAnalysis.newInvokeGraph();
 	}
 	catch (RuntimeException re) {
-	    return; // shh -- most likely a phantom class problem ... but will have already been reported ... 
+	    return; // don't die ... most likely a phantom class problem ... will have already been reported ... 
 	}	
 
 	IterableSet worklist = new IterableSet();
@@ -66,46 +66,44 @@ public class ThrowFinder
 	while (classIt.hasNext()) {
 	    SootClass c = (SootClass) classIt.next();
 	    
-	    IterableSet superClasses = null;
-	    if ((superClasses = (IterableSet) superClassSet.get( c)) == null) {
+	    IterableSet superClasses =  (IterableSet) superClassSet.get( c);
+	    if (superClasses == null) {
 		superClasses = new IterableSet();
 		superClassSet.put( c, superClasses);
+	    }
+
+	    IterableSet subClasses = (IterableSet) subClassSet.get( c);
+	    if (subClasses == null) {
+		subClasses = new IterableSet();
+		subClassSet.put( c, subClasses);
 	    }
 
 	    if (c.hasSuperclass()) {
 		SootClass superClass = c.getSuperclass();
 
-		IterableSet subClasses = null;
-		if ((subClasses = (IterableSet) subClassSet.get( superClass)) == null) {
-		    subClasses = new IterableSet();
-		    subClassSet.put( superClass, subClasses);
+		IterableSet superClassSubClasses = (IterableSet) subClassSet.get( superClass);
+		if (superClassSubClasses == null) {
+		    superClassSubClasses = new IterableSet();
+		    subClassSet.put( superClass, superClassSubClasses);
 		}
-
-		if (subClasses.contains( c) == false)
-		    subClasses.add( c);
-
-		if ((applicationClasses.contains( superClass)) && (superClasses.contains( superClass) == false))
-		    superClasses.add( superClass);
+		superClassSubClasses.add( c);
+		superClasses.add( superClass);
 	    }
 
 	    Iterator interfaceIt = c.getInterfaces().iterator();
 	    while (interfaceIt.hasNext()) {
 		SootClass interfaceClass = (SootClass) interfaceIt.next();
 
-		IterableSet subClasses = null;
-		if ((subClasses = (IterableSet) subClassSet.get( interfaceClass)) == null) {
-		    subClasses = new IterableSet();
-		    subClassSet.put( interfaceClass, subClasses);
+		IterableSet interfaceClassSubClasses = (IterableSet) subClassSet.get( interfaceClass);
+		if (interfaceClassSubClasses == null) {
+		    interfaceClassSubClasses = new IterableSet();
+		    subClassSet.put( interfaceClass, interfaceClassSubClasses);
 		}
-
-		if (subClasses.contains( c) == false)
-		    subClasses.add( c);
-
-		if ((applicationClasses.contains( interfaceClass)) && (superClasses.contains( interfaceClass) == false))
-		    superClasses.add( interfaceClass);
+		interfaceClassSubClasses.add( c);
+		superClasses.add( interfaceClass);
 	    }
 	}
-
+	
 	// Build the subMethod and superMethod mappings.
 	HashMap agreementMethodSet = new HashMap();
 
@@ -167,8 +165,8 @@ public class ThrowFinder
 	    }
 
 	    // While we're at it, put the superMethods and the subMethods in the agreementMethodSet.
-	    find_OtherMethods( m, agreementMethodSet, subClassSet);
-	    find_OtherMethods( m, agreementMethodSet, superClassSet);
+	    find_OtherMethods( m, agreementMethodSet, subClassSet, applicationClasses);
+	    find_OtherMethods( m, agreementMethodSet, superClassSet, applicationClasses);
 	}
 
 	// Perform worklist algorithm to propegate the throws information.
@@ -241,18 +239,22 @@ public class ThrowFinder
 	System.out.flush();
     }
 
-    private void find_OtherMethods( SootMethod startingMethod, HashMap methodMapping, HashMap classMapping)
-    {
-	IterableSet worklist = (IterableSet) classMapping.get( startingMethod.getDeclaringClass());
 
-	if (worklist == null) 
-	    return;
+    private void find_OtherMethods( SootMethod startingMethod, HashMap methodMapping, HashMap classMapping, HashSet applicationClasses)
+    {
+	IterableSet worklist = (IterableSet) ((IterableSet) classMapping.get( startingMethod.getDeclaringClass())).clone();
+
+	HashSet touchSet = new HashSet();
+	touchSet.addAll( worklist);
 
 	String signature = startingMethod.getSubSignature();
 
 	while (worklist.isEmpty() == false) {
 	    SootClass currentClass = (SootClass) worklist.getFirst();
 	    worklist.removeFirst();
+
+	    if (applicationClasses.contains( currentClass) == false)
+		continue;
 
 	    if (currentClass.declaresMethod( signature)) {
 		IterableSet otherMethods = (IterableSet) methodMapping.get( startingMethod);
@@ -261,10 +263,7 @@ public class ThrowFinder
 		    methodMapping.put( startingMethod, otherMethods);
 		}
 
-		SootMethod otherMethod = currentClass.getMethod( signature);
-
-		if (otherMethods.contains( otherMethod) == false)
-		    otherMethods.add( otherMethod);
+		otherMethods.add( currentClass.getMethod( signature));
 	    }
 
 	    else {
@@ -274,8 +273,10 @@ public class ThrowFinder
 		    while (ocit.hasNext()) {
 			SootClass otherClass = (SootClass) ocit.next();
 
-			if (worklist.contains( otherClass) == false)
+			if (touchSet.contains( otherClass) == false) {
 			    worklist.addLast( otherClass);
+			    touchSet.add( otherClass);
+			}
 		    }
 		}
 	    }
@@ -341,10 +342,11 @@ public class ThrowFinder
     {
 	SootClass 
 	    thrownException = c,
-	    runtimeException = Scene.v().getSootClass( "java.lang.RuntimeException");
+	    runtimeException = Scene.v().getSootClass( "java.lang.RuntimeException"),
+	    error = Scene.v().getSootClass( "java.lang.Error");
 	
 	while (true) {
-	    if (thrownException == runtimeException)
+	    if ((thrownException == runtimeException) || (thrownException == error))
 		return true;
 	    
 	    if (thrownException.hasSuperclass() == false)

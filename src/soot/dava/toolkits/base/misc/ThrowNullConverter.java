@@ -13,12 +13,7 @@ public class ThrowNullConverter
 {
     private ThrowNullConverter() 
     {
-	String npe = "soot.NullPointerException";
-
-	if (Scene.v().getClasses().contains( npe) == false)
-	    Scene.v().addClass( new SootClass( npe));
-
-	npeRef = RefType.v( npe);
+	npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
     }
     
     private static ThrowNullConverter instance = new ThrowNullConverter();
@@ -28,7 +23,6 @@ public class ThrowNullConverter
 	return instance;
     }
 
-    private SootClass nullPointerException;
     private RefType npeRef;
 
     public void convert( DavaBody body)

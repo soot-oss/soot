@@ -27,7 +27,7 @@ public class DVirtualInvokeExpr extends GVirtualInvokeExpr
 	    StringBuffer b = new StringBuffer();
 
 	    b.append( "((");
-	    b.append( getMethod().getDeclaringClass().getShortName());
+	    b.append( getMethod().getDeclaringClass().getJavaStyleName());
 	    b.append( ") ");
 	    
 	    String baseStr = ((ToBriefString) getBase()).toBriefString();

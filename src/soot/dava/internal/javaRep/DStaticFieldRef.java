@@ -17,13 +17,13 @@ public class DStaticFieldRef extends StaticFieldRef
 
     public String toString()
     {
-	return toBriefString();
+	return this.toBriefString();
     }
 
     public DStaticFieldRef( SootField field, String myClassName)
     {
 	super( field);
-	supressDeclaringClass = myClassName.equals( getField().getDeclaringClass().getName());
+	supressDeclaringClass = myClassName.equals( getField().getDeclaringClass().getFullName());
     }
 
     public DStaticFieldRef( SootField field, boolean supressDeclaringClass)

@@ -17,25 +17,15 @@ public class MonitorConverter
 	return instance;
     }
 
-    private SootClass davaMonitor;
-    private SootMethod v, enter, exit;
+    private SootMethod v, enter, exit; 
 
     private MonitorConverter()
     {
-	SootClass davaMonitor = new SootClass( "DavaMonitor");
+	SootClass davaMonitor = Scene.v().loadClassAndSupport( "soot.dava.toolkits.base.DavaMonitor.DavaMonitor");
 
-	ArrayList parameterTypes = new ArrayList();
-	parameterTypes.add( RefType.v());
-
-
-	SootMethod 
-	    v     = new SootMethod( "v", new ArrayList(), RefType.v()),
-	    enter = new SootMethod( "enter", parameterTypes, VoidType.v()),
-	    exit  = new SootMethod( "exit", parameterTypes, VoidType.v());
-
-	davaMonitor.addMethod( v);
-	davaMonitor.addMethod( enter);
-	davaMonitor.addMethod( exit);
+	v = davaMonitor.getMethodByName( "v");
+	enter = davaMonitor.getMethodByName( "enter");
+	exit = davaMonitor.getMethodByName( "exit");
     }
 
     public void convert( DavaBody body)
@@ -45,19 +35,15 @@ public class MonitorConverter
 	    AugmentedStmt mas = (AugmentedStmt) mfit.next();
 	    MonitorStmt ms = (MonitorStmt) mas.get_Stmt();
 
-	    body.addPackage( "soot.dava.toolkits.base.misc");
-
-	    ArrayList args = new ArrayList();
-	    args.add( ms.getOp());
+	    body.addPackage( "soot.dava.toolkits.base.DavaMonitor");
 	    
-	    GInvokeStmt gis = null;
+	    ArrayList arg = new ArrayList();
+	    arg.add( ms.getOp());
 
 	    if (ms instanceof EnterMonitorStmt)
-		gis = new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), enter, args));
-	    else 
-		gis = new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), exit, args));
-	
-	    mas.set_Stmt( gis);
+		mas.set_Stmt( new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), enter, arg)));
+	    else
+		mas.set_Stmt( new GInvokeStmt( new GVirtualInvokeExpr( new GStaticInvokeExpr( v, new ArrayList()), exit, arg)));
 	}
     }
 }

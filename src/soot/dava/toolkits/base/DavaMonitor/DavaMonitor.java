@@ -5,17 +5,16 @@ import java.util.LinkedList;
 
 public class DavaMonitor
 {
-    private static DavaMonitor instance;
-    private static HashMap ref, lockTable;
-    private static LinkedList q;
-    private DavaMonitor() {}
+    private static DavaMonitor instance = new DavaMonitor();
 
-    static
+    private HashMap ref, lockTable;
+    private LinkedList q;
+
+    private DavaMonitor() 
     {
-	instance = new DavaMonitor();
 	ref = new HashMap( 1, 0.7f);
 	lockTable = new HashMap( 1, 0.7f);
-	q = new LinkedList();
+	q = new LinkedList();	
     }
 
     public static DavaMonitor v() { return instance; }

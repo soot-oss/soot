@@ -511,7 +511,7 @@ public class SootMethod extends AbstractHost implements ClassMember
      */
     public String getDeclaration()
     {
-	if ((Main.getShortClassNames()) && (getName().equals( staticInitializerName)))
+	if ((Main.getJavaStyle()) && (getName().equals( staticInitializerName)))
 	    return "static";
 
         StringBuffer buffer = new StringBuffer();
@@ -529,8 +529,8 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         // return type + name
 
-	if ((Main.getShortClassNames()) && (getName().equals( constructorName)))
-	    buffer.append( getDeclaringClass().getName());
+	if ((Main.getJavaStyle()) && (getName().equals( constructorName)))
+	    buffer.append( getDeclaringClass().getShortJavaStyleName());
 	else {
 	    Type t = this.getReturnType();
 
@@ -549,7 +549,7 @@ public class SootMethod extends AbstractHost implements ClassMember
 	    buffer.append( t);
 	    buffer.append( " ");
 
-	    if (Main.getShortClassNames()) {
+	    if (Main.getJavaStyle()) {
 		if (hasActiveBody()) 
 		    buffer.append( ((DavaBody) getActiveBody()).get_ParamMap().get( new Integer( count++)));
 		else {

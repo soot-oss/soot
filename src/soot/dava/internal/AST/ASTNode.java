@@ -6,10 +6,6 @@ import soot.dava.toolkits.base.AST.*;
 
 public abstract class ASTNode extends AbstractUnit
 {
-    public static final int 
-	PREFIX_TRAVERSAL  = 0,
-	POSTFIX_TRAVERSAL = 1;
-
     public static final String 
 	TAB     = "    ",
 	NEWLINE = "\n";
@@ -43,37 +39,30 @@ public abstract class ASTNode extends AbstractUnit
 	return b.toString();	
     }
 
-    public void perform( ASTAnalysis analysis)
-    {
-	perform( analysis, POSTFIX_TRAVERSAL);
-    }
-
-    public void perform( ASTAnalysis analysis, int traversalOrder)
-    {
-	walk( analysis, traversalOrder);
-    }
-
     public List get_SubBodies()
     {
 	return subBodies;
     }
 
+    public abstract void perform_Analysis( ASTAnalysis a);
 
-
-    private void walk( ASTAnalysis analysis, int traversalOrder)
+    protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
     {
-	if (traversalOrder == PREFIX_TRAVERSAL)
-	    analysis.analyse( this);
-
 	Iterator sbit = subBodies.iterator();
 	while (sbit.hasNext()) {
-	    Iterator it = ((List) sbit.next()).iterator();
-	    while (it.hasNext())
-		((ASTNode) it.next()).walk( analysis, traversalOrder);
-	}
+	    Object subBody = sbit.next();
+	    Iterator it = null;
 
-	if (traversalOrder != PREFIX_TRAVERSAL)
-	    analysis.analyse( this);
+	    if (this instanceof ASTTryNode)
+		it = ((List) ((ASTTryNode.container) subBody).o).iterator();
+	    else 
+		it = ((List) subBody).iterator();
+	    
+	    while (it.hasNext())
+		((ASTNode) it.next()).perform_Analysis( a);
+	}
+	
+	a.analyseASTNode( this);
     }
 
     public boolean fallsThrough()

@@ -107,7 +107,7 @@ public class RefType extends BaseType implements ToBriefString, Comparable
 
     public String toString()
     {
-	if (Main.getShortClassNames())
+	if (Main.getJavaStyle())
 	    return toBriefString();
 	else
 	    return Scene.v().quotedNameOf(className);
@@ -115,7 +115,7 @@ public class RefType extends BaseType implements ToBriefString, Comparable
 
     public String toBriefString()
     {
-	if (Main.getShortClassNames())
+	if (Main.getJavaStyle())
 	    return toVeryBriefString();
 	else
 	    return className;
@@ -123,7 +123,7 @@ public class RefType extends BaseType implements ToBriefString, Comparable
 
     public String toVeryBriefString()
     {
-	return Scene.v().getSootClass( className).getShortName();
+	return Scene.v().getSootClass( className).getJavaStyleName();
     }
 
     public int hashCode()

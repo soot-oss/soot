@@ -1,6 +1,7 @@
 package soot.dava.internal.AST;
 
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.*;
 
 public abstract class ASTLabeledNode extends ASTNode
 {
@@ -21,6 +22,11 @@ public abstract class ASTLabeledNode extends ASTNode
     public void set_Label( SETNodeLabel label)
     {
 	this.label = label;
+    }
+
+    public void perform_Analysis( ASTAnalysis a)
+    {
+	perform_AnalysisOnSubBodies( a);
     }
 
     public String label_toString( String indentation)

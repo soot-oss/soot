@@ -29,11 +29,28 @@ public class ASTSwitchNode extends ASTLabeledNode
 	}
     }
 
+    public Value get_Key()
+    {
+	return key;
+    }
 
     public Object clone()
     {
 	return new ASTSwitchNode( get_Label(), key, indexList, index2BodyList);
     }
+
+    public void perform_Analysis( ASTAnalysis a)
+    {
+	ASTWalker.v().walk_value( a, key);
+
+	if (a instanceof TryContentsFinder) {
+	    TryContentsFinder tcf = (TryContentsFinder) a;
+	    tcf.v().add_ExceptionSet( this, tcf.v().remove_CurExceptionSet());
+	}
+  
+	perform_AnalysisOnSubBodies( a);
+    }
+
 
     public String toString( Map stmtToName, String indentation)
     {

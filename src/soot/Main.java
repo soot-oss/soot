@@ -134,10 +134,7 @@ public class Main implements Runnable
             str = ".class";
             break;
         case DAVA:
-	    if (withPackagedOutput)
-		str = ".java";
-	    else
-		str = ".dava";
+	    str = ".java";
             break;
         case JASMIN:
             str = ".jasmin";
@@ -150,111 +147,64 @@ public class Main implements Runnable
 
     public static String getFileNameFor( SootClass c, int rep)
     {
-	String name = c.getName();
-
-	StringBuffer 
-	    path  = new StringBuffer(),
-	    fname = new StringBuffer();
-
-        String pathStr = null;
-
-	if (outputDir != null)
-	    path.append( outputDir);
-
-	if ((path.length() > 0) && (path.charAt( path.length() - 1) != fileSeparator))
-	    path.append( fileSeparator);
+	StringBuffer b = new StringBuffer();
 	
-	if (getWithPackagedOutput()) {
+	if (outputDir != null)
+	    b.append( outputDir);
+	
+	if ((b.length() > 0) && (b.charAt( b.length() - 1) != fileSeparator))
+	    b.append( fileSeparator);
+	
+	if (rep != DAVA) {
+	    b.append( c.getName());
+	    b.append( getExtensionFor( rep));
 
-	    int index = name.lastIndexOf( '.');
+	    return b.toString();
+	}
+
+	b.append( "dava");
+	b.append( fileSeparator);
+	{
+	    String classPath = b.toString() + "classes";
+	    File dir = new File( classPath);
 	    
-	    if (index == (name.length() - 1))
-		throw new RuntimeException( "Malformed class name for packaging: " + name);
-
-	    switch(rep) {
-	    case BAF:
-	    case B:
-		path.append( "baf");
-		break;
-		
-	    case JIMPLE: 
-	    case JIMP:
-	    case NJIMPLE:
-		path.append( "jimple");
-		break;                        
-		
-	    case GRIMP:
-	    case GRIMPLE:
-		path.append( "grimp");
-		break;
-		
-	    case CLASS:
-		path.append( "sootclass");
-		break;
-		
-	    case DAVA:
-		path.append( "dava");
-		path.append( fileSeparator);
-		{
-		    String classPath = path.toString() + "classes";
-		    File dir = new File( classPath);
-		    
-		    if (!dir.exists())
-			try {
-			    dir.mkdirs();
-			}
-			catch( SecurityException se) {
-			    System.err.println( "Unable to create " + classPath);
-			    se.printStackTrace();
-			    System.exit(0);
-			}
+	    if (!dir.exists())
+		try {
+		    dir.mkdirs();
 		}
-		path.append( "src");
-		break;
-		
-	    case JASMIN:
-		path.append( "jasmin");
-		break;
-		
-	    default:
-		throw new RuntimeException();
-	    }
-
-	    path.append( fileSeparator);
-
-	    if (index > 0) {
-		path.append( c.getPackageName().replace( '.', fileSeparator));
-		path.append( fileSeparator);
-	    }
-
-	    pathStr = path.toString();
-
-	    fname.append( pathStr + c.getShortName());
-	}
-	else {
-	    pathStr = path.toString();
-
-	    fname.append( pathStr);
-	    fname.append( c.getName());
+		catch( SecurityException se) {
+		    System.err.println( "Unable to create " + classPath);
+		    System.exit(0);
+		}
 	}
 
-	fname.append( getExtensionFor( targetExtension));
+	b.append( "src");
+	b.append( fileSeparator);
+	
+	String fixedPackageName = c.getJavaPackageName();
+	if (fixedPackageName.equals( "") == false) {
+	    b.append( fixedPackageName.replace( '.', fileSeparator));
+	    b.append( fileSeparator);
+	}
 
-	if (path.length() > 0) {
-	    File dir = new File( pathStr);
+	{
+	    String path = b.toString();
+	    File dir = new File( path);
 
 	    if (!dir.exists())
 		try {
 		    dir.mkdirs();
 		}
 		catch( SecurityException se) {
-		    System.err.println( "Unable to create " + pathStr);
-		    se.printStackTrace();
+		    System.err.println( "Unable to create " + path);
 		    System.exit(0);
 		}
 	}
 
-	return fname.toString();
+	b.append( c.getShortJavaStyleName());
+	b.append( ".java");
+
+	return b.toString();
     }
 
 
@@ -279,7 +229,7 @@ public class Main implements Runnable
     static private boolean produceXmlOutput = false;
     static private boolean withPackagedOutput = false;
     static private boolean usedPackagedOutputSwitch = false;
-    static private boolean useShortClassNames = false;
+    static private boolean useJavaStyle = false;
 
     static public int totalFlowNodes, totalFlowComputations;
 
@@ -466,14 +416,14 @@ public class Main implements Runnable
         return isApplication;
     }
 
-    public static void setShortClassNames( boolean val)
+    public static void setJavaStyle( boolean val)
     {
-	useShortClassNames = val;
+	useJavaStyle = val;
     }
 
-    public static boolean getShortClassNames()
+    public static boolean getJavaStyle()
     {
-	return useShortClassNames;
+	return useJavaStyle;
     }
 
 
@@ -691,7 +641,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.36)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.37)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -848,16 +798,6 @@ public class Main implements Runnable
 				
 	while (cl.contains("t") || cl.contains("time"))
 	    setProfiling(true);
-
-	while (cl.contains("no-packages")) {
-	    setWithPackagedOutput(false);
-	    usedPackagedOutputSwitch = true;
-	}
-
-	while (cl.contains("with-packages")) {
-	    setWithPackagedOutput(true);
-	    usedPackagedOutputSwitch = true;
-	}
 
 	while (cl.contains("subtract-gc"))
 	    setSubstractingGC(true);
@@ -1024,8 +964,6 @@ public class Main implements Runnable
 	addGetoptOption('A', "annotation", LongOpt.REQUIRED_ARGUMENT);
 	addGetoptOption(-21, "version", LongOpt.NO_ARGUMENT);
 	addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-22, "no-packages", LongOpt.NO_ARGUMENT);
-	addGetoptOption(-23, "with-packages", LongOpt.NO_ARGUMENT);
 
 	// options handled elsewhere
 	addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
@@ -1269,14 +1207,6 @@ public class Main implements Runnable
 		setOptimizingWhole(true);
 	    else if(arg.equals("-t") || arg.equals("--time"))
 		setProfiling(true);
-	    else if(arg.equals("--no-packages")) {
-		setWithPackagedOutput( false); 
-		usedPackagedOutputSwitch = true;
-	    }
-	    else if(arg.equals("--with-packages")) {
-		setWithPackagedOutput( true);
-		usedPackagedOutputSwitch = true;
-	    }
 	    else if(arg.equals("--subtract-gc"))
 		setSubstractingGC(true);
 	    else if(arg.equals("-v") || arg.equals("--verbose"))
@@ -1709,8 +1639,11 @@ public class Main implements Runnable
 				
 				// System.gc();
 
-	    if ((targetExtension == DAVA) || (finalRep == DAVA))
+	    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
 		ThrowFinder.v().find();
+		PackageNamer.v().fixNames();
+	    }
+
 
 	    // Handle each class individually
 	    {
@@ -1919,12 +1852,8 @@ public class Main implements Runnable
 	    }
 	}
 
-	boolean buildPackages = getWithPackagedOutput();
-	if ((produceDava) && (!usedPackagedOutputSwitch))
-	    setWithPackagedOutput( true);
-
         String fileName = getFileNameFor( c, targetExtension);
-      
+	
         if(targetExtension != CLASS)
 	    {
 		try {
@@ -1936,8 +1865,6 @@ public class Main implements Runnable
 			System.out.println("Cannot output file " + fileName);
 		    }
 	    }
-	else if ((getWithPackagedOutput()) && (outputDir.equals( "")))
-	    outputDir = "sootified";
 
 
 	HashChain newMethods = new HashChain();
@@ -2008,8 +1935,7 @@ public class Main implements Runnable
 	    }
         }
 
-	 if ((produceDava) && (getWithPackagedOutput()))
-	    setShortClassNames( true);
+	setJavaStyle( produceDava);
 
         switch(targetExtension) {
         case JASMIN:
@@ -2034,7 +1960,7 @@ public class Main implements Runnable
             c.printJimpleStyleTo(writerOut, 0);
             break;
         case DAVA:
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS, true);
+            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
             break;
         case GRIMP:
             c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
@@ -2046,7 +1972,7 @@ public class Main implements Runnable
             throw new RuntimeException();
         }
 
-	setShortClassNames( false);
+	setJavaStyle( false);
         
         if(targetExtension != CLASS)
 	    {
@@ -2072,7 +1998,6 @@ public class Main implements Runnable
 			m.releaseActiveBody();
 		}
         }
-	setWithPackagedOutput( buildPackages);
     }
     
     public static double truncatedOf(double d, int numDigits)

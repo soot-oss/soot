@@ -64,13 +64,9 @@ public class Scene  //extends AbstractHost
     StmtPrinter jimpleStmtPrinter = soot.jimple.DefaultStmtPrinter.v();
     LocalPrinter localPrinter = soot.jimple.DefaultLocalPrinter.v();
 
-    private HashSet forbiddenNames;
-    private HashMap fcnMap;
-    
     /**
         Resets this scene to zero.
-        
-     */    
+    */    
     public void reset()
     {
         Scene.constant = new Scene();
@@ -128,64 +124,9 @@ public class Scene  //extends AbstractHost
         return sootClassPath;
     }
 
-    public boolean isForbiddenName( String s, Object c)
-    {
-	if (forbiddenNames.contains( s) == false) {
-	    forbiddenNames.add( s);
-	    fcnMap.put( s, c);
-	    return false;
-	}
-
-	if (c == null)
-	    return true;
-
-	else if (c instanceof SootClass) {
-	    if (c == fcnMap.get( s))
-		return false;
-	}
-
-	else if (c instanceof String) {
-	    Object o = fcnMap.get( s);
-	    
-	    if ((o != null) && (o instanceof String) && (((String) c).equals( (String) o)))
-		return false;
-	}
-
-	else
-	    throw new RuntimeException( "Unknown type for dynamic renaming: " + c.getClass());
-
-	return true;
-    }
-
-    private void initForbiddenNames()
-    {
-	forbiddenNames = new HashSet();
-	fcnMap = new HashMap();
-
-	String[] names =
-	{
-	    "abstract",	    "default",	    "if",            "private",	    "this",	    "boolean",
-	    "do",	    "implements",	    "protected",	    "throw",	    "break",
-	    "double",	    "import",	    "public",	    "throws",	    "byte",	    "else",
-	    "instanceof",	    "return",	    "transient",	    "case",	    "extends",
-	    "int",	    "short",	    "try",	    "catch",	    "final",	    "interface",
-	    "static",	    "void",             "char",	    "finally",	    "long",	    "strictfp",
-	    "volatile",	    "class",	    "float",	    "native",	    "super",	    "while",
-	    "const",	    "for",	    "new",	    "switch",	    "continue",	    "goto",
-	    "package",	    "synchronized",	    "true",	    "false",	    "null"
-	};
-
-	for (int i=0; i<names.length; i++) {
-	    forbiddenNames.add( names[i]);
-	    fcnMap.put( names[i], null);
-	}
-    }
-
     private Scene()
     {
         Pack p;
-
-	initForbiddenNames();
 
         // Jimple transformation pack
         packNameToPack.put("jtp", p = new Pack());

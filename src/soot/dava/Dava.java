@@ -3,6 +3,7 @@ package soot.dava;
 import soot.*;
 import java.io.*;
 import java.util.*;
+import soot.util.*;
 import soot.jimple.*;
 
 
@@ -13,10 +14,22 @@ public class Dava
 
     private static final Dava instance = new Dava();
     private Writer iOut;
+    private IterableSet currentPackageContext;
     
     private Dava() 
     {
 	iOut = null;
+	currentPackageContext = null;
+    }
+
+    public void set_CurrentPackageContext( IterableSet cpc)
+    {
+	currentPackageContext = cpc;
+    }
+
+    public IterableSet get_CurrentPackageContext()
+    {
+	return currentPackageContext;
     }
 
     public static Dava v() 

@@ -10,8 +10,9 @@ public class ASTTryNode extends ASTLabeledNode
 {
     private List tryBody, catchList;
     private Map exceptionMap, paramMap;
+    private container tryBodyContainer;
 
-    private class container
+    public class container
     {
 	public Object o;
 
@@ -26,6 +27,7 @@ public class ASTTryNode extends ASTLabeledNode
 	super( label);
 
 	this.tryBody = tryBody;
+	tryBodyContainer = new container( tryBody);
 
 	this.catchList = new ArrayList();
 	Iterator cit = catchList.iterator();
@@ -46,10 +48,34 @@ public class ASTTryNode extends ASTLabeledNode
 	    this.paramMap.put( c, paramMap.get( c.o));
 	}
 	
-	subBodies.add( tryBody);
-	cit = catchList.iterator();
+	subBodies.add( tryBodyContainer);
+	cit = this.catchList.iterator();
 	while (cit.hasNext())
 	    subBodies.add( cit.next());
+    }
+
+    protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
+    {
+	if (a instanceof TryContentsFinder) {
+	    TryContentsFinder tcf = (TryContentsFinder) a;
+
+	    Iterator sbit = subBodies.iterator();
+	    while (sbit.hasNext()) {
+		container subBody = (container) sbit.next();
+
+		Iterator it = ((List) subBody.o).iterator();
+		while (it.hasNext()) {
+		    ASTNode n = (ASTNode) it.next();
+		    
+		    n.perform_Analysis( a);
+		    tcf.v().add_ExceptionSet( subBody, tcf.v().get_ExceptionSet( n));
+		}
+	    }
+
+	    a.analyseASTNode( this);
+	}
+	else 
+	    super.perform_AnalysisOnSubBodies( a);
     }
 
     public boolean isEmpty()
@@ -57,9 +83,45 @@ public class ASTTryNode extends ASTLabeledNode
 	return tryBody.isEmpty();
     }
 
+    public List get_TryBody()
+    {
+	return tryBody;
+    }
+
+    public container get_TryBodyContainer()
+    {
+	return tryBodyContainer;
+    }
+
+    public List get_CatchList()
+    {
+	return catchList;
+    }
+
+    public Map get_ExceptionMap()
+    {
+	return exceptionMap;
+    }
+
+    public Set get_ExceptionSet()
+    {
+	HashSet s = new HashSet();
+
+	Iterator it = catchList.iterator();
+	while (it.hasNext())
+	    s.add( exceptionMap.get( it.next()));
+
+	return s;
+    }
+
     public Object clone()
     {
-	return new ASTTryNode( get_Label(), tryBody, catchList, exceptionMap, paramMap);
+	ArrayList newCatchList = new ArrayList();
+	Iterator it = catchList.iterator();
+	while (it.hasNext())
+	    newCatchList.add( ((container) it.next()).o);
+
+	return new ASTTryNode( get_Label(), tryBody, newCatchList, exceptionMap, paramMap);
     }
 
     public String toString( Map stmtToName, String indentation)

@@ -49,7 +49,7 @@ public class SETStatementSequenceNode extends SETNode
     {
 	List l = new LinkedList();
 	
-	boolean isStaticInitializer = davaBody.getMethod().getName().equals( DavaMethod.staticInitializerName);
+	boolean isStaticInitializer = davaBody.getMethod().getName().equals( SootMethod.staticInitializerName);
 	
 	Iterator it = get_Body().iterator();
 	while (it.hasNext()) {
