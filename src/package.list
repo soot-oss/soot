@@ -38,6 +38,7 @@ soot.jimple.toolkits.annotation.fields
 soot.jimple.toolkits.annotation.qualifiers
 soot.jimple.toolkits.annotation.profiling
 soot.jimple.toolkits.annotation.tags
+soot.jimple.toolkits.annotation.defs
 soot.jimple.toolkits.base
 soot.jimple.toolkits.graph
 soot.jimple.toolkits.invoke

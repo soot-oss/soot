@@ -3167,6 +3167,17 @@ information in these tags.  For example, even variables (such as
 						<default>false</default>
 					</boolopt>
                 </sub_phase>
+                <sub_phase>
+					<name>Reaching Defs Tagger</name>
+					<alias>jap.rdtagger</alias>
+					<short_desc>Creates link tags for reaching defs</short_desc>
+					<long_desc>For each use of a local in a stmt creates a link to the reaching def.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
 			<phase>
 				<name>Grimp Body Creation</name>

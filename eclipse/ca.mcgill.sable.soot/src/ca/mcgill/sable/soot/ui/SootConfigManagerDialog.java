@@ -190,6 +190,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		setTreeViewer(tree);
 		
 		tree.addSelectionChangedListener(this);
+	
 		
 		tree.expandAll();
 		tree.getControl().addKeyListener(new KeyAdapter() {
@@ -215,11 +216,15 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				//System.out.println("selected: "+sel.getLabel()); //$NON-NLS-1$
 				setSelected(sel.getLabel());
 			}
+			enableButtons();
 		}
 	}
 	
 	private void enableButtons(){
-			
+		Iterator it = specialButtonList.iterator();
+		while (it.hasNext()){
+			((Button)it.next()).setEnabled(true);	
+		}
 	}
 	
 	protected void handleKeyPressed(KeyEvent e) {
@@ -247,6 +252,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				root.addChild(new SootConfiguration(configNames[i]));
 				//System.out.println("added to tree "+configNames[i]); //$NON-NLS-1$
 			}
+		
 			
 		}
 		setTreeRoot(root);
@@ -281,11 +287,13 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		return composite;
 	}
 	
+	ArrayList specialButtonList = new ArrayList(); 
+	
 	protected Button createSpecialButton(
 		Composite parent,
 		int id,
 		String label,
-		boolean defaultButton) {
+		boolean defaultButton, boolean enabled) {
 	
 
 		Button button = new Button(parent, SWT.PUSH);
@@ -304,23 +312,28 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			}
 		}
 		button.setFont(parent.getFont());
+		if (!enabled){
+			button.setEnabled(false);
+		}
 
 		setButtonLayoutData(button);
-
+		specialButtonList.add(button);
 		return button;
 	}
 	
 	protected void createButtonsForButtonBar(Composite parent){
 		//run and close will close dialog
-		createButton(parent, 5, Messages.getString("SootConfigManagerDialog.Run"), false); //$NON-NLS-1$
+		Button runButton = createButton(parent, 5, Messages.getString("SootConfigManagerDialog.Run"), false); //$NON-NLS-1$
+		runButton.setEnabled(false);
+		specialButtonList.add(runButton);
 		createButton(parent, 6, Messages.getString("SootConfigManagerDialog.Close"), true); //$NON-NLS-1$
 	}
 	protected void createSpecialButtonsForButtonBar(Composite parent) {
-		createSpecialButton(parent, 0, Messages.getString("SootConfigManagerDialog.New"), false); //$NON-NLS-1$
-		createSpecialButton(parent, 1, Messages.getString("SootConfigManagerDialog.Edit"), false); //$NON-NLS-1$
-		createSpecialButton(parent, 2, Messages.getString("SootConfigManagerDialog.Delete"), false); //$NON-NLS-1$
-		createSpecialButton(parent, 3, Messages.getString("SootConfigManagerDialog.Rename"), false); //$NON-NLS-1$
-		createSpecialButton(parent, 4, Messages.getString("SootConfigManagerDialog.Clone"), false); //$NON-NLS-1$
+		createSpecialButton(parent, 0, Messages.getString("SootConfigManagerDialog.New"), false, true); //$NON-NLS-1$
+		createSpecialButton(parent, 1, Messages.getString("SootConfigManagerDialog.Edit"), false, false); //$NON-NLS-1$
+		createSpecialButton(parent, 2, Messages.getString("SootConfigManagerDialog.Delete"), false, false); //$NON-NLS-1$
+		createSpecialButton(parent, 3, Messages.getString("SootConfigManagerDialog.Rename"), false, false); //$NON-NLS-1$
+		createSpecialButton(parent, 4, Messages.getString("SootConfigManagerDialog.Clone"), false, false); //$NON-NLS-1$
 		//createSpecialButton(parent, 7, Messages.getString("SootConfigManagerDialog.Import"), false); //$NON-NLS-1$
 		//createSpecialButton(parent, 8, Messages.getString("SootConfigManagerDialog.Export"), false); //$NON-NLS-1$
 	
@@ -385,7 +398,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		for (int i = 1; i <= config_count; i++) {
 			currentNames.add(settings.get(Messages.getString("SootConfigManagerDialog.soot_run_config")+i)); //$NON-NLS-1$
 		}
-					
+		
+		//currentNames.add("");			
 		// sets validator to know about already used names - but it doesn't use
 		// them because then editing a file cannot use same file name
 		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
@@ -610,7 +624,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
 		validator.setAlreadyUsed(currentNames);
 		
-		InputDialog nameDialog = new InputDialog(this.getShell(), Messages.getString("SootConfigManagerDialog.Clone_Saved_Configuration"), Messages.getString("SootConfigManagerDialog.Enter_new_name"), "", validator);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		InputDialog nameDialog = new InputDialog(this.getShell(), Messages.getString("SootConfigManagerDialog.Clone_Saved_Configuration"), Messages.getString("SootConfigManagerDialog.Enter_new_name"), result, validator);  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		nameDialog.open();
 		if (nameDialog.getReturnCode() == Dialog.OK){
 			config_count++;

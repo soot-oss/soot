@@ -2,13 +2,13 @@ Todo (as of 2.0.1)
 
 VERY HIGH - fix problem that xml attribute tags are only generated if output == jimple (they should work if other output formats are selected also) - fixed
 
-VERY HIGH - fix the mechanism used to generate attributes in the source viewers in Eclipse - fixed 
+VERY HIGH - fix the mechanism used to generate attributes in the source viewers in Eclipse - fixed - needs more work
 
 HIGH - finish coloring for stmts - fixed 
 
 HIGH - make visual attributes display in inner classes in source - done
 
-HIGH - implement getting the actual Soot Output dir from Soot so the plugin can find the xml attributes file (right now if you use a dir other then the default the attributes cannot be found)
+HIGH - implement getting the actual Soot Output dir from Soot so the plugin can find the xml attributes file (right now if you use a dir other then the default the attributes cannot be found) 
 
 HIGH - minimize amount of XML being generated - done
 
@@ -21,7 +21,7 @@ HIGH - implement being able to run Soot on a package of java files (not classes)
 HIGH - fix the paths problems when plugin is automatically finding and adding to soot-class-path all jars required by the project (or all jars in the project) -
 - fixed 
 
-MEDIUM - when cloning a configuration, give the old name of the cloned configuration as a starting point for the new name for the new configuration
+MEDIUM - when cloning a configuration, give the old name of the cloned configuration as a starting point for the new name for the new configuration - done
 
 MEDIUM - decide what to do while Soot is running
     1) don't allow the user to do anything

@@ -43,6 +43,7 @@ import soot.jimple.toolkits.annotation.fields.*;
 import soot.jimple.toolkits.annotation.qualifiers.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
+import soot.jimple.toolkits.annotation.defs.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.tagkit.*;
@@ -167,6 +168,7 @@ public class PackManager {
             p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
             p.add(new Transform("jap.parity", ParityTagger.v()));
             p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
+            p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
 	    
         }
         

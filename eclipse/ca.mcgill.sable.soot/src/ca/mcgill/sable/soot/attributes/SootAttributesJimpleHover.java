@@ -66,7 +66,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		setEditor(editor);
 	}
 	
-	public IResource getResource(AbstractTextEditor textEditor) {
+	/*public IResource getResource(AbstractTextEditor textEditor) {
 		IEditorInput input= textEditor.getEditorInput();
 		return (IResource) ((IAdaptable) input).getAdapter(IResource.class);
 	
@@ -146,11 +146,13 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		
 		
 
-	}
+	}*/
 	
-	protected String getAttributes() {
+	protected String getAttributes(AbstractTextEditor editor) {
 	
 		
+		JimpleAttributesComputer jac = new JimpleAttributesComputer();
+		SootAttributesHandler handler = jac.getAttributesHandler(editor);
 				
 		
 		/*if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
@@ -183,8 +185,9 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			}*/
 			//return null;
 		//}
-		if (getAttrsHandler() != null) {
-					
+		//if (getAttrsHandler() != null) {
+		if (handler != null){			
+		
 			//if (!SootPlugin.getDefault().getManager().alreadyOnColorList((IFile)getRec())){
 				//  getSajc().clearTextPresentations();
                 //setSajc(new SootAttributesJimpleColorer());
@@ -193,7 +196,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 				//SootPlugin.getDefault().getManager().addToColorList((IFile)getRec(), tp);
 			//}
 			
-			return getAttrsHandler().getJimpleAttributes(
+			return handler.getJimpleAttributes(
 			getLineNum());
 			
 		}
@@ -203,7 +206,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		
 		
 	}
-	protected void addColorTags(){
+	/*protected void addColorTags(){
 		setSajc(new SootAttributesJimpleColorer());
 		getSajc().computeColors(getAttrsHandler(), getViewer(), getEditor());	
 	}
@@ -215,15 +218,15 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
     /**
      * @return
      */
-    public SootAttributesJimpleColorer getSajc() {
+    /*public SootAttributesJimpleColorer getSajc() {
         return sajc;
     }
 
     /**
      * @param colorer
      */
-    public void setSajc(SootAttributesJimpleColorer colorer) {
+    /*public void setSajc(SootAttributesJimpleColorer colorer) {
         sajc = colorer;
-    }
+    }*/
 
 }

@@ -15,14 +15,14 @@ Once you have <a href="eclipse-plugin-install.html">installed</a> the soot-eclip
 
 <p>
 Now under the Project menu there should be a Soot section (the menu items may be grayed out at this point)
-<p>
+</p>
 
 <p>
 You must also switch to the Java Perspective in Eclipse:
 <br>
 Select Window -- Open Perspective -- Java
 <br>
-This isn't actually necessary to use Soot, but it is if you want to demonstrate that your Java class runs.<br><p>
+This isn't actually necessary to use Soot, but it is if you want to demonstrate that your Java class runs.<br></p>
 
 <p>
 As Soot runs on java classes, you must create or import some.
@@ -45,7 +45,7 @@ You now have a project with a src folder ready for use. For more information abo
 <br><br><b>
 <h4>Caveat: source folders</h4> 
 One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. What happens is the first time you run Soot everything works fine, except that the sootOutput folder automatically becaomes a package (as the project output folder is the project folder). The second time you run Soot (at the project level) it tries to process files inside the sootOutput folder which are not on the class path and all sorts of errors occur. So don't do this. </b>
-<p>
+</p>
 <hr>
 
 <!--<h4>Caveat: source folders</h4> 

@@ -57,7 +57,7 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	private void setCmd() {
 		ArrayList commands = new ArrayList();
 		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
-		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
+		commands.add(getClasspathAppend()+getSootClasspath().getSeparator()+getProcessPath());
 		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);

@@ -157,3 +157,4 @@ UnreachableMethodsTagger
 UnreachableFieldsTagger
 TightestQualifiersTagger
 ParameterAliasTagger
+ReachingDefsTagger

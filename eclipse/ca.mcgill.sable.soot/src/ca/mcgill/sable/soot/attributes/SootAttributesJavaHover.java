@@ -37,25 +37,6 @@ import org.eclipse.jdt.ui.text.java.hover.*;
 import org.eclipse.jdt.core.*;
 import ca.mcgill.sable.soot.*;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 public class SootAttributesJavaHover extends AbstractSootAttributesHover implements IJavaEditorTextHover {
 
 	private ArrayList fileNames;
@@ -66,7 +47,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 	
 	}
 	
-	public void setEditor(IEditorPart ed) {
+	/*public void setEditor(IEditorPart ed) {
 		super.setEditor(ed);
 	
 		//System.out.println(ed.getClass().toString());
@@ -122,7 +103,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 						name = name.replaceAll("\\.", System.getProperty("file.separator"));
 						System.out.println("top level decl name: "+name);
 						*/
-						getPackFileNames().add(topLevelDecls[i].getFullyQualifiedName());
+						/*getPackFileNames().add(topLevelDecls[i].getFullyQualifiedName());
 					}
 				}
 				catch (Exception e1) {
@@ -139,7 +120,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			//addAction();
 		}
 		
-	}
+	}*/
 	
 	/*private void addAction(){
 		SootAttributeRulerActionDelegate actionDel = new SootAttributeRulerActionDelegate();
@@ -229,11 +210,13 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 
 	}
 	
-	public String fileToNoExt(String filename) {
+	/*public String fileToNoExt(String filename) {
 		return filename.substring(0, filename.lastIndexOf('.'));
-	}
+	}*/
 	
-	protected String getAttributes() {
+	protected String getAttributes(AbstractTextEditor editor) {
+		JavaAttributesComputer jac = new JavaAttributesComputer();
+		SootAttributesHandler handler = jac.getAttributesHandler(editor);
 		
 		/*if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
 			SootPlugin.getDefault().getManager().setToFalseUpdate((IFile)getRec());
@@ -261,40 +244,41 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			return null;
 		}*/
 		
-		if (getAttrsHandler() != null) {
-            
+		//if (getAttrsHandler() != null) {
+        if (handler != null){    
+        
             //System.out.println("about to make java colorer");
             ////setSajc(new SootAttributesJavaColorer());
             
             //sajc.computeColors(getAttrsHandler(), getViewer(), getEditor());
                           
 			//System.out.println("getting attribute for java ln: "+getLineNum());
-		  	return getAttrsHandler().getJavaAttribute(getLineNum());
+		  	return handler.getJavaAttribute(getLineNum());
 		}
 		else {
 			return null;
 		}
 	}
     
-    protected void addColorTags(){
+    /*protected void addColorTags(){
     	setSajc(new SootAttributesJavaColorer());
     	getSajc().computeColors(getAttrsHandler(), getViewer(), getEditor());	
     }
     
     private SootAttributesJavaColorer sajc;   
-
+*/
     /**
      * @return
      */
-    public SootAttributesJavaColorer getSajc() {
+    /*public SootAttributesJavaColorer getSajc() {
         return sajc;
-    }
+    }*/
 
     /**
      * @param colorer
      */
-    public void setSajc(SootAttributesJavaColorer colorer) {
+   /* public void setSajc(SootAttributesJavaColorer colorer) {
         sajc = colorer;
-    }
+    }*/
 
 }

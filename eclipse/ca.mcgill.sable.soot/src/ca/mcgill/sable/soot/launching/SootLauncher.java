@@ -20,14 +20,23 @@
 package ca.mcgill.sable.soot.launching;
 
 import org.eclipse.ui.*;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.operation.ModalContext;
+import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.action.*;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
 import java.lang.reflect.InvocationTargetException;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.attributes.AbstractAttributesComputer;
+import ca.mcgill.sable.soot.attributes.JavaAttributesComputer;
+import ca.mcgill.sable.soot.attributes.JimpleAttributesComputer;
+import ca.mcgill.sable.soot.attributes.SootAttributesJavaColorer;
+
 import org.eclipse.swt.widgets.*;
 import org.eclipse.jdt.core.*;
 
@@ -243,7 +252,8 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
 		//getDavaHandler().handleAfter();
 		//getFileHandler().handleFilesChanged();
-		
+		IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
 	}
 	
 

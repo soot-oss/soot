@@ -19,6 +19,7 @@
 
 package ca.mcgill.sable.soot;
 
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
@@ -69,6 +70,8 @@ public class SootPlugin extends AbstractUIPlugin {
 	// list of jimple editor viewers
 	private ArrayList editorViewers = new ArrayList();
 	
+	private SootPartManager partManager;
+	
 	/**
 	 * Method addSootOutputEventListener.
 	 * @param listener
@@ -118,6 +121,9 @@ public class SootPlugin extends AbstractUIPlugin {
 		setManager(new SootResourceManager());
 		//getManager().initialize();
 		
+		PlatformUI.getWorkbench().addWindowListener(new SootWorkbenchListener());
+		System.out.println("added window listener");
+		setPartManager(new SootPartManager());
 	}
 	
 	// used for getting any needed images for content outline
@@ -229,6 +235,20 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setEditorViewers(ArrayList list) {
 		editorViewers = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public SootPartManager getPartManager() {
+		return partManager;
+	}
+
+	/**
+	 * @param manager
+	 */
+	public void setPartManager(SootPartManager manager) {
+		partManager = manager;
 	}
 
 }

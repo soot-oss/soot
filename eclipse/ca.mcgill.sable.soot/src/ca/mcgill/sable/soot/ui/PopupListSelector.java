@@ -167,6 +167,7 @@ public class PopupListSelector {
 		if (!shell.isDisposed ()) {
 			String [] strings = list.getSelection ();
 			shell.dispose();
+			System.out.println("disposing popup list");
 			if (strings.length != 0) result = strings [0];
 		}
 		return result;

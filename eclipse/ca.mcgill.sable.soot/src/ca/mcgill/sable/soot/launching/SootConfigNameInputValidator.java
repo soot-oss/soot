@@ -41,10 +41,14 @@ public class SootConfigNameInputValidator implements IInputValidator {
 	 * @see org.eclipse.jface.dialogs.IInputValidator#isValid(String)
 	 */
 	public String isValid(String newText) {
-		if (newText == null) {
+		System.out.println("newText: "+newText);
+		if (newText.equals("")){
+			return "You must enter a name!";
+		}
+		else if (newText == null) {
 			return "Must not be null!";
 		}
-		if (getAlreadyUsed().contains(newText)) {
+		else if (getAlreadyUsed().contains(newText)) {
 			return "A configuration with that name already exists!";
 		}
 		return null;

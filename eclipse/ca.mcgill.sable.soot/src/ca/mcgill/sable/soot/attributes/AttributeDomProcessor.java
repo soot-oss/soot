@@ -51,7 +51,7 @@ public class AttributeDomProcessor {
 
 	private void processNode(Node node) {
 
-		System.out.println("Start Processing: "+System.currentTimeMillis());
+		//System.out.println("Start Processing: "+System.currentTimeMillis());
 		if (node.getNodeType() == Node.DOCUMENT_NODE) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
@@ -88,13 +88,13 @@ public class AttributeDomProcessor {
 		else {
 		
 		}
-		System.out.println("Stop Processing: "+System.currentTimeMillis());
+		//System.out.println("Stop Processing: "+System.currentTimeMillis());
 		
 	}
 	
 	private void processAttributeNode(SootAttribute current, Node node) {
 
-		System.out.println("node type: "+node.getNodeType());
+		//System.out.println("node type: "+node.getNodeType());
 		if (node.getNodeType() == Node.ELEMENT_NODE) {
 			/*if (node.getNodeName().equals("value_box_attribute")){
 				NodeList children = node.getChildNodes();
@@ -169,7 +169,7 @@ public class AttributeDomProcessor {
 			
 
 			if (type.equals("text")) {
-				System.out.println("reading text node");
+				//System.out.println("reading text node");
 				current.addTextAttr(node.getNodeValue());
 			}
 		}

@@ -125,20 +125,23 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 							Rectangle rect = new Rectangle(400, (getLineNumber()+1-topIndex), 650, 45 );
 							
 							popup.open(rect);
+                            System.out.println("popup open");
                             //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
 						}	
 						else {
+							int topIndex = ((ITextViewer)((AbstractTextEditor)getEditor()).getAdapter(ITextOperationTarget.class)).getTopIndex();
 							System.out.println(getEditor().getClass());
 							System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
 							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
 							pos = pos / getLineNumber();
-							Rectangle rect = new Rectangle(320, 16, 660, 45 );
-							
+							Rectangle rect = new Rectangle(320, getLineNumber()+1-topIndex, 660, 45 );
+							System.out.println("popup open");
 							popup.open(rect);
 
 						}
 						
 						handleSelection(popup.getSelected(), links);
+						System.out.println("popup should be closed");
 					}
 				}			
 			}

@@ -27,6 +27,7 @@ public class SootAttributesHandler {
 	//private HashMap fileList;
 	private String fileName;
 	private HashMap projList;
+	private long valuesSetTime;
 
 	private static final String NEWLINE = "\n\r";
 	
@@ -42,8 +43,10 @@ public class SootAttributesHandler {
 	}
 
 	public String getJimpleAttributes(int lnNum) {
-		Iterator it = getAttrList().iterator();
 		StringBuffer sb = new StringBuffer();
+		if (getAttrList() == null) return sb.toString();
+		Iterator it = getAttrList().iterator();
+		
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJimpleLn(lnNum)) {
@@ -70,8 +73,9 @@ public class SootAttributesHandler {
 	}
 	
 	public String getJavaAttribute(int lnNum) {
-		Iterator it = getAttrList().iterator();
 		StringBuffer sb = new StringBuffer();
+		if (getAttrList() == null) return sb.toString();
+		Iterator it = getAttrList().iterator();
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJavaLn(lnNum)) {
@@ -85,8 +89,9 @@ public class SootAttributesHandler {
 	}
 
 	public ArrayList getJavaLinks(int lnNum){
-		Iterator it = getAttrList().iterator();
 		ArrayList list = new ArrayList();
+		if (getAttrList() == null) return list;
+		Iterator it = getAttrList().iterator();
 		while (it.hasNext()){
 			SootAttribute sa = (SootAttribute)it.next();
 			System.out.println("links for line: "+lnNum);
@@ -140,6 +145,20 @@ public class SootAttributesHandler {
 	 */
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	/**
+	 * @return
+	 */
+	public long getValuesSetTime() {
+		return valuesSetTime;
+	}
+
+	/**
+	 * @param l
+	 */
+	public void setValuesSetTime(long l) {
+		valuesSetTime = l;
 	}
 
 }

@@ -44,7 +44,7 @@ public class SootAttributesJavaColorer {
 	
 	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		
-		System.out.println("Start Coloring: "+System.currentTimeMillis());
+		//System.out.println("Start Coloring: "+System.currentTimeMillis());
 		
 		setViewer(viewer);
 		setEditorPart(editorPart);
@@ -147,7 +147,7 @@ public class SootAttributesJavaColorer {
 				for (int i = 0; i < srs.length; i++){
 				
 					try{
-					System.out.println("Style Range: "+srs[i]);
+					//System.out.println("Style Range: "+srs[i]);
 					getViewer().getTextWidget().setStyleRange(srs[i]);
 					}
 					catch(Exception e){
@@ -157,7 +157,7 @@ public class SootAttributesJavaColorer {
 			};
 		});	
 		//return tp;
-		System.out.println("Stop Coloring: "+System.currentTimeMillis());
+		//System.out.println("Stop Coloring: "+System.currentTimeMillis());
 		
 					
 	}
@@ -184,7 +184,7 @@ public class SootAttributesJavaColorer {
 			int j = 0;
 			for (int i = sline; i <= eline; i++){
 				offsets[j] = getViewer().getDocument().getLineOffset((i-1));
-				System.out.println("offset at "+j+" is: "+offsets[j]);
+				//System.out.println("offset at "+j+" is: "+offsets[j]);
 				starts[j] = offsets[j] + unColLen;
 				lengths[j] = getViewer().getDocument().getLineOffset((i)) - 1 - starts[j];
 				j++;
@@ -327,7 +327,7 @@ public class SootAttributesJavaColorer {
 	}
     
     private void changeTextPres(TextPresentation tp) {
-		System.out.println("changing text pres");
+		//System.out.println("changing text pres");
 		Display display = getEditorPart().getSite().getShell().getDisplay();
 		final TextPresentation pres = tp;
 		display.asyncExec(new Runnable() {

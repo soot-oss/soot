@@ -25,31 +25,10 @@ import java.util.ArrayList;
 import org.eclipse.jface.text.*;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.ui.*;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import ca.mcgill.sable.soot.SootPlugin;
-
-
-/**
- * @author jlhotak
- */ 
- 
-/**
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 
 public abstract class AbstractSootAttributesHover implements ITextHover {
 
@@ -73,15 +52,16 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public void setEditor(IEditorPart ed) {
 		System.out.println("editor set");
 		editor = ed;
-		formTextViewer(editor);
+		//formTextViewer(editor);
 	}
 	
 
-	public void formTextViewer(IEditorPart edPart) {
-		SourceViewer input= (SourceViewer)edPart.getAdapter(SourceViewer.class);
+	/*public void formTextViewer(IEditorPart edPart) {
+		SourceViewer input= (SourceViewer)((AbstractTextEditor)edPart).getAdapter(ITextOperationTarget.class);
+		System.out.println("editor name is: "+edPart.getTitle());
 		System.out.println("text viewer is: "+input);
 	
-	}
+	}*/
 	
 	/**
 	 * Method getAttributes.
@@ -90,7 +70,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 * if more then one attribute return 
 	 * each attribute separated by newlines
 	 */
-	protected abstract String getAttributes();
+	protected abstract String getAttributes(AbstractTextEditor editor);
 	
 	/**
 	 * @see org.eclipse.jface.text.ITextHover#getHoverInfo(ITextViewer, IRegion)
@@ -100,20 +80,20 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 		// this prevents showing incorrect tags - at least temporaily
 		// and hopefully if the editor has ever changed
 		
-		if (editor.isDirty()) {
+		/*if (editor.isDirty()) {
 			setEditorHasChanged(true);
 			return null;
 		}
 		
 		if (isEditorHasChanged()) {
 			return null;
-		}
+		}*/
 					
 		getHoverRegion(textViewer, hoverRegion.getOffset());
 		String attr = null;
-		if (getAttrsHandler() != null) {
-			attr = getAttributes();
-		}
+		//if (getAttrsHandler() != null) {
+			attr = getAttributes((AbstractTextEditor)getEditor());
+		//}
 		return attr;
 		
 	}
@@ -125,7 +105,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	    try {
 			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
 			System.out.println("getting hover region and setting text viewer.");
-			handleViewer(textViewer);
+			//handleViewer(textViewer);
 			setDocument(textViewer.getDocument());
 			//System.out.println(getLineNum());
 			return textViewer.getDocument().getLineInformationOfOffset(offset);
@@ -135,7 +115,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 
 	}
 	
-	public void handleViewer(ITextViewer viewer){
+	/*public void handleViewer(ITextViewer viewer){
 		if (getViewer() != null) return;
 		setViewer(viewer);
 		computeAttributes();

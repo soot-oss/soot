@@ -41,6 +41,7 @@ public class SootAttributesJimpleColorer {
 	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		setViewer(viewer);
 		setEditorPart(editorPart);
+		if (handler.getAttrList() == null) return;
 		Iterator it = handler.getAttrList().iterator();
 		//TextPresentation tp = new TextPresentation();
 		//System.out.println("computing colors");
@@ -79,15 +80,15 @@ public class SootAttributesJimpleColorer {
 		ColorManager colorManager = new ColorManager();
 		int sLineOffset = 0;
 		int eLineOffset = 0;
-		System.out.println("line: "+line+" eline: "+eline+" spos: "+start+" epos: "+end);
+		//System.out.println("line: "+line+" eline: "+eline+" spos: "+start+" epos: "+end);
 		try {
 			sLineOffset = getViewer().getDocument().getLineOffset((line-1));
 			eLineOffset = getViewer().getDocument().getLineOffset((eline-1));
 		}
 		catch(Exception e){	
 		}
-		System.out.println("sLineOffset: "+sLineOffset);
-		System.out.println("eLineOffset: "+eLineOffset);
+		//System.out.println("sLineOffset: "+sLineOffset);
+		//System.out.println("eLineOffset: "+eLineOffset);
 		StyleRange sr = new StyleRange((sLineOffset + start - 1	), ((eLineOffset + end -1) - (sLineOffset + start - 1)), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
 		tp.addStyleRange(sr);
 		Color c = tp.getFirstStyleRange().background;

@@ -3016,7 +3016,7 @@ public class Grm
 
     public static Position pos(Object first, Object last){
       
-        System.out.println("first: "+first+" class: "+first.getClass()+" last: "+last+" class: "+last.getClass());
+        //System.out.println("first: "+first+" class: "+first.getClass()+" last: "+last+" class: "+last.getClass());
         Position fpos = null;
         Position epos = null;
         if (first instanceof Node) {
