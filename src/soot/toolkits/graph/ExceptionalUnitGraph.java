@@ -459,6 +459,7 @@ public class ExceptionalUnitGraph extends UnitGraph
 					Map unitToSuccs, Map unitToPreds,
 					boolean omitExceptingUnitEdges) {
 	Set trapsThatAreHeads = new ArraySet();
+	Unit entryPoint = (Unit) unitChain.getFirst();
 
 	// Add exceptional edges from each predecessor of units that
 	// throw exceptions to the handler that catches them.  Add an
@@ -474,7 +475,7 @@ public class ExceptionalUnitGraph extends UnitGraph
 		if (dest.trap() != null) {
 		    Unit catcher = dest.trap().getHandlerUnit();
 		    List throwersPreds = getUnexceptionalPredsOf(thrower);
-		    if (throwersPreds.size() == 0) {
+		    if (thrower == entryPoint) {
 			trapsThatAreHeads.add(catcher);
 		    } else {
 			for (Iterator j = throwersPreds.iterator(); 
