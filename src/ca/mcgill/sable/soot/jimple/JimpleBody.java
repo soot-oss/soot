@@ -651,7 +651,7 @@ public class JimpleBody extends AbstractBody implements StmtBody
 */
         
         //LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
-        LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
+        // LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
         //EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);
         
         // Create statement name table
@@ -668,6 +668,8 @@ public class JimpleBody extends AbstractBody implements StmtBody
             }
         }
 
+        Zonation zonation = new Zonation(this);
+        
         for(int j = 0; j < stmtList.size(); j++)
         {
             Stmt s = ((Stmt) stmtList.get(j));
@@ -677,11 +679,14 @@ public class JimpleBody extends AbstractBody implements StmtBody
             out.print(s.toBriefString(stmtToName, "        "));
             out.print(";");
 
-                       
+            out.print(zonation.getZoneOf(s));
+            
+        /*               
             // Print info about live locals
             {
                 out.print(liveLocals.getLiveLocalsAfter(s));
-            }
+            } */
+            
             /*
             // Print info about local copies
             {

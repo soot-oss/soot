@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on May 24, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed a bug with getUseDefAndBoxes method.
+   
  - Modified on May 13, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Moved AbstractStmt's contents to AbstractUnit.
    
@@ -130,15 +133,12 @@ public abstract class AbstractUnit implements Unit
 
     public List getUseAndDefBoxes()
     {
-        if(valueBoxes == null)
-        {
-            valueBoxes = new ArrayList();
+        valueBoxes = new ArrayList();
 
-            valueBoxes.addAll(getUseBoxes());
-            valueBoxes.addAll(getDefBoxes());
+        valueBoxes.addAll(getUseBoxes());
+        valueBoxes.addAll(getDefBoxes());
 
-            valueBoxes = Collections.unmodifiableList(valueBoxes);
-        }
+        valueBoxes = Collections.unmodifiableList(valueBoxes);
 
         return valueBoxes;
     }

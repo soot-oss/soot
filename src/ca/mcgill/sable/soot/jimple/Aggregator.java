@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on May 24, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
+   Added support for zone checking.
+   
  - Modified on April 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
    Split off the aggregate method into its own classfile.
    Split off packLocals() method into the class LocalPacker Transformations.java
@@ -165,14 +168,39 @@ public class Aggregator
         if(Main.isProfilingOptimization)
             Main.aggregationTimer.start();
          boolean changed = false;
-             
+
+        Map boxToZone = new HashMap(body.getStmtList().size() * 2 + 1, 0.7f);
+
+        // Determine the zone of every box
+        {
+            Zonation zonation = new Zonation(body);
+            
+            Iterator unitIt = body.getStmtList().iterator();
+            
+            while(unitIt.hasNext())
+            {
+                Unit u = (Unit) unitIt.next();
+                Zone zone = (Zone) zonation.getZoneOf(u);
+                
+                
+                Iterator boxIt = u.getUseAndDefBoxes().iterator();
+                           
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();                    
+                    boxToZone.put(box, zone);
+                }   
+            }
+        }        
+        
+                     
         do {
             if(Main.isVerbose)
                 System.out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
             // body.printTo(new java.io.PrintWriter(System.out, true));
             
-            changed = internalAggregate(body, isConservative);
+            changed = internalAggregate(body, boxToZone, isConservative);
             
             aggregateCount++;
         } while(changed);
@@ -182,7 +210,7 @@ public class Aggregator
             
     }
   
-  private static boolean internalAggregate(StmtBody body, boolean isConservative)
+  private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean isConservative)
     {
       Iterator stmtIt;
       LocalUses localUses;
@@ -202,7 +230,6 @@ public class Aggregator
         {
           Stmt s = (Stmt)(stmtIt.next());
               
-          /* could this be definitionStmt instead? */
           if (!(s instanceof AssignStmt))
             continue;
           
@@ -225,6 +252,12 @@ public class Aggregator
           if (ld.size() != 1)
             continue;
    
+          // Check to make sure aggregation pair in the same zone
+            if(boxToZone.get(((AssignStmt) s).getRightOpBox()) != boxToZone.get(usepair.valueBox))
+            {
+                continue;
+            }  
+             
           /* we need to check the path between def and use */
           /* to see if there are any intervening re-defs of RHS */
           /* in fact, we should check that this path is unique. */
@@ -331,8 +364,12 @@ public class Aggregator
                            }
                       }
                   }
+                  
+                  // Make sure not propagating past a {enter,exit}Monitor
+                    if(propagatingInvokeExpr && between instanceof MonitorStmt)
+                        cantAggr = true;
               }  
-              
+                            
               // Check for intervening side effects due to method calls
                 if(propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
                     {

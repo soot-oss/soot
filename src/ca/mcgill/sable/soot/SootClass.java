@@ -763,6 +763,9 @@ public class SootClass
                             throw new RuntimeException("method " + method.getName() + " has no active body!");
                         else
                             method.getActiveBody().printTo(out, printBodyOptions);
+                            // ((ca.mcgill.sable.soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
+                        
+                            
 
                         if(methodIt.hasNext())
                             out.println();

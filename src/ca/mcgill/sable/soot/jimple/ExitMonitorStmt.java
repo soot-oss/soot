@@ -82,7 +82,7 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.*;
 
-public interface ExitMonitorStmt extends Stmt
+public interface ExitMonitorStmt extends MonitorStmt
 {
     public Value getOp();
     public void setOp(Value op);

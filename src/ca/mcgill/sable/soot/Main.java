@@ -218,7 +218,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.30");
+            System.out.println("Soot version 1.beta.4.dev.31");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -603,7 +603,8 @@ public class Main
                     else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || 
                         targetExtension.equals(".class") || targetExtension.equals(".jasmin"))
                     {
-                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
+                        // JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
+                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
                         
                         if(isOptimizing) 
                             BaseJimpleOptimizer.optimize(jimpleBody);

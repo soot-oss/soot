@@ -64,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on May 21, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Split off EnterMonitorStmt.
+ 
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -84,7 +88,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public interface EnterMonitorStmt extends MonitorStmt
+public interface MonitorStmt extends Stmt
 {
     public Value getOp();
     public void setOp(Value op);
