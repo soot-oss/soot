@@ -85,9 +85,9 @@ public class InitialResolver {
         astNode.visit(typeListBuilder);
         
         // find and resolve anonymous classes
-        resolveAnonClasses();
+        //resolveAnonClasses();
         // find and resolve local classes
-        resolveLocalClasses();
+        //resolveLocalClasses();
 
         Iterator it = typeListBuilder.getList().iterator();
         while (it.hasNext()) {
@@ -141,6 +141,13 @@ public class InitialResolver {
             
         }
         
+        // after or before - after assures they are processed after their
+        // outer class ??
+        // find and resolve anonymous classes
+        resolveAnonClasses();
+        // find and resolve local classes
+        resolveLocalClasses();
+        
         // resolve Object, StrungBuffer and inner classes
         SootResolver.v().assertResolvedClass("java.lang.Object");
         SootResolver.v().assertResolvedClass("java.lang.StringBuffer");
@@ -172,6 +179,7 @@ public class InitialResolver {
     
     // resolves all types and deals with .class literals and asserts
     public void resolveFromJavaFile(soot.SootClass sc) {
+        //System.out.println("processing: "+sc.getName());
         sootClass = sc;
 
         // add sourcefile tag to Soot class
@@ -345,6 +353,7 @@ public class InitialResolver {
             polyglot.types.ClassType outer = (polyglot.types.ClassType)keysIt.next();
             for (int i = 0; i < ((Integer)anonClassChecker.getMap().get(outer)).intValue(); i++) {
                 String className = outer.toString()+"$"+(i+1);
+                //System.out.println("will resolve: "+className);
                 soot.SootResolver.v().assertResolvedClass(className);
 
                 polyglot.ast.New aNew = (polyglot.ast.New)anonClassChecker.getBodyNameMap().getKey(className);
@@ -376,6 +385,7 @@ public class InitialResolver {
                 int count = ((Integer)innerMap.get(innerName)).intValue();
                 for (int i = 1; i <= count; i++) {
                     String className = outer.toString()+"$"+i+"$"+innerName;
+                    //System.out.println("will resolve: "+className);
                     soot.SootResolver.v().assertResolvedClass(className);
                     //System.out.println("class name: "+className);
                     polyglot.ast.LocalClassDecl lcd = (polyglot.ast.LocalClassDecl)localClassChecker.getClassMap().getKey(className);
@@ -406,7 +416,8 @@ public class InitialResolver {
      * Source Creation 
      */
     private void createSource(polyglot.ast.SourceFile source){
-        
+       
+        //System.out.println("source file name: "+source.source().name());
         String simpleName = sootClass.getName();
         //System.out.println("trying to create source for: "+simpleName);
         /*if (sootClass.getPackageName() != null) {
@@ -435,7 +446,8 @@ public class InitialResolver {
                     // its actually a map from class names to the corresponding source file
                     if (((polyglot.ast.ClassDecl)next).type().isTopLevel() && !((polyglot.ast.ClassDecl)next).flags().isPublic()){                    
                         //System.out.println("class to src map: "+((polyglot.ast.ClassDecl)next).name()+" and "+sootClass.getName());
-                        addToClassToSourceMap(((polyglot.ast.ClassDecl)next).name(), sootClass.getName());                
+                        addToClassToSourceMap(((polyglot.ast.ClassDecl)next).type().fullName(), sootClass.getName());                
+                        //addToClassToSourceMap(((polyglot.ast.ClassDecl)next).type().fullName(), source.source().name().substring(0, source.source().name().lastIndexOf(".java")));                
                     }
                 }
 		    }
@@ -689,6 +701,7 @@ public class InitialResolver {
 
         //System.out.println("final locals replaced: "+localsUsed);
         info.finalLocals(localsUsed);
+        //System.out.println("add to finalLocalInfo: node: "+nodeKey);
         finalLocalInfo.put(nodeKey, info);
         return finalFields;
     }
@@ -899,6 +912,8 @@ public class InitialResolver {
         PrivateInstancesAvailable privateInsts = new PrivateInstancesAvailable();
         cBody.visit(privateInsts);
 
+        //System.out.println("privateInsts: "+privateInsts.getList());
+    
         // look through body again for all inner class bodies
         InnerClassBodies icb = new InnerClassBodies();
         cBody.visit(icb);
@@ -918,7 +933,8 @@ public class InitialResolver {
         //System.out.println("uses of private access: "+uses);
         Iterator listIt = uses.iterator();
         while (listIt.hasNext()) {
-            Object nextInst = listIt.next();
+            Object nextInst = ((polyglot.util.IdentityKey)listIt.next()).object();
+            //System.out.println("next inxt: "+nextInst.getClass());
             if (nextInst instanceof polyglot.types.FieldInstance) {
                 if (Util.getSootType(((polyglot.types.FieldInstance)nextInst).container()).equals(sootClass.getType())){
                     privateAccessList.add(nextInst);
@@ -932,6 +948,7 @@ public class InitialResolver {
             }
         }
 
+        //System.out.println("private access list: "+privateAccessList);
         Iterator it = privateAccessList.iterator();
         while (it.hasNext()) {
             polyglot.types.MemberInstance inst = (polyglot.types.MemberInstance)it.next();

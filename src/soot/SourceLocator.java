@@ -102,6 +102,15 @@ public class SourceLocator
 	return false;
     }
 
+    public List resolveClassesUnder(String aPath){
+        List resolvedClasses = new ArrayList();
+        Iterator it = getClassesUnder(aPath).iterator();
+        while (it.hasNext()){
+            resolvedClasses.add(SootResolver.v().getResolvedClass((String)it.next()).getName());
+        }
+        return resolvedClasses;    
+    }
+    
     public List getClassesUnder(String aPath) {
         List fileNames = new ArrayList();
 
@@ -412,10 +421,12 @@ public class SourceLocator
             // class is an inner class and will be in
             // Outer of Outer$Inner
             javaClassName = className.substring(0, className.indexOf("$"));
+            //System.out.println("cut off inner class: look for: "+javaClassName);
         }
         // always do this because an inner class could be in a class
         // thats in the map
         if (sourceToClassMap != null) {
+            //System.out.println("in source map: "+sourceToClassMap);
             if (sourceToClassMap.get(javaClassName) != null) {
                 javaClassName = (String)sourceToClassMap.get(javaClassName);
             }

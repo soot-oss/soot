@@ -52,6 +52,10 @@ public class JimpleBodyBuilder {
         //create outer class this param ref for inner classes except for static inner classes - this is not needed
         int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
         int classMod = sootMethod.getDeclaringClass().getModifiers();
+        if (soot.Modifier.isStatic(classMod)){
+            //System.out.println("class is static no this$0: "+sootMethod.getDeclaringClass());
+        }
+            
         if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && !soot.Modifier.isStatic(classMod)){
 
             // we know its an inner non static class can get outer class
@@ -414,7 +418,7 @@ public class JimpleBodyBuilder {
             soot.Local sootLocal = (soot.Local)localsMap.get(new polyglot.util.IdentityKey(li));
             return sootLocal;
         }
-        else {
+        else if (body.getMethod().getDeclaringClass().declaresField("val$"+li.name(), Util.getSootType(li.type()))){
             soot.Local fieldLocal = generateLocal(li.type());
             soot.SootField field = body.getMethod().getDeclaringClass().getField("val$"+li.name(), Util.getSootType(li.type()));
             soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, field);
@@ -422,7 +426,55 @@ public class JimpleBodyBuilder {
             body.getUnits().add(assign);
             return fieldLocal;
         }
-        //else create access meth in outer for val$fieldname
+        else {
+            //else create access meth in outer for val$fieldname
+            // get the this$0 field to find the type of an outer class - has
+            // to have one because local/anon inner can't declare static
+            // memebers so for deepnesting not in static context for these
+            // cases
+
+            soot.SootClass currentClass = body.getMethod().getDeclaringClass();
+            boolean fieldFound = false;
+            
+            while (!fieldFound){
+                if (!currentClass.declaresFieldByName("this$0")){
+                    throw new RuntimeException("Trying to get field val$"+li.name()+" from some outer class but can't access the outer class!");
+                }
+                soot.SootClass outerClass = ((soot.RefType)currentClass.getFieldByName("this$0").getType()).getSootClass();
+                // look for field of type li.type and name val$li.name in outer 
+                // class 
+                if (outerClass.declaresField("val$"+li.name(), Util.getSootType(li.type()))){
+                    fieldFound = true;
+                }
+                currentClass = outerClass;
+                // repeat until found in some outer class
+            }
+            // create and add accessor to that outer class (indic as current)
+            soot.SootMethod methToInvoke = makeLiFieldAccessMethod(currentClass, li);
+            
+            // invoke and return
+            // generate a local that corresponds to the invoke of that meth
+            ArrayList methParams = new ArrayList();
+            methParams.add(getThis(currentClass.getType()));
+        
+            soot.Local res = getPrivateAccessFieldInvoke(methToInvoke, methParams);
+            return res;
+        }
+    }
+    
+    private soot.SootMethod makeLiFieldAccessMethod(soot.SootClass classToInvoke, polyglot.types.LocalInstance li){
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        paramTypes.add(classToInvoke.getType());
+        
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, Util.getSootType(li.type()), soot.Modifier.STATIC);
+
+        classToInvoke.addMethod(meth);
+        PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource();
+        src.fieldName("val$"+li.name());
+        src.fieldType(Util.getSootType(li.type()));
+        meth.setActiveBody(src.getBody(meth, null));
+        return meth;
     }
     
     /**
@@ -3202,7 +3254,9 @@ public class JimpleBodyBuilder {
         //System.out.println("soot param types: "+sootParamsTypes);
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
         
-      
+        if (!methodToInvoke.getDeclaringClass().getType().equals(classToInvoke.getType())){
+            throw new RuntimeException("created new for type: "+classToInvoke.getType()+" but didn't find needed initializer there instead found initializer in "+methodToInvoke.getDeclaringClass().getType());
+        }
         soot.jimple.SpecialInvokeExpr specialInvokeExpr = soot.jimple.Jimple.v().newSpecialInvokeExpr(retLocal, methodToInvoke, sootParams);
                 
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(specialInvokeExpr);
