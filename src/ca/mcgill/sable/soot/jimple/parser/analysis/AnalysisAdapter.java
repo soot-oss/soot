@@ -192,6 +192,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAThrowsClause(AThrowsClause node)
+    {
+        defaultCase(node);
+    }
+
     public void caseABooleanBaseType(ABooleanBaseType node)
     {
         defaultCase(node);
@@ -437,7 +442,17 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseANewExpr(ANewExpr node)
+    public void caseASimpleNewExpr(ASimpleNewExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAArrayNewExpr(AArrayNewExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAMultiNewExpr(AMultiNewExpr node)
     {
         defaultCase(node);
     }
@@ -457,7 +472,12 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseABoolExpr(ABoolExpr node)
+    public void caseABinopBoolExpr(ABinopBoolExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAUnopBoolExpr(AUnopBoolExpr node)
     {
         defaultCase(node);
     }
@@ -468,6 +488,16 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAStaticInvokeExpr(AStaticInvokeExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseABinopExpr(ABinopExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAUnopExpr(AUnopExpr node)
     {
         defaultCase(node);
     }
@@ -518,6 +548,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAFieldSignature(AFieldSignature node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFixedArrayDescriptor(AFixedArrayDescriptor node)
     {
         defaultCase(node);
     }
@@ -797,11 +832,6 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseTNew(TNew node)
-    {
-        defaultCase(node);
-    }
-
     public void caseTCase(TCase node)
     {
         defaultCase(node);
@@ -877,6 +907,21 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseTNew(TNew node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTNewarray(TNewarray node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTNewmultiarray(TNewmultiarray node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTNop(TNop node)
     {
         defaultCase(node);
@@ -908,6 +953,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTThrow(TThrow node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTThrows(TThrows node)
     {
         defaultCase(node);
     }

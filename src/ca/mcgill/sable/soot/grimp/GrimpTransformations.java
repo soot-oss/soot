@@ -93,22 +93,9 @@ public class GrimpTransformations
 
       CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
 	
-      if(Main.isProfilingOptimization)
-	Main.defsTimer.start();
-	
-      LocalDefs localDefs = new SimpleLocalDefs(graph);
-	
-      if(Main.isProfilingOptimization)
-	Main.defsTimer.end();
-		
-      if(Main.isProfilingOptimization)
-	Main.usesTimer.start();
-	
+      LocalDefs localDefs = new SimpleLocalDefs(graph);	
       LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
-      if(Main.isProfilingOptimization)
-	Main.usesTimer.end();
-	
       Iterator stmtIt = stmtList.iterator();
 	
       /* fold in NewExpr's with specialinvoke's */

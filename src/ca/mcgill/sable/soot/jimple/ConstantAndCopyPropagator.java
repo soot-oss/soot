@@ -84,6 +84,21 @@ public class ConstantAndCopyPropagator
     
     public static void propagateConstantsAndCopies(StmtBody stmtBody)
     {
+        propagateConstantsAndCopies_internal(stmtBody, false);
+    }
+
+    /** 
+       Only propagate stack locals, that is, those which start with $.
+      */    
+      
+    public static void conservativelyPropagateConstantsAndCopies(StmtBody stmtBody)
+    {
+        propagateConstantsAndCopies_internal(stmtBody, true);    
+    }
+    
+    
+    private static void propagateConstantsAndCopies_internal(StmtBody stmtBody, boolean isConservative)
+    {
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
         int constantPropagationCount = 0;
@@ -162,6 +177,9 @@ public class ConstantAndCopyPropagator
                     {
                         Local l = (Local) useBox.getValue();
 
+                        if(isConservative && !l.getName().startsWith("$"))
+                            continue;
+                            
                         List defsOfUse = localDefs.getDefsOfAt(l, stmt);
 
                         if(defsOfUse.size() == 1)

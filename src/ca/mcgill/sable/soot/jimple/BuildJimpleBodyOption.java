@@ -59,6 +59,10 @@
 
  B) Changes:
 
+ - Modified on April 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added a conserve locals option.
+   Changed NO_PACKING to USE_PACKING.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -79,12 +83,13 @@ import java.io.*;
 
 public class BuildJimpleBodyOption
 {
-    public static final int NO_TYPING      = 0x0001,
-                            NO_RENAMING    = 0x0002,
-                            NO_SPLITTING   = 0x0004,
-                            NO_CLEANUP     = 0x0008,
-                            NO_PACKING     = 0x0010,
-                            NO_AGGREGATING = 0x0020;
+    public static final int NO_TYPING       = 0x0001,
+                            NO_RENAMING     = 0x0002,
+                            NO_SPLITTING    = 0x0004,
+                            NO_CLEANUP      = 0x0008,
+                            USE_PACKING      = 0x0010,
+                            NO_AGGREGATING  = 0x0020,
+                            USE_ORIGINAL_NAMES = 0x0040;
 
     public static boolean noTyping(int m)
     {
@@ -106,14 +111,19 @@ public class BuildJimpleBodyOption
         return (m & NO_CLEANUP) != 0;
     }
 
-    public static boolean noPacking(int m)
+    public static boolean usePacking(int m)
     {
-        return (m & NO_PACKING) != 0;
+        return (m & USE_PACKING) != 0;
     }
 
     public static boolean noAggregating(int m)
     {
         return (m & NO_AGGREGATING) != 0;
+    }
+    
+    public static boolean useOriginalNames(int m)
+    {
+        return (m & USE_ORIGINAL_NAMES) != 0;
     }
 }
 

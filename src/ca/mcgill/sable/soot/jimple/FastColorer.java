@@ -78,13 +78,90 @@ import ca.mcgill.sable.util.*;
 
 public class FastColorer
 {   
-    public static void assignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
+    public static void conservativelyAssignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-        new FastColorer(stmtBody, localToGroup, localToColor, groupToColorCount);
-    }
+        StmtList stmtList = stmtBody.getStmtList();
+
+        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+
+        LiveLocals liveLocals;
+
+        if(Main.usePackedLive)
+            liveLocals = new SimpleLiveLocals(stmtGraph);
+        else 
+            liveLocals = new SparseLiveLocals(stmtGraph);
+
+        InterferenceGraph intGraph = new InterferenceGraph(stmtBody, localToGroup, liveLocals);
+
+        // Assign a color for each local.
+        {
+            int[] freeColors = new int[10];
+            Iterator localIt = intGraph.getLocals().iterator();
+            
+            while(localIt.hasNext())
+            {
+                Local local = (Local) localIt.next();
+                
+                if(localToColor.containsKey(local))
+                {
+                    // Already assigned, probably a parameter
+                    continue;
+                }
+                
+                Object group = localToGroup.get(local);
+                int colorCount = ((Integer) groupToColorCount.get(group)).intValue();
+                
+                if(freeColors.length < colorCount)
+                    freeColors = new int[Math.max(freeColors.length * 2, colorCount)];
+                
+                // Set all colors to free.
+                {
+                    for(int i= 0; i < colorCount; i++)
+                        freeColors[i] = 1;
+                }
+                
+                // Remove unavailable colors for this local
+                {
+                    Local[] interferences = intGraph.getInterferencesOf(local);
+
+                    for(int i = 0; i < interferences.length; i++)
+                    {
+                        if(localToColor.containsKey(interferences[i]))
+                        {
+                            int usedColor = ((Integer) localToColor.get(interferences[i])).intValue();
+                
+                            freeColors[usedColor] = 0;
+                        }
+                    }
+                }
+                
+                // Assign a color to this local.
+                {
+                    boolean found = false;
+                    int assignedColor = 0;
+                    
+                    for(int i = 0; i < colorCount; i++)
+                        if(freeColors[i] == 1)
+                        {
+                            found = true;
+                            assignedColor = i;
+                        }
+                    
+                    if(!found)
+                    {
+                        assignedColor = colorCount++;
+                        groupToColorCount.put(group, new Integer(colorCount));
+                    }   
+                    
+                    localToColor.put(local, new Integer(assignedColor));
+                }
+            }
+        }
+                            
+    }    
     
-    private FastColorer(StmtBody stmtBody, Map localToGroup,
+    public static void assignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
         StmtList stmtList = stmtBody.getStmtList();
@@ -167,7 +244,7 @@ public class FastColorer
                             
     }
 
-    public class InterferenceGraph
+    public static class InterferenceGraph
     {
         Map localToLocals;// Maps a local to its interfering locals.
         List locals;

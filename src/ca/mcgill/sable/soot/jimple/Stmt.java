@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 
 public interface Stmt extends Unit
 {
@@ -97,5 +98,6 @@ public interface Stmt extends Unit
     public String toString(Map stmtToName);
     public String toString(String indentation);
     public String toString(Map stmtToName, String indentation);
+    // public void convertToBaf(JimpleToBafContext context, List out);      
 }
 

@@ -95,7 +95,7 @@ public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("newmulti " + baseType.baseType.toString());
+        buffer.append("newmultiarray (" + baseType.baseType.toString() + ")");
 
         for(int i = 0; i < sizeBoxes.length; i++)
             buffer.append("[" + sizeBoxes[i].getValue().toString() + "]");
@@ -110,7 +110,7 @@ public class AbstractNewMultiArrayExpr implements NewMultiArrayExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("new " + baseType.baseType.toBriefString());
+        buffer.append("newmultiarray (" + baseType.baseType.toBriefString() + ")");
 
         for(int i = 0; i < sizeBoxes.length; i++)
             buffer.append("[" + ((ToBriefString) sizeBoxes[i].getValue()).toBriefString() + "]");

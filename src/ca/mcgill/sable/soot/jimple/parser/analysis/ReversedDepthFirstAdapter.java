@@ -443,6 +443,10 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getMethodBody().apply(this);
         }
+        if(node.getThrowsClause() != null)
+        {
+            node.getThrowsClause().apply(this);
+        }
         if(node.getRParen() != null)
         {
             node.getRParen().apply(this);
@@ -569,6 +573,28 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getNonvoidType().apply(this);
         }
         outAParameter(node);
+    }
+
+    public void inAThrowsClause(AThrowsClause node)
+    {
+    }
+
+    public void outAThrowsClause(AThrowsClause node)
+    {
+    }
+
+    public void caseAThrowsClause(AThrowsClause node)
+    {
+        inAThrowsClause(node);
+        if(node.getNameList() != null)
+        {
+            node.getNameList().apply(this);
+        }
+        if(node.getThrows() != null)
+        {
+            node.getThrows().apply(this);
+        }
+        outAThrowsClause(node);
     }
 
     public void inABooleanBaseType(ABooleanBaseType node)
@@ -1653,17 +1679,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseABinopExpression(ABinopExpression node)
     {
         inABinopExpression(node);
-        if(node.getRight() != null)
+        if(node.getBinopExpr() != null)
         {
-            node.getRight().apply(this);
-        }
-        if(node.getBinop() != null)
-        {
-            node.getBinop().apply(this);
-        }
-        if(node.getLeft() != null)
-        {
-            node.getLeft().apply(this);
+            node.getBinopExpr().apply(this);
         }
         outABinopExpression(node);
     }
@@ -1679,13 +1697,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAUnopExpression(AUnopExpression node)
     {
         inAUnopExpression(node);
-        if(node.getImmediate() != null)
+        if(node.getUnopExpr() != null)
         {
-            node.getImmediate().apply(this);
-        }
-        if(node.getUnop() != null)
-        {
-            node.getUnop().apply(this);
+            node.getUnopExpr().apply(this);
         }
         outAUnopExpression(node);
     }
@@ -1708,24 +1722,17 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAImmediateExpression(node);
     }
 
-    public void inANewExpr(ANewExpr node)
+    public void inASimpleNewExpr(ASimpleNewExpr node)
     {
     }
 
-    public void outANewExpr(ANewExpr node)
+    public void outASimpleNewExpr(ASimpleNewExpr node)
     {
     }
 
-    public void caseANewExpr(ANewExpr node)
+    public void caseASimpleNewExpr(ASimpleNewExpr node)
     {
-        inANewExpr(node);
-        {
-            Object temp[] = node.getArrayDescriptor().toArray();
-            for(int i = temp.length - 1; i >= 0; i--)
-            {
-                ((PArrayDescriptor) temp[i]).apply(this);
-            }
-        }
+        inASimpleNewExpr(node);
         if(node.getBaseType() != null)
         {
             node.getBaseType().apply(this);
@@ -1734,7 +1741,78 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getNew().apply(this);
         }
-        outANewExpr(node);
+        outASimpleNewExpr(node);
+    }
+
+    public void inAArrayNewExpr(AArrayNewExpr node)
+    {
+    }
+
+    public void outAArrayNewExpr(AArrayNewExpr node)
+    {
+    }
+
+    public void caseAArrayNewExpr(AArrayNewExpr node)
+    {
+        inAArrayNewExpr(node);
+        if(node.getFixedArrayDescriptor() != null)
+        {
+            node.getFixedArrayDescriptor().apply(this);
+        }
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getNonvoidType() != null)
+        {
+            node.getNonvoidType().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getNewarray() != null)
+        {
+            node.getNewarray().apply(this);
+        }
+        outAArrayNewExpr(node);
+    }
+
+    public void inAMultiNewExpr(AMultiNewExpr node)
+    {
+    }
+
+    public void outAMultiNewExpr(AMultiNewExpr node)
+    {
+    }
+
+    public void caseAMultiNewExpr(AMultiNewExpr node)
+    {
+        inAMultiNewExpr(node);
+        {
+            Object temp[] = node.getArrayDescriptor().toArray();
+            for(int i = temp.length - 1; i >= 0; i--)
+            {
+                ((PArrayDescriptor) temp[i]).apply(this);
+            }
+        }
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getBaseType() != null)
+        {
+            node.getBaseType().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getNewmultiarray() != null)
+        {
+            node.getNewmultiarray().apply(this);
+        }
+        outAMultiNewExpr(node);
     }
 
     public void inAArrayDescriptor(AArrayDescriptor node)
@@ -1799,22 +1877,40 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outALocalVariable(node);
     }
 
-    public void inABoolExpr(ABoolExpr node)
+    public void inABinopBoolExpr(ABinopBoolExpr node)
     {
     }
 
-    public void outABoolExpr(ABoolExpr node)
+    public void outABinopBoolExpr(ABinopBoolExpr node)
     {
     }
 
-    public void caseABoolExpr(ABoolExpr node)
+    public void caseABinopBoolExpr(ABinopBoolExpr node)
     {
-        inABoolExpr(node);
-        if(node.getExpression() != null)
+        inABinopBoolExpr(node);
+        if(node.getBinopExpr() != null)
         {
-            node.getExpression().apply(this);
+            node.getBinopExpr().apply(this);
         }
-        outABoolExpr(node);
+        outABinopBoolExpr(node);
+    }
+
+    public void inAUnopBoolExpr(AUnopBoolExpr node)
+    {
+    }
+
+    public void outAUnopBoolExpr(AUnopBoolExpr node)
+    {
+    }
+
+    public void caseAUnopBoolExpr(AUnopBoolExpr node)
+    {
+        inAUnopBoolExpr(node);
+        if(node.getUnopExpr() != null)
+        {
+            node.getUnopExpr().apply(this);
+        }
+        outAUnopBoolExpr(node);
     }
 
     public void inANonstaticInvokeExpr(ANonstaticInvokeExpr node)
@@ -1891,6 +1987,54 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getStaticinvoke().apply(this);
         }
         outAStaticInvokeExpr(node);
+    }
+
+    public void inABinopExpr(ABinopExpr node)
+    {
+    }
+
+    public void outABinopExpr(ABinopExpr node)
+    {
+    }
+
+    public void caseABinopExpr(ABinopExpr node)
+    {
+        inABinopExpr(node);
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        if(node.getBinop() != null)
+        {
+            node.getBinop().apply(this);
+        }
+        if(node.getLeft() != null)
+        {
+            node.getLeft().apply(this);
+        }
+        outABinopExpr(node);
+    }
+
+    public void inAUnopExpr(AUnopExpr node)
+    {
+    }
+
+    public void outAUnopExpr(AUnopExpr node)
+    {
+    }
+
+    public void caseAUnopExpr(AUnopExpr node)
+    {
+        inAUnopExpr(node);
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        if(node.getUnop() != null)
+        {
+            node.getUnop().apply(this);
+        }
+        outAUnopExpr(node);
     }
 
     public void inASpecialNonstaticInvoke(ASpecialNonstaticInvoke node)
@@ -2052,17 +2196,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseAArrayRef(AArrayRef node)
     {
         inAArrayRef(node);
-        if(node.getRBracket() != null)
+        if(node.getFixedArrayDescriptor() != null)
         {
-            node.getRBracket().apply(this);
-        }
-        if(node.getImmediate() != null)
-        {
-            node.getImmediate().apply(this);
-        }
-        if(node.getLBracket() != null)
-        {
-            node.getLBracket().apply(this);
+            node.getFixedArrayDescriptor().apply(this);
         }
         if(node.getLocalName() != null)
         {
@@ -2155,6 +2291,32 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getCmplt().apply(this);
         }
         outAFieldSignature(node);
+    }
+
+    public void inAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+    }
+
+    public void outAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+    }
+
+    public void caseAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+        inAFixedArrayDescriptor(node);
+        if(node.getRBracket() != null)
+        {
+            node.getRBracket().apply(this);
+        }
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        if(node.getLBracket() != null)
+        {
+            node.getLBracket().apply(this);
+        }
+        outAFixedArrayDescriptor(node);
     }
 
     public void inASingleArgList(ASingleArgList node)

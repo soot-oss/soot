@@ -466,6 +466,10 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getRParen().apply(this);
         }
+        if(node.getThrowsClause() != null)
+        {
+            node.getThrowsClause().apply(this);
+        }
         if(node.getMethodBody() != null)
         {
             node.getMethodBody().apply(this);
@@ -569,6 +573,28 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getNonvoidType().apply(this);
         }
         outAParameter(node);
+    }
+
+    public void inAThrowsClause(AThrowsClause node)
+    {
+    }
+
+    public void outAThrowsClause(AThrowsClause node)
+    {
+    }
+
+    public void caseAThrowsClause(AThrowsClause node)
+    {
+        inAThrowsClause(node);
+        if(node.getThrows() != null)
+        {
+            node.getThrows().apply(this);
+        }
+        if(node.getNameList() != null)
+        {
+            node.getNameList().apply(this);
+        }
+        outAThrowsClause(node);
     }
 
     public void inABooleanBaseType(ABooleanBaseType node)
@@ -1653,17 +1679,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseABinopExpression(ABinopExpression node)
     {
         inABinopExpression(node);
-        if(node.getLeft() != null)
+        if(node.getBinopExpr() != null)
         {
-            node.getLeft().apply(this);
-        }
-        if(node.getBinop() != null)
-        {
-            node.getBinop().apply(this);
-        }
-        if(node.getRight() != null)
-        {
-            node.getRight().apply(this);
+            node.getBinopExpr().apply(this);
         }
         outABinopExpression(node);
     }
@@ -1679,13 +1697,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAUnopExpression(AUnopExpression node)
     {
         inAUnopExpression(node);
-        if(node.getUnop() != null)
+        if(node.getUnopExpr() != null)
         {
-            node.getUnop().apply(this);
-        }
-        if(node.getImmediate() != null)
-        {
-            node.getImmediate().apply(this);
+            node.getUnopExpr().apply(this);
         }
         outAUnopExpression(node);
     }
@@ -1708,17 +1722,17 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAImmediateExpression(node);
     }
 
-    public void inANewExpr(ANewExpr node)
+    public void inASimpleNewExpr(ASimpleNewExpr node)
     {
     }
 
-    public void outANewExpr(ANewExpr node)
+    public void outASimpleNewExpr(ASimpleNewExpr node)
     {
     }
 
-    public void caseANewExpr(ANewExpr node)
+    public void caseASimpleNewExpr(ASimpleNewExpr node)
     {
-        inANewExpr(node);
+        inASimpleNewExpr(node);
         if(node.getNew() != null)
         {
             node.getNew().apply(this);
@@ -1727,6 +1741,70 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getBaseType().apply(this);
         }
+        outASimpleNewExpr(node);
+    }
+
+    public void inAArrayNewExpr(AArrayNewExpr node)
+    {
+    }
+
+    public void outAArrayNewExpr(AArrayNewExpr node)
+    {
+    }
+
+    public void caseAArrayNewExpr(AArrayNewExpr node)
+    {
+        inAArrayNewExpr(node);
+        if(node.getNewarray() != null)
+        {
+            node.getNewarray().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getNonvoidType() != null)
+        {
+            node.getNonvoidType().apply(this);
+        }
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
+        if(node.getFixedArrayDescriptor() != null)
+        {
+            node.getFixedArrayDescriptor().apply(this);
+        }
+        outAArrayNewExpr(node);
+    }
+
+    public void inAMultiNewExpr(AMultiNewExpr node)
+    {
+    }
+
+    public void outAMultiNewExpr(AMultiNewExpr node)
+    {
+    }
+
+    public void caseAMultiNewExpr(AMultiNewExpr node)
+    {
+        inAMultiNewExpr(node);
+        if(node.getNewmultiarray() != null)
+        {
+            node.getNewmultiarray().apply(this);
+        }
+        if(node.getLParen() != null)
+        {
+            node.getLParen().apply(this);
+        }
+        if(node.getBaseType() != null)
+        {
+            node.getBaseType().apply(this);
+        }
+        if(node.getRParen() != null)
+        {
+            node.getRParen().apply(this);
+        }
         {
             Object temp[] = node.getArrayDescriptor().toArray();
             for(int i = 0; i < temp.length; i++)
@@ -1734,7 +1812,7 @@ public class DepthFirstAdapter extends AnalysisAdapter
                 ((PArrayDescriptor) temp[i]).apply(this);
             }
         }
-        outANewExpr(node);
+        outAMultiNewExpr(node);
     }
 
     public void inAArrayDescriptor(AArrayDescriptor node)
@@ -1799,22 +1877,40 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outALocalVariable(node);
     }
 
-    public void inABoolExpr(ABoolExpr node)
+    public void inABinopBoolExpr(ABinopBoolExpr node)
     {
     }
 
-    public void outABoolExpr(ABoolExpr node)
+    public void outABinopBoolExpr(ABinopBoolExpr node)
     {
     }
 
-    public void caseABoolExpr(ABoolExpr node)
+    public void caseABinopBoolExpr(ABinopBoolExpr node)
     {
-        inABoolExpr(node);
-        if(node.getExpression() != null)
+        inABinopBoolExpr(node);
+        if(node.getBinopExpr() != null)
         {
-            node.getExpression().apply(this);
+            node.getBinopExpr().apply(this);
         }
-        outABoolExpr(node);
+        outABinopBoolExpr(node);
+    }
+
+    public void inAUnopBoolExpr(AUnopBoolExpr node)
+    {
+    }
+
+    public void outAUnopBoolExpr(AUnopBoolExpr node)
+    {
+    }
+
+    public void caseAUnopBoolExpr(AUnopBoolExpr node)
+    {
+        inAUnopBoolExpr(node);
+        if(node.getUnopExpr() != null)
+        {
+            node.getUnopExpr().apply(this);
+        }
+        outAUnopBoolExpr(node);
     }
 
     public void inANonstaticInvokeExpr(ANonstaticInvokeExpr node)
@@ -1891,6 +1987,54 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getRParen().apply(this);
         }
         outAStaticInvokeExpr(node);
+    }
+
+    public void inABinopExpr(ABinopExpr node)
+    {
+    }
+
+    public void outABinopExpr(ABinopExpr node)
+    {
+    }
+
+    public void caseABinopExpr(ABinopExpr node)
+    {
+        inABinopExpr(node);
+        if(node.getLeft() != null)
+        {
+            node.getLeft().apply(this);
+        }
+        if(node.getBinop() != null)
+        {
+            node.getBinop().apply(this);
+        }
+        if(node.getRight() != null)
+        {
+            node.getRight().apply(this);
+        }
+        outABinopExpr(node);
+    }
+
+    public void inAUnopExpr(AUnopExpr node)
+    {
+    }
+
+    public void outAUnopExpr(AUnopExpr node)
+    {
+    }
+
+    public void caseAUnopExpr(AUnopExpr node)
+    {
+        inAUnopExpr(node);
+        if(node.getUnop() != null)
+        {
+            node.getUnop().apply(this);
+        }
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        outAUnopExpr(node);
     }
 
     public void inASpecialNonstaticInvoke(ASpecialNonstaticInvoke node)
@@ -2056,17 +2200,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getLocalName().apply(this);
         }
-        if(node.getLBracket() != null)
+        if(node.getFixedArrayDescriptor() != null)
         {
-            node.getLBracket().apply(this);
-        }
-        if(node.getImmediate() != null)
-        {
-            node.getImmediate().apply(this);
-        }
-        if(node.getRBracket() != null)
-        {
-            node.getRBracket().apply(this);
+            node.getFixedArrayDescriptor().apply(this);
         }
         outAArrayRef(node);
     }
@@ -2155,6 +2291,32 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getCmpgt().apply(this);
         }
         outAFieldSignature(node);
+    }
+
+    public void inAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+    }
+
+    public void outAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+    }
+
+    public void caseAFixedArrayDescriptor(AFixedArrayDescriptor node)
+    {
+        inAFixedArrayDescriptor(node);
+        if(node.getLBracket() != null)
+        {
+            node.getLBracket().apply(this);
+        }
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        if(node.getRBracket() != null)
+        {
+            node.getRBracket().apply(this);
+        }
+        outAFixedArrayDescriptor(node);
     }
 
     public void inASingleArgList(ASingleArgList node)

@@ -11,6 +11,7 @@ public final class AMethodMember extends PMember
     private TLParen _lParen_;
     private PParameterList _parameterList_;
     private TRParen _rParen_;
+    private PThrowsClause _throwsClause_;
     private PMethodBody _methodBody_;
 
     public AMethodMember()
@@ -24,6 +25,7 @@ public final class AMethodMember extends PMember
         TLParen _lParen_,
         PParameterList _parameterList_,
         TRParen _rParen_,
+        PThrowsClause _throwsClause_,
         PMethodBody _methodBody_)
     {
         {
@@ -44,6 +46,8 @@ public final class AMethodMember extends PMember
 
         setRParen(_rParen_);
 
+        setThrowsClause(_throwsClause_);
+
         setMethodBody(_methodBody_);
 
     }
@@ -55,6 +59,7 @@ public final class AMethodMember extends PMember
         TLParen _lParen_,
         PParameterList _parameterList_,
         TRParen _rParen_,
+        PThrowsClause _throwsClause_,
         PMethodBody _methodBody_)
     {
         if(_modifier_ != null)
@@ -77,6 +82,8 @@ public final class AMethodMember extends PMember
 
         setRParen(_rParen_);
 
+        setThrowsClause(_throwsClause_);
+
         setMethodBody(_methodBody_);
 
     }
@@ -89,6 +96,7 @@ public final class AMethodMember extends PMember
             (TLParen) cloneNode(_lParen_),
             (PParameterList) cloneNode(_parameterList_),
             (TRParen) cloneNode(_rParen_),
+            (PThrowsClause) cloneNode(_throwsClause_),
             (PMethodBody) cloneNode(_methodBody_));
     }
 
@@ -236,6 +244,31 @@ public final class AMethodMember extends PMember
         _rParen_ = node;
     }
 
+    public PThrowsClause getThrowsClause()
+    {
+        return _throwsClause_;
+    }
+
+    public void setThrowsClause(PThrowsClause node)
+    {
+        if(_throwsClause_ != null)
+        {
+            _throwsClause_.parent(null);
+        }
+
+        if(node != null)
+        {
+            if(node.parent() != null)
+            {
+                node.parent().removeChild(node);
+            }
+
+            node.parent(this);
+        }
+
+        _throwsClause_ = node;
+    }
+
     public PMethodBody getMethodBody()
     {
         return _methodBody_;
@@ -270,6 +303,7 @@ public final class AMethodMember extends PMember
             + toString(_lParen_)
             + toString(_parameterList_)
             + toString(_rParen_)
+            + toString(_throwsClause_)
             + toString(_methodBody_);
     }
 
@@ -307,6 +341,12 @@ public final class AMethodMember extends PMember
         if(_rParen_ == child)
         {
             _rParen_ = null;
+            return;
+        }
+
+        if(_throwsClause_ == child)
+        {
+            _throwsClause_ = null;
             return;
         }
 
@@ -364,6 +404,12 @@ public final class AMethodMember extends PMember
         if(_rParen_ == oldChild)
         {
             setRParen((TRParen) newChild);
+            return;
+        }
+
+        if(_throwsClause_ == oldChild)
+        {
+            setThrowsClause((PThrowsClause) newChild);
             return;
         }
 

@@ -5,32 +5,22 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class ABinopExpression extends PExpression
 {
-    private PImmediate _left_;
-    private PBinop _binop_;
-    private PImmediate _right_;
+    private PBinopExpr _binopExpr_;
 
     public ABinopExpression()
     {
     }
 
     public ABinopExpression(
-        PImmediate _left_,
-        PBinop _binop_,
-        PImmediate _right_)
+        PBinopExpr _binopExpr_)
     {
-        setLeft(_left_);
-
-        setBinop(_binop_);
-
-        setRight(_right_);
+        setBinopExpr(_binopExpr_);
 
     }
     public Object clone()
     {
         return new ABinopExpression(
-            (PImmediate) cloneNode(_left_),
-            (PBinop) cloneNode(_binop_),
-            (PImmediate) cloneNode(_right_));
+            (PBinopExpr) cloneNode(_binopExpr_));
     }
 
     public void apply(Switch sw)
@@ -38,16 +28,16 @@ public final class ABinopExpression extends PExpression
         ((Analysis) sw).caseABinopExpression(this);
     }
 
-    public PImmediate getLeft()
+    public PBinopExpr getBinopExpr()
     {
-        return _left_;
+        return _binopExpr_;
     }
 
-    public void setLeft(PImmediate node)
+    public void setBinopExpr(PBinopExpr node)
     {
-        if(_left_ != null)
+        if(_binopExpr_ != null)
         {
-            _left_.parent(null);
+            _binopExpr_.parent(null);
         }
 
         if(node != null)
@@ -60,84 +50,20 @@ public final class ABinopExpression extends PExpression
             node.parent(this);
         }
 
-        _left_ = node;
-    }
-
-    public PBinop getBinop()
-    {
-        return _binop_;
-    }
-
-    public void setBinop(PBinop node)
-    {
-        if(_binop_ != null)
-        {
-            _binop_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _binop_ = node;
-    }
-
-    public PImmediate getRight()
-    {
-        return _right_;
-    }
-
-    public void setRight(PImmediate node)
-    {
-        if(_right_ != null)
-        {
-            _right_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _right_ = node;
+        _binopExpr_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_left_)
-            + toString(_binop_)
-            + toString(_right_);
+            + toString(_binopExpr_);
     }
 
     void removeChild(Node child)
     {
-        if(_left_ == child)
+        if(_binopExpr_ == child)
         {
-            _left_ = null;
-            return;
-        }
-
-        if(_binop_ == child)
-        {
-            _binop_ = null;
-            return;
-        }
-
-        if(_right_ == child)
-        {
-            _right_ = null;
+            _binopExpr_ = null;
             return;
         }
 
@@ -145,21 +71,9 @@ public final class ABinopExpression extends PExpression
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_left_ == oldChild)
+        if(_binopExpr_ == oldChild)
         {
-            setLeft((PImmediate) newChild);
-            return;
-        }
-
-        if(_binop_ == oldChild)
-        {
-            setBinop((PBinop) newChild);
-            return;
-        }
-
-        if(_right_ == oldChild)
-        {
-            setRight((PImmediate) newChild);
+            setBinopExpr((PBinopExpr) newChild);
             return;
         }
 

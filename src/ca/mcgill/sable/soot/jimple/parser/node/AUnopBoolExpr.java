@@ -3,15 +3,15 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class AUnopExpression extends PExpression
+public final class AUnopBoolExpr extends PBoolExpr
 {
     private PUnopExpr _unopExpr_;
 
-    public AUnopExpression()
+    public AUnopBoolExpr()
     {
     }
 
-    public AUnopExpression(
+    public AUnopBoolExpr(
         PUnopExpr _unopExpr_)
     {
         setUnopExpr(_unopExpr_);
@@ -19,13 +19,13 @@ public final class AUnopExpression extends PExpression
     }
     public Object clone()
     {
-        return new AUnopExpression(
+        return new AUnopBoolExpr(
             (PUnopExpr) cloneNode(_unopExpr_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAUnopExpression(this);
+        ((Analysis) sw).caseAUnopBoolExpr(this);
     }
 
     public PUnopExpr getUnopExpr()

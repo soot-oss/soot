@@ -68,6 +68,12 @@
 
  B) Changes:
 
+ - Modified on April 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*) 
+   Split off the aggregate method into its own classfile.
+   Split off packLocals() method into the class LocalPacker Transformations.java
+   Added a standardizeStackLocalNames().
+   
+   
  - Modified on March 25, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    1. Changed the aggregator to proceed in pseudo topological order.  Failure
    to do this introduces possible bugs.
@@ -278,8 +284,9 @@ public class Transformations
         //stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
     }
 
-    public static void renameLocals(StmtBody body)
+    public static void standardizeStackLocalNames(StmtBody body)
     {
+        boolean saveStackName = true;
         StmtList stmtList = body.getStmtList();
 
         // Change the names to the standard forms now.
@@ -298,379 +305,85 @@ public class Transformations
             while(localIt.hasNext())
             {
                 Local l = (Local) localIt.next();
-
+                String prefix = "";
+                
+                if(l.getName().startsWith("$"))
+                    prefix = "$";
+                else
+                    continue;
+                    
                 if(l.getType().equals(IntType.v()))
-                    l.setName("i" + intCount++);
+                    l.setName(prefix + "i" + intCount++);
                 else if(l.getType().equals(LongType.v()))
-                    l.setName("l" + longCount++);
+                    l.setName(prefix + "l" + longCount++);
                 else if(l.getType().equals(DoubleType.v()))
-                    l.setName("d" + doubleCount++);
+                    l.setName(prefix + "d" + doubleCount++);
                 else if(l.getType().equals(FloatType.v()))
-                    l.setName("f" + floatCount++);
+                    l.setName(prefix + "f" + floatCount++);
                 else if(l.getType().equals(StmtAddressType.v()))
-                    l.setName("a" + addressCount++);
+                    l.setName(prefix + "a" + addressCount++);
                 else if(l.getType().equals(ErroneousType.v()) ||
                     l.getType().equals(UnknownType.v()))
                 {
-                    l.setName("e" + errorCount++);
+                    l.setName(prefix + "e" + errorCount++);
                 }
                 else if(l.getType().equals(NullType.v()))
-                    l.setName("n" + nullCount++);
+                    l.setName(prefix + "n" + nullCount++);
                 else
-                    l.setName("r" + objectCount++);
+                    l.setName(prefix + "r" + objectCount++);
             }
         }
-    }
-
-  public static int nodeCount = 0;
-  public static int aggrCount = 0;
-
-
-
-  /** Traverse the statements in the given body, looking for
-   *  aggregation possibilities; that is, given a def d and a use u,
-   *  d has no other uses, u has no other defs, collapse d and u. */
-   
-    public static void aggregate(StmtBody body)
-    {
-        int aggregateCount = 1;
-
-        if(Main.isProfilingOptimization)
-            Main.aggregationTimer.start();
-         boolean changed = false;
-             
-        do {
-            if(Main.isVerbose)
-                System.out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
-        
-            changed = internalAggregate(body);
-            
-            aggregateCount++;
-        } while(changed);
-        
-        if(Main.isProfilingOptimization)
-            Main.aggregationTimer.end();
-            
-    }
-  
-  private static boolean internalAggregate(StmtBody body)
-    {
-      Iterator stmtIt;
-      LocalUses localUses;
-      LocalDefs localDefs;
-      CompleteStmtGraph graph;
-      boolean hadAggregation = false;
-      StmtList stmtList = body.getStmtList();
-      
-
-      graph = new CompleteStmtGraph(stmtList);
-      localDefs = new SimpleLocalDefs(graph);
-      localUses = new SimpleLocalUses(graph, localDefs);
-          
-      stmtIt = graph.pseudoTopologicalOrderIterator();
-      
-      while (stmtIt.hasNext())
-        {
-          Stmt s = (Stmt)(stmtIt.next());
-              
-          /* could this be definitionStmt instead? */
-          if (!(s instanceof AssignStmt))
-            continue;
-          
-          Value lhs = ((AssignStmt)s).getLeftOp();
-          if (!(lhs instanceof Local))
-            continue;
-          
-          List lu = localUses.getUsesOf((AssignStmt)s);
-          if (lu.size() != 1)
-            continue;
-            
-          StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
-          Stmt use = usepair.stmt;
-          ValueBox useBox = usepair.valueBox;
-              
-          List ld = localDefs.getDefsOfAt((Local)lhs, use);
-          if (ld.size() != 1)
-            continue;
-   
-          /* we need to check the path between def and use */
-          /* to see if there are any intervening re-defs of RHS */
-          /* in fact, we should check that this path is unique. */
-          /* if the RHS uses only locals, then we know what
-             to do; if RHS has a method invocation f(a, b,
-             c) or field access, we must ban field writes, other method
-             calls and (as usual) writes to a, b, c. */
-          
-          boolean cantAggr = false;
-          boolean propagatingInvokeExpr = false;
-          boolean propagatingFieldRef = false;
-          boolean propagatingArrayRef = false;
-          FieldRef fieldRef = null;
-      
-          Value rhs = ((AssignStmt)s).getRightOp();
-          LinkedList localsUsed = new LinkedList();
-          for (Iterator useIt = (s.getUseBoxes()).iterator();
-               useIt.hasNext(); )
-            {
-              Value v = ((ValueBox)(useIt.next())).getValue();
-                if (v instanceof Local)
-                    localsUsed.add(v);
-                else if (v instanceof InvokeExpr)
-                    propagatingInvokeExpr = true;
-                else if(v instanceof ArrayRef)
-                    propagatingArrayRef = true;
-                else if(v instanceof FieldRef)
-                {
-                    propagatingFieldRef = true;
-                    fieldRef = (FieldRef) v;
-                }
-            }
-          
-          // look for a path from s to use in graph.
-          // only look in an extended basic block, though.
-
-          List path = graph.getExtendedBasicBlockPathBetween(s, use);
-      
-          if (path == null)
-            continue;
-
-          Iterator pathIt = path.iterator();
-
-          // skip s.
-          if (pathIt.hasNext())
-            pathIt.next();
-
-          while (pathIt.hasNext() && !cantAggr)
-          {
-              Stmt between = (Stmt)(pathIt.next());
-          
-              if(between != use)    
-              {
-                // Check for killing definitions
-                
-                for (Iterator it = between.getDefBoxes().iterator();
-                       it.hasNext(); )
-                  {
-                      Value v = ((ValueBox)(it.next())).getValue();
-                      if (localsUsed.contains(v))
-                      { 
-                            cantAggr = true; 
-                            break; 
-                      }
-                      
-                      if (propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
-                      {
-                          if (v instanceof FieldRef)
-                          {
-                              if(propagatingInvokeExpr)
-                              {
-                                  cantAggr = true; 
-                                  break;
-                              }
-                              else if(propagatingFieldRef)
-                              {
-                                  // Can't aggregate a field access if passing a definition of a field 
-                                  // with the same name, because they might be aliased
-                            
-                                  if(((FieldRef) v).getField() == fieldRef.getField())
-                                  {
-                                      cantAggr = true;
-                                      break;
-                                  } 
-                              } 
-                           }
-                           else if(v instanceof ArrayRef)
-                           {
-                                if(propagatingInvokeExpr)
-                                {   
-                                    // Cannot aggregate an invoke expr past an array write
-                                    cantAggr = true;
-                                    break;
-                                }
-                                else if(propagatingArrayRef)
-                                {
-                                    // cannot aggregate an array read past a write
-                                    // this is somewhat conservative
-                                    // (if types differ they may not be aliased)
-                                    
-                                    cantAggr = true;
-                                    break;
-                                }
-                           }
-                      }
-                  }
-              }  
-              
-              // Check for intervening side effects due to method calls
-                if(propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
-                    {
-                      for (Iterator useIt = (between.getUseBoxes()).iterator();
-                           useIt.hasNext(); )
-                        {
-                          ValueBox box = (ValueBox) useIt.next();
-                          
-                          if(between == use && box == useBox)
-                          {
-                                // Reached use point, stop looking for
-                                // side effects
-                                break;
-                          }
-                          
-                          Value v = box.getValue();
-                          
-                          if (v instanceof InvokeExpr)
-                            cantAggr = true;
-                        }
-                    }
-            }
-
-          // we give up: can't aggregate.
-          if (cantAggr)
-          {
-            continue;
-          }
-          /* assuming that the d-u chains are correct, */
-          /* we need not check the actual contents of ld */
-          
-          Value aggregatee = ((AssignStmt)s).getRightOp();
-          
-          if (usepair.valueBox.canContainValue(aggregatee))
-            {
-              usepair.valueBox.setValue(aggregatee);
-              body.eliminateBackPointersTo(s);
-              stmtList.remove(s);
-              hadAggregation = true;
-              aggrCount++;
-            }
-          else
-            {/*
-            if(Main.isVerbose)
-            {
-                System.out.println("[debug] failed aggregation");
-                  System.out.println("[debug] tried to put "+aggregatee+
-                                 " into "+usepair.stmt + 
-                                 ": in particular, "+usepair.valueBox);
-                  System.out.println("[debug] aggregatee instanceof Expr: "
-                                 +(aggregatee instanceof Expr));
-            }*/
-            }
-        }
-      return hadAggregation;
     }
     
-    public static void packLocals(StmtBody body)
+    public static void standardizeLocalNames(StmtBody body)
     {
-        Map localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map localToNewLocal;
-        
-        // Assign each local to a group, and set that group's color count to 0.
+        boolean saveStackName = true;
+        StmtList stmtList = body.getStmtList();
+
+        // Change the names to the standard forms now.
         {
+            int objectCount = 0;
+            int intCount = 0;
+            int longCount = 0;
+            int floatCount = 0;
+            int doubleCount = 0;
+            int addressCount = 0;
+            int errorCount = 0;
+            int nullCount = 0;
+
             Iterator localIt = body.getLocals().iterator();
 
             while(localIt.hasNext())
             {
                 Local l = (Local) localIt.next();
-                Object g = l.getType();
+                String prefix = "";
                 
-                localToGroup.put(l, g);
+                if(l.getName().startsWith("$"))
+                    prefix = "$";
                 
-                if(!groupToColorCount.containsKey(g))
+                if(l.getType().equals(IntType.v()))
+                    l.setName(prefix + "i" + intCount++);
+                else if(l.getType().equals(LongType.v()))
+                    l.setName(prefix + "l" + longCount++);
+                else if(l.getType().equals(DoubleType.v()))
+                    l.setName(prefix + "d" + doubleCount++);
+                else if(l.getType().equals(FloatType.v()))
+                    l.setName(prefix + "f" + floatCount++);
+                else if(l.getType().equals(StmtAddressType.v()))
+                    l.setName(prefix + "a" + addressCount++);
+                else if(l.getType().equals(ErroneousType.v()) ||
+                    l.getType().equals(UnknownType.v()))
                 {
-                    groupToColorCount.put(g, new Integer(0));
+                    l.setName(prefix + "e" + errorCount++);
                 }
+                else if(l.getType().equals(NullType.v()))
+                    l.setName(prefix + "n" + nullCount++);
+                else
+                    l.setName(prefix + "r" + objectCount++);
             }
         }
-
-        // Assign colors to the parameter locals.
-        {
-            Iterator codeIt = body.getStmtList().iterator();
-
-            while(codeIt.hasNext())
-            {
-                Stmt s = (Stmt) codeIt.next();
-
-                if(s instanceof IdentityStmt &&
-                    ((IdentityStmt) s).getLeftOp() instanceof Local)
-                {
-                    Local l = (Local) ((IdentityStmt) s).getLeftOp();
-                    
-                    Object group = localToGroup.get(l);
-                    int count = ((Integer) groupToColorCount.get(group)).intValue();
-                    
-                    localToColor.put(l, new Integer(count));
-                    
-                    count++;
-                    
-                    groupToColorCount.put(group, new Integer(count));
-                }
-            }
-        }
-        
-        // Call the graph colorer.
-            FastColorer.assignColorsToLocals(body, localToGroup,
-                localToColor, groupToColorCount);
-                    
-        // Map each local to a new local.
-        {
-            List originalLocals = new ArrayList();
-            localToNewLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-            Map groupIntToLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-            
-            originalLocals.addAll(body.getLocals());
-            body.getLocals().clear();
-
-            Iterator localIt = originalLocals.iterator();
-
-            while(localIt.hasNext())
-            {
-                Local original = (Local) localIt.next();
-                
-                Object group = localToGroup.get(original);
-                int color = ((Integer) localToColor.get(original)).intValue();
-                GroupIntPair pair = new GroupIntPair(group, color);
-                
-                Local newLocal;
-                
-                if(groupIntToLocal.containsKey(pair))
-                    newLocal = (Local) groupIntToLocal.get(pair);
-                else {
-                    newLocal = (Local) original.clone();
-                    newLocal.setType((Type) group);
-                    
-                    groupIntToLocal.put(pair, newLocal);
-                    body.getLocals().add(newLocal);
-                }
-                
-                localToNewLocal.put(original, newLocal);
-            }
-        }
-
-        
-        // Go through all valueBoxes of this method and perform changes
-        {
-            Iterator codeIt = body.getStmtList().iterator();
-
-            while(codeIt.hasNext())
-            {
-                Stmt s = (Stmt) codeIt.next();
-
-                Iterator boxIt = s.getUseAndDefBoxes().iterator();
-
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-
-                    if(box.getValue() instanceof Local)
-                    {
-                        Local l = (Local) box.getValue();
-                        box.setValue((Local) localToNewLocal.get(l));
-                    }
-                }
-            }
-        }
-    }
-    
-        
+    }        
 }
+
+
+

@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Baf, a Java(TM) bytecode analyzer framework.                      *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -61,11 +61,14 @@
 
  B) Changes:
 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added a debug option.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
@@ -73,36 +76,24 @@ package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import java.io.*;
 
-public class Baf implements BodyRepresentation
+public class PrintBafBodyOption
 {
-    private static Baf bafRepresentation = new Baf();
+    public static final int USE_ABBREVIATIONS = 0x0001,
+                            DEBUG_MODE        = 0x0002;
 
-    private Baf()
+    protected PrintBafBodyOption()
     {
     }
 
-    
-    public static Baf v()
+    public static boolean useAbbreviations(int m)
     {
-        return bafRepresentation;
-    }
-
-    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
-    {
-        return new BafBody(m, sourceBody);
+        return (m & USE_ABBREVIATIONS) != 0;
     }
     
-    
-    /**
-        Constructs a Local with the given name and type.
-    */
-
-    public Local newLocal(String name, Type t)
+    public static boolean debugMode(int m)
     {
-        return new BafLocal(name, t);
+        return (m & DEBUG_MODE) != 0;
     }
-
 }
-
-

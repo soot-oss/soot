@@ -3,41 +3,41 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class AUnopExpression extends PExpression
+public final class ABinopBoolExpr extends PBoolExpr
 {
-    private PUnopExpr _unopExpr_;
+    private PBinopExpr _binopExpr_;
 
-    public AUnopExpression()
+    public ABinopBoolExpr()
     {
     }
 
-    public AUnopExpression(
-        PUnopExpr _unopExpr_)
+    public ABinopBoolExpr(
+        PBinopExpr _binopExpr_)
     {
-        setUnopExpr(_unopExpr_);
+        setBinopExpr(_binopExpr_);
 
     }
     public Object clone()
     {
-        return new AUnopExpression(
-            (PUnopExpr) cloneNode(_unopExpr_));
+        return new ABinopBoolExpr(
+            (PBinopExpr) cloneNode(_binopExpr_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAUnopExpression(this);
+        ((Analysis) sw).caseABinopBoolExpr(this);
     }
 
-    public PUnopExpr getUnopExpr()
+    public PBinopExpr getBinopExpr()
     {
-        return _unopExpr_;
+        return _binopExpr_;
     }
 
-    public void setUnopExpr(PUnopExpr node)
+    public void setBinopExpr(PBinopExpr node)
     {
-        if(_unopExpr_ != null)
+        if(_binopExpr_ != null)
         {
-            _unopExpr_.parent(null);
+            _binopExpr_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class AUnopExpression extends PExpression
             node.parent(this);
         }
 
-        _unopExpr_ = node;
+        _binopExpr_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_unopExpr_);
+            + toString(_binopExpr_);
     }
 
     void removeChild(Node child)
     {
-        if(_unopExpr_ == child)
+        if(_binopExpr_ == child)
         {
-            _unopExpr_ = null;
+            _binopExpr_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class AUnopExpression extends PExpression
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_unopExpr_ == oldChild)
+        if(_binopExpr_ == oldChild)
         {
-            setUnopExpr((PUnopExpr) newChild);
+            setBinopExpr((PBinopExpr) newChild);
             return;
         }
 

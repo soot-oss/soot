@@ -224,8 +224,13 @@ public class JimpleBody implements StmtBody
                     Main.assignTimer.start();
 
                 // Jimple.printStmtListBody_debug(this, System.out);
+                //System.out.println("before typing");
+                //printTo(new PrintWriter(System.out, true));
                 Transformations.assignTypesToLocals(this);
 
+                //System.out.println("after typing");
+                //printTo(new PrintWriter(System.out, true));
+                
                 if(typingFailed())
                 {
                     patchForTyping();
@@ -246,43 +251,36 @@ public class JimpleBody implements StmtBody
                 }
             }
         }
+        
+        //printTo(new PrintWriter(System.out, true));
+        
         if(!BuildJimpleBodyOption.noCleanup(buildOptions))
         {
-            Transformations.cleanupCode(this);
-            Transformations.removeUnusedLocals(this);
-
+            //ConstantAndCopyPropagator.conservativelyPropagateConstantsAndCopies(this);
+            //DeadCodeEliminator.eliminateDeadCode(this);
+            //Transformations.removeUnusedLocals(this);
         }
 
 	    if(!BuildJimpleBodyOption.noAggregating(buildOptions))
 	    {
- 	        Transformations.aggregate(this);
+ 	        Aggregator.conservativelyAggregate(this);
  	        Transformations.removeUnusedLocals(this);            
 	    }
 
-            Transformations.renameLocals(this);
-            
+        if(!BuildJimpleBodyOption.useOriginalNames(buildOptions))
+            Transformations.standardizeLocalNames(this);
+        else
+        {   
+            LocalPacker.conservativelyPackLocals(this);
+            Transformations.standardizeStackLocalNames(this);
+        }
+        
         //printDebugTo(new PrintWriter(System.out, true));
         
-/*
-            if(!BuildJimpleBodyOption.noPacking(buildOptions))
-            {
-                if(Main.isProfilingOptimization)
-                    Main.packTimer.start();
-
-                Transformations.packLocals(this);
-                
-                //FastAllocator.packLocals(this);
-                Transformations.removeUnusedLocals(this);
-
-                if(Main.isProfilingOptimization)
-                {
-                    Main.packLocalCount += getLocalCount();
-                    Main.packStmtCount += stmtList.size();
-
-                    Main.packTimer.end();
-                }
-            }
-*/
+        if(BuildJimpleBodyOption.usePacking(buildOptions))
+        {
+            LocalPacker.packLocals(this);
+        }
 
             /*
             if(!Main.noCleanUp)
@@ -317,7 +315,6 @@ public class JimpleBody implements StmtBody
         
         Transformations.cleanupCode(this);
         Transformations.removeUnusedLocals(this);
-        Transformations.renameLocals(this);
         
         while(stmtIt.hasNext())
         {
@@ -568,50 +565,9 @@ public class JimpleBody implements StmtBody
 
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
 
-        // Print out method name plus parameters
-        {
-            StringBuffer buffer = new StringBuffer();
-
-            buffer.append(Modifier.toString(method.getModifiers()));
-
-            if(buffer.length() != 0)
-                buffer.append(" ");
-
-            buffer.append(method.getReturnType().toString() + " '" + method.getName() + "'");
-            buffer.append("(");
-
-            Iterator typeIt = method.getParameterTypes().iterator();
-
-            if(typeIt.hasNext())
-            {
-                buffer.append(typeIt.next());
-
-                while(typeIt.hasNext())
-                {
-                    buffer.append(", ");
-                    buffer.append(typeIt.next());
-                }
-            }
-
-            buffer.append(")");
-
-            out.print("    " + buffer.toString());
-        }
-
-        out.println();
+        out.println("    " + method.getDeclaration());        
         out.println("    {");
 
-        /*
-        // Print out local variables
-        {
-            Local[] locals = getLocals();
-
-            for(int j = 0; j < locals.length; j++)
-                out.println("        " + locals[j].getType().toString() + " " +
-                    locals[j].getName());
-        }
-
-        */
 
         // Print out local variables
         {

@@ -1,40 +1,10 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * This work was done as a project of the Sable Research Group,      *
- * School of Computer Science, McGill University, Canada             *
- * (http://www.sable.mcgill.ca/).  It is understood that any         *
- * modification not identified as such is not covered by the         *
- * preceding statement.                                              *
- *                                                                   *
- * This work is free software; you can redistribute it and/or        *
- * modify it under the terms of the GNU Library General Public       *
- * License as published by the Free Software Foundation; either      *
- * version 2 of the License, or (at your option) any later version.  *
- *                                                                   *
- * This work is distributed in the hope that it will be useful,      *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of    *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU *
- * Library General Public License for more details.                  *
- *                                                                   *
- * You should have received a copy of the GNU Library General Public *
- * License along with this library; if not, write to the             *
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,      *
- * Boston, MA  02111-1307, USA.                                      *
- *                                                                   *
- * Java is a trademark of Sun Microsystems, Inc.                     *
- *                                                                   *
- * To submit a bug report, send a comment, or get the latest news on *
- * this project and other Sable Research Group projects, please      *
- * visit the web site: http://www.sable.mcgill.ca/                   *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Coffi, a bytecode parser for the Java(TM) language.               *
- * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
- * All rights reserved.                                              *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -68,7 +38,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $CoffiVersion: 1.1 $
 
  Change History
  --------------
@@ -95,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -103,36 +76,109 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.coffi;
+package ca.mcgill.sable.soot.baf;
 
-import java.io.*;
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
 
-/** An entry in a local variable table.
- * @see LocalVariableTable_attribute
- * @author Clark Verbrugge
- */
-class local_variable_table_entry {
-   /** Code offset of start of code wherein this entry applies. */
-   public int start_pc;
-   /** Length of code sequence in which this name applies. */
-   public int length;
-   /** Constant pool index of string giving this local variable's name.
-    * @see CONSTANT_Utf8_info
-    */
-   public int name_index;
-   /** Constant pool index of string giving this local variable's type
-    * descriptor.
-    * @see CONSTANT_Utf8_info
-    */
-   public int descriptor_index;
-   /** The index in the local variable array of this local variable. */
-   public int index;
-   
-   public String toString()
-   {
-        return "start: " + start_pc + "length: " + length + "name_index: " + name_index + 
-            "descriptor_index: " + descriptor_index + "index: " + index ;
+public abstract class AbstractInst implements Inst
+{
+    Map allMapToUnnamed = new AllMapTo("<unnamed>");
+    
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     * Note that they are returned in usual evaluation order.
+     * (this is important for aggregation)
+     */
+
+    public abstract List getUseBoxes();
+
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     */
+
+    public abstract List getDefBoxes();
+
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     */
+
+    public abstract List getUnitBoxes();
+
+    static List emptyList = Collections.unmodifiableList(new ArrayList());
+
+    List boxesPointingToThis = new ArrayList();
+    List valueBoxes = null;
+
+    public List getBoxesPointingToThis()
+    {
+        return boxesPointingToThis;
+    }
+
+    public void apply(Switch sw)
+    {
+    }
+
+    public String toBriefString()
+    {
+        return toString(true, allMapToUnnamed, "");
+    }
+    
+    public String toBriefString(Map stmtToName)
+    {
+        return toString(true, stmtToName, "");
+    }
+    
+    public String toBriefString(String indentation)
+    {
+        return toString(true, allMapToUnnamed, indentation);
+    }
+    
+    public String toBriefString(Map stmtToName, String indentation)
+    {
+        return toString(true, stmtToName, indentation);
+    }
+    
+    public String toString()
+    {
+        return toString(false, allMapToUnnamed, "");
+    }
+    
+    public String toString(Map stmtToName)
+    {
+        return toString(false, stmtToName, "");
+    }
+    
+    public String toString(String indentation)
+    {
+        return toString(false, allMapToUnnamed, indentation);
+    }
+    
+    public String toString(Map stmtToName, String indentation)
+    {
+        return toString(false, stmtToName, indentation);
+    }
+    
+    abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
+
+    class AllMapTo extends AbstractMap
+    {
+        Object dest;
         
+        public AllMapTo(Object dest)
+        {
+            this.dest = dest;
+        }
         
-   }
+        public Object get(Object key)
+        {
+            return dest;
+        }
+        
+        public Collection entries()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
 }

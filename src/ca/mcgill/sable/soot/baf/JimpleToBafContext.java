@@ -61,48 +61,20 @@
 
  B) Changes:
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+ - Modified on April 16, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   First release.
 */
 
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
+import java.io.*;
 
-public class Baf implements BodyRepresentation
+public class JimpleToBafContext
 {
-    private static Baf bafRepresentation = new Baf();
-
-    private Baf()
-    {
-    }
-
+    public Map jimpleLocalToBafLocal;
     
-    public static Baf v()
-    {
-        return bafRepresentation;
-    }
-
-    public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
-    {
-        return new BafBody(m, sourceBody);
-    }
-    
-    
-    /**
-        Constructs a Local with the given name and type.
-    */
-
-    public Local newLocal(String name, Type t)
-    {
-        return new BafLocal(name, t);
-    }
-
 }
-
 

@@ -6,9 +6,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AArrayRef extends PArrayRef
 {
     private PLocalName _localName_;
-    private TLBracket _lBracket_;
-    private PImmediate _immediate_;
-    private TRBracket _rBracket_;
+    private PFixedArrayDescriptor _fixedArrayDescriptor_;
 
     public AArrayRef()
     {
@@ -16,26 +14,18 @@ public final class AArrayRef extends PArrayRef
 
     public AArrayRef(
         PLocalName _localName_,
-        TLBracket _lBracket_,
-        PImmediate _immediate_,
-        TRBracket _rBracket_)
+        PFixedArrayDescriptor _fixedArrayDescriptor_)
     {
         setLocalName(_localName_);
 
-        setLBracket(_lBracket_);
-
-        setImmediate(_immediate_);
-
-        setRBracket(_rBracket_);
+        setFixedArrayDescriptor(_fixedArrayDescriptor_);
 
     }
     public Object clone()
     {
         return new AArrayRef(
             (PLocalName) cloneNode(_localName_),
-            (TLBracket) cloneNode(_lBracket_),
-            (PImmediate) cloneNode(_immediate_),
-            (TRBracket) cloneNode(_rBracket_));
+            (PFixedArrayDescriptor) cloneNode(_fixedArrayDescriptor_));
     }
 
     public void apply(Switch sw)
@@ -68,16 +58,16 @@ public final class AArrayRef extends PArrayRef
         _localName_ = node;
     }
 
-    public TLBracket getLBracket()
+    public PFixedArrayDescriptor getFixedArrayDescriptor()
     {
-        return _lBracket_;
+        return _fixedArrayDescriptor_;
     }
 
-    public void setLBracket(TLBracket node)
+    public void setFixedArrayDescriptor(PFixedArrayDescriptor node)
     {
-        if(_lBracket_ != null)
+        if(_fixedArrayDescriptor_ != null)
         {
-            _lBracket_.parent(null);
+            _fixedArrayDescriptor_.parent(null);
         }
 
         if(node != null)
@@ -90,66 +80,14 @@ public final class AArrayRef extends PArrayRef
             node.parent(this);
         }
 
-        _lBracket_ = node;
-    }
-
-    public PImmediate getImmediate()
-    {
-        return _immediate_;
-    }
-
-    public void setImmediate(PImmediate node)
-    {
-        if(_immediate_ != null)
-        {
-            _immediate_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _immediate_ = node;
-    }
-
-    public TRBracket getRBracket()
-    {
-        return _rBracket_;
-    }
-
-    public void setRBracket(TRBracket node)
-    {
-        if(_rBracket_ != null)
-        {
-            _rBracket_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _rBracket_ = node;
+        _fixedArrayDescriptor_ = node;
     }
 
     public String toString()
     {
         return ""
             + toString(_localName_)
-            + toString(_lBracket_)
-            + toString(_immediate_)
-            + toString(_rBracket_);
+            + toString(_fixedArrayDescriptor_);
     }
 
     void removeChild(Node child)
@@ -160,21 +98,9 @@ public final class AArrayRef extends PArrayRef
             return;
         }
 
-        if(_lBracket_ == child)
+        if(_fixedArrayDescriptor_ == child)
         {
-            _lBracket_ = null;
-            return;
-        }
-
-        if(_immediate_ == child)
-        {
-            _immediate_ = null;
-            return;
-        }
-
-        if(_rBracket_ == child)
-        {
-            _rBracket_ = null;
+            _fixedArrayDescriptor_ = null;
             return;
         }
 
@@ -188,21 +114,9 @@ public final class AArrayRef extends PArrayRef
             return;
         }
 
-        if(_lBracket_ == oldChild)
+        if(_fixedArrayDescriptor_ == oldChild)
         {
-            setLBracket((TLBracket) newChild);
-            return;
-        }
-
-        if(_immediate_ == oldChild)
-        {
-            setImmediate((PImmediate) newChild);
-            return;
-        }
-
-        if(_rBracket_ == oldChild)
-        {
-            setRBracket((TRBracket) newChild);
+            setFixedArrayDescriptor((PFixedArrayDescriptor) newChild);
             return;
         }
 

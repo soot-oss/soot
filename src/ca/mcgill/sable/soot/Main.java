@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on April 20, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed up some arguments.
+   
  - Modified on March 28, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Renamed class to ca.mcgill.sable.soot.Main
    Fixed up all the command line arguments to conform to GNU standards.
@@ -115,6 +118,7 @@ package ca.mcgill.sable.soot;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.grimp.*;
+import ca.mcgill.sable.soot.baf.*;
 
 import java.io.*;
 
@@ -209,20 +213,22 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.18");
+            System.out.println("Soot version 1.beta.4.dev.19");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
             System.out.println("Contributions are copyright (C) 1997-1999 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
-            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  This is free software,");
+            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is freed source software,");
             System.out.println("and you are welcome to redistribute it under certain conditions.");
             System.out.println("See the accompanying file 'license.html' for details.");
             System.out.println("");
             System.out.println("Syntax: soot [option]* classname ...  ");
             System.out.println("");
             System.out.println("Output options:");
+            System.out.println("  -b, --ba                   produce .ba (abbreviated .baf) files");
+            System.out.println("  -B, --baf                  produce .baf code");
             System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
             System.out.println("  -J, --jimple               produce .jimple code");
             System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
@@ -238,8 +244,10 @@ public class Main
             System.out.println("Jimple construction options:");
             System.out.println("  --no-cleanup               do not perform constant or copy propagation");
             System.out.println("  --no-splitting             do not split local variables");
+            System.out.println("  --use-packing              pack locals after conversion");
             System.out.println("  --no-typing                do not assign types to the local variables");
             System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
+            System.out.println("  --use-original-names       retain variables name from local variable table");
             System.out.println("");
             System.out.println("Misc. options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
@@ -269,6 +277,10 @@ public class Main
                     targetExtension = ".jasmin";
                 else if(arg.equals("-J") || arg.equals("--jimple"))
                     targetExtension = ".jimple";
+                else if(arg.equals("-B") || arg.equals("--baf"))
+                    targetExtension = ".baf";
+                else if(arg.equals("-b") || arg.equals("--ba"))
+                    targetExtension = ".ba";
                 else if(arg.equals("-g") || arg.equals("--grimp"))
                     targetExtension = ".grimp";
                 else if(arg.equals("-G") || arg.equals("--grimple"))
@@ -284,7 +296,10 @@ public class Main
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_AGGREGATING;
                 else if(arg.equals("--no-splitting"))
                     buildJimpleBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
-                    
+                else if(arg.equals("--use-packing"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_PACKING;
+                else if(arg.equals("--use-original-names"))
+                    buildJimpleBodyOptions |= BuildJimpleBodyOption.USE_ORIGINAL_NAMES;
                 else if(arg.equals("-t") || arg.equals("--time"))
                     isProfilingOptimization = true;
                 else if(arg.equals("--subtract-gc"))
@@ -543,17 +558,27 @@ public class Main
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions),
                 writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         }
+        else if(targetExtension.equals(".ba"))
+        {
+            c.printTo(new BuildBody(Baf.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
+                writerOut, ca.mcgill.sable.soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
+        }
+        else if(targetExtension.equals(".baf"))
+        {
+            c.printTo(new BuildBody(Baf.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
+                writerOut);
+        }
         else if(targetExtension.equals(".jimple"))
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions), writerOut);
         else if(targetExtension.equals(".grimple"))
-            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
-                writerOut);
+            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions | 
+                BuildJimpleBodyOption.NO_AGGREGATING)), writerOut);
         else if(targetExtension.equals(".grimp"))
-            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
-                writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+            c.printTo(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions | 
+            BuildJimpleBodyOption.NO_AGGREGATING)), writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".class"))
-            c.write(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions)),
-                outputDir);
+            c.write(new BuildBody(Grimp.v(), new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildJimpleBodyOptions |
+            BuildJimpleBodyOption.NO_AGGREGATING )), outputDir);
         
         if(!targetExtension.equals(".class"))
         {

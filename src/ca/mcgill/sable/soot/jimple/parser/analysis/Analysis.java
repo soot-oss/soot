@@ -36,6 +36,7 @@ public interface Analysis extends Switch
     void caseASingleParameterList(ASingleParameterList node);
     void caseAMultiParameterList(AMultiParameterList node);
     void caseAParameter(AParameter node);
+    void caseAThrowsClause(AThrowsClause node);
     void caseABooleanBaseType(ABooleanBaseType node);
     void caseAByteBaseType(AByteBaseType node);
     void caseACharBaseType(ACharBaseType node);
@@ -85,13 +86,18 @@ public interface Analysis extends Switch
     void caseABinopExpression(ABinopExpression node);
     void caseAUnopExpression(AUnopExpression node);
     void caseAImmediateExpression(AImmediateExpression node);
-    void caseANewExpr(ANewExpr node);
+    void caseASimpleNewExpr(ASimpleNewExpr node);
+    void caseAArrayNewExpr(AArrayNewExpr node);
+    void caseAMultiNewExpr(AMultiNewExpr node);
     void caseAArrayDescriptor(AArrayDescriptor node);
     void caseAReferenceVariable(AReferenceVariable node);
     void caseALocalVariable(ALocalVariable node);
-    void caseABoolExpr(ABoolExpr node);
+    void caseABinopBoolExpr(ABinopBoolExpr node);
+    void caseAUnopBoolExpr(AUnopBoolExpr node);
     void caseANonstaticInvokeExpr(ANonstaticInvokeExpr node);
     void caseAStaticInvokeExpr(AStaticInvokeExpr node);
+    void caseABinopExpr(ABinopExpr node);
+    void caseAUnopExpr(AUnopExpr node);
     void caseASpecialNonstaticInvoke(ASpecialNonstaticInvoke node);
     void caseAVirtualNonstaticInvoke(AVirtualNonstaticInvoke node);
     void caseAInterfaceNonstaticInvoke(AInterfaceNonstaticInvoke node);
@@ -102,6 +108,7 @@ public interface Analysis extends Switch
     void caseALocalFieldRef(ALocalFieldRef node);
     void caseASigFieldRef(ASigFieldRef node);
     void caseAFieldSignature(AFieldSignature node);
+    void caseAFixedArrayDescriptor(AFixedArrayDescriptor node);
     void caseASingleArgList(ASingleArgList node);
     void caseAMultiArgList(AMultiArgList node);
     void caseALocalImmediate(ALocalImmediate node);
@@ -158,7 +165,6 @@ public interface Analysis extends Switch
     void caseTExtends(TExtends node);
     void caseTImplements(TImplements node);
     void caseTBreakpoint(TBreakpoint node);
-    void caseTNew(TNew node);
     void caseTCase(TCase node);
     void caseTCatch(TCatch node);
     void caseTCmp(TCmp node);
@@ -174,6 +180,9 @@ public interface Analysis extends Switch
     void caseTInterfaceinvoke(TInterfaceinvoke node);
     void caseTLengthof(TLengthof node);
     void caseTLookupswitch(TLookupswitch node);
+    void caseTNew(TNew node);
+    void caseTNewarray(TNewarray node);
+    void caseTNewmultiarray(TNewmultiarray node);
     void caseTNop(TNop node);
     void caseTRet(TRet node);
     void caseTReturn(TReturn node);
@@ -181,6 +190,7 @@ public interface Analysis extends Switch
     void caseTStaticinvoke(TStaticinvoke node);
     void caseTTableswitch(TTableswitch node);
     void caseTThrow(TThrow node);
+    void caseTThrows(TThrows node);
     void caseTTo(TTo node);
     void caseTVirtualinvoke(TVirtualinvoke node);
     void caseTWith(TWith node);

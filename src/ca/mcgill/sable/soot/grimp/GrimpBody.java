@@ -98,7 +98,7 @@ public class GrimpBody implements StmtBody
         this.method = m;
         stmtList = new StmtList(this);   
     }
-    
+
     /**
         Constructs a GrimpBody from the given Body.
      */
@@ -293,18 +293,19 @@ public class GrimpBody implements StmtBody
 			    (Unit)(oldToNew.get(oldTrap.getHandlerUnit()))));
 	}
 
-	if (Main.isProfilingOptimization)
-	  Main.aggregationTimer.start();
-	
 	if (!BuildGrimpBodyOption.noAggregating(buildOptions))
     {
-        GrimpTransformations.foldConstructors(this);
-	    Transformations.aggregate(this);
+        printTo(new PrintWriter(System.out, true));
+        
+        Aggregator.conservativelyAggregate(this);
+	    GrimpTransformations.foldConstructors(this);
+        Aggregator.conservativelyAggregate(this);
+	    
+        printTo(new PrintWriter(System.out, true));
+        
         Transformations.removeUnusedLocals(this);
 	}
     
-	if (Main.isProfilingOptimization)
-	  Main.aggregationTimer.end();
     }
 
 

@@ -95,6 +95,9 @@
 
  B) Changes:
 
+ - Modified on April 18, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+   Added LocalVariableTable support.
+   
  - Modified on March 2, 1999 by Patrick Lam (plam@sable.mcgill.ca)
    Fixed interface modifiers bug.
        
@@ -119,6 +122,12 @@ public class Util
     static SootClassManager classManager;
     static Set markedClasses;
     static LinkedList classesToResolve;
+
+    static int activeOriginalIndex = -1;
+    static cp_info[] activeConstantPool = null;
+    static LocalVariableTable_attribute activeVariableTable;
+    static boolean useFaithfulNaming = true;
+    static boolean isLocalStore = false;
     
     static void setActiveClassManager(SootClassManager manager)
     {
@@ -567,7 +576,7 @@ public class Util
             index--;
         }
 
-        return getLocalCreatingIfNecessary(listBody, "op" + index, UnknownType.v());
+        return getLocalCreatingIfNecessary(listBody, "$stack" + index, UnknownType.v());
     }
 
     static String getAbbreviationOfClassName(String className)
@@ -636,7 +645,26 @@ public class Util
 
     static Local getLocalForIndex(JimpleBody listBody, int index)
     {
-        String name = "l" + index;
+        String name = null;
+        boolean assignedName = false;
+        
+        if(useFaithfulNaming && activeVariableTable != null)
+        {
+            if(activeOriginalIndex != -1)
+            {
+                if(isLocalStore)
+                    activeOriginalIndex++;
+                    
+                name = activeVariableTable.getLocalVariableName(activeConstantPool,
+                    index, activeOriginalIndex);
+               
+                if(name != null) 
+                    assignedName = true;
+            }
+        }  
+        
+        if(!assignedName)
+            name = "l" + index;
 
         if(listBody.declaresLocal(name))
             return listBody.getLocal(name);

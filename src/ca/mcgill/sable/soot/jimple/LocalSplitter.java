@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on April 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed the split symbol from $ to #.
+
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Split off from Transformations.java
 */
@@ -221,7 +224,7 @@ public class LocalSplitter
                     localToUseCount.put(desiredLocal, new Integer(useCount));
         
                     Local local = (Local) desiredLocal.clone();
-                    local.setName(desiredLocal.getName() + "$" + useCount);
+                    local.setName(desiredLocal.getName() + "#" + useCount);
                     
                     listBody.addLocal(local);
 
