@@ -26,6 +26,7 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -138,8 +139,12 @@ public class JimpleLocal implements Local, ConvertToBaf
 
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-        out.add(Baf.v().newLoadInst(getType(), 
-            context.getBafLocalOfJimpleLocal(this)));
+	Unit u;
+        out.add(u=Baf.v().newLoadInst(getType(),context.getBafLocalOfJimpleLocal(this)));
+	Iterator it = context.getCurrentUnit().getTags().iterator();
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 }
 

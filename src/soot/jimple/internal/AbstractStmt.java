@@ -30,6 +30,7 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.*;
@@ -41,7 +42,12 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
 {
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-        out.add(Baf.v().newNopInst());
+	Unit u;
+        out.add(u=Baf.v().newNopInst());
+	Iterator it = getTags().iterator();
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 
     public boolean containsInvokeExpr()

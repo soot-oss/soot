@@ -30,12 +30,14 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+
 
 public class JIdentityStmt extends AbstractDefinitionStmt 
     implements IdentityStmt
@@ -96,11 +98,23 @@ public class JIdentityStmt extends AbstractDefinitionStmt
         else if(currentRhs instanceof ParameterRef)
             newRhs = Baf.v().newParameterRef(((ParameterRef)currentRhs).getType(), ((ParameterRef) currentRhs).getIndex());
         else if(currentRhs instanceof CaughtExceptionRef)
-            { out.add(Baf.v().newStoreInst(RefType.v(), context.getBafLocalOfJimpleLocal((Local) getLeftOp()))); return; }
+            { 
+		Unit u;
+		out.add(u=Baf.v().newStoreInst(RefType.v(), context.getBafLocalOfJimpleLocal((Local) getLeftOp()))); 
+		Iterator it = getTags().iterator();
+		while(it.hasNext()) {
+		    u.addTag((Tag) it.next());
+		}
+		return; 
+	    }
         else
             throw new RuntimeException("Don't know how to convert unknown rhs");
-
-        out.add(Baf.v().newIdentityInst(context.getBafLocalOfJimpleLocal((Local) getLeftOp()), newRhs));
+	Unit u;
+        out.add(u=Baf.v().newIdentityInst(context.getBafLocalOfJimpleLocal((Local) getLeftOp()), newRhs));
+	Iterator it = getTags().iterator();
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 
 

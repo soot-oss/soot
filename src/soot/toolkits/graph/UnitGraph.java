@@ -42,6 +42,8 @@ import java.util.*;
  *  @see BriefUnitGraph
  */
 
+/* Updated By Marc Berndl May 13 */
+
 public class UnitGraph implements DirectedGraph
 {
     List heads;
@@ -261,7 +263,7 @@ public class UnitGraph implements DirectedGraph
 
         // Build tails
         {
-            List tailList = new ArrayList();
+          List tailList = new ArrayList();
 
             // Build the set
             {
@@ -423,7 +425,7 @@ public class UnitGraph implements DirectedGraph
     
     public int size()
     {
-        return size;
+        return unitChain.size();
     }  
 
     public Iterator iterator()

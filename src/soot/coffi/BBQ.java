@@ -31,7 +31,7 @@
 
 package soot.coffi;
 
-import java.util.Vector;
+import java.util.*;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 
@@ -41,7 +41,7 @@ import java.util.NoSuchElementException;
  */
 final class BBQ {
 
-   private Vector q = new Vector();
+   private ArrayList q = new ArrayList();
 
    /** Adds a block to the end of the queue, but only if its <i>inq</i> flag is false.
     * @param b the Basic Block in question.
@@ -50,7 +50,7 @@ final class BBQ {
    public void push(BasicBlock b) {
       if (b.inq!=true) {  // ensure only in queue once...
          b.inq = true;
-         q.addElement(b);
+         q.add(b);
       }
    }
 
@@ -63,8 +63,8 @@ final class BBQ {
       if(q.size()==0)
          throw new
             NoSuchElementException("Pull from empty BBQ");
-      BasicBlock b = (BasicBlock)(q.firstElement());
-      q.removeElementAt(0);
+      BasicBlock b = (BasicBlock)(q.get(0));
+      q.remove(0);
       b.inq = false;
       return b;
    }
@@ -87,11 +87,11 @@ final class BBQ {
    /** Empties the queue of all blocks (and resets their <i>inq</i> flags). */
    public void clear() {
       BasicBlock b;
-      for (Enumeration e = q.elements();e.hasMoreElements();) {
-         b = (BasicBlock)(e.nextElement());
+      for (Iterator e = q.iterator();e.hasNext();) {
+         b = (BasicBlock)(e.next());
          b.inq = false;
       }
-      q.removeAllElements();
+      q.clear();
    }
 }
 

@@ -30,6 +30,7 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -106,9 +107,15 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 	context.setCurrentUnit(this);
 	
         ((ConvertToBaf) ie).convertToBaf(context, out);
-        
+        Unit u;
         if(!ie.getMethod().getReturnType().equals(VoidType.v()))
-            out.add(Baf.v().newPopInst(ie.getMethod().getReturnType()));	
+        {
+            out.add(u=Baf.v().newPopInst(ie.getMethod().getReturnType()));	
+	    Iterator it = getTags().iterator();
+	    while(it.hasNext()) {
+		u.addTag((Tag) it.next());
+	    }
+	}
     }    
 
     public boolean fallsThrough() {return true;}        

@@ -30,6 +30,7 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -48,8 +49,12 @@ abstract public class AbstractJimpleIntBinopExpr extends AbstractIntBinopExpr
     {
         ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
         ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
-        
-        out.add(makeBafInst(this.getOp1().getType()));
+        Unit u;
+        out.add(u=(Unit)makeBafInst(this.getOp1().getType()));
+	Iterator it = context.getCurrentUnit().getTags().iterator();
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
     }
 
     abstract Object makeBafInst(Type opType);

@@ -36,6 +36,8 @@ import java.util.*;
  *  the nodes of a DirectedGraph instance.
  */
 
+/* Updated By Marc Berndl May 13 */
+
 public class PseudoTopologicalOrderer
 {
     public static final boolean REVERSE = true;
@@ -43,15 +45,13 @@ public class PseudoTopologicalOrderer
     public PseudoTopologicalOrderer(boolean isReversed) { mIsReversed = isReversed;}
 
     private Map stmtToColor;
-    private static final int 
-        WHITE = 0,
-        GRAY = 1,
-        BLACK = 2;
-
+    private static Object GRAY = new Object();
     private LinkedList order;
     private boolean mIsReversed = false;
     private DirectedGraph graph;
-
+    private int[] indexStack;
+    private Object[] stmtStack;
+    private int last;
         
     /**
      *  @param g a DirectedGraph instance whose nodes we which to order.
@@ -87,37 +87,25 @@ public class PseudoTopologicalOrderer
      */
     LinkedList computeOrder(DirectedGraph g)
     {
-        stmtToColor = new HashMap();
-            
+        stmtToColor = new HashMap((3*g.size())/2,0.7f);
+        indexStack = new int[g.size()];
+	stmtStack = new Object[g.size()];
         order = new LinkedList();
         graph = g;
         
-        // Color all nodes white
-        {
-            
-
-            Iterator stmtIt = g.iterator();
-            while(stmtIt.hasNext())
-            {
-                Object s = stmtIt.next();
-                
-                stmtToColor.put(s, new Integer(WHITE));
-            }
-        }
-        
         // Visit each node
         {
-            Iterator stmtIt = g.iterator();
-            
+            Iterator stmtIt = g.iterator();            
             while(stmtIt.hasNext())
             {
-                Object s = stmtIt.next();
-               
-                if(((Integer) stmtToColor.get(s)).intValue() == WHITE)
+                Object s = stmtIt.next();               
+                if(stmtToColor.get(s) == null)
                     visitNode(s); 
             }
         }
-        
+        indexStack = null;
+	stmtStack = null;
+	stmtToColor = null;
         return order;
     }
 
@@ -130,22 +118,16 @@ public class PseudoTopologicalOrderer
     
     private void visitNode(Object startStmt)
     {
-        LinkedList stmtStack = new LinkedList();
-        LinkedList indexStack = new LinkedList();
+	last=0;
         
-        stmtToColor.put(startStmt, new Integer(GRAY));
+        stmtToColor.put(startStmt, GRAY);
         
-        stmtStack.addLast(startStmt);
-        indexStack.addLast(new Integer(-1));
-        
-        while(!stmtStack.isEmpty())
-        {
-            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = stmtStack.getLast();
-            
-            toVisitIndex++;
-            
-            indexStack.addLast(new Integer(toVisitIndex));
+        stmtStack[last]=startStmt;
+        indexStack[last++]= -1;
+        while(last>0)
+	{
+            int toVisitIndex = ++indexStack[last-1];
+            Object toVisitNode = stmtStack[last-1];
             
             if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
             {
@@ -155,24 +137,18 @@ public class PseudoTopologicalOrderer
                     else
                         order.addFirst(toVisitNode);
                            
-                    stmtToColor.put(toVisitNode, new Integer(BLACK));                
-                
-                // Pop this node off
-                    stmtStack.removeLast();
-                    indexStack.removeLast();
+		    last--;
             }
             else
             {
                 Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
                 
-                // Visit this child next if not already visited (or on stack)
-                    if(((Integer) stmtToColor.get(childNode)).intValue() == WHITE)
+                    if(stmtToColor.get(childNode) == null)
                     {
-                        stmtToColor.put(childNode, new Integer(GRAY));
-                        
-                        stmtStack.addLast(childNode);
-                        indexStack.addLast(new Integer(-1));
-                    }
+                        stmtToColor.put(childNode, GRAY);                        
+                        stmtStack[last]=childNode;
+			indexStack[last++]=-1;
+		    }
             }
         }
     }

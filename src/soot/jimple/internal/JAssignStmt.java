@@ -252,8 +252,13 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-                        out.add(Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
-                        return;
+			Unit u;
+                        out.add(u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
+			Iterator it = getTags().iterator();
+			while(it.hasNext()) {
+			    u.addTag((Tag) it.next());
+			}
+			return;
                     }        
                 }
             }
@@ -304,9 +309,13 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 public void caseLocal(final Local v)
                 {
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
-                    
-                    out.add(Baf.v().newStoreInst(v.getType(), 
+                    Unit u;
+                    out.add(u=Baf.v().newStoreInst(v.getType(), 
                         context.getBafLocalOfJimpleLocal(v)));
+		    Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
                 }
                 
                 public void caseStaticFieldRef(StaticFieldRef v)

@@ -101,11 +101,9 @@ public class StronglyConnectedComponents
         }
         componentList = Collections.unmodifiableList(componentList);
 
-        if (Main.isVerbose) {
-            System.out.println("Done computing scc components");
-            System.out.println("number of nodes in underlying graph: "+g.size());
-            System.out.println("number of components: "+sccGraph.size());
-        }
+        System.out.println("Done computing scc components");
+        System.out.println("number of nodes in underlying graph: "+g.size());
+        System.out.println("number of components: "+sccGraph.size());
     }
 
     private void visitNode(DirectedGraph graph, Object startNode)

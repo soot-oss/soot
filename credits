@@ -6,6 +6,9 @@
     
 -------------------- Soot Contributors ------------------------
                   (in alphabetical order)
+Marc Berndl
+    - Soot framework optimization
+    - annotation
 
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
