@@ -39,8 +39,9 @@
 
 	</sub_phase>
 	<sub_phase>
-	<sub_phase_name>Lazy Code Motion</sub_phase_name>
+                <sub_phase_name>Lazy Code Motion</sub_phase_name>
 		<sub_phase_java_name>lazyCodeMotion</sub_phase_java_name>
+                <phase_option_class>LCMOptions</phase_option_class>
 		<sub_phase_alias>jop.lcm</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>
@@ -87,6 +88,7 @@
 	<sub_phase>
 		<sub_phase_name>Copy Propogator</sub_phase_name>
 		<sub_phase_java_name>copyPropogator</sub_phase_java_name>
+                <phase_option_class>CPOptions</phase_option_class>
 		<sub_phase_alias>jop.cp</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>

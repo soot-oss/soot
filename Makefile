@@ -44,7 +44,7 @@ TARGETS_TMP = $(SOURCES:.java=.class)
 TARGETS = $(subst src,classes,${TARGETS_TMP})
 RM_TARGETS = $(TARGETS) $(subst .class,\$$*.class,$(TARGETS))
 
-all: ${TARGETS} foo
+all: ${TARGETS} foo classes/soot/options/Options.class
 
 $(TARGETS): classes/%.class: src/%.java
 	$(JC) $<
@@ -59,7 +59,11 @@ classes/soot/jimple/parser/lexer/lexer.dat: src/soot/jimple/parser/lexer/lexer.d
 classes/soot/baf/toolkits/base/peephole.dat: src/soot/baf/toolkits/base/peephole.dat
 	cp src/soot/baf/toolkits/base/peephole.dat classes/soot/baf/toolkits/base/peephole.dat
 
-foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat
+src/soot/options/Options.java: src/soot/options/*.xml src/soot/options/make-soot-options.xsl
+	xsltproc src/soot/options/make-soot-options.xsl src/soot/options/soot_options.xml > src/soot/options/Options.java
+
+foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat src/soot/options/Options.java
+
 
 #
 #

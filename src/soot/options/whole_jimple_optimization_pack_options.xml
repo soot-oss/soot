@@ -15,6 +15,7 @@
 	<sub_phase>
 		<sub_phase_name>Static Method Binding</sub_phase_name>
 		<sub_phase_java_name>staticMethodBinding</sub_phase_java_name>
+                <phase_option_class>SMBOptions</phase_option_class>
 		<sub_phase_alias>wjop.smb</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>
@@ -75,6 +76,7 @@
 	<sub_phase>
 		<sub_phase_name>Static Inlining</sub_phase_name>
 		<sub_phase_java_name>staticInlining</sub_phase_java_name>
+                <phase_option_class>SIOptions</phase_option_class>
 		<sub_phase_alias>wjop.si</sub_phase_alias>
 		<boolean_option>
 			<name>Disabled</name>
