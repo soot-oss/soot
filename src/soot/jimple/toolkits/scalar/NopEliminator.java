@@ -39,7 +39,8 @@ public class NopEliminator extends BodyTransformer
     public NopEliminator( Singletons.Global g ) {}
     public static NopEliminator v() { return G.v().NopEliminator(); }
 
-    /** Eliminates dead code in a linear fashion.  Complexity is linear 
+    /** Removes {@link NopStmt}s from the passed body (which must be
+	a {@link JimpleBody}).  Complexity is linear 
         with respect to the statements.
     */
     
