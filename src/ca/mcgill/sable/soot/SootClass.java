@@ -794,9 +794,14 @@ public class SootClass
 
     public void write(BodyExpr bodyExpr, String outputDir)
     {
+        String outputDirWithSep = "";
         
+            
+        if(!outputDir.equals(""))
+            outputDirWithSep = outputDir + fileSeparator;
+            
         try {
-            File tempFile = new File(outputDir + fileSeparator + this.getName() + ".jasmin");
+            File tempFile = new File(outputDirWithSep + this.getName() + ".jasmin");
  
             FileOutputStream streamOut = new FileOutputStream(tempFile);
             PrintWriter writerOut = new PrintWriter(streamOut);
@@ -805,13 +810,33 @@ public class SootClass
 
             writerOut.close();
 
-            Runtime.getRuntime().exec("java jasmin.Main -d " + outputDir + " " + outputDir + fileSeparator + this.getName() + ".jasmin");
+            if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+                ca.mcgill.sable.soot.Main.assembleJasminTimer.start(); 
+        
+            Process p;
+            
+            if(outputDir.equals(""))
+                p = Runtime.getRuntime().exec("java jasmin.Main " + this.getName() + ".jasmin");
+            else 
+                p = Runtime.getRuntime().exec("java jasmin.Main -d " + outputDir + " " + outputDirWithSep + this.getName() + ".jasmin");
+            
+            try {
+                p.waitFor();
+            } catch(InterruptedException e)
+            {
+            }
+            
             tempFile.delete();
+            
+            if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+                ca.mcgill.sable.soot.Main.assembleJasminTimer.end(); 
+            
         } catch(IOException e)
         {
             throw new RuntimeException("Could not produce new classfile! (" + e + ")");
         }
 
+         
     }
     
     public String toString()

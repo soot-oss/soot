@@ -330,6 +330,9 @@ public class JasminClass
     
     public JasminClass(SootClass SootClass, BodyExpr bodyExpr)
     {
+        if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+            ca.mcgill.sable.soot.Main.buildJasminTimer.start();
+        
         code = new LinkedList();
 
         // Emit the header
@@ -394,6 +397,9 @@ public class JasminClass
                 emit("");
             }
         }
+        
+        if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+            ca.mcgill.sable.soot.Main.buildJasminTimer.end();
     }
 
     void assignColorsToLocals(StmtBody body)
@@ -468,7 +474,14 @@ public class JasminClass
     
     void emitMethod(SootMethod method, BodyExpr bodyExpr)
     {
+        if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+            ca.mcgill.sable.soot.Main.buildJasminTimer.end();
+        
         StmtBody body = (StmtBody) bodyExpr.resolveFor(method);
+        
+        if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
+            ca.mcgill.sable.soot.Main.buildJasminTimer.start();
+        
         StmtList stmtList = body.getStmtList();
 
         // let's create a u-d web for the ++ peephole optimization.

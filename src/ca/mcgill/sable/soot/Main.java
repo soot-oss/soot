@@ -170,7 +170,9 @@ public class Main
         aggregationTimer = new Timer("aggregation"),
         grimpAggregationTimer = new Timer("grimpAggregation"),
         deadCodeTimer = new Timer("deadCode"),
-        propagatorTimer = new Timer("propagator");
+        propagatorTimer = new Timer("propagator"),
+        buildJasminTimer = new Timer("buildjasmin"),
+        assembleJasminTimer = new Timer("assembling jasmin");
         
     static public Timer
         resolverTimer = new Timer("resolver");
@@ -190,14 +192,14 @@ public class Main
         cleanup2StmtCount;
 
     static private int buildJimpleBodyOptions = 0;
-    static private String outputDir;
+    static private String outputDir = "";
     
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
         long stmtCount = 0;
         boolean isRecursing = false;
-        Set excludingPackages = new HashSet();
+        List excludingPackages = new ArrayList();
         List classesToProcess;
 
         totalTimer.start();
@@ -206,7 +208,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.10");
+            System.out.println("Soot version 1.beta.4.dev.11");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -244,6 +246,14 @@ public class Main
             System.out.println("  --substract-gc             attempt to substract the gc from the time stats");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
+            System.out.println("");
+            System.out.println("Examples:");
+            System.out.println("");
+            System.out.println("  soot -x java -x sun -r -d newClasses Simulator");
+            System.out.println("         Transforms all classes starting with Simulator, excluding ");
+            System.out.println("         those in java.*, sun.*, and stores them in newClasses. ");
+               
+
             System.exit(0);
         }
 
@@ -340,8 +350,15 @@ public class Main
                 {
                     SootClass s = (SootClass) classIt.next();
                     
-                    if(excludingPackages.contains(s.getPackageName()))
-                        classIt.remove();
+                    Iterator packageIt = excludingPackages.iterator();
+                    
+                    while(packageIt.hasNext())
+                    {
+                        String pkg = (String) packageIt.next();
+                        
+                        if(s.getPackageName().startsWith(pkg))
+                            classIt.remove();
+                    }
                 }
             }
         }
@@ -422,6 +439,8 @@ public class Main
                     System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
                     System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
                     System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
+                    System.out.println("  Building jasmin classfile: " + toTimeString(buildJasminTimer, totalTime));
+                    System.out.println(" Converting jasmin -> class: " + toTimeString(assembleJasminTimer, totalTime));
 
                                             
 //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
@@ -494,7 +513,15 @@ public class Main
     {
         FileOutputStream streamOut = null;
         PrintWriter writerOut = null;
-        String fileName = outputDir + fileSeparator + c.getName() + targetExtension;
+        
+        String fileName;
+        
+        if(!outputDir.equals(""))
+            fileName = outputDir + fileSeparator;
+        else
+            fileName = "";
+        
+        fileName += c.getName() + targetExtension;
         
         if(!targetExtension.equals(".class"))
         {   
