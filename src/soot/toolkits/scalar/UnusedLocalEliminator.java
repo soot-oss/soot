@@ -37,7 +37,7 @@ import java.util.*;
 
 
 /**
- *    A BodyTransformer that removes all used local variables from a given Body.
+ *    A BodyTransformer that removes all unused local variables from a given Body.
  *    Implemented as a singleton.
  *    @see BodyTransformer
  *    @see Body 
@@ -54,7 +54,7 @@ public class UnusedLocalEliminator extends BodyTransformer
 
         Set usedLocals = new HashSet();
 
-        // Traverse statements noting all the uses
+        // Traverse statements noting all the uses and defs
         {
             Iterator unitIt = body.getUnits().iterator();
 
@@ -62,7 +62,6 @@ public class UnusedLocalEliminator extends BodyTransformer
             {
                 Unit s = (Unit) unitIt.next();
 
-                // Remove all locals in defBoxes from unusedLocals
                 {
                     Iterator boxIt;
                     boxIt = s.getUseBoxes().iterator();
