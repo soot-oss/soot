@@ -33,11 +33,24 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
+import java.io.*;
 
-abstract public class AbstractInvokeExpr implements InvokeExpr
+abstract public class AbstractInvokeExpr implements InvokeExpr, Serializable
 {
-    SootMethod method;
+    transient SootMethod method;
     protected ValueBox[] argBoxes;
+
+    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+	in.defaultReadObject();
+	method = Scene.v().getMethod( (String) in.readObject());
+    }
+
+    private void writeObject( ObjectOutputStream out) throws IOException
+    {
+	out.defaultWriteObject();
+	out.writeObject( method.getSignature());
+    }
 
     public SootMethod getMethod()
     {

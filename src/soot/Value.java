@@ -29,13 +29,14 @@ package soot;
 import soot.util.*;
 import java.util.*;
 import soot.*;
+import java.io.*;
 
 /** Data used as, for instance, arguments to instructions; typical implementations are
  * constants or expressions. 
  *
  * Values are typed, clonable and must declare which other 
  * Values they use (contain). */
-public interface Value extends Switchable, EquivTo
+public interface Value extends Switchable, EquivTo, Serializable
 {
     /** Returns a List of boxes corresponding to Values 
      * which are used by (ie contained within) this Value. */

@@ -34,10 +34,21 @@ import soot.*;
 import soot.baf.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
-public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, EquivTo
+public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, EquivTo, Serializable
 {
     SootField field;
+
+    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+	field = Scene.v().getField( (String) in.readObject());
+    }
+
+    private void writeObject( ObjectOutputStream out) throws IOException
+    {
+	out.writeObject( field.getSignature());
+    }
 
     protected StaticFieldRef(SootField field)
     {

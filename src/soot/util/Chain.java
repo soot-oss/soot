@@ -28,10 +28,11 @@ package soot.util;
 
 import java.util.*;
 import soot.*;
+import java.io.*;
 
 /** Augmented data type guaranteeing O(1) insertion and removal from a set
  * of ordered, unique elements.  */
-public interface Chain extends Collection
+public interface Chain extends Collection, Serializable
 {
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(List toInsert, Object point);

@@ -30,12 +30,13 @@ package soot;
 
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 /** A box which can contain units. 
  *
  * @see Unit
  */
-public interface UnitBox
+public interface UnitBox extends Serializable
 {
     /** Sets this box to contain the given unit.  Subject to canContainValue() checks. */
     public void setUnit(Unit u);

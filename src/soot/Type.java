@@ -28,9 +28,10 @@ package soot;
 
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
-public abstract class Type implements Switchable, ToBriefString
+public abstract class Type implements Switchable, ToBriefString, Serializable
 {
     /** Returns a textual representation of this type. */
     public abstract String toString();

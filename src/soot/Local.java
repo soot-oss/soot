@@ -29,12 +29,13 @@ package soot;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 /** A local variable, used within Body
  * classes.  Intermediate representations must use an implementation
  * of Local for their local variables.
  *  */
-public interface Local extends Value, ToBriefString
+public interface Local extends Value, ToBriefString, Serializable
 {
     /** Returns the name of the current Local variable. */
     public String getName();

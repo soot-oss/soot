@@ -1,9 +1,11 @@
 package soot.dava.toolkits.base.misc;
 
 import soot.*;
+import java.io.*;
 import java.util.*;
 import soot.util.*;
 import soot.dava.*;
+import java.util.jar.*;
 
 public class PackageNamer
 {
@@ -13,9 +15,7 @@ public class PackageNamer
 	otherRoots = new ArrayList();
 
 	keywords = new HashSet();
-
 	class2package = new HashMap();
-	properClassName2packageSet = new HashMap();
 
 	fixed = false;
     }
@@ -32,35 +32,31 @@ public class PackageNamer
 	return fixed;
     }
 
-    public boolean use_ShortName( String fixedShortClassName)
+    public boolean use_ShortName( String fixedPackageName, String fixedShortClassName)
     {
 	if (fixed == false)
 	    return false;
 
-	IterableSet classSet = (IterableSet) class2package.get( fixedShortClassName);
-	if (classSet == null) {
-	    classSet = new IterableSet();
-	    class2package.put( fixedShortClassName, classSet);
-
-	    List nhList = (List) properClassName2packageSet.get( fixedShortClassName);
-	    if (nhList == null)
-		return true;
-
-	    Iterator it = nhList.iterator();
-	    while (it.hasNext())
-		classSet.add( ((NameHolder) it.next()).get_FixedPackageName());
-	}
+	if (fixedPackageName.equals( Dava.v().get_CurrentPackage()))
+	    return true;
 
 	IterableSet packageContext = Dava.v().get_CurrentPackageContext();
 	if (packageContext == null)
 	    return true;
-	
+
+	packageContext = patch_PackageContext( packageContext);
+
 	int count = 0;
-	Iterator classSetIt = classSet.iterator();
-	while (classSetIt.hasNext())
-	    if (packageContext.contains( classSetIt.next()))
-		if (++count > 1)
-		    return false;
+	StringTokenizer st = new StringTokenizer( classPath, pathSep);
+	while (st.hasMoreTokens()) {
+	    String classpathDir = st.nextToken();
+
+	    Iterator packIt = packageContext.iterator();
+	    while (packIt.hasNext()) 
+		if (package_ContainsClass( classpathDir, (String) packIt.next(), fixedShortClassName))
+		    if (++count > 1)
+			return false;
+	}
 
 	return true;
     }
@@ -221,6 +217,30 @@ public class PackageNamer
 	    throw new RuntimeException( "Unable to resolve naming.");
 	}
 
+	public String get_OriginalPackageName( StringTokenizer st)
+	{
+	    if (st.hasMoreTokens() == false)
+		return get_OriginalName();
+
+	    String subName = st.nextToken();
+
+	    Iterator cit = children.iterator();
+	    while (cit.hasNext()) {
+		NameHolder h = (NameHolder) cit.next();
+
+		if (h.get_PackageName().equals( subName)) {
+		    String originalSubPackageName = h.get_OriginalPackageName( st);
+
+		    if (originalSubPackageName == null)
+			return null;
+		    else
+			return get_OriginalName() + "." + originalSubPackageName;
+		}
+	    }
+
+	    return null;
+	}
+
 	public boolean contains_OriginalName( StringTokenizer st, boolean forClass)
 	{
 	    if (get_OriginalName().equals( st.nextToken()) == false)
@@ -248,24 +268,17 @@ public class PackageNamer
 
 	public void fix_ClassNames( String curPackName)
 	{
-	    if (is_Class())
-		for (int i=0;; i++) {
-		    String curName = curPackName + "." + className;
-
-		    if ((keywords.contains( className) == false) &&
-			(PackageNamer.v().classClashes_WithOtherPackages( curName) == false)) {
-
-			ArrayList packageSet = (ArrayList) properClassName2packageSet.get( className);
-			if (packageSet == null) {
-			    packageSet = new ArrayList();
-			    properClassName2packageSet.put( className, packageSet);
-			}
-			packageSet.add( this);
-			break;
-		    }
-		    
-		    className = originalName + "_c" + i;
+	    if ((is_Class()) && (keywords.contains( className))) {
+		String tClassName = className;
+		
+		if (Character.isLowerCase( className.charAt( 0))) {
+		    tClassName = tClassName.substring( 0, 1).toUpperCase() + tClassName.substring( 1);
+		    className = tClassName;
 		}
+		
+		for (int i=0; keywords.contains( className); i++)
+		    className = tClassName + "_c" + i;
+	    }
 
 	    Iterator it = children.iterator();
 	    while (it.hasNext())
@@ -274,20 +287,29 @@ public class PackageNamer
 
 	public void fix_PackageNames()
 	{
-	    if (is_Package())
-		for (int i=0;; i++) {
-		    if ((keywords.contains( packageName) == false) && 
-			(siblingClashes( packageName) == false) &&
-			((is_Class() == false) || (className.equals( packageName) == false)))
-			
-			break;
-		    
-		    packageName = originalName + "_p" + i;
+	    if ((is_Package()) && (verify_PackageName() == false)) {
+		String tPackageName = packageName;
+
+		if (Character.isUpperCase( packageName.charAt( 0))) {
+		    tPackageName = tPackageName.substring( 0, 1).toLowerCase() + tPackageName.substring( 1);
+		    packageName = tPackageName;
 		}
+		
+		for (int i=0; verify_PackageName() == false; i++)
+		    packageName = tPackageName + "_p" + i;
+	    }
 
 	    Iterator it = children.iterator();
 	    while (it.hasNext())
 		((NameHolder) it.next()).fix_PackageNames();
+	}
+
+
+	public boolean verify_PackageName()
+	{
+	    return ((keywords.contains( packageName) == false) && 
+		    (siblingClashes( packageName) == false) &&
+		    ((is_Class() == false) || (className.equals( packageName) == false)));
 	}
 
 	public boolean siblingClashes( String name)
@@ -337,7 +359,9 @@ public class PackageNamer
     private boolean fixed;
     private ArrayList appRoots, otherRoots;
     private HashSet keywords;
-    private HashMap class2package, properClassName2packageSet;
+    private HashMap class2package;
+    private char fileSep;
+    private String classPath, pathSep;
     
     public void fixNames()
     {
@@ -380,6 +404,10 @@ public class PackageNamer
 	while (arit.hasNext())
 	    ((NameHolder) arit.next()).fix_PackageNames();
 	
+	fileSep = System.getProperty( "file.separator").charAt(0);
+	pathSep = System.getProperty( "path.separator");
+	classPath = System.getProperty( "java.class.path");
+	
 	fixed = true;
     }
 
@@ -419,35 +447,73 @@ public class PackageNamer
 	}
     }
 
-    public boolean classClashes_WithOtherPackages( String s)
+    public boolean package_ContainsClass( String classpathDir, String packageName, String className)
     {
-	ArrayList children = otherRoots;
-	NameHolder curNode = null;
+	File p = new File( classpathDir);
 
-	StringTokenizer st = new StringTokenizer( s, ".");
-	while (st.hasMoreTokens()) {
-	    String curName = (String) st.nextToken();
+	if (p.exists() == false)
+	    return false;
 
-	    NameHolder child = null;
-	    boolean found = false;
-	    Iterator cit = children.iterator();
+	packageName = packageName.replace( '.', fileSep);
+	if ((packageName.length() > 0) && (packageName.charAt( packageName.length() - 1) != fileSep))
+	    packageName += fileSep;
 
-	    while (cit.hasNext()) {
-		child = (NameHolder) cit.next();
+	String name = packageName + className + ".class";
 
-		if (child.get_PackageName().equals( curName)) {
-		    found = true;
+	if (p.isDirectory()) {
+	    if ((classpathDir.length() > 0) && (classpathDir.charAt( classpathDir.length() - 1) != fileSep))
+		classpathDir += fileSep;
+	    
+	    return (new File( classpathDir + name)).exists();
+	}
+
+	else {
+	    JarFile jf = null;
+
+	    try {
+		jf = new JarFile( p);
+	    }
+	    catch (IOException ioe) {
+		return false;
+	    }
+
+	    return (jf.getJarEntry( name) != null);
+	}
+    }
+
+    IterableSet patch_PackageContext( IterableSet currentContext) 
+    {
+	IterableSet newContext = new IterableSet();
+
+	Iterator it = currentContext.iterator();
+	while (it.hasNext()) {
+	    String 
+		currentPackage = (String) it.next(),
+		newPackage = null;
+
+	    StringTokenizer st = new StringTokenizer( currentPackage, ".");
+	    
+	    if (st.hasMoreTokens() == false) {
+		newContext.add( currentPackage);
+		continue;
+	    }
+
+	    String firstToken = st.nextToken();
+	    Iterator arit = appRoots.iterator();
+	    while (arit.hasNext()) {
+		NameHolder h = (NameHolder) arit.next();
+
+		if (h.get_PackageName().equals( firstToken)) {
+		    newPackage = h.get_OriginalPackageName( st);
 		    break;
 		}
 	    }
-	    
-	    if (!found) 
-		return false;
-
-	    curNode = child;
-	    children = child.get_Children();
+	    if (newPackage != null)
+		newContext.add( newPackage);
+	    else
+		newContext.add( currentPackage);
 	}
 
-	return ((curNode != null) && (curNode.is_Package()));
+	return newContext;
     }
 }

@@ -28,6 +28,7 @@ package soot.util;
 
 import java.util.*;
 import soot.*;
+import java.io.*;
 
 /** Reference implementation of the Chain interface, 
     using a HashMap as the underlying structure. */
@@ -351,7 +352,7 @@ public class HashChain extends AbstractCollection
     }
     
 
-    class Link {
+    class Link implements Serializable {
         private Link nextLink;
         private Link previousLink;
         private Object item;

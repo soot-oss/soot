@@ -30,13 +30,14 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 /** Partial implementation of trap (exception catcher), used within Body
  * classes.  */
-public class AbstractTrap implements Trap
+public class AbstractTrap implements Trap, Serializable
 {
     /** The exception being caught. */
-    protected SootClass exception;
+    protected transient SootClass exception;
 
     /** The first unit being trapped. */
     protected UnitBox beginUnitBox;
@@ -49,6 +50,19 @@ public class AbstractTrap implements Trap
 
     /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
     protected List unitBoxes;
+
+    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+	in.defaultReadObject();
+	exception = Scene.v().getSootClass( (String) in.readObject());
+    }
+
+    private void writeObject( ObjectOutputStream out) throws IOException
+    {
+	out.defaultWriteObject();
+	out.writeObject( exception.getFullName());
+    }
+
 
     /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
     protected AbstractTrap(SootClass exception, UnitBox beginUnitBox,

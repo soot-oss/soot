@@ -15,11 +15,22 @@ public class Dava
     private static final Dava instance = new Dava();
     private Writer iOut;
     private IterableSet currentPackageContext;
+    private String currentPackage;
     
     private Dava() 
     {
 	iOut = null;
 	currentPackageContext = null;
+    }
+
+    public void set_CurrentPackage( String cp)
+    {
+	currentPackage = cp;
+    }
+
+    public String get_CurrentPackage()
+    {
+	return currentPackage;
     }
 
     public void set_CurrentPackageContext( IterableSet cpc)

@@ -35,6 +35,8 @@ import java.util.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.dava.*;
+import java.io.*;
+import java.util.jar.*;
 
 /**
     Soot representation of a Java method.  Can be declared to belong to a SootClass. 
@@ -285,11 +287,166 @@ public class SootMethod extends AbstractHost implements ClassMember
         if(!hasActiveBody())
 	{
 //	    System.out.println("Retrieving "+this.getSignature());
-            setActiveBody(this.getBodyFromMethodSource("jb"));
+
+	    if (Main.getWithCache()) {
+		if (getCachedActiveBody() == false) {
+		    setActiveBody( this.getBodyFromMethodSource("jb"));
+		    cacheActiveBody();
+		}
+	    }
+	    else setActiveBody( this.getBodyFromMethodSource("jb"));
         }
         return getActiveBody();
     }
         
+
+    private boolean getCachedActiveBody() 
+    {
+	JimpleBody jb = null;
+	
+	try {
+	    ObjectInputStream in = new ObjectInputStream( new BufferedInputStream( new FileInputStream( getCacheFileName())));
+	    jb = (JimpleBody) in.readObject();
+	    in.close();
+	}
+	catch (IOException ioe) {
+	    return false;
+	}
+	catch (ClassNotFoundException cnfe) {
+	    return false;
+	}
+	finally {
+	    if (jb == null)
+		return false;
+	}
+
+	jb.setMethod( this);
+	setActiveBody( jb);
+
+	return true;
+    }
+
+    private static String cachePathName = null;
+
+    private String getCacheFileName()
+    {
+	if (cachePathName == null) {
+	    String 
+		fileSep = System.getProperty( "file.separator"),
+		rootDir = null;
+	    
+	    cachePathName = Main.getCacheDir();
+
+	    if (cachePathName == null)
+		cachePathName = System.getProperty( "user.home") + fileSep + ".soot" + fileSep + "cache";
+
+	    File dir = new File( cachePathName);
+	    if (!dir.exists()) {
+		try {
+		    dir.mkdirs();
+		}
+		catch( SecurityException se) {
+		    System.err.println( "Unable to create " + cachePathName);
+		    System.exit(0);
+		}
+	    }
+
+	    if ((cachePathName.length() > 0) && (cachePathName.charAt( cachePathName.length() - 1) != fileSep.charAt( 0)))
+		cachePathName += fileSep;
+	}
+
+	return cachePathName + getSignature() + getCacheFileAttr();
+    }
+
+    private String classFileAttr = null;
+
+    private String getCacheFileAttr()
+    {
+	if (classFileAttr == null) {
+
+	    StringBuffer b = new StringBuffer();
+	    char fileSep = System.getProperty( "file.separator").charAt( 0);
+	    String className = getDeclaringClass().getFullName().replace( '.', fileSep) + ".class";
+
+	    StringTokenizer st = new StringTokenizer( System.getProperty( "java.class.path"), System.getProperty( "path.separator"));
+	    while (st.hasMoreTokens()) {
+		String classPath = st.nextToken();
+
+		if (classPath.length() == 0)
+		    continue;
+
+		File p = new File( classPath);
+
+		if (p.exists() == false)
+		    continue;
+
+		if (p.isDirectory()) {
+		    if (classPath.charAt( classPath.length() - 1) != fileSep)
+			classPath += fileSep;
+
+		    File f = new File( classPath + className);
+		    if (f.exists()) {
+
+			b.append( " ");
+			b.append( Long.toString( f.length()));
+			b.append( "-");
+			b.append( Long.toString( f.lastModified()));
+
+			break;
+		    }
+		}
+
+		else {
+		    JarFile jf = null;
+
+		    try {
+			jf = new JarFile( classPath);
+		    }
+		    catch( IOException ioe) {
+			continue;
+		    }
+
+		    if (jf.getEntry( className) != null) {
+			
+			b.append( " ");
+			b.append( Long.toString( p.length()));
+			b.append( "-");
+			b.append( Long.toString( p.lastModified()));
+
+			break;
+		    }
+		}
+	    }
+
+	    if (b.length() == 0)
+		throw new RuntimeException( "Unable to generate cache filename for: " + getSignature());
+
+	    classFileAttr = b.toString();
+	}
+
+	return classFileAttr;
+    }
+
+
+    private void cacheActiveBody()
+    {
+	Body b = getActiveBody();
+
+	if ((b instanceof JimpleBody) == false)  // silently avoid caching non-JimpleBodies
+	    return;
+
+	try {
+	    ObjectOutputStream out = new ObjectOutputStream( new BufferedOutputStream( new FileOutputStream( getCacheFileName())));
+	    out.writeObject( (JimpleBody) b);
+	    out.close();
+	}
+	catch (Exception e) {
+	    e.printStackTrace();
+	    System.exit(0);
+	}
+    }
+   
+
     /**
         Sets the active body for this method. 
      */

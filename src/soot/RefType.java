@@ -32,7 +32,6 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
-
 /**
  *   A class that models Java's reference types. RefTypes are parametrized by a class name.
  *   Two RefType are equal iff they are parametrized by the same class name as a String.

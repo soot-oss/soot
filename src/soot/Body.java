@@ -49,10 +49,10 @@ import soot.toolkits.scalar.*;
  *  @see soot.jimple.JimpleBody
  *  @see soot.baf.BafBody
  */
-public abstract class Body extends AbstractHost
+public abstract class Body extends AbstractHost implements Serializable
 {
     /** The method associated with this Body. */
-    protected SootMethod method = null;
+    protected transient SootMethod method = null;
 
     /** The chain of locals for this Body. */
     protected Chain localChain = new HashChain();

@@ -30,13 +30,14 @@ package soot;
 import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 /** A code fragment (eg Stmt or Inst), used within Body
  * classes.  Intermediate representations must use an implementation
  * of Unit for their code.  In general, a unit denotes
  * some sort of unit for execution.
  */
-public interface Unit extends Switchable, Host
+public interface Unit extends Switchable, Host, Serializable
 {
     /** Returns a list of Boxes containing Values used in this Unit. */
     public List getUseBoxes();

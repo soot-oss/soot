@@ -227,8 +227,8 @@ public class Main implements Runnable
     static private int targetExtension = CLASS;
     static private String xmlInputFile = null;
     static private boolean produceXmlOutput = false;
-    static private boolean withPackagedOutput = false;
-    static private boolean usedPackagedOutputSwitch = false;
+    static private boolean withCache = false;
+    static private String cacheDir = null;
     static private boolean useJavaStyle = false;
 
     static public int totalFlowNodes, totalFlowComputations;
@@ -396,13 +396,23 @@ public class Main implements Runnable
         return isVerbose;
     }
 
-    public static void setWithPackagedOutput(boolean val)
+    public static void setWithCache(boolean val)
     {
-	withPackagedOutput = val;
+	withCache = val;
     }
-    public static boolean getWithPackagedOutput()
+    public static boolean getWithCache()
     {
-	return withPackagedOutput;
+	return withCache;
+    }
+    
+    public static void setCacheDir( String s)
+    {
+	cacheDir = s;
+	setWithCache( true);
+    }
+    public static String getCacheDir()
+    {
+	return cacheDir;
     }
     
 
@@ -641,7 +651,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.39)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.40)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -802,6 +812,21 @@ public class Main implements Runnable
 	while (cl.contains("subtract-gc"))
 	    setSubstractingGC(true);
 				
+	while (cl.contains( "with-cache"))
+	    setWithCache( true);
+
+	while (cl.contains( "k") || cl.contains( "cache-dir")) {
+	    String s = cl.getValue();
+	    if (s.equals( "")) {
+		System.err.println( "Warning: -k option without argument");
+		System.err.println( "         Using default cache directory");
+		setWithCache( true);
+	    }
+	    else
+		setCacheDir( s);
+	}
+	    
+
 	while (cl.contains("v") || cl.contains("verbose"))
 	    setVerbose(true);
 				
@@ -964,6 +989,8 @@ public class Main implements Runnable
 	addGetoptOption('A', "annotation", LongOpt.REQUIRED_ARGUMENT);
 	addGetoptOption(-21, "version", LongOpt.NO_ARGUMENT);
 	addGetoptOption('h', "help", LongOpt.NO_ARGUMENT);
+	addGetoptOption(-22, "with-cache", LongOpt.NO_ARGUMENT);
+	addGetoptOption('k', "cache-dir", LongOpt.REQUIRED_ARGUMENT);
 
 	// options handled elsewhere
 	addGetoptOption('-', "use-Getopt", LongOpt.NO_ARGUMENT);
@@ -1090,6 +1117,12 @@ public class Main implements Runnable
 	    case -21:
 		printVersion();
 		throw new CompilationDeathException(COMPILATION_SUCCEDED);
+	    case -22:
+		setWithCache( true);
+		break;
+	    case 'k':
+		setCacheDir( g.getOptarg());
+		break;
 	    case 'h':
 		printHelp();
 		throw new CompilationDeathException(COMPILATION_SUCCEDED);
@@ -1178,6 +1211,7 @@ public class Main implements Runnable
 		continue; // ignore
 	    else if(arg.equals("-j") || arg.equals("--jimp"))
 		setTargetRep(JIMP);
+
 	    else if(arg.equals("--njimple"))
 		setTargetRep(NJIMPLE);
 	    else if(arg.equals("-s") || arg.equals("--jasmin"))
@@ -1207,6 +1241,12 @@ public class Main implements Runnable
 		setOptimizingWhole(true);
 	    else if(arg.equals("-t") || arg.equals("--time"))
 		setProfiling(true);
+	    else if (arg.equals( "--with-cache"))
+		setWithCache( true);
+	    else if ((arg.equals( "--cache-dir")) || (arg.equals( "-k"))) {
+		if (++i < args.length)
+		    setCacheDir( args[i]);
+	    }
 	    else if(arg.equals("--subtract-gc"))
 		setSubstractingGC(true);
 	    else if(arg.equals("-v") || arg.equals("--verbose"))
@@ -1640,10 +1680,12 @@ public class Main implements Runnable
 				// System.gc();
 
 	    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+
 		ThrowFinder.v().find();
 		PackageNamer.v().fixNames();
-	    }
 
+		System.out.println();
+	    }
 
 	    // Handle each class individually
 	    {
@@ -1652,8 +1694,12 @@ public class Main implements Runnable
 		while(classIt.hasNext())
 		    {
 			SootClass s = (SootClass) classIt.next();
-										
-			System.out.print("Transforming " + s.getName() + "... " );
+				
+			if ((targetExtension == DAVA) || (finalRep == DAVA))
+			    System.out.print( "Decompiling ");
+			else
+			    System.out.print( "Transforming ");
+			System.out.print( s.getName() + "... " );
 			System.out.flush();
 							
 			if(!isInDebugMode)
@@ -1674,6 +1720,85 @@ public class Main implements Runnable
 			System.out.println();
 		    }
 	    }
+
+	    if ((targetExtension == DAVA) || (finalRep == DAVA)) {
+
+		// ThrowFinder.v().find();
+		// PackageNamer.v().fixNames();
+
+		System.out.println();
+
+		setJavaStyle( true);
+
+		Iterator classIt = Scene.v().getApplicationClasses().iterator();
+		while (classIt.hasNext()) {
+		    SootClass s = (SootClass) classIt.next();
+
+		    FileOutputStream streamOut = null;
+		    PrintWriter writerOut = null;
+		    String fileName = getFileNameFor( s, targetExtension);
+		    
+		    {
+			try {
+			    streamOut = new FileOutputStream(fileName);
+			    writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+			}
+			catch (IOException e)
+			    {
+				System.out.println("Cannot output file " + fileName);
+			    }
+		    }
+
+
+
+		    System.out.print( "Generating " + fileName + "... ");
+		    System.out.flush();
+
+		    if (!isInDebugMode) {
+			try {
+			   s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+			}
+			catch (RuntimeException e) {
+			    e.printStackTrace();
+			}
+		    }
+		    else {
+			s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
+		    }
+
+		    System.out.println();
+		    System.out.flush();
+
+		    {
+			try {
+			    writerOut.flush();
+			    streamOut.close();
+			}
+			catch(IOException e)
+			    {
+				System.out.println("Cannot close output file " + fileName);
+			    }
+		    }
+
+		    {
+			Iterator methodIt = s.getMethods().iterator();
+			
+			while(methodIt.hasNext())
+			    {   
+				SootMethod m = (SootMethod) methodIt.next();
+				
+				if(m.hasActiveBody())
+				    m.releaseActiveBody();
+			    }
+		    }
+		    
+
+		}
+		System.out.println();
+
+		setJavaStyle( false);
+	    }
+
 				
 	    totalTimer.end();            
 				
@@ -1935,8 +2060,6 @@ public class Main implements Runnable
 	    }
         }
 
-	setJavaStyle( produceDava);
-
         switch(targetExtension) {
         case JASMIN:
             if(c.containsBafBody())
@@ -1960,8 +2083,7 @@ public class Main implements Runnable
             c.printJimpleStyleTo(writerOut, 0);
             break;
         case DAVA:
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-            break;
+	    break;
         case GRIMP:
             c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
             break;
@@ -1972,8 +2094,6 @@ public class Main implements Runnable
             throw new RuntimeException();
         }
 
-	setJavaStyle( false);
-        
         if(targetExtension != CLASS)
 	    {
 		try {
@@ -1987,7 +2107,7 @@ public class Main implements Runnable
 	    }
 
         // Release bodies
-        {
+        if (!produceDava) {
             Iterator methodIt = c.getMethods().iterator();
                 
             while(methodIt.hasNext())

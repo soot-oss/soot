@@ -33,10 +33,11 @@ import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
-public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf, EquivTo
+public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf, EquivTo, Serializable
 {
-    SootField field;
+    transient SootField field;
     ValueBox baseBox;
 
     protected AbstractInstanceFieldRef(ValueBox baseBox, SootField field)
@@ -46,6 +47,18 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     }
 
     public abstract Object clone();
+
+    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+	in.defaultReadObject();
+	field = Scene.v().getField( (String) in.readObject());
+    }
+
+    private void writeObject( ObjectOutputStream out) throws IOException
+    {
+	out.defaultWriteObject();
+	out.writeObject( field.getSignature());
+    }
 
     public String toString()
     {

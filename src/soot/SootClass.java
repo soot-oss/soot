@@ -682,7 +682,7 @@ public class SootClass extends AbstractHost
 	    if (fixedShortName == null)
 		fixedShortName = PackageNamer.v().get_FixedClassName( name);
 
-	    if (PackageNamer.v().use_ShortName( fixedShortName) == false)
+	    if (PackageNamer.v().use_ShortName( getJavaPackageName(), fixedShortName) == false)
 		return getJavaPackageName() + "." + fixedShortName;
 
 	    return fixedShortName;
@@ -883,7 +883,7 @@ public class SootClass extends AbstractHost
 		out.println( "package " + curPackage + ";");
 		out.println();
 	    }
-	    
+
 	    IterableSet packagesUsed = new IterableSet();
 
 	    if (this.hasSuperclass()) {
@@ -963,7 +963,9 @@ public class SootClass extends AbstractHost
 
 	    packagesUsed.add( "java.lang");
 	    packagesUsed.add( curPackage);
+
 	    Dava.v().set_CurrentPackageContext( packagesUsed);
+	    Dava.v().set_CurrentPackage( curPackage);
 	}
 
 
