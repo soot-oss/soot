@@ -30,7 +30,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import soot.util.BitSet;
 
 /**
  * Each instance of this class represents one type in the class hierarchy (or basic types).
@@ -48,8 +47,8 @@ class TypeNode
   private TypeNode array;
 
   private List parents = Collections.EMPTY_LIST;
-  private final BitSet ancestors = new BitSet(0);
-  private final BitSet descendants = new BitSet(0);
+  private final BitVector ancestors = new BitVector(0);
+  private final BitVector descendants = new BitVector(0);
 	
   public TypeNode(int id, Type type, ClassHierarchy hierarchy)
   {

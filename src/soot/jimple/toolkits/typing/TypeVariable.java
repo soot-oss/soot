@@ -30,8 +30,6 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
-import java.util.*;
-import soot.util.BitSet;
 
 /** Represents a type variable. **/
 class TypeVariable implements Comparable
@@ -53,8 +51,8 @@ class TypeVariable implements Comparable
 
   private List parents = Collections.unmodifiableList(new LinkedList());
   private List children = Collections.unmodifiableList(new LinkedList());
-  private BitSet ancestors;
-  private BitSet indirectAncestors;
+  private BitVector ancestors;
+  private BitVector indirectAncestors;
 
   public TypeVariable(int id, TypeResolver resolver)
   {
@@ -305,8 +303,8 @@ class TypeVariable implements Comparable
   
   private void fixAncestors()
   {
-    BitSet ancestors = new BitSet(0);
-    BitSet indirectAncestors = new BitSet(0);
+    BitVector ancestors = new BitVector(0);
+    BitVector indirectAncestors = new BitVector(0);
     for(Iterator i = parents.iterator(); i.hasNext();)
       {
 	TypeVariable parent = ((TypeVariable) i.next()).ecr();

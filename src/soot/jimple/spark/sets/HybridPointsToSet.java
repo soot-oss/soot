@@ -47,17 +47,17 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     private final boolean nativeAddAll( HybridPointsToSet other, HybridPointsToSet exclude ) {
         boolean ret = false;
-        BitSet mask = null;
+        BitVector mask = null;
         TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
-            mask = (BitSet) typeManager.get( this.getType() );
+            mask = (BitVector) typeManager.get( this.getType() );
         }
         if( other.bits != null ) {
             convertToBits();
             if( exclude != null ) {
                 exclude.convertToBits();
             }
-            BitSet ebits = ( exclude==null ? null : exclude.bits );
+            BitVector ebits = ( exclude==null ? null : exclude.bits );
             ret = bits.orAndAndNot( other.bits, mask, ebits );
         } else {
             do {
@@ -237,7 +237,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final void convertToBits() {
         if( bits != null ) return;
-        bits = new BitSet( pag.getAllocNodeNumberer().size() );
+        bits = new BitVector( pag.getAllocNodeNumberer().size() );
         if( n1 != null ) fastAdd( n1 );
         if( n2 != null ) fastAdd( n2 );
         if( n3 != null ) fastAdd( n3 );
@@ -272,7 +272,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     private Node n14 = null;
     private Node n15 = null;
     private Node n16 = null; 
-    private BitSet bits = null;
+    private BitVector bits = null;
     private PAG pag;
     private boolean empty = true;
 }

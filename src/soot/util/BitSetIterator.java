@@ -27,17 +27,17 @@
 package soot.util;
 
 import java.util.*;
-import soot.util.BitSet;
+import soot.util.*;
 
 
 /** A fast enumerator for sparse bit sets. When the enumerator is
- *  created, it takes a snapshot of the underlying BitSet, and iterates
+ *  created, it takes a snapshot of the underlying BitVector, and iterates
  *  through the set bits. Note that this class almost implements the
  *  Iterator interface, but it doesn't because the return type of next
  *  is int rather than Object. */
 public class BitSetIterator {
 
-    long[] bits;    // Bits inherited from the underlying BitSet
+    long[] bits;    // Bits inherited from the underlying BitVector
     int index;      // The 64-bit block currently being examined
     long save = 0;  // A copy of the 64-bit block (for fast access)
 
@@ -65,7 +65,7 @@ public class BitSetIterator {
             save = bits[index];
     }
 
-    /** Returns true if there are more set bits in the BitSet; false otherwise. */
+    /** Returns true if there are more set bits in the BitVector; false otherwise. */
     public boolean hasNext() {
 	return index < bits.length;
     }

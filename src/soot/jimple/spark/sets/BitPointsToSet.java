@@ -32,7 +32,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
     public BitPointsToSet( Type type, PAG pag ) {
         super( type );
         this.pag = pag;
-        bits = new BitSet( pag.getAllocNodeNumberer().size() );
+        bits = new BitVector( pag.getAllocNodeNumberer().size() );
     }
     /** Returns true if this set contains no run-time objects. */
     public final boolean isEmpty() {
@@ -46,13 +46,13 @@ public final class BitPointsToSet extends PointsToSetInternal {
     }
 
     private final boolean nativeAddAll( BitPointsToSet other, BitPointsToSet exclude ) {
-        BitSet mask = null;
+        BitVector mask = null;
         TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
             mask = typeManager.get( this.getType() );
         }
-        BitSet obits = other.bits;
-        BitSet ebits = ( exclude==null ? null : exclude.bits );
+        BitVector obits = other.bits;
+        BitVector ebits = ( exclude==null ? null : exclude.bits );
         boolean ret = bits.orAndAndNot( obits, mask, ebits );
         if( ret ) empty = false;
         return ret;
@@ -103,7 +103,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
         return ret;
     }
 
-    private BitSet bits = null;
+    private BitVector bits = null;
     private boolean empty = true;
     private PAG pag = null;
 }

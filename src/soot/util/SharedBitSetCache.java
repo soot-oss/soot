@@ -26,10 +26,10 @@ public final class SharedBitSetCache {
 
     public static final int size = 32749; // a nice prime about 32k
 
-    public BitSet[] cache = new BitSet[size];
-    public BitSet[] orAndAndNotCache = new BitSet[size];
+    public BitVector[] cache = new BitVector[size];
+    public BitVector[] orAndAndNotCache = new BitVector[size];
 
-    public BitSet canonicalize( BitSet set ) {
+    public BitVector canonicalize( BitVector set ) {
         int hash = set.hashCode();
         if( hash < 0 ) hash = -hash;
         hash %= size;

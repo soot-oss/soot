@@ -47,10 +47,10 @@ public final class SharedPointsToSet extends PointsToSetInternal {
 
     private final boolean nativeAddAll( SharedPointsToSet other, SharedPointsToSet exclude ) {
         boolean ret = false;
-        BitSet mask = null;
+        BitVector mask = null;
         TypeManager typeManager = pag.getTypeManager();
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
-            mask = (BitSet) typeManager.get( this.getType() );
+            mask = (BitVector) typeManager.get( this.getType() );
         }
         if( other.bits != null ) {
             convertToBits();

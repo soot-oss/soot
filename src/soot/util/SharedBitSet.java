@@ -20,10 +20,10 @@
 package soot.util;
 
 public final class SharedBitSet {
-    BitSet value;
+    BitVector value;
     boolean own = true;
     public SharedBitSet(int i) {
-        value = new BitSet( i );
+        value = new BitVector( i );
     }
     public SharedBitSet() {
         this(32);
@@ -31,7 +31,7 @@ public final class SharedBitSet {
     private void acquire() {
         if( own ) return;
         own = true;
-        value = (BitSet) value.clone();
+        value = (BitVector) value.clone();
     }
     private void canonicalize() {
         value = SharedBitSetCache.v().canonicalize( value );
@@ -52,7 +52,7 @@ public final class SharedBitSet {
         if( own ) {
             value.and( other.value );
         } else {
-            value = BitSet.and( value, other.value );
+            value = BitVector.and( value, other.value );
             own = true;
         }
         canonicalize();
@@ -61,7 +61,7 @@ public final class SharedBitSet {
         if( own ) {
             value.or( other.value );
         } else {
-            value = BitSet.or( value, other.value );
+            value = BitVector.or( value, other.value );
             own = true;
         }
         canonicalize();
@@ -72,7 +72,7 @@ public final class SharedBitSet {
         canonicalize();
         return ret;
     }
-    public boolean orAndAndNot( SharedBitSet orset, BitSet andset, SharedBitSet andnotset ) {
+    public boolean orAndAndNot( SharedBitSet orset, BitVector andset, SharedBitSet andnotset ) {
         acquire();
         boolean ret = value.orAndAndNot( orset.value, andset,
                 andnotset == null ? null : andnotset.value );

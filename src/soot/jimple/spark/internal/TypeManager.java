@@ -31,7 +31,7 @@ import soot.options.SparkOptions;
  * @author Ondrej Lhotak
  */
 public final class TypeManager {
-    final public BitSet get( Type type ) {
+    final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(true) {
             AllocNode n = (AllocNode) allocNodeListener.next();
@@ -41,9 +41,9 @@ public final class TypeManager {
                 if( !(t instanceof RefLikeType) ) continue;
                 if( t instanceof AnySubType ) continue;
                 if( castNeverFails( n.getType(), t ) ) {
-                    BitSet mask = (BitSet) typeMask.get( t );
+                    BitVector mask = (BitVector) typeMask.get( t );
                     if( mask == null ) {
-                        typeMask.put( t, mask = new BitSet() );
+                        typeMask.put( t, mask = new BitVector() );
                         for( Iterator anIt = pag.getAllocNodeNumberer().iterator(); anIt.hasNext(); ) {
                             final AllocNode an = (AllocNode) anIt.next();
                             if( castNeverFails( an.getType(), t ) ) {
@@ -56,7 +56,7 @@ public final class TypeManager {
                 }
             }
         }
-        BitSet ret = (BitSet) typeMask.get( type );
+        BitVector ret = (BitVector) typeMask.get( type );
         if( ret == null && fh != null ) throw new RuntimeException( "oops"+type );
         return ret;
     }
@@ -90,7 +90,7 @@ public final class TypeManager {
             final Type t = (Type) tIt.next();
             if( !(t instanceof RefLikeType) ) continue;
             if( t instanceof AnySubType ) continue;
-            BitSet mask = new BitSet( allocNodes.size() );
+            BitVector mask = new BitVector( allocNodes.size() );
             for( Iterator nIt = allocNodes.iterator(); nIt.hasNext(); ) {
                 final Node n = (Node) nIt.next();
                 if( castNeverFails( n.getType(), t ) ) {

@@ -82,7 +82,7 @@ public final class NumberedSet {
     private final void doubleSize() {
         int uniSize = universe.size();
         if( array.length*128 > uniSize ) {
-            bits = new soot.util.BitSet( uniSize );
+            bits = new BitVector( uniSize );
             Numberable[] oldArray = array;
             array = null;
             for( int i = 0; i < oldArray.length; i++ ) {
@@ -152,7 +152,7 @@ public final class NumberedSet {
     public final int size() { return size; }
 
     private Numberable[] array = new Numberable[8];
-    private soot.util.BitSet bits;
+    private BitVector bits;
     private int size = 0;
     private Numberer universe;
 

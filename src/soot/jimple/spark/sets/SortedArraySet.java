@@ -42,7 +42,7 @@ public final class SortedArraySet extends PointsToSetInternal {
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
         boolean ret = false;
-        BitSet typeMask = pag.getTypeManager().get( type );
+        BitVector typeMask = pag.getTypeManager().get( type );
         if( other instanceof SortedArraySet ) {
             SortedArraySet o = (SortedArraySet) other;
             Node[] mya = nodes;
