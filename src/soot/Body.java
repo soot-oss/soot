@@ -467,6 +467,10 @@ public abstract class Body extends AbstractHost implements Serializable
         if(!xmlOutput)
 	{
 	    out.println("    " + decl);        
+            for( Iterator tIt = getMethod().getTags().iterator(); tIt.hasNext(); ) {        
+                final Tag t = (Tag) tIt.next();
+                out.println(t);
+            }
 	    out.println("    {");
 	
 	    Scene.v().getLocalPrinter().printLocalsInBody( this, out, isPrecise);
