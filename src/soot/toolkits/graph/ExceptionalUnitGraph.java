@@ -323,9 +323,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	    RefType caughtType;
 	    boolean active;
 
-	    TrapRecord(Trap trap, RefType caughtType) {
+	    TrapRecord(Trap trap) {
 		this.trap = trap;
-		this.caughtType = caughtType;
+		this.caughtType = RefType.v(trap.getException());
 		active = false;
 	    }
 	}
@@ -334,8 +334,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 	for (Iterator trapIt = body.getTraps().iterator(); 
 	     trapIt.hasNext(); trapIndex++) {
 	    Trap trap = (Trap) trapIt.next();
-	    trapTable[trapIndex] = new TrapRecord(trap, 
-						  RefType.v(trap.getException()));
+	    trapTable[trapIndex] = new TrapRecord(trap);
 	}
 
 	Map unitToExceptionDests = new HashMap(unitChain.size() * 2 + 1, 0.7f);
@@ -935,7 +934,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
     /**
      * <p>Return the {@link ThrowAnalysis} used to construct this
      * graph, if the graph contains no {@link Trap}s, or <code>null</code>
-     * if the graph does contain <code>Traph</code>s. A reference to the <code>ThrowAnalysis</code>
+     * if the graph does contain <code>Trap</code>s. A reference to the <code>ThrowAnalysis</code>
      * is kept when there are no <code>Trap</code>s so that the graph can 
      * generate responses to {@link getExceptionDest} on the fly, rather than
      * precomputing information that may never be needed.</p>
