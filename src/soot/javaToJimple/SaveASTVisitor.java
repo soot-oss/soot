@@ -25,7 +25,6 @@ public class SaveASTVisitor extends polyglot.frontend.AbstractPass {
 
     private polyglot.frontend.Job job;
     private polyglot.frontend.ExtensionInfo extInfo;
-    private HashMap sourceJobMap;
     
     public SaveASTVisitor(polyglot.frontend.Pass.ID id, polyglot.frontend.Job job,  polyglot.frontend.ExtensionInfo extInfo){
         super(id);
