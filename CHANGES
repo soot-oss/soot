@@ -3,7 +3,7 @@ Improvements in current version
 1. fix to SourceLocator for the case where there are no actual
      paths in the soot classpath. (plam)
 2. fix to HashMutableDirectedGraph to remove wayward extra
-     preds and succs edges to a removed node. (Felix Kwok, wkwok)
+     preds and succs edges to a removed node. (fabien)
 3. fix for Windows classpaths which contain less than two letters.
      Formerly, this crashed in charAt(1).  (plam, reported by Mary Payne)
 4. add an option '-A LineNumber' to keep line number attributes in
@@ -17,6 +17,9 @@ Improvements in current version
      Changes were: - sharing of coffi CONSTANT_Utf8_info objects
                    - SootMethod exceptions list created on demand
                    - get[Sub]Signature() storage hack useful for Sun JDK
+7. minor changes in HashChain (remove useless null checks, states increments
+   and modified insertBefore(List) ) (fabien)
+8. fix to AbstractHost to avoid creation of thousands of empty lists (fabien)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

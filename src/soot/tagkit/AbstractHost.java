@@ -38,11 +38,14 @@ import java.util.*;
  */
 public  class AbstractHost implements Host 
 {
-    List mTagList = new ArrayList(1);
+		// avoid creating an empty list for each element, when it is not used
+		// use lazy instantation (in addTag) instead
+		private static List emptyList = new ArrayList(0);
+    private List mTagList = emptyList;
     
     public List getTags()
     {
-        return mTagList;
+        return Collections.unmodifiableList(mTagList);
     }
 
     public void removeTag(String aName)
@@ -73,7 +76,7 @@ public  class AbstractHost implements Host
             return (Tag) mTagList.get(tagIndex);
         }
         
-	return null;
+				return null;
     }
 
     public boolean hasTag(String aName)
@@ -83,7 +86,9 @@ public  class AbstractHost implements Host
     
     public void addTag(Tag t)
     {
-	mTagList.add(t);
+				if (mTagList == emptyList) 
+						mTagList = new ArrayList(1);
+				mTagList.add(t);
     }
 }
 
