@@ -29,6 +29,7 @@ import java.util.*;
 import soot.util.*;
 import soot.options.BDDSparkOptions;
 import soot.tagkit.*;
+import soot.relations.*;
 
 /** Main entry point for Spark.
  * @author Ondrej Lhotak
@@ -88,6 +89,9 @@ public class BDDSparkTransformer extends AbstractSparkTransformer
         Scene.v().setPointsToAnalysis( pag );
         if( opts.add_tags() ) {
             addTags( pag );
+        }
+        if( opts.verbose() ) {
+            JBuddyProfiler.v().printInfo();
         }
     }
 

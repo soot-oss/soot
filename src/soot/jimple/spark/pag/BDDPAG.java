@@ -43,7 +43,7 @@ public class BDDPAG extends AbstractPAG {
         VarNode vn = findVarNode( l );
         if( vn == null ) return EmptyPointsToSet.v();
         return new BDDPointsToSet(
-                pt.restrict( pt_var, vn ).projectDownTo( pt_obj ) );
+                pointsTo.restrict( var, vn ).projectDownTo( obj ) );
     }
     public PointsToSet reachingObjects( SootField f ) {
         throw new RuntimeException( "NYI" );
@@ -53,44 +53,50 @@ public class BDDPAG extends AbstractPAG {
     }
 
     public Iterator simpleSourcesIterator() {
-        return es.projectDownTo( es_src ).iterator();
+        return edgeSet.projectDownTo( src ).iterator();
     }
     public Iterator allocSourcesIterator() {
-        return alloc.projectDownTo( pt_obj ).iterator();
+        return alloc.projectDownTo( obj ).iterator();
     }
     public Iterator storeSourcesIterator() {
-        return st.projectDownTo( st_src ).iterator();
+        return stores.projectDownTo( src ).iterator();
     }
     public Iterator loadSourcesIterator() {
         throw new RuntimeException( "NYI" );
     }
     public Iterator simpleInvSourcesIterator() {
-        return es.projectDownTo( es_dst ).iterator();
+        return edgeSet.projectDownTo( dst ).iterator();
     }
     public Iterator allocInvSourcesIterator() {
-        return alloc.projectDownTo( pt_var ).iterator();
+        return alloc.projectDownTo( var ).iterator();
     }
     public Iterator storeInvSourcesIterator() {
         throw new RuntimeException( "NYI" );
     }
     public Iterator loadInvSourcesIterator() {
-        return ld.projectDownTo( ld_dst ).iterator();
+        return loads.projectDownTo( dst ).iterator();
     }
 
     public boolean doAddSimpleEdge( VarNode from, VarNode to ) {
-        return es.add( from, to );
+        return edgeSet.add( src, from,
+                            dst, to );
     }
 
     public boolean doAddStoreEdge( VarNode from, FieldRefNode to ) {
-        return st.add( from, to.getField(), to.getBase() );
+        return stores.add( src, from,
+                           dst, to.getBase(),
+                           fld, to.getField() );
     }
 
     public boolean doAddLoadEdge( FieldRefNode from, VarNode to ) {
-        return ld.add( from.getBase(), from.getField(), to );
+        return loads.add( src, from.getBase(),
+                       fld, from.getField(),
+                       dst, to );
     }
 
     public boolean doAddAllocEdge( AllocNode from, VarNode to ) {
-        return alloc.add( from, to );
+        return alloc.add( obj, from,
+                          var, to );
     }
 
 
@@ -102,29 +108,33 @@ public class BDDPAG extends AbstractPAG {
     public PhysicalDomain h1 = new PhysicalDomain(20,"H1");
     public PhysicalDomain h2 = new PhysicalDomain(20,"H2");
 
-    public Domain pt_var = new Domain( getVarNodeNumberer(), v1, "pt.var" );
-    public Domain pt_obj = new Domain( getAllocNodeNumberer(), h1, "pt.obj" );
-    public Relation alloc = new Relation( pt_obj, pt_var );
-    public Relation pt = new Relation( pt_var, pt_obj );
+    public Domain var = new Domain( getVarNodeNumberer(), "var" );
+    public Domain src = new Domain( getVarNodeNumberer(), "src" );
+    public Domain dst = new Domain( getVarNodeNumberer(), "dst" );
 
-    public Domain es_src = new Domain( getVarNodeNumberer(), v1, "es.src" );
-    public Domain es_dst = new Domain( getVarNodeNumberer(), v2, "es.dst" );
-    public Relation es = new Relation( es_src, es_dst );
+    public Domain base = new Domain( getAllocNodeNumberer(), "base" );
+    public Domain obj = new Domain( getAllocNodeNumberer(), "obj" );
 
-    public Domain ld_src = new Domain( getVarNodeNumberer(), v1, "ld.src" );
-    public Domain ld_fd = new Domain( Scene.v().getFieldNumberer(), fd, "ld.fd" );
-    public Domain ld_dst = new Domain( getVarNodeNumberer(), v2, "ld.dst" );
-    public Relation ld = new Relation( ld_src, ld_fd, ld_dst );
+    public Domain fld = new Domain( Scene.v().getFieldNumberer(), "fld" );
 
-    public Domain st_src = new Domain( getVarNodeNumberer(), v1, "st.src" );
-    public Domain st_fd = new Domain( Scene.v().getFieldNumberer(), fd, "st.fd" );
-    public Domain st_dst = new Domain( getVarNodeNumberer(), v2, "st.dst" );
-    public Relation st = new Relation( st_src, st_fd, st_dst );
-
-    public Domain hpt_base = new Domain( getAllocNodeNumberer(), h1, "hpt.base" );
-    public Domain hpt_fd = new Domain( getAllocNodeNumberer(), fd, "hpt.fd" );
-    public Domain hpt_obj = new Domain( getAllocNodeNumberer(), h2, "hpt.obj" );
-    public Relation hpt = new Relation( hpt_base, hpt_fd, hpt_obj );
+    // var := new obj()
+    final public Relation alloc = new Relation( obj, var,
+                                                h1,  v1 );
+    // var points to object obj
+    final public Relation pointsTo = new Relation( var, obj,
+                                                   v1,  h1 );
+    // dst := src
+    final public Relation edgeSet = new Relation( src, dst,
+                                                  v1,  v2 );
+    // dst := src.fld
+    final public Relation loads = new Relation( src, fld, dst,
+                                                v1,  fd,  v2 );
+    // dst.fld := src
+    final public Relation stores = new Relation( src, dst, fld,
+                                                 v1,  v2,  fd );
+    // base.fld points to object obj
+    final public Relation fieldPt = new Relation( base, fld, obj,
+                                                  h1,   fd,  h2 );
 
 }
 

@@ -36,84 +36,127 @@ public final class BDDPropagator extends Propagator {
     public BDDPropagator( BDDPAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public final void propagate() {
-        ofcg = pag.getOnFlyCallGraph();
+        final Domain var = pag.var;
+        final Domain src = pag.src;
+        final Domain dst = pag.dst;
+        final Domain base = pag.base;
+        final Domain obj = pag.obj;
+        final Domain fld = pag.fld;
 
-        Domain stp_var = new Domain( pag.getVarNodeNumberer(), pag.v1, "stp.var" );
+        final PhysicalDomain v1 = pag.v1;
+        final PhysicalDomain v2 = pag.v2;
+        final PhysicalDomain h1 = pag.h1;
+        final PhysicalDomain h2 = pag.h2;
+        final PhysicalDomain fd = pag.fd;
 
-        Relation oldPointsTo = new Relation( pag.pt_var, pag.pt_obj );
-        Relation newPointsTo = new Relation( pag.pt_var, pag.pt_obj );
-        Relation tmp;
-        Relation objectsBeingStored;
-        Relation loadsFromHeap;
-        Relation newStorePt;
-        Relation storePt = new Relation( stp_var, pag.st_fd, pag.hpt_obj );
-        Relation loadPt;
-        Relation newFieldPt;
-        Relation loadAss = new Relation( pag.pt_obj, pag.ld_fd, pag.ld_dst );
-        Relation newLoadPt;
+        final Relation edgeSet = pag.edgeSet;
+        final Relation pointsTo = pag.pointsTo;
+        final Relation alloc = pag.alloc;
+        final Relation loads = pag.loads;
+        final Relation stores = pag.stores;
+        final Relation fieldPt = pag.fieldPt;
 
-        pag.pt.unionEq( pag.alloc );
-        newPointsTo.unionEq( pag.pt );
+        // Variable var points to object obj
+        final Relation oldPointsTo = pointsTo.sameDomains();
+        final Relation newPointsTo = pointsTo.sameDomains();
+        final Relation tmpPointsTo = newPointsTo.sameDomains();
+
+
+        // Object obj is being stored into var.fld
+        final Relation objectsBeingStored = new Relation( obj, var, fld,
+                                                          h2,  v1,  fd );
+        final Relation oldStorePt = objectsBeingStored.sameDomains();
+        final Relation newStorePt = objectsBeingStored.sameDomains();
+
+        final Relation newFieldPt = fieldPt.sameDomains();
+        final Relation tmpFieldPt = fieldPt.sameDomains();
+
+        // The objects pointed to by base.fld are being loaded into dst
+        final Relation loadsFromHeap = new Relation( base, fld, dst,
+                                                     h1,   fd,  v2 );
+        final Relation loadAss = loadsFromHeap.sameDomains();
+
+
+
+        pointsTo.eqUnion( pointsTo, alloc );
+        newPointsTo.eqUnion( newPointsTo, pointsTo );
 
         // start solving 
         do {
 
             // repeat rule (1) in the inner loop
             do {
-                tmp = pag.es.relprod( pag.es_src, newPointsTo, pag.pt_var );
-                tmp = tmp.replace( pag.es_dst, pag.pt_var );
-                tmp = tmp.minus( pag.pt );
-                // newPointsTo = newPt3 & typeFilter;
-                newPointsTo = tmp;
-                pag.pt.unionEq( newPointsTo );
+                newPointsTo.eqRelprod( edgeSet, src, newPointsTo, var,
+                                       var, edgeSet,     dst,
+                                       obj, newPointsTo, obj );
+                newPointsTo.eqMinus( newPointsTo, pointsTo );
+                // newPointsTo = newPointsTo & typeFilter;
+                pointsTo.eqUnion( pointsTo, newPointsTo );
+
                 if( pag.getOpts().verbose() ) {
-                    G.v().out.println( "Minor iteration: "+newPointsTo.projectDownTo( pag.pt_var ).size()+" changed p2sets" );
+                    G.v().out.println( "Minor iteration: "+newPointsTo.
+                            projectDownTo( var ).size()+" changed p2sets" );
                 }
+
             } while( !newPointsTo.isEmpty() );
 
-            newPointsTo = pag.pt.minus( oldPointsTo );
+            newPointsTo.eqMinus( pointsTo, oldPointsTo );
 
             // apply rule (2)
-            objectsBeingStored = pag.st.relprod( pag.st_src, newPointsTo, pag.pt_var );
-            objectsBeingStored = objectsBeingStored.replace( 
-                    Domain.box( pag.st_dst, pag.pt_obj ),
-                    Domain.box( stp_var, pag.hpt_obj ) );
-            newStorePt = objectsBeingStored.minus( storePt );
-            storePt.unionEq( newStorePt );
+            objectsBeingStored.eqRelprod( stores, src, newPointsTo, var,
+                                          obj, newPointsTo, obj,
+                                          var, stores,      dst, 
+                                          fld, stores,      fld );
+                                          
+            newStorePt.eqMinus( objectsBeingStored, oldStorePt );
+            oldStorePt.eqUnion( oldStorePt, newStorePt );
 
-            newFieldPt = storePt.relprod( stp_var, newPointsTo, pag.pt_var );
-            newFieldPt.unionEq(
-                    newStorePt.relprod( stp_var, oldPointsTo, pag.pt_var ) );
-            newFieldPt = newFieldPt.replace(
-                    Domain.box( pag.st_fd, pag.pt_obj ),
-                    Domain.box( pag.hpt_fd, pag.hpt_base ) );
-            newFieldPt = newFieldPt.minus( pag.hpt );
-            pag.hpt.unionEq( newFieldPt );
+            newFieldPt.eqRelprod( oldStorePt, var, newPointsTo, var,
+                                  base, newPointsTo, obj,
+                                  fld,  oldStorePt,  fld,
+                                  obj,  oldStorePt,  obj );
+
+            tmpFieldPt.eqRelprod( newStorePt, var, oldPointsTo, var,
+                                  base, oldPointsTo, obj,
+                                  fld,  newStorePt,  fld,
+                                  obj,  newStorePt,  obj );
+            newFieldPt.eqUnion( newFieldPt, tmpFieldPt );
+                                  
+            newFieldPt.eqMinus( newFieldPt, fieldPt );
+            fieldPt.eqUnion( fieldPt, newFieldPt );
 
             // apply rule (3)
-            loadsFromHeap = pag.ld.relprod( pag.ld_src, newPointsTo, pag.pt_var );
-            loadsFromHeap = loadsFromHeap.minus( loadAss );
-            newLoadPt = loadAss.relprod( pag.ld_fd, pag.pt_obj, newFieldPt, pag.hpt_fd, pag.hpt_base );
-            newLoadPt.unionEq(
-                    loadsFromHeap.relprod( pag.ld_fd, pag.pt_obj, pag.hpt, pag.hpt_fd, pag.hpt_base ) );
+            loadsFromHeap.eqRelprod( loads, src, newPointsTo, var,
+                                     base, newPointsTo, obj,
+                                     fld,  loads,       fld,
+                                     dst,  loads,       dst );
+
+            loadsFromHeap.eqMinus( loadsFromHeap, loadAss );
+                                     
+            newPointsTo.eqRelprod( loadAss, base, fld, newFieldPt, base, fld,
+                                   var, loadAss,    dst,
+                                   obj, newFieldPt, obj );
+            tmpPointsTo.eqRelprod( loadsFromHeap, base, fld, fieldPt, base, fld,
+                                   var, loadsFromHeap, dst,
+                                   obj, fieldPt,       obj );
+
+            newPointsTo.eqUnion( newPointsTo, tmpPointsTo );
+
             // cache loadAss
-            loadAss.unionEq( loadsFromHeap );
+            loadAss.eqUnion( loadAss, loadsFromHeap );
             
             // update oldPointsTo
-            oldPointsTo.unionEq( pag.pt ); 
+            oldPointsTo.eq( pointsTo ); 
 
             // convert new points-to relation to normal type
-            newPointsTo = newLoadPt.replace( 
-                    Domain.box( pag.ld_dst, pag.hpt_obj ),
-                    Domain.box( pag.pt_var, pag.pt_obj ) );
-            newPointsTo.minusEq( pag.pt );
+            newPointsTo.eqMinus( newPointsTo, pointsTo );
     
             // apply typeFilter
             //newPointsTo = typeFilter & newPointsTo;
-            pag.pt.unionEq( newPointsTo );
+            pointsTo.eqUnion( pointsTo, newPointsTo );
 
             if( pag.getOpts().verbose() ) {
-                G.v().out.println( "Major iteration: "+newPointsTo.projectDownTo( pag.pt_var ).size()+" changed p2sets" );
+                G.v().out.println( "Major iteration: "+newPointsTo.projectDownTo( pag.var ).size()+" changed p2sets" );
             }
         } while(!newPointsTo.isEmpty());
     }

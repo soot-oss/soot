@@ -54,3 +54,4 @@ soot.util
 soot.util.queue
 soot.shimple
 soot.shimple.toolkits.scalar
+soot.relations

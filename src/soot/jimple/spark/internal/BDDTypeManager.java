@@ -33,16 +33,18 @@ import soot.relations.*;
  */
 public final class BDDTypeManager extends AbstractTypeManager {
     public BDDTypeManager() {
+        BDDPAG bddpag = (BDDPAG) pag;
+        typeMask = new Relation( bddpag.var, bddpag.obj,
+                                 bddpag.v1,  bddpag.h1 );
         clearTypeMask();
     }
     final public void clearTypeMask() {
-        typeMask = new Relation( ((BDDPAG)pag).pt_var, ((BDDPAG)pag).pt_obj );
         typeMask.makeFull();
     }
     final public void makeTypeMask( AbstractPAG pag ) {
         if(true) throw new RuntimeException( "NYI" );
     }
 
-    private Relation typeMask = null;
+    final private Relation typeMask;
 }
 

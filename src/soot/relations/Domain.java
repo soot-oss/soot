@@ -22,25 +22,22 @@ import soot.util.*;
 
 public class Domain
 { 
-    public Domain( Numberer numberer, PhysicalDomain phys ) {
+    public Domain( Numberer numberer ) {
         this.numberer = numberer;
-        this.phys = phys;
     }
-    public Domain( Numberer numberer, PhysicalDomain phys, String name ) {
-        this(numberer, phys);
+    public Domain( Numberer numberer, String name ) {
+        this(numberer);
         this.name = name;
     }
     private Numberer numberer;
     public Numberer numberer() { return numberer; }
-    private PhysicalDomain phys;
-    public PhysicalDomain phys() { return phys; }
     private String name;
     public String toString() { 
         if( name == null ) return super.toString();
         return name;
     }
 
-    public static String toString( Domain[] domains ) {
+    public static String toString( Object[] domains ) {
         StringBuffer b = new StringBuffer();
         b.append( "[ ");
         for( int k = 0; k < domains.length; k++ ) {

@@ -28,7 +28,7 @@ import soot.relations.*;
  * @author Ondrej Lhotak
  */
 public class BDDPointsToSet implements PointsToSet {
-    private Relation bdd;
+    final private Relation bdd;
     public BDDPointsToSet( Relation bdd ) {
         this.bdd = bdd;
     }
@@ -37,7 +37,9 @@ public class BDDPointsToSet implements PointsToSet {
     /** Returns true if this set shares some objects with other. */
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
         BDDPointsToSet o = (BDDPointsToSet) other;
-        return !bdd.intersect( o.bdd ).isEmpty();
+        Relation intersection = bdd.sameDomains();
+        intersection.eqIntersect( bdd, o.bdd );
+        return !intersection.isEmpty();
     }
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {

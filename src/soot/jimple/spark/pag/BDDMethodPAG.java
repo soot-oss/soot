@@ -51,21 +51,22 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
         this.pag = pag;
         this.method = m;
         this.parms = new StandardParms( pag, this );
-        es = new Relation( pag.es_src, pag.es_dst );
-        st = new Relation( pag.st_src, pag.st_fd, pag.st_dst );
-        ld = new Relation( pag.ld_src, pag.ld_fd, pag.ld_dst );
-        alloc = new Relation( pag.pt_obj, pag.pt_var );
+        edgeSet = pag.edgeSet.sameDomains();
+        stores = pag.stores.sameDomains();
+        loads = pag.loads.sameDomains();
+        alloc = pag.alloc.sameDomains();
     }
+
     /** Adds this method to the main PAG, with all VarNodes parameterized by
      * varNodeParameter. */
     public void addToPAG( Object varNodeParameter ) {
         if( varNodeParameter != null ) throw new RuntimeException( "NYI" );
         if( hasBeenAdded ) return;
         hasBeenAdded = true;
-        pag.es.unionEq( es );
-        pag.st.unionEq( st );
-        pag.ld.unionEq( ld );
-        pag.alloc.unionEq( alloc );
+        pag.edgeSet.eqUnion( pag.edgeSet, edgeSet );
+        pag.stores.eqUnion( pag.stores, stores );
+        pag.loads.eqUnion( pag.loads, loads );
+        pag.alloc.eqUnion( pag.alloc, alloc );
     }
     private static Numberable[] box ( Numberable n1, Numberable n2 ) {
         Numberable[] ret = { n1, n2 };
@@ -78,23 +79,29 @@ public final class BDDMethodPAG extends AbstractMethodPAG {
     public void addEdge( Node src, Node dst ) {
         if( src instanceof VarNode ) {
             if( dst instanceof VarNode ) {
-                es.add( (VarNode) src, (VarNode) dst );
+                edgeSet.add( pag.src, (VarNode) src,
+                             pag.dst, (VarNode) dst );
             } else {
                 FieldRefNode fdst = (FieldRefNode) dst;
-                st.add( (VarNode) src, fdst.getField(), fdst.getBase() );
+                stores.add( pag.src, (VarNode) src,
+                            pag.dst, fdst.getBase(),
+                            pag.fld, fdst.getField() );
             }
         } else if( src instanceof FieldRefNode ) {
             FieldRefNode fsrc = (FieldRefNode) src;
-            ld.add( fsrc.getBase(), fsrc.getField(), (VarNode) dst );
+            loads.add( pag.src, fsrc.getBase(),
+                       pag.fld, fsrc.getField(),
+                       pag.dst, (VarNode) dst );
         } else {
-            alloc.add( (AllocNode) src, (VarNode) dst );
+            alloc.add( pag.obj, (AllocNode) src,
+                       pag.var, (VarNode) dst );
         }
     }
 
-    public Relation es;
-    public Relation st;
-    public Relation ld;
-    public Relation alloc;
+    final public Relation edgeSet;
+    final public Relation stores;
+    final public Relation loads;
+    final public Relation alloc;
 
 }
 

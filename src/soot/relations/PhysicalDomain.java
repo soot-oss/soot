@@ -24,7 +24,7 @@ public class PhysicalDomain
 { 
     static {
         System.loadLibrary("jbuddy");
-        JBuddy.bdd_init( 10000, 10000 );
+        JBuddy.bdd_init( 1000000, 100000 );
     }
     public PhysicalDomain( int bits ) {
         this.bits = bits;
