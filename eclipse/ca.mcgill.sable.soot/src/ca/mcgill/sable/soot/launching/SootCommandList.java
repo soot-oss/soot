@@ -103,6 +103,13 @@ public class SootCommandList {
 		setList(withDashes);
 	}
 
+	public void printList(){
+		System.out.println("Soot Command List:");
+		Iterator it = list.iterator();
+		while (it.hasNext()){
+			System.out.println(it.next());
+		}
+	}
 	/**
 	 * Returns the list.
 	 * @return ArrayList

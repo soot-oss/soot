@@ -321,6 +321,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		createSpecialButton(parent, 2, Messages.getString("SootConfigManagerDialog.Delete"), false); //$NON-NLS-1$
 		createSpecialButton(parent, 3, Messages.getString("SootConfigManagerDialog.Rename"), false); //$NON-NLS-1$
 		createSpecialButton(parent, 4, Messages.getString("SootConfigManagerDialog.Clone"), false); //$NON-NLS-1$
+		//createSpecialButton(parent, 7, Messages.getString("SootConfigManagerDialog.Import"), false); //$NON-NLS-1$
+		//createSpecialButton(parent, 8, Messages.getString("SootConfigManagerDialog.Export"), false); //$NON-NLS-1$
 	
 	}
 	
@@ -352,6 +354,14 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			}
 			case 6: {
 				cancelPressed();
+				break;
+			}
+			case 7: {
+				//importPressed();
+				break;
+			}
+			case 8: {
+				//exportPressed();
 				break;
 			}
 			 
@@ -617,20 +627,30 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	// runs the config
 	private void runPressed() {
 		super.okPressed();
+		System.out.println("get selected: "+getSelected());
 		if (getSelected() == null) return;
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		String mainClass = settings.get(getSelected()+"_mainClass");
-			
+		
+		System.out.println(getLauncher().getClass());	
 		if (getLauncher() instanceof SootConfigProjectLauncher) {
 			((SootConfigProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		else if (getLauncher() instanceof SootConfigFileLauncher) {
+			System.out.println("Is File Launcher");
 			((SootConfigFileLauncher)getLauncher()).launch(getSelected(), mainClass);
+		}
+		else if (getLauncher() instanceof SootConfigFromJavaFileLauncher){
+			((SootConfigFromJavaFileLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		
 		
-	}	
+	}
+	
+	private void importPressed(){
+			
+	}
 	
 	/**
 	 * Returns the sashForm.
