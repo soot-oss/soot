@@ -509,6 +509,9 @@ public class Scene  //extends AbstractHost
         if(!hasCallGraph()) {
             CallGraphBuilder cgb = new CallGraphBuilder();
             cgb.build();
+            CallGraph ret = activeCallGraph;
+            activeCallGraph = null;
+            return ret;
         }
             
         return activeCallGraph;
