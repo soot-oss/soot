@@ -148,6 +148,7 @@ public class SootMethod extends AbstractHost implements ClassMember
     public void setDeclaringClass( SootClass declaringClass)
     {
 	this.declaringClass = declaringClass;
+	setDeclared( true);
     }
 
     /** Returns the class which declares the current <code>SootMethod</code>. */

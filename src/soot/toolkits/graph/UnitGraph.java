@@ -152,10 +152,12 @@ public class UnitGraph implements DirectedGraph
                         
                         beginToHandler.put(beginUnit, handlerUnit);
 
-                        
-                        Unit u;
+			
+			for (Unit u = (Unit) unitIt.next(); u != endUnit; u = (Unit) unitIt.next())
+			    ((List) unitToSuccs.get(u)).add(handlerUnit);
+			/*                        		       
 
-                        
+                        Unit u;
 
                         do  {
                             u = (Unit) unitIt.next();
@@ -164,7 +166,8 @@ public class UnitGraph implements DirectedGraph
                             
                         } while(u != endUnit);
                         
-                        
+                        */
+
                     }
            
                     // Add edges from the predecessors of begin statements directly to the handlers

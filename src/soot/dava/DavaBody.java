@@ -1,95 +1,95 @@
-/* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Jerome Miecznikowski
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
 package soot.dava;
 
 import soot.*;
 import java.util.*;
-import soot.jimple.*;
-import soot.grimp.*;
-//import soot.dava.internal.*;
-import soot.dava.toolkits.base.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
+import soot.grimp.*;
+import soot.jimple.*;
+import soot.toolkits.graph.*;
+import soot.jimple.internal.*;
+import soot.dava.internal.asg.*;
+import soot.dava.internal.AST.*;
+import soot.dava.internal.SET.*;
+import soot.dava.internal.javaRep.*;
+import soot.dava.toolkits.base.misc.*;
+import soot.dava.toolkits.base.finders.*;
+
 
 public class DavaBody extends Body
 {
+    private Map pMap;
+    private HashSet consumedConditions, thisLocals;
+    private IteratorableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+    private Local controlLocal;
+    private InstanceInvokeExpr constructorExpr;
+    private Unit constructorUnit;
+    private List caughtrefs;
+
+    
     /**
      *  Construct an empty DavaBody 
-     **/
+     */
+             
+    DavaBody(SootMethod m)
+    {
+        super(m);
+
+	pMap = new HashMap();
+	consumedConditions = new HashSet();
+	thisLocals = new HashSet();
+	synchronizedBlockFacts = new IteratorableSet();
+	exceptionFacts = new IteratorableSet();
+	monitorFacts = new IteratorableSet();
+	caughtrefs = new LinkedList();
+
+	controlLocal = null;
+	constructorExpr = null;
+    }
+
+
+    public Unit get_ConstructorUnit()
+    {
+	return constructorUnit;
+    }
     
-    private List trunkList, tempList;
-    private Trunk entryTrunk;
-    public boolean transformed;
-    
-    PatchingChain trunkChain;
-    PatchingChain originalUnits;
-    
-    //public PatchingChain getUnits() {return trunkChain;}
-    
+    public List get_CaughtRefs()
+    {
+	return caughtrefs;
+    }
+
+    public InstanceInvokeExpr get_ConstructorExpr()
+    {
+	return constructorExpr;
+    }
+
     public Map get_ParamMap()
     {
-        return null;
+	return pMap;
     }
 
     public HashSet get_ThisLocals()
     {
-        return null;
+	return thisLocals;
     }
 
-    public List getTrunks() {
-	return trunkList;
-    }
-    
-    public Trunk getHeadTrunk() {
-	return entryTrunk;
-    }
-
-  public void addTrunk( Trunk t)
-  {
-      if (t != null)
-	  trunkList.add( t);
-  }
-  
-  public boolean removeTrunk( Trunk t)
-  {
-    int index;
-
-    if ((index = trunkList.indexOf( t)) < 0) return false;
-    return removeTrunkAtIndex( index);
-  }
-
-  public boolean removeTrunkAtIndex( int index)
-  {
-    return (trunkList.remove( index) == null);
-  }
-
-     
-    DavaBody(SootMethod m)
+    public Local get_ControlLocal()
     {
-        super(m);
+	if (controlLocal == null) {
+	    controlLocal = new JimpleLocal( "controlLocal", IntType.v());
+	    getLocals().add( controlLocal);
+	}
+
+	return controlLocal;
+    }
+
+    public Set get_ConsumedConditions()
+    {
+	return consumedConditions;
+    }
+
+    public void consume_Condition( AugmentedStmt as)
+    {
+	consumedConditions.add( as);
     }
 
     public Object clone()
@@ -99,64 +99,144 @@ public class DavaBody extends Body
         return b;
     }
 
-    /**
-        Constructs a DavaBody from the given Body.
-     */
+    public IteratorableSet get_SynchronizedBlockFacts()
+    {
+	return synchronizedBlockFacts;
+    }
 
+    public IteratorableSet get_ExceptionFacts()
+    {
+	return exceptionFacts;
+    }
+
+    public IteratorableSet get_MonitorFacts()
+    {
+	return monitorFacts;
+    }
+    
+
+    /**
+     * Constructs a DavaBody from the given Body.
+     */
+    
     DavaBody(Body body, Map options)
     {
-        super(body.getMethod());
+        this( body.getMethod());
 
-        entryTrunk = null;
-	trunkList = new ArrayList();
+	// copy and "convert" the grimp representation
+	copy_Body( body);
 
-        if(!(body instanceof GrimpBody))
-            throw new RuntimeException("can only create a DavaBody from a GrimpBody!");
-        
+	// prime the analysis
+        AugmentedStmtGraph asg = new AugmentedStmtGraph( new BriefUnitGraph( this), new CompleteUnitGraph( this, true));
+
+	ExceptionFinder.v().preprocess( this, asg);
+	SETNode SET = new SETTopNode( asg.get_ChainView());
+
+	while (true) {
+	    try {
+		CycleFinder.v().find( this, asg, SET);
+		IfFinder.v().find( this, asg, SET);
+		SwitchFinder.v().find( this, asg, SET);
+		SynchronizedBlockFinder.v().find( this, asg, SET);
+		ExceptionFinder.v().find( this, asg, SET);
+		SequenceFinder.v().find( this, asg, SET);
+		LabeledBlockFinder.v().find( this, asg, SET);
+		AbruptEdgeFinder.v().find( this, asg, SET);
+	    }
+	    catch (RetriggerAnalysisException rae) {
+		SET = new SETTopNode( asg.get_ChainView());
+		continue;
+	    }
+	    break;
+	}
+
+	MonitorConverter.v().convert( this);
+	
+	// get rid of the grimp representation
+	getTraps().clear();
+	getUnits().clear();
+	
+	// put in a new AST representation
+	getUnits().addLast( SET.emit_AST());
+    }
+
+
+    /*
+     *  Copy and patch a GrimpBody so that it can be used to output Java.
+     */
+
+    private void copy_Body( Body body)
+    {
+        if (!(body instanceof GrimpBody))
+            throw new RuntimeException("You can only create a DavaBody from a GrimpBody!");
+
         GrimpBody grimpBody = (GrimpBody) body;
 
-	originalUnits = new PatchingChain( new HashChain());
-            
-        // Convert all locals
-        {
-            Iterator localIt = grimpBody.getLocals().iterator();
-            
-            while(localIt.hasNext()) {
-
-		Local l = (Local) localIt.next();
-		Local newLocal;
-		
-		newLocal = Grimp.v().newLocal(l.getName(), l.getType());
-		getLocals().add(newLocal);
-	    }
-        }
-
-        // Import body contents from Grimp.
+        /*
+	 *  Import body contents from Grimp.
+	 */
+ 
         {        
             HashMap bindings = new HashMap();
+	    HashMap reverse_binding = new HashMap();
     
             Iterator it = grimpBody.getUnits().iterator();
-    
+	    
             // Clone units in body's statement list 
-            while(it.hasNext()) {
-                Unit original = (Unit) it.next();
-                                
+            while (it.hasNext()) {
+                Unit original = (Unit) it.next();                                
                 Unit copy = (Unit) original.clone();
                 
                 // Add cloned unit to our unitChain.
                 getUnits().addLast(copy);
-		originalUnits.addLast(copy);
     
                 // Build old <-> new map to be able to patch up references to other units 
                 // within the cloned units. (these are still refering to the original
                 // unit objects).
                 bindings.put(original, copy);
-            }
+		reverse_binding.put( copy, original);
+            }	    
+
+	    // patch up the switch statments
+	    it = getUnits().iterator();
+	    while (it.hasNext()) {
+		Unit u = (Unit) it.next();
+		Stmt s = (Stmt)u;
+		
+		if (s instanceof TableSwitchStmt) {
+		    TableSwitchStmt ts = (TableSwitchStmt) s;
+
+		    TableSwitchStmt original_switch = (TableSwitchStmt) reverse_binding.get(u);
+		    ts.setDefaultTarget( (Unit) bindings.get( original_switch.getDefaultTarget()));
+
+		    LinkedList new_target_list = new LinkedList();
+
+		    int target_count = ts.getHighIndex() - ts.getLowIndex() + 1;
+		    for (int i=0; i<target_count; i++) 
+			new_target_list.add( (Unit) bindings.get( original_switch.getTarget( i)));
+		    ts.setTargets( new_target_list);
+
+		}
+		if (s instanceof LookupSwitchStmt) {
+		    LookupSwitchStmt ls = (LookupSwitchStmt) s;
+
+		    LookupSwitchStmt original_switch = (LookupSwitchStmt) reverse_binding.get(u);
+		    ls.setDefaultTarget( (Unit) bindings.get( original_switch.getDefaultTarget()));
+
+                    Unit[] new_target_list = new Unit[ original_switch.getTargetCount()];
+                    for (int i = 0; i < original_switch.getTargetCount(); i++)
+                        new_target_list[i] = (Unit) (bindings.get( original_switch.getTarget(i)));
+                    ls.setTargets( new_target_list);
+
+		    ls.setLookupValues( original_switch.getLookupValues());
+		}
+	    }
     
             // Clone locals.
             it = grimpBody.getLocals().iterator();
             while(it.hasNext()) {
                 Local original = (Local) it.next();
+
                 Value copy = Dava.v().newLocal(original.getName(), original.getType());
                 
                 getLocals().addLast(copy);
@@ -174,9 +254,8 @@ public class DavaBody extends Body
                 
                 // if we have a reference to an old object, replace it 
                 // it's clone.
-                if( (newObject = (Unit)  bindings.get(oldObject)) != null )
+                if( (newObject = (Unit) bindings.get(oldObject)) != null )
                     box.setUnit(newObject);
-                    
             }        
     
             // backpatch all local variables.
@@ -186,126 +265,402 @@ public class DavaBody extends Body
                 if(vb.getValue() instanceof Local) 
                     vb.setValue((Value) bindings.get(vb.getValue()));
             }
-        }    
-    
-        // Call transformers to recover structure
-        {
-            BlockStructurer.v().transform(this, "db.bs");
-	    transformed = true;
-	    while (transformed) {
-		transformed = false;
-		
-		IfThenElseMatcher.v().transform(this, "db.item");
-		WhileMatcher.v().transform( this, "db.wm");
-		IfMatcher.v().transform(this, "db.im");
+        
+	    // clone the traps 
+	    Iterator trit = grimpBody.getTraps().iterator();
+	    while (trit.hasNext()) {
+
+		Trap originalTrap = (Trap) trit.next();
+		Trap cloneTrap    = (Trap) originalTrap.clone();
+
+		Unit handlerUnit = (Unit) bindings.get( originalTrap.getHandlerUnit());
+
+		cloneTrap.setHandlerUnit( handlerUnit);
+		cloneTrap.setBeginUnit( (Unit) bindings.get( originalTrap.getBeginUnit()));
+		cloneTrap.setEndUnit( (Unit) bindings.get( originalTrap.getEndUnit()));
+
+		getTraps().add( cloneTrap);
 	    }
-        }
-
-	// Remove the Grimp units and put in the Dava units
-	while (getUnits().size() > 0)
-	    getUnits().removeLast();
-
-
-	Iterator t_it = trunkList.iterator();
-	while( t_it.hasNext()) {
-	    getUnits().addLast( (Trunk) t_it.next());
 	}
 
-
-    }
-
-
-    // clean up list of trunks by looking for trunks with their "removed" flags on and 
-    // trunks having only one successor, one predecessor and the successor has only one
-    // successor and one predecessor.
-    
-    public void clean() {
-	Iterator it;
-	Trunk t;
-	boolean done = false;
-
-	while (!done) {
-	    done = true;
-
-	    // first make a list of all the trunks to remove
-	    it = trunkList.iterator();
-	    tempList = new ArrayList();
-	    while (it.hasNext())
-		if ((t = ((Trunk) it.next())).removed())
-		    tempList.add( t);
+	/*
+	 *  Add one level of indirection to "if", "switch", and exceptional control flow.
+	 *  This allows for easy handling of breaks, continues and exceptional loops.
+	 */
+	{
+	    PatchingChain units = getUnits();
 	    
-	    // then remove those trunks
-	    it = tempList.iterator();
-	    while (it.hasNext())
-		trunkList.remove( it.next());
+	    Iterator it = units.snapshotIterator();
+	    while (it.hasNext()) {
+		Unit u = (Unit) it.next();
+		Stmt s = (Stmt) u;
 
-	    boolean done_ttred = false;
+		if (s instanceof IfStmt) {
+		    IfStmt ifs = (IfStmt) s;
 
-	    // now hunt for trunks to make trunktrunks out of
-	    while (!done_ttred) {
-		done_ttred = true;
-		tempList = new ArrayList();
+		    JGotoStmt jgs = new JGotoStmt( (Unit) units.getSuccOf( u));
+		    units.insertAfter( jgs, u);
 
-		it = trunkList.iterator();
-		while (it.hasNext())
-		    if (findMatch( (Trunk) it.next())) {
-			done = false;
-			done_ttred = false;
+		    JGotoStmt jumper = new JGotoStmt( (Unit) ifs.getTarget());
+		    units.insertAfter( jumper, jgs);
+		    ifs.setTarget( (Unit) jumper);
+		}
+
+		else if (s instanceof TableSwitchStmt) {
+		    TableSwitchStmt tss = (TableSwitchStmt) s;
+
+		    int targetCount = tss.getHighIndex() - tss.getLowIndex() + 1;
+		    for (int i=0; i<targetCount; i++) {
+			JGotoStmt jgs = new JGotoStmt( (Unit) tss.getTarget( i));
+			units.insertAfter( jgs, tss);
+			tss.setTarget( i, (Unit) jgs);
 		    }
 
-		trunkList.addAll( tempList);
+		    JGotoStmt jgs = new JGotoStmt( (Unit) tss.getDefaultTarget());
+		    units.insertAfter( jgs, tss);
+		    tss.setDefaultTarget( (Unit) jgs);
+		}
+
+		else if (s instanceof LookupSwitchStmt) {
+		    LookupSwitchStmt lss = (LookupSwitchStmt) s;
+		    
+		    for (int i=0; i<lss.getTargetCount(); i++) {
+			JGotoStmt jgs = new JGotoStmt( (Unit) lss.getTarget( i));
+			units.insertAfter( jgs, lss);
+			lss.setTarget( i, (Unit) jgs);
+		    }
+
+		    JGotoStmt jgs = new JGotoStmt( (Unit) lss.getDefaultTarget());
+		    units.insertAfter( jgs, lss);
+		    lss.setDefaultTarget( (Unit) jgs);
+		}
+	    }
+
+	    it = getTraps().iterator();
+	    while (it.hasNext()) {
+		Trap t = (Trap) it.next();
+		
+		JGotoStmt jgs = new JGotoStmt( (Unit) t.getHandlerUnit());
+		units.addLast( jgs);
+		t.setHandlerUnit( (Unit) jgs);
+	    }
+	}
+
+
+	/*
+	 *  Fix up the grimp representations of statements so they can be compiled as java.
+	 */
+
+	{
+	    Iterator it = getUnits().iterator();
+	    while (it.hasNext()) {
+		Unit u = (Unit) it.next();		
+		Stmt s = (Stmt) u;
+
+		if (s instanceof IfStmt)
+		    javafy( ((IfStmt) s).getConditionBox());
+
+		else if (s instanceof DefinitionStmt) {
+		    DefinitionStmt ds = (DefinitionStmt) s;
+
+		    javafy( ds.getRightOpBox());
+		    javafy( ds.getLeftOpBox());
+		    
+		    if (ds.getRightOp() instanceof IntConstant) 
+			ds.getRightOpBox().setValue( DIntConstant.v( ((IntConstant) ds.getRightOp()).value, ds.getLeftOp().getType()));
+		}
+
+		else if (s instanceof ReturnStmt) {
+		    ReturnStmt rs = (ReturnStmt) s;
+		    
+		    if (rs.getOp() instanceof IntConstant)
+			rs.getOpBox().setValue( DIntConstant.v( ((IntConstant) rs.getOp()).value, body.getMethod().getReturnType()));
+		    else 
+			javafy( rs.getOpBox());
+		}
+
+		else if (s instanceof InvokeStmt)
+		    javafy( ((InvokeStmt) s).getInvokeExprBox());
+	    }
+	}
+
+
+	/*
+	 *  Convert references to "this" and parameters.
+	 */
+	
+	{
+	    Iterator ucit = getUnits().iterator();
+	    while (ucit.hasNext()) {
+		Stmt s = (Stmt) ucit.next();
+		
+		if (s instanceof IdentityStmt) {
+		    IdentityStmt ids = (IdentityStmt) s;
+		    Value ids_rightOp = ids.getRightOp();
+		    Value ids_leftOp  = ids.getLeftOp();
+		    
+		    if ((ids_leftOp instanceof Local) && (ids_rightOp instanceof ThisRef)) {
+			Local thisLocal = (Local) ids_leftOp;
+			
+			thisLocals.add( thisLocal);
+			thisLocal.setName( "this");
+		    }
+		}
+
+		if (s instanceof DefinitionStmt) {
+		    DefinitionStmt ds = (DefinitionStmt) s;
+		    Value rightOp = ds.getRightOp();
+
+		    if (rightOp instanceof ParameterRef)
+			pMap.put( new Integer( ((ParameterRef) rightOp).getIndex()), ds.getLeftOp());
+
+		    if (rightOp instanceof CaughtExceptionRef)
+			caughtrefs.add( ds.getLeftOp());
+		}
+	    }
+	}
+
+
+	/*
+	 *  Fix up the calls to other constructors.  Note, this is seriously underbuilt. :-)
+	 */
+
+	{
+	    Iterator ucit = getUnits().iterator();
+	    while (ucit.hasNext()) {
+		Stmt s = (Stmt) ucit.next();
+
+		if (s instanceof InvokeStmt) {
+		    
+		    InvokeStmt ivs = (InvokeStmt) s;
+		    Value ie = ivs.getInvokeExpr();
+			
+		    if (ie instanceof InstanceInvokeExpr) {
+			
+			InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+			Value base = iie.getBase();
+			
+			if ((base instanceof Local) && (((Local) base).getName().equals( "this"))) {
+			    SootMethod m = iie.getMethod();
+			    String name = m.getName();
+
+			    if ((name.equals( DavaMethod.constructorName)) || (name.equals( DavaMethod.staticInitializerName))) {
+				constructorExpr = iie;
+				constructorUnit = (Unit) s;
+				break;
+			    }
+			}
+		    }
+		}
 	    }
 	}
     }
-	
-    private boolean findMatch( Trunk t) {
-	Trunk t0;
-	boolean found = false;
 
-	if (t.removed())
-	    return false;
 
-	if (t.getSuccessors().size() == 1) {
 
-	    t0 = (Trunk) t.getSuccessors().get(0);
-	    if ((t0.getPredecessors().size() == 1) && (t0.getSuccessors().size() < 2)) {
-		found = true;
+    /*
+     *  The following set of routines takes care of converting the syntax of single grimp 
+     *  statements to java.
+     *
+     */
 
-		// create the new trunk to hold the two old ones
-		TrunkTrunk ttm = Dava.v().newTrunkTrunk( t, t0);
-		ttm.setPredecessorList( t.getPredecessors());
-		ttm.setSuccessorList( t0.getSuccessors());
-		
-		// fix the successor links from the outside graph to the new trunk
-		Iterator pit = ttm.getPredecessors().iterator();
-		while (pit.hasNext()) {
-		    Trunk pt = (Trunk) pit.next();
-		    pt.getSuccessors().remove( t);
-		    pt.addSuccessor( ttm);
-		}
-				
-		// set the predecessor to point to our new trunk
-		if (t0.getSuccessors().size() == 1) {
-		    Trunk st = (Trunk) t0.getSuccessors().get(0);
-		    st.getPredecessors().remove( t0);
-		    st.getPredecessors().add( ttm);
-		}
-				
-		// and nuke the old trunks
-		t.setRemoved();
-		t0.setRemoved();
 
-		if (t.getLastStmt() instanceof GotoStmt) 
-		    t.maskGotoStmt();
-		
-		// put in the new trunk
-		tempList.add( ttm);
+    private void javafy( ValueBox vb) 
+    {
+	Value v = vb.getValue();
+
+	if (v instanceof Expr)
+	    javafy_expr( vb);
+	else if (v instanceof Ref)
+	    javafy_ref( vb);
+	else if (v instanceof Local)
+	    javafy_local( vb);
+	else if (v instanceof Constant)
+	    javafy_constant( vb);
+    }
+
+    private void javafy_expr( ValueBox vb)
+    {
+	Expr e = (Expr) vb.getValue();
+
+	if (e instanceof BinopExpr)
+	    javafy_binop_expr( vb);
+	else if (e instanceof UnopExpr)
+	    javafy_unop_expr( vb);
+	else if (e instanceof CastExpr)
+	    javafy_cast_expr( vb);
+	else if (e instanceof NewArrayExpr)
+	    javafy_newarray_expr( vb);
+	else if (e instanceof NewMultiArrayExpr)
+	    javafy_newmultiarray_expr( vb);
+	else if (e instanceof InstanceOfExpr)
+	    javafy_instanceof_expr( vb);
+	else if (e instanceof InvokeExpr)
+	    javafy_invoke_expr( vb);
+	else if (e instanceof NewExpr)
+	    javafy_new_expr( vb);
+    }
+
+
+    private void javafy_ref( ValueBox vb)
+    {
+	Ref r = (Ref) vb.getValue();
+
+	if (r instanceof StaticFieldRef)
+	    vb.setValue( new DStaticFieldRef( ((StaticFieldRef) r).getField(), ((DavaMethod) getMethod()).getClassName()));
+
+	else if (r instanceof ArrayRef) {
+	    ArrayRef ar = (ArrayRef) r;
+
+	    javafy( ar.getBaseBox());
+	    javafy( ar.getIndexBox());
+	}
+
+	else if (r instanceof InstanceFieldRef) {
+	    InstanceFieldRef ifr = (InstanceFieldRef) r;
+
+	    vb.setValue( new DInstanceFieldRef( ifr.getBase(), ifr.getField(), thisLocals));
+	}
+
+	else if (r instanceof ThisRef) {
+	    ThisRef tr = (ThisRef) r;
+	    
+	    vb.setValue( new DThisRef( (RefType) tr.getType()));
+	}
+    }
+    
+    private void javafy_local( ValueBox vb)
+    {
+    }
+    
+    private void javafy_constant( ValueBox vb)
+    {
+    }
+
+
+    private void javafy_binop_expr( ValueBox vb)
+    {
+	BinopExpr boe = (BinopExpr) vb.getValue();
+
+	ValueBox
+	    leftOpBox = boe.getOp1Box(),
+	    rightOpBox = boe.getOp2Box();
+	Value 
+	    leftOp = leftOpBox.getValue(),
+	    rightOp = rightOpBox.getValue();
+
+
+	if (rightOp instanceof IntConstant) {
+	    if ((leftOp instanceof IntConstant) == false) {
+		javafy( leftOpBox);
+		rightOpBox.setValue( DIntConstant.v( ((IntConstant) rightOp).value, leftOp.getType()));
 	    }
 	}
-	return found;
+	else if (leftOp instanceof IntConstant) {
+	    javafy( rightOpBox);
+	    leftOpBox.setValue( DIntConstant.v( ((IntConstant) leftOp).value, rightOp.getType()));
+	}
+	else {
+	    javafy( rightOpBox);
+	    javafy( leftOpBox);
+	}
+
+	if (boe instanceof CmplExpr)
+	    vb.setValue( new DCmplExpr( leftOp, rightOp));
+    }
+
+    private void javafy_unop_expr( ValueBox vb)
+    {
+	UnopExpr uoe = (UnopExpr) vb.getValue();
+
+	javafy( uoe.getOpBox());
+
+	if (uoe instanceof LengthExpr)
+	    vb.setValue( new DLengthExpr( ((LengthExpr) uoe).getOp()));
+    }
+
+    private void javafy_cast_expr( ValueBox vb)
+    {
+	CastExpr ce = (CastExpr) vb.getValue();
+
+	javafy( ce.getOpBox());
+    }
+
+    private void javafy_newarray_expr( ValueBox vb)
+    {
+	NewArrayExpr nae = (NewArrayExpr) vb.getValue();
+
+	javafy( nae.getSizeBox());
+	vb.setValue( new DNewArrayExpr( nae.getBaseType(), nae.getSize()));
+    }
+
+    private void javafy_newmultiarray_expr( ValueBox vb)
+    {
+	NewMultiArrayExpr nmae = (NewMultiArrayExpr) vb.getValue();
+
+	for (int i=0; i<nmae.getSizeCount(); i++)
+	    javafy( nmae.getSizeBox( i));
+
+	vb.setValue( new DNewMultiArrayExpr( nmae.getBaseType(), nmae.getSizes()));
+    }
+
+    private void javafy_instanceof_expr( ValueBox vb)
+    {
+	InstanceOfExpr ioe = (InstanceOfExpr) vb.getValue();
+
+	javafy( ioe.getOpBox());	
+    }
+    
+    private void javafy_invoke_expr( ValueBox vb)
+    {
+	InvokeExpr ie = (InvokeExpr) vb.getValue();
+
+	for (int i=0; i<ie.getArgCount(); i++)
+	    javafy( ie.getArgBox( i));
+
+	if (ie instanceof InstanceInvokeExpr) {
+	    javafy( ((InstanceInvokeExpr) ie).getBaseBox());
+
+	    if (ie instanceof VirtualInvokeExpr) {
+		VirtualInvokeExpr vie = (VirtualInvokeExpr) ie;
+
+		vb.setValue( new DVirtualInvokeExpr( vie.getBase(), vie.getMethod(), vie.getArgs(), thisLocals));
+	    }
+	    
+	    else if (ie instanceof SpecialInvokeExpr) {
+		SpecialInvokeExpr sie = (SpecialInvokeExpr) ie;
+		
+		vb.setValue( new DSpecialInvokeExpr( sie.getBase(), sie.getMethod(), sie.getArgs()));
+	    }
+	    
+	    else if (ie instanceof InterfaceInvokeExpr) {
+		InterfaceInvokeExpr iie = (InterfaceInvokeExpr) ie;
+		
+		vb.setValue( new DInterfaceInvokeExpr( iie.getBase(), iie.getMethod(), iie.getArgs()));
+	    }
+
+	    else 
+		throw new RuntimeException( "InstanceInvokeExpr " + ie + " not javafied correctly");
+	}
+
+	else if (ie instanceof StaticInvokeExpr) {
+	    StaticInvokeExpr sie = (StaticInvokeExpr) ie;
+	    
+	    if (sie instanceof NewInvokeExpr) {
+		NewInvokeExpr nie = (NewInvokeExpr) sie;
+		
+		vb.setValue( new DNewInvokeExpr( (RefType) nie.getType(), nie.getMethod(), nie.getArgs()));
+	    }
+	    
+	    else
+		vb.setValue( new DStaticInvokeExpr( sie.getMethod(), sie.getArgs()));
+	}
+
+	else 
+	    throw new RuntimeException( "InvokeExpr " + ie + " not javafied correctly");
+    }
+
+    private void javafy_new_expr( ValueBox vb)
+    {	
     }
 }
-
-
-
-

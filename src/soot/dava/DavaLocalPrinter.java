@@ -1,10 +1,10 @@
 package soot.dava;
 
-import soot.tagkit.*;
 import soot.*;
 import java.util.*;
 import soot.util.*;
 import soot.jimple.*;
+import soot.tagkit.*;
 import soot.toolkits.graph.*;
 
 public class DavaLocalPrinter implements LocalPrinter
@@ -26,7 +26,9 @@ public class DavaLocalPrinter implements LocalPrinter
         {
             Map typeToLocals = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
 
-	    Collection params = davaBody.get_ParamMap().values();
+	    HashSet params = new HashSet();
+	    params.addAll( davaBody.get_ParamMap().values());
+	    params.addAll( davaBody.get_CaughtRefs());
 	    HashSet thisLocals = davaBody.get_ThisLocals();
 	    
 
@@ -60,38 +62,25 @@ public class DavaLocalPrinter implements LocalPrinter
                 }
             }
 
-	    /*
-	    if (davaBody.constructorUnit != null) {
+	    InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr(); 
+	    if (constructorExpr != null) {
 
-		if (davaBody.constructorUnit instanceof InvokeStmt) {
-		    InvokeExpr ie = (InvokeExpr) ((InvokeStmt) davaBody.constructorUnit).getInvokeExpr();
+		if (((DavaMethod) davaBody.getMethod()).getClassName().equals( constructorExpr.getMethod().getDeclaringClass().toString()))
+		    out.print("        this(");
+		else
+		    out.print("        super(");
+
+		Iterator ait = constructorExpr.getArgs().iterator();
+		while (ait.hasNext()) {
+		    out.print( ait.next().toString());
 		    
-		    if (ie instanceof SpecialInvokeExpr) {
-			SpecialInvokeExpr sie = (SpecialInvokeExpr) ie;
-			
-			{
-			    InstanceInvokeExpr iie = (InstanceInvokeExpr) ((InvokeStmt) davaBody.constructorUnit).getInvokeExpr();
-			    
-			    
-			    if (((DavaMethod) davaBody.getMethod()).getClassName().equals( iie.getMethod().getDeclaringClass().toString()))
-				out.print("        this(");
-			    else
-				out.print("        super(");
-
-			    Iterator ait = iie.getArgs().iterator();
-			    while (ait.hasNext()) {
-				out.print(ait.next().toString());
-				
-				if (ait.hasNext())
-				    out.print( ", ");
-			    }
-			    
-			    out.print( ");\n\n");
-			}
-		    }
+		    if (ait.hasNext())
+			out.print( ", ");
 		}
+		
+		out.print( ");\n\n");
 	    }
-	    */
+
 
             // Print locals
             {

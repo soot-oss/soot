@@ -1,13 +1,12 @@
 package soot.dava;
 
 import soot.*;
-import soot.dava.*;
 import java.util.*;
 
 public class DavaMethod extends SootMethod
 {
-    private static String constructorName = "<init>";
-    private static String staticInitializerName = "<clinit>";
+    public static final String constructorName = "<init>";
+    public static final String staticInitializerName = "<clinit>";
 
     private String className = "";
 
@@ -48,7 +47,10 @@ public class DavaMethod extends SootMethod
     {
 	String name = getName();
 
-	if (name.equals( constructorName)) {
+	if (name.equals( staticInitializerName)) 
+	    return "static";
+
+	else {
 
 	    StringBuffer buffer = new StringBuffer();
 	    
@@ -63,10 +65,19 @@ public class DavaMethod extends SootMethod
 	    if(buffer.length() != 0)
 		buffer.append(" ");
 
-
 	    // name
-	    buffer.append( className + "(");            
-	    
+	    if (name.equals( constructorName))
+		buffer.append( className);  
+	    else {
+		Type rt;
+		if ((rt = this.getReturnType()) != null)
+		    buffer.append( rt + " ");
+
+		buffer.append(Scene.v().quotedNameOf( this.getName()));
+	    }
+
+	    buffer.append( "(");
+
 	    // parameters
 	    Iterator typeIt = this.getParameterTypes().iterator();
 	    
@@ -114,13 +125,6 @@ public class DavaMethod extends SootMethod
 	    }
 	    
 	    return buffer.toString();
-	    
-	    
 	}
-	
-	if (name.equals( staticInitializerName))
-	    return "static";
-
-	return super.getDeclaration();
     }
 }
