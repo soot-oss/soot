@@ -57,7 +57,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-            final Unit u = (Unit) uIt.next();
+            final Object u = (Object) uIt.next();
             numbers.put(u, new Integer(i));
             i++;
         }
