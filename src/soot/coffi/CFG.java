@@ -735,7 +735,7 @@ public class CFG {
 
 	    LinkedList newentries = new LinkedList();
 
-	    int orig_start_of_subr = headbefore.next.originalIndex; // inclusive
+	    int orig_start_of_subr = astore.next.originalIndex; // inclusive
 	    int orig_end_of_subr = ret.originalIndex; // again, inclusive
 
 	    for (int i=0; i<ca.exception_table_length; i++) 
