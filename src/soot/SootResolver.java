@@ -136,7 +136,6 @@ public class SootResolver
             newClass.setContextClass();
             
             markedClasses.add(newClass);
-	    if(className.equals("int")) throw new RuntimeException();
             classesToResolve.addLast(newClass);
         }
     }

@@ -24,10 +24,6 @@
  */
 
 
-
-
-
-
 package soot.toolkits.scalar;
 
 import soot.*;
@@ -35,26 +31,26 @@ import soot.toolkits.graph.*;
 import soot.util.*;
 import java.util.*;
 
+/** Provides methods for register coloring.  Jimple uses these methods
+ * to assign the local slots appropriately. */
 public class FastColorer
 {   
-    public static void unsplitAssignColorsToLocals(Body unitBody, Map localToGroup, 
-        Map localToColor, Map groupToColorCount)
+    /** Provides a coloring for the locals of 
+     * <code>unitBody</code>, attempting to not
+     * split locals assigned the same name in the original Jimple. */
+    public static void unsplitAssignColorsToLocals(Body unitBody, 
+                                                   Map localToGroup, 
+                                                   Map localToColor, 
+                                                   Map groupToColorCount)
     {
-        unitBody.printTo(new java.io.PrintWriter(System.out, true));
         CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
 
         LiveLocals liveLocals;        
         liveLocals = new SimpleLiveLocals(unitGraph);
         
         
-        UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
-
-        Iterator it = intGraph.getLocals().iterator();
-        
-        while(it.hasNext()) {
-            Local local = (Local) it.next();
-            Local[] locals = intGraph.getInterferencesOf(local);
-        }
+        UnitInterferenceGraph intGraph = 
+            new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
 
         Map localToOriginalName = new HashMap();
         
@@ -72,7 +68,8 @@ public class FastColorer
                 
                 if(signIndex != -1)
                 {
-                    localToOriginalName.put(local, local.getName().substring(0, signIndex));
+                    localToOriginalName.put(local, 
+                               local.getName().substring(0, signIndex));
                 }
                 else
                     localToOriginalName.put(local, local.getName()); 
@@ -99,10 +96,12 @@ public class FastColorer
                 }
                 
                 Object group = localToGroup.get(local);
-                int colorCount = ((Integer) groupToColorCount.get(group)).intValue();
+                int colorCount = 
+                    ((Integer) groupToColorCount.get(group)).intValue();
                 
                 if(freeColors.length < colorCount)
-                    freeColors = new int[Math.max(freeColors.length * 2, colorCount)];
+                    freeColors = 
+                        new int[Math.max(freeColors.length * 2, colorCount)];
                 
                 // Set all colors to free.
                 {
@@ -112,13 +111,16 @@ public class FastColorer
                 
                 // Remove unavailable colors for this local
                 {
-                    Local[] interferences = intGraph.getInterferencesOf(local);
+                    Local[] interferences = 
+                        intGraph.getInterferencesOf(local);
 
                     for(int i = 0; i < interferences.length; i++)
                     {
                         if(localToColor.containsKey(interferences[i]))
                         {
-                            int usedColor = ((Integer) localToColor.get(interferences[i])).intValue();
+                            int usedColor = 
+                                ((Integer) localToColor.get(interferences[i]))
+                                .intValue();
                 
                             freeColors[usedColor] = 0;
                         }
@@ -127,20 +129,25 @@ public class FastColorer
                 
                 // Assign a color to this local.
                 {
-                    String originalName = (String) localToOriginalName.get(local);
-                    List originalNameColors = (List) originalNameAndGroupToColors.get(new StringGroupPair(originalName, group));
+                    String originalName = 
+                        (String) localToOriginalName.get(local);
+                    List originalNameColors = 
+                        (List) originalNameAndGroupToColors.get
+                        (new StringGroupPair(originalName, group));
                     
                     if(originalNameColors == null)
                     {
                         originalNameColors = new ArrayList();
-                        originalNameAndGroupToColors.put(new StringGroupPair(originalName, group), originalNameColors);
-                        
+                        originalNameAndGroupToColors.put
+                            (new StringGroupPair(originalName, group), 
+                             originalNameColors);
                     }
                     
                     boolean found = false;
                     int assignedColor = 0;
                     
-                    // Check if the colors assigned to this original name is already free
+                    // Check if the colors assigned to this 
+                    // original name is already free
                     {
                         Iterator colorIt = originalNameColors.iterator();
                         
@@ -168,21 +175,19 @@ public class FastColorer
             }
         }                            
     }    
-        
+
+    /** Provides an economical coloring for the locals of 
+     * <code>unitBody</code>. */
     public static void assignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-       
         CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
-
         LiveLocals liveLocals;
-
        
         liveLocals = new SimpleLiveLocals(unitGraph);
-       
 
-        UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
-
+        UnitInterferenceGraph intGraph = 
+            new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
 
         // Assign a color for each local.
         {
@@ -200,10 +205,12 @@ public class FastColorer
                 }
                 
                 Object group = localToGroup.get(local);
-                int colorCount = ((Integer) groupToColorCount.get(group)).intValue();
+                int colorCount = 
+                    ((Integer) groupToColorCount.get(group)).intValue();
                 
                 if(freeColors.length < colorCount)
-                    freeColors = new int[Math.max(freeColors.length * 2, colorCount)];
+                    freeColors = new int[Math.max(freeColors.length * 2, 
+                                                  colorCount)];
                 
                 // Set all colors to free.
                 {
@@ -213,13 +220,16 @@ public class FastColorer
                 
                 // Remove unavailable colors for this local
                 {
-                    Local[] interferences = intGraph.getInterferencesOf(local);
+                    Local[] interferences = 
+                        intGraph.getInterferencesOf(local);
 
                     for(int i = 0; i < interferences.length; i++)
                     {
                         if(localToColor.containsKey(interferences[i]))
                         {
-                            int usedColor = ((Integer) localToColor.get(interferences[i])).intValue();
+                            int usedColor = 
+                                ((Integer) localToColor.
+                                 get(interferences[i])).intValue();
                 
                             freeColors[usedColor] = 0;
                         }
@@ -251,6 +261,7 @@ public class FastColorer
                             
     }
 
+    /** Implementation of a unit interference graph. */
     public static class UnitInterferenceGraph
     {
         Map localToLocals;// Maps a local to its interfering locals.
@@ -265,15 +276,16 @@ public class FastColorer
             return locals;
         }
         
-        public UnitInterferenceGraph(Body body, Map localToGroup, LiveLocals liveLocals)
+        public UnitInterferenceGraph(Body body, Map localToGroup, 
+                                     LiveLocals liveLocals)
         {
-
             locals = new ArrayList();
             locals.addAll(body.getLocals());
             
             // Initialize localToLocals
             {
-                localToLocals = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+                localToLocals = new HashMap(body.getLocalCount() * 2 + 1, 
+                                            0.7f);
     
                 Iterator localIt = body.getLocals().iterator();
     
@@ -293,34 +305,33 @@ public class FastColorer
                     {
                         Unit unit = (Unit) codeIt.next();
     
-                        List liveLocalsAtUnit = liveLocals.getLiveLocalsAfter(unit);
+                        List liveLocalsAtUnit = 
+                            liveLocals.getLiveLocalsAfter(unit);
                     
-                        // Note interferences if this statement is a definition
+                        // Note interferences if this stmt is a definition
                         {
                             List defBoxes = unit.getDefBoxes();
                 
                             if(!defBoxes.isEmpty()) {
                 
                                 if(!(defBoxes.size() ==1)) 
-                                    throw new RuntimeException("FastColorer: invalid number of def boxes");
+                                    throw new RuntimeException
+                                        ("invalid number of def boxes");
                             
-                                if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
-                
+                                if(((ValueBox)defBoxes.get(0)).getValue() 
+                                   instanceof Local) 
+                                {
                                     Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                  
                                     Iterator localIt = liveLocalsAtUnit.iterator();
                                 
                                     while(localIt.hasNext())
-                                        {
-                                            Local otherLocal = (Local) localIt.next();
+                                    {
+                                        Local otherLocal = (Local) localIt.next();
                 
-                                            if(localToGroup.get(otherLocal).equals(
-                                                                                   localToGroup.get(defLocal)))
-                                            {
-                
-                                                setInterference(defLocal, otherLocal);
-                                            }
-                                        }
+                                        if(localToGroup.get(otherLocal)
+                                              .equals(localToGroup.get(defLocal)))
+                                            setInterference(defLocal, otherLocal);
+                                    }
                                 }   
                             } 
                     
@@ -358,7 +369,7 @@ public class FastColorer
     }
 }
 
-
+/** Binds together a String and a Group. */
 class StringGroupPair
 {
     String string;
