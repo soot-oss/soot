@@ -540,6 +540,9 @@ public class PackManager {
             if (produceJimple) {
                 JimpleBody body =(JimpleBody) m.retrieveActiveBody();
                 PackManager.v().getPack("jtp").apply(body);
+                if( Options.v().validate() ) {
+                    body.validate();
+                }
                 PackManager.v().getPack("jop").apply(body);
                 PackManager.v().getPack("jap").apply(body);
                 if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
