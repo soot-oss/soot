@@ -124,10 +124,6 @@ public class DavaPrinter {
         Chain units = ((DavaBody) body).getUnits();
 
         if (units.size() != 1) {
-            for( Iterator uIt = body.getUnits().iterator(); uIt.hasNext(); ) {
-                final Unit u = (Unit) uIt.next();
-                System.out.println( ""+u );
-            }
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 

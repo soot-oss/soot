@@ -54,12 +54,8 @@ public class Options extends OptionsBase {
         while( hasMoreOptions() ) {
             String option = nextOption();
             if( option.charAt(0) != '-' ) {
-                while(true) {
-                    classes.add( option );
-                    if( !hasMoreOptions() ) break;
-                    option = nextOption();
-                }
-                return true;
+                classes.add( option );
+                continue;
             }
             while( option.charAt(0) == '-' ) {
                 option = option.substring(1);
@@ -819,15 +815,15 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "cg.cha" ) )
-            return ""
-                +"disabled "
-                +"verbose ";
-    
         if( phaseName.equals( "cg.vta" ) )
             return ""
                 +"disabled "
                 +"passes ";
+    
+        if( phaseName.equals( "cg.cha" ) )
+            return ""
+                +"disabled "
+                +"verbose ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -1145,14 +1141,17 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "cg.oldcha" ) )
-            return "";
-    
-        if( phaseName.equals( "cg.cha" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "cg.vta" ) )
             return ""
+              +"disabled:true "
               +"passes:1 ";
+    
+        if( phaseName.equals( "cg.cha" ) )
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -1385,8 +1384,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.uce" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.oldcha" ) ) return;
-        if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.vta" ) ) return;
+        if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
@@ -1472,10 +1471,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
         if( !PackManager.v().hasPhase( "cg.oldcha" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.oldcha" );
-        if( !PackManager.v().hasPhase( "cg.cha" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
         if( !PackManager.v().hasPhase( "cg.vta" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.vta" );
+        if( !PackManager.v().hasPhase( "cg.cha" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
         if( !PackManager.v().hasPhase( "cg.spark" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
         if( !PackManager.v().hasPhase( "wstp" ) )

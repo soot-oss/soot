@@ -50,12 +50,8 @@ public class Options extends OptionsBase {
         while( hasMoreOptions() ) {
             String option = nextOption();
             if( option.charAt(0) != '-' ) {
-                while(true) {
-                    classes.add( option );
-                    if( !hasMoreOptions() ) break;
-                    option = nextOption();
-                }
-                return true;
+                classes.add( option );
+                continue;
             }
             while( option.charAt(0) == '-' ) {
                 option = option.substring(1);

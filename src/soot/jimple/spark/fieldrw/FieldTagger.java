@@ -64,8 +64,6 @@ statement: for( Iterator sIt = ig.getSitesOf( body.getMethod() ).iterator(); sIt
                 read.addAll( methodToRead.get( target ) );
                 write.addAll( methodToWrite.get( target ) );
                 if( read.size() + write.size() > threshold ) {
-                    //System.out.println( "Over threshold in site "+s );
-                    //System.out.println( "Reads: "+read.size()+" Writes: "+write.size() );
                     continue statement;
                 }
             }

@@ -482,6 +482,12 @@ This phase eliminates assignment statements (to locals) with no uses.
 			<phase>
 				<name>Call Graph</name>
 				<alias>cg</alias>
+                                <long_desc>The purpose of this pack is to compute
+an invoke graph. When this pack finishes, the Scene should have an active invoke
+graph. The different phases represent different ways to construct the invoke
+graph. Only one phase may be enabled; Soot will raise an error otherwise.
+If no phases are enabled, the Old Class Hierarchy Analysis phase
+<tt>cg.oldcha</tt> is used as the default.</long_desc>
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
@@ -492,19 +498,7 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Spark Class Hierarchy Analysis</name>
-					<alias>cg.cha</alias>
-                                        <class>CHAOptions</class>
-					<boolopt>
-						<name>Disabled</name>
-						<alias>disabled</alias>
-					</boolopt>
-					<boolopt>
-						<name>Verbose</name>
-						<alias>verbose</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -514,12 +508,27 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
+                                                <default>true</default>
 					</boolopt>
                                         <intopt>
                                             <name>Number of passes</name>
                                             <alias>passes</alias>
                                             <default>1</default>
                                         </intopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Spark Class Hierarchy Analysis</name>
+					<alias>cg.cha</alias>
+                                        <class>CHAOptions</class>
+					<boolopt>
+						<name>Disabled</name>
+						<alias>disabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>Verbose</name>
+						<alias>verbose</alias>
+					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Spark</name>

@@ -29,6 +29,7 @@ soot.jimple.spark.internal
 soot.jimple.spark.pag
 soot.jimple.spark.sets
 soot.jimple.spark.solver
+soot.jimple.spark.fieldrw
 soot.jimple.toolkits.annotation.arraycheck
 soot.jimple.toolkits.annotation.nullcheck
 soot.jimple.toolkits.annotation.profiling

@@ -117,7 +117,7 @@ public class PackManager {
         }
 
         // Call graph pack
-        addPack(p = new ScenePack("cg"));
+        addPack(p = new RadioScenePack("cg"));
         {
             p.add(new Transform("cg.oldcha", OldCHATransformer.v()));
             p.add(new Transform("cg.vta", VTATransformer.v()));
@@ -178,15 +178,11 @@ public class PackManager {
     }
 
     public boolean hasPack(String phaseName) {
-        Pack p = (Pack) packNameToPack.get(phaseName);
-        return p != null;
+        return getPhase( phaseName ) != null;
     }
 
     public Pack getPack(String phaseName) {
         Pack p = (Pack) packNameToPack.get(phaseName);
-        if (p == null)
-            throw new RuntimeException(
-                "tried to get nonexistant pack " + phaseName);
         return p;
     }
 

@@ -1,3 +1,6 @@
+OldCHATransformer
+VTATransformer
+CHATransformer
 SlowPseudoTopologicalOrderer
 SynchronizerManager
 NodeCast
@@ -139,3 +142,6 @@ UselessTryRemover
 VoidType
 VTATestingFramework
 WordType
+FieldReadTagAggregator
+FieldWriteTagAggregator
+FieldTagAggregator
