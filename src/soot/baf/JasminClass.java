@@ -261,7 +261,7 @@ public class JasminClass
 	while(it.hasNext()) {
 	    Tag tag = (Tag) it.next();
 	    if(tag instanceof Attribute)
-		emit(".class_attribute "  + tag.getName() + " \"" + Base64.encode(((Attribute)tag).getValue()) + "\"");
+		emit(".class_attribute "  + tag.getName() + " " + Base64.encode(((Attribute)tag).getValue()) + "");
 	}
 
 
@@ -284,7 +284,7 @@ public class JasminClass
 		while(attributeIt.hasNext()) {
 		    Tag tag = (Tag) attributeIt.next();
 		    if(tag instanceof Attribute)
-			emit(".field_attribute " + tag.getName() + " \"" + Base64.encode(((Attribute)tag).getValue()) + "\"");
+			emit(".field_attribute " + tag.getName() + " " + Base64.encode(((Attribute)tag).getValue()));
 		}
 
             }
@@ -402,7 +402,7 @@ public class JasminClass
 	    while(it.hasNext()) {
 		Tag tag = (Tag) it.next();
 		if(tag instanceof Attribute)
-		    emit(".method_attribute "  + tag.getName() + " \"" + Base64.encode(((Attribute)tag).getValue())+ "\"");
+		    emit(".method_attribute "  + tag.getName() + " " + Base64.encode(tag.getValue()));
 	    }	    
     }
     
@@ -635,7 +635,7 @@ public class JasminClass
 		    emit(".code_attribute " + t.getName() +" \"" + ((JasminAttribute) t).getJasminValue(instToLabel) +"\"");
 		}		
 	    }
-	}       
+	}
     }
 
     public void print(PrintWriter out)
