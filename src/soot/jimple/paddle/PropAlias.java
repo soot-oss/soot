@@ -66,7 +66,6 @@ public final class PropAlias extends AbsPropagator {
             G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                     " nodes." );
         }
-        aliasWorkList = new HashSet();
         while( !varNodeWorkList.isEmpty() ) {
             ContextVarNode src = (ContextVarNode) varNodeWorkList.removeMin();
             addToAliasWorkList( src );
@@ -106,6 +105,7 @@ public final class PropAlias extends AbsPropagator {
                 }
             }
         }
+        aliasWorkList = new HashSet();
         for( Iterator srcIt = fieldRefWorkList.iterator(); srcIt.hasNext(); ) {
             final ContextFieldRefNode src = (ContextFieldRefNode) srcIt.next();
             for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
@@ -172,6 +172,12 @@ public final class PropAlias extends AbsPropagator {
             if( fieldToBase.put( t.fld(), srccvn ) ) {
                 addToAliasWorkList( srccvn );
             }
+            ContextFieldRefNode src = srccvn.dot(t.fld());
+            ContextVarNode dst = ContextVarNode.make(t.dstc(), t.dst());
+            if( p2setsMake(dst).addAll(outSetsGet(src), null) ) {
+                addToVarNodeWorkList(dst);
+                ret = true;
+            }
         }
         for( Iterator tIt = newStore.iterator(); tIt.hasNext(); ) {
             final Rsrcc_src_dstc_dst_fld.Tuple t = (Rsrcc_src_dstc_dst_fld.Tuple) tIt.next();
@@ -179,6 +185,12 @@ public final class PropAlias extends AbsPropagator {
             ContextVarNode dstcvn = ContextVarNode.make(t.dstc(), t.dst());
             if( fieldToBase.put( t.fld(), dstcvn ) ) {
                 addToAliasWorkList( dstcvn );
+            }
+            ContextFieldRefNode storeTarget = dstcvn.dot(t.fld());
+            ContextVarNode src = ContextVarNode.make(t.srcc(), t.src());
+            if( inSetsMake(storeTarget).addAll( p2setsGet(src), null ) ) {
+                addToFieldRefWorkList( storeTarget );
+                ret = true;
             }
         }
         return ret;
@@ -248,7 +260,7 @@ public final class PropAlias extends AbsPropagator {
     private boolean addToVarNodeWorkList( ContextVarNode cvn ) {
         return varNodeWorkList.add(cvn); 
     }
-    protected Set aliasWorkList;
+    protected Set aliasWorkList = new HashSet();
     private boolean addToAliasWorkList( ContextVarNode cvn ) {
         return aliasWorkList.add(cvn); 
     }
