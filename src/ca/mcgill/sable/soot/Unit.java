@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Soot, a Java(TM) classfile optimization framework.                *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -69,10 +69,9 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
-import ca.mcgill.sable.soot.*;
 
 public interface Unit extends Switchable
 {

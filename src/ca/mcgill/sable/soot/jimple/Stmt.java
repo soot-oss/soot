@@ -84,8 +84,8 @@ import ca.mcgill.sable.util.*;
 public interface Stmt extends Unit
 {
     public List getUseBoxes();
-    public abstract List getDefBoxes();
-    public abstract List getUnitBoxes();
+    public List getDefBoxes();
+    public List getUnitBoxes();
     public List getBoxesPointingToThis();
     public List getUseAndDefBoxes();
     public void apply(Switch sw);
@@ -98,3 +98,4 @@ public interface Stmt extends Unit
     public String toString(String indentation);
     public String toString(Map stmtToName, String indentation);
 }
+

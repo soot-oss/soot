@@ -88,7 +88,7 @@ public class DoubleConstant extends Constant implements Switchable, ToBriefStrin
         return new DoubleConstant(value);
     }
 
-    public boolean equals(Constant c)
+    public boolean equals(Object c)
     {
         return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
     }

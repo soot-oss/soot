@@ -119,7 +119,7 @@ public class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr imple
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("specialinvoke " + ((ToBriefString) baseBox.getValue()).toBriefString() +
-            ".'" + method.getName() + "'(");
+            "." + method.getName() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {

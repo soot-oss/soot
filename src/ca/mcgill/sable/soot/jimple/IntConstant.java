@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on April 15, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed the equals method.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -88,7 +91,7 @@ public class IntConstant extends Constant implements Switchable, ToBriefString
         return new IntConstant(value);
     }
 
-    public boolean equals(Constant c)
+    public boolean equals(Object c)
     {
         return c instanceof IntConstant && ((IntConstant) c).value == value;
     }

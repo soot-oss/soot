@@ -83,8 +83,6 @@ import ca.mcgill.sable.util.*;
 
 public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Value
 {
-    public abstract boolean equals(Constant c);
-
     public List getUseBoxes()
     {
         return AbstractStmt.emptyList;

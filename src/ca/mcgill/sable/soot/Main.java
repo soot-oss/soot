@@ -129,7 +129,7 @@ public class Main
     public static boolean isVerbose;
     static boolean onlyJasminOutput;
     static public boolean isProfilingOptimization;
-    static boolean isSubstractingGC;
+    static boolean isSubtractingGC;
     static public boolean oldTyping;
     static public boolean isInDebugMode;
     static public boolean usePackedLive;
@@ -209,7 +209,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.15");
+            System.out.println("Soot version 1.beta.4.dev.16");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -244,7 +244,7 @@ public class Main
             System.out.println("Misc. options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
             System.out.println("  -t, --time                 print out time statistics about tranformations");
-            System.out.println("  --substract-gc             attempt to substract the gc from the time stats");
+            System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
             System.out.println("  -v, --verbose              verbose mode");
             System.out.println("  --debug                    avoid catching exceptions");
             System.out.println("");
@@ -287,10 +287,10 @@ public class Main
                     
                 else if(arg.equals("-t") || arg.equals("--time"))
                     isProfilingOptimization = true;
-                else if(arg.equals("--substract-gc"))
+                else if(arg.equals("--subtract-gc"))
                 {
-                    Timer.setSubstractingGC(true);
-                    isSubstractingGC = true;
+                    Timer.setSubtractingGC(true);
+                    isSubtractingGC = true;
                 }    
                 else if(arg.equals("-v") || arg.equals("--verbose"))
                     isVerbose = true;
@@ -466,9 +466,9 @@ public class Main
 
                     System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
                     
-                    if(isSubstractingGC)
+                    if(isSubtractingGC)
                     {
-                        System.out.println("Garbage collection was substracted from these numbers.");
+                        System.out.println("Garbage collection was subtracted from these numbers.");
                         System.out.println("           forcedGC:" + 
                             toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
                     }

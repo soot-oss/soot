@@ -627,12 +627,14 @@ public class JimpleBody implements StmtBody
 
                     List localList;
  
-                    if(typeToLocals.containsKey(local.getType().toString()))
-                        localList = (List) typeToLocals.get(local.getType().toString());
+                    String typeName = (isPrecise) ? local.getType().toString() : local.getType().toBriefString();
+                    
+                    if(typeToLocals.containsKey(typeName))
+                        localList = (List) typeToLocals.get(typeName);
                     else
                     {
                         localList = new ArrayList();
-                        typeToLocals.put(local.getType().toString(), localList);
+                        typeToLocals.put(typeName, localList);
                     }
 
                     localList.add(local);
@@ -766,9 +768,9 @@ public class JimpleBody implements StmtBody
             {
                 Trap trap = (Trap) trapIt.next();
 
-                out.println("        .catch " + trap.getException().getName() + " from " +
+                out.println("        catch '" + trap.getException().getName() + "' from " +
                     stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
-                    " with " + stmtToName.get(trap.getHandlerUnit()));
+                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
             }
         }
     }

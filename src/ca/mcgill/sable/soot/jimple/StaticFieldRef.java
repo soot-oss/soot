@@ -101,7 +101,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString
 
     public String toBriefString()
     {
-        return "'" + field.getDeclaringClass().getName() + "'.'" + field.getName() + "'";
+        return "" + field.getDeclaringClass().getName() + "." + field.getName() + "";
     }
 
     public SootField getField()

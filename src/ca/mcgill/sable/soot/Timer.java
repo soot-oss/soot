@@ -62,7 +62,7 @@
  B) Changes:
 
  - Modified on March 19, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Made the timers substract garbage collection time.
+   Made the timers subtract garbage collection time.
    
  - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Added an assertion to check that end() is always preceeded by a start()
@@ -91,7 +91,7 @@ public class Timer
     private static boolean isGarbageCollecting;
     
     public static Timer forcedGarbageCollectionTimer = new Timer("gc");
-    private static boolean isSubstractingGC;
+    private static boolean isSubtractingGC;
     
     private static int count;
     
@@ -106,15 +106,15 @@ public class Timer
         this("unnamed");
     }
     
-    public static void setSubstractingGC(boolean value)
+    public static void setSubtractingGC(boolean value)
     {
-        isSubstractingGC = value;
+        isSubtractingGC = value;
     }
     
     public void start()
     {
         // Substract garbage collection time
-            if(!isGarbageCollecting && isSubstractingGC && ((count++ % 4) == 0))
+            if(!isGarbageCollecting && isSubtractingGC && ((count++ % 4) == 0))
             {
                 // garbage collects only every 4 calls to avoid round off errors
                 

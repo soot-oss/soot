@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on April 15, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed the equals method.
+
  - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed the "l" to an "L".
     
@@ -94,7 +97,7 @@ public class LongConstant extends Constant implements Switchable, ToBriefString
         return new LongConstant(value);
     }
 
-    public boolean equals(Constant c)
+    public boolean equals(Object c)
     {
         return c instanceof IntConstant && ((IntConstant) c).value == this.value;
     }
