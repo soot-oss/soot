@@ -341,7 +341,10 @@ public final class OnFlyCallGraphBuilder
         addEdge( source, null, scl, sigFinalize, Edge.FINALIZE );
         FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
         if( fh.canStoreType( scl.getType(), clRunnable ) ) {
-            addEdge( source, null, scl, sigExit, Edge.EXIT );
+            // Edges of type EXIT are bogus; they were a bug in VTA, and just
+            // got carried into Spark. There's no reason exit() should be
+            // called implicitly.
+            //addEdge( source, null, scl, sigExit, Edge.EXIT );
         }
     }
     private void constantForName( String cls, SootMethod src, Stmt srcUnit ) {
