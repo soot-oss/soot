@@ -60,7 +60,7 @@ public abstract class AbstractLengthExpr extends AbstractUnopExpr implements Len
     public String toBriefString()
     {
         return ((ToBriefString) opBox.getValue()).toBriefString() + 
-            "length";
+            ".length";
     }
 
     public Type getType()

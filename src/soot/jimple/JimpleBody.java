@@ -351,6 +351,8 @@ public class JimpleBody extends StmtBody
     /** Prints contents of current body to out, with given options. */
     public void printTo(PrintWriter out, int printBodyOptions)
     {
+        validate();
+
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);

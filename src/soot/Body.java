@@ -186,6 +186,8 @@ public abstract class Body
         validateLocals();
         validateTraps();
         validateUnitBoxes();
+        if (Main.isInDebugMode)
+            validateUses();
     }
 
     /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
@@ -230,10 +232,35 @@ public abstract class Body
         {
             UnitBox ub = (UnitBox)it.next();
             if (!unitChain.contains(ub.getUnit()))
-                throw new RuntimeException("unitbox points outside unitChain!");
+                throw new RuntimeException
+                    ("unitbox points outside unitChain!");
         }
     }
 
+    /** Verifies that each use in this Body has a def. */
+    public void validateUses()
+    {
+        LocalDefs ld = new SimpleLocalDefs(new CompleteUnitGraph(this));
+
+        Iterator unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Unit u = (Unit) unitsIt.next();
+            Iterator useBoxIt = u.getUseBoxes().iterator();
+            while (useBoxIt.hasNext())
+            {
+                Value v = ((ValueBox)useBoxIt.next()).getValue();
+                if (v instanceof Local)
+                {
+                    // This throws an exception if there is
+                    // no def already; we check anyhow.
+                    List l = ld.getDefsOfAt((Local)v, u);
+                    if (l.size() == 0)
+                        throw new RuntimeException("no defs for value!");
+                }
+            }
+        }
+    }
 
     /** Returns a backed chain of the locals declared in this Body. */
     public Chain getLocals() {return localChain;} 
@@ -390,21 +417,16 @@ public abstract class Body
      */
     public void printTo(PrintWriter out, int printBodyOptions)
     {
+        validate();
       	
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
-        
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-
 
 	String decl = getMethod().getDeclaration();
 
-
         out.println("    " + decl);        
-	
-	
         out.println("    {");
-
 
         // Print out local variables
         {

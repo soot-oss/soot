@@ -35,6 +35,9 @@ import java.io.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 
+/** Does constant propagation and folding. 
+ * Constant folding is the compile-time evaluation of constant
+ * expressions (i.e. 2 * 3). */
 public class ConstantPropagatorAndFolder extends BodyTransformer
 {
     private static ConstantPropagatorAndFolder instance = new ConstantPropagatorAndFolder();

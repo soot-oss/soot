@@ -39,59 +39,75 @@ import java.io.*;
 import java.util.*;
 
 
-/** Walks a jimple AST, extracting all the contained reference 
-   type names.
-*/
-class CstPoolExtractorWalker extends DepthFirstAdapter
-{           
-    private Set mRefTypes = null;
-    
-    CstPoolExtractorWalker() 
-    {	
-    }
-   
-    public void inStart(Start node)
+/** 
+ *  Walks a jimple AST, extracting all the contained reference 
+ *  type names.
+ */
+
+class CstPoolExtractor
+{
+
+    private  Set mRefTypes = null;
+    private Start mParseTree;
+
+    public CstPoolExtractor(Start parseTree) 
     {
-	mRefTypes = new HashSet();
-        defaultIn(node);
+	mParseTree = parseTree;
     }
 
-    public void outAQuotedClassName(AQuotedClassName node)
-    {
-	mRefTypes.add(node.getQuotedName().getText());
-    }
-    public void outAIdentClassName(AIdentClassName node)
-    {
-	mRefTypes.add(node.getIdentifier().getText());
-    }
-
-    public void outAFullIdentClassName(AFullIdentClassName node)
-    {
-	mRefTypes.add(node.getFullIdentifier().getText());
-    }
-
-    public void outAQuotedNonvoidType(AQuotedNonvoidType node)
-    {
-	mRefTypes.add(node.getQuotedName().getText());
-    }
-   
-    public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
-    {
-        mRefTypes.add(node.getFullIdentifier().getText());
-    }    
-    
-    public void outAIdentNonvoidType(AIdentNonvoidType node)
-    {
-        mRefTypes.add(node.getIdentifier().getText());
-
-    }
-    
     public Set getCstPool()
     {
-	if(mRefTypes == null)
-	    throw new RuntimeException("no constant pool has been computed yet");
+	if(mRefTypes == null) {	    
+	    mRefTypes = new HashSet();
+	    CstPoolExtractorWalker  walker = new CstPoolExtractorWalker(); 	
+	    mParseTree.apply(walker);  	
+	    mParseTree = null; // allow garbage collection
+	}	   
 	return mRefTypes;
     }        
+		
+
+    private class CstPoolExtractorWalker extends DepthFirstAdapter
+    {               
+	CstPoolExtractorWalker() 
+	{	
+	}
+   
+	public void inStart(Start node)
+	{
+	    defaultIn(node);
+	}
+
+	public void outAQuotedClassName(AQuotedClassName node)
+	{
+	    mRefTypes.add(node.getQuotedName().getText());
+	}
+	public void outAIdentClassName(AIdentClassName node)
+	{
+	    mRefTypes.add(node.getIdentifier().getText());
+	}
+
+	public void outAFullIdentClassName(AFullIdentClassName node)
+	{
+	    mRefTypes.add(node.getFullIdentifier().getText());
+	}
+
+	public void outAQuotedNonvoidType(AQuotedNonvoidType node)
+	{
+	    mRefTypes.add(node.getQuotedName().getText());
+	}
+   
+	public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
+	{
+	    mRefTypes.add(node.getFullIdentifier().getText());
+	}    
+    
+	public void outAIdentNonvoidType(AIdentNonvoidType node)
+	{
+	    mRefTypes.add(node.getIdentifier().getText());
+
+	}
+    }
 } 
 
 

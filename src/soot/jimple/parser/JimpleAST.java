@@ -69,12 +69,13 @@ public class JimpleAST
 	}
     }
 
-
+    /** Reads an entire class from jimple, creates the Soot objects & 
+     * returns it. */
     public SootClass createSootClass()
     {	
 	Walker w = new Walker(mResolver);	
 	mTree.apply(w);  
-	return w.getSootClass();	
+	return w.getSootClass();
     }
 
     /** 
@@ -114,21 +115,17 @@ public class JimpleAST
 	return cpe.getCstPool();	
     }
 
-
-
-
-    
+    /** Returns the SootResolver currently in use. */
     public SootResolver getResolver()
     {
 	return mResolver;
     }
+
+    /** Sets the SootResolver used in this class as given. */
     public void setResolver(SootResolver resolver)
     {
 	mResolver = resolver;
     }
-
-
-
     
     /* Runs a Walker on the JimpleInputStream associated to this object.
      * The SootClass which we want bodies for is passed as the argument. 
@@ -144,9 +141,5 @@ public class JimpleAST
         Scene.v().setPhantomRefs(true);
 	mTree.apply(w);
         Scene.v().setPhantomRefs(oldPhantomValue);
-    }
-
-    
-
-    
+    }    
 } // Parse
