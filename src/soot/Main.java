@@ -256,19 +256,22 @@ public class Main
         packageInclusionFlags.add(new Boolean(false));
         packageInclusionMasks.add("sun.");
 
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("javax.");
+
         totalTimer.start();
 
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.107");
+            System.out.println("Soot version 1.beta.4.dev.108");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
             System.out.println("Contributions are copyright (C) 1997-1999 by their respective contributors.");
             System.out.println("See individual source files for details.");
             System.out.println("");
-            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is freed software,");
+            System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
             System.out.println("and you are welcome to redistribute it under certain conditions.");
             System.out.println("See the accompanying file 'license.html' for details.");
             System.out.println("");
@@ -286,14 +289,15 @@ public class Main
             System.out.println("");
             System.out.println("  -d PATH                    store produced files in PATH");
             System.out.println("  -r, --recurse              process dependent classfiles as well");
-            System.out.println("  -x, --exclude PACKAGE      marks classfiles in PACKAGE (e.g. java)"); 
+            System.out.println("  -x, --exclude PACKAGE      marks classfiles in PACKAGE (e.g. java.)"); 
             System.out.println("                             as library classes");
-            System.out.println("  -i, --include PACKAGE      marks classfiles in PACKAGE (e.g. java.util)");
+            System.out.println("  -i, --include PACKAGE      marks classfiles in PACKAGE (e.g. java.util.)");
             System.out.println("                             as application classes");
             System.out.println("  -a, --analyze-libraries    permit analysis of library classes");
             System.out.println("");
             System.out.println("Construction options:");
-            System.out.println("  --final-rep REP        produce jasmin from REP (jasmin, grimp, or baf)");
+            System.out.println("  --final-rep REP            produce classfile/jasmin from REP ");
+            System.out.println("                                  (jimple, grimp, or baf)");
             System.out.println();
             System.out.println("Jimple construction options:");
             System.out.println("  --no-splitting             do not split local variables");
