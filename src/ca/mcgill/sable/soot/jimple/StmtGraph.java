@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on March 24, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Add some edges to the flow graph regarding exceptions.
+ 
  - Modified on March 15, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Added a pseudo topological order iterator (and its reverse).
    Moved in Patrick's getPath code.
@@ -242,6 +245,8 @@ public class StmtGraph
             // Add exception based successors
                 if(addExceptionEdges)
                 {
+                    Map beginToHandler = new HashMap();
+                    
                     Iterator trapIt = getBody().getTraps().
                         iterator();
 
@@ -254,6 +259,8 @@ public class StmtGraph
                         Stmt endStmt = (Stmt) trap.getEndUnit();
                         Iterator stmtIt = stmtList.listIterator(stmtList.indexOf(beginStmt));
 
+                        beginToHandler.put(beginStmt, handlerStmt);
+                        
                         for(;;)
                         {
                             Stmt s = (Stmt) stmtIt.next();
@@ -262,6 +269,42 @@ public class StmtGraph
 
                             if(s == endStmt)
                                 break;
+                        }
+                    }
+                    
+                    // Add edges from the predecessors of begin statements directly to the handlers
+                    // This is necessary because sometimes the first statement of try block
+                    // is not even fully executed before an exception is thrown
+                    {
+                        Iterator stmtIt = stmtList.iterator();
+                        
+                        while(stmtIt.hasNext())
+                        {
+                            Stmt s = (Stmt) stmtIt.next();
+                            
+                            List succs = ((List) stmtToSuccs.get(s));
+                            
+                            List succsClone = new ArrayList();
+                            succsClone.addAll(succs);
+                                // need to clone it because you are potentially 
+                                // modifying it
+                                
+                            Iterator succIt = succsClone.iterator();
+                                
+                            while(succIt.hasNext())
+                            {
+                                Stmt succ = (Stmt) succIt.next();
+                                
+                                if(beginToHandler.containsKey(succ))
+                                {
+                                    // Add an edge from s to succ
+                                    
+                                    Stmt handler = (Stmt) beginToHandler.get(succ);
+                                    
+                                    if(!succs.contains(handler))
+                                        succs.add(handler);
+                                }
+                            }
                         }
                     }
                 }

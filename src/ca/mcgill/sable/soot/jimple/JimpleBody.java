@@ -255,6 +255,9 @@ public class JimpleBody implements StmtBody
 	    }
 
             Transformations.renameLocals(this);
+            
+        //printDebugTo(new PrintWriter(System.out, true));
+        
 /*
             if(!BuildJimpleBodyOption.noPacking(buildOptions))
             {
@@ -774,12 +777,13 @@ public class JimpleBody implements StmtBody
         
         LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
 
+        System.out.println("debug output for " + getMethod().getSignature());
         /*
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);
 */
-        LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
+        //LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
         LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
-        EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);
+        //EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);
         
         // Create statement name table
         {
@@ -804,11 +808,11 @@ public class JimpleBody implements StmtBody
             out.print(s.toBriefString(stmtToName, "        "));
             out.print(";");
 
-            /*           
+                       
             // Print info about live locals
             {
                 out.print(liveLocals.getLiveLocalsAfter(s));
-            }*/
+            }
             /*
             // Print info about local copies
             {

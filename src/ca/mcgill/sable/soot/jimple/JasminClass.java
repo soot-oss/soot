@@ -674,7 +674,7 @@ public class JasminClass
 		boolean contFlag = false;
                 // this is a fake do, to give us break;
                 do
-                  {
+                  {     
                     if (!(s instanceof AssignStmt))
                       break;
 
