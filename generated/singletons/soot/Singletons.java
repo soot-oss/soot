@@ -1037,4 +1037,10 @@ public class Singletons {
         return instanceTightestQualifiersTagger;
     }
 
+    private ParameterAliasTagger instanceParameterAliasTagger;
+    public ParameterAliasTagger ParameterAliasTagger() {
+        if( instanceParameterAliasTagger == null ) instanceParameterAliasTagger = new ParameterAliasTagger( g );
+        return instanceParameterAliasTagger;
+    }
+
 }

@@ -166,6 +166,7 @@ public class PackManager {
             p.add(new Transform("jap.fieldrw", FieldTagger.v()));
             p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
             p.add(new Transform("jap.parity", ParityTagger.v()));
+            p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
 	    
         }
         

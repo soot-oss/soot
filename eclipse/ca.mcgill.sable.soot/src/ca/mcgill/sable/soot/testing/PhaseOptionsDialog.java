@@ -212,6 +212,8 @@ Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
 
 Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
 
+Composite japjap_patChild = japjap_patCreate(getPageContainer());
+
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
 Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
@@ -1084,6 +1086,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jap", "jap.parity", getjapjap_parityenabled_widget(), "enabled");
 		
 		getjapjap_parityenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jap", "jap.pat");
+		
+		
+		addToEnableGroup("jap", "jap.pat", getjapjap_patenabled_widget(), "enabled");
+		
+		getjapjap_patenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("gb");
@@ -3045,6 +3055,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_parityenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjapjap_patenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_patenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getgbenabled_widget().getButton().getSelection();
 		
 		
@@ -4035,6 +4055,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jap_jap_parity_branch;
+			
+			
+			SootOption jap_jap_pat_branch = new SootOption("Parameter Alias Tagger", "japjap_pat");
+			subParent.addChild(jap_jap_pat_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_pat_branch;
 			
 			
 			//Grimp Body Creation
@@ -6013,6 +6043,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjapjap_parityenabled_widget() {
 		return japjap_parityenabled_widget;
+	}	
+	
+	private BooleanOptionWidget japjap_patenabled_widget;
+	
+	private void setjapjap_patenabled_widget(BooleanOptionWidget widget) {
+		japjap_patenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_patenabled_widget() {
+		return japjap_patenabled_widget;
 	}	
 	
 	private BooleanOptionWidget gbenabled_widget;
@@ -11548,6 +11588,51 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_parity;
+	}
+
+
+
+	private Composite japjap_patCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroupjapjap_pat = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_pat.setLayout(layout);
+	
+	 	editGroupjapjap_pat.setText("Parameter Alias Tagger");
+	 	
+		editGroupjapjap_pat.setData("id", "japjap_pat");
+		
+		String descjapjap_pat = "Colour-codes method parameters that may be aliased";	
+		if (descjapjap_pat.length() > 0) {
+			Label descLabeljapjap_pat = new Label(editGroupjapjap_pat, SWT.WRAP);
+			descLabeljapjap_pat.setText(descjapjap_pat);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.pat"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_patenabled_widget(new BooleanOptionWidget(editGroupjapjap_pat, SWT.NONE, new OptionData("Enabled", "p", "jap.pat","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_pat;
 	}
 
 

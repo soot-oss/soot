@@ -3130,6 +3130,17 @@ information in these tags.  For example, even variables (such as
 						<default>false</default>
 					</boolopt>
 				</sub_phase>
+                <sub_phase>
+					<name>Parameter Alias Tagger</name>
+					<alias>jap.pat</alias>
+					<short_desc>Colour-codes method parameters that may be aliased</short_desc>
+					<long_desc>For each method with parameters of reference type, this tagger indicates the aliasing relationships between the parameters using colour tags. Parameters that may be aliased are the same colour. Parameters that may not be aliased are in different colours.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
 			<phase>
 				<name>Grimp Body Creation</name>
