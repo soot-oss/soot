@@ -76,7 +76,10 @@ public class CommonSubexpressionEliminator extends BodyTransformer
 
         if(Options.v().verbose())
             G.v().out.println("[" + b.getMethod().getName() +
-                "]     Eliminating common subexpressions (naively)...");
+                "]     Eliminating common subexpressions " +
+		(sideEffect instanceof NaiveSideEffectTester ? 
+		 "(naively)" : "") +
+		"...");
 
         AvailableExpressions ae = // new SlowAvailableExpressions(b);
 	     new FastAvailableExpressions(b, sideEffect);
