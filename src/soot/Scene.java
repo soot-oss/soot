@@ -166,6 +166,12 @@ public class Scene  //extends AbstractHost
 
         // Grimp optimization pack
         packNameToPack.put("gop", p = new Pack());
+
+        // load soot.class.path system property, if defined
+        String scp = System.getProperty("soot.class.path");
+
+        if (scp != null)
+            setSootClassPath(scp);
     }
 
     public Pack getPack(String phaseName)

@@ -219,13 +219,8 @@ public class ClassFile {
       return loadClassFile(classFileStream);
    }
 
-
-
-
-
-
-
-    public boolean loadClassFile(InputStream is) {
+    public boolean loadClassFile(InputStream is) 
+    {
       InputStream f = null;
       InputStream classFileStream;
       DataInputStream d;

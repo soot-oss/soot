@@ -226,22 +226,26 @@ public class SourceLocator
                     } catch(IOException e) { 
                         System.out.println(e); throw new RuntimeException("!"); 
                     }
-                } else {  // check if file  is in an archive(ie in a .zip or .zip file)
+                } else {  
+                    // check if file is in an archive(ie in a .zip or jar file)
+                    // this looks pretty slow.  is it n^2?
 		    Iterator zipFileIt = zipFileList.iterator();
 		    while(zipFileIt.hasNext()) {
 			ZipFile zip = (ZipFile) zipFileIt.next();
 
-			ZipEntry entry = zip.getEntry(className2 + inputRep.getFileExtension());    
-
-			try {
-			    InputStream is = new BufferedInputStream(zip.getInputStream(entry));
-			    InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
+			ZipEntry entry = zip.getEntry(className2 + inputRep.getFileExtension());
+                        if (entry != null)
+                        {
+                            try {
+                                InputStream is = new BufferedInputStream(zip.getInputStream(entry));
+                                InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
 				
-			    return inputRep.createInputStream(bugFreeInputStream);
-			} catch(IOException e) {
-			    System.err.println("error reading file:" + zip.getName() + e.toString());
-			    System.exit(1);
-			}
+                                return inputRep.createInputStream(bugFreeInputStream);
+                            } catch(IOException e) {
+                                System.err.println("error reading file:" + zip.getName() + e.toString());
+                                System.exit(1);
+                            }
+                        }
 		    }
 		}
             }
