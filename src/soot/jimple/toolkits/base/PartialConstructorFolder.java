@@ -39,13 +39,24 @@ import soot.grimp.*;
 import soot.util.*;
 import java.util.*;
 
-public class JimpleConstructorFolder extends BodyTransformer
+public class PartialConstructorFolder extends BodyTransformer
 {
     //public JimpleConstructorFolder( Singletons.Global g ) {}
     //public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
 
+    private List types;
+
+    public void setTypes(List t){
+        types = t;
+    }
+
+    public List getTypes(){
+        return types;
+    }
+    
     /** This method pushes all newExpr down to be the stmt directly before every
-     * invoke of the init */
+     * invoke of the init only if they are in the types list*/
+    
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         JimpleBody body = (JimpleBody)b;
@@ -104,6 +115,10 @@ public class JimpleConstructorFolder extends BodyTransformer
                     }
                 }
             }
+            
+
+            // check if new is in the types list - only process these
+            if (!types.contains(((NewExpr)rhs).getType())) continue;
             
             List lu = localUses.getUsesOf((DefinitionStmt)s);
             Iterator luIter = lu.iterator();
