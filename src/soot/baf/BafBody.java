@@ -56,6 +56,9 @@ public class BafBody extends Body
     {
         super(body.getMethod());
 
+        if(soot.Main.isVerbose)
+            System.out.println("[" + getMethod().getName() + "] Constructing BafBody...");
+
         JimpleBody jimpleBody;
 
         if(body instanceof JimpleBody)

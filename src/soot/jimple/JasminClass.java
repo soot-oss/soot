@@ -224,6 +224,9 @@ public class JasminClass
     {
         if(soot.Main.isProfilingOptimization)
             soot.Main.buildJasminTimer.start();
+
+        if(soot.Main.isVerbose)
+            System.out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
         
         code = new LinkedList();
 

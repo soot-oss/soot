@@ -203,37 +203,40 @@ public class JasminClass
             code.add(s);
     }
     
-    public JasminClass(SootClass SootClass)
+    public JasminClass(SootClass sootClass)
     {
         if(soot.Main.isProfilingOptimization)
             soot.Main.buildJasminTimer.start();
         
+        if(soot.Main.isVerbose)
+            System.out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+
         code = new LinkedList();
 
         // Emit the header
         {
-            int modifiers = SootClass.getModifiers();
+            int modifiers = sootClass.getModifiers();
 
             if(Modifier.isInterface(modifiers))
                 {
                 modifiers -= Modifier.INTERFACE;
 
-                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName()));
+                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
             }
             else
-                emit(".class " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName()));
+                emit(".class " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
 
-            if(SootClass.hasSuperclass())
-                emit(".super " + slashify(SootClass.getSuperclass().getName()));
+            if(sootClass.hasSuperclass())
+                emit(".super " + slashify(sootClass.getSuperclass().getName()));
             else
-                emit(".super " + slashify(SootClass.getName()));
+                emit(".super " + slashify(sootClass.getName()));
 
             emit("");
         }
 
         // Emit the interfaces
         {
-            Iterator interfaceIt = SootClass.getInterfaces().iterator();
+            Iterator interfaceIt = sootClass.getInterfaces().iterator();
 
             while(interfaceIt.hasNext())
             {
@@ -242,13 +245,13 @@ public class JasminClass
                 emit(".implements " + slashify(inter.getName()));
             }
 
-            if(SootClass.getInterfaceCount() != 0)
+            if(sootClass.getInterfaceCount() != 0)
                 emit("");
         }
 
         // Emit the fields
         {
-            Iterator fieldIt = SootClass.getFields().iterator();
+            Iterator fieldIt = sootClass.getFields().iterator();
 
             while(fieldIt.hasNext())
             {
@@ -258,13 +261,13 @@ public class JasminClass
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
             }
 
-            if(SootClass.getFieldCount() != 0)
+            if(sootClass.getFieldCount() != 0)
                 emit("");
         }
 
         // Emit the methods
         {
-            Iterator methodIt = SootClass.getMethods().iterator();
+            Iterator methodIt = sootClass.getMethods().iterator();
 
             while(methodIt.hasNext())
             {

@@ -41,6 +41,9 @@ public class UnusedLocalEliminator extends BodyTransformer
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {
+        if(soot.Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() + "] Eliminating unused locals...");
+
         Set usedLocals = new HashSet();
 
         // Traverse statements noting all the uses

@@ -88,7 +88,7 @@ public class JimpleBody extends StmtBody
 
         */
         if(Main.isVerbose)
-            System.out.println("[" + getMethod().getName() + "] Jimplifying...");
+            System.out.println("[" + getMethod().getName() + "] Constructing JimpleBody...");
 
         if(getMethod().isAbstract() || getMethod().isNative() || getMethod().isPhantom())
             return;

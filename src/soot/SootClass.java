@@ -824,9 +824,7 @@ public class SootClass extends AbstractHost
     {
         Iterator methodIt = getMethods().iterator();
         
-        if(!methodIt.hasNext())
-            return false;
-        else
+        while(methodIt.hasNext())
         {
             SootMethod m = (SootMethod) methodIt.next();
             
@@ -839,6 +837,7 @@ public class SootClass extends AbstractHost
         
         return false;
     }
+    
     /**
         Writes the class out to a file.
      */

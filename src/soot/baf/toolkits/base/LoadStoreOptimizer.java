@@ -129,6 +129,9 @@ public class LoadStoreOptimizer extends BodyTransformer
         mBody = body;        
         mUnits =  mBody.getUnits();
                 
+        if(soot.Main.isVerbose)
+            System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
+
         if(debug) { System.out.println("Optimizing: " + body.getMethod().toString());}
         
         if(mUnits.isEmpty()) 
