@@ -224,8 +224,6 @@ public class ClassResolver {
     private void addOuterClassThisRefToInit(polyglot.types.Type outerType){
         soot.Type outerSootType = Util.getSootType(outerType);
         Iterator it = sootClass.getMethods().iterator();
-        //System.out.println("adding outer class thie ref to init of: "+sootClass);
-        //System.out.println("outer class is: "+Util.getSootType(outerType));
         while (it.hasNext()){
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
@@ -254,7 +252,6 @@ public class ClassResolver {
         }
                 
         // add field
-        //System.out.println("add field: val$"+li.name()+" to: "+sootClass.getName());
         soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
         sootClass.addField(sf);
         finalFields.add(sf);
@@ -265,32 +262,37 @@ public class ClassResolver {
         
         LocalUsesChecker luc = new LocalUsesChecker();
         cBody.visit(luc);
-        Iterator localsNeededIt = luc.getLocals().iterator();
+        /*Iterator localsNeededIt = luc.getLocals().iterator();*/
         ArrayList localsUsed = new ArrayList();
-        while (localsNeededIt.hasNext()){
+        /*while (localsNeededIt.hasNext()){
             polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)localsNeededIt.next()).object();
-            //System.out.println("testing class: "+Util.getSootType(nodeKeyType));
-            //System.out.println("for local inst: "+li);
-            //System.out.println("luc localdecls: "+luc.getLocalDecls());
             //if (luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
-              //  System.out.println("contains decl"+li);
             //}
             //else {
-              //  System.out.println("doesn't contain decl: "+li);
             //}
             if (finalLocalsAvail.contains(new polyglot.util.IdentityKey(li)) && !luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
                
-                //System.out.println("how does it get here??");
                 addFinals(li,finalFields);
                 
                 localsUsed.add(new polyglot.util.IdentityKey(li));
             }
+        }*/
+        Iterator fieldsNeededIt = finalLocalsAvail.iterator();
+        while (fieldsNeededIt.hasNext()){
+            
+            polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)fieldsNeededIt.next()).object();
+            if (!luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li))){
+                localsUsed.add(new polyglot.util.IdentityKey(li));
+                addFinals(li, finalFields);    
+            }
         }
+        
+        // this part is broken it adds all final locals available for the new 
+        // not just the ones used (which is a problem)
         Iterator newsIt = luc.getNews().iterator();
         while (newsIt.hasNext()){
             polyglot.ast.New tempNew = (polyglot.ast.New)newsIt.next();
             polyglot.types.ClassType tempNewType = (polyglot.types.ClassType)tempNew.objectType().type();
-            //System.out.println("checking new of class: "+Util.getSootType(tempNewType));
             if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(tempNewType))){
                 AnonLocalClassInfo lInfo = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(tempNewType));
                 Iterator it = lInfo.finalLocalsAvail().iterator();
@@ -305,10 +307,28 @@ public class ClassResolver {
                 }
             }
         }
-   
-        //System.out.println("processing final locals for: "+Util.getSootType(nodeKeyType)+" locals: "+localsUsed);
+        // also need to add them if any super class all the way up needs one
+        // because the super() will be made in init and it will require
+        // possibly eventually to send in the finals
+        
+        polyglot.types.ClassType superType = (polyglot.types.ClassType)nodeKeyType.superType();
+        while (!Util.getSootType(superType).equals(soot.Scene.v().getSootClass("java.lang.Object").getType())){
+            if (InitialResolver.v().finalLocalInfo().containsKey(new polyglot.util.IdentityKey(superType))){
+                AnonLocalClassInfo lInfo = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(superType));
+                Iterator it = lInfo.finalLocalsAvail().iterator();
+                while (it.hasNext()){
+                    polyglot.types.LocalInstance li2 = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
+                    if (!sootClass.declaresField("val$"+li2.name(), Util.getSootType(li2.type()))){
+                        if (!luc.getLocalDecls().contains(new polyglot.util.IdentityKey(li2))){
+                            addFinals(li2, finalFields);
+                            localsUsed.add(new polyglot.util.IdentityKey(li2));
+                        }
+                    }
+                }
+            }
+            superType = (polyglot.types.ClassType)superType.superType(); 
+        }
         info.finalLocalsUsed(localsUsed);
-        //System.out.println("localsUsed: "+info.finalLocalsUsed());
         InitialResolver.v().finalLocalInfo().put(new polyglot.util.IdentityKey(nodeKeyType), info);
         return finalFields;
     }
@@ -366,8 +386,6 @@ public class ClassResolver {
        
             AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
           
-            //System.out.println("anon class: "+Util.getSootType(aNew.anonType()));
-            //System.out.println("info: "+info);
             if (aNew.qualifier() != null) {
                 // add qualifier ref - do this first to get right order
                 addQualifierRefToInit(aNew.qualifier().type());

@@ -24,6 +24,11 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
 
     private ArrayList inners;
     private ArrayList finalLocals;
+    private HashMap typeToLocalsUsed;
+
+    public HashMap typeToLocalsUsed(){
+        return typeToLocalsUsed;
+    }
     
     public ArrayList finalLocals(){
         return finalLocals;
@@ -38,17 +43,26 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
     public MethodFinalsChecker(){
         finalLocals = new ArrayList();
         inners = new ArrayList();
+        typeToLocalsUsed = new HashMap();
     }
 
     public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n){
         if (n instanceof polyglot.ast.LocalClassDecl){
             inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
-            return null;
+            polyglot.ast.ClassBody localClassBody = ((polyglot.ast.LocalClassDecl)n).decl().body();
+            LocalUsesChecker luc = new LocalUsesChecker();
+            localClassBody.visit(luc);
+            typeToLocalsUsed.put(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()), luc.getLocals());
+            return n;
         }
         else if (n instanceof polyglot.ast.New) {
             if (((polyglot.ast.New)n).anonType() != null) {
                 inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
-                return null;
+                polyglot.ast.ClassBody anonClassBody = ((polyglot.ast.New)n).body();
+                LocalUsesChecker luc = new LocalUsesChecker();
+                anonClassBody.visit(luc);
+                typeToLocalsUsed.put(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()), luc.getLocals());
+                return n;
             }
         }
         return null;

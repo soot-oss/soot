@@ -70,6 +70,10 @@ public abstract class AbstractJimpleBodyBuilder {
         return ext().handlePrivateFieldAssignSet(assign);
     }
     
+    protected soot.Local handlePrivateFieldUnarySet(polyglot.ast.Unary unary){
+        return ext().handlePrivateFieldUnarySet(unary);
+    }
+    
 
     protected soot.Value getAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
         return ext().getAssignRightLocal(assign, leftLocal);
@@ -79,8 +83,8 @@ public abstract class AbstractJimpleBodyBuilder {
         return ext().getSimpleAssignRightLocal(assign);
     }
    
-    protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right){
-        return ext().handlePrivateFieldSet(expr, right);
+    protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right, soot.Value base){
+        return ext().handlePrivateFieldSet(expr, right, base);
     }
 
     protected soot.SootMethodRef getSootMethodRef(polyglot.ast.Call call){
@@ -109,5 +113,9 @@ public abstract class AbstractJimpleBodyBuilder {
 
     protected soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field){
         return ext().getFieldRef(field);
+    }
+
+    protected soot.jimple.Constant  getConstant(soot.Type sootType, int val){
+        return ext().getConstant(sootType, val);
     }
 }

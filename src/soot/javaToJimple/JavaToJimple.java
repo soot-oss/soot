@@ -42,7 +42,7 @@ public class JavaToJimple {
         ExtensionInfo extInfo = new soot.javaToJimple.jj.ExtensionInfo() {
             public List passes(Job job) {
                 List passes = super.passes(job);
-                beforePass(passes, Pass.TYPE_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new polyglot.visit.ConstantFolder(ts, nf)));
+                //beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new polyglot.visit.ConstantFolder(ts, nf)));
                 beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(CAST_INSERTION, job, new CastInsertionVisitor(job, ts, nf)));
                 beforePass(passes, Pass.EXIT_CHECK, new VisitorPass(STRICTFP_PROP, job, new StrictFPPropagator(false)));
                 afterPass(passes, Pass.PRE_OUTPUT_ALL, new SaveASTVisitor(SAVE_AST, job, this));
@@ -58,6 +58,7 @@ public class JavaToJimple {
         Iterator it = sourceLocations.iterator();
         while (it.hasNext()){
             Object next = it.next();
+            System.out.println("adding src loc: "+next.toString());
             options.source_path.add(new File(next.toString()));
         }
 

@@ -38,19 +38,57 @@ public class AccessFieldJBB extends AbstractJimpleBodyBuilder{
         }
     }
 
+    protected soot.Local handlePrivateFieldUnarySet(polyglot.ast.Unary unary){
+        if (unary.expr() instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
+            // not sure about strings here but...
+            soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)unary.expr();
+          
+            // create field target
+            soot.Local baseLocal = (soot.Local)base().getBaseLocal(accessField.field().target());
+            //soot.Value fieldGetLocal = getPrivateAccessFieldLocal(accessField, base);
+            soot.Local fieldGetLocal = handleCall(accessField.field(), accessField.getMeth(), null, baseLocal);
+
+            soot.Local tmp = base().generateLocal(accessField.field().type());
+            soot.jimple.AssignStmt stmt1 = soot.jimple.Jimple.v().newAssignStmt(tmp, fieldGetLocal);
+            ext().body.getUnits().add(stmt1);
+            Util.addLnPosTags(stmt1, unary.position());
+            soot.Value incVal = base().getConstant(Util.getSootType(accessField.field().type()), 1);
+            soot.jimple.BinopExpr binExpr;
+            if (unary.operator() == polyglot.ast.Unary.PRE_INC || unary.operator() == polyglot.ast.Unary.POST_INC){
+                binExpr = soot.jimple.Jimple.v().newAddExpr(tmp, incVal);
+            }
+            else {
+                binExpr = soot.jimple.Jimple.v().newSubExpr(tmp, incVal);
+            }
+            soot.Local tmp2 = generateLocal(accessField.field().type());
+            soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(tmp2, binExpr);
+            ext().body.getUnits().add(assign);
+            if (unary.operator() == polyglot.ast.Unary.PRE_INC || unary.operator() == polyglot.ast.Unary.PRE_DEC){
+                return base().handlePrivateFieldSet(accessField, tmp2, baseLocal);
+            }
+            else {
+                base().handlePrivateFieldSet(accessField, tmp2, baseLocal);
+                return tmp;
+            }
+        }
+        else {
+            return ext().handlePrivateFieldUnarySet(unary);
+        }
+    
+    }
     protected soot.Local handlePrivateFieldAssignSet(polyglot.ast.Assign assign){
         if (assign.left() instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
             // not sure about strings here but...
             soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)assign.left();
-           
+          
+            // create field target
+            soot.Local baseLocal = (soot.Local)base().getBaseLocal(accessField.field().target());
             if (assign.operator() == polyglot.ast.Assign.ASSIGN){
                 soot.Value right = base().getSimpleAssignRightLocal(assign);
-                return base().handlePrivateFieldSet(accessField, right);
+                return base().handlePrivateFieldSet(accessField, right, baseLocal);
             }
             else {
 
-                // create field target
-                soot.Local baseLocal = (soot.Local)base().getBaseLocal(accessField.field().target());
                 // create field get using target
                 soot.Local leftLocal = handleCall(accessField.field(), accessField.getMeth(), null, baseLocal);
                 // handle field set using same target
@@ -99,20 +137,18 @@ call.methodInstance().flags().isAbstract()){
         }
         soot.Local retLocal = base().generateLocal(field.type());
         soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, invoke);
-        //System.out.println("body: "+ext().body);
         ext().body.getUnits().add(assignStmt);
         
         return retLocal;
     }
     
-    protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right){
+    protected soot.Local handlePrivateFieldSet(polyglot.ast.Expr expr, soot.Value right, soot.Value baseLocal){
         if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
             soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)expr;
-            //System.out.println("handling private field set in access field");
             return handleCall(accessField.field(), accessField.setMeth(), right, null);
         }
         else {
-            return ext().handlePrivateFieldSet(expr, right);
+            return ext().handlePrivateFieldSet(expr, right, baseLocal);
         }
     }
 
@@ -124,7 +160,6 @@ call.methodInstance().flags().isAbstract()){
             soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)expr;
          
             
-            //System.out.println("access field create expr: "+expr);
             // here is where we need to return the field using get method
             return handleCall(accessField.field(), accessField.getMeth(), null, null);
             // return ext().createExpr(accessField.field());

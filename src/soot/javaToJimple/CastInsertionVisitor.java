@@ -26,6 +26,7 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     }
 
     public polyglot.ast.Expr ascribe(polyglot.ast.Expr e, polyglot.types.Type toType) {
+
         polyglot.types.Type fromType = e.type();
 
         if (toType == null){

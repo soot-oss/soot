@@ -162,7 +162,6 @@ public class Util {
     
     public static void addLnPosTags(soot.tagkit.Host host, int sline, int eline, int spos, int epos) {
         if (soot.options.Options.v().keep_line_number()){
-            //System.out.println("adding pos tag to : "+host);
             host.addTag(new soot.tagkit.SourceLnPosTag(sline, eline, spos, epos));
         }
     }
@@ -229,13 +228,11 @@ public class Util {
         
         // if this for type already created return it from map
         if (getThisMap.containsKey(sootType)){
-            //System.out.println("map contains this");
             return (soot.Local)getThisMap.get(sootType);
         }
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
         if (specialThisLocal.getType().equals(sootType)) {
-            //System.out.println("thinks it this");
            
             getThisMap.put(sootType, specialThisLocal);
             return specialThisLocal;
@@ -245,14 +242,12 @@ public class Util {
         // if its an initializer - then ust use it)
         // here we need an exact type I think
         if (bodyHasLocal(body, sootType)){
-            //System.out.println("body has local");
             soot.Local l = getLocalOfType(body, sootType);
             getThisMap.put(sootType, l);
             return l;
         }
         
         // otherwise get this$0 for one level up
-        //System.out.println("should be getting this$0");
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
         soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
         soot.Local t1 = lg.generateLocal(outerThisField.getType());
@@ -262,10 +257,18 @@ public class Util {
         body.getUnits().add(fieldAssignStmt);
          
         if (fh.canStoreType(t1.getType(), sootType)){
-            //System.out.println("get this wanted for type: "+t1.getType()+" found: "+sootType);
             getThisMap.put(sootType, t1);
             return t1;            
         }
+        
+        // check to see if this method has a local of the correct type (it will
+        // if its an initializer - then ust use it)
+        // here we need an exact type I think
+        /*if (bodyHasLocal(body, sootType)){
+            soot.Local l = getLocalOfType(body, sootType);
+            getThisMap.put(sootType, l);
+            return l;
+        }*/
         
         // otherwise make a new access method
         soot.Local t2 = t1;
@@ -275,12 +278,21 @@ public class Util {
 
     private static soot.Local getLocalOfType(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
-        Iterator it = body.getLocals().iterator();
+        Iterator stmtsIt = body.getUnits().iterator();
         soot.Local correctLocal = null;
-        while (it.hasNext()){
-            soot.Local l = (soot.Local)it.next();
-            if (fh.canStoreType(type, l.getType())){//,l.getType().equals(type)){
-                correctLocal = l;
+        while (stmtsIt.hasNext()){
+            soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
+            Iterator it = s.getDefBoxes().iterator();
+            while (it.hasNext()){
+                soot.ValueBox vb = (soot.ValueBox)it.next();
+                if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
+        //Iterator it = body.getLocals().iterator();
+        //soot.Local correctLocal = null;
+        //while (it.hasNext()){
+            //soot.Local l = (soot.Local)it.next();
+            //if (fh.canStoreType(type, l.getType())){//,l.getType().equals(type)){
+                    correctLocal = (soot.Local)vb.getValue();
+                }
             }
         }
         return correctLocal;
@@ -289,10 +301,8 @@ public class Util {
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getDefBoxes().iterator();
-        //System.out.println("looking for type : "+type);
         while (it.hasNext()){
             soot.ValueBox vb = (soot.ValueBox)it.next();
-            //System.out.println("next vb: "+vb.getValue()+" type: "+vb.getValue().getType());
             if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
                 return true;
             }

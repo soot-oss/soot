@@ -243,7 +243,6 @@ public class InitialResolver {
     
     private void createLocalClassName(polyglot.ast.LocalClassDecl lcd){
         // maybe this localdecl has already been resolved 
-        //System.out.println("creating local class decl: "+lcd);
         if (localClassMap == null){
             localClassMap = new BiMap();
         }
@@ -258,8 +257,6 @@ public class InitialResolver {
                 outerToMatch = outerToMatch.outer();
             }
 
-            //System.out.println("outer to match: "+outerToMatch);
-            //System.out.println("local decl name: "+lcd.decl().name());
             if (!localTypeMap.isEmpty()){
                 Iterator matchIt = localTypeMap.keySet().iterator();
                 while (matchIt.hasNext()){
@@ -268,7 +265,6 @@ public class InitialResolver {
                     while (outerMatch.isNested()){
                         outerMatch = outerMatch.outer();
                     }
-                    //System.out.println("outerMatch: "+outerMatch);
                     if (outerMatch.equals(outerToMatch)){
                         int numFound = getLocalClassNum((String)localTypeMap.get(new polyglot.util.IdentityKey(pType)), lcd.decl().name());
                         if (numFound >= nextAvailNum){
@@ -290,9 +286,6 @@ public class InitialResolver {
     private int getLocalClassNum(String realName, String simpleName){
         // a local inner class is named outer$NsimpleName where outer 
         // is the very outer most class
-        //System.out.println("real name: "+realName+" simple name: "+simpleName);
-        //System.out.println("getLocalClassNum: "+realName);
-        //System.out.println("getLocalClassNum: "+simpleName);
         int dIndex = realName.indexOf("$");
         int nIndex = realName.indexOf(simpleName, dIndex);
         if (nIndex == -1) return NO_MATCH;
@@ -359,6 +352,10 @@ public class InitialResolver {
     private void handleFinalLocals(polyglot.ast.ClassMember member){
         MethodFinalsChecker mfc = new MethodFinalsChecker();
         member.visit(mfc);
+        //System.out.println("member: "+member);
+        //System.out.println("mcf final locals avail: "+mfc.finalLocals());
+        //System.out.println("mcf locals used: "+mfc.typeToLocalsUsed());
+        //System.out.println("mfc inners: "+mfc.inners());
         AnonLocalClassInfo alci = new AnonLocalClassInfo();
         if (member instanceof polyglot.ast.ProcedureDecl){
             polyglot.ast.ProcedureDecl procedure = (polyglot.ast.ProcedureDecl)member;
@@ -389,15 +386,28 @@ public class InitialResolver {
         while (it.hasNext()){
             
             polyglot.types.ClassType cType = (polyglot.types.ClassType)((polyglot.util.IdentityKey)it.next()).object();
+            // do the comparison about locals avail and locals used here
+            HashMap typeToLocalUsed = mfc.typeToLocalsUsed();
+            ArrayList localsUsed = new ArrayList();
+            if (typeToLocalUsed.containsKey(new polyglot.util.IdentityKey(cType))){
+                ArrayList localsNeeded = (ArrayList)typeToLocalUsed.get(new polyglot.util.IdentityKey(cType));
+                Iterator usesIt = localsNeeded.iterator();
+                while (usesIt.hasNext()){
+                    polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)usesIt.next()).object();
+                    if (alci.finalLocalsAvail().contains(new polyglot.util.IdentityKey(li))){
+                        localsUsed.add(new polyglot.util.IdentityKey(li));
+                    }
+                }
+            }
+                
+            
             AnonLocalClassInfo info = new AnonLocalClassInfo();
             info.inStaticMethod(alci.inStaticMethod());
-            //System.out.println("init final locals for: "+Util.getSootType(cType)+" are: "+alci.finalLocalsAvail());
-            info.finalLocalsAvail(alci.finalLocalsAvail());
+            info.finalLocalsAvail(localsUsed);
             if (!finalLocalInfo.containsKey(new polyglot.util.IdentityKey(cType))){
                 finalLocalInfo.put(new polyglot.util.IdentityKey(cType), info);
             }
         }
-        //System.out.println("init build of final local map: "+finalLocalInfo);
     }
     
     
