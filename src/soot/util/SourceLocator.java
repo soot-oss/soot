@@ -61,6 +61,8 @@ public class SourceLocator
 
     private static int srcPrecedence = PRECEDENCE_NONE;
 
+    private static List zipFileList = Collections.synchronizedList(new LinkedList()); 
+
     private SourceLocator() // No instances.
     {
     }
@@ -82,7 +84,8 @@ public class SourceLocator
     private static String previousCP = null;
     private static int previousCPHashCode = 0;
     private static boolean isRunningUnderBraindeadOS = System.getProperty("os.name").startsWith("Windows");
-    
+
+    private static int  count = 0;
     /** Given a class name and class-path, returns an input stream for the given class. */
     public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
     {
@@ -91,7 +94,7 @@ public class SourceLocator
         // Either object equality or string equality will do.
         if (classPath.hashCode() == previousCPHashCode && (classPath == previousCP || classPath.equals(previousCP)))
         {
-            locations = previousLocations;
+            locations = previousLocations;	   
         }
         else
         // Split up the class path into locations
@@ -141,9 +144,14 @@ public class SourceLocator
                 else if(!absolutePath)
                     candidate = userDir + fileSeparator + candidate;
 
-                locations.add(candidate);
 
-                classPath = classPath.substring(sepIndex + 1);
+		if(isArchive(candidate)) {
+		    addArchive(candidate);
+		    
+		} else {		
+		    locations.add(candidate);
+		}
+		classPath = classPath.substring(sepIndex + 1);		
             }
             previousLocations = locations;
         }
@@ -157,10 +165,12 @@ public class SourceLocator
             if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {		
                 List lst = new LinkedList();
                 lst.add(ClassInputRep.v());
-                if( (res = getFileInputStream(locations, lst, className)) != null)
+                if( (res = getFileInputStream(locations, lst, className)) != null) {
                     return res;
-                if( (res = getFileInputStream(locations, reps, className)) != null)
+		}
+                if( (res = getFileInputStream(locations, reps, className)) != null) {
                     return res;
+		}
             } 
             else if (srcPrecedence == PRECEDENCE_JIMPLE) {
                 List lst = new LinkedList();
@@ -206,7 +216,7 @@ public class SourceLocator
                     adjustedClassName = path + className2;
 
                 String fullPath = adjustedClassName + inputRep.getFileExtension();
-                                     
+		
                 File f = new File(fullPath);
                 InputStream in;
 
@@ -216,10 +226,66 @@ public class SourceLocator
                     } catch(IOException e) { 
                         System.out.println(e); throw new RuntimeException("!"); 
                     }
-                }
+                } else {  // check if file  is in an archive(ie in a .zip or .zip file)
+		    Iterator zipFileIt = zipFileList.iterator();
+		    while(zipFileIt.hasNext()) {
+			ZipFile zip = (ZipFile) zipFileIt.next();
+
+			ZipEntry entry = zip.getEntry(className2 + inputRep.getFileExtension());    
+
+			try {
+			    InputStream is = new BufferedInputStream(zip.getInputStream(entry));
+			    InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
+				
+			    return inputRep.createInputStream(bugFreeInputStream);
+			} catch(IOException e) {
+			    System.err.println("error reading file:" + zip.getName() + e.toString());
+			    System.exit(1);
+			}
+		    }
+		}
             }
         }
         return null;
     }    
+    
+    private static boolean isArchive(String path) {
+	File f = new File(path);	
+	if(f.isFile() && f.canRead()) { 		
+	    if(path.endsWith("zip") || path.endsWith("jar")) {
+		return true;
+	    } else {
+		System.err.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
+	    }
+	}  
+	return false;
+    }
+
+    private static void addArchive(String fileName) {
+	try {
+	    ZipFile zipFile = new ZipFile(fileName);
+	    zipFileList.add(zipFile);	
+	} catch (IOException e) {
+	    System.err.println("error loading file:" + fileName + e.toString());
+	}
+    }    
+    
+    private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+	
+	int sz = (int) size;
+	byte[] buf = new byte[sz];					
+				
+				    
+	final int N = 1024;
+	int ln = 0;
+	int count = 0;
+	while (sz > 0 &&  
+	       (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
+	    count += ln;
+	    sz -= ln;
+	}
+	return  new ByteArrayInputStream(buf);		
+    }
+
 }
 

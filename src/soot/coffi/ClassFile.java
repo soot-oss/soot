@@ -199,7 +199,8 @@ public class ClassFile {
       try
       {   
           if(!soot.Scene.v().getSootClassPath().equals("<external-class-path>"))
-          {   classFileStream = SourceLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
+          {   
+	      classFileStream = SourceLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
           }
           else
           {   classFileStream = SourceLocator.getInputStreamOf(fn);
@@ -217,6 +218,11 @@ public class ClassFile {
 
       return loadClassFile(classFileStream);
    }
+
+
+
+
+
 
 
     public boolean loadClassFile(InputStream is) {

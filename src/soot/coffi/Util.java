@@ -319,17 +319,18 @@ public class Util
     }
     
 
-    public static void resolveFromClassFile(SootClass aClass, soot.SootResolver sootResolver, Scene cm)
+    public static void resolveFromClassFile(SootClass aClass, InputStream is, soot.SootResolver sootResolver, Scene cm)
     {
         SootClass bclass = aClass;                
         String className = bclass.getName();
+
         setActiveClassManager(cm);
     
         ClassFile coffiClass = new ClassFile(className);
         
         // Load up class file, and retrieve bclass from class manager.
         {
-            boolean success = coffiClass.loadClassFile();                                  
+            boolean success = coffiClass.loadClassFile(is);                                  
             if(!success)
                 {
                     if(!Scene.v().allowsPhantomRefs())
@@ -346,7 +347,7 @@ public class Util
     
             String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
             name = name.replace('/', '.');
-                
+                	    
             bclass.setName(name);
             // replace this classe'ss name with its fully qualified version.    
         }
@@ -412,10 +413,16 @@ public class Util
         for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
+		
+		
+		if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
+		    System.err.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+		    throw new RuntimeException("jjjj");
+		}
 
                 String methodName = ((CONSTANT_Utf8_info)
                                      (coffiClass.constant_pool[methodInfo.name_index])).convert();
-    
+		
                 String methodDescriptor = ((CONSTANT_Utf8_info)
                                            (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
     

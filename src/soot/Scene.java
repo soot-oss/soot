@@ -339,23 +339,19 @@ public class Scene  //extends AbstractHost
     {   
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
-        if(toReturn == null)
-        {         
-            if(Scene.v().allowsPhantomRefs())
-            {
-                SootClass c = new SootClass(className);
-                c.setPhantom(true);
-                addClass(c);
-                return c;
-            }
-            else 
-            { 
-                System.out.println("can't find classfile" + className );
-                throw new RuntimeException();
-            }
-        }
-        else
-            return toReturn;
+        if(toReturn != null) {
+	    return toReturn;
+	} else  if(Scene.v().allowsPhantomRefs()) {            
+	    SootClass c = new SootClass(className);
+	    c.setPhantom(true);
+	    addClass(c);
+	    return c;
+	}
+	else {          
+	    System.out.println(System.getProperty("line.separator") + "Aborting: can't find classfile" + className );            
+	    System.exit(1);
+	}
+	return null;
     }
 
     /**

@@ -101,7 +101,7 @@ public class SootResolver
             if(is instanceof ClassInputStream) {
                 if(soot.Main.isVerbose)
                     System.err.println("resolving [from .class]: " + className );
-                soot.coffi.Util.resolveFromClassFile(sc, this, Scene.v());
+                soot.coffi.Util.resolveFromClassFile(sc, is, this, Scene.v());
             } else if(is instanceof JimpleInputStream) {
                 if(soot.Main.isVerbose)
                     System.err.println("resolving [from .jimple]: " + className );
