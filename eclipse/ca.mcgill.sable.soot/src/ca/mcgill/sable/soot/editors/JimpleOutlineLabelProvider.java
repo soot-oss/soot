@@ -134,8 +134,9 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 		if (image == null) {
 		 	//System.out.println("image was null");
 		  	image = descriptor.createImage();
-		  	//System.out.println("created image");
+		  	System.out.println("created image");
 		   	getImageCache().put(descriptor, image);
+            
 		}
 		
 	

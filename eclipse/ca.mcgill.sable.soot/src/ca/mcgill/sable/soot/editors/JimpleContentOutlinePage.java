@@ -100,6 +100,7 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 				//System.out.println(nextLine);
 				//System.out.println(nextLine.trim().length());
 			}
+            getViewer().getLabelProvider().dispose();
 			setJimpleFileParser(new JimpleFile(text));
 			//System.out.println(getJimpleFileParser().getFile());
 			return getJimpleFileParser().getOutline();
