@@ -401,7 +401,7 @@ public class SourceLocator
             if( entry == null ) return null;
             return new FoundFile(jarFile, entry);
         } catch( IOException e ) {
-            throw new RuntimeException( "Caught IOException "+e );
+            throw new RuntimeException( "Caught IOException "+e+" looking in jar file "+jar+" for file "+fileName );
         }
     }
     private HashMap sourceToClassMap;

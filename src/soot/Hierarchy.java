@@ -372,7 +372,7 @@ public class Hierarchy
     {
         i.checkLevel(SootClass.HIERARCHY);
         if (!i.isInterface())
-            throw new RuntimeException("interface needed!");
+            throw new RuntimeException("interface needed; got "+i);
 
         checkState();
 
@@ -384,7 +384,7 @@ public class Hierarchy
     {
         i.checkLevel(SootClass.HIERARCHY);
         if (!i.isInterface())
-            throw new RuntimeException("interface needed!");
+            throw new RuntimeException("interface needed; got "+i);
 
         checkState();
 

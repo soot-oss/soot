@@ -86,7 +86,7 @@ public class SootClass extends AbstractHost implements Numberable
         this.modifiers = modifiers;
         refType = RefType.v(name);
         refType.setSootClass(this);
-        if(Options.v().debug_resolver()) System.out.println("created "+name);
+        if(Options.v().debug_resolver()) G.v().out.println("created "+name+" with modifiers "+modifiers);
         setResolvingLevel(BODIES);
     }
 
@@ -830,6 +830,7 @@ public class SootClass extends AbstractHost implements Numberable
     /** Convenience method; returns true if this class is an interface. */
     public boolean isInterface()
     {
+        checkLevel(HIERARCHY);
         return Modifier.isInterface(this.getModifiers());
     }
 
