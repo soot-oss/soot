@@ -39,6 +39,11 @@ public class JimpleOptimizationPack extends BodyTransformer
 
     public static JimpleOptimizationPack v() { return instance; }
 
+    public String defaultOptions() 
+    {
+        return "eliminate-dead-assignments propagate-copies";
+    }
+
     protected void internalTransform(Body b, Map options)
     {
         JimpleBody body = (JimpleBody)b;

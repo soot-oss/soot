@@ -33,8 +33,14 @@ public abstract class SceneTransformer
      *  That is, the options in optionsString override those in the Scene. */
     public final void transform(String phaseName, String optionsString)
     {
-        Map options = Scene.v().computePhaseOptions(phaseName, optionsString);
+        Map options = Scene.v().computePhaseOptions(phaseName, 
+                                                    getDefaultOptions() + " " + optionsString);
         internalTransform(options);
+    }
+
+    public String getDefaultOptions() 
+    {
+        return "";
     }
 
     public final void transform()

@@ -40,15 +40,24 @@ public class StaticMethodBinder extends SceneTransformer
 
     public static StaticMethodBinder v() { return instance; }
 
+    public String getDefaultOptions() 
+    {
+        return "insert-null-checks insert-redundant-casts";
+    }
+
+    // Q: Does this have any dependence on Jimple form?
     protected void internalTransform(Map options)
     {
-        boolean enableNullPointerCheckInsertion = !Options.getBoolean(options, "no-insert-null-checks");
-        boolean enableRedundantCastInsertion = !Options.getBoolean(options, "no-insert-redundant-casts");
+        boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
+        boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
 
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+
+        // How do we get a good default size for this hashtable?
+        Hashtable visitedMethods = new Hashtable();
                 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
         while (classesIt.hasNext())
@@ -58,13 +67,36 @@ public class StaticMethodBinder extends SceneTransformer
             LinkedList methodsList = new LinkedList(); 
             methodsList.addAll(c.getMethods());
 
+            // Because of methodUsesThis, we may process a method
+            // only *after* all of its contained invokeSites are processed.
             while (!methodsList.isEmpty())
             {
                 SootMethod container = (SootMethod)methodsList.removeFirst();
                 JimpleBody b = (JimpleBody)container.getActiveBody();
                 
-                if (graph.getSitesOf(container).size() == 0)
+                List containerSites = graph.getSitesOf(container);
+
+                if (containerSites.size() == 0)
                     continue;
+
+                // Check that all of the containerSites have been visited.
+                Iterator containerIt = containerSites.iterator();
+                boolean defer = false;
+                while (containerIt.hasNext())
+                {
+                    Object site = containerSites.next();
+
+                    if (!visitedMethods.contains(site))
+                    {
+                        defer = true;
+                        methodsList.addLast(container);
+                        break;
+                    }
+                }
+
+                if (defer)
+                    continue;
+                visitedSites.add(container);
 
                 List unitList = new ArrayList(); unitList.addAll(b.getUnits());
                 Iterator unitIt = unitList.iterator();
@@ -79,7 +111,8 @@ public class StaticMethodBinder extends SceneTransformer
                     InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
 
                     if (ie instanceof StaticInvokeExpr || 
-                        ie instanceof SpecialInvokeExpr)
+                        ie instanceof SpecialInvokeExpr ||
+                        ie instanceof NewInvokeExpr)
                         continue;
 
                     List targets = graph.getTargetsOf(ie);
