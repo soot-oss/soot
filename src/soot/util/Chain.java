@@ -31,6 +31,7 @@ import soot.*;
 
 public interface Chain extends Collection
 {
+    public void insertAfter(List toInsert, Object point);
     public void insertAfter(Object toInsert, Object point);
     public void insertBefore(Object toInsert, Object point);
     public void swapWith(Object out, Object in);

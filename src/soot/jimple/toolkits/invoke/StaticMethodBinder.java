@@ -84,7 +84,7 @@ public class StaticMethodBinder extends SceneTransformer
 
                     List targets = graph.getTargetsOf(ie);
 
-                    if (targets.size() != -1)
+                    if (targets.size() != 1)
                         continue;
 
                     // Ok, we have an Interface or VirtualInvoke going to 1.

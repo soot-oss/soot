@@ -120,7 +120,18 @@ public class HashChain extends AbstractCollection
         Link newLink = temp.insertAfter(toInsert);
         map.put(toInsert, newLink);    
     }
-    
+
+    public void insertAfter(List toInsert, Object point)
+    {
+        Object previousPoint = point;
+        Iterator it = toInsert.iterator();
+        while (it.hasNext())
+        {
+            Object o = it.next();
+            insertAfter(o, previousPoint);
+            previousPoint = o;
+        }
+    }
 
     public void insertBefore(Object toInsert, Object point)
     {
