@@ -70,6 +70,10 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
             return indentation + invokeExprBox.getValue().toString();
     }
     
+    public void toString(UnitPrinter up) {
+        invokeExprBox.toString(up);
+    }
+    
     public void setInvokeExpr(Value invokeExpr)
     {
         invokeExprBox.setValue(invokeExpr);

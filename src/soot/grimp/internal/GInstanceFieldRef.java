@@ -60,7 +60,7 @@ public class GInstanceFieldRef extends AbstractInstanceFieldRef
     public String toString()
     {
         return toString(getBase(), getBase().toString(),
-                        ".[" + getField().getSignature() + "]");
+                        "." + getField().getSignature());
     }
 
     public String toBriefString()

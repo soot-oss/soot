@@ -34,7 +34,6 @@ import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -144,6 +143,39 @@ public class JLookupSwitchStmt extends AbstractStmt
         buffer.append(indentation + "}");
 
         return buffer.toString();
+    }
+    
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.v().LOOKUPSWITCH);
+        up.literal("(");
+        keyBox.toString(up);
+        up.literal(")");
+        up.newline();
+        up.literal("{");
+        up.newline();
+        for(int i = 0; i < lookupValues.size(); i++) {
+            up.literal("    ");
+            up.literal(Jimple.v().CASE);
+            up.literal(" ");
+            up.constant((Constant)lookupValues.get(i));
+            up.literal(": ");
+            up.literal(Jimple.v().GOTO);
+            up.literal(" ");
+            targetBoxes[i].toString(up);
+            up.literal(";");
+            up.newline();
+        }
+        
+        up.literal("    ");
+        up.literal(Jimple.v().DEFAULT);
+        up.literal(": ");
+        up.literal(Jimple.v().GOTO);
+        up.literal(" ");
+        defaultTargetBox.toString(up);
+        up.literal(";");
+        up.newline();
+        up.literal("}");
     }
 
     public Unit getDefaultTarget()

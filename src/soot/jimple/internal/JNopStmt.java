@@ -57,6 +57,10 @@ public class JNopStmt extends AbstractStmt implements NopStmt
         return indentation + Jimple.v().NOP;
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().NOP);
+    }
+    
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseNopStmt(this);

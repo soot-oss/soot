@@ -177,7 +177,7 @@ public class DoubleConstant extends RealConstant implements Switchable, ToBriefS
         else
             return doubleString;
     }
-
+    
     public String toBriefString()
     {
         return toString();

@@ -54,6 +54,10 @@ class FutureStmt extends soot.jimple.internal.AbstractStmt
     {
         return "<futurestmt>";
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal("<futurestmt>");
+    }
 
     public List getDefBoxes()
     {

@@ -61,6 +61,11 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
     final public String getName() { return "interfaceinvoke"; }
     final String getParameters(boolean isBrief, Map unitToName)
         { return super.getParameters(isBrief, unitToName) + " " + argCount; }
+    protected void getParameters(UnitPrinter up) {
+        super.getParameters(up);
+        up.literal(" ");
+        up.literal(new Integer(argCount).toString());
+    }
 
     public int getArgCount() { return argCount; }
     public void setArgCount(int x) { argCount = x; }

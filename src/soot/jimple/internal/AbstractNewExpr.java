@@ -57,6 +57,13 @@ public abstract class AbstractNewExpr implements NewExpr
     {
         return Jimple.v().NEW + " " + type.toString();
     }
+    
+    public void toString( UnitPrinter up )
+    {
+        up.literal(Jimple.v().NEW);
+        up.literal(" ");
+        up.type(type);
+    }
 
     public String toBriefString()
     {

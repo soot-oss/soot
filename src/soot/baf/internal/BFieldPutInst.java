@@ -79,6 +79,10 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
                       (field.getDeclaringClass().getName() + "." + 
                        field.getName()) : field.getSignature()); 
     }
+    protected void getParameters( UnitPrinter up ) {
+        up.literal(" ");
+        up.fieldRef(field);
+    }
     
     public SootField getField() { return field; }
     public void setField(SootField f) { this.field = f; }

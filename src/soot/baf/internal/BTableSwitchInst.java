@@ -174,6 +174,29 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         return buffer.toString();
     }
 
+    public void toString(UnitPrinter up) {
+        up.literal("tableswitch");
+        up.newline();
+        up.literal("{");
+        up.newline();
+        
+        for(int i = lowIndex; i <= highIndex; i++)
+        {
+            up.literal("    case ");
+            up.literal(new Integer(i).toString());
+            up.literal(": goto ");
+            targetBoxes[i-lowIndex].toString(up);
+            up.literal(";");
+            up.newline();
+        }
+
+        up.literal("    default: goto ");
+        defaultTargetBox.toString(up);
+        up.literal(";");
+        up.newline();
+        up.literal("}");
+    }
+
     public List getUnitBoxes()
     {
         return unitBoxes;

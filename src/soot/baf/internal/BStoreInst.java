@@ -78,6 +78,10 @@ public class BStoreInst extends AbstractOpTypeInst implements StoreInst
     final public String getName() { return "store"; }
     final String getParameters(boolean isBrief, Map unitToName)
     { return " " + localBox.getValue().toString(); }
+    protected void getParameters(UnitPrinter up ) {
+        up.literal(" ");
+        localBox.toString(up);
+    }
 
     public void apply(Switch sw)
     {

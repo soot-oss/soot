@@ -69,6 +69,10 @@ public class StaticFieldRef implements FieldRef, ToBriefString, ConvertToBaf, Eq
     {
         return "" + field.getDeclaringClass().getName() + "." + field.getName() + "";
     }
+    
+    public void toString( UnitPrinter up ) {
+        up.fieldRef(field);
+    }
 
     public SootField getField()
     {

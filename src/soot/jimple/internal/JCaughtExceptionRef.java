@@ -57,6 +57,11 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
     {
         return "@caughtexception";
     }
+    
+    public void toString(UnitPrinter up)
+    {
+        up.identityRef(this);
+    }
 
     public String toBriefString()
     {

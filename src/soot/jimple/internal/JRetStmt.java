@@ -63,6 +63,12 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         else
             return indentation + Jimple.v().RET + " "  + stmtAddressBox.getValue().toString();
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().RET);
+        up.literal(" ");
+        stmtAddressBox.toString(up);
+    }
 
     public Value getStmtAddress()
     {

@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.grimp.PrecedenceTest;
 
 public abstract class AbstractBinopExpr implements Expr, ToBriefString
 {
@@ -116,5 +117,20 @@ public abstract class AbstractBinopExpr implements Expr, ToBriefString
             rightOp = ((ToBriefString)op2).toBriefString();
 
         return leftOp + getSymbol() + rightOp;
+    }
+    
+    public void toString( UnitPrinter up ) {
+        Value val1 = op1Box.getValue();
+        Value val2 = op2Box.getValue();
+
+        if( PrecedenceTest.needsBrackets( op1Box, this ) ) up.literal("(");
+        op1Box.toString(up);
+        if( PrecedenceTest.needsBrackets( op1Box, this ) ) up.literal(")");
+
+        up.literal(getSymbol());
+
+        if( PrecedenceTest.needsBracketsRight( op2Box, this ) ) up.literal("(");
+        op2Box.toString(up);        
+        if( PrecedenceTest.needsBracketsRight( op2Box, this ) ) up.literal(")");
     }
 }

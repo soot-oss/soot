@@ -137,13 +137,47 @@ public class JTableSwitchStmt extends AbstractStmt
         }
 
         buffer.append(indentation + "    " +  Jimple.v().DEFAULT + 
-                      ": " +  Jimple.v().GOTO + "  " 
+                      ": " +  Jimple.v().GOTO + " " 
                       + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
         
         buffer.append(indentation + "}");
 
         return buffer.toString();
     }
+    
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.v().TABLESWITCH);
+        up.literal("(");
+        keyBox.toString(up);
+        up.literal(")");
+        up.newline();
+        up.literal("{");
+        up.newline();
+        for(int i = lowIndex; i <= highIndex; i++) {
+            up.literal("    ");
+            up.literal(Jimple.v().CASE);
+            up.literal(" ");
+            up.literal(new Integer(i).toString());
+            up.literal(": ");
+            up.literal(Jimple.v().GOTO);
+            up.literal(" ");
+            targetBoxes[i-lowIndex].toString(up);
+            up.literal(";");
+            up.newline();
+        }
+        
+        up.literal("    ");
+        up.literal(Jimple.v().DEFAULT);
+        up.literal(": ");
+        up.literal(Jimple.v().GOTO);
+        up.literal(" ");
+        defaultTargetBox.toString(up);
+        up.literal(";");
+        up.newline();
+        up.literal("}");
+    }
+
 
     public Unit getDefaultTarget()
     {

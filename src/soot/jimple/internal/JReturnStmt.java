@@ -66,6 +66,12 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
             return indentation + Jimple.v().RETURN + " "  + returnValueBox.getValue().toString();
     }
     
+    public void toString( UnitPrinter up) {
+        up.literal(Jimple.v().RETURN);
+        up.literal(" ");
+        returnValueBox.toString(up);
+    }
+    
     public ValueBox getOpBox()
     {
         return returnValueBox;

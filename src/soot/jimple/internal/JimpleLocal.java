@@ -117,6 +117,10 @@ public class JimpleLocal implements Local, ConvertToBaf
     {
         return getName();
     }
+    
+    public void toString(UnitPrinter up) {
+        up.local(this);
+    }
 
     public String toBriefString()
     {

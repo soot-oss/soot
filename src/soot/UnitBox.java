@@ -45,5 +45,7 @@ public interface UnitBox extends Serializable
     public Unit getUnit();
 
     /** Returns true if this box can contain the given Unit. */
-    public boolean canContainUnit(Unit u);    
+    public boolean canContainUnit(Unit u);   
+    
+    public void toString(UnitPrinter up); 
 }

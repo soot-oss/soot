@@ -57,6 +57,11 @@ public class BPushInst extends AbstractInst implements PushInst
         return " "+constant.toString(); 
     }
 
+    protected void getParameters( UnitPrinter up ) {
+        up.literal(" ");
+        up.constant(constant);
+    }
+
     public int getInCount()
     {
         return 0;

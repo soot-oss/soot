@@ -55,6 +55,12 @@ public abstract class AbstractBranchInst extends AbstractInst
         return indentation + getName() + " " + 
           (String) unitToName.get(getTarget());
     }
+
+    public void toString( UnitPrinter up ) {
+        up.literal( getName() );
+        up.literal(" ");
+        targetBox.toString( up );
+    }
     
     public Unit getTarget()
     {

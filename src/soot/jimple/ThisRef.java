@@ -57,6 +57,10 @@ public class ThisRef implements IdentityRef, ToBriefString
     {
         return "@this: "+thisType;
     }
+    
+    public void toString( UnitPrinter up ) {
+        up.identityRef(this);
+    }
 
     public String toBriefString()
     {

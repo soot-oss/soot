@@ -41,6 +41,11 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     {
         return indentation + getName() + getParameters(isBrief, unitToName);
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(getName());
+        getParameters(up);
+    }
 
 
     public int getInCount()
@@ -95,7 +100,8 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
    
     
     public abstract String getName();
-    String getParameters(boolean isBrief, Map unitToName) { return ""; }    
+    String getParameters(boolean isBrief, Map unitToName) { return ""; }
+    protected void getParameters(UnitPrinter up) {}
 
     public boolean containsInvokeExpr() { return false; }
     public boolean containsArrayRef() { return false; }

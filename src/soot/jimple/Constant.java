@@ -75,4 +75,8 @@ public abstract class Constant implements Value, ConvertToBaf
     {
         return hashCode();
     }
+    
+    public void toString( UnitPrinter up ) {
+        up.constant(this);
+    }
 }

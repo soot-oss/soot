@@ -30,7 +30,6 @@ import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
-import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
@@ -93,6 +92,24 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         buffer.append(")");
 
         return buffer.toString();
+    }
+
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.v().STATICINVOKE);
+        up.literal(" ");
+        up.method(method);
+        up.literal("(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+
+            argBoxes[i].toString(up);
+        }
+
+        up.literal(")");
     }
 
     public String toBriefString()

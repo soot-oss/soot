@@ -64,6 +64,13 @@ public abstract class AbstractOpTypeInst extends AbstractInst
         return indentation + getName() + "." + 
           Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(getName());
+        up.literal(".");
+        up.literal(Baf.bafDescriptorOf(opType));
+        getParameters(up);
+    }
 
 
   

@@ -82,5 +82,12 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
            " " + (String) unitToName.get(getTarget());
           
     }    
+    public void toString( UnitPrinter up ) {
+        up.literal( getName() );
+        up.literal( "." );
+        up.literal( Baf.bafDescriptorOf(opType) );
+        up.literal( " " );
+        targetBox.toString(up);
+    }
 }
 

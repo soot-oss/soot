@@ -101,4 +101,7 @@ public class EquivalentValue implements Value {
     public void apply(Switch sw) {
       e.apply(sw);
     }
+    public void toString( UnitPrinter up ) {
+        e.toString(up);
+    }
 }

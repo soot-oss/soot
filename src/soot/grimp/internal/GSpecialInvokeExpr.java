@@ -67,7 +67,7 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append(".[" + getMethod().getSignature() + "](");
+        buffer.append("." + getMethod().getSignature() + "(");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
@@ -81,6 +81,26 @@ public class GSpecialInvokeExpr extends AbstractSpecialInvokeExpr
 
         return toString(getBase(), getBase().toString(), 
                         buffer.toString());
+    }
+
+    public void toString(UnitPrinter up)
+    {
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
+        baseBox.toString(up);
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
+        up.literal(".");
+        up.method(getMethod());
+        up.literal("(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+
+            argBoxes[i].toString(up);
+        }
+
+        up.literal(")");
     }
 
     

@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with cl library; if not, write to the
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
@@ -281,7 +281,7 @@ public class Printer {
 	    // only print tags if not printing attributes in a file 
 	    if (!addJimpleLn()) {
             	for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-                    final Tag t = (Tag) tIt.next();
+            	    final Tag t = (Tag) tIt.next();
                     out.println(t);
                     incJimpleLnNum();
 
@@ -308,6 +308,7 @@ public class Printer {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
         boolean isPrecise = !useAbbreviations();
+        final String indent = "        ";
 
         Chain units = body.getUnits();
 
@@ -347,9 +348,12 @@ public class Printer {
             }
         }
 
+        UnitPrinter up = isPrecise ?
+            new NormalUnitPrinter(stmtToName, indent) :
+            new BriefUnitPrinter(stmtToName, indent);
+
         Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
-        String indent = "        ";
 
         while (unitIt.hasNext()) {
 
@@ -389,10 +393,20 @@ public class Printer {
 
             }
 
-            if (isPrecise)
-                out.print(currentStmt.toString(stmtToName, indent));
-            else
-                out.print(currentStmt.toBriefString(stmtToName, indent));
+            String oldString;
+            if (isPrecise) {
+                oldString = currentStmt.toString(stmtToName, indent);
+            } else {
+                oldString = currentStmt.toBriefString(stmtToName, indent);
+            }
+            up.startUnit(currentStmt);
+            currentStmt.toString(up);
+            up.endUnit(currentStmt);
+            String newString = up.toString();
+            if( !newString.equals( oldString ) ) {
+                System.err.println( "\nOLD: "+oldString+"\nNEW: "+newString );
+            }
+            out.print(oldString);
 
             out.print(";");
             out.println();

@@ -98,6 +98,24 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
         return buffer.toString();
     }
 
+    public void toString(UnitPrinter up)
+    {
+        up.literal("new");
+        up.literal(" ");
+        up.type(type);
+        up.literal("(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+
+            argBoxes[i].toString(up);
+        }
+
+        up.literal(")");
+    }
+
 
     public String toBriefString()
     {

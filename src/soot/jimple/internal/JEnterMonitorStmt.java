@@ -67,6 +67,12 @@ public class JEnterMonitorStmt extends AbstractStmt
             return indentation + Jimple.v().ENTERMONITOR + " "  + opBox.getValue().toString();
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().ENTERMONITOR);
+        up.literal(" ");
+        opBox.toString(up);
+    }
+    
     public Value getOp()
     {
         return opBox.getValue();

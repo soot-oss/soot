@@ -91,6 +91,10 @@ public class BafLocal implements Local
         return toString();
     }
     
+    public void toString( UnitPrinter up ) {
+        up.local( this );
+    }
+    
     public List getUseBoxes()
     {
         return AbstractUnit.emptyList;

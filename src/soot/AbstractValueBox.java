@@ -44,6 +44,12 @@ public abstract class AbstractValueBox implements ValueBox
     {
         return value;
     }
+    
+    public void toString( UnitPrinter up ) {
+        up.startValueBox(this);
+        value.toString(up);
+        up.endValueBox(this);
+    }
 }
 
 

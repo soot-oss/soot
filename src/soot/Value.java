@@ -47,4 +47,6 @@ public interface Value extends Switchable, EquivTo, Serializable
 
     /** Returns a clone of this Value. */
     public Object clone();
+    
+    public void toString( UnitPrinter up );
 }

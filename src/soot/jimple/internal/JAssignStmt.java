@@ -191,6 +191,12 @@ public class JAssignStmt extends AbstractDefinitionStmt
         else
             return indentation + leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
     }
+    
+    public void toString(UnitPrinter up) {
+        leftBox.toString(up);
+        up.literal(" = ");
+        rightBox.toString(up);
+    }
 
     public Object clone() 
     {

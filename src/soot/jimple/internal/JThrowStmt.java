@@ -79,6 +79,12 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
         else
             return indentation + "throw " + opBox.getValue().toString();
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().THROW);
+        up.literal(" ");
+        opBox.toString(up);
+    }
 
     public List getUseBoxes()
     {

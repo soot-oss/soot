@@ -3,6 +3,7 @@ package soot.dava.internal.javaRep;
 import java.util.*;
 import soot.jimple.internal.*;
 import soot.dava.internal.SET.*;
+import soot.*;
 
 public class DAbruptStmt extends AbstractStmt
 {
@@ -49,6 +50,14 @@ public class DAbruptStmt extends AbstractStmt
 	}
 
 	return b.toString();
+    }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(command);
+        if ((surpressDestinationLabel == false) && (label.toString() != null)) {
+            up.literal( " ");
+            up.literal( label.toString());
+        }
     }
 
     public String toString( boolean isBrief, Map stmtToName, String indentation)

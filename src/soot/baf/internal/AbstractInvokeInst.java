@@ -60,6 +60,10 @@ abstract class AbstractInvokeInst extends AbstractInst
     abstract public String getName();
     String getParameters(boolean isBrief, Map unitToName)
         { return " " + (isBrief ? method.getName() : method.getSignature()); }
+    protected void getParameters(UnitPrinter up) {
+        up.literal(" ");
+        up.method(method);
+    }
 
     
 

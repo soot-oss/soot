@@ -65,4 +65,10 @@ public abstract class AbstractUnitBox implements UnitBox
     {
         return unit;
     }
+    
+    public void toString(UnitPrinter up) {
+        up.startUnitBox(this);
+        up.unitRef(unit);
+        up.endUnitBox(this);
+    }
 }

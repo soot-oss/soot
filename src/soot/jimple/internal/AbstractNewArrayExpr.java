@@ -72,7 +72,17 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
 
         return buffer.toString();
     }
-
+    
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().NEWARRAY);
+        up.literal(" ");
+        up.literal("(");
+        up.type(baseType);
+        up.literal(")");
+        up.literal("[");
+        sizeBox.toString(up);
+        up.literal("]");
+    }
     
     public String toBriefString()
     {

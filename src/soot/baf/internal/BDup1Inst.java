@@ -80,6 +80,12 @@ public class BDup1Inst extends BDupInst implements Dup1Inst
         return indentation + "dup1." +  Baf.bafDescriptorOf(mOpType);        
     }
 
+    public void toString( UnitPrinter up ) {
+        up.literal("dup1");
+        up.literal(".");
+        up.literal(Baf.bafDescriptorOf(mOpType));
+    }
+
   
 }
 

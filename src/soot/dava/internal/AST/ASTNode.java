@@ -74,4 +74,8 @@ public abstract class ASTNode extends AbstractUnit
     {
         return false;
     }
+    
+    public void toString( UnitPrinter up ) {
+        throw new RuntimeException("Not implemented yet.");
+    }
 }

@@ -55,6 +55,10 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
         return indentation + Jimple.v().RETURN;
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().RETURN);
+    }
+    
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnVoidStmt(this);

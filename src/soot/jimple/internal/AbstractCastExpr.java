@@ -33,6 +33,7 @@ import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.grimp.PrecedenceTest;
 
 abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 {
@@ -71,6 +72,15 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
     public String toString()
     {
         return "("  + type.toString() + ") " + opBox.getValue().toString();
+    }
+    
+    public void toString(UnitPrinter up) {
+        up.literal("(");
+        up.type(type);
+        up.literal(") ");
+        if( PrecedenceTest.needsBrackets( opBox, this ) ) up.literal("(");
+        opBox.toString(up);
+        if( PrecedenceTest.needsBrackets( opBox, this ) ) up.literal(")");
     }
 
     public String toBriefString()

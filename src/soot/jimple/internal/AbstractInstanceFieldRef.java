@@ -28,12 +28,12 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.tagkit.*;
-import soot.jimple.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
+import soot.grimp.PrecedenceTest;
 
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf, EquivTo, Serializable
 {
@@ -63,6 +63,14 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     public String toString()
     {
         return baseBox.getValue().toString() + "." + field.getSignature();
+    }
+    
+    public void toString( UnitPrinter up ) {
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
+        baseBox.toString(up);
+        if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
+        up.literal(".");
+        up.fieldRef(field);
     }
 
     public String toBriefString()

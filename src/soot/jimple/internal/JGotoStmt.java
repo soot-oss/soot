@@ -73,6 +73,12 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 	    return indentation + Jimple.v().GOTO + " " + (String)stmtToName.get(getTarget());
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().GOTO);
+        up.literal(" ");
+        targetBox.toString(up);
+    }
+    
     public Unit getTarget()
     {
         return targetBox.getUnit();

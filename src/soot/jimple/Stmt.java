@@ -43,6 +43,7 @@ public interface Stmt extends Unit
     public String toString(Map stmtToName);
     public String toString(String indentation);
     public String toString(Map stmtToName, String indentation);
+    public void toString(UnitPrinter up);
 
     public boolean containsInvokeExpr();
     public InvokeExpr getInvokeExpr();

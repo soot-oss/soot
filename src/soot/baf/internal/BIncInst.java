@@ -140,6 +140,10 @@ public class BIncInst extends AbstractInst implements IncInst
   final public String getName() { return "inc.i"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     { return " "+ localBox.getValue().toString(); }
+    protected void getParameters(UnitPrinter up ) {
+        up.literal(" ");
+        localBox.toString(up);
+    }
     
     public void apply(Switch sw)
     {
@@ -170,6 +174,14 @@ public class BIncInst extends AbstractInst implements IncInst
   protected String toString(boolean isBrief, Map unitToName, String indentation)
   {
     return indentation + "inc.i" + " " +getLocal() + " " + getConstant() ;
+  }
+
+  public void toString( UnitPrinter up ) {
+      up.literal( "inc.i" );
+      up.literal( " " );
+      localBox.toString( up );
+      up.literal( " " );
+      up.constant( mConstant );
   }
 
     

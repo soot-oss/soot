@@ -80,6 +80,13 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
     {
         return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
     }
+    
+    public void toString(UnitPrinter up) {
+        baseBox.toString(up);
+        up.literal("[");
+        indexBox.toString(up);
+        up.literal("]");
+    }
 
     public String toBriefString()
     {

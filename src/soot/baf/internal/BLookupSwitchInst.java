@@ -24,7 +24,7 @@
  */
 
 package soot.baf.internal;
-
+import soot.jimple.Constant;
 import soot.util.*;
 import java.util.*;
 import soot.*;
@@ -185,6 +185,29 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
         buffer.append(indentation + "}");
 
         return buffer.toString();
+    }
+
+    public void toString(UnitPrinter up) {
+        up.literal( "lookupswitch" );
+        up.newline();
+        up.literal("{");
+        up.newline();
+        
+        for(int i = 0; i < lookupValues.size(); i++)
+        {
+            up.literal("    case ");
+            up.constant( (Constant) lookupValues.get(i) );
+            up.literal(": goto ");
+            targetBoxes[i].toString(up);
+            up.literal(";");
+            up.newline();
+        }
+
+        up.literal("    default: goto ");
+        defaultTargetBox.toString(up);
+        up.literal(";");
+        up.newline();
+        up.literal("}");
     }
 
     public List getUnitBoxes()

@@ -46,6 +46,10 @@ public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
         return indentation + Jimple.v().BREAKPOINT;
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().BREAKPOINT);
+    }
+    
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseBreakpointStmt(this);

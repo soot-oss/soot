@@ -66,6 +66,12 @@ public class JExitMonitorStmt extends AbstractStmt
         else
             return indentation + Jimple.v().EXITMONITOR + " "  + opBox.getValue().toString();
     }
+    
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().EXITMONITOR);
+        up.literal(" ");
+        opBox.toString(up);
+    }
 
     public Value getOp()
     {

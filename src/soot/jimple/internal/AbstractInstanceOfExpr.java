@@ -64,6 +64,14 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
     {
         return opBox.getValue().toString() + " " + Jimple.v().INSTANCEOF + " " + checkType.toString();
     }
+    
+    public void toString( UnitPrinter up ) {
+        opBox.toString(up);
+        up.literal(" ");
+        up.literal(Jimple.v().INSTANCEOF);
+        up.literal(" ");
+        up.type(checkType);
+    }
 
     public String toBriefString()
     {

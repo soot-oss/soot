@@ -44,6 +44,12 @@ public class PlaceholderStmt extends AbstractStmt
         return indentation + "<placeholder: " + ((ToBriefString) source).toBriefString() + ">";
     }
     
+    public void toString( UnitPrinter up ) {
+        up.literal("<placeholder: ");
+        source.toString(up);
+        up.literal(">");
+    }
+    
     PlaceholderStmt(Unit source)
     {
         this.source = source;

@@ -76,6 +76,11 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
     {
         return "@parameter" + n + ": " + paramType;                                                   
     }
+    
+    public void toString( UnitPrinter up )
+    {
+        up.identityRef(this);
+    }
 
     /** Converts the given ParameterRef into a brief String i.e. <code>@paraemter0</code>. */
     public String toBriefString()

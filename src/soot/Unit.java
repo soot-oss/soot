@@ -71,6 +71,7 @@ public interface Unit extends Switchable, Host, Serializable
     public String toBriefString();
     public String toBriefString(Map stmtToName, String indentation);
     public String toString(Map stmtToName, String indentation);
+    public void toString(UnitPrinter up);
 
     public void redirectJumpsToThisTo(Unit newLocation);
 }

@@ -83,6 +83,16 @@ public class JIfStmt extends AbstractStmt implements IfStmt
             return indentation + Jimple.v().IF + " "  + getCondition().toString() + " " + Jimple.v().GOTO + " "  + (String) stmtToName.get(getTarget());
     }
     
+    public void toString(UnitPrinter up) {
+        up.literal(Jimple.v().IF);
+        up.literal(" ");
+        conditionBox.toString(up);
+        up.literal(" ");
+        up.literal(Jimple.v().GOTO);
+        up.literal(" ");
+        targetBox.toString(up);
+    }
+    
     public String toString()
     {
 	return Jimple.v().IF + " "  + conditionBox.getValue().toString() + "[?= "+ getTarget() + "]";

@@ -28,7 +28,6 @@ package soot.jimple.internal;
 
 import soot.tagkit.*;
 import soot.*;
-import soot.jimple.*;
 import soot.util.*;
 import soot.baf.*;
 import soot.jimple.*;
@@ -87,6 +86,26 @@ public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeEx
         buffer.append(")");
 
         return buffer.toString();
+    }
+    
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.SPECIALINVOKE);
+        up.literal(" ");
+        baseBox.toString(up);
+        up.literal(".");
+        up.method(method);
+        up.literal("(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+                
+            argBoxes[i].toString(up);
+        }
+
+        up.literal(")");
     }
 
 

@@ -91,6 +91,26 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
         return buffer.toString();
     }
 
+    public void toString(UnitPrinter up)
+    {
+        up.literal(Jimple.INTERFACEINVOKE);
+        up.literal(" ");
+        baseBox.toString(up);
+        up.literal(".");
+        up.method(method);
+        up.literal("(");
+        
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                up.literal(", ");
+                
+            argBoxes[i].toString(up);
+        }
+
+        up.literal(")");
+    }
+
     
     public String toBriefString()
     {

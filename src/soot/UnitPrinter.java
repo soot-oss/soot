@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -17,31 +17,29 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
 package soot;
+import soot.jimple.*;
 
-import java.io.*;
+/**
+* Interface for different methods of printing out a Unit.
+*/
+public interface UnitPrinter {
+    public void startUnit( Unit u );
+    public void endUnit( Unit u );
+    public void startUnitBox( UnitBox u );
+    public void endUnitBox( UnitBox u );
+    public void startValueBox( ValueBox u );
+    public void endValueBox( ValueBox u );
 
-/** A box which can contain values. 
- *
- * @see Value
- */
-public interface ValueBox extends Serializable
-{
-    /** Sets the value contained in this box as given.  Subject to canContainValue() checks. */
-    public void setValue(Value value);
-
-    /** Returns the value contained in this box. */
-    public Value getValue();
-
-    /** Returns true if the given Value fits in this box. */
-    public boolean canContainValue(Value value);
-
-    public void toString( UnitPrinter up );
+    public void literal( String s );
+    public void newline();
+    public void local( Local l );
+    public void type( Type t );
+    public void method( SootMethod m );
+    public void constant( Constant c );
+    public void fieldRef( SootField f );
+    public void unitRef( Unit u );
+    public void identityRef( IdentityRef r );
 }
+
+
