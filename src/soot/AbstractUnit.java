@@ -100,18 +100,26 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     {
         List useBoxes = getUseBoxes();
         List defBoxes = getDefBoxes();
-        if( useBoxes == emptyList && defBoxes == emptyList ) return emptyList;
-        if( useBoxes == emptyList ) return Collections.unmodifiableList(defBoxes);
-        if( defBoxes == emptyList ) return Collections.unmodifiableList(useBoxes);
+        if( useBoxes.isEmpty() ) {
+            if( defBoxes.isEmpty() ) {
+                return emptyList;
+            } else {
+                return Collections.unmodifiableList(defBoxes);
+            }
+        } else {
+            if( defBoxes.isEmpty() ) {
+                return Collections.unmodifiableList(useBoxes);
+            } else {
+                valueBoxes = new ArrayList();
 
-        valueBoxes = new ArrayList();
+                valueBoxes.addAll(defBoxes);
+                valueBoxes.addAll(useBoxes);
 
-        valueBoxes.addAll(getUseBoxes());
-        valueBoxes.addAll(getDefBoxes());
+                valueBoxes = Collections.unmodifiableList(valueBoxes);
 
-        valueBoxes = Collections.unmodifiableList(valueBoxes);
-
-        return valueBoxes;
+                return valueBoxes;
+            }
+        }
     }
 
     /** Used to implement the Switchable construct. */
