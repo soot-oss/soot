@@ -45,7 +45,7 @@ public class MultiOptionWidget implements ISootOptionWidget {//extends Composite
 		
 		Group multi = new Group(parent, SWT.NONE);
 		GridLayout gl = new GridLayout();
-		gl.numColumns = 4;
+		gl.numColumns = 2;
 		
 		multi.setLayout(gl);
 		

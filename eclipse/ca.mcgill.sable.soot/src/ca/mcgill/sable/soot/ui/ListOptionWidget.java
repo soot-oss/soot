@@ -55,6 +55,7 @@ public class ListOptionWidget {
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
 		setText(new Text(path,  SWT.MULTI | SWT.BORDER));
+		
 
 		if ((data.getInitText() == null) || (data.getInitText().length() == 0)){
 			getText().setText("");
@@ -68,7 +69,7 @@ public class ListOptionWidget {
 		// this makes textbox fill available space		
 		GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.horizontalSpan = 2;
-
+		gridData.heightHint = 35;
 		getText().setLayoutData(gridData);
 		
 		
