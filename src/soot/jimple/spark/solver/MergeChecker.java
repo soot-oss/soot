@@ -91,7 +91,7 @@ public class MergeChecker {
             throw new RuntimeException( "upstream "+upstream+" is illegal" );
         PointsToSetInternal p2set = container.getP2Set();
         FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
-        if( !container.getP2Set().contains( n ) 
+        if( !p2set.contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {
             G.v().out.println( "Check failure: "+container+" does not have "+n
@@ -120,14 +120,12 @@ public class MergeChecker {
 	Node[] storeTargets = pag.storeLookup( src );
 	for( int i = 0; i < storeTargets.length; i++ ) {
             final FieldRefNode fr = (FieldRefNode) storeTargets[i];
-            final SparkField f = fr.getField();
             checkAll( fr, srcSet, src );
 	}
     }
 
     protected void handleLoads( final FieldRefNode src ) {
 	final Node[] loadTargets = pag.loadLookup( src );
-        final SparkField f = src.getField();
         PointsToSetInternal set = src.getP2Set();
         if( set.isEmpty() ) return;
         for( int i = 0; i < loadTargets.length; i++ ) {

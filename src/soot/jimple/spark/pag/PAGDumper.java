@@ -67,8 +67,6 @@ public class PAGDumper {
         try {
             PrintWriter file = new PrintWriter(
                 new FileOutputStream( "pag" ) );
-            String[] labels = { "Allocations:", "Assignments:", "Loads:",
-                "Stores:" };
 
             if( pag.getOpts().topo_sort() ) {
                 new TopoSorter( pag, false ).sort();

@@ -77,7 +77,6 @@ public class EBBCollapser {
         }
     }
     protected void collapseSimple() {
-        final boolean verbose = pag.getOpts().verbose();
         final boolean ofcg = (pag.getOnFlyCallGraph() != null);
         final TypeManager typeManager = pag.getTypeManager();
         boolean change;

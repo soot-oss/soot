@@ -95,7 +95,7 @@ public class LazyCodeMotion extends BodyTransformer {
       };
 
     FlowUniverse universe = new CollectionFlowUniverse(unitToEquivRhs.values());
-    BoundedFlowSet set = new BoundedArraySparseSet(universe);
+    BoundedFlowSet set = new ArrayPackedSet(universe);
 
     /* if a more precise sideeffect-tester comes out, please change it here! */
     SideEffectTester sideEffect;

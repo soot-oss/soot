@@ -69,7 +69,7 @@ public class EarliestnessComputation {
    */
   public EarliestnessComputation(UnitGraph unitGraph, UpSafetyAnalysis upSafe,
       DownSafetyAnalysis downSafe, SideEffectTester sideEffect) {
-    this(unitGraph, upSafe, downSafe, sideEffect, new BoundedArraySparseSet());
+    this(unitGraph, upSafe, downSafe, sideEffect, new ArraySparseSet());
   }
 
   /**

@@ -476,7 +476,6 @@ public class PAG implements PointsToAnalysis {
     protected Map allocInv = new HashMap();
 
     protected boolean addToMap( Map m, Node key, Node value ) {
-	boolean ret = false;
 	Object valueList = m.get( key );
 
 	if( valueList == null ) {

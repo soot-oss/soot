@@ -24,7 +24,6 @@
  */
 
 package soot;
-import soot.*;
 import soot.coffi.*;
 import java.io.PrintStream;
 import java.util.*;

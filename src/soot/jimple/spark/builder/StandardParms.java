@@ -107,7 +107,6 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     /** Adds the edges required for this statement to the graph. */
     final public void handleStmt( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
-	    InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
             addCallTarget( s, null );
 	    return;
 	}

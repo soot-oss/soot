@@ -67,7 +67,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
   public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
 			    sideEffect) {
     this(dg, unitToGen, sideEffect, new
-      BoundedArraySparseSet(new CollectionFlowUniverse(unitToGen.values())));
+      ArrayPackedSet(new CollectionFlowUniverse(unitToGen.values())));
   }
 
   /**

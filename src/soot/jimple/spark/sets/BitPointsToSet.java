@@ -62,7 +62,6 @@ public final class BitPointsToSet extends PointsToSetInternal {
      * changed. */
     public final boolean addAll( PointsToSetInternal other,
             PointsToSetInternal exclude ) {
-        boolean ret;
         if( other != null && !(other instanceof BitPointsToSet) )
             return superAddAll( other, exclude );
         if( exclude != null && !(exclude instanceof BitPointsToSet) )

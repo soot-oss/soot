@@ -125,7 +125,7 @@ public class DoublePointsToSet extends PointsToSetInternal {
     /* End of package methods. */
 
     private PAG pag;
-    private PointsToSetInternal newSet;
-    private PointsToSetInternal oldSet;
+    protected PointsToSetInternal newSet;
+    protected PointsToSetInternal oldSet;
 }
 

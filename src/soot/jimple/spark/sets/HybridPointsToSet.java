@@ -135,7 +135,6 @@ public final class HybridPointsToSet extends PointsToSetInternal {
      * changed. */
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
-                boolean ret;
         if( other != null && !(other instanceof HybridPointsToSet) )
             return superAddAll( other, exclude );
         if( exclude != null && !(exclude instanceof HybridPointsToSet) )

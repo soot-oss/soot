@@ -65,7 +65,7 @@ public class Checker {
             throw new RuntimeException( "upstream "+upstream+" is illegal" );
         PointsToSetInternal p2set = container.getP2Set();
         FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
-        if( !container.getP2Set().contains( n ) 
+        if( !p2set.contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {
             G.v().out.println( "Check failure: "+container+" does not have "+n

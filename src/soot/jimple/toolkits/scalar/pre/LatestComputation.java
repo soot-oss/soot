@@ -60,7 +60,7 @@ public class LatestComputation {
   public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
                            Map equivRhsMap) {
     this(unitGraph, delayed, equivRhsMap, new
-      BoundedArraySparseSet(new CollectionFlowUniverse(equivRhsMap.values())));
+      ArrayPackedSet(new CollectionFlowUniverse(equivRhsMap.values())));
   }
 
   /**

@@ -261,8 +261,7 @@ public final class CallGraph
     }
 
     public boolean wantStringConstants( Local l ) {
-        return false;
-//        return wantedStringConstants.keySet().contains( l );
+        return wantedStringConstants.keySet().contains( l );
     }
 
     public boolean wantClassConstants( Local l ) {

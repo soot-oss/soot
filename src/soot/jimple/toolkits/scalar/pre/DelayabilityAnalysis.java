@@ -68,7 +68,7 @@ public class DelayabilityAnalysis extends ForwardFlowAnalysis {
   public DelayabilityAnalysis(DirectedGraph dg, EarliestnessComputation
       earliest, Map equivRhsMap) {
     this(dg, earliest, equivRhsMap, new
-      BoundedArraySparseSet(new CollectionFlowUniverse(equivRhsMap.values())));
+      ArrayPackedSet(new CollectionFlowUniverse(equivRhsMap.values())));
   }
 
   /**
