@@ -55,15 +55,11 @@ public class UnreachablePruner {
     private static void visitStmt(Stmt stmt) {
 	//ignore if already seen
 	if (visited.contains(stmt)) {
-	    if (debug)
-		System.out.println("    ignoring " + stmt);
 	    return;
 	}
 
 	// add to list of visited nodes
 	visited.add(stmt);
-	if (debug)
-	    System.out.println("    marking " + stmt);
 
 	// visit all successors recursively
 	Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();

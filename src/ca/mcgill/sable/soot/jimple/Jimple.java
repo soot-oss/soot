@@ -802,6 +802,7 @@ public class Jimple implements BodyRepresentation
         return new JArrayRef(base, index);
     }
 
+    // Note: This is NOT used to create the variable box in JAssignStmt.
     public ValueBox newVariableBox(Value value)
     {
         return new VariableBox(value);
@@ -812,6 +813,7 @@ public class Jimple implements BodyRepresentation
         return new JimpleLocalBox(value);
     }
 
+    // Note: This is NOT used to create the rvalue box in JAssignStmt.
     public ValueBox newRValueBox(Value value)
     {
         return new RValueBox(value);

@@ -86,10 +86,57 @@ import java.util.*;
 public class JAssignStmt extends AbstractDefinitionStmt
     implements AssignStmt
 {
+    private class LinkedVariableBox extends VariableBox
+    {
+        ValueBox otherBox = null;
+
+        private LinkedVariableBox(Value v)
+        {
+            super(v);
+        }
+
+        public void setOtherBox(ValueBox otherBox) { this.otherBox = otherBox; }
+
+        public boolean canContainValue(Value v) 
+        { 
+            if (otherBox == null) return super.canContainValue(v);
+            Value other = otherBox.getValue();
+            return super.canContainValue(v) && 
+                ((v instanceof Local || v instanceof Constant) || (other instanceof Local || other instanceof Constant));
+        }
+    }
+
+    private class LinkedRValueBox extends RValueBox
+    {
+        ValueBox otherBox = null;
+
+        private LinkedRValueBox(Value v)
+        {
+            super(v);
+        }
+
+        public void setOtherBox(ValueBox otherBox) { this.otherBox = otherBox; }
+
+        public boolean canContainValue(Value v) 
+        { 
+            if (otherBox == null) return super.canContainValue(v);
+            Value other = otherBox.getValue();
+            return super.canContainValue(v) && 
+                ((v instanceof Local || v instanceof Constant) || (other instanceof Local || other instanceof Constant));
+        }
+    }
+
     JAssignStmt(Value variable, Value rvalue)
     {
-        this(Jimple.v().newVariableBox(variable),
-             Jimple.v().newRValueBox(rvalue));
+        leftBox = new LinkedVariableBox(variable);
+        rightBox = new LinkedRValueBox(rvalue);
+
+        ((LinkedVariableBox)leftBox).setOtherBox(rightBox); 
+        ((LinkedRValueBox)rightBox).setOtherBox(leftBox);
+
+        defBoxes = new ArrayList();
+        defBoxes.add(leftBox);
+        defBoxes = Collections.unmodifiableList(defBoxes);
     }
 
     protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox)
