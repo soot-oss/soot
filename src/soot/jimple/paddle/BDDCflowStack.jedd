@@ -150,11 +150,21 @@ public class BDDCflowStack
     private <stmt> alwaysValid = 0B;
 
     public String queryStats() {
+        return "LaTeX: "
+            +shadows.size()+" & "
+            +(shadows.size()-unnecessaryShadows.size())+" & "
+            +isValids.size()+" & "+
+            +(isValids&neverValid&alwaysValid).size()+" & "+
+            +(neverValid-alwaysValid).size()+" & "+
+            +(alwaysValid-neverValid).size()+" & "+
+            +(isValids-neverValid-alwaysValid).size()+" \\";
+        /*
         return
             "both: "+(neverValid&alwaysValid&isValids).size()+
             " always but not never: "+((alwaysValid-neverValid)&isValids).size()+
             " never but not always: "+((neverValid-alwaysValid)&isValids).size()+
             " not statically known: "+(isValids-neverValid-alwaysValid).size();
+            */
     }
     /** Returns true if the call to isValid() in statement s always returns
      * false.
@@ -209,6 +219,8 @@ public class BDDCflowStack
         return ret;
     }
 
+    <shadow> unnecessaryShadows = 0B;
+
     /** Returns the subset of shadows whose effect cannot be observed by
      * any of the isValid statements. Specifically, returns the shadows
      * whose mayCflow does not contain any isValid statements that are
@@ -224,7 +236,8 @@ public class BDDCflowStack
         if( !bindsArgs ) {
             necessaryShadows -= mustCflow{stmt} <> pushes{stmt};
         }
-        Iterator ret = (shadows - necessaryShadows).iterator();
+        unnecessaryShadows = (shadows - necessaryShadows);
+        Iterator ret = unnecessaryShadows.iterator();
         debug("Done computing unnecessaryShadows");
         return ret;
     }

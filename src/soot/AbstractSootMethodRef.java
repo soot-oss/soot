@@ -36,8 +36,9 @@ class AbstractSootMethodRef implements SootMethodRef {
             boolean isStatic) {
         this.declaringClass = declaringClass;
         this.name = name;
-        this.parameterTypes = new ArrayList();
-        this.parameterTypes.addAll(parameterTypes);
+        List l = new ArrayList();
+        l.addAll(parameterTypes);
+        this.parameterTypes = Collections.unmodifiableList(l);
         this.returnType = returnType;
         this.isStatic = isStatic;
         if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null class" );
