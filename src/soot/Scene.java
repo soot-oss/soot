@@ -109,8 +109,8 @@ public class Scene extends AbstractHost
         packNameToPack.put("wjtp", p = new Pack());
         packNameToPack.put("wjop", p = new Pack());
         {
-            p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
-            p.add(new Transform("wjop.si", StaticInliner.v()));
+            p.add(new Transform("wjop.smb", StaticMethodBinder.v()));
+            p.add(new Transform("wjop.si", StaticInliner.v(), "disabled"));
         }
         packNameToPack.put("bop", p = new Pack());
         packNameToPack.put("gop", p = new Pack());

@@ -59,6 +59,9 @@ public class StaticMethodBinder extends SceneTransformer
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
+        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
+        vta.trimActiveInvokeGraph();
+
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
                 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
@@ -97,7 +100,7 @@ public class StaticMethodBinder extends SceneTransformer
                         ie instanceof SpecialInvokeExpr)
                         continue;
 
-                    List targets = graph.getTargetsOf(ie);
+                    List targets = graph.getTargetsOf(s);
 
                     if (targets.size() != 1)
                         continue;
@@ -160,8 +163,8 @@ public class StaticMethodBinder extends SceneTransformer
                                     {
                                         // Might have been added by the ThrowManager without patching graph
                                         
-                                        graph.addSite(newIE, ct);
-                                        graph.copyTargets(oldIE, newIE);
+                                        graph.addSite(newStmt, ct);
+                                        graph.copyTargets(oldStmt, newStmt);
                                     }
                                 }
                             }
@@ -246,9 +249,9 @@ public class StaticMethodBinder extends SceneTransformer
                         ValueBox ieBox = s.getInvokeExprBox();
                         ieBox.setValue(sie);
 
-                        graph.removeSite(ie);
-                        graph.addSite(sie, container);
-                        graph.addTarget(sie, clonedTarget);
+                        graph.removeSite(s);
+                        graph.addSite(s, container);
+                        graph.addTarget(s, clonedTarget);
                     }
 
                     // (If enabled), add a null pointer check.

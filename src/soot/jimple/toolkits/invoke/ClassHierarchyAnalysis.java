@@ -76,7 +76,7 @@ public class ClassHierarchyAnalysis
                         {
                             Type receiverType = ((InstanceInvokeExpr)ie).getBase().getType();
 
-                            g.addSite(ie, m);
+                            g.addSite(s, m);
                             
                             if(receiverType instanceof RefType)
                             {   
@@ -85,18 +85,18 @@ public class ClassHierarchyAnalysis
                                     ie.getMethod()).iterator();
                             
                                 while (targetsIt.hasNext())
-                                    g.addTarget(ie, (SootMethod)targetsIt.next());
+                                    g.addTarget(s, (SootMethod)targetsIt.next());
                             }
                         }
                         else if (ie instanceof StaticInvokeExpr)
                         {
-                            g.addSite(ie, m);
-                            g.addTarget(ie, ie.getMethod());
+                            g.addSite(s, m);
+                            g.addTarget(s, ie.getMethod());
                         }
                         else if (ie instanceof SpecialInvokeExpr)
                         {
-                            g.addSite(ie, m);
-                            g.addTarget(ie, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
+                            g.addSite(s, m);
+                            g.addTarget(s, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
                         }
                     }
                 }

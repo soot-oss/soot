@@ -432,6 +432,21 @@ public class Hierarchy
         throw new RuntimeException("could not resolve concrete dispatch!");
     }
 
+    // what will get called for a set of definite receiver types
+    public List resolveConcreteDispatch(List classes, SootMethod m)
+    {
+        checkState();
+
+        ArraySet s = new ArraySet();
+        Iterator classesIt = classes.iterator();
+
+        while (classesIt.hasNext())
+            s.add(resolveConcreteDispatch((SootClass)classesIt.next(), m));
+
+        List l = new ArrayList(); l.addAll(s);
+        return Collections.unmodifiableList(l);
+    }
+
     // what can get called for c & all its subclasses
     public List resolveAbstractDispatch(SootClass c, SootMethod m) 
     {

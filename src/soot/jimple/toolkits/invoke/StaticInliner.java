@@ -93,9 +93,7 @@ public class StaticInliner extends SceneTransformer
                     if (!s.containsInvokeExpr())
                         continue;
                     
-                    InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
-    
-                    List targets = graph.getTargetsOf(ie);
+                    List targets = graph.getTargetsOf(s);
     
                     if (targets.size() != 1)
                         continue;

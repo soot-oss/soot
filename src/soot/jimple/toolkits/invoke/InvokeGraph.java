@@ -30,24 +30,24 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
-/** Maps invokeExpr's to their declaring and target methods. 
+/** Maps invoke statements to their declaring and target methods. 
  * ClassHierarchyAnalysis is the default source of InvokeGraphs, although
  * VTA and RTA can create or trim these graphs. */
 public class InvokeGraph
 {   
-    HashMap invokeExprToDeclaringMethod = new HashMap();
-    HashMap invokeExprToTargetMethods = new HashMap();
-    HashMap methodToInvokeExprs = new HashMap();
+    HashMap siteToDeclaringMethod = new HashMap();
+    HashMap siteToTargetMethods = new HashMap();
+    HashMap methodToSites = new HashMap();
   
-    public SootMethod getDeclaringMethod(InvokeExpr ie) 
+    public SootMethod getDeclaringMethod(Stmt site) 
     {
-        return (SootMethod)invokeExprToDeclaringMethod.get(ie);
+        return (SootMethod)siteToDeclaringMethod.get(site);
     }
 
-    /** Returns the invoke expressions of container added via addInvokeExpr */
+    /** Returns the sites of container added via addSite */
     public List getSitesOf(SootMethod container) 
     {
-        List l = (List)methodToInvokeExprs.get(container);
+        List l = (List)methodToSites.get(container);
         if (l != null)
             return l;
         else
@@ -74,14 +74,7 @@ public class InvokeGraph
         {
 	    Stmt s = (Stmt)unitsIt.next();
 	    if (s.containsInvokeExpr())
-	    {
-		InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
-
-		try {
-		    targets.addAll(getTargetsOf(ie));
-		}
-		catch (java.lang.RuntimeException e) {}
-	    }
+                targets.addAll(getTargetsOf(s));
 	}
 
 	// Transfer the results to a list to match return type 
@@ -124,9 +117,9 @@ public class InvokeGraph
 	return toReturn;
     }
 
-    public List getTargetsOf(InvokeExpr ie) 
+    public List getTargetsOf(Stmt site) 
     {
-        List toReturn = (List) invokeExprToTargetMethods.get(ie);
+        List toReturn = (List) siteToTargetMethods.get(site);
 
         if(toReturn == null)
             throw new RuntimeException("Site is not part of invoke graph!");
@@ -134,46 +127,51 @@ public class InvokeGraph
         return toReturn;
     }
 
-    public void removeTarget(InvokeExpr ie, SootMethod target) 
+    public void removeTarget(Stmt site, SootMethod target) 
     {
-        List l = (List)invokeExprToTargetMethods.get(ie);
+        List l = (List)siteToTargetMethods.get(site);
         l.remove(target);
     }
 
-    /** Add an InvokeGraph target to an InvokeExpr ie. 
-      * Note that ie must previously have been addInvokeExpr'd. */
-    public void addTarget(InvokeExpr ie, SootMethod target) 
+    public void removeAllTargets(Stmt site)
     {
-        List l = (List)invokeExprToTargetMethods.get(ie);
+        siteToTargetMethods.put(site, new ArrayList());
+    }
+
+    /** Add an InvokeGraph target to an Stmt site. 
+      * Note that site must previously have been addSite'd. */
+    public void addTarget(Stmt site, SootMethod target) 
+    {
+        List l = (List)siteToTargetMethods.get(site);
         l.add(target);
     }
 
-    public void addSite(InvokeExpr ie, SootMethod container) 
+    public void addSite(Stmt site, SootMethod container) 
     {
-        invokeExprToDeclaringMethod.put(ie, container);
-        invokeExprToTargetMethods.put(ie, new ArrayList());
+        siteToDeclaringMethod.put(site, container);
+        siteToTargetMethods.put(site, new ArrayList());
 
-        List l = (List)methodToInvokeExprs.get(container);
+        List l = (List)methodToSites.get(container);
         if (l == null) 
             l = new ArrayList();
-        l.add(ie);
+        l.add(site);
 
-        methodToInvokeExprs.put(container, l);
+        methodToSites.put(container, l);
     }
 
-    public void removeSite(InvokeExpr ie) 
+    public void removeSite(Stmt site) 
     {
-        SootMethod d = (SootMethod)invokeExprToDeclaringMethod.remove(ie);
-        invokeExprToTargetMethods.remove(ie);
-        List l = (List)methodToInvokeExprs.get(d);
+        SootMethod d = (SootMethod)siteToDeclaringMethod.remove(site);
+        siteToTargetMethods.remove(site);
+        List l = (List)methodToSites.get(d);
         if (l.size() == 1)
-            methodToInvokeExprs.remove(d);
+            methodToSites.remove(d);
         else
-            l.remove(ie);            
+            l.remove(site);            
     }
 
-    /** This method is to be called after the imitator has been addInvokeExpr'd. */
-    public void copyTargets(InvokeExpr roleModel, InvokeExpr imitator)
+    /** This method is to be called after the imitator has been addSite'd. */
+    public void copyTargets(Stmt roleModel, Stmt imitator)
     {
         Iterator it = getTargetsOf(roleModel).iterator();
         while (it.hasNext())
@@ -219,8 +217,8 @@ public class InvokeGraph
                 Iterator sitesIt = getSitesOf(m).iterator();
                 while (sitesIt.hasNext())
                 {
-                    InvokeExpr ie = (InvokeExpr)sitesIt.next();
-                    Iterator targetsIt = getTargetsOf(ie).iterator();
+                    Stmt site = (Stmt)sitesIt.next();
+                    Iterator targetsIt = getTargetsOf(site).iterator();
                     while (targetsIt.hasNext())
                     {
                         Object target = targetsIt.next();

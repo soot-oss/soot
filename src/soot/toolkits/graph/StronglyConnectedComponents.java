@@ -39,6 +39,7 @@ public class StronglyConnectedComponents
 
     private List componentList = new ArrayList();
     private HashMap nodeToComponent = new HashMap();
+    MutableDirectedGraph sccGraph = new HashMutableDirectedGraph();
 
     public StronglyConnectedComponents(DirectedGraph g)
     {
@@ -78,7 +79,16 @@ public class StronglyConnectedComponents
 
                 if(((Integer) nodeToColor.get(s)).intValue() == WHITE)
                 {
-                    List currentComponent = new ArrayList();
+                    List currentComponent = null;
+
+                    if (nodeToComponent.get(s) == null)
+                    {
+                        currentComponent = new ArrayList();
+                        sccGraph.addNode(currentComponent);
+                    }
+                    else
+                        currentComponent = (List)nodeToComponent.get(s);
+
                     visitRevNode(g, s, currentComponent); 
                     componentList.add(Collections.unmodifiableList(currentComponent));
                 }
@@ -174,6 +184,14 @@ public class StronglyConnectedComponents
                         nodeStack.addLast(childNode);
                         indexStack.addLast(new Integer(-1));
                     }
+                    else if (((Integer)nodeToColor.get(childNode)).intValue() == GRAY)
+                        /* we just stumbled on a back edge, in the same component. Ignore. */;
+                    else
+                    {
+                        /* we may be visiting a node in another component.  if so, add edge to sccGraph. */
+                        if (nodeToComponent.get(childNode) != currentComponent)
+                            sccGraph.addEdge(currentComponent, nodeToComponent.get(childNode));
+                    }
             }
         }
     }
@@ -186,5 +204,16 @@ public class StronglyConnectedComponents
     public List getComponents()
     {
         return componentList;
+    }
+
+    public List getComponentOf(Object a)
+    {
+        return (List)nodeToComponent.get(a);
+    }
+
+    /* we should make this unmodifiable at some point. */
+    public DirectedGraph getSuperGraph()
+    {
+        return sccGraph;
     }
 }
