@@ -84,7 +84,10 @@ public class ContextInsensitiveBuilder implements Builder {
             if( o == null ) break;
             if( o instanceof SootMethod ) {
                 SootMethod target = (SootMethod) o;
-                parms.addCallTarget( s, target );
+                Object parameter = null;
+                //if( pag.getOpts().context_sens() ) parameter = s;
+                MethodPAG.v( pag, target ).addToPAG( parameter );
+                parms.addCallTarget( s, target, null );
             } else if( o instanceof VirtualCallSite )
                 s = ((VirtualCallSite) o).getStmt();
             else if( o instanceof Stmt ) s = (Stmt) o;
@@ -111,7 +114,7 @@ public class ContextInsensitiveBuilder implements Builder {
             if( cg.isReachable( m ) ) {
                 MethodPAG mpag = MethodPAG.v( pag, m );
                 mpag.build();
-                mpag.addToPAG();
+                mpag.addToPAG(null);
                 analyzedMethods++;
                 if( !incedClasses ) {
                     incedClasses = true;

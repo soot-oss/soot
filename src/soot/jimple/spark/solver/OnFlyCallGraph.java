@@ -61,7 +61,7 @@ public class OnFlyCallGraph {
             if( m == null ) return;
             MethodPAG mpag = MethodPAG.v( pag, m );
             mpag.build();
-            mpag.addToPAG();
+            mpag.addToPAG(null);
         }
     }
     private void processCallEdges() {
@@ -71,7 +71,10 @@ public class OnFlyCallGraph {
             if( o == null ) break;
             if( o instanceof SootMethod ) {
                 SootMethod target = (SootMethod) o;
-                parms.addCallTarget( s, target );
+                Object parameter = null;
+                //if( pag.getOpts().context_sens() ) parameter = s;
+                MethodPAG.v( pag, target ).addToPAG( parameter );
+                parms.addCallTarget( s, target, parameter );
             } else if( o instanceof VirtualCallSite )
                 s = ((VirtualCallSite) o).getStmt();
             else if( o instanceof Stmt ) s = (Stmt) o;

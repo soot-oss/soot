@@ -53,6 +53,6 @@ public interface Parms {
     /** Node for elements of array base of type arrayType. */
     public Node caseArray( Object base, ArrayType arrayType );
     /** Adds a possible target of a call site. */
-    public void addCallTarget( Stmt s, SootMethod target );
+    public void addCallTarget( Stmt s, SootMethod target, Object varNodeParameter );
 }
 

@@ -24,6 +24,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.builder.*;
+import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
@@ -64,16 +65,44 @@ public final class MethodPAG {
             }
         }
         addMiscEdges();
-        //method.releaseActiveBody();
     }
     public SootMethod getMethod() { return method; }
-    public void addToPAG() {
-        if( hasBeenAdded ) return;
-        hasBeenAdded = true;
+    private VarNode parameterize( VarNode vn, Object varNodeParameter ) {
+        SootMethod m = vn.getMethod();
+        if( m == null ) return vn;
+        if( m != method ) G.v().out.println( "Warning: "+vn+" in method "+method+" has method "+m );
+        return pag.makeVarNode(
+                new Pair( varNodeParameter, vn.getVariable() ),
+                vn.getType(),
+                vn.getMethod() );
+    }
+    private FieldRefNode parameterize( FieldRefNode frn, Object varNodeParameter ) {
+        return pag.makeFieldRefNode(
+                parameterize( (VarNode) frn.getBase(), varNodeParameter ),
+                frn.getField() );
+    }
+    public Node parameterize( Node n, Object varNodeParameter ) {
+        if( varNodeParameter == null ) return n;
+        if( n instanceof VarNode ) 
+            return parameterize( (VarNode) n, varNodeParameter);
+        if( n instanceof FieldRefNode )
+            return parameterize( (FieldRefNode) n, varNodeParameter);
+        return n;
+    }
+    /** Adds this method to the main PAG, with all VarNodes parameterized by
+     * varNodeParameter. */
+    public void addToPAG( Object varNodeParameter ) {
+        if( varNodeParameter == null ) {
+            if( hasBeenAdded ) return;
+            hasBeenAdded = true;
+        }
+        QueueReader reader = (QueueReader) edgeReader.clone();
         while(true) {
-            Node src = (Node) edgeReader.next();
+            Node src = (Node) reader.next();
             if( src == null ) break;
-            Node dst = (Node) edgeReader.next();
+            src = parameterize( src, varNodeParameter );
+            Node dst = (Node) reader.next();
+            dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
     }

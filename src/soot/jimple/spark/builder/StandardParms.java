@@ -65,7 +65,10 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
      * TouchedNodes is an out parameter that is filled in with all the
      * nodes to which edges were added by adding the target. It may be
      * null if the caller does not need this information. */
-    final public void addCallTarget( Stmt s, SootMethod target ) {
+    final public void addCallTarget( Stmt s, SootMethod target,
+            Object varNodeParameter ) {
+        MethodPAG mpag = null;
+        if( target != null ) mpag = MethodPAG.v( pag, target );
         InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
         int numArgs = ie.getArgCount();
         for( int i = 0; i < numArgs; i++ ) {
@@ -77,6 +80,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             argNode = argNode.getReplacement();
             if( target != null ) {
                 Node parm = caseParm( target, i ).getReplacement();
+                parm = mpag.parameterize( parm, varNodeParameter );
                 addEdge( argNode, parm );
             }
         }
@@ -86,6 +90,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
             Node baseNode = getNode().getReplacement();
             if( target != null ) {
                 Node thisRef = caseThis( target ).getReplacement();
+                thisRef = mpag.parameterize( thisRef, varNodeParameter );
                 addEdge( baseNode, thisRef );
             }
         }
@@ -99,6 +104,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
                 }
                 if( target != null ) {
                     Node retNode = caseRet( target ).getReplacement();
+                    retNode = mpag.parameterize( retNode, varNodeParameter );
                     addEdge( retNode, destNode );
                 }
             }
@@ -107,7 +113,7 @@ public class StandardParms extends AbstractJimpleValueSwitch implements Parms {
     /** Adds the edges required for this statement to the graph. */
     final public void handleStmt( Stmt s ) {
 	if( s.containsInvokeExpr() ) {
-            addCallTarget( s, null );
+            addCallTarget( s, null, null );
 	    return;
 	}
 	s.apply( new AbstractStmtSwitch() {

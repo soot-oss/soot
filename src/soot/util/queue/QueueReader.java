@@ -46,6 +46,9 @@ public class QueueReader
         }
         return q[index++];
     }
+    public final Object clone() {
+        return new QueueReader( q, index );
+    }
 }
 
 
