@@ -225,6 +225,7 @@ public class InitialResolver {
     private void createClassToSourceMap(polyglot.ast.SourceFile src){
        
         String srcName = src.source().path();
+        //System.out.println("srcName: "+srcName);
         String srcFileName = null;
         if (src.package_() != null){
             String slashedPkg = soot.util.StringTools.replaceAll(src.package_().package_().fullName(), ".", System.getProperty("file.separator"));

@@ -1800,7 +1800,7 @@ public class JimpleBodyBuilder {
         
         // handle private access field assigns
         HashMap accessMap = ((PolyglotMethodSource)body.getMethod().getSource()).getPrivateAccessMap();
-        if ((assign.left() instanceof polyglot.ast.Field) && (accessMap != null) && accessMap.containsKey(((polyglot.ast.Field)assign.left()).fieldInstance())){
+        if ((assign.left() instanceof polyglot.ast.Field) && (accessMap != null) && accessMap.containsKey(((polyglot.ast.Field)assign.left()).fieldInstance()) && !body.getMethod().getDeclaringClass().declaresField(((polyglot.ast.Field)assign.left()).name(), Util.getSootType(((polyglot.ast.Field)assign.left()).type())) ){
             return handlePrivateFieldSet(assign);    
         }
 
@@ -2070,7 +2070,7 @@ public class JimpleBodyBuilder {
         else if (field.name().equals("class")){
             throw new RuntimeException("Should go through ClassLit");
         }
-        else if ((ms.getPrivateAccessMap() != null) && (ms.getPrivateAccessMap().containsKey(field.fieldInstance()))){
+        else if ((ms.getPrivateAccessMap() != null) && (ms.getPrivateAccessMap().containsKey(field.fieldInstance())) && !body.getMethod().getDeclaringClass().declaresField(field.name(), Util.getSootType(field.type())) ){
         
             return getPrivateAccessFieldLocal(field);
         }
