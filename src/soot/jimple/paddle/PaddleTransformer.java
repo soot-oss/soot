@@ -332,8 +332,6 @@ public class PaddleTransformer extends SceneTransformer
         G.v().out.println( "Variable mass: " + varMass );
         G.v().out.println( "Scalars: "+scalars );
         G.v().out.println( "adfs: "+adfs );
-        G.v().out.println( "count of RCs: "+jedd.internal.RelationContainer.count );
-        G.v().out.println( "delreftime: "+jedd.internal.RelationContainer.delRefTime );
     }
     protected static void doGC() {
         // Do 5 times because the garbage collector doesn't seem to always collect
