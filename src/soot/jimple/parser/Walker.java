@@ -7,8 +7,7 @@ import soot.jimple.parser.analysis.*;
 
 import java.io.*;
 import ca.mcgill.sable.util.*;
-
-
+import java.util.*;
 
 import soot.jimple.*;
 import soot.*;

@@ -1,6 +1,7 @@
 package soot.jimple.parser.node;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import soot.jimple.parser.analysis.*;
 
 public final class TColonEquals extends Token

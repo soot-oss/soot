@@ -2,6 +2,7 @@ package soot.jimple.parser.lexer;
 
 import java.io.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import soot.jimple.parser.node.*;
 
 public class Lexer

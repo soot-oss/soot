@@ -4,6 +4,7 @@ import soot.jimple.parser.lexer.*;
 import soot.jimple.parser.node.*;
 import soot.jimple.parser.analysis.*;
 import ca.mcgill.sable.util.*;
+import java.util.*;
 
 import java.io.DataInputStream;
 import java.io.BufferedInputStream;

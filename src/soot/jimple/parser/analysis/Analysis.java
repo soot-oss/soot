@@ -1,6 +1,7 @@
 package soot.jimple.parser.analysis;
 
 import ca.mcgill.sable.util.*;
+import java.util.*;
 import soot.jimple.parser.node.*;
 
 public interface Analysis extends Switch
