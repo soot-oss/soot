@@ -31,8 +31,8 @@ Hacking Overview
 The public API of Shimple is fully described in the Soot API
 documentation.  In particular, in the soot.shimple package, the
 Shimple class provides the Shimple grammar constructors and various
-utility functions, the ShimpleBody class describes Shimple bodies and
-PhiExpr provides the interface to Phi expressions.
+utility functions, the ShimpleBody class describes Shimple method 
+bodies and PhiExpr provides the interface to Phi expressions.
 
 Use/Definition and Definition/Use chains for Shimple bodies can be
 obtained either from the accessor methods in ShimpleBody or with
@@ -78,15 +78,7 @@ public class ShimpleTest
 (a) If you produce Jimple with "soot.Main -f jimple ShimpleTest", you
 obtain the following code for the test() method:
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -97,19 +89,10 @@ obtain the following code for the test() method:
 
      label1:
         return i0;
-    }
 
 (b) To produce Shimple instead, use "soot.Main -f shimple ShimpleTest":
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -121,7 +104,6 @@ obtain the following code for the test() method:
      label1:
         i0_2 = Phi(i0 #0, i0_1 #1);
         return i0_2;
-    }
 
 The difference between the Jimple and Shimple output is that the latter
 guarantees unique local definition points in the program (for scalars).
@@ -176,14 +158,6 @@ may wish to see what the code looks like after going from Jimple to
 Shimple and back again to Jimple. Do this with "java soot.Main -f
 jimple -via-shimple ShimpleTest":
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0_2 = 1000;
@@ -194,7 +168,6 @@ jimple -via-shimple ShimpleTest":
 
      label1:
         return i0_2;
-    }
 
 Happily, in this case, the Jimple produced looks exactly like the
 original Jimple code. As usual you may specify "-p shimple
@@ -205,15 +178,7 @@ To understand what's really going on when Shimple eliminates Phi
 nodes, you can tell it to eliminate them naively with "soot.Main -f
 jimple -via-shimple -p shimple phi-elim-opt:none ShimpleTest":
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -226,7 +191,6 @@ jimple -via-shimple -p shimple phi-elim-opt:none ShimpleTest":
 
      label1:
         return i0_2;
-    }
 
 Now you can see that all Shimple did was to replace the Phi nodes with
 equivalent copy statements.
@@ -243,14 +207,6 @@ Let's try to apply Jimple's Constant Propagator and Folder. In fact, to
 be fair, let's try all the available Jimple optimizations activated with
 "soot.Main -f jimple -p jop on ShimpleTest":
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean $z1;
-        int i0;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -261,7 +217,6 @@ be fair, let's try all the available Jimple optimizations activated with
 
      label1:
         return i0;
-    }
 
 As you can see in this case, the Jimple optimizations had trouble
 tracking the control flow and failed to deduce that i is a constant.
@@ -274,21 +229,12 @@ Shimple is a fairly naive and literal version of the constant
 propagation algorithm sketched by the Cytron et el. Let's apply it with
 "soot.Main -f jimple -via-shimple -p sop on ShimpleTest":
 
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         goto label0;
 
      label0:
         return 1000;
-    }
 
 Et voila, Shimple optimized out the i variable completely and replaced
 it with a constant. What happened is that the optimization propagated
@@ -310,22 +256,18 @@ examples and see how well the Shimple optimization fares:
 
 public class ShimpleTest
 {
-   public boolean doIt, doIt2;
+   public boolean doIt, stopIt;
 
-   public int test2(){
+   public int test(){
      int i = 1000;
-     int j = i;
+     int j = 1000;
 
-     while (doIt){
-         i = j;
-
-         while(doIt2)
-             j = i;
-
-         if(doIt2 != doIt)
-             i = 1000;
-         else
-             j = 1000;
+     while(doIt != stopIt)
+     {
+        if (doIt)
+           i = j;
+        else
+           j = i;
      }
 
      return i + j;

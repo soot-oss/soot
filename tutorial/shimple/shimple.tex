@@ -104,15 +104,7 @@ If you produce Jimple with
 for the {\tt test()} method:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -123,7 +115,6 @@ for the {\tt test()} method:
 
      label1:
         return i0;
-    }
 \end{verbatim}
 
 \subsection{Producing Shimple}
@@ -131,15 +122,7 @@ for the {\tt test()} method:
 To produce Shimple instead, use {\tt soot.Main -f shimple ShimpleTest}:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -151,7 +134,6 @@ To produce Shimple instead, use {\tt soot.Main -f shimple ShimpleTest}:
      label1:
         i0_2 = Phi(i0 #0, i0_1 #1);
         return i0_2;
-    }
 \end{verbatim}
 
 The difference between the Jimple and Shimple output is that the
@@ -214,14 +196,6 @@ Shimple and back again to Jimple.  Do this with {\tt java soot.Main -f
 jimple --via-shimple ShimpleTest}:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0_2 = 1000;
@@ -232,7 +206,6 @@ jimple --via-shimple ShimpleTest}:
 
      label1:
         return i0_2;
-    }
 \end{verbatim}
 
 Happily, in this case, the Jimple produced looks exactly like the
@@ -245,15 +218,7 @@ nodes, you can tell it to eliminate them naively with {\tt soot.Main
 -f jimple --via-shimple -p shimple phi-elim-opt:none ShimpleTest}:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
         z0 = 0;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -266,7 +231,6 @@ nodes, you can tell it to eliminate them naively with {\tt soot.Main
 
      label1:
         return i0_2;
-    }
 \end{verbatim}
 
 Now you can see that all Shimple did was to replace the Phi nodes
@@ -287,14 +251,6 @@ to be fair, let's try all the available  Jimple optimizations activated
 with {\tt soot.Main -f jimple -p jop on ShimpleTest}:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean $z1;
-        int i0;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         i0 = 1000;
@@ -305,7 +261,6 @@ with {\tt soot.Main -f jimple -p jop on ShimpleTest}:
 
      label1:
         return i0;
-    }
 \end{verbatim}
 
 As you can see in this case, the Jimple optimizations had trouble
@@ -320,21 +275,12 @@ propagation algorithm sketched by the Cytron et el.  Let's apply it
 with {\tt soot.Main -f jimple --via-shimple -p sop on ShimpleTest}:
 
 \begin{verbatim}
-    public int test()
-    {
-        ShimpleTest r0;
-        boolean z0, $z1;
-        int i0, i0_1, i0_2;
-
-        r0 := @this: ShimpleTest;
-        $z1 = r0.<ShimpleTest: boolean doIt>;
         if $z1 == 0 goto label0;
 
         goto label0;
 
      label0:
         return 1000;
-    }
 \end{verbatim}
 
 Et voila, Shimple optimized out the {\tt i} variable completely and
@@ -359,22 +305,18 @@ examples and see how well the Shimple optimization fares:
 \begin{verbatim}
 public class ShimpleTest
 {
-   public boolean doIt, doIt2;
+   public boolean doIt, stopIt;
 
-   public int test2(){
+   public int test(){
      int i = 1000;
-     int j = i;
+     int j = 1000;
 
-     while (doIt){
-         i = j;
-
-         while(doIt2)
-             j = i;
-
-         if(doIt2 != doIt)
-             i = 1000;
-         else
-             j = 1000;
+     while(doIt != stopIt)
+     {
+        if (doIt)
+           i = j;
+        else
+           j = i;
      }
 
      return i + j;
