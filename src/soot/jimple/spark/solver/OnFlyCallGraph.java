@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2002,2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,29 +35,35 @@ import soot.options.SparkOptions;
  */
 
 public class OnFlyCallGraph {
-    CallGraphBuilder cgb;
-    QueueReader reachables;
-    QueueReader callEdges;
-    public CallGraphBuilder getCallGraph() { return cgb; }
-    public OnFlyCallGraph( PAG pag, FastHierarchy fh, Parms parms ) {
+    private OnFlyCallGraphBuilder ofcgb;
+    private ReachableMethods reachableMethods;
+    private QueueReader reachablesReader;
+    private QueueReader callEdges;
+    private CallGraph callGraph;
+
+    public ReachableMethods reachableMethods() { return reachableMethods; }
+    public CallGraph callGraph() { return callGraph; }
+
+    public OnFlyCallGraph( PAG pag, Parms parms ) {
         this.pag = pag;
-        this.fh = fh;
         this.parms = parms;
-        cgb = new CallGraphBuilder( pag );
-        reachables = cgb.reachables().listener();
-        callEdges = cgb.getCallGraph().listener();
+        callGraph = new CallGraph();
+        Scene.v().setCallGraph( callGraph );
+        ContextManager cm = new ContextInsensitiveContextManager( callGraph );
+        reachableMethods = Scene.v().getReachableMethods();
+        ofcgb = new OnFlyCallGraphBuilder( cm, reachableMethods );
+        reachablesReader = reachableMethods.listener();
+        callEdges = cm.callGraph().listener();
     }
     public void build() {
-        cgb.build();
+        ofcgb.processReachables();
         processReachables();
         processCallEdges();
     }
-    public boolean addSite( Stmt site ) {
-        return false;
-    }
     private void processReachables() {
+        reachableMethods.update();
         while(true) {
-            SootMethod m = (SootMethod) reachables.next();
+            SootMethod m = (SootMethod) reachablesReader.next();
             if( m == null ) return;
             AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m );
             mpag.build();
@@ -74,47 +80,35 @@ public class OnFlyCallGraph {
         }
     }
 
-    public boolean wantReachingTypes( VarNode receiver ) {
-        Object r = receiver.getVariable();
-        if( !(r instanceof Local) ) return false;
-        return cgb.wantTypes( (Local) r );
-    }
-    public void addReachingType( Type type ) {
-        cgb.addType( type );
-    }
-    public void doneReachingTypes() {
-        cgb.doneTypes();
-        processReachables();
-        processCallEdges();
+    public OnFlyCallGraphBuilder ofcgb() { return ofcgb; }
+
+    public void updatedNode( VarNode vn ) {
+        Object r = vn.getVariable();
+        if( !( r instanceof Local ) ) return;
+        Local receiver = (Local) r;
+        PointsToSet p2set = vn.getP2Set().getNewSet();
+        if( ofcgb.wantTypes( receiver ) ) {
+            for( Iterator typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
+                final Type type = (Type) typeIt.next();
+                ofcgb.addType( receiver, null, type, null );
+            }
+        }
+        if( ofcgb.wantStringConstants( receiver ) ) {
+            for( Iterator constantIt = p2set.possibleStringConstants().iterator(); constantIt.hasNext(); ) {
+                final String constant = (String) constantIt.next();
+                ofcgb.addStringConstant( receiver, null, constant, null );
+            }
+        }
     }
 
     /** Node uses this to notify PAG that n2 has been merged into n1. */
     public void mergedWith( Node n1, Node n2 ) {
     }
 
-    public Set allReceivers() {
-        throw new RuntimeException( "not implemented" );
-    }
-
-    public boolean wantStringConstants( VarNode v ) {
-        Object r = v.getVariable();
-        if( !(r instanceof Local) ) return false;
-        return cgb.wantStringConstants( (Local) r );
-    }
-
-    public void newStringConstant( VarNode v, String name ) {
-        cgb.newStringConstant( (Local) v.getVariable(), name );
-    }
-
-    public void doneStringConstants() {
-        cgb.doneStringConstants();
-    }
-      
     /* End of public methods. */
     /* End of package methods. */
 
     private PAG pag;
-    private FastHierarchy fh;
     private Parms parms;
 }
 

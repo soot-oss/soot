@@ -61,24 +61,25 @@ public class ContextInsensitiveBuilder {
         }
 	parms = new StandardParms( pag, null );
         if( opts.on_fly_cg() && !opts.vta() ) {
-            OnFlyCallGraph ofcg = new OnFlyCallGraph( (PAG) pag,
-                        Scene.v().getOrMakeFastHierarchy(), parms );
+            ofcg = new OnFlyCallGraph( (PAG) pag, parms );
             pag.setOnFlyCallGraph( ofcg );
-            cgb = ofcg.getCallGraph();
         } else {
             cgb = new CallGraphBuilder( DumbPointerAnalysis.v() );
         }
         return pag;
     }
-    public CallGraphBuilder getCallGraphBuilder() { return cgb; }
     /** Fills in the pointer assignment graph returned by setup. */
     public void build() {
-        QueueReader callEdges = cgb.getCallGraph().listener();
-        OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+        QueueReader callEdges;
         if( ofcg != null ) {
+            callEdges = ofcg.callGraph().listener();
             ofcg.build();
+            reachables = ofcg.reachableMethods();
+            reachables.update();
         } else {
+            callEdges = cgb.getCallGraph().listener();
             cgb.build();
+            reachables = cgb.reachables();
         }
         for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
             final SootClass c = (SootClass) cIt.next();
@@ -109,7 +110,7 @@ public class ContextInsensitiveBuilder {
 	    SootMethod m = (SootMethod) methodsIt.next();
 	    if( !m.isConcrete() && !m.isNative() ) continue;
             totalMethods++;
-            if( cgb.reachables().contains( m ) ) {
+            if( reachables.contains( m ) ) {
                 AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m );
                 mpag.build();
                 mpag.addToPAG(null);
@@ -126,6 +127,8 @@ public class ContextInsensitiveBuilder {
     private AbstractPAG pag;
     private Parms parms;
     private CallGraphBuilder cgb;
+    private OnFlyCallGraph ofcg;
+    private ReachableMethods reachables;
     int classes = 0;
     int totalMethods = 0;
     int analyzedMethods = 0;

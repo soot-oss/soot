@@ -122,27 +122,8 @@ public final class PropWorklist extends Propagator {
 
         if( ofcg != null ) {
             QueueReader addedEdges = pag.edgeReader();
-            if( ofcg.wantReachingTypes( src ) ) {
-                newP2Set.forall( new P2SetVisitor() {
-                public final void visit( Node n ) {
-                        ofcg.addReachingType( n.getType() );
-                    }
-                } );
-            }
-            ofcg.doneReachingTypes();
-
-            if( ofcg.wantStringConstants( src ) ) {
-                Set constants = newP2Set.possibleStringConstants();
-                if( constants == null ) {
-                    ofcg.newStringConstant( src, null );
-                } else {
-                    for( Iterator constantIt = constants.iterator(); constantIt.hasNext(); ) {
-                        final String constant = (String) constantIt.next();
-                        ofcg.newStringConstant( src, constant );
-                    }
-                }
-            }
-            ofcg.doneStringConstants();
+            ofcg.updatedNode( src );
+            ofcg.build();
 
             while(true) {
                 Node addedSrc = (Node) addedEdges.next();
