@@ -3,7 +3,22 @@ package soot.javaToJimple;
 import java.util.*;
 
 public class Util {
-  
+
+    public static void addInnerClassTag(soot.SootClass sc, String innerName, String outerName, String simpleName, int access){
+        // maybe need file sep here - may break windows
+
+        innerName = soot.util.StringTools.replaceAll(innerName, ".", "/");
+        if (outerName != null){
+            outerName = soot.util.StringTools.replaceAll(outerName, ".", "/");
+        }
+        sc.addTag(new soot.tagkit.InnerClassTag(
+            innerName,
+            outerName, 
+            simpleName,
+            access));
+    
+    }
+    
     public static String getParamNameForClassLit(polyglot.types.Type type){
         String name = "";
         if (type.isArray()){

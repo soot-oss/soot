@@ -22,6 +22,6 @@
     <classpathentry kind="src" path="/org.eclipse.gef"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
     <classpathentry kind="src" path="/ca.mcgill.sable.graph"/>
-    <classpathentry kind="lib" path="polyglot-1.2.0.jar"/>
+    <classpathentry kind="lib" path="polyglot_latest.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

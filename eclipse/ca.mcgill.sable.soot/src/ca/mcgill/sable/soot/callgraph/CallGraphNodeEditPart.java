@@ -91,7 +91,20 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 		}*/
 	}
 
-	public void switchToComplex(){
+	/*public void switchToComplex(){
+		((CallGraphNode)getNode()).getGenerator().expandGraph((CallGraphNode)getNode());
+	}*/
+	
+	public void expandGraph(){
 		((CallGraphNode)getNode()).getGenerator().expandGraph((CallGraphNode)getNode());
 	}
+	
+	public void collapseGraph(){
+		((CallGraphNode)getNode()).getGenerator().collapseGraph((CallGraphNode)getNode());
+	}
+	
+	public void showInCode(){
+		((CallGraphNode)getNode()).getGenerator().showInCode((CallGraphNode)getNode());
+	}
 }
+

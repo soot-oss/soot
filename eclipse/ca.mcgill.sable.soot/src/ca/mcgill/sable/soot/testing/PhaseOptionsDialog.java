@@ -168,7 +168,7 @@ Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
 
 Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
 
-Composite cgcg_bddChild = cgcg_bddCreate(getPageContainer());
+Composite cgcg_paddleChild = cgcg_paddleCreate(getPageContainer());
 
 Composite cgSpark_General_OptionsChild = cgSpark_General_OptionsCreate(getPageContainer());
 
@@ -180,13 +180,15 @@ Composite cgSpark_Points_To_Set_Flowing_OptionsChild = cgSpark_Points_To_Set_Flo
 
 Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageContainer());
 
-Composite cgBDD_Spark_General_OptionsChild = cgBDD_Spark_General_OptionsCreate(getPageContainer());
+Composite cgPaddle_General_OptionsChild = cgPaddle_General_OptionsCreate(getPageContainer());
 
-Composite cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsChild = cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
+Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
 
-Composite cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsChild = cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
+Composite cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
 
-Composite cgBDD_Spark_Output_OptionsChild = cgBDD_Spark_Output_OptionsCreate(getPageContainer());
+Composite cgPaddle_Points_To_Set_Flowing_OptionsChild = cgPaddle_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
+
+Composite cgPaddle_Output_OptionsChild = cgPaddle_Output_OptionsCreate(getPageContainer());
 
 Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 
@@ -313,8 +315,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 		if (isEnableButton("enabled")) {
-			buttonList.add(getcgcg_bddenabled_widget());	
-			getcgcg_bddenabled_widget().getButton().addSelectionListener(this);
+			buttonList.add(getcgcg_paddleenabled_widget());	
+			getcgcg_paddleenabled_widget().getButton().addSelectionListener(this);
 		}
 
 		
@@ -643,7 +645,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgcontext_widget(), "context");
 		
 		
-		addToEnableGroup("cg", getcgbdd_widget(), "bdd");
+		addToEnableGroup("cg", getcgk_widget(), "k");
 		
 		
 		getcgenabled_widget().getButton().addSelectionListener(this);
@@ -657,8 +659,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getcgall_reachable_widget().getButton().addSelectionListener(this);
 		
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
-		
-		getcgbdd_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -768,89 +768,122 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		
-		makeNewEnableGroup("cg", "cg.bdd");
+		makeNewEnableGroup("cg", "cg.paddle");
 		
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddenabled_widget(), "enabled");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleenabled_widget(), "enabled");
 		
-		getcgcg_bddenabled_widget().getButton().addSelectionListener(this);
+		getcgcg_paddleenabled_widget().getButton().addSelectionListener(this);
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddverbose_widget(), "verbose");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleverbose_widget(), "verbose");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddignore_types_widget(), "ignore-types");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebdd_widget(), "bdd");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddforce_gc_widget(), "force-gc");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprofile_widget(), "profile");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddpre_jimplify_widget(), "pre-jimplify");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebddq_widget(), "bddq");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddprofile_widget(), "profile");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledebugq_widget(), "debugq");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddvta_widget(), "vta");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletrace_widget(), "trace");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddrta_widget(), "rta");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlenumtrace_widget(), "numtrace");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddfield_based_widget(), "field-based");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebackend_widget(), "backend");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddtypes_for_sites_widget(), "types-for-sites");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_widget(), "ignore-types");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddmerge_stringbuffer_widget(), "merge-stringbuffer");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleforce_gc_widget(), "force-gc");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddstring_constants_widget(), "string-constants");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepre_jimplify_widget(), "pre-jimplify");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimulate_natives_widget(), "simulate-natives");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlevta_widget(), "vta");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlerta_widget(), "rta");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddon_fly_cg_widget(), "on-fly-cg");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlefield_based_widget(), "field-based");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimplify_offline_widget(), "simplify-offline");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletypes_for_sites_widget(), "types-for-sites");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimplify_sccs_widget(), "simplify-sccs");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlemerge_stringbuffer_widget(), "merge-stringbuffer");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddignore_types_for_sccs_widget(), "ignore-types-for-sccs");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlestring_constants_widget(), "string-constants");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_html_widget(), "dump-html");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimulate_natives_widget(), "simulate-natives");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_pag_widget(), "dump-pag");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_solution_widget(), "dump-solution");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleon_fly_cg_widget(), "on-fly-cg");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddtopo_sort_widget(), "topo-sort");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimplify_offline_widget(), "simplify-offline");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_types_widget(), "dump-types");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimplify_sccs_widget(), "simplify-sccs");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddclass_method_var_widget(), "class-method-var");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_for_sccs_widget(), "ignore-types-for-sccs");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bdddump_answer_widget(), "dump-answer");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepropagator_widget(), "propagator");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddadd_tags_widget(), "add-tags");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleset_impl_widget(), "set-impl");
 
 		
-		addToEnableGroup("cg", "cg.bdd", getcgcg_bddset_mass_widget(), "set-mass");
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledouble_set_old_widget(), "double-set-old");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledouble_set_new_widget(), "double-set-new");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_html_widget(), "dump-html");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_pag_widget(), "dump-pag");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_solution_widget(), "dump-solution");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletopo_sort_widget(), "topo-sort");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_types_widget(), "dump-types");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleclass_method_var_widget(), "class-method-var");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledump_answer_widget(), "dump-answer");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleadd_tags_widget(), "add-tags");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleset_mass_widget(), "set-mass");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlenumber_nodes_widget(), "number-nodes");
 
 		
 		
@@ -1723,6 +1756,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getOutput_Optionsxml_attributes_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getOutput_Optionsprint_tags_in_output_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsprint_tags_in_output_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getOutput_Optionsoutput_source_file_attribute_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsoutput_source_file_attribute_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getOutput_Optionsno_output_inner_classes_attribute_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsno_output_inner_classes_attribute_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getOutput_Optionsshow_exception_dests_widget().getButton().getSelection();
 		
 		
@@ -2340,14 +2403,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgbdd_widget().getButton().getSelection();
+		stringRes = getcgk_widget().getText().getText();
 		
-		
-		defBoolRes = false;
+		defStringRes = "2";
 		
 
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgbdd_widget().getAlias(), new Boolean(boolRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgk_widget().getAlias(), stringRes);
 		}
 		 
 		stringRes = getcgcontext_widget().getSelectedAlias();
@@ -2680,274 +2742,384 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddenabled_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddenabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddverbose_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleverbose_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddverbose_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddignore_types_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlebdd_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddignore_types_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlebdd_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddforce_gc_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleprofile_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddforce_gc_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleprofile_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddpre_jimplify_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlebddq_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddpre_jimplify_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlebddq_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddprofile_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledebugq_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddprofile_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledebugq_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddvta_widget().getButton().getSelection();
+		boolRes = getcgcg_paddletrace_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddvta_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddletrace_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddrta_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlenumtrace_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddrta_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlenumtrace_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddfield_based_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleignore_types_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddfield_based_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleignore_types_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddtypes_for_sites_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleforce_gc_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddtypes_for_sites_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleforce_gc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddmerge_stringbuffer_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlepre_jimplify_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlepre_jimplify_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getcgcg_paddlebackend_widget().getSelectedAlias();
+
+		
+		defStringRes = "buddy";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddlebackend_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getcgcg_paddlevta_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlevta_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddlerta_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlerta_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddlefield_based_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlefield_based_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddletypes_for_sites_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddletypes_for_sites_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddlemerge_stringbuffer_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlemerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddstring_constants_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlestring_constants_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddstring_constants_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlestring_constants_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddsimulate_natives_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlesimulate_natives_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddsimulate_natives_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlesimulate_natives_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddsimple_edges_bidirectional_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlesimple_edges_bidirectional_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddsimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlesimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddon_fly_cg_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleon_fly_cg_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddon_fly_cg_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleon_fly_cg_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddsimplify_offline_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlesimplify_offline_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddsimplify_offline_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlesimplify_offline_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddsimplify_sccs_widget().getButton().getSelection();
+		boolRes = getcgcg_paddlesimplify_sccs_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddsimplify_sccs_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddlesimplify_sccs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddignore_types_for_sccs_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleignore_types_for_sccs_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getcgcg_paddlepropagator_widget().getSelectedAlias();
+
+		
+		defStringRes = "worklist";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddlepropagator_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddleset_impl_widget().getSelectedAlias();
+
+		
+		defStringRes = "double";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddleset_impl_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddledouble_set_old_widget().getSelectedAlias();
+
+		
+		defStringRes = "hybrid";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddledouble_set_old_widget().getAlias(), stringRes);
+		}
+		 
+		stringRes = getcgcg_paddledouble_set_new_widget().getSelectedAlias();
+
+		
+		defStringRes = "hybrid";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_paddledouble_set_new_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getcgcg_bdddump_html_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledump_html_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bdddump_html_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledump_html_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bdddump_pag_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledump_pag_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bdddump_pag_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledump_pag_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bdddump_solution_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledump_solution_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bdddump_solution_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledump_solution_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddtopo_sort_widget().getButton().getSelection();
+		boolRes = getcgcg_paddletopo_sort_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddtopo_sort_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddletopo_sort_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bdddump_types_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledump_types_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bdddump_types_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledump_types_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddclass_method_var_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleclass_method_var_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddclass_method_var_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleclass_method_var_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bdddump_answer_widget().getButton().getSelection();
+		boolRes = getcgcg_paddledump_answer_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bdddump_answer_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddledump_answer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddadd_tags_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleadd_tags_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddadd_tags_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleadd_tags_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_bddset_mass_widget().getButton().getSelection();
+		boolRes = getcgcg_paddleset_mass_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_bddset_mass_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_paddleset_mass_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddlenumber_nodes_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlenumber_nodes_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwstpenabled_widget().getButton().getSelection();
@@ -4017,7 +4189,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = gettagtag_lnenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -4550,31 +4722,35 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			subSectParent.addChild(cg_Spark_Output_Options_branch);
 			
-			SootOption cg_cg_bdd_branch = new SootOption("Spark", "cgcg_bdd");
-			subParent.addChild(cg_cg_bdd_branch);
+			SootOption cg_cg_paddle_branch = new SootOption("Paddle", "cgcg_paddle");
+			subParent.addChild(cg_cg_paddle_branch);
 
 
 			
 
 			
-			subSectParent = cg_cg_bdd_branch;
+			subSectParent = cg_cg_paddle_branch;
 			
 			
-			SootOption cg_BDD_Spark_General_Options_branch = new SootOption("BDD Spark General Options", "cgBDD_Spark_General_Options");
+			SootOption cg_Paddle_General_Options_branch = new SootOption("Paddle General Options", "cgPaddle_General_Options");
 
-			subSectParent.addChild(cg_BDD_Spark_General_Options_branch);
+			subSectParent.addChild(cg_Paddle_General_Options_branch);
 			
-			SootOption cg_BDD_Spark_Pointer_Assignment_Graph_Building_Options_branch = new SootOption("BDD Spark Pointer Assignment Graph Building Options", "cgBDD_Spark_Pointer_Assignment_Graph_Building_Options");
+			SootOption cg_Paddle_Pointer_Assignment_Graph_Building_Options_branch = new SootOption("Paddle Pointer Assignment Graph Building Options", "cgPaddle_Pointer_Assignment_Graph_Building_Options");
 
-			subSectParent.addChild(cg_BDD_Spark_Pointer_Assignment_Graph_Building_Options_branch);
+			subSectParent.addChild(cg_Paddle_Pointer_Assignment_Graph_Building_Options_branch);
 			
-			SootOption cg_BDD_Spark_Pointer_Assignment_Graph_Simplification_Options_branch = new SootOption("BDD Spark Pointer Assignment Graph Simplification Options", "cgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options");
+			SootOption cg_Paddle_Pointer_Assignment_Graph_Simplification_Options_branch = new SootOption("Paddle Pointer Assignment Graph Simplification Options", "cgPaddle_Pointer_Assignment_Graph_Simplification_Options");
 
-			subSectParent.addChild(cg_BDD_Spark_Pointer_Assignment_Graph_Simplification_Options_branch);
+			subSectParent.addChild(cg_Paddle_Pointer_Assignment_Graph_Simplification_Options_branch);
 			
-			SootOption cg_BDD_Spark_Output_Options_branch = new SootOption("BDD Spark Output Options", "cgBDD_Spark_Output_Options");
+			SootOption cg_Paddle_Points_To_Set_Flowing_Options_branch = new SootOption("Paddle Points-To Set Flowing Options", "cgPaddle_Points_To_Set_Flowing_Options");
 
-			subSectParent.addChild(cg_BDD_Spark_Output_Options_branch);
+			subSectParent.addChild(cg_Paddle_Points_To_Set_Flowing_Options_branch);
+			
+			SootOption cg_Paddle_Output_Options_branch = new SootOption("Paddle Output Options", "cgPaddle_Output_Options");
+
+			subSectParent.addChild(cg_Paddle_Output_Options_branch);
 			
 			//Whole Shimple Transformation Pack
 			SootOption wstp_branch = new SootOption("Whole Shimple Transformation Pack", "wstp");
@@ -5328,6 +5504,36 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Output_Optionsxml_attributes_widget;
 	}	
 	
+	private BooleanOptionWidget Output_Optionsprint_tags_in_output_widget;
+	
+	private void setOutput_Optionsprint_tags_in_output_widget(BooleanOptionWidget widget) {
+		Output_Optionsprint_tags_in_output_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsprint_tags_in_output_widget() {
+		return Output_Optionsprint_tags_in_output_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Optionsoutput_source_file_attribute_widget;
+	
+	private void setOutput_Optionsoutput_source_file_attribute_widget(BooleanOptionWidget widget) {
+		Output_Optionsoutput_source_file_attribute_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsoutput_source_file_attribute_widget() {
+		return Output_Optionsoutput_source_file_attribute_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Optionsno_output_inner_classes_attribute_widget;
+	
+	private void setOutput_Optionsno_output_inner_classes_attribute_widget(BooleanOptionWidget widget) {
+		Output_Optionsno_output_inner_classes_attribute_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsno_output_inner_classes_attribute_widget() {
+		return Output_Optionsno_output_inner_classes_attribute_widget;
+	}	
+	
 	private BooleanOptionWidget Output_Optionsshow_exception_dests_widget;
 	
 	private void setOutput_Optionsshow_exception_dests_widget(BooleanOptionWidget widget) {
@@ -5958,15 +6164,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgtrim_clinit_widget;
 	}	
 	
-	private BooleanOptionWidget cgbdd_widget;
 	
-	private void setcgbdd_widget(BooleanOptionWidget widget) {
-		cgbdd_widget = widget;
+	private StringOptionWidget cgk_widget;
+	
+	private void setcgk_widget(StringOptionWidget widget) {
+		cgk_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgbdd_widget() {
-		return cgbdd_widget;
-	}	
+	public StringOptionWidget getcgk_widget() {
+		return cgk_widget;
+	}
+	
 	
 	
 	private MultiOptionWidget cgcontext_widget;
@@ -6308,274 +6516,394 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkset_mass_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddenabled_widget;
+	private BooleanOptionWidget cgcg_paddleenabled_widget;
 	
-	private void setcgcg_bddenabled_widget(BooleanOptionWidget widget) {
-		cgcg_bddenabled_widget = widget;
+	private void setcgcg_paddleenabled_widget(BooleanOptionWidget widget) {
+		cgcg_paddleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddenabled_widget() {
-		return cgcg_bddenabled_widget;
+	public BooleanOptionWidget getcgcg_paddleenabled_widget() {
+		return cgcg_paddleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddverbose_widget;
+	private BooleanOptionWidget cgcg_paddleverbose_widget;
 	
-	private void setcgcg_bddverbose_widget(BooleanOptionWidget widget) {
-		cgcg_bddverbose_widget = widget;
+	private void setcgcg_paddleverbose_widget(BooleanOptionWidget widget) {
+		cgcg_paddleverbose_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddverbose_widget() {
-		return cgcg_bddverbose_widget;
+	public BooleanOptionWidget getcgcg_paddleverbose_widget() {
+		return cgcg_paddleverbose_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddignore_types_widget;
+	private BooleanOptionWidget cgcg_paddlebdd_widget;
 	
-	private void setcgcg_bddignore_types_widget(BooleanOptionWidget widget) {
-		cgcg_bddignore_types_widget = widget;
+	private void setcgcg_paddlebdd_widget(BooleanOptionWidget widget) {
+		cgcg_paddlebdd_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddignore_types_widget() {
-		return cgcg_bddignore_types_widget;
+	public BooleanOptionWidget getcgcg_paddlebdd_widget() {
+		return cgcg_paddlebdd_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddforce_gc_widget;
+	private BooleanOptionWidget cgcg_paddleprofile_widget;
 	
-	private void setcgcg_bddforce_gc_widget(BooleanOptionWidget widget) {
-		cgcg_bddforce_gc_widget = widget;
+	private void setcgcg_paddleprofile_widget(BooleanOptionWidget widget) {
+		cgcg_paddleprofile_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddforce_gc_widget() {
-		return cgcg_bddforce_gc_widget;
+	public BooleanOptionWidget getcgcg_paddleprofile_widget() {
+		return cgcg_paddleprofile_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddpre_jimplify_widget;
+	private BooleanOptionWidget cgcg_paddlebddq_widget;
 	
-	private void setcgcg_bddpre_jimplify_widget(BooleanOptionWidget widget) {
-		cgcg_bddpre_jimplify_widget = widget;
+	private void setcgcg_paddlebddq_widget(BooleanOptionWidget widget) {
+		cgcg_paddlebddq_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddpre_jimplify_widget() {
-		return cgcg_bddpre_jimplify_widget;
+	public BooleanOptionWidget getcgcg_paddlebddq_widget() {
+		return cgcg_paddlebddq_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddprofile_widget;
+	private BooleanOptionWidget cgcg_paddledebugq_widget;
 	
-	private void setcgcg_bddprofile_widget(BooleanOptionWidget widget) {
-		cgcg_bddprofile_widget = widget;
+	private void setcgcg_paddledebugq_widget(BooleanOptionWidget widget) {
+		cgcg_paddledebugq_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddprofile_widget() {
-		return cgcg_bddprofile_widget;
+	public BooleanOptionWidget getcgcg_paddledebugq_widget() {
+		return cgcg_paddledebugq_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddvta_widget;
+	private BooleanOptionWidget cgcg_paddletrace_widget;
 	
-	private void setcgcg_bddvta_widget(BooleanOptionWidget widget) {
-		cgcg_bddvta_widget = widget;
+	private void setcgcg_paddletrace_widget(BooleanOptionWidget widget) {
+		cgcg_paddletrace_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddvta_widget() {
-		return cgcg_bddvta_widget;
+	public BooleanOptionWidget getcgcg_paddletrace_widget() {
+		return cgcg_paddletrace_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddrta_widget;
+	private BooleanOptionWidget cgcg_paddlenumtrace_widget;
 	
-	private void setcgcg_bddrta_widget(BooleanOptionWidget widget) {
-		cgcg_bddrta_widget = widget;
+	private void setcgcg_paddlenumtrace_widget(BooleanOptionWidget widget) {
+		cgcg_paddlenumtrace_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddrta_widget() {
-		return cgcg_bddrta_widget;
+	public BooleanOptionWidget getcgcg_paddlenumtrace_widget() {
+		return cgcg_paddlenumtrace_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddfield_based_widget;
+	private BooleanOptionWidget cgcg_paddleignore_types_widget;
 	
-	private void setcgcg_bddfield_based_widget(BooleanOptionWidget widget) {
-		cgcg_bddfield_based_widget = widget;
+	private void setcgcg_paddleignore_types_widget(BooleanOptionWidget widget) {
+		cgcg_paddleignore_types_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddfield_based_widget() {
-		return cgcg_bddfield_based_widget;
+	public BooleanOptionWidget getcgcg_paddleignore_types_widget() {
+		return cgcg_paddleignore_types_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddtypes_for_sites_widget;
+	private BooleanOptionWidget cgcg_paddleforce_gc_widget;
 	
-	private void setcgcg_bddtypes_for_sites_widget(BooleanOptionWidget widget) {
-		cgcg_bddtypes_for_sites_widget = widget;
+	private void setcgcg_paddleforce_gc_widget(BooleanOptionWidget widget) {
+		cgcg_paddleforce_gc_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddtypes_for_sites_widget() {
-		return cgcg_bddtypes_for_sites_widget;
+	public BooleanOptionWidget getcgcg_paddleforce_gc_widget() {
+		return cgcg_paddleforce_gc_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddmerge_stringbuffer_widget;
+	private BooleanOptionWidget cgcg_paddlepre_jimplify_widget;
 	
-	private void setcgcg_bddmerge_stringbuffer_widget(BooleanOptionWidget widget) {
-		cgcg_bddmerge_stringbuffer_widget = widget;
+	private void setcgcg_paddlepre_jimplify_widget(BooleanOptionWidget widget) {
+		cgcg_paddlepre_jimplify_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddmerge_stringbuffer_widget() {
-		return cgcg_bddmerge_stringbuffer_widget;
+	public BooleanOptionWidget getcgcg_paddlepre_jimplify_widget() {
+		return cgcg_paddlepre_jimplify_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddstring_constants_widget;
 	
-	private void setcgcg_bddstring_constants_widget(BooleanOptionWidget widget) {
-		cgcg_bddstring_constants_widget = widget;
+	private MultiOptionWidget cgcg_paddlebackend_widget;
+	
+	private void setcgcg_paddlebackend_widget(MultiOptionWidget widget) {
+		cgcg_paddlebackend_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddstring_constants_widget() {
-		return cgcg_bddstring_constants_widget;
+	public MultiOptionWidget getcgcg_paddlebackend_widget() {
+		return cgcg_paddlebackend_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddsimulate_natives_widget;
 	
-	private void setcgcg_bddsimulate_natives_widget(BooleanOptionWidget widget) {
-		cgcg_bddsimulate_natives_widget = widget;
+	private BooleanOptionWidget cgcg_paddlevta_widget;
+	
+	private void setcgcg_paddlevta_widget(BooleanOptionWidget widget) {
+		cgcg_paddlevta_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddsimulate_natives_widget() {
-		return cgcg_bddsimulate_natives_widget;
+	public BooleanOptionWidget getcgcg_paddlevta_widget() {
+		return cgcg_paddlevta_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddsimple_edges_bidirectional_widget;
+	private BooleanOptionWidget cgcg_paddlerta_widget;
 	
-	private void setcgcg_bddsimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
-		cgcg_bddsimple_edges_bidirectional_widget = widget;
+	private void setcgcg_paddlerta_widget(BooleanOptionWidget widget) {
+		cgcg_paddlerta_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddsimple_edges_bidirectional_widget() {
-		return cgcg_bddsimple_edges_bidirectional_widget;
+	public BooleanOptionWidget getcgcg_paddlerta_widget() {
+		return cgcg_paddlerta_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddon_fly_cg_widget;
+	private BooleanOptionWidget cgcg_paddlefield_based_widget;
 	
-	private void setcgcg_bddon_fly_cg_widget(BooleanOptionWidget widget) {
-		cgcg_bddon_fly_cg_widget = widget;
+	private void setcgcg_paddlefield_based_widget(BooleanOptionWidget widget) {
+		cgcg_paddlefield_based_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddon_fly_cg_widget() {
-		return cgcg_bddon_fly_cg_widget;
+	public BooleanOptionWidget getcgcg_paddlefield_based_widget() {
+		return cgcg_paddlefield_based_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddsimplify_offline_widget;
+	private BooleanOptionWidget cgcg_paddletypes_for_sites_widget;
 	
-	private void setcgcg_bddsimplify_offline_widget(BooleanOptionWidget widget) {
-		cgcg_bddsimplify_offline_widget = widget;
+	private void setcgcg_paddletypes_for_sites_widget(BooleanOptionWidget widget) {
+		cgcg_paddletypes_for_sites_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddsimplify_offline_widget() {
-		return cgcg_bddsimplify_offline_widget;
+	public BooleanOptionWidget getcgcg_paddletypes_for_sites_widget() {
+		return cgcg_paddletypes_for_sites_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddsimplify_sccs_widget;
+	private BooleanOptionWidget cgcg_paddlemerge_stringbuffer_widget;
 	
-	private void setcgcg_bddsimplify_sccs_widget(BooleanOptionWidget widget) {
-		cgcg_bddsimplify_sccs_widget = widget;
+	private void setcgcg_paddlemerge_stringbuffer_widget(BooleanOptionWidget widget) {
+		cgcg_paddlemerge_stringbuffer_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddsimplify_sccs_widget() {
-		return cgcg_bddsimplify_sccs_widget;
+	public BooleanOptionWidget getcgcg_paddlemerge_stringbuffer_widget() {
+		return cgcg_paddlemerge_stringbuffer_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddignore_types_for_sccs_widget;
+	private BooleanOptionWidget cgcg_paddlestring_constants_widget;
 	
-	private void setcgcg_bddignore_types_for_sccs_widget(BooleanOptionWidget widget) {
-		cgcg_bddignore_types_for_sccs_widget = widget;
+	private void setcgcg_paddlestring_constants_widget(BooleanOptionWidget widget) {
+		cgcg_paddlestring_constants_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddignore_types_for_sccs_widget() {
-		return cgcg_bddignore_types_for_sccs_widget;
+	public BooleanOptionWidget getcgcg_paddlestring_constants_widget() {
+		return cgcg_paddlestring_constants_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bdddump_html_widget;
+	private BooleanOptionWidget cgcg_paddlesimulate_natives_widget;
 	
-	private void setcgcg_bdddump_html_widget(BooleanOptionWidget widget) {
-		cgcg_bdddump_html_widget = widget;
+	private void setcgcg_paddlesimulate_natives_widget(BooleanOptionWidget widget) {
+		cgcg_paddlesimulate_natives_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bdddump_html_widget() {
-		return cgcg_bdddump_html_widget;
+	public BooleanOptionWidget getcgcg_paddlesimulate_natives_widget() {
+		return cgcg_paddlesimulate_natives_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bdddump_pag_widget;
+	private BooleanOptionWidget cgcg_paddlesimple_edges_bidirectional_widget;
 	
-	private void setcgcg_bdddump_pag_widget(BooleanOptionWidget widget) {
-		cgcg_bdddump_pag_widget = widget;
+	private void setcgcg_paddlesimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
+		cgcg_paddlesimple_edges_bidirectional_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bdddump_pag_widget() {
-		return cgcg_bdddump_pag_widget;
+	public BooleanOptionWidget getcgcg_paddlesimple_edges_bidirectional_widget() {
+		return cgcg_paddlesimple_edges_bidirectional_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bdddump_solution_widget;
+	private BooleanOptionWidget cgcg_paddleon_fly_cg_widget;
 	
-	private void setcgcg_bdddump_solution_widget(BooleanOptionWidget widget) {
-		cgcg_bdddump_solution_widget = widget;
+	private void setcgcg_paddleon_fly_cg_widget(BooleanOptionWidget widget) {
+		cgcg_paddleon_fly_cg_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bdddump_solution_widget() {
-		return cgcg_bdddump_solution_widget;
+	public BooleanOptionWidget getcgcg_paddleon_fly_cg_widget() {
+		return cgcg_paddleon_fly_cg_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddtopo_sort_widget;
+	private BooleanOptionWidget cgcg_paddlesimplify_offline_widget;
 	
-	private void setcgcg_bddtopo_sort_widget(BooleanOptionWidget widget) {
-		cgcg_bddtopo_sort_widget = widget;
+	private void setcgcg_paddlesimplify_offline_widget(BooleanOptionWidget widget) {
+		cgcg_paddlesimplify_offline_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddtopo_sort_widget() {
-		return cgcg_bddtopo_sort_widget;
+	public BooleanOptionWidget getcgcg_paddlesimplify_offline_widget() {
+		return cgcg_paddlesimplify_offline_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bdddump_types_widget;
+	private BooleanOptionWidget cgcg_paddlesimplify_sccs_widget;
 	
-	private void setcgcg_bdddump_types_widget(BooleanOptionWidget widget) {
-		cgcg_bdddump_types_widget = widget;
+	private void setcgcg_paddlesimplify_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_paddlesimplify_sccs_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bdddump_types_widget() {
-		return cgcg_bdddump_types_widget;
+	public BooleanOptionWidget getcgcg_paddlesimplify_sccs_widget() {
+		return cgcg_paddlesimplify_sccs_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddclass_method_var_widget;
+	private BooleanOptionWidget cgcg_paddleignore_types_for_sccs_widget;
 	
-	private void setcgcg_bddclass_method_var_widget(BooleanOptionWidget widget) {
-		cgcg_bddclass_method_var_widget = widget;
+	private void setcgcg_paddleignore_types_for_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_paddleignore_types_for_sccs_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddclass_method_var_widget() {
-		return cgcg_bddclass_method_var_widget;
+	public BooleanOptionWidget getcgcg_paddleignore_types_for_sccs_widget() {
+		return cgcg_paddleignore_types_for_sccs_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bdddump_answer_widget;
 	
-	private void setcgcg_bdddump_answer_widget(BooleanOptionWidget widget) {
-		cgcg_bdddump_answer_widget = widget;
+	private MultiOptionWidget cgcg_paddlepropagator_widget;
+	
+	private void setcgcg_paddlepropagator_widget(MultiOptionWidget widget) {
+		cgcg_paddlepropagator_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bdddump_answer_widget() {
-		return cgcg_bdddump_answer_widget;
+	public MultiOptionWidget getcgcg_paddlepropagator_widget() {
+		return cgcg_paddlepropagator_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddadd_tags_widget;
 	
-	private void setcgcg_bddadd_tags_widget(BooleanOptionWidget widget) {
-		cgcg_bddadd_tags_widget = widget;
+	
+	private MultiOptionWidget cgcg_paddleset_impl_widget;
+	
+	private void setcgcg_paddleset_impl_widget(MultiOptionWidget widget) {
+		cgcg_paddleset_impl_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddadd_tags_widget() {
-		return cgcg_bddadd_tags_widget;
+	public MultiOptionWidget getcgcg_paddleset_impl_widget() {
+		return cgcg_paddleset_impl_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_bddset_mass_widget;
 	
-	private void setcgcg_bddset_mass_widget(BooleanOptionWidget widget) {
-		cgcg_bddset_mass_widget = widget;
+	
+	private MultiOptionWidget cgcg_paddledouble_set_old_widget;
+	
+	private void setcgcg_paddledouble_set_old_widget(MultiOptionWidget widget) {
+		cgcg_paddledouble_set_old_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_bddset_mass_widget() {
-		return cgcg_bddset_mass_widget;
+	public MultiOptionWidget getcgcg_paddledouble_set_old_widget() {
+		return cgcg_paddledouble_set_old_widget;
+	}	
+	
+	
+	
+	private MultiOptionWidget cgcg_paddledouble_set_new_widget;
+	
+	private void setcgcg_paddledouble_set_new_widget(MultiOptionWidget widget) {
+		cgcg_paddledouble_set_new_widget = widget;
+	}
+	
+	public MultiOptionWidget getcgcg_paddledouble_set_new_widget() {
+		return cgcg_paddledouble_set_new_widget;
+	}	
+	
+	
+	private BooleanOptionWidget cgcg_paddledump_html_widget;
+	
+	private void setcgcg_paddledump_html_widget(BooleanOptionWidget widget) {
+		cgcg_paddledump_html_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledump_html_widget() {
+		return cgcg_paddledump_html_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddledump_pag_widget;
+	
+	private void setcgcg_paddledump_pag_widget(BooleanOptionWidget widget) {
+		cgcg_paddledump_pag_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledump_pag_widget() {
+		return cgcg_paddledump_pag_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddledump_solution_widget;
+	
+	private void setcgcg_paddledump_solution_widget(BooleanOptionWidget widget) {
+		cgcg_paddledump_solution_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledump_solution_widget() {
+		return cgcg_paddledump_solution_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddletopo_sort_widget;
+	
+	private void setcgcg_paddletopo_sort_widget(BooleanOptionWidget widget) {
+		cgcg_paddletopo_sort_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddletopo_sort_widget() {
+		return cgcg_paddletopo_sort_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddledump_types_widget;
+	
+	private void setcgcg_paddledump_types_widget(BooleanOptionWidget widget) {
+		cgcg_paddledump_types_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledump_types_widget() {
+		return cgcg_paddledump_types_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddleclass_method_var_widget;
+	
+	private void setcgcg_paddleclass_method_var_widget(BooleanOptionWidget widget) {
+		cgcg_paddleclass_method_var_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddleclass_method_var_widget() {
+		return cgcg_paddleclass_method_var_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddledump_answer_widget;
+	
+	private void setcgcg_paddledump_answer_widget(BooleanOptionWidget widget) {
+		cgcg_paddledump_answer_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddledump_answer_widget() {
+		return cgcg_paddledump_answer_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddleadd_tags_widget;
+	
+	private void setcgcg_paddleadd_tags_widget(BooleanOptionWidget widget) {
+		cgcg_paddleadd_tags_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddleadd_tags_widget() {
+		return cgcg_paddleadd_tags_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddleset_mass_widget;
+	
+	private void setcgcg_paddleset_mass_widget(BooleanOptionWidget widget) {
+		cgcg_paddleset_mass_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddleset_mass_widget() {
+		return cgcg_paddleset_mass_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddlenumber_nodes_widget;
+	
+	private void setcgcg_paddlenumber_nodes_widget(BooleanOptionWidget widget) {
+		cgcg_paddlenumber_nodes_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddlenumber_nodes_widget() {
+		return cgcg_paddlenumber_nodes_widget;
 	}	
 	
 	private BooleanOptionWidget wstpenabled_widget;
@@ -8197,6 +8525,54 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot has attached to \nits internal representations of the application classes. The XML \nfile can then be read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"print-tags";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setOutput_Optionsprint_tags_in_output_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Print Tags in Output", "", "","print-tags", "\nPrint in output files (either in Jimple or Dave) a variety of \ntags which Soot has attached to its internal representations of \nthe application classes. The tags will be printed on the line \nsucceeding the stmt that they are attached to. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"output-source-file-attribute";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setOutput_Optionsoutput_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Source File Attribute", "", "","output-source-file-attribute", "\nOutput Source File Attribute in class files. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"no-output-inner-classes-attribute";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setOutput_Optionsno_output_inner_classes_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Inner Classes Attribute", "", "","no-output-inner-classes-attribute", "\nOutput inner classes attribute in class files. ", defaultBool)));
 		
 		
 		
@@ -10153,22 +10529,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"cg"+" "+"bdd";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgbdd_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Use BDDs", "p", "cg","bdd", "\nWhen set to true, the call graph is built not in Java data \nstructures, but in BDDs, for interfacing to other BDD algorithms \n(such as BDD Spark). Note that each part of Soot is compatible \nwith either the BDD version of the call graph or the Java \nversion; if you select this option, you must also set the other \nparts of Soot to use BDDs. ", defaultBool)));
-		
-		
-		
 		data = new OptionData [] {
 		
 		new OptionData("Context-insensitive",
@@ -10183,16 +10543,28 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("k-CFA",
+		"kcfa",
+		"\nBuilds a k-CFA call graph. ",
+		
+		false),
+		
 		new OptionData("Object Sensitive",
 		"objsens",
 		"\nBuilds an object-sensitive call graph. ",
 		
 		false),
 		
+		new OptionData("k-Object Sensitive",
+		"kobjsens",
+		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects. ",
+		
+		false),
+		
 		};
 		
 										
-		setcgcontext_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Context sensitivity", "p", "cg","context", "\nThis option tells Spark which level of context-sensitivity to \nuse in constructing the call graph. ")));
+		setcgcontext_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Context sensitivity", "p", "cg","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph. ")));
 		
 		defKey = "p"+" "+"cg"+" "+"context";
 		defKey = defKey.trim();
@@ -10203,6 +10575,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getcgcontext_widget().setDef(defaultString);
 		}
 		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"k";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "2";
+			
+		}
+
+		setcgk_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Context length (k)",  "p", "cg","k", "\nThe maximum length of \ncall string or receiver object string used as context. \n", defaultString)));
 		
 
 		
@@ -11073,31 +11460,31 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite cgcg_bddCreate(Composite parent) {
+	private Composite cgcg_paddleCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgcg_bdd = new Group(parent, SWT.NONE);
+		Group editGroupcgcg_paddle = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgcg_bdd.setLayout(layout);
+		editGroupcgcg_paddle.setLayout(layout);
 	
-	 	editGroupcgcg_bdd.setText("Spark");
+	 	editGroupcgcg_paddle.setText("Paddle");
 	 	
-		editGroupcgcg_bdd.setData("id", "cgcg_bdd");
+		editGroupcgcg_paddle.setData("id", "cgcg_paddle");
 		
-		String desccgcg_bdd = "BDD Spark points-to analysis framework";	
-		if (desccgcg_bdd.length() > 0) {
-			Label descLabelcgcg_bdd = new Label(editGroupcgcg_bdd, SWT.WRAP);
-			descLabelcgcg_bdd.setText(desccgcg_bdd);
+		String desccgcg_paddle = "Paddle points-to analysis framework";	
+		if (desccgcg_paddle.length() > 0) {
+			Label descLabelcgcg_paddle = new Label(editGroupcgcg_paddle, SWT.WRAP);
+			descLabelcgcg_paddle.setText(desccgcg_paddle);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"enabled";
+		defKey = "p"+" "+"cg.paddle"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11109,41 +11496,41 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddenabled_widget(new BooleanOptionWidget(editGroupcgcg_bdd, SWT.NONE, new OptionData("Enabled", "p", "cg.bdd","enabled", "\n", defaultBool)));
+		setcgcg_paddleenabled_widget(new BooleanOptionWidget(editGroupcgcg_paddle, SWT.NONE, new OptionData("Enabled", "p", "cg.paddle","enabled", "\n", defaultBool)));
 		
 		
 
 		
-		return editGroupcgcg_bdd;
+		return editGroupcgcg_paddle;
 	}
 
 
 
-	private Composite cgBDD_Spark_General_OptionsCreate(Composite parent) {
+	private Composite cgPaddle_General_OptionsCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgBDD_Spark_General_Options = new Group(parent, SWT.NONE);
+		Group editGroupcgPaddle_General_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgBDD_Spark_General_Options.setLayout(layout);
+		editGroupcgPaddle_General_Options.setLayout(layout);
 	
-	 	editGroupcgBDD_Spark_General_Options.setText("BDD Spark General Options");
+	 	editGroupcgPaddle_General_Options.setText("Paddle General Options");
 	 	
-		editGroupcgBDD_Spark_General_Options.setData("id", "cgBDD_Spark_General_Options");
+		editGroupcgPaddle_General_Options.setData("id", "cgPaddle_General_Options");
 		
-		String desccgBDD_Spark_General_Options = "";	
-		if (desccgBDD_Spark_General_Options.length() > 0) {
-			Label descLabelcgBDD_Spark_General_Options = new Label(editGroupcgBDD_Spark_General_Options, SWT.WRAP);
-			descLabelcgBDD_Spark_General_Options.setText(desccgBDD_Spark_General_Options);
+		String desccgPaddle_General_Options = "";	
+		if (desccgPaddle_General_Options.length() > 0) {
+			Label descLabelcgPaddle_General_Options = new Label(editGroupcgPaddle_General_Options, SWT.WRAP);
+			descLabelcgPaddle_General_Options.setText(desccgPaddle_General_Options);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"verbose";
+		defKey = "p"+" "+"cg.paddle"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11155,11 +11542,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddverbose_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.bdd","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution. ", defaultBool)));
+		setcgcg_paddleverbose_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.paddle","verbose", "\nWhen this option is set to true, Paddle prints detailed \ninformation about its execution. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"ignore-types";
+		defKey = "p"+" "+"cg.paddle"+" "+"bdd";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11171,11 +11558,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddignore_types_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.bdd","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts. ", defaultBool)));
+		setcgcg_paddlebdd_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Use BDDs", "p", "cg.paddle","bdd", "\nCauses \nPaddle to use BDD versions of its components ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"force-gc";
+		defKey = "p"+" "+"cg.paddle"+" "+"profile";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11187,11 +11574,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddforce_gc_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.bdd","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
+		setcgcg_paddleprofile_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.paddle","profile", "\nTurns on JeddProfiler for profiling BDD operations. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"pre-jimplify";
+		defKey = "p"+" "+"cg.paddle"+" "+"bddq";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11203,11 +11590,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddpre_jimplify_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.bdd","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		setcgcg_paddlebddq_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Queues", "p", "cg.paddle","bddq", "\nForce \nPaddle to use BDD versions of the queues for communicating \nbetween its components ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"profile";
+		defKey = "p"+" "+"cg.paddle"+" "+"debugq";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11219,41 +11606,169 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddprofile_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.bdd","profile", "\nTurns on JeddProfiler for profiling BDD operations. ", defaultBool)));
+		setcgcg_paddledebugq_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Debug Queues", "p", "cg.paddle","debugq", "\nForce \nPaddle to use debugging versions of the queues for communicating \nbetween its components ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"trace";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddletrace_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Trace", "p", "cg.paddle","trace", "\nPrint \nthe contents of all internal Paddle queues for debugging. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"numtrace";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddlenumtrace_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Number Trace", "p", "cg.paddle","numtrace", "\nPrint \nthe sizes of all internal Paddle queues for debugging. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"ignore-types";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.paddle","ignore-types", "\nWhen this option is set to true, all parts of Paddle completely \nignore declared types of variables and casts. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"force-gc";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddleforce_gc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.paddle","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"pre-jimplify";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddlepre_jimplify_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.paddle","pre-jimplify", "\nWhen this option is set to true, Paddle converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("BuDDy",
+		"buddy",
+		"\nUse BuDDy implementation of BDDs. ",
+		
+		true),
+		
+		new OptionData("CUDD",
+		"cudd",
+		"\nUse CUDD implementation of BDDs. ",
+		
+		false),
+		
+		new OptionData("SableJBDD",
+		"sable",
+		"\nUse SableJBDD implementation of BDDs.",
+		
+		false),
+		
+		new OptionData("JavaBDD",
+		"javabdd",
+		"\nUse JavaBDD implementation of BDDs. ",
+		
+		false),
+		
+		new OptionData("None",
+		"none",
+		"\nDon't use any BDD backend. Any attempted use of BDDs will cause \nPaddle to crash. ",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddlebackend_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Backend", "p", "cg.paddle","backend", "\nThis option tells Paddle which implementation of BDDs to use. \n")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"backend";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddlebackend_widget().setDef(defaultString);
+		}
 		
 		
 
 		
-		return editGroupcgBDD_Spark_General_Options;
+		return editGroupcgPaddle_General_Options;
 	}
 
 
 
-	private Composite cgBDD_Spark_Pointer_Assignment_Graph_Building_OptionsCreate(Composite parent) {
+	private Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options = new Group(parent, SWT.NONE);
+		Group editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setLayout(layout);
+		editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options.setLayout(layout);
 	
-	 	editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setText("BDD Spark Pointer Assignment Graph Building Options");
+	 	editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options.setText("Paddle Pointer Assignment Graph Building Options");
 	 	
-		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setData("id", "cgBDD_Spark_Pointer_Assignment_Graph_Building_Options");
+		editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options.setData("id", "cgPaddle_Pointer_Assignment_Graph_Building_Options");
 		
-		String desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options = "";	
-		if (desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options.length() > 0) {
-			Label descLabelcgBDD_Spark_Pointer_Assignment_Graph_Building_Options = new Label(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.WRAP);
-			descLabelcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setText(desccgBDD_Spark_Pointer_Assignment_Graph_Building_Options);
+		String desccgPaddle_Pointer_Assignment_Graph_Building_Options = "";	
+		if (desccgPaddle_Pointer_Assignment_Graph_Building_Options.length() > 0) {
+			Label descLabelcgPaddle_Pointer_Assignment_Graph_Building_Options = new Label(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.WRAP);
+			descLabelcgPaddle_Pointer_Assignment_Graph_Building_Options.setText(desccgPaddle_Pointer_Assignment_Graph_Building_Options);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"vta";
+		defKey = "p"+" "+"cg.paddle"+" "+"vta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11265,11 +11780,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddvta_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.bdd","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
+		setcgcg_paddlevta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.paddle","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"rta";
+		defKey = "p"+" "+"cg.paddle"+" "+"rta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11281,11 +11796,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddrta_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.bdd","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
+		setcgcg_paddlerta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.paddle","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nPaddle to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"field-based";
+		defKey = "p"+" "+"cg.paddle"+" "+"field-based";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11297,11 +11812,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddfield_based_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.bdd","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
+		setcgcg_paddlefield_based_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.paddle","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"types-for-sites";
+		defKey = "p"+" "+"cg.paddle"+" "+"types-for-sites";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11313,11 +11828,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddtypes_for_sites_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.bdd","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
+		setcgcg_paddletypes_for_sites_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.paddle","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"merge-stringbuffer";
+		defKey = "p"+" "+"cg.paddle"+" "+"merge-stringbuffer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11329,11 +11844,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.bdd","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
+		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"string-constants";
+		defKey = "p"+" "+"cg.paddle"+" "+"string-constants";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11345,11 +11860,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddstring_constants_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.bdd","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
+		setcgcg_paddlestring_constants_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.paddle","string-constants", "\nWhen this option is set to false, Paddle only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"simulate-natives";
+		defKey = "p"+" "+"cg.paddle"+" "+"simulate-natives";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11361,11 +11876,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddsimulate_natives_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.bdd","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
+		setcgcg_paddlesimulate_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.paddle","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"simple-edges-bidirectional";
+		defKey = "p"+" "+"cg.paddle"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11377,11 +11892,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddsimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.bdd","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
+		setcgcg_paddlesimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.paddle","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"on-fly-cg";
+		defKey = "p"+" "+"cg.paddle"+" "+"on-fly-cg";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11393,41 +11908,41 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddon_fly_cg_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.bdd","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
+		setcgcg_paddleon_fly_cg_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.paddle","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
 		
 		
 
 		
-		return editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options;
+		return editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options;
 	}
 
 
 
-	private Composite cgBDD_Spark_Pointer_Assignment_Graph_Simplification_OptionsCreate(Composite parent) {
+	private Composite cgPaddle_Pointer_Assignment_Graph_Simplification_OptionsCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
+		Group editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
+		editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
 	
-	 	editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setText("BDD Spark Pointer Assignment Graph Simplification Options");
+	 	editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setText("Paddle Pointer Assignment Graph Simplification Options");
 	 	
-		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setData("id", "cgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options");
+		editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setData("id", "cgPaddle_Pointer_Assignment_Graph_Simplification_Options");
 		
-		String desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = "";	
-		if (desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.length() > 0) {
-			Label descLabelcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = new Label(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.WRAP);
-			descLabelcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setText(desccgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options);
+		String desccgPaddle_Pointer_Assignment_Graph_Simplification_Options = "";	
+		if (desccgPaddle_Pointer_Assignment_Graph_Simplification_Options.length() > 0) {
+			Label descLabelcgPaddle_Pointer_Assignment_Graph_Simplification_Options = new Label(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.WRAP);
+			descLabelcgPaddle_Pointer_Assignment_Graph_Simplification_Options.setText(desccgPaddle_Pointer_Assignment_Graph_Simplification_Options);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"simplify-offline";
+		defKey = "p"+" "+"cg.paddle"+" "+"simplify-offline";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11439,11 +11954,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddsimplify_offline_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.bdd","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		setcgcg_paddlesimplify_offline_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.paddle","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"simplify-sccs";
+		defKey = "p"+" "+"cg.paddle"+" "+"simplify-sccs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11455,11 +11970,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddsimplify_sccs_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.bdd","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		setcgcg_paddlesimplify_sccs_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.paddle","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"ignore-types-for-sccs";
+		defKey = "p"+" "+"cg.paddle"+" "+"ignore-types-for-sccs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11471,41 +11986,281 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.bdd","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
+		setcgcg_paddleignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.paddle","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
 		
 		
 
 		
-		return editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options;
+		return editGroupcgPaddle_Pointer_Assignment_Graph_Simplification_Options;
 	}
 
 
 
-	private Composite cgBDD_Spark_Output_OptionsCreate(Composite parent) {
+	private Composite cgPaddle_Points_To_Set_Flowing_OptionsCreate(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
 	    String defaultArray;
        
-		Group editGroupcgBDD_Spark_Output_Options = new Group(parent, SWT.NONE);
+		Group editGroupcgPaddle_Points_To_Set_Flowing_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
-		editGroupcgBDD_Spark_Output_Options.setLayout(layout);
+		editGroupcgPaddle_Points_To_Set_Flowing_Options.setLayout(layout);
 	
-	 	editGroupcgBDD_Spark_Output_Options.setText("BDD Spark Output Options");
+	 	editGroupcgPaddle_Points_To_Set_Flowing_Options.setText("Paddle Points-To Set Flowing Options");
 	 	
-		editGroupcgBDD_Spark_Output_Options.setData("id", "cgBDD_Spark_Output_Options");
+		editGroupcgPaddle_Points_To_Set_Flowing_Options.setData("id", "cgPaddle_Points_To_Set_Flowing_Options");
 		
-		String desccgBDD_Spark_Output_Options = "";	
-		if (desccgBDD_Spark_Output_Options.length() > 0) {
-			Label descLabelcgBDD_Spark_Output_Options = new Label(editGroupcgBDD_Spark_Output_Options, SWT.WRAP);
-			descLabelcgBDD_Spark_Output_Options.setText(desccgBDD_Spark_Output_Options);
+		String desccgPaddle_Points_To_Set_Flowing_Options = "";	
+		if (desccgPaddle_Points_To_Set_Flowing_Options.length() > 0) {
+			Label descLabelcgPaddle_Points_To_Set_Flowing_Options = new Label(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.WRAP);
+			descLabelcgPaddle_Points_To_Set_Flowing_Options.setText(desccgPaddle_Points_To_Set_Flowing_Options);
 		}
 		OptionData [] data;	
 		
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"dump-html";
+		data = new OptionData [] {
+		
+		new OptionData("Iter",
+		"iter",
+		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
+		
+		false),
+		
+		new OptionData("Worklist",
+		"worklist",
+		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
+		
+		true),
+		
+		new OptionData("Cycle",
+		"cycle",
+		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
+		
+		false),
+		
+		new OptionData("Merge",
+		"merge",
+		"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished. ",
+		
+		false),
+		
+		new OptionData("Alias",
+		"alias",
+		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
+		
+		false),
+		
+		new OptionData("BDD",
+		"bdd",
+		"\nBDD is a propagator that stores points-to sets in binary \ndecision diagrams. ",
+		
+		false),
+		
+		new OptionData("None",
+		"none",
+		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddlepropagator_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.paddle","propagator", "\nThis option tells Paddle which propagation algorithm to use. \n")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"propagator";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddlepropagator_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Hash set",
+		"hash",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
+		
+		false),
+		
+		new OptionData("Bit-vector",
+		"bit",
+		"\nBit is an implementation using a bit vector. ",
+		
+		false),
+		
+		new OptionData("Hybrid",
+		"hybrid",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		
+		false),
+		
+		new OptionData("Sorted array",
+		"array",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		
+		false),
+		
+		new OptionData("Double",
+		"double",
+		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
+		
+		true),
+		
+		new OptionData("Shared bit-vector",
+		"shared",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddleset_impl_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.paddle","set-impl", "\nSelect an implementation of points-to sets for Paddle to use. ")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"set-impl";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddleset_impl_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Hash set",
+		"hash",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
+		
+		false),
+		
+		new OptionData("Bit-vector",
+		"bit",
+		"\nBit is an implementation using a bit vector. ",
+		
+		false),
+		
+		new OptionData("Hybrid",
+		"hybrid",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		
+		true),
+		
+		new OptionData("Sorted array",
+		"array",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		
+		false),
+		
+		new OptionData("Shared bit-vector",
+		"shared",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddledouble_set_old_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.paddle","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"double-set-old";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddledouble_set_old_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Hash set",
+		"hash",
+		"\nHash is an implementation based on Java's built-in hash-set. ",
+		
+		false),
+		
+		new OptionData("Bit-vector",
+		"bit",
+		"\nBit is an implementation using a bit vector. ",
+		
+		false),
+		
+		new OptionData("Hybrid",
+		"hybrid",
+		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		
+		true),
+		
+		new OptionData("Sorted array",
+		"array",
+		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		
+		false),
+		
+		new OptionData("Shared bit-vector",
+		"shared",
+		"\nThis is a bit-vector representation, in which duplicate \nbit-vectors are found and stored only once to save memory.",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_paddledouble_set_new_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.paddle","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"double-set-new";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_paddledouble_set_new_widget().setDef(defaultString);
+		}
+		
+		
+
+		
+		return editGroupcgPaddle_Points_To_Set_Flowing_Options;
+	}
+
+
+
+	private Composite cgPaddle_Output_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupcgPaddle_Output_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupcgPaddle_Output_Options.setLayout(layout);
+	
+	 	editGroupcgPaddle_Output_Options.setText("Paddle Output Options");
+	 	
+		editGroupcgPaddle_Output_Options.setData("id", "cgPaddle_Output_Options");
+		
+		String desccgPaddle_Output_Options = "";	
+		if (desccgPaddle_Output_Options.length() > 0) {
+			Label descLabelcgPaddle_Output_Options = new Label(editGroupcgPaddle_Output_Options, SWT.WRAP);
+			descLabelcgPaddle_Output_Options.setText(desccgPaddle_Output_Options);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"dump-html";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11517,11 +12272,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bdddump_html_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.bdd","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
+		setcgcg_paddledump_html_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.paddle","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"dump-pag";
+		defKey = "p"+" "+"cg.paddle"+" "+"dump-pag";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11533,11 +12288,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bdddump_pag_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.bdd","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
+		setcgcg_paddledump_pag_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.paddle","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"dump-solution";
+		defKey = "p"+" "+"cg.paddle"+" "+"dump-solution";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11549,11 +12304,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bdddump_solution_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.bdd","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
+		setcgcg_paddledump_solution_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.paddle","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"topo-sort";
+		defKey = "p"+" "+"cg.paddle"+" "+"topo-sort";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11565,11 +12320,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddtopo_sort_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.bdd","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
+		setcgcg_paddletopo_sort_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.paddle","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"dump-types";
+		defKey = "p"+" "+"cg.paddle"+" "+"dump-types";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11581,11 +12336,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bdddump_types_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.bdd","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
+		setcgcg_paddledump_types_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.paddle","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"class-method-var";
+		defKey = "p"+" "+"cg.paddle"+" "+"class-method-var";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11597,11 +12352,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddclass_method_var_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.bdd","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
+		setcgcg_paddleclass_method_var_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.paddle","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"dump-answer";
+		defKey = "p"+" "+"cg.paddle"+" "+"dump-answer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11613,11 +12368,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bdddump_answer_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.bdd","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
+		setcgcg_paddledump_answer_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.paddle","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"add-tags";
+		defKey = "p"+" "+"cg.paddle"+" "+"add-tags";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11629,11 +12384,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddadd_tags_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.bdd","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
+		setcgcg_paddleadd_tags_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.paddle","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"cg.bdd"+" "+"set-mass";
+		defKey = "p"+" "+"cg.paddle"+" "+"set-mass";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -11645,12 +12400,28 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_bddset_mass_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.bdd","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
+		setcgcg_paddleset_mass_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.paddle","set-mass", "\nWhen this option is set to true, Paddle computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"number-nodes";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_paddlenumber_nodes_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Number nodes", "p", "cg.paddle","number-nodes", "\nWhen printing debug information about nodes, this option causes \nthe node number of each node to be printed. ", defaultBool)));
 		
 		
 
 		
-		return editGroupcgBDD_Spark_Output_Options;
+		return editGroupcgPaddle_Output_Options;
 	}
 
 
@@ -15267,7 +16038,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 

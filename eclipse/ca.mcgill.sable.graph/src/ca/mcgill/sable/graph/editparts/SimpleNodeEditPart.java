@@ -109,7 +109,7 @@ public class SimpleNodeEditPart
 	 */
 	protected void createEditPolicies() {
 		// TODO Auto-generated method stub
-		installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SimpleNodeSelectPolicy()); 
+		//installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SimpleNodeSelectPolicy()); 
 	}
 
 	public List getModelSourceConnections(){

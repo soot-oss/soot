@@ -7,7 +7,9 @@
    class="ca.mcgill.sable.graph.GraphPlugin">
 
    <runtime>
-      <library name="graph.jar"/>
+      <library name="graph.jar">
+        <export name="*"/>
+       </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>

@@ -2095,9 +2095,9 @@ public class JimpleBodyBuilder {
     }
 
     private soot.jimple.Constant getReturnConstant(polyglot.ast.Field field){
-        System.out.println("field cons: "+field);
-        System.out.println("field type: "+field.type());
-        System.out.println("field cons type: "+field.fieldInstance().constantValue().getClass());
+        //System.out.println("field cons: "+field);
+        //System.out.println("field type: "+field.type());
+        //System.out.println("field cons type: "+field.fieldInstance().constantValue().getClass());
         if (field.fieldInstance().constantValue() instanceof String){
             return soot.jimple.StringConstant.v((String)field.constantValue());
         }
@@ -2121,7 +2121,14 @@ public class JimpleBodyBuilder {
             else if (num instanceof Float) {
                 return soot.jimple.FloatConstant.v(((Float)num).floatValue());
             }
+            else if (num instanceof Byte) {
+                return soot.jimple.IntConstant.v(((Byte)num).byteValue());
+            }
+            else if (num instanceof Short) {
+                return soot.jimple.IntConstant.v(((Short)num).shortValue());
+            }
             else {//if (num instanceof Long) {
+                //System.out.println("num class: "+num.getClass());
                 return soot.jimple.IntConstant.v(((Integer)num).intValue());
             }
         }
@@ -3425,12 +3432,13 @@ public class JimpleBodyBuilder {
         BiMap lcMap = InitialResolver.v().getLocalClassMap();
         String name = Util.getSootType(cDecl.decl().type()).toString();
         if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
-            body.getMethod().getDeclaringClass().addTag(
+            Util.addInnerClassTag(body.getMethod().getDeclaringClass(), name, null, cDecl.decl().name(), Util.getModifier(cDecl.decl().flags()));
+            /*body.getMethod().getDeclaringClass().addTag(
                     new soot.tagkit.InnerClassTag(
                     name,
                     null, //"<not a member>",
                     cDecl.decl().name(),
-                    Util.getModifier(cDecl.decl().flags()) ));
+                    Util.getModifier(cDecl.decl().flags()) ));*/
         }
     }
     
@@ -3448,15 +3456,18 @@ public class JimpleBodyBuilder {
         if (newExpr.anonType() != null){
             objType = newExpr.anonType();
             // add inner class tags for any anon classes created
+            //System.out.println("About to add inner class tag for anon class:");
             String name = Util.getSootType(objType).toString();
+            //System.out.println("name: "+name); 
             polyglot.types.ClassType outerType = objType.outer();
             if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
-                body.getMethod().getDeclaringClass().addTag(
+                Util.addInnerClassTag(body.getMethod().getDeclaringClass(), name, null, null, outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()));
+                /*body.getMethod().getDeclaringClass().addTag(
                     new soot.tagkit.InnerClassTag(
                     name,
                     null,//"<not a member>",
                     null,//"<anonymous>",
-                    outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));
+                    outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));*/
             }
         }
         else {
@@ -3465,12 +3476,13 @@ public class JimpleBodyBuilder {
                 String name = Util.getSootType(objType).toString();
                 polyglot.types.ClassType outerType = objType.outer();
                 if (!InitialResolver.v().hasClassInnerTag(body.getMethod().getDeclaringClass(), name)){
-                    body.getMethod().getDeclaringClass().addTag(
+                    Util.addInnerClassTag(body.getMethod().getDeclaringClass(), name, Util.getSootType(outerType).toString(), objType.name(), outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()));
+                    /*body.getMethod().getDeclaringClass().addTag(
                         new soot.tagkit.InnerClassTag(
                         name,
                         Util.getSootType(outerType).toString(),
                         objType.name(),
-                        outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));
+                        outerType.flags().isInterface() ? soot.Modifier.PUBLIC | soot.Modifier.STATIC : Util.getModifier(objType.flags()) ));*/
             }
                 
             }

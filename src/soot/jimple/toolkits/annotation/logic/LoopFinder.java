@@ -10,13 +10,19 @@ import soot.tagkit.*;
 public class LoopFinder extends BodyTransformer {
 
     private UnitGraph g;
+
+    private HashMap loops;
+
+    public HashMap loops(){
+        return loops;
+    }
     
     protected void internalTransform (Body b, String phaseName, Map options){
     
         g = new ExceptionalUnitGraph(b);
         DominatorAnalysis a = new DominatorAnalysis(g);
         
-        HashMap loops = new HashMap();
+        loops = new HashMap();
         
         Iterator stmtsIt = b.getUnits().iterator();
         while (stmtsIt.hasNext()){
@@ -62,10 +68,10 @@ public class LoopFinder extends BodyTransformer {
 
             // tag loop stmts with colors
             
-            Iterator bIt = ((List)loops.get(h)).iterator();
+            /*Iterator bIt = ((List)loops.get(h)).iterator();
             while (bIt.hasNext()){
                 tagLoopStmt((Stmt)bIt.next(), colorId);
-            }
+            }*/
 
             colorId++;
         }
@@ -84,7 +90,7 @@ public class LoopFinder extends BodyTransformer {
             Stmt next = (Stmt)stack.pop();
             if (!loopBody.contains(next)){
                 // add next to loop body
-                loopBody.add(next);
+                loopBody.add(0, next);
                 // put all preds of next on stack
                 Iterator it = g.getPredsOf(next).iterator();
                 while (it.hasNext()){

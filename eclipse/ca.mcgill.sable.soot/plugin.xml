@@ -8,7 +8,7 @@
 
    <runtime>
       <library name="soot-plugin.jar"/>
-      <library name="soot/classes/"/>
+      <library name="sootclasses-2.1.0-custom.jar"/>
       <library name="jasminclasses-sable-1.2.jar"/>
       <library name="polyglot-1.2.0.jar"/>
       <library name="myclasses/"/>
@@ -140,6 +140,22 @@
          </action>
       </editorContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="ca.mcgill.sable.graph.GraphEditor"
+            id="ca.mcgill.sable.soot.cg.actions">
+         <action
+               label="Done"
+               class="ca.mcgill.sable.soot.callgraph.CGDoneAction"
+               toolbarPath="Normal/Call Graph/Done"
+               icon="icons/done.gif"
+               id="ca.mcgill.sable.soot.cg.doneaction">
+         </action>
+      </editorContribution>
+   </extension>
+   
+  
 <!--<extension point="org.eclipse.ui.editorActions">
 	<editorContribution
 		id="ca.mcgill.sable.soot.ruler.actions"

@@ -42,14 +42,15 @@ public class SimpleNodeSelectPolicy extends SelectionEditPolicy {
 	 */
 	protected void showSelection() {
 		// TODO Auto-generated method stub
-		((SimpleNodeEditPart)getHost()).switchToComplex();
+		((SimpleNodeEditPart)getHost()).setSelected(EditPart.SELECTED);//switchToComplex();
 		//getHost().setFocus(false);
-		((SimpleNodeEditPart)getHost()).getViewer().deselect(getHost());		//this.setSelectedState(EditPart.SELECTED_NONE);
+		//((SimpleNodeEditPart)getHost()).getViewer().deselect(getHost());		//this.setSelectedState(EditPart.SELECTED_NONE);
 	}
 	
 	
 	
 	public void showTargetFeedback(Request request){
+		System.out.println("request: "+request);
 		//super.showTargetFeedback(request);
 		/*System.out.println("req type: "+request.getType());
 		System.out.println("req class: "+request.getClass());
@@ -73,14 +74,14 @@ public class SimpleNodeSelectPolicy extends SelectionEditPolicy {
 		
 	}
 	
-	public boolean understandsRequest(Request req){
+	/*public boolean understandsRequest(Request req){
 		if (req.getType() == RequestConstants.REQ_SELECTION){
 			return true;
 		}
 		else {
 			return false;
 		}
-	}
+	*/
 	
 
 }

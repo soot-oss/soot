@@ -68,6 +68,9 @@ public class GraphEditor extends GraphicalEditor {
 		getActionRegistry().registerAction(zoomIn);
 		getActionRegistry().registerAction(zoomOut);
 		
+		IAction printAction = new PrintAction(this);
+		getActionRegistry().registerAction(printAction);
+		
 		getSite().getKeyBindingService().registerAction(zoomIn);
 		getSite().getKeyBindingService().registerAction(zoomOut);
 	
@@ -75,7 +78,12 @@ public class GraphEditor extends GraphicalEditor {
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 		
 	}
-
+	
+	public void setMenuProvider(ContextMenuProvider prov){
+		getGraphicalViewer().setContextMenu(prov);
+		getSite().registerContextMenu(prov, getGraphicalViewer());
+	}
+	
 	public void setPartFactory(PartFactory factory){
 		getGraphicalViewer().setEditPartFactory(factory);
 	}
@@ -154,7 +162,26 @@ public class GraphEditor extends GraphicalEditor {
 		super.createActions();
 		ActionRegistry registry = getActionRegistry();
 		IAction action = new SimpleSelectAction(this);
-		registry.getAction(action.getId());
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+		//registry.getAction(action.getId());
 	}
+	
+	public ActionRegistry getGraphEditorActionRegistry(){
+		return getActionRegistry();
+	}
+	
+	public GraphicalViewer getGraphEditorGraphicalViewer(){
+		return getGraphicalViewer();
+	}
+	
+	public List getGraphEditorSelectionActions(){
+		return getSelectionActions();
+	}
+	
+
+	
+	
+	
 	
 }

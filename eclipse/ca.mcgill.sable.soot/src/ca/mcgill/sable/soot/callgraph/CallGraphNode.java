@@ -19,6 +19,8 @@ public class CallGraphNode extends SimpleNode {
 
 	private CallGraphGenerator generator;
 	private boolean expand = true;
+	private boolean expandCollape = false;
+	private boolean collapse = false;
 	
 	public boolean isLeaf(){
 		if ((getOutputs() == null) ||(getOutputs().size() == 0)) return true;
@@ -66,6 +68,34 @@ public class CallGraphNode extends SimpleNode {
 	 */
 	public void setExpand(boolean b) {
 		expand = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isCollapse() {
+		return collapse;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isExpandCollape() {
+		return expandCollape;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setCollapse(boolean b) {
+		collapse = b;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setExpandCollape(boolean b) {
+		expandCollape = b;
 	}
 
 }

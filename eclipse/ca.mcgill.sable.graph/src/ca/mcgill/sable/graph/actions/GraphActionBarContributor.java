@@ -36,8 +36,7 @@ public class GraphActionBarContributor extends ActionBarContributor {
 		// TODO Auto-generated method stub
 		addRetargetAction(new ZoomInRetargetAction());
 		addRetargetAction(new ZoomOutRetargetAction());
-		
-		
+	
 		
 	}
 
@@ -46,7 +45,7 @@ public class GraphActionBarContributor extends ActionBarContributor {
 	 */
 	protected void declareGlobalActionKeys() {
 		// TODO Auto-generated method stub
-
+		addGlobalActionKey(IWorkbenchActionConstants.PRINT);
 	}
 	
 	//  this is for zoom toolbar buttons
@@ -69,7 +68,7 @@ public class GraphActionBarContributor extends ActionBarContributor {
 	
 	public void setActiveEditor(IEditorPart editor) { 
 		super.setActiveEditor(editor); 
-	
+		
 	}
 	
 }

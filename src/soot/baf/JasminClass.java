@@ -221,7 +221,7 @@ public class JasminClass
             int modifiers = sootClass.getModifiers();
 
             
-            if (sootClass.getTag("SourceFileTag") != null){
+            if ((sootClass.getTag("SourceFileTag") != null) && (Options.v().output_source_file_attribute())){
                 String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
                 emit(".source "+srcName);
             }
@@ -261,6 +261,7 @@ public class JasminClass
 
 
 
+    
 	// emit class attributes.
 	Iterator it =  sootClass.getTags().iterator(); 
 	while(it.hasNext()) {
@@ -268,27 +269,29 @@ public class JasminClass
 	    if(tag instanceof Attribute)
 		emit(".class_attribute "  + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue()))+"\"");
         else if (tag instanceof InnerClassAttribute){
-            emit(".inner_class_attr ");
-            Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
-            while (innersIt.hasNext()){
-                InnerClassTag ict = (InnerClassTag)innersIt.next();
-                emit(".inner_class_spec_attr "+
-                    "\""+ict.getInnerClass()+"\" "+
+            if (!Options.v().no_output_inner_classes_attribute()){
+                emit(".inner_class_attr ");
+                Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
+                while (innersIt.hasNext()){
+                    InnerClassTag ict = (InnerClassTag)innersIt.next();
+                    //System.out.println("inner class tag: "+ict);
+                    emit(".inner_class_spec_attr "+
+                        "\""+ict.getInnerClass()+"\" "+
                     
-                    "\""+ict.getOuterClass()+"\" "+
+                        "\""+ict.getOuterClass()+"\" "+
                     
-                    "\""+ict.getShortName()+"\" "+
-                    Modifier.toString(ict.getAccessFlags())+" "+
+                        "\""+ict.getShortName()+"\" "+
+                        Modifier.toString(ict.getAccessFlags())+" "+
 
-                   ".end .inner_class_spec_attr");
+                    ".end .inner_class_spec_attr");
+                }
+                emit(".end .inner_class_attr\n");
             }
-            emit(".end .inner_class_attr\n");
         }
         else {
             emit("");
         }
 	}
-
 
 
 

@@ -441,6 +441,16 @@ public class Options extends OptionsBase {
             )
                 print_tags_in_output = true;
   
+            else if( false 
+            || option.equals( "output-source-file-attribute" )
+            )
+                output_source_file_attribute = true;
+  
+            else if( false 
+            || option.equals( "no-output-inner-classes-attribute" )
+            )
+                no_output_inner_classes_attribute = true;
+  
             else if( false
             || option.equals( "dump-body" )
             ) {
@@ -863,6 +873,14 @@ public class Options extends OptionsBase {
     private boolean print_tags_in_output = false;
     public void set_print_tags_in_output( boolean setting ) { print_tags_in_output = setting; }
   
+    public boolean output_source_file_attribute() { return output_source_file_attribute; }
+    private boolean output_source_file_attribute = false;
+    public void set_output_source_file_attribute( boolean setting ) { output_source_file_attribute = setting; }
+  
+    public boolean no_output_inner_classes_attribute() { return no_output_inner_classes_attribute; }
+    private boolean no_output_inner_classes_attribute = false;
+    public void set_no_output_inner_classes_attribute( boolean setting ) { no_output_inner_classes_attribute = setting; }
+  
     public List dump_body() { 
         if( dump_body == null )
             return java.util.Collections.EMPTY_LIST;
@@ -1005,6 +1023,8 @@ public class Options extends OptionsBase {
 +padVal(" d dava", "Produce dava-decompiled .java files" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )
++padOpt(" -output-source-file-attribute", "Outputs Source File Attribute in class files" )
++padOpt(" -no-output-inner-classes-attribute", "Output inner classes attribute in class files" )
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )
