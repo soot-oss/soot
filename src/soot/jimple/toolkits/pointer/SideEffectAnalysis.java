@@ -48,9 +48,6 @@ public class SideEffectAnalysis {
 	methodToNTReadSet.put( method, read );
 	methodToNTWriteSet.put( method, write );
 	SootClass c = method.getDeclaringClass();
-	if( !c.isApplicationClass() ) {
-	    method.releaseActiveBody();
-	}
     }
 
     public RWSet nonTransitiveReadSet( SootMethod method ) {
