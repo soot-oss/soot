@@ -226,7 +226,7 @@ public class JasminClass
                 emit(".source "+srcName);
             }
             if(Modifier.isInterface(modifiers))
-                {
+            {
                 modifiers -= Modifier.INTERFACE;
 
                 emit(".interface " + Modifier.toString(modifiers) + " " + slashify(sootClass.getName()));
@@ -236,6 +236,8 @@ public class JasminClass
 
             if(sootClass.hasSuperclass())
                 emit(".super " + slashify(sootClass.getSuperclass().getName()));
+            else
+                emit(".no_super");
 
             emit("");
         }
