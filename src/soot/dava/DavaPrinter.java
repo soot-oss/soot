@@ -125,9 +125,6 @@ public class DavaPrinter
         }
     }
 
-    public DavaStmtPrinter( Singletons.Global g ) {}
-    public static DavaStmtPrinter v() { return G.v().DavaStmtPrinter(); }
-
     public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
 	Chain units = ((DavaBody) body).getUnits();
@@ -212,131 +209,8 @@ public class DavaPrinter
         printTo(cl, out, 0);
     }
 	
-    public void printXMLTo(SootClass cl, PrintWriter out)
-    {
-        XMLPrinter xmlOut = new XMLPrinter();
-	XMLNode xmlRootNode = null;
-	XMLNode xmlHistoryNode = null;
-        XMLNode xmlClassNode = null;
-        XMLNode xmlTempNode = null;
-
-        // Print XML class output
-        {
-	    // add header nodes
-	    xmlRootNode = xmlOut.root.addElement("jil");
-
-	    // add history node
-	    // TODO: grab the software version and command line
-	    String cmdlineStr = "";
-	    for( int i = 0; i < Main.v().cmdLineArgs.length; i++ )
-	    {
-		cmdlineStr += Main.v().cmdLineArgs[ i ] + " ";
-	    }
-	    String dateStr = new Date().toString();
-	    xmlHistoryNode = xmlRootNode.addChild("history");
-	    xmlHistoryNode.addAttribute("created", dateStr );
-	    xmlHistoryNode.addChild("soot",new String[] {"version", "command", "timestamp"},new String[] {Main.v().versionString, cmdlineStr.trim(), dateStr});
-            
-	    // add class root node
-            xmlClassNode = xmlRootNode.addChild("class",new String[] {"name"},new String[] {Scene.v().quotedNameOf(cl.getName()).toString()});
-            if(cl.getPackageName().length()>0)
-                xmlClassNode.addAttribute("package",cl.getPackageName());
-            if(cl.hasSuperclass())
-                xmlClassNode.addAttribute("extends",Scene.v().quotedNameOf(cl.getSuperclass().getName()).toString());
-
-            // add modifiers subnode
-            xmlTempNode = xmlClassNode.addChild("modifiers");
-            StringTokenizer st = new StringTokenizer(Modifier.toString(cl.getModifiers()));
-            while(st.hasMoreTokens())
-		xmlTempNode.addChild("modifier",new String[] {"name"},new String[] {st.nextToken()+""});
-            xmlTempNode.addAttribute("count",xmlTempNode.getNumberOfChildren()+"");		
-        } 
-
-        // Print interfaces
-        {
-            xmlTempNode = xmlClassNode.addChild("interfaces","",new String[] {"count"},new String[] {cl.getInterfaceCount()+""});
-
-	    Iterator interfaceIt = cl.getInterfaces().iterator();
-            if(interfaceIt.hasNext())
-            {
-                while(interfaceIt.hasNext())
-		    xmlTempNode.addChild("implements","",new String[] {"class"},new String[] {Scene.v().quotedNameOf(((SootClass) interfaceIt.next()).getName()).toString()});
-            }
-        }
-        
-        // Print fields
-        {   
-	    xmlTempNode = xmlClassNode.addChild( "fields", "", new String[] { "count" }, new String[] { cl.getFieldCount()+"" } );
-                
-	    Iterator fieldIt = cl.getFields().iterator();
-            if(fieldIt.hasNext())
-            {
-                int i = 0;
-                while(fieldIt.hasNext())
-                {
-                    SootField f = (SootField) fieldIt.next();
-                    
-                    if(f.isPhantom())
-                        continue;
-                    
-                    String type = f.getType().toString();
-                    String name = f.getName().toString();
-                    String decl = f.getDeclaration();
-							
-                    // add the field node
-                    XMLNode xmlFieldNode = xmlTempNode.addChild( "field", "", new String[] { "id", "name", "type" }, new String[] { (i++)+"", name, type } );
-                    XMLNode xmlModifiersNode = xmlFieldNode.addChild( "modifiers" );
-							
-                    StringTokenizer st = new StringTokenizer(Modifier.toString(f.getModifiers()));
-                    while(st.hasMoreTokens())
-                        xmlModifiersNode.addChild( "modifier", new String[] {"name"},new String[]{st.nextToken()+""} );
-			
-                    xmlModifiersNode.addAttribute( "count", xmlModifiersNode.getNumberOfChildren()+"" );
-                }
-            }
-        }
-
-        // Print methods
-        {
-            Iterator methodIt = cl.methodIterator();
-
-            if( Scene.v().getJimpleStmtPrinter() instanceof XMLStmtPrinter )
-            {
-                XMLStmtPrinter xmlStmtPrinter = ( XMLStmtPrinter )Scene.v().getJimpleStmtPrinter();
-                xmlStmtPrinter.setXMLNode( xmlClassNode.addChild( "methods", new String[] { "count" }, new String[] { cl.getMethodCount()+"" } ) );
-            }
-
-            while(methodIt.hasNext())
-            {
-                SootMethod method = (SootMethod) methodIt.next();
-
-                if(method.isPhantom())
-		        continue;
-					    
-                if(!Modifier.isAbstract(method.getModifiers()) && 
-		   !Modifier.isNative(method.getModifiers()))
-                {
-                    if(!method.hasActiveBody())
-                        throw new RuntimeException("method " + method.getName() + " has no active body!");
-                    else
-                        printTo(method.getActiveBody(), out, XML_OUTPUT);
-                }
-            }
-        }
-        out.println(xmlOut.toString());
-    }
-  
-
     public void printJimpleStyleTo(SootClass cl, PrintWriter out, int printBodyOptions)
     {
-        // write cl class as XML
-        boolean xmlOutput = xmlOutput(printBodyOptions);
-        if(xmlOutput)
-        {
-            printXMLTo(cl, out);
-            return;
-        }
-
 	// add jimple line number tags
 	setAddJimpleLn(addJimpleLn(printBodyOptions));
 	if (isAddJimpleLn()) {
@@ -822,15 +696,15 @@ public class DavaPrinter
 		}
 			    
 	
-		Scene.v().getLocalPrinter().printLocalsInBody( b, out, isPrecise);
+		printLocalsInBody( b, out, isPrecise);
 	}
 
 		// Print out statements
 		// Use an external class so that it can be overridden.
 		if(debug) {
-			Scene.v().getJimpleStmtPrinter().printDebugStatementsInBody(b, out, isPrecise);
+			printDebugStatementsInBody(b, out, isPrecise);
 		} else {
-			Scene.v().getJimpleStmtPrinter().printStatementsInBody(b, out, isPrecise, isNumbered);
+			printStatementsInBody(b, out, isPrecise, isNumbered);
 		}
         
 		if(!xmlOutput) {

@@ -850,7 +850,7 @@ public class Main
     case Options.output_format_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-      XMLPrinter.v().printJimpleStyleTo(c, writerOut, Printer.XML_OUTPUT);
+      XMLPrinter.v().printJimpleStyleTo(c, writerOut, 0);
       break;
     default:
       throw new RuntimeException();

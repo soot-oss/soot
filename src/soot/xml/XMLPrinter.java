@@ -36,6 +36,8 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.invoke.*;
+import java.io.*;
+import soot.dava.*;
 
 
 /** XML printing routines all XML output comes through here */
@@ -46,7 +48,7 @@ public class XMLPrinter
 	public static final String dtdHeader = "<!DOCTYPE jil SYSTEM \"http://www.sable.mcgill.ca/~flynn/jil/jil10.dtd\">\n";
 
 	// xml tree
-	public XMLRoot root = new XMLRoot();
+	public XMLRoot root;
 
 	// returns the buffer - this is the XML output
 	public String toString()
@@ -705,7 +707,7 @@ public class XMLPrinter
 	
     public void printXMLTo(SootClass cl, PrintWriter out)
     {
-        XMLPrinter xmlOut = new XMLPrinter();
+        root = new XMLRoot();
 	XMLNode xmlRootNode = null;
 	XMLNode xmlHistoryNode = null;
         XMLNode xmlClassNode = null;
@@ -714,7 +716,7 @@ public class XMLPrinter
         // Print XML class output
         {
 	    // add header nodes
-	    xmlRootNode = xmlOut.root.addElement("jil");
+	    xmlRootNode = root.addElement("jil");
 
 	    // add history node
 	    // TODO: grab the software version and command line
@@ -791,11 +793,7 @@ public class XMLPrinter
         {
             Iterator methodIt = cl.methodIterator();
 
-            if( Scene.v().getJimpleStmtPrinter() instanceof XMLStmtPrinter )
-            {
-                XMLStmtPrinter xmlStmtPrinter = ( XMLStmtPrinter )Scene.v().getJimpleStmtPrinter();
-                xmlStmtPrinter.setXMLNode( xmlClassNode.addChild( "methods", new String[] { "count" }, new String[] { cl.getMethodCount()+"" } ) );
-            }
+            setXMLNode( xmlClassNode.addChild( "methods", new String[] { "count" }, new String[] { cl.getMethodCount()+"" } ) );
 
             while(methodIt.hasNext())
             {
@@ -814,7 +812,7 @@ public class XMLPrinter
                 }
             }
         }
-        out.println(xmlOut.toString());
+        out.println(toString());
     }
   
 
@@ -1313,15 +1311,15 @@ public class XMLPrinter
 		}
 			    
 	
-		Scene.v().getLocalPrinter().printLocalsInBody( b, out, isPrecise);
+		printLocalsInBody( b, out, isPrecise);
 	}
 
 		// Print out statements
 		// Use an external class so that it can be overridden.
 		if(debug) {
-			Scene.v().getJimpleStmtPrinter().printDebugStatementsInBody(b, out, isPrecise);
+			printDebugStatementsInBody(b, out, isPrecise);
 		} else {
-			Scene.v().getJimpleStmtPrinter().printStatementsInBody(b, out, isPrecise, isNumbered);
+			printStatementsInBody(b, out, isPrecise, isNumbered);
 		}
         
 		if(!xmlOutput) {
@@ -1333,5 +1331,75 @@ public class XMLPrinter
 	}
 	}
     
+    /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
+    public void printLocalsInBody(Body body, java.io.PrintWriter out, boolean isPrecise)
+    {
+        // Print out local variables
+        {
+            Map typeToLocals = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+
+            // Collect locals
+            {
+                Iterator localIt = body.getLocals().iterator();
+
+                while(localIt.hasNext())
+                {
+                    Local local = (Local) localIt.next();
+
+                    List localList;
+ 
+                    String typeName;
+                    Type t = local.getType();
+
+                    typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
+
+                    if(typeToLocals.containsKey(typeName))
+                        localList = (List) typeToLocals.get(typeName);
+                    else
+                    {
+                        localList = new ArrayList();
+                        typeToLocals.put(typeName, localList);
+                    }
+
+                    localList.add(local);
+                }
+            }
+
+            // Print locals
+            {
+                Iterator typeIt = typeToLocals.keySet().iterator();
+
+                while(typeIt.hasNext())
+                {
+                    String type = (String) typeIt.next();
+
+                    List localList = (List) typeToLocals.get(type);
+                    Object[] locals = localList.toArray();
+                    out.print("        "  + type + " ");
+                    
+                    for(int k = 0; k < locals.length; k++)
+                    {
+                        if(k != 0)
+                            out.print(", ");
+
+                        out.print(((Local) locals[k]).getName());
+                    }
+
+                    out.println(";");
+		    if (Printer.v().isAddJimpleLn()) {
+		    	Printer.v().incJimpleLnNum();
+		    }
+                }
+            }
+
+
+            if(!typeToLocals.isEmpty()){
+                out.println();
+		if (Printer.v().isAddJimpleLn()) {
+	        	Printer.v().incJimpleLnNum();
+		}				    
+	    }
+        }
+    }
 }
 
