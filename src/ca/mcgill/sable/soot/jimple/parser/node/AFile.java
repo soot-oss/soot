@@ -7,7 +7,7 @@ public final class AFile extends PFile
 {
     private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
     private PFileType _fileType_;
-    private PQualifiedName _qualifiedName_;
+    private TName _name_;
     private PExtendsClause _extendsClause_;
     private PImplementsClause _implementsClause_;
     private PFileBody _fileBody_;
@@ -19,7 +19,7 @@ public final class AFile extends PFile
     public AFile(
         List _modifier_,
         PFileType _fileType_,
-        PQualifiedName _qualifiedName_,
+        TName _name_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -34,7 +34,7 @@ public final class AFile extends PFile
 
         setFileType(_fileType_);
 
-        setQualifiedName(_qualifiedName_);
+        setName(_name_);
 
         setExtendsClause(_extendsClause_);
 
@@ -47,7 +47,7 @@ public final class AFile extends PFile
     public AFile(
         XPModifier _modifier_,
         PFileType _fileType_,
-        PQualifiedName _qualifiedName_,
+        TName _name_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -64,7 +64,7 @@ public final class AFile extends PFile
 
         setFileType(_fileType_);
 
-        setQualifiedName(_qualifiedName_);
+        setName(_name_);
 
         setExtendsClause(_extendsClause_);
 
@@ -78,7 +78,7 @@ public final class AFile extends PFile
         return new AFile(
             cloneList(_modifier_),
             (PFileType) cloneNode(_fileType_),
-            (PQualifiedName) cloneNode(_qualifiedName_),
+            (TName) cloneNode(_name_),
             (PExtendsClause) cloneNode(_extendsClause_),
             (PImplementsClause) cloneNode(_implementsClause_),
             (PFileBody) cloneNode(_fileBody_));
@@ -128,16 +128,16 @@ public final class AFile extends PFile
         _fileType_ = node;
     }
 
-    public PQualifiedName getQualifiedName()
+    public TName getName()
     {
-        return _qualifiedName_;
+        return _name_;
     }
 
-    public void setQualifiedName(PQualifiedName node)
+    public void setName(TName node)
     {
-        if(_qualifiedName_ != null)
+        if(_name_ != null)
         {
-            _qualifiedName_.parent(null);
+            _name_.parent(null);
         }
 
         if(node != null)
@@ -150,7 +150,7 @@ public final class AFile extends PFile
             node.parent(this);
         }
 
-        _qualifiedName_ = node;
+        _name_ = node;
     }
 
     public PExtendsClause getExtendsClause()
@@ -233,7 +233,7 @@ public final class AFile extends PFile
         return ""
             + toString(_modifier_)
             + toString(_fileType_)
-            + toString(_qualifiedName_)
+            + toString(_name_)
             + toString(_extendsClause_)
             + toString(_implementsClause_)
             + toString(_fileBody_);
@@ -252,9 +252,9 @@ public final class AFile extends PFile
             return;
         }
 
-        if(_qualifiedName_ == child)
+        if(_name_ == child)
         {
-            _qualifiedName_ = null;
+            _name_ = null;
             return;
         }
 
@@ -303,9 +303,9 @@ public final class AFile extends PFile
             return;
         }
 
-        if(_qualifiedName_ == oldChild)
+        if(_name_ == oldChild)
         {
-            setQualifiedName((PQualifiedName) newChild);
+            setName((TName) newChild);
             return;
         }
 

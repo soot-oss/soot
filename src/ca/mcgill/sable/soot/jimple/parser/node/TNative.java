@@ -3,32 +3,32 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class TCmpge extends Token
+public final class TNative extends Token
 {
-    public TCmpge()
+    public TNative()
     {
-        super.setText(">=");
+        super.setText("native");
     }
 
-    public TCmpge(int line, int pos)
+    public TNative(int line, int pos)
     {
-        super.setText(">=");
+        super.setText("native");
         setLine(line);
         setPos(pos);
     }
 
     public Object clone()
     {
-      return new TCmpge(getLine(), getPos());
+      return new TNative(getLine(), getPos());
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTCmpge(this);
+        ((Analysis) sw).caseTNative(this);
     }
 
     public void setText(String text)
     {
-        throw new RuntimeException("Cannot change TCmpge text.");
+        throw new RuntimeException("Cannot change TNative text.");
     }
 }

@@ -3,32 +3,32 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class TCmpge extends Token
+public final class TLengthof extends Token
 {
-    public TCmpge()
+    public TLengthof()
     {
-        super.setText(">=");
+        super.setText("lengthof");
     }
 
-    public TCmpge(int line, int pos)
+    public TLengthof(int line, int pos)
     {
-        super.setText(">=");
+        super.setText("lengthof");
         setLine(line);
         setPos(pos);
     }
 
     public Object clone()
     {
-      return new TCmpge(getLine(), getPos());
+      return new TLengthof(getLine(), getPos());
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTCmpge(this);
+        ((Analysis) sw).caseTLengthof(this);
     }
 
     public void setText(String text)
     {
-        throw new RuntimeException("Cannot change TCmpge text.");
+        throw new RuntimeException("Cannot change TLengthof text.");
     }
 }

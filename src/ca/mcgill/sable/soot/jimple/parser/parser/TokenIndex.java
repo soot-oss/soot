@@ -7,287 +7,287 @@ class TokenIndex extends AnalysisAdapter
 {
     int index;
 
-    public void caseTPublic(TPublic node)
+    public void caseTAbstract(TAbstract node)
     {
         index = 0;
     }
 
-    public void caseTProtected(TProtected node)
+    public void caseTFinal(TFinal node)
     {
         index = 1;
     }
 
-    public void caseTPrivate(TPrivate node)
+    public void caseTNative(TNative node)
     {
         index = 2;
     }
 
-    public void caseTStatic(TStatic node)
+    public void caseTPublic(TPublic node)
     {
         index = 3;
     }
 
-    public void caseTFinal(TFinal node)
+    public void caseTProtected(TProtected node)
     {
         index = 4;
     }
 
-    public void caseTAbstract(TAbstract node)
+    public void caseTPrivate(TPrivate node)
     {
         index = 5;
     }
 
-    public void caseTSynchronized(TSynchronized node)
+    public void caseTStatic(TStatic node)
     {
         index = 6;
     }
 
-    public void caseTTransient(TTransient node)
+    public void caseTSynchronized(TSynchronized node)
     {
         index = 7;
     }
 
-    public void caseTVolatile(TVolatile node)
+    public void caseTTransient(TTransient node)
     {
         index = 8;
     }
 
-    public void caseTClass(TClass node)
+    public void caseTVolatile(TVolatile node)
     {
         index = 9;
     }
 
-    public void caseTInterface(TInterface node)
+    public void caseTClass(TClass node)
     {
         index = 10;
     }
 
-    public void caseTVoid(TVoid node)
+    public void caseTInterface(TInterface node)
     {
         index = 11;
     }
 
-    public void caseTBoolean(TBoolean node)
+    public void caseTVoid(TVoid node)
     {
         index = 12;
     }
 
-    public void caseTByte(TByte node)
+    public void caseTBoolean(TBoolean node)
     {
         index = 13;
     }
 
-    public void caseTShort(TShort node)
+    public void caseTByte(TByte node)
     {
         index = 14;
     }
 
-    public void caseTChar(TChar node)
+    public void caseTShort(TShort node)
     {
         index = 15;
     }
 
-    public void caseTInt(TInt node)
+    public void caseTChar(TChar node)
     {
         index = 16;
     }
 
-    public void caseTLong(TLong node)
+    public void caseTInt(TInt node)
     {
         index = 17;
     }
 
-    public void caseTFloat(TFloat node)
+    public void caseTLong(TLong node)
     {
         index = 18;
     }
 
-    public void caseTDouble(TDouble node)
+    public void caseTFloat(TFloat node)
     {
         index = 19;
     }
 
-    public void caseTUnknown(TUnknown node)
+    public void caseTDouble(TDouble node)
     {
         index = 20;
     }
 
-    public void caseTExtends(TExtends node)
+    public void caseTUnknown(TUnknown node)
     {
         index = 21;
     }
 
-    public void caseTImplements(TImplements node)
+    public void caseTExtends(TExtends node)
     {
         index = 22;
     }
 
-    public void caseTBreakpoint(TBreakpoint node)
+    public void caseTImplements(TImplements node)
     {
         index = 23;
     }
 
-    public void caseTNew(TNew node)
+    public void caseTBreakpoint(TBreakpoint node)
     {
         index = 24;
     }
 
-    public void caseTCase(TCase node)
+    public void caseTNew(TNew node)
     {
         index = 25;
     }
 
-    public void caseTCatch(TCatch node)
+    public void caseTCase(TCase node)
     {
         index = 26;
     }
 
-    public void caseTCmp(TCmp node)
+    public void caseTCatch(TCatch node)
     {
         index = 27;
     }
 
-    public void caseTCmpg(TCmpg node)
+    public void caseTCmp(TCmp node)
     {
         index = 28;
     }
 
-    public void caseTCmpl(TCmpl node)
+    public void caseTCmpg(TCmpg node)
     {
         index = 29;
     }
 
-    public void caseTDefault(TDefault node)
+    public void caseTCmpl(TCmpl node)
     {
         index = 30;
     }
 
-    public void caseTEntermonitor(TEntermonitor node)
+    public void caseTDefault(TDefault node)
     {
         index = 31;
     }
 
-    public void caseTExitmonitor(TExitmonitor node)
+    public void caseTEntermonitor(TEntermonitor node)
     {
         index = 32;
     }
 
-    public void caseTFrom(TFrom node)
+    public void caseTExitmonitor(TExitmonitor node)
     {
         index = 33;
     }
 
-    public void caseTGoto(TGoto node)
+    public void caseTFrom(TFrom node)
     {
         index = 34;
     }
 
-    public void caseTIf(TIf node)
+    public void caseTGoto(TGoto node)
     {
         index = 35;
     }
 
-    public void caseTInstanceof(TInstanceof node)
+    public void caseTIf(TIf node)
     {
         index = 36;
     }
 
-    public void caseTInterfaceinvoke(TInterfaceinvoke node)
+    public void caseTInstanceof(TInstanceof node)
     {
         index = 37;
     }
 
-    public void caseTLookupswitch(TLookupswitch node)
+    public void caseTInterfaceinvoke(TInterfaceinvoke node)
     {
         index = 38;
     }
 
-    public void caseTNop(TNop node)
+    public void caseTLengthof(TLengthof node)
     {
         index = 39;
     }
 
-    public void caseTRet(TRet node)
+    public void caseTLookupswitch(TLookupswitch node)
     {
         index = 40;
     }
 
-    public void caseTReturn(TReturn node)
+    public void caseTNop(TNop node)
     {
         index = 41;
     }
 
-    public void caseTSpecialinvoke(TSpecialinvoke node)
+    public void caseTRet(TRet node)
     {
         index = 42;
     }
 
-    public void caseTStaticinvoke(TStaticinvoke node)
+    public void caseTReturn(TReturn node)
     {
         index = 43;
     }
 
-    public void caseTTableswitch(TTableswitch node)
+    public void caseTSpecialinvoke(TSpecialinvoke node)
     {
         index = 44;
     }
 
-    public void caseTThrow(TThrow node)
+    public void caseTStaticinvoke(TStaticinvoke node)
     {
         index = 45;
     }
 
-    public void caseTTo(TTo node)
+    public void caseTTableswitch(TTableswitch node)
     {
         index = 46;
     }
 
-    public void caseTVirtualinvoke(TVirtualinvoke node)
+    public void caseTThrow(TThrow node)
     {
         index = 47;
     }
 
-    public void caseTWith(TWith node)
+    public void caseTTo(TTo node)
     {
         index = 48;
     }
 
-    public void caseTComma(TComma node)
+    public void caseTVirtualinvoke(TVirtualinvoke node)
     {
         index = 49;
     }
 
-    public void caseTLBrace(TLBrace node)
+    public void caseTWith(TWith node)
     {
         index = 50;
     }
 
-    public void caseTRBrace(TRBrace node)
+    public void caseTComma(TComma node)
     {
         index = 51;
     }
 
-    public void caseTSemicolon(TSemicolon node)
+    public void caseTLBrace(TLBrace node)
     {
         index = 52;
     }
 
-    public void caseTLBracket(TLBracket node)
+    public void caseTRBrace(TRBrace node)
     {
         index = 53;
     }
 
-    public void caseTRBracket(TRBracket node)
+    public void caseTSemicolon(TSemicolon node)
     {
         index = 54;
     }
 
-    public void caseTLAngledBracket(TLAngledBracket node)
+    public void caseTLBracket(TLBracket node)
     {
         index = 55;
     }
 
-    public void caseTRAngledBracket(TRAngledBracket node)
+    public void caseTRBracket(TRBracket node)
     {
         index = 56;
     }
@@ -412,12 +412,12 @@ class TokenIndex extends AnalysisAdapter
         index = 80;
     }
 
-    public void caseTClassIdentifier(TClassIdentifier node)
+    public void caseTName(TName node)
     {
         index = 81;
     }
 
-    public void caseTSimpleIdentifier(TSimpleIdentifier node)
+    public void caseTIdentifier(TIdentifier node)
     {
         index = 82;
     }
@@ -437,13 +437,18 @@ class TokenIndex extends AnalysisAdapter
         index = 85;
     }
 
-    public void caseTStringConstant(TStringConstant node)
+    public void caseTFloatConstant(TFloatConstant node)
     {
         index = 86;
     }
 
-    public void caseEOF(EOF node)
+    public void caseTStringConstant(TStringConstant node)
     {
         index = 87;
+    }
+
+    public void caseEOF(EOF node)
+    {
+        index = 88;
     }
 }

@@ -72,6 +72,21 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAAbstractModifier(AAbstractModifier node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFinalModifier(AFinalModifier node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseANativeModifier(ANativeModifier node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAPublicModifier(APublicModifier node)
     {
         defaultCase(node);
@@ -88,16 +103,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAStaticModifier(AStaticModifier node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseAFinalModifier(AFinalModifier node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseAAbstractModifier(AAbstractModifier node)
     {
         defaultCase(node);
     }
@@ -127,11 +132,6 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseAName(AName node)
-    {
-        defaultCase(node);
-    }
-
     public void caseAExtendsClause(AExtendsClause node)
     {
         defaultCase(node);
@@ -147,27 +147,12 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseAQualifiedName(AQualifiedName node)
+    public void caseASingleNameList(ASingleNameList node)
     {
         defaultCase(node);
     }
 
-    public void caseAPlainNameList(APlainNameList node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseADotNameList(ADotNameList node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseASingleQualifiedNameList(ASingleQualifiedNameList node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseAMultiQualifiedNameList(AMultiQualifiedNameList node)
+    public void caseAMultiNameList(AMultiNameList node)
     {
         defaultCase(node);
     }
@@ -302,11 +287,6 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseAIdQuotedIdentifier(AIdQuotedIdentifier node)
-    {
-        defaultCase(node);
-    }
-
     public void caseALabelStatement(ALabelStatement node)
     {
         defaultCase(node);
@@ -363,6 +343,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAReturnStatement(AReturnStatement node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAThrowStatement(AThrowStatement node)
     {
         defaultCase(node);
     }
@@ -448,6 +433,16 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseAImmediateExpression(AImmediateExpression node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseANewExpr(ANewExpr node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAArrayDescriptor(AArrayDescriptor node)
     {
         defaultCase(node);
     }
@@ -552,7 +547,7 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseABooleanConstant(ABooleanConstant node)
+    public void caseAFloatConstant(AFloatConstant node)
     {
         defaultCase(node);
     }
@@ -662,12 +657,32 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseALengthofUnop(ALengthofUnop node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAPlusUnop(APlusUnop node)
     {
         defaultCase(node);
     }
 
     public void caseAMinusUnop(AMinusUnop node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTAbstract(TAbstract node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTFinal(TFinal node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTNative(TNative node)
     {
         defaultCase(node);
     }
@@ -688,16 +703,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTStatic(TStatic node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTFinal(TFinal node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTAbstract(TAbstract node)
     {
         defaultCase(node);
     }
@@ -862,6 +867,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseTLengthof(TLengthof node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTLookupswitch(TLookupswitch node)
     {
         defaultCase(node);
@@ -943,16 +953,6 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTRBracket(TRBracket node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTLAngledBracket(TLAngledBracket node)
-    {
-        defaultCase(node);
-    }
-
-    public void caseTRAngledBracket(TRAngledBracket node)
     {
         defaultCase(node);
     }
@@ -1077,12 +1077,12 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseTClassIdentifier(TClassIdentifier node)
+    public void caseTName(TName node)
     {
         defaultCase(node);
     }
 
-    public void caseTSimpleIdentifier(TSimpleIdentifier node)
+    public void caseTIdentifier(TIdentifier node)
     {
         defaultCase(node);
     }
@@ -1098,6 +1098,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTIntegerConstant(TIntegerConstant node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTFloatConstant(TFloatConstant node)
     {
         defaultCase(node);
     }

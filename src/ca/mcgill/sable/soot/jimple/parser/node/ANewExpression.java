@@ -5,27 +5,22 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class ANewExpression extends PExpression
 {
-    private TNew _new_;
-    private PNonvoidType _nonvoidType_;
+    private PNewExpr _newExpr_;
 
     public ANewExpression()
     {
     }
 
     public ANewExpression(
-        TNew _new_,
-        PNonvoidType _nonvoidType_)
+        PNewExpr _newExpr_)
     {
-        setNew(_new_);
-
-        setNonvoidType(_nonvoidType_);
+        setNewExpr(_newExpr_);
 
     }
     public Object clone()
     {
         return new ANewExpression(
-            (TNew) cloneNode(_new_),
-            (PNonvoidType) cloneNode(_nonvoidType_));
+            (PNewExpr) cloneNode(_newExpr_));
     }
 
     public void apply(Switch sw)
@@ -33,16 +28,16 @@ public final class ANewExpression extends PExpression
         ((Analysis) sw).caseANewExpression(this);
     }
 
-    public TNew getNew()
+    public PNewExpr getNewExpr()
     {
-        return _new_;
+        return _newExpr_;
     }
 
-    public void setNew(TNew node)
+    public void setNewExpr(PNewExpr node)
     {
-        if(_new_ != null)
+        if(_newExpr_ != null)
         {
-            _new_.parent(null);
+            _newExpr_.parent(null);
         }
 
         if(node != null)
@@ -55,52 +50,20 @@ public final class ANewExpression extends PExpression
             node.parent(this);
         }
 
-        _new_ = node;
-    }
-
-    public PNonvoidType getNonvoidType()
-    {
-        return _nonvoidType_;
-    }
-
-    public void setNonvoidType(PNonvoidType node)
-    {
-        if(_nonvoidType_ != null)
-        {
-            _nonvoidType_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _nonvoidType_ = node;
+        _newExpr_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_new_)
-            + toString(_nonvoidType_);
+            + toString(_newExpr_);
     }
 
     void removeChild(Node child)
     {
-        if(_new_ == child)
+        if(_newExpr_ == child)
         {
-            _new_ = null;
-            return;
-        }
-
-        if(_nonvoidType_ == child)
-        {
-            _nonvoidType_ = null;
+            _newExpr_ = null;
             return;
         }
 
@@ -108,15 +71,9 @@ public final class ANewExpression extends PExpression
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_new_ == oldChild)
+        if(_newExpr_ == oldChild)
         {
-            setNew((TNew) newChild);
-            return;
-        }
-
-        if(_nonvoidType_ == oldChild)
-        {
-            setNonvoidType((PNonvoidType) newChild);
+            setNewExpr((PNewExpr) newChild);
             return;
         }
 

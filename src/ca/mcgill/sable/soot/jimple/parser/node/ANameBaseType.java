@@ -5,22 +5,22 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class ANameBaseType extends PBaseType
 {
-    private PQualifiedName _qualifiedName_;
+    private TName _name_;
 
     public ANameBaseType()
     {
     }
 
     public ANameBaseType(
-        PQualifiedName _qualifiedName_)
+        TName _name_)
     {
-        setQualifiedName(_qualifiedName_);
+        setName(_name_);
 
     }
     public Object clone()
     {
         return new ANameBaseType(
-            (PQualifiedName) cloneNode(_qualifiedName_));
+            (TName) cloneNode(_name_));
     }
 
     public void apply(Switch sw)
@@ -28,16 +28,16 @@ public final class ANameBaseType extends PBaseType
         ((Analysis) sw).caseANameBaseType(this);
     }
 
-    public PQualifiedName getQualifiedName()
+    public TName getName()
     {
-        return _qualifiedName_;
+        return _name_;
     }
 
-    public void setQualifiedName(PQualifiedName node)
+    public void setName(TName node)
     {
-        if(_qualifiedName_ != null)
+        if(_name_ != null)
         {
-            _qualifiedName_.parent(null);
+            _name_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _qualifiedName_ = node;
+        _name_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_qualifiedName_);
+            + toString(_name_);
     }
 
     void removeChild(Node child)
     {
-        if(_qualifiedName_ == child)
+        if(_name_ == child)
         {
-            _qualifiedName_ = null;
+            _name_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_qualifiedName_ == oldChild)
+        if(_name_ == oldChild)
         {
-            setQualifiedName((PQualifiedName) newChild);
+            setName((TName) newChild);
             return;
         }
 

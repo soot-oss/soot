@@ -7,7 +7,7 @@ public final class AMethodMember extends PMember
 {
     private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
     private PType _type_;
-    private PName _name_;
+    private TName _name_;
     private TLParen _lParen_;
     private PParameterList _parameterList_;
     private TRParen _rParen_;
@@ -20,7 +20,7 @@ public final class AMethodMember extends PMember
     public AMethodMember(
         List _modifier_,
         PType _type_,
-        PName _name_,
+        TName _name_,
         TLParen _lParen_,
         PParameterList _parameterList_,
         TRParen _rParen_,
@@ -51,7 +51,7 @@ public final class AMethodMember extends PMember
     public AMethodMember(
         XPModifier _modifier_,
         PType _type_,
-        PName _name_,
+        TName _name_,
         TLParen _lParen_,
         PParameterList _parameterList_,
         TRParen _rParen_,
@@ -85,7 +85,7 @@ public final class AMethodMember extends PMember
         return new AMethodMember(
             cloneList(_modifier_),
             (PType) cloneNode(_type_),
-            (PName) cloneNode(_name_),
+            (TName) cloneNode(_name_),
             (TLParen) cloneNode(_lParen_),
             (PParameterList) cloneNode(_parameterList_),
             (TRParen) cloneNode(_rParen_),
@@ -136,12 +136,12 @@ public final class AMethodMember extends PMember
         _type_ = node;
     }
 
-    public PName getName()
+    public TName getName()
     {
         return _name_;
     }
 
-    public void setName(PName node)
+    public void setName(TName node)
     {
         if(_name_ != null)
         {
@@ -345,7 +345,7 @@ public final class AMethodMember extends PMember
 
         if(_name_ == oldChild)
         {
-            setName((PName) newChild);
+            setName((TName) newChild);
             return;
         }
 

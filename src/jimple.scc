@@ -5,7 +5,7 @@ Helpers
 
   dec_digit = ['0' .. '9'];
   dec_nonzero = ['1' .. '9'];
-  dec_constant = dec_nonzero dec_digit*;
+  dec_constant = dec_digit+;
 
   hex_digit = dec_digit | ['a' .. 'f'] | ['A' .. 'F'];
   hex_constant = '0' ('x' | 'X') hex_digit+;
@@ -24,20 +24,22 @@ Helpers
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   id_char = alpha_char | dec_digit | '_' | '<' | '>';
   
+  quote = ''';
   simple_id_char = alpha_char | dec_digit | '_';
-  quoted_char = [not_cr_lf - [''' + ['.' + ' ']]];
+  quotable_char = [not_cr_lf - '''];
   string_char = [not_cr_lf - '"'];
 
   line_comment = '//' not_cr_lf*;
   long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/';
  
 Tokens
+  abstract = 'abstract';
+  final = 'final';
+  native = 'native';
   public = 'public';
   protected = 'protected';
   private = 'private';
   static = 'static';
-  final = 'final';
-  abstract = 'abstract';
   synchronized = 'synchronized';
   transient = 'transient';
   volatile = 'volatile';
@@ -74,6 +76,7 @@ Tokens
   if = 'if';
   instanceof = 'instanceof';
   interfaceinvoke = 'interfaceinvoke';
+  lengthof = 'lengthof';
   lookupswitch = 'lookupswitch';
   nop = 'nop';
   ret = 'ret';
@@ -92,8 +95,6 @@ Tokens
   semicolon = ';';
   l_bracket = '[';
   r_bracket = ']';
-  l_angled_bracket = '<';
-  r_angled_bracket = '>';
   l_paren = '(';
   r_paren = ')';
   colon = ':';
@@ -108,7 +109,7 @@ Tokens
   cmpeq = '==';
   cmpne = '!=';
   cmpgt = '>';
-  cmpge = '<=';
+  cmpge = '>=';
   cmplt = '<';
   cmple = '<=';
   shl = '<<';
@@ -119,12 +120,13 @@ Tokens
   mult = '*';
   div = '/';
 
-  class_identifier = id_char+;
-  simple_identifier = alpha_char simple_id_char*;
-  at_identifier = '@' (('parameter' dec_digit+) | 'this');
+  name = quote quotable_char+ quote;
+  identifier = alpha_char simple_id_char*;
+  at_identifier = '@' (('parameter' dec_digit+) | 'this' | 'caughtexception');
 
   bool_constant = 'true' | 'false';
-  integer_constant = dec_constant | hex_constant | oct_constant;
+  integer_constant = '-'? (dec_constant | hex_constant | oct_constant) 'L'?;
+  float_constant = '-'? (dec_constant '.' dec_constant) (('e'|'E') ('+'|'-')? dec_constant)? ('f'|'F')?;
   string_constant = '"' string_char* '"';
 
   blank = (' ' | 9 | 13 | 10)+;  
@@ -135,15 +137,16 @@ Ignored Tokens
 
 Productions
   file = 
-    modifier* file_type qualified_name extends_clause? implements_clause? file_body; 
+    modifier* file_type name extends_clause? implements_clause? file_body; 
 
   modifier =
+    {abstract}     abstract |
+    {final}        final |
+    {native}       native |
     {public}       public |
     {protected}    protected |
     {private}      private |
     {static}       static |
-    {final}        final |
-    {abstract}     abstract |
     {synchronized} synchronized |
     {transient}    transient |
     {volatile}     volatile;
@@ -152,28 +155,18 @@ Productions
     {class}     [theclass]:class |
     {interface} interface;
 
-  name =
-    [left]:quote quoted_identifier [right]:quote;
-
   extends_clause =
-    extends qualified_name;
+    extends name;
 
   implements_clause =
-    implements qualified_name_list;
+    implements name_list;
 
   file_body =
     l_brace member* r_brace;
 
-  qualified_name =
-    [left]:quote name_list [right]:quote;
-
   name_list =
-    {plain} quoted_identifier |
-    {dot}   quoted_identifier dot name_list;
-
-  qualified_name_list =
-    {single} qualified_name | 
-    {multi}  qualified_name comma qualified_name_list;
+    {single} name | 
+    {multi}  name comma name_list;
 
   member =
     {field}  modifier* type name semicolon |
@@ -199,7 +192,7 @@ Productions
     {long}    long |
     {float}   float |
     {double}  double |
-    {name}    qualified_name;
+    {name}    name;
   
   nonvoid_type =
     base_type array_brackets*;
@@ -219,14 +212,11 @@ Productions
     {nonvoid} nonvoid_type;
 
   local_name =
-    simple_identifier;
+    identifier;
 
   local_name_list =
     {single} local_name |
     {multi}  local_name comma local_name_list;
-
-  quoted_identifier =
-    {id} class_identifier;
 
   statement =
     {label}        label_name colon |
@@ -241,10 +231,11 @@ Productions
     {nop}          nop semicolon |
     {ret}          ret immediate? semicolon |
     {return}       return immediate? semicolon |
+    {throw}        throw immediate semicolon |
     {invoke}       invoke_expr semicolon;
 
   label_name =
-    simple_identifier;
+    identifier;
 
   switch =
     {lookup} lookupswitch |
@@ -264,7 +255,7 @@ Productions
     catch [name]:name from [from_label]:label_name to [to_label]:label_name with [with_label]:label_name semicolon;
 
   expression =
-    {new}         new nonvoid_type |
+    {new}         new_expr |
     {cast}        l_paren nonvoid_type r_paren local_name |
     {instanceof}  immediate instanceof nonvoid_type |
     {invoke}      invoke_expr |
@@ -272,6 +263,12 @@ Productions
     {binop}       [left]:immediate binop [right]:immediate |
     {unop}        unop immediate |
     {immediate}   immediate;
+
+  new_expr =
+    new base_type array_descriptor*;
+
+  array_descriptor =
+    l_bracket immediate? r_bracket;
 
   variable =
     {reference} reference |
@@ -290,7 +287,7 @@ Productions
     {interface} interfaceinvoke;
 
   method_signature =
-    l_angled_bracket qualified_name [first_colon]:colon name [second_colon]:colon l_paren parameter_list? r_paren [third_colon]:colon type r_angled_bracket;
+    cmplt [class_name]:name [first]:colon [method_name]:name [second]:colon l_paren parameter_list? r_paren [third]:colon type cmpgt;
 
   reference =
     {array} array_ref |
@@ -304,7 +301,7 @@ Productions
     {sig}   field_signature;
 
   field_signature =
-    l_angled_bracket qualified_name [first_colon]:colon name [second_colon]:colon type r_angled_bracket;
+    cmplt [class_name]:name [first]:colon [field_name]:name [second]:colon type cmpgt;
 
   arg_list =
     {single} immediate |
@@ -316,7 +313,7 @@ Productions
 
   constant =
     {integer} integer_constant |
-    {boolean} bool_constant |
+    {float}   float_constant |
     {string}  string_constant;
 
   binop =
@@ -342,8 +339,11 @@ Productions
     {div}   div;
 
   unop =
-    {plus}  plus |
-    {minus} minus;
+    {lengthof} lengthof |
+    {plus}     plus |
+    {minus}    minus;
+
+
 
 
 

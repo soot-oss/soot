@@ -3,59 +3,29 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class AExtendsClause extends PExtendsClause
+public final class ASingleNameList extends PNameList
 {
-    private TExtends _extends_;
     private TName _name_;
 
-    public AExtendsClause()
+    public ASingleNameList()
     {
     }
 
-    public AExtendsClause(
-        TExtends _extends_,
+    public ASingleNameList(
         TName _name_)
     {
-        setExtends(_extends_);
-
         setName(_name_);
 
     }
     public Object clone()
     {
-        return new AExtendsClause(
-            (TExtends) cloneNode(_extends_),
+        return new ASingleNameList(
             (TName) cloneNode(_name_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAExtendsClause(this);
-    }
-
-    public TExtends getExtends()
-    {
-        return _extends_;
-    }
-
-    public void setExtends(TExtends node)
-    {
-        if(_extends_ != null)
-        {
-            _extends_.parent(null);
-        }
-
-        if(node != null)
-        {
-            if(node.parent() != null)
-            {
-                node.parent().removeChild(node);
-            }
-
-            node.parent(this);
-        }
-
-        _extends_ = node;
+        ((Analysis) sw).caseASingleNameList(this);
     }
 
     public TName getName()
@@ -86,18 +56,11 @@ public final class AExtendsClause extends PExtendsClause
     public String toString()
     {
         return ""
-            + toString(_extends_)
             + toString(_name_);
     }
 
     void removeChild(Node child)
     {
-        if(_extends_ == child)
-        {
-            _extends_ = null;
-            return;
-        }
-
         if(_name_ == child)
         {
             _name_ = null;
@@ -108,12 +71,6 @@ public final class AExtendsClause extends PExtendsClause
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_extends_ == oldChild)
-        {
-            setExtends((TExtends) newChild);
-            return;
-        }
-
         if(_name_ == oldChild)
         {
             setName((TName) newChild);

@@ -3,41 +3,41 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ALabelName extends PLabelName
+public final class ANativeModifier extends PModifier
 {
-    private TIdentifier _identifier_;
+    private TNative _native_;
 
-    public ALabelName()
+    public ANativeModifier()
     {
     }
 
-    public ALabelName(
-        TIdentifier _identifier_)
+    public ANativeModifier(
+        TNative _native_)
     {
-        setIdentifier(_identifier_);
+        setNative(_native_);
 
     }
     public Object clone()
     {
-        return new ALabelName(
-            (TIdentifier) cloneNode(_identifier_));
+        return new ANativeModifier(
+            (TNative) cloneNode(_native_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseALabelName(this);
+        ((Analysis) sw).caseANativeModifier(this);
     }
 
-    public TIdentifier getIdentifier()
+    public TNative getNative()
     {
-        return _identifier_;
+        return _native_;
     }
 
-    public void setIdentifier(TIdentifier node)
+    public void setNative(TNative node)
     {
-        if(_identifier_ != null)
+        if(_native_ != null)
         {
-            _identifier_.parent(null);
+            _native_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class ALabelName extends PLabelName
             node.parent(this);
         }
 
-        _identifier_ = node;
+        _native_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_identifier_);
+            + toString(_native_);
     }
 
     void removeChild(Node child)
     {
-        if(_identifier_ == child)
+        if(_native_ == child)
         {
-            _identifier_ = null;
+            _native_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class ALabelName extends PLabelName
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_identifier_ == oldChild)
+        if(_native_ == oldChild)
         {
-            setIdentifier((TIdentifier) newChild);
+            setNative((TNative) newChild);
             return;
         }
 

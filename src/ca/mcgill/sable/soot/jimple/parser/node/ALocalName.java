@@ -5,22 +5,22 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class ALocalName extends PLocalName
 {
-    private TSimpleIdentifier _simpleIdentifier_;
+    private TIdentifier _identifier_;
 
     public ALocalName()
     {
     }
 
     public ALocalName(
-        TSimpleIdentifier _simpleIdentifier_)
+        TIdentifier _identifier_)
     {
-        setSimpleIdentifier(_simpleIdentifier_);
+        setIdentifier(_identifier_);
 
     }
     public Object clone()
     {
         return new ALocalName(
-            (TSimpleIdentifier) cloneNode(_simpleIdentifier_));
+            (TIdentifier) cloneNode(_identifier_));
     }
 
     public void apply(Switch sw)
@@ -28,16 +28,16 @@ public final class ALocalName extends PLocalName
         ((Analysis) sw).caseALocalName(this);
     }
 
-    public TSimpleIdentifier getSimpleIdentifier()
+    public TIdentifier getIdentifier()
     {
-        return _simpleIdentifier_;
+        return _identifier_;
     }
 
-    public void setSimpleIdentifier(TSimpleIdentifier node)
+    public void setIdentifier(TIdentifier node)
     {
-        if(_simpleIdentifier_ != null)
+        if(_identifier_ != null)
         {
-            _simpleIdentifier_.parent(null);
+            _identifier_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class ALocalName extends PLocalName
             node.parent(this);
         }
 
-        _simpleIdentifier_ = node;
+        _identifier_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_simpleIdentifier_);
+            + toString(_identifier_);
     }
 
     void removeChild(Node child)
     {
-        if(_simpleIdentifier_ == child)
+        if(_identifier_ == child)
         {
-            _simpleIdentifier_ = null;
+            _identifier_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class ALocalName extends PLocalName
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_simpleIdentifier_ == oldChild)
+        if(_identifier_ == oldChild)
         {
-            setSimpleIdentifier((TSimpleIdentifier) newChild);
+            setIdentifier((TIdentifier) newChild);
             return;
         }
 

@@ -5,52 +5,52 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class AFieldSignature extends PFieldSignature
 {
-    private TLAngledBracket _lAngledBracket_;
-    private PQualifiedName _qualifiedName_;
-    private TColon _firstColon_;
-    private PName _name_;
-    private TColon _secondColon_;
+    private TCmplt _cmplt_;
+    private TName _className_;
+    private TColon _first_;
+    private TName _fieldName_;
+    private TColon _second_;
     private PType _type_;
-    private TRAngledBracket _rAngledBracket_;
+    private TCmpgt _cmpgt_;
 
     public AFieldSignature()
     {
     }
 
     public AFieldSignature(
-        TLAngledBracket _lAngledBracket_,
-        PQualifiedName _qualifiedName_,
-        TColon _firstColon_,
-        PName _name_,
-        TColon _secondColon_,
+        TCmplt _cmplt_,
+        TName _className_,
+        TColon _first_,
+        TName _fieldName_,
+        TColon _second_,
         PType _type_,
-        TRAngledBracket _rAngledBracket_)
+        TCmpgt _cmpgt_)
     {
-        setLAngledBracket(_lAngledBracket_);
+        setCmplt(_cmplt_);
 
-        setQualifiedName(_qualifiedName_);
+        setClassName(_className_);
 
-        setFirstColon(_firstColon_);
+        setFirst(_first_);
 
-        setName(_name_);
+        setFieldName(_fieldName_);
 
-        setSecondColon(_secondColon_);
+        setSecond(_second_);
 
         setType(_type_);
 
-        setRAngledBracket(_rAngledBracket_);
+        setCmpgt(_cmpgt_);
 
     }
     public Object clone()
     {
         return new AFieldSignature(
-            (TLAngledBracket) cloneNode(_lAngledBracket_),
-            (PQualifiedName) cloneNode(_qualifiedName_),
-            (TColon) cloneNode(_firstColon_),
-            (PName) cloneNode(_name_),
-            (TColon) cloneNode(_secondColon_),
+            (TCmplt) cloneNode(_cmplt_),
+            (TName) cloneNode(_className_),
+            (TColon) cloneNode(_first_),
+            (TName) cloneNode(_fieldName_),
+            (TColon) cloneNode(_second_),
             (PType) cloneNode(_type_),
-            (TRAngledBracket) cloneNode(_rAngledBracket_));
+            (TCmpgt) cloneNode(_cmpgt_));
     }
 
     public void apply(Switch sw)
@@ -58,16 +58,16 @@ public final class AFieldSignature extends PFieldSignature
         ((Analysis) sw).caseAFieldSignature(this);
     }
 
-    public TLAngledBracket getLAngledBracket()
+    public TCmplt getCmplt()
     {
-        return _lAngledBracket_;
+        return _cmplt_;
     }
 
-    public void setLAngledBracket(TLAngledBracket node)
+    public void setCmplt(TCmplt node)
     {
-        if(_lAngledBracket_ != null)
+        if(_cmplt_ != null)
         {
-            _lAngledBracket_.parent(null);
+            _cmplt_.parent(null);
         }
 
         if(node != null)
@@ -80,19 +80,19 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _lAngledBracket_ = node;
+        _cmplt_ = node;
     }
 
-    public PQualifiedName getQualifiedName()
+    public TName getClassName()
     {
-        return _qualifiedName_;
+        return _className_;
     }
 
-    public void setQualifiedName(PQualifiedName node)
+    public void setClassName(TName node)
     {
-        if(_qualifiedName_ != null)
+        if(_className_ != null)
         {
-            _qualifiedName_.parent(null);
+            _className_.parent(null);
         }
 
         if(node != null)
@@ -105,19 +105,19 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _qualifiedName_ = node;
+        _className_ = node;
     }
 
-    public TColon getFirstColon()
+    public TColon getFirst()
     {
-        return _firstColon_;
+        return _first_;
     }
 
-    public void setFirstColon(TColon node)
+    public void setFirst(TColon node)
     {
-        if(_firstColon_ != null)
+        if(_first_ != null)
         {
-            _firstColon_.parent(null);
+            _first_.parent(null);
         }
 
         if(node != null)
@@ -130,19 +130,19 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _firstColon_ = node;
+        _first_ = node;
     }
 
-    public PName getName()
+    public TName getFieldName()
     {
-        return _name_;
+        return _fieldName_;
     }
 
-    public void setName(PName node)
+    public void setFieldName(TName node)
     {
-        if(_name_ != null)
+        if(_fieldName_ != null)
         {
-            _name_.parent(null);
+            _fieldName_.parent(null);
         }
 
         if(node != null)
@@ -155,19 +155,19 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _name_ = node;
+        _fieldName_ = node;
     }
 
-    public TColon getSecondColon()
+    public TColon getSecond()
     {
-        return _secondColon_;
+        return _second_;
     }
 
-    public void setSecondColon(TColon node)
+    public void setSecond(TColon node)
     {
-        if(_secondColon_ != null)
+        if(_second_ != null)
         {
-            _secondColon_.parent(null);
+            _second_.parent(null);
         }
 
         if(node != null)
@@ -180,7 +180,7 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _secondColon_ = node;
+        _second_ = node;
     }
 
     public PType getType()
@@ -208,16 +208,16 @@ public final class AFieldSignature extends PFieldSignature
         _type_ = node;
     }
 
-    public TRAngledBracket getRAngledBracket()
+    public TCmpgt getCmpgt()
     {
-        return _rAngledBracket_;
+        return _cmpgt_;
     }
 
-    public void setRAngledBracket(TRAngledBracket node)
+    public void setCmpgt(TCmpgt node)
     {
-        if(_rAngledBracket_ != null)
+        if(_cmpgt_ != null)
         {
-            _rAngledBracket_.parent(null);
+            _cmpgt_.parent(null);
         }
 
         if(node != null)
@@ -230,50 +230,50 @@ public final class AFieldSignature extends PFieldSignature
             node.parent(this);
         }
 
-        _rAngledBracket_ = node;
+        _cmpgt_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_lAngledBracket_)
-            + toString(_qualifiedName_)
-            + toString(_firstColon_)
-            + toString(_name_)
-            + toString(_secondColon_)
+            + toString(_cmplt_)
+            + toString(_className_)
+            + toString(_first_)
+            + toString(_fieldName_)
+            + toString(_second_)
             + toString(_type_)
-            + toString(_rAngledBracket_);
+            + toString(_cmpgt_);
     }
 
     void removeChild(Node child)
     {
-        if(_lAngledBracket_ == child)
+        if(_cmplt_ == child)
         {
-            _lAngledBracket_ = null;
+            _cmplt_ = null;
             return;
         }
 
-        if(_qualifiedName_ == child)
+        if(_className_ == child)
         {
-            _qualifiedName_ = null;
+            _className_ = null;
             return;
         }
 
-        if(_firstColon_ == child)
+        if(_first_ == child)
         {
-            _firstColon_ = null;
+            _first_ = null;
             return;
         }
 
-        if(_name_ == child)
+        if(_fieldName_ == child)
         {
-            _name_ = null;
+            _fieldName_ = null;
             return;
         }
 
-        if(_secondColon_ == child)
+        if(_second_ == child)
         {
-            _secondColon_ = null;
+            _second_ = null;
             return;
         }
 
@@ -283,9 +283,9 @@ public final class AFieldSignature extends PFieldSignature
             return;
         }
 
-        if(_rAngledBracket_ == child)
+        if(_cmpgt_ == child)
         {
-            _rAngledBracket_ = null;
+            _cmpgt_ = null;
             return;
         }
 
@@ -293,33 +293,33 @@ public final class AFieldSignature extends PFieldSignature
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_lAngledBracket_ == oldChild)
+        if(_cmplt_ == oldChild)
         {
-            setLAngledBracket((TLAngledBracket) newChild);
+            setCmplt((TCmplt) newChild);
             return;
         }
 
-        if(_qualifiedName_ == oldChild)
+        if(_className_ == oldChild)
         {
-            setQualifiedName((PQualifiedName) newChild);
+            setClassName((TName) newChild);
             return;
         }
 
-        if(_firstColon_ == oldChild)
+        if(_first_ == oldChild)
         {
-            setFirstColon((TColon) newChild);
+            setFirst((TColon) newChild);
             return;
         }
 
-        if(_name_ == oldChild)
+        if(_fieldName_ == oldChild)
         {
-            setName((PName) newChild);
+            setFieldName((TName) newChild);
             return;
         }
 
-        if(_secondColon_ == oldChild)
+        if(_second_ == oldChild)
         {
-            setSecondColon((TColon) newChild);
+            setSecond((TColon) newChild);
             return;
         }
 
@@ -329,9 +329,9 @@ public final class AFieldSignature extends PFieldSignature
             return;
         }
 
-        if(_rAngledBracket_ == oldChild)
+        if(_cmpgt_ == oldChild)
         {
-            setRAngledBracket((TRAngledBracket) newChild);
+            setCmpgt((TCmpgt) newChild);
             return;
         }
 

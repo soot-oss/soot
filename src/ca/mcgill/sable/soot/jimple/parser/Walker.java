@@ -13,7 +13,7 @@ class Walker extends DepthFirstAdapter
 
     public void inAFile(AFile node)
     {
-	System.out.println("reading class " + node.getQualifiedName());
+	System.out.println("reading class " + node.getName());
     } // inAFile
 
     public void inAMethodMember(AMethodMember node)

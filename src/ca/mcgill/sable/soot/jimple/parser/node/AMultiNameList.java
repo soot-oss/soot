@@ -3,51 +3,51 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class AMultiQualifiedNameList extends PQualifiedNameList
+public final class AMultiNameList extends PNameList
 {
-    private PQualifiedName _qualifiedName_;
+    private TName _name_;
     private TComma _comma_;
-    private PQualifiedNameList _qualifiedNameList_;
+    private PNameList _nameList_;
 
-    public AMultiQualifiedNameList()
+    public AMultiNameList()
     {
     }
 
-    public AMultiQualifiedNameList(
-        PQualifiedName _qualifiedName_,
+    public AMultiNameList(
+        TName _name_,
         TComma _comma_,
-        PQualifiedNameList _qualifiedNameList_)
+        PNameList _nameList_)
     {
-        setQualifiedName(_qualifiedName_);
+        setName(_name_);
 
         setComma(_comma_);
 
-        setQualifiedNameList(_qualifiedNameList_);
+        setNameList(_nameList_);
 
     }
     public Object clone()
     {
-        return new AMultiQualifiedNameList(
-            (PQualifiedName) cloneNode(_qualifiedName_),
+        return new AMultiNameList(
+            (TName) cloneNode(_name_),
             (TComma) cloneNode(_comma_),
-            (PQualifiedNameList) cloneNode(_qualifiedNameList_));
+            (PNameList) cloneNode(_nameList_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseAMultiQualifiedNameList(this);
+        ((Analysis) sw).caseAMultiNameList(this);
     }
 
-    public PQualifiedName getQualifiedName()
+    public TName getName()
     {
-        return _qualifiedName_;
+        return _name_;
     }
 
-    public void setQualifiedName(PQualifiedName node)
+    public void setName(TName node)
     {
-        if(_qualifiedName_ != null)
+        if(_name_ != null)
         {
-            _qualifiedName_.parent(null);
+            _name_.parent(null);
         }
 
         if(node != null)
@@ -60,7 +60,7 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
             node.parent(this);
         }
 
-        _qualifiedName_ = node;
+        _name_ = node;
     }
 
     public TComma getComma()
@@ -88,16 +88,16 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
         _comma_ = node;
     }
 
-    public PQualifiedNameList getQualifiedNameList()
+    public PNameList getNameList()
     {
-        return _qualifiedNameList_;
+        return _nameList_;
     }
 
-    public void setQualifiedNameList(PQualifiedNameList node)
+    public void setNameList(PNameList node)
     {
-        if(_qualifiedNameList_ != null)
+        if(_nameList_ != null)
         {
-            _qualifiedNameList_.parent(null);
+            _nameList_.parent(null);
         }
 
         if(node != null)
@@ -110,22 +110,22 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
             node.parent(this);
         }
 
-        _qualifiedNameList_ = node;
+        _nameList_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_qualifiedName_)
+            + toString(_name_)
             + toString(_comma_)
-            + toString(_qualifiedNameList_);
+            + toString(_nameList_);
     }
 
     void removeChild(Node child)
     {
-        if(_qualifiedName_ == child)
+        if(_name_ == child)
         {
-            _qualifiedName_ = null;
+            _name_ = null;
             return;
         }
 
@@ -135,9 +135,9 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
             return;
         }
 
-        if(_qualifiedNameList_ == child)
+        if(_nameList_ == child)
         {
-            _qualifiedNameList_ = null;
+            _nameList_ = null;
             return;
         }
 
@@ -145,9 +145,9 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_qualifiedName_ == oldChild)
+        if(_name_ == oldChild)
         {
-            setQualifiedName((PQualifiedName) newChild);
+            setName((TName) newChild);
             return;
         }
 
@@ -157,9 +157,9 @@ public final class AMultiQualifiedNameList extends PQualifiedNameList
             return;
         }
 
-        if(_qualifiedNameList_ == oldChild)
+        if(_nameList_ == oldChild)
         {
-            setQualifiedNameList((PQualifiedNameList) newChild);
+            setNameList((PNameList) newChild);
             return;
         }
 

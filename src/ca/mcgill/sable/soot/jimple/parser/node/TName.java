@@ -3,14 +3,14 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class TClassIdentifier extends Token
+public final class TName extends Token
 {
-    public TClassIdentifier(String text)
+    public TName(String text)
     {
         setText(text);
     }
 
-    public TClassIdentifier(String text, int line, int pos)
+    public TName(String text, int line, int pos)
     {
         setText(text);
         setLine(line);
@@ -19,11 +19,11 @@ public final class TClassIdentifier extends Token
 
     public Object clone()
     {
-      return new TClassIdentifier(getText(), getLine(), getPos());
+      return new TName(getText(), getLine(), getPos());
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseTClassIdentifier(this);
+        ((Analysis) sw).caseTName(this);
     }
 }

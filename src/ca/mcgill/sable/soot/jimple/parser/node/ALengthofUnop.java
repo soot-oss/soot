@@ -3,41 +3,41 @@ package ca.mcgill.sable.soot.jimple.parser.node;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ALabelName extends PLabelName
+public final class ALengthofUnop extends PUnop
 {
-    private TIdentifier _identifier_;
+    private TLengthof _lengthof_;
 
-    public ALabelName()
+    public ALengthofUnop()
     {
     }
 
-    public ALabelName(
-        TIdentifier _identifier_)
+    public ALengthofUnop(
+        TLengthof _lengthof_)
     {
-        setIdentifier(_identifier_);
+        setLengthof(_lengthof_);
 
     }
     public Object clone()
     {
-        return new ALabelName(
-            (TIdentifier) cloneNode(_identifier_));
+        return new ALengthofUnop(
+            (TLengthof) cloneNode(_lengthof_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseALabelName(this);
+        ((Analysis) sw).caseALengthofUnop(this);
     }
 
-    public TIdentifier getIdentifier()
+    public TLengthof getLengthof()
     {
-        return _identifier_;
+        return _lengthof_;
     }
 
-    public void setIdentifier(TIdentifier node)
+    public void setLengthof(TLengthof node)
     {
-        if(_identifier_ != null)
+        if(_lengthof_ != null)
         {
-            _identifier_.parent(null);
+            _lengthof_.parent(null);
         }
 
         if(node != null)
@@ -50,20 +50,20 @@ public final class ALabelName extends PLabelName
             node.parent(this);
         }
 
-        _identifier_ = node;
+        _lengthof_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_identifier_);
+            + toString(_lengthof_);
     }
 
     void removeChild(Node child)
     {
-        if(_identifier_ == child)
+        if(_lengthof_ == child)
         {
-            _identifier_ = null;
+            _lengthof_ = null;
             return;
         }
 
@@ -71,9 +71,9 @@ public final class ALabelName extends PLabelName
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_identifier_ == oldChild)
+        if(_lengthof_ == oldChild)
         {
-            setIdentifier((TIdentifier) newChild);
+            setLengthof((TLengthof) newChild);
             return;
         }
 

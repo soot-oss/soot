@@ -1,5 +1,5 @@
 package ca.mcgill.sable.soot.jimple.parser.node;
 
-public abstract class PName extends Node
+public abstract class XPArrayDescriptor extends Node
 {
 }

@@ -43,9 +43,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getFileType().apply(this);
         }
-        if(node.getQualifiedName() != null)
+        if(node.getName() != null)
         {
-            node.getQualifiedName().apply(this);
+            node.getName().apply(this);
         }
         if(node.getExtendsClause() != null)
         {
@@ -60,6 +60,60 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getFileBody().apply(this);
         }
         outAFile(node);
+    }
+
+    public void inAAbstractModifier(AAbstractModifier node)
+    {
+    }
+
+    public void outAAbstractModifier(AAbstractModifier node)
+    {
+    }
+
+    public void caseAAbstractModifier(AAbstractModifier node)
+    {
+        inAAbstractModifier(node);
+        if(node.getAbstract() != null)
+        {
+            node.getAbstract().apply(this);
+        }
+        outAAbstractModifier(node);
+    }
+
+    public void inAFinalModifier(AFinalModifier node)
+    {
+    }
+
+    public void outAFinalModifier(AFinalModifier node)
+    {
+    }
+
+    public void caseAFinalModifier(AFinalModifier node)
+    {
+        inAFinalModifier(node);
+        if(node.getFinal() != null)
+        {
+            node.getFinal().apply(this);
+        }
+        outAFinalModifier(node);
+    }
+
+    public void inANativeModifier(ANativeModifier node)
+    {
+    }
+
+    public void outANativeModifier(ANativeModifier node)
+    {
+    }
+
+    public void caseANativeModifier(ANativeModifier node)
+    {
+        inANativeModifier(node);
+        if(node.getNative() != null)
+        {
+            node.getNative().apply(this);
+        }
+        outANativeModifier(node);
     }
 
     public void inAPublicModifier(APublicModifier node)
@@ -132,42 +186,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getStatic().apply(this);
         }
         outAStaticModifier(node);
-    }
-
-    public void inAFinalModifier(AFinalModifier node)
-    {
-    }
-
-    public void outAFinalModifier(AFinalModifier node)
-    {
-    }
-
-    public void caseAFinalModifier(AFinalModifier node)
-    {
-        inAFinalModifier(node);
-        if(node.getFinal() != null)
-        {
-            node.getFinal().apply(this);
-        }
-        outAFinalModifier(node);
-    }
-
-    public void inAAbstractModifier(AAbstractModifier node)
-    {
-    }
-
-    public void outAAbstractModifier(AAbstractModifier node)
-    {
-    }
-
-    public void caseAAbstractModifier(AAbstractModifier node)
-    {
-        inAAbstractModifier(node);
-        if(node.getAbstract() != null)
-        {
-            node.getAbstract().apply(this);
-        }
-        outAAbstractModifier(node);
     }
 
     public void inASynchronizedModifier(ASynchronizedModifier node)
@@ -260,32 +278,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAInterfaceFileType(node);
     }
 
-    public void inAName(AName node)
-    {
-    }
-
-    public void outAName(AName node)
-    {
-    }
-
-    public void caseAName(AName node)
-    {
-        inAName(node);
-        if(node.getLeft() != null)
-        {
-            node.getLeft().apply(this);
-        }
-        if(node.getQuotedIdentifier() != null)
-        {
-            node.getQuotedIdentifier().apply(this);
-        }
-        if(node.getRight() != null)
-        {
-            node.getRight().apply(this);
-        }
-        outAName(node);
-    }
-
     public void inAExtendsClause(AExtendsClause node)
     {
     }
@@ -301,9 +293,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getExtends().apply(this);
         }
-        if(node.getQualifiedName() != null)
+        if(node.getName() != null)
         {
-            node.getQualifiedName().apply(this);
+            node.getName().apply(this);
         }
         outAExtendsClause(node);
     }
@@ -323,9 +315,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getImplements().apply(this);
         }
-        if(node.getQualifiedNameList() != null)
+        if(node.getNameList() != null)
         {
-            node.getQualifiedNameList().apply(this);
+            node.getNameList().apply(this);
         }
         outAImplementsClause(node);
     }
@@ -359,118 +351,48 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAFileBody(node);
     }
 
-    public void inAQualifiedName(AQualifiedName node)
+    public void inASingleNameList(ASingleNameList node)
     {
     }
 
-    public void outAQualifiedName(AQualifiedName node)
+    public void outASingleNameList(ASingleNameList node)
     {
     }
 
-    public void caseAQualifiedName(AQualifiedName node)
+    public void caseASingleNameList(ASingleNameList node)
     {
-        inAQualifiedName(node);
-        if(node.getLeft() != null)
+        inASingleNameList(node);
+        if(node.getName() != null)
         {
-            node.getLeft().apply(this);
+            node.getName().apply(this);
         }
-        if(node.getNameList() != null)
+        outASingleNameList(node);
+    }
+
+    public void inAMultiNameList(AMultiNameList node)
+    {
+    }
+
+    public void outAMultiNameList(AMultiNameList node)
+    {
+    }
+
+    public void caseAMultiNameList(AMultiNameList node)
+    {
+        inAMultiNameList(node);
+        if(node.getName() != null)
         {
-            node.getNameList().apply(this);
-        }
-        if(node.getRight() != null)
-        {
-            node.getRight().apply(this);
-        }
-        outAQualifiedName(node);
-    }
-
-    public void inAPlainNameList(APlainNameList node)
-    {
-    }
-
-    public void outAPlainNameList(APlainNameList node)
-    {
-    }
-
-    public void caseAPlainNameList(APlainNameList node)
-    {
-        inAPlainNameList(node);
-        if(node.getQuotedIdentifier() != null)
-        {
-            node.getQuotedIdentifier().apply(this);
-        }
-        outAPlainNameList(node);
-    }
-
-    public void inADotNameList(ADotNameList node)
-    {
-    }
-
-    public void outADotNameList(ADotNameList node)
-    {
-    }
-
-    public void caseADotNameList(ADotNameList node)
-    {
-        inADotNameList(node);
-        if(node.getQuotedIdentifier() != null)
-        {
-            node.getQuotedIdentifier().apply(this);
-        }
-        if(node.getDot() != null)
-        {
-            node.getDot().apply(this);
-        }
-        if(node.getNameList() != null)
-        {
-            node.getNameList().apply(this);
-        }
-        outADotNameList(node);
-    }
-
-    public void inASingleQualifiedNameList(ASingleQualifiedNameList node)
-    {
-    }
-
-    public void outASingleQualifiedNameList(ASingleQualifiedNameList node)
-    {
-    }
-
-    public void caseASingleQualifiedNameList(ASingleQualifiedNameList node)
-    {
-        inASingleQualifiedNameList(node);
-        if(node.getQualifiedName() != null)
-        {
-            node.getQualifiedName().apply(this);
-        }
-        outASingleQualifiedNameList(node);
-    }
-
-    public void inAMultiQualifiedNameList(AMultiQualifiedNameList node)
-    {
-    }
-
-    public void outAMultiQualifiedNameList(AMultiQualifiedNameList node)
-    {
-    }
-
-    public void caseAMultiQualifiedNameList(AMultiQualifiedNameList node)
-    {
-        inAMultiQualifiedNameList(node);
-        if(node.getQualifiedName() != null)
-        {
-            node.getQualifiedName().apply(this);
+            node.getName().apply(this);
         }
         if(node.getComma() != null)
         {
             node.getComma().apply(this);
         }
-        if(node.getQualifiedNameList() != null)
+        if(node.getNameList() != null)
         {
-            node.getQualifiedNameList().apply(this);
+            node.getNameList().apply(this);
         }
-        outAMultiQualifiedNameList(node);
+        outAMultiNameList(node);
     }
 
     public void inAFieldMember(AFieldMember node)
@@ -804,9 +726,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseANameBaseType(ANameBaseType node)
     {
         inANameBaseType(node);
-        if(node.getQualifiedName() != null)
+        if(node.getName() != null)
         {
-            node.getQualifiedName().apply(this);
+            node.getName().apply(this);
         }
         outANameBaseType(node);
     }
@@ -992,9 +914,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseALocalName(ALocalName node)
     {
         inALocalName(node);
-        if(node.getSimpleIdentifier() != null)
+        if(node.getIdentifier() != null)
         {
-            node.getSimpleIdentifier().apply(this);
+            node.getIdentifier().apply(this);
         }
         outALocalName(node);
     }
@@ -1041,24 +963,6 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getLocalNameList().apply(this);
         }
         outAMultiLocalNameList(node);
-    }
-
-    public void inAIdQuotedIdentifier(AIdQuotedIdentifier node)
-    {
-    }
-
-    public void outAIdQuotedIdentifier(AIdQuotedIdentifier node)
-    {
-    }
-
-    public void caseAIdQuotedIdentifier(AIdQuotedIdentifier node)
-    {
-        inAIdQuotedIdentifier(node);
-        if(node.getClassIdentifier() != null)
-        {
-            node.getClassIdentifier().apply(this);
-        }
-        outAIdQuotedIdentifier(node);
     }
 
     public void inALabelStatement(ALabelStatement node)
@@ -1384,6 +1288,32 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAReturnStatement(node);
     }
 
+    public void inAThrowStatement(AThrowStatement node)
+    {
+    }
+
+    public void outAThrowStatement(AThrowStatement node)
+    {
+    }
+
+    public void caseAThrowStatement(AThrowStatement node)
+    {
+        inAThrowStatement(node);
+        if(node.getThrow() != null)
+        {
+            node.getThrow().apply(this);
+        }
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        if(node.getSemicolon() != null)
+        {
+            node.getSemicolon().apply(this);
+        }
+        outAThrowStatement(node);
+    }
+
     public void inAInvokeStatement(AInvokeStatement node)
     {
     }
@@ -1417,9 +1347,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseALabelName(ALabelName node)
     {
         inALabelName(node);
-        if(node.getSimpleIdentifier() != null)
+        if(node.getIdentifier() != null)
         {
-            node.getSimpleIdentifier().apply(this);
+            node.getIdentifier().apply(this);
         }
         outALabelName(node);
     }
@@ -1613,13 +1543,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseANewExpression(ANewExpression node)
     {
         inANewExpression(node);
-        if(node.getNew() != null)
+        if(node.getNewExpr() != null)
         {
-            node.getNew().apply(this);
-        }
-        if(node.getNonvoidType() != null)
-        {
-            node.getNonvoidType().apply(this);
+            node.getNewExpr().apply(this);
         }
         outANewExpression(node);
     }
@@ -1780,6 +1706,61 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getImmediate().apply(this);
         }
         outAImmediateExpression(node);
+    }
+
+    public void inANewExpr(ANewExpr node)
+    {
+    }
+
+    public void outANewExpr(ANewExpr node)
+    {
+    }
+
+    public void caseANewExpr(ANewExpr node)
+    {
+        inANewExpr(node);
+        if(node.getNew() != null)
+        {
+            node.getNew().apply(this);
+        }
+        if(node.getBaseType() != null)
+        {
+            node.getBaseType().apply(this);
+        }
+        {
+            Object temp[] = node.getArrayDescriptor().toArray();
+            for(int i = 0; i < temp.length; i++)
+            {
+                ((PArrayDescriptor) temp[i]).apply(this);
+            }
+        }
+        outANewExpr(node);
+    }
+
+    public void inAArrayDescriptor(AArrayDescriptor node)
+    {
+    }
+
+    public void outAArrayDescriptor(AArrayDescriptor node)
+    {
+    }
+
+    public void caseAArrayDescriptor(AArrayDescriptor node)
+    {
+        inAArrayDescriptor(node);
+        if(node.getLBracket() != null)
+        {
+            node.getLBracket().apply(this);
+        }
+        if(node.getImmediate() != null)
+        {
+            node.getImmediate().apply(this);
+        }
+        if(node.getRBracket() != null)
+        {
+            node.getRBracket().apply(this);
+        }
+        outAArrayDescriptor(node);
     }
 
     public void inAReferenceVariable(AReferenceVariable node)
@@ -1977,25 +1958,25 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAMethodSignature(AMethodSignature node)
     {
         inAMethodSignature(node);
-        if(node.getLAngledBracket() != null)
+        if(node.getCmplt() != null)
         {
-            node.getLAngledBracket().apply(this);
+            node.getCmplt().apply(this);
         }
-        if(node.getQualifiedName() != null)
+        if(node.getClassName() != null)
         {
-            node.getQualifiedName().apply(this);
+            node.getClassName().apply(this);
         }
-        if(node.getFirstColon() != null)
+        if(node.getFirst() != null)
         {
-            node.getFirstColon().apply(this);
+            node.getFirst().apply(this);
         }
-        if(node.getName() != null)
+        if(node.getMethodName() != null)
         {
-            node.getName().apply(this);
+            node.getMethodName().apply(this);
         }
-        if(node.getSecondColon() != null)
+        if(node.getSecond() != null)
         {
-            node.getSecondColon().apply(this);
+            node.getSecond().apply(this);
         }
         if(node.getLParen() != null)
         {
@@ -2009,17 +1990,17 @@ public class DepthFirstAdapter extends AnalysisAdapter
         {
             node.getRParen().apply(this);
         }
-        if(node.getThirdColon() != null)
+        if(node.getThird() != null)
         {
-            node.getThirdColon().apply(this);
+            node.getThird().apply(this);
         }
         if(node.getType() != null)
         {
             node.getType().apply(this);
         }
-        if(node.getRAngledBracket() != null)
+        if(node.getCmpgt() != null)
         {
-            node.getRAngledBracket().apply(this);
+            node.getCmpgt().apply(this);
         }
         outAMethodSignature(node);
     }
@@ -2145,33 +2126,33 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAFieldSignature(AFieldSignature node)
     {
         inAFieldSignature(node);
-        if(node.getLAngledBracket() != null)
+        if(node.getCmplt() != null)
         {
-            node.getLAngledBracket().apply(this);
+            node.getCmplt().apply(this);
         }
-        if(node.getQualifiedName() != null)
+        if(node.getClassName() != null)
         {
-            node.getQualifiedName().apply(this);
+            node.getClassName().apply(this);
         }
-        if(node.getFirstColon() != null)
+        if(node.getFirst() != null)
         {
-            node.getFirstColon().apply(this);
+            node.getFirst().apply(this);
         }
-        if(node.getName() != null)
+        if(node.getFieldName() != null)
         {
-            node.getName().apply(this);
+            node.getFieldName().apply(this);
         }
-        if(node.getSecondColon() != null)
+        if(node.getSecond() != null)
         {
-            node.getSecondColon().apply(this);
+            node.getSecond().apply(this);
         }
         if(node.getType() != null)
         {
             node.getType().apply(this);
         }
-        if(node.getRAngledBracket() != null)
+        if(node.getCmpgt() != null)
         {
-            node.getRAngledBracket().apply(this);
+            node.getCmpgt().apply(this);
         }
         outAFieldSignature(node);
     }
@@ -2274,22 +2255,22 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAIntegerConstant(node);
     }
 
-    public void inABooleanConstant(ABooleanConstant node)
+    public void inAFloatConstant(AFloatConstant node)
     {
     }
 
-    public void outABooleanConstant(ABooleanConstant node)
+    public void outAFloatConstant(AFloatConstant node)
     {
     }
 
-    public void caseABooleanConstant(ABooleanConstant node)
+    public void caseAFloatConstant(AFloatConstant node)
     {
-        inABooleanConstant(node);
-        if(node.getBoolConstant() != null)
+        inAFloatConstant(node);
+        if(node.getFloatConstant() != null)
         {
-            node.getBoolConstant().apply(this);
+            node.getFloatConstant().apply(this);
         }
-        outABooleanConstant(node);
+        outAFloatConstant(node);
     }
 
     public void inAStringConstant(AStringConstant node)
@@ -2668,6 +2649,24 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getDiv().apply(this);
         }
         outADivBinop(node);
+    }
+
+    public void inALengthofUnop(ALengthofUnop node)
+    {
+    }
+
+    public void outALengthofUnop(ALengthofUnop node)
+    {
+    }
+
+    public void caseALengthofUnop(ALengthofUnop node)
+    {
+        inALengthofUnop(node);
+        if(node.getLengthof() != null)
+        {
+            node.getLengthof().apply(this);
+        }
+        outALengthofUnop(node);
     }
 
     public void inAPlusUnop(APlusUnop node)

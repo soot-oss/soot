@@ -7,7 +7,7 @@ public final class AFieldMember extends PMember
 {
     private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
     private PType _type_;
-    private PName _name_;
+    private TName _name_;
     private TSemicolon _semicolon_;
 
     public AFieldMember()
@@ -17,7 +17,7 @@ public final class AFieldMember extends PMember
     public AFieldMember(
         List _modifier_,
         PType _type_,
-        PName _name_,
+        TName _name_,
         TSemicolon _semicolon_)
     {
         {
@@ -39,7 +39,7 @@ public final class AFieldMember extends PMember
     public AFieldMember(
         XPModifier _modifier_,
         PType _type_,
-        PName _name_,
+        TName _name_,
         TSemicolon _semicolon_)
     {
         if(_modifier_ != null)
@@ -64,7 +64,7 @@ public final class AFieldMember extends PMember
         return new AFieldMember(
             cloneList(_modifier_),
             (PType) cloneNode(_type_),
-            (PName) cloneNode(_name_),
+            (TName) cloneNode(_name_),
             (TSemicolon) cloneNode(_semicolon_));
     }
 
@@ -112,12 +112,12 @@ public final class AFieldMember extends PMember
         _type_ = node;
     }
 
-    public PName getName()
+    public TName getName()
     {
         return _name_;
     }
 
-    public void setName(PName node)
+    public void setName(TName node)
     {
         if(_name_ != null)
         {
@@ -225,7 +225,7 @@ public final class AFieldMember extends PMember
 
         if(_name_ == oldChild)
         {
-            setName((PName) newChild);
+            setName((TName) newChild);
             return;
         }
 

@@ -12,26 +12,23 @@ public interface Analysis extends Switch
 
     void caseStart(Start node);
     void caseAFile(AFile node);
+    void caseAAbstractModifier(AAbstractModifier node);
+    void caseAFinalModifier(AFinalModifier node);
+    void caseANativeModifier(ANativeModifier node);
     void caseAPublicModifier(APublicModifier node);
     void caseAProtectedModifier(AProtectedModifier node);
     void caseAPrivateModifier(APrivateModifier node);
     void caseAStaticModifier(AStaticModifier node);
-    void caseAFinalModifier(AFinalModifier node);
-    void caseAAbstractModifier(AAbstractModifier node);
     void caseASynchronizedModifier(ASynchronizedModifier node);
     void caseATransientModifier(ATransientModifier node);
     void caseAVolatileModifier(AVolatileModifier node);
     void caseAClassFileType(AClassFileType node);
     void caseAInterfaceFileType(AInterfaceFileType node);
-    void caseAName(AName node);
     void caseAExtendsClause(AExtendsClause node);
     void caseAImplementsClause(AImplementsClause node);
     void caseAFileBody(AFileBody node);
-    void caseAQualifiedName(AQualifiedName node);
-    void caseAPlainNameList(APlainNameList node);
-    void caseADotNameList(ADotNameList node);
-    void caseASingleQualifiedNameList(ASingleQualifiedNameList node);
-    void caseAMultiQualifiedNameList(AMultiQualifiedNameList node);
+    void caseASingleNameList(ASingleNameList node);
+    void caseAMultiNameList(AMultiNameList node);
     void caseAFieldMember(AFieldMember node);
     void caseAMethodMember(AMethodMember node);
     void caseAVoidType(AVoidType node);
@@ -58,7 +55,6 @@ public interface Analysis extends Switch
     void caseALocalName(ALocalName node);
     void caseASingleLocalNameList(ASingleLocalNameList node);
     void caseAMultiLocalNameList(AMultiLocalNameList node);
-    void caseAIdQuotedIdentifier(AIdQuotedIdentifier node);
     void caseALabelStatement(ALabelStatement node);
     void caseABreakpointStatement(ABreakpointStatement node);
     void caseAEntermonitorStatement(AEntermonitorStatement node);
@@ -71,6 +67,7 @@ public interface Analysis extends Switch
     void caseANopStatement(ANopStatement node);
     void caseARetStatement(ARetStatement node);
     void caseAReturnStatement(AReturnStatement node);
+    void caseAThrowStatement(AThrowStatement node);
     void caseAInvokeStatement(AInvokeStatement node);
     void caseALabelName(ALabelName node);
     void caseALookupSwitch(ALookupSwitch node);
@@ -88,6 +85,8 @@ public interface Analysis extends Switch
     void caseABinopExpression(ABinopExpression node);
     void caseAUnopExpression(AUnopExpression node);
     void caseAImmediateExpression(AImmediateExpression node);
+    void caseANewExpr(ANewExpr node);
+    void caseAArrayDescriptor(AArrayDescriptor node);
     void caseAReferenceVariable(AReferenceVariable node);
     void caseALocalVariable(ALocalVariable node);
     void caseABoolExpr(ABoolExpr node);
@@ -108,7 +107,7 @@ public interface Analysis extends Switch
     void caseALocalImmediate(ALocalImmediate node);
     void caseAConstantImmediate(AConstantImmediate node);
     void caseAIntegerConstant(AIntegerConstant node);
-    void caseABooleanConstant(ABooleanConstant node);
+    void caseAFloatConstant(AFloatConstant node);
     void caseAStringConstant(AStringConstant node);
     void caseAAndBinop(AAndBinop node);
     void caseAOrBinop(AOrBinop node);
@@ -130,15 +129,17 @@ public interface Analysis extends Switch
     void caseAMinusBinop(AMinusBinop node);
     void caseAMultBinop(AMultBinop node);
     void caseADivBinop(ADivBinop node);
+    void caseALengthofUnop(ALengthofUnop node);
     void caseAPlusUnop(APlusUnop node);
     void caseAMinusUnop(AMinusUnop node);
 
+    void caseTAbstract(TAbstract node);
+    void caseTFinal(TFinal node);
+    void caseTNative(TNative node);
     void caseTPublic(TPublic node);
     void caseTProtected(TProtected node);
     void caseTPrivate(TPrivate node);
     void caseTStatic(TStatic node);
-    void caseTFinal(TFinal node);
-    void caseTAbstract(TAbstract node);
     void caseTSynchronized(TSynchronized node);
     void caseTTransient(TTransient node);
     void caseTVolatile(TVolatile node);
@@ -171,6 +172,7 @@ public interface Analysis extends Switch
     void caseTIf(TIf node);
     void caseTInstanceof(TInstanceof node);
     void caseTInterfaceinvoke(TInterfaceinvoke node);
+    void caseTLengthof(TLengthof node);
     void caseTLookupswitch(TLookupswitch node);
     void caseTNop(TNop node);
     void caseTRet(TRet node);
@@ -188,8 +190,6 @@ public interface Analysis extends Switch
     void caseTSemicolon(TSemicolon node);
     void caseTLBracket(TLBracket node);
     void caseTRBracket(TRBracket node);
-    void caseTLAngledBracket(TLAngledBracket node);
-    void caseTRAngledBracket(TRAngledBracket node);
     void caseTLParen(TLParen node);
     void caseTRParen(TRParen node);
     void caseTColon(TColon node);
@@ -214,11 +214,12 @@ public interface Analysis extends Switch
     void caseTMinus(TMinus node);
     void caseTMult(TMult node);
     void caseTDiv(TDiv node);
-    void caseTClassIdentifier(TClassIdentifier node);
-    void caseTSimpleIdentifier(TSimpleIdentifier node);
+    void caseTName(TName node);
+    void caseTIdentifier(TIdentifier node);
     void caseTAtIdentifier(TAtIdentifier node);
     void caseTBoolConstant(TBoolConstant node);
     void caseTIntegerConstant(TIntegerConstant node);
+    void caseTFloatConstant(TFloatConstant node);
     void caseTStringConstant(TStringConstant node);
     void caseTBlank(TBlank node);
     void caseTComment(TComment node);

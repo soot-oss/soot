@@ -6,7 +6,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AImplementsClause extends PImplementsClause
 {
     private TImplements _implements_;
-    private PQualifiedNameList _qualifiedNameList_;
+    private PNameList _nameList_;
 
     public AImplementsClause()
     {
@@ -14,18 +14,18 @@ public final class AImplementsClause extends PImplementsClause
 
     public AImplementsClause(
         TImplements _implements_,
-        PQualifiedNameList _qualifiedNameList_)
+        PNameList _nameList_)
     {
         setImplements(_implements_);
 
-        setQualifiedNameList(_qualifiedNameList_);
+        setNameList(_nameList_);
 
     }
     public Object clone()
     {
         return new AImplementsClause(
             (TImplements) cloneNode(_implements_),
-            (PQualifiedNameList) cloneNode(_qualifiedNameList_));
+            (PNameList) cloneNode(_nameList_));
     }
 
     public void apply(Switch sw)
@@ -58,16 +58,16 @@ public final class AImplementsClause extends PImplementsClause
         _implements_ = node;
     }
 
-    public PQualifiedNameList getQualifiedNameList()
+    public PNameList getNameList()
     {
-        return _qualifiedNameList_;
+        return _nameList_;
     }
 
-    public void setQualifiedNameList(PQualifiedNameList node)
+    public void setNameList(PNameList node)
     {
-        if(_qualifiedNameList_ != null)
+        if(_nameList_ != null)
         {
-            _qualifiedNameList_.parent(null);
+            _nameList_.parent(null);
         }
 
         if(node != null)
@@ -80,14 +80,14 @@ public final class AImplementsClause extends PImplementsClause
             node.parent(this);
         }
 
-        _qualifiedNameList_ = node;
+        _nameList_ = node;
     }
 
     public String toString()
     {
         return ""
             + toString(_implements_)
-            + toString(_qualifiedNameList_);
+            + toString(_nameList_);
     }
 
     void removeChild(Node child)
@@ -98,9 +98,9 @@ public final class AImplementsClause extends PImplementsClause
             return;
         }
 
-        if(_qualifiedNameList_ == child)
+        if(_nameList_ == child)
         {
-            _qualifiedNameList_ = null;
+            _nameList_ = null;
             return;
         }
 
@@ -114,9 +114,9 @@ public final class AImplementsClause extends PImplementsClause
             return;
         }
 
-        if(_qualifiedNameList_ == oldChild)
+        if(_nameList_ == oldChild)
         {
-            setQualifiedNameList((PQualifiedNameList) newChild);
+            setNameList((PNameList) newChild);
             return;
         }
 
