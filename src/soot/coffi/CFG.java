@@ -2029,7 +2029,7 @@ public class CFG {
                             Local local = Util.getLocalCreatingIfNecessary(listBody, "$stack0",
                                 UnknownType.v());
     
-                            newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef(listBody));
+                            newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
     
                             units.insertBefore(newTarget, firstTargetStmt);
                             

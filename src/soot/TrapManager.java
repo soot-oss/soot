@@ -85,6 +85,27 @@ public class TrapManager
         return trapsList;
     }
 
+    /** Returns a set of units which lie inside the range of any trap. */
+    public static Set getTrappedUnitsOf(Body b)
+    {
+        Set trapsSet = new HashSet();
+        Chain units = b.getUnits();
+
+        Iterator trapsIt = b.getTraps().iterator();
+
+        while (trapsIt.hasNext())
+        {
+            Trap t = (Trap)trapsIt.next();
+
+            Iterator it = units.iterator(t.getBeginUnit(),
+                                         units.getPredOf(t.getEndUnit()));
+            while (it.hasNext())
+                trapsSet.add(it.next());
+        }
+
+        return trapsSet;
+    }
+
     /** Splits all traps so that they do not cross the range rangeStart - rangeEnd. 
      * Note that rangeStart is inclusive, rangeEnd is exclusive. */
     public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd)
@@ -135,5 +156,30 @@ public class TrapManager
                 }
             }
         }
+    }
+
+    /** Given a body and a unit handling an exception,
+     * returns the list of exception types possibly caught 
+     * by the handler. */
+    public static List getExceptionTypesOf(Unit u, Body body)
+    {
+        List possibleTypes = new ArrayList();
+        
+        Iterator trapIt = body.getTraps().iterator();
+        
+        while(trapIt.hasNext())
+        {
+            Trap trap = (Trap) trapIt.next();
+            
+            Unit handler = trap.getHandlerUnit();
+             
+            if(handler == u)
+            {
+                possibleTypes.add(RefType.v(trap.getException().
+                    getName()));
+            }
+        }
+        
+        return possibleTypes;
     }
 }

@@ -37,17 +37,13 @@ import java.util.*;
 
 public class JCaughtExceptionRef implements CaughtExceptionRef
 {
-    Body body;
-    
-    public JCaughtExceptionRef(Body b)
+    public JCaughtExceptionRef()
     {
-        this.body = b;
     }
-
     
     public Object clone() 
     {
-        return new JCaughtExceptionRef(body);
+        return new JCaughtExceptionRef();
     }
 
 
@@ -66,29 +62,6 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
         return AbstractUnit.emptyList;
     }
 
-    public List getExceptionTypes()
-    {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
-        
-        return possibleTypes;
-    }
-    
     public Type getType()
     {
         return RefType.v("java.lang.Throwable");

@@ -45,10 +45,13 @@ public class ThrowManager
     public static Stmt getNullPointerExceptionThrower(JimpleBody b)
     {
         Chain units = b.getUnits();
+        Set trappedUnits = TrapManager.getTrappedUnitsOf(b);
         
         for (Stmt s = (Stmt)units.getLast(); s != units.getFirst();
              s = (Stmt)units.getPredOf(s))
         {
+            if (trappedUnits.contains(s))
+                continue;
             if (s instanceof ThrowStmt)
             {
                 Value throwee = ((ThrowStmt)s).getOp();

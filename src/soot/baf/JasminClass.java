@@ -349,6 +349,9 @@ public class JasminClass
 
     void emitMethod(SootMethod method)
     {
+       if (method.isPhantom())
+           return;
+
        // Emit prologue
             emit(".method " + Modifier.toString(method.getModifiers()) + " " +
                  method.getName() + jasminDescriptorOf(method));

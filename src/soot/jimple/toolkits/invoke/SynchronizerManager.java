@@ -72,16 +72,19 @@ public class SynchronizerManager
 //              }
 //          }
 
-        // and also we must add a catch Throwable exception block.
+        // and also we must add a catch Throwable exception block in the appropriate place.
         {
+            Stmt newGoto = Jimple.v().newGotoStmt((Stmt)units.getSuccOf(exitMon));
+            units.insertAfter(newGoto, exitMon);
+
             List l = new ArrayList();
             Local eRef = Jimple.v().newLocal("__exception", RefType.v("java.lang.Throwable"));
             b.getLocals().add(eRef);
-            Stmt handlerStmt = Jimple.v().newIdentityStmt(eRef, Jimple.v().newCaughtExceptionRef(b));
+            Stmt handlerStmt = Jimple.v().newIdentityStmt(eRef, Jimple.v().newCaughtExceptionRef());
             l.add(handlerStmt);
             l.add(exitMon.clone());
             l.add(Jimple.v().newThrowStmt(eRef));
-            units.insertAfter(l, units.getLast());
+            units.insertAfter(l, newGoto);
 
             Trap newTrap = Jimple.v().newTrap(Scene.v().getSootClass("java.lang.Throwable"), 
                                               stmt, (Stmt)units.getSuccOf(stmt),

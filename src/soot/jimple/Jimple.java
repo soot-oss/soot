@@ -719,9 +719,9 @@ public class Jimple
         Constructs a CaughtExceptionRef() grammar chunk.
      */
 
-    public CaughtExceptionRef newCaughtExceptionRef(JimpleBody b)
+    public CaughtExceptionRef newCaughtExceptionRef()
     {
-        return new JCaughtExceptionRef(b);
+        return new JCaughtExceptionRef();
     }
 
 

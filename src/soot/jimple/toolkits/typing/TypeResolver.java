@@ -147,7 +147,7 @@ public class TypeResolver
 
     /** This constructor triggers the type resolution of
         local variables of the given statement list body. **/
-    TypeResolver(JimpleBody stmtBody)
+    TypeResolver(final JimpleBody stmtBody)
     {
         try 
         {
@@ -2192,7 +2192,7 @@ public class TypeResolver
                 }
                 else
                 {
-                    List exceptionTypes = ((CaughtExceptionRef) r).getExceptionTypes();
+                    List exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
                     Iterator typeIt = exceptionTypes.iterator();
 
                     while(typeIt.hasNext())

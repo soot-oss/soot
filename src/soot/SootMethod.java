@@ -80,30 +80,18 @@ public class SootMethod extends AbstractHost
         this.modifiers = modifiers;
     }
 
-    /*
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers,
-        InstListBody instListBody)
+                      List thrownExceptions)
     {
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
+
         this.returnType = returnType;
         this.modifiers = modifiers;
 
-        this.instListBody = instListBody;
+        this.exceptions.addAll(thrownExceptions);
     }
-    */
-
-    /*
-    public SootMethod(String name, List parameterTypes, Type returnType, InstListBody instListBody)
-    {
-        this.name = name;
-        this.parameterTypes = new ArrayList();
-        this.parameterTypes.addAll(parameterTypes);
-        this.returnType = returnType;
-        this.instListBody = instListBody;
-    }
- */
 
     public void setSource(soot.coffi.ClassFile coffiClass,
         soot.coffi.method_info coffiMethod)

@@ -668,9 +668,9 @@ public class Grimp
         Constructs a CaughtExceptionRef() grammar chunk.
      */
 
-    public CaughtExceptionRef newCaughtExceptionRef(JimpleBody b)
+    public CaughtExceptionRef newCaughtExceptionRef()
     {
-        return Jimple.v().newCaughtExceptionRef(b);
+        return Jimple.v().newCaughtExceptionRef();
     }
 
 

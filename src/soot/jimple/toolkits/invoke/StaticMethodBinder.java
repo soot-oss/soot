@@ -49,7 +49,7 @@ public class StaticMethodBinder extends SceneTransformer
     {
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
-        
+
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
@@ -123,7 +123,8 @@ public class StaticMethodBinder extends SceneTransformer
                             newName = newName + "_static";
 
                         SootMethod ct = new SootMethod(newName, newParameterTypes,
-                                                       target.getReturnType(), target.getModifiers() | Modifier.STATIC);
+                                                       target.getReturnType(), target.getModifiers() | Modifier.STATIC,
+                                                       target.getExceptions());
                         target.getDeclaringClass().addMethod(ct);
 
                         methodsList.addLast(ct);
