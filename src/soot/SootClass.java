@@ -341,10 +341,8 @@ public class SootClass extends AbstractHost
         return methods;
     }
 
-    
     /**
         Attempts to retrieve the method with the given name, parameters and return type.  
-        
     */
 
     public SootMethod getMethod(String name, List parameterTypes, Type returnType) 

@@ -60,6 +60,7 @@ public class ClassHierarchyAnalysis
         {
             SootClass c = (SootClass)classesIt.next();
 
+	    System.out.println("requesting methods iterator for "+c.getName());
             Iterator methodsIt = c.getMethods().iterator();
             while (methodsIt.hasNext())
             {
@@ -69,12 +70,6 @@ public class ClassHierarchyAnalysis
                     continue;
 
                 Body b = m.retrieveActiveBody();
-/*                
-                if (!m.hasActiveBody())
-                    b = m.getBodyFromMethodSource("cha.jb");
-                else
-                    b = m.getActiveBody();
-*/
 
                 Iterator unitsIt = b.getUnits().iterator();
                 while (unitsIt.hasNext())

@@ -43,7 +43,7 @@ import soot.baf.*;
  *    Block instances are the nodes of the graph. Hence, a Block can be queried
  *    for its successors and predecessors Blocks, as found in this graph.
  */
-public class Block implements Directed
+public class Block
 {
     private Unit mHead, mTail;
     private Body mBody;

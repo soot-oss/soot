@@ -1,6 +1,6 @@
-Toto (as of 1.2.1)
+Todo (as of 1.2.1)
 1. test new command line options provided by Fabien
-2. move from jams to gmake?
+2. test with HashChain and putting things into an array for snapshotIterator.
 
 Open problems (as of 1.2.0):
 

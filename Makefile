@@ -21,7 +21,7 @@
 #
 # Compiler
 #
-JC=javac -J-mx128M -d classes -classpath classes:src:$$CLASSPATH
+JC=jikes -d classes -classpath classes:src:$$CLASSPATH
 
 #
 # Virtual machine
@@ -44,7 +44,7 @@ TARGETS_TMP = $(SOURCES:.java=.class)
 TARGETS = $(subst src,classes,${TARGETS_TMP})
 RM_TARGETS = $(TARGETS) $(subst .class,\$$*.class,$(TARGETS))
 
-all: ${TARGETS}
+all: ${TARGETS} foo
 
 $(TARGETS): classes/%.class: src/%.java
 	$(JC) $<
