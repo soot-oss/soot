@@ -147,11 +147,10 @@ public class SourceLocator
 
 		if(isArchive(candidate)) {
 		    addArchive(candidate);
-		    
 		} else {		
 		    locations.add(candidate);
 		}
-		classPath = classPath.substring(sepIndex + 1);		
+		classPath = classPath.substring(sepIndex + 1);
             }
             previousLocations = locations;
         }
@@ -192,9 +191,8 @@ public class SourceLocator
     {    
         Iterator it = locations.iterator();
         className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
-        String className2 = className.replace('.', '/');
+        String classNameSlashed = className.replace('.', '/'); // now it's back in canonical / form.
 
-        
         while(it.hasNext()) 
         {
             StringBuffer locationBuf = new StringBuffer();
@@ -213,43 +211,51 @@ public class SourceLocator
 
                 String adjustedClassName = path + className;
                 if(inputRep instanceof ClassInputRep)
-                    adjustedClassName = path + className2;
+                    adjustedClassName = path + classNameSlashed;
 
                 String fullPath = adjustedClassName + inputRep.getFileExtension();
 		
                 File f = new File(fullPath);
-                InputStream in;
 
                 if (f.canRead()) {
                     try {       
-                        return in = inputRep.createInputStream(new FileInputStream(f));                    
+                        return inputRep.createInputStream(new FileInputStream(f));                    
                     } catch(IOException e) { 
                         System.out.println(e); throw new RuntimeException("!"); 
                     }
-                } else {  
-                    // check if file is in an archive(ie in a .zip or jar file)
-                    // this looks pretty slow.  is it n^2?
-		    Iterator zipFileIt = zipFileList.iterator();
-		    while(zipFileIt.hasNext()) {
-			ZipFile zip = (ZipFile) zipFileIt.next();
-
-			ZipEntry entry = zip.getEntry(className2 + inputRep.getFileExtension());
-                        if (entry != null)
-                        {
-                            try {
-                                InputStream is = new BufferedInputStream(zip.getInputStream(entry));
-                                InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
-				
-                                return inputRep.createInputStream(bugFreeInputStream);
-                            } catch(IOException e) {
-                                System.err.println("error reading file:" + zip.getName() + e.toString());
-                                System.exit(1);
-                            }
-                        }
-		    }
-		}
+                }
             }
         }
+
+        // all right, none of the paths had it.
+        // check if file is in an archive(ie in a .zip or jar file)
+        // this looks pretty slow.  is it n^2?
+        Iterator zipFileIt = zipFileList.iterator();
+        while(zipFileIt.hasNext()) {
+            ZipFile zip = (ZipFile) zipFileIt.next();
+
+            Iterator repsIt = reps.iterator();    
+            while(repsIt.hasNext()) 
+            { 
+                SootInputRepresentation inputRep = (SootInputRepresentation) repsIt.next();
+
+                ZipEntry entry = zip.getEntry(classNameSlashed + inputRep.getFileExtension());
+                if (entry != null)
+                {
+                    try {
+                        InputStream is = new BufferedInputStream(zip.getInputStream(entry));
+                        InputStream bugFreeInputStream = doJDKBugWorkaround(is, entry.getSize());				
+				
+                        return inputRep.createInputStream(bugFreeInputStream);
+                    } catch(IOException e) {
+                        System.err.println("error reading file:" + zip.getName() + e.toString());
+                        System.exit(1);
+                    }
+                }
+            }
+        }
+
+        // drat!
         return null;
     }    
     
