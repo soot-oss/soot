@@ -34,10 +34,9 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
 {
     public BSpecialInvokeInst(SootMethod method) { setMethod(method); }
 
-    public int getInCount()
-    {
-        
-        return getMethod().getParameterCount() +1;
+  public int getInCount()
+  {         
+        return super.getInCount() +1;
     }
 
 
@@ -47,23 +46,12 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
     }
 
 
+
     public Object clone() 
     {
         return new  BSpecialInvokeInst(getMethod());
     }
-
-
-    
-    public int getOutCount()
-    {
-        if(getMethod().getReturnType() instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
-
-    
-
+           
     public String getName() { return "specialinvoke"; }
 
     public void apply(Switch sw)
@@ -71,3 +59,4 @@ public class BSpecialInvokeInst extends AbstractInvokeInst implements SpecialInv
         ((InstSwitch) sw).caseSpecialInvokeInst(this);
     }
 }
+

@@ -46,6 +46,7 @@ public class LoadStoreOptimizer extends BodyTransformer
     final static private int MAKE_DUP1_X1 = 3;
     final static private int SPECIAL_SUCCESS = 4;
     final static private int HAS_CHANGED = 5;
+    final static private int SPECIAL_SUCCESS2 = 6;
 
     final static private int STORE_LOAD_ELIMINATION = 0;
     final static private int STORE_LOAD_LOAD_ELIMINATION = -1;
@@ -62,7 +63,7 @@ public class LoadStoreOptimizer extends BodyTransformer
     private LocalUses mLocalUses;
     private Map mUnitToBlockMap;     // maps a unit it's containing block
 
-    
+  private Map gOptions;
        
     private LoadStoreOptimizer()
     {
@@ -120,7 +121,13 @@ public class LoadStoreOptimizer extends BodyTransformer
         mLocalDefs = new SimpleLocalDefs(mCompleteUnitGraph);
         mLocalUses = new SimpleLocalUses(mCompleteUnitGraph, mLocalDefs);            
     }
-    
+   
+
+  public String getDefaultOptions() 
+  {
+    return "optimize-1 optimize-2 optimize-3 case-2 case-1 case-2.1 case-0";
+  }
+ 
 
     /** The method that drives the optimizations. */
     /* This is the public interface to LoadStoreOptimizer */
@@ -129,10 +136,14 @@ public class LoadStoreOptimizer extends BodyTransformer
         mBody = body;        
         mUnits =  mBody.getUnits();
                 
+	gOptions = options;
+
+	
         if(soot.Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
         if(debug) { System.out.println("Optimizing: " + body.getMethod().toString());}
+	if(debug) { mBody.printTo(new java.io.PrintWriter(System.out, true), 0);}
         
         if(mUnits.isEmpty()) 
             return;                
@@ -140,16 +151,27 @@ public class LoadStoreOptimizer extends BodyTransformer
         buildUnitToBlockMap();
         computeLocalDefsAndLocalUsesInfo(); 
         
-        optimizeLoadStores();    if(debug)  System.out.println("pass 1"); 
-        doInterBlockOptimizations();  if(debug)  System.out.println("pass 2"); 
-        computeLocalDefsAndLocalUsesInfo();
+	if(Options.getBoolean(options, "optimize-1")) {
+	  optimizeLoadStores();    if(debug)  System.out.println("pass 1"); 
+	}
+	  
+	if(Options.getBoolean(options, "optimize-2") ) {
+	  doInterBlockOptimizations();  
+	  if(debug)  System.out.println("pass 2"); 
+	}
 
-              //propagateLoadsBackwards();         if(debug)     System.out.println("pass 3");         
+	  
+	computeLocalDefsAndLocalUsesInfo();
+	  
+	//propagateLoadsBackwards();         if(debug)     System.out.println("pass 3");         
         //optimizeLoadStores();      if(debug)   System.out.println("pass 4"); 
         //propagateLoadsForward();   if(debug)   System.out.println("pass 5"); 
         //propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6"); 
-
-        optimizeLoadStores();    if(debug)             System.out.println("pass 7"); 
+	
+	
+	if(Options.getBoolean(options, "optimize-3")) {
+	  optimizeLoadStores();    if(debug)             System.out.println("pass 7"); 
+	}
     }
 
 
@@ -216,11 +238,14 @@ public class LoadStoreOptimizer extends BodyTransformer
 
     // main optimizing method
     private void optimizeLoadStores() 
-    {
-        
+  {
+    if(debug) {
+      System.out.println("xxxxxxxxxx>> " + mBody.getMethod().getName());}
+    if(mBody.getMethod().getName().equals("aM")) {
         Chain units  = mUnits;
         List storeList;
         
+	
         // build a list of all store units in mUnits
         storeList = buildStoreList();        
         
@@ -271,6 +296,9 @@ public class LoadStoreOptimizer extends BodyTransformer
                         // Check that all loads are in the same bb as the store
                         {
                             Block storeBlock = (Block) mUnitToBlockMap.get(unit);
+
+			    //xxx
+			    if(debug) {System.out.println("Index in method>>>" + storeBlock.getIndexInMethod());}
                             Iterator useIt = uses.iterator();
                             while(useIt.hasNext()) {
                                 UnitValueBoxPair pair = (UnitValueBoxPair) useIt.next();
@@ -285,18 +313,24 @@ public class LoadStoreOptimizer extends BodyTransformer
                             Block block;
                             switch(uses.size()) {
                             case 0:        
+				if(Options.getBoolean(gOptions, "case-0")) {
                                 // replace store by a pop and remove store from store list
-                                replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType()));
-                                unitIt.remove();
-  
-                                hasChanged = true;        hasChangedFlag = false;
+				    replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType()));
+				    unitIt.remove();
+				    
+				    hasChanged = true;        hasChangedFlag = false;
+				}
                                 break;
                                     
                             case 1:
+			      if(Options.getBoolean(gOptions, "case-1")) {
                                 // try to eliminate store/load pair
                                 Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 block =  (Block) mUnitToBlockMap.get(unit);
                                 int test = stackIndependent(unit, loadUnit , block, STORE_LOAD_ELIMINATION);
+				
+				//xxx 
+				if(block.getIndexInMethod() < 1 ) { // <13
                                 if(test == SUCCESS || test == SPECIAL_SUCCESS){
                                     
                                     block.remove(unit);
@@ -304,13 +338,21 @@ public class LoadStoreOptimizer extends BodyTransformer
                                     unitIt.remove();
                                     hasChanged = true;        hasChangedFlag = false;
                                     
-                                //delme[
-                                    if(debug) { System.out.println("Store/Load elimination occurred.");}
-                                //delme]
-                                } 
-                                break;
+				    //delme[
+                                    if(debug) { System.out.println("Store/Load elimination occurred case1.");}
+				    //delme]
+                                } /*else if (test == SPECIAL_SUCCESS2) {
+				    if(!hasChangedFlag) {
+				    hasChangedFlag = true;
+				    hasChanged = true;
+				    } 
+				    }*/
+				}
+			      }
+			      break;
                                 
                             case 2:
+			      if(Options.getBoolean(gOptions, "case-2")) {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                 Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                 Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();
@@ -327,14 +369,14 @@ public class LoadStoreOptimizer extends BodyTransformer
 
                                 int result = stackIndependent(unit, firstLoad, block, STORE_LOAD_ELIMINATION);                                 
                                 if(result == SUCCESS){        
-                                    
+				  
                                     // move the first load just after it's defining store.
                                     block.remove(firstLoad);
                                     block.insertAfter(firstLoad, unit);                                
                                     
-                                    
-                                    int res = stackIndependent(unit, secondLoad, block, STORE_LOAD_LOAD_ELIMINATION);
-                                    if(res == MAKE_DUP) {                                        
+                                    if(Options.getBoolean(gOptions, "case-2.1")) {
+				      int res = stackIndependent(unit, secondLoad, block, STORE_LOAD_LOAD_ELIMINATION);
+				      if(res == MAKE_DUP) {                                        
                                         // replace store by dup, drop both loads                                                                        
                                         replaceUnit(unit,  Baf.v().newDup1Inst(((LoadInst) secondLoad).getOpType()));
                                         unitIt.remove(); // remove store from store list
@@ -344,7 +386,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
                                         hasChanged = true;         hasChangedFlag = false;
                                         
-                                    }  else if(res == MAKE_DUP1_X1) {
+				      }  else if(res == MAKE_DUP1_X1) {
                                                       
                                         // replace store/load/load by a dup1_x1
                                         Unit stackUnit = getStackItemAt2(unit, block, -2); 
@@ -367,21 +409,26 @@ public class LoadStoreOptimizer extends BodyTransformer
                                         hasChanged = true;          hasChangedFlag = false;                                      
                                         break;                                        
                                         }
-
-                                } else if(result == SPECIAL_SUCCESS || result == HAS_CHANGED){
-                                    if(!hasChangedFlag) {
-                                        hasChangedFlag = true;
-                                        hasChanged = true;
-                                    }
-                                }
-                            }                    
-                        }
-                    }
-                }
-            }
-        }                    
+				    }
+				    
+                                } else if(result == SPECIAL_SUCCESS || result == HAS_CHANGED || result == SPECIAL_SUCCESS2){
+				    if(!hasChangedFlag) {
+					hasChangedFlag = true;
+					hasChanged = true;
+				    } 
+				}
+				
+				
+			      }
+			    }                   
+			}
+		    }
+		}
+	    }
+	}          
+      }          
     }
-    
+  
     
     
     
@@ -578,8 +625,10 @@ public class LoadStoreOptimizer extends BodyTransformer
                         if(block.getPredOf(u) instanceof Dup1Inst) {
                             block.remove(u);
                             block.insertBefore(u, to);
-                            if(debug) { System.out.println("xxx: success due to 1, SUCCESS");}
-                            return SPECIAL_SUCCESS;
+			    block.remove(from);
+			    block.insertBefore(from, to);
+                            if(debug) { System.out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
+                            return SPECIAL_SUCCESS2;
                         }                    
                 }
                 else if (minStackHeightAttained < 0){

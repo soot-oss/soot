@@ -43,25 +43,9 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
 
     public int getInMachineCount()
     {
-        return getMethod().getParameterCount() +1;
-        
+        return super.getInMachineCount() +1;        
     }
     
-    public int getOutCount()
-    {
-        if(getMethod().getReturnType() instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
-
-    public int getOutMachineCount()
-    {
-        if(getMethod().getReturnType() instanceof VoidType)
-            return 0;
-        else
-            return 1;
-    }
 
     public BInterfaceInvokeInst(SootMethod method, int argCount) 
         { setMethod(method); this.argCount = argCount; }
@@ -86,3 +70,7 @@ public class BInterfaceInvokeInst extends AbstractInvokeInst
         ((InstSwitch) sw).caseInterfaceInvokeInst(this);
     }   
 }
+
+
+
+

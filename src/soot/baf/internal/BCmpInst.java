@@ -44,7 +44,7 @@ public class BCmpInst extends AbstractOpTypeInst implements CmpInst
     
     public int getInCount()
     {
-        return 1;
+        return 2;
     }
 
 

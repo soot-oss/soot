@@ -38,6 +38,14 @@ public class Block
     private List mPreds, mSuccessors;
     private int mPredCount = 0, mBlockLength = 0, mIndexInMethod = 0;
     private BlockGraph mBlockGraph;
+
+
+  public Body getBody() 
+  {
+    return mBody;
+  }
+       
+    
  
     // xxx can't call remove on first or last item!!!!!! tail/ head won't get ajusted
     public Iterator iterator() 

@@ -129,11 +129,13 @@ public abstract class AbstractOpTypeInst extends AbstractInst
           Baf.bafDescriptorOf(opType) + getParameters(isBrief, unitToName);
     }
 
-    public int getOutMachineCount()
-    {
-        return JasminClass.sizeOfType(getOpType());
-    } 
 
-
+  
+  
+  
+  public int getOutMachineCount()
+  {
+    return JasminClass.sizeOfType(getOpType());
+  } 
 
 }

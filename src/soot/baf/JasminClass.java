@@ -58,7 +58,9 @@ public class JasminClass
 
 
     Map blockToStackHeight = new HashMap(); // maps a block to the stack height upon entering it
-            
+    Map blockToLogicalStackHeight = new HashMap(); // maps a block to the logical stack height upon entering it
+    
+
     String slashify(String s)
     {
         return s.replace('.', '/');
@@ -558,7 +560,7 @@ public class JasminClass
                     if(blocks.size() != 0) {
                         Block b = (Block) blocks.get(0);                
                     
-                        // set the stack height of the entyr points
+                        // set the stack height of the entry points
                         List entryPoints = ((DirectedGraph)blockGraph).getHeads();                
                         Iterator entryIt = entryPoints.iterator();
                         while(entryIt.hasNext()) {
@@ -570,12 +572,15 @@ public class JasminClass
                                 initialHeight = new Integer(1);
                             }                                                
                             blockToStackHeight.put(entryBlock, initialHeight);
+			    blockToLogicalStackHeight.put(entryBlock, initialHeight); 
                         }                
                                     
                         // dfs the block graph using the blocks in the entryPoints list  as roots 
                         entryIt = entryPoints.iterator();
                         while(entryIt.hasNext()) {
-                            calculateStackHeight((Block) entryIt.next());
+			    Block nextBlock = (Block) entryIt.next();
+                            calculateStackHeight(nextBlock);
+			    calculateLogicalStackHeightCheck(nextBlock);
                         }                
                     }
                 }
@@ -1950,19 +1955,37 @@ public class JasminClass
 
         });
     }
-    
+   
+
+
+ 
     private void calculateStackHeight(Block aBlock)
     {
         Iterator it = aBlock.iterator();
         int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
         
         while(it.hasNext()) {
-            blockHeight += ((Inst)it.next()).getNetMachineCount();
-            if( blockHeight > maxStackHeight) {
-                maxStackHeight = blockHeight;
-            }
+	  Inst nInst = (Inst) it.next();
+	  
+	  blockHeight -= nInst.getInMachineCount();
+	  if(blockHeight < 0 ){	    
+	    throw new RuntimeException("Negative Stack height has been attained\n:" +
+				       "StackHeight: " + blockHeight + 
+				       "\nAt instruction:" + nInst +
+				       "\nBlock:\n" + aBlock +
+				       "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
+				       + "\n" +  aBlock.getBody().getMethod()				       
+				       );
+	  }
+	  
+	  blockHeight += nInst.getOutMachineCount();
+	  if( blockHeight > maxStackHeight) {
+	    maxStackHeight = blockHeight;
+	  }
+	  //System.out.println(">>> " + nInst + " " + blockHeight);	    
         }
         
+	
         Iterator succs = aBlock.getSuccessors().iterator();
         while(succs.hasNext()) {
             Block b = (Block) succs.next();
@@ -1978,6 +2001,56 @@ public class JasminClass
             }            
         }        
     }
+
+
+    private void calculateLogicalStackHeightCheck(Block aBlock)
+    {
+        Iterator it = aBlock.iterator();
+        int blockHeight =  ((Integer)blockToLogicalStackHeight.get(aBlock)).intValue();
+        
+        while(it.hasNext()) {
+	    Inst nInst = (Inst) it.next();
+	  
+	    blockHeight -= nInst.getInCount();
+	    if(blockHeight < 0 ){	    
+		throw new RuntimeException("Negative Stack Logical height has been attained\n:" +
+					   "StackHeight: " + blockHeight + 
+					   "\nAt instruction:" + nInst +
+					   "\nBlock:\n" + aBlock +
+					   "\n\nMethod: " + aBlock.getBody().getMethod().getName() 
+					   + "\n" +  aBlock.getBody().getMethod()				       
+					   );
+	    }
+	  
+	    blockHeight += nInst.getOutCount();
+	    
+	    //System.out.println(">>> " + nInst + " " + blockHeight);	    
+        }
+        
+	
+        Iterator succs = aBlock.getSuccessors().iterator();
+        while(succs.hasNext()) {
+            Block b = (Block) succs.next();
+            Integer i = (Integer) blockToLogicalStackHeight.get(b);
+            if(i != null) {
+                if(i.intValue() != blockHeight) {
+                    throw new RuntimeException("incoherent logical stack height at block merge point " + b + aBlock);
+                }
+                
+            } else {
+                blockToLogicalStackHeight.put(b, new Integer(blockHeight));
+                calculateLogicalStackHeightCheck(b);
+            }            
+        }        
+    }
+
+
+
+
+
+
+
+
 
 
 }

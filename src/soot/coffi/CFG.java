@@ -2084,7 +2084,7 @@ public class CFG {
         int x;
         x = ((int)(ins.code))&0xff;
 
-        // System.out.println(ins.toString());
+	//        System.out.println(ins.toString());
         switch(x)
         {
          case ByteCode.BIPUSH:

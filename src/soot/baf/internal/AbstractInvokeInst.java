@@ -62,29 +62,42 @@ abstract class AbstractInvokeInst extends AbstractInst
         { return " " + (isBrief ? method.getName() : method.getSignature()); }
 
     
-    public int getOutMachineCount()
-    {
-        
-        Type returnType = getMethod().getReturnType();
-        
-        if(returnType instanceof VoidType)
-            return 0;
-        else if(returnType instanceof LongType || returnType instanceof DoubleType) 
-            return 2;
-        else 
-            return 1;
-    }
 
-    public int getInMachineCount()
-    {
-        int count = 0;
-        
-        Iterator it = getMethod().getParameterTypes().iterator();
-        while(it.hasNext()) {
-            count += JasminClass.sizeOfType((Type) it.next());            
-        }
-        return count;
-    }
+  
+  public int getInCount()
+  {
+    return getMethod().getParameterCount();
+  }
+  
+
+  public int getOutCount()
+  {
+    if(getMethod().getReturnType() instanceof VoidType) 
+      return 0;
+    else
+      return 1;
+  }
+  
+
+
+  public int getInMachineCount()
+  {
+    int count = 0;
     
+    Iterator it = getMethod().getParameterTypes().iterator();
+    while(it.hasNext()) {
+      count += JasminClass.sizeOfType((Type) it.next());            
+    }
+    return count;
+  }
+  
+
+  public int getOutMachineCount()
+  {
+    if(getMethod().getReturnType() instanceof VoidType) 
+      return 0;
+    else
+      return JasminClass.sizeOfType(getMethod().getReturnType());
+  } 
 
 }
