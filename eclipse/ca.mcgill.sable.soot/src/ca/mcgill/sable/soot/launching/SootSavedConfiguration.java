@@ -26,6 +26,8 @@ public class SootSavedConfiguration {
 	private HashMap config;
 	private String name;
 	private String saved;
+	private ArrayList saveArray;
+	private ArrayList runArray;
 	private HashMap eclipseDefs;
 
 	
@@ -44,11 +46,25 @@ public class SootSavedConfiguration {
 	/**
 	 * Constructor for SootSavedConfiguration.
 	 */
+	public SootSavedConfiguration(String name, String [] saveArray) {
+		setName(name);
+		
+		setSaveArray(new ArrayList());
+		for (int i = 0; i < saveArray.length; i++){
+			getSaveArray().add(saveArray[i]);
+		}
+	}
+	
+	
+	/**
+	 * Constructor for SootSavedConfiguration.
+	 */
 	public SootSavedConfiguration(String name, String saved) {
 		setName(name);
 		setSaved(saved);
 	}
 	
+	// same as before (removes defs from HashMap)
 	private void removeEclipseDefs(){
 		if (getEclipseDefs() == null) return;
 		System.out.println("removing eclipse defs");
@@ -82,6 +98,7 @@ public class SootSavedConfiguration {
 		}
 	}
 	
+	// will use addEclipseDefs to Array instead
 	private void addEclipseDefs() {
 		System.out.println("adding eclipse defs");
 		if (getEclipseDefs() == null) return;
@@ -106,6 +123,73 @@ public class SootSavedConfiguration {
 			}
 		}
 		setSaved(tempSaved.toString());
+	}
+	
+	// will use this one in future and not addEclipseDefs
+	private void addEclipseDefsToArray() {
+		System.out.println("adding eclipse defs to array");
+		if (getEclipseDefs() == null) return;
+		Iterator it = getEclipseDefs().keySet().iterator();
+		System.out.println("before adding saved is: "+getSaved());
+		//StringBuffer tempSaved = new StringBuffer(getSaved());
+		//ArrayList tempSaved = new ArrayList();
+		//tempSaved.addAll(getSaveArray());
+		while (it.hasNext()) {
+			String key = (String)it.next();
+			System.out.println("going to add : "+key);
+			if (getSaveArray().contains(DASH+key)) {
+				// already there don't add (implies user changed val)	
+			}
+			else {
+				// add it to end
+				getSaveArray().add(DASH+key);
+				getSaveArray().add(getEclipseDefs().get(key).toString());
+				//tempSaved.append(SPACE);
+				//tempSaved.append(DASH);
+				//tempSaved.append(key);
+				//tempSaved.append(SPACE);
+				//tempSaved.append(getEclipseDefs().get(key).toString());
+				//tempSaved.append(SPACE);
+				System.out.println("added : "+key);
+			}
+		}
+		//setSaved(tempSaved.toString());
+	
+	}
+	
+	public HashMap toHashMapFromArray(){
+		addEclipseDefsToArray();
+		HashMap config = new HashMap();
+		BitSet bits = new BitSet(getSaveArray().size());
+		for (int i = 0; i < getSaveArray().size(); i++){
+			if (((String)getSaveArray().get(i)).indexOf("--") != -1){
+				bits.set(i);
+			}
+		}
+		int counter = 0;
+		
+		System.out.println(getSaveArray().size());
+		while (counter < getSaveArray().size()){
+			System.out.println(getSaveArray().get(counter)+" "+bits.get(counter));
+			if ((bits.get(counter+2)) || ((counter+2) >= getSaveArray().size())){
+				// non phase opt
+				config.put(((String)getSaveArray().get(counter)).substring(2), (String)getSaveArray().get(counter+1));
+				counter = counter + 2;
+			}
+			else if (bits.get(counter+3)){
+				// phase opt
+				String key = getSaveArray().get(counter)+SPACE+getSaveArray().get(counter+1);
+				StringTokenizer valTemp = new StringTokenizer((String)getSaveArray().get(counter+2), ":");
+				key = key+SPACE+valTemp.nextToken();
+				String val = valTemp.nextToken();
+				config.put(key.substring(2), val);
+				counter = counter + 3;
+			}
+			System.out.println(counter);
+		}
+		
+		return config;
+		
 	}
 	
 	// goes from save String to HashMap
@@ -149,6 +233,26 @@ public class SootSavedConfiguration {
 			}
 		}
 		return config;
+	}
+	
+	// goes from save Array to run Array -
+	//will use this and not toRunString in future 
+	public ArrayList toRunArray() {
+		addEclipseDefsToArray();
+		if (getRunArray() == null){
+			setRunArray(new ArrayList());
+		}
+		Iterator it = getSaveArray().iterator();
+		while (it.hasNext()){
+			String test = (String)it.next();
+			if (test.equals("true")){
+				// don't send 
+			}
+			else {
+				getRunArray().add(test);
+			}
+		}
+		return getRunArray();	
 	}
 	
 	// goes from save String to run String
@@ -215,8 +319,82 @@ public class SootSavedConfiguration {
 		return toRun.toString();
 	}
 	
+	// goes from HashMap to ArrayList -> will use this and
+	// not toSaveString in future
+	public ArrayList toSaveArray() {
+		if (getSaveArray() == null) {
+			setSaveArray(new ArrayList());
+		}
+		
+		removeEclipseDefs();
+		Iterator keysIt = getConfig().keySet().iterator();
+		while (keysIt.hasNext()) {
+			String key = (String)keysIt.next();
+			StringTokenizer st = new StringTokenizer(key);
+			System.out.println("about to find val");
+			Object val = getConfig().get(key);
+			System.out.println("found val");
+			switch(st.countTokens()) {
+				case 1: {
+					String aliasName = st.nextToken();
+					getSaveArray().add(DASH+aliasName);
+					//toSave.append(DASH);
+					//String aliasName = st.nextToken();
+					//toSave.append(aliasName);
+					//toSave.append(SPACE);
+					if (val instanceof Boolean) {
+						getSaveArray().add(val.toString());	
+					}	
+					else if (val instanceof String) {
+						if (((String)val).indexOf("\n") != -1){
+							StringTokenizer listOptTokenizer = new StringTokenizer((String)val, "\n");
+							while (listOptTokenizer.hasMoreTokens()){
+								String next = listOptTokenizer.nextToken();
+								getSaveArray().add(next);
+								if (listOptTokenizer.hasMoreTokens()){
+									getSaveArray().add(DASH+aliasName);
+									//toSave.append(aliasName);
+									//toSave.append(SPACE);		
+								}
+							}
+							System.out.println("LISTOPT: String contains newline");
+						}
+						else {
+							getSaveArray().add(val);
+						}
+					}			
+					//toSave.append(SPACE);
+					break;
+				}
+				case 3: {
+					getSaveArray().add(DASH+st.nextToken());
+					//toSave.append(st.nextToken());
+					//toSave.append(SPACE);
+					getSaveArray().add(st.nextToken());
+					//toSave.append(SPACE);
+					String realVal = st.nextToken()+COLON;
+					//getSaveArray().add(st.nextToken());
+					//toSave.append(COLON);
+					if (val instanceof Boolean) {
+						realVal = realVal + val.toString();	
+					}	
+					else if (val instanceof String) {
+						realVal = realVal + val;
+					}			
+					getSaveArray().add(realVal);
+					break;
+				}
+				default: {
+					//unhandled non option
+					break;
+				}
+			}
+		}
+		
+		return getSaveArray();
+	}
 	
-	// goeas from HashMap to String
+	// goeas from HashMap to String - will use toSaveArray in future
 	public String toSaveString() {
 		
 		// first remove eclipse defs
@@ -233,13 +411,29 @@ public class SootSavedConfiguration {
 			switch(st.countTokens()) {
 				case 1: {
 					toSave.append(DASH);
-					toSave.append(st.nextToken());
+					String aliasName = st.nextToken();
+					toSave.append(aliasName);
 					toSave.append(SPACE);
 					if (val instanceof Boolean) {
 						toSave.append(val.toString());	
 					}	
 					else if (val instanceof String) {
-						toSave.append(val);
+						if (((String)val).indexOf("\n") != -1){
+							StringTokenizer listOptTokenizer = new StringTokenizer((String)val, "\n");
+							while (listOptTokenizer.hasMoreTokens()){
+								String next = listOptTokenizer.nextToken();
+								toSave.append(next);
+								if (listOptTokenizer.hasMoreTokens()){
+									toSave.append(DASH);
+									toSave.append(aliasName);
+									toSave.append(SPACE);		
+								}
+							}
+							System.out.println("LISTOPT: String contains newline");
+						}
+						else {
+							toSave.append(val);
+						}
 					}			
 					toSave.append(SPACE);
 					break;
@@ -270,7 +464,7 @@ public class SootSavedConfiguration {
 			
 		}
 		setSaved(toSave.toString());
-		System.out.println("about to return toSave string");
+		System.out.println("about to return toSave string: "+getSaved());
 		return toSave.toString();
 	}
 	
@@ -416,6 +610,34 @@ public class SootSavedConfiguration {
 	 */
 	public void setEclipseDefs(HashMap eclipseDefs) {
 		this.eclipseDefs = eclipseDefs;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getSaveArray() {
+		return saveArray;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setSaveArray(ArrayList list) {
+		saveArray = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getRunArray() {
+		return runArray;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setRunArray(ArrayList list) {
+		runArray = list;
 	}
 
 }

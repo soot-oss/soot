@@ -14,11 +14,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 //import org.eclipse.swt.events.MouseEvent;
 //import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 //import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.jface.dialogs.*;
@@ -110,7 +113,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		gd = new GridData(GridData.FILL_BOTH);
 		topComp.setLayoutData(gd);
 		GridLayout topLayout = new GridLayout();
-		topLayout.numColumns = 1;
+		topLayout.numColumns = 10;
+		//topLayout.makeColumnsEqualWidth = false;
+		//topLayout.horizontalSpacing = 20;
 		topComp.setLayout(topLayout);
 		
 		// Set the things that TitleAreaDialog takes care of
@@ -131,7 +136,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		
 		Composite selection = createSelectionArea(topComp);
 		gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 7;
+		gd.horizontalSpan = 9;
+		
 		selection.setLayoutData(gd);
 		
 		// here need buttons
@@ -148,14 +154,22 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		//catch(Exception e1) {
 		//	System.out.println(e1.getMessage());
 		//}
+		Control specialButtons = createSpecialButtonBar(topComp);
+		gd = new GridData(GridData.FILL_BOTH);
+		//gd.horizontalSpan = 1;
 		
+		specialButtons.setLayoutData(gd);
+				
 		Label separator = new Label(topComp, SWT.HORIZONTAL | SWT.SEPARATOR);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
-		//gd.horizontalSpan = 7;
+		gd.horizontalSpan = 10;
 		separator.setLayoutData(gd);
 		
-		dialogComp.layout(true);
+		//topComp.layout(true);
 		
+		
+		
+		dialogComp.layout(true);
 		return dialogComp;
 	}
 	
@@ -184,10 +198,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		setSelectionArea(comp);
 		
 		GridLayout layout = new GridLayout();
-
+	
 		layout.numColumns = 1;
-		layout.marginHeight = 0;
-		//layout.marginWidth = 5;
+		
+		//layout.marginHeight = 0;
+		//layout.marginWidth = 0;
 		
 		comp.setLayout(layout);
 		
@@ -195,8 +210,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		
 		TreeViewer tree = new TreeViewer(comp);
 		gd = new GridData(GridData.FILL_BOTH);
-		gd.horizontalSpan = 7;
-		gd.widthHint = 0;
+		//gd.horizontalSpan = 6;
+		//gd.widthHint = 0;
 		tree.getControl().setLayoutData(gd);
 		
 		tree.setContentProvider(new SootConfigContentProvider());
@@ -214,6 +229,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			}
 		});
 		 
+		//buttonBar = createButtonBar(comp); 
 		return comp;
 	}
 
@@ -267,13 +283,92 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		return root;
 	}
 	
-	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, 0, "New", false);
-		createButton(parent, 1, "Edit", false);
+	/*
+	 * @see Dialog#createButtonBar(Composite)
+	 */				
+	protected Control createSpecialButtonBar(Composite parent) {
+		Composite composite= new Composite(parent, SWT.NULL);
+		GridLayout layout= new GridLayout();
+		layout.numColumns= 1;
+		//layout.marginHeight= 0;
+		//layout.marginWidth= convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		//layout.marginWidth = 0;
+		composite.setLayout(layout);
+		composite.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+	
+		
+		applyDialogFont(composite);
+		//super.createButtonBar(composite);
+		//return composite;
+		
+		
+				//layout.numColumns = 0; // this is incremented by createButton
+		//layout.makeColumnsEqualWidth = true;
+		//layout.marginWidth =
+		//	convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
+		//layout.marginHeight =
+		//	convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+		//layout.horizontalSpacing =
+		//	convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+		//layout.verticalSpacing =
+		//	convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+
+		composite.setLayout(layout);
+
+		GridData data =
+			new GridData(
+				GridData.VERTICAL_ALIGN_END | GridData.HORIZONTAL_ALIGN_CENTER);
+		composite.setLayoutData(data);
+
+		//composite.setFont(parent.getFont());
+
+		// Add the buttons to the button bar.
+		createSpecialButtonsForButtonBar(composite);
+
+		return composite;
+	}
+	
+	protected Button createSpecialButton(
+		Composite parent,
+		int id,
+		String label,
+		boolean defaultButton) {
+		
+		// increment the number of rows in the button bar
+		//((GridLayout) parent.getLayout())..numColumns++;
+
+		Button button = new Button(parent, SWT.PUSH);
+		button.setText(label);
+
+		button.setData(new Integer(id));
+		button.addSelectionListener(new SelectionAdapter() {
+		public void widgetSelected(SelectionEvent event) {
+			buttonPressed(((Integer) event.widget.getData()).intValue());
+		}
+		});
+		if (defaultButton) {
+			Shell shell = parent.getShell();
+			if (shell != null) {
+				shell.setDefaultButton(button);
+			}
+		}
+		button.setFont(parent.getFont());
+		//buttons.put(new Integer(id), button);
+		setButtonLayoutData(button);
+
+		return button;
+	}
+	
+	protected void createButtonsForButtonBar(Composite parent){
+		//empty method to override OK and Cancel buttons
+	}
+	protected void createSpecialButtonsForButtonBar(Composite parent) {
+		createSpecialButton(parent, 0, "New", false);
+		createSpecialButton(parent, 1, "Edit", false);
 		// create OK and Cancel buttons by default
-		createButton(parent, 2, "Delete", false);
-		createButton(parent, 3, "Run", false);
-		createButton(parent, 4, "Close", true);
+		createSpecialButton(parent, 2, "Delete", false);
+		createSpecialButton(parent, 3, "Run", false);
+		createSpecialButton(parent, 4, "Close", true);
 	}
 	
 	protected void buttonPressed(int id) {
@@ -403,10 +498,17 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		String result = this.getSelected();
 		System.out.println("result selected: "+result);
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		String saved = settings.get(result);
-		System.out.println("saved: "+saved);
-		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saved);
-		setEditDefs(ssc.toHashMap());
+		// TODO switch these 2 lines 
+		String [] saveArray = settings.getArray(result);
+		//String saved = settings.get(result);
+		//System.out.println("saved: "+saved);
+		// TODO switch these 2 lines
+		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saveArray);
+		//SootSavedConfiguration ssc = new SootSavedConfiguration(result, saved);
+		
+		// TODO switch these 2 lines
+		setEditDefs(ssc.toHashMapFromArray());
+		//setEditDefs(ssc.toHashMap());
 		displayOptions(result);
 	}
 	

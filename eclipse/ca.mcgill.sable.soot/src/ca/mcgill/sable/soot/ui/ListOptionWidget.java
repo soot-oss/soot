@@ -74,12 +74,18 @@ public class ListOptionWidget {//extends Composite {
   			
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
-		setText(new Text(path,  SWT.SINGLE | SWT.BORDER));
+		setText(new Text(path,  SWT.MULTI | SWT.BORDER));
 		//if (defaultVal != null) {
 		//	getText().setText(defaultVal);
 		//}
-		getText().setText(data.getInitText());
-		getText().setToolTipText(data.getTooltip());		
+		if ((data.getInitText() == null) || (data.getInitText().length() == 0)){
+			getText().setText(data.getInitText());
+		}
+		else {
+			getText().setText(data.getInitText());
+		}
+		String listMessage = " Separate values on different lines.";
+		getText().setToolTipText(data.getTooltip()+listMessage);		
 		// this makes label fill available space		
 		//GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         //gridData.horizontalSpan = 1;

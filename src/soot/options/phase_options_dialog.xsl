@@ -126,7 +126,9 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		String stringRes = "";
 		boolean defBoolRes = false;
 		String defStringRes = "";
-		
+		StringTokenizer listOptTokens;
+		String nextListToken;
+	
 		<xsl:for-each select="section">
 		<xsl:call-template name="createConfig">
 		<xsl:with-param name="subParent" select="name"/>
@@ -214,6 +216,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		root.addChild(<xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch);
 		parent = <xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch;		
 		<xsl:for-each select="phaseopt">
+		SootOption <xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch = new SootOption("<xsl:value-of select="name"/>");
+		root.addChild(<xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch);
+
+		parent = <xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch;	
 		//<xsl:value-of select="name"/>
 <!--create branches for phase pages-->
 			<xsl:for-each select="phase">
@@ -405,6 +411,27 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 			config.put(get<xsl:value-of select="translate($parent[last()],'-. ','___')"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), stringRes);
 		}
 		</xsl:for-each>-->
+
+		<!--
+		<xsl:for-each select="listopt">
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
+		<xsl:if test="default">
+		defStringRes = "<xsl:value-of select="default"/>";
+		</xsl:if>
+		<xsl:if test="not(default)">
+		defStringRes = "";
+		</xsl:if>
+
+	        if ( (&#33;(stringRes.equals(defStringRes))) &#38;&#38; (stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
+
+			listOptTokens = new StringTokenizer(stringRes);
+			while (listOptTokens.hasMoreTokens()) {
+				nextListToken = listOptTokens.nextToken();
+				getConfig().put(get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), nextListToken);
+			}
+		}
+		</xsl:for-each>
+		-->
 		
 		<xsl:for-each select="stropt|intopt|flopt|listopt">
 		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();

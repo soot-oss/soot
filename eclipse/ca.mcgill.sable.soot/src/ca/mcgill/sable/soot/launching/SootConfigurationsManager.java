@@ -23,6 +23,8 @@ import org.eclipse.ui.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+// TODO this class is not used
 public class SootConfigurationsManager implements IWorkbenchWindowActionDelegate {
 	private IStructuredSelection structured;
 	private IWorkbenchWindow window;

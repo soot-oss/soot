@@ -48,10 +48,16 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
 		setSootCommandList(new SootCommandList());
-		//System.out.println(settings.get(choosen));
-		SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.get(name));
+		//System.out.println(setting.get(choosen));
+		
+		// TODO switch these 2 lines
+		SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.getArray(name));
+		//SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.get(name));
 		ssc.setEclipseDefs(setEclipseDefs());
-		getSootCommandList().addSingleOpt(ssc.toRunString());
+		
+		// TODO switch these 2 line
+		getSootCommandList().addSingleOpt(ssc.toRunArray());
+		//getSootCommandList().addSingleOpt(ssc.toRunString());
 		getSootCommandList().addSingleOpt(getToProcess());
 		//System.out.println("set SootCommandList");
 		runSootDirectly();

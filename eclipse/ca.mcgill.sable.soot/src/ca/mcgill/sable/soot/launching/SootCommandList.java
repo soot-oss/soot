@@ -33,6 +33,13 @@ public class SootCommandList {
 	}
 	
 	/**
+	 * @param key
+	 */
+	public void addSingleOpt(ArrayList key){
+		getList().addAll(key);	
+	}
+	
+	/**
 	 * Method addSingleOpt.
 	 * @param key
 	 */

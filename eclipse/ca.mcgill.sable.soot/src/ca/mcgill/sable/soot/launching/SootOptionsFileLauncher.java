@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
 import ca.mcgill.sable.soot.*;
@@ -40,14 +42,17 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
       	}
       	else {
       		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", dialog.getConfig());
-      		ssc.toSaveString();
+      		ssc.toSaveArray();
       		
       		
       		//HashMap temp = dialog.getOkMap();
       		//System.out.println("ok map: "+temp.get("test"));
       		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
-      		setCmd(ssc.toRunString());
-      		System.out.println("to run String: "+ssc.toRunString());
+      		
+      		// TODO switch these 2 lines
+      		setCmd(ssc.toRunArray());
+      		//setCmd(ssc.toRunString());
+      		//System.out.println("to run String: "+ssc.toRunString());
 			runSootDirectly();
 			runFinish();
 			
@@ -90,6 +95,11 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 		getSdc().setPrintTags();	
 	}
 	
+	// TODO use this instead of String one
+	private void setCmd(ArrayList user_cmd){
+		getSootCommandList().addSingleOpt(user_cmd);
+		getSootCommandList().addSingleOpt(getToProcess());
+	}
 	private void setCmd(String user_cmd) {
 		
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);

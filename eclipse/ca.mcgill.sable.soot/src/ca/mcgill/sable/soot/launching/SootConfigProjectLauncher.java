@@ -48,9 +48,15 @@ public class SootConfigProjectLauncher extends SootProjectLauncher {
 		
 		setSootCommandList(new SootCommandList());
 		//System.out.println(settings.get(choosen));
-		SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.get(name));
+		
+		// TODO switch these 2 lines
+		SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.getArray(name));
+		//SootSavedConfiguration ssc = new SootSavedConfiguration(name, settings.get(name));
 		ssc.setEclipseDefs(setEclipseDefs());
-		getSootCommandList().addSingleOpt(ssc.toRunString());
+		
+		// TODO swicth these 2 lines
+		getSootCommandList().addSingleOpt(ssc.toRunArray());
+		//getSootCommandList().addSingleOpt(ssc.toRunString());
 		//System.out.println("set SootCommandList");
 		runSootDirectly();
 		runFinish();

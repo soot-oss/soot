@@ -286,9 +286,12 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (getEditMap() == null) {
 			setEditMap(new HashMap());
 		}
-		getEditMap().put(name, newConfig.toSaveString());
-		System.out.println("added config to editMap");
-		System.out.println("Save String: "+newConfig.toSaveString());
+		// TODO switch lines
+		getEditMap().put(name, newConfig.toSaveArray());
+		System.out.println("put in editMap: "+name);
+		//getEditMap().put(name, newConfig.toSaveString());
+		//System.out.println("added config to editMap");
+		//System.out.println("Save String: "+newConfig.toSaveString());
 					
 	}
 		//settings.put("New_Config","Smile");

@@ -96,11 +96,11 @@ public class SavedConfigManager {
 				String name = (String)it.next();
 				System.out.println("will save: "+name);
 				if (alreadyInList(name)) {
-					update(name, (String)getEditMap().get(name));
+					update(name, (ArrayList)getEditMap().get(name));
 				}
 				else {
 					System.out.println(getEditMap().get(name).getClass().toString());
-					add(name, (String)getEditMap().get(name));
+					add(name, (ArrayList)getEditMap().get(name));
 				}
 			}
 		}
@@ -109,13 +109,32 @@ public class SavedConfigManager {
 	
 	private boolean alreadyInList(String name) {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		if (settings.get(name) == null) return false;
+		if (settings.getArray(name) == null) return false;
 		else return true;
 	}
-	
+
+	//	TODO use this instaed of with String, String
+	private void update(String name, ArrayList val){
+		String [] temp = new String [val.size()];
+		val.toArray(temp);
+		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		
+		settings.put(name, temp);
+	}
+	 
+	// TODO use this instaed of with String, String
+	private void update(String name, String [] val){
+		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		
+		settings.put(name, val);
+	}
+
+	// TODO stop using this
 	private void update(String name, String val) {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
+		// TODO test this - I think it doesn't ever put "default" 
+		// keyword -- test using it also
 		if (val != null) {
 			System.out.println("about to update "+name);
 			//SootSavedConfiguration ssc = new SootSavedConfiguration(name, val);
@@ -127,6 +146,23 @@ public class SavedConfigManager {
 		}
 	}
 	
+	// TODO use this instaed of String, String
+	private void add(String name, ArrayList val){
+		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
+		int count = 0;
+		try {
+			count = settings.getInt("config_count");
+		}
+		catch(NumberFormatException e) {
+		}
+		count++;
+		settings.put("config_count", count);
+		System.out.println("config_count: "+count);
+		settings.put("soot_run_config_"+count, name);
+		update(name, val);	
+	}
+	
+	// TODO stop using this
 	private void add(String name, String val) {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		int count = 0;

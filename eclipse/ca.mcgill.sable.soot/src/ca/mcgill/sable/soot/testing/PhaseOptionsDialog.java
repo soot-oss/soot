@@ -696,6 +696,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_chaverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_chaall_clinit_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_chaall_clinit_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_sparkdisabled_widget().getButton().getSelection();
 		
 		
@@ -844,6 +854,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkreturns_as_fields_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkall_clinit_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkall_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
@@ -1004,6 +1024,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkadd_tags_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkset_mass_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwstpdisabled_widget().getButton().getSelection();
@@ -2028,6 +2058,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		root.addChild(Processing_Options_branch);
 		parent = Processing_Options_branch;		
 		
+		SootOption Phase_Options_branch = new SootOption("Phase Options");
+		root.addChild(Phase_Options_branch);
+
+		parent = Phase_Options_branch;	
 		//Phase Options
 			//Jimple Body Creation
 			SootOption jb_branch = new SootOption("Jimple Body Creation");
@@ -2979,6 +3013,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_chaverbose_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_chaall_clinit_widget;
+	
+	private void setcgcg_chaall_clinit_widget(BooleanOptionWidget widget) {
+		cgcg_chaall_clinit_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_chaall_clinit_widget() {
+		return cgcg_chaall_clinit_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_sparkdisabled_widget;
 	
 	private void setcgcg_sparkdisabled_widget(BooleanOptionWidget widget) {
@@ -3127,6 +3171,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_sparkreturns_as_fields_widget() {
 		return cgcg_sparkreturns_as_fields_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkall_clinit_widget;
+	
+	private void setcgcg_sparkall_clinit_widget(BooleanOptionWidget widget) {
+		cgcg_sparkall_clinit_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkall_clinit_widget() {
+		return cgcg_sparkall_clinit_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparksimplify_offline_widget;
@@ -3295,6 +3349,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_sparkadd_tags_widget() {
 		return cgcg_sparkadd_tags_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkset_mass_widget;
+	
+	private void setcgcg_sparkset_mass_widget(BooleanOptionWidget widget) {
+		cgcg_sparkset_mass_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkset_mass_widget() {
+		return cgcg_sparkset_mass_widget;
 	}	
 	
 	private BooleanOptionWidget wstpdisabled_widget;
@@ -5582,6 +5646,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"cg.cha"+" "+"all-clinit";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_chaall_clinit_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("All Static Initializers Reachable", "p", "cg.cha","all-clinit", "\nWhen this option is set to true, all static initializer methods in\navailable classes are considered to be reachable. Otherwise, static\ninitializers are only considered reachable if a statement using the\nclass (such as a static read, an object creation, or use of Class.forName())\nis reachable.\n", defaultBool)));
+		
+		
 
 		
 		return editGroup;
@@ -5882,6 +5962,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setcgcg_sparkreturns_as_fields_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.spark","returns-as-fields", "\nWhen this option is set to true, return values from methods are\nrepresented as fields (Red nodes) of the this object; otherwise,\nreturn values are represented as variable (Green) nodes.\n        ", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"all-clinit";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkall_clinit_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("All Static Initializers Reachable", "p", "cg.spark","all-clinit", "\nWhen this option is set to true, all static initializer methods in\navailable classes are considered to be reachable. Otherwise, static\ninitializers are only considered reachable if a statement using the\nclass (such as a static read, an object creation, or use of Class.forName())\nis reachable.\n        ", defaultBool)));
+		
+		
 
 		
 		return editGroup;
@@ -5984,6 +6080,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		"",
 		
 		true),
+		
+		new OptionData("Cycle",
+		"cycle",
+		"",
+		
+		false),
 		
 		new OptionData("Merge",
 		"merge",
@@ -6330,6 +6432,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\n        When this option is set to true, the results of the analysis are encoded inside\ntags, and printed with the resulting Jimple code.\n\n        ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"set-mass";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints various\ncryptic statistics about the size of the points-to sets computed.\n        ", defaultBool)));
 		
 		
 
