@@ -65,7 +65,7 @@ public class JNopStmt extends AbstractStmt implements NopStmt
 	Unit u;
         out.add(u = Baf.v().newNopInst());
 
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

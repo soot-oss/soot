@@ -94,7 +94,14 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
     
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-        out.add(Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));
+	Unit u;
+        out.add(u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));
+
+	Iterator it = getTags().iterator();
+	while(it.hasNext()) {
+	    u.addTag((Tag) it.next());
+	}
+	u.addTag(new ArrayCheckTag(true, false));       
     }
     
     public boolean fallsThrough(){return false;}        

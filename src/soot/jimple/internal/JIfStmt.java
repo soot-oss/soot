@@ -143,6 +143,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
 
         final Value op1 = ((BinopExpr) cond).getOp1();
         final Value op2 = ((BinopExpr) cond).getOp2();
+	
+	context.setCurrentUnit(this);
 
         // Handle simple subcase where op1 is null
         if(op2 instanceof NullConstant || op1 instanceof NullConstant)
@@ -270,45 +272,96 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         
         ((ConvertToBaf)op1).convertToBaf(context, out);
         ((ConvertToBaf)op2).convertToBaf(context, out);
+	
 
         cond.apply(new AbstractJimpleValueSwitch()
-        {
-            public void caseEqExpr(EqExpr expr)
-            {
-              out.add(Baf.v().newIfCmpEqInst(op1.getType(), 
-                       Baf.v().newPlaceholderInst(getTarget())));
+		   {
+		       public void caseEqExpr(EqExpr expr)
+		{
+		   Unit u;
+		    out.add( u = Baf.v().newIfCmpEqInst(op1.getType(), 
+							Baf.v().newPlaceholderInst(getTarget())));
+		    
+		    Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    
+
+		    
             }
 
             public void caseNeExpr(NeExpr expr)
             {
-              out.add(Baf.v().newIfCmpNeInst(op1.getType(), 
+		Unit u;
+              out.add(u = Baf.v().newIfCmpNeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
+	      Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    
+	      
             }
 
             public void caseLtExpr(LtExpr expr)
             {
-              out.add(Baf.v().newIfCmpLtInst(op1.getType(), 
+		Unit u;
+              out.add(u = Baf.v().newIfCmpLtInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
+	      Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    
+
             }
 
             public void caseLeExpr(LeExpr expr)
             {
-              out.add(Baf.v().newIfCmpLeInst(op1.getType(), 
+		Unit u;
+              out.add(u = Baf.v().newIfCmpLeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
+	      Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    
             }
 
             public void caseGtExpr(GtExpr expr)
             {
-              out.add(Baf.v().newIfCmpGtInst(op1.getType(), 
+		Unit u;
+              out.add(u = Baf.v().newIfCmpGtInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
+	      Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+                    
+
             }
 
             public void caseGeExpr(GeExpr expr)
             {
-              out.add(Baf.v().newIfCmpGeInst(op1.getType(), 
+		Unit u;
+              out.add(u = Baf.v().newIfCmpGeInst(op1.getType(), 
                        Baf.v().newPlaceholderInst(getTarget())));
+	      Iterator it = getTags().iterator();
+		    while(it.hasNext()) {
+			u.addTag((Tag) it.next());
+		    }
+		    u.addTag(new ArrayCheckTag(true, false));
+
+
             }
         });
+	
     }
 
 

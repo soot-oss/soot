@@ -264,7 +264,7 @@ public class JTableSwitchStmt extends AbstractStmt
                 (Baf.v().newPlaceholderInst(getDefaultTarget()),
                  lowIndex, highIndex, targetPlaceholders));
 	
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

@@ -103,6 +103,8 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
     {
         InvokeExpr ie = (InvokeExpr) getInvokeExpr();
         
+	context.setCurrentUnit(this);
+	
         ((ConvertToBaf) ie).convertToBaf(context, out);
         
         if(!ie.getMethod().getReturnType().equals(VoidType.v()))

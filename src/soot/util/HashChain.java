@@ -201,7 +201,7 @@ public class HashChain extends AbstractCollection
         stateCount++;
         Link newLink, temp;
         if(map.containsKey(item))
-            throw new RuntimeException("Chain already contains object.");
+            throw new RuntimeException("Chain already contains object: " + item);
         
         if(lastItem != null) {
             temp = (Link) map.get(lastItem);

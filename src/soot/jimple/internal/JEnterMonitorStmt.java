@@ -102,7 +102,7 @@ public class JEnterMonitorStmt extends AbstractStmt
 	Unit u;
         out.add(u = Baf.v().newEnterMonitorInst());
 
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

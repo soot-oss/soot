@@ -242,7 +242,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     out.add(u);
 
 
-                    out.add(u);
+                    
                 }
                 
                 public void caseLocal(final Local v)
@@ -266,7 +266,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     out.add(u);
 
 
-                    out.add(u);
+                    
                 }
             }); 
     }    

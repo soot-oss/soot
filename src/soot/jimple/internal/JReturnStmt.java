@@ -102,7 +102,7 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
        Unit u;
        out.add(u = Baf.v().newReturnInst(getOp().getType()));
      
-       Unit currentUnit = context.getCurrentUnit();
+       Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

@@ -102,7 +102,7 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
 	Unit u;
         out.add(u = Baf.v().newThrowInst());
 
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

@@ -64,7 +64,7 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
 	Unit u;
         out.add(u = Baf.v().newReturnVoidInst());
 	
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {

@@ -267,7 +267,7 @@ public class JLookupSwitchStmt extends AbstractStmt
                 (Baf.v().newPlaceholderInst(getDefaultTarget()),
                  getLookupValues(), targetPlaceholders));
 
-	Unit currentUnit = context.getCurrentUnit();
+	Unit currentUnit = this;
 
 	Iterator it = currentUnit.getTags().iterator();	
 	while(it.hasNext()) {
