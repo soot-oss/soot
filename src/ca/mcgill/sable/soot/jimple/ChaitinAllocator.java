@@ -3,10 +3,6 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
- * rights reserved.                                                  *
- *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +61,12 @@
 
  B) Changes:
 
+ - Modified on February 4, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
+   Replaced getLiveLocalsAfter() with getLiveLocalsBefore().
+
+ - Modified on February 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
+   Improved the interference graph builder.
+   
  - Modified on January 20, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Extracted the interference graph and local packer and put in this file for
    increased pluggability. 
@@ -302,7 +304,8 @@ public class ChaitinAllocator
         {
             return localToLocals.keySet();
         }
-        
+
+                
         public InterferenceGraph(JimpleBody body, Type type, LiveLocals liveLocals)
         {
             StmtList stmtList = body.getStmtList();
@@ -330,12 +333,9 @@ public class ChaitinAllocator
                 {
                     Stmt stmt = (Stmt) codeIt.next();
     
-                    List liveLocalsAtStmt = liveLocals.getLiveLocalsAfter(stmt);
-                    List locals = new ArrayList();
-    
-                    locals.addAll(liveLocalsAtStmt);
-    
-                    // Augment live locals with the variable just defined
+                    List liveLocalsAtStmt = liveLocals.getLiveLocalsBefore(stmt);
+                    
+                    // Note interferences if this statement is a definition
                     {
                         if(stmt instanceof DefinitionStmt)
                         {
@@ -343,31 +343,23 @@ public class ChaitinAllocator
     
                             if(def.getLeftOp() instanceof Local)
                             {
-                                if(!locals.contains(def.getLeftOp()))
-                                    locals.add(def.getLeftOp());
-                            }
+                                Local defLocal = (Local) def.getLeftOp();
+                  
+                                if(defLocal.getType().equals(type))
+                                {   
+                                    Iterator localIt = liveLocalsAtStmt.iterator();
+                                    
+                                    while(localIt.hasNext())
+                                    {
+                                        Local otherLocal = (Local) localIt.next();
+                                        
+                                        if(otherLocal.getType().equals(type))
+                                            setInterference(defLocal, otherLocal);
+                                    }
+                                }
+                            }    
                         }
-                    }
-    
-                    int localCount = locals.size();
-    
-                    for(int j = 0; j < localCount; j++)
-                    {
-                        Local l1 = (Local) locals.get(j);
-    
-                        for(int k = j + 1; k < localCount; k++)
-                        {
-                             Local l2 = (Local) locals.get(k);
-    
-                            if(l1.getType().equals(type) &&
-                                l2.getType().equals(type))
-                            {
-                                // Record this interference
-    
-                                setInterference(l1, l2);
-                            }
-                        }
-                    }
+                    }                    
                 }
             }
         }
