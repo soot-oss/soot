@@ -53,11 +53,17 @@ Improvements in current version
     reported by Nathan Kitchen. See fix 12 also.    (fqian)
 17. Small improvement in ArraySparseSet and BackwardFlowAnalysis pointed
     out by Florian Loitsch.                         (fqian)
-18. Add several utility classes for drawing generate graphs, e.g., 
+18. Added several utility classes for drawing generate graphs. 
     UnitGraph, BlockGraph, and Hierarchy can produce "dot" file
 	for generating postscript files. 
 	See soot/util/DotGraph*.java
 	(More function will be added on.)               (fqian)
+19. Added one flag in soot.Main.java to indicate the compilation for
+    J2ME library which does not have Cloneable and Serializable interfaces.
+	This affects the typing system which handcodes both interfaces.
+	Has not benn tested on J2ME. But when the flag is set to false, 
+	original function is not affected.
+	Patch provided by Stephen Cheng.                (fqian)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

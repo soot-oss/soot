@@ -54,6 +54,9 @@ public class TypeResolver
   private final TypeNode OBJECT;
 
   private static final boolean DEBUG = false;
+  // flag for J2ME library
+  private final static boolean J2ME = soot.Main.isJ2ME();
+
 
   // categories for type variables (solved = hard, unsolved = soft)
   private List unsolved;
@@ -156,8 +159,12 @@ public class TypeResolver
     NULL = hierarchy.NULL;
     typeVariable(OBJECT);
     typeVariable(NULL);
-    typeVariable(hierarchy.CLONEABLE);
-    typeVariable(hierarchy.SERIALIZABLE);
+    
+    // hack for J2ME library, reported by Stephen Cheng 
+    if (!J2ME) {
+      typeVariable(hierarchy.CLONEABLE);
+      typeVariable(hierarchy.SERIALIZABLE);
+    }
   }
 
   public static void resolve(JimpleBody stmtBody, Scene scene)
@@ -375,11 +382,13 @@ public class TypeResolver
 	  }
       }
 
-    if(max > 1)
-      {
+    if(max > 1) {
+      // hack for J2ME library, reported by Stephen Cheng 
+      if (!J2ME) {
 	typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), max - 1));
 	typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), max - 1));
       }
+    }
 
     // create lists for each array depth
     LinkedList[] lists = new LinkedList[max + 1];

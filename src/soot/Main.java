@@ -304,6 +304,16 @@ public class Main implements Runnable
     static private boolean isUsingRTA;
     static private boolean isApplication = false;
 
+  // hack for J2ME, patch provided by Stephen Chen
+  // by default, this is set as false, to use SOOT with J2ME library
+  // flag isJ2ME true. Type system works around Clonable, Serializeable.
+  // see changes in: 
+  //           soot/jimple/toolkits/typing/ClassHierarchy.java
+  //           soot/jimple/toolkits/typing/TypeResolver.java
+  //           soot/jimple/toolkits/typing/TypeVariable.java
+  //           soot/jimple/toolkits/typing/TypeNode.java
+  final static private boolean isJ2ME = false;
+
     // In application mode, we can choose lazy invocation mode
     // and also choose no output, this is only used for 
     // our point-to analysis right now.
@@ -442,6 +452,11 @@ public class Main implements Runnable
     {
         return isApplication;
     }
+
+  /* hack for J2ME */
+  public static boolean isJ2ME(){
+    return isJ2ME;
+  }
 
     /* for POINTs-TO analysis */
     public static void setLazyInvocation(boolean val) {
@@ -676,7 +691,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.55)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.56)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");

@@ -37,7 +37,8 @@ import soot.util.BitSet;
  **/
 class TypeNode
 {
-  public static final boolean DEBUG = false;
+  private static final boolean DEBUG = false;
+  private static final boolean J2ME  = soot.Main.isJ2ME();
 
   private final int id;
   private final Type type;
@@ -155,15 +156,25 @@ class TypeNode
 	  else if(type.numDimensions == 1)
 	    {
 	      plist.add(hierarchy.OBJECT);
-	      plist.add(hierarchy.CLONEABLE);
-	      plist.add(hierarchy.SERIALIZABLE);
+
+	      // hack for J2ME library, reported by Stephen Cheng
+	      if (!J2ME) {
+		plist.add(hierarchy.CLONEABLE);
+		plist.add(hierarchy.SERIALIZABLE);
+	      }
+
 	      parentClass = hierarchy.OBJECT;
 	    }
 	  else
 	    {
 	      plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1)));
-	      plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
-	      plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+
+	      // hack for J2ME library, reported by Stephen Cheng
+	      if (!J2ME) {
+		plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
+		plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+	      }
+
 	      parentClass = hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1));
 	    }
 
@@ -176,15 +187,24 @@ class TypeNode
       else if(type.numDimensions == 1)
 	{
 	  plist.add(hierarchy.OBJECT);
-	  plist.add(hierarchy.CLONEABLE);
-	  plist.add(hierarchy.SERIALIZABLE);
+
+	  // hack for J2ME library, reported by Stephen Cheng
+	  if (!J2ME) {
+	    plist.add(hierarchy.CLONEABLE);
+	    plist.add(hierarchy.SERIALIZABLE);
+	  }
+
 	  parentClass = hierarchy.OBJECT;
 	}
       else
 	{
 	  plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1)));
-	  plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
-	  plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+	  // hack for J2ME library, reported by Stephen Cheng
+	  if (!J2ME) {
+	    plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.CLONEABLE.type(), type.numDimensions - 1)));
+	    plist.add(hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.SERIALIZABLE.type(), type.numDimensions - 1)));
+	  }
+
 	  parentClass = hierarchy.typeNode(ArrayType.v((BaseType) hierarchy.OBJECT.type(), type.numDimensions - 1));
 	}
       	    

@@ -37,6 +37,8 @@ import soot.util.BitSet;
 class TypeVariable implements Comparable
 {
   private static final boolean DEBUG = false;
+  // flag for J2ME library
+  private final static boolean J2ME = soot.Main.isJ2ME();
 
   private final int id;
   private final TypeResolver resolver;
@@ -741,19 +743,23 @@ class TypeVariable implements Comparable
 	  }
 	else if(var.depth() == 0)
 	  {
-	    if(var.type() == null)
-	      {
+	    if(var.type() == null) {
+	      // hack for J2ME library, reported by Stephen Cheng
+	      if (!J2ME) {
 		var.addChild(resolver.typeVariable(resolver.hierarchy().CLONEABLE));
 		var.addChild(resolver.typeVariable(resolver.hierarchy().SERIALIZABLE));
 	      }
+	    }
 	  }
 	else
 	  {
-	    if(var.type() == null)
-	      {
+	    if(var.type() == null) {
+	      // hack for J2ME library, reported by Stephen Cheng
+	      if (!J2ME) {
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.lang.Cloneable"), var.depth())));
 		var.addChild(resolver.typeVariable(ArrayType.v(RefType.v("java.io.Serializable"), var.depth())));
 	      }
+	    }
 	  }
       }
 

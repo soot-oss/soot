@@ -545,7 +545,8 @@ public class Hierarchy
     canvas.setGraphLabel("Class Hierarchy");
     canvas.setPageSize(8.5, 11.0); // set graph size to 8x11 inches
     canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
-
+	canvas.setGraphAttribute("rankdir", "LR");
+	
     Chain allclasses = Scene.v().getClasses();
 
     Iterator classesIt = allclasses.iterator();

@@ -76,8 +76,17 @@ class ClassHierarchy
 
     NULL = typeNode(NullType.v());
     OBJECT = typeNode(RefType.v("java.lang.Object"));
-    CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
-    SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
+
+    // hack for J2ME library which does not have Cloneable and Serializable
+    // reported by Stephen Chen
+    if (!soot.Main.isJ2ME()) {
+      CLONEABLE = typeNode(RefType.v("java.lang.Cloneable"));
+      SERIALIZABLE = typeNode(RefType.v("java.io.Serializable"));
+    } else {
+      CLONEABLE = null;
+      SERIALIZABLE = null;
+    }
+
     INT = typeNode(IntType.v());
   }
 
