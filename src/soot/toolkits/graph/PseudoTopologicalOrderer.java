@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1997-1999 Raja Vallee-Rai, Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -61,29 +61,29 @@ public class PseudoTopologicalOrderer
         order = new LinkedList();
         graph = g;
         
-        // Color all statements white
+        // Color all nodes white
         {
             
 
             Iterator stmtIt = g.iterator();
             while(stmtIt.hasNext())
             {
-                Unit s = (Unit) stmtIt.next();
+                Object s = stmtIt.next();
                 
                 stmtToColor.put(s, new Integer(WHITE));
             }
         }
         
-        // Visit each statement 
+        // Visit each node
         {
             Iterator stmtIt = g.iterator();
             
             while(stmtIt.hasNext())
             {
-                Unit s = (Unit) stmtIt.next();
+                Object s = stmtIt.next();
                
                 if(((Integer) stmtToColor.get(s)).intValue() == WHITE)
-                    visitStmt(s); 
+                    visitNode(s); 
             }
         }
         
@@ -97,7 +97,7 @@ public class PseudoTopologicalOrderer
     // list of statements starting at s.  Simulates recursion with a stack.
     
     
-    private static void visitStmt(Unit startStmt)
+    private static void visitNode(Object startStmt)
     {
         LinkedList stmtStack = new LinkedList();
         LinkedList indexStack = new LinkedList();
@@ -110,21 +110,21 @@ public class PseudoTopologicalOrderer
         while(!stmtStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Unit toVisitStmt = (Unit) stmtStack.getLast();
+            Object toVisitNode = stmtStack.getLast();
             
             toVisitIndex++;
             
             indexStack.addLast(new Integer(toVisitIndex));
             
-            if(toVisitIndex >= graph.getSuccsOf(toVisitStmt).size())
+            if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
             {
                 // Visit this node now that we ran out of children 
                     if(mIsReversed)
-                        order.addLast(toVisitStmt);
+                        order.addLast(toVisitNode);
                     else
-                        order.addFirst(toVisitStmt);
+                        order.addFirst(toVisitNode);
                            
-                    stmtToColor.put(toVisitStmt, new Integer(BLACK));                
+                    stmtToColor.put(toVisitNode, new Integer(BLACK));                
                 
                 // Pop this node off
                     stmtStack.removeLast();
@@ -132,14 +132,14 @@ public class PseudoTopologicalOrderer
             }
             else
             {
-                Unit childStmt = (Unit) graph.getSuccsOf(toVisitStmt).get(toVisitIndex);
+                Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
                 
                 // Visit this child next if not already visited (or on stack)
-                    if(((Integer) stmtToColor.get(childStmt)).intValue() == WHITE)
+                    if(((Integer) stmtToColor.get(childNode)).intValue() == WHITE)
                     {
-                        stmtToColor.put(childStmt, new Integer(GRAY));
+                        stmtToColor.put(childNode, new Integer(GRAY));
                         
-                        stmtStack.addLast(childStmt);
+                        stmtStack.addLast(childNode);
                         indexStack.addLast(new Integer(-1));
                     }
             }

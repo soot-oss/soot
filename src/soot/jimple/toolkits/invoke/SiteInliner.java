@@ -31,28 +31,35 @@ import soot.jimple.toolkits.scalar.*;
 import java.util.*;
 import soot.util.*;
 
-public class JimpleInliner
+public class SiteInliner
 {
-    public static void inlineAll(Body b)
+    public static void inlineSites(List sites)
     {
-        Chain units = b.getUnits();
-        ArrayList unitsList = new ArrayList(); unitsList.addAll(units);
-        Iterator it = unitsList.iterator();
+        inlineSites(sites, new HashMap());
+    }
 
+    public static void inlineSites(List sites, Map options)
+    {
+        Iterator it = sites.iterator();
         while (it.hasNext())
         {
-            Stmt s = (Stmt)it.next();
-            if (s instanceof InvokeStmt)
-            {
-                InvokeExpr ie = (InvokeExpr)((InvokeStmt)s).getInvokeExpr();
-                if (ie instanceof StaticInvokeExpr || ie instanceof VirtualInvokeExpr)
-                    inlineInvoke(ie.getMethod(), s, b.getMethod());
-            }
+            List l = (List)it.next();
+            SootMethod inlinee = (SootMethod)l.get(0);
+            Stmt toInline = (Stmt)l.get(1);
+            SootMethod container = (SootMethod)l.get(2);
+
+            inlineSite(inlinee, toInline, container, options);
         }
     }
 
-    public static void inlineInvoke(SootMethod inlinee, Stmt toInline, 
+    public static void inlineSite(SootMethod inlinee, Stmt toInline, 
                                     SootMethod container)
+    {
+        inlineSite(inlinee, toInline, container, new HashMap());
+    }
+
+    public static void inlineSite(SootMethod inlinee, Stmt toInline, 
+                                    SootMethod container, Map options)
     {
         // DEBUG
 //          System.out.println("inlining: "+inlinee + " into "+container);

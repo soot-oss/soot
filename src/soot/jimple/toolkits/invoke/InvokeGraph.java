@@ -28,6 +28,7 @@ package soot.jimple.toolkits.invoke;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
+import soot.toolkits.graph.*;
 
 /** Maps invokeExpr's to their declaring and target methods. 
  * ClassHierarchyAnalysis is the default source of InvokeGraphs, although
@@ -117,6 +118,59 @@ public class InvokeGraph
         Iterator it = getTargetsOf(roleModel).iterator();
         while (it.hasNext())
             addTarget(imitator, (SootMethod)it.next());
+    }
+
+    public MutableDirectedGraph newMethodGraph()
+    {
+        HashMutableDirectedGraph g = new HashMutableDirectedGraph();
+
+        List appAndLibClasses = new ArrayList();
+        appAndLibClasses.addAll(Scene.v().getApplicationClasses());
+        appAndLibClasses.addAll(Scene.v().getLibraryClasses());
+
+        // Add all of the methods as nodes of g.
+        // Note that if we had a list of entryPoints, we'd
+        // have a mini tree shaker.
+        {
+            Iterator classesIt = appAndLibClasses.iterator();
+
+            while (classesIt.hasNext())
+            {
+                SootClass c = (SootClass)classesIt.next();
+                Iterator methodsIt = c.getMethods().iterator();
+                while (methodsIt.hasNext())
+                {
+                    SootMethod m = (SootMethod)methodsIt.next();
+                    g.addNode(m);
+                }
+            }
+        }
+
+        // Add edges to g
+        {
+            Iterator methodsIt = g.getNodes().iterator();
+            while (methodsIt.hasNext())
+            {
+                SootMethod m = (SootMethod)methodsIt.next();
+                
+                if(!m.isConcrete())
+                    continue;
+
+                Iterator sitesIt = getSitesOf(m).iterator();
+                while (sitesIt.hasNext())
+                {
+                    InvokeExpr ie = (InvokeExpr)sitesIt.next();
+                    Iterator targetsIt = getTargetsOf(ie).iterator();
+                    while (targetsIt.hasNext())
+                    {
+                        Object target = targetsIt.next();
+                        if (g.containsNode(target))
+                            g.addEdge(m, target);
+                    }
+                }
+            }
+        }
+        return g;
     }
 }
 

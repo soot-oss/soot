@@ -491,11 +491,11 @@ public class BlockGraph implements DirectedGraph
     {
         throw new RuntimeException("not yet implemented");
     }
-    public List getPredsOf(Unit s)
+    public List getPredsOf(Object s)
     {
         throw new RuntimeException("not yet implemented");
     }
-    public List getSuccsOf(Unit s)
+    public List getSuccsOf(Object s)
     {
         throw new RuntimeException("not yet implemented");
     }

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai, Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,9 +23,23 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
 
-public interface Directed
+package soot.toolkits.graph;
+
+
+import java.util.*;
+import soot.*;
+
+public interface MutableDirectedGraph extends DirectedGraph
 {
-    
+    public void addEdge(Object from, Object to);
+    public void removeEdge(Object from, Object to);
+    public boolean containsEdge(Object from, Object to);
+
+    public List getNodes();
+    public void addNode(Object node);
+    public void removeNode(Object node);
+    public boolean containsNode(Object node);
 }
+
+ 

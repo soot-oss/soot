@@ -70,14 +70,14 @@ public class StaticMethodBinder extends SceneTransformer
             {
                 SootMethod container = (SootMethod)methodsList.removeFirst();
 
-                if (container.isAbstract() || container.isNative() || container.isPhantom())
+                if (!container.isConcrete())
+                    continue;
+
+                if (graph.getSitesOf(container).size() == 0)
                     continue;
 
                 JimpleBody b = (JimpleBody)container.getActiveBody();
                 
-                if (graph.getSitesOf(container).size() == 0)
-                    continue;
-
                 List unitList = new ArrayList(); unitList.addAll(b.getUnits());
                 Iterator unitIt = unitList.iterator();
 

@@ -1,0 +1,190 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1999 Patrick Lam, Raja Vallee-Rai
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+package soot.toolkits.graph;
+
+import soot.util.*;
+import java.util.*;
+
+public class StronglyConnectedComponents
+{
+    private HashMap nodeToColor = new HashMap();
+    private static final int 
+        WHITE = 0,
+        GRAY = 1,
+        BLACK = 2;
+    Chain finishingOrder = new HashChain();
+
+    private List componentList = new ArrayList();
+    private HashMap nodeToComponent = new HashMap();
+
+    public StronglyConnectedComponents(DirectedGraph g)
+    {
+        // Color all nodes white
+        {
+            Iterator nodeIt = g.iterator();
+            while(nodeIt.hasNext())
+                nodeToColor.put(nodeIt.next(), new Integer(WHITE));
+        }
+        
+        // Visit each node
+        {
+            Iterator nodeIt = g.iterator();
+            
+            while(nodeIt.hasNext())
+            {
+                Object s = nodeIt.next();
+               
+                if(((Integer) nodeToColor.get(s)).intValue() == WHITE)
+                    visitNode(g, s); 
+            }
+        }
+
+        // Re-color all nodes white
+        {
+            Iterator nodeIt = g.iterator();
+            while(nodeIt.hasNext())
+                nodeToColor.put(nodeIt.next(), new Integer(WHITE));
+        }
+
+        // Visit each node via transpose edges
+        {
+            Iterator revNodeIt = finishingOrder.iterator();
+            while (revNodeIt.hasNext())
+            {
+                Object s = revNodeIt.next();
+
+                if(((Integer) nodeToColor.get(s)).intValue() == WHITE)
+                {
+                    List currentComponent = new ArrayList();
+                    visitRevNode(g, s, currentComponent); 
+                    componentList.add(Collections.unmodifiableList(currentComponent));
+                }
+            }
+        }
+        componentList = Collections.unmodifiableList(componentList);
+    }
+
+    private void visitNode(DirectedGraph graph, Object startNode)
+    {
+        LinkedList nodeStack = new LinkedList();
+        LinkedList indexStack = new LinkedList();
+        
+        nodeToColor.put(startNode, new Integer(GRAY));
+        
+        nodeStack.addLast(startNode);
+        indexStack.addLast(new Integer(-1));
+        
+        while(!nodeStack.isEmpty())
+        {
+            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+            Object toVisitNode = nodeStack.getLast();
+            
+            toVisitIndex++;
+            
+            indexStack.addLast(new Integer(toVisitIndex));
+            
+            if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
+            {
+                // Visit this node now that we ran out of children 
+                    finishingOrder.addFirst(toVisitNode);
+
+                    nodeToColor.put(toVisitNode, new Integer(BLACK));                
+                
+                // Pop this node off
+                    nodeStack.removeLast();
+                    indexStack.removeLast();
+            }
+            else
+            {
+                Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
+                
+                // Visit this child next if not already visited (or on stack)
+                    if(((Integer) nodeToColor.get(childNode)).intValue() == WHITE)
+                    {
+                        nodeToColor.put(childNode, new Integer(GRAY));
+                        
+                        nodeStack.addLast(childNode);
+                        indexStack.addLast(new Integer(-1));
+                    }
+            }
+        }
+    }
+
+    private void visitRevNode(DirectedGraph graph, Object startNode, List currentComponent)
+    {
+        LinkedList nodeStack = new LinkedList();
+        LinkedList indexStack = new LinkedList();
+        
+        nodeToColor.put(startNode, new Integer(GRAY));
+        
+        nodeStack.addLast(startNode);
+        indexStack.addLast(new Integer(-1));
+        
+        while(!nodeStack.isEmpty())
+        {
+            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
+            Object toVisitNode = nodeStack.getLast();
+            
+            toVisitIndex++;
+            
+            indexStack.addLast(new Integer(toVisitIndex));
+            
+            if(toVisitIndex >= graph.getPredsOf(toVisitNode).size())
+            {
+                // No more nodes.  Add toVisitNode to current component.
+                    currentComponent.add(toVisitNode);
+                    nodeToComponent.put(toVisitNode, currentComponent);
+               
+                // Pop this node off
+                    nodeStack.removeLast();
+                    indexStack.removeLast();
+            }
+            else
+            {
+                Object childNode = graph.getPredsOf(toVisitNode).get(toVisitIndex);
+                
+                // Visit this child next if not already visited (or on stack)
+                    if(((Integer) nodeToColor.get(childNode)).intValue() == WHITE)
+                    {
+                        nodeToColor.put(childNode, new Integer(GRAY));
+                        
+                        nodeStack.addLast(childNode);
+                        indexStack.addLast(new Integer(-1));
+                    }
+            }
+        }
+    }
+
+    public boolean equivalent(Object a, Object b)
+    {
+        return nodeToComponent.get(a) == nodeToComponent.get(b);
+    }
+
+    public List getComponents()
+    {
+        return componentList;
+    }
+}

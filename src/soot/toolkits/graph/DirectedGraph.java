@@ -34,8 +34,8 @@ public interface DirectedGraph
 {
     public List getHeads();
     public List getTails();
-    public List getPredsOf(Unit s);
-    public List getSuccsOf(Unit s);
+    public List getPredsOf(Object s);
+    public List getSuccsOf(Object s);
     public int size();
     public Iterator iterator();
 }
