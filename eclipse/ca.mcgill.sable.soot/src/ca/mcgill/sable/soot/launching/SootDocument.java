@@ -46,10 +46,10 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 		//System.out.println("handling Soot Event");
 		if (!viewShown) {
 			System.out.println("view wasn't shown and now will be");
-			
+			showSootOutputView();
 			notifySootOutputView();
 			getViewer().getTextViewer().setDocument(this);
-			showSootOutputView();
+			//showSootOutputView();
 			viewShown = true;
 		}
 	}
@@ -68,6 +68,7 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 				IViewPart part= iWorkbenchPage.findView(ISootConstants.SOOT_OUTPUT_VIEW_ID);
 				System.out.println("asked to find part");
 				if (part == null) {
+					
 					IViewReference refs [] = iWorkbenchPage.getViewReferences();
 					for (int k = 0; k < refs.length; k++) {
 						System.out.println(refs[k].getPart(true).getClass().toString());
@@ -127,13 +128,18 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	
 	 
 	private void showSootOutputView() {
+		System.out.println("in showSootOutputView");
+		System.out.println(SootPlugin.getDefault().getWorkbench());
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();		
+		
 		if (window != null) {
+			System.out.println("window not null");
 			IWorkbenchPage page= window.getActivePage();
 			if (page != null) {
 				try {
 					IViewPart sootOutputViewer = page.findView("ca.mcgill.sable.soot.ui.sootoutputview.view");
 					if(sootOutputViewer == null) {
+						System.out.println("page not null");
 						IWorkbenchPart activePart= page.getActivePart();
 						System.out.println("active part gotten");
 						page.showView("ca.mcgill.sable.soot.ui.sootoutputview.view");

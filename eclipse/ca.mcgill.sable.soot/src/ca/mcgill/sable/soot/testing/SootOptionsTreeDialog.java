@@ -28,6 +28,10 @@ import org.eclipse.swt.layout.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+/*
+ * this class is not used
+ */
 public class SootOptionsTreeDialog extends TitleAreaDialog {
 	
 	private SashForm sashForm;

@@ -39,9 +39,9 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
-import ca.mcgill.sable.soot.ui.*;
 import ca.mcgill.sable.soot.util.*;
 import java.util.HashMap;
+import ca.mcgill.sable.soot.ui.*;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
@@ -108,7 +108,17 @@ Composite bopChild = bopCreate(getPageContainer());
 
 Composite tagChild = tagCreate(getPageContainer());
 
-Composite jbjb_asvChild = jbjb_asvCreate(getPageContainer());
+Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
+
+Composite jbjb_a1Child = jbjb_a1Create(getPageContainer());
+
+Composite jbjb_ule1Child = jbjb_ule1Create(getPageContainer());
+
+Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
+
+Composite jbjb_a2Child = jbjb_a2Create(getPageContainer());
+
+Composite jbjb_ule2Child = jbjb_ule2Create(getPageContainer());
 
 Composite jbjb_ulpChild = jbjb_ulpCreate(getPageContainer());
 
@@ -117,14 +127,6 @@ Composite jbjb_lnsChild = jbjb_lnsCreate(getPageContainer());
 Composite jbjb_cpChild = jbjb_cpCreate(getPageContainer());
 
 Composite jbjb_daeChild = jbjb_daeCreate(getPageContainer());
-
-Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
-
-Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
-
-Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
-
-Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
 
 Composite jbjb_cp_uleChild = jbjb_cp_uleCreate(getPageContainer());
 
@@ -287,6 +289,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getGeneral_Optionswhole_program_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsdebug_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsdebug_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
 		
 		
@@ -395,46 +407,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbno_splitting_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_splitting_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbno_typing_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_typing_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbaggregate_all_locals_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbaggregate_all_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbno_aggregating_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_aggregating_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getjbuse_original_names_widget().getButton().getSelection();
 		
 		
@@ -445,74 +417,84 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbpack_locals_widget().getButton().getSelection();
+		boolRes = getjbjb_lsdisabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbpack_locals_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_lsdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbno_cp_widget().getButton().getSelection();
+		boolRes = getjbjb_a1disabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_cp_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a1disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbno_nop_elimination_widget().getButton().getSelection();
+		boolRes = getjbjb_a1only_stack_locals_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_nop_elimination_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbno_unreachable_code_elimination_widget().getButton().getSelection();
+		boolRes = getjbjb_ule1disabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbno_unreachable_code_elimination_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_ule1disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbverbatim_widget().getButton().getSelection();
+		boolRes = getjbjb_trdisabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbverbatim_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_trdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_asvdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_a2disabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_asvdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a2disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_asvonly_stack_locals_widget().getButton().getSelection();
+		boolRes = getjbjb_a2only_stack_locals_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_asvonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_ule2disabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_ule2disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpdisabled_widget().getButton().getSelection();
@@ -605,56 +587,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_lsdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_lsdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_adisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_adisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_aonly_stack_locals_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_uledisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_uledisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_trdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_trdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getjbjb_cp_uledisabled_widget().getButton().getSelection();
 		
 		
@@ -668,7 +600,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getjbjb_lpdisabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -1929,16 +1861,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getSingle_File_Mode_Optionsprocess_path_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getApplication_Mode_Optionsanalyze_context_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getApplication_Mode_Optionsanalyze_context_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
 		
 		defStringRes = "";
@@ -2112,11 +2034,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			parent.addChild(jb_branch);
 			subParent = jb_branch;
 
-			SootOption jb_jb_asv_branch = new SootOption("Stack Variable Aggregation");
-			subParent.addChild(jb_jb_asv_branch);
+			SootOption jb_jb_ls_branch = new SootOption("Local Splitter");
+			subParent.addChild(jb_jb_ls_branch);
 
 			
-			subSectParent = jb_jb_asv_branch;
+			subSectParent = jb_jb_ls_branch;
+			
+			
+			SootOption jb_jb_a1_branch = new SootOption("Pre-typing Aggregator");
+			subParent.addChild(jb_jb_a1_branch);
+
+			
+			subSectParent = jb_jb_a1_branch;
+			
+			
+			SootOption jb_jb_ule1_branch = new SootOption("Pre-typing Unused Local Eliminator");
+			subParent.addChild(jb_jb_ule1_branch);
+
+			
+			subSectParent = jb_jb_ule1_branch;
+			
+			
+			SootOption jb_jb_tr_branch = new SootOption("Type Assigner");
+			subParent.addChild(jb_jb_tr_branch);
+
+			
+			subSectParent = jb_jb_tr_branch;
+			
+			
+			SootOption jb_jb_a2_branch = new SootOption("Post-typing Aggregator");
+			subParent.addChild(jb_jb_a2_branch);
+
+			
+			subSectParent = jb_jb_a2_branch;
+			
+			
+			SootOption jb_jb_ule2_branch = new SootOption("Post-typing Unused Local Eliminator");
+			subParent.addChild(jb_jb_ule2_branch);
+
+			
+			subSectParent = jb_jb_ule2_branch;
 			
 			
 			SootOption jb_jb_ulp_branch = new SootOption("Unsplit-originals Local Packer");
@@ -2145,34 +2102,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 			
 			subSectParent = jb_jb_dae_branch;
-			
-			
-			SootOption jb_jb_ls_branch = new SootOption("Local Splitter");
-			subParent.addChild(jb_jb_ls_branch);
-
-			
-			subSectParent = jb_jb_ls_branch;
-			
-			
-			SootOption jb_jb_a_branch = new SootOption("Aggregator");
-			subParent.addChild(jb_jb_a_branch);
-
-			
-			subSectParent = jb_jb_a_branch;
-			
-			
-			SootOption jb_jb_ule_branch = new SootOption("Unused Local Eliminator");
-			subParent.addChild(jb_jb_ule_branch);
-
-			
-			subSectParent = jb_jb_ule_branch;
-			
-			
-			SootOption jb_jb_tr_branch = new SootOption("Type Assigner");
-			subParent.addChild(jb_jb_tr_branch);
-
-			
-			subSectParent = jb_jb_tr_branch;
 			
 			
 			SootOption jb_jb_cp_ule_branch = new SootOption("Unused Local Eliminator");
@@ -2630,6 +2559,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return General_Optionswhole_program_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsdebug_widget;
+	
+	private void setGeneral_Optionsdebug_widget(BooleanOptionWidget widget) {
+		General_Optionsdebug_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsdebug_widget() {
+		return General_Optionsdebug_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsallow_phantom_refs_widget;
 	
 	private void setInput_Optionsallow_phantom_refs_widget(BooleanOptionWidget widget) {
@@ -2748,46 +2687,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbdisabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbno_splitting_widget;
-	
-	private void setjbno_splitting_widget(BooleanOptionWidget widget) {
-		jbno_splitting_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbno_splitting_widget() {
-		return jbno_splitting_widget;
-	}	
-	
-	private BooleanOptionWidget jbno_typing_widget;
-	
-	private void setjbno_typing_widget(BooleanOptionWidget widget) {
-		jbno_typing_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbno_typing_widget() {
-		return jbno_typing_widget;
-	}	
-	
-	private BooleanOptionWidget jbaggregate_all_locals_widget;
-	
-	private void setjbaggregate_all_locals_widget(BooleanOptionWidget widget) {
-		jbaggregate_all_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbaggregate_all_locals_widget() {
-		return jbaggregate_all_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jbno_aggregating_widget;
-	
-	private void setjbno_aggregating_widget(BooleanOptionWidget widget) {
-		jbno_aggregating_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbno_aggregating_widget() {
-		return jbno_aggregating_widget;
-	}	
-	
 	private BooleanOptionWidget jbuse_original_names_widget;
 	
 	private void setjbuse_original_names_widget(BooleanOptionWidget widget) {
@@ -2798,74 +2697,84 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbuse_original_names_widget;
 	}	
 	
-	private BooleanOptionWidget jbpack_locals_widget;
+	private BooleanOptionWidget jbjb_lsdisabled_widget;
 	
-	private void setjbpack_locals_widget(BooleanOptionWidget widget) {
-		jbpack_locals_widget = widget;
+	private void setjbjb_lsdisabled_widget(BooleanOptionWidget widget) {
+		jbjb_lsdisabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbpack_locals_widget() {
-		return jbpack_locals_widget;
+	public BooleanOptionWidget getjbjb_lsdisabled_widget() {
+		return jbjb_lsdisabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbno_cp_widget;
+	private BooleanOptionWidget jbjb_a1disabled_widget;
 	
-	private void setjbno_cp_widget(BooleanOptionWidget widget) {
-		jbno_cp_widget = widget;
+	private void setjbjb_a1disabled_widget(BooleanOptionWidget widget) {
+		jbjb_a1disabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbno_cp_widget() {
-		return jbno_cp_widget;
+	public BooleanOptionWidget getjbjb_a1disabled_widget() {
+		return jbjb_a1disabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbno_nop_elimination_widget;
+	private BooleanOptionWidget jbjb_a1only_stack_locals_widget;
 	
-	private void setjbno_nop_elimination_widget(BooleanOptionWidget widget) {
-		jbno_nop_elimination_widget = widget;
+	private void setjbjb_a1only_stack_locals_widget(BooleanOptionWidget widget) {
+		jbjb_a1only_stack_locals_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbno_nop_elimination_widget() {
-		return jbno_nop_elimination_widget;
+	public BooleanOptionWidget getjbjb_a1only_stack_locals_widget() {
+		return jbjb_a1only_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbno_unreachable_code_elimination_widget;
+	private BooleanOptionWidget jbjb_ule1disabled_widget;
 	
-	private void setjbno_unreachable_code_elimination_widget(BooleanOptionWidget widget) {
-		jbno_unreachable_code_elimination_widget = widget;
+	private void setjbjb_ule1disabled_widget(BooleanOptionWidget widget) {
+		jbjb_ule1disabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbno_unreachable_code_elimination_widget() {
-		return jbno_unreachable_code_elimination_widget;
+	public BooleanOptionWidget getjbjb_ule1disabled_widget() {
+		return jbjb_ule1disabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbverbatim_widget;
+	private BooleanOptionWidget jbjb_trdisabled_widget;
 	
-	private void setjbverbatim_widget(BooleanOptionWidget widget) {
-		jbverbatim_widget = widget;
+	private void setjbjb_trdisabled_widget(BooleanOptionWidget widget) {
+		jbjb_trdisabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbverbatim_widget() {
-		return jbverbatim_widget;
+	public BooleanOptionWidget getjbjb_trdisabled_widget() {
+		return jbjb_trdisabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_asvdisabled_widget;
+	private BooleanOptionWidget jbjb_a2disabled_widget;
 	
-	private void setjbjb_asvdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_asvdisabled_widget = widget;
+	private void setjbjb_a2disabled_widget(BooleanOptionWidget widget) {
+		jbjb_a2disabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_asvdisabled_widget() {
-		return jbjb_asvdisabled_widget;
+	public BooleanOptionWidget getjbjb_a2disabled_widget() {
+		return jbjb_a2disabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_asvonly_stack_locals_widget;
+	private BooleanOptionWidget jbjb_a2only_stack_locals_widget;
 	
-	private void setjbjb_asvonly_stack_locals_widget(BooleanOptionWidget widget) {
-		jbjb_asvonly_stack_locals_widget = widget;
+	private void setjbjb_a2only_stack_locals_widget(BooleanOptionWidget widget) {
+		jbjb_a2only_stack_locals_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_asvonly_stack_locals_widget() {
-		return jbjb_asvonly_stack_locals_widget;
+	public BooleanOptionWidget getjbjb_a2only_stack_locals_widget() {
+		return jbjb_a2only_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_ule2disabled_widget;
+	
+	private void setjbjb_ule2disabled_widget(BooleanOptionWidget widget) {
+		jbjb_ule2disabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_ule2disabled_widget() {
+		return jbjb_ule2disabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_ulpdisabled_widget;
@@ -2956,56 +2865,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbjb_daeonly_stack_locals_widget() {
 		return jbjb_daeonly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_lsdisabled_widget;
-	
-	private void setjbjb_lsdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_lsdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_lsdisabled_widget() {
-		return jbjb_lsdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_adisabled_widget;
-	
-	private void setjbjb_adisabled_widget(BooleanOptionWidget widget) {
-		jbjb_adisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_adisabled_widget() {
-		return jbjb_adisabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_aonly_stack_locals_widget;
-	
-	private void setjbjb_aonly_stack_locals_widget(BooleanOptionWidget widget) {
-		jbjb_aonly_stack_locals_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_aonly_stack_locals_widget() {
-		return jbjb_aonly_stack_locals_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_uledisabled_widget;
-	
-	private void setjbjb_uledisabled_widget(BooleanOptionWidget widget) {
-		jbjb_uledisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_uledisabled_widget() {
-		return jbjb_uledisabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_trdisabled_widget;
-	
-	private void setjbjb_trdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_trdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_trdisabled_widget() {
-		return jbjb_trdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_cp_uledisabled_widget;
@@ -4314,16 +4173,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget Application_Mode_Optionsanalyze_context_widget;
-	
-	private void setApplication_Mode_Optionsanalyze_context_widget(BooleanOptionWidget widget) {
-		Application_Mode_Optionsanalyze_context_widget = widget;
-	}
-	
-	public BooleanOptionWidget getApplication_Mode_Optionsanalyze_context_widget() {
-		return Application_Mode_Optionsanalyze_context_widget;
-	}	
-	
 
 	private ListOptionWidget Application_Mode_Optionsinclude_widget;
 	
@@ -4558,6 +4407,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "runs in whole-program mode", defaultBool)));
 		
 		
+		
+		defKey = ""+" "+""+" "+"debug";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Debug", "", "","debug", "prints various Soot debugging info", defaultBool)));
+		
+		
 
 		
 		return editGroup;
@@ -4763,9 +4628,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Output Format", "", "","o", "sets the source precedence for Soot")));
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Output Format", "", "","f", "sets the output format for Soot")));
 		
-		defKey = ""+" "+""+" "+"o";
+		defKey = ""+" "+""+" "+"f";
 		defKey = defKey.trim();
 		
 		if (isInDefList(defKey)) {
@@ -4895,70 +4760,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"jb"+" "+"no-splitting";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_splitting_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Splitting", "p", "jb","no-splitting", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"no-typing";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_typing_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Typing", "p", "jb","no-typing", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"aggregate-all-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbaggregate_all_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Aggregate All Locals", "p", "jb","aggregate-all-locals", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"no-aggregating";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_aggregating_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Aggregating", "p", "jb","no-aggregating", "", defaultBool)));
-		
-		
-		
 		defKey = "p"+" "+"jb"+" "+"use-original-names";
 		defKey = defKey.trim();
 
@@ -4974,8 +4775,28 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setjbuse_original_names_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "", defaultBool)));
 		
 		
+
 		
-		defKey = "p"+" "+"jb"+" "+"pack-locals";
+		return editGroup;
+	}
+
+
+
+	private Composite jbjb_lsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroup = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroup.setLayout(layout);
+	
+	 	editGroup.setText("Local Splitter");
+	 	OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jb.ls"+" "+"disabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4987,71 +4808,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbpack_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Pack Locals", "p", "jb","pack-locals", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"no-cp";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_cp_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Copy Propogator", "p", "jb","no-cp", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"no-nop-elimination";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_nop_elimination_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Nop Elimination", "p", "jb","no-nop-elimination", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"no-unreachable-code-elimination";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbno_unreachable_code_elimination_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("No Unreachable Code Elimination", "p", "jb","no-unreachable-code-elimination", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"verbatim";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbverbatim_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Verbatim", "p", "jb","verbatim", "", defaultBool)));
+		setjbjb_lsdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ls","disabled", "", defaultBool)));
 		
 		
 
@@ -5061,7 +4818,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite jbjb_asvCreate(Composite parent) {
+	private Composite jbjb_a1Create(Composite parent) {
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
@@ -5070,12 +4827,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroup.setLayout(layout);
 	
-	 	editGroup.setText("Stack Variable Aggregation");
+	 	editGroup.setText("Pre-typing Aggregator");
 	 	OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.asv"+" "+"disabled";
+		defKey = "p"+" "+"jb.a1"+" "+"disabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5087,11 +4844,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_asvdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.asv","disabled", "", defaultBool)));
+		setjbjb_a1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.a1","disabled", "", defaultBool)));
 		
 		
 		
-		defKey = "p"+" "+"jb.asv"+" "+"only-stack-locals";
+		defKey = "p"+" "+"jb.a1"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5099,11 +4856,171 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjbjb_asvonly_stack_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.asv","only-stack-locals", "", defaultBool)));
+		setjbjb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a1","only-stack-locals", "Aggregate values stored in stack locals only.", defaultBool)));
+		
+		
+
+		
+		return editGroup;
+	}
+
+
+
+	private Composite jbjb_ule1Create(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroup = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroup.setLayout(layout);
+	
+	 	editGroup.setText("Pre-typing Unused Local Eliminator");
+	 	OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jb.ule1"+" "+"disabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_ule1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ule1","disabled", "", defaultBool)));
+		
+		
+
+		
+		return editGroup;
+	}
+
+
+
+	private Composite jbjb_trCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroup = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroup.setLayout(layout);
+	
+	 	editGroup.setText("Type Assigner");
+	 	OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jb.tr"+" "+"disabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_trdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.tr","disabled", "", defaultBool)));
+		
+		
+
+		
+		return editGroup;
+	}
+
+
+
+	private Composite jbjb_a2Create(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroup = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroup.setLayout(layout);
+	
+	 	editGroup.setText("Post-typing Aggregator");
+	 	OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jb.a2"+" "+"disabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_a2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.a2","disabled", "", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.a2"+" "+"only-stack-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a2","only-stack-locals", "Aggregate values stored in stack locals only.", defaultBool)));
+		
+		
+
+		
+		return editGroup;
+	}
+
+
+
+	private Composite jbjb_ule2Create(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+		
+		Group editGroup = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroup.setLayout(layout);
+	
+	 	editGroup.setText("Post-typing Unused Local Eliminator");
+	 	OptionData [] data;	
+		
+
+		
+		defKey = "p"+" "+"jb.ule2"+" "+"disabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_ule2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ule2","disabled", "", defaultBool)));
 		
 		
 
@@ -5337,166 +5254,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 
-	private Composite jbjb_lsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Local Splitter");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.ls"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_lsdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ls","disabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroup;
-	}
-
-
-
-	private Composite jbjb_aCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Aggregator");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.a"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_adisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.a","disabled", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.a"+" "+"only-stack-locals";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a","only-stack-locals", "Aggregate values stored in stack locals only.", defaultBool)));
-		
-		
-
-		
-		return editGroup;
-	}
-
-
-
-	private Composite jbjb_uleCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Unused Local Eliminator");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.ule"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_uledisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ule","disabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroup;
-	}
-
-
-
-	private Composite jbjb_trCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Type Assigner");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"jb.tr"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_trdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.tr","disabled", "", defaultBool)));
-		
-		
-
-		
-		return editGroup;
-	}
-
-
-
 	private Composite jbjb_cp_uleCreate(Composite parent) {
 		String defKey;
 		String defaultString;
@@ -5555,7 +5312,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -6294,6 +6051,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		true),
 		
+		new OptionData("Shared",
+		"shared",
+		"",
+		
+		false),
+		
 		};
 		
 										
@@ -6336,6 +6099,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
+		new OptionData("Shared",
+		"shared",
+		"",
+		
+		false),
+		
 		};
 		
 										
@@ -6374,6 +6143,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Array",
 		"array",
+		"",
+		
+		false),
+		
+		new OptionData("Shared",
+		"shared",
 		"",
 		
 		false),
@@ -8968,22 +8743,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	OptionData [] data;	
 		
 
-		
-		defKey = ""+" "+""+" "+"a";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setApplication_Mode_Optionsanalyze_context_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Analyze Context", "", "","a", "label context classes as library", defaultBool)));
-		
-		
 
 		defKey = ""+" "+""+" "+"i";
 		defKey = defKey.trim();

@@ -1,6 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -8,8 +9,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import ca.mcgill.sable.soot.SootPlugin;
-import ca.mcgill.sable.soot.ui.EditSavedConfigDialog;
-
+import ca.mcgill.sable.soot.ui.*;
+import org.eclipse.jface.dialogs.*;
 /**
  * @author jlhotak
  *
@@ -28,10 +29,12 @@ import ca.mcgill.sable.soot.ui.EditSavedConfigDialog;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class SootEditSavedConfigurationLauncher extends SootLauncher {
+
+// classs not used
+public class SootEditConfigProjectLauncher extends SootProjectLauncher {
 	
 	public void run(IAction action) {
-	
+		super.run(action);
 		// show dialog with list of configs and
 		// ok and cancel buttons at bottom and
 		// edit and remove buttons at side
@@ -46,8 +49,8 @@ public class SootEditSavedConfigurationLauncher extends SootLauncher {
 
 		//System.out.println("config_count: "+numConfig);
 		if (numConfig != 0) {		
+			//String [] configNames = new String[numConfig];
 			ArrayList configNames = new ArrayList();
-			
 			for (int i = 0; i < numConfig; i++) {
 				configNames.add(settings.get("soot_run_config_"+(i+1)));
 				//System.out.println("configNames[i]: "+configNames[i]);
@@ -58,32 +61,47 @@ public class SootEditSavedConfigurationLauncher extends SootLauncher {
 			ecd.setTitle("Soot Configuration Editor");
 			ecd.setMessage("Select:");
 			ecd.setMultipleSelection(false);
+			addEclipseDefsToDialog(ecd);
 			ecd.open();
 			
-			//ElementListSelectionDialog configChooser = new ElementListSelectionDialog(getWindow().getShell(), new LabelProvider());
-			//System.out.println("configChooser created");
-			//configChooser.setElements(configNames);
-			//System.out.println("set elements");
-			//configChooser.setTitle("Soot Configuration Chooser");
-			//configChooser.setMessage("Select:");
-			//configChooser.setMultipleSelection(false);
-			//configChooser.open(); 
+			if (ecd.getReturnCode() == Dialog.OK) {
+				SavedConfigManager scm = new SavedConfigManager();
+				scm.setEditMap(ecd.getEditMap());
+				scm.handleEdits();
+				scm.setDeleteList(ecd.getDeleteList());
+				scm.handleDeletes();
+		
+			}
+			else {
+			}
 			
-			/*if (configChooser.getReturnCode() == Dialog.OK) {
-				String choosen = (String)configChooser.getFirstResult();
-				//System.out.println("choosen: "+choosen);
-				//SootSavedConfiguration config = new SootSavedConfiguration(choosen, settings.get(choosen));
-				setSootCommandList(new SootCommandList());
-				//System.out.println(settings.get(choosen));
-				getSootCommandList().addSingleOpt(settings.get(choosen));
-				//System.out.println("set SootCommandList");
-				runSootDirectly();
-			}*/
+			
 		}
 		else {
 			MessageDialog noConfigs = new MessageDialog(getWindow().getShell(), "Soot Configuration Chooser Message", null, "There are no saved configurations to edit!", 0, new String [] {"OK"}, 0);	
 			noConfigs.open();
 		}
 		
+	}
+	
+	private void addEclipseDefsToDialog(EditSavedConfigDialog dialog) {
+		//HashMap defs = new HashMap();
+		dialog.addToEclipseDefList(LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		System.out.println("setting eclipse defs");
+		System.out.println(getOutputLocation());
+		//System.out.println("presetting output dir");
+		dialog.addToEclipseDefList(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		System.out.println(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		//System.out.println("presetting cp");
+		dialog.addToEclipseDefList(LaunchCommands.PROCESS_PATH, getProcess_path());
+		System.out.println(getProcess_path());
+		//System.out.println("presetting process-path"+getProcess_path());
+		dialog.addToEclipseDefList(LaunchCommands.KEEP_LINE_NUMBER, new Boolean(true));
+		//getSdc().setKeepLineNum();
+		//System.out.println("presetting keep line num");
+		dialog.addToEclipseDefList(LaunchCommands.XML_ATTRIBUTES, new Boolean(true));
+		//getSdc().setPrintTags();	
+		//System.out.println("presetting print tags");
+	
 	}
 }

@@ -40,9 +40,9 @@ public class SootConfigNameInputValidator implements IInputValidator {
 		if (newText == null) {
 			return "Must not be null!";
 		}
-		/*if (getAlreadyUsed().contains(newText)) {
+		if (getAlreadyUsed().contains(newText)) {
 			return "A configuration with that name already exists!";
-		}*/
+		}
 		return null;
 	}
 

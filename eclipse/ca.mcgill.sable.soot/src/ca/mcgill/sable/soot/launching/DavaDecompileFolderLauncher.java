@@ -17,7 +17,16 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	 */
 	public void run(IAction action) {
 	  	super.run(action);
-
+	  	
+		setCmd();
+/*		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", getSootCommandList());
+      		ssc.toSaveString();
+      		
+      		
+      		//HashMap temp = dialog.getOkMap();
+      		//System.out.println("ok map: "+temp.get("test"));
+      		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
+      		setCmd(ssc.toRunString());*/
 		setCmd();
 		runSootDirectly();
 		runFinish();

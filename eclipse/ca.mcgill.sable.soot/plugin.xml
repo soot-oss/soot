@@ -104,18 +104,18 @@
          </menu>
          <action
                label="%PopupMenus.action11"
-               class="ca.mcgill.sable.soot.launching.SootEditConfigProjectLauncher"
+               class="ca.mcgill.sable.soot.launching.SootConfigProjectLauncher"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.launchingaction6">
          </action>
-         <action
+         <!--<action
                label="%PopupMenus.action10"
                class="ca.mcgill.sable.soot.launching.SootSavedConfigProjectLauncher"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.launchingaction5">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action4"
                class="ca.mcgill.sable.soot.launching.SootOptionsProjectLauncher"
@@ -123,13 +123,13 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.launchingaction2">
          </action>
-         <action
+         <!--<action
                label="%PopupMenus.action1"
                class="ca.mcgill.sable.soot.launching.SootDefaultProjectLauncher"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.launching.action1">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action3"
                class="ca.mcgill.sable.soot.launching.DavaDecompileProjectLauncher"
@@ -181,18 +181,18 @@
          </menu>
          <action
                label="%PopupMenus.action10"
-               class="ca.mcgill.sable.soot.launching.SootEditConfigFileLauncher"
+               class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction10">
          </action>
-         <action
+         <!--<action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootSavedConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction11">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action4"
                class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"
@@ -270,18 +270,18 @@
          </menu>
          <action
                label="%PopupMenus.action10"
-               class="ca.mcgill.sable.soot.launching.SootEditConfigFileLauncher"
+               class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction10">
          </action>
-         <action
+         <!--<action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootSavedConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction11">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action4"
                class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"
@@ -360,18 +360,18 @@
          </menu>
          <action
                label="%PopupMenus.action10"
-               class="ca.mcgill.sable.soot.launching.SootEditConfigFileLauncher"
+               class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction10">
          </action>
-         <action
+         <!--<action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootSavedConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction11">
-         </action>
+         </action>-->
          <action
                label="%PopupMenus.action4"
                class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"

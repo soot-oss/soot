@@ -1,6 +1,6 @@
 package ca.mcgill.sable.soot.launching;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author jlhotak
@@ -22,6 +22,11 @@ import java.util.HashMap;
  */
 public class SootConfiguration {
 
+
+	private Vector children;
+	private String label;
+	private SootConfiguration parent;
+	
 	/**
 	 * Constructor for SootConfiguration.
 	 */
@@ -31,8 +36,34 @@ public class SootConfiguration {
 		setName(name);
 	}
 	
+	public SootConfiguration(String label) {
+		setLabel(label);
+	}
+	
 	private HashMap aliasValPairs;
 	private String name;
+
+	public void addChild(SootConfiguration t) {
+		if (getChildren() == null) {
+			setChildren(new Vector());
+		}
+		t.setParent(this);
+		getChildren().add(t);
+	}
+	
+	public void removeChild(String name) {
+		Iterator it = getChildren().iterator();
+		SootConfiguration toRemove = null;
+		while (it.hasNext()) {
+			SootConfiguration temp = (SootConfiguration)it.next();
+			if (temp.getLabel().equals(name)) {
+				toRemove = temp;
+			}
+		}
+		if (toRemove != null) {
+			getChildren().remove(toRemove);
+		}
+	}
 
 	/**
 	 * Returns the aliasValPairs.
@@ -64,6 +95,54 @@ public class SootConfiguration {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Returns the children.
+	 * @return Vector
+	 */
+	public Vector getChildren() {
+		return children;
+	}
+
+	/**
+	 * Returns the label.
+	 * @return String
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * Returns the parent.
+	 * @return SootConfiguration
+	 */
+	public SootConfiguration getParent() {
+		return parent;
+	}
+
+	/**
+	 * Sets the children.
+	 * @param children The children to set
+	 */
+	public void setChildren(Vector children) {
+		this.children = children;
+	}
+
+	/**
+	 * Sets the label.
+	 * @param label The label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * Sets the parent.
+	 * @param parent The parent to set
+	 */
+	public void setParent(SootConfiguration parent) {
+		this.parent = parent;
 	}
 
 }
