@@ -165,7 +165,12 @@ import java.io.*;
     * @return array of instructions which may be targets of this instruction.
     * @see Instruction#branches
     */
-   public Instruction[] branchpoints(Instruction next) { return null; }
+   	public Instruction[] branchpoints(Instruction next) 
+   	{  
+   		Instruction[] bp = new Instruction[1];
+   		bp[0] = next;
+		return bp; 
+	}
 
    /** Marks the appropriate spot if that constant_pool entry is used by this instr.
     * For every constant pool entry used (referenced) by this instruction, the
