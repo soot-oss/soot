@@ -80,6 +80,8 @@ import java.io.*;
 
    /** Reference for chaining. */
    public Instruction next;
+   /** More convenient for chaining. */
+   public Instruction prev;
    /** Whether this instruction is the target of a branch. */
    public boolean labelled;
    /** Whether this instruction branches. */
@@ -111,7 +113,7 @@ import java.io.*;
 
    public String toString()
    {
-      return name + "[" + originalIndex + "]";
+      return label +": "+name + "[" + originalIndex + "]";
    }
 
    /** Assuming the actual bytecode for this instruction has been extracted already,
