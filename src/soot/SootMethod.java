@@ -28,16 +28,10 @@
 
 
 package soot;
-import soot.*;
-
 import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
-import soot.baf.*;
-import soot.jimple.*;
 import soot.dava.*;
-import java.io.*;
-import java.util.jar.*;
 
 /**
     Soot representation of a Java method.  Can be declared to belong to a SootClass. 
@@ -309,76 +303,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
     }
         
 
-    private String classFileAttr = null;
-
-    private String getCacheFileAttr()
-    {
-	if (classFileAttr == null) {
-
-	    StringBuffer b = new StringBuffer();
-	    char fileSep = System.getProperty( "file.separator").charAt( 0);
-	    String className = getDeclaringClass().getFullName().replace( '.', fileSep) + ".class";
-
-	    StringTokenizer st = new StringTokenizer( System.getProperty( "java.class.path"), System.getProperty( "path.separator"));
-	    while (st.hasMoreTokens()) {
-		String classPath = st.nextToken();
-
-		if (classPath.length() == 0)
-		    continue;
-
-		File p = new File( classPath);
-
-		if (p.exists() == false)
-		    continue;
-
-		if (p.isDirectory()) {
-		    if (classPath.charAt( classPath.length() - 1) != fileSep)
-			classPath += fileSep;
-
-		    File f = new File( classPath + className);
-		    if (f.exists()) {
-
-			b.append( " ");
-			b.append( Long.toString( f.length()));
-			b.append( "-");
-			b.append( Long.toString( f.lastModified()));
-
-			break;
-		    }
-		}
-
-		else {
-		    JarFile jf = null;
-
-		    try {
-			jf = new JarFile( classPath);
-		    }
-		    catch( IOException ioe) {
-			continue;
-		    }
-
-		    if (jf.getEntry( className) != null) {
-			
-			b.append( " ");
-			b.append( Long.toString( p.length()));
-			b.append( "-");
-			b.append( Long.toString( p.lastModified()));
-
-			break;
-		    }
-		}
-	    }
-
-	    if (b.length() == 0)
-		throw new RuntimeException( "Unable to generate cache filename for: " + getSignature());
-
-	    classFileAttr = b.toString();
-	}
-
-	return classFileAttr;
-    }
-
-
     /**
         Sets the active body for this method. 
      */
@@ -527,8 +451,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
     public String getBytecodeSignature()
     {
         String name = getName();
-        List params =  getParameterTypes();
-        Type returnType = getReturnType();
         
         StringBuffer buffer = new StringBuffer();
         buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");

@@ -568,7 +568,7 @@ public class Main
 	G.v().out.print( "Generating " + fileName + "... ");
 	G.v().out.flush();
 
-        DavaPrinter.v().printTo(s, writerOut, Printer.USE_ABBREVIATIONS);
+        DavaPrinter.v().printTo(s, writerOut);
 
 	G.v().out.println();
 	G.v().out.flush();
@@ -828,7 +828,8 @@ public class Main
     case Options.output_format_jimp:            
     case Options.output_format_b:
     case Options.output_format_grimp:
-      Printer.v().printTo(c, writerOut, Printer.USE_ABBREVIATIONS);
+      Printer.v().setOption( Printer.USE_ABBREVIATIONS );
+      Printer.v().printTo(c, writerOut );
       break;
     case Options.output_format_baf:
     case Options.output_format_jimple:
@@ -836,11 +837,9 @@ public class Main
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
       if (opts.xml_attributes()) {
-	Printer.v().printJimpleStyleTo(c, writerOut, Printer.ADD_JIMPLE_LN);
+        Printer.v().setOption( Printer.ADD_JIMPLE_LN );
       }
-      else {
-      Printer.v().printJimpleStyleTo(c, writerOut, 0);
-      }
+      Printer.v().printJimpleStyleTo(c, writerOut);
       break;
     case Options.output_format_dava:
       break;
@@ -850,7 +849,7 @@ public class Main
     case Options.output_format_xml:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-      XMLPrinter.v().printJimpleStyleTo(c, writerOut, 0);
+      XMLPrinter.v().printJimpleStyleTo(c, writerOut);
       break;
     default:
       throw new RuntimeException();
