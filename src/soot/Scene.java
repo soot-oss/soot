@@ -61,26 +61,6 @@ public class Scene extends AbstractHost
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
 
-    private Vector classesToResolve = new Vector();
-
-    public void addClassToResolve(String c) 
-    {
-        classesToResolve.add(c);
-    }
-
-    public String getNextClassToResolve()
-    {
-        if(!classesToResolve.isEmpty())
-            return (String) classesToResolve.firstElement();
-        else
-            return null;
-    }
-
-    public List getClassesToResolve()
-    {
-        return classesToResolve;
-    }
-
     
     /**
         Resets this scene to zero.
@@ -349,7 +329,6 @@ public class Scene extends AbstractHost
                 SootClass c = new SootClass(className);
                 c.setPhantom(true);
                 addClass(c);
-                classesToResolve.add(c.getName());
                 return c;
             }
             else 
