@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewArrayExpr implements Expr, ToBriefStringOwner
+public class NewArrayExpr implements Expr, ToBriefString
 {
     Type baseType;
     ValueBox sizeBox;
@@ -106,7 +106,7 @@ public class NewArrayExpr implements Expr, ToBriefStringOwner
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("new " + baseType.toString());
-        buffer.append("[" + ((ToBriefStringOwner) sizeBox.getValue()).toBriefString() + "]");
+        buffer.append("[" + ((ToBriefString) sizeBox.getValue()).toBriefString() + "]");
 
         return buffer.toString();
     }

@@ -88,7 +88,7 @@ public class EnterMonitorStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "entermonitor " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+            return indentation + "entermonitor " + ((ToBriefString) opBox.getValue()).toBriefString();
         else
             return indentation + "entermonitor " + opBox.getValue().toString();
     }

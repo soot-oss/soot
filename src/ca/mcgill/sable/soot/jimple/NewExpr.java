@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NewExpr implements Expr, ToBriefStringOwner
+public class NewExpr implements Expr, ToBriefString
 {
     RefType type;
 

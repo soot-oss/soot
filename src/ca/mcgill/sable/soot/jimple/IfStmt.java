@@ -95,7 +95,7 @@ public class IfStmt extends Stmt
     {
         if(isBrief)
             return indentation + "if " + 
-                ((ToBriefStringOwner) getCondition()).toBriefString() + " goto " + (String) stmtToName.get(getTarget());
+                ((ToBriefString) getCondition()).toBriefString() + " goto " + (String) stmtToName.get(getTarget());
         else
             return indentation + "if " + getCondition().toString() + " goto " + (String) stmtToName.get(getTarget());
     }

@@ -86,7 +86,7 @@ public class ReturnStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "return " + ((ToBriefStringOwner) returnValueBox.getValue()).toBriefString();
+            return indentation + "return " + ((ToBriefString) returnValueBox.getValue()).toBriefString();
         else
             return indentation + "return " + returnValueBox.getValue().toString();
     }

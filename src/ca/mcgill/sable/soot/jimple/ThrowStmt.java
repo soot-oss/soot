@@ -101,7 +101,7 @@ public class ThrowStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "throw " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+            return indentation + "throw " + ((ToBriefString) opBox.getValue()).toBriefString();
         else
             return indentation + "throw " + opBox.getValue().toString();
     }

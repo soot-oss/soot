@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StaticInvokeExpr extends InvokeExpr implements ToBriefStringOwner
+public class StaticInvokeExpr extends InvokeExpr implements ToBriefString
 {
     StaticInvokeExpr(SootMethod method, List args)
     {
@@ -116,7 +116,7 @@ public class StaticInvokeExpr extends InvokeExpr implements ToBriefStringOwner
             if(i != 0)
                 buffer.append(", ");
 
-            buffer.append(((ToBriefStringOwner) argBoxes[i].getValue()).toBriefString());
+            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
         }
 
         buffer.append(")");

@@ -86,7 +86,7 @@ public class InvokeStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + ((ToBriefStringOwner) invokeExprBox.getValue()).toBriefString();
+            return indentation + ((ToBriefString) invokeExprBox.getValue()).toBriefString();
         else
             return indentation + invokeExprBox.getValue().toString();
     }

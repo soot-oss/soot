@@ -1,10 +1,11 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1998, 1999 Etienne Gagnon (gagnon@sable.mcgill.ca). *
- * All rights reserved.                                              *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
  *                                                                   *
- * Modifications by Raja Vallee-Rai (kor@sable.mcgill.ca) are       *
- * Copyright (C) 1998 Raja Vallee-Rai.  All rights reserved.         *
+ * Modifications by Raja Vallee-Rai (kor@sable.mcgill.ca)  are       *
+ * Copyright (C) 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).  All    *
+ * rights reserved.                                                  *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -64,12 +65,9 @@
 
  B) Changes:
 
- - Modified on January 15, 1999 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
-   Fixed typing bug in null assignment to array variables.
-
  - Modified on November 13, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added type information for @caughtexception
-
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -1661,7 +1659,7 @@ class TypeResolver
             }
             else if(r instanceof NullConstant)
             {
-                right = null; // getTypeVariable(NullType.v());
+                right = getTypeVariable(NullType.v());
             }
             else if(r instanceof StringConstant)
             {
@@ -1821,8 +1819,8 @@ class TypeResolver
                         (r instanceof ShrExpr) ||
                         (r instanceof UshrExpr))
                     {
-                        // getTypeVariable(NullType.v()).ecrAddParent(left);
-                        right = null; // getTypeVariable(NullType.v());
+                        getTypeVariable(NullType.v()).ecrAddParent(left);
+                        right = getTypeVariable(NullType.v());
                     }
                 }
                 else if(be.getOp1() instanceof StringConstant)
@@ -2003,7 +2001,7 @@ class TypeResolver
                         (r instanceof OrExpr) ||
                         (r instanceof XorExpr))
                     {
-                        right = null; // getTypeVariable(NullType.v());
+                        right = getTypeVariable(NullType.v());
                     }
                     else
                     {
@@ -2174,10 +2172,7 @@ class TypeResolver
                 throw new RuntimeException("Unhandled variable type: " + r.getClass());
             }
 
-            if(right != null)
-            {
-                right.ecrAddParent(left);
-            }
+            right.ecrAddParent(left);
         }
 
         public void caseIdentityStmt(IdentityStmt stmt)
@@ -2195,17 +2190,17 @@ class TypeResolver
                     right.ecrAddParent(left);
                 }
                 else
-                {
+                {   
                     List exceptionTypes = ((CaughtExceptionRef) r).getExceptionTypes();
                     Iterator typeIt = exceptionTypes.iterator();
-
+                    
                     while(typeIt.hasNext())
                     {
                         Type t = (Type) typeIt.next();
-
+                        
                         left.ecrAddChild(getTypeVariable(t));
                     }
-
+                        
                     left.ecrAddParent(getTypeVariable(RefType.v("java.lang.Throwable")));
                 }
             }

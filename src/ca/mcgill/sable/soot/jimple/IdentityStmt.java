@@ -90,8 +90,8 @@ public class IdentityStmt extends DefinitionStmt
     {
         if(isBrief)
         {
-            return indentation + ((ToBriefStringOwner) leftBox.getValue()).toBriefString() + " := " + 
-                ((ToBriefStringOwner) rightBox.getValue()).toBriefString();
+            return indentation + ((ToBriefString) leftBox.getValue()).toBriefString() + " := " + 
+                ((ToBriefString) rightBox.getValue()).toBriefString();
         }
         else
             return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();

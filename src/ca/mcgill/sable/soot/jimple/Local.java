@@ -81,7 +81,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class Local implements Value, ToBriefStringOwner
+public class Local implements Value, ToBriefString
 {
     String name;
     Type type;

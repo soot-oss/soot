@@ -92,7 +92,7 @@ public class RetStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "ret " + ((ToBriefStringOwner) stmtAddressBox.getValue()).toBriefString();
+            return indentation + "ret " + ((ToBriefString) stmtAddressBox.getValue()).toBriefString();
         else
             return indentation + "ret " + stmtAddressBox.getValue().toString();
     }

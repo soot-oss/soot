@@ -77,7 +77,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceFieldRef implements ConcreteRef, ToBriefStringOwner
+public class InstanceFieldRef implements ConcreteRef, ToBriefString
 {
     SootField field;
     ValueBox baseBox;
@@ -100,7 +100,7 @@ public class InstanceFieldRef implements ConcreteRef, ToBriefStringOwner
 
     public String toBriefString()
     {
-        return ((ToBriefStringOwner) baseBox.getValue()).toBriefString() + "." + field.getName();
+        return ((ToBriefString) baseBox.getValue()).toBriefString() + "." + field.getName();
     }
     
     public Value getBase()

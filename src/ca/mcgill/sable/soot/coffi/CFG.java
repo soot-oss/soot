@@ -3,6 +3,9 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Patrick Lam (gagnon@sable.mcgill.ca) are         *
+ * Copyright (C) 1998 Patrick Lam.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -94,6 +97,9 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on January 18, 1998 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Fixed a bug in interpreting the SWAP bytecode.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -1355,8 +1361,8 @@ public class CFG {
 
             typeStack = typeStack.pop();
 
-            typeStack.push(topType);
-            typeStack.push(secondType);
+            typeStack = typeStack.push(topType);
+            typeStack = typeStack.push(secondType);
             break;
          }
 

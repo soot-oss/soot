@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CaughtExceptionRef implements IdentityRef, ToBriefStringOwner
+public class CaughtExceptionRef implements IdentityRef, ToBriefString
 {
     JimpleBody body;
     

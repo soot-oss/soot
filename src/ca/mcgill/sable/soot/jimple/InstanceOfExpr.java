@@ -78,7 +78,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InstanceOfExpr implements Expr, ToBriefStringOwner
+public class InstanceOfExpr implements Expr, ToBriefString
 {
     ValueBox opBox;
     Type checkType;
@@ -97,7 +97,7 @@ public class InstanceOfExpr implements Expr, ToBriefStringOwner
 
     public String toBriefString()
     {
-        return ((ToBriefStringOwner) opBox.getValue()).toBriefString() + " instanceof " + checkType.toString();
+        return ((ToBriefString) opBox.getValue()).toBriefString() + " instanceof " + checkType.toString();
     }
 
     public Value getOp()

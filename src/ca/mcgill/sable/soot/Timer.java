@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Soot, a Java(TM) classfile optimization framework.                *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
  * All rights reserved.                                              *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
@@ -61,6 +61,10 @@
 
  B) Changes:
 
+ - Modified on January 18, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Moved classfile to ca.mcgill.sable.soot and changed permissions
+   to public.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -69,29 +73,29 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-class Timer
+public class Timer
 {
     private long duration;
     private long startTime;
 
-    Timer()
+    public Timer()
     {
         duration = 0;
     }
 
-    void start()
+    public void start()
     {
         startTime = System.currentTimeMillis();
     }
 
-    void end()
+    public void end()
     {
         duration += System.currentTimeMillis() - startTime;
     }
 
-    long getTime()
+    public long getTime()
     {
         return duration;
     }

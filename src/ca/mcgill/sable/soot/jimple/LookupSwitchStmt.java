@@ -113,7 +113,7 @@ public class LookupSwitchStmt extends Stmt
         StringBuffer buffer = new StringBuffer();
         String endOfLine = (indentation.equals("")) ? " " : "\n";
         
-        buffer.append(indentation + "lookupswitch(" + ((isBrief) ? ((ToBriefStringOwner) keyBox.getValue()).toBriefString() :
+        buffer.append(indentation + "lookupswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
             keyBox.getValue().toString()) + ")" + endOfLine);
             
         buffer.append(indentation + "{" + endOfLine);

@@ -113,7 +113,7 @@ public class TableSwitchStmt extends Stmt
         StringBuffer buffer = new StringBuffer();
         String endOfLine = (indentation.equals("")) ? " " : "\n";
         
-        buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefStringOwner) keyBox.getValue()).toBriefString() :
+        buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefString) keyBox.getValue()).toBriefString() :
             keyBox.getValue().toString()) + ")" + endOfLine);
             
         buffer.append(indentation + "{" + endOfLine);

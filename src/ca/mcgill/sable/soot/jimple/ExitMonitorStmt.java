@@ -86,7 +86,7 @@ class ExitMonitorStmt extends Stmt
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)
-            return indentation + "exitmonitor " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+            return indentation + "exitmonitor " + ((ToBriefString) opBox.getValue()).toBriefString();
         else
             return indentation + "exitmonitor " + opBox.getValue().toString();
     }
