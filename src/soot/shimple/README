@@ -3,7 +3,7 @@ SSA Jimple (aka Shimple)
 
 This is a first cut at an SSA version of Jimple for scalars, dubbed
 Shimple.  The idea is that Shimple can be treated almost identically
-as Jimple with the added benefit of SSA form.
+to Jimple with the added benefit of SSA form.
 
 The public API is described in soot.shimple.Shimple,
 soot.shimple.ShimpleBody and soot.shimple.PhiExpr.
@@ -21,7 +21,7 @@ directly to myself at navindra@cs.mcgill.ca.
 
 TODO: Make some of the internal analyses externally available.
 TODO: Investigate why the Aggregator doesn't seem to work too well.
-TODO: Write a Shimple parser.
+TODO: Write a Shimple parser?
 TODO: Implement a Control Dependence Graph?  Any interest in that?
 
 6 Feb 2003

@@ -28,7 +28,7 @@ import soot.util.*;
 import java.util.*;
 
 /**
- * Implementation of the Body class for the Shimple IR (SSA Jimple).
+ * Implementation of the Body class for the Shimple (SSA Jimple) IR.
  * This class provides methods for maintaining SSA form as well as
  * elimininating SSA form.
  *

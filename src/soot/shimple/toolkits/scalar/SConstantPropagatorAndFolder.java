@@ -40,7 +40,7 @@ import java.util.*;
  *
  * <p> To use this analysis from the command line in Soot, try
  * something like: <code>soot.Main --shimple -p shimple optimize
- * classname</code> or <code>soot.Main --shimplejimple -p shimple
+ * &lt;classname&gt;</code> or <code>soot.Main --shimplejimple -p shimple
  * optimize -p shimple naive-phi-elimination &lt;classname&gt;</code>.
  *
  * <p> To compare the results with the non-SSA propagator, you can use
@@ -54,7 +54,7 @@ import java.util.*;
  *  described in section 1.1, P5 of the Cytron paper with the
  *  exception that conditional control flow is not considered
  *  (conservatively estimated).  This is not necessarily the best
- *  implementation, improvements and suggestions are welcome.
+ *  implementation -- improvements and suggestions are welcome.
  *
  * @author Navindra Umanee
  * @see soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder

@@ -38,14 +38,16 @@ import soot.toolkits.scalar.*;
  *
  * <p> The work is done in two main steps:
  *
- * <p> (1) Trivial PHI-functions are added.
- * <p> (2) A renaming algorithm is executed.
+ * <ol>
+ * <li> Trivial PHI-functions are added.
+ * <li> A renaming algorithm is executed.
+ * </ol>
  *
  * <p> This class can also translate out of Shimple by producing an
  * equivalent Jimple body with all PHI-functions removed.
  *
  * <p> Note that this is an internal class, understanding it should
- * not be necessarily from a user point-of-view and relying on it
+ * not be necessary from a user point-of-view and relying on it
  * directly is not recommended.
  *
  * @author Navindra Umanee
