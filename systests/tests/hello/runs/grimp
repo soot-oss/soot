@@ -1,0 +1,1 @@
+java soot.Main -cp classes:.:/home/olhotak/jasmin/classes:/home/olhotak/soot/classes:/usr/local/j2sdk1.4.1/jre/lib/rt.jar:/home/olhotak/jbuddy/classes -f grimp Hello

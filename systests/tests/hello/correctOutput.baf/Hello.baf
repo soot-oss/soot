@@ -1,0 +1,24 @@
+public class Hello extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        word r0;
+
+        r0 := @this: Hello;
+        load.r r0;
+        specialinvoke <java.lang.Object: void <init>()>;
+        return;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        word r0;
+
+        r0 := @parameter0: java.lang.String[];
+        staticget <java.lang.System: java.io.PrintStream out>;
+        push "Hello, World!";
+        virtualinvoke <java.io.PrintStream: void println(java.lang.String)>;
+        return;
+    }
+}

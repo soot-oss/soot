@@ -1,0 +1,2 @@
+#!/bin/sh
+java -Xmx350m soot.Main -cp classes:$CLASSPATH -W -p wjop.si off -p wjop.smb on -f jimple Devirt
