@@ -36,7 +36,7 @@ import java.util.*;
  * of Unit for their code.  In general, a unit denotes
  * some sort of unit for execution.
  */
-public interface Unit extends Switchable, Directed, Host
+public interface Unit extends Switchable, Host
 {
     /** Returns a list of Boxes containing Values used in this Unit. */
     public List getUseBoxes();

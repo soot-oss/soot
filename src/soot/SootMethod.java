@@ -40,7 +40,7 @@ import soot.jimple.*;
     Does not contain the actual code, which belongs to a Body.
     The getActiveBody() method points to the currently-active body.
 */
-public class SootMethod extends AbstractHost implements ClassMember, Directed
+public class SootMethod extends AbstractHost implements ClassMember
 {
     /** Name of the current method. */
     String name;

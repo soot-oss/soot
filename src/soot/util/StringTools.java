@@ -103,6 +103,8 @@ public class StringTools
                 { toStringBuffer.append("\\\""); continue; }
               if (ch == '\n')
                 { toStringBuffer.append("\\n"); continue; }
+              if (ch == '\t')
+                { toStringBuffer.append("\\t"); continue; }
               else if((int) ch >= 32 && (int) ch <= 126)
                 {toStringBuffer.append(ch); continue;}
             }
