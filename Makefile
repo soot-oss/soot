@@ -81,13 +81,37 @@ document:
 
 badfields: all
 	java -Xmx200m soot.tools.BadFields -w -f none -process-path classes soot.Main
+
+
+#
+##########################################################################
+#
+# compile tests
+#
+# To compile the tests, CLASSPATH needs to include a path to junit classes
+# (/usr/share/java/junit.jar, in the Sable lab)
+#
+TEST_SOURCES = ${shell find tests -name "*.java" -print}
+TEST_TARGETS_TMP = $(TEST_SOURCES:.java=.class)
+TEST_TARGETS = $(subst tests,testclasses,${TEST_TARGETS_TMP})
+RM_TEST_TARGETS = $(TEST_TARGETS) $(subst .class,\$$*.class,$(TEST_TARGETS))
+TEST_JC=javac -target 1.2 -d testclasses -classpath classes:testclasses:src:tests:$$CLASSPATH
+
+buildtests: ${TARGETS} testclasses ${TEST_TARGETS}
+
+$(TEST_TARGETS): testclasses/%.class: tests/%.java
+	$(TEST_JC) $<
+
+testclasses: 
+	mkdir -p testclasses
+
 #
 ##########################################################################
 #
 # remove all the class files
 #
-clean:
-	find classes -name '*.class' | xargs rm
+clean: testclasses
+	find classes testclasses -name '*.class' | xargs rm
 
 
 #
