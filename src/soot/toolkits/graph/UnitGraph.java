@@ -70,14 +70,9 @@ public class UnitGraph implements DirectedGraph
      */
     UnitGraph(Body unitBody, boolean addExceptionEdges)
     {
-        boolean rightMethod = false;
-
         body = unitBody;
         unitChain = body.getUnits();
         method = getBody().getMethod();
-        
-        if (method == Scene.v().getMethod("<sun.io.CharacterEncoding: void <clinit>()>"))
-            rightMethod = true;
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + 
