@@ -7,7 +7,6 @@ import java.io.*;
 
 public class StdTagPrinter implements TagPrinter
 {
-
     public String  print(String aClassName, String aFieldOrMtdSignature, Tag aTag)
     {
 	String identifier = "<" + aClassName + 

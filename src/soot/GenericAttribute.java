@@ -31,13 +31,33 @@ import javax.swing.*;
 
 /** Represents a tag; these get attached to implementations of Host.
  */
-public interface Tag 
+public class GenericAttribute implements Tag
 {
-    public   String getName();
-    public  byte[] getEncoding();        
-    public  String toString();
+    private String mName;
+    private byte[] mValue;
+    
+    public GenericAttribute(String name, byte[] value)
+    {
+	mName = name;
+	mValue = value;
+    }
+    public String getName()
+    {
+	return mName;
+    }
+    public  byte[] getEncoding()
+    {
+	return mValue;
+    }        
+    public  String toString()
+    {
+	return mName + " " + Base64.encode(mValue);
+    }
 
-    public  void setValue(byte[] value);
+    public void setValue(byte[] value)
+    {
+	mValue = value;
+    }
 }
 
 

@@ -63,6 +63,6 @@ public class ArrayCheckTag extends CodeAttribute
 	if((value & DO_UPPER) != 0)
 	    doUpper = true;
 
-	return "// " + getPcAsInt() + ":" +  NAME + " "  + (doLower ? "[check lower bound]":"") + (doUpper ? "[check upper bound]":"");
+	return   (doLower ? "": "[safe lower bound]") +" " +  (doUpper ? "":"[safe upper bound]");
     }
 }

@@ -31,7 +31,7 @@ import javax.swing.*;
 
 /** Represents a tag; these get attached to implementations of Host.
  */
-public abstract  class CodeAttribute extends Tag
+public abstract  class CodeAttribute implements Tag
 {
     public byte[] pc = new byte[2];
     
