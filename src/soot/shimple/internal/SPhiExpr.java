@@ -185,7 +185,20 @@ public class SPhiExpr implements PhiExpr
 
     public int getArgIndex(Block pred)
     {
-        return getArgIndex(pred.getTail());
+        Unit predTailUnit = pred.getTail();
+        int index = getArgIndex(predTailUnit);
+
+        // workaround added for internal cases where the predTailUnit
+        // may not be at the end of the predecessor block
+        // (fall-through pointer not moved)
+        while(index == -1){
+            predTailUnit = pred.getPredOf(predTailUnit);
+            if(predTailUnit == null)
+                break;
+            index = getArgIndex(predTailUnit);
+        }
+
+        return index;
     }
 
     public int getArgIndex(Unit predTailUnit)
