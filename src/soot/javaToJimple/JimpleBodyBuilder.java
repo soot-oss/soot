@@ -1259,27 +1259,36 @@ public class JimpleBodyBuilder {
         //handle finally blocks before return if inside try block
         if (tryStack != null && !tryStack.isEmpty()){
             polyglot.ast.Try currentTry = (polyglot.ast.Try)tryStack.pop();
-            createBlock(currentTry.finallyBlock());
-            tryStack.push(currentTry);
-            // if return stmt contains a return don't create the other return
-            ReturnStmtChecker rsc = new ReturnStmtChecker();
-            currentTry.finallyBlock().visit(rsc);
-            if (rsc.hasRet()){
-                return;
+            if (currentTry.finallyBlock() != null){
+                createBlock(currentTry.finallyBlock());
+                tryStack.push(currentTry);
+                // if return stmt contains a return don't create the other return
+                ReturnStmtChecker rsc = new ReturnStmtChecker();
+                currentTry.finallyBlock().visit(rsc);
+                if (rsc.hasRet()){
+                    return;
+                }
             }
-            
+            else {
+                tryStack.push(currentTry);
+            }
         }
        
         //handle finally blocks before return if inside catch block
         if (catchStack != null && !catchStack.isEmpty()){
             polyglot.ast.Try currentTry = (polyglot.ast.Try)catchStack.pop();
-            createBlock(currentTry.finallyBlock());
-            catchStack.push(currentTry);
-            // if return stmt contains a return don't create the other return
-            ReturnStmtChecker rsc = new ReturnStmtChecker();
-            currentTry.finallyBlock().visit(rsc);
-            if (rsc.hasRet()){
-                return;
+            if (currentTry.finallyBlock() != null){
+                createBlock(currentTry.finallyBlock());
+                catchStack.push(currentTry);
+                // if return stmt contains a return don't create the other return
+                ReturnStmtChecker rsc = new ReturnStmtChecker();
+                currentTry.finallyBlock().visit(rsc);
+                if (rsc.hasRet()){
+                    return;
+                }
+            }
+            else {
+                catchStack.push(currentTry);
             }
         }
         
