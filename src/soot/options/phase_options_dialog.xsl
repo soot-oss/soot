@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
+import ca.mcgill.sable.soot.util.*;
 import java.util.HashMap;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog {
@@ -118,20 +119,25 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
 	protected HashMap savePressed() {
 		HashMap config = new HashMap();
+		boolean boolRes = false;
+		String stringRes = "";
+		boolean defBoolRes = false;
+		String defStringRes = "";
+		
 		<xsl:apply-templates mode="savePressed" select="/options/section"/>
 
 		<xsl:for-each select="section">
 		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>-->
 		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="savePressed" select="phase"/>
+		<xsl:apply-templates mode="savePressedPhase" select="phase"/>
 		<xsl:for-each select="phase">
-		<xsl:apply-templates mode="savePressed" select="sub_phase">
+		<xsl:apply-templates mode="savePressedPhase" select="sub_phase">
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		</xsl:apply-templates>
 		
 		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="savePressed" select="section">
+		<xsl:apply-templates mode="savePressedPhase" select="section">
 		<xsl:with-param name="parent" select="$sectionParent"/>
 		</xsl:apply-templates>
 		
@@ -282,6 +288,60 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 <xsl:variable name="java_name" select="translate((alias|name)[last()],'-. ','___')"/>
 Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child = <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Create(getPageContainer());
 </xsl:template>
+
+<!--SAVE PRESSED FOR PHASE TEMPLATE-->
+
+<xsl:template mode="savePressedPhase" match="section|phase|sub_phase">
+<xsl:param name="parent"/>
+<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
+
+		
+		<xsl:for-each select="boolopt|macroopt">
+		boolRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection();
+		
+		<xsl:if test="default">
+		defBoolRes = <xsl:value-of select="default"/>;
+		</xsl:if>
+		<xsl:if test="not(default)">
+		defBoolRes = false;
+		</xsl:if>
+
+		if (boolRes &#33;&#61; defBoolRes) {
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+		}
+		</xsl:for-each>
+		
+		<xsl:for-each select="listopt">
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
+
+		if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+		}
+		</xsl:for-each>
+		
+		<xsl:for-each select="stropt|intopt|flopt">
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
+
+	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+		}
+		</xsl:for-each>
+		
+		<xsl:for-each select="multiopt"> 
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias();
+
+		<xsl:for-each select="value">
+		<xsl:if test="default">
+		defStringRes = "<xsl:value-of select="alias"/>";
+		</xsl:if>
+		</xsl:for-each>
+
+		if (!stringRes.equals(defStringRes)) {
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+		}
+		</xsl:for-each>
+</xsl:template>	
+
 		
 <!--SAVE PRESSED TEMPLATE-->
 
@@ -291,19 +351,51 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 
 
 		<xsl:for-each select="boolopt|macroopt">
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new Boolean(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection()));
+		boolRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection();
+		
+		<xsl:if test="default">
+		defBoolRes = <xsl:value-of select="default"/>;
+		</xsl:if>
+		<xsl:if test="not(default)">
+		defBoolRes = false;
+		</xsl:if>
+
+		if (boolRes &#33;&#61; defBoolRes) {
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+		}
 		</xsl:for-each>
 		
 		<xsl:for-each select="listopt">
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
+
+	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
+
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
+		}
 		</xsl:for-each>
 		
 		<xsl:for-each select="stropt|intopt|flopt">
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
+
+	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
+
+		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
+		}
 		</xsl:for-each>
 		
-		<xsl:for-each select="multiopt"> 
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias());
+		<xsl:for-each select="multiopt">
+		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias();
+
+		<xsl:for-each select="value">
+		<xsl:if test="default">
+		defStringRes = "<xsl:value-of select="alias"/>";
+		</xsl:if>
+		</xsl:for-each>
+
+		if (!stringRes.equals(defStringRes)) {
+
+			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
+		}
 		</xsl:for-each>
 </xsl:template>	
 
