@@ -130,9 +130,9 @@ public class XMLAttributesPrinter {
 		Iterator it = h.getTags().iterator();
 		while (it.hasNext()){
 			Tag t = (Tag)it.next();
-			G.v().out.println(t.getClass().toString());
+			//G.v().out.println(t.getClass().toString());
 			if (t instanceof LineNumberTag) {
-				G.v().out.println("t is LineNumberTag");
+				//G.v().out.println("t is LineNumberTag");
 				return (new Integer(((LineNumberTag)t).toString())).intValue();
 			}
 		}
