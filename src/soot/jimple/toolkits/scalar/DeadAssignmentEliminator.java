@@ -53,6 +53,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
     
     protected void internalTransform(Body b, String phaseName, Map options)
     {
+        boolean eliminateOnlyStackLocals = Options.getBoolean(options, "only-stack-locals");
+
         JimpleBody body = (JimpleBody)b;
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() +
@@ -82,7 +84,9 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 {
                     AssignStmt as = (AssignStmt) s;
                     
-                    if(as.getLeftOp() instanceof Local)
+                    if(as.getLeftOp() instanceof Local &&
+                        (!eliminateOnlyStackLocals || 
+                            ((Local) as.getLeftOp()).getName().startsWith("$")))
                     {
                         Value rhs = as.getRightOp();
                     

@@ -42,11 +42,11 @@ public class LocalNameStandardizer extends BodyTransformer
 
     public static LocalNameStandardizer v() { return instance; }
 
-    /* supported option: only-stack-names */
+    /* supported option: only-stack-locals */
     protected void internalTransform(Body body, String phaseName, Map options)
     {
-        boolean onlyStackName = options.containsKey("only-stack-names") &&
-            options.get("only-stack-names").equals("true");
+        boolean onlyStackName = options.containsKey("only-stack-locals") &&
+            options.get("only-stack-locals").equals("true");
 
         // Change the names to the standard forms now.
         {

@@ -70,6 +70,8 @@ public class JimpleBody extends StmtBody
         boolean noAggregating = Options.getBoolean(options, "no-aggregating");
         boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
         boolean usePacking = Options.getBoolean(options, "pack-locals");
+        boolean noCopyPropagating = Options.getBoolean(options, "no-cp");
+        
         boolean noNopElimination = Options.getBoolean(options, "no-nop-elimination");
         
         ClassFileBody fileBody;
@@ -171,6 +173,7 @@ public class JimpleBody extends StmtBody
         
         //printTo(new PrintWriter(System.out, true));
         
+        
         if(aggregateAllLocals)
         {
             Aggregator.v().transform(this, "jb.a");
@@ -178,7 +181,7 @@ public class JimpleBody extends StmtBody
         }
         else if(!noAggregating)
         {
-            Aggregator.v().transform(this, "jb.asv", "only-stack-vars");
+            Aggregator.v().transform(this, "jb.asv", "only-stack-locals");
             UnusedLocalEliminator.v().transform(this, "jb.ule");
         }
 
@@ -187,7 +190,14 @@ public class JimpleBody extends StmtBody
         else
         {   
             LocalPacker.v().transform(this, "jb.ulp", "unsplit-original-locals");
-            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-names");
+            LocalNameStandardizer.v().transform(this, "jb.lns", "only-stack-locals");
+        }
+
+        if(!noCopyPropagating)
+        {
+            CopyPropagator.v().transform(this, "jb.cp", "only-stack-locals");
+            DeadAssignmentEliminator.v().transform(this, "jp.dae", "only-stack-locals");
+            UnusedLocalEliminator.v().transform(this, "jb.cp-ule");
         }
         
         //printDebugTo(new PrintWriter(System.out, true));

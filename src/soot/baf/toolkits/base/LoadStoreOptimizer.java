@@ -126,7 +126,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
   public String getDefaultOptions() 
   {
-    return "sl sll inter sl2 sll2";
+    return "sl sll inter:false sl2:false sll2:false";
   }
  
 

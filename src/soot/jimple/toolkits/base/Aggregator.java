@@ -50,13 +50,13 @@ public class Aggregator extends BodyTransformer
       *  aggregation possibilities; that is, given a def d and a use u,
       *  d has no other uses, u has no other defs, collapse d and u. 
       * 
-      * option: only-stack-vars; if this is true, only aggregate variables
+      * option: only-stack-locals; if this is true, only aggregate variables
                         starting with $ */
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody body = (StmtBody)b;
-        boolean onlyStackVars = options.containsKey("only-stack-vars") &&
-            options.get("only-stack-vars").equals("true");
+        boolean onlyStackVars = options.containsKey("only-stack-locals") &&
+            options.get("only-stack-locals").equals("true");
 
         int aggregateCount = 1;
 

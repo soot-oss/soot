@@ -256,9 +256,9 @@ public class GrimpBody extends StmtBody
         }
         else if (!noAggregating)
         {
-            Aggregator.v().transform(this, "gb.asv1", "only-stack-vars");
+            Aggregator.v().transform(this, "gb.asv1", "only-stack-locals");
             ConstructorFolder.v().transform(this, "gb.cf");
-            Aggregator.v().transform(this, "gb.asv2", "only-stack-vars");
+            Aggregator.v().transform(this, "gb.asv2", "only-stack-locals");
             UnusedLocalEliminator.v().transform(this, "gb.ule");
         }    
     }

@@ -49,7 +49,7 @@ public class ThisRef implements IdentityRef, ToBriefString
 
     public String toBriefString()
     {
-        return toString();
+        return "@this";
     }
     
     public List getUseBoxes()

@@ -54,13 +54,14 @@ public class CopyPropagator extends BodyTransformer
         Otherwise, if a has multiple definitions then it only checks for redefinitions of
         Propagates constants and copies in extended basic blocks. 
         
-        Does not propagate stack locals when the "ignore-stack-locals" option is true.
+        Does not propagate stack locals when the "only-regular-locals" option is true.
     */
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody stmtBody = (StmtBody)b;
-        boolean propagateStackLocals = !(options.containsKey("ignore-stack-locals") &&
-                                         options.get("ignore-stack-locals").equals("true"));
+        boolean propagateStackLocals = !Options.getBoolean(options, "only-regular-locals");
+        boolean propagateRegularLocals = !Options.getBoolean(options, "only-stack-locals");
+    
 
         int fastCopyPropagationCount = 0;
         int slowCopyPropagationCount = 0;
@@ -126,6 +127,9 @@ public class CopyPropagator extends BodyTransformer
                         Local l = (Local) useBox.getValue();
 
                         if(!propagateStackLocals && l.getName().startsWith("$"))
+                            continue;
+       
+                        if(!propagateRegularLocals && !l.getName().startsWith("$"))
                             continue;
                             
                         List defsOfUse = localDefs.getDefsOfAt(l, stmt);
