@@ -129,6 +129,13 @@
         </jar>
     </target>
 
+    <target name="classesjar" depends="settings,compile">
+        <property file="ant.settings"/>
+        <jar destfile="${release.loc}/sootclasses-${soot.version}.jar">
+            <fileset dir="classes"/>
+        </jar>
+    </target>
+
     <target name="eclipse-plugin" depends="compile,settings">
         <xslt
             style="src/soot/options/phase_options_dialog.xsl"
