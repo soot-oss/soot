@@ -34,7 +34,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -68,7 +67,7 @@
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,27 +81,27 @@ public class BuildJimpleBodyOption
                             NO_SPLITTING = 0x0004,
                             NO_CLEANUP   = 0x0008,
                             NO_PACKING   = 0x0010;
-    
+
     public static boolean noTyping(int m)
     {
         return (m & NO_TYPING) != 0;
     }
-    
+
     public static boolean noRenaming(int m)
     {
         return (m & NO_RENAMING) != 0;
     }
-    
+
     public static boolean noSplitting(int m)
     {
         return (m & NO_SPLITTING) != 0;
     }
-    
+
     public static boolean noCleanup(int m)
     {
         return (m & NO_CLEANUP) != 0;
     }
-    
+
     public static boolean noPacking(int m)
     {
         return (m & NO_PACKING) != 0;

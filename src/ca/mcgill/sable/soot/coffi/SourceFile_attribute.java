@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -114,7 +113,7 @@ import java.io.*;
  * @author Clark Verbrugge
  */
 class SourceFile_attribute extends attribute_info {
-   /** Constant pool index of a utf8 string for the name of 
+   /** Constant pool index of a utf8 string for the name of
     * the associated source file.
     * @see CONSTANT_Utf8_info
     */

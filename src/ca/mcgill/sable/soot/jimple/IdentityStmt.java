@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,41 +68,41 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class IdentityStmt extends DefinitionStmt
-{    
+{
     IdentityStmt(Value local, Value identityValue)
     {
         this.leftBox = Jimple.v().newLocalBox(local);
         this.rightBox = Jimple.v().newIdentityRefBox(identityValue);
-        
+
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
         defBoxes = Collections.unmodifiableList(defBoxes);
     }
-    
+
     public String toString()
     {
         return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
     }
-    
+
     public void setLeftOp(Value local)
     {
         leftBox.setValue(local);
     }
-    
+
     public void setRightOp(Value identityRef)
     {
         rightBox.setValue(identityRef);
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIdentityStmt(this);
-    }    
+    }
 }

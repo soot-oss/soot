@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on October 29, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -77,7 +76,7 @@ import ca.mcgill.sable.soot.*;
 abstract class AbstractValueBox implements ValueBox
 {
     Value value;
-    
+
     public void setValue(Value value)
     {
         if(canContainValue(value))
@@ -85,12 +84,12 @@ abstract class AbstractValueBox implements ValueBox
         else
             throw new RuntimeException("Box cannot contain given value.");
     }
-    
+
     public Value getValue()
     {
         return value;
     }
-    
+
 }
 
 

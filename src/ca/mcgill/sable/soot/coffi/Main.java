@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -115,66 +114,66 @@ class Main
             System.out.println("Usage: java ca.mcgill.sable.soot.coffi.Main class1 class2 ...");
             System.exit(0);
         }
-        
+
         for(int i = 0; i < args.length; i++)
             printClassInfo(args[i]);
     }
-    
+
     public static void printClassInfo(String name)
     {
         ClassFile coffiClass = new ClassFile(name);
         long totalLocals;
         long totalInstructions;
         long totalCodeSize;
-                
+
         // Load classFile
         {
             boolean success = coffiClass.loadClassFile();
-                
+
             if(!success)
             throw new RuntimeException("Couldn't load class file for " + name);
         }
-        
+
         // Get statistics
             totalLocals = 0;
             totalInstructions = 0;
             totalCodeSize = 0;
-                
+
             for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info method = coffiClass.methods[i];
                 Code_attribute code_attribute = method.locate_code_attribute();
-                
+
                 long numLocals = 0;
                 long numInstructions = 0;
                 long codeSize = 0;
-                
+
                 if(code_attribute != null)
                 {
                     new CFG(method);
-                    
+
                     method.cfg.reconstructInstructions();
-                
+
                     numLocals += code_attribute.max_locals;
                     codeSize += code_attribute.code_length;
-                        
+
                     Instruction ins = method.instructions;
-                    
+
                     while(ins != null)
                     {
                         numInstructions++;
-                        
+
                         ins = ins.next;
                     }
                 }
-                
+
                 totalLocals += numLocals;
                 totalInstructions += numInstructions;
                 totalCodeSize += codeSize;
             }
 
         // Print info
-            System.out.println(name + ": " + totalLocals + " locals  " + totalInstructions + 
-                " bytecode instructions  " + totalCodeSize + " bytes of code");                
+            System.out.println(name + ": " + totalLocals + " locals  " + totalInstructions +
+                " bytecode instructions  " + totalCodeSize + " bytes of code");
     }
 }

@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -77,7 +76,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -85,62 +84,62 @@ import ca.mcgill.sable.soot.*;
 public abstract class AbstractStmtSwitch implements StmtSwitch
 {
     Object result;
-    
+
     public void caseBreakpointStmt(BreakpointStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseInvokeStmt(InvokeStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseAssignStmt(AssignStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseIdentityStmt(IdentityStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseExitMonitorStmt(ExitMonitorStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseGotoStmt(GotoStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseIfStmt(IfStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseNopStmt(NopStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseRetStmt(RetStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseReturnStmt(ReturnStmt stmt)
     {
         defaultCase(stmt);
@@ -150,17 +149,17 @@ public abstract class AbstractStmtSwitch implements StmtSwitch
     {
         defaultCase(stmt);
     }
-    
+
     public void caseTableSwitchStmt(TableSwitchStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void caseThrowStmt(ThrowStmt stmt)
     {
         defaultCase(stmt);
     }
-    
+
     public void defaultCase(Object obj)
     {
     }
@@ -169,7 +168,7 @@ public abstract class AbstractStmtSwitch implements StmtSwitch
     {
         this.result = result;
     }
-    
+
     public Object getResult()
     {
         return result;

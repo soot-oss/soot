@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -115,9 +114,9 @@ import java.util.NoSuchElementException;
  * @see BasicBlock
  */
 final class BBQ {
-   
+
    private Vector q = new Vector();
-   
+
    /** Adds a block to the end of the queue, but only if its <i>inq</i> flag is false.
     * @param b the Basic Block in question.
     * @see BasicBlock#inq
@@ -128,15 +127,15 @@ final class BBQ {
          q.addElement(b);
       }
    }
-   
+
    /** Removes the first block in the queue (and resets its <i>inq</i> flag).
     * @return BasicBlock which was first.
     * @exception java.util.NoSuchElementException if the queue is empty.
     * @see BasicBlock#inq
     */
    public BasicBlock pull() throws NoSuchElementException {
-      if(q.size()==0) 
-         throw new 
+      if(q.size()==0)
+         throw new
             NoSuchElementException("Pull from empty BBQ");
       BasicBlock b = (BasicBlock)(q.firstElement());
       q.removeElementAt(0);
@@ -158,15 +157,15 @@ final class BBQ {
     * @return <i>true</i> if it is, <i>false</i> if it ain't.
     */
    public boolean isEmpty() { return q.isEmpty(); }
-   
+
    /** Empties the queue of all blocks (and resets their <i>inq</i> flags). */
-   public void clear() { 
+   public void clear() {
       BasicBlock b;
       for (Enumeration e = q.elements();e.hasMoreElements();) {
          b = (BasicBlock)(e.nextElement());
          b.inq = false;
       }
-      q.removeAllElements(); 
+      q.removeAllElements();
    }
 }
 

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -80,57 +79,57 @@ public class NewArrayExpr implements Expr
     Type baseType;
     ValueBox sizeBox;
     List useBoxes;
-        
+
     NewArrayExpr(Type type, Value size)
     {
         this.baseType = type;
         this.sizeBox = Jimple.v().newImmediateBox(size);
-        
+
         useBoxes = new ArrayList();
         useBoxes.add(sizeBox);
         useBoxes = Collections.unmodifiableList(useBoxes);
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append("new " + baseType.toString());
         buffer.append("[" + sizeBox.getValue().toString() + "]");
-            
+
         return buffer.toString();
     }
-    
+
     public Type getBaseType()
     {
         return baseType;
     }
-    
+
     public void setBaseType(Type type)
     {
         baseType = type;
     }
-    
+
     public ValueBox getSizeBox()
     {
         return sizeBox;
     }
-    
+
     public Value getSize()
     {
         return sizeBox.getValue();
     }
-    
+
     public void setSize(Value size)
     {
         sizeBox.setValue(size);
     }
-    
+
     public List getUseBoxes()
     {
         return useBoxes;
     }
-    
+
     public Type getType()
     {
         if(baseType instanceof ArrayType)
@@ -138,9 +137,9 @@ public class NewArrayExpr implements Expr
         else
             return ArrayType.v((BaseType) baseType, 1);
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseNewArrayExpr(this);
-    }    
+    }
 }

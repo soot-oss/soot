@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -108,21 +107,21 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.io.*;
 
-/** Represents a single field_info object. 
+/** Represents a single field_info object.
  * @see ClassFile
  * @author Clark Verbrugge
  */
 class field_info {
    /** Access flags for this field. */
    public short access_flags;
-   /** Constant pool index of the name of this field. 
+   /** Constant pool index of the name of this field.
     * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info 
+    * @see CONSTANT_Utf8_info
     */
    public short name_index;
    /** Constant pool index of the type descriptor of this field.
     * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info 
+    * @see CONSTANT_Utf8_info
     */
    public short descriptor_index;
    /** Count of attributes this field contains. */
@@ -132,7 +131,7 @@ class field_info {
     */
    public attribute_info attributes[];
 
-   /** Returns the name of this field. 
+   /** Returns the name of this field.
     * @param constant_pool the constant_pool for this class.
     * @return the name of this field.
     */
@@ -141,8 +140,8 @@ class field_info {
       ci = (CONSTANT_Utf8_info)(constant_pool[name_index]);
       return ci.convert();
    }
-   
-   /** Returns the prototype of this field. 
+
+   /** Returns the prototype of this field.
     * @param constant_pool the constant_pool for this class.
     * @return the prototype (access + type + name) of this field.
     */
@@ -151,7 +150,7 @@ class field_info {
       CONSTANT_Utf8_info cm,dm;
       int i,j;
       String s;
-      
+
       cm = (CONSTANT_Utf8_info)(constant_pool[name_index]);
       dm = (CONSTANT_Utf8_info)(constant_pool[descriptor_index]);
       s = ClassFile.access_string(access_flags," ");
@@ -172,5 +171,5 @@ class field_info {
       }
       return null;
    }
-   
+
 }

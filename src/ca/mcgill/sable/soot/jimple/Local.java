@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,7 +78,7 @@ public class Local implements Value
 {
     String name;
     Type type;
-        
+
     Local(String name, Type t)
     {
         this.name = name;
@@ -90,41 +89,41 @@ public class Local implements Value
     {
         return new Local(name, type);
     }
-        
+
     public String getName()
     {
         return name;
     }
-    
-    public void setName(String name) 
+
+    public void setName(String name)
     {
         this.name = name;
     }
-    
+
     public Type getType()
     {
         return type;
     }
-    
+
     public void setType(Type t)
     {
         this.type = t;
     }
-    
+
     public String toString()
     {
         return getName();
     }
-    
+
     public List getUseBoxes()
     {
         return Stmt.emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((JimpleValueSwitch) sw).caseLocal(this);
     }
-    
+
 }
 

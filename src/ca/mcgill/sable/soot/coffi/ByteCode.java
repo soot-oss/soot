@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -102,7 +101,7 @@
 
  - Modified on 28-Aug-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Fixed the wide instructions.
-   
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -113,7 +112,7 @@ package ca.mcgill.sable.soot.coffi;
  * @author Clark Verbrugge
  */
 class ByteCode {
-   
+
    public static final int NOP = 0;
    public static final int ACONST_NULL = 1;
    public static final int ICONST_M1 = 2;
@@ -371,12 +370,12 @@ class ByteCode {
         public static final int  = 254;
         public static final int  = 255;*/
 
-   private int icount;                          
+   private int icount;
    private Instruction instructions[];
-   
+
    /** Constructor---does nothing. */
    ByteCode() {  }
-   
+
    /** Main entry point for disassembling bytecode into Instructions; this
     * method converts the given single bytecode into an Instruction (with
     * label set to index).
@@ -388,16 +387,16 @@ class ByteCode {
     * @see Instruction#parse
     * @see ByteCode#build
     */
-   public Instruction disassemble_bytecode(byte bc[],int index) {    
-      // returns a string representing the disassembly of the 
+   public Instruction disassemble_bytecode(byte bc[],int index) {
+      // returns a string representing the disassembly of the
       // bytecode at the given index
       byte b = bc[index];
       boolean isWide = false;
       Instruction i;
       int x;
-      
+
       x = ((int)b)&0xff;
-      
+
       switch(x) {
       case BIPUSH:
          i = (Instruction)new Instruction_Bipush();
@@ -615,37 +614,37 @@ class ByteCode {
       case WIDE:
       {
          int nextIndex = ((int) bc[index+1]) & 0xff;
-         
+
          switch(nextIndex)
          {
             case ILOAD:
                 i = new Instruction_Iload();
                 break;
-                
+
             case FLOAD:
                 i = new Instruction_Fload();
                 break;
-                
+
             case ALOAD:
                 i = new Instruction_Aload();
                 break;
-                
+
             case LLOAD:
                 i = new Instruction_Lload();
                 break;
-            
+
             case ISTORE:
                 i = new Instruction_Istore();
                 break;
-                
+
             case FSTORE:
                 i = new Instruction_Fstore();
                 break;
-                
+
             case ASTORE:
                 i = new Instruction_Astore();
                 break;
-                
+
             case LSTORE:
                 i = new Instruction_Lstore();
                 break;
@@ -653,21 +652,21 @@ class ByteCode {
             case RET:
                 i = new Instruction_Ret();
                 break;
-                                
+
             case IINC:
-                i = new Instruction_Iinc(); 
+                i = new Instruction_Iinc();
                 break;
-                
+
             default:
                 throw new RuntimeException("invalid wide instruction: " + nextIndex);
          }
-      
-         ((Instruction_bytevar) i).isWide = true;   
+
+         ((Instruction_bytevar) i).isWide = true;
          isWide = true;
-      }  
-      
+      }
+
         break;
-        
+
       case NEWARRAY:
          i = (Instruction)new Instruction_Newarray();
          break;
@@ -1064,19 +1063,19 @@ class ByteCode {
       default:
          //int j;
          //j = ((int)b)&0xff;
-         //System.out.println("Unknown instruction op=" + j + 
+         //System.out.println("Unknown instruction op=" + j +
          //                   " at offset " + index);
          i = (Instruction)new Instruction_Unknown(b);
          break;
       }
-      
+
       i.label = index;
-      
+
       if(isWide)
         i.parse(bc,index+2);
       else
         i.parse(bc,index+1);
-        
+
       return i;
    }
 
@@ -1091,7 +1090,7 @@ class ByteCode {
       Instruction i,j;
       attribute_info ai;
       Code_attribute ca;
-      
+
       i = insts;
       // find out how many instructions that is
       icount = 0;
@@ -1113,8 +1112,8 @@ class ByteCode {
             instructions[k] = i;
             k++;
             i = i.next;
-         }    
-         
+         }
+
          // now convert all offsets to pointers
          i = insts;
          while (i!=null) {
@@ -1130,8 +1129,8 @@ class ByteCode {
     * @param constant_pool constant pool of the ClassFile object.
     * @see ByteCode#showCode(Instruction, int, cp_info)
     */
-   public static void showCode(Instruction inst,cp_info constant_pool[]) { 
-      showCode(inst,0,constant_pool); 
+   public static void showCode(Instruction inst,cp_info constant_pool[]) {
+      showCode(inst,0,constant_pool);
    }
    /** Displays the code (in the form of Instructions) for the given list
     * of Instructions.
@@ -1168,7 +1167,7 @@ class ByteCode {
    /** Performs a binary search of the instructions[] array. */
    private Instruction locateInstr(int index,int mini,int maxi) {
       int mid = (maxi-mini)/2 + mini;
-      
+
       if (mini>maxi) return null;
       if (instructions[mid].label==index)
          return instructions[mid];

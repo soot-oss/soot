@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -78,16 +77,16 @@ import ca.mcgill.sable.util.*;
 public class Baf implements BodyRepresentation
 {
     private static Baf bafRepresentation = new Baf();
-    
+
     private Baf()
     {
     }
-    
+
     public static Baf v()
     {
         return bafRepresentation;
     }
-    
+
     public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
     {
         return new BafBody(m);

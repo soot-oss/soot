@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
 
  - Modified on October 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added flag and option to print debugging information.
-   
+
  - Modified on 12-Sep-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed the output options, and redirected the output to files.
 
@@ -85,13 +84,13 @@
 
  - Modified on 28-Aug-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Changed the displayed copyright on program execution.
-   
+
  - Modified on July 29, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Added -nosplitting and -oldtyping parameters.
 
  - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Minor changes.
- 
+
  - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Added jimpleClassPath parameter.
    Updated copyright notice.
@@ -99,7 +98,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -115,22 +114,22 @@ public class Main
     static boolean isProfilingOptimization;
     static boolean oldTyping;
     static boolean isInDebugMode;
-        
+
     public static String jimpleClassPath;
 
     static boolean produceJimpleFile,
         produceJasminFile,
         produceJimpFile = true;
-        
-    static Timer copiesTimer = new Timer(), 
-        defsTimer = new Timer(), 
+
+    static Timer copiesTimer = new Timer(),
+        defsTimer = new Timer(),
         usesTimer = new Timer(),
         liveTimer = new Timer(),
         splitTimer = new Timer(),
-        packTimer = new Timer(), 
+        packTimer = new Timer(),
         cleanup1Timer = new Timer(),
         cleanup2Timer = new Timer(),
-        conversionTimer = new Timer(), 
+        conversionTimer = new Timer(),
         cleanupAlgorithmTimer = new Timer(),
         graphTimer = new Timer(),
         assignTimer = new Timer(),
@@ -150,23 +149,23 @@ public class Main
         assignStmtCount,
         packStmtCount,
         cleanup2StmtCount;
-    
-    
+
+
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
         long stmtCount = 0;
         int buildBodyOptions = 0;
-        
+
         totalTimer.start();
-        
+
         SootClassManager cm = new SootClassManager();
-        
+
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version dev0pt0.11");
-            System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");  
+            System.out.println("Jimple version 1.beta.1");
+            System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
             System.out.println("Portions copyright (C) 1997 Clark Verbrugge (clump@sable.mcgill.ca).");
@@ -206,7 +205,7 @@ public class Main
             System.exit(0);
         }
 
-        // Handle all the options           
+        // Handle all the options
             for(int i = 0; i < args.length; i++)
             {
                 if(args[i].equals("-jimple"))
@@ -242,64 +241,64 @@ public class Main
                 }
                 else
                     break;
-                    
+
                 firstNonOption = i + 1;
             }
-        
+
         // Handle all the classes
         {
             int numFailed = 0;
             int numSuccess = 0;
-                        
+
             List listBodies = new ArrayList();
-            
+
             for(int i = firstNonOption; i < args.length; i++)
             {
                 SootClass c = cm.getClass(args[i]);
                 String postFix;
                 PrintWriter writerOut = null;
                 FileOutputStream streamOut = null;
-                
+
                 System.out.print("Jimplifying " + c.getName() + "... " );
                 System.out.flush();
-                
+
                 // Open output file.
-                {   
+                {
                     if(produceJasminFile)
                         postFix = ".jasmin";
                     else if(produceJimpleFile)
                         postFix = ".jimple";
                     else
                         postFix = ".jimp";
-                       
+
                     try {
                         streamOut = new FileOutputStream(c.getName() + postFix);
                         writerOut = new PrintWriter(streamOut);
                     }
-                    catch (IOException e) 
+                    catch (IOException e)
                     {
                         System.out.println("Cannot output file " + c.getName() + postFix);
                     }
                 }
-                
+
                 /*
                 if(isProfilingOptimization)
-                {        
+                {
                     Iterator methodIt = c.getMethods().iterator();
                     long localStmtCount = 0;
-                    
-                    try {   
+
+                    try {
                         while(methodIt.hasNext())
                         {
-                            SootMethod m = (SootMethod) methodIt.next();                        
+                            SootMethod m = (SootMethod) methodIt.next();
                             StmtListBody listBody = new StmtListBody(m.getInstListBody());
-                    
-                            listBodies.add(listBody);        
+
+                            listBodies.add(listBody);
                             localStmtCount += listBody.getStmtList().size();
-                        } 
-                        
+                        }
+
                         stmtCount += localStmtCount;
-                    
+
                         System.out.println(localStmtCount + " stmts  ");
                         numSuccess++;
                     }
@@ -307,12 +306,12 @@ public class Main
                     {
                         System.out.println("failed due to: " + e);
                         numFailed++;
-                    } 
+                    }
                 }
                 */
 
                 // Produce the file
-                {                
+                {
                     if(!isInDebugMode)
                     {
                         try {
@@ -321,46 +320,46 @@ public class Main
                         catch(Exception e)
                         {
                             System.out.println("failed due to: " + e);
-                        }                    
+                        }
                     }
                     else {
                         handleClass(c, postFix, writerOut, buildBodyOptions);
                     }
-                    
+
                     try {
                         writerOut.flush();
                         streamOut.close();
-                    }         
+                    }
                     catch(IOException e )
                     {
                         System.out.println("Cannot close output file " + c.getName() + postFix);
                     }
-                                            
-                    System.out.println();       
+
+                    System.out.println();
                 }
             }
         }
-        
+
             /*
             if(isProfilingOptimization)
-            {            
+            {
                 System.out.println("Successfully jimplified " + numSuccess + " classfiles; failed on " + numFailed + ".");
-                
+
                 // Count number of statements stored
                 {
                     Iterator bodyIt = listBodies.iterator();
                     long storedStmtCount = 0;
-                    
+
                     while(bodyIt.hasNext())
                     {
                         StmtListBody listBody = (StmtListBody) bodyIt.next();
                         storedStmtCount += listBody.getStmtList().size();
                     }
-                    
+
                     System.out.println("Confirmed " + storedStmtCount + " stored statements.");
                     System.out.println();
                 }
-                
+
                 System.out.println("graphTimer: " + graphTimer.getTime());
                 System.out.println("defsTimer: " + defsTimer.getTime());
                 System.out.println("usesTimer: " + usesTimer.getTime());
@@ -368,9 +367,9 @@ public class Main
                 System.out.println("copiesTimer: " + copiesTimer.getTime());
                 System.out.println("liveTimer: " + liveTimer.getTime());
                 System.out.println("resolveTimer: " + resolveTimer.getTime());
-                
+
                 System.out.println();
-                
+
                 // Print out time stats.
                 {
                     long conversionTime = conversionTimer.getTime();
@@ -379,54 +378,54 @@ public class Main
                     long assignTime = assignTimer.getTime();
                     long packTime = packTimer.getTime();
                     long cleanup2Time = cleanup2Timer.getTime();
-                    
+
                     totalTimer.end();
                     long totalTime = totalTimer.getTime();
                     float timeInSecs;
-                    
-                    System.out.println("conversionTimer: " + conversionTime + 
+
+                    System.out.println("conversionTimer: " + conversionTime +
                         "(" + (conversionTime * 100 / totalTime) + "%) " +
                         conversionLocalCount + " locals  " + conversionStmtCount + " stmts");
                     System.out.println("cleanup1Timer:   " + cleanup1Time +
                         "(" + (cleanup1Time * 100 / totalTime) + "%) " +
                         cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
-                    System.out.println("splitTimer:      " + splitTime + 
+                    System.out.println("splitTimer:      " + splitTime +
                         "(" + (splitTime * 100 / totalTime) + "%) " +
-                        splitLocalCount + " locals  " + splitStmtCount + " stmts");   
+                        splitLocalCount + " locals  " + splitStmtCount + " stmts");
                     System.out.println("assignTimer:     " + assignTime +
                         "(" + (assignTime * 100 / totalTime) + "%) " +
                         assignLocalCount + " locals  " + assignStmtCount + " stmts");
-                    System.out.println("packTimer:       " + packTime + 
+                    System.out.println("packTimer:       " + packTime +
                         "(" + (packTime * 100 / totalTime) + "%) " +
                         packLocalCount + " locals  " + packStmtCount + " stmts");
                     System.out.println("cleanup2Timer:   " + cleanup2Time +
                         "(" + (cleanup2Time * 100 / totalTime) + "%) " +
                         cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
-                    
+
                     timeInSecs = (float) totalTime / 1000.0f;
                     float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
-                                        
+
                     System.out.println("stmts created: " + stmtCount);
-                    
-                    System.out.println("totalTime:" + timeInSecs + "s  " + (float) stmtCount / timeInSecs + " (stmts/sec)"); 
-                    System.out.println("totalMemory:" + memoryUsed + "k  " + (float) memoryUsed / stmtCount+ " (k/stmt)"); 
-                   
+
+                    System.out.println("totalTime:" + timeInSecs + "s  " + (float) stmtCount / timeInSecs + " (stmts/sec)");
+                    System.out.println("totalMemory:" + memoryUsed + "k  " + (float) memoryUsed / stmtCount+ " (k/stmt)");
+
                 }
             }*/
 
     }
-        
+
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
             new JasminClass(c, new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()))).print(writerOut);
         else if(postFix.equals(".jimp"))
         {
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions), 
-                writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS); 
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
+                writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         }
-        else 
-            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions), 
+        else
+            c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions),
                 writerOut);
     }
 }

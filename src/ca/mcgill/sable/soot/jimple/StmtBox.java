@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,31 +81,31 @@ class StmtBox implements UnitBox
     StmtBox(Stmt stmt)
     {
         setUnit(stmt);
-    }    
-    
+    }
+
     public void setUnit(Unit unit)
     {
         Stmt stmt = (Stmt) unit;
-        
-        // Remove this from set of back pointers.        
+
+        // Remove this from set of back pointers.
             if(this.stmt != null)
             {
                 List boxesPointingToThis = this.stmt.getBoxesPointingToThis();
                 boxesPointingToThis.remove(this);
             }
-    
-        
+
+
         // Perform link
             this.stmt = stmt;
-      
+
         // Add this to back pointers
             if(this.stmt != null)
             {
                 List boxesPointingToThis = this.stmt.getBoxesPointingToThis();
                 boxesPointingToThis.add(this);
-            }    
+            }
     }
-    
+
     public Unit getUnit()
     {
         return stmt;

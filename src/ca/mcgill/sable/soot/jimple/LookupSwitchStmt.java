@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -83,158 +82,158 @@ public class LookupSwitchStmt extends Stmt
     UnitBox[] targetBoxes;
 
     List stmtBoxes;
-        
+
     LookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
     {
         this.keyBox = Jimple.v().newImmediateBox(key);
         this.defaultTargetBox = Jimple.v().newStmtBox(defaultTarget);
-        
+
         this.lookupValues = new ArrayList();
         this.lookupValues.addAll(lookupValues);
-        
+
         this.targetBoxes = new UnitBox[targets.size()];
-        
+
         for(int i = 0; i < targetBoxes.length; i++)
             targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
-        
+
         // Build up stmtBoxes
-        {    
+        {
             stmtBoxes = new ArrayList();
-            
+
             for(int i = 0; i < targetBoxes.length; i++)
                 stmtBoxes.add(targetBoxes[i]);
-            
+
             stmtBoxes.add(defaultTargetBox);
             stmtBoxes = Collections.unmodifiableList(stmtBoxes);
-        }    
+        }
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append("lookupswitch(" + keyBox.getValue().toString() + ")\n");
         buffer.append("{\n");
-        
+
         for(int i = 0; i < lookupValues.size(); i++)
         {
             buffer.append("case " + lookupValues.get(i) + ": goto ?;\n");
         }
-        
+
         buffer.append("default: goto ?;\n");
         buffer.append("}");
-        
+
         return buffer.toString();
     }
-    
+
     public Unit getDefaultTarget()
     {
         return defaultTargetBox.getUnit();
     }
-    
+
     public void setDefaultTarget(Unit defaultTarget)
     {
         defaultTargetBox.setUnit(defaultTarget);
     }
-    
+
     public UnitBox getDefaultTargetBox()
     {
         return defaultTargetBox;
     }
-    
+
     public Value getKey()
     {
         return keyBox.getValue();
-    }    
-    
+    }
+
     public void setKey(Value key)
     {
         keyBox.setValue(key);
     }
-    
+
     public ValueBox getKeyBox()
     {
         return keyBox;
     }
-    
+
     public void setLookupValues(List lookupValues)
     {
         this.lookupValues = new ArrayList();
         this.lookupValues.addAll(lookupValues);
     }
-    
+
     public void setLookupValue(int index, int value)
     {
         this.lookupValues.set(index, new Integer(value));
     }
-    
+
     public int getLookupValue(int index)
     {
         return ((Integer) lookupValues.get(index)).intValue();
     }
-    
+
     public  List getLookupValues()
     {
         return Collections.unmodifiableList(lookupValues);
     }
-    
+
     public int getTargetCount()
     {
         return targetBoxes.length;
     }
-    
+
     public Unit getTarget(int index)
     {
         return targetBoxes[index].getUnit();
     }
-    
+
     public UnitBox getTargetBox(int index)
     {
         return targetBoxes[index];
     }
-    
+
     public void setTarget(int index, Unit target)
     {
         targetBoxes[index].setUnit(target);
     }
-    
+
     public List getTargets()
     {
         List targets = new ArrayList();
-        
+
         for(int i = 0; i < targetBoxes.length; i++)
             targets.add(targetBoxes[i].getUnit());
-            
+
         return targets;
     }
-    
+
     public void setTargets(Unit[] targets)
     {
         for(int i = 0; i < targets.length; i++)
             targetBoxes[i].setUnit(targets[i]);
     }
-    
+
 
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(keyBox);
         list.addAll(keyBox.getValue().getUseBoxes());
-        
+
         return list;
-    }    
-    
+    }
+
     public List getUnitBoxes()
     {
         return stmtBoxes;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseLookupSwitchStmt(this);

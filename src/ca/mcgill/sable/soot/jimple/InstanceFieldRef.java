@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -83,42 +82,42 @@ public class InstanceFieldRef implements ConcreteRef
     SootField field;
     ValueBox baseBox;
     List useBoxes;
-        
+
     InstanceFieldRef(Value base, SootField field)
     {
         this.baseBox = Jimple.v().newLocalBox(base);
         this.field = field;
-        
+
         useBoxes = new ArrayList();
         useBoxes.add(baseBox);
         useBoxes = Collections.unmodifiableList(useBoxes);
     }
-    
+
     public String toString()
     {
         return baseBox.getValue().toString() + ".[" + field.getSignature() + "]";
     }
-    
+
     public Value getBase()
     {
         return (Local) baseBox.getValue();
     }
-    
+
     public ValueBox getBaseBox()
     {
         return baseBox;
     }
-    
+
     public void setBase(Value base)
     {
         baseBox.setValue(base);
     }
-    
+
     public SootField getField()
     {
         return field;
     }
-    
+
     public void setField(SootField field)
     {
         this.field = field;
@@ -127,13 +126,13 @@ public class InstanceFieldRef implements ConcreteRef
     public List getUseBoxes()
     {
         return useBoxes;
-    }    
-    
+    }
+
     public Type getType()
     {
         return field.getType();
     }
-    
+
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseInstanceFieldRef(this);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,28 +77,28 @@ import ca.mcgill.sable.util.*;
 public class StmtList extends ArrayList
 {
     JimpleBody body;
-    
+
     public StmtList(JimpleBody body)
     {
         super();
-        
+
         this.body = body;
     }
-     
+
     public JimpleBody getBody()
     {
         return body;
     }
-       
+
     public boolean remove(Object obj)
     {
         boolean toReturn = false;
-        
+
         if(contains(obj))
         {
             int index = indexOf(obj);
             Stmt successor;
-            
+
             if(index + 1 < size())
                 successor = (Stmt) get(index + 1);
             else if(size() >= 2)
@@ -109,94 +108,94 @@ public class StmtList extends ArrayList
 
             toReturn = super.remove(obj);
             body.redirectJumps((Stmt) obj, successor);
-            body.eliminateBackPointersTo((Stmt) obj);            
+            body.eliminateBackPointersTo((Stmt) obj);
         }
-        
+
         return toReturn;
     }
-    
+
     public Object remove(int index)
     {
         Object obj = get(index);
         Object toReturn = null;
-                
+
         if(contains(obj))
         {
             Stmt successor;
-            
+
             if(index + 1 < size())
                 successor = (Stmt) get(index + 1);
             else if(size() >= 2)
                 successor = (Stmt) get(index - 1);
             else
                 successor = null;
-            
+
             toReturn = super.remove(index);
-            
+
             body.redirectJumps((Stmt) obj, successor);
             body.eliminateBackPointersTo((Stmt) obj);
-            
+
         }
-        
+
         return toReturn;
     }
-    
+
     public boolean removeAll(Collection c)
     {
         throw new UnsupportedOperationException();
     }
-    
+
     void testIntegrity(String message)
     {
         Iterator stmtIt = iterator();
-         
+
         while(stmtIt.hasNext())
         {
             Stmt s = (Stmt) stmtIt.next();
             Iterator boxIt = s.getUnitBoxes().iterator();
-            
+
             while(boxIt.hasNext())
             {
                 StmtBox box = (StmtBox) boxIt.next();
                 Stmt pointed = (Stmt) box.getUnit();
-                
+
                 if(!contains(pointed))
                     throw new RuntimeException(message + "Statement no longer contained");
-                     
+
                 if(!pointed.getBoxesPointingToThis().contains(box))
                     throw new RuntimeException(message + "back pointer not set");
             }
         }
-        
+
         stmtIt = iterator();
-        
+
         while(stmtIt.hasNext())
         {
             Stmt s = (Stmt) stmtIt.next();
             List boxes = s.getBoxesPointingToThis();
-            
+
             Iterator it = boxes.iterator();
-            
+
             while(it.hasNext())
             {
                 StmtBox box = (StmtBox) it.next();
-                
+
                 if(box.getUnit() != s)
                     throw new RuntimeException(message + "back pointer still set");
             }
         }
-        
+
         stmtIt = iterator();
-        
+
         while(stmtIt.hasNext())
         {
             Stmt s = (Stmt) stmtIt.next();
             Iterator boxIt = s.getUnitBoxes().iterator();
-            
+
             while(boxIt.hasNext())
             {
                 StmtBox box = (StmtBox) boxIt.next();
-                
+
                 if(indexOf(box.getUnit()) == -1)
                 {
                     System.out.println("looking for: " + box.getUnit());
@@ -204,6 +203,6 @@ public class StmtList extends ArrayList
                 }
             }
         }
-    }            
+    }
 }
 

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,30 +81,30 @@ public abstract class FlowAnalysis
 {
     protected Map stmtToAfterFlow,
         stmtToBeforeFlow;
-    
+
     StmtGraph graph;
-    
+
     public FlowAnalysis(StmtGraph graph)
     {
         stmtToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
         stmtToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-        
+
         this.graph = graph;
     }
-    
+
     protected abstract Flow getInitialFlow();
-    
+
     protected abstract boolean isForward();
-    
+
     protected abstract void flowThrough(Flow in, Stmt s, Flow out);
     protected abstract void merge(Flow in1, Flow in2, Flow out);
     protected abstract void doAnalysis();
-    
+
     public Flow getFlowAfterStmt(Stmt s)
     {
         return (Flow) stmtToAfterFlow.get(s);
     }
-    
+
     public Flow getFlowBeforeStmt(Stmt s)
     {
         return (Flow) stmtToBeforeFlow.get(s);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -75,12 +74,12 @@ package ca.mcgill.sable.soot;
 public class StoredBody implements BodyExpr
 {
     public final BodyRepresentation bodyRep;
-    
+
     public StoredBody(BodyRepresentation rep)
     {
         this.bodyRep = rep;
     }
-    
+
     public Body resolveFor(SootMethod method)
     {
         return method.getBody(bodyRep);

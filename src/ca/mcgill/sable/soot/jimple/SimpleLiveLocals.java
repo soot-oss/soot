@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,29 +81,29 @@ public class SimpleLiveLocals implements LiveLocals
 {
     Map stmtToLocals;
     //Map stmtToLocalsBefore;
-    
+
     public SimpleLiveLocals(CompleteStmtGraph graph)
     {
-        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);  
-        
+        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);
+
         // Build stmtToLocals map
         {
             stmtToLocals = new HashMap(graph.size() * 2 + 1, 0.7f);
-            
+
             Iterator stmtIt = graph.iterator();
-            
+
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                
+
                 FlowSet set = (FlowSet) analysis.getFlowBeforeStmt(s);
                 stmtToLocals.put(s, Collections.unmodifiableList(set.toList()));
-                
-            }        
-        }  
-        
+
+            }
+        }
+
     }
-    
+
     /*
     public List getLiveLocalsBefore(Stmt s)
     {
@@ -113,7 +112,7 @@ public class SimpleLiveLocals implements LiveLocals
         return set.toList();
     }
       */
-        
+
     public List getLiveLocalsAfter(Stmt s)
     {
         return (List) stmtToLocals.get(s);
@@ -125,100 +124,100 @@ class LiveLocalsAnalysis extends BackwardFlowAnalysis
     FlowSet emptySet;
     Map stmtToGenerateSet;
     Map stmtToPreserveSet;
-    
+
     LiveLocalsAnalysis(StmtGraph g)
     {
         super(g);
-        
-        
+
+
         // Generate list of locals and empty set
         {
             List locals = g.getBody().getLocals();
             FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
-            
+
             emptySet = PackSet.v(localUniverse);
         }
-                   
+
         // Create preserve sets.
         {
             stmtToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
-            
+
             Iterator stmtIt = g.iterator();
-            
+
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                
+
                 FlowSet killSet = (FlowSet) emptySet.clone();
-                
+
                 Iterator boxIt = s.getDefBoxes().iterator();
-                
+
                 while(boxIt.hasNext())
                 {
                     ValueBox box = (ValueBox) boxIt.next();
-                    
+
                     if(box.getValue() instanceof Local)
                         killSet.add(box.getValue(), killSet);
                 }
-                
-                // Store complement           
-                    killSet.complement(killSet);       
+
+                // Store complement
+                    killSet.complement(killSet);
                     stmtToPreserveSet.put(s, killSet);
             }
         }
-            
+
         // Create generate sets
         {
             stmtToGenerateSet = new HashMap(g.size() * 2 + 1, 0.7f);
-            
+
             Iterator stmtIt = g.iterator();
-            
+
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                
+
                 FlowSet genSet = (FlowSet) emptySet.clone();
-                
+
                 Iterator boxIt = s.getUseBoxes().iterator();
-                
+
                 while(boxIt.hasNext())
                 {
                     ValueBox box = (ValueBox) boxIt.next();
-                    
+
                     if(box.getValue() instanceof Local)
                         genSet.add(box.getValue(), genSet);
                 }
-                        
+
                 stmtToGenerateSet.put(s, genSet);
             }
         }
-        
+
         doAnalysis();
     }
-    
+
     protected Flow getInitialFlow()
     {
         return emptySet;
     }
-    
+
     protected void flowThrough(Flow inValue, Stmt stmt, Flow outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform kill
             in.intersection((FlowSet) stmtToPreserveSet.get(stmt), out);
-        
+
         // Perform generation
-            out.union((FlowSet) stmtToGenerateSet.get(stmt), out);        
+            out.union((FlowSet) stmtToGenerateSet.get(stmt), out);
     }
-    
+
     protected void merge(Flow in1, Flow in2, Flow out)
     {
         FlowSet inSet1 = (FlowSet) in1,
             inSet2 = (FlowSet) in2;
-            
+
         FlowSet outSet = (FlowSet) out;
-        
+
         inSet1.union(inSet2, outSet);
     }
 }

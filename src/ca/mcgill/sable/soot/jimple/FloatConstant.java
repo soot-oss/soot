@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -80,8 +79,8 @@ import ca.mcgill.sable.util.*;
 
 public class FloatConstant extends Constant implements Switchable
 {
-    public final float value; 
-    
+    public final float value;
+
     private FloatConstant(float value)
     {
         this.value = value;
@@ -91,23 +90,23 @@ public class FloatConstant extends Constant implements Switchable
     {
         return new FloatConstant(value);
     }
-    
-    
+
+
     public boolean equals(Constant c)
     {
         return c instanceof FloatConstant && ((FloatConstant) c).value == value;
     }
-    
+
     public String toString()
     {
         return new Float(value).toString() + "f";
     }
-    
+
     public Type getType()
     {
         return FloatType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ConstantSwitch) sw).caseFloatConstant(this);

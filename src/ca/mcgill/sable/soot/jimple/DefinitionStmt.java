@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,55 +68,55 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public abstract class DefinitionStmt extends Stmt
-{   
+{
     ValueBox leftBox;
     ValueBox rightBox;
-    
+
     List defBoxes;
-    
+
     public Value getLeftOp()
     {
         return leftBox.getValue();
     }
-    
+
     public Value getRightOp()
     {
         return rightBox.getValue();
     }
-    
+
     public ValueBox getLeftOpBox()
     {
         return leftBox;
     }
-    
+
     public ValueBox getRightOpBox()
     {
         return rightBox;
     }
-    
+
     public List getDefBoxes()
     {
         return defBoxes;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(rightBox);
         list.addAll(rightBox.getValue().getUseBoxes());
         list.addAll(leftBox.getValue().getUseBoxes());
-        
+
         return list;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;

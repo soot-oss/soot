@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,76 +81,76 @@ public class TableSwitchStmt extends Stmt
     int lowIndex;
     int highIndex;
     UnitBox[] targetBoxes;
-    
+
     List stmtBoxes;
-    
+
     TableSwitchStmt(Value key, int lowIndex, int highIndex, List targets, Unit defaultTarget)
     {
         this.keyBox = Jimple.v().newImmediateBox(key);
         this.defaultTargetBox = Jimple.v().newStmtBox(defaultTarget);
         this.lowIndex = lowIndex;
         this.highIndex = highIndex;
-        
+
         this.targetBoxes = new UnitBox[targets.size()];
-        
+
         for(int i = 0; i < targetBoxes.length; i++)
             targetBoxes[i] = Jimple.v().newStmtBox((Stmt) targets.get(i));
-            
+
         // Build up stmtBoxes
-        {    
+        {
             stmtBoxes = new ArrayList();
-            
+
             for(int i = 0; i < targetBoxes.length; i++)
                 stmtBoxes.add(targetBoxes[i]);
-            
+
             stmtBoxes.add(defaultTargetBox);
             stmtBoxes = Collections.unmodifiableList(stmtBoxes);
-        }    
+        }
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append("tableswitch(" + keyBox.getValue().toString() + ")\n");
         buffer.append("{\n");
-        
+
         for(int i = lowIndex; i <= highIndex; i++)
         {
             buffer.append("case " + i + ": goto ?;\n");
         }
-        
+
         buffer.append("default: goto ?;\n");
         buffer.append("}");
-        
+
         return buffer.toString();
     }
-    
+
     public Unit getDefaultTarget()
     {
         return defaultTargetBox.getUnit();
     }
-    
+
     public void setDefaultTarget(Unit defaultTarget)
     {
         defaultTargetBox.setUnit(defaultTarget);
     }
-    
+
     public UnitBox getDefaultTargetBox()
     {
         return defaultTargetBox;
     }
-    
+
     public Value getKey()
     {
         return keyBox.getValue();
-    }    
-    
+    }
+
     public void setKey(Value key)
     {
         keyBox.setValue(key);
     }
-    
+
     public ValueBox getKeyBox()
     {
         return keyBox;
@@ -160,38 +159,38 @@ public class TableSwitchStmt extends Stmt
     public void setLowIndex(int lowIndex)
     {
         this.lowIndex = lowIndex;
-    }    
-    
+    }
+
     public void setHighIndex(int highIndex)
     {
         this.highIndex = highIndex;
     }
-    
+
     public int getLowIndex()
     {
-        return lowIndex; 
+        return lowIndex;
     }
-    
+
     public int getHighIndex()
     {
         return highIndex;
     }
-    
+
     public List getTargets()
     {
         List targets = new ArrayList();
-        
+
         for(int i = 0; i < targetBoxes.length; i++)
             targets.add(targetBoxes[i].getUnit());
-            
+
         return targets;
     }
-    
+
     public Unit getTarget(int index)
     {
         return targetBoxes[index].getUnit();
     }
-    
+
     public void setTarget(int index, Unit target)
     {
         targetBoxes[index].setUnit(target);
@@ -202,32 +201,32 @@ public class TableSwitchStmt extends Stmt
         for(int i = 0; i < targets.size(); i++)
             targetBoxes[i].setUnit((Stmt) targets.get(i));
     }
-    
+
     public UnitBox getTargetBox(int index)
     {
         return targetBoxes[index];
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(keyBox);
         list.addAll(keyBox.getValue().getUseBoxes());
-        
+
         return list;
     }
-    
+
     public List getUnitBoxes()
     {
         return stmtBoxes;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseTableSwitchStmt(this);

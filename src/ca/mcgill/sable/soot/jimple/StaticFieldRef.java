@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,37 +77,37 @@ import ca.mcgill.sable.util.*;
 public class StaticFieldRef implements ConcreteRef
 {
     SootField field;
-    
+
     StaticFieldRef(SootField field)
     {
         this.field = field;
     }
-    
+
     public String toString()
     {
         return "[" + field.getSignature() + "]";
     }
-    
+
     public SootField getField()
     {
         return field;
     }
-    
+
     public void setField(SootField field)
     {
         this.field = field;
     }
-    
+
     public List getUseBoxes()
     {
         return Stmt.emptyList;
     }
-    
+
     public Type getType()
     {
         return field.getType();
     }
-    
+
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseStaticFieldRef(this);

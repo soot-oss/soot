@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -123,15 +122,15 @@ class CONSTANT_Utf8_info extends cp_info {
    /** Byte array of actual utf8 string. */
    public byte bytes[];
    /** Length in bytes of byte array. */
-   public int length() { 
-      return (((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff)); 
+   public int length() {
+      return (((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff));
    }
    /** Returns the size of this cp_info object.
     * @return number of bytes occupied by this object.
     * @see cp_info#size
     */
-   public int size() { return length()+3; } 
-   /** Converts internal representation into an actual String. 
+   public int size() { return length()+3; }
+   /** Converts internal representation into an actual String.
     * @return String version of this utf8 object.
     */
    public String convert() {
@@ -143,7 +142,7 @@ class CONSTANT_Utf8_info extends cp_info {
          } catch(IOException e) {
             return "!!IOException!!";
          }
-      } 
+      }
       return s;
    }
    /** Answers whether this utf8 string is the same as a given one.
@@ -196,7 +195,7 @@ class CONSTANT_Utf8_info extends cp_info {
       if (e2.hasMoreElements()) return 1;
       return 0;
    }
-   /** Utility method; converts the given String into a utf8 encoded array 
+   /** Utility method; converts the given String into a utf8 encoded array
     * of bytes.
     * @param s String to encode.
     * @return array of bytes, utf8 encoded version of s.

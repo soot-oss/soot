@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,31 +68,31 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 class Timer
 {
     private long duration;
     private long startTime;
-    
+
     Timer()
     {
         duration = 0;
     }
-    
+
     void start()
     {
-        startTime = System.currentTimeMillis();    
+        startTime = System.currentTimeMillis();
     }
 
     void end()
     {
         duration += System.currentTimeMillis() - startTime;
     }
-        
+
     long getTime()
     {
         return duration;
-    }    
+    }
 }

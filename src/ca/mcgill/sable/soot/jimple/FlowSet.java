@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,7 +77,7 @@ import ca.mcgill.sable.util.*;
 public interface FlowSet extends Flow
 {
     public int size();
-    
+
     public boolean isEmpty();
     public List toList();
     public List toList(int low, int high);
@@ -87,7 +86,7 @@ public interface FlowSet extends Flow
     public void union(FlowSet other, FlowSet dest);
     public void intersection(FlowSet other, FlowSet dest);
     public void complement(FlowSet dest);
-    
+
     public boolean contains(Object obj);
 }
 

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -107,9 +106,9 @@
 package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.  
+ * bytecode operation has a corresponding subclass of Instruction.
  * <p>
- * Each subclass is derived from one of 
+ * Each subclass is derived from one of
  * <ul><li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
@@ -118,7 +117,7 @@ import java.io.*;
  * <li>Instruction_int (an Instruction with a single short data argument)</li>
  * <li>Instruction_intvar (a short argument specifying a local variable)</li>
  * <li>Instruction_intindex (a short argument specifying a constant pool index)</li>
- * <li>Instruction_intbranch (a short argument specifying a code offset)</li> 
+ * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
  * @author Clark Verbrugge
@@ -135,8 +134,8 @@ import java.io.*;
  * @see Instruction_Unknown
  */
 class Instruction_Unknown extends Instruction_noargs {
-   public Instruction_Unknown(byte c) { 
-      super(c); 
-      name = "unknown instruction (" + (((int)c)&0xff) + ")"; 
+   public Instruction_Unknown(byte c) {
+      super(c);
+      name = "unknown instruction (" + (((int)c)&0xff) + ")";
    }
 }

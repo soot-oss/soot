@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,18 +77,18 @@ import ca.mcgill.sable.util.*;
 public class ThisRef implements IdentityRef
 {
     SootClass SootClass;
-    
+
     ThisRef(SootClass SootClass)
     {
         this.SootClass = SootClass;
     }
-    
+
     public String toString()
     {
         return "@this";
     }
-    
-    public List getUseBoxes() 
+
+    public List getUseBoxes()
     {
         return Stmt.emptyList;
     }
@@ -97,8 +96,8 @@ public class ThisRef implements IdentityRef
     public Type getType()
     {
         return RefType.v(SootClass.getName());
-    }    
-    
+    }
+
     public void apply(Switch sw)
     {
         ((RefSwitch) sw).caseThisRef(this);

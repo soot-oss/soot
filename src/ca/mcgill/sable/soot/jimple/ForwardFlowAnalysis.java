@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,94 +68,94 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public abstract class ForwardFlowAnalysis extends FlowAnalysis 
-{   
+public abstract class ForwardFlowAnalysis extends FlowAnalysis
+{
     public ForwardFlowAnalysis(StmtGraph graph)
     {
         super(graph);
     }
-    
+
     protected boolean isForward()
     {
         return true;
     }
-    
+
     protected void doAnalysis()
     {
         LinkedList changedStmts = new LinkedList();
         // HashSet changedStmtsSet = new HashSet();
-             
+
         // Set initial values and nodes to visit.
         {
             Iterator it = graph.iterator();
             Flow initialFlow = getInitialFlow();
-            
+
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
 
                 changedStmts.addLast(s);
                 // changedStmtsSet.add(s);
-                        
+
                 stmtToBeforeFlow.put(s, initialFlow.clone());
                 stmtToAfterFlow.put(s, initialFlow.clone());
             }
         }
-        
-        // Perform fixed point flow analysis    
+
+        // Perform fixed point flow analysis
         {
             Flow previousAfterFlow = (Flow) getInitialFlow().clone();
-            
+
             while(!changedStmts.isEmpty())
             {
                 Flow beforeFlow;
                 Flow afterFlow;
-                
+
                 Stmt s = (Stmt) changedStmts.removeFirst();
-                
+
                 // changedStmtsSet.remove(s);
 
                 ((Flow) stmtToAfterFlow.get(s)).copy(previousAfterFlow);
-                
+
                 // Compute and store beforeFlow
                 {
                     List preds = graph.getPredsOf(s);
-                    
+
                     beforeFlow = (Flow) stmtToBeforeFlow.get(s);
-                    
+
                     if(preds.size() == 1)
                         ((Flow) stmtToAfterFlow.get(preds.get(0))).copy(beforeFlow);
                     else if(preds.size() != 0)
                     {
                         Iterator predIt = preds.iterator();
-                        
+
                         ((Flow) stmtToAfterFlow.get(predIt.next())).copy(beforeFlow);
-                            
+
                         while(predIt.hasNext())
                         {
-                            Flow otherBranch = (Flow) stmtToAfterFlow.get(predIt.next());  
+                            Flow otherBranch = (Flow) stmtToAfterFlow.get(predIt.next());
                             merge(beforeFlow, otherBranch, beforeFlow);
-                        } 
+                        }
                     }
                 }
-                
+
                 // Compute afterFlow and store it.
                 {
                     afterFlow = (Flow) stmtToAfterFlow.get(s);
                     flowThrough(beforeFlow, s, afterFlow);
                 }
-                
+
                 // Update queue appropriately
                     if(!afterFlow.equals(previousAfterFlow))
                     {
                         Iterator succIt = graph.getSuccsOf(s).iterator();
-                        
+
                         while(succIt.hasNext())
                         {
                             // if(!changedStmts.contains(succs[i]))
@@ -165,7 +164,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                     }
             }
         }
-    }    
+    }
 }
 
 

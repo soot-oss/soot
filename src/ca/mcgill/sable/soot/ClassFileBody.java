@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -76,8 +75,8 @@ import java.io.*;
 
 public class ClassFileBody implements Body
 {
-    SootMethod method; 
-    
+    SootMethod method;
+
     public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
@@ -87,16 +86,16 @@ public class ClassFileBody implements Body
         this.coffiClass = method.coffiClass;
         this.coffiMethod = method.coffiMethod;
     }
-    
+
     public SootMethod getMethod()
     {
         return method;
     }
-    
+
     public void printTo(PrintWriter out)
     {
     }
-    
+
     public void printTo(PrintWriter out, int printBodyOptions)
     {
     }

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,24 +68,24 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class StaticInvokeExpr extends InvokeExpr
-{    
+{
     StaticInvokeExpr(SootMethod method, List args)
     {
         this.method = method;
-        
+
         this.argBoxes = new ValueBox[args.size()];
-        
+
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
@@ -97,36 +96,36 @@ public class StaticInvokeExpr extends InvokeExpr
         {
             if(i != 0)
                 buffer.append(", ");
-                
+
             buffer.append(argBoxes[i].getValue().toString());
         }
-            
+
         buffer.append(")");
-        
+
         return buffer.toString();
     }
-   
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-            
+
         for(int i = 0; i < argBoxes.length; i++)
             list.add(argBoxes[i]);
-    
+
         // Add the boxes within the boxes
-        {        
+        {
             for(int i = 0; i < argBoxes.length; i++)
                 list.addAll(argBoxes[i].getValue().getUseBoxes());
         }
-        
+
         return list;
-    }    
-    
+    }
+
     public Type getType()
     {
         return method.getReturnType();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseStaticInvokeExpr(this);

@@ -34,7 +34,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -73,7 +73,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -118,40 +117,40 @@ import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
 
 class FutureStmt extends ca.mcgill.sable.soot.jimple.Stmt
-{   
+{
     public Object object;
-    
+
     List myEmptyList = Collections.unmodifiableList(new ArrayList());
-    
+
     public FutureStmt(Object object)
     {
         this.object = object;
     }
-    
+
     public FutureStmt()
     {
     }
-    
+
     public String toString()
     {
         return "<futureStmt>";
     }
-    
+
     public List getDefBoxes()
     {
         return myEmptyList;
     }
-    
+
     public List getUseBoxes()
     {
         return myEmptyList;
     }
-    
+
     public List getUnitBoxes()
     {
         return myEmptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((ca.mcgill.sable.soot.jimple.StmtSwitch) sw).defaultCase(this);

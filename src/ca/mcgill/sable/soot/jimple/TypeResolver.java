@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
- 
+
  - Modified on October 14, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Implemented fast typing algorithm for arrays.
 
@@ -81,7 +80,7 @@
 
  - Modified on 2-Sep-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Applied Etienne's patch.
-    
+
  - Modified on July 29, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Initial version.
 
@@ -97,10 +96,10 @@ import java.util.*;
 /**
  * This class resolves the type of local variables.
  **/
-class TypeResolver 
+class TypeResolver
 {
     private static final boolean DEBUG = false;
-    
+
     /** Reference to the class hierarchy **/
     ClassHierarchy classHierarchy;
 
@@ -110,7 +109,7 @@ class TypeResolver
     static String lastClass;
     /** All type variable instances **/
     Vector typeVariableInstances = new Vector();
-    
+
     /** Hashtable: [TypeNode or Local] -> TypeVariable **/
     private Hashtable typeVariableHashtable = new Hashtable();
 
@@ -125,20 +124,20 @@ class TypeResolver
 
     /** Indicates that a new relation due to merging isArrayOf has be added **/
     boolean new_relation;
-    
-    /** This constructor triggers the type resolution of 
+
+    /** This constructor triggers the type resolution of
         local variables of the given statement list body. **/
     private TypeResolver(JimpleBody stmtBody)
     {
         try {
-        
+
         currentMethod = stmtBody.getMethod();
         if(!currentMethod.getDeclaringClass().getName().equals(lastClass))
         {
             // System.out.println();
             lastClass = currentMethod.getDeclaringClass().getName();
         }
-        
+
         classHierarchy = ClassHierarchy.getClassHierarchy(
             currentMethod.getDeclaringClass().getManager());
 
@@ -147,9 +146,9 @@ class TypeResolver
             System.out.println();
             System.out.println("****" + currentMethod.getName());
         }
-        
-        System.gc();
-        long st = System.currentTimeMillis();
+
+//        System.gc();
+//        long st = System.currentTimeMillis();
 
         // Collect constraints
         for(Iterator i = stmtBody.getStmtList().iterator(); i.hasNext();)
@@ -166,15 +165,15 @@ class TypeResolver
         getTypeVariable(RefType.v("java.lang.Cloneable"));
         getTypeVariable(NullType.v());
 
-        long en = System.currentTimeMillis();
+//        long en = System.currentTimeMillis();
 
-        {
+/*        {
             int edges = 0, nodes = 0, unresolved = 0;
-            
+
 //            System.out.println();
 //            System.out.print(currentMethod.getDeclaringClass().getName() + "." + currentMethod.getName() + ":");
 //            System.out.print("\t" + stmtBody.getStmtList().size());
-            
+
             for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
             {
                 TypeVariable var = (TypeVariable) e.nextElement();
@@ -186,18 +185,18 @@ class TypeResolver
                 }
             }
             // System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
-        }
-        
-        System.gc();
-/**/    long start = System.currentTimeMillis();
-  
+        } */
+
+//        System.gc();
+//    long start = System.currentTimeMillis();
+
         // Collapse basic types
         mergeAll(getTypeVariable(IntType.v()));
         mergeAll(getTypeVariable(LongType.v()));
         mergeAll(getTypeVariable(FloatType.v()));
         mergeAll(getTypeVariable(DoubleType.v()));
         mergeAll(getTypeVariable(StmtAddressType.v()));
-        
+
         // Collapse connected components
         do
         {
@@ -206,7 +205,7 @@ class TypeResolver
         }
         while(new_relation == true);
 //        collapseStronglyConnectedComponents();
-        
+
 /*        if(currentMethod.getName().equals("decapitalize"))
         {
         System.out.println();
@@ -217,7 +216,7 @@ class TypeResolver
             if(var == var.ecr())
             {
             System.out.println(
-                var.getEcrId() + ": count=" + var.count + " parents=" + var.parents + " children=" + var.children + 
+                var.getEcrId() + ": count=" + var.count + " parents=" + var.parents + " children=" + var.children +
                 " isArrayOf=" + ((var.isArrayOf == null) ? "" : ("" + var.isArrayOf.getEcrId())) + " isElementOf=" + var.isElementOf +
                 " type=" + ((var.getEcrTypeNode() == null) ? "" : ("" + var.getEcrTypeNode().getType())) + " arrayDepth=" + var.arrayDepth
             );
@@ -227,7 +226,7 @@ class TypeResolver
 
         // Propagate array constraints
         propagateArrayConstraints();
-                
+
         addRelationsBetweenHardNodes();
 //        removeRelationsBetweenNonEcrs();
 
@@ -242,50 +241,50 @@ class TypeResolver
         collapseStronglyConnectedComponents();
 
 
-        {
+/*        {
             int edges = 0, nodes = 0, unresolved = 0;
-            
+
             for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
             {
                 TypeVariable var = (TypeVariable) e.nextElement();
-                
+
                 if((var != var.ecr()) || (var.arrayDepth != 0))
                 {
                     continue;
                 }
-                
+
                 nodes++;
                 edges += var.parents.elementCount();
-                
+
                 if(var.getEcrTypeNode() == null)
                 {
                     unresolved++;
                 }
             }
 //            System.out.print("\t" + nodes + "\t" + unresolved + "\t" + (nodes - unresolved) + "\t" + edges);
-        }
+        } */
 
-/**/    {
-/**/    int count = 0;
-           
+//    {
+//    int count = 0;
+
         // Main algorithm
         if(unresolvedTypeVariables.size() != 0)
         {
             resolveSingleRelations();
-            count++;
+//            count++;
         }
-        
+
         boolean modified = true;
         while((unresolvedTypeVariables.size() != 0) && modified)
         {
             removeIndirectRelations();
             modified = resolveSingleRelations();
-/**/        count++;
+//        count++;
         }
 
 /*      System.out.print("\t" + count); */
-/**/    }
-       
+//    }
+
 
         // NP-Complete hard case!
         if(unresolvedTypeVariables.size() != 0)
@@ -306,16 +305,16 @@ class TypeResolver
         {
 /*          System.out.print("\t0\t0"); */
         }
-        
 
-/**/    long end = System.currentTimeMillis();
+
+//    long end = System.currentTimeMillis();
 /*      System.out.print("\t" + (end - start)); */
 /*      System.out.print("\t" + (en - st)); */
         } catch(TypeException e)
         {
 ///**/        System.out.print(" error=1");
         }
-        
+
 /*      System.out.println(); */
 
         for(Iterator i = stmtBody.getLocals().iterator(); i.hasNext(); )
@@ -323,7 +322,7 @@ class TypeResolver
             Local local = (Local) i.next();
 
             TypeVariable var = getTypeVariable(local).ecr();
-            if(var == null) 
+            if(var == null)
             {
                 local.setType(UnknownType.v());
             }
@@ -356,7 +355,7 @@ class TypeResolver
                 else
                 {
                     local.setType(ArrayType.v(
-                        (BaseType) var.base.getEcrTypeNode().getType(), 
+                        (BaseType) var.base.getEcrTypeNode().getType(),
                         var.arrayDepth));
                 }
             }
@@ -397,7 +396,7 @@ class TypeResolver
         while(workList.size() > 0)
         {
             TypeVariable var = (TypeVariable) workList.removeFirst();
-            
+
             TypeVariable[] elements = new TypeVariable[workList.size()];
             workList.toArray(elements);
 
@@ -469,7 +468,7 @@ class TypeResolver
     {
         new SCC(typeVariableInstances);
     }
-    
+
     /** Merge the given type variable with all its ancestors and descentants. **/
     private void mergeAll(TypeVariable var)
     {
@@ -532,7 +531,7 @@ class TypeResolver
             }
         }
     }
-    
+
     private void propagateConstrains()
     {
         for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
@@ -563,7 +562,7 @@ class TypeResolver
                         int[] elements = tv.isElementOf.elements();
                         for(int i = 0; i < elements.length; i++)
                         {
-                            TypeVariable array = 
+                            TypeVariable array =
                                 ((TypeVariable) typeVariableInstances.
                                 elementAt(elements[i])).ecr();
                             array.base = var.base;
@@ -583,7 +582,7 @@ class TypeResolver
                 int[] elements = var.parents.elements();
                 for(int i = 0; i < elements.length; i++)
                 {
-                    TypeVariable parent = 
+                    TypeVariable parent =
                         (TypeVariable) typeVariableInstances.elementAt(elements[i]);
 
                     if(parent.arrayDepth == var.arrayDepth)
@@ -604,14 +603,14 @@ class TypeResolver
             }
         }
     }
-    
+
     private void computeArrayDepths()
     {
         LinkedList workList = new LinkedList();
         LinkedList workList2 = new LinkedList();
 
         int counter = 0;
-                
+
         for(Enumeration e = typeVariableInstances.elements(); e.hasMoreElements();)
         {
             TypeVariable var = (TypeVariable) e.nextElement();
@@ -620,13 +619,13 @@ class TypeResolver
             {
                 counter++;
                 var.count = var.parents.elementCount();
-                
+
                 if((var.isArrayOf != null) &&
                     (!var.parents.get(var.isArrayOf.getEcrId())))
                 {
                    var.count++;
                 }
-                
+
                 if(var.count == 0)
                 {
                     var.arrayDepth = 0;
@@ -634,15 +633,15 @@ class TypeResolver
                 }
             }
         }
-        
+
         while(workList.size() > 0)
         {
             TypeVariable var = (TypeVariable) workList.removeFirst();
-            
+
             int[] elements = var.children.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable child = 
+                TypeVariable child =
                     (TypeVariable) typeVariableInstances.elementAt(elements[i]);
                 child.arrayDepth = Math.max(child.arrayDepth, var.arrayDepth);
                 if(--child.count == 0)
@@ -650,11 +649,11 @@ class TypeResolver
                     workList.add(child);
                 }
             }
-            
+
             elements = var.isElementOf.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable array = 
+                TypeVariable array =
                     ((TypeVariable) typeVariableInstances.
                     elementAt(elements[i])).ecr();
 
@@ -679,16 +678,16 @@ class TypeResolver
             {
             /*
             System.out.println(
-                var.getEcrId() + ": count=" + var.count + " parents=" + var.parents + " children=" + var.children + 
+                var.getEcrId() + ": count=" + var.count + " parents=" + var.parents + " children=" + var.children +
                 " isArrayOf=" + ((var.isArrayOf == null) ? "" : ("" + var.isArrayOf.getEcrId())) + " isElementOf=" + var.isElementOf +
                 " type=" + ((var.getEcrTypeNode() == null) ? "" : ("" + var.getEcrTypeNode().getType()))
             );
             */
-            
+
             }
         }
         }
-                
+
         while(workList2.size() > 0)
         {
             TypeVariable var = (TypeVariable) workList2.removeFirst();
@@ -699,13 +698,13 @@ class TypeResolver
             {
                 var.arrayDepth = var.isArrayOf.ecr().arrayDepth + 1;
             }
-            
+
             int[] elements = var.isElementOf.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable array = 
+                TypeVariable array =
                     ((TypeVariable) typeVariableInstances.elementAt(elements[i])).ecr();
-                
+
                 if(var.arrayDepth < array.arrayDepth - 1)
                 {
                     var.arrayDepth = array.arrayDepth - 1;
@@ -715,15 +714,15 @@ class TypeResolver
             elements = var.parents.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable parent = 
+                TypeVariable parent =
                     ((TypeVariable) typeVariableInstances.elementAt(elements[i])).ecr();
-                
+
                 if(var.arrayDepth < parent.arrayDepth)
                 {
                     var.arrayDepth = parent.arrayDepth;
                 }
             }
-            
+
             if((var.isArrayOf != null) &&
                 (var.arrayDepth > var.isArrayOf.ecr().arrayDepth + 1))
             {
@@ -734,13 +733,13 @@ class TypeResolver
                     workList2.add(var.isArrayOf.ecr());
                 }
             }
-            
+
             elements = var.isElementOf.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable array = 
+                TypeVariable array =
                     ((TypeVariable) typeVariableInstances.elementAt(elements[i])).ecr();
-                
+
                 if(var.arrayDepth > array.arrayDepth - 1)
                 {
                     array.arrayDepth = var.arrayDepth + 1;
@@ -751,13 +750,13 @@ class TypeResolver
                     }
                 }
             }
-            
+
             elements = var.children.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable child = 
+                TypeVariable child =
                     (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-                
+
                 if(var.arrayDepth > child.arrayDepth)
                 {
                     child.arrayDepth = var.arrayDepth;
@@ -768,9 +767,9 @@ class TypeResolver
                     }
                 }
             }
-        }        
+        }
     }
-    
+
     /** Resolve single relations.
         <P> <UL> <LI> No Parent -> "java.lang.Object"
         <LI> No Child -> "*null*"
@@ -785,7 +784,7 @@ class TypeResolver
         for(int i = 0; i < elements.length; i++)
         {
             TypeVariable var = (TypeVariable) typeVariableInstances.elementAt(elements[i]);
-            
+
             if(var.getEcrTypeNode() == null)
             {
                 TypeVariable[] parents = var.getEcrParents();
@@ -837,7 +836,7 @@ class TypeResolver
 
             var.removeEcrIndirectRelations();
             processed.set(var.getEcrId());
-            
+
             TypeVariable[] children = var.getEcrChildren();
             for(int i = 0; i < children.length; i++)
             {
@@ -850,7 +849,7 @@ class TypeResolver
             }
         }
     }
-    
+
     /** Do the exponential search of a solution. This is an NP-Complete problem. **/
     private boolean resolveComplexRelations()
     {
@@ -858,7 +857,7 @@ class TypeResolver
         {
             return true;
         }
-        
+
         final TypeVariable[] ecrInstances;
         {
             Vector ecrs = new Vector();
@@ -927,11 +926,11 @@ class TypeResolver
                 elements[index++] = ((TypeVariable) i.next()).getEcrId();
             }
         }
-        
+
         class RecursiveFunction
         {
             int index = 0;
-            
+
             public boolean resolve()
             {
                 if(index == elements.length)
@@ -939,9 +938,9 @@ class TypeResolver
                     return true;
                 }
 
-                TypeVariable var = 
+                TypeVariable var =
                     (TypeVariable) typeVariableInstances.elementAt(elements[index++]);
-                
+
                 for(int i = 0; i < ecrInstances.length; i++)
                 {
                     if(var.setEcrTypeNode(ecrInstances[i].getEcrTypeNode()))
@@ -954,11 +953,11 @@ class TypeResolver
                     }
                 }
                 index--;
-                
+
                 return false;
             }
         }
-        
+
         return new RecursiveFunction().resolve();
     }
 
@@ -979,7 +978,7 @@ class TypeResolver
         private boolean cannotBeDouble;
         private boolean cannotBeAddress;
         private boolean cannotBeRef;
-        
+
         TypeVariable isArrayOf;
         IntSet isElementOf = new IntSet();
         int arrayDepth;
@@ -1021,7 +1020,7 @@ class TypeResolver
                 {
                     new_relation = true;
                     getTypeVariable(
-                        ArrayType.v(type.baseType, 
+                        ArrayType.v(type.baseType,
                         type.numDimensions - 1)).ecrUnion(
                         getEcrIsArrayOf());
                 }
@@ -1047,7 +1046,7 @@ class TypeResolver
         TypeVariable ecrUnion(TypeVariable var)
         {
             new_relation = true;
-            
+
             TypeVariable x = ecr();
             TypeVariable y = var.ecr();
 
@@ -1106,7 +1105,7 @@ class TypeResolver
 
             // Merge isElementOf & isArrayOf
             isElementOf.or(var.isElementOf);
-            
+
             if(isArrayOf == null)
             {
                 if(var.isArrayOf != null)
@@ -1130,7 +1129,7 @@ class TypeResolver
             int[] elements = var.parents.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable parent = 
+                TypeVariable parent =
                     (TypeVariable) typeVariableInstances.elementAt(elements[i]);
                 parent.children.clear(var.id);
                 parent.children.set(id);
@@ -1141,7 +1140,7 @@ class TypeResolver
             elements = var.children.elements();
             for(int i = 0; i < elements.length; i++)
             {
-                TypeVariable child = 
+                TypeVariable child =
                     (TypeVariable) typeVariableInstances.elementAt(elements[i]);
                 child.parents.clear(var.id);
                 child.parents.set(id);
@@ -1184,7 +1183,7 @@ class TypeResolver
                     error("Type Error(6): Should not be a StmtAddressType.");
                 }
 
-                if(cannotBeRef && 
+                if(cannotBeRef &&
                     ((typeNode.getType() instanceof RefType) ||
                     (typeNode.getType() instanceof ArrayType)))
                 {
@@ -1195,13 +1194,13 @@ class TypeResolver
                 elements = parents.elements();
                 for(int i = 0; i < elements.length; i++)
                 {
-                    TypeVariable parent = 
+                    TypeVariable parent =
                         (TypeVariable) typeVariableInstances.elementAt(elements[i]);
                     if(parent.typeNode != null)
                     {
                         if(!typeNode.hasAncestor(parent.typeNode))
                         {
-                            parent.typeNode = typeNode = 
+                            parent.typeNode = typeNode =
                                 classHierarchy.getTypeNode(ErroneousType.v());
                             error("Type Error(8): Parent type is not a valid ancestor.");
                         }
@@ -1211,20 +1210,20 @@ class TypeResolver
                 elements = children.elements();
                 for(int i = 0; i < elements.length; i++)
                 {
-                    TypeVariable child = 
+                    TypeVariable child =
                         (TypeVariable) typeVariableInstances.elementAt(elements[i]);
                     if(child.typeNode != null)
                     {
                         if(!typeNode.hasDescendant(child.typeNode))
                         {
-                            child.typeNode = typeNode = 
+                            child.typeNode = typeNode =
                                 classHierarchy.getTypeNode(ErroneousType.v());
                             error("Type Error(9): Child type is not a valid descendant.");
                         }
                     }
                 }
             }
-            
+
             var.parents = new IntSet();
             var.children = new IntSet();
             var.isElementOf = new IntSet();
@@ -1261,10 +1260,10 @@ class TypeResolver
             {
                 if(DEBUG)
                 {
-                    System.out.println(typeVariableStringHashtable.get(variable.ecr()) + " < " + 
+                    System.out.println(typeVariableStringHashtable.get(variable.ecr()) + " < " +
                         typeVariableStringHashtable.get(ecr()));
                 }
-                
+
                 ecr().parents.set(variable.ecr().id);
                 variable.ecr().children.set(ecr().id);
             }
@@ -1279,7 +1278,7 @@ class TypeResolver
                     System.out.println(typeVariableStringHashtable.get(ecr()) + " < " +
                         typeVariableStringHashtable.get(variable.ecr()));
                 }
-                
+
                 ecr().children.set(variable.ecr().id);
                 variable.ecr().parents.set(ecr().id);
             }
@@ -1329,7 +1328,7 @@ class TypeResolver
         {
             return ecr().arrayDepth;
         }
-        
+
         TypeVariable getEcrIsArrayOf()
         {
             TypeVariable x = ecr();
@@ -1380,7 +1379,7 @@ class TypeResolver
         {
             return ecr().typeNode;
         }
-        
+
         boolean setEcrTypeNode(ClassHierarchy.TypeNode typeNode)
         {
             TypeVariable[] elements = getEcrParents();
@@ -1408,7 +1407,7 @@ class TypeResolver
                     }
                 }
             }
-            
+
             if(isEcrArray())
             {
                 if(!(typeNode.getType() instanceof ArrayType))
@@ -1433,7 +1432,7 @@ class TypeResolver
             ecr().typeNode = typeNode;
             return true;
         }
-        
+
         void unsetEcrTypeNode()
         {
            ecr().typeNode = null;
@@ -1569,7 +1568,7 @@ class TypeResolver
         {
             handleInvokeExpr((InvokeExpr) stmt.getInvokeExpr());
         }
-    
+
         public void caseAssignStmt(AssignStmt stmt)
         {
             Value l = stmt.getLeftOp();
@@ -1588,7 +1587,7 @@ class TypeResolver
 
                 TypeVariable baseType = getTypeVariable((Local) base);
                 left = baseType.getEcrIsArrayOf();
-                
+
                 if(index instanceof Local)
                 {
                     getTypeVariable((Local) index).ecrCannotBeLong();
@@ -1620,7 +1619,7 @@ class TypeResolver
             {
                 throw new RuntimeException("Unhandled variable type: " + l.getClass());
             }
-            
+
             if(r instanceof ArrayRef)
             {
                 ArrayRef ref = (ArrayRef) r;
@@ -1629,7 +1628,7 @@ class TypeResolver
 
                 TypeVariable baseType = getTypeVariable((Local) base);
                 right = baseType.getEcrIsArrayOf();
-                
+
                 if(index instanceof Local)
                 {
                     getTypeVariable((Local) index).ecrCannotBeLong();
@@ -2058,7 +2057,7 @@ class TypeResolver
                 NewArrayExpr nae = (NewArrayExpr) r;
 
                 Type baseType = nae.getBaseType();
-                
+
                 if(baseType instanceof ArrayType)
                 {
                     right = getTypeVariable(ArrayType.v(((ArrayType) baseType).
@@ -2172,7 +2171,7 @@ class TypeResolver
 
             right.ecrAddParent(left);
         }
-    
+
         public void caseIdentityStmt(IdentityStmt stmt)
         {
             Value l = stmt.getLeftOp();
@@ -2181,7 +2180,7 @@ class TypeResolver
             if(l instanceof Local)
             {
                 TypeVariable left = getTypeVariable((Local) l);
-                
+
                 if(!(r instanceof CaughtExceptionRef))
                 {
                     TypeVariable right = getTypeVariable(r.getType());
@@ -2193,7 +2192,7 @@ class TypeResolver
                 }
             }
         }
-    
+
         public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
         {
             if(stmt.getOp() instanceof Local)
@@ -2203,7 +2202,7 @@ class TypeResolver
                 op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Object")));
             }
         }
-    
+
         public void caseExitMonitorStmt(ExitMonitorStmt stmt)
         {
             if(stmt.getOp() instanceof Local)
@@ -2213,11 +2212,11 @@ class TypeResolver
                 op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Object")));
             }
         }
-    
+
         public void caseGotoStmt(GotoStmt stmt)
         {
         }
-    
+
         public void caseIfStmt(IfStmt stmt)
         {
             ConditionExpr cond = (ConditionExpr) stmt.getCondition();
@@ -2276,7 +2275,7 @@ class TypeResolver
                 }
             }
         }
-    
+
         public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
         {
             Value key = stmt.getKey();
@@ -2290,17 +2289,17 @@ class TypeResolver
                 getTypeVariable((Local) key).ecrCannotBeRef();
             }
         }
-    
+
         public void caseNopStmt(NopStmt stmt)
         {
         }
-    
+
         public void caseRetStmt(RetStmt stmt)
         {
             getTypeVariable((Local) stmt.getStmtAddress()).
                 ecrAddParent(getTypeVariable(StmtAddressType.v()));
         }
-    
+
         public void caseReturnStmt(ReturnStmt stmt)
         {
             if(stmt.getReturnValue() instanceof Local)
@@ -2313,7 +2312,7 @@ class TypeResolver
         public void caseReturnVoidStmt(ReturnVoidStmt stmt)
         {
         }
-    
+
         public void caseTableSwitchStmt(TableSwitchStmt stmt)
         {
             Value key = stmt.getKey();
@@ -2327,7 +2326,7 @@ class TypeResolver
                 getTypeVariable((Local) key).ecrCannotBeRef();
             }
         }
-    
+
         public void caseThrowStmt(ThrowStmt stmt)
         {
             if(stmt.getOp() instanceof Local)
@@ -2337,7 +2336,7 @@ class TypeResolver
                 op.ecrAddParent(getTypeVariable(RefType.v("java.lang.Throwable")));
             }
         }
-    
+
         public void defaultCase(Stmt stmt)
         {
             throw new RuntimeException("Unhandled statement type: " + stmt.getClass());
@@ -2388,7 +2387,7 @@ class TypeResolver
                 {
                     continue;
                 }
-                
+
                 if((finished[i] == finished[i].ecr()) &&
                     (finished[i].arrayDepth == 0))
                 {
@@ -2459,18 +2458,18 @@ class TypeResolver
             }
         }
     }
-    
+
     private static class TypeException extends RuntimeException
     {
     }
-    
+
     private static void error(String message)
     {
         if(DEBUG)
         {
           System.out.println(message);
         }
-        
+
         throw new TypeException();
     }
 }

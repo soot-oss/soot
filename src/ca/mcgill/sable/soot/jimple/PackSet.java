@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.util.*;
@@ -79,140 +78,140 @@ public class PackSet implements FlowSet
     public static PackSet v(FlowUniverse universe)
     {
         int size = universe.getSize();
-        
+
         int numWords = size / 32 + (((size % 32) != 0) ? 1 : 0);
 
         return new ArrayPackSet(universe, new int[numWords]);
     }
-    
+
     public PackSet()
     {
     }
-    
+
     public Object clone()
     {
         return null;
     }
-    
+
     public void copy(Flow dest)
     {
     }
-    
+
     public int size()
     {
         return 0;
     }
-    
+
     public boolean isEmpty()
     {
         return false;
     }
-    
+
     public List toList()
     {
         return null;
     }
-    
+
     public List toList(int low, int high)
     {
         return null;
     }
-    
+
     public void add(Object obj, FlowSet dest)
     {
     }
-    
+
     public void remove(Object obj, FlowSet dest)
     {
     }
-    
+
     public void union(FlowSet other, FlowSet dest)
     {
     }
     public void intersection(FlowSet other, FlowSet dest)
     {
     }
-    
+
     public void complement(FlowSet dest)
     {
     }
-    
+
     public boolean contains(Object obj)
     {
         return false;
     }
-    
+
 }
 
 class ArrayPackSet extends PackSet
 {
     FlowUniverse map;
     int[] bits;
-    
+
     ArrayPackSet(FlowUniverse map, int[] bits)
     {
         this.map = map;
         this.bits = (int[]) bits.clone();
     }
-    
+
     public Object clone()
     {
         return new ArrayPackSet(map, bits);
     }
-    
+
     public int size()
     {
         int count = 0;
-        
+
         for(int i = 0; i < bits.length; i++)
         {
             int word = bits[i];
-            
+
             for(int j = 0; j < 32; j++)
                 if((word & (1 << j)) != 0)
                     count++;
         }
-        
+
         return count;
     }
-    
+
     public boolean isEmpty()
     {
         for(int i = 0; i < bits.length; i++)
             if(bits[i] != 0)
                 return false;
-        
+
         return true;
     }
-    
+
 
     public List toList(int low, int high)
     {
         List elements = new ArrayList();
-        
-        int startWord = low / 32, 
+
+        int startWord = low / 32,
             startBit = low % 32;
-            
+
         int endWord = high / 32,
             endBit = high % 32;
-        
+
         if(low > high)
             return elements;
-            
+
         // Do the first word
         {
             int word = bits[startWord];
-            
+
             int offset = startWord * 32;
             int lastBit = (startWord != endWord) ? 32 : (endBit + 1);
-            
+
             for(int j = startBit; j < lastBit; j++)
             {
                 if((word & (1 << j)) != 0)
                     elements.add(map.getObjectOf(offset + j));
             }
         }
-      
+
         // Do the in between ones
             if(startWord != endWord && startWord + 1 != endWord)
             {
@@ -220,152 +219,152 @@ class ArrayPackSet extends PackSet
                 {
                     int word = bits[i];
                     int offset = i * 32;
-            
+
                     for(int j = 0; j < 32; j++)
                     {
                         if((word & (1 << j)) != 0)
                             elements.add(map.getObjectOf(offset + j));
                     }
                 }
-            }   
-            
+            }
+
         // Do the last one
             if(startWord != endWord)
             {
                 int word = bits[endWord];
                 int offset = endWord * 32;
                 int lastBit = endBit + 1;
-                
+
                 for(int j = 0; j < lastBit; j++)
                 {
                     if((word & (1 << j)) != 0)
-                        elements.add(map.getObjectOf(offset + j)); 
+                        elements.add(map.getObjectOf(offset + j));
                 }
             }
-        
+
         return elements;
     }
 
-    
+
     public List toList()
     {
         List elements = new ArrayList();
-        
+
         for(int i = 0; i < bits.length; i++)
         {
             int word = bits[i];
             int offset = i * 32;
-            
+
             for(int j = 0; j < 32; j++)
                 if((word & (1 << j)) != 0)
                     elements.add(map.getObjectOf(offset + j));
         }
-        
+
         return elements;
     }
-        
+
     public void add(Object obj, FlowSet destFlow)
     {
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-        
+
         if(this != dest)
             copy(dest);
-            
+
         int bitNum = map.getIndexOf(obj);
-        
+
         dest.bits[bitNum / 32] |= 1 << (bitNum % 32);
     }
-    
+
     public void complement(FlowSet destFlow)
-    {   
+    {
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-             
+
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = ~(this.bits[i]);
     }
-    
+
     public void remove(Object obj, FlowSet destFlow)
     {
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-        
+
         if(this != dest)
             copy(dest);
-        
+
         int bitNum = map.getIndexOf(obj);
-        
+
         dest.bits[bitNum / 32] &= ~(1 << (bitNum % 32));
     }
-    
+
     public void union(FlowSet otherFlow, FlowSet destFlow)
     {
         ArrayPackSet other = (ArrayPackSet) otherFlow;
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-            
+
         if(!(other instanceof ArrayPackSet) || bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
-            
+
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] | other.bits[i];
     }
-    
+
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
         ArrayPackSet other = (ArrayPackSet) otherFlow;
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-            
+
         if(!(other instanceof ArrayPackSet) || bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
-            
+
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] & other.bits[i];
     }
-    
+
     public boolean contains(Object obj)
     {
         int bitNum = map.getIndexOf(obj);
-        
+
         return (bits[bitNum / 32] & (1 << (bitNum % 32))) != 0;
     }
-    
+
     public boolean equals(Object otherFlow)
     {
         ArrayPackSet other = (ArrayPackSet) otherFlow;
-                            
+
         for(int i = 0; i < bits.length; i++)
             if(this.bits[i] != other.bits[i])
                 return false;
-        
+
         return true;
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer("{");
         Iterator it = toList().iterator();
-        
+
         buffer.append("{");
-        
+
         if(it.hasNext())
         {
             buffer.append(it.next());
-            
+
             while(it.hasNext())
             {
                 buffer.append(", " + it.next());
             }
         }
-        
+
         buffer.append("}");
-        
+
         return buffer.toString();
     }
-    
+
     public void copy(Flow destFlow)
     {
         ArrayPackSet dest = (ArrayPackSet) destFlow;
-        
+
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i];
     }
-    
+
 }

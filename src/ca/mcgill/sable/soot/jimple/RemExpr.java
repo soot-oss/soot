@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,31 +68,31 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class RemExpr extends BinopExpr 
+public class RemExpr extends BinopExpr
 {
     RemExpr(Value op1, Value op2)
     {
         op1Box = Jimple.v().newImmediateBox(op1);
         op2Box = Jimple.v().newImmediateBox(op2);
     }
-    
+
     public String toString()
     {
         return op1Box.getValue().toString() + " % " + op2Box.getValue().toString();
     }
-    
-    
+
+
     public Type getType()
     {
         Value op1 = op1Box.getValue();
         Value op2 = op1Box.getValue();
-        
+
         if(op1.getType().equals(IntType.v()) || op2.getType().equals(IntType.v()))
             return IntType.v();
         else if(op1.getType().equals(LongType.v()) || op2.getType().equals(LongType.v()))
@@ -105,7 +104,7 @@ public class RemExpr extends BinopExpr
         else
             return UnknownType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseRemExpr(this);

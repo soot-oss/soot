@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -82,37 +81,37 @@ public abstract class AbstractRefSwitch implements RefSwitch
     {
         defaultCase(v);
     }
-    
+
     public void caseStaticFieldRef(StaticFieldRef v)
     {
         defaultCase(v);
     }
-    
+
     public void caseInstanceFieldRef(InstanceFieldRef v)
     {
         defaultCase(v);
     }
-    
+
     public void caseParameterRef(ParameterRef v)
     {
         defaultCase(v);
     }
-    
+
     public void caseNextNextStmtRef(NextNextStmtRef v)
     {
         defaultCase(v);
     }
-    
+
     public void caseCaughtExceptionRef(CaughtExceptionRef v)
     {
         defaultCase(v);
     }
-    
+
     public void caseThisRef(ThisRef v)
     {
         defaultCase(v);
     }
-    
+
     public void defaultCase(Object obj)
     {
     }

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -81,63 +80,63 @@ import ca.mcgill.sable.util.*;
 public class SimpleLocalUses implements LocalUses
 {
     Map stmtToUses;
-    
+
     public SimpleLocalUses(CompleteStmtGraph graph, LocalDefs localDefs)
     {
         Map stmtToUseList = new HashMap(graph.size() * 2 + 1, 0.7f);
-        
+
         // Initialize this map to empty sets
         {
             Iterator it = graph.iterator();
-            
+
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
-                
+
                 stmtToUseList.put(s, new ArrayList());
             }
         }
-        
+
         // Traverse stmts and associate uses with definitions
         {
             Iterator it = graph.iterator();
-                        
+
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
-                
+
                 Iterator boxIt = s.getUseBoxes().iterator();
-                
+
                 while(boxIt.hasNext())
                 {
                     ValueBox useBox = (ValueBox) boxIt.next();
-                    
+
                     if(useBox.getValue() instanceof Local)
                     {
                         // Add this statement to the uses of the definition of the local
-                        
+
                         Local l = (Local) useBox.getValue();
-                        
+
                         List possibleDefs = localDefs.getDefsOfAt(l, s);
                         Iterator defIt = possibleDefs.iterator();
-                        
+
                         while(defIt.hasNext())
                         {
                             List useList = (List) stmtToUseList.get(defIt.next());
-                            
+
                             useList.add(new StmtValueBoxPair(s, useBox));
                         }
                     }
                 }
             }
         }
-        
+
         // Store the map as a bunch of unmodifiable lists.
         {
             stmtToUses = new HashMap(graph.size() * 2 + 1, 0.7f);
-            
+
             Iterator it = graph.iterator();
-            
+
             while(it.hasNext())
             {
                 Stmt s = (Stmt) it.next();
@@ -146,7 +145,7 @@ public class SimpleLocalUses implements LocalUses
             }
         }
     }
-    
+
     public List getUsesOf(DefinitionStmt s)
     {
         return (List) stmtToUses.get(s);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,50 +68,50 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public abstract class NonStaticInvokeExpr extends InvokeExpr
-{    
+{
     ValueBox baseBox;
-        
+
     public Value getBase()
     {
         return baseBox.getValue();
     }
-    
+
     public ValueBox getBaseBox()
     {
         return baseBox;
     }
-    
+
     public void setBase(Value base)
     {
         baseBox.setValue(base);
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-            
+
         list.add(baseBox);
-        
+
         for(int i = 0; i < argBoxes.length; i++)
             list.add(argBoxes[i]);
-    
+
         // Add the boxes within the boxes
-        {        
+        {
             list.addAll(baseBox.getValue().getUseBoxes());
-            
+
             for(int i = 0; i < argBoxes.length; i++)
                 list.addAll(argBoxes[i].getValue().getUseBoxes());
         }
-        
+
         return list;
-    }    
+    }
 
 
 }

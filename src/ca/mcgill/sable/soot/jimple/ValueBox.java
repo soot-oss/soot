@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -68,11 +67,11 @@
 
  - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Added method canContainValue().
- 
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -83,6 +82,6 @@ public interface ValueBox
     public abstract void setValue(Value value);
     public abstract Value getValue();
     public abstract boolean canContainValue(Value value);
-    
+
 }
 

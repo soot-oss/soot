@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,23 +78,23 @@ public class StmtValueBoxPair
 {
     public Stmt stmt;
     public ValueBox valueBox;
-    
+
     public StmtValueBoxPair(Stmt stmt, ValueBox valueBox)
     {
         this.stmt = stmt;
         this.valueBox = valueBox;
     }
-    
+
     public boolean equals(Object other)
     {
         if(other instanceof StmtValueBoxPair)
         {
             StmtValueBoxPair otherPair = (StmtValueBoxPair) other;
-            
+
             if(stmt.equals(otherPair.stmt) && valueBox.equals(otherPair.valueBox))
                 return false;
         }
-         
+
         return false;
     }
 }

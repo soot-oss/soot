@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -109,21 +108,21 @@ package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 import java.util.Vector;
 
-/** Represents a single method_info object. 
+/** Represents a single method_info object.
  * @see ClassFile
  * @author Clark Verbrugge
  */
 public class method_info {
    /** Access flags for this field. */
     short access_flags;
-   /** Constant pool index of the name of this method. 
+   /** Constant pool index of the name of this method.
     * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info 
+    * @see CONSTANT_Utf8_info
     */
     short name_index;
    /** Constant pool index of the type descriptor of this method.
     * @see ClassFile#constant_pool
-    * @see CONSTANT_Utf8_info 
+    * @see CONSTANT_Utf8_info
     */
     short descriptor_index;
    /** Count of attributes this method contains. */
@@ -143,12 +142,12 @@ public class method_info {
     * @see CFG
     */
     public CFG cfg;
-   
+
     ca.mcgill.sable.soot.SootMethod jmethod;
-    
+
     ca.mcgill.sable.util.List instructionList;
-   
-   /** Returns the name of this method. 
+
+   /** Returns the name of this method.
     * @param constant_pool the constant_pool for this class.
     * @return the name of this method.
     */
@@ -165,7 +164,7 @@ public class method_info {
     Code_attribute locate_code_attribute() {
       attribute_info ai;
       int i;
-      
+
       for (i=0; i<attributes_count; i++) {
          ai = attributes[i];
          if (ai instanceof Code_attribute)
@@ -174,14 +173,14 @@ public class method_info {
       return null;
    }
 
-   /** Returns the prototype of this field. 
+   /** Returns the prototype of this field.
     * @param constant_pool the constant_pool for this class.
     * @return the prototype (access + return + name + parameters) of this method.
     */
     String prototype(cp_info constant_pool[]) {
       String access,rt,name,params;
       Code_attribute c = locate_code_attribute();
-      
+
       access = ClassFile.access_string(access_flags," ");
       rt = ClassFile.parseMethodDesc_return(cp_info.getTypeDescr(constant_pool,
                                                                  descriptor_index));
@@ -189,7 +188,7 @@ public class method_info {
       params = ClassFile.parseMethodDesc_params(cp_info.
                                                 getTypeDescr(constant_pool,
                                                              descriptor_index));
-      if (access.length()>0) 
+      if (access.length()>0)
          return access + " " + rt + " " + name + "(" + params + ")";
       return rt + " " + name + "(" + params + ")";
    }

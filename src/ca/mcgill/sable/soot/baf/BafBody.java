@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
@@ -78,22 +77,22 @@ import java.io.*;
 
 public class BafBody implements Body
 {
-    SootMethod method; 
-    
+    SootMethod method;
+
     BafBody(SootMethod method)
     {
         this.method = method;
     }
-    
+
     public SootMethod getMethod()
     {
         return method;
     }
-    
+
     public void printTo(PrintWriter out)
     {
     }
-    
+
     public void printTo(PrintWriter out, int printBodyOptions)
     {
     }

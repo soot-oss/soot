@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -77,23 +76,23 @@ public class BuildBody implements BodyExpr
     public final BodyRepresentation bodyRep;
     public final BodyExpr sourceBuilder;
     public final int buildBodyOptions;
-    
+
     public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder)
     {
         this.bodyRep = bodyRep;
-        this.sourceBuilder = sourceBuilder;    
+        this.sourceBuilder = sourceBuilder;
         this.buildBodyOptions = 0;
     }
-    
+
     public BuildBody(BodyRepresentation bodyRep, BodyExpr sourceBuilder, int buildBodyOptions)
     {
         this.bodyRep = bodyRep;
-        this.sourceBuilder = sourceBuilder;    
+        this.sourceBuilder = sourceBuilder;
         this.buildBodyOptions = buildBodyOptions;
     }
-    
+
     public Body resolveFor(SootMethod method)
-    {        
+    {
         return bodyRep.buildBodyOfFrom(method, sourceBuilder.resolveFor(method), buildBodyOptions);
     }
 }

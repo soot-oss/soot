@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -68,52 +67,52 @@
 
  - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Changed the base to Local.
- 
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class SpecialInvokeExpr extends NonStaticInvokeExpr 
-{    
+public class SpecialInvokeExpr extends NonStaticInvokeExpr
+{
     SpecialInvokeExpr(Local base, SootMethod method, List args)
     {
         this.baseBox = new LocalBox(base);
         this.method = method;
-        
+
         this.argBoxes = (ImmediateBox[]) new ImmediateBox[args.size()];
-        
+
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = new ImmediateBox((Value) args.get(i));
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
-        buffer.append("specialinvoke " + baseBox.getValue().toString() + 
+
+        buffer.append("specialinvoke " + baseBox.getValue().toString() +
             ".[" + method.getSignature() + "](");
 
         for(int i = 0; i < argBoxes.length; i++)
         {
             if(i != 0)
                 buffer.append(", ");
-                
+
             buffer.append(argBoxes[i].getValue().toString());
         }
-            
+
         buffer.append(")");
-        
+
         return buffer.toString();
     }
 
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseSpecialInvokeExpr(this);
-    }    
+    }
 }

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -102,7 +101,7 @@
 
  - Modified on September 3, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Fixed wide instruction version.
-   
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -110,9 +109,9 @@
 package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.  
+ * bytecode operation has a corresponding subclass of Instruction.
  * <p>
- * Each subclass is derived from one of 
+ * Each subclass is derived from one of
  * <ul><li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
@@ -121,7 +120,7 @@ import java.io.*;
  * <li>Instruction_int (an Instruction with a single short data argument)</li>
  * <li>Instruction_intvar (a short argument specifying a local variable)</li>
  * <li>Instruction_intindex (a short argument specifying a constant pool index)</li>
- * <li>Instruction_intbranch (a short argument specifying a code offset)</li> 
+ * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
  * @author Clark Verbrugge
@@ -144,11 +143,11 @@ class Instruction_Iinc extends Instruction_bytevar {
       return super.toString(constant_pool) + argsep + arg_c;
    }
    public int nextOffset(int curr) { return super.nextOffset(curr)+ ((isWide) ? 2 : 1); }
-   
-   public int parse(byte bc[],int index) 
-   { 
+
+   public int parse(byte bc[],int index)
+   {
       index = super.parse(bc,index);
-      
+
       if(!isWide)
       {
         arg_c = bc[index];
@@ -157,16 +156,16 @@ class Instruction_Iinc extends Instruction_bytevar {
       else {
         int constbyte1 = ((int) bc[index]) & 0xff;
         int constbyte2 = ((int) bc[index+1]) & 0xff;
-            
+
         arg_c = (short) ((constbyte1 << 8) | constbyte2);
-        
+
         return index+2;
       }
    }
-   
-   public int compile(byte bc[],int index) { 
+
+   public int compile(byte bc[],int index) {
       index = super.compile(bc,index);
       bc[index] = (byte)(arg_c&0xff);
-      return index+1; 
+      return index+1;
    }
 }

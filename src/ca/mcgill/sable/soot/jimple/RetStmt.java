@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,53 +78,53 @@ public class RetStmt extends Stmt
 {
     ValueBox stmtAddressBox;
     List useBoxes;
-    
+
     RetStmt(Value stmtAddress)
     {
         stmtAddressBox = Jimple.v().newLocalBox(stmtAddress);
-        
+
         useBoxes = new ArrayList();
-        
+
         useBoxes.add(stmtAddressBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);   
+        useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
     public String toString()
     {
         return "ret " + stmtAddressBox.getValue().toString();
     }
-    
+
     public Value getStmtAddress()
     {
         return stmtAddressBox.getValue();
-    }   
-    
+    }
+
     public ValueBox getStmtAddressBox()
     {
         return stmtAddressBox;
     }
-    
+
     public void setStmtAddress(Value stmtAddress)
     {
         stmtAddressBox.setValue(stmtAddress);
     }
-    
+
 
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         return useBoxes;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseRetStmt(this);

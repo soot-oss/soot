@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -81,72 +80,72 @@ public class IfStmt extends Stmt
     UnitBox targetBox;
 
     List targetBoxes;
-        
+
     IfStmt(Value condition, Unit target)
     {
         this.conditionBox = Jimple.v().newConditionExprBox(condition);
         this.targetBox = Jimple.v().newStmtBox(target);
-        
+
         targetBoxes = new ArrayList();
         targetBoxes.add(this.targetBox);
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
-    
+
     public String toString()
     {
         return "if " + conditionBox.getValue().toString() + " goto ?";
     }
-    
+
     public Value getCondition()
     {
         return conditionBox.getValue();
     }
-    
+
     public void setCondition(Value condition)
     {
         conditionBox.setValue(condition);
     }
-    
+
     public ValueBox getConditionBox()
     {
         return conditionBox;
     }
-    
+
     public Stmt getTarget()
     {
         return (Stmt) targetBox.getUnit();
     }
-    
+
     public void setTarget(Unit target)
     {
         targetBox.setUnit(target);
     }
-    
+
     public UnitBox getTargetBox()
     {
         return targetBox;
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         List useBoxes = new ArrayList();
-        
+
         useBoxes.add(conditionBox);
         useBoxes.addAll(conditionBox.getValue().getUseBoxes());
-        
+
         return useBoxes;
     }
-    
+
     public List getUnitBoxes()
     {
         return targetBoxes;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIfStmt(this);

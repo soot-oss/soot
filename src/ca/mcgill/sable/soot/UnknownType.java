@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,41 +64,41 @@
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
- 
+
  - Modified on October 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Modified the toString() value.
 
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public class UnknownType extends Type 
+public class UnknownType extends Type
 {
     private static final UnknownType constant = new UnknownType();
-    
+
     private UnknownType()
     {
     }
-    
+
     public static UnknownType v()
     {
         return constant;
     }
-    
+
     public boolean equals(Object t)
     {
         return this == t;
     }
-    
+
     public String toString()
     {
         return "<unknown>";
     }
-    
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseUnknownType(this);

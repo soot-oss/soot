@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -78,20 +77,20 @@ import ca.mcgill.sable.util.*;
 public class ClassFile implements BodyRepresentation
 {
     private static ClassFile classFileRepresentation = new ClassFile();
-    
+
     private ClassFile()
     {
     }
-    
+
     public static ClassFile v()
     {
         return classFileRepresentation;
     }
-    
+
     /**
         Returns a Body representing the ClassFile body.  Only 'null' can be passed as the source.
      */
-     
+
     public Body buildBodyOfFrom(SootMethod m, Body sourceBody, int options)
     {
         if(sourceBody != null)

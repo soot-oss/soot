@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -79,51 +78,51 @@ public class ArrayType extends Type
     /**
      * baseType can be any type except for an array type and void
      */
- 
+
     public final BaseType baseType;
     public final int numDimensions;
-    
+
     private ArrayType(BaseType baseType, int numDimensions)
     {
         this.baseType = baseType;
         this.numDimensions = numDimensions;
     }
-    
-    public static ArrayType v(BaseType baseType, int numDimensions) 
+
+    public static ArrayType v(BaseType baseType, int numDimensions)
     {
-        return new ArrayType(baseType, numDimensions);    
+        return new ArrayType(baseType, numDimensions);
     }
-        
+
     public boolean equals(Object t)
     {
         if(t instanceof ArrayType)
         {
             ArrayType arrayType = (ArrayType) t;
-            
-            return this.numDimensions == arrayType.numDimensions && 
+
+            return this.numDimensions == arrayType.numDimensions &&
                 this.baseType.equals(arrayType.baseType);
         }
         else
             return false;
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append(baseType.toString());
-        
+
         for(int i = 0; i < numDimensions; i++)
             buffer.append("[]");
-        
+
         return buffer.toString();
     }
 
     public int hashCode()
-    {   
+    {
         return toString().hashCode();
-    }    
-    
+    }
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseArrayType(this);

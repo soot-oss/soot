@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -115,25 +114,25 @@ import java.io.*;
  * @author Clark Verbrugge
  */
 class exception_table_entry {
-   /** Code offset of start of code protected by this handler (inclusive). 
+   /** Code offset of start of code protected by this handler (inclusive).
     * @see exception_table_entry#start_inst
     */
    public short start_pc;
-   /** Code offset of end of code protected by this handler (exclusive). 
+   /** Code offset of end of code protected by this handler (exclusive).
     * @see exception_table_entry#end_inst
     */
    public short end_pc;
-   /** Code offset of actual exception handler for the specified code block. 
+   /** Code offset of actual exception handler for the specified code block.
     * @see exception_table_entry#handler_inst
     * @see exception_table_entry#b
     */
    public short handler_pc;
    /** Constant pool index of a CONSTANT_Class entry describing the exception
-    * this handler handles; if 0, this handler catches all exceptions. 
+    * this handler handles; if 0, this handler catches all exceptions.
     * @see CONSTANT_Class
     */
    public short catch_type;
-   /** First Instruction object (after parsing) of code protected by this handler. 
+   /** First Instruction object (after parsing) of code protected by this handler.
     * @see exception_table_entry#start_pc
     * @see Instruction
     */
@@ -149,8 +148,8 @@ class exception_table_entry {
     * @see Instruction
     */
    public Instruction handler_inst;
-   /** Once basic blocks are constructed, the handler can be found by 
-    * referencing its basic block. 
+   /** Once basic blocks are constructed, the handler can be found by
+    * referencing its basic block.
     * @see BasicBlock
     */
    public BasicBlock b;

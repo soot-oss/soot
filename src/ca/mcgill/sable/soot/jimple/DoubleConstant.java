@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,32 +77,32 @@ import ca.mcgill.sable.util.*;
 public class DoubleConstant extends Constant implements Switchable
 {
     public final double value;
-    
+
     private DoubleConstant(double value)
     {
         this.value = value;
     }
-        
+
     public static DoubleConstant v(double value)
     {
         return new DoubleConstant(value);
     }
-    
+
     public boolean equals(Constant c)
     {
         return (c instanceof DoubleConstant && ((DoubleConstant) c).value == this.value);
     }
-    
+
     public String toString()
     {
         return new Double(value).toString();
     }
-    
+
     public Type getType()
     {
         return DoubleType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ConstantSwitch) sw).caseDoubleConstant(this);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,7 +64,7 @@
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
- 
+
  - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Added support for exception edge inclusion.
 
@@ -75,7 +74,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -85,19 +84,19 @@ public class StmtGraph
 {
     List heads;
     List tails;
-        
+
     Map stmtToSuccs;        // Stmt to List
     Map stmtToPreds;        // Stmt to List
     SootMethod method;
     List stmts;
     int size;
     StmtList stmtList;
-    
+
     public JimpleBody getBody()
-    {  
+    {
         return stmtList.getBody();
     }
-     
+
     StmtGraph(StmtList stmtList, boolean addExceptionEdges)
     {
         this.stmtList = stmtList;
@@ -106,30 +105,30 @@ public class StmtGraph
         // Build stmts (for iterator)
         {
             stmts = new LinkedList();
-            
+
             stmts.addAll(stmtList);
             size = stmtList.size();
         }
-        
+
         // Build successors
         {
             Map classToHandler = new HashMap(); // list of exceptions being caught, and their handlers
-        
+
             stmtToSuccs = new HashMap(size * 2 + 1, 0.7f);
             stmtToPreds = new HashMap(size * 2 + 1, 0.7f);
-            
 
-            // Add regular successors                
+
+            // Add regular successors
             {
                 ListIterator stmtIt = stmtList.listIterator();
 
                 while(stmtIt.hasNext())
                 {
                     Stmt s = (Stmt) stmtIt.next();
-    
+
                     List successors = new ArrayList();
                     boolean addNext = true;
-                    
+
                     if(s instanceof GotoStmt)
                     {
                         successors.add(((GotoStmt) s).getTarget());
@@ -146,32 +145,32 @@ public class StmtGraph
                     else if(s instanceof RetStmt)
                     {
                         // Add all statements which get their address taken
-                        
+
                         ListIterator it = stmtList.listIterator();
-                        
+
                         while(it.hasNext())
                         {
                             Stmt stmt = (Stmt) it.next();
-                            
+
                             if(stmt instanceof AssignStmt)
                             {
                                 AssignStmt as = (AssignStmt) stmt;
-                                
+
                                 if(as.getRightOp() instanceof NextNextStmtRef)
                                 {
                                     Iterator succIt = stmtList.listIterator(it.nextIndex());
-                                    
+
                                     if(succIt.hasNext())
                                     {
                                         succIt.next();
-                                        
+
                                         if(succIt.hasNext())
                                             successors.add(succIt.next());
                                     }
                                 }
                             }
                         }
-                    
+
                         addNext = false;
                     }
                     else if(s instanceof ThrowStmt)
@@ -181,70 +180,70 @@ public class StmtGraph
                     else if(s instanceof LookupSwitchStmt)
                     {
                         LookupSwitchStmt l = (LookupSwitchStmt) s;
-                        
+
                         successors.add(l.getDefaultTarget());
-                        
+
                         Iterator targetIt = l.getTargets().iterator();
-                        
+
                         while(targetIt.hasNext())
                             successors.add(targetIt.next());
-                            
+
                         addNext = false;
                     }
                     else if(s instanceof TableSwitchStmt)
                     {
                         TableSwitchStmt t = (TableSwitchStmt) s;
-                        
+
                         successors.add(t.getDefaultTarget());
-                        
+
                         Iterator targetIt = t.getTargets().iterator();
-                        
+
                         while(targetIt.hasNext())
                             successors.add(targetIt.next());
-                            
-                        
+
+
                         addNext = false;
                     }
-                    
+
                     // Put the next statement as the successor
                         if(addNext)
                         {
                             successors.add(stmtList.get(stmtIt.nextIndex()));
                         }
-                       
-                                     
+
+
                     // Store away successors
                         stmtToSuccs.put(s, successors);
                 }
             }
-            
-            // Add exception based successors            
+
+            // Add exception based successors
                 if(addExceptionEdges)
                 {
                     Iterator trapIt = getBody().getTraps().
                         iterator();
-                        
+
                     while(trapIt.hasNext())
                     {
                         Trap trap = (Trap) trapIt.next();
-                        
+
                         Stmt beginStmt = (Stmt) trap.getBeginUnit();
                         Stmt handlerStmt = (Stmt) trap.getHandlerUnit();
                         Stmt endStmt = (Stmt) trap.getEndUnit();
                         Iterator stmtIt = stmtList.listIterator(stmtList.indexOf(beginStmt));
-                        
+
                         for(;;)
                         {
                             Stmt s = (Stmt) stmtIt.next();
-                            
+
                             ((List) stmtToSuccs.get(s)).add(handlerStmt);
-                            
+
                             if(s == endStmt)
                                 break;
-                        } 
+                        }
                     }
                 }
-                
+
             // Make successors unmodifiable
             {
                 ListIterator stmtIt = stmtList.listIterator();
@@ -257,30 +256,30 @@ public class StmtGraph
             }
         }
 
-                
+
         // Build predecessors
         {
             Map stmtToPredList = new HashMap(size * 2 + 1, 0.7f);
-            
+
             // initialize the pred sets to empty
             {
                 Iterator stmtIt = stmtList.iterator();
-                
+
                 while(stmtIt.hasNext())
                 {
                     stmtToPredList.put(stmtIt.next(), new ArrayList());
                 }
             }
-               
+
             // Modify preds set for each successor for this statement
             {
                 Iterator stmtIt = stmtList.iterator();
-                
+
                 while(stmtIt.hasNext())
                 {
                     Stmt s = (Stmt) stmtIt.next();
                     Iterator succIt = ((List) stmtToSuccs.get(s)).iterator();
-                    
+
                     while(succIt.hasNext())
                     {
                         List predList = (List) stmtToPredList.get(succIt.next());
@@ -288,91 +287,91 @@ public class StmtGraph
                     }
                 }
             }
-            
-                                
+
+
             // Convert pred lists to arrays
             {
                 Iterator stmtIt = stmtList.iterator();
-                
+
                 while(stmtIt.hasNext())
                 {
                     Stmt s = (Stmt) stmtIt.next();
-                    
+
                     List predList = (List) stmtToPredList.get(s);
                     stmtToPreds.put(s, Collections.unmodifiableList(predList));
-                }   
+                }
             }
-            
+
         }
 
         // Build tails
         {
             List tailList = new ArrayList();
-            
+
             // Build the set
             {
                 Iterator stmtIt = stmtList.iterator();
-                
+
                 while(stmtIt.hasNext())
                 {
                     Stmt s = (Stmt) stmtIt.next();
-                    
+
                     List succs = (List) stmtToSuccs.get(s);
-                    
+
                     if(succs.size() == 0)
                         tailList.add(s);
                 }
             }
-               
+
             tails = Collections.unmodifiableList(tailList);
         }
-        
+
         // Build heads
         {
             List headList = new ArrayList();
-            
+
             // Build the set
             {
                 Iterator stmtIt = stmtList.iterator();
-                
+
                 while(stmtIt.hasNext())
                 {
                     Stmt s = (Stmt) stmtIt.next();
                     List preds = (List) stmtToPreds.get(s);
-                    
+
                     if(preds.size() == 0)
                         headList.add(s);
                 }
             }
-         
+
             heads = Collections.unmodifiableList(headList);
         }
-        
-    }        
-        
+
+    }
+
     public List getHeads()
     {
         return heads;
     }
-    
+
     public List getTails()
     {
         return tails;
     }
-    
+
     public List getPredsOf(Stmt s)
     {
         if(!stmtToPreds.containsKey(s))
             throw new RuntimeException("Invalid stmt" + s);
-            
+
         return (List) stmtToPreds.get(s);
     }
-    
+
     public List getSuccsOf(Stmt s)
     {
         if(!stmtToSuccs.containsKey(s))
             throw new RuntimeException("Invalid stmt" + s);
-            
+
         return (List) stmtToSuccs.get(s);
     }
 
@@ -385,29 +384,29 @@ public class StmtGraph
     {
         return size;
     }
-    
+
     private class GraphIterator implements Iterator
     {
         Iterator iterator;
-        
+
         public GraphIterator()
         {
             iterator = stmts.iterator();
         }
-        
+
         public boolean hasNext()
         {
             return iterator.hasNext();
         }
-        
+
         public Object next()
         {
             return iterator.next();
         }
-        
+
         public void remove() throws UnsupportedOperationException
         {
-            throw new UnsupportedOperationException(); 
+            throw new UnsupportedOperationException();
         }
     }
 

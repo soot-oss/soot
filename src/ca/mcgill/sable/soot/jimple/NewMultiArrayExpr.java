@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,41 +78,41 @@ public class NewMultiArrayExpr implements Expr
 {
     ArrayType baseType;
     ValueBox[] sizeBoxes;
-    
+
     NewMultiArrayExpr(ArrayType type, List sizes)
     {
         this.baseType = type;
         this.sizeBoxes = new ValueBox[sizes.size()];
-        
+
         for(int i = 0; i < sizes.size(); i++)
             sizeBoxes[i] = Jimple.v().newImmediateBox((Value) sizes.get(i));
     }
-    
+
     public String toString()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append("newmulti " + baseType.baseType.toString());
-        
+
         for(int i = 0; i < sizeBoxes.length; i++)
             buffer.append("[" + sizeBoxes[i].getValue().toString() + "]");
-            
+
         for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
             buffer.append("[]");
-            
+
         return buffer.toString();
     }
-    
+
     public ArrayType getBaseType()
     {
         return baseType;
     }
-    
+
     public void setBaseType(ArrayType baseType)
     {
         this.baseType = baseType;
     }
-    
+
     public ValueBox getSizeBox(int index)
     {
         return sizeBoxes[index];
@@ -123,7 +122,7 @@ public class NewMultiArrayExpr implements Expr
     {
         return sizeBoxes.length;
     }
-        
+
     public Value getSize(int index)
     {
         return sizeBoxes[index].getValue();
@@ -132,38 +131,38 @@ public class NewMultiArrayExpr implements Expr
     public List getSizes()
     {
         List toReturn = new ArrayList();
-        
+
         for(int i = 0; i < sizeBoxes.length; i++)
             toReturn.add(sizeBoxes[i].getValue());
-            
+
         return toReturn;
     }
-    
+
     public void setSize(int index, Value size)
     {
         sizeBoxes[index].setValue(size);
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         for(int i = 0; i < sizeBoxes.length; i++)
             list.add(sizeBoxes[i]);
-        
+
         for(int i = 0; i < sizeBoxes.length; i++)
             list.addAll(sizeBoxes[i].getValue().getUseBoxes());
-     
+
         return list;
     }
-    
+
     public Type getType()
     {
         return baseType;
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
-    }    
+    }
 }

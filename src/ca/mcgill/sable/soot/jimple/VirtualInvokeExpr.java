@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -75,7 +74,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -87,14 +86,14 @@ public class VirtualInvokeExpr extends NonStaticInvokeExpr
     {
         this.baseBox = Jimple.v().newLocalBox(base);
         this.method = method;
-        
+
         this.argBoxes =  new ValueBox[args.size()];
-        
+
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
-    
-    
+
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseVirtualInvokeExpr(this);

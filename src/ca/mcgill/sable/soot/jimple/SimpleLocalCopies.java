@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -81,35 +80,35 @@ import ca.mcgill.sable.util.*;
 public class SimpleLocalCopies implements LocalCopies
 {
     Map stmtToCopies;
-    
+
     public SimpleLocalCopies(CompleteStmtGraph g)
     {
         CopiesFlowAnalysis analysis = new CopiesFlowAnalysis(g);
-        
+
         // Build up stmtToCopies map
         {
             stmtToCopies = new HashMap(g.size() * 2 + 1, 0.7f);
-            
+
             Iterator stmtIt = g.iterator();
-            
+
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                
+
                 FlowSet copies = (FlowSet) analysis.getFlowBeforeStmt(s);
-                
+
                 stmtToCopies.put(s, Collections.unmodifiableList(copies.toList()));
             }
         }
     }
-    
+
     public boolean isLocalCopyOfBefore(Local x, Local y, Stmt s)
     {
         List copies = (List) stmtToCopies.get(s);
-        
+
         return copies.contains(new LocalCopy(x, y));
     }
-    
+
     public List getCopiesBefore(Stmt s)
     {
         return (List) stmtToCopies.get(s);
@@ -120,36 +119,36 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet;
     Map localToPreserveSet;
-        
+
     CopiesFlowAnalysis(StmtGraph g)
     {
         super(g);
-        
+
         List copiesList;
-        
+
         // Create list of possible copies
         {
             copiesList = new ArrayList();
-               
+
             Iterator stmtIt = g.iterator();
-            
+
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-                
+
                 if(s instanceof DefinitionStmt)
                 {
                     DefinitionStmt def = (DefinitionStmt) s;
-                    
+
                     if(def.getLeftOp() instanceof Local &&
                         def.getRightOp() instanceof Local)
                     {
-                        copiesList.add(new LocalCopy((Local) def.getLeftOp(), 
+                        copiesList.add(new LocalCopy((Local) def.getLeftOp(),
                             (Local) def.getRightOp()));
                     }
-                }        
+                }
             }
-            
+
             FlowUniverse copiesUniverse = new FlowUniverse(copiesList.toArray());
             emptySet = PackSet.v(copiesUniverse);
         }
@@ -157,93 +156,93 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
         // Create preserve sets for each local.
         {
             localToPreserveSet = new HashMap(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-            
+
             // Initialize each set to empty
             {
                 Iterator localIt = g.getBody().getLocals().iterator();
-                
+
                 while(localIt.hasNext())
                     localToPreserveSet.put(localIt.next(), emptySet.clone());
             }
-            
+
             // Go through all the copies, add the copy to the killSet of the involved locals
             {
                 Iterator copyIt = copiesList.iterator();
-                
+
                 while(copyIt.hasNext())
                 {
                     LocalCopy copy = (LocalCopy) copyIt.next();
-                    
+
                     FlowSet fset = (FlowSet) localToPreserveSet.get(copy.leftLocal);
-                    
+
                     fset.add(copy, fset);
-                    
+
                     fset = (FlowSet) localToPreserveSet.get(copy.rightLocal);
                     fset.add(copy, fset);
                 }
             }
-            
+
             // Flip all the kill sets to really become preserve sets
             {
                 Iterator localIt = g.getBody().getLocals().iterator();
-                
+
                 while(localIt.hasNext())
                 {
                     FlowSet preserveSet = (FlowSet) localToPreserveSet.get(localIt.next());
-                    
+
                     preserveSet.complement(preserveSet);
                 }
             }
         }
-            
-                
+
+
         doAnalysis();
     }
-    
+
     protected Flow getInitialFlow()
     {
         return emptySet;
     }
-    
+
     protected void flowThrough(Flow inValue, Stmt stmt, Flow outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-        
+
         if(stmt instanceof DefinitionStmt)
         {
             // Perform Kill
             {
                 DefinitionStmt def = (DefinitionStmt) stmt;
-                
+
                 if(def.getLeftOp() instanceof Local)
                     in.intersection((FlowSet) localToPreserveSet.get(def.getLeftOp()), out);
                 else
                     in.copy(out);
             }
-            
+
             // Perform generation
             {
                 DefinitionStmt def = (DefinitionStmt) stmt;
-                
+
                 if(def.getLeftOp() instanceof Local && def.getRightOp() instanceof Local)
                 {
-                    out.add(new LocalCopy((Local) def.getLeftOp(), (Local) def.getRightOp()), 
+                    out.add(new LocalCopy((Local) def.getLeftOp(), (Local) def.getRightOp()),
                         out);
-                    
+
                 }
             }
         }
         else
             in.copy(out);
     }
-    
+
     protected void merge(Flow in1, Flow in2, Flow out)
     {
         FlowSet inSet1 = (FlowSet) in1,
             inSet2 = (FlowSet) in2;
-            
+
         FlowSet outSet = (FlowSet) out;
-        
+
         inSet1.intersection(inSet2, outSet);
     }
 }

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -107,9 +106,9 @@
 package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.  
+ * bytecode operation has a corresponding subclass of Instruction.
  * <p>
- * Each subclass is derived from one of 
+ * Each subclass is derived from one of
  * <ul><li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
@@ -118,7 +117,7 @@ import java.io.*;
  * <li>Instruction_int (an Instruction with a single short data argument)</li>
  * <li>Instruction_intvar (a short argument specifying a local variable)</li>
  * <li>Instruction_intindex (a short argument specifying a constant pool index)</li>
- * <li>Instruction_intbranch (a short argument specifying a code offset)</li> 
+ * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
  * @author Clark Verbrugge
@@ -135,10 +134,10 @@ import java.io.*;
  * @see Instruction_Unknown
  */
 class Instruction_Tableswitch extends Instruction {
-   public Instruction_Tableswitch() { 
-      super((byte)ByteCode.TABLESWITCH); 
-      name = "tableswitch"; 
-      branches = true; 
+   public Instruction_Tableswitch() {
+      super((byte)ByteCode.TABLESWITCH);
+      name = "tableswitch";
+      branches = true;
    }
    public byte pad;  // number of bytes used for padding
    public int default_offset;
@@ -150,7 +149,7 @@ class Instruction_Tableswitch extends Instruction {
    public String toString(cp_info constant_pool[]) {
       String args;
       int i;
-      args = super.toString(constant_pool) + argsep + "(" + 
+      args = super.toString(constant_pool) + argsep + "(" +
          Integer.toString(pad) + ")";
       args = args + argsep + "label_" + Integer.toString(default_inst.label);
       args = args + argsep + Integer.toString(low);
@@ -160,7 +159,7 @@ class Instruction_Tableswitch extends Instruction {
       }
       return args;
    }
-   public int parse(byte bc[],int index) { 
+   public int parse(byte bc[],int index) {
       // first figure out padding to next 4-byte quantity
       int i,j,baseindex;
       baseindex = index;
@@ -177,7 +176,7 @@ class Instruction_Tableswitch extends Instruction {
       high = getInt(bc,index);
       index += 4;
       i = high-low+1;
-      if (i>0) {    
+      if (i>0) {
          jump_offsets = new int[i];
          j = 0;
          do {
@@ -188,7 +187,7 @@ class Instruction_Tableswitch extends Instruction {
       }
       return index;
    }
-   public int nextOffset(int curr) { 
+   public int nextOffset(int curr) {
       int i,j,baseindex,siz=0;
       baseindex = curr;
       i = (curr+1) % 4;
@@ -196,27 +195,27 @@ class Instruction_Tableswitch extends Instruction {
          siz = (4 - i);
       return (curr + siz + 13 + (high-low+1)*4);
    }
-   public int compile(byte bc[],int index) { 
+   public int compile(byte bc[],int index) {
       int i;
       bc[index++] = code;
       // insert padding so next instruction is on a 4-byte boundary
-      for (i=0;i<pad;i++) 
+      for (i=0;i<pad;i++)
          bc[index++] = 0;
       if (default_inst!=null)
-         index = intToBytes(default_inst.label-label,bc,index); 
+         index = intToBytes(default_inst.label-label,bc,index);
       else
-         index = intToBytes(default_offset,bc,index); 
-      index = intToBytes(low,bc,index); 
-      index = intToBytes(high,bc,index); 
+         index = intToBytes(default_offset,bc,index);
+      index = intToBytes(low,bc,index);
+      index = intToBytes(high,bc,index);
       for (i=0;i<=high-low;i++) {
          if (jump_insts[i]!=null)
             index = intToBytes((jump_insts[i]).label-label,bc,index);
          else
             index = intToBytes(jump_offsets[i],bc,index);
       }
-      return index; 
+      return index;
    }
-   public void offsetToPointer(ByteCode bc) { 
+   public void offsetToPointer(ByteCode bc) {
       int i;
       default_inst = bc.locateInst(default_offset+label);
       if (default_inst==null) {
@@ -230,14 +229,14 @@ class Instruction_Tableswitch extends Instruction {
             jump_insts[i] = bc.locateInst(jump_offsets[i]+label);
             if (jump_insts[i]==null) {
                System.out.println("Warning: can't locate target of instruction");
-               System.out.println(" which should be at byte address " + 
+               System.out.println(" which should be at byte address " +
                                   (label+jump_offsets[i]));
             } else
                jump_insts[i].labelled = true;
          }
       }
    }
-   public Instruction[] branchpoints(Instruction next) { 
+   public Instruction[] branchpoints(Instruction next) {
       Instruction i[] = new Instruction[high-low+2];
       int j;
       i[0] = default_inst;

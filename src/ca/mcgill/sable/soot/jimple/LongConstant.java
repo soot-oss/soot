@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -81,32 +80,32 @@ import ca.mcgill.sable.util.*;
 public class LongConstant extends Constant implements Switchable
 {
     public final long value;
-    
+
     private LongConstant(long value)
     {
         this.value = value;
     }
-    
+
     public static LongConstant v(long value)
     {
         return new LongConstant(value);
     }
-    
+
     public boolean equals(Constant c)
     {
         return c instanceof IntConstant && ((IntConstant) c).value == this.value;
     }
-    
+
     public String toString()
     {
         return new Long(value).toString() + "l";
     }
-    
+
     public Type getType()
     {
         return LongType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ConstantSwitch) sw).caseLongConstant(this);

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -120,18 +119,18 @@ import ca.mcgill.sable.soot.*;
  * A less resource hungry implementation of the TypeStack would just have pointers to
  * 'sub-stacks' instead of copying the entire array around.
  */
- 
+
 class TypeStack implements ca.mcgill.sable.util.ValueObject
 {
     private static SootClassManager cm;
-    
+
     private Type[] types;
-    
-    private TypeStack() 
+
+    private TypeStack()
     {
         // no constructor
-    }  
-    
+    }
+
     public static void setClassManager(SootClassManager cm)
     {
         TypeStack.cm = cm;
@@ -140,58 +139,58 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
     public Object clone()
     {
         TypeStack newTypeStack = new TypeStack();
-        
+
         newTypeStack.cm = this.cm;
         newTypeStack.types = (Type[]) types.clone();
-        
+
         return newTypeStack;
     }
-        
+
     /**
      * Returns an empty stack.
      */
-     
+
     public static TypeStack v()
     {
         TypeStack typeStack = new TypeStack();
-        
+
         typeStack.types = new Type[0];
-        
+
         return typeStack;
     }
-    
+
     public TypeStack pop()
     {
         TypeStack newStack = new TypeStack();
-        
+
         newStack.types = new Type[types.length - 1];
         System.arraycopy(types, 0, newStack.types, 0, types.length - 1);
-        
+
         return newStack;
     }
-    
+
     public TypeStack push(Type type)
     {
         TypeStack newStack = new TypeStack();
-        
+
         newStack.types = new Type[types.length + 1];
         System.arraycopy(types, 0, newStack.types, 0, types.length);
-        
+
         newStack.types[types.length] = type;
-         
+
         return newStack;
     }
-    
+
     public Type get(int index)
     {
         return types[index];
     }
-    
+
     public int topIndex()
     {
         return types.length - 1;
     }
-    
+
     public Type top()
     {
         if(types.length == 0)
@@ -199,60 +198,60 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
         else
             return types[types.length - 1];
     }
-    
+
     public boolean equals(Object object)
     {
         if(object instanceof TypeStack)
         {
             TypeStack otherStack = (TypeStack) object;
-             
+
             if(otherStack.types.length != types.length)
                 return false;
-                
+
             for(int i = 0; i < types.length; i++)
                 if(!types[i].equals(otherStack.types[i]))
                     return false;
-                    
+
             return true;
         }
         else
             return false;
     }
-    
+
     public TypeStack merge(TypeStack other)
     {
-        
+
         if(types.length != other.types.length)
             throw new RuntimeException("TypeStack merging failed; unequal " +
             "stack lengths: " + types.length + " and " + other.types.length);
-            
+
         TypeStack newStack = new TypeStack();
-        
+
         newStack.types = new Type[other.types.length];
-        
+
         for(int i = 0; i < types.length; i++)
             if(types[i].equals(other.types[i]))
                 newStack.types[i] = types[i];
             else {
-                if(!(types[i] instanceof RefType) || !(other.types[i] instanceof 
+                if(!(types[i] instanceof RefType) || !(other.types[i] instanceof
                     RefType))
                 {
                     throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
-                } 
-                
+                }
+
                 // System.out.println("Merging: " + types[i] + " with " + other.types[i]);
-                
+
                 newStack.types[i] = RefType.v("java.lang.Object");
             }
-            
+
         return newStack;
     }
-    
+
     public void print(PrintStream out)
     {
         for(int i = types.length - 1; i >= 0; i--)
             out.println(i + ": " + types[i].toString());
-            
+
         if(types.length == 0)
             out.println("<empty>");
     }

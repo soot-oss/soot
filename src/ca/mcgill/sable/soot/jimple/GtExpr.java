@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,17 +81,17 @@ public class GtExpr extends BinopExpr implements ConditionExpr
         op1Box = Jimple.v().newImmediateBox(op1);
         op2Box = Jimple.v().newImmediateBox(op2);
     }
-    
+
     public String toString()
     {
         return op1Box.getValue().toString() + " > " + op2Box.getValue().toString();
     }
-    
+
     public Type getType()
     {
         return IntType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseGtExpr(this);

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -108,7 +107,7 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.util.Enumeration;
 
-/** An enumeration of a Utf8 allows one to run through the characters in a 
+/** An enumeration of a Utf8 allows one to run through the characters in a
  * unicode string; used primarily for comparing unicode strings.  Note that
  * unlike regular enumerations, and to be efficient (ie to avoid allocating
  * an object in each call to nextElement), the return value is accessed by
@@ -119,22 +118,22 @@ import java.util.Enumeration;
  * @author Clark Verbrugge
  */
 class Utf8_Enumeration implements Enumeration {
-   
+
    /** The latest character, as determined by nextElement.
     * @see Utf8_Enumeration#nextElement
     */
    public int c;            // latest character
-   
+
    private short curindex;
    private short length;
    private byte bytes[];
-   
+
    /** For creating an empty enumeration; you must use reset() after this
     * to initialize the enumeration.
     * @see Utf8_Enumeration#reset
     */
    public Utf8_Enumeration() {}
-   /** For creating a normal enumeration of the given Utf8 string. 
+   /** For creating a normal enumeration of the given Utf8 string.
     * @param b array of bytes in Utf8 format.
     */
    public Utf8_Enumeration(byte b[]) {
@@ -150,7 +149,7 @@ class Utf8_Enumeration implements Enumeration {
       curindex = (short)2;
       length = (short)(((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff) + 2);
    }
-   
+
    /** <i>true</i> if the entire string hasn't been enumerated yet. */
    public boolean hasMoreElements() {
       if (curindex<length) return true;

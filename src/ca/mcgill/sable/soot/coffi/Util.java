@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -114,136 +113,136 @@ import ca.mcgill.sable.soot.*;
 public class Util
 {
     static Map classNameToAbbreviation;
-    
+
     static SootClassManager classManager;
-    
+
     static void setActiveClassManager(SootClassManager manager)
     {
         classManager = manager;
     }
-        
+
     public static void resolveClass(SootClass bclass)
     {
         if(ca.mcgill.sable.soot.jimple.Main.isVerbose)
             System.out.println("Resolving " + bclass.getName() + "...");
-        
+
         SootClassManager cm = bclass.getManager();
-        
+
         ClassFile coffiClass = new ClassFile(bclass.getName());
-        
-        // Load up class file, and retrieve bclass from class manager. 
+
+        // Load up class file, and retrieve bclass from class manager.
         {
             boolean success = coffiClass.loadClassFile();
-            
+
             if(!success)
                 throw new RuntimeException("Couldn't load class file.");
 
             CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.this_class];
-            
+
             String name = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
             name = name.replace('/', '.');
-            
+
             bclass.setName(name);
                 // replace this classes name with its fully qualified version.
-                
+
         }
-        
+
         // Set modifier
             bclass.setModifiers(coffiClass.access_flags & (~0x0020));
-                // don't want the ACC_SUPER flag, it is always supposed to be set anyways 
-                
+                // don't want the ACC_SUPER flag, it is always supposed to be set anyways
+
         // Set superclass
         {
             if(coffiClass.super_class != 0)
             {
                 // This object is not java.lang.Object, so must have a super class
-                
+
                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
                     super_class];
-            
+
                 String superName = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                 superName = superName.replace('/', '.');
 
                 bclass.setSuperClass(cm.getClass(superName));
             }
         }
-                 
+
         // Add interfaces to the bclass
         {
             for(int i = 0; i < coffiClass.interfaces_count; i++)
             {
                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
                     interfaces[i]];
-                
-                String interfaceName = 
+
+                String interfaceName =
                     ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
-                
+
                 interfaceName = interfaceName.replace('/', '.');
-                
+
                 SootClass interfaceClass = cm.getClass(interfaceName);
-                
-                interfaceClass.setModifiers(Modifier.INTERFACE);                
+
+                interfaceClass.setModifiers(Modifier.INTERFACE);
                 bclass.addInterface(interfaceClass);
             }
         }
-              
+
         // Add every field to the bclass
             for(int i = 0; i < coffiClass.fields_count; i++)
             {
                 field_info fieldInfo = coffiClass.fields[i];
-                
-                String fieldName = ((CONSTANT_Utf8_info) 
+
+                String fieldName = ((CONSTANT_Utf8_info)
                     (coffiClass.constant_pool[fieldInfo.name_index])).convert();
-                
-                String fieldDescriptor = ((CONSTANT_Utf8_info) 
+
+                String fieldDescriptor = ((CONSTANT_Utf8_info)
                     (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
-                    
+
                 int modifiers = fieldInfo.access_flags;
-                
+
                 if(bclass.declaresField(fieldName))
                 {
                     SootField field = bclass.getField(fieldName);
-                    
+
                     field.setType(jimpleTypeOfFieldDescriptor(cm, fieldDescriptor));
                     field.setModifiers(modifiers);
                 }
                 else {
-                    bclass.addField(new SootField(fieldName, 
+                    bclass.addField(new SootField(fieldName,
                         jimpleTypeOfFieldDescriptor(cm, fieldDescriptor), modifiers));
-                } 
-            } 
-        
+                }
+            }
+
         // Add every method to the bclass
             for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
-                
-                String methodName = ((CONSTANT_Utf8_info) 
+
+                String methodName = ((CONSTANT_Utf8_info)
                     (coffiClass.constant_pool[methodInfo.name_index])).convert();
-                
-                String methodDescriptor = ((CONSTANT_Utf8_info) 
+
+                String methodDescriptor = ((CONSTANT_Utf8_info)
                     (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
-                
+
                 List parameterTypes;
                 Type returnType;
-                
+
                 // Generate parameterTypes & returnType
                 {
-                    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm, 
+                    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm,
                         methodDescriptor);
-                    
+
                     parameterTypes = new ArrayList();
-                    
+
                     for(int j = 0; j < types.length - 1; j++)
                         parameterTypes.add(types[j]);
-                    
+
                     returnType = types[types.length - 1];
                 }
-                
+
                 int modifiers = methodInfo.access_flags;
-                
+
                 SootMethod method;
-                
+
                 if(bclass.declaresMethod(methodName, parameterTypes))
                 {
                     method = bclass.getMethod(methodName, parameterTypes);
@@ -252,57 +251,57 @@ public class Util
                     method.setModifiers(modifiers);
                 }
                 else {
-                    method = new SootMethod(methodName, 
+                    method = new SootMethod(methodName,
                         parameterTypes, returnType, modifiers);
                     bclass.addMethod(method);
                 }
-                
+
                 methodInfo.jmethod = method;
-                
+
                 // add exceptions to method
                 {
                     for(int j = 0; j < methodInfo.attributes_count; j++)
                         if(methodInfo.attributes[j] instanceof Exception_attribute)
                         {
                             Exception_attribute exceptions = (Exception_attribute) methodInfo.attributes[j];
-                                
+
                             for(int k = 0; k < exceptions.number_of_exceptions; k++)
                             {
                                 CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
                                     constant_pool[exceptions.exception_index_table[k]];
-    
-                                String exceptionName = ((CONSTANT_Utf8_info) 
+
+                                String exceptionName = ((CONSTANT_Utf8_info)
                                     (coffiClass.constant_pool[c.name_index])).convert();
-                                    
+
                                 exceptionName = exceptionName.replace('/', '.');
-                                
+
                                 method.addException(cm.getClass(exceptionName));
                             }
                         }
                 }
             }
-        
+
         // Set coffi source of method
             for(int i = 0; i < coffiClass.methods_count; i++)
             {
                 method_info methodInfo = coffiClass.methods[i];
                 methodInfo.jmethod.setSource(coffiClass, methodInfo);
-            }            
+            }
     }
-           
-    static Type jimpleReturnTypeOfMethodDescriptor(SootClassManager cm, 
+
+    static Type jimpleReturnTypeOfMethodDescriptor(SootClassManager cm,
         String descriptor)
     {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm, descriptor);
-        
+
         return types[types.length - 1];
     }
-    
-    static Type[] jimpleTypesOfFieldOrMethodDescriptor(SootClassManager cm, 
+
+    static Type[] jimpleTypesOfFieldOrMethodDescriptor(SootClassManager cm,
         String descriptor)
     {
         java.util.Vector types = new java.util.Vector();
-        
+
         while(descriptor.length() != 0)
         {
             boolean isArray = false;
@@ -315,7 +314,7 @@ public class Util
                     descriptor = descriptor.substring(1);
                     continue;
                 }
-                
+
             // Handle array case
                 while(descriptor.startsWith("["))
                 {
@@ -324,7 +323,7 @@ public class Util
                     descriptor = descriptor.substring(1);
                 }
 
-            // Determine base type            
+            // Determine base type
                 if(descriptor.startsWith("B"))
                 {
                     baseType = ByteType.v();
@@ -358,14 +357,14 @@ public class Util
                 else if(descriptor.startsWith("L"))
                 {
                     int index = descriptor.indexOf(';');
-                    
+
                     if(index == -1)
                         throw new RuntimeException("Class reference has no ending ;");
-                    
+
                     String className = descriptor.substring(1, index);
-                
+
                     baseType = RefType.v(className.replace('/', '.'));
-                    
+
                     descriptor = descriptor.substring(index + 1);
                 }
                 else if(descriptor.startsWith("S"))
@@ -385,10 +384,10 @@ public class Util
                 }
                 else
                     throw new RuntimeException("Unknown field type!");
-                  
+
             Type t;
-            
-            // Determine type  
+
+            // Determine type
                 if(isArray)
                     t = ArrayType.v((BaseType) baseType, numDimensions);
                 else
@@ -396,24 +395,24 @@ public class Util
 
             types.addElement(t);
         }
-        
+
         // Generate array containing types
         {
             Type[] typesArray = new Type[types.size()];
-            
+
             types.copyInto(typesArray);
-            
-            return typesArray; 
+
+            return typesArray;
         }
     }
-        
-    static Type jimpleTypeOfFieldDescriptor(SootClassManager cm, 
+
+    static Type jimpleTypeOfFieldDescriptor(SootClassManager cm,
         String descriptor)
     {
         boolean isArray = false;
         int numDimensions = 0;
         Type baseType;
-        
+
         // Handle array case
             while(descriptor.startsWith("["))
             {
@@ -422,7 +421,7 @@ public class Util
                 descriptor = descriptor.substring(1);
             }
 
-        // Determine base type            
+        // Determine base type
             if(descriptor.equals("B"))
                 baseType = ByteType.v();
             else if(descriptor.equals("C"))
@@ -439,9 +438,9 @@ public class Util
             {
                 if(!descriptor.endsWith(";"))
                     throw new RuntimeException("Class reference does not end with ;");
-                
+
                 String className = descriptor.substring(1, descriptor.length() - 1);
-                
+
                 baseType = RefType.v(className.replace('/', '.'));
             }
             else if(descriptor.equals("S"))
@@ -450,155 +449,155 @@ public class Util
                 baseType = BooleanType.v();
             else
                 throw new RuntimeException("Unknown field type: " + descriptor);
-                
+
         // Return type
             if(isArray)
                 return ArrayType.v((BaseType) baseType, numDimensions);
             else
                 return baseType;
     }
-    
+
     static int nextEasyNameIndex;
-    
+
     static void resetEasyNames()
     {
         nextEasyNameIndex = 0;
     }
-    
+
     static String getNextEasyName()
     {
-        final String[] easyNames = 
-            {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
+        final String[] easyNames =
+            {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
              "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"};
-    
+
         int justifiedIndex = nextEasyNameIndex++;
-        
+
         if(justifiedIndex >= easyNames.length)
             return "local" + (justifiedIndex - easyNames.length);
         else
             return easyNames[justifiedIndex];
-    }    
-    
+    }
+
     static void setClassNameToAbbreviation(Map map)
     {
         classNameToAbbreviation = map;
     }
-    
+
     static Local getLocalForStackOp(JimpleBody listBody, TypeStack typeStack,
         int index)
     {
-        if(typeStack.get(index).equals(Double2ndHalfType.v()) || 
+        if(typeStack.get(index).equals(Double2ndHalfType.v()) ||
             typeStack.get(index).equals(Long2ndHalfType.v()))
         {
             index--;
         }
-           
+
         return getLocalCreatingIfNecessary(listBody, "op" + index, UnknownType.v());
     }
-    
+
     static String getAbbreviationOfClassName(String className)
-    {    
+    {
         StringBuffer buffer = new StringBuffer(new Character(className.charAt(0)).toString());
         int periodIndex = 0;
-        
-        for(;;) 
+
+        for(;;)
         {
             periodIndex = className.indexOf('.', periodIndex + 1);
-        
+
             if(periodIndex == -1)
                 break;
-                
+
             buffer.append(Character.toLowerCase(className.charAt(periodIndex + 1)));
-        } 
-        
-        return buffer.toString();   
+        }
+
+        return buffer.toString();
     }
 
     static String getNormalizedClassName(String className)
     {
         className = className.replace('/', '.');
-        
+
         if(className.endsWith(";"))
             className = className.substring(0, className.length() - 1);
-        
+
         // Handle array case
-        {    
+        {
             int numDimensions = 0;
-            
+
             while(className.startsWith("["))
             {
                 numDimensions++;
                 className = className.substring(1, className.length());
                 className = className + "[]";
             }
-            
+
             if(numDimensions != 0)
             {
                 if(!className.startsWith("L"))
                     throw new RuntimeException("For some reason an array reference does not start with L");
-                
+
                 className = className.substring(1, className.length());
             }
         }
-        
-        
+
+
         return className;
     }
 
-     static Local 
+     static Local
         getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
-    {        
+    {
         if(listBody.declaresLocal(name))
         {
-            return listBody.getLocal(name);            
+            return listBody.getLocal(name);
         }
         else {
             Local l = Jimple.v().newLocal(name, type);
             listBody.addLocal(l);
-                        
-            return l;
-        }
-    } 
-        
-    static Local getLocalForIndex(JimpleBody listBody, int index)
-    {
-        String name = "l" + index;
-        
-        if(listBody.declaresLocal(name))
-            return listBody.getLocal(name);
-        else {
-            Local l = Jimple.v().newLocal(name, 
-                UnknownType.v());
-                
-            listBody.addLocal(l);
-            
+
             return l;
         }
     }
 
-    /*    
-    static void setLocalType(Local local, List locals, 
+    static Local getLocalForIndex(JimpleBody listBody, int index)
+    {
+        String name = "l" + index;
+
+        if(listBody.declaresLocal(name))
+            return listBody.getLocal(name);
+        else {
+            Local l = Jimple.v().newLocal(name,
+                UnknownType.v());
+
+            listBody.addLocal(l);
+
+            return l;
+        }
+    }
+
+    /*
+    static void setLocalType(Local local, List locals,
         int localIndex, Type type)
     {
         if(local.getType().equals(UnknownType.v()) ||
             local.getType().equals(type))
         {
             local.setType(type);
-            
+
             if(local.getType().equals(DoubleType.v()) ||
                 local.getType().equals(LongType.v()))
             {
-                // This means the next local becomes voided, since these types occupy two 
+                // This means the next local becomes voided, since these types occupy two
                 // words.
-                
+
                 Local secondHalf = (Local) locals.get(localIndex + 1);
-                
+
                 secondHalf.setType(VoidType.v());
             }
-            
+
             return;
         }
-        
+
         if(type.equals(IntType.v()))
         {
             if(local.getType().equals(BooleanType.v()) ||
@@ -610,10 +609,10 @@ public class Util
                 // bytes are all sort of treated like integers by the JVM.
                 return;
             }
-            
+
         }
-        
-        throw new RuntimeException("required and actual types do not match: " + type.toString() + 
+
+        throw new RuntimeException("required and actual types do not match: " + type.toString() +
                 " with " + local.getType().toString());
     }    */
 }

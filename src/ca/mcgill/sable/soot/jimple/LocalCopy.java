@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,27 +77,27 @@ public class LocalCopy
 {
     Local leftLocal;
     Local rightLocal;
-    
+
     public LocalCopy(Local leftLocal, Local rightLocal)
     {
         this.leftLocal = leftLocal;
         this.rightLocal = rightLocal;
     }
-    
+
     public boolean equals(Object other)
     {
-        return other instanceof LocalCopy && leftLocal == ((LocalCopy)other).leftLocal && 
+        return other instanceof LocalCopy && leftLocal == ((LocalCopy)other).leftLocal &&
             rightLocal == ((LocalCopy) other).rightLocal;
-    } 
-    
+    }
+
     public String toString()
     {
         return leftLocal.toString() + " = " + rightLocal.toString();
     }
-    
+
     public int hashCode()
     {
         return leftLocal.hashCode() * 7 + rightLocal.hashCode() * 13;
     }
-    
+
 }

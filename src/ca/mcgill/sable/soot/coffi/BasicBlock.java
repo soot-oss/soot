@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -119,11 +118,11 @@ class BasicBlock {
    public int size;
    /** Head of the list of instructions. */
    public Instruction head;
-   /** Tail of the list of instructions. 
+   /** Tail of the list of instructions.
     * <p>
     * Normally, the last instruction will have a next pointer with value
-    * <i>null</i>.  After a Instruction sequences are reconstructed though, 
-    * the instruction lists 
+    * <i>null</i>.  After a Instruction sequences are reconstructed though,
+    * the instruction lists
     * are rejoined in order, and so the tail instruction will not
     * have a <i>null</i> next pointer.
     * @see CFG#reconstructInstructions
@@ -137,7 +136,7 @@ class BasicBlock {
     * @see java.util.Vector
     */
    public Vector pred;
-   
+
    public boolean inq;
    /** Flag for whether starting an exception or not. */
    public boolean beginException;
@@ -146,37 +145,37 @@ class BasicBlock {
    /** Flag for semantic stack analysis fixup pass.
     * @see CFG#jimplify
     */
-     
+
    boolean done;
-   
+
    /** Next BasicBlock in the CFG, in the parse order. */
    public BasicBlock next;
    /** Unique (among basic blocks) id. */
    public long id;                   // unique id
-   
+
    private short wide;                 // convert indices when parsing jimple
 
    private static long ids;           // for generating unique ids
-   
-   /** Constructs a BasicBlock consisting of the given list of Instructions. 
+
+   /** Constructs a BasicBlock consisting of the given list of Instructions.
     * @param insts list of instructions composing this basic block.
     */
-    
-   private ca.mcgill.sable.soot.jimple.Stmt stmt;  // statement generated 
-   
-   ca.mcgill.sable.util.List statements; 
+
+   private ca.mcgill.sable.soot.jimple.Stmt stmt;  // statement generated
+
+   ca.mcgill.sable.util.List statements;
    ca.mcgill.sable.util.Set addressesToFixup = new ca.mcgill.sable.util.VectorSet();
-       
+
    ca.mcgill.sable.soot.jimple.Stmt getHeadJStmt()
    {
       return (ca.mcgill.sable.soot.jimple.Stmt) statements.get(0);
    }
-   
+
    ca.mcgill.sable.soot.jimple.Stmt getTailJStmt()
    {
       return (ca.mcgill.sable.soot.jimple.Stmt) statements.get(statements.size() - 1);
    }
-   
+
    public BasicBlock(Instruction insts) {
       id = ids++;
       head = insts;
@@ -223,5 +222,5 @@ class BasicBlock {
       wide = (byte)0;
       return i;
    }
-   
+
 }

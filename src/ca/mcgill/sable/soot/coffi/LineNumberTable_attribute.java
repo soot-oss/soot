@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -108,7 +107,7 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.io.*;
 
-/** A debugging attribute, this associates blocks of bytecode with 
+/** A debugging attribute, this associates blocks of bytecode with
  * specific source code line numbers.
  * @see attribute_info
  * @author Clark Verbrugge

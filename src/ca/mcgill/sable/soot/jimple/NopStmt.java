@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -80,28 +79,28 @@ public class NopStmt extends Stmt
     NopStmt()
     {
     }
-    
+
     public String toString()
     {
         return "nop";
     }
-    
-    
+
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseNopStmt(this);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,53 +68,53 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
-public class SootField  
+public class SootField
 {
     String name;
     Type type;
     int modifiers;
-    
+
     boolean isDeclared = false;
     SootClass declaringClass;
-    
+
     public SootField(String name, Type type, int modifiers)
     {
         this.name = name;
         this.type = type;
         this.modifiers = modifiers;
     }
-    
+
     public SootField(String name, Type type)
     {
         this.name = name;
         this.type = type;
         this.modifiers = 0;
     }
- 
+
     public String getName()
     {
         return name;
     }
-    
+
     public String getSignature()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append(getDeclaringClass().getName());
         buffer.append("." + getName());
         buffer.append(":" + getType());
-        
+
         return buffer.toString();
-        
+
     }
     public SootClass getDeclaringClass() throws NotDeclaredException
     {
         if(!isDeclared)
             throw new NotDeclaredException();
-            
+
         return declaringClass;
     }
 
@@ -123,42 +122,42 @@ public class SootField
     {
         return isDeclared;
     }
-        
-    public void setName(String name) 
+
+    public void setName(String name)
     {
         this.name = name;
     }
-    
+
     public Type getType()
     {
         return type;
     }
-    
-    public void setType(Type t) 
+
+    public void setType(Type t)
     {
         this.type = t;
     }
-       
-    public void setModifiers(int modifiers) 
+
+    public void setModifiers(int modifiers)
     {
         this.modifiers = modifiers;
     }
-    
-    public int getModifiers() 
+
+    public int getModifiers()
     {
         return modifiers;
     }
-    
+
     public String toString()
     {
         return getSignature();
     }
-    
+
     public String getDeclaration()
     {
         String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
         qualifiers = qualifiers.trim();
-        
+
         if(qualifiers.equals(""))
             return name;
         else

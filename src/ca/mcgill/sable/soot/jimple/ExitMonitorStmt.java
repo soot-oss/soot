@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.util.*;
@@ -78,52 +77,52 @@ public
 class ExitMonitorStmt extends Stmt
 {
     ValueBox opBox;
-    
+
     ExitMonitorStmt(Value op)
     {
         this.opBox = Jimple.v().newImmediateBox(op);
     }
-    
+
     public String toString()
     {
         return "exitmonitor " + opBox.getValue().toString();
     }
-    
+
     public Value getOp()
     {
         return (Value) opBox.getValue();
     }
-    
+
     public void setOp(Value op)
     {
         opBox.setValue(op);
     }
-    
+
     public ValueBox getOpBox()
     {
         return opBox;
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(opBox);
         list.addAll(opBox.getValue().getUseBoxes());
-        
+
         return list;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,14 +68,14 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class ReturnVoidStmt extends Stmt
-{    
+{
     ReturnVoidStmt()
     {
     }
@@ -85,22 +84,22 @@ public class ReturnVoidStmt extends Stmt
     {
         return "return";
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnVoidStmt(this);

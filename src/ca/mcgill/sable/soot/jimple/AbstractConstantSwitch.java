@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -79,46 +78,46 @@ package ca.mcgill.sable.soot.jimple;
 public abstract class AbstractConstantSwitch implements ConstantSwitch
 {
     Object result;
-    
+
     public void caseDoubleConstant(DoubleConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void caseFloatConstant(FloatConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void caseIntConstant(IntConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void caseLongConstant(LongConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void caseNullConstant(NullConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void caseStringConstant(StringConstant v)
     {
         defaultCase(v);
     }
-    
+
     public void defaultCase(Object v)
     {
     }
-    
+
     public Object getResult()
     {
         return result;
     }
-    
+
     public void setResult(Object result)
     {
         this.result = result;

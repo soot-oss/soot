@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -102,7 +101,7 @@
 
  - Modified on September 29, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Corrected the ints2long method.
-   
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -133,23 +132,23 @@ abstract class cp_info {
 
    /** One of the CONSTANT_* constants. */
    public byte tag;
-   
+
    /** Returns the size of this entry.
     * @return size (in bytes) of this entry.
     */
    public abstract int size();
-   
+
    /** Returns a String representation of this entry.
     * @param constant_pool constant pool of ClassFile.
     * @return String representation of this entry.
     */
    public abstract String toString(cp_info constant_pool[]);
-   
+
    /** Returns a String description of what kind of entry this is.
     * @return String representation of this kind of entry.
     */
    public abstract String typeName();
-   
+
    /** Compares this entry with another cp_info object (which may reside
     * in a different constant pool).
     * @param constant_pool constant pool of ClassFile for this.
@@ -160,9 +159,9 @@ abstract class cp_info {
     */
    public abstract int compareTo(cp_info constant_pool[],cp_info cp,
                                  cp_info cp_constant_pool[]);
-   
 
-   /** Utility method, converts two integers into a single long. 
+
+   /** Utility method, converts two integers into a single long.
     * @param high upper 32 bits of the long.
     * @param low lower 32 bits of the long.
     * @return a long value composed from the two ints.
@@ -172,7 +171,7 @@ abstract class cp_info {
       h = high; l = low;
       return ((h<<32) + l);
    }
-   
+
    /** Utility method, returns a String binary representation of the
     * given integer.
     * @param i the integer in question.
@@ -184,7 +183,7 @@ abstract class cp_info {
       int j,k;
       k = 1;
       for (j=0;j<32; j++) {
-         if ((i&k)!=0) 
+         if ((i&k)!=0)
             s = "1" + s;
          else
             s = "0" + s;
@@ -192,7 +191,7 @@ abstract class cp_info {
       }
       return s;
    }
-   
+
    /** Utility method, returns a String binary representation of the
     * given long.
     * @param i the long in question.
@@ -204,7 +203,7 @@ abstract class cp_info {
       long j,k;
       k = 1;
       for (j=0;j<64; j++) {
-         if ((i&k)!=0) 
+         if ((i&k)!=0)
             s = "1" + s;
          else
             s = "0" + s;
@@ -212,9 +211,9 @@ abstract class cp_info {
       }
       return s;
    }
-   
-   /** Locates the name of the corresponding class, given the constant 
-    * pool index of either a CONSTANT_Class, _Fieldref, Methodref or 
+
+   /** Locates the name of the corresponding class, given the constant
+    * pool index of either a CONSTANT_Class, _Fieldref, Methodref or
     * InterfaceMethodref.
     * @param constant_pool constant pool of ClassFile.
     * @param i index of cp_info entry in question.
@@ -240,9 +239,9 @@ abstract class cp_info {
       System.out.println("Request for classname for non-class object!");
       return "Can't find classname. Sorry.";
    }
-   
+
    /** Returns the name of the given constant pool object, assuming it is
-    * of type CONSTANT_NameAndType, _FieldRef, _Methodref or _InterfaceMethodref. 
+    * of type CONSTANT_NameAndType, _FieldRef, _Methodref or _InterfaceMethodref.
     * @param constant_pool constant pool of ClassFile.
     * @param i index of cp_info entry in question.
     * @return name of the associated object.
@@ -285,12 +284,12 @@ abstract class cp_info {
       st = new StringTokenizer(s,",",false);
       return st.countTokens();
    }
-   
+
    /** Returns the type descriptor for the given constant pool
     * object, which must be a CONSTANT_Utf8, CONSTANT_NameAndType,
     * CONSTANT_Fieldref, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
     * @param constant_pool constant pool of ClassFile.
-    * @param i a constant pool index for an entry of type CONSTANT_Utf8, 
+    * @param i a constant pool index for an entry of type CONSTANT_Utf8,
     * CONSTANT_NameAndType, CONSTANT_MethodRef, or CONSTANT_InterfaceMethodRef.
     * @return the type descriptor.
     * @see CONSTANT_Utf8_info
@@ -303,7 +302,7 @@ abstract class cp_info {
       cp_info c = constant_pool[i];
       if (c instanceof CONSTANT_Utf8_info)
          return c.toString(constant_pool);
-      if (c instanceof CONSTANT_NameAndType_info) 
+      if (c instanceof CONSTANT_NameAndType_info)
          return getTypeDescr(constant_pool,
                              ((CONSTANT_NameAndType_info)c).descriptor_index);
       if (c instanceof CONSTANT_Methodref_info)
@@ -321,7 +320,7 @@ abstract class cp_info {
 
    /** Returns the name of the field type of the given constant pool object.
     * @param constant_pool constant pool of ClassFile.
-    * @param i a constant pool index for an entry of type CONSTANT_Utf8, 
+    * @param i a constant pool index for an entry of type CONSTANT_Utf8,
     * CONSTANT_NameAndType, or CONSTANT_FieldRef.
     * @return the type of the field.
     * @see CONSTANT_Utf8_info

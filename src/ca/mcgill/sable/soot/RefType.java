@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,15 +68,15 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public class RefType extends BaseType 
-{    
+public class RefType extends BaseType
+{
     public final String className;
-    
+
     private RefType(String className)
     {
         this.className = className;
@@ -87,22 +86,22 @@ public class RefType extends BaseType
     {
         return new RefType(className);
     }
-            
+
     public boolean equals(Object t)
     {
         return ((t instanceof RefType) && className.equals(((RefType) t).className));
     }
-    
+
     public String toString()
     {
         return className;
     }
-    
+
     public int hashCode()
     {
         return className.hashCode();
     }
-    
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseRefType(this);

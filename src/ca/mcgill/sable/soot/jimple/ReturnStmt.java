@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,66 +68,66 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class ReturnStmt extends Stmt
-{   
+{
     ValueBox returnValueBox;
-         
+
     ReturnStmt(Value returnValue)
     {
-        this.returnValueBox = Jimple.v().newImmediateBox(returnValue); 
+        this.returnValueBox = Jimple.v().newImmediateBox(returnValue);
     }
-    
+
     public String toString()
     {
         return "return " + returnValueBox.getValue().toString();
     }
-    
+
     public ValueBox getReturnValueBox()
     {
         return returnValueBox;
     }
-    
+
     public void setReturnValue(Value returnValue)
     {
         returnValueBox.setValue(returnValue);
     }
-    
+
     public Value getReturnValue()
     {
         return returnValueBox.getValue();
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         List useBoxes = new ArrayList();
-        
+
         useBoxes.add(returnValueBox);
         useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        
+
         return useBoxes;
     }
-    
+
     public List getUnitBoxes()
     {
         return emptyList;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnStmt(this);
     }
-    
-    
+
+
 }
 

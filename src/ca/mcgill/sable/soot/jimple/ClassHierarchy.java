@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -87,7 +86,7 @@ import java.util.*;
  *
  * <P> This class is primarily used by the TypeResolver class, to optimize its computation.
  **/
-class ClassHierarchy 
+class ClassHierarchy
 {
     /** Hashtable: SootClassManager -> ClassHierarchy **/
     private static Hashtable classHierarchyHashtable = new Hashtable();
@@ -121,7 +120,7 @@ class ClassHierarchy
     /** Get the class hierarchy for the given class manager. **/
     public static ClassHierarchy getClassHierarchy(SootClassManager classManager)
     {
-        ClassHierarchy classHierarchy = 
+        ClassHierarchy classHierarchy =
             (ClassHierarchy) classHierarchyHashtable.get(classManager);
 
         if(classHierarchy == null)
@@ -137,12 +136,12 @@ class ClassHierarchy
     {
         type = transform.toInt(type);
         TypeNode typeNode = (TypeNode) typeNodeHashtable.get(type);
-        
+
         if(typeNode == null)
         {
             typeNode = make.typeNode(type);
         }
-        
+
         return typeNode;
     }
 
@@ -171,79 +170,79 @@ class ClassHierarchy
         return s.toString();
     }
 
-    /** 
+    /**
      * Transforms boolean, byte, short and char into int.
      **/
     private class ToInt extends TypeSwitch
     {
         private Type result;
         private Type intType = IntType.v();
-        
+
         ToInt()
         {
         }
-        
+
         /** Transform boolean, byte, short and char into int. **/
         Type toInt(Type type)
         {
             type.apply(this);
             return result;
         }
-           
+
         public void caseBooleanType(BooleanType type)
         {
             result = intType;
         }
-        
+
         public void caseByteType(ByteType type)
         {
             result = intType;
         }
-        
+
         public void caseShortType(ShortType type)
         {
             result = intType;
         }
-        
+
         public void caseCharType(CharType type)
         {
             result = intType;
         }
-        
+
         public void defaultCase(Type type)
         {
             result = type;
         }
     }
 
-    /** 
+    /**
      * Creates new TypeNode instances usign the appropriate constructor.
      **/
     private class ConstructorChooser extends TypeSwitch
     {
         private TypeNode result;
-        
+
         ConstructorChooser()
         {
         }
-        
+
         /** Create a new TypeNode instance for the type parameter. **/
         TypeNode typeNode(Type type)
         {
             type.apply(this);
             return result;
         }
-           
+
         public void caseRefType(RefType type)
         {
             result = new TypeNode(type);
         }
-        
+
         public void caseArrayType(ArrayType type)
         {
             result = new TypeNode(type);
         }
-        
+
         public void defaultCase(Type type)
         {
             result = new TypeNode(type);
@@ -269,11 +268,11 @@ class ClassHierarchy
             typeNodeInstances.addElement(this);
             typeNodeHashtable.put(type, this);
         }
-        
+
         TypeNode(RefType type)
         {
             this((Type) type);
-            
+
             SootClass sClass = classManager.getClass(type.className);
             if(sClass.hasSuperClass())
             {
@@ -283,7 +282,7 @@ class ClassHierarchy
             {
                 parents.set(getTypeNode(RefType.v(((SootClass) i.next()).getName())).id);
             }
-            
+
             int size = parents.size();
             for(int i = 0; i < size; i++)
             {
@@ -294,7 +293,7 @@ class ClassHierarchy
                 }
             }
             ancestors.or(parents);
-            
+
             TypeNode nullNode = getTypeNode(NullType.v());
             descendants.set(nullNode.id);
             nullNode.ancestors.set(id);
@@ -312,11 +311,11 @@ class ClassHierarchy
         TypeNode(ArrayType type)
         {
             this((Type) type);
-            
+
             if(type.baseType instanceof RefType)
             {
                 RefType baseType = (RefType) type.baseType;
-                
+
                 SootClass sClass = classManager.getClass(baseType.className);
                 if(sClass.hasSuperClass())
                 {
@@ -434,7 +433,7 @@ class ClassHierarchy
 
             return result;
         } */
-       
+
        public boolean hasAncestor(TypeNode typeNode)
        {
            return ancestors.get(typeNode.id);

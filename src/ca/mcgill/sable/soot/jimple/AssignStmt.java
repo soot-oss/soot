@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,40 +68,40 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class AssignStmt extends DefinitionStmt
-{    
+{
     public AssignStmt(Value variable, Value rvalue)
     {
         leftBox = Jimple.v().newVariableBox(variable);
         rightBox = Jimple.v().newRValueBox(rvalue);
-        
+
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
         defBoxes = Collections.unmodifiableList(defBoxes);
-        
+
     }
-    
+
     public String toString()
     {
         return leftBox.getValue().toString() + " = " + rightBox.getValue().toString();
     }
-        
+
     public void setLeftOp(Value variable)
     {
         leftBox.setValue(variable);
     }
-    
+
     public void setRightOp(Value rvalue)
     {
         rightBox.setValue(rvalue);
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseAssignStmt(this);

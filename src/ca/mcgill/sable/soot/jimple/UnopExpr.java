@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,29 +77,29 @@ import ca.mcgill.sable.util.*;
 public abstract class UnopExpr implements Expr
 {
     ValueBox opBox;
-     
+
     public Value getOp()
     {
         return (Value) opBox.getValue();
-    }    
-    
+    }
+
     public void setOp(Value op)
     {
         opBox.setValue(op);
     }
-    
+
     public ValueBox getOpBox()
     {
         return opBox;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(opBox);
         list.addAll(opBox.getValue().getUseBoxes());
-        
+
         return list;
     }
 }

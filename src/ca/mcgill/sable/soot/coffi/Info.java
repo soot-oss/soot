@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -132,7 +131,7 @@ class Info {
     ps.println("<INFO> -- Debigulation Report on " + cf.fn + " --");
     ps.println("<INFO>   Length: " + flength);
     ps.println("<INFO>       CP: " + cp + " reduced to " + cf.constant_pool_count);
-    ps.println("<INFO>   Fields: " + fields + " (" + pfields + " private)" + 
+    ps.println("<INFO>   Fields: " + fields + " (" + pfields + " private)" +
                " reduced to " + cf.fields_count);
     ps.println("<INFO>  Methods: " + methods + " (" + pmethods + " private)" +
                " reduced to " + cf.methods_count);
@@ -141,15 +140,15 @@ class Info {
       ps.println("<INFO> -- Savings through debigulation --");
       if (attribsave > 0)
         ps.println("<INFO>         Attributes: " + attribsave);
-      if (attribcpsave > 0) 
+      if (attribcpsave > 0)
         ps.println("<INFO>     CP Compression: " + attribcpsave);
-      if (psave > 0) 
+      if (psave > 0)
         ps.println("<INFO>   Private renaming: " + psave);
       ps.println("<INFO>  Total savings: " + total);
       double d = (((double)total)*100000.0)/((double)flength);
       int x = (int)d;
       d = ((double)x)/1000.0;
       ps.println("<INFO>          ratio: " + d + "%");
-    } 
+    }
   }
 }

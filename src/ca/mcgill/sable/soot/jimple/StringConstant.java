@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -78,32 +77,32 @@ import ca.mcgill.sable.util.*;
 public class StringConstant extends Constant implements Switchable
 {
     public final String value;
-    
+
     private StringConstant(String s)
     {
         this.value = s;
     }
-    
+
     public static StringConstant v(String value)
     {
         return new StringConstant(value);
     }
-    
+
     public boolean equals(Constant c)
     {
         return (c instanceof StringConstant && ((StringConstant) c).value.equals(this.value));
     }
-    
+
     public String toString()
     {
         return "\"" + value + "\"";
     }
-    
+
     public Type getType()
     {
         return RefType.v("java.lang.String");
     }
-    
+
     public void apply(Switch sw)
     {
         ((ConstantSwitch) sw).caseStringConstant(this);

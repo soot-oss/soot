@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -72,7 +71,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -82,31 +81,31 @@ class FlowUniverse
 {
     Object[] indexToObject;
     Map objectToIndex;
-    
+
     public FlowUniverse(Object[] objects)
     {
         objectToIndex = new HashMap(objects.length * 2 + 1, 0.7f);
-        
+
         indexToObject = (Object[]) objects.clone();
-        
+
         for(int i = 0; i < objects.length; i++)
-            objectToIndex.put(objects[i], new Integer(i));        
+            objectToIndex.put(objects[i], new Integer(i));
     }
-    
+
     int getSize()
     {
         return indexToObject.length;
     }
-    
+
     Object getObjectOf(int index)
     {
         return indexToObject[index];
     }
-    
+
     int getIndexOf(Object obj)
     {
         Integer index = (Integer) objectToIndex.get(obj);
-        
+
         if(index == null)
             throw new RuntimeException("object not in universe");
         else

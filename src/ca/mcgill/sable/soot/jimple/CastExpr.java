@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,58 +78,58 @@ public class CastExpr implements Expr
 {
     ValueBox opBox;
     Type type;
-    
+
     CastExpr(Value op, Type type)
     {
         this.opBox = Jimple.v().newImmediateBox(op);
         this.type = type;
-    }    
-    
+    }
+
     public String toString()
     {
         return "(" + type.toString() + ") " + opBox.getValue().toString();
     }
-    
+
     public Value getOp()
     {
         return opBox.getValue();
     }
-    
+
     public void setOp(Value op)
     {
         opBox.setValue(op);
     }
-    
+
     public ValueBox getOpBox()
     {
         return opBox;
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(opBox);
         list.addAll(opBox.getValue().getUseBoxes());
-        
+
         return list;
     }
-    
+
     public Type getCastType()
     {
         return type;
     }
-    
+
     public void setCastType(Type castType)
     {
         this.type = castType;
     }
-    
+
     public Type getType()
     {
         return type;
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseCastExpr(this);

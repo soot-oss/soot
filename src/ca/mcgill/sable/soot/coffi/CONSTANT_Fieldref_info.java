@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -133,7 +132,7 @@ class CONSTANT_Fieldref_info extends cp_info {
     */
    public String toString(cp_info constant_pool[]) {
       CONSTANT_Class_info cc = (CONSTANT_Class_info)(constant_pool[class_index]);
-      CONSTANT_NameAndType_info cn = 
+      CONSTANT_NameAndType_info cn =
          (CONSTANT_NameAndType_info)(constant_pool[name_and_type_index]);
       return cc.toString(constant_pool) + "." + cn.toString(constant_pool);
    }

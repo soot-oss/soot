@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -85,10 +84,10 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
         {
             return IntType.v();
         }
-        else 
+        else
             return t;
     }
-    
+
     public Type merge(Type other, SootClassManager cm)
     {
         if(this.equals(UnknownType.v()))
@@ -100,64 +99,64 @@ public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchab
         else if(this instanceof RefType && other instanceof RefType)
         {
             // Return least common superclass
-                
+
             SootClass thisClass = cm.getClass(((RefType) this).className);
             SootClass otherClass = cm.getClass(((RefType) other).className);
             SootClass javalangObject = cm.getClass("java.lang.Object");
-            
+
             LinkedList thisHierarchy = new LinkedList();
             LinkedList otherHierarchy = new LinkedList();
-  
+
             // Build thisHierarchy
             {
                 SootClass SootClass = thisClass;
-                
+
                 for(;;)
                 {
                     thisHierarchy.addFirst(SootClass);
-                    
+
                     if(SootClass == javalangObject)
                         break;
-                        
-                    SootClass = SootClass.getSuperClass(); 
+
+                    SootClass = SootClass.getSuperClass();
                 }
-            }    
-        
+            }
+
             // Build otherHierarchy
             {
                 SootClass SootClass = otherClass;
-                
+
                 for(;;)
                 {
                     otherHierarchy.addFirst(SootClass);
-                    
+
                     if(SootClass == javalangObject)
                         break;
-                        
-                    SootClass = SootClass.getSuperClass(); 
+
+                    SootClass = SootClass.getSuperClass();
                 }
-            }        
-            
+            }
+
             // Find least common superclass
             {
                 SootClass commonClass = null;
-                
-                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() && 
+
+                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
                     otherHierarchy.getFirst() == thisHierarchy.getFirst())
                 {
                     commonClass = (SootClass) otherHierarchy.removeFirst();
                     thisHierarchy.removeFirst();
                 }
-                   
+
                 return RefType.v(commonClass.getName());
             }
         }
         else
             throw new IllegalTypeMergeException(this + " and " + other);
-    }    
-    
+    }
+
     public void apply(Switch sw)
     {
     }
-    
+
 }

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,15 +68,15 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
 
-public class ShortType extends BaseType 
+public class ShortType extends BaseType
 {
     private static final ShortType constant = new ShortType();
-    
+
     private ShortType()
     {
     }
@@ -86,17 +85,17 @@ public class ShortType extends BaseType
     {
         return constant;
     }
-    
+
     public boolean equals(Object t)
     {
         return this == t;
     }
-    
+
     public String toString()
     {
         return "short";
     }
-    
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseShortType(this);

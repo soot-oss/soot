@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,21 +68,21 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 /**
  * Used to indicate that a statement is already in the code list.
  */
- 
-public 
+
+public
 class NotManagedException extends RuntimeException
 {
     public NotManagedException(String s)
     {
         super(s);
     }
-    
+
     public NotManagedException()
     {
     }

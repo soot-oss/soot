@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -79,46 +78,46 @@ public abstract class BinopExpr implements Expr
 {
     ValueBox op1Box;
     ValueBox op2Box;
-        
+
     public Value getOp1()
     {
         return op1Box.getValue();
     }
-    
+
     public Value getOp2()
     {
         return op2Box.getValue();
     }
-    
+
     public ValueBox getOp1Box()
     {
         return op1Box;
     }
-    
+
     public ValueBox getOp2Box()
     {
         return op2Box;
     }
-    
+
     public void setOp1(Value op1)
     {
         op1Box.setValue(op1);
     }
-    
+
     public void setOp2(Value op2)
     {
         op2Box.setValue(op2);
     }
-    
+
     public List getUseBoxes()
     {
         List list = new ArrayList();
-        
+
         list.add(op1Box);
         list.add(op2Box);
         list.addAll(op1Box.getValue().getUseBoxes());
         list.addAll(op2Box.getValue().getUseBoxes());
-        
+
         return list;
     }
 }

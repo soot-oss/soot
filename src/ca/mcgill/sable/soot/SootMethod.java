@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -80,49 +79,49 @@ public class SootMethod
     String name;
     List parameterTypes;
     Type returnType;
-    
+
     boolean isDeclared;
     SootClass declaringClass;
-    
+
     int modifiers;
 
     List exceptions = new ArrayList();
 
     Map repToBody = new HashMap();
-        
+
     /**
      * Hooks for coffi.  Do not use!
      */
-     
+
     public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
-    
+
     /**
      * Hooks for coffi.  Do not use!
      */
-     
+
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
-                
+
     public SootMethod(String name, List parameterTypes, Type returnType)
     {
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
-        this.returnType = returnType; 
+        this.returnType = returnType;
     }
-    
+
     public SootMethod(String name, List parameterTypes, Type returnType, int modifiers)
     {
         this.name = name;
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
-        
+
         this.returnType = returnType;
         this.modifiers = modifiers;
     }
-    
+
     /*
-    public SootMethod(String name, List parameterTypes, Type returnType, int modifiers, 
+    public SootMethod(String name, List parameterTypes, Type returnType, int modifiers,
         InstListBody instListBody)
     {
         this.name = name;
@@ -130,11 +129,11 @@ public class SootMethod
         this.parameterTypes.addAll(parameterTypes);
         this.returnType = returnType;
         this.modifiers = modifiers;
-        
+
         this.instListBody = instListBody;
     }
     */
-      
+
     /*
     public SootMethod(String name, List parameterTypes, Type returnType, InstListBody instListBody)
     {
@@ -145,58 +144,58 @@ public class SootMethod
         this.instListBody = instListBody;
     }
  */
-    
-    public void setSource(ca.mcgill.sable.soot.coffi.ClassFile coffiClass, 
+
+    public void setSource(ca.mcgill.sable.soot.coffi.ClassFile coffiClass,
         ca.mcgill.sable.soot.coffi.method_info coffiMethod)
     {
         this.coffiClass = coffiClass;
-        this.coffiMethod = coffiMethod; 
+        this.coffiMethod = coffiMethod;
     }
-    
+
     public String getName()
     {
         return name;
     }
-        
+
     public SootClass getDeclaringClass() throws NotDeclaredException
     {
         if(!isDeclared)
             throw new NotDeclaredException(getName());
-            
+
         return declaringClass;
     }
-         
+
     public boolean isDeclared()
     {
         return isDeclared;
     }
-    
 
-    public void setName(String name) 
+
+    public void setName(String name)
     {
         this.name = name;
     }
-    
-    public int getModifiers() 
+
+    public int getModifiers()
     {
         return modifiers;
     }
-    
-    public void setModifiers(int modifiers) 
+
+    public void setModifiers(int modifiers)
     {
         this.modifiers = modifiers;
-    }    
-    
-    public Type getReturnType() 
+    }
+
+    public Type getReturnType()
     {
         return returnType;
     }
-    
+
     public void setReturnType(Type t)
     {
         returnType = t;
     }
-    
+
     public int getParameterCount()
     {
         return parameterTypes.size();
@@ -206,11 +205,11 @@ public class SootMethod
     {
         return (Type) parameterTypes.get(n);
     }
-    
+
     /**
      * Returns a backed list of the parameter types of this method.
      */
-     
+
     public List getParameterTypes()
     {
         return parameterTypes;
@@ -219,7 +218,7 @@ public class SootMethod
     /**
         Retrieves a stored representation for the body of the method.
      */
-     
+
     public Body getBody(BodyRepresentation bodyRep)
     {
         if(bodyRep.equals(ClassFile.v()))
@@ -227,24 +226,24 @@ public class SootMethod
         else if(repToBody.containsKey(bodyRep))
             return (Body) repToBody.get(bodyRep);
         else
-            throw new RuntimeException("Method does not have a stored representation for" + bodyRep);    
+            throw new RuntimeException("Method does not have a stored representation for" + bodyRep);
     }
 
     /**
-        Stores a representation for the body of the method. 
-     */    
-     
+        Stores a representation for the body of the method.
+     */
+
     public void storeBody(BodyRepresentation r, Body b)
     {
         repToBody.put(r, b);
     }
-    
+
     /*
     public void setInstListBody(InstListBody instListBody)
     {
         this.instListBody = instListBody;
     }
-    
+
     public InstListBody getInstListBody()
     {
         if(instListBody == null)
@@ -252,8 +251,8 @@ public class SootMethod
             instListBody = new InstListBody(this, coffiClass, coffiMethod);
             coffiClass = null;
             coffiMethod = null;
-        }       
-        
+        }
+
         return instListBody;
     }
 */
@@ -261,114 +260,114 @@ public class SootMethod
     {
         if(exceptions.contains(e))
             throw new AlreadyThrowsException(e.getName());
-        
+
         exceptions.add(e);
     }
-    
+
     public void removeException(SootClass e) throws DoesNotThrowException
     {
         if(!exceptions.contains(e))
             throw new DoesNotThrowException(e.getName());
     }
-    
+
     public boolean throwsException(SootClass e)
     {
         return exceptions.contains(e);
     }
-    
+
     /**
      * Returns a backed list of the exceptions thrown by this method.
      */
-     
+
     public List getExceptions()
     {
         return exceptions;
     }
-    
+
     public void setParameterTypes(List parameterTypes)
     {
         this.parameterTypes = new ArrayList();
         this.parameterTypes.addAll(parameterTypes);
     }
-    
-    
-    /** 
-     * For convenience.  
+
+
+    /**
+     * For convenience.
      */
-    
+
     public boolean isStatic()
     {
         return Modifier.isStatic(this.getModifiers());
     }
-    
+
     /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.
      */
-    
+
     public String getSignature()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append(getDeclaringClass().getName());
         buffer.append(".");
         buffer.append(getName());
         buffer.append("(");
-        
+
         Iterator typeIt = getParameterTypes().iterator();
-        
+
         if(typeIt.hasNext())
         {
             buffer.append(typeIt.next());
-            
+
             while(typeIt.hasNext())
             {
                 buffer.append(",");
                 buffer.append(typeIt.next());
             }
         }
-        
+
         buffer.append(")");
-        
+
         buffer.append(":" + getReturnType().toString());
-        
+
         return buffer.toString();
     }
 
     public String toString()
     {
         return getSignature();
-    }    
-    
+    }
+
     /**
         Returns the declaration of this method.  Used at the tops of textual body representations (before the {}'s containing the code
         for representation.)
      */
-     
+
     public String getDeclaration()
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         buffer.append(Modifier.toString(this.getModifiers()));
-        
+
         if(buffer.length() != 0)
             buffer.append(" ");
-            
+
         buffer.append(this.getReturnType().toString() + " " + this.getName());
         buffer.append("(");
 
         Iterator typeIt = this.getParameterTypes().iterator();
-        
+
         if(typeIt.hasNext())
         {
             buffer.append(typeIt.next());
-            
+
             while(typeIt.hasNext())
             {
                 buffer.append(", ");
                 buffer.append(typeIt.next());
             }
         }
-        
+
         buffer.append(")");
 
         // Print exceptions
@@ -378,20 +377,20 @@ public class SootMethod
             if(exceptionIt.hasNext())
             {
                 buffer.append(" throws ");
-                buffer.append(((SootClass) exceptionIt.next()).getName());  
-                
+                buffer.append(((SootClass) exceptionIt.next()).getName());
+
                 while(exceptionIt.hasNext())
                 {
                     buffer.append(", ");
-                    buffer.append(((SootClass) exceptionIt.next()).getName());  
+                    buffer.append(((SootClass) exceptionIt.next()).getName());
                 }
             }
-            
-        }        
-        
+
+        }
+
         return buffer.toString();
     }
-    
+
 }
 
 

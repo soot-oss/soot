@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -77,26 +76,26 @@ import ca.mcgill.sable.util.*;
 public class FloatType extends BaseType
 {
     private static final FloatType constant = new FloatType();
-    
+
     private FloatType()
     {
     }
-    
+
     public static FloatType v()
     {
         return constant;
     }
-    
+
     public boolean equals(Object t)
     {
         return this == t;
     }
-        
+
     public String toString()
     {
         return "float";
     }
-    
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseFloatType(this);

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -118,34 +117,34 @@ class LocalVariableTable_attribute extends attribute_info {
    public short local_variable_table_length;
    /** Actual table of local variables. */
    public local_variable_table_entry local_variable_table[];
-   
+
    /** Locates the first name found for a given local variable.
     * @param constant_pool constant pool for the associated class.
-    * @param idx local variable index. 
-    * @return name of the local variable, or <i>null</i> if not found. 
+    * @param idx local variable index.
+    * @return name of the local variable, or <i>null</i> if not found.
     * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int, int)
     */
-   public String getLocalVariableName(cp_info constant_pool[],int idx) { 
-      return getLocalVariableName(constant_pool,idx,-1); 
+   public String getLocalVariableName(cp_info constant_pool[],int idx) {
+      return getLocalVariableName(constant_pool,idx,-1);
    }
    /** Locates the name of the given local variable for the specified code offset.
     * @param constant_pool constant pool for the associated class.
-    * @param idx local variable index. 
+    * @param idx local variable index.
     * @param code code offset for variable name; use -1 to return the first name found
     * for that local variable.
-    * @return name of the local variable, or <i>null</i> if not found. 
+    * @return name of the local variable, or <i>null</i> if not found.
     * @see LocalVariableTable_attribute#getLocalVariableName(cp_info[], int)
     */
    public String getLocalVariableName(cp_info constant_pool[],int idx,int code) {
       local_variable_table_entry e;
       CONSTANT_Utf8_info cu;
       int i;
-      
+
       // now to find that variable
       for (i=0;i<local_variable_table_length;i++) {
          e = local_variable_table[i];
-         if (e.index==idx && 
-             (code==-1 || 
+         if (e.index==idx &&
+             (code==-1 ||
               (code>=e.start_pc && code<e.start_pc+e.length))) {
             // found the variable, now find its name.
             if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info)

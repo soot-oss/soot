@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -80,51 +79,51 @@ public class GotoStmt extends Stmt
     UnitBox targetBox;
 
     List targetBoxes;
-        
+
     GotoStmt(Unit target)
     {
         this.targetBox = Jimple.v().newStmtBox(target);
-        
+
         targetBoxes = new ArrayList();
         targetBoxes.add(this.targetBox);
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
-    
+
     public String toString()
     {
         return "goto ?";
     }
-    
+
     public Unit getTarget()
     {
         return targetBox.getUnit();
     }
-    
+
     public void setTarget(Unit target)
     {
         targetBox.setUnit(target);
     }
-    
+
     public UnitBox getTargetBox()
     {
         return targetBox;
     }
-    
+
     public List getDefBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUseBoxes()
     {
         return emptyList;
     }
-    
+
     public List getUnitBoxes()
     {
         return targetBoxes;
     }
-    
+
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseGotoStmt(this);

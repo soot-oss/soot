@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -81,66 +80,66 @@ import ca.mcgill.sable.util.*;
  * Please note that referring to a class as a type will not cause the
  * class to be loaded.
  */
- 
+
 public class SootClassManager
 {
-    List classes = new ArrayList(); 
-    
+    List classes = new ArrayList();
+
     public SootClassManager()
     {
     }
-    
+
     public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
     {
         if(c.isManaged())
             throw new AlreadyManagedException(c.getName());
-        
+
         if(managesClass(c.getName()))
             throw new DuplicateNameException(c.getName());
-            
+
         classes.add(c);
         c.isManaged = true;
         c.manager = this;
     }
-    
+
     public void removeClass(SootClass c) throws IncorrectManagerException
     {
         if(!c.isManaged() || c.getManager() != this)
             throw new IncorrectManagerException(c.getName());
-        
+
         classes.remove(c);
         c.isManaged = false;
     }
-    
+
     public boolean managesClass(String className)
     {
         Object[] elements = classes.toArray();
-        
+
         for(int i = 0; i < elements.length; i++)
         {
             SootClass c = (SootClass) elements[i];
-            
+
             if(c.getName().equals(className))
                 return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Returns the SootClass with the given className.  Loads it if it is not present.
      */
-     
-    public SootClass getClass(String className) throws ClassFileNotFoundException, 
+
+    public SootClass getClass(String className) throws ClassFileNotFoundException,
                                              CorruptClassFileException,
                                              DuplicateNameException
     {
         Object[] elements = classes.toArray();
-        
+
         for(int i = 0; i < elements.length; i++)
         {
             SootClass c = (SootClass) elements[i];
-            
+
             if(c.getName().equals(className))
                 return c;
         }
@@ -148,13 +147,13 @@ public class SootClassManager
         // Not there, create an unresolved class.
         {
             SootClass SootClass = new SootClass(className);
-            
+
             addClass(SootClass);
-            
+
             return SootClass;
         }
     }
-    
+
     public List getClasses()
     {
         return Collections.unmodifiableList(classes);

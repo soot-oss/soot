@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -115,103 +114,103 @@ import ca.mcgill.sable.soot.*;
 class TypeArray implements ca.mcgill.sable.util.ValueObject
 {
     private static SootClassManager cm;
-    
+
     private Type[] types;
-    
+
     public static void setClassManager(SootClassManager cm)
     {
         TypeArray.cm = cm;
-    } 
-    
+    }
+
     private TypeArray()
     {
     }
-    
+
     /**
      * Returns an empty array of types.
-     * 
+     *
      */
-     
+
     public static TypeArray v(int size)
     {
         TypeArray newArray = new TypeArray();
-        
+
         newArray.types = new Type[size];
-        
+
         for(int i =  0; i < size; i++)
             newArray.types[i] = UnusuableType.v();
-            
-        return newArray;    
+
+        return newArray;
     }
-    
+
     public Type get(int index)
     {
         return types[index];
     }
-    
+
     public TypeArray set(int index, Type type)
     {
         TypeArray newArray = new TypeArray();
-        
+
         newArray.types = (Type[]) types.clone();
         newArray.types[index] = type;
-        
+
         return newArray;
     }
-    
+
     public boolean equals(Object obj)
     {
         if(obj instanceof TypeArray)
         {
             TypeArray other = (TypeArray) obj;
-            
+
             if(types.length != other.types.length)
                 return false;
-                
+
             for(int i = 0; i < types.length; i++)
                 if(!types[i].equals(other.types[i]))
                     return false;
-                    
+
             return true;
         }
         else
             return false;
     }
-    
+
     public TypeArray merge(TypeArray otherArray)
     {
         TypeArray newArray = new TypeArray();
-        
+
         if(types.length != otherArray.types.length)
             throw new RuntimeException("Merging of type arrays failed; unequal array length");
-            
+
         newArray.types = new Type[types.length];
-        
+
         for(int i = 0; i < types.length; i++)
         {
             if(types[i].equals(otherArray.types[i]))
                 newArray.types[i] = types[i];
-            else if((types[i] instanceof ArrayType || 
-                types[i] instanceof RefType) && 
-                (otherArray.types[i] instanceof ArrayType 
+            else if((types[i] instanceof ArrayType ||
+                types[i] instanceof RefType) &&
+                (otherArray.types[i] instanceof ArrayType
                     || otherArray.types[i] instanceof RefType))
             {
                 // This type merge does not need to be accurate, because it is not really used
-                
+
                 newArray.types[i] = RefType.v("java.lang.Object");
             }
             else {
                 newArray.types[i] = UnusuableType.v();
             }
-        }        
+        }
         return newArray;
     }
-    
+
     public void print(PrintStream out)
     {
         for(int i = 0; i < types.length; i++)
             out.println(i + ": " + types[i].toString());
-    }    
+    }
 }
 
 

@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -79,73 +78,73 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
  package ca.mcgill.sable.soot;
 
-public class TypeSwitch implements ca.mcgill.sable.util.Switch 
+public class TypeSwitch implements ca.mcgill.sable.util.Switch
 {
     Object result;
-    
+
     public void caseArrayType(ArrayType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseBooleanType(BooleanType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseByteType(ByteType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseCharType(CharType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseDoubleType(DoubleType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseFloatType(FloatType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseIntType(IntType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseLongType(LongType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseRefType(RefType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseShortType(ShortType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseStmtAddressType(StmtAddressType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseUnknownType(UnknownType t)
     {
         defaultCase(t);
     }
-    
+
     public void caseVoidType(VoidType t)
     {
         defaultCase(t);
@@ -155,28 +154,28 @@ public class TypeSwitch implements ca.mcgill.sable.util.Switch
     {
         defaultCase(t);
     }
-    
+
     public void caseErroneousType(ErroneousType t)
     {
         defaultCase(t);
     }
-    
+
     public void defaultCase(Type t)
     {
-        
+
     }
-        
+
     /** @deprecated Replaced by defaultCase
         @see defaultCase(Type) **/
     public void caseDefault(Type t)
     {
     }
-      
+
     public void setResult(Object result)
     {
         this.result = result;
     }
-    
+
     public Object getResult()
     {
         return this.result;

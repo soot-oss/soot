@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -109,7 +108,7 @@ package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 
 /** There should be exactly one code attribute in every method; there
- * may also be a code attribute associated with a field (as an 
+ * may also be a code attribute associated with a field (as an
  * initializer).
  * @see attribute_info
  * @see method_info#attributes
@@ -134,7 +133,7 @@ class Code_attribute extends attribute_info {
    public exception_table_entry exception_table[];
    /** Length of attributes array. */
    short attributes_count;
-   /** Array of attributes. 
+   /** Array of attributes.
     * @see attribute_info
     */
    attribute_info attributes[];

@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -111,21 +110,21 @@ import ca.mcgill.sable.soot.*;
 class Long2ndHalfType extends Type
 {
     private static Long2ndHalfType constant = new Long2ndHalfType();
-    
+
     private Long2ndHalfType()
     {
     }
-    
+
     public static Long2ndHalfType v()
     {
         return constant;
     }
-    
+
     public boolean equals(Type otherType)
     {
         return otherType instanceof Long2ndHalfType;
     }
-    
+
     public String toString()
     {
         return "long2ndhalf";

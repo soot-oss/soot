@@ -30,7 +30,7 @@
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-  
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Coffi, a bytecode parser for the Java(TM) language.               *
  * Copyright (C) 1996, 1997 Clark Verbrugge (clump@sable.mcgill.ca). *
@@ -69,7 +69,6 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $SootVersion$
 
  Change History
  --------------
@@ -107,9 +106,9 @@
 package ca.mcgill.sable.soot.coffi;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
- * bytecode operation has a corresponding subclass of Instruction.  
+ * bytecode operation has a corresponding subclass of Instruction.
  * <p>
- * Each subclass is derived from one of 
+ * Each subclass is derived from one of
  * <ul><li>Instruction</li>
  * <li>Instruction_noargs (an Instruction with no embedded arguments)</li>
  * <li>Instruction_byte (an Instruction with a single byte data argument)</li>
@@ -118,7 +117,7 @@ import java.io.*;
  * <li>Instruction_int (an Instruction with a single short data argument)</li>
  * <li>Instruction_intvar (a short argument specifying a local variable)</li>
  * <li>Instruction_intindex (a short argument specifying a constant pool index)</li>
- * <li>Instruction_intbranch (a short argument specifying a code offset)</li> 
+ * <li>Instruction_intbranch (a short argument specifying a code offset)</li>
  * <li>Instruction_longbranch (an int argument specifying a code offset)</li>
  * </ul>
  * @author Clark Verbrugge
@@ -135,33 +134,33 @@ import java.io.*;
  * @see Instruction_Unknown
  */
 class Instruction_Invokeinterface extends Instruction_intindex {
-   public Instruction_Invokeinterface() { 
-      super((byte)ByteCode.INVOKEINTERFACE); 
-      name = "invokeinterface"; 
-      //branches = true; 
+   public Instruction_Invokeinterface() {
+      super((byte)ByteCode.INVOKEINTERFACE);
+      name = "invokeinterface";
+      //branches = true;
       calls = true;
    }
    public byte nargs;
    public byte reserved;
    public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep + nargs + argsep + 
+      return super.toString(constant_pool) + argsep + nargs + argsep +
          "(reserved " + reserved + ")";
    }
    public int nextOffset(int curr) { return super.nextOffset(curr)+2; }
-   public int parse(byte bc[],int index) { 
+   public int parse(byte bc[],int index) {
       index = super.parse(bc,index);
       nargs = bc[index];
       index++;
       reserved = bc[index];
-      return index+1; 
+      return index+1;
    }
-   public int compile(byte bc[],int index) { 
+   public int compile(byte bc[],int index) {
       index = super.compile(bc,index);
       bc[index++] = nargs;
       bc[index++] = reserved;
-      return index; 
+      return index;
    }
-   /*Instruction[] branchpoints(Instruction next) { 
+   /*Instruction[] branchpoints(Instruction next) {
      public Instruction i[] = new Instruction[1];
      i[0] = null;
      return i;

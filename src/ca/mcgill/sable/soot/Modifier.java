@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot;
 
 // Incomplete class
@@ -96,96 +95,96 @@ public class Modifier
     {
         return (m & ABSTRACT) != 0;
     }
-    
+
     public static boolean isFinal(int m )
     {
         return (m & FINAL) != 0;
     }
-    
+
     public static boolean isInterface(int m)
     {
         return (m & INTERFACE) != 0;
     }
-    
+
     public static boolean isNative(int m)
     {
         return (m & NATIVE) != 0;
     }
-    
+
     public static boolean isPrivate(int m)
     {
         return (m & PRIVATE) != 0;
     }
-    
+
     public static boolean isProtected(int m)
     {
         return (m & PROTECTED) != 0;
     }
-    
+
     public static boolean isPublic(int m)
     {
         return (m & PUBLIC) != 0;
     }
-    
+
     public static boolean isStatic(int m)
     {
         return (m & STATIC) != 0;
     }
-    
+
     public static boolean isSynchronized(int m)
     {
         return (m & SYNCHRONIZED) != 0;
     }
-    
+
     public static boolean isTransient(int m )
     {
         return (m & TRANSIENT) != 0;
     }
-    
+
     public static boolean isVolatile(int m)
     {
         return (m & VOLATILE) != 0;
     }
-    
+
     /**
-     * Converts the given modifiers to their string representation, in canonical form.  
+     * Converts the given modifiers to their string representation, in canonical form.
      */
-     
+
     public static String toString(int m)
     {
         StringBuffer buffer = new StringBuffer();
-        
+
         if(isPublic(m))
-            buffer.append("public "); 
+            buffer.append("public ");
         else if(isPrivate(m))
             buffer.append("private ");
         else if(isProtected(m))
             buffer.append("protected ");
-            
+
         if(isAbstract(m))
             buffer.append("abstract ");
 
         if(isInterface(m))
             buffer.append("interface ");
-                        
+
         if(isStatic(m))
             buffer.append("static ");
-            
+
         if(isFinal(m))
             buffer.append("final ");
-            
+
         if(isSynchronized(m))
             buffer.append("synchronized ");
-            
+
         if(isNative(m))
             buffer.append("native ");
-        
+
         if(isTransient(m))
             buffer.append("transient ");
-    
+
         if(isVolatile(m))
             buffer.append("volatile ");
-                        
+
         return (buffer.toString()).trim();
     }
 }

@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,59 +68,59 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public abstract class Stmt implements Unit
-{   
+{
     /**
      * The list of boxes is not dynamically updated as the structure changes.
      */
-    
+
     public abstract List getUseBoxes();
-    
+
     /**
      * The list of boxes is not dynamically updated as the structure changes.
      */
-    
+
     public abstract List getDefBoxes();
-    
+
     /**
      * The list of boxes is not dynamically updated as the structure changes.
      */
-     
+
     public abstract List getUnitBoxes();
-    
+
     static List emptyList = Collections.unmodifiableList(new ArrayList());
-    
+
     List boxesPointingToThis = new ArrayList();
     List valueBoxes = null;
-    
+
     List getBoxesPointingToThis()
     {
         return boxesPointingToThis;
     }
-    
+
     public List getUseAndDefBoxes()
     {
         if(valueBoxes == null)
         {
             valueBoxes = new ArrayList();
-            
+
             valueBoxes.addAll(getUseBoxes());
             valueBoxes.addAll(getDefBoxes());
-            
+
             valueBoxes = Collections.unmodifiableList(valueBoxes);
         }
-            
+
         return valueBoxes;
     }
-    
+
     public void apply(Switch sw)
     {
     }
-    
+
 }

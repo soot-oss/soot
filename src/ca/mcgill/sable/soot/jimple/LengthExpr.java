@@ -35,7 +35,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -69,7 +68,7 @@
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
@@ -81,17 +80,17 @@ public class LengthExpr extends UnopExpr
     {
         opBox = Jimple.v().newImmediateBox(op);
     }
-        
+
     public String toString()
     {
         return "lengthof " + opBox.getValue().toString();
     }
-    
+
     public Type getType()
     {
         return IntType.v();
     }
-    
+
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseLengthExpr(this);

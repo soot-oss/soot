@@ -39,7 +39,6 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -76,7 +75,7 @@
  - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Initial Version.
 */
- 
+
 package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.util.*;
@@ -84,26 +83,26 @@ import ca.mcgill.sable.util.*;
 public class ErroneousType extends Type
 {
     private static ErroneousType constant = new ErroneousType();
-     
+
     private ErroneousType()
     {
     }
-    
+
     public static ErroneousType v()
     {
         return constant;
     }
-    
+
     public boolean equals(Object t)
     {
         return this == t;
     }
-    
+
     public String toString()
     {
         return "<error>";
     }
-    
+
     public void apply(Switch sw)
     {
         ((TypeSwitch) sw).caseErroneousType(this);
