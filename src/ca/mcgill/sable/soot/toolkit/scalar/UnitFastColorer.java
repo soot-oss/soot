@@ -234,16 +234,7 @@ public class UnitFastColorer
        
 
         UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
-	Iterator it = intGraph.getLocals().iterator();
-	
-	while(it.hasNext()) {
-	    Local local = (Local) it.next();
-	    Local[] locals = intGraph.getInterferencesOf(local);
-	    System.out.print(local + ":");
-	    for(int i = 0; i < locals.length; i++) 
-		System.out.print(locals[i] + " ");
-	    System.out.println("");
-	}
+
 
         // Assign a color for each local.
         {
