@@ -39,24 +39,6 @@ public class HashChain extends AbstractCollection
     private Object lastItem;
     private long stateCount = 0;  
 
-    /** Converts the given List to a freshly-generated HashChain. */
-    public static Chain listToHashChain(List l)
-    {
-        Iterator it = l.iterator();
-        HashChain chain = new HashChain();
-        HashMap bindings = new HashMap();
-
-        while(it.hasNext()) {
-            Unit tempp = (Unit) it.next();
-            System.out.println(tempp.toString());
-            Unit copy = (Unit) tempp.clone();
-            bindings.put(tempp,copy);
-            chain.addLast(copy);
-        }
-
-        return chain;
-    }
-
     /** Erases the contents of the current HashChain. */
     public void clear() 
     {
