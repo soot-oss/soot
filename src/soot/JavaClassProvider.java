@@ -48,7 +48,7 @@ public class JavaClassProvider implements ClassProvider
 
         String fileName = javaClassName.replace('.', File.separatorChar) + ".java";
         SourceLocator.FoundFile file = 
-            SourceLocator.v().lookupInClassPath(className);
+            SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ) return null;
         if( file.file == null ) {
             throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );

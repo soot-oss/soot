@@ -315,7 +315,7 @@ public class Scene  //extends AbstractHost
 	    return c;
 	}
 	else {          
-	    throw new RuntimeException( System.getProperty("line.separator") + "Aborting: can't find classfile" + className );            
+	    throw new RuntimeException( System.getProperty("line.separator") + "Aborting: can't find classfile " + className );            
 	}
     }
 

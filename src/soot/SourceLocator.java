@@ -78,6 +78,18 @@ public class SourceLocator
     private List classPath;
     public List classPath() { return classPath; }
 
+    private List sourcePath;
+    public List sourcePath() {
+        if( sourcePath == null ) {
+            sourcePath = new ArrayList();
+            for( Iterator dirIt = classPath.iterator(); dirIt.hasNext(); ) {
+                final String dir = (String) dirIt.next();
+                if( !isJar(dir) ) sourcePath.add(dir);
+            }
+        }
+        return sourcePath;
+    }
+
     private boolean isJar(String path) {
 	File f = new File(path);	
 	if(f.isFile() && f.canRead()) { 		
@@ -324,12 +336,32 @@ public class SourceLocator
         public InputStream inputStream() {
             try {
                 if( file != null ) return new FileInputStream(file);
-                return zipFile.getInputStream(entry);
+                return doJDKBugWorkaround(zipFile.getInputStream(entry),
+                        entry.getSize());
             } catch( IOException e ) {
                 throw new RuntimeException( "Caught IOException "+e );
             }
         }
     }
+
+    private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+	
+	int sz = (int) size;
+	byte[] buf = new byte[sz];					
+				
+				    
+	final int N = 1024;
+	int ln = 0;
+	int count = 0;
+	while (sz > 0 &&  
+	       (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
+	    count += ln;
+	    sz -= ln;
+	}
+	return  new ByteArrayInputStream(buf);		
+    }
+
+
     /** Searches for a file with the given name in the exploded classPath. */
     public FoundFile lookupInClassPath( String fileName ) {
         for( Iterator dirIt = classPath.iterator(); dirIt.hasNext(); ) {
@@ -345,7 +377,7 @@ public class SourceLocator
         return null;
     }
     private FoundFile lookupInDir(String dir, String fileName) {
-        File f = new File( dir+fileName );
+        File f = new File( dir+File.separatorChar+fileName );
         if( f.canRead() ) {
             return new FoundFile(f);
         }

@@ -116,7 +116,8 @@ public class Util
         
         // Load up class file, and retrieve bclass from class manager.
         {
-            boolean success = coffiClass.loadClassFile(is);                                  
+            boolean success = coffiClass.loadClassFile(is);
+
             if(!success)
                 {
                     if(!Scene.v().allowsPhantomRefs())
