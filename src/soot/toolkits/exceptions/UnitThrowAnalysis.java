@@ -126,7 +126,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	private ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
 
 	// Asynchronous errors are always possible:
-	private ThrowableSet result = mgr.ASYNC_ERRORS;
+	private ThrowableSet result = mgr.VM_ERRORS;
 	
 	ThrowableSet getResult() {
 	    return result;
@@ -217,55 +217,55 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseStaticGetInst(StaticGetInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	}
 
 	public void caseStaticPutInst(StaticPutInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	}
 
 	public void caseFieldGetInst(FieldGetInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_FIELD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
 	}
 
 	public void caseFieldPutInst(FieldPutInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_FIELD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
 	}
 
 	public void caseInstanceCastInst(InstanceCastInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    result = result.add(mgr.CLASS_CAST_EXCEPTION);
 	}
 
 	public void caseInstanceOfInst(InstanceOfInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	}
 
 	public void casePrimitiveCastInst(PrimitiveCastInst i) {
 	}
 
 	public void caseStaticInvokeInst(StaticInvokeInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	    result = result.add(mightThrow(i.getMethod()));
 	}
 
 	public void caseVirtualInvokeInst(VirtualInvokeInst i) {
+	    result = result.add(mgr.RESOLVE_METHOD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
-	    result = result.add(mgr.LINKAGE_ERRORS);
 	    result = result.add(mightThrow(i.getMethod()));
 	}
 
 	public void caseInterfaceInvokeInst(InterfaceInvokeInst i) {
+	    result = result.add(mgr.RESOLVE_METHOD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
-	    result = result.add(mgr.LINKAGE_ERRORS);
 	    result = result.add(mightThrow(i.getMethod()));
 	}
 
 	public void caseSpecialInvokeInst(SpecialInvokeInst i) {
+	    result = result.add(mgr.RESOLVE_METHOD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
-	    result = result.add(mgr.LINKAGE_ERRORS);
 	    result = result.add(mightThrow(i.getMethod()));
 	}
 
@@ -337,7 +337,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseNewInst(NewInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	}
 	    
 	public void caseNegInst(NegInst i) {
@@ -365,12 +365,12 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseNewArrayInst(NewArrayInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS); // Could be omitted for primitive arrays.
 	    result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
 	}
 
 	public void caseNewMultiArrayInst(NewMultiArrayInst i) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    result = result.add(mgr.NEGATIVE_ARRAY_SIZE_EXCEPTION);
 	}
 
@@ -418,7 +418,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseIdentityStmt(IdentityStmt s) {}
-	// Perhaps IdentityStmt shouldn't even return ASYNC_ERRORS,
+	// Perhaps IdentityStmt shouldn't even return VM_ERRORS,
 	// since it corresponds to no bytecode instructions whatsoever.
 
 	public void caseIfStmt(IfStmt s) {
@@ -486,7 +486,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	    ThrowableSet.Manager.v();
 
 	// Asynchronous errors are always possible:
-	private ThrowableSet result = mgr.ASYNC_ERRORS;
+	private ThrowableSet result = mgr.VM_ERRORS;
 	
 	ThrowableSet getResult() {
 	    return result;
@@ -605,7 +605,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseStaticInvokeExpr(StaticInvokeExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	    for (int i = 0; i < expr.getArgCount(); i++) {
 		result = result.add(mightThrow(expr.getArg(i)));
 	    }
@@ -617,7 +617,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseCastExpr(CastExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    Type fromType = expr.getOp().getType();
 	    Type toType = expr.getCastType();
 	    if (toType instanceof RefLikeType) {
@@ -634,13 +634,13 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 		
 	public void caseInstanceOfExpr(InstanceOfExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    result = result.add(mightThrow(expr.getOp()));
 	}
 
 	public void caseNewArrayExpr(NewArrayExpr expr) {
 	    if (expr.getBaseType() instanceof RefLikeType) {
-		result = result.add(mgr.LINKAGE_ERRORS);
+		result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    }
 	    Value count = expr.getSize();
 	    if ((! (count instanceof IntConstant)) ||
@@ -652,7 +652,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseNewMultiArrayExpr(NewMultiArrayExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_CLASS_ERRORS);
 	    for (int i = 0; i < expr.getSizeCount(); i++) {
 		Value count = expr.getSize(i);
 		if ((! (count instanceof IntConstant)) ||
@@ -665,7 +665,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseNewExpr(NewExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	    for (Iterator i = expr.getUseBoxes().iterator(); i.hasNext(); ) {
 		ValueBox box = (ValueBox) i.next();
 		result = result.add(mightThrow(box.getValue()));
@@ -692,11 +692,11 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	public void caseStaticFieldRef(StaticFieldRef ref) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.INITIALIZATION_ERRORS);
 	}
 
 	public void caseInstanceFieldRef(InstanceFieldRef ref) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_FIELD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
 	    result = result.add(mightThrow(ref.getBase()));
 	}
@@ -756,7 +756,7 @@ public class UnitThrowAnalysis implements ThrowAnalysis {
 	}
 
 	private void caseInstanceInvokeExpr(InstanceInvokeExpr expr) {
-	    result = result.add(mgr.LINKAGE_ERRORS);
+	    result = result.add(mgr.RESOLVE_METHOD_ERRORS);
 	    result = result.add(mgr.NULL_POINTER_EXCEPTION);
 	    for (int i = 0; i < expr.getArgCount(); i++) {
 		result = result.add(mightThrow(expr.getArg(i)));

@@ -69,30 +69,56 @@ public final class ThrowableSet {
 	 * <code>ThrowableSet</code> representing all possible
 	 * Throwables.
 	 */
-	public final ThrowableSet ALL_THROWABLES;
+	final ThrowableSet ALL_THROWABLES;
 
 	/**
-	 * <code>ThrowableSet</code> containing all the
-	 * asynchronous exceptions.
+	 * <code>ThrowableSet</code> containing all the asynchronous
+	 * and virtual machine errors, which may be thrown by any
+	 * bytecode instruction at any point in the computation.
 	 */
-	public final ThrowableSet ASYNC_ERRORS;
+	final ThrowableSet VM_ERRORS;
 
 	/**
-	 * <code>ThrowableSet</code> containing all the
-	 * exceptions which may be thrown by an instruction that
-	 * causes a new class to be loaded.
+	 * <code>ThrowableSet</code> containing all the exceptions
+	 * that may be thrown in the course of resolving a reference
+	 * to another class, including the process of loading, preparing,
+	 * and verifying the referenced class.
 	 */
-	public final ThrowableSet LINKAGE_ERRORS;
+	final ThrowableSet RESOLVE_CLASS_ERRORS;
 
-	public final RefType RUNTIME_EXCEPTION;
-	public final RefType ARITHMETIC_EXCEPTION;
-	public final RefType ARRAY_STORE_EXCEPTION;
-	public final RefType CLASS_CAST_EXCEPTION;
-	public final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
-	public final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	public final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	public final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
-	public final RefType NULL_POINTER_EXCEPTION;
+	/**
+	 * <code>ThrowableSet</code> containing all the exceptions
+	 * that may be thrown in the course of resolving a reference
+	 * to a field.
+	 */
+	final ThrowableSet RESOLVE_FIELD_ERRORS;
+
+	/**
+	 * <code>ThrowableSet</code> containing all the exceptions
+	 * that may be thrown in the course of resolving a reference
+	 * to a non-static method.
+	 */
+	final ThrowableSet RESOLVE_METHOD_ERRORS;
+
+	/**
+	 * <code>ThrowableSet</code> containing all the exceptions
+	 * which may be thrown by instructions that have the potential
+	 * to cause a new class to be loaded and initialized (including
+	 * UnsatisfiedLinkError, which is raised at runtime rather than
+	 * linking type).
+	 */
+	final ThrowableSet INITIALIZATION_ERRORS;
+
+	final RefType RUNTIME_EXCEPTION;
+	final RefType ARITHMETIC_EXCEPTION;
+	final RefType ARRAY_STORE_EXCEPTION;
+	final RefType CLASS_CAST_EXCEPTION;
+	final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
+	final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
+	final RefType NULL_POINTER_EXCEPTION;
+	final RefType INSTANTIATION_ERROR;
 
 	// counts for instrumenting:
 	private int registeredSets = 0;
@@ -133,7 +159,6 @@ public final class ThrowableSet {
 	    Scene.v().loadClassAndSupport("java.lang.IllegalMonitorStateException");
             ILLEGAL_MONITOR_STATE_EXCEPTION = 
                 Scene.v().getRefType("java.lang.IllegalMonitorStateException");
-
 	    Scene.v().loadClassAndSupport("java.lang.IndexOutOfBoundsException");
 	    INDEX_OUT_OF_BOUNDS_EXCEPTION =
 		Scene.v().getRefType("java.lang.IndexOutOfBoundsException");
@@ -147,89 +172,80 @@ public final class ThrowableSet {
 	    NULL_POINTER_EXCEPTION = 
 		Scene.v().getRefType("java.lang.NullPointerException");
 
-	    // linkage errors:
-	    Scene.v().loadClassAndSupport("java.lang.LinkageError");
-	    Scene.v().loadClassAndSupport("java.lang.ClassCircularityError");
-	    Scene.v().loadClassAndSupport("java.lang.ClassFormatError");
-	    Scene.v().loadClassAndSupport("java.lang.UnsupportedClassVersionError");
-	    Scene.v().loadClassAndSupport("java.lang.ExceptionInInitializerError");
-	    Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");
-	    Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
-	    Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
 	    Scene.v().loadClassAndSupport("java.lang.InstantiationError");
-	    Scene.v().loadClassAndSupport("java.lang.NoSuchFieldError");
-	    Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
-	    Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError");
-	    Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
-	    Scene.v().loadClassAndSupport("java.lang.VerifyError");
-
-	    // VM and async errors:
-	    Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
-	    Scene.v().loadClassAndSupport("java.lang.VirtualMachineError");
-	    Scene.v().loadClassAndSupport("java.lang.InternalError");
-	    Scene.v().loadClassAndSupport("java.lang.OutOfMemoryError");
-	    Scene.v().loadClassAndSupport("java.lang.StackOverflowError");
-	    Scene.v().loadClassAndSupport("java.lang.UnknownError");
-
-	    // superclasses of the others.
-	    Scene.v().loadClassAndSupport("java.lang.Error");
-	    Scene.v().loadClassAndSupport("java.lang.Throwable");
+	    INSTANTIATION_ERROR =
+		Scene.v().getRefType("java.lang.InstantiationError");
 
 	    EMPTY = registerSetIfNew(new HashSet());
 
 	    Set allThrowablesSet = new HashSet();
+	    Scene.v().loadClassAndSupport("java.lang.Throwable");
 	    allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
 	    ALL_THROWABLES = registerSetIfNew(allThrowablesSet);
 
-	    Set asyncSet = new HashSet();
-	    // From section 6.3 and 2.16.4 of the VM spec.  Note that
-	    // there is nothing to stop programmers from defining their
-	    // own subclasses of java.lang.VirtualMachineError that could
-	    // not be delivered asynchronously (they shouldn't, but there
-	    // is nothing to stop them), so we should not substitute
-	    // AnySubType(java.lang.VirtualMachineError) for these four
-	    // individual Errors:
-	    asyncSet.add(Scene.v().getRefType("java.lang.InternalError"));
-	    asyncSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
-	    asyncSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
-	    asyncSet.add(Scene.v().getRefType("java.lang.UnknownError"));
+	    Set vmErrorSet = new HashSet();
+	    Scene.v().loadClassAndSupport("java.lang.InternalError");
+	    vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
+	    Scene.v().loadClassAndSupport("java.lang.OutOfMemoryError");
+	    vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
+	    Scene.v().loadClassAndSupport("java.lang.StackOverflowError");
+	    vmErrorSet.add(Scene.v().getRefType("java.lang.StackOverflowError"));
+	    Scene.v().loadClassAndSupport("java.lang.UnknownError");
+	    vmErrorSet.add(Scene.v().getRefType("java.lang.UnknownError"));
 
 	    // The Java library's deprecated Thread.stop(Throwable) method
 	    // would actually allow _any_ Throwable to be delivered
-	    // asynchronously. 
-	    asyncSet.add(Scene.v().getRefType("java.lang.ThreadDeath"));
+	    // asynchronously, not just java.lang.ThreadDeath.
+	    Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
+	    vmErrorSet.add(Scene.v().getRefType("java.lang.ThreadDeath"));
 
-	    ASYNC_ERRORS = registerSetIfNew(asyncSet);
+	    VM_ERRORS = registerSetIfNew(vmErrorSet);
 
-	    // The individual Errors specified in the description of
-	    // linking and loading are:
+	    Set resolveClassErrorSet = new HashSet();
+	    Scene.v().loadClassAndSupport("java.lang.ClassCircularityError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
+	    Scene.v().loadClassAndSupport("java.lang.ClassFormatError");
+	    // We add AnySubType(ClassFormatError) so that we can
+	    // avoid adding its subclass,
+	    // UnsupportedClassVersionError, explicitly.  This is a
+	    // hack to allow Soot to analyze older class libraries 
+	    // (UnsupportedClassVersionError was added in JDK 1.2).
+	    allThrowablesSet.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
+	    Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
+	    Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.IncompatibleClassChangeError"));
+	    Scene.v().loadClassAndSupport("java.lang.LinkageError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.LinkageError"));
+	    Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
+	    Scene.v().loadClassAndSupport("java.lang.VerifyError");
+	    resolveClassErrorSet.add(Scene.v().getRefType("java.lang.VerifyError"));
+	    RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet);
+
+	    Set resolveFieldErrorSet = new HashSet(resolveClassErrorSet);
+	    Scene.v().loadClassAndSupport("java.lang.NoSuchFieldError");
+	    resolveFieldErrorSet.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
+	    RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet);
+
+	    Set resolveMethodErrorSet = new HashSet(resolveClassErrorSet);
+	    Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
+	    resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
+	    Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
+	    resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
+	    Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
+	    resolveMethodErrorSet.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
+	    RESOLVE_METHOD_ERRORS = registerSetIfNew(resolveMethodErrorSet);
+
+	    // The static initializers of a newly loaded class might
+	    // throw any Error (if they threw an Exception---even a
+	    // RuntimeException---it would be replaced by an
+	    // ExceptionInInitializerError):
 	    //
-	    //     java.lang.LinkageError
-	    //     java.lang.ClassCircularityError
-	    //     java.lang.ClassFormatError
-	    //     java.lang.UnsupportedClassVersionError
-	    //     java.lang.ExceptionInInitializerError
-	    //     java.lang.IncompatibleClassChangeError
-	    //     java.lang.AbstractMethodError
-	    //     java.lang.IllegalAccessError
-	    //     java.lang.InstantiationError
-	    //     java.lang.NoSuchFieldError
-	    //     java.lang.NoSuchMethodError
-	    //     java.lang.NoClassDefFoundError
-	    //     java.lang.UnsatisfiedLinkError
-	    //     java.lang.VerifyError
-	    //
-	    // But the static initializers of a newly loaded class
-	    // might throw any Error (if they threw an
-	    // Exception---even a RuntimeException---it would be
-	    // replaced by an ExceptionInInitializerError). Since all
-	    // of the preceding classes are subclasses of
-	    // java.lang.Error, linkage errors can be represented by
-	    // all subtypes of Error:
-	    //
-	    Set linkageErrorSet = new HashSet();
-	    linkageErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
-	    LINKAGE_ERRORS = registerSetIfNew(linkageErrorSet);
+	    Set initializationErrorSet = new HashSet();
+	    Scene.v().loadClassAndSupport("java.lang.Error");
+	    initializationErrorSet.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
+	    INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet);
 	}
 
 
@@ -821,12 +837,12 @@ public final class ThrowableSet {
      * the ends of exception names.</li>
      *
      * <li>Instances of <code>AnySubType</code> are indicated by surrounding
-     * the base type name with parantheses, rather than with the string 
+     * the base type name with parentheses, rather than with the string 
      * &ldquo;<code>Any_subtype_of_</code>&rdquo;</li>
      *
-     * <li>If all the elements of the asynchronous errors 
-     * are present, they are abbreviated as &ldquo;<code>async</code>&rdquo;
-     * rather than listed individually.</li>
+     * <li>If all the elements of VM_ERRORS are present, they are
+     * abbreviated as &ldquo;<code>vmErrors</code>&rdquo; rather than
+     * listed individually.</li>
      * 
      * @return An abbreviated representation of the contents of this set.
      */
@@ -837,12 +853,12 @@ public final class ThrowableSet {
 	final  int EXCEPTION_LENGTH = EXCEPTION.length();
 
 	Collection setsThrowables = this.types();
-	Collection asyncThrowables = ThrowableSet.Manager.v().ASYNC_ERRORS.types();
-	boolean containsAllAsync = setsThrowables.containsAll(asyncThrowables);
+	Collection vmErrorThrowables = ThrowableSet.Manager.v().VM_ERRORS.types();
+	boolean containsAllVmErrors = setsThrowables.containsAll(vmErrorThrowables);
 	StringBuffer buf = new StringBuffer();
 
-	if (containsAllAsync) {
-	    buf.append("+async");
+	if (containsAllVmErrors) {
+	    buf.append("+vmErrors");
 	}
 
 	for (Iterator it = this.types().iterator(); it.hasNext(); ) {
@@ -850,8 +866,8 @@ public final class ThrowableSet {
 	    RefType baseType = null;
 	    if (reflikeType instanceof RefType) {
 		baseType = (RefType)reflikeType;
-		if (asyncThrowables.contains(baseType) && containsAllAsync) {
-		    continue;		// This is already accounted for in "+async".
+		if (vmErrorThrowables.contains(baseType) && containsAllVmErrors) {
+		    continue;		// This is already accounted for in "+vmError".
 		} else {
 		    buf.append('+');
 		}
