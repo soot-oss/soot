@@ -258,7 +258,7 @@ public class ClassResolver {
         soot.SootField sf = new soot.SootField("val$"+li.name(), Util.getSootType(li.type()), soot.Modifier.FINAL | soot.Modifier.PRIVATE);
         sootClass.addField(sf);
         finalFields.add(sf);
-               
+        sf.addTag(new soot.tagkit.SyntheticTag());       
     }
     private ArrayList addFinalLocals(polyglot.ast.ClassBody cBody, ArrayList finalLocalsAvail, polyglot.types.ClassType nodeKeyType, AnonLocalClassInfo info){
         ArrayList finalFields = new ArrayList();
@@ -433,6 +433,7 @@ public class ClassResolver {
                 soot.SootClass specialClass = new soot.SootClass(specialClassName);
                 soot.Scene.v().addClass(specialClass);
                 specialClass.setApplicationClass();
+                specialClass.addTag(new soot.tagkit.SyntheticTag());
                 specialClass.setSuperclass(soot.Scene.v().getSootClass("java.lang.Object"));
                 Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
                 Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
@@ -465,7 +466,9 @@ public class ClassResolver {
         String fieldName = "$assertionsDisabled";
         soot.Type fieldType = soot.BooleanType.v();
         if (!sootClass.declaresField(fieldName, fieldType)){
-            sootClass.addField(new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL));
+            soot.SootField assertionsDisabledField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC | soot.Modifier.FINAL);
+            sootClass.addField(assertionsDisabledField);
+            assertionsDisabledField.addTag(new soot.tagkit.SyntheticTag());
         }
 
         // class$ field is added to the outer most class if sootClass 
@@ -487,7 +490,9 @@ public class ClassResolver {
         fieldType = soot.RefType.v("java.lang.Class"); 
         
         if (!addToClass.declaresField(fieldName, fieldType)){
-            addToClass.addField(new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC));
+            soot.SootField classField =new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+            addToClass.addField(classField);
+            classField.addTag(new soot.tagkit.SyntheticTag());
         }
         
         // two extra methods
@@ -507,6 +512,7 @@ public class ClassResolver {
         
         if (!addToClass.declaresMethod(methodName, paramTypes, methodRetType)){
             addToClass.addMethod(sootMethod);
+            sootMethod.addTag(new soot.tagkit.SyntheticTag());
         }
 
         // clinit method is added to actual class where assert is found
@@ -629,6 +635,7 @@ public class ClassResolver {
             
             if (!addToClass.declaresMethod(methodName, paramTypes, methodRetType)){
                 addToClass.addMethod(sootMethod);
+                sootMethod.addTag(new soot.tagkit.SyntheticTag());
             }
             
 
@@ -644,6 +651,7 @@ public class ClassResolver {
                 soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
                 if (!addToClass.declaresField(fieldName, fieldType)){
                     addToClass.addField(sootField);
+                    sootField.addTag(new soot.tagkit.SyntheticTag());
                 }
             }
         } 

@@ -352,6 +352,7 @@ public class Util {
             classToInvoke
             );
         meth.setActiveBody(src.getBody(meth, null));
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
     

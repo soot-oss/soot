@@ -105,8 +105,7 @@ public class Util
                 {
                     // This object is not java.lang.Object, so must have a super class
                     
-                    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
-                                                                                          super_class];
+                    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.super_class];
     
                     String superName = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
                     superName = superName.replace('/', '.');
@@ -120,8 +119,7 @@ public class Util
         {
             for(int i = 0; i < coffiClass.interfaces_count; i++)
                 {
-                    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.
-                                                                                          interfaces[i]];
+                    CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.constant_pool[coffiClass.interfaces[i]];
     
                     String interfaceName =
                         ((CONSTANT_Utf8_info) (coffiClass.constant_pool[c.name_index])).convert();
@@ -135,134 +133,135 @@ public class Util
         }
     
         // Add every field to the bclass
-        for(int i = 0; i < coffiClass.fields_count; i++)
-            {
-                field_info fieldInfo = coffiClass.fields[i];
-    
-                String fieldName = ((CONSTANT_Utf8_info)
-                                    (coffiClass.constant_pool[fieldInfo.name_index])).convert();
-    
-                String fieldDescriptor = ((CONSTANT_Utf8_info)
-                                          (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
-    
-                int modifiers = fieldInfo.access_flags;
-                Type fieldType = jimpleTypeOfFieldDescriptor(fieldDescriptor);
+        for(int i = 0; i < coffiClass.fields_count; i++){
+            
+            field_info fieldInfo = coffiClass.fields[i];
+
+            String fieldName = ((CONSTANT_Utf8_info)
+                                (coffiClass.constant_pool[fieldInfo.name_index])).convert();
+
+            String fieldDescriptor = ((CONSTANT_Utf8_info)
+                                      (coffiClass.constant_pool[fieldInfo.descriptor_index])).convert();
+
+            int modifiers = fieldInfo.access_flags;
+            Type fieldType = jimpleTypeOfFieldDescriptor(fieldDescriptor);
+                
+            SootField field = new SootField(fieldName, fieldType, modifiers);
+            bclass.addField(field);
+                
+            references.add(fieldType);
+
+            // add initialization constant, if any
+		    for(int j = 0; j < fieldInfo.attributes_count; j++) {
+                // add constant value attributes
+                if (fieldInfo.attributes[j] instanceof ConstantValue_attribute){
                     
-                SootField field = new SootField(fieldName, fieldType, modifiers);
-                bclass.addField(field);
-                    
-                references.add(fieldType);
-    
-                // add initialization constant, if any
-		for(int j = 0; j < fieldInfo.attributes_count; j++) {
-		    if (!(fieldInfo.attributes[j] instanceof ConstantValue_attribute))
-			continue;
-		    ConstantValue_attribute attr = (ConstantValue_attribute) fieldInfo.attributes[j];
-		    cp_info cval = coffiClass.constant_pool[attr.constantvalue_index];
-		    ConstantValueTag tag;
-		    switch (cval.tag) {
-		    case cp_info.CONSTANT_Integer:
-			tag = new IntegerConstantValueTag((int)((CONSTANT_Integer_info)cval).bytes);
-			break;
-		    case cp_info.CONSTANT_Float:
-			tag = new FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
-			break;
-		    case cp_info.CONSTANT_Long:
-		      {
-			CONSTANT_Long_info lcval = (CONSTANT_Long_info)cval;
-			tag = new LongConstantValueTag((lcval.high << 32) + lcval.low);
-			break;
-		      }
-		    case cp_info.CONSTANT_Double:
-		      {
-			CONSTANT_Double_info dcval = (CONSTANT_Double_info)cval;
-			tag = new DoubleConstantValueTag((dcval.high << 32) + dcval.low);
-			break;
-		      }
-		    case cp_info.CONSTANT_String:
-		      {
-			CONSTANT_String_info scval = (CONSTANT_String_info)cval;
-			CONSTANT_Utf8_info ucval = (CONSTANT_Utf8_info)coffiClass.constant_pool[scval.string_index];
-			tag = new StringConstantValueTag(ucval.convert());
-			break;
-		      }
-		    default:
-			throw new RuntimeException("unexpected ConstantValue: " + cval);
+                    ConstantValue_attribute attr = (ConstantValue_attribute) fieldInfo.attributes[j];
+                    cp_info cval = coffiClass.constant_pool[attr.constantvalue_index];
+                    ConstantValueTag tag;
+                    switch (cval.tag) {
+                    case cp_info.CONSTANT_Integer:
+                    tag = new IntegerConstantValueTag((int)((CONSTANT_Integer_info)cval).bytes);
+                    break;
+                    case cp_info.CONSTANT_Float:
+                    tag = new FloatConstantValueTag((int)((CONSTANT_Float_info)cval).bytes);
+                    break;
+                    case cp_info.CONSTANT_Long:
+                      {
+                    CONSTANT_Long_info lcval = (CONSTANT_Long_info)cval;
+                    tag = new LongConstantValueTag((lcval.high << 32) + lcval.low);
+                    break;
+                      }
+                    case cp_info.CONSTANT_Double:
+                      {
+                    CONSTANT_Double_info dcval = (CONSTANT_Double_info)cval;
+                    tag = new DoubleConstantValueTag((dcval.high << 32) + dcval.low);
+                    break;
+                      }
+                    case cp_info.CONSTANT_String:
+                      {
+                    CONSTANT_String_info scval = (CONSTANT_String_info)cval;
+                    CONSTANT_Utf8_info ucval = (CONSTANT_Utf8_info)coffiClass.constant_pool[scval.string_index];
+                    tag = new StringConstantValueTag(ucval.convert());
+                    break;
+                      }
+                    default:
+                    throw new RuntimeException("unexpected ConstantValue: " + cval);
+                    }
+                    field.addTag(tag);
+                }
+                // add synthetic tags
+                else if (fieldInfo.attributes[j] instanceof Synthetic_attribute){
+                    field.addTag(new SyntheticTag());
+                }
 		    }
-		    field.addTag(tag);
-		    break;
-		}
-            }
+        }
     
         // Add every method to the bclass
-        for(int i = 0; i < coffiClass.methods_count; i++)
+        for(int i = 0; i < coffiClass.methods_count; i++){
+            
+            method_info methodInfo = coffiClass.methods[i];
+		
+		
+		    if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
+		        G.v().out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+		        throw new RuntimeException("method has no name");
+		    }
+
+            String methodName = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[methodInfo.name_index])).convert();
+		    String methodDescriptor = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
+    
+            List parameterTypes;
+            Type returnType;
+    
+            // Generate parameterTypes & returnType
             {
-                method_info methodInfo = coffiClass.methods[i];
-		
-		
-		if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
-		    G.v().out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
-		    throw new RuntimeException("method has no name");
-		}
-
-                String methodName = ((CONSTANT_Utf8_info)
-                                     (coffiClass.constant_pool[methodInfo.name_index])).convert();
-		
-
-                String methodDescriptor = ((CONSTANT_Utf8_info)
-                                           (coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
+                Type[] types = jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
     
-                List parameterTypes;
-                Type returnType;
-    
-                // Generate parameterTypes & returnType
-                {
-                    Type[] types = jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
-    
-                    parameterTypes = new ArrayList();
-    
-                    for(int j = 0; j < types.length - 1; j++)
-                        {
-                            references.add(types[j]);
-                            parameterTypes.add(types[j]);
-                        }
+                parameterTypes = new ArrayList();
+                for(int j = 0; j < types.length - 1; j++){
+                    references.add(types[j]);
+                    parameterTypes.add(types[j]);
+                }
                         
-                    returnType = types[types.length - 1];
-                    references.add(returnType);
+                returnType = types[types.length - 1];
+                references.add(returnType);
+            }
+    
+            int modifiers = methodInfo.access_flags;
+
+            SootMethod method;
+
+            method = new SootMethod(methodName,
+                                    parameterTypes, returnType, modifiers);
+            bclass.addMethod(method);
+
+            methodInfo.jmethod = method;
+
+            // add exceptions to method
+            {
+                for(int j = 0; j < methodInfo.attributes_count; j++){
+                    if(methodInfo.attributes[j] instanceof Exception_attribute){
+                        Exception_attribute exceptions = (Exception_attribute) methodInfo.attributes[j];
+
+                        for(int k = 0; k < exceptions.number_of_exceptions; k++)
+{
+                            CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
+                            constant_pool[exceptions.exception_index_table[k]];
+
+                            String exceptionName = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[c.name_index])).convert();
+
+                            exceptionName = exceptionName.replace('/', '.');
+
+                            references.add(exceptionName);
+                            method.addExceptionIfAbsent(SootResolver.v().makeClassRef(exceptionName));
+                        }
+                    }
+                    else if (methodInfo.attributes[j] instanceof Synthetic_attribute) {
+                        method.addTag(new SyntheticTag());
+                    }
                 }
-    
-                int modifiers = methodInfo.access_flags;
-    
-                SootMethod method;
-    
-                method = new SootMethod(methodName,
-                                        parameterTypes, returnType, modifiers);
-                bclass.addMethod(method);
-    
-                methodInfo.jmethod = method;
-    
-                // add exceptions to method
-                {
-                    for(int j = 0; j < methodInfo.attributes_count; j++)
-                        if(methodInfo.attributes[j] instanceof Exception_attribute)
-                            {
-                                Exception_attribute exceptions = (Exception_attribute) methodInfo.attributes[j];
-    
-                                for(int k = 0; k < exceptions.number_of_exceptions; k++)
-                                    {
-                                        CONSTANT_Class_info c = (CONSTANT_Class_info) coffiClass.
-                                            constant_pool[exceptions.exception_index_table[k]];
-    
-                                        String exceptionName = ((CONSTANT_Utf8_info)
-                                                                (coffiClass.constant_pool[c.name_index])).convert();
-    
-                                        exceptionName = exceptionName.replace('/', '.');
-    
-                                        references.add(exceptionName);
-                                        method.addExceptionIfAbsent(SootResolver.v().makeClassRef(exceptionName));
-                                    }
-                            }
-                }
+            }
                     
                 // Go through the constant pool, forcing all mentioned classes to be resolved. 
                 {
@@ -302,50 +301,50 @@ public class Util
             }
         
 	// Set "SourceFile" attribute tag
-	for(int i = 0; i < coffiClass.attributes_count; i++)
-	    {
-		if(!(coffiClass.attributes[i] instanceof SourceFile_attribute))
-		    continue;
-		SourceFile_attribute attr = (SourceFile_attribute)coffiClass.attributes[i];
-                String sourceFile = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert();
+	for(int i = 0; i < coffiClass.attributes_count; i++){
+	    
+		if(coffiClass.attributes[i] instanceof SourceFile_attribute){
+		    
+		    SourceFile_attribute attr = (SourceFile_attribute)coffiClass.attributes[i];
+            String sourceFile = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert();
 
-                if( sourceFile.indexOf(' ') >= 0 ) {
-                    G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
-                } else {
-                    bclass.addTag(new SourceFileTag( sourceFile ) );
-                }
-		break;
+            if( sourceFile.indexOf(' ') >= 0 ) {
+                G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
+            } else {
+                bclass.addTag(new SourceFileTag( sourceFile ) );
+            }
+	
 	    }
+	    // Set "InnerClass" attribute tag
+	    else if(coffiClass.attributes[i] instanceof InnerClasses_attribute){
+		   
+		    InnerClasses_attribute attr = (InnerClasses_attribute)coffiClass.attributes[i];
+            for (int j = 0; j < attr.inner_classes_length; j++)
+                {
+                    inner_class_entry e = attr.inner_classes[j];
+                String inner = null;
+                String outer = null;
+                String name = null;
+                int class_index;
 
-	// Set "InnerClass" attribute tag
-	for(int i = 0; i < coffiClass.attributes_count; i++)
-	    {
-		if(!(coffiClass.attributes[i] instanceof InnerClasses_attribute))
-		    continue;
-		InnerClasses_attribute attr = (InnerClasses_attribute)coffiClass.attributes[i];
-		for (int j = 0; j < attr.inner_classes_length; j++)
-		    {
-		    	inner_class_entry e = attr.inner_classes[j];
-			String inner = null;
-			String outer = null;
-			String name = null;
-			int class_index;
-
-			if (e.inner_class_index != 0)
-				inner = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.inner_class_index]).name_index]).convert();
-			if (e.outer_class_index != 0)
-				outer = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.outer_class_index]).name_index]).convert();
-			if (e.name_index != 0)
-				name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[e.name_index])).convert();
-			bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
-		    }
-		break;
-	    }
-
+                if (e.inner_class_index != 0)
+                    inner = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.inner_class_index]).name_index]).convert();
+                if (e.outer_class_index != 0)
+                    outer = ((CONSTANT_Utf8_info)coffiClass.constant_pool[((CONSTANT_Class_info)coffiClass.constant_pool[e.outer_class_index]).name_index]).convert();
+                if (e.name_index != 0)
+                    name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[e.name_index])).convert();
+                bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
+            }
+        }
+        // set synthetic tags
+        else if(coffiClass.attributes[i] instanceof Synthetic_attribute){
+		    
+		    Synthetic_attribute attr = (Synthetic_attribute)coffiClass.attributes[i];
+            bclass.addTag(new SyntheticTag());
+        }
+   
     }
-    
-
-
+    }
 
 
 

@@ -65,6 +65,10 @@ class attribute_info {
     * @see InnerClasses_attribute
     */
    public static final String InnerClasses = "InnerClasses";
+   /** String by which a Synthetic attribute is recognized.
+    * @see Synthetic_attribute
+    */
+   public static final String Synthetic = "Synthetic";
 
    /** Constant pool index of the name of this attribute; should be a utf8 String
     * matching one of the constant Strings define here.

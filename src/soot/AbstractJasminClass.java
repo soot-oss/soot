@@ -270,7 +270,7 @@ public abstract class AbstractJasminClass
 	    Tag tag = (Tag) it.next();
 	    if(tag instanceof Attribute)
 		emit(".class_attribute "  + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue()))+"\"");
-        else if (tag instanceof InnerClassAttribute){
+        /*else if (tag instanceof InnerClassAttribute){
             if (!Options.v().no_output_inner_classes_attribute()){
                 emit(".inner_class_attr ");
                 Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
@@ -290,13 +290,40 @@ public abstract class AbstractJasminClass
                 emit(".end .inner_class_attr\n");
             }
         }
+        else if (tag instanceof SyntheticTag){
+            emit(".synthetic");
+        }*/
         else {
             emit("");
         }
 	}
 
 
+    // emit synthetic attributes
+    if (sootClass.hasTag("SyntheticTag")){
+        emit(".synthetic\n");
+    }
+    // emit inner class attributes
+    if (sootClass.hasTag("InnerClassAttribute")){
+        if (!Options.v().no_output_inner_classes_attribute()){
+            emit(".inner_class_attr ");
+            Iterator innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();
+            while (innersIt.hasNext()){
+                InnerClassTag ict = (InnerClassTag)innersIt.next();
+                //System.out.println("inner class tag: "+ict);
+                emit(".inner_class_spec_attr "+
+                    "\""+ict.getInnerClass()+"\" "+
+                
+                    "\""+ict.getOuterClass()+"\" "+
+                
+                    "\""+ict.getShortName()+"\" "+
+                    Modifier.toString(ict.getAccessFlags())+" "+
 
+                ".end .inner_class_spec_attr");
+            }
+            emit(".end .inner_class_attr\n");
+        }
+    }
 
         // Emit the fields
         {
@@ -422,6 +449,9 @@ public abstract class AbstractJasminClass
             while (throwsIt.hasNext()){
                 SootClass exceptClass = (SootClass)throwsIt.next();
                 emit(".throws "+exceptClass.getName());
+            }
+            if (method.hasTag("SyntheticTag")){
+                emit(".synthetic");
             }
        if(method.isConcrete())
        {

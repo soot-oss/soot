@@ -517,6 +517,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 classToInvoke
         );
         meth.setActiveBody(src.getBody(meth, null));
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
     
@@ -1727,6 +1728,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         meth.setActiveBody(pfsms.getBody(meth, null));
 
         InitialResolver.v().addToPrivateFieldSetAccessMap(field, meth);
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
 
@@ -1754,6 +1756,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         meth.setActiveBody(pfams.getBody(meth, null));
 
         InitialResolver.v().addToPrivateFieldGetAccessMap(field, meth);
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
 
@@ -1780,6 +1783,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         meth.setActiveBody(pmams.getBody(meth, null));
 
         InitialResolver.v().addToPrivateMethodGetAccessMap(call, meth);
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
 
@@ -4241,6 +4245,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         classToInvoke.addMethod(meth);
         meth.setActiveBody(src.getBody(meth, null));
+        meth.addTag(new soot.tagkit.SyntheticTag());
         return meth;
     }
     

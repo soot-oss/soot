@@ -644,7 +644,11 @@ public class ClassFile {
                la.local_variable_table[k] = e;
             }
             a = (attribute_info)la;
-	 } else if(s.compareTo(attribute_info.InnerClasses)==0)
+	 } else if (s.compareTo(attribute_info.Synthetic)==0){
+        Synthetic_attribute ia = new Synthetic_attribute();
+        a = (attribute_info)ia;
+     }
+         else if(s.compareTo(attribute_info.InnerClasses)==0)
 	 {
 	    InnerClasses_attribute ia = new InnerClasses_attribute();
 	    ia.inner_classes_length = d.readUnsignedShort();
