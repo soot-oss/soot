@@ -40,7 +40,6 @@ public interface NewArrayExpr extends Expr, ToBriefString
     public ValueBox getSizeBox();
     public Value getSize();
     public void setSize(Value size);
-    public List getUseBoxes();
     public Type getType();
     public void apply(Switch sw);
 }

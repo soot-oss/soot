@@ -38,7 +38,6 @@ public interface CastExpr extends Expr, ToBriefString
     public Value getOp();
     public void setOp(Value op);
     public ValueBox getOpBox();
-    public List getUseBoxes();
     public Type getCastType();
     public void setCastType(Type castType);
     public Type getType();

@@ -41,7 +41,6 @@ public interface BinopExpr extends Expr
     public ValueBox getOp2Box();
     public void setOp1(Value op1);
     public void setOp2(Value op2);
-    public List getUseBoxes();
     public String getSymbol();
     public String toString();
     public String toBriefString();

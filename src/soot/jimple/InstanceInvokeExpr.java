@@ -38,5 +38,4 @@ public interface InstanceInvokeExpr extends InvokeExpr
     public Value getBase();
     public ValueBox getBaseBox();
     public void setBase(Value base);
-    public List getUseBoxes();
 }

@@ -42,7 +42,6 @@ public interface NewMultiArrayExpr extends Expr, ToBriefString
     public Value getSize(int index);
     public List getSizes();
     public void setSize(int index, Value size);
-    public List getUseBoxes();
     public Type getType();
     public void apply(Switch sw);
 }

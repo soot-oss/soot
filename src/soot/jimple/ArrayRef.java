@@ -41,7 +41,6 @@ public interface ArrayRef extends ConcreteRef, Switchable, ToBriefString
     public Value getIndex();
     public void setIndex(Value index);
     public ValueBox getIndexBox();
-    public List getUseBoxes();
     public Type getType();
     public void apply(Switch sw);
 }

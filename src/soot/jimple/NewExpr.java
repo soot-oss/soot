@@ -38,6 +38,5 @@ public interface NewExpr extends Expr, ToBriefString
     public RefType getBaseType();
     public void setBaseType(RefType type);
     public Type getType();
-    public List getUseBoxes();
     public void apply(Switch sw);
 }

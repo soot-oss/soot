@@ -35,7 +35,6 @@ import java.util.*;
 
 public interface CaughtExceptionRef extends IdentityRef, ToBriefString
 {
-    public List getUseBoxes();
     public Type getType();
     public void apply(Switch sw);
 }

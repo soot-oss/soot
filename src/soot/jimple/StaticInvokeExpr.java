@@ -37,7 +37,6 @@ public interface StaticInvokeExpr extends InvokeExpr, ToBriefString
 {
     public String toString();
     public String toBriefString();
-    public List getUseBoxes();
     public Type getType();
     public void apply(Switch sw);
 }
