@@ -819,6 +819,18 @@ public class Options extends OptionsBase {
             return ""
                 +"disabled ";
     
+        if( phaseName.equals( "tag.ln" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.an" ) )
+            return ""
+                +"disabled ";
+    
+        if( phaseName.equals( "tag.dep" ) )
+            return ""
+                +"disabled ";
+    
         if( phaseName.equals( "wjtp2" ) )
             return ""
                 +"disabled ";
@@ -1085,6 +1097,18 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "tag" ) )
             return "";
     
+        if( phaseName.equals( "tag.ln" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "tag.an" ) )
+            return ""
+              +"disabled:true ";
+    
+        if( phaseName.equals( "tag.dep" ) )
+            return ""
+              +"disabled:true ";
+    
         if( phaseName.equals( "wjtp2" ) )
             return "";
     
@@ -1251,6 +1275,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jap.profiling" ) ) return;
         if( phaseName.equals( "gop" ) ) return;
         if( phaseName.equals( "tag" ) ) return;
+        if( phaseName.equals( "tag.ln" ) ) return;
+        if( phaseName.equals( "tag.an" ) ) return;
+        if( phaseName.equals( "tag.dep" ) ) return;
         if( phaseName.equals( "wjtp2" ) ) return;
         if( phaseName.equals( "wjtp2.ra" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
@@ -1277,8 +1304,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
-        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase" );
-        System.out.println( " and isn't listed in the options XML files." );
+        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {
@@ -1345,6 +1371,12 @@ public class Options extends OptionsBase {
             System.out.println( "Warning: Options exist for non-existent phase gop" );
         if( !PackManager.v().hasPhase( "tag" ) )
             System.out.println( "Warning: Options exist for non-existent phase tag" );
+        if( !PackManager.v().hasPhase( "tag.ln" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.ln" );
+        if( !PackManager.v().hasPhase( "tag.an" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.an" );
+        if( !PackManager.v().hasPhase( "tag.dep" ) )
+            System.out.println( "Warning: Options exist for non-existent phase tag.dep" );
         if( !PackManager.v().hasPhase( "wjtp2" ) )
             System.out.println( "Warning: Options exist for non-existent phase wjtp2" );
         if( !PackManager.v().hasPhase( "wjtp2.ra" ) )

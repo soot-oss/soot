@@ -454,8 +454,7 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="phase|phase/sub_phase"><!---->
         if( phaseName.equals( "<xsl:value-of select="phase_alias|sub_phase_alias"/>" ) ) return;<!---->
     </xsl:for-each>
-        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase" );
-        System.out.println( " and isn't listed in the options XML files." );
+        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {

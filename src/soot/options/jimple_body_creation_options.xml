@@ -421,7 +421,47 @@
         </sub_phase>
 </phase>
 <phase><phase_name>gop</phase_name><phase_java_name>gop</phase_java_name><phase_alias>gop</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
-<phase><phase_name>tag</phase_name><phase_java_name>tag</phase_java_name><phase_alias>tag</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
+<phase><phase_name>tag</phase_name><phase_java_name>tag</phase_java_name><phase_alias>tag</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
+	<sub_phase>
+		<sub_phase_name>Line Number Tag Aggregator</sub_phase_name>
+		<sub_phase_java_name>lineNum</sub_phase_java_name>
+		<sub_phase_alias>tag.ln</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Array Bounds and Null Pointer Check Tag Aggregator</sub_phase_name>
+		<sub_phase_java_name>abnpc</sub_phase_java_name>
+		<sub_phase_alias>tag.an</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+	</sub_phase>
+	<sub_phase>
+		<sub_phase_name>Dependence Tag Aggregator</sub_phase_name>
+		<sub_phase_java_name>depTag</sub_phase_java_name>
+		<sub_phase_alias>tag.dep</sub_phase_alias>
+		<boolean_option>
+			<name>Disabled</name>
+			<java_name>disabled</java_name>
+			<alias_name>disabled</alias_name>
+                        <default_value>true</default_value>
+			<short_desc></short_desc>
+			<long_desc></long_desc>
+		</boolean_option>
+	</sub_phase>
+</phase>
 <phase><phase_name>wjtp2</phase_name><phase_java_name>wjtp2</phase_java_name><phase_alias>wjtp2</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
 	<sub_phase>
 		<sub_phase_name>Rectangular Array Finder</sub_phase_name>

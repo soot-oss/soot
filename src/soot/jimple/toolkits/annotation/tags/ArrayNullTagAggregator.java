@@ -8,65 +8,41 @@ import soot.tagkit.*;
 
 /** The aggregator for ArrayNullCheckAttribute. */
 
-public class ArrayNullTagAggregator implements TagAggregator
+public class ArrayNullTagAggregator extends TagAggregator
 {    
-    private boolean status = false;
-    private List tags = new LinkedList();
-    private List units = new LinkedList();
-
     private Unit lastUnit = null;
     private ArrayNullCheckTag lastTag = null;
 
-    public ArrayNullTagAggregator(boolean active)
-    {
-	this.status = active;
-    }
+    private ArrayNullTagAggregator() {}
+    private static ArrayNullTagAggregator instance = new ArrayNullTagAggregator();
+    public static ArrayNullTagAggregator v() { return instance; }
 
-    public boolean isActive()
+    public void internalTransform( Body b, String phaseName, Map options )
     {
-	return this.status;
-    }
-
-  /** Clears accumulated tags. */
-    public void refresh()
-    {
-        tags.clear();
-	units.clear();
 	lastUnit = null;
 	lastTag = null;
+        super.internalTransform( b, phaseName, options );
     }
 
-  /** Adds a new (unit, tag) pair. */
-    public void aggregateTag(Tag t, Unit u)
+    public Tag wantTag(Tag t, Unit u)
     {
 	if(t instanceof OneByteCodeTag) 
 	{	
-	    if (lastUnit == u)
-	    {
-		byte[] v = ((OneByteCodeTag)t).getValue();
-	    	lastTag.accumulate(v[0]);
-            }
-	    else
-	    {
-		units.add(u);
+            OneByteCodeTag obct = (OneByteCodeTag) t;
+	    if (lastUnit == u) {
+	    	lastTag.accumulate(obct.getValue()[0]);
+            } else {
 		lastUnit = u;
-		
-		byte[] v = ((OneByteCodeTag)t).getValue();
-		lastTag = new ArrayNullCheckTag(v[0]);
-		tags.add(lastTag);
+		lastTag = new ArrayNullCheckTag(obct.getValue()[0]);
+                return lastTag;
 	    }
 	}
+        return null;
     }
     
-  /** Returns a CodeAttribute with all tags aggregated. */ 
-    public Tag produceAggregateTag()
+    public String aggregatedName()
     {
-	if(units.size() == 0)
-	    return null;
-	else
-	    return new CodeAttribute("ArrayNullCheckAttribute", 
-				     new LinkedList(units), 
-				     new LinkedList(tags));
+        return "ArrayNullCheckAttribute"; 
     }
 }
 

@@ -25,19 +25,47 @@
 
 package soot.tagkit;
 import soot.*;
+import soot.baf.BafBody;
+import java.util.*;
 
 /** Interface to aggregate tags of units. */
 
-public interface TagAggregator {
-    /** Adds in a new (unit, tag) pair. */
-    public void aggregateTag(Tag t, Unit u);
+public abstract class TagAggregator extends BodyTransformer {
+    private List tags = new LinkedList();
+    private List units = new LinkedList();
 
-    /** Generates the aggregated tag. */    
-    public Tag produceAggregateTag();
+    /** Decide whether this tag should be aggregated by this aggregator.
+     *  Return the tag to be attached to this unit, or null if nothing should
+     *  be attached. */
+    public abstract Tag wantTag( Tag t, Unit u );
 
-    /** Clears old accumulated tags. */
-    public void refresh();
+    /** Return name of the resulting aggregated tag. */
+    public abstract String aggregatedName();
 
-    /** Returns true if the aggregator is active. */
-    public boolean isActive();
+    public void internalTransform(Body b, String phaseName, Map options)
+    {
+        BafBody body = (BafBody) b;
+       
+	/* clear the aggregator first. */
+        tags.clear();
+	units.clear();
+
+	/* aggregate all tags */
+        for( Iterator unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
+            final Unit unit = (Unit) unitIt.next();
+            for( Iterator tagIt = unit.getTags().iterator(); tagIt.hasNext(); ) {
+                final Tag tag = (Tag) tagIt.next();
+                Tag t = wantTag( tag, unit );
+                if( t != null ) {
+                    units.add(unit);
+                    tags.add(t);
+                }
+	    }         
+        }        
+
+	if(units.size() > 0) {
+            b.addTag( new CodeAttribute(aggregatedName(), 
+                 new LinkedList(units), new LinkedList(tags)) );
+        }
+    }
 }

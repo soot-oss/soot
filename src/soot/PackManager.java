@@ -29,6 +29,9 @@ import soot.jimple.toolkits.scalar.pre.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
+import soot.jimple.toolkits.annotation.tags.*;
+import soot.jimple.toolkits.pointer.*;
+import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.SparkTransformer;
@@ -161,7 +164,12 @@ public class PackManager {
         addPack(p = new BodyPack("gop"));
 
         // Code attribute tag aggregation pack
-        addPack(p = new CodeAttributeGenerator());
+        addPack(p = new BodyPack("tag"));
+        {
+            p.add(new Transform("tag.ln", LineNumberTagAggregator.v()));
+            p.add(new Transform("tag.an", ArrayNullTagAggregator.v()));
+            p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
+        }
     }
 
     public boolean hasPack(String phaseName) {

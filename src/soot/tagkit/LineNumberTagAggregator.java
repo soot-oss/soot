@@ -32,57 +32,38 @@ import soot.*;
 import java.util.*;
 
 /** The aggregator for LineNumberTable attribute. */
-public class LineNumberTagAggregator implements TagAggregator
+public class LineNumberTagAggregator extends TagAggregator
 {    
-    private boolean status = false;
-    private List tags = new LinkedList();
-    private List units = new LinkedList();
-
     private Tag lastTag = null;
 
-    public LineNumberTagAggregator(boolean active)
-    {
-	this.status = active;
+    private LineNumberTagAggregator() {}
+    private static LineNumberTagAggregator instance = new LineNumberTagAggregator();
+    public static LineNumberTagAggregator v() { return instance; }
+
+    public void internalTransform( Body b, String phaseName, Map options ) {
+        lastTag = null;
+        super.internalTransform( b, phaseName, options );
     }
 
-    public boolean isActive()
-    {
-	return this.status;
-    }
-
-  /** Clears accumulated tags. */
-    public void refresh()
-    {
-        tags.clear();
-	units.clear();
-	lastTag = null;
-    }
-
-  /** Adds a new (unit, tag) pair. Probabely we are assuming
-   * the (unit, tag) pairs come in the order.
-   */
-    public void aggregateTag(Tag t, Unit u)
+    /** Decide whether this tag should be aggregated by this aggregator.
+     *  Return the tag to be attached to this unit, or null if nothing should
+     *  be attached. */
+    public Tag wantTag(Tag t, Unit u)
     {
 	if(t instanceof LineNumberTag) 
 	{
 	    if (t != lastTag)
 	    {
-		units.add(u);
-		tags.add(t);
 		lastTag = t;
+                return t;
 	    }
 	}
+        return null;
     }
     
-  /** Returns a CodeAttribute with all tags aggregated. */ 
-    public Tag produceAggregateTag()
+    public String aggregatedName()
     {
-	if(units.size() == 0)
-	    return null;
-	else
-	    return new CodeAttribute("LineNumberTable", 
-				     new LinkedList(units), 
-				     new LinkedList(tags));
+        return "LineNumberTable";
     }
 }
 
