@@ -94,6 +94,6 @@ public class CaughtExceptionRef implements IdentityRef
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseCaughtExceptionRef(this);
+        ((RefSwitch) sw).caseCaughtExceptionRef(this);
     }
 }

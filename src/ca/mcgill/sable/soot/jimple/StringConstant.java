@@ -102,6 +102,6 @@ public class StringConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseStringConstant(this);
+        ((ConstantSwitch) sw).caseStringConstant(this);
     }
 }

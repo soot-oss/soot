@@ -101,6 +101,6 @@ public class NullConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNullConstant(this);
+        ((ConstantSwitch) sw).caseNullConstant(this);
     }
 }

@@ -103,6 +103,6 @@ public class MulExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseMulExpr(this);
+        ((ExprSwitch) sw).caseMulExpr(this);
     }
 }

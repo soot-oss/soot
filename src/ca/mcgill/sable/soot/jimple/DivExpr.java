@@ -103,6 +103,6 @@ public class DivExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseDivExpr(this);
+        ((ExprSwitch) sw).caseDivExpr(this);
     }
 }

@@ -97,6 +97,6 @@ public class ThisRef implements IdentityRef
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseThisRef(this);
+        ((RefSwitch) sw).caseThisRef(this);
     }
 }

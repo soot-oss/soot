@@ -104,6 +104,6 @@ public class SubExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseSubExpr(this);
+        ((ExprSwitch) sw).caseSubExpr(this);
     }
 }

@@ -90,6 +90,6 @@ public class LengthExpr extends UnopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseLengthExpr(this);
+        ((ExprSwitch) sw).caseLengthExpr(this);
     }
 }

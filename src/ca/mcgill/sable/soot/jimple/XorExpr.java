@@ -99,6 +99,6 @@ public class XorExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseXorExpr(this);
+        ((ExprSwitch) sw).caseXorExpr(this);
     }
 }

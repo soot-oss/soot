@@ -102,6 +102,6 @@ public class DoubleConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseDoubleConstant(this);
+        ((ConstantSwitch) sw).caseDoubleConstant(this);
     }
 }

@@ -77,91 +77,24 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
 
-public class StmtSwitch implements ca.mcgill.sable.util.Switch 
+public interface StmtSwitch extends Switch
 {
-    public void caseBreakpointStmt(BreakpointStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseInvokeStmt(InvokeStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseAssignStmt(AssignStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseIdentityStmt(IdentityStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseExitMonitorStmt(ExitMonitorStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseGotoStmt(GotoStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseIfStmt(IfStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseNopStmt(NopStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseRetStmt(RetStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseReturnStmt(ReturnStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-
-    public void caseReturnVoidStmt(ReturnVoidStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseTableSwitchStmt(TableSwitchStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void caseThrowStmt(ThrowStmt stmt)
-    {
-        defaultCase(stmt);
-    }
-    
-    public void defaultCase(Stmt stmt)
-    {
-    }
-    
-    /** @deprecated Replaced by defaultCase
-        @see defaultCase(Value) **/
-    public void caseDefault(Value v)
-    {
-    }   
+    public abstract void caseBreakpointStmt(BreakpointStmt stmt);
+    public abstract void caseInvokeStmt(InvokeStmt stmt);
+    public abstract void caseAssignStmt(AssignStmt stmt);
+    public abstract void caseIdentityStmt(IdentityStmt stmt);
+    public abstract void caseEnterMonitorStmt(EnterMonitorStmt stmt);
+    public abstract void caseExitMonitorStmt(ExitMonitorStmt stmt);
+    public abstract void caseGotoStmt(GotoStmt stmt);
+    public abstract void caseIfStmt(IfStmt stmt);
+    public abstract void caseLookupSwitchStmt(LookupSwitchStmt stmt);
+    public abstract void caseNopStmt(NopStmt stmt);
+    public abstract void caseRetStmt(RetStmt stmt);
+    public abstract void caseReturnStmt(ReturnStmt stmt);
+    public abstract void caseReturnVoidStmt(ReturnVoidStmt stmt);
+    public abstract void caseTableSwitchStmt(TableSwitchStmt stmt);
+    public abstract void caseThrowStmt(ThrowStmt stmt);
+    public abstract void defaultCase(Object obj);
 }

@@ -107,6 +107,6 @@ public class StaticFieldRef implements ConcreteRef
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseStaticFieldRef(this);
+        ((RefSwitch) sw).caseStaticFieldRef(this);
     }
 }

@@ -106,6 +106,6 @@ public class FloatConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseFloatConstant(this);
+        ((ConstantSwitch) sw).caseFloatConstant(this);
     }
 }

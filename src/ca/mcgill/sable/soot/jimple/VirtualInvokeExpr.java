@@ -93,7 +93,7 @@ public class VirtualInvokeExpr extends NonStaticInvokeExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseVirtualInvokeExpr(this);
+        ((ExprSwitch) sw).caseVirtualInvokeExpr(this);
     }
 }
 

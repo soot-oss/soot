@@ -125,7 +125,7 @@ public class StaticInvokeExpr extends InvokeExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseStaticInvokeExpr(this);
+        ((ExprSwitch) sw).caseStaticInvokeExpr(this);
     }
 }
 

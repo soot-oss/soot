@@ -160,6 +160,6 @@ public class NewMultiArrayExpr implements Expr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNewMultiArrayExpr(this);
+        ((ExprSwitch) sw).caseNewMultiArrayExpr(this);
     }    
 }

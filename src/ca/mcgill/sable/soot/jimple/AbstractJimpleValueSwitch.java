@@ -79,8 +79,10 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
 
-public class ValueSwitch implements ca.mcgill.sable.util.Switch
+public abstract class AbstractJimpleValueSwitch implements JimpleValueSwitch
 {
+    Object result;
+    
     public void caseArrayRef(ArrayRef v)
     {
         defaultCase(v);
@@ -306,14 +308,18 @@ public class ValueSwitch implements ca.mcgill.sable.util.Switch
         defaultCase(v);
     }
     
-    public void defaultCase(Value v)
+    public void defaultCase(Object v)
     {
     }
     
-    /** @deprecated Replaced by defaultCase
-        @see defaultCase(Value) **/
-    public void caseDefault(Value v)
+    public Object getResult()
     {
-    }   
+        return result;
+    }
+    
+    public void setResult(Object result)
+    {
+        this.result = result;
+    }
 }
  

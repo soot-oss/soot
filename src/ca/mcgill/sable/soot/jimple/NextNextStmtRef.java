@@ -94,6 +94,6 @@ public class NextNextStmtRef implements ConcreteRef
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNextNextStmtRef(this);
+        ((RefSwitch) sw).caseNextNextStmtRef(this);
     }
 }

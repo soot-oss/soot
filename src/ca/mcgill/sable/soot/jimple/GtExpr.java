@@ -91,6 +91,6 @@ public class GtExpr extends BinopExpr implements ConditionExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseGtExpr(this);
+        ((ExprSwitch) sw).caseGtExpr(this);
     }
 }

@@ -3,6 +3,10 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -62,6 +66,10 @@
 
  B) Changes:
 
+ - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
+   Changed caseDefault to defaultCase, to avoid name conflicts (and conform
+   to the standard).
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -69,35 +77,98 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
 
-public class UshrExpr extends BinopExpr
+public abstract class AbstractStmtSwitch implements StmtSwitch
 {
-    UshrExpr(Value op1, Value op2)
+    Object result;
+    
+    public void caseBreakpointStmt(BreakpointStmt stmt)
     {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
+        defaultCase(stmt);
     }
     
-    public String toString()
+    public void caseInvokeStmt(InvokeStmt stmt)
     {
-        return op1Box.getValue().toString() + " ushr " + op2Box.getValue().toString();
+        defaultCase(stmt);
     }
     
-    public Type getType()
+    public void caseAssignStmt(AssignStmt stmt)
     {
-        Value op1 = op1Box.getValue();
-           
-        if(op1.getType().equals(IntType.v()))
-            return IntType.v();
-        else if(op1.getType().equals(LongType.v()))
-            return LongType.v();
-        else
-            return UnknownType.v();
+        defaultCase(stmt);
     }
     
-    public void apply(Switch sw)
+    public void caseIdentityStmt(IdentityStmt stmt)
     {
-        ((ExprSwitch) sw).caseUshrExpr(this);
+        defaultCase(stmt);
+    }
+    
+    public void caseEnterMonitorStmt(EnterMonitorStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseExitMonitorStmt(ExitMonitorStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseGotoStmt(GotoStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseIfStmt(IfStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseLookupSwitchStmt(LookupSwitchStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseNopStmt(NopStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseRetStmt(RetStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseReturnStmt(ReturnStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+
+    public void caseReturnVoidStmt(ReturnVoidStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseTableSwitchStmt(TableSwitchStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void caseThrowStmt(ThrowStmt stmt)
+    {
+        defaultCase(stmt);
+    }
+    
+    public void defaultCase(Object obj)
+    {
+    }
+
+    public void setResult(Object result)
+    {
+        this.result = result;
+    }
+    
+    public Object getResult()
+    {
+        return result;
     }
 }
+

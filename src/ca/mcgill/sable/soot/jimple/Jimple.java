@@ -674,7 +674,7 @@ public class Jimple implements BodyRepresentation
     {
         out.print(indentation);
         
-        stmt.apply(new StmtSwitch()
+        stmt.apply(new AbstractStmtSwitch()
         {
             public void caseAssignStmt(AssignStmt s)
             {
@@ -803,7 +803,7 @@ public class Jimple implements BodyRepresentation
     
     static void printValuePrecisely(Value value, final PrintWriter out)
     {
-        value.apply(new ValueSwitch()
+        value.apply(new AbstractJimpleValueSwitch()
         {  
             public void caseAddExpr(AddExpr v)
             {
@@ -1155,7 +1155,7 @@ public class Jimple implements BodyRepresentation
     {
         out.print(indentation);
         
-        stmt.apply(new StmtSwitch()
+        stmt.apply(new AbstractStmtSwitch()
         {
             public void caseAssignStmt(AssignStmt s)
             {
@@ -1284,7 +1284,7 @@ public class Jimple implements BodyRepresentation
     
     static void printValueBriefly(Value value, final PrintWriter out)
     {
-        value.apply(new ValueSwitch()
+        value.apply(new AbstractJimpleValueSwitch()
         {  
             public void caseAddExpr(AddExpr v)
             {

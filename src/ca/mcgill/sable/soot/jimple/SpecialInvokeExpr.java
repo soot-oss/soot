@@ -110,6 +110,6 @@ public class SpecialInvokeExpr extends NonStaticInvokeExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseSpecialInvokeExpr(this);
+        ((ExprSwitch) sw).caseSpecialInvokeExpr(this);
     }    
 }

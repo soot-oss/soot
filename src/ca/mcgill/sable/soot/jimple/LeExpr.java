@@ -91,7 +91,7 @@ public class LeExpr extends BinopExpr implements ConditionExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseLeExpr(this);
+        ((ExprSwitch) sw).caseLeExpr(this);
     }
 }
 

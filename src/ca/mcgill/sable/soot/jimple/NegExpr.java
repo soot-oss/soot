@@ -101,6 +101,6 @@ public class NegExpr extends UnopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNegExpr(this);
+        ((ExprSwitch) sw).caseNegExpr(this);
     }
 }

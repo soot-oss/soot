@@ -133,6 +133,6 @@ public class InstanceOfExpr implements Expr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseInstanceOfExpr(this);
+        ((ExprSwitch) sw).caseInstanceOfExpr(this);
     }
 }

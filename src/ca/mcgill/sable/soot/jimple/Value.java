@@ -71,10 +71,8 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
 
-public interface Value
+public interface Value extends Switchable
 {
     public abstract List getUseBoxes();
     public abstract Type getType();
-    public abstract void apply(ca.mcgill.sable.util.Switch sw);
-
 }

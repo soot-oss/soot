@@ -3,6 +3,10 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -62,42 +66,23 @@
 
  B) Changes:
 
+ - Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
+   Changed caseDefault to defaultCase, to avoid name conflicts (and conform
+   to the standard).
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
 
-public class UshrExpr extends BinopExpr
+public interface JimpleValueSwitch extends ConstantSwitch, 
+    ExprSwitch, RefSwitch
 {
-    UshrExpr(Value op1, Value op2)
-    {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
-    }
+    public abstract void caseLocal(Local l);
     
-    public String toString()
-    {
-        return op1Box.getValue().toString() + " ushr " + op2Box.getValue().toString();
-    }
-    
-    public Type getType()
-    {
-        Value op1 = op1Box.getValue();
-           
-        if(op1.getType().equals(IntType.v()))
-            return IntType.v();
-        else if(op1.getType().equals(LongType.v()))
-            return LongType.v();
-        else
-            return UnknownType.v();
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseUshrExpr(this);
-    }
 }
+ 

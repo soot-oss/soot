@@ -103,6 +103,6 @@ public class AddExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseAddExpr(this);
+        ((ExprSwitch) sw).caseAddExpr(this);
     }
 }

@@ -109,7 +109,7 @@ public class InterfaceInvokeExpr extends NonStaticInvokeExpr
         
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseInterfaceInvokeExpr(this);
+        ((ExprSwitch) sw).caseInterfaceInvokeExpr(this);
     }
 }
 

@@ -3,6 +3,10 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -62,42 +66,57 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 31, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
-
-public class UshrExpr extends BinopExpr
+public abstract class AbstractConstantSwitch implements ConstantSwitch
 {
-    UshrExpr(Value op1, Value op2)
+    Object result;
+    
+    public void caseDoubleConstant(DoubleConstant v)
     {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
+        defaultCase(v);
     }
     
-    public String toString()
+    public void caseFloatConstant(FloatConstant v)
     {
-        return op1Box.getValue().toString() + " ushr " + op2Box.getValue().toString();
+        defaultCase(v);
     }
     
-    public Type getType()
+    public void caseIntConstant(IntConstant v)
     {
-        Value op1 = op1Box.getValue();
-           
-        if(op1.getType().equals(IntType.v()))
-            return IntType.v();
-        else if(op1.getType().equals(LongType.v()))
-            return LongType.v();
-        else
-            return UnknownType.v();
+        defaultCase(v);
     }
     
-    public void apply(Switch sw)
+    public void caseLongConstant(LongConstant v)
     {
-        ((ExprSwitch) sw).caseUshrExpr(this);
+        defaultCase(v);
+    }
+    
+    public void caseNullConstant(NullConstant v)
+    {
+        defaultCase(v);
+    }
+    
+    public void caseStringConstant(StringConstant v)
+    {
+        defaultCase(v);
+    }
+    
+    public void defaultCase(Object v)
+    {
+    }
+    
+    public Object getResult()
+    {
+        return result;
+    }
+    
+    public void setResult(Object result)
+    {
+        this.result = result;
     }
 }

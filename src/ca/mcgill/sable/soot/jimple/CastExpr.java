@@ -129,6 +129,6 @@ public class CastExpr implements Expr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseCastExpr(this);
+        ((ExprSwitch) sw).caseCastExpr(this);
     }
 }

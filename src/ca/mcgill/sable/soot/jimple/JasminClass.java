@@ -537,7 +537,7 @@ class JasminClass
         final Value lvalue = stmt.getLeftOp();
         final Value rvalue = stmt.getRightOp();
                         
-        lvalue.apply(new ValueSwitch()
+        lvalue.apply(new AbstractJimpleValueSwitch()
         {
             public void caseArrayRef(ArrayRef v)
             {
@@ -730,7 +730,7 @@ class JasminClass
         emitValue(op2);
 
         
-        cond.apply(new ValueSwitch()
+        cond.apply(new AbstractJimpleValueSwitch()
         {
             public void caseEqExpr(EqExpr expr)
             {
@@ -975,7 +975,7 @@ class JasminClass
         
     void emitStmt(Stmt stmt)
     {
-        stmt.apply(new StmtSwitch()
+        stmt.apply(new AbstractStmtSwitch()
         {
             public void caseAssignStmt(AssignStmt s)
             {
@@ -1154,7 +1154,7 @@ class JasminClass
     
     void emitValue(Value value)
     {
-        value.apply(new ValueSwitch()
+        value.apply(new AbstractJimpleValueSwitch()
         {  
             public void caseAddExpr(AddExpr v)
             {

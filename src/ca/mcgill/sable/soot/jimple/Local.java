@@ -119,7 +119,7 @@ public class Local implements Value
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseLocal(this);
+        ((JimpleValueSwitch) sw).caseLocal(this);
     }
     
 }

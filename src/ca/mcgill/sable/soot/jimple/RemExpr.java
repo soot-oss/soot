@@ -104,6 +104,6 @@ public class RemExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseRemExpr(this);
+        ((ExprSwitch) sw).caseRemExpr(this);
     }
 }

@@ -137,6 +137,6 @@ public class NewArrayExpr implements Expr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNewArrayExpr(this);
+        ((ExprSwitch) sw).caseNewArrayExpr(this);
     }    
 }

@@ -71,6 +71,6 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.*;
 
-public interface Unit
+public interface Unit extends Switchable
 {
 }

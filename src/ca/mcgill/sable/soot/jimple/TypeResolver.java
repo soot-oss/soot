@@ -1431,7 +1431,7 @@ class TypeResolver
         }
     }
 
-    private class ConstraintCollector extends StmtSwitch
+    private class ConstraintCollector extends AbstractStmtSwitch
     {
         private void handleInvokeExpr(InvokeExpr ie)
         {

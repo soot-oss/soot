@@ -105,7 +105,7 @@ public class LongConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseLongConstant(this);
+        ((ConstantSwitch) sw).caseLongConstant(this);
     }
 }
 

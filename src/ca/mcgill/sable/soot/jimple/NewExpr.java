@@ -108,6 +108,6 @@ public class NewExpr implements Expr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseNewExpr(this);
+        ((ExprSwitch) sw).caseNewExpr(this);
     }
 }

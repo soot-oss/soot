@@ -109,6 +109,6 @@ public class ParameterRef implements IdentityRef, Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseParameterRef(this);
+        ((RefSwitch) sw).caseParameterRef(this);
     }
 }

@@ -3,6 +3,10 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
+ * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
+ * rights reserved.                                                  *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -62,42 +66,44 @@
 
  B) Changes:
 
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 31, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
- 
+
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
-
-public class UshrExpr extends BinopExpr
+public interface ExprSwitch extends ca.mcgill.sable.util.Switch
 {
-    UshrExpr(Value op1, Value op2)
-    {
-        op1Box = Jimple.v().newImmediateBox(op1);
-        op2Box = Jimple.v().newImmediateBox(op2);
-    }
-    
-    public String toString()
-    {
-        return op1Box.getValue().toString() + " ushr " + op2Box.getValue().toString();
-    }
-    
-    public Type getType()
-    {
-        Value op1 = op1Box.getValue();
-           
-        if(op1.getType().equals(IntType.v()))
-            return IntType.v();
-        else if(op1.getType().equals(LongType.v()))
-            return LongType.v();
-        else
-            return UnknownType.v();
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseUshrExpr(this);
-    }
+    public abstract void caseAddExpr(AddExpr v);
+    public abstract void caseAndExpr(AndExpr v);
+    public abstract void caseCmpExpr(CmpExpr v);
+    public abstract void caseCmpgExpr(CmpgExpr v);
+    public abstract void caseCmplExpr(CmplExpr v);
+    public abstract void caseDivExpr(DivExpr v);
+    public abstract void caseEqExpr(EqExpr v);
+    public abstract void caseNeExpr(NeExpr v);
+    public abstract void caseGeExpr(GeExpr v);
+    public abstract void caseGtExpr(GtExpr v);
+    public abstract void caseLeExpr(LeExpr v);
+    public abstract void caseLtExpr(LtExpr v);
+    public abstract void caseMulExpr(MulExpr v);
+    public abstract void caseOrExpr(OrExpr v);
+    public abstract void caseRemExpr(RemExpr v);
+    public abstract void caseShlExpr(ShlExpr v);
+    public abstract void caseShrExpr(ShrExpr v);
+    public abstract void caseUshrExpr(UshrExpr v);
+    public abstract void caseSubExpr(SubExpr v);
+    public abstract void caseXorExpr(XorExpr v);
+    public abstract void caseInterfaceInvokeExpr(InterfaceInvokeExpr v);
+    public abstract void caseSpecialInvokeExpr(SpecialInvokeExpr v);
+    public abstract void caseStaticInvokeExpr(StaticInvokeExpr v);
+    public abstract void caseVirtualInvokeExpr(VirtualInvokeExpr v);
+    public abstract void caseCastExpr(CastExpr v);
+    public abstract void caseInstanceOfExpr(InstanceOfExpr v);
+    public abstract void caseNewArrayExpr(NewArrayExpr v);
+    public abstract void caseNewMultiArrayExpr(NewMultiArrayExpr v);
+    public abstract void caseNewExpr(NewExpr v);
+    public abstract void caseLengthExpr(LengthExpr v);
+    public abstract void caseNegExpr(NegExpr v);
+    public abstract void defaultCase(Object obj);
 }

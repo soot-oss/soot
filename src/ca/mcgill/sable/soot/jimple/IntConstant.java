@@ -102,6 +102,6 @@ public class IntConstant extends Constant implements Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseIntConstant(this);
+        ((ConstantSwitch) sw).caseIntConstant(this);
     }
 }

@@ -132,6 +132,6 @@ public class InstanceFieldRef implements ConcreteRef
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseInstanceFieldRef(this);
+        ((RefSwitch) sw).caseInstanceFieldRef(this);
     }
 }

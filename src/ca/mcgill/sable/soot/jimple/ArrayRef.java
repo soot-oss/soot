@@ -151,7 +151,7 @@ public class ArrayRef implements ConcreteRef, Switchable
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseArrayRef(this);
+        ((RefSwitch) sw).caseArrayRef(this);
     }
 }
 

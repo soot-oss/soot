@@ -98,7 +98,7 @@ public class ShlExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseShlExpr(this);
+        ((ExprSwitch) sw).caseShlExpr(this);
     }
 
 }

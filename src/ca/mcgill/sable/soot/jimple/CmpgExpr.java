@@ -91,6 +91,6 @@ public class CmpgExpr extends BinopExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseCmpgExpr(this);
+        ((ExprSwitch) sw).caseCmpgExpr(this);
     }
 }

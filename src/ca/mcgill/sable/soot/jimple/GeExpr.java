@@ -91,6 +91,6 @@ public class GeExpr extends BinopExpr implements ConditionExpr
     
     public void apply(Switch sw)
     {
-        ((ValueSwitch) sw).caseGeExpr(this);
+        ((ExprSwitch) sw).caseGeExpr(this);
     }
 }
