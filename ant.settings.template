@@ -14,3 +14,6 @@ soot.version=2.1.0-custom
 ## Location in which to generate Soot release tarballs.
 release.loc=/tmp
 
+## Location of JFlex classes jar file
+jflex.jar=${user.home}/JFlex.jar
+

@@ -50,6 +50,7 @@ public class PosColAttribute {
 	private int red;
 	private int green;
 	private int blue;
+	private int fg;
 	
 	public RGB getRGBColor(){
 		return new RGB(getRed(), getGreen(), getBlue());
@@ -152,5 +153,19 @@ public class PosColAttribute {
     public void setSourceStartOffset(int i) {
         sourceStartOffset = i;
     }
+
+	/**
+	 * @return
+	 */
+	public int getFg() {
+		return fg;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setFg(int i) {
+		fg = i;
+	}
 
 }

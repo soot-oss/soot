@@ -222,6 +222,7 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	public void runFinish() {
 		getFileHandler().refreshFolder();
+		getFileHandler().refreshAll(getSootSelection().getProject());
 		//for updating markers
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
 		//getDavaHandler().handleAfter();

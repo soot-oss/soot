@@ -1,0 +1,1495 @@
+package soot.javaToJimple.jj.parse;
+
+import polyglot.ast.*;
+import polyglot.lex.*;
+import polyglot.util.*;
+import polyglot.parse.*;
+import polyglot.types.*;
+import polyglot.*;
+import soot.javaToJimple.jj.types.JjTypeSystem;
+import soot.javaToJimple.jj.ast.JjNodeFactory;
+import polyglot.ext.jl.parse.Name;
+import soot.javaToJimple.jj.DPosition;
+import java.util.*;
+import polyglot.ast.Assert;
+
+parser Grm extends polyglot.ext.jl.parse.Grm {:
+
+    public final JjTypeSystem ts;
+    public final JjNodeFactory nf;
+
+    public Grm(Lexer l, TypeSystem t, NodeFactory n, ErrorQueue q) {
+        super(l, t, n, q);
+        ts = (JjTypeSystem) t;
+        nf = (JjNodeFactory) n;
+    }
+
+    public static Position pos(Object first, Object last){
+       
+        Position fpos = null;
+        Position epos = null;
+        if (first instanceof Node) {
+            fpos = pos ((Node) first);
+        }
+        else if (first instanceof Token) {
+            fpos = pos ((Token) first);
+        }
+        else if (first instanceof Type) {
+            fpos = pos ((Type) first);
+        }
+        else if (first instanceof List) {
+            fpos = pos ((List) first);
+        }
+        else if (first instanceof Name) {
+            fpos = pos ((Name) first);
+        }
+        else if (first instanceof VarDeclarator) {
+            fpos = pos ((VarDeclarator) first);
+        }
+        else {
+            //System.out.println(first.getClass());
+        }
+        
+        if (last instanceof Node) {
+            epos = pos ((Node) last);
+        }
+        else if (last instanceof Token) {
+            epos = pos ((Token) last);
+        }
+        else if (last instanceof Type) {
+            epos = pos ((Type) last);
+        }
+        else if (last instanceof List) {
+            epos = pos ((List) last);
+        }
+        else if (last instanceof Name) {
+            epos = pos ((Name) last);
+        }
+        else if (last instanceof VarDeclarator) {
+            epos = pos ((VarDeclarator) last);
+        }
+        else {
+            //System.out.println(last.getClass());
+        }
+
+            
+        DPosition real_pos = null;
+        
+        if ((fpos != null) && (epos != null)) {
+            DPosition dpos = (DPosition)epos;
+        
+            real_pos = new DPosition(fpos.file(), fpos.line(), fpos.column(), dpos.endCol(), dpos.endLine());
+
+        }
+        return real_pos;
+
+    }
+    
+    public static Position pos(List l){
+
+        if (l == null | l.isEmpty()){
+            return null;
+        }
+        
+        Object first = l.get (0);
+        Object last = l.get (l.size()-1);
+
+        return pos(first, last);
+    }
+  
+  public List variableDeclarators(TypeNode a, List b, Flags flags)
+    throws Exception
+  {
+    List l = new TypedList(new LinkedList(), LocalDecl.class, false);
+    for (Iterator i = b.iterator(); i.hasNext(); ) {
+	VarDeclarator d = (VarDeclarator) i.next();
+	l.add(nf.LocalDecl(pos(a, d), flags, array(a, d.dims),
+				  d.name, d.init));
+    }
+    return l;
+  }
+
+:}
+scan with {: return nextSymbol(); :};
+terminal Token BOOLEAN;
+terminal Token BYTE, SHORT, INT, LONG, CHAR;
+terminal Token FLOAT, DOUBLE;
+terminal Token LBRACK, RBRACK;
+terminal Identifier IDENTIFIER;
+terminal Token DOT;
+terminal Token SEMICOLON, MULT, COMMA, LBRACE, RBRACE, EQ;
+terminal Token LPAREN, RPAREN, COLON;
+terminal Token PACKAGE;
+terminal Token IMPORT;
+terminal Token PUBLIC, PROTECTED, PRIVATE;
+terminal Token STATIC;
+terminal Token ABSTRACT, FINAL, NATIVE, SYNCHRONIZED, TRANSIENT, VOLATILE;
+terminal Token CLASS;
+terminal Token EXTENDS;
+terminal Token IMPLEMENTS;
+terminal Token VOID;
+terminal Token THROWS;
+terminal Token THIS, SUPER;
+terminal Token INTERFACE;
+terminal Token IF, ELSE;
+terminal Token SWITCH;
+terminal Token CASE, DEFAULT;
+terminal Token DO, WHILE;
+terminal Token FOR;
+terminal Token BREAK;
+terminal Token CONTINUE;
+terminal Token RETURN;
+terminal Token THROW;
+terminal Token TRY;
+terminal Token CATCH;
+terminal Token FINALLY;
+terminal Token NEW;
+terminal Token PLUSPLUS;
+terminal Token MINUSMINUS;
+terminal Token PLUS, MINUS, COMP, NOT, DIV, MOD;
+terminal Token LSHIFT, RSHIFT, URSHIFT;
+terminal Token LT, GT, LTEQ, GTEQ, INSTANCEOF;
+terminal Token EQEQ, NOTEQ;
+terminal Token AND;
+terminal Token XOR;
+terminal Token OR;
+terminal Token ANDAND;
+terminal Token OROR;
+terminal Token QUESTION;
+terminal Token MULTEQ, DIVEQ, MODEQ, PLUSEQ, MINUSEQ;
+terminal Token LSHIFTEQ, RSHIFTEQ, URSHIFTEQ;
+terminal Token ANDEQ, XOREQ, OREQ;
+terminal polyglot.lex.IntegerLiteral INTEGER_LITERAL;
+terminal polyglot.lex.LongLiteral LONG_LITERAL;
+terminal polyglot.lex.DoubleLiteral DOUBLE_LITERAL;
+terminal polyglot.lex.FloatLiteral FLOAT_LITERAL;
+terminal polyglot.lex.BooleanLiteral BOOLEAN_LITERAL;
+terminal polyglot.lex.CharacterLiteral CHARACTER_LITERAL;
+terminal polyglot.lex.StringLiteral STRING_LITERAL;
+terminal polyglot.lex.NullLiteral NULL_LITERAL;
+terminal Token STRICTFP;
+terminal Token ASSERT;
+terminal CONST, GOTO;
+non terminal SourceFile goal;
+non terminal polyglot.ast.Lit literal;
+non terminal TypeNode type, primitive_type, numeric_type;
+non terminal TypeNode integral_type, floating_point_type;
+non terminal TypeNode reference_type;
+non terminal TypeNode class_or_interface_type;
+non terminal TypeNode class_type, interface_type;
+non terminal TypeNode array_type;
+non terminal Name name, simple_name, qualified_name;
+non terminal SourceFile compilation_unit;
+non terminal PackageNode package_declaration_opt, package_declaration;
+non terminal List import_declarations_opt, import_declarations;
+non terminal List type_declarations_opt, type_declarations;
+non terminal Import import_declaration;
+non terminal Import single_type_import_declaration;
+non terminal Import type_import_on_demand_declaration;
+non terminal ClassDecl type_declaration;
+non terminal Flags modifiers_opt, modifiers, modifier;
+non terminal ClassDecl class_declaration;
+non terminal TypeNode super, super_opt;
+non terminal List interfaces, interfaces_opt, interface_type_list;
+non terminal ClassBody class_body;
+non terminal List class_body_declarations, class_body_declarations_opt;
+non terminal List class_body_declaration, class_member_declaration;
+non terminal List field_declaration;
+non terminal List variable_declarators;
+non terminal VarDeclarator variable_declarator;
+non terminal VarDeclarator variable_declarator_id;
+non terminal Expr variable_initializer;
+non terminal MethodDecl method_declaration, method_header;
+non terminal List formal_parameter_list_opt, formal_parameter_list;
+non terminal Formal formal_parameter;
+non terminal List throws_opt, throws;
+non terminal List class_type_list;
+non terminal Block method_body;
+non terminal Block static_initializer;
+non terminal ConstructorDecl constructor_declaration;
+non terminal Block constructor_body;
+non terminal ConstructorCall explicit_constructor_invocation;
+non terminal ClassDecl interface_declaration;
+non terminal List extends_interfaces_opt, extends_interfaces;
+non terminal ClassBody interface_body;
+non terminal List interface_member_declarations_opt, interface_member_declarations;
+non terminal List interface_member_declaration;
+non terminal List constant_declaration;
+non terminal MethodDecl abstract_method_declaration;
+non terminal ArrayInit array_initializer;
+non terminal List variable_initializers;
+non terminal Block block;
+non terminal List block_statements_opt, block_statements;
+non terminal List block_statement;
+non terminal List local_variable_declaration_statement;
+non terminal List local_variable_declaration;
+non terminal Stmt statement, statement_no_short_if;
+non terminal Stmt statement_without_trailing_substatement;
+non terminal Empty empty_statement;
+non terminal Labeled labeled_statement, labeled_statement_no_short_if;
+non terminal Stmt expression_statement;
+non terminal Expr statement_expression;
+non terminal If if_then_statement;
+non terminal If if_then_else_statement, if_then_else_statement_no_short_if;
+non terminal Switch switch_statement;
+non terminal List switch_block, switch_block_statement_groups;
+non terminal List switch_block_statement_group, switch_labels;
+non terminal Case switch_label;
+non terminal While while_statement, while_statement_no_short_if;
+non terminal Do do_statement;
+non terminal For for_statement, for_statement_no_short_if;
+non terminal List for_init_opt, for_init;
+non terminal List for_update_opt, for_update;
+non terminal List statement_expression_list;
+non terminal Name identifier_opt;
+non terminal Branch break_statement, continue_statement;
+non terminal Return return_statement;
+non terminal Throw throw_statement;
+non terminal Synchronized synchronized_statement;
+non terminal Try try_statement;
+non terminal List catches_opt, catches;
+non terminal Catch catch_clause;
+non terminal Block finally;
+non terminal Assert assert_statement;
+non terminal Expr primary, primary_no_new_array;
+non terminal Expr class_instance_creation_expression;
+non terminal List argument_list_opt, argument_list;
+non terminal NewArray array_creation_expression;
+non terminal List dim_exprs;
+non terminal Expr dim_expr;
+non terminal Integer dims_opt, dims;
+non terminal Field field_access;
+non terminal Call method_invocation;
+non terminal ArrayAccess array_access;
+non terminal Expr postfix_expression;
+non terminal Unary postincrement_expression, postdecrement_expression;
+non terminal Expr unary_expression, unary_expression_not_plus_minus;
+non terminal Unary preincrement_expression, predecrement_expression;
+non terminal Cast cast_expression;
+non terminal Expr multiplicative_expression, additive_expression;
+non terminal Expr shift_expression, relational_expression, equality_expression;
+non terminal Expr and_expression, exclusive_or_expression, inclusive_or_expression;
+non terminal Expr conditional_and_expression, conditional_or_expression;
+non terminal Expr conditional_expression, assignment_expression;
+non terminal Expr assignment;
+non terminal Expr left_hand_side;
+non terminal Assign.Operator assignment_operator;
+non terminal Expr expression_opt, expression;
+non terminal Expr constant_expression;
+
+
+start with goal;
+
+goal ::=
+    compilation_unit:a {:  RESULT = a;  :};
+
+literal ::=
+    INTEGER_LITERAL:a {:
+                      RESULT = parser.nf.IntLit(parser.pos(a), IntLit.INT,
+                                     a.getValue().intValue()); 
+                      :}
+ |  LONG_LITERAL:a {:
+                   RESULT = parser.nf.IntLit(parser.pos(a), IntLit.LONG,
+                     a.getValue().longValue()); 
+                   :}
+ |  DOUBLE_LITERAL:a {:
+                     RESULT = parser.nf.FloatLit(parser.pos(a), FloatLit.DOUBLE,
+                                           a.getValue().doubleValue()); 
+                     :}
+ |  FLOAT_LITERAL:a {:
+                    RESULT = parser.nf.FloatLit(parser.pos(a), FloatLit.FLOAT,
+                                           a.getValue().floatValue()); 
+                    :}
+ |  BOOLEAN_LITERAL:a {:
+                      RESULT = parser.nf.BooleanLit(parser.pos(a),
+                                         a.getValue().booleanValue()); 
+                      :}
+ |  CHARACTER_LITERAL:a {:
+                        RESULT = parser.nf.CharLit(parser.pos(a),
+                      a.getValue().charValue()); 
+                        :}
+ |  STRING_LITERAL:a {:
+                     RESULT = parser.nf.StringLit(parser.pos(a), a.getValue()); 
+                     :}
+ |  NULL_LITERAL:a {:  RESULT = parser.nf.NullLit(parser.pos(a));  :};
+
+type ::=
+    primitive_type:a {:  RESULT = a;  :}
+ |  reference_type:a {:  RESULT = a;  :};
+
+primitive_type ::=
+    numeric_type:a {:  RESULT = a;  :}
+ |  BOOLEAN:a {:
+              RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Boolean()); 
+              :};
+
+numeric_type ::=
+    integral_type:a {:  RESULT = a;  :}
+ |  floating_point_type:a {:  RESULT = a;  :};
+
+integral_type ::=
+    BYTE:a {:
+           RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Byte()); 
+           :}
+ |  CHAR:a {:
+           RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Char()); 
+           :}
+ |  SHORT:a {:
+            RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Short()); 
+            :}
+ |  INT:a {:
+          RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Int()); 
+          :}
+ |  LONG:a {:
+           RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Long()); 
+           :};
+
+floating_point_type ::=
+    FLOAT:a {:
+            RESULT = parser.nf.CanonicalTypeNode(parser.pos(a),
+                       parser.ts.Float()); 
+            :}
+ |  DOUBLE:a {:
+             RESULT = parser.nf.CanonicalTypeNode(parser.pos(a),
+                       parser.ts.Double()); 
+             :};
+
+reference_type ::=
+    class_or_interface_type:a {:  RESULT = a;  :}
+ |  array_type:a {:  RESULT = a;  :};
+
+class_or_interface_type ::=
+    name:a {:  RESULT = a.toType();  :};
+
+class_type ::=
+    class_or_interface_type:a {:  RESULT = a;  :};
+
+interface_type ::=
+    class_or_interface_type:a {:  RESULT = a;  :};
+
+array_type ::=
+    primitive_type:a dims:b {:
+                            RESULT = parser.array(a, b.intValue()); 
+                            :}
+ |  name:a dims:b {:
+                  RESULT = parser.array(a.toType(), b.intValue()); 
+                  :};
+
+name ::=
+    simple_name:a {:  RESULT = a;  :}
+ |  qualified_name:a {:  RESULT = a;  :};
+
+simple_name ::=
+    IDENTIFIER:a {:
+                 RESULT = new Name(parser, parser.pos(a), a.getIdentifier()); 
+                 :};
+
+qualified_name ::=
+    name:a DOT IDENTIFIER:b {:
+                            RESULT = new Name(parser, parser.pos(a, b), a, b.getIdentifier()); 
+                            :};
+
+compilation_unit ::=
+    package_declaration_opt:a import_declarations_opt:b type_declarations_opt:c {:
+                                                                                RESULT = parser.nf.SourceFile(new Position(parser.lexer.file()),
+					     a, b, c);
+	    
+                                                                                :};
+
+package_declaration_opt ::=
+    package_declaration:a {:  RESULT = a;  :}
+ |  {:  RESULT = null;  :};
+
+import_declarations_opt ::=
+    import_declarations:a {:  RESULT = a;  :}
+ |  {:
+    RESULT = new TypedList(new LinkedList(), Import.class, false); 
+    :};
+
+type_declarations_opt ::=
+    type_declarations:a {:  RESULT = a;  :}
+ |  {:
+    RESULT = new TypedList(new LinkedList(), ClassDecl.class, false); 
+    :};
+
+import_declarations ::=
+    import_declaration:a {:
+                         List l = new TypedList(new LinkedList(), Import.class, false); 
+               l.add(a);
+               RESULT = l; 
+                         :}
+ |  import_declarations:a import_declaration:b {:
+                                               RESULT = a; 
+               a.add(b); 
+                                               :};
+
+type_declarations ::=
+    type_declaration:a {:
+                       List l = new TypedList(new LinkedList(), ClassDecl.class, false); 
+               if (a != null)
+                   l.add(a);
+               RESULT = l; 
+                       :}
+ |  type_declarations:a type_declaration:b {:
+                                           RESULT = a;
+               if (b != null)
+                   a.add(b); 
+                                           :};
+
+package_declaration ::=
+    PACKAGE name:a SEMICOLON {:  RESULT = a.toPackage();  :};
+
+import_declaration ::=
+    single_type_import_declaration:a {:  RESULT = a;  :}
+ |  type_import_on_demand_declaration:a {:  RESULT = a;  :};
+
+single_type_import_declaration ::=
+    IMPORT:a name:b SEMICOLON:c {:
+                                RESULT = parser.nf.Import(parser.pos(a, c), Import.CLASS, b.toString()); 
+                                :};
+
+type_import_on_demand_declaration ::=
+    IMPORT:a name:b DOT MULT SEMICOLON:c {:
+                                         RESULT = parser.nf.Import(parser.pos(a, c), Import.PACKAGE, b.toString()); 
+                                         :};
+
+type_declaration ::=
+    class_declaration:a {:  RESULT = a;  :}
+ |  interface_declaration:a {:  RESULT = a;  :}
+ |  SEMICOLON {:  RESULT = null;  :};
+
+modifiers_opt ::=
+    {:  RESULT = Flags.NONE;  :}
+ |  modifiers:a {:  RESULT = a;  :};
+
+modifiers ::=
+    modifier:a {:  RESULT = a;  :}
+ |  modifiers:a modifier:b {:  RESULT = a.set(b);  :};
+
+modifier ::=
+    PUBLIC:a {:  RESULT = Flags.PUBLIC;  :}
+ |  PROTECTED:a {:  RESULT = Flags.PROTECTED;  :}
+ |  PRIVATE:a {:  RESULT = Flags.PRIVATE;  :}
+ |  STATIC:a {:  RESULT = Flags.STATIC;  :}
+ |  ABSTRACT:a {:  RESULT = Flags.ABSTRACT;  :}
+ |  FINAL:a {:  RESULT = Flags.FINAL;  :}
+ |  NATIVE:a {:  RESULT = Flags.NATIVE;  :}
+ |  SYNCHRONIZED:a {:  RESULT = Flags.SYNCHRONIZED;  :}
+ |  TRANSIENT:a {:  RESULT = Flags.TRANSIENT;  :}
+ |  VOLATILE:a {:  RESULT = Flags.VOLATILE;  :}
+ |  STRICTFP:a {:  RESULT = Flags.STRICTFP;  :};
+
+class_declaration ::=
+    modifiers_opt:a CLASS:n IDENTIFIER:b super_opt:c interfaces_opt:d class_body:e {:
+                                                                                   RESULT = parser.nf.ClassDecl(parser.pos(n, e),
+                a, b.getIdentifier(), c, d, e); 
+                                                                                   :};
+
+super ::=
+    EXTENDS class_type:a {:  RESULT = a;  :};
+
+super_opt ::=
+   
+ |  super:a {:  RESULT = a;  :};
+
+interfaces ::=
+    IMPLEMENTS interface_type_list:a {:  RESULT = a;  :};
+
+interfaces_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), TypeNode.class, false); 
+    :}
+ |  interfaces:a {:  RESULT = a;  :};
+
+interface_type_list ::=
+    interface_type:a {:
+                     List l = new TypedList(new LinkedList(), TypeNode.class, false);
+               l.add(a);
+               RESULT = l; 
+                     :}
+ |  interface_type_list:a COMMA interface_type:b {:
+                                                 RESULT = a;
+               a.add(b); 
+                                                 :};
+
+class_body ::=
+    LBRACE:n class_body_declarations_opt:a RBRACE:b {:
+                                                    RESULT = parser.nf.ClassBody(parser.pos(n, b), a); 
+                                                    :};
+
+class_body_declarations_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), ClassMember.class, false); 
+    :}
+ |  class_body_declarations:a {:  RESULT = a;  :};
+
+class_body_declarations ::=
+    class_body_declaration:a {:  RESULT = a;  :}
+ |  class_body_declarations:a class_body_declaration:b {:
+                                                       RESULT = a;
+               a.addAll(b); 
+                                                       :};
+
+class_body_declaration ::=
+    class_member_declaration:a {:  RESULT = a;  :}
+ |  static_initializer:a {:
+                         List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(parser.nf.Initializer(parser.pos(a), Flags.STATIC, a));
+               RESULT = l; 
+                         :}
+ |  constructor_declaration:a {:
+                              List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                              :}
+ |  block:a {:
+            List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(parser.nf.Initializer(parser.pos(a), Flags.NONE, a));
+               RESULT = l; 
+            :};
+
+class_member_declaration ::=
+    field_declaration:a {:  RESULT = a;  :}
+ |  method_declaration:a {:
+                         List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                         :}
+ |  modifiers_opt:a CLASS:n IDENTIFIER:b super_opt:c interfaces_opt:d class_body:e {:
+                                                                                   List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(parser.nf.ClassDecl(parser.pos(n, e),
+                        a, b.getIdentifier(), c, d, e));
+               RESULT = l; 
+                                                                                   :}
+ |  interface_declaration:a {:
+                            List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                            :};
+
+field_declaration ::=
+    modifiers_opt:a type:b variable_declarators:c SEMICOLON:e {:
+                                                              List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               for (Iterator i = c.iterator(); i.hasNext(); ) {
+                   VarDeclarator d = (VarDeclarator) i.next();
+                   l.add(parser.nf.FieldDecl(parser.pos(b, e),
+                                             a, parser.array(b, d.dims),
+                                             d.name, d.init));
+               }
+               RESULT = l; 
+                                                              :};
+
+variable_declarators ::=
+    variable_declarator:a {:
+                          List l = new TypedList(new LinkedList(), VarDeclarator.class, false);
+               l.add(a);
+               RESULT = l; 
+                          :}
+ |  variable_declarators:a COMMA variable_declarator:b {:
+                                                       RESULT = a;
+               a.add(b); 
+                                                       :};
+
+variable_declarator ::=
+    variable_declarator_id:a {:  RESULT = a;  :}
+ |  variable_declarator_id:a EQ variable_initializer:b {:
+                                                       RESULT = a;
+               a.init = b; 
+                                                       :};
+
+variable_declarator_id ::=
+    IDENTIFIER:a {:
+                 RESULT = new VarDeclarator(parser.pos(a),
+                            a.getIdentifier()); 
+                 :}
+ |  variable_declarator_id:a LBRACK RBRACK {:
+                                           RESULT = a;
+               a.dims++; 
+                                           :};
+
+variable_initializer ::=
+    expression:a {:  RESULT = a;  :}
+ |  array_initializer:a {:  RESULT = a;  :};
+
+method_declaration ::=
+    method_header:a method_body:b {:
+                                  RESULT = (MethodDecl) a.body(b); 
+                                  :};
+
+method_header ::=
+    modifiers_opt:a type:b IDENTIFIER:c LPAREN formal_parameter_list_opt:d RPAREN:g dims_opt:e throws_opt:f {:
+                                                                                                            RESULT = parser.nf.MethodDecl(parser.pos(b, g), a,
+                parser.array(b, e.intValue()), c.getIdentifier(),
+                d, f, null); 
+                                                                                                            :}
+ |  modifiers_opt:a VOID:b IDENTIFIER:c LPAREN formal_parameter_list_opt:d RPAREN:g throws_opt:f {:
+                                                                                                 RESULT = parser.nf.MethodDecl(parser.pos(b, g), a,
+                parser.nf.CanonicalTypeNode(parser.pos(b),
+                parser.ts.Void()), c.getIdentifier(), d, f, null); 
+                                                                                                 :};
+
+formal_parameter_list_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), Formal.class, false); 
+    :}
+ |  formal_parameter_list:a {:  RESULT = a;  :};
+
+formal_parameter_list ::=
+    formal_parameter:a {:
+                       List l = new TypedList(new LinkedList(), Formal.class, false);
+               l.add(a);
+               RESULT = l; 
+                       :}
+ |  formal_parameter_list:a COMMA formal_parameter:b {:
+                                                     RESULT = a;
+               a.add(b); 
+                                                     :};
+
+formal_parameter ::=
+    type:a variable_declarator_id:b {:
+                                    RESULT = parser.nf.Formal(parser.pos(a, b), Flags.NONE,
+                                         parser.array(a, b.dims), b.name); 
+                                    :}
+ |  FINAL:f type:a variable_declarator_id:b {:
+                                            RESULT = parser.nf.Formal(parser.pos(a, b), Flags.FINAL,
+                     parser.array(a, b.dims), b.name); 
+                                            :};
+
+throws_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), TypeNode.class, false); 
+    :}
+ |  throws:a {:  RESULT = a;  :};
+
+throws ::=
+    THROWS class_type_list:a {:  RESULT = a;  :};
+
+class_type_list ::=
+    class_type:a {:
+                 List l = new TypedList(new LinkedList(), TypeNode.class, false);
+               l.add(a);
+               RESULT = l; 
+                 :}
+ |  class_type_list:a COMMA class_type:b {:
+                                         RESULT = a;
+               a.add(b); 
+                                         :};
+
+method_body ::=
+    block:a {:  RESULT = a;  :}
+ |  SEMICOLON {:  RESULT = null;  :};
+
+static_initializer ::=
+    STATIC block:a {:  RESULT = a;  :};
+
+constructor_declaration ::=
+    modifiers_opt:m simple_name:a LPAREN formal_parameter_list_opt:b RPAREN throws_opt:c constructor_body:d {:
+                                                                                                            RESULT = parser.nf.ConstructorDecl(parser.pos(a, d), m, a.toString(), b,
+                c, d); 
+                                                                                                            :};
+
+constructor_body ::=
+    LBRACE:n explicit_constructor_invocation:a block_statements:b RBRACE:d {:
+                                                                           List l = new TypedList(new LinkedList(), Stmt.class, false);
+               l.add(a);
+               l.addAll(b);
+               RESULT = parser.nf.Block(parser.pos(n, d), l); 
+                                                                           :}
+ |  LBRACE:n explicit_constructor_invocation:a RBRACE:d {:
+                                                        RESULT = parser.nf.Block(parser.pos(n, d), a); 
+                                                        :}
+ |  LBRACE:n block_statements:a RBRACE:d {:
+                                         a.add(0, parser.nf.SuperCall(parser.pos(n, d), 
+                Collections.EMPTY_LIST));
+               RESULT = parser.nf.Block(parser.pos(n, d), a); 
+                                         :}
+ |  LBRACE:n RBRACE:d {:
+                      RESULT = parser.nf.Block(parser.pos(n, d),
+                parser.nf.SuperCall(parser.pos(n, d),
+                Collections.EMPTY_LIST)); 
+                      :};
+
+explicit_constructor_invocation ::=
+    THIS:a LPAREN argument_list_opt:b RPAREN SEMICOLON:c {:
+                                                         RESULT = parser.nf.ThisCall(parser.pos(a, c), b); 
+                                                         :}
+ |  SUPER:a LPAREN argument_list_opt:b RPAREN SEMICOLON:c {:
+                                                          RESULT = parser.nf.SuperCall(parser.pos(a, c), b); 
+                                                          :}
+ |  primary:a DOT THIS:n LPAREN argument_list_opt:b RPAREN SEMICOLON:c {:
+                                                                       RESULT = parser.nf.ThisCall(parser.pos(a, c), a, b); 
+                                                                       :}
+ |  primary:a DOT SUPER:n LPAREN argument_list_opt:b RPAREN SEMICOLON:c {:
+                                                                        RESULT = parser.nf.SuperCall(parser.pos(a, c), a, b); 
+                                                                        :};
+
+interface_declaration ::=
+    modifiers_opt:a INTERFACE:n IDENTIFIER:b extends_interfaces_opt:c interface_body:d {:
+                                                                                       RESULT = parser.nf.ClassDecl(
+                    parser.pos(n, d), a.Interface(),
+                        b.getIdentifier(), null, c, d); 
+                                                                                       :};
+
+extends_interfaces_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), TypeNode.class, false); 
+    :}
+ |  extends_interfaces:a {:  RESULT = a;  :};
+
+extends_interfaces ::=
+    EXTENDS interface_type:a {:
+                             List l = new TypedList(new LinkedList(), TypeNode.class, false);
+               l.add(a);
+               RESULT = l; 
+                             :}
+ |  extends_interfaces:a COMMA interface_type:b {:
+                                                RESULT = a;
+               a.add(b); 
+                                                :};
+
+interface_body ::=
+    LBRACE:n interface_member_declarations_opt:a RBRACE:d {:
+                                                          RESULT = parser.nf.ClassBody(parser.pos(n, d), a); 
+                                                          :};
+
+interface_member_declarations_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), ClassMember.class, false); 
+    :}
+ |  interface_member_declarations:a {:  RESULT = a;  :};
+
+interface_member_declarations ::=
+    interface_member_declaration:a {:  RESULT = a;  :}
+ |  interface_member_declarations:a interface_member_declaration:b {:
+                                                                   RESULT = a;
+               a.addAll(b); 
+                                                                   :};
+
+interface_member_declaration ::=
+    constant_declaration:a {:  RESULT = a;  :}
+ |  abstract_method_declaration:a {:
+                                  List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                                  :}
+ |  class_declaration:a {:
+                        List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                        :}
+ |  interface_declaration:a {:
+                            List l = new TypedList(new LinkedList(), ClassMember.class, false);
+               l.add(a);
+               RESULT = l; 
+                            :};
+
+constant_declaration ::=
+    field_declaration:a {:  RESULT = a;  :};
+
+abstract_method_declaration ::=
+    method_header:a SEMICOLON {:  RESULT = a;  :};
+
+array_initializer ::=
+    LBRACE:n variable_initializers:a COMMA RBRACE:d {:
+                                                    RESULT = parser.nf.ArrayInit(parser.pos(n, d), a); 
+                                                    :}
+ |  LBRACE:n variable_initializers:a RBRACE:d {:
+                                              RESULT = parser.nf.ArrayInit(parser.pos(n, d), a); 
+                                              :}
+ |  LBRACE:n COMMA RBRACE:d {:
+                            RESULT = parser.nf.ArrayInit(parser.pos(n, d)); 
+                            :}
+ |  LBRACE:n RBRACE:d {:
+                      RESULT = parser.nf.ArrayInit(parser.pos(n, d)); 
+                      :};
+
+variable_initializers ::=
+    variable_initializer:a {:
+                           List l = new TypedList(new LinkedList(), Expr.class, false);
+           l.add(a);
+           RESULT = l; 
+                           :}
+ |  variable_initializers:a COMMA variable_initializer:b {:
+                                                         RESULT = a; a.add(b); 
+                                                         :};
+
+block ::=
+    LBRACE:n block_statements_opt:a RBRACE:d {:
+                                             RESULT = parser.nf.Block(parser.pos(n, d), a); 
+                                             :};
+
+block_statements_opt ::=
+    {:  RESULT = new TypedList(new LinkedList(), Stmt.class, false);  :}
+ |  block_statements:a {:  RESULT = a;  :};
+
+block_statements ::=
+    block_statement:a {:
+                      List l = new TypedList(new LinkedList(), Stmt.class, false);
+               l.addAll(a);
+               RESULT = l; 
+                      :}
+ |  block_statements:a block_statement:b {:
+                                         RESULT = a;
+               a.addAll(b); 
+                                         :};
+
+block_statement ::=
+    local_variable_declaration_statement:a {:  RESULT = a;  :}
+ |  statement:a {:
+                List l = new TypedList(new LinkedList(), Stmt.class, false);
+               l.add(a);
+               RESULT = l; 
+                :}
+ |  class_declaration:a {:
+                        List l = new TypedList(new LinkedList(), Stmt.class, false);
+               l.add(parser.nf.LocalClassDecl(parser.pos(a), a));
+               RESULT = l; 
+                        :}
+ |  interface_declaration:a {:
+                            List l = new TypedList(new LinkedList(), Stmt.class, false);
+               l.add(parser.nf.LocalClassDecl(parser.pos(a), a));
+               RESULT = l; 
+                            :};
+
+local_variable_declaration_statement ::=
+    local_variable_declaration:a SEMICOLON {:  RESULT = a;  :};
+
+local_variable_declaration ::=
+    type:a variable_declarators:b {:
+                                  RESULT = parser.variableDeclarators(a, b, Flags.NONE); 
+                                  :}
+ |  FINAL type:a variable_declarators:b {:
+                                        RESULT = parser.variableDeclarators(a, b, Flags.FINAL); 
+                                        :};
+
+statement ::=
+    statement_without_trailing_substatement:a {:  RESULT = a;  :}
+ |  labeled_statement:a {:  RESULT = a;  :}
+ |  if_then_statement:a {:  RESULT = a;  :}
+ |  if_then_else_statement:a {:  RESULT = a;  :}
+ |  while_statement:a {:  RESULT = a;  :}
+ |  for_statement:a {:  RESULT = a;  :};
+
+statement_no_short_if ::=
+    statement_without_trailing_substatement:a {:  RESULT = a;  :}
+ |  labeled_statement_no_short_if:a {:  RESULT = a;  :}
+ |  if_then_else_statement_no_short_if:a {:  RESULT = a;  :}
+ |  while_statement_no_short_if:a {:  RESULT = a;  :}
+ |  for_statement_no_short_if:a {:  RESULT = a;  :};
+
+statement_without_trailing_substatement ::=
+    block:a {:  RESULT = a;  :}
+ |  empty_statement:a {:  RESULT = a;  :}
+ |  expression_statement:a {:  RESULT = a;  :}
+ |  switch_statement:a {:  RESULT = a;  :}
+ |  do_statement:a {:  RESULT = a;  :}
+ |  break_statement:a {:  RESULT = a;  :}
+ |  continue_statement:a {:  RESULT = a;  :}
+ |  return_statement:a {:  RESULT = a;  :}
+ |  synchronized_statement:a {:  RESULT = a;  :}
+ |  throw_statement:a {:  RESULT = a;  :}
+ |  try_statement:a {:  RESULT = a;  :}
+ |  assert_statement:a {:  RESULT = a;  :};
+
+empty_statement ::=
+    SEMICOLON:a {:  RESULT = parser.nf.Empty(parser.pos(a));  :};
+
+labeled_statement ::=
+    IDENTIFIER:a COLON statement:b {:
+                                   RESULT = parser.nf.Labeled(parser.pos(a, b),
+                                      a.getIdentifier(), b); 
+                                   :};
+
+labeled_statement_no_short_if ::=
+    IDENTIFIER:a COLON statement_no_short_if:b {:
+                                               RESULT = parser.nf.Labeled(parser.pos(a, b),
+                                      a.getIdentifier(), b); 
+                                               :};
+
+expression_statement ::=
+    statement_expression:a SEMICOLON:d {:
+                                       RESULT = parser.nf.Eval(parser.pos(a, d), a); 
+                                       :};
+
+statement_expression ::=
+    assignment:a {:  RESULT = a;  :}
+ |  preincrement_expression:a {:  RESULT = a;  :}
+ |  predecrement_expression:a {:  RESULT = a;  :}
+ |  postincrement_expression:a {:  RESULT = a;  :}
+ |  postdecrement_expression:a {:  RESULT = a;  :}
+ |  method_invocation:a {:  RESULT = a;  :}
+ |  class_instance_creation_expression:a {:  RESULT = a;  :};
+
+if_then_statement ::=
+    IF:n LPAREN expression:a RPAREN statement:b {:
+                                                RESULT = parser.nf.If(parser.pos(n, b), a, b); 
+                                                :};
+
+if_then_else_statement ::=
+    IF:n LPAREN expression:a RPAREN statement_no_short_if:b ELSE statement:c {:
+                                                                             RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                             :};
+
+if_then_else_statement_no_short_if ::=
+    IF:n LPAREN expression:a RPAREN statement_no_short_if:b ELSE statement_no_short_if:c {:
+                                                                                         RESULT = parser.nf.If(parser.pos(n, b), a, b, c); 
+                                                                                         :};
+
+switch_statement ::=
+    SWITCH:n LPAREN expression:a RPAREN switch_block:b {:
+                                                       RESULT = parser.nf.Switch(parser.pos(n, b), a, b); 
+                                                       :};
+
+switch_block ::=
+    LBRACE switch_block_statement_groups:a switch_labels:b RBRACE {:
+                                                                  RESULT = a;
+               a.addAll(b); 
+                                                                  :}
+ |  LBRACE switch_block_statement_groups:a RBRACE {:  RESULT = a;  :}
+ |  LBRACE switch_labels:a RBRACE {:  RESULT = a;  :}
+ |  LBRACE RBRACE {:
+                  RESULT = new TypedList(new LinkedList(), SwitchElement.class, false); 
+                  :};
+
+switch_block_statement_groups ::=
+    switch_block_statement_group:a {:  RESULT = a;  :}
+ |  switch_block_statement_groups:a switch_block_statement_group:b {:
+                                                                   RESULT = a;
+               a.addAll(b); 
+                                                                   :};
+
+switch_block_statement_group ::=
+    switch_labels:a block_statements:b {:
+                                       List l = new TypedList(new LinkedList(), SwitchElement.class, false);
+               l.addAll(a); 
+               l.add(parser.nf.SwitchBlock(parser.pos(a, b), b));
+               RESULT = l; 
+                                       :};
+
+switch_labels ::=
+    switch_label:a {:
+                   List l = new TypedList(new LinkedList(), Case.class, false);
+               l.add(a);
+               RESULT = l; 
+                   :}
+ |  switch_labels:a switch_label:b {:
+                                   RESULT = a;
+               a.add(b); 
+                                   :};
+
+switch_label ::=
+    CASE:n constant_expression:a COLON:d {:
+                                         RESULT = parser.nf.Case(parser.pos(n, d), a); 
+                                         :}
+ |  DEFAULT:n COLON:d {:
+                      RESULT = parser.nf.Default(parser.pos(n, d)); 
+                      :};
+
+while_statement ::=
+    WHILE:n LPAREN expression:a RPAREN statement:b {:
+                                                   RESULT = parser.nf.While(parser.pos(n, b), a, b); 
+                                                   :};
+
+while_statement_no_short_if ::=
+    WHILE:n LPAREN expression:a RPAREN statement_no_short_if:b {:
+                                                               RESULT = parser.nf.While(parser.pos(n, b), a, b); 
+                                                               :};
+
+do_statement ::=
+    DO:n statement:a WHILE LPAREN expression:b RPAREN SEMICOLON:d {:
+                                                                  RESULT = parser.nf.Do(parser.pos(n, d), a, b); 
+                                                                  :};
+
+for_statement ::=
+    FOR:n LPAREN for_init_opt:a SEMICOLON expression_opt:b SEMICOLON:e for_update_opt:c RPAREN statement:d {:
+                                                                                                           RESULT = parser.nf.For(parser.pos(n, e), a, b, c, d); 
+                                                                                                           :};
+
+for_statement_no_short_if ::=
+    FOR:n LPAREN for_init_opt:a SEMICOLON expression_opt:b SEMICOLON:e for_update_opt:c RPAREN statement_no_short_if:d {:
+                                                                                                                       RESULT = parser.nf.For(parser.pos(n, e), a, b, c, d); 
+                                                                                                                       :};
+
+for_init_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), ForInit.class, false); 
+    :}
+ |  for_init:a {:  RESULT = a;  :};
+
+for_init ::=
+    statement_expression_list:a {:  RESULT = a;  :}
+ |  local_variable_declaration:a {:
+                                 List l = new TypedList(new LinkedList(), ForInit.class, false);
+               l.addAll(a);
+               RESULT = l; 
+                                 :};
+
+for_update_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), ForUpdate.class, false); 
+    :}
+ |  for_update:a {:  RESULT = a;  :};
+
+for_update ::=
+    statement_expression_list:a {:  RESULT = a;  :};
+
+statement_expression_list ::=
+    statement_expression:a {:
+                           List l = new TypedList(new LinkedList(), Eval.class, false);
+               l.add(parser.nf.Eval(parser.pos(a), a));
+               RESULT = l; 
+                           :}
+ |  statement_expression_list:a COMMA statement_expression:b {:
+                                                             RESULT = a;
+               a.add(parser.nf.Eval(parser.pos(a, b), b)); 
+                                                             :};
+
+identifier_opt ::=
+    {:  RESULT = null;  :}
+ |  IDENTIFIER:a {:
+                 RESULT = new Name(parser, parser.pos(a), 
+                a.getIdentifier()); 
+                 :};
+
+break_statement ::=
+    BREAK:n identifier_opt:a SEMICOLON:d {:
+                                         if (a == null)
+                   RESULT = parser.nf.Break(parser.pos(n, d));
+               else
+                   RESULT = parser.nf.Break(parser.pos(n, d), a.toString()); 
+                                         :};
+
+continue_statement ::=
+    CONTINUE:n identifier_opt:a SEMICOLON:d {:
+                                            if (a == null)
+                   RESULT = parser.nf.Continue(parser.pos(n, d));
+               else
+                   RESULT = parser.nf.Continue(parser.pos(n, d), a.toString()); 
+                                            :};
+
+return_statement ::=
+    RETURN:n expression_opt:a SEMICOLON:d {:
+                                          RESULT = parser.nf.Return(parser.pos(n, d), a); 
+                                          :};
+
+throw_statement ::=
+    THROW:n expression:a SEMICOLON:d {:
+                                     RESULT = parser.nf.Throw(parser.pos(n, d), a); 
+                                     :};
+
+synchronized_statement ::=
+    SYNCHRONIZED:n LPAREN expression:a RPAREN block:b {:
+                                                      RESULT = parser.nf.Synchronized(parser.pos(n, b), a, b); 
+                                                      :};
+
+try_statement ::=
+    TRY:n block:a catches:b {:
+                            RESULT = parser.nf.Try(parser.pos(n, b), a, b); 
+                            :}
+ |  TRY:n block:a catches_opt:b finally:c {:
+                                          RESULT = parser.nf.Try(parser.pos(n, c), a, b, c); 
+                                          :};
+
+catches_opt ::=
+    {:
+    RESULT = new TypedList(new LinkedList(), Catch.class, false); 
+    :}
+ |  catches:a {:  RESULT = a;  :};
+
+catches ::=
+    catch_clause:a {:
+                   List l = new TypedList(new LinkedList(), Catch.class, false);
+               l.add(a);
+               RESULT = l; 
+                   :}
+ |  catches:a catch_clause:b {:
+                             RESULT = a;
+               a.add(b); 
+                             :};
+
+catch_clause ::=
+    CATCH:n LPAREN formal_parameter:a RPAREN block:b {:
+                                                     RESULT = parser.nf.Catch(parser.pos(n, b), a, b); 
+                                                     :};
+
+finally ::=
+    FINALLY block:a {:  RESULT = a;  :};
+
+assert_statement ::=
+    ASSERT:x expression:a SEMICOLON:d {:
+                                      RESULT = parser.nf.Assert(parser.pos(x, d), a); 
+                                      :}
+ |  ASSERT:x expression:a COLON expression:b SEMICOLON:d {:
+                                                         RESULT = parser.nf.Assert(parser.pos(x, d), a, b); 
+                                                         :};
+
+primary ::=
+    primary_no_new_array:a {:  RESULT = a;  :}
+ |  array_creation_expression:a {:  RESULT = a;  :};
+
+primary_no_new_array ::=
+    literal:a {:  RESULT = a;  :}
+ |  THIS:a {:  RESULT = parser.nf.This(parser.pos(a));  :}
+ |  LPAREN expression:a RPAREN {:  RESULT = a;  :}
+ |  class_instance_creation_expression:a {:  RESULT = a;  :}
+ |  field_access:a {:  RESULT = a;  :}
+ |  method_invocation:a {:  RESULT = a;  :}
+ |  array_access:a {:  RESULT = a;  :}
+ |  primitive_type:a DOT CLASS:n {:
+                                 RESULT = parser.nf.Field(parser.pos(a, n), a, "class"); 
+                                 :}
+ |  VOID:a DOT CLASS:n {:
+                       RESULT = parser.nf.Field(parser.pos(a, n), 
+                parser.nf.CanonicalTypeNode(parser.pos(a),
+                parser.ts.Void()), "class"); 
+                       :}
+ |  array_type:a DOT CLASS:n {:
+                             RESULT = parser.nf.Field(parser.pos(a, n), a, "class"); 
+                             :}
+ |  name:a DOT CLASS:n {:
+                       RESULT = parser.nf.Field(parser.pos(a, n), a.toType(), "class"); 
+                       :}
+ |  name:a DOT THIS:n {:
+                      RESULT = parser.nf.This(parser.pos(a, n), a.toType()); 
+                      :};
+
+class_instance_creation_expression ::=
+    NEW:n class_type:a LPAREN argument_list_opt:b RPAREN:d {:
+                                                           RESULT = parser.nf.New(parser.pos(n, d), a, b); 
+                                                           :}
+ |  NEW:n class_type:a LPAREN argument_list_opt:b RPAREN class_body:c {:
+                                                                      RESULT = parser.nf.New(parser.pos(n, c), a, b, c); 
+                                                                      :}
+ |  primary:a DOT NEW simple_name:b LPAREN argument_list_opt:c RPAREN:d {:
+                                                                        RESULT = parser.nf.New(parser.pos(a, d), a,
+				      b.toType(), c); 
+                                                                        :}
+ |  primary:a DOT NEW simple_name:b LPAREN argument_list_opt:c RPAREN class_body:d {:
+                                                                                   RESULT = parser.nf.New(parser.pos(a, d), a,
+				      b.toType(), c, d); 
+                                                                                   :}
+ |  name:a DOT NEW simple_name:b LPAREN argument_list_opt:c RPAREN:d {:
+                                                                     RESULT = parser.nf.New(parser.pos(a, d), a.toExpr(),
+				      b.toType(), c); 
+                                                                     :}
+ |  name:a DOT NEW simple_name:b LPAREN argument_list_opt:c RPAREN class_body:d {:
+                                                                                RESULT = parser.nf.New(parser.pos(a, d), a.toExpr(),
+				      b.toType(), c, d); 
+                                                                                :};
+
+argument_list_opt ::=
+    {:  RESULT = new TypedList(new LinkedList(), Expr.class, false);  :}
+ |  argument_list:a {:  RESULT = a;  :};
+
+argument_list ::=
+    expression:a {:
+                 List l = new TypedList(new LinkedList(), Expr.class, false);
+               l.add(a);
+               RESULT = l; 
+                 :}
+ |  argument_list:a COMMA expression:b {:
+                                       RESULT = a;
+               a.add(b); 
+                                       :};
+
+array_creation_expression ::=
+    NEW:n primitive_type:a dim_exprs:b dims_opt:c {:
+                                                  RESULT = parser.nf.NewArray(parser.pos(n, c), a, b,
+                c.intValue()); 
+                                                  :}
+ |  NEW:n class_or_interface_type:a dim_exprs:b dims_opt:c {:
+                                                           RESULT = parser.nf.NewArray(parser.pos(n, c), a, b, 
+                c.intValue()); 
+                                                           :}
+ |  NEW:n primitive_type:a dims:b array_initializer:c {:
+                                                      RESULT = parser.nf.NewArray(parser.pos(n, c), a,
+                b.intValue(), c); 
+                                                      :}
+ |  NEW:n class_or_interface_type:a dims:b array_initializer:c {:
+                                                               RESULT = parser.nf.NewArray(parser.pos(n, c), a,
+                b.intValue(), c); 
+                                                               :};
+
+dim_exprs ::=
+    dim_expr:a {:
+               List l = new TypedList(new LinkedList(), Expr.class, false);
+               l.add(a);
+               RESULT = l; 
+               :}
+ |  dim_exprs:a dim_expr:b {:  RESULT = a;
+               a.add(b);  :};
+
+dim_expr ::=
+    LBRACK expression:a RBRACK {:  RESULT = a;  :};
+
+dims_opt ::=
+    {:  RESULT = new Integer(0);  :}
+ |  dims:a {:  RESULT = a;  :};
+
+dims ::=
+    LBRACK RBRACK {:  RESULT = new Integer(1);  :}
+ |  dims:a LBRACK RBRACK {:
+                         RESULT = new Integer(a.intValue() + 1); 
+                         :};
+
+field_access ::=
+    primary:a DOT IDENTIFIER:b {:
+                               RESULT = parser.nf.Field(parser.pos(a, b), a,
+                b.getIdentifier()); 
+                               :}
+ |  SUPER:n DOT IDENTIFIER:a {:
+                             RESULT = parser.nf.Field(parser.pos(a),
+                parser.nf.Super(parser.pos(n)),
+                a.getIdentifier()); 
+                             :}
+ |  name:a DOT SUPER:n DOT IDENTIFIER:b {:
+                                        RESULT = parser.nf.Field(parser.pos(b),
+                parser.nf.Super(parser.pos(n), a.toType()),
+                b.getIdentifier()); 
+                                        :};
+
+method_invocation ::=
+    name:a LPAREN argument_list_opt:b RPAREN:d {:
+                                               RESULT = parser.nf.Call(parser.pos(a, d),
+                a.prefix == null ? null : a.prefix.toReceiver(),
+                a.name, b); 
+                                               :}
+ |  primary:a DOT IDENTIFIER:b LPAREN argument_list_opt:c RPAREN:d {:
+                                                                   RESULT = parser.nf.Call(parser.pos(b, d), a,
+                b.getIdentifier(), c); 
+                                                                   :}
+ |  SUPER:a DOT IDENTIFIER:b LPAREN argument_list_opt:c RPAREN:d {:
+                                                                 RESULT = parser.nf.Call(parser.pos(b, d),
+                parser.nf.Super(parser.pos(a)),
+                b.getIdentifier(), c); 
+                                                                 :}
+ |  name:a DOT SUPER:n DOT IDENTIFIER:b LPAREN argument_list_opt:c RPAREN:d {:
+                                                                            RESULT = parser.nf.Call(parser.pos(b, d),
+                parser.nf.Super(parser.pos(n), a.toType()),
+                b.getIdentifier(), c); 
+                                                                            :};
+
+array_access ::=
+    name:a LBRACK expression:b RBRACK:d {:
+                                        RESULT = parser.nf.ArrayAccess(parser.pos(a, d), a.toExpr(), b); 
+                                        :}
+ |  primary_no_new_array:a LBRACK expression:b RBRACK:d {:
+                                                        RESULT = parser.nf.ArrayAccess(parser.pos(a, d), a, b); 
+                                                        :};
+
+postfix_expression ::=
+    primary:a {:  RESULT = a;  :}
+ |  name:a {:  RESULT = a.toExpr();  :}
+ |  postincrement_expression:a {:  RESULT = a;  :}
+ |  postdecrement_expression:a {:  RESULT = a;  :};
+
+postincrement_expression ::=
+    postfix_expression:a PLUSPLUS {:
+                                  RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_INC); 
+                                  :};
+
+postdecrement_expression ::=
+    postfix_expression:a MINUSMINUS {:
+                                    RESULT = parser.nf.Unary(parser.pos(a), a, Unary.POST_DEC); 
+                                    :};
+
+unary_expression ::=
+    preincrement_expression:a {:  RESULT = a;  :}
+ |  predecrement_expression:a {:  RESULT = a;  :}
+ |  PLUS unary_expression:a {:
+                            RESULT = parser.nf.Unary(parser.pos(a), Unary.POS, a); 
+                            :}
+ |  MINUS unary_expression:a {:
+                             RESULT = parser.nf.Unary(parser.pos(a), Unary.NEG, a); 
+                             :}
+ |  unary_expression_not_plus_minus:a {:  RESULT = a;  :};
+
+preincrement_expression ::=
+    PLUSPLUS unary_expression:a {:
+                                RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_INC, a); 
+                                :};
+
+predecrement_expression ::=
+    MINUSMINUS unary_expression:a {:
+                                  RESULT = parser.nf.Unary(parser.pos(a), Unary.PRE_DEC, a); 
+                                  :};
+
+unary_expression_not_plus_minus ::=
+    postfix_expression:a {:  RESULT = a;  :}
+ |  COMP unary_expression:a {:
+                            RESULT = parser.nf.Unary(parser.pos(a), Unary.BIT_NOT, a); 
+                            :}
+ |  NOT unary_expression:a {:
+                           RESULT = parser.nf.Unary(parser.pos(a), Unary.NOT, a); 
+                           :}
+ |  cast_expression:a {:  RESULT = a;  :};
+
+cast_expression ::=
+    LPAREN primitive_type:a dims_opt:b RPAREN unary_expression:c {:
+                                                                 RESULT = parser.nf.Cast(parser.pos(a, c),
+                parser.array(a, b.intValue()), c); 
+                                                                 :}
+ |  LPAREN expression:a RPAREN unary_expression_not_plus_minus:b {:
+                                                                 RESULT = parser.nf.Cast(parser.pos(a, b),
+                parser.exprToType(a), b); 
+                                                                 :}
+ |  LPAREN name:a dims:b RPAREN unary_expression_not_plus_minus:c {:
+                                                                  RESULT = parser.nf.Cast(parser.pos(a, c),
+                parser.array(a.toType(), b.intValue()), c); 
+                                                                  :};
+
+multiplicative_expression ::=
+    unary_expression:a {:  RESULT = a;  :}
+ |  multiplicative_expression:a MULT unary_expression:b {:
+                                                        RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.MUL, b); 
+                                                        :}
+ |  multiplicative_expression:a DIV unary_expression:b {:
+                                                       RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.DIV, b); 
+                                                       :}
+ |  multiplicative_expression:a MOD unary_expression:b {:
+                                                       RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.MOD, b); 
+                                                       :};
+
+additive_expression ::=
+    multiplicative_expression:a {:  RESULT = a;  :}
+ |  additive_expression:a PLUS multiplicative_expression:b {:
+                                                           RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.ADD, b); 
+                                                           :}
+ |  additive_expression:a MINUS multiplicative_expression:b {:
+                                                            RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.SUB, b); 
+                                                            :};
+
+shift_expression ::=
+    additive_expression:a {:  RESULT = a;  :}
+ |  shift_expression:a LSHIFT additive_expression:b {:
+                                                    RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.SHL, b); 
+                                                    :}
+ |  shift_expression:a RSHIFT additive_expression:b {:
+                                                    RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.SHR, b); 
+                                                    :}
+ |  shift_expression:a URSHIFT additive_expression:b {:
+                                                     RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.USHR, b); 
+                                                     :};
+
+relational_expression ::=
+    shift_expression:a {:  RESULT = a;  :}
+ |  relational_expression:a LT shift_expression:b {:
+                                                  RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.LT, b); 
+                                                  :}
+ |  relational_expression:a GT shift_expression:b {:
+                                                  RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.GT, b); 
+                                                  :}
+ |  relational_expression:a LTEQ shift_expression:b {:
+                                                    RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.LE, b); 
+                                                    :}
+ |  relational_expression:a GTEQ shift_expression:b {:
+                                                    RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.GE, b); 
+                                                    :}
+ |  relational_expression:a INSTANCEOF reference_type:b {:
+                                                        RESULT = parser.nf.Instanceof(parser.pos(a, b), a, b); 
+                                                        :};
+
+equality_expression ::=
+    relational_expression:a {:  RESULT = a;  :}
+ |  equality_expression:a EQEQ relational_expression:b {:
+                                                       RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.EQ, b); 
+                                                       :}
+ |  equality_expression:a NOTEQ relational_expression:b {:
+                                                        RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.NE, b); 
+                                                        :};
+
+and_expression ::=
+    equality_expression:a {:  RESULT = a;  :}
+ |  and_expression:a AND equality_expression:b {:
+                                               RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.BIT_AND, b); 
+                                               :};
+
+exclusive_or_expression ::=
+    and_expression:a {:  RESULT = a;  :}
+ |  exclusive_or_expression:a XOR and_expression:b {:
+                                                   RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.BIT_XOR, b); 
+                                                   :};
+
+inclusive_or_expression ::=
+    exclusive_or_expression:a {:  RESULT = a;  :}
+ |  inclusive_or_expression:a OR exclusive_or_expression:b {:
+                                                           RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.BIT_OR, b); 
+                                                           :};
+
+conditional_and_expression ::=
+    inclusive_or_expression:a {:  RESULT = a;  :}
+ |  conditional_and_expression:a ANDAND inclusive_or_expression:b {:
+                                                                  RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.COND_AND, b); 
+                                                                  :};
+
+conditional_or_expression ::=
+    conditional_and_expression:a {:  RESULT = a;  :}
+ |  conditional_or_expression:a OROR conditional_and_expression:b {:
+                                                                  RESULT = parser.nf.Binary(parser.pos(a, b), a, 
+                Binary.COND_OR, b); 
+                                                                  :};
+
+conditional_expression ::=
+    conditional_or_expression:a {:  RESULT = a;  :}
+ |  conditional_or_expression:a QUESTION expression:b COLON conditional_expression:c {:
+                                                                                     RESULT = parser.nf.Conditional(parser.pos(a, b), a, 
+                b, c); 
+                                                                                     :};
+
+assignment_expression ::=
+    conditional_expression:a {:  RESULT = a;  :}
+ |  assignment:a {:  RESULT = a;  :};
+
+assignment ::=
+    left_hand_side:a assignment_operator:b assignment_expression:c {:
+                                                                   RESULT = parser.nf.Assign(parser.pos(a, c), a, b, c); 
+                                                                   :};
+
+left_hand_side ::=
+    name:a {:  RESULT = a.toExpr();  :}
+ |  field_access:a {:  RESULT = a;  :}
+ |  array_access:a {:  RESULT = a;  :};
+
+assignment_operator ::=
+    EQ {:  RESULT = Assign.ASSIGN;  :}
+ |  MULTEQ {:  RESULT = Assign.MUL_ASSIGN;  :}
+ |  DIVEQ {:  RESULT = Assign.DIV_ASSIGN;  :}
+ |  MODEQ {:  RESULT = Assign.MOD_ASSIGN;  :}
+ |  PLUSEQ {:  RESULT = Assign.ADD_ASSIGN;  :}
+ |  MINUSEQ {:  RESULT = Assign.SUB_ASSIGN;  :}
+ |  LSHIFTEQ {:  RESULT = Assign.SHL_ASSIGN;  :}
+ |  RSHIFTEQ {:  RESULT = Assign.SHR_ASSIGN;  :}
+ |  URSHIFTEQ {:  RESULT = Assign.USHR_ASSIGN;  :}
+ |  ANDEQ {:  RESULT = Assign.BIT_AND_ASSIGN;  :}
+ |  XOREQ {:  RESULT = Assign.BIT_XOR_ASSIGN;  :}
+ |  OREQ {:  RESULT = Assign.BIT_OR_ASSIGN;  :};
+
+expression_opt ::=
+    {:  RESULT = null;  :}
+ |  expression:a {:  RESULT = a;  :};
+
+expression ::=
+    assignment_expression:a {:  RESULT = a;  :};
+
+constant_expression ::=
+    expression:a {:  RESULT = a;  :};
+
+

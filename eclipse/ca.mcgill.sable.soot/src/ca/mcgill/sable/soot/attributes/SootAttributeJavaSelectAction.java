@@ -66,5 +66,9 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 		ArrayList links = handler.getJavaLinks(getLineNumber()+1);
 		return links;
 	}
+	
+	protected int getLinkLine(LinkAttribute la){
+		return la.getJavaLink();
+	}
 
 }

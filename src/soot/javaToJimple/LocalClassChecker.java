@@ -4,13 +4,19 @@ import java.util.*;
 public class LocalClassChecker extends polyglot.visit.NodeVisitor {
 
     private HashMap map;
-      
+    private HashMap classMap;
+    
     public HashMap getMap() {
         return map;
     }
 
+    public HashMap getClassMap(){
+        return classMap;
+    }
+    
     public LocalClassChecker(){
         map = new HashMap();
+        classMap = new HashMap();
     }
 
     public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
@@ -23,6 +29,7 @@ public class LocalClassChecker extends polyglot.visit.NodeVisitor {
             while (outerType.isNested()) {
                 outerType = outerType.outer();
             }
+            int num = 1;
             if (map.containsKey(outerType)){         
                 HashMap classMap = (HashMap)map.get(outerType);
                 if (classMap.containsKey(lcDecl.decl().name())) {
@@ -30,6 +37,7 @@ public class LocalClassChecker extends polyglot.visit.NodeVisitor {
                     counter++;
                     classMap.put(lcDecl.decl().name(), new Integer(counter));
                     map.put(outerType, classMap);
+                    num = counter;
                 }
                 else {
                     classMap.put(lcDecl.decl().name(), new Integer(1));
@@ -42,6 +50,9 @@ public class LocalClassChecker extends polyglot.visit.NodeVisitor {
                 map.put(outerType, classNumMap);
 
             }
+           
+            String realName = outerType.toString()+"$"+num+"$"+lcDecl.decl().name();
+            classMap.put(realName, lcDecl.decl());
         }
         return n;
     }

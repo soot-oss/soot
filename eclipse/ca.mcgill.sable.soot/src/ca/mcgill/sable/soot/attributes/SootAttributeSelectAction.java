@@ -17,24 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.ArrayList;
@@ -112,8 +94,13 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 					
 					System.out.println("just before getMarkerLinks()");
 					ArrayList links = getMarkerLinks();
+					Iterator lit = links.iterator();
+					while (lit.hasNext()){
+						System.out.println("link: "+lit.next());
+					}
 					String [] list = getMarkerLabels(links);
 					if ((list == null) || (list.length == 0)) {
+						System.out.println("no links");
 						// show no links
 					}
 					else {
@@ -130,11 +117,19 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
                             //System.out.println("Top Inset: "+((JimpleEditor)getEditor()).getViewer().getTopInset());
                             //System.out.println("Document First Visible Line Offset: "+getDocument().getLineOffset(topIndex));
                             //System.out.println("Document Line Offset: "+getDocument().getLineOffset(getLineNumber()+1));
-							popup.open(new Rectangle(400, (getLineNumber()+1-topIndex), 600, 45 ));
+							Rectangle rect = new Rectangle(400, (getLineNumber()+1-topIndex), 650, 45 );
+							
+							popup.open(rect);
                             //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
 						}	
 						else {
-							popup.open(new Rectangle(380, 40, 600, 45 ));
+							System.out.println(getEditor().getClass());
+							System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
+							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
+							pos = pos / getLineNumber();
+							Rectangle rect = new Rectangle(380, 16, 650, 45 );
+							
+							popup.open(rect);
 
 						}
 						
@@ -151,6 +146,7 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		
 	}
 	
+	
 	public void handleSelection(String selected, ArrayList links){
 		if (selected == null) return;
 		try {
@@ -160,17 +156,19 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 			while (it.hasNext()){
 				LinkAttribute la = (LinkAttribute)it.next();
 				if (la.getLabel().equals(selected)){
-					toShow = la.getJimpleLink() - 1;
+					toShow = getLinkLine(la) - 1;//.getJimpleLink() - 1;
+					
 					className = la.getClassName();
 					findClass(className);
 					System.out.println("return from findClass");
 				}
 			}
 		
+			System.out.println("line to show: "+toShow);
 			
 			int selOffset = getLinkToEditor().getDocumentProvider().getDocument(getLinkToEditor().getEditorInput()).getLineOffset(toShow);
-			///System.out.println("line to show: "+toShow);
-			//System.out.println("offset of line to show: "+selOffset);
+			System.out.println("line to show: "+toShow);
+			System.out.println("offset of line to show: "+selOffset);
 			if ((selOffset != -1) && (selOffset != 0)){
 				
 				if (getLinkToEditor() instanceof JimpleEditor){
@@ -179,11 +177,19 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
 			
 				}
+				else {
+					getLinkToEditor().selectAndReveal(selOffset, 0);
+					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+			
+				}
 			}
 		}
 		catch(BadLocationException e){
+			System.out.println(e.getMessage());		
 		}
 	}
+	
+	protected abstract int getLinkLine(LinkAttribute la);
 	
 	public void findClass(String className){
 		//System.out.println("className: "+className);
@@ -233,6 +239,17 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		}
 		list.toArray(attributeTexts);
 		return attributeTexts;
+	
+	}
+	
+	public String [] fixLabels(String [] at){
+		for (int i = 0; i < at.length; i++){
+			String temp = at[i];
+			temp.replaceAll("&lt;", "<");
+			temp.replaceAll("&gt;", ">");
+			at[i] = temp;
+		}
+		return at;
 	}
 	
 	public void getMarkerResolutions(IMarker marker){

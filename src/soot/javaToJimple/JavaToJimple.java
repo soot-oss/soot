@@ -15,7 +15,7 @@ public class JavaToJimple {
 	public polyglot.frontend.ExtensionInfo initExtInfo(String fileName, List sourceLocations){
 		
         Set source = new HashSet();
-        ExtensionInfo extInfo = new polyglot.ext.jl.ExtensionInfo() {
+        ExtensionInfo extInfo = new soot.javaToJimple.jj.ExtensionInfo() {
             public List passes(Job job) {
                 List passes = super.passes(job);
                 beforePass(passes, Pass.TYPE_CHECK, new VisitorPass(polyglot.frontend.Pass.FOLD, job, new polyglot.visit.ConstantFolder(ts, nf)));

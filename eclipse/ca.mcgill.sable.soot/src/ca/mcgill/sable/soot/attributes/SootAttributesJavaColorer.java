@@ -50,9 +50,14 @@ public class SootAttributesJavaColorer {
 			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
 			}
 			else {
-				System.out.println("java line: "+sa.getJava_ln()+" start: "+sa.getJavaOffsetStart()+1+" end: "+ sa.getJavaOffsetEnd()+1);
+				//System.out.println("java line: "+sa.getJava_ln()+" start: "+sa.getJavaOffsetStart()+1+" end: "+ sa.getJavaOffsetEnd()+1);
 						
-				setAttributeTextColor(sa.getJava_ln(), sa.getJavaOffsetStart()+1, sa.getJavaOffsetEnd()+1, sa.getRGBColor());//, tp);
+                boolean fg = false;
+                if (sa.getFg() == 1){
+                    fg = true;
+                }
+                
+				setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaOffsetStart()+1, sa.getJavaOffsetEnd()+1, sa.getRGBColor(), fg);//, tp);
 			}
 			// sets colors for valueboxes
 			if (sa.getValueAttrs() != null){
@@ -62,9 +67,13 @@ public class SootAttributesJavaColorer {
 					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
 					}
 					else {
-						System.out.println("java line: "+sa.getJava_ln()+" start: "+vba.getSourceStartOffset()+1+" end: "+ vba.getSourceEndOffset()+1);
-											
-                        setAttributeTextColor(sa.getJava_ln(), vba.getSourceStartOffset()+1, vba.getSourceEndOffset()+1, vba.getRGBColor());//, tp);
+						//System.out.println("java line: "+sa.getJava_ln()+" start: "+vba.getSourceStartOffset()+1+" end: "+ vba.getSourceEndOffset()+1);
+						
+                        boolean fg = false;
+                        if (vba.getFg() == 1) {
+                            fg = true;
+                        }
+                        setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), vba.getSourceStartOffset()+1, vba.getSourceEndOffset()+1, vba.getRGBColor(), fg);//, tp);
 					}
 				}
 			}
@@ -73,7 +82,7 @@ public class SootAttributesJavaColorer {
 					
 	}
 	
-	private void setAttributeTextColor(int line, int start, int end, RGB colorKey) {//, TextPresentation tp){
+	private void setAttributeTextColor(int sline, int eline, int start, int end, RGB colorKey, boolean fg) {//, TextPresentation tp){
 		System.out.println("setting text color");
         Display display = getEditorPart().getSite().getShell().getDisplay();
 		//Color backgroundColor = getEditorPart().getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND);
@@ -83,29 +92,44 @@ public class SootAttributesJavaColorer {
         }
         getTextPresList().add(tp);
 		ColorManager colorManager = new ColorManager();
-		int lineOffset = 0;
+		int sLineOffset = 0;
+		int eLineOffset = 0;
 		try {
-			lineOffset = getViewer().getDocument().getLineOffset((line-1));
-            System.out.println("lineOffset: "+lineOffset);
+			sLineOffset = getViewer().getDocument().getLineOffset((sline-1));
+			eLineOffset = getViewer().getDocument().getLineOffset((eline-1));
+			System.out.println("slineOffset: "+sLineOffset);
 		}
 		catch(Exception e){	
 		}
-		System.out.println("style range: ");
-        System.out.println("start: "+start);
-        System.out.println("end: "+end);
+		//System.out.println("style range: ");
+        //System.out.println("start: "+start);
+        //System.out.println("end: "+end);
         
         //StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(colorKey), getViewer().get.getTextWidget().getBackground());
 		//tp.addStyleRange(sr);
 		//Color c = tp.getFirstStyleRange().background;
 		
 		//final TextPresentation newPresentation = tp;
-		final int s = lineOffset + start - 1;
-		final int l = end - start;
+        final boolean foreground = fg;
+		final int s = sLineOffset + start - 1;
+		System.out.println("start offset: "+s);
+		int e = eLineOffset + end - 1;
+		System.out.println("end offset: "+e);
+		final int l = e - s;
+		System.out.println("length: "+l);
 		final Color ck = colorManager.getColor(colorKey);
+        final Color oldBgC = colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT);
+      
 		display.asyncExec( new Runnable() {
 			public void run() {
 				TextPresentation tp = new TextPresentation();
-				StyleRange sr = new StyleRange(s, l, ck, getViewer().getTextWidget().getBackground());
+                StyleRange sr;
+                if (foreground){
+				    sr = new StyleRange(s, l, ck, getViewer().getTextWidget().getBackground());
+                }
+                else {
+                    sr = new StyleRange(s, l, oldBgC, ck);
+                }
 				tp.addStyleRange(sr);			
 				getViewer().changeTextPresentation(tp, true);
 				//getViewer().setTextColor(ck, s, l, false);

@@ -66,5 +66,7 @@ public class SootAttributeJimpleSelectAction
 		ArrayList links = handler.getJimpleLinks(getLineNumber()+1);
 		return links;
 	}
-
+	protected int getLinkLine(LinkAttribute la){
+		return la.getJimpleLink();
+	}
 }

@@ -68,6 +68,15 @@ public class SootOutputFilesHandler {
 		}	
 	}
 	
+	public void refreshAll(IProject project){
+		try{
+			project.refreshLocal(IResource.DEPTH_INFINITE, null);	
+		}
+		catch(CoreException e){
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	public void refreshFolder() {
 		try {
 			getSootOutputFolder().refreshLocal(IResource.DEPTH_INFINITE, null);

@@ -17,24 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
@@ -67,7 +50,7 @@ public class SootAttributesJimpleColorer {
 			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
 			}
 			else {
-				setAttributeTextColor(sa.getJimple_ln(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());//, tp);
+				setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());//, tp);
 			}
 			// sets colors for valueboxes
 			if (sa.getValueAttrs() != null){
@@ -77,7 +60,7 @@ public class SootAttributesJimpleColorer {
 					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
 					}
 					else {
-						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());//, tp);
+						setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());//, tp);
 					}
 				}
 			}
@@ -86,7 +69,7 @@ public class SootAttributesJimpleColorer {
 					
 	}
 	
-	private void setAttributeTextColor(int line, int start, int end, RGB colorKey) {//, TextPresentation tp){
+	private void setAttributeTextColor(int line, int eline, int start, int end, RGB colorKey) {//, TextPresentation tp){
 		Display display = getEditorPart().getSite().getShell().getDisplay();
 		TextPresentation tp = new TextPresentation();
         if (getTextPresList() == null) {
@@ -94,14 +77,18 @@ public class SootAttributesJimpleColorer {
         }
         getTextPresList().add(tp);
 		ColorManager colorManager = new ColorManager();
-		int lineOffset = 0;
+		int sLineOffset = 0;
+		int eLineOffset = 0;
+		System.out.println("line: "+line+" eline: "+eline+" spos: "+start+" epos: "+end);
 		try {
-			lineOffset = getViewer().getDocument().getLineOffset((line-1));
+			sLineOffset = getViewer().getDocument().getLineOffset((line-1));
+			eLineOffset = getViewer().getDocument().getLineOffset((eline-1));
 		}
 		catch(Exception e){	
 		}
-		
-		StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
+		System.out.println("sLineOffset: "+sLineOffset);
+		System.out.println("eLineOffset: "+eLineOffset);
+		StyleRange sr = new StyleRange((sLineOffset + start - 1	), ((eLineOffset + end -1) - (sLineOffset + start - 1)), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
 		tp.addStyleRange(sr);
 		Color c = tp.getFirstStyleRange().background;
 		

@@ -62,4 +62,5 @@ public class SootTestingLauncher extends SootLauncher {
 		
 	}
 
+	public void setClasspathAppend(String ca){}
 }

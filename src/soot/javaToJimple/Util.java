@@ -5,49 +5,32 @@ public class Util {
     /**
      * Position Tag Adder
      */
-    public static void addPosTag(soot.tagkit.Host vb, polyglot.util.Position pos) {
+    public static void addPosTag(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            addPosTag(vb, pos.line(), pos.column());
+            if (pos instanceof soot.javaToJimple.jj.DPosition){
+                soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
+                addPosTag(host, dpos.column(), dpos.endCol());
+            }
         }
-        /*if (pos != null) {
-            vb.addTag(new soot.tagkit.StringTag("Java Info: "+vb.getValue().toString()+" line: "+pos.line()+" column: "+pos.column()+" length: "+vb.getValue().toString().length())); 
-            //System.out.println("Java Info: "+vb.getValue().toString()+" line: "+pos.line()+" column: "+pos.column()+" length: "+vb.getValue().toString().length()); 
-            vb.addTag(new soot.tagkit.SourcePositionTag(pos.column(), (pos.column()+vb.getValue().toString().length())));
-        }*/
     }
 
-    public static void addMethodPosTag(soot.tagkit.Host meth, int start, int length){
-        meth.addTag(new soot.tagkit.SourcePositionTag(start, start+length));
+    public static void addMethodPosTag(soot.tagkit.Host meth, int start, int end){
+    
+        meth.addTag(new soot.tagkit.SourcePositionTag(start, end));
     }
     
     /**
      * Position Tag Adder
      */
-    public static void addPosTag(soot.tagkit.Host vb, int line, int column) {
-        //if (pos != null) {
-        if (vb instanceof soot.ValueBox) {
-            soot.ValueBox vBox = (soot.ValueBox)vb;
-            vBox.addTag(new soot.tagkit.StringTag("Java Info: "+vBox.getValue().toString()+" line: "+line+" column: "+column+" length: "+vBox.getValue().toString().length())); 
-            ////System.out.println("Java Info: "+vBox.getValue().toString()+" line: "+line+" column: "+column+" length: "+vBox.getValue().toString().length()); 
-            vBox.addTag(new soot.tagkit.SourcePositionTag(column, column+vBox.getValue().toString().length()));
-        
-        }
-        else if (vb instanceof soot.SootField) {
-            soot.SootField sField = (soot.SootField)vb;
-            sField.addTag(new soot.tagkit.StringTag("Java Info: "+sField.getName()+" line: "+line+" column: "+column+" length: "+sField.getName().length()));
-            sField.addTag(new soot.tagkit.SourcePositionTag(column, column+sField.getName().length()));
-        }
-        else if (vb instanceof soot.jimple.Stmt) {
-            soot.jimple.Stmt stmt = (soot.jimple.Stmt)vb;
-            stmt.addTag(new soot.tagkit.StringTag("Java Info: "+stmt.toString()+" line: "+line+" column: "+column+" length: "+stmt.toString().length()));
-            stmt.addTag(new soot.tagkit.SourcePositionTag(column, column+stmt.toString().length()));
-        } 
-        else {
-            //System.out.println("Adding pos tag to unhandled Host");
-            throw new RuntimeException("Adding pos tag to unhandled Host");
-        }
+    public static void addPosTag(soot.tagkit.Host host, int sc, int ec) {
+
+        host.addTag(new soot.tagkit.SourcePositionTag(sc, ec));
     }
-   
+
+    public static void addMethodLineTag(soot.tagkit.Host host, int sline, int eline){
+        host.addTag(new soot.tagkit.SourceLineNumberTag(sline, eline));    
+    }
+    
     /**
      * Line Tag Adder
      */
@@ -55,7 +38,12 @@ public class Util {
 
         if (soot.options.Options.v().keep_line_number()){
             if (node.position() != null) {
-                host.addTag(new soot.tagkit.LineNumberTag(node.position().line())); 
+                if (node.position() instanceof soot.javaToJimple.jj.DPosition){
+                    soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)node.position();
+                    host.addTag(new soot.tagkit.SourceLineNumberTag(dpos.line(), dpos.line()));
+                    
+                }
+                
             }
         }
     }
@@ -72,20 +60,15 @@ public class Util {
 		}
 		else if (type.isArray()){
 
-            //System.out.println("original polyglot type: "+type);
             polyglot.types.Type polyglotBase = ((polyglot.types.ArrayType)type).base();
             while (polyglotBase instanceof polyglot.types.ArrayType) {
-            //for (int i = 0; i < ((polyglot.types.ArrayType)type).dims(); i++) {
               polyglotBase = ((polyglot.types.ArrayType)polyglotBase).base();
             }
 			soot.Type baseType = getSootType(polyglotBase);
 			int dims = ((polyglot.types.ArrayType)type).dims();
 
-            //System.out.println("Getting Type: baseType: "+baseType+" dims: "+dims);
             // do something here if baseType is still an array
-            //System.out.println("baseType: "+baseType);
 			sootType = soot.ArrayType.v(baseType, dims);
-            //System.out.println("returning from getType: "+sootType.getClass()+" name: "+sootType.toString());
 		}
 		else if (type.isBoolean()){
 			sootType = soot.BooleanType.v();
@@ -122,10 +105,11 @@ public class Util {
                 
                 className = classType.fullName();
                 StringBuffer sb = new StringBuffer(className);
-                ////System.out.println("resolveing types className : "+ className);
                 int lastDot = className.lastIndexOf(".");
-                sb.replace(lastDot, lastDot+1, "$");
-                className = sb.toString();
+                if (lastDot != -1){
+                    sb.replace(lastDot, lastDot+1, "$");
+                    className = sb.toString();
+                }
                 
             }
             else {
@@ -135,16 +119,10 @@ public class Util {
 		}
 		else{
 			throw new RuntimeException("Unknown Type");
-            ////System.out.println("Uknown Type Encountered");
-            //sootType = soot.UnknownType.v();
 		}
 		return sootType;
     }    
     
-    /*public static boolean isPrimitiveType(polyglot.types.Type type) {
-        if (type instanceof polyglot.types.PrimitiveType) return true;
-        else return false;
-    }*/
     
     /**
      * Modifier Creation

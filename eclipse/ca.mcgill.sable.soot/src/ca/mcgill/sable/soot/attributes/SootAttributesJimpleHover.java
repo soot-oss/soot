@@ -129,8 +129,8 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
 			HashMap markerAttr = new HashMap();
-			markerAttr.put(IMarker.MESSAGE, "Soot Attribute: "+sa.getText());
-			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimple_ln()));
+			markerAttr.put(IMarker.MESSAGE, "Soot Attribute");
+			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimpleStartLn()));
 			try {
 				if (sa.getTextList() != null){
 					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
@@ -155,14 +155,14 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		
 		if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
 			SootPlugin.getDefault().getManager().setToFalseUpdate((IFile)getRec());
-			try {
+			/*try {
 				//System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
 				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
 				SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			//System.out.println("need to update markers from: "+getRec().getFullPath().toOSString());
 			computeAttributes();
 			
@@ -171,7 +171,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		}
 		else if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)getRec())) {
 			//SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
-			try {
+			/*try {
 				System.out.println("need to remove markers from: "+getRec().getFullPath().toOSString());
 				getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_ONE);
 				//SootPlugin.getDefault().getManager().clearColors();
@@ -180,7 +180,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
                 }
 			}
 			catch(CoreException e){
-			}
+			}*/
 			return null;
 		}
 		if (getAttrsHandler() != null) {

@@ -36,6 +36,9 @@ public class ColorTag implements Tag
     private int green;
     /* it is a value representing blue. */
     private int blue;
+    /* for highlighting foreground of text default is to
+     * higlight background */
+    private boolean foreground = false;
     
     public static final int RED = 0;
 	public static final int GREEN = 1;
@@ -44,6 +47,14 @@ public class ColorTag implements Tag
 	public static final int ORANGE = 4;
 	public static final int PURPLE = 5;
 	
+	public ColorTag(int r, int g, int b, boolean fg)
+    {
+		red = r;
+		green = g;
+		blue = b;
+        foreground = fg;
+    }
+    
 	public ColorTag(int r, int g, int b)
     {
 		red = r;
@@ -51,7 +62,11 @@ public class ColorTag implements Tag
 		blue = b;
     }
 
-	public ColorTag(int color){
+    public ColorTag(int color){
+        this(color, false);
+    }
+    
+	public ColorTag(int color, boolean fg){
 		//G.v().out.println("color: "+color);
 		switch (color) {
 			case RED: {
@@ -97,6 +112,7 @@ public class ColorTag implements Tag
 				break;
 			}
 		}
+        foreground = fg;
 	}
 
 	public int getRed(){
@@ -110,6 +126,10 @@ public class ColorTag implements Tag
 	public int getBlue(){
 		return blue;
 	}
+   
+    public boolean isForeground(){
+        return foreground;
+    }
     
     public String getName()
     {

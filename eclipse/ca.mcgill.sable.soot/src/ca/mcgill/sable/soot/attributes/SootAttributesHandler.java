@@ -86,8 +86,13 @@ public class SootAttributesHandler {
 		ArrayList list = new ArrayList();
 		while (it.hasNext()){
 			SootAttribute sa = (SootAttribute)it.next();
+			System.out.println("links for line: "+lnNum);
 			if (sa.attrForJavaLn(lnNum)){
-				list = sa.getAllLinkAttrs();
+				if (sa.getAllLinkAttrs() != null){
+				
+					list = sa.getAllLinkAttrs();
+				}
+				//System.out.println("list length: "+list);
 			}
 		}
 		return list;

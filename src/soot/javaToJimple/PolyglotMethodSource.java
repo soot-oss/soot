@@ -13,6 +13,8 @@ public class PolyglotMethodSource implements MethodSource {
     private ArrayList staticInitializerBlocks;
     private soot.Local outerClassThisInit;
     private HashMap privateAccessMap;
+    private HashMap localClassMap;
+    private HashMap anonClassMap;
     
     public PolyglotMethodSource(){
         this.block = null;
@@ -25,7 +27,6 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
-        ////System.out.println("Creating block for sm: "+sm.getName());
         JimpleBodyBuilder jbb = new JimpleBodyBuilder();
         soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
         
@@ -79,5 +80,21 @@ public class PolyglotMethodSource implements MethodSource {
 
     public HashMap getPrivateAccessMap() {
         return privateAccessMap;
+    }
+
+    public void setLocalClassMap(HashMap map) {
+        localClassMap = map;
+    }
+
+    public HashMap getLocalClassMap(){
+        return localClassMap;
+    }
+    
+    public void setAnonClassMap(HashMap map) {
+        anonClassMap = map;
+    }
+
+    public HashMap getAnonClassMap(){
+        return anonClassMap;
     }
 }

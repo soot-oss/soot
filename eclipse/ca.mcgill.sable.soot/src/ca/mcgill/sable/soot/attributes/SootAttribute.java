@@ -23,28 +23,13 @@ import java.util.*;
 
 import org.eclipse.swt.graphics.RGB;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+
 public class SootAttribute {
 
-	private int java_ln;
-	private int jimple_ln;
+	private int javaEndLn;
+	private int javaStartLn;
+	private int jimpleEndLn;
+	private int jimpleStartLn;
 	private int jimpleOffsetStart;
 	private int jimpleOffsetEnd;
     private int javaOffsetStart;
@@ -57,18 +42,25 @@ public class SootAttribute {
 	private int red;
 	private int green;
 	private int blue;
+	private int fg;
 	private ArrayList linkList;
+
 	
 	public String toString(){
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n");
-		sb.append("Java Line: "+java_ln+"\n");
-		sb.append("Jimple Line: "+jimple_ln+"\n");
+		sb.append("Java Line: "+javaEndLn+"\n");
+		sb.append("Jimple Line: "+jimpleEndLn+"\n");
 		sb.append("Jimple Offset Start: "+jimpleOffsetStart+"\n");
 		sb.append("Jimple Offset End: "+jimpleOffsetEnd+"\n");
 		sb.append("Texts: \n");
 		sb.append(getAllTextAttrs("\n"));
-		
+		if (getLinkList() != null){
+			Iterator it = getLinkList().iterator();
+			while(it.hasNext()){
+				sb.append("link: "+((LinkAttribute)it.next()).getLabel());
+			}
+		}
 		
 		return sb.toString();
 	}
@@ -87,6 +79,7 @@ public class SootAttribute {
 			setLinkList(new ArrayList());
 		}
 		getLinkList().add(link);
+		System.out.println("added link for line: "+getJavaStartLn()+" "+link.getLabel());
 		addTextAttr(link.getLabel());
 	}
 	
@@ -130,17 +123,22 @@ public class SootAttribute {
 	}
 	
 	public RGB getRGBColor(){
+
 		//System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
 		return new RGB(getRed(), getGreen(), getBlue());
 	}
-	
+
+	// these two are maybe not accurate maybe
+	// need to check if ln in question is between
+	// the start and end ln's
 	public boolean attrForJimpleLn(int jimple_ln) {
-		if (getJimple_ln() == jimple_ln) return true;
+		if (getJimpleStartLn() == jimple_ln) return true;
 		else return false;
 	}
 	
 	public boolean attrForJavaLn(int java_ln) {
-		if (getJava_ln() == java_ln) return true;
+		System.out.println("java start line: "+getJavaStartLn()+" java_ln: "+java_ln);
+		if (getJavaStartLn() == java_ln) return true;
 		else return false;
 	}
 	
@@ -155,23 +153,7 @@ public class SootAttribute {
 		return filename;
 	}
 
-	/**
-	 * Returns the java_ln.
-	 * @return int
-	 */
-	public int getJava_ln() {
-		return java_ln;
-	}
 
-	/**
-	 * Returns the jimple_ln.
-	 * @return int
-	 */
-	public int getJimple_ln() {
-		return jimple_ln;
-	}
-
-	
 	/**
 	 * Returns the text.
 	 * @return String
@@ -188,21 +170,7 @@ public class SootAttribute {
 		this.filename = filename;
 	}
 
-	/**
-	 * Sets the java_ln.
-	 * @param java_ln The java_ln to set
-	 */
-	public void setJava_ln(int java_ln) {
-		this.java_ln = java_ln;
-	}
 
-	/**
-	 * Sets the jimple_ln.
-	 * @param jimple_ln The jimple_ln to set
-	 */
-	public void setJimple_ln(int jimple_ln) {
-		this.jimple_ln = jimple_ln;
-	}
 
 
 	/**
@@ -370,5 +338,75 @@ public class SootAttribute {
     public void setJavaOffsetStart(int i) {
         javaOffsetStart = i;
     }
+
+	/**
+	 * @return
+	 */
+	public int getFg() {
+		return fg;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setFg(int b) {
+		fg = b;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJavaEndLn() {
+		return javaEndLn;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJavaStartLn() {
+		return javaStartLn;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJimpleEndLn() {
+		return jimpleEndLn;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJimpleStartLn() {
+		return jimpleStartLn;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJavaEndLn(int i) {
+		javaEndLn = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJavaStartLn(int i) {
+		javaStartLn = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJimpleEndLn(int i) {
+		jimpleEndLn = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJimpleStartLn(int i) {
+		jimpleStartLn = i;
+	}
 
 }

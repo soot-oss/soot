@@ -9,25 +9,22 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     public polyglot.ast.Expr ascribe(polyglot.ast.Expr e, polyglot.types.Type toType) {
         polyglot.types.Type fromType = e.type();
 
-        //System.out.println("in ascribe: "+e.getClass().toString());
-        //System.out.println("toType: "+toType+" fromType: "+fromType+" expr: "+e);
         if (toType == null){
             return e;
         }
         if (toType.isVoid()) {
             return e;
         }
+        
+        polyglot.util.Position p = e.position();
 
         if (toType.equals(fromType)){
             return e;
         }
 
-        //System.out.println("toType: "+toType+" fromType: "+fromType+" expr: "+e);
-        polyglot.util.Position p = e.position();
 
         if (toType.isPrimitive() && fromType.isPrimitive()) {
             polyglot.ast.Expr newExpr = nf.Cast(p, nf.CanonicalTypeNode(p, toType), e).type(toType);
-            //System.out.println(newExpr);
             return newExpr;
         }
         
@@ -39,8 +36,6 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     
         n = super.leaveCall(old, n, v);
 
-        //return n.ext().rewrite(typeSystem(), nodeFactory());    
-        //return n.visit(v); 
         return n;
     }
 }
