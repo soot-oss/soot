@@ -8,12 +8,12 @@ public final class TVolatile extends Token
 {
     public TVolatile()
     {
-        super.setText(".volatile");
+        super.setText("volatile");
     }
 
     public TVolatile(int line, int pos)
     {
-        super.setText(".volatile");
+        super.setText("volatile");
         setLine(line);
         setPos(pos);
     }

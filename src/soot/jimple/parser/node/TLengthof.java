@@ -8,12 +8,12 @@ public final class TLengthof extends Token
 {
     public TLengthof()
     {
-        super.setText(".lengthof");
+        super.setText("lengthof");
     }
 
     public TLengthof(int line, int pos)
     {
-        super.setText(".lengthof");
+        super.setText("lengthof");
         setLine(line);
         setPos(pos);
     }

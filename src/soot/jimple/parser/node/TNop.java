@@ -8,12 +8,12 @@ public final class TNop extends Token
 {
     public TNop()
     {
-        super.setText(".nop");
+        super.setText("nop");
     }
 
     public TNop(int line, int pos)
     {
-        super.setText(".nop");
+        super.setText("nop");
         setLine(line);
         setPos(pos);
     }

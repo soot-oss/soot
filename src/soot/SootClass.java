@@ -263,6 +263,8 @@ public class SootClass extends AbstractHost
     public SootMethod getMethod(String subsignature)
     {
         SootMethod toReturn = (SootMethod) Scene.v().methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
+
+
         if(toReturn == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
@@ -275,6 +277,7 @@ public class SootClass extends AbstractHost
 
     public boolean declaresMethod(String subsignature)
     {
+
         return Scene.v().methodSignatureToMethod.containsKey("<" + getName() + ": " + subsignature + ">");
     }
     

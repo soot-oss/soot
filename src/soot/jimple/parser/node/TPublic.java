@@ -8,12 +8,12 @@ public final class TPublic extends Token
 {
     public TPublic()
     {
-        super.setText(".public");
+        super.setText("public");
     }
 
     public TPublic(int line, int pos)
     {
-        super.setText(".public");
+        super.setText("public");
         setLine(line);
         setPos(pos);
     }

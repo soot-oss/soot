@@ -8,12 +8,12 @@ public final class TInt extends Token
 {
     public TInt()
     {
-        super.setText(".int");
+        super.setText("int");
     }
 
     public TInt(int line, int pos)
     {
-        super.setText(".int");
+        super.setText("int");
         setLine(line);
         setPos(pos);
     }

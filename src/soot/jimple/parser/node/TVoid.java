@@ -8,12 +8,12 @@ public final class TVoid extends Token
 {
     public TVoid()
     {
-        super.setText(".void");
+        super.setText("void");
     }
 
     public TVoid(int line, int pos)
     {
-        super.setText(".void");
+        super.setText("void");
         setLine(line);
         setPos(pos);
     }

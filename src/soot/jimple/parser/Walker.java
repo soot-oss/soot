@@ -307,9 +307,9 @@ public class Walker extends DepthFirstAdapter
     
     public void outAQuotedNonvoidType(AQuotedNonvoidType node)
     {        
-        String typeName = (String) mProductions.pop();
-        if(typeName.equals("int")) throw new RuntimeException();
-        Type t = RefType.v(typeName);
+	String typeName = (String) mProductions.pop();
+	Type t = RefType.v(typeName);
+       
         int dim = node.getArrayBrackets().size();
         if(dim > 0) 
             t = ArrayType.v((BaseType) t, dim);
@@ -317,10 +317,9 @@ public class Walker extends DepthFirstAdapter
     }
 
     public void outAIdentNonvoidType(AIdentNonvoidType node)
-    {        
-        String typeName = (String) mProductions.pop();
-        if(typeName.equals("int")) throw new RuntimeException();
-        Type t = RefType.v(typeName);
+    {        	  
+	String typeName = (String) mProductions.pop();
+	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
             t = ArrayType.v((BaseType) t, dim);
@@ -329,18 +328,17 @@ public class Walker extends DepthFirstAdapter
 
 
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
-    {                
-        String typeName = (String) mProductions.pop();
-        if(typeName.equals("int")) throw new RuntimeException();
-        Type t = RefType.v(typeName);
-        //        Scene.v().addClassToResolve(typeName);
-        
+    {                	  
+	String typeName = (String) mProductions.pop();
+	Type t = RefType.v(typeName);
         int dim = node.getArrayBrackets().size();
         if(dim > 0)
             t = ArrayType.v((BaseType)t, dim);                
         mProductions.push(t);
     }
     
+
+
 
 
     /*      
@@ -1650,6 +1648,7 @@ public class Walker extends DepthFirstAdapter
                 throw e;
               }
             }
+	    	  
             mProductions.push(tokenString);
         } 
     }

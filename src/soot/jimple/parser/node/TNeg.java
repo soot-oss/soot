@@ -8,12 +8,12 @@ public final class TNeg extends Token
 {
     public TNeg()
     {
-        super.setText(".neg");
+        super.setText("neg");
     }
 
     public TNeg(int line, int pos)
     {
-        super.setText(".neg");
+        super.setText("neg");
         setLine(line);
         setPos(pos);
     }

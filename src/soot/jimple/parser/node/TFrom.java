@@ -8,12 +8,12 @@ public final class TFrom extends Token
 {
     public TFrom()
     {
-        super.setText(".from");
+        super.setText("from");
     }
 
     public TFrom(int line, int pos)
     {
-        super.setText(".from");
+        super.setText("from");
         setLine(line);
         setPos(pos);
     }

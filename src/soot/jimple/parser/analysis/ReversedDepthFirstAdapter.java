@@ -1366,9 +1366,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
     public void caseALocalName(ALocalName node)
     {
         inALocalName(node);
-        if(node.getIdentifier() != null)
+        if(node.getName() != null)
         {
-            node.getIdentifier().apply(this);
+            node.getName().apply(this);
         }
         outALocalName(node);
     }

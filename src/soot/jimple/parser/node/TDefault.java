@@ -8,12 +8,12 @@ public final class TDefault extends Token
 {
     public TDefault()
     {
-        super.setText(".default");
+        super.setText("default");
     }
 
     public TDefault(int line, int pos)
     {
-        super.setText(".default");
+        super.setText("default");
         setLine(line);
         setPos(pos);
     }

@@ -8,12 +8,12 @@ public final class TClass extends Token
 {
     public TClass()
     {
-        super.setText(".class");
+        super.setText("class");
     }
 
     public TClass(int line, int pos)
     {
-        super.setText(".class");
+        super.setText("class");
         setLine(line);
         setPos(pos);
     }

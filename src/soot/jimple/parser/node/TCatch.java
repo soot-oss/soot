@@ -8,12 +8,12 @@ public final class TCatch extends Token
 {
     public TCatch()
     {
-        super.setText(".catch");
+        super.setText("catch");
     }
 
     public TCatch(int line, int pos)
     {
-        super.setText(".catch");
+        super.setText("catch");
         setLine(line);
         setPos(pos);
     }

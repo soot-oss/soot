@@ -8,12 +8,12 @@ public final class TCmp extends Token
 {
     public TCmp()
     {
-        super.setText(".cmp");
+        super.setText("cmp");
     }
 
     public TCmp(int line, int pos)
     {
-        super.setText(".cmp");
+        super.setText("cmp");
         setLine(line);
         setPos(pos);
     }

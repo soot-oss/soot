@@ -8,12 +8,12 @@ public final class TInstanceof extends Token
 {
     public TInstanceof()
     {
-        super.setText(".instanceof");
+        super.setText("instanceof");
     }
 
     public TInstanceof(int line, int pos)
     {
-        super.setText(".instanceof");
+        super.setText("instanceof");
         setLine(line);
         setPos(pos);
     }

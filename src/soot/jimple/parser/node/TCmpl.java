@@ -8,12 +8,12 @@ public final class TCmpl extends Token
 {
     public TCmpl()
     {
-        super.setText(".cmpl");
+        super.setText("cmpl");
     }
 
     public TCmpl(int line, int pos)
     {
-        super.setText(".cmpl");
+        super.setText("cmpl");
         setLine(line);
         setPos(pos);
     }

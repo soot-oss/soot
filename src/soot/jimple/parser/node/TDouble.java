@@ -8,12 +8,12 @@ public final class TDouble extends Token
 {
     public TDouble()
     {
-        super.setText(".double");
+        super.setText("double");
     }
 
     public TDouble(int line, int pos)
     {
-        super.setText(".double");
+        super.setText("double");
         setLine(line);
         setPos(pos);
     }

@@ -8,12 +8,12 @@ public final class TSynchronized extends Token
 {
     public TSynchronized()
     {
-        super.setText(".synchronized");
+        super.setText("synchronized");
     }
 
     public TSynchronized(int line, int pos)
     {
-        super.setText(".synchronized");
+        super.setText("synchronized");
         setLine(line);
         setPos(pos);
     }

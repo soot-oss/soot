@@ -155,7 +155,9 @@ public class BodyExtractorWalker extends Walker
         }
         else
         {
-            System.out.println("[!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
+            System.out.println("[!!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
+
+	    
             System.out.println("[!] Methods in class are:");
             Iterator it = mSootClass.getMethods().iterator();
             while(it.hasNext()) {

@@ -8,12 +8,12 @@ public final class TTableswitch extends Token
 {
     public TTableswitch()
     {
-        super.setText(".tableswitch");
+        super.setText("tableswitch");
     }
 
     public TTableswitch(int line, int pos)
     {
-        super.setText(".tableswitch");
+        super.setText("tableswitch");
         setLine(line);
         setPos(pos);
     }

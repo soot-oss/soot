@@ -8,12 +8,12 @@ public final class TNewarray extends Token
 {
     public TNewarray()
     {
-        super.setText(".newarray");
+        super.setText("newarray");
     }
 
     public TNewarray(int line, int pos)
     {
-        super.setText(".newarray");
+        super.setText("newarray");
         setLine(line);
         setPos(pos);
     }

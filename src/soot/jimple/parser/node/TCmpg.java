@@ -8,12 +8,12 @@ public final class TCmpg extends Token
 {
     public TCmpg()
     {
-        super.setText(".cmpg");
+        super.setText("cmpg");
     }
 
     public TCmpg(int line, int pos)
     {
-        super.setText(".cmpg");
+        super.setText("cmpg");
         setLine(line);
         setPos(pos);
     }

@@ -45,6 +45,70 @@ import java.text.*;
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable, ICompilationListener
 {        
+
+    
+
+    static {
+        Set rn = Scene.v().getReservedNames();
+        
+        rn.add("newarray");
+        rn.add("newmultiarray");
+        rn.add("nop");
+        rn.add("ret");
+        rn.add("specialinvoke");
+        rn.add("staticinvoke");
+        rn.add("tableswitch");
+        rn.add("virtualinvoke");
+        rn.add("null_type");
+        rn.add("unknown");
+        rn.add("cmp");
+        rn.add("cmpg");
+        rn.add("cmpl");
+        rn.add("entermonitor");
+        rn.add("exitmonitor");
+        rn.add("interfaceinvoke");
+        rn.add("lengthof");
+        rn.add("lookupswitch");
+        rn.add("neg");
+        rn.add("if");
+        rn.add("abstract");
+        rn.add("boolean");
+        rn.add("break");
+        rn.add("byte");
+        rn.add("case");
+        rn.add("catch");
+        rn.add("char");
+        rn.add("class");
+        rn.add("final");
+        rn.add("native");
+        rn.add("public");
+        rn.add("protected");
+        rn.add("private");
+        rn.add("static");
+        rn.add("synchronized");
+        rn.add("transient");
+        rn.add("volatile");
+	rn.add("interface");
+        rn.add("void");
+        rn.add("short");
+        rn.add("int");
+        rn.add("long");
+        rn.add("float");
+        rn.add("double");
+        rn.add("extends");
+        rn.add("implements");
+        rn.add("breakpoint");
+        rn.add("default");
+        rn.add("goto");
+        rn.add("instanceof");
+        rn.add("new");
+        rn.add("return");
+        rn.add("throw");
+        rn.add("throws");
+        rn.add("null");
+        
+    }
+
      //------> this used to be in Main
      // DEBUG
     static boolean isAnalyzingLibraries = false;
@@ -446,7 +510,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.46");
+            System.out.println("Soot version 1.beta.6.dev.47");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

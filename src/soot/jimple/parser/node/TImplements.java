@@ -8,12 +8,12 @@ public final class TImplements extends Token
 {
     public TImplements()
     {
-        super.setText(".implements");
+        super.setText("implements");
     }
 
     public TImplements(int line, int pos)
     {
-        super.setText(".implements");
+        super.setText("implements");
         setLine(line);
         setPos(pos);
     }

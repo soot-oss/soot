@@ -7,22 +7,22 @@ import soot.jimple.parser.analysis.*;
 
 public final class ALocalName extends PLocalName
 {
-    private TIdentifier _identifier_;
+    private PName _name_;
 
     public ALocalName()
     {
     }
 
     public ALocalName(
-        TIdentifier _identifier_)
+        PName _name_)
     {
-        setIdentifier(_identifier_);
+        setName(_name_);
 
     }
     public Object clone()
     {
         return new ALocalName(
-            (TIdentifier) cloneNode(_identifier_));
+            (PName) cloneNode(_name_));
     }
 
     public void apply(Switch sw)
@@ -30,16 +30,16 @@ public final class ALocalName extends PLocalName
         ((Analysis) sw).caseALocalName(this);
     }
 
-    public TIdentifier getIdentifier()
+    public PName getName()
     {
-        return _identifier_;
+        return _name_;
     }
 
-    public void setIdentifier(TIdentifier node)
+    public void setName(PName node)
     {
-        if(_identifier_ != null)
+        if(_name_ != null)
         {
-            _identifier_.parent(null);
+            _name_.parent(null);
         }
 
         if(node != null)
@@ -52,20 +52,20 @@ public final class ALocalName extends PLocalName
             node.parent(this);
         }
 
-        _identifier_ = node;
+        _name_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_identifier_);
+            + toString(_name_);
     }
 
     void removeChild(Node child)
     {
-        if(_identifier_ == child)
+        if(_name_ == child)
         {
-            _identifier_ = null;
+            _name_ = null;
             return;
         }
 
@@ -73,9 +73,9 @@ public final class ALocalName extends PLocalName
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_identifier_ == oldChild)
+        if(_name_ == oldChild)
         {
-            setIdentifier((TIdentifier) newChild);
+            setName((PName) newChild);
             return;
         }
 

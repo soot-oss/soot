@@ -45,67 +45,67 @@ Helpers
  
 Tokens
   ignored = ignored_helper;
-  abstract = '.abstract';
-  final = '.final';
-  native = '.native';
-  public = '.public';
-  protected = '.protected';
-  private = '.private';
-  static = '.static';
-  synchronized = '.synchronized';
-  transient = '.transient';
-  volatile = '.volatile';
+  abstract = 'abstract';
+  final = 'final';
+  native = 'native';
+  public = 'public';
+  protected = 'protected';
+  private = 'private';
+  static = 'static';
+  synchronized = 'synchronized';
+  transient = 'transient';
+  volatile = 'volatile';
   
-  class = '.class';
-  interface = '.interface';
+  class = 'class';
+  interface = 'interface';
 
-  void = '.void';
-  boolean = '.boolean';
-  byte = '.byte';
-  short = '.short';
-  char = '.char';
-  int = '.int';
-  long = '.long';
-  float = '.float';
-  double = '.double';
-  null_type = '.null_type';
-  unknown = '.unknown';
+  void = 'void';
+  boolean = 'boolean';
+  byte = 'byte';
+  short = 'short';
+  char = 'char';
+  int = 'int';
+  long = 'long';
+  float = 'float';
+  double = 'double';
+  null_type = 'null_type';
+  unknown = 'unknown';
 
-  extends = '.extends';
-  implements = '.implements';
+  extends = 'extends';
+  implements = 'implements';
  
-  breakpoint = '.breakpoint';
-  case = '.case';
-  catch = '.catch';
-  cmp = '.cmp';
-  cmpg = '.cmpg';
-  cmpl = '.cmpl';
-  default = '.default';
-  entermonitor = '.entermonitor';
-  exitmonitor = '.exitmonitor';
-  goto = '.goto';
-  if = '.if';
-  instanceof = '.instanceof';
-  interfaceinvoke = '.interfaceinvoke';
-  lengthof = '.lengthof';
-  lookupswitch = '.lookupswitch';
-  neg = '.neg';
-  new = '.new';
-  newarray = '.newarray';
-  newmultiarray = '.newmultiarray';
-  nop = '.nop';
-  ret = '.ret';
-  return = '.return';
-  specialinvoke = '.specialinvoke';
-  staticinvoke = '.staticinvoke';
-  tableswitch = '.tableswitch';
-  throw = '.throw';
-  throws = '.throws';
-  virtualinvoke = '.virtualinvoke';
-  null = '.null';
-  from = '.from';
-  to = '.to';
-  with = '.with';
+  breakpoint = 'breakpoint';
+  case = 'case';
+  catch = 'catch';
+  cmp = 'cmp';
+  cmpg = 'cmpg';
+  cmpl = 'cmpl';
+  default = 'default';
+  entermonitor = 'entermonitor';
+  exitmonitor = 'exitmonitor';
+  goto = 'goto';
+  if = 'if';
+  instanceof = 'instanceof';
+  interfaceinvoke = 'interfaceinvoke';
+  lengthof = 'lengthof';
+  lookupswitch = 'lookupswitch';
+  neg = 'neg';
+  new = 'new';
+  newarray = 'newarray';
+  newmultiarray = 'newmultiarray';
+  nop = 'nop';
+  ret = 'ret';
+  return = 'return';
+  specialinvoke = 'specialinvoke';
+  staticinvoke = 'staticinvoke';
+  tableswitch = 'tableswitch';
+  throw = 'throw';
+  throws = 'throws';
+  virtualinvoke = 'virtualinvoke';
+  null = 'null';
+  from = 'from';
+  to = 'to';
+  with = 'with';
 
   comma = ',';
   l_brace = '{';
@@ -260,7 +260,7 @@ class_name_list =
     {nonvoid} nonvoid_type;
 
   local_name =
-    identifier;
+    name;
 
 
 

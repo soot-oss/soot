@@ -8,12 +8,12 @@ public final class TEntermonitor extends Token
 {
     public TEntermonitor()
     {
-        super.setText(".entermonitor");
+        super.setText("entermonitor");
     }
 
     public TEntermonitor(int line, int pos)
     {
-        super.setText(".entermonitor");
+        super.setText("entermonitor");
         setLine(line);
         setPos(pos);
     }

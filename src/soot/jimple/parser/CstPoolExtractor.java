@@ -29,6 +29,7 @@ package soot.jimple.parser;
 import soot.baf.*;
 import soot.*;
 import soot.jimple.*;
+import soot.util.*;
 
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
@@ -78,34 +79,56 @@ class CstPoolExtractor
             defaultIn(node);
         }
 
+
         public void outAQuotedClassName(AQuotedClassName node)
         {
-            mRefTypes.add(node.getQuotedName().getText());
+	    String tokenString = node.getQuotedName().getText();
+	    tokenString = tokenString.substring(1, tokenString.length() -1 );                                       
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+
+            mRefTypes.add(tokenString);
+       
         }
+
         public void outAIdentClassName(AIdentClassName node)
         {
-            mRefTypes.add(node.getIdentifier().getText());
+	    String tokenString = node.getIdentifier().getText();
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+	    
+	    mRefTypes.add(tokenString);
         }
 
         public void outAFullIdentClassName(AFullIdentClassName node)
         {
-            mRefTypes.add(node.getFullIdentifier().getText());
+	    String tokenString = node.getFullIdentifier().getText();
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+	    
+            mRefTypes.add(tokenString);
         }
 
         public void outAQuotedNonvoidType(AQuotedNonvoidType node)
         {
-            mRefTypes.add(node.getQuotedName().getText());
+	    String tokenString = node.getQuotedName().getText();
+	    tokenString = tokenString.substring(1, tokenString.length() -1 );                                       
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+
+            mRefTypes.add(tokenString);
         }
    
         public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
         {
-            mRefTypes.add(node.getFullIdentifier().getText());
+	    String tokenString = node.getFullIdentifier().getText();
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+
+            mRefTypes.add(tokenString);
         }    
     
         public void outAIdentNonvoidType(AIdentNonvoidType node)
         {
-            mRefTypes.add(node.getIdentifier().getText());
-
+	    String tokenString = node.getIdentifier().getText();
+	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
+	    
+            mRefTypes.add(tokenString);
         }
     }
 } 

@@ -8,12 +8,12 @@ public final class TLong extends Token
 {
     public TLong()
     {
-        super.setText(".long");
+        super.setText("long");
     }
 
     public TLong(int line, int pos)
     {
-        super.setText(".long");
+        super.setText("long");
         setLine(line);
         setPos(pos);
     }

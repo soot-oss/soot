@@ -106,68 +106,7 @@ public class Jimple
     public final static String THROWS = "throws";
     public final static String NULL = "null";
 
-    static {
-        Set rn = Scene.v().getReservedNames();
-        
-        rn.add("newarray");
-        rn.add("newmultiarray");
-        rn.add("nop");
-        rn.add("ret");
-        rn.add("specialinvoke");
-        rn.add("staticinvoke");
-        rn.add("tableswitch");
-        rn.add("virtualinvoke");
-        rn.add("null_type");
-        rn.add("unknown");
-        rn.add("cmp");
-        rn.add("cmpg");
-        rn.add("cmpl");
-        rn.add("entermonitor");
-        rn.add("exitmonitor");
-        rn.add("interfaceinvoke");
-        rn.add("lengthof");
-        rn.add("lookupswitch");
-        rn.add("neg");
-        rn.add("if");
-        rn.add("abstract");
-        rn.add("boolean");
-        rn.add("break");
-        rn.add("byte");
-        rn.add("case");
-        rn.add("catch");
-        rn.add("char");
-        rn.add("class");
-        rn.add("final");
-        rn.add("native");
-        rn.add("public");
-        rn.add("protected");
-        rn.add("private");
-        rn.add("static");
-        rn.add("synchronized");
-        rn.add(TRANSIENT);
-        rn.add(VOLATILE);
-        rn.add(INTERFACE);
-        rn.add(VOID);
-        rn.add(SHORT);
-        rn.add(INT);
-        rn.add(LONG);
-        rn.add(FLOAT);
-        rn.add(DOUBLE);
-        rn.add(EXTENDS);
-        rn.add(IMPLEMENTS);
-        rn.add(BREAKPOINT);
-        rn.add(DEFAULT);
-        rn.add(GOTO);
-        rn.add(INSTANCEOF);
-        rn.add(NEW);
-        rn.add(RETURN);
-        rn.add(THROW);
-        rn.add(THROWS);
-        rn.add(NULL);
-        
-    }
     
-
   
   
   public static boolean isJavaKeywordType(Type t)

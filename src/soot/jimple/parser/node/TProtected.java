@@ -8,12 +8,12 @@ public final class TProtected extends Token
 {
     public TProtected()
     {
-        super.setText(".protected");
+        super.setText("protected");
     }
 
     public TProtected(int line, int pos)
     {
-        super.setText(".protected");
+        super.setText("protected");
         setLine(line);
         setPos(pos);
     }

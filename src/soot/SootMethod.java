@@ -421,7 +421,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     private static String getSubSignatureImpl(String name, List params, Type returnType) 
     {
         StringBuffer buffer = new StringBuffer();
-        
         Type t = returnType;
         buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name));
         buffer.append("(");

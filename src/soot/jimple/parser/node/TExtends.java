@@ -8,12 +8,12 @@ public final class TExtends extends Token
 {
     public TExtends()
     {
-        super.setText(".extends");
+        super.setText("extends");
     }
 
     public TExtends(int line, int pos)
     {
-        super.setText(".extends");
+        super.setText("extends");
         setLine(line);
         setPos(pos);
     }

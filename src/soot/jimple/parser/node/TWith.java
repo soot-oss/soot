@@ -8,12 +8,12 @@ public final class TWith extends Token
 {
     public TWith()
     {
-        super.setText(".with");
+        super.setText("with");
     }
 
     public TWith(int line, int pos)
     {
-        super.setText(".with");
+        super.setText("with");
         setLine(line);
         setPos(pos);
     }

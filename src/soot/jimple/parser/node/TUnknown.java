@@ -8,12 +8,12 @@ public final class TUnknown extends Token
 {
     public TUnknown()
     {
-        super.setText(".unknown");
+        super.setText("unknown");
     }
 
     public TUnknown(int line, int pos)
     {
-        super.setText(".unknown");
+        super.setText("unknown");
         setLine(line);
         setPos(pos);
     }

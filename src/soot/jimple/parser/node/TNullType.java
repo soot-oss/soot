@@ -8,12 +8,12 @@ public final class TNullType extends Token
 {
     public TNullType()
     {
-        super.setText(".null_type");
+        super.setText("null_type");
     }
 
     public TNullType(int line, int pos)
     {
-        super.setText(".null_type");
+        super.setText("null_type");
         setLine(line);
         setPos(pos);
     }

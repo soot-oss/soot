@@ -8,12 +8,12 @@ public final class TThrows extends Token
 {
     public TThrows()
     {
-        super.setText(".throws");
+        super.setText("throws");
     }
 
     public TThrows(int line, int pos)
     {
-        super.setText(".throws");
+        super.setText("throws");
         setLine(line);
         setPos(pos);
     }
