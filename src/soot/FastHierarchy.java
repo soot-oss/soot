@@ -147,38 +147,31 @@ public class FastHierarchy
      * implementers of it but NOT their subclasses. */
     public Set getAllImplementersOfInterface( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
-        Set subs;
-        if( interfaceToAllImplementers.containsKey( parent ) ) {
-            subs = interfaceToAllImplementers.get( parent );
-        } else {
-	    subs = new HashSet();
+        if( !interfaceToAllImplementers.containsKey( parent ) ) {
             for( Iterator subinterfaceIt = getAllSubinterfaces( parent ).iterator(); subinterfaceIt.hasNext(); ) {
                 final SootClass subinterface = (SootClass) subinterfaceIt.next();
                 if( subinterface == parent ) continue;
-                subs.addAll( getAllImplementersOfInterface( subinterface ) );
+                interfaceToAllImplementers.putAll(parent,
+                    getAllImplementersOfInterface( subinterface ) );
             }
-            subs.addAll( interfaceToImplementers.get( parent ) );
-	    interfaceToAllImplementers.putAll(parent, subs);
+            interfaceToAllImplementers.putAll(parent, 
+                    interfaceToImplementers.get( parent ) );
         }
-        return subs;
+        return interfaceToAllImplementers.get( parent );
     }
 
     /** For an interface parent (MUST be an interface), returns set of all
      * subinterfaces. */
     protected Set getAllSubinterfaces( SootClass parent ) {
         parent.checkLevel(SootClass.HIERARCHY);
-        Set subs;
-        if( interfaceToAllSubinterfaces.containsKey( parent ) ) {
-            subs = interfaceToAllSubinterfaces.get( parent );
-        } else {
-            subs = new HashSet();
-            subs.add( parent );
+        if( !interfaceToAllSubinterfaces.containsKey( parent ) ) {
+            interfaceToAllSubinterfaces.put( parent, parent );
             for( Iterator it = interfaceToSubinterfaces.get( parent ).iterator(); it.hasNext(); ) {
-                subs.addAll( getAllSubinterfaces( (SootClass) it.next() ) );
+                interfaceToAllSubinterfaces.putAll(parent, 
+                    getAllSubinterfaces( (SootClass) it.next() ) );
             }
-	    interfaceToAllSubinterfaces.putAll(parent, subs);
         }
-        return subs;
+        return interfaceToAllSubinterfaces.get( parent );
     }
 
     /** Given an object of declared type child, returns true if the object
