@@ -90,9 +90,9 @@ public class SootAttributesHandler {
 			if (sa.attrForJavaLn(lnNum)){
 				if (sa.getAllLinkAttrs() != null){
 				
-					list = sa.getAllLinkAttrs();
+					list.addAll(sa.getAllLinkAttrs());
 				}
-				//System.out.println("list length: "+list);
+				System.out.println("list length: "+list.size());
 			}
 		}
 		return list;
