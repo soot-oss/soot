@@ -150,13 +150,6 @@ public class Main {
     public static void main(String[] args) {
         Main.v().run(args);
     }
-    /**
-     *   Entry point for Eclipse invocation of soot.
-     */
-    public static int main(String[] args, PrintStream out) {
-        G.v().out = out;
-        return Main.v().run(args);
-    }
 
     /** 
      *  Entry point to the soot's compilation process.

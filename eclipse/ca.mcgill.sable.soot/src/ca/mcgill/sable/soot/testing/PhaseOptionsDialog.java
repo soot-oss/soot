@@ -65,8 +65,6 @@ Composite Output_OptionsChild = Output_OptionsCreate(getPageContainer());
 
 Composite Processing_OptionsChild = Processing_OptionsCreate(getPageContainer());
 
-Composite Single_File_Mode_OptionsChild = Single_File_Mode_OptionsCreate(getPageContainer());
-
 Composite Application_Mode_OptionsChild = Application_Mode_OptionsCreate(getPageContainer());
 
 Composite Input_Attribute_OptionsChild = Input_Attribute_OptionsCreate(getPageContainer());
@@ -840,11 +838,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_all_widget(), "with-all");
 		
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_fieldref_widget(), "with-fieldref");
+		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_cse_widget(), "with-cse");
 		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_arrayref_widget(), "with-arrayref");
 		
-		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_cse_widget(), "with-cse");
+		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_fieldref_widget(), "with-fieldref");
 		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_classfield_widget(), "with-classfield");
 		
@@ -856,11 +854,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		getjapjap_abcwith_all_widget().getButton().addSelectionListener(this);
 		
-		getjapjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
+		getjapjap_abcwith_cse_widget().getButton().addSelectionListener(this);
 		
 		getjapjap_abcwith_arrayref_widget().getButton().addSelectionListener(this);
 		
-		getjapjap_abcwith_cse_widget().getButton().addSelectionListener(this);
+		getjapjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
 		
 		getjapjap_abcwith_classfield_widget().getButton().addSelectionListener(this);
 		
@@ -1223,6 +1221,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_classpath_widget().getAlias(), stringRes);
 		}
+		
+		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
+		}
 		 
 		stringRes = getInput_Optionssrc_prec_widget().getSelectedAlias();
 
@@ -1232,16 +1239,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getInput_Optionssrc_prec_widget().getAlias(), stringRes);
-		}
-		
-		boolRes = getOutput_Optionsvia_grimp_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getOutput_Optionsvia_grimp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
@@ -1256,7 +1253,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
 		
-		defStringRes = "";
+		defStringRes = "./sootOutput";
 		
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
@@ -1291,6 +1288,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionswhole_optimize_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getProcessing_Optionsvia_grimp_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionsvia_grimp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getProcessing_Optionsvia_shimple_widget().getButton().getSelection();
@@ -2380,14 +2387,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_abcwith_all_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_abcwith_fieldref_widget().getButton().getSelection();
+		boolRes = getjapjap_abcwith_cse_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_arrayref_widget().getButton().getSelection();
@@ -2400,14 +2407,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_abcwith_arrayref_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_abcwith_cse_widget().getButton().getSelection();
+		boolRes = getjapjap_abcwith_fieldref_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_classfield_widget().getButton().getSelection();
@@ -2777,15 +2784,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		stringRes = getSingle_File_Mode_Optionsprocess_dir_widget().getText().getText();
-		
-		defStringRes = "";
-		
-
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getSingle_File_Mode_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
@@ -3187,8 +3185,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjap_wjap_ra_branch;
 			
 			
-			//Shimple Body Creation
-			SootOption shimple_branch = new SootOption("Shimple Body Creation", "shimple");
+			//Shimple Control
+			SootOption shimple_branch = new SootOption("Shimple Control", "shimple");
 			parent.addChild(shimple_branch);
 			subParent = shimple_branch;
 
@@ -3359,7 +3357,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			SootOption jap_jap_npc_branch = new SootOption("Null Pointer Check", "japjap_npc");
+			SootOption jap_jap_npc_branch = new SootOption("Null Pointer Checker", "japjap_npc");
 			subParent.addChild(jap_jap_npc_branch);
 
 
@@ -3399,7 +3397,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_profiling_branch;
 			
 			
-			SootOption jap_jap_sea_branch = new SootOption("Side effect tagger", "japjap_sea");
+			SootOption jap_jap_sea_branch = new SootOption("Side Effect tagger", "japjap_sea");
 			subParent.addChild(jap_jap_sea_branch);
 
 
@@ -3547,8 +3545,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			//Tag
-			SootOption tag_branch = new SootOption("Tag", "tag");
+			//Tag Aggregator
+			SootOption tag_branch = new SootOption("Tag Aggregator", "tag");
 			parent.addChild(tag_branch);
 			subParent = tag_branch;
 
@@ -3594,10 +3592,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = tag_tag_fieldrw_branch;
 			
 			
-		SootOption Single_File_Mode_Options_branch = new SootOption("Single File Mode Options", "Single_File_Mode_Options");
-		root.addChild(Single_File_Mode_Options_branch);
-		parent = Single_File_Mode_Options_branch;		
-		
 		SootOption Application_Mode_Options_branch = new SootOption("Application Mode Options", "Application_Mode_Options");
 		root.addChild(Application_Mode_Options_branch);
 		parent = Application_Mode_Options_branch;		
@@ -3713,6 +3707,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
+
+	private ListOptionWidget Input_Optionsprocess_dir_widget;
+	
+	private void setInput_Optionsprocess_dir_widget(ListOptionWidget widget) {
+		Input_Optionsprocess_dir_widget = widget;
+	}
+	
+	public ListOptionWidget getInput_Optionsprocess_dir_widget() {
+		return Input_Optionsprocess_dir_widget;
+	}	
+	
+	
 	
 	private StringOptionWidget Input_Optionssoot_classpath_widget;
 	
@@ -3736,16 +3742,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Input_Optionssrc_prec_widget;
 	}	
 	
-	
-	private BooleanOptionWidget Output_Optionsvia_grimp_widget;
-	
-	private void setOutput_Optionsvia_grimp_widget(BooleanOptionWidget widget) {
-		Output_Optionsvia_grimp_widget = widget;
-	}
-	
-	public BooleanOptionWidget getOutput_Optionsvia_grimp_widget() {
-		return Output_Optionsvia_grimp_widget;
-	}	
 	
 	private BooleanOptionWidget Output_Optionsxml_attributes_widget;
 	
@@ -3799,6 +3795,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getProcessing_Optionswhole_optimize_widget() {
 		return Processing_Optionswhole_optimize_widget;
+	}	
+	
+	private BooleanOptionWidget Processing_Optionsvia_grimp_widget;
+	
+	private void setProcessing_Optionsvia_grimp_widget(BooleanOptionWidget widget) {
+		Processing_Optionsvia_grimp_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionsvia_grimp_widget() {
+		return Processing_Optionsvia_grimp_widget;
 	}	
 	
 	private BooleanOptionWidget Processing_Optionsvia_shimple_widget;
@@ -4913,14 +4919,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_abcwith_all_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_abcwith_fieldref_widget;
+	private BooleanOptionWidget japjap_abcwith_cse_widget;
 	
-	private void setjapjap_abcwith_fieldref_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_fieldref_widget = widget;
+	private void setjapjap_abcwith_cse_widget(BooleanOptionWidget widget) {
+		japjap_abcwith_cse_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_abcwith_fieldref_widget() {
-		return japjap_abcwith_fieldref_widget;
+	public BooleanOptionWidget getjapjap_abcwith_cse_widget() {
+		return japjap_abcwith_cse_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_abcwith_arrayref_widget;
@@ -4933,14 +4939,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_abcwith_arrayref_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_abcwith_cse_widget;
+	private BooleanOptionWidget japjap_abcwith_fieldref_widget;
 	
-	private void setjapjap_abcwith_cse_widget(BooleanOptionWidget widget) {
-		japjap_abcwith_cse_widget = widget;
+	private void setjapjap_abcwith_fieldref_widget(BooleanOptionWidget widget) {
+		japjap_abcwith_fieldref_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_abcwith_cse_widget() {
-		return japjap_abcwith_cse_widget;
+	public BooleanOptionWidget getjapjap_abcwith_fieldref_widget() {
+		return japjap_abcwith_fieldref_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_abcwith_classfield_widget;
@@ -5316,18 +5322,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 
-	private ListOptionWidget Single_File_Mode_Optionsprocess_dir_widget;
-	
-	private void setSingle_File_Mode_Optionsprocess_dir_widget(ListOptionWidget widget) {
-		Single_File_Mode_Optionsprocess_dir_widget = widget;
-	}
-	
-	public ListOptionWidget getSingle_File_Mode_Optionsprocess_dir_widget() {
-		return Single_File_Mode_Optionsprocess_dir_widget;
-	}	
-	
-	
-
 	private ListOptionWidget Application_Mode_Optionsinclude_widget;
 	
 	private void setApplication_Mode_Optionsinclude_widget(ListOptionWidget widget) {
@@ -5678,7 +5672,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSet Soot's preference for what type of source files to read \nwhen it looks for a class. ")));
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSet Soot's preference for the type of source files to read when \nit looks for a class. ")));
 		
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
@@ -5689,6 +5683,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getInput_Optionssrc_prec_widget().setDef(defaultString);
 		}
 		
+		
+
+		defKey = ""+" "+""+" "+"process-dir";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in to the set of argument classes which \nis analyzed and transformed by Soot. You can specify the option \nmore than once, to add argument classes from multiple \ndirectories. If subdirectories of contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"cp";
@@ -5733,22 +5742,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		OptionData [] data;	
 		
 
-		
-		defKey = ""+" "+""+" "+"via-grimp";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setOutput_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimple intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation. ", defaultBool)));
-		
-		
 		
 		defKey = ""+" "+""+" "+"xml-attributes";
 		defKey = defKey.trim();
@@ -5804,15 +5797,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		false),
 		
-		new OptionData("Grimple File",
+		new OptionData("Grimp File",
 		"G",
 		"\nProduce .grimple files, which contain a textual form of Soot's \nGrimp internal representation. ",
 		
 		false),
 		
-		new OptionData("Grimp File",
+		new OptionData("Abbreviated Grimp File",
 		"g",
-		"\nProduce .grimp files, which contain an abbreviated form of \nGrimple. ",
+		"\nProduce .grimp files, which contain an abbreviated form of \nGrimp. ",
 		
 		false),
 		
@@ -5849,7 +5842,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify which format of output files Soot should produce, if \nany. Note that while the abbreviated formats (jimp, shimp, b, \nand grimp) are easier to read than their unabbreviated \ncounterparts (jimple, shimple, baf, and grimple), they may \ncontain ambiguities. Method signatures in the abbreviated \nformats, for instance, are not uniquely determined.")));
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify the format of output files Soot should produce, if any. \nNote that while the abbreviated formats (jimp, shimp, b, and \ngrimp) are easier to read than their unabbreviated counterparts \n(jimple, shimple, baf, and grimple), they may contain \nambiguities. Method signatures in the abbreviated formats, for \ninstance, are not uniquely determined.")));
 		
 		defKey = ""+" "+""+" "+"f";
 		defKey = defKey.trim();
@@ -5870,7 +5863,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultString = "";
+			defaultString = "./sootOutput";
 			
 		}
 
@@ -5934,6 +5927,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the application classes. \nThis enables the Whole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"via-grimp";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation. ", defaultBool)));
 		
 		
 		
@@ -6032,7 +6041,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupjbjb_ls.setData("id", "jbjb_ls");
 		
-		String descjbjb_ls = "Associates separate locals with each use-def web";	
+		String descjbjb_ls = "Associates separate locals with each DU-UD web";	
 		if (descjbjb_ls.length() > 0) {
 			Label descLabeljbjb_ls = new Label(editGroupjbjb_ls, SWT.WRAP);
 			descLabeljbjb_ls.setText(descjbjb_ls);
@@ -6997,7 +7006,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true to simulate Variable \nType Analysis, described in our OOPSLA 2000 paper. Note that the \nalgorithm differs from the original VTA in that it handles array \nelements more precisely. ", defaultBool)));
+		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
 		
 		
 		
@@ -8085,7 +8094,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupshimple.setLayout(layout);
 	
-	 	editGroupshimple.setText("Shimple Body Creation");
+	 	editGroupshimple.setText("Shimple Control");
 	 	
 		editGroupshimple.setData("id", "shimple");
 		
@@ -8116,7 +8125,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		data = new OptionData [] {
 		
-		new OptionData("Naive Phi Node Elimination",
+		new OptionData("No-optimize Phi Elimination",
 		"none",
 		"\nDo not optimize as part of Phi node elimination, either before \nor after eliminating Phi nodes. This is useful for monitoring \nand understanding the behaviour of Shimple optimizations and \ntransformations.",
 		
@@ -8143,7 +8152,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setshimplephi_elim_opt_widget(new MultiOptionWidget(editGroupshimple, SWT.NONE, data, new OptionData("Phi Node Elimination Optimizations", "p", "shimple","phi-elim-opt", "\nThese options control Shimple's behaviour when \neliminating Phi nodes.")));
+		setshimplephi_elim_opt_widget(new MultiOptionWidget(editGroupshimple, SWT.NONE, data, new OptionData("Phi Node Elimination Optimizations", "p", "shimple","phi-elim-opt", "\n")));
 		
 		defKey = "p"+" "+"shimple"+" "+"phi-elim-opt";
 		defKey = defKey.trim();
@@ -9111,7 +9120,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npc.setLayout(layout);
 	
-	 	editGroupjapjap_npc.setText("Null Pointer Check");
+	 	editGroupjapjap_npc.setText("Null Pointer Checker");
 	 	
 		editGroupjapjap_npc.setData("id", "japjap_npc");
 		
@@ -9168,7 +9177,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions counting the number of eliminated \nsafe null pointer checks at runtime. This is only for profiling \npurpose. 						", defaultBool)));
+		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions that at runtime count the number \nof eliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a MultiCounter class implementing \nthe methods invoked. For details, see the NullPointerChecker \nsource code.", defaultBool)));
 		
 		
 
@@ -9272,39 +9281,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nA macro. Instead of typing a long string of phase options, \nthis option will turn on all options of the phase ``jap.abc''. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-fieldref";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions. The restrictions from the `with-arrayref' \noption also apply. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-arrayref";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. \nNOTE: We also assume that the application in a single-threaded \nprogram or in a synchronized block. That is, an array element \nmay not be changed by other threads between two array \nreferences. ", defaultBool)));
+		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
 		
 		
 		
@@ -9320,7 +9297,39 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 \nis assigned a*b, where both a and b have not been changed \nbetween the two statements. The analysis can conclude that r2 \nhas the same value as r1. Experiments show that this option \ncan improve the result slightly. ", defaultBool)));
+		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jap.abc"+" "+"with-arrayref";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jap.abc"+" "+"with-fieldref";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
 		
 		
 		
@@ -9336,7 +9345,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes `final' or `private' class fields first. It \ncan recognize the fields that hold array objects with constant \nlength. In an application using lots of array fields, this \noption can improve the analysis results dramatically. \n", defaultBool)));
+		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
 		
 		
 		
@@ -9368,7 +9377,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\n", defaultBool)));
+		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\nProfile the results of array bounds check analysis. The \ninserted profiling code assumes the existence of a MultiCounter \nclass implementing the methods invoked. For details, see the \nArrayBoundsChecker source code.", defaultBool)));
 		
 		
 
@@ -9428,7 +9437,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\n", defaultBool)));
+		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\nInsert the calls to the MultiCounter at the beginning and end \nof methods with the signature long \nrunBenchmark(java.lang.String[]) instead of the signature void \nmain(java.lang.String[]).", defaultBool)));
 		
 		
 
@@ -9447,7 +9456,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_sea.setLayout(layout);
 	
-	 	editGroupjapjap_sea.setText("Side effect tagger");
+	 	editGroupjapjap_sea.setText("Side Effect tagger");
 	 	
 		editGroupjapjap_sea.setData("id", "japjap_sea");
 		
@@ -9488,7 +9497,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. The purpose of this switch is to make it possible to \nmeasure the effect of merging nodes for equivalent statements on \nthe size of the dependence graph.", defaultBool)));
+		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. This makes it possible to measure the effect of \nmerging nodes for equivalent statements on the size of the \ndependence graph.", defaultBool)));
 		
 		
 
@@ -9591,7 +9600,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\n", defaultBool)));
+		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\nProduces LinkTags based on the call graph. These tags and are \nused in the Eclipse plugin to produce linked popup lists which \nindicate the source and target methods of the statement. When a \nlink is selected in the popup list the cursor repositions to the \nindicated method.", defaultBool)));
 		
 		
 
@@ -9635,7 +9644,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\n", defaultBool)));
+		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\nProduces StringTags and ColorTags indicating the parity of a \nvariable (even, odd, top, bottom). These tags are used in the \nEclipse plugin to show tooltips about parity information and to \nhighlight the background tect color of the variables based on \ntheir parity. For example; even variables (eg: x = 2) are \ncolored yellow.", defaultBool)));
 		
 		
 
@@ -10326,7 +10335,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGrouptag.setLayout(layout);
 	
-	 	editGrouptag.setText("Tag");
+	 	editGrouptag.setText("Tag Aggregator");
 	 	
 		editGrouptag.setData("id", "tag");
 		
@@ -10533,49 +10542,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGrouptagtag_fieldrw;
-	}
-
-
-
-	private Composite Single_File_Mode_OptionsCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroupSingle_File_Mode_Options = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroupSingle_File_Mode_Options.setLayout(layout);
-	
-	 	editGroupSingle_File_Mode_Options.setText("Single File Mode Options");
-	 	
-		editGroupSingle_File_Mode_Options.setData("id", "Single_File_Mode_Options");
-		
-		String descSingle_File_Mode_Options = "";	
-		if (descSingle_File_Mode_Options.length() > 0) {
-			Label descLabelSingle_File_Mode_Options = new Label(editGroupSingle_File_Mode_Options, SWT.WRAP);
-			descLabelSingle_File_Mode_Options.setText(descSingle_File_Mode_Options);
-		}
-		OptionData [] data;	
-		
-
-
-		defKey = ""+" "+""+" "+"process-dir";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
-			defaultString = "";
-			
-		}
-
-		setSingle_File_Mode_Optionsprocess_dir_widget(new ListOptionWidget(editGroupSingle_File_Mode_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in to the set of argument classes which \nis analyzed and transformed by Soot. You can specify the option \nmore than once, to add argument classes from multiple \ndirectories. If subdirectories of contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
-		
-
-		
-		return editGroupSingle_File_Mode_Options;
 	}
 
 

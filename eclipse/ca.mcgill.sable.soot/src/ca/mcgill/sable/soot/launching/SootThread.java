@@ -71,9 +71,9 @@ public class SootThread extends Thread {
 			for (int i = 0; i < meths.length; i++){
 				if (meths[i].getName().equals("main")){
 					Class [] fields = meths[i].getParameterTypes();
-					//if (fields.length == 2){
+					if (fields.length == 1){
 					meths[i].invoke(toRun, args);
-					//}
+					}
 				}
 			}
 			
