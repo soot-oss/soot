@@ -44,7 +44,19 @@ public interface PointsToAnalysis {
     public static final Integer DEFAULT_CLASS_LOADER = new Integer( -18 );
     public static final Integer DEFAULT_CLASS_LOADER_LOCAL = new Integer( -19 );
 
-    /** Returns the set of objects reaching variable l. */
+    /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l );
+
+    /** Returns the set of objects pointed to by static field f. */
+    public PointsToSet reachingObjects( SootField f );
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects in the PointsToSet s. */
+    public PointsToSet reachingObjects( PointsToSet s, SootField f );
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l. */
+    public PointsToSet reachingObjects( Local l, SootField f );
+
 }
 

@@ -102,13 +102,55 @@ public class PAG implements PointsToAnalysis {
                 throw new RuntimeException();
         }
     }
-    /** Returns the set of objects reaching variable l before stmt in method. */
+
+    /** Returns the set of objects pointed to by variable l. */
     public PointsToSet reachingObjects( Local l ) {
         VarNode n = findVarNode( l );
         if( n == null ) {
             return EmptyPointsToSet.v();
         }
         return n.getP2Set();
+    }
+
+    /** Returns the set of objects pointed to by static field f. */
+    public PointsToSet reachingObjects( SootField f ) {
+        if( !f.isStatic() )
+            throw new RuntimeException( "The parameter f must be a *static* field." );
+        VarNode n = findVarNode( f );
+        if( n == null ) {
+            return EmptyPointsToSet.v();
+        }
+        return n.getP2Set();
+    }
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects in the PointsToSet s. */
+    public PointsToSet reachingObjects( PointsToSet s, final SootField f ) {
+        if( f.isStatic() )
+            throw new RuntimeException( "The parameter f must be an *instance* field." );
+        if( getOpts().field_based() || getOpts().vta() ) {
+            VarNode n = findVarNode( f );
+            if( n == null ) {
+                return EmptyPointsToSet.v();
+            }
+            return n.getP2Set();
+        }
+        if( getOpts().propagator() == SparkOptions.propagator_alias ) {
+            throw new RuntimeException( "The alias edge propagator does not compute points-to information for instance fields! Use a different propagator." );
+        }
+        PointsToSetInternal bases = (PointsToSetInternal) s;
+        final PointsToSetInternal ret = setFactory.newSet( f.getType(), this );
+        bases.forall( new P2SetVisitor() {
+        public final void visit( Node n ) {
+            ret.addAll( ((AllocNode) n).dot( f ).getP2Set(), null );
+        }} );
+        return ret;
+    }
+
+    /** Returns the set of objects pointed to by instance field f
+     * of the objects pointed to by l. */
+    public PointsToSet reachingObjects( Local l, SootField f ) {
+        return reachingObjects( reachingObjects(l), f );
     }
 
     /** Returns SparkOptions for this graph. */
