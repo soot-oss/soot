@@ -60,7 +60,7 @@ public class Main implements Runnable
 {   
     // TODO: the following string should be updated by the source control
     //   $Format: "            public static final String versionString = \"1.2.4 (build $ProjectVersion$)\";"$
-            public static final String versionString = "1.2.4 (build 1.2.4.dev.10)";
+            public static final String versionString = "1.2.4 (build 1.2.4.dev.11)";
 
     public Date start;
     public Date finish;
@@ -70,6 +70,9 @@ public class Main implements Runnable
     static boolean isAnalyzingLibraries = false;
 
     public static boolean keepLineNumberAttribute = false;
+ 
+  // should soot keep approximated bytecode offset for each jimple instruction?
+    public static boolean keepBytecodeOffsetInfo = false;
 
     private static List compilationListeners = new ArrayList(1);
     public static void addCompilationListener(ICompilationListener l)
@@ -683,6 +686,10 @@ public class Main implements Runnable
 		soot.Main.keepLineNumberAttribute = true;
 		CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
 	    }
+	else if (opt.equals("BytecodeOffset")) 
+	  {
+	    soot.Main.keepBytecodeOffsetInfo = true;
+	  }
 	else
 	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
 				
@@ -708,7 +715,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.4 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.10)");
+            System.out.println("Soot version 1.2.4 (build 1.2.4.dev.11)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -785,6 +792,7 @@ public class Main implements Runnable
 	System.out.println("                               array bounds check. ");
 	System.out.println("                               more options are in the document. ");
 	System.out.println("  -A LineNumber                keep line number tables.");
+	System.out.println("  -A BytecodeOffset            attach bytecode offset to jimple statement.");
 	System.out.println("");
 	System.out.println("Examples:");
 	System.out.println("");

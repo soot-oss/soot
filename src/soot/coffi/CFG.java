@@ -2991,7 +2991,7 @@ public class CFG {
       int args;
       Value rvalue;
 
-      int localIndex;
+      //      int localIndex;
 
       Stmt stmt = null;
 
@@ -4747,8 +4747,12 @@ public class CFG {
             throw new RuntimeException("Unrecognized bytecode instruction: " + x);
         }
 
-    if(stmt != null)
+      if(stmt != null) {
+	if (soot.Main.keepBytecodeOffsetInfo) {
+	  stmt.addTag(new BytecodeOffsetTag(ins.label));
+	}
         statements.add(stmt);
+      }
    }
 
      Type jimpleTypeOfAtype(int atype)
