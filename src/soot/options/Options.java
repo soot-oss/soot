@@ -946,9 +946,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
                 +"enabled "
-                +"naive-phi-elimination "
-                +"pre-optimize-phi-elimination "
-                +"post-optimize-phi-elimination ";
+                +"phi-elim-opt ";
     
         if( phaseName.equals( "stp" ) )
             return ""
@@ -1287,9 +1285,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "shimple" ) )
             return ""
               +"enabled:true "
-              +"naive-phi-elimination:false "
-              +"pre-optimize-phi-elimination:false "
-              +"post-optimize-phi-elimination:true ";
+              +"phi-elim-opt:post ";
     
         if( phaseName.equals( "stp" ) )
             return ""

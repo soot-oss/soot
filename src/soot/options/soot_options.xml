@@ -1433,8 +1433,8 @@ This phase does not change the program.
         <alias>shimple</alias>
         <class>ShimpleOptions</class>
         <short_desc>General Shimple options.</short_desc>
-        <long_desc>These options affect the Shimple body behaviour --
-          currently the only available options affect Shimple during Phi 
+        <long_desc>These options affect the Shimple body behaviour.
+          Currently, the only available options affect Shimple during Phi 
 	  node elimination.</long_desc>
         <boolopt>
           <name>Enabled</name>
@@ -1453,19 +1453,18 @@ This phase does not change the program.
             <alias>none</alias>
             <short_desc>If enabled, no optimizations are applied
             before or after eliminating Phi nodes.</short_desc>
-            <long_desc>If set to true, neither pre-optimization nor
-              post-optimization will be applied to the Phi elimination
-              process.  This is useful for monitoring and understanding
-              the behaviour of Shimple optimizations or transformations.
-              Note that setting this option to true takes precedence over
-              other Phi elimination options.</long_desc>
+            <long_desc>If enabled, neither pre-optimization nor
+            post-optimization will be applied to the Phi elimination
+            process.  This is useful for monitoring and understanding
+            the behaviour of Shimple optimizations or
+            transformations.</long_desc>
           </value>
           <value>
             <name>Pre-optimize Phi Elimination</name>
             <alias>pre</alias>
             <short_desc>If enabled, some optimizations are applied
               before Phi nodes are eliminated.</short_desc>
-            <long_desc>If set to true, some recommended optimizations
+            <long_desc>If enabled, some recommended optimizations
               such as dead code elimination and local packing are applied
               before Phi node elimination.  This does not appear to be as
               effective as post-optimization, but the option is provided
@@ -1477,19 +1476,19 @@ This phase does not change the program.
             <default/>
             <short_desc>If enabled, some optimizations are applied after
               Phi nodes are eliminated.</short_desc>
-            <long_desc>Applies recommended optimizations such as dead
-              code elimination and local packing after Phi node
-              elimination.  This appears to be more effective than
-              pre-optimization.</long_desc>
+            <long_desc>If enabled, applies recommended optimizations
+            such as dead code elimination and local packing after Phi
+            node elimination.  This appears to be more effective than
+            pre-optimization.</long_desc>
           </value>
           <value>
             <name>Pre- and Post- Optimize Phi Elimination</name>
             <alias>pre-and-post</alias> 
             <short_desc>If enabled, some optimizations are applied
             both before and after Phi nodes are eliminated.</short_desc>
-            <long_desc>Applies recommended optimizations such as dead
-            code elimination and local packing both before and after
-            Phi node elimination.  Provided for
+            <long_desc>If enabled, applies recommended optimizations
+            such as dead code elimination and local packing both
+            before and after Phi node elimination.  Provided for
             experimentation.</long_desc>
           </value>
         </multiopt>
