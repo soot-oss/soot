@@ -15,6 +15,9 @@
 	<topic label="Editors" href="doc/concepts/editors.html">
 		<topic label="IR Editor" href="doc/concepts/jimple_editor.html"/>
 	</topic>
-	<topic label="Attributes" href="doc/concepts/soot_attributes.html"/>
+	<topic label="Attributes" href="doc/concepts/attributes.html">
+		<topic label="Tags" href="doc/concepts/tags.html"/>
+		<topic label="Visualizations" href="doc/concepts/visualizations.html"/>
+	</topic>
 </toc>
 				    
