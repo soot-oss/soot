@@ -855,7 +855,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) )
             return ""
                 +"disabled "
-                +"verbose ";
+                +"verbose "
+                +"all-clinit ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -874,6 +875,7 @@ public class Options extends OptionsBase {
                 +"on-fly-cg "
                 +"parms-as-fields "
                 +"returns-as-fields "
+                +"all-clinit "
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
@@ -1186,7 +1188,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
-              +"disabled:true ";
+              +"disabled:true "
+              +"all-clinit:false ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -1205,6 +1208,7 @@ public class Options extends OptionsBase {
               +"on-fly-cg:false "
               +"parms-as-fields:false "
               +"returns-as-fields:false "
+              +"all-clinit:false "
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "

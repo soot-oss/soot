@@ -40,7 +40,7 @@ public class CHATransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map opts)
     {
         CHAOptions options = new CHAOptions( opts );
-        CallGraph cg = new CallGraph( DumbPointerAnalysis.v(), options.verbose() );
+        CallGraph cg = new CallGraph( DumbPointerAnalysis.v(), options.verbose(), options.all_clinit() );
         cg.setInvokeGraph( new InvokeGraph() );
         cg.build();
         Scene.v().setActiveInvokeGraph( cg.getInvokeGraph() );

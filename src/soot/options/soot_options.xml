@@ -458,6 +458,18 @@ If no phases are enabled, the Old Class Hierarchy Analysis phase
 						<name>Verbose</name>
 						<alias>verbose</alias>
 					</boolopt>
+                                        <boolopt>
+                                                <name>All Static Initializers Reachable</name>
+                                                <alias>all-clinit</alias>
+                                                <default>false</default>
+                                                <long_desc>
+When this option is set to true, all static initializer methods in
+available classes are considered to be reachable. Otherwise, static
+initializers are only considered reachable if a statement using the
+class (such as a static read, an object creation, or use of Class.forName())
+is reachable.
+</long_desc>
+                                        </boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Spark</name>
@@ -614,6 +626,18 @@ represented as variable (Green) nodes.
 When this option is set to true, return values from methods are
 represented as fields (Red nodes) of the this object; otherwise,
 return values are represented as variable (Green) nodes.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>All Static Initializers Reachable</name>
+							<alias>all-clinit</alias>
+							<default>false</default>
+							<long_desc>
+When this option is set to true, all static initializer methods in
+available classes are considered to be reachable. Otherwise, static
+initializers are only considered reachable if a statement using the
+class (such as a static read, an object creation, or use of Class.forName())
+is reachable.
         </long_desc>
 						</boolopt>
 					</section>

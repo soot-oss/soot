@@ -42,9 +42,11 @@ public final class CallGraph
     private ChunkedQueue callEdgeQueue = new ChunkedQueue();
     public QueueReader callEdges() { return callEdgeQueue.reader(); }
     private boolean verbose;
+    private boolean allClinit;
 
-    public CallGraph( PointsToAnalysis pa, boolean verbose ) {
+    public CallGraph( PointsToAnalysis pa, boolean verbose, boolean allClinit ) {
         this.verbose = verbose;
+        this.allClinit = allClinit;
         this.pa = pa;
         reachableQueue = new ChunkedQueue();
         worklist = reachables();
@@ -73,6 +75,15 @@ public final class CallGraph
         for( Iterator mIt = ImplicitMethodInvocation.v().getEntryPoints().iterator(); mIt.hasNext(); ) {
             final SootMethod m = (SootMethod) mIt.next();
             setReachable( m, m );
+        }
+        if( allClinit ) {
+            for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+                final SootClass cl = (SootClass) clIt.next();
+                if( cl.declaresMethod( ImplicitMethodInvocation.v().sigClinit ) ) {
+                    SootMethod m = cl.getMethod( ImplicitMethodInvocation.v().sigClinit );
+                    setReachable( m, m );
+                }
+            }
         }
         processWorklist();
     }

@@ -107,6 +107,11 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "returns-as-fields" );
     }
     
+    /** All Static Initializers Reachable --  */
+    public boolean all_clinit() {
+        return soot.PackManager.getBoolean( options, "all-clinit" );
+    }
+    
     /** Simplify Offline --  */
     public boolean simplify_offline() {
         return soot.PackManager.getBoolean( options, "simplify-offline" );

@@ -44,19 +44,21 @@ public final class PropCycle extends Propagator {
     public final void propagate() {
         ofcg = pag.getOnFlyCallGraph();
         boolean verbose = pag.getOpts().verbose();
-        HashSet bases = new HashSet();
+        Collection bases = new HashSet();
         for( Iterator frnIt = pag.getFieldRefNodeNumberer().iterator(); frnIt.hasNext(); ) {
             final FieldRefNode frn = (FieldRefNode) frnIt.next();
             bases.add( frn.getBase() );
         }
+        bases = new ArrayList( bases );
         int iteration = 0;
         boolean changed;
+        boolean finalIter = false;
 	do {
             changed = false;
             iteration++;
             currentIteration = new Integer( iteration );
             if( verbose ) G.v().out.println( "Iteration: "+iteration );
-            for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
+            for( Iterator vIt = bases.iterator(); vIt.hasNext(); ) {
                 final VarNode v = (VarNode) vIt.next();
                 changed = computeP2Set( (VarNode) v.getReplacement(), new ArrayList() ) | changed;
             }
@@ -76,14 +78,17 @@ public final class PropCycle extends Propagator {
                     } ) | changed;
                 }
             }
+            if( !changed && !finalIter ) {
+                finalIter = true;
+                if( verbose ) G.v().out.println( "Doing full graph" );
+                bases = new ArrayList(pag.getVarNodeNumberer().size());
+                for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
+                    final VarNode v = (VarNode) vIt.next();
+                    bases.add( v );
+                }
+                changed = true;
+            }
 	} while( changed );
-        iteration++;
-        currentIteration = new Integer( iteration );
-        if( verbose ) G.v().out.println( "Doing final iteration" );
-        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
-            computeP2Set( (VarNode) v.getReplacement(), new ArrayList() );
-        }
     }
 
 

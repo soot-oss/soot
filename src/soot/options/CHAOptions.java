@@ -42,5 +42,10 @@ public class CHAOptions
         return soot.PackManager.getBoolean( options, "verbose" );
     }
     
+    /** All Static Initializers Reachable --  */
+    public boolean all_clinit() {
+        return soot.PackManager.getBoolean( options, "all-clinit" );
+    }
+    
 }
         

@@ -43,7 +43,7 @@ public class OnFlyCallGraph {
         this.pag = pag;
         this.fh = fh;
         this.parms = parms;
-        cg = new CallGraph( pag, pag.getOpts().verbose() );
+        cg = new CallGraph( pag, pag.getOpts().verbose(), pag.getOpts().all_clinit() );
         reachables = cg.reachables();
         callEdges = cg.callEdges();
     }

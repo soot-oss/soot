@@ -60,7 +60,7 @@ public class ContextInsensitiveBuilder implements Builder {
             pag.setOnFlyCallGraph( ofcg );
             cg = ofcg.getCallGraph();
         } else {
-            cg = new CallGraph( DumbPointerAnalysis.v(), opts.verbose() );
+            cg = new CallGraph( DumbPointerAnalysis.v(), opts.verbose(), opts.all_clinit() );
         }
         return pag;
     }
