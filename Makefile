@@ -21,7 +21,7 @@
 #
 # Compiler
 #
-JC=javac -target 1.2 -d classes -classpath classes:src:$$CLASSPATH
+JC=javac -target 1.2 -d classes -classpath $(CP)
 
 #
 # Virtual machine
@@ -33,6 +33,58 @@ JVM = java
 #
 JD = jdb
 
+
+#######################################################################
+### Classpaths
+#######################################################################
+
+MAIN_CLASSPATH=classes:src:$$CLASSPATH
+TEST_CLASSPATH=classes:testclasses:src:tests:$$CLASSPATH
+
+#######################################################################
+### Figure out the OSTYPE
+#######################################################################
+
+# the OSTYPE
+# this only needs to be set for windows (which is untested); 
+# unix (default) and cygwin should work fine without setting this
+#OSTYPE=windows
+#OSTYPE=cygwin
+#OSTYPE=linux
+
+ifndef OSTYPE
+	OSTYPE := $(shell uname)
+endif
+
+# get things into lower case
+# this is a hack, but I don't know any other way to do this strictly
+# within make (ie, not requiring some shell feature or other program)
+OSTYPE := $(subst CYGWIN,cygwin,$(OSTYPE))
+OSTYPE := $(subst Cygwin,cygwin,$(OSTYPE))
+OSTYPE := $(subst WINDOWS,windows,$(OSTYPE))
+OSTYPE := $(subst Windows,windows,$(OSTYPE))
+
+#cygwin
+ifeq (cygwin, $(findstring cygwin,$(OSTYPE)))
+	CP=`cygpath -w -p $(MAIN_CLASSPATH)`
+	TEST_CP=`cygpath -w -p $(TEST_CLASSPATH)`
+endif
+
+#windows
+# nb: this has not been tested
+ifeq (windows ,$(findstring windows,$(OSTYPE)))
+	CP=$(subst :,;,$(MAIN_CLASSPATH))
+	TEST_CP=$(subst :,;,$(TEST_CLASSPATH))
+endif
+
+# see if the classpath is defined yet
+# if not, then the default (unix)
+ifndef CP
+	CP=$(MAIN_CLASSPATH)
+	TEST_CP=$(TEST_CLASSPATH)
+endif
+
+
 #
 #
 ##########################################################################
@@ -43,6 +95,7 @@ SOURCES = ${shell find src -name "*.java" -print}
 TARGETS_TMP = $(SOURCES:.java=.class)
 TARGETS = $(subst src,classes,${TARGETS_TMP})
 RM_TARGETS = $(TARGETS) $(subst .class,\$$*.class,$(TARGETS))
+
 
 all: classes/soot/options/Options.class ${TARGETS} foo 
 
@@ -95,7 +148,7 @@ TEST_SOURCES = ${shell find tests -name "*.java" -print}
 TEST_TARGETS_TMP = $(TEST_SOURCES:.java=.class)
 TEST_TARGETS = $(subst tests,testclasses,${TEST_TARGETS_TMP})
 RM_TEST_TARGETS = $(TEST_TARGETS) $(subst .class,\$$*.class,$(TEST_TARGETS))
-TEST_JC=javac -target 1.2 -d testclasses -classpath classes:testclasses:src:tests:$$CLASSPATH
+TEST_JC=javac -target 1.2 -d testclasses -classpath $(TEST_CP)
 
 buildtests: ${TARGETS} testclasses ${TEST_TARGETS}
 
