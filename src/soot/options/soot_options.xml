@@ -405,7 +405,7 @@ only within extended basic blocks.
 						<alias>only-regular-locals</alias>
 						<short_desc/>
 						<long_desc>
-Propagate copies only for ``regular&apos;&apos; locals, that is,
+Only propagate copies through ``regular&apos;&apos; locals, that is,
 those declared in the source bytecode.
 </long_desc>
 					</boolopt>
@@ -415,8 +415,8 @@ those declared in the source bytecode.
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-Propagate copies only for locals that represent stack locations
-in the original bytecode.
+Only propagate copies through locals that represent stack locations in
+the original bytecode.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -424,9 +424,10 @@ in the original bytecode.
 					<name>Dead Assignment Eliminator</name>
 					<alias>jb.dae</alias>
 					<long_desc>
-This phase eliminates assignment statements to locals whose
-values are not subsequently used, unless evaluating the
-right-hand side of the assignment may cause side-effects.
+The Dead Assignment Eliminator eliminates assignment statements
+to locals whose values are not subsequently used, unless
+evaluating the right-hand side of the assignment may cause
+side-effects.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -503,7 +504,8 @@ Removes <tt>nop</tt> statements from the method.
 					<name>Unreachable Code Eliminator</name>
 					<alias>jb.uce</alias>
 						<long_desc>
-Examines the control flow graph of the method and removes unreachable code.
+The Unreachable Code Eliminator removes unreachable code and
+traps whose catch blocks are empty.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -1532,26 +1534,30 @@ transformations in the Jimple Optimization Pack.
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
-					<name>Common Subexpression Elimination</name>
+					<name>Common Subexpression Eliminator</name>
 					<alias>jop.cse</alias>
 					<long_desc>
-Runs an available expressions analysis on the method body, then
-eliminates common subexpressions.
-
-This implementation is especially slow, as it does not run on basic
-blocks.  A better implementation (which wouldn&apos;t catch every single
-common subexpression, but would get most) would use basic blocks
-instead.
-
-It is also slow because the flow universe is explicitly created; it
-need not be.  A better implementation would implicitly compute the kill
-sets at every node.
-
-Because of the current slowness, this transformation is not enabled in
-the default settings.  To enable it, specify <tt>-p jop.cse
-enabled:true</tt> on the command line.
-
-                        </long_desc>
+<p>
+The Common Subexpression Eliminator runs an available expressions
+analysis on the method body, then eliminates common
+subexpressions.
+</p>
+<p>
+This implementation is especially slow, as it runs on individual
+statements rather than on basic blocks.  A better implementation
+(which would find most common subexpressions, but not all) would use
+basic blocks instead.
+</p>
+<p>
+This implementation is also slow because the flow universe is
+explicitly created; it need not be.  A better implementation
+would implicitly compute the kill sets at every node.
+</p>
+<p>
+Because of the current slowness, this transformation is not
+enabled by default.
+</p>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1562,8 +1568,34 @@ enabled:true</tt> on the command line.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
+						<long_desc>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>true</tt> the Common
+Subexpression Eliminator uses the conservative side effect
+information provided by the <tt>NaiveSideEffectTester</tt> class,
+even if interprocedural information about side effects is
+available.</p>
+<p>
+The naive side effect analysis is based solely on the information
+available locally about a statement. It assumes, for example,
+that any method call has the potential to write and read all
+instance and static fields in the program.</p>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
+program analysis has been specified by the <tt>-W</tt> or
+<tt>-whole-program</tt> options, then the Common Subexpression
+Eliminator uses the side effect information provided by the
+<tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
+uses the information provided by a points-to analysis to
+determine which fields and statics may be written or read by a
+given statement.</p>
+<p>
+If whole program analysis is not performed, naive side effect
+information is used regardless of the setting of
+<tt>naive-side-effect</tt>.
+</p>
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1572,15 +1604,10 @@ enabled:true</tt> on the command line.
 					<class>BCMOptions</class>
 					<long_desc>
 Busy Code Motion is a straightforward implementation of Partial
-Redundancy Elimination. This implementation is not very aggressive.
-The Lazy Code Motion
-is an improved version of the Busy Code Motion, and should be used
-instead of it.
-
-Busy Code Motion is not enabled by default. To enable it, specify
-<tt>-p jop.bcm enabled:true</tt> on the command line.
-
-                        </long_desc>
+Redundancy Elimination. This implementation is not very
+aggressive.  Lazy Code Motion is an improved version which
+should be used instead of Busy Code Motion.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1591,8 +1618,33 @@ Busy Code Motion is not enabled by default. To enable it, specify
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
+						<long_desc>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>true</tt> Busy Code
+Motion uses the conservative side effect information provided by
+the <tt>NaiveSideEffectTester</tt> class, even if interprocedural
+information about side effects is available.</p>
+<p>
+The naive side effect analysis is based solely on the information
+available locally about a statement. It assumes, for example,
+that any method call has the potential to write and read all
+instance and static fields in the program.</p>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
+program analysis has been specified by the <tt>-W</tt> or
+<tt>-whole-program</tt> options, then Busy Code Motion uses the
+side effect information provided by the
+<tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
+uses the information provided by a points-to analysis to
+determine which fields and statics may be written or read by a
+given statement.</p>
+<p>
+If whole program analysis is not performed, naive side effect
+information is used regardless of the setting of
+<tt>naive-side-effect</tt>.
+</p>
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1600,17 +1652,13 @@ Busy Code Motion is not enabled by default. To enable it, specify
 					<class>LCMOptions</class>
 					<alias>jop.lcm</alias>
 					<long_desc>
-Lazy Code Motion is the enhanced version of the Busy Code Motion, a
+Lazy Code Motion is an enhanced version of Busy Code Motion, a
 Partial Redundancy Eliminator. Before doing Partial Redundancy Elimination,
 this optimization performs loop inversion (turning <tt>while</tt> loops
 into <tt>do while</tt> loops inside an <tt>if</tt> statement).
 This allows the Partial Redundancy Eliminator
 to optimize loop invariants of <tt>while</tt> loops.
-
-By default, this transformation is disabled. To enable it, specify
-<tt>-p jop.lcm enabled:true</tt> on the command line.
-
-                        </long_desc>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1619,43 +1667,49 @@ By default, this transformation is disabled. To enable it, specify
 						<long_desc/>
 					</boolopt>
 					<multiopt>
-						<name>Safe</name>
-						<alias>safe</alias>
+						<name>Safety</name>
+						<alias>safety</alias>
 						<value>
 							<name>Safe</name>
 							<alias>safe</alias>
 							<short_desc/>
+							<long_desc>
+Safe, but only considers moving additions,
+subtractions and multiplications.
+</long_desc>
 							<default/>
 						</value>
 						<value>
 							<name>Medium</name>
 							<alias>medium</alias>
 							<short_desc/>
+							<long_desc>
+Unsafe in multi-threaded programs, as it may reuse the values
+read from field accesses.
+</long_desc>
 						</value>
 						<value>
 							<name>Unsafe</name>
 							<alias>unsafe</alias>
 							<short_desc/>
+							<long_desc>
+May violate Java's exception semantics, as it may move or reorder
+exception-throwing statements, potentially outside of
+<tt>try-catch</tt> blocks.
+</long_desc>
 						</value>
 						<short_desc/>
-						<long_desc>This option
-controls how fields and exception-throwing statements are
-treated.
-<tt>safe</tt> is safe, but only considers additions,
-subtractions and multiplications.
-<tt>medium</tt> is unsafe in multi-threaded environment, as
-already performed field accesses are reused.
-<tt>unsafe</tt> moves exception-throwing statements, and
-reorders them. They are potentially moved out of
-<tt>try-catch</tt>-blocks.
+						<long_desc>
+This option controls which fields and statements are candidates
+for code motion.
 </long_desc>
 					</multiopt>
 					<boolopt>
 						<name>Unroll</name>
 						<alias>unroll</alias>
 						<short_desc/>
-						<long_desc>if <tt>true</tt>,
-loop inversion is performed before doing the
+						<long_desc>
+If <tt>true</tt>, perform loop inversion before doing the
 transformation.
 </long_desc>
 						<default>true</default>
@@ -1663,17 +1717,44 @@ transformation.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
-						<short_desc/>
-						<long_desc/>
+						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
+						<long_desc>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>true</tt> Lazy Code
+Motion uses the conservative side effect information provided by
+the <tt>NaiveSideEffectTester</tt> class, even if interprocedural
+information about side effects is available.</p>
+<p>
+The naive side effect analysis is based solely on the information
+available locally about a statement. It assumes, for example,
+that any method call has the potential to write and read all
+instance and static fields in the program.</p>
+<p>
+If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
+program analysis has been specified by the <tt>-W</tt> or
+<tt>-whole-program</tt> options, then Lazy Code Motion uses the
+side effect information provided by the
+<tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
+uses the information provided by a points-to analysis to
+determine which fields and statics may be written or read by a
+given statement.</p>
+<p>
+If whole program analysis is not performed, naive side effect
+information is used regardless of the setting of
+<tt>naive-side-effect</tt>.
+</p>
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Copy Propagator</name>
 					<class>CPOptions</class>
 					<alias>jop.cp</alias>
+					<short_desc>Removes unnecessary copies</short_desc>
 					<long_desc>
-The default behaviour here is to propagate on all locals.
-                        </long_desc>
+<p>
+This phase performs cascaded copy propagation.</p>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1685,14 +1766,17 @@ The default behaviour here is to propagate on all locals.
 						<name>Only Regular Locals</name>
 						<alias>only-regular-locals</alias>
 						<short_desc/>
-						<long_desc>Copy propagation only occurs on the ``regular&apos;&apos; locals.</long_desc>
+						<long_desc>
+Only propagate copies through ``regular&apos;&apos; locals, that is,
+those declared in the source bytecode.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<short_desc/>
 						<long_desc>
-Only propagate copies to locals that represent stack locations in
+Only propagate copies through locals that represent stack locations in
 the original bytecode.
 </long_desc>
 					</boolopt>
@@ -1700,27 +1784,29 @@ the original bytecode.
 				<sub_phase>
 					<name>Constant Propagator and Folder</name>
 					<alias>jop.cpf</alias>
+					<short_desc/>
+					<long_desc>
+The Constant Propagator and Folder evaluates any expressions
+consisting entirely of compile-time constants, for example <tt>2
+* 3</tt>, and replaces the expression with the constant result,
+in this case <tt>6</tt>.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>true</default>
-						<short_desc/>
-						<long_desc>
-This phase does constant propagation and folding.
-Constant folding is the compile-time evaluation of constant
-expressions (i.e. 2 * 3). 
-                        </long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Conditional Branch Folder</name>
 					<alias>jop.cbf</alias>
 					<long_desc>
-Statically evaluates the condition-expression of Jimple 
-<tt>IfStmt</tt>s.  If the condition is identically `true&apos; or `false&apos;,
-changes the conditional branch instruction to a `goto&apos; statement.
-
-                        </long_desc>
+The Conditional Branch Folder statically evaluates the
+conditional expression of Jimple <tt>IfStmt</tt>s.  If the
+condition is identically `<tt>true</tt>&apos; or
+`<tt>false</tt>&apos;, the Folder replaces the conditional branch
+statement with an unconditional `<tt>goto</tt>&apos; statement.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1733,12 +1819,11 @@ changes the conditional branch instruction to a `goto&apos; statement.
 					<name>Dead Assignment Eliminator</name>
 					<alias>jop.dae</alias>
 					<long_desc>
-This phase eliminates assignment statements (to locals) with no uses.
-
-In this incarnation, the default value for <tt>only-stack-locals</tt>
-is <tt>false</tt>.
-
-                        </long_desc>
+The Dead Assignment Eliminator eliminates assignment statements
+to locals whose values are not subsequently used, unless
+evaluating the right-hand side of the assignment may cause
+side-effects.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1757,19 +1842,9 @@ is <tt>false</tt>.
 					<name>Unreachable Code Eliminator 1</name>
 					<alias>jop.uce1</alias>
 					<long_desc>
-Removes unreachable codes and empty traps.
-                        </long_desc>
-					<boolopt>
-						<name>Enabled</name>
-						<alias>enabled</alias>
-                                                <default>true</default>
-						<short_desc/>
-						<long_desc/>
-					</boolopt>
-				</sub_phase>
-				<sub_phase>
-					<name>Unreachable Code Eliminator 2</name>
-					<alias>jop.uce2</alias>
+The Unreachable Code Eliminator removes unreachable code and
+traps whose catch blocks are empty.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1782,19 +1857,36 @@ Removes unreachable codes and empty traps.
 					<name>Unconditional Branch Folder 1</name>
 					<alias>jop.ubf1</alias>
 					<long_desc>
-Removes unnecessary `goto&apos; statements from a <tt>JimpleBody</tt>.
-
-If a <tt>GotoStmt</tt>&apos;s target is the next instruction, then it is
-removed.  If a <tt>GotoStmt</tt> <tt>x</tt>&apos;s target is another <tt>GotoStmt</tt>,
-with target <tt>y</tt>, then <tt>x</tt>&apos;s target can be changed to <tt>y</tt>&apos;s target.
-
-If some <tt>IfStmt</tt>&apos;s target is a <tt>GotoStmt</tt>, then the
-<tt>IfStmt</tt>&apos;s target can be updated to the <tt>GotoStmt</tt>&apos;s target.
-        
-(These situations could result from other optimizations; after folding
-branches, we might generate more unreachable code.)
-
-                        </long_desc>
+<p>
+The Unconditional Branch Folder removes unnecessary `<tt>goto</tt>&apos;
+statements from a <tt>JimpleBody</tt>.</p>
+<p>
+If a <tt>GotoStmt</tt>&apos;s target is the next instruction,
+then it is removed.  If a <tt>GotoStmt</tt>&apos;s target is
+another <tt>GotoStmt</tt>, with target <tt>y</tt>, then the first
+statement&apos;s target is changed to <tt>y</tt>&apos;.</p>
+<p>
+If some <tt>IfStmt</tt>&apos;s target is a <tt>GotoStmt</tt>,
+then the <tt>IfStmt</tt>&apos;s target can be updated to the
+<tt>GotoStmt</tt>&apos;s target.</p>
+<p>
+(These situations can result from other optimizations, and folding
+branches may itself generate more unreachable code.)</p>
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unreachable Code Eliminator 2</name>
+					<alias>jop.uce2</alias>
+					<long_desc>
+Another iteration of the Unreachable Code Eliminator.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1806,6 +1898,9 @@ branches, we might generate more unreachable code.)
 				<sub_phase>
 					<name>Unconditional Branch Folder 2</name>
 					<alias>jop.ubf2</alias>
+					<long_desc>
+Another iteration of the Unconditional Branch Folder.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1819,8 +1914,9 @@ branches, we might generate more unreachable code.)
 					<alias>jop.ule</alias>
 					<short_desc>Removes unused locals</short_desc>
 					<long_desc>
-Removes locals with no uses in the method body.
-                        </long_desc>
+The Unused Local Eliminator phase removes any unused locals from
+the method.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
