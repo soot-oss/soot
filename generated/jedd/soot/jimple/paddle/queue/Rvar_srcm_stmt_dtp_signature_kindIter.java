@@ -48,19 +48,20 @@ public class Rvar_srcm_stmt_dtp_signature_kindIter extends Rvar_srcm_stmt_dtp_si
                                                ":soot.jimple.paddle.bdddomains.T1, soot.jimple.paddle.bdddom" +
                                                "ains.signature:soot.jimple.paddle.bdddomains.SG, soot.jimple" +
                                                ".paddle.bdddomains.kind:soot.jimple.paddle.bdddomains.KD> re" +
-                                               "t = jedd.internal.Jedd.v().falseBDD(); at /tmp/olhotak/soot-" +
-                                               "trunk/src/soot/jimple/paddle/queue/Rvar_srcm_stmt_dtp_signat" +
-                                               "ure_kindIter.jedd:46,66-69"),
+                                               "t = jedd.internal.Jedd.v().falseBDD(); at /home/research/ccl" +
+                                               "/olhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Rvar" +
+                                               "_srcm_stmt_dtp_signature_kindIter.jedd:46,66-69"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next(), r.next(), r.next(), r.next() },
                                                        new Attribute[] { var.v(), srcm.v(), stmt.v(), dtp.v(), signature.v(), kind.v() },
                                                        new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), T1.v(), SG.v(), KD.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { signature.v(), dtp.v(), srcm.v(), kind.v(), var.v(), stmt.v() },
-                                                   new PhysicalDomain[] { SG.v(), T1.v(), MS.v(), KD.v(), V1.v(), ST.v() },
-                                                   ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/queue/Rvar_srcm_stmt_dtp_signature_kindIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), dtp.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                   new PhysicalDomain[] { KD.v(), T1.v(), MS.v(), V1.v(), SG.v(), ST.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/queue/Rvar_srcm_stmt_dtp_signature_ki" +
+                                                    "ndIter.jedd:50,8-14"),
                                                    ret);
     }
     

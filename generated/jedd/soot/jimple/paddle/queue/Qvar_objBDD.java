@@ -19,8 +19,8 @@ public final class Qvar_objBDD extends Qvar_obj {
                                                 new PhysicalDomain[] { V1.v(), H1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qvar_o" +
-                                                 "bjBDD.jedd:34,8-11"),
+                                                 " /home/research/ccl/olhota/olhotak/soot-trunk/src/soot/jimpl" +
+                                                 "e/paddle/queue/Qvar_objBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _var, _obj },
                                                                                new Attribute[] { var.v(), obj.v() },
                                                                                new PhysicalDomain[] { V1.v(), H1.v() })));
@@ -31,10 +31,10 @@ public final class Qvar_objBDD extends Qvar_obj {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_objBDD reader = (Rvar_objBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                           new PhysicalDomain[] { H1.v(), V1.v() },
-                                                           ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                            "ddle/queue/Qvar_objBDD.jedd:40,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
+                                                           new PhysicalDomain[] { V1.v(), H1.v() },
+                                                           ("reader.add(in) at /home/research/ccl/olhota/olhotak/soot-tru" +
+                                                            "nk/src/soot/jimple/paddle/queue/Qvar_objBDD.jedd:40,12-18"),
                                                            in));
         }
     }

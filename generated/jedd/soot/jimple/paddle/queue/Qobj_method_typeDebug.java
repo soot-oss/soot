@@ -24,11 +24,11 @@ public class Qobj_method_typeDebug extends Qobj_method_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
-                                               "unk/src/soot/jimple/paddle/queue/Qobj_method_typeDebug.jedd:" +
-                                               "40,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
+                                              new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
+                                               "lhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qobj_m" +
+                                               "ethod_typeDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { obj.v(), method.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

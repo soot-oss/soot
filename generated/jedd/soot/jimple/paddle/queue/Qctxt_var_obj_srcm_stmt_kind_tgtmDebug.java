@@ -30,11 +30,11 @@ public class Qctxt_var_obj_srcm_stmt_kind_tgtmDebug extends Qctxt_var_obj_srcm_s
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), tgtm.v(), srcm.v(), kind.v(), var.v(), ctxt.v(), stmt.v() },
-                                              new PhysicalDomain[] { H1.v(), MT.v(), MS.v(), KD.v(), V1.v(), C1.v(), ST.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
-                                               "unk/src/soot/jimple/paddle/queue/Qctxt_var_obj_srcm_stmt_kin" +
-                                               "d_tgtmDebug.jedd:40,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), var.v(), stmt.v(), ctxt.v(), tgtm.v(), obj.v() },
+                                              new PhysicalDomain[] { KD.v(), MS.v(), V1.v(), ST.v(), C1.v(), MT.v(), H1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
+                                               "lhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qctxt_" +
+                                               "var_obj_srcm_stmt_kind_tgtmDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { ctxt.v(), var.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

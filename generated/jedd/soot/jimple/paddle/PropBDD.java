@@ -20,12 +20,12 @@ public class PropBDD extends AbsPropagator {
     
     final jedd.internal.RelationContainer pt =
       new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
-                                          new PhysicalDomain[] { C2.v(), V2.v(), C3.v(), H2.v() },
+                                          new PhysicalDomain[] { C1.v(), V2.v(), C2.v(), H2.v() },
                                           ("<soot.jimple.paddle.bdddomains.varc, soot.jimple.paddle.bddd" +
                                            "omains.var, soot.jimple.paddle.bdddomains.objc, soot.jimple." +
                                            "paddle.bdddomains.obj> pt = jedd.internal.Jedd.v().falseBDD(" +
-                                           ") at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD." +
-                                           "jedd:39,16-38"),
+                                           ") at /home/research/ccl/olhota/olhotak/soot-trunk/src/soot/j" +
+                                           "imple/paddle/PropBDD.jedd:39,16-38"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     final jedd.internal.RelationContainer fieldPt =
@@ -35,9 +35,9 @@ public class PropBDD extends AbsPropagator {
                                            "omains.C1, soot.jimple.paddle.bdddomains.base, soot.jimple.p" +
                                            "addle.bdddomains.fld, soot.jimple.paddle.bdddomains.objc:soo" +
                                            "t.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains" +
-                                           ".obj> fieldPt = jedd.internal.Jedd.v().falseBDD() at /tmp/ol" +
-                                           "hotak/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:40,16-5" +
-                                           "1"),
+                                           ".obj> fieldPt = jedd.internal.Jedd.v().falseBDD() at /home/r" +
+                                           "esearch/ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddle" +
+                                           "/PropBDD.jedd:40,16-51"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     protected jedd.internal.RelationContainer typeFilter() {
@@ -47,15 +47,16 @@ public class PropBDD extends AbsPropagator {
                                               ("final <soot.jimple.paddle.bdddomains.varc:soot.jimple.paddle" +
                                                ".bdddomains.C1, soot.jimple.paddle.bdddomains.objc:soot.jimp" +
                                                "le.paddle.bdddomains.C2> allContexts = jedd.internal.Jedd.v(" +
-                                               ").trueBDD(); at /tmp/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                               "le/PropBDD.jedd:43,27-38"),
+                                               ").trueBDD(); at /home/research/ccl/olhota/olhotak/soot-trunk" +
+                                               "/src/soot/jimple/paddle/PropBDD.jedd:43,27-38"),
                                               jedd.internal.Jedd.v().trueBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v(), objc.v(), varc.v() },
-                                                   new PhysicalDomain[] { H2.v(), V1.v(), C2.v(), C1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
+                                                   new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
                                                    ("return jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().re" +
                                                     "ad(soot.jimple.paddle.PaddleScene.v().tm.get()), allContexts" +
-                                                    ", new jedd.PhysicalDomain[...]); at /tmp/olhotak/soot-trunk/" +
-                                                    "src/soot/jimple/paddle/PropBDD.jedd:44,8-14"),
+                                                    ", new jedd.PhysicalDomain[...]); at /home/research/ccl/olhot" +
+                                                    "a/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:44," +
+                                                    "8-14"),
                                                    jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(PaddleScene.v().tm.get()),
                                                                                allContexts,
                                                                                new PhysicalDomain[] {  }));
@@ -67,8 +68,8 @@ public class PropBDD extends AbsPropagator {
                                           ("protected <soot.jimple.paddle.bdddomains.varc, soot.jimple.p" +
                                            "addle.bdddomains.var, soot.jimple.paddle.bdddomains.objc, so" +
                                            "ot.jimple.paddle.bdddomains.obj> outputtedPt = jedd.internal" +
-                                           ".Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/src/soot/jim" +
-                                           "ple/paddle/PropBDD.jedd:47,14-36"),
+                                           ".Jedd.v().falseBDD() at /home/research/ccl/olhota/olhotak/so" +
+                                           "ot-trunk/src/soot/jimple/paddle/PropBDD.jedd:47,14-36"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     protected void outputPt(final jedd.internal.RelationContainer pt) {
@@ -80,17 +81,24 @@ public class PropBDD extends AbsPropagator {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.objc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.obj" +
                                                ":soot.jimple.paddle.bdddomains.H1> toOutput = jedd.internal." +
-                                               "Jedd.v().minus(jedd.internal.Jedd.v().read(pt), outputtedPt)" +
-                                               "; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD." +
-                                               "jedd:49,31-39"),
-                                              jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(pt),
-                                                                           outputtedPt));
+                                               "Jedd.v().replace(jedd.internal.Jedd.v().minus(jedd.internal." +
+                                               "Jedd.v().read(pt), jedd.internal.Jedd.v().replace(outputtedP" +
+                                               "t, new jedd.PhysicalDomain[...], new jedd.PhysicalDomain[..." +
+                                               "])), new jedd.PhysicalDomain[...], new jedd.PhysicalDomain[." +
+                                               "..]); at /home/research/ccl/olhota/olhotak/soot-trunk/src/so" +
+                                               "ot/jimple/paddle/PropBDD.jedd:49,31-39"),
+                                              jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().minus(jedd.internal.Jedd.v().read(pt),
+                                                                                                          jedd.internal.Jedd.v().replace(outputtedPt,
+                                                                                                                                         new PhysicalDomain[] { V1.v() },
+                                                                                                                                         new PhysicalDomain[] { V2.v() })),
+                                                                             new PhysicalDomain[] { V2.v() },
+                                                                             new PhysicalDomain[] { V1.v() }));
         if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(toOutput), jedd.internal.Jedd.v().falseBDD()))
             return;
-        ptout.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                      new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
-                                                      ("ptout.add(toOutput) at /tmp/olhotak/soot-trunk/src/soot/jimp" +
-                                                       "le/paddle/PropBDD.jedd:51,8-13"),
+        ptout.add(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                      new PhysicalDomain[] { C2.v(), V1.v(), C1.v(), H1.v() },
+                                                      ("ptout.add(toOutput) at /home/research/ccl/olhota/olhotak/soo" +
+                                                       "t-trunk/src/soot/jimple/paddle/PropBDD.jedd:51,8-13"),
                                                       toOutput));
         outputtedPt.eqUnion(toOutput);
     }
@@ -99,41 +107,40 @@ public class PropBDD extends AbsPropagator {
                                                          final jedd.internal.RelationContainer simple) {
         final jedd.internal.RelationContainer ret =
           new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
-                                              new PhysicalDomain[] { C1.v(), V2.v(), C3.v(), H1.v() },
+                                              new PhysicalDomain[] { C1.v(), V2.v(), C2.v(), H2.v() },
                                               ("<soot.jimple.paddle.bdddomains.varc:soot.jimple.paddle.bdddo" +
                                                "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V2, soot.jimple.paddle.bdddomains.objc:soot.ji" +
-                                               "mple.paddle.bdddomains.C3, soot.jimple.paddle.bdddomains.obj" +
-                                               ":soot.jimple.paddle.bdddomains.H1> ret = jedd.internal.Jedd." +
-                                               "v().falseBDD(); at /tmp/olhotak/soot-trunk/src/soot/jimple/p" +
-                                               "addle/PropBDD.jedd:61,31-34"),
+                                               "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.obj" +
+                                               ":soot.jimple.paddle.bdddomains.H2> ret = jedd.internal.Jedd." +
+                                               "v().falseBDD(); at /home/research/ccl/olhota/olhotak/soot-tr" +
+                                               "unk/src/soot/jimple/paddle/PropBDD.jedd:61,31-34"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (true) {
-            pt.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(typeFilter()),
-                                                                                  jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(simple,
-                                                                                                                                                                                                           new PhysicalDomain[] { V2.v(), C3.v(), V1.v() },
-                                                                                                                                                                                                           new PhysicalDomain[] { V1.v(), C1.v(), V2.v() })),
-                                                                                                                                                jedd.internal.Jedd.v().replace(pt,
-                                                                                                                                                                               new PhysicalDomain[] { H1.v() },
-                                                                                                                                                                               new PhysicalDomain[] { H2.v() }),
-                                                                                                                                                new PhysicalDomain[] { C1.v(), V2.v() }),
-                                                                                                                 new PhysicalDomain[] { C2.v(), C3.v() },
-                                                                                                                 new PhysicalDomain[] { C1.v(), C2.v() })),
-                                                 new PhysicalDomain[] { H2.v(), C2.v(), V1.v() },
-                                                 new PhysicalDomain[] { H1.v(), C3.v(), V2.v() }));
-            pt.eqMinus(ret);
+            pt.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(typeFilter(),
+                                                                                                                                             new PhysicalDomain[] { V1.v(), H1.v() },
+                                                                                                                                             new PhysicalDomain[] { V2.v(), H2.v() })),
+                                                                                  jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(simple),
+                                                                                                                 jedd.internal.Jedd.v().replace(pt,
+                                                                                                                                                new PhysicalDomain[] { V2.v() },
+                                                                                                                                                new PhysicalDomain[] { V1.v() }),
+                                                                                                                 new PhysicalDomain[] { C3.v(), V1.v() })),
+                                                 new PhysicalDomain[] { C1.v() },
+                                                 new PhysicalDomain[] { C3.v() }));
+            pt.eqMinus(jedd.internal.Jedd.v().replace(ret,
+                                                      new PhysicalDomain[] { C1.v() },
+                                                      new PhysicalDomain[] { C3.v() }));
             if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(pt), jedd.internal.Jedd.v().falseBDD()))
                 break;
-            ret.eqUnion(pt);
+            ret.eqUnion(jedd.internal.Jedd.v().replace(pt,
+                                                       new PhysicalDomain[] { C3.v() },
+                                                       new PhysicalDomain[] { C1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                   new PhysicalDomain[] { H1.v(), C3.v(), V1.v(), C1.v() },
-                                                   ("return jedd.internal.Jedd.v().replace(ret, new jedd.Physical" +
-                                                    "Domain[...], new jedd.PhysicalDomain[...]); at /tmp/olhotak/" +
-                                                    "soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:71,8-14"),
-                                                   jedd.internal.Jedd.v().replace(ret,
-                                                                                  new PhysicalDomain[] { V2.v() },
-                                                                                  new PhysicalDomain[] { V1.v() }));
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H2.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/PropBDD.jedd:71,8-14"),
+                                                   ret);
     }
     
     protected jedd.internal.RelationContainer propStore(final jedd.internal.RelationContainer pt,
@@ -151,29 +158,29 @@ public class PropBDD extends AbsPropagator {
                                                "d = jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().re" +
                                                "ad(store), jedd.internal.Jedd.v().replace(pt, new jedd.Physi" +
                                                "calDomain[...], new jedd.PhysicalDomain[...]), new jedd.Phys" +
-                                               "icalDomain[...]); at /tmp/olhotak/soot-trunk/src/soot/jimple" +
-                                               "/paddle/PropBDD.jedd:80,39-57"),
+                                               "icalDomain[...]); at /home/research/ccl/olhota/olhotak/soot-" +
+                                               "trunk/src/soot/jimple/paddle/PropBDD.jedd:80,39-57"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(store),
                                                                              jedd.internal.Jedd.v().replace(pt,
-                                                                                                            new PhysicalDomain[] { C2.v() },
-                                                                                                            new PhysicalDomain[] { C1.v() }),
+                                                                                                            new PhysicalDomain[] { C2.v(), V2.v() },
+                                                                                                            new PhysicalDomain[] { C3.v(), V1.v() }),
                                                                              new PhysicalDomain[] { C1.v(), V1.v() }));
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), fld.v(), basec.v(), base.v() },
-                                                   new PhysicalDomain[] { H2.v(), C2.v(), FD.v(), C1.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), fld.v(), obj.v(), base.v(), basec.v() },
+                                                   new PhysicalDomain[] { C2.v(), FD.v(), H2.v(), H1.v(), C1.v() },
                                                    ("return jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()" +
-                                                    ".compose(jedd.internal.Jedd.v().read(objectsBeingStored), je" +
-                                                    "dd.internal.Jedd.v().replace(storePt, new jedd.PhysicalDomai" +
-                                                    "n[...], new jedd.PhysicalDomain[...]), new jedd.PhysicalDoma" +
+                                                    ".compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v()." +
+                                                    "replace(objectsBeingStored, new jedd.PhysicalDomain[...], ne" +
+                                                    "w jedd.PhysicalDomain[...])), storePt, new jedd.PhysicalDoma" +
                                                     "in[...]), new jedd.PhysicalDomain[...], new jedd.PhysicalDom" +
-                                                    "ain[...]); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle" +
-                                                    "/PropBDD.jedd:84,8-14"),
-                                                   jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(objectsBeingStored),
-                                                                                                                 jedd.internal.Jedd.v().replace(storePt,
-                                                                                                                                                new PhysicalDomain[] { C3.v() },
-                                                                                                                                                new PhysicalDomain[] { C1.v() }),
-                                                                                                                 new PhysicalDomain[] { C2.v(), V2.v() }),
-                                                                                  new PhysicalDomain[] { C3.v() },
-                                                                                  new PhysicalDomain[] { C2.v() }));
+                                                    "ain[...]); at /home/research/ccl/olhota/olhotak/soot-trunk/s" +
+                                                    "rc/soot/jimple/paddle/PropBDD.jedd:84,8-14"),
+                                                   jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(objectsBeingStored,
+                                                                                                                                                                            new PhysicalDomain[] { C2.v() },
+                                                                                                                                                                            new PhysicalDomain[] { C1.v() })),
+                                                                                                                 storePt,
+                                                                                                                 new PhysicalDomain[] { C1.v(), V2.v() }),
+                                                                                  new PhysicalDomain[] { C3.v(), C2.v() },
+                                                                                  new PhysicalDomain[] { C2.v(), C1.v() }));
     }
     
     protected jedd.internal.RelationContainer propLoad(final jedd.internal.RelationContainer fpt,
@@ -181,146 +188,156 @@ public class PropBDD extends AbsPropagator {
                                                        final jedd.internal.RelationContainer loadPt) {
         final jedd.internal.RelationContainer loadsFromHeap =
           new jedd.internal.RelationContainer(new Attribute[] { basec.v(), base.v(), fld.v(), dstc.v(), dst.v() },
-                                              new PhysicalDomain[] { C1.v(), H1.v(), FD.v(), C3.v(), V2.v() },
+                                              new PhysicalDomain[] { C2.v(), H2.v(), FD.v(), C3.v(), V1.v() },
                                               ("<soot.jimple.paddle.bdddomains.basec:soot.jimple.paddle.bddd" +
-                                               "omains.C1, soot.jimple.paddle.bdddomains.base:soot.jimple.pa" +
-                                               "ddle.bdddomains.H1, soot.jimple.paddle.bdddomains.fld:soot.j" +
+                                               "omains.C2, soot.jimple.paddle.bdddomains.base:soot.jimple.pa" +
+                                               "ddle.bdddomains.H2, soot.jimple.paddle.bdddomains.fld:soot.j" +
                                                "imple.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.ds" +
                                                "tc:soot.jimple.paddle.bdddomains.C3, soot.jimple.paddle.bddd" +
-                                               "omains.dst:soot.jimple.paddle.bdddomains.V2> loadsFromHeap; " +
-                                               "at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD.je" +
-                                               "dd:94,41-54"));
-        loadsFromHeap.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(load),
-                                                                                       loadPt,
-                                                                                       new PhysicalDomain[] { C1.v(), V1.v() }),
-                                                        new PhysicalDomain[] { C2.v(), C3.v() },
-                                                        new PhysicalDomain[] { C3.v(), C1.v() }));
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v(), obj.v(), objc.v() },
-                                                   new PhysicalDomain[] { V2.v(), C3.v(), H2.v(), C2.v() },
-                                                   ("return jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v()" +
-                                                    ".read(loadsFromHeap), fpt, new jedd.PhysicalDomain[...]); at" +
-                                                    " /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd" +
-                                                    ":98,8-14"),
-                                                   jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(loadsFromHeap),
-                                                                                  fpt,
-                                                                                  new PhysicalDomain[] { C1.v(), H1.v(), FD.v() }));
+                                               "omains.dst:soot.jimple.paddle.bdddomains.V1> loadsFromHeap; " +
+                                               "at /home/research/ccl/olhota/olhotak/soot-trunk/src/soot/jim" +
+                                               "ple/paddle/PropBDD.jedd:94,41-54"));
+        loadsFromHeap.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(load,
+                                                                                                                   new PhysicalDomain[] { C2.v() },
+                                                                                                                   new PhysicalDomain[] { C3.v() })),
+                                                        loadPt,
+                                                        new PhysicalDomain[] { C1.v(), V2.v() }));
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), varc.v(), objc.v(), obj.v() },
+                                                   new PhysicalDomain[] { V1.v(), C1.v(), C2.v(), H2.v() },
+                                                   ("return jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()" +
+                                                    ".compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v()." +
+                                                    "replace(jedd.internal.Jedd.v().replace(loadsFromHeap, new je" +
+                                                    "dd.PhysicalDomain[...], new jedd.PhysicalDomain[...]), new j" +
+                                                    "edd.PhysicalDomain[...], new jedd.PhysicalDomain[...])), fpt" +
+                                                    ", new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[..." +
+                                                    "], new jedd.PhysicalDomain[...]); at /home/research/ccl/olho" +
+                                                    "ta/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:98" +
+                                                    ",8-14"),
+                                                   jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(loadsFromHeap,
+                                                                                                                                                                                                           new PhysicalDomain[] { C2.v() },
+                                                                                                                                                                                                           new PhysicalDomain[] { C1.v() }),
+                                                                                                                                                                            new PhysicalDomain[] { H2.v() },
+                                                                                                                                                                            new PhysicalDomain[] { H1.v() })),
+                                                                                                                 fpt,
+                                                                                                                 new PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
+                                                                                  new PhysicalDomain[] { C3.v() },
+                                                                                  new PhysicalDomain[] { C1.v() }));
     }
     
     public boolean update() {
         final jedd.internal.RelationContainer veryOldPt =
           new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
-                                              new PhysicalDomain[] { C2.v(), V2.v(), C3.v(), H2.v() },
+                                              new PhysicalDomain[] { C1.v(), V2.v(), C2.v(), H2.v() },
                                               ("<soot.jimple.paddle.bdddomains.varc:soot.jimple.paddle.bdddo" +
-                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V2, soot.jimple.paddle.bdddomains.objc:soot.ji" +
-                                               "mple.paddle.bdddomains.C3, soot.jimple.paddle.bdddomains.obj" +
-                                               ":soot.jimple.paddle.bdddomains.H2> veryOldPt = pt; at /tmp/o" +
-                                               "lhotak/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:104,31" +
-                                               "-40"),
+                                               "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.obj" +
+                                               ":soot.jimple.paddle.bdddomains.H2> veryOldPt = pt; at /home/" +
+                                               "research/ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddl" +
+                                               "e/PropBDD.jedd:104,31-40"),
                                               pt);
         pt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(newAlloc.get()),
-                                                                                   jedd.internal.Jedd.v().replace(typeFilter(),
-                                                                                                                  new PhysicalDomain[] { H2.v() },
-                                                                                                                  new PhysicalDomain[] { H1.v() })),
-                                                  new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
-                                                  new PhysicalDomain[] { H2.v(), C3.v(), V2.v(), C2.v() }));
-        pt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(propSimple(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                                                                                                                                                             new PhysicalDomain[] { H1.v(), C3.v(), V2.v(), C1.v() },
-                                                                                                                                                                                             ("propSimple(jedd.internal.Jedd.v().replace(pt, new jedd.Physi" +
-                                                                                                                                                                                              "calDomain[...], new jedd.PhysicalDomain[...]), jedd.internal" +
-                                                                                                                                                                                              ".Jedd.v().replace(pag.allSimple().get(), new jedd.PhysicalDo" +
-                                                                                                                                                                                              "main[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak/so" +
-                                                                                                                                                                                              "ot-trunk/src/soot/jimple/paddle/PropBDD.jedd:107,14-24"),
-                                                                                                                                                                                             jedd.internal.Jedd.v().replace(pt,
-                                                                                                                                                                                                                            new PhysicalDomain[] { H2.v(), C2.v() },
-                                                                                                                                                                                                                            new PhysicalDomain[] { H1.v(), C1.v() })),
-                                                                                                                                                         new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() },
-                                                                                                                                                                                             new PhysicalDomain[] { C3.v(), V1.v(), C2.v(), V2.v() },
-                                                                                                                                                                                             ("propSimple(jedd.internal.Jedd.v().replace(pt, new jedd.Physi" +
-                                                                                                                                                                                              "calDomain[...], new jedd.PhysicalDomain[...]), jedd.internal" +
-                                                                                                                                                                                              ".Jedd.v().replace(pag.allSimple().get(), new jedd.PhysicalDo" +
-                                                                                                                                                                                              "main[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak/so" +
-                                                                                                                                                                                              "ot-trunk/src/soot/jimple/paddle/PropBDD.jedd:107,14-24"),
-                                                                                                                                                                                             jedd.internal.Jedd.v().replace(pag.allSimple().get(),
-                                                                                                                                                                                                                            new PhysicalDomain[] { C1.v() },
-                                                                                                                                                                                                                            new PhysicalDomain[] { C3.v() }))),
-                                                                                                                                              new PhysicalDomain[] { C3.v(), H1.v() },
-                                                                                                                                              new PhysicalDomain[] { C2.v(), H2.v() })),
                                                                                    typeFilter()),
-                                                  new PhysicalDomain[] { C2.v(), V1.v(), C1.v() },
-                                                  new PhysicalDomain[] { C3.v(), V2.v(), C2.v() }));
-        outputPt(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                     new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
+                                                  new PhysicalDomain[] { V1.v(), H1.v() },
+                                                  new PhysicalDomain[] { V2.v(), H2.v() }));
+        pt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(propSimple(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                                                                                                                                                             new PhysicalDomain[] { C2.v(), V2.v(), C3.v(), H2.v() },
+                                                                                                                                                                                             ("propSimple(jedd.internal.Jedd.v().replace(pt, new jedd.Physi" +
+                                                                                                                                                                                              "calDomain[...], new jedd.PhysicalDomain[...]), jedd.internal" +
+                                                                                                                                                                                              ".Jedd.v().replace(pag.allSimple().get(), new jedd.PhysicalDo" +
+                                                                                                                                                                                              "main[...], new jedd.PhysicalDomain[...])) at /home/research/" +
+                                                                                                                                                                                              "ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD" +
+                                                                                                                                                                                              ".jedd:107,14-24"),
+                                                                                                                                                                                             jedd.internal.Jedd.v().replace(pt,
+                                                                                                                                                                                                                            new PhysicalDomain[] { C1.v() },
+                                                                                                                                                                                                                            new PhysicalDomain[] { C3.v() })),
+                                                                                                                                                         new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v() },
+                                                                                                                                                                                             new PhysicalDomain[] { C3.v(), V1.v(), C1.v(), V2.v() },
+                                                                                                                                                                                             ("propSimple(jedd.internal.Jedd.v().replace(pt, new jedd.Physi" +
+                                                                                                                                                                                              "calDomain[...], new jedd.PhysicalDomain[...]), jedd.internal" +
+                                                                                                                                                                                              ".Jedd.v().replace(pag.allSimple().get(), new jedd.PhysicalDo" +
+                                                                                                                                                                                              "main[...], new jedd.PhysicalDomain[...])) at /home/research/" +
+                                                                                                                                                                                              "ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddle/PropBDD" +
+                                                                                                                                                                                              ".jedd:107,14-24"),
+                                                                                                                                                                                             jedd.internal.Jedd.v().replace(pag.allSimple().get(),
+                                                                                                                                                                                                                            new PhysicalDomain[] { C1.v(), C2.v() },
+                                                                                                                                                                                                                            new PhysicalDomain[] { C3.v(), C1.v() }))),
+                                                                                                                                              new PhysicalDomain[] { H2.v() },
+                                                                                                                                              new PhysicalDomain[] { H1.v() })),
+                                                                                   jedd.internal.Jedd.v().replace(typeFilter(),
+                                                                                                                  new PhysicalDomain[] { V1.v() },
+                                                                                                                  new PhysicalDomain[] { V2.v() })),
+                                                  new PhysicalDomain[] { H1.v() },
+                                                  new PhysicalDomain[] { H2.v() }));
+        outputPt(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                     new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H1.v() },
                                                      ("outputPt(jedd.internal.Jedd.v().replace(pt, new jedd.Physica" +
-                                                      "lDomain[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak" +
-                                                      "/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:108,8-16"),
+                                                      "lDomain[...], new jedd.PhysicalDomain[...])) at /home/resear" +
+                                                      "ch/ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddle/Prop" +
+                                                      "BDD.jedd:108,8-16"),
                                                      jedd.internal.Jedd.v().replace(pt,
-                                                                                    new PhysicalDomain[] { H2.v(), C3.v(), V2.v(), C2.v() },
-                                                                                    new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() })));
-        fieldPt.eqUnion(propStore(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                                      new PhysicalDomain[] { H2.v(), C3.v(), V1.v(), C2.v() },
-                                                                      ("propStore(jedd.internal.Jedd.v().replace(pt, new jedd.Physic" +
-                                                                       "alDomain[...], new jedd.PhysicalDomain[...]), pag.allStore()" +
-                                                                       ".get(), jedd.internal.Jedd.v().replace(pt, new jedd.Physical" +
-                                                                       "Domain[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak/" +
-                                                                       "soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
-                                                                      jedd.internal.Jedd.v().replace(pt,
-                                                                                                     new PhysicalDomain[] { V2.v() },
-                                                                                                     new PhysicalDomain[] { V1.v() })),
+                                                                                    new PhysicalDomain[] { H2.v() },
+                                                                                    new PhysicalDomain[] { H1.v() })));
+        fieldPt.eqUnion(propStore(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                                      new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H2.v() },
+                                                                      ("propStore(pt, pag.allStore().get(), jedd.internal.Jedd.v().r" +
+                                                                       "eplace(pt, new jedd.PhysicalDomain[...], new jedd.PhysicalDo" +
+                                                                       "main[...])) at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                                       "src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
+                                                                      pt),
                                   new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v(), fld.v() },
                                                                       new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), V2.v(), FD.v() },
-                                                                      ("propStore(jedd.internal.Jedd.v().replace(pt, new jedd.Physic" +
-                                                                       "alDomain[...], new jedd.PhysicalDomain[...]), pag.allStore()" +
-                                                                       ".get(), jedd.internal.Jedd.v().replace(pt, new jedd.Physical" +
-                                                                       "Domain[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak/" +
-                                                                       "soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
+                                                                      ("propStore(pt, pag.allStore().get(), jedd.internal.Jedd.v().r" +
+                                                                       "eplace(pt, new jedd.PhysicalDomain[...], new jedd.PhysicalDo" +
+                                                                       "main[...])) at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                                       "src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
                                                                       pag.allStore().get()),
-                                  new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                                      new PhysicalDomain[] { H1.v(), C3.v(), V2.v(), C2.v() },
-                                                                      ("propStore(jedd.internal.Jedd.v().replace(pt, new jedd.Physic" +
-                                                                       "alDomain[...], new jedd.PhysicalDomain[...]), pag.allStore()" +
-                                                                       ".get(), jedd.internal.Jedd.v().replace(pt, new jedd.Physical" +
-                                                                       "Domain[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak/" +
-                                                                       "soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
+                                  new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                                      new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H1.v() },
+                                                                      ("propStore(pt, pag.allStore().get(), jedd.internal.Jedd.v().r" +
+                                                                       "eplace(pt, new jedd.PhysicalDomain[...], new jedd.PhysicalDo" +
+                                                                       "main[...])) at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                                       "src/soot/jimple/paddle/PropBDD.jedd:110,19-28"),
                                                                       jedd.internal.Jedd.v().replace(pt,
                                                                                                      new PhysicalDomain[] { H2.v() },
                                                                                                      new PhysicalDomain[] { H1.v() }))));
-        pt.eqUnion(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(propLoad(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), fld.v(), basec.v(), base.v() },
-                                                                                                                                                            new PhysicalDomain[] { H2.v(), C2.v(), FD.v(), C1.v(), H1.v() },
-                                                                                                                                                            ("propLoad(fieldPt, pag.allLoad().get(), jedd.internal.Jedd.v(" +
-                                                                                                                                                             ").replace(pt, new jedd.PhysicalDomain[...], new jedd.Physica" +
-                                                                                                                                                             "lDomain[...])) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                                                                                                                             "ddle/PropBDD.jedd:111,14-22"),
+        pt.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(propLoad(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), fld.v(), base.v(), obj.v(), basec.v() },
+                                                                                                                                                            new PhysicalDomain[] { C2.v(), FD.v(), H1.v(), H2.v(), C1.v() },
+                                                                                                                                                            ("propLoad(fieldPt, jedd.internal.Jedd.v().replace(pag.allLoad" +
+                                                                                                                                                             "().get(), new jedd.PhysicalDomain[...], new jedd.PhysicalDom" +
+                                                                                                                                                             "ain[...]), pt) at /home/research/ccl/olhota/olhotak/soot-tru" +
+                                                                                                                                                             "nk/src/soot/jimple/paddle/PropBDD.jedd:111,14-22"),
                                                                                                                                                             fieldPt),
                                                                                                                         new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() },
-                                                                                                                                                            new PhysicalDomain[] { C1.v(), V1.v(), FD.v(), C2.v(), V2.v() },
-                                                                                                                                                            ("propLoad(fieldPt, pag.allLoad().get(), jedd.internal.Jedd.v(" +
-                                                                                                                                                             ").replace(pt, new jedd.PhysicalDomain[...], new jedd.Physica" +
-                                                                                                                                                             "lDomain[...])) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                                                                                                                             "ddle/PropBDD.jedd:111,14-22"),
-                                                                                                                                                            pag.allLoad().get()),
-                                                                                                                        new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                                                                                                                            new PhysicalDomain[] { H1.v(), C3.v(), V1.v(), C1.v() },
-                                                                                                                                                            ("propLoad(fieldPt, pag.allLoad().get(), jedd.internal.Jedd.v(" +
-                                                                                                                                                             ").replace(pt, new jedd.PhysicalDomain[...], new jedd.Physica" +
-                                                                                                                                                             "lDomain[...])) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                                                                                                                             "ddle/PropBDD.jedd:111,14-22"),
-                                                                                                                                                            jedd.internal.Jedd.v().replace(pt,
-                                                                                                                                                                                           new PhysicalDomain[] { H2.v(), V2.v(), C2.v() },
-                                                                                                                                                                                           new PhysicalDomain[] { H1.v(), V1.v(), C1.v() }))),
-                                                                                                               new PhysicalDomain[] { C3.v(), C2.v() },
-                                                                                                               new PhysicalDomain[] { C2.v(), C3.v() })),
-                                                    jedd.internal.Jedd.v().replace(typeFilter(),
-                                                                                   new PhysicalDomain[] { C1.v(), V1.v(), C2.v() },
-                                                                                   new PhysicalDomain[] { C2.v(), V2.v(), C3.v() })));
-        outputPt(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                     new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
+                                                                                                                                                            new PhysicalDomain[] { C1.v(), V2.v(), FD.v(), C2.v(), V1.v() },
+                                                                                                                                                            ("propLoad(fieldPt, jedd.internal.Jedd.v().replace(pag.allLoad" +
+                                                                                                                                                             "().get(), new jedd.PhysicalDomain[...], new jedd.PhysicalDom" +
+                                                                                                                                                             "ain[...]), pt) at /home/research/ccl/olhota/olhotak/soot-tru" +
+                                                                                                                                                             "nk/src/soot/jimple/paddle/PropBDD.jedd:111,14-22"),
+                                                                                                                                                            jedd.internal.Jedd.v().replace(pag.allLoad().get(),
+                                                                                                                                                                                           new PhysicalDomain[] { V1.v(), V2.v() },
+                                                                                                                                                                                           new PhysicalDomain[] { V2.v(), V1.v() })),
+                                                                                                                        new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                                                                                                                            new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H2.v() },
+                                                                                                                                                            ("propLoad(fieldPt, jedd.internal.Jedd.v().replace(pag.allLoad" +
+                                                                                                                                                             "().get(), new jedd.PhysicalDomain[...], new jedd.PhysicalDom" +
+                                                                                                                                                             "ain[...]), pt) at /home/research/ccl/olhota/olhotak/soot-tru" +
+                                                                                                                                                             "nk/src/soot/jimple/paddle/PropBDD.jedd:111,14-22"),
+                                                                                                                                                            pt))),
+                                                                                   jedd.internal.Jedd.v().replace(typeFilter(),
+                                                                                                                  new PhysicalDomain[] { H1.v() },
+                                                                                                                  new PhysicalDomain[] { H2.v() })),
+                                                  new PhysicalDomain[] { V1.v() },
+                                                  new PhysicalDomain[] { V2.v() }));
+        outputPt(new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                     new PhysicalDomain[] { C2.v(), V2.v(), C1.v(), H1.v() },
                                                      ("outputPt(jedd.internal.Jedd.v().replace(pt, new jedd.Physica" +
-                                                      "lDomain[...], new jedd.PhysicalDomain[...])) at /tmp/olhotak" +
-                                                      "/soot-trunk/src/soot/jimple/paddle/PropBDD.jedd:113,8-16"),
+                                                      "lDomain[...], new jedd.PhysicalDomain[...])) at /home/resear" +
+                                                      "ch/ccl/olhota/olhotak/soot-trunk/src/soot/jimple/paddle/Prop" +
+                                                      "BDD.jedd:113,8-16"),
                                                      jedd.internal.Jedd.v().replace(pt,
-                                                                                    new PhysicalDomain[] { H2.v(), C3.v(), V2.v(), C2.v() },
-                                                                                    new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() })));
+                                                                                    new PhysicalDomain[] { H2.v() },
+                                                                                    new PhysicalDomain[] { H1.v() })));
         if (PaddleScene.v().options().verbose()) { G.v().out.println("Major iteration: "); }
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(pt), veryOldPt);
     }

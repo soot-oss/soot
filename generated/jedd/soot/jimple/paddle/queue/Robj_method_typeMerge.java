@@ -39,11 +39,12 @@ public final class Robj_method_typeMerge extends Robj_method_type {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
-                                                   new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
+                                                   new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/olhotak/soot-trunk/src/s" +
-                                                    "oot/jimple/paddle/queue/Robj_method_typeMerge.jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/olh" +
+                                                    "otak/soot-trunk/src/soot/jimple/paddle/queue/Robj_method_typ" +
+                                                    "eMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

@@ -19,13 +19,15 @@ public class BDDInsensitiveStaticContextManager extends AbsStaticContextManager 
                                                "nd:soot.jimple.paddle.bdddomains.KD, soot.jimple.paddle.bddd" +
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> newOu" +
-                                               "t = in.get(); at /tmp/olhotak/soot-trunk/src/soot/jimple/pad" +
-                                               "dle/BDDInsensitiveStaticContextManager.jedd:34,45-51"),
+                                               "t = in.get(); at /home/research/ccl/olhota/olhotak/soot-trun" +
+                                               "k/src/soot/jimple/paddle/BDDInsensitiveStaticContextManager." +
+                                               "jedd:34,45-51"),
                                               in.get());
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), kind.v(), stmt.v(), srcc.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { MT.v(), MS.v(), KD.v(), ST.v(), C1.v(), C2.v() },
-                                                    ("out.add(newOut) at /tmp/olhotak/soot-trunk/src/soot/jimple/p" +
-                                                     "addle/BDDInsensitiveStaticContextManager.jedd:35,8-11"),
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), stmt.v(), srcc.v(), tgtc.v(), tgtm.v() },
+                                                    new jedd.PhysicalDomain[] { KD.v(), MS.v(), ST.v(), C1.v(), C2.v(), MT.v() },
+                                                    ("out.add(newOut) at /home/research/ccl/olhota/olhotak/soot-tr" +
+                                                     "unk/src/soot/jimple/paddle/BDDInsensitiveStaticContextManage" +
+                                                     "r.jedd:35,8-11"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

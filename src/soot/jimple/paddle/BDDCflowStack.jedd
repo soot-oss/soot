@@ -149,6 +149,13 @@ public class BDDCflowStack
     private <stmt> neverValid = 0B;
     private <stmt> alwaysValid = 0B;
 
+    public String queryStats() {
+        return
+            "both: "+(neverValid&alwaysValid&isValids).size()+
+            " always but not never: "+((alwaysValid-neverValid)&isValids).size()+
+            " never but not always: "+((neverValid-alwaysValid)&isValids).size()+
+            " not statically known: "+(isValids-neverValid-alwaysValid).size();
+    }
     /** Returns true if the call to isValid() in statement s always returns
      * false.
      */

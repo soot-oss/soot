@@ -14,8 +14,8 @@ public final class RobjBDD extends Robj {
       new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                           new PhysicalDomain[] { H1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
-                                           "e.bdddomains.H1> bdd at /tmp/olhotak/soot-trunk/src/soot/jim" +
-                                           "ple/paddle/queue/RobjBDD.jedd:31,12-20"));
+                                           "e.bdddomains.H1> bdd at /home/research/ccl/olhota/olhotak/so" +
+                                           "ot-trunk/src/soot/jimple/paddle/queue/RobjBDD.jedd:31,12-20"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
@@ -23,8 +23,8 @@ public final class RobjBDD extends Robj {
         this(name);
         add(new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                 new PhysicalDomain[] { H1.v() },
-                                                ("add(bdd) at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/q" +
-                                                 "ueue/RobjBDD.jedd:33,62-65"),
+                                                ("add(bdd) at /home/research/ccl/olhota/olhotak/soot-trunk/src" +
+                                                 "/soot/jimple/paddle/queue/RobjBDD.jedd:33,62-65"),
                                                 bdd));
     }
     
@@ -50,8 +50,9 @@ public final class RobjBDD extends Robj {
                     it =
                       new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                           new PhysicalDomain[] { H1.v() },
-                                                          ("bdd.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-t" +
-                                                           "runk/src/soot/jimple/paddle/queue/RobjBDD.jedd:45,25-28"),
+                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
+                                                           "olhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/RobjB" +
+                                                           "DD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { obj.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -68,14 +69,14 @@ public final class RobjBDD extends Robj {
           new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                               new PhysicalDomain[] { H1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
-                                               "ains.H1> ret = bdd; at /tmp/olhotak/soot-trunk/src/soot/jimp" +
-                                               "le/paddle/queue/RobjBDD.jedd:55,17-20"),
+                                               "ains.H1> ret = bdd; at /home/research/ccl/olhota/olhotak/soo" +
+                                               "t-trunk/src/soot/jimple/paddle/queue/RobjBDD.jedd:55,17-20"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                    new PhysicalDomain[] { H1.v() },
-                                                   ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/queue/RobjBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/queue/RobjBDD.jedd:57,8-14"),
                                                    ret);
     }
     

@@ -26,11 +26,11 @@ public class Qvar_srcm_stmt_dtp_signature_kindTrad extends Qvar_srcm_stmt_dtp_si
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { signature.v(), dtp.v(), srcm.v(), kind.v(), var.v(), stmt.v() },
-                                              new PhysicalDomain[] { SG.v(), T1.v(), MS.v(), KD.v(), V1.v(), ST.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
-                                               "unk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt_dtp_signatur" +
-                                               "e_kindTrad.jedd:43,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), dtp.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                              new PhysicalDomain[] { KD.v(), T1.v(), MS.v(), V1.v(), SG.v(), ST.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
+                                               "lhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qvar_s" +
+                                               "rcm_stmt_dtp_signature_kindTrad.jedd:43,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), dtp.v(), signature.v(), kind.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

@@ -37,8 +37,8 @@ public class Rsrc_dstIter extends Rsrc_dst {
                                               ("<soot.jimple.paddle.bdddomains.src:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.dst:soot.jimple.paddl" +
                                                "e.bdddomains.V2> ret = jedd.internal.Jedd.v().falseBDD(); at" +
-                                               " /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Rsrc_d" +
-                                               "stIter.jedd:46,25-28"),
+                                               " /home/research/ccl/olhota/olhotak/soot-trunk/src/soot/jimpl" +
+                                               "e/paddle/queue/Rsrc_dstIter.jedd:46,25-28"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
@@ -47,8 +47,8 @@ public class Rsrc_dstIter extends Rsrc_dst {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
                                                    new PhysicalDomain[] { V2.v(), V1.v() },
-                                                   ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/queue/Rsrc_dstIter.jedd:50,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/queue/Rsrc_dstIter.jedd:50,8-14"),
                                                    ret);
     }
     

@@ -24,11 +24,11 @@ public class Qsrc_dst_fldDebug extends Qsrc_dst_fld {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
-                                              new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
-                                               "unk/src/soot/jimple/paddle/queue/Qsrc_dst_fldDebug.jedd:40,2" +
-                                               "2-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v(), fld.v() },
+                                              new PhysicalDomain[] { V2.v(), V1.v(), FD.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
+                                               "lhota/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qsrc_d" +
+                                               "st_fldDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { src.v(), dst.v(), fld.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

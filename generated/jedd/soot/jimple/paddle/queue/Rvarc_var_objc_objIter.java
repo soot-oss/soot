@@ -41,18 +41,20 @@ public class Rvarc_var_objc_objIter extends Rvarc_var_objc_obj {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.objc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.obj" +
                                                ":soot.jimple.paddle.bdddomains.H1> ret = jedd.internal.Jedd." +
-                                               "v().falseBDD(); at /tmp/olhotak/soot-trunk/src/soot/jimple/p" +
-                                               "addle/queue/Rvarc_var_objc_objIter.jedd:46,43-46"),
+                                               "v().falseBDD(); at /home/research/ccl/olhota/olhotak/soot-tr" +
+                                               "unk/src/soot/jimple/paddle/queue/Rvarc_var_objc_objIter.jedd" +
+                                               ":46,43-46"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next(), r.next() },
                                                        new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
                                                        new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), H1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
-                                                   new PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
-                                                   ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/queue/Rvarc_var_objc_objIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { objc.v(), var.v(), varc.v(), obj.v() },
+                                                   new PhysicalDomain[] { C2.v(), V1.v(), C1.v(), H1.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/queue/Rvarc_var_objc_objIter.jedd:50," +
+                                                    "8-14"),
                                                    ret);
     }
     

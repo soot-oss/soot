@@ -51,8 +51,9 @@ public class BDDCflow {
                                                "edd.v().literal(new java.lang.Object[...], new jedd.Attribut" +
                                                "e[...], new jedd.PhysicalDomain[...]))), jedd.internal.Jedd." +
                                                "v().literal(new java.lang.Object[...], new jedd.Attribute[.." +
-                                               ".], new jedd.PhysicalDomain[...])); at /tmp/olhotak/soot-tru" +
-                                               "nk/src/soot/jimple/paddle/BDDCflow.jedd:49,15-26"),
+                                               ".], new jedd.PhysicalDomain[...])); at /home/research/ccl/ol" +
+                                               "hota/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCflow.jedd" +
+                                               ":49,15-26"),
                                               jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().literal(new Object[] { Kind.STATIC },
                                                                                                                                                                                                                                                                                                                                                                                                                                    new jedd.Attribute[] { kind.v() },
                                                                                                                                                                                                                                                                                                                                                                                                                                    new jedd.PhysicalDomain[] { KD.v() })),
@@ -85,14 +86,15 @@ public class BDDCflow {
       new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), method.v() },
                                           new jedd.PhysicalDomain[] { ST.v(), MT.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt, soot.jimple.pad" +
-                                           "dle.bdddomains.method> stmtMethod at /tmp/olhotak/soot-trunk" +
-                                           "/src/soot/jimple/paddle/BDDCflow.jedd:62,12-26"));
+                                           "dle.bdddomains.method> stmtMethod at /home/research/ccl/olho" +
+                                           "ta/olhotak/soot-trunk/src/soot/jimple/paddle/BDDCflow.jedd:6" +
+                                           "2,12-26"));
     
     jedd.internal.RelationContainer stmtMethod() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), stmt.v() },
                                                    new jedd.PhysicalDomain[] { MT.v(), ST.v() },
-                                                   ("return stmtMethod; at /tmp/olhotak/soot-trunk/src/soot/jimpl" +
-                                                    "e/paddle/BDDCflow.jedd:63,34-40"),
+                                                   ("return stmtMethod; at /home/research/ccl/olhota/olhotak/soot" +
+                                                    "-trunk/src/soot/jimple/paddle/BDDCflow.jedd:63,34-40"),
                                                    stmtMethod);
     }
     
@@ -101,14 +103,14 @@ public class BDDCflow {
                                           new jedd.PhysicalDomain[] { MS.v(), ST.v(), MT.v() },
                                           ("private <soot.jimple.paddle.bdddomains.srcm, soot.jimple.pad" +
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.tgtm> cal" +
-                                           "lGraph at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/BDD" +
-                                           "Cflow.jedd:64,12-30"));
+                                           "lGraph at /home/research/ccl/olhota/olhotak/soot-trunk/src/s" +
+                                           "oot/jimple/paddle/BDDCflow.jedd:64,12-30"));
     
     jedd.internal.RelationContainer callGraph() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), stmt.v() },
-                                                   new jedd.PhysicalDomain[] { MT.v(), MS.v(), ST.v() },
-                                                   ("return callGraph; at /tmp/olhotak/soot-trunk/src/soot/jimple" +
-                                                    "/paddle/BDDCflow.jedd:65,37-43"),
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), stmt.v(), tgtm.v() },
+                                                   new jedd.PhysicalDomain[] { MS.v(), ST.v(), MT.v() },
+                                                   ("return callGraph; at /home/research/ccl/olhota/olhotak/soot-" +
+                                                    "trunk/src/soot/jimple/paddle/BDDCflow.jedd:65,37-43"),
                                                    callGraph);
     }
 }

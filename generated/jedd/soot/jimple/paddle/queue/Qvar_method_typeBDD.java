@@ -19,8 +19,8 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
                                                 new PhysicalDomain[] { V1.v(), MS.v(), T1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qvar_m" +
-                                                 "ethod_typeBDD.jedd:34,8-11"),
+                                                 " /home/research/ccl/olhota/olhotak/soot-trunk/src/soot/jimpl" +
+                                                 "e/paddle/queue/Qvar_method_typeBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _var, _method, _type },
                                                                                new Attribute[] { var.v(), method.v(), type.v() },
                                                                                new PhysicalDomain[] { V1.v(), MS.v(), T1.v() })));
@@ -33,8 +33,9 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
             Rvar_method_typeBDD reader = (Rvar_method_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), var.v(), type.v() },
                                                            new PhysicalDomain[] { MS.v(), V1.v(), T1.v() },
-                                                           ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
-                                                            "ddle/queue/Qvar_method_typeBDD.jedd:40,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/olhotak/soot-tru" +
+                                                            "nk/src/soot/jimple/paddle/queue/Qvar_method_typeBDD.jedd:40," +
+                                                            "12-18"),
                                                            in));
         }
     }

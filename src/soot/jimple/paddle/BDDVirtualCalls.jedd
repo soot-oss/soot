@@ -148,7 +148,7 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         <obj, tgtm> clinitTargets =
             stringConstants | (nonStringConstants{} >< dynamicClinits{});
         <srcc, var, tgtm> tgtMethods =
-            (ctxt=>srcc) newPt{obj} <> clinitTargets{obj};
+            (ctxt=>srcc) allPt{obj} <> clinitTargets{obj};
 
         <srcc, srcm, stmt, kind, tgtc, tgtm> newStatics =
             tgtMethods{var} <> clinits{var}{} 
@@ -160,7 +160,8 @@ public class BDDVirtualCalls extends AbsVirtualCalls
     private void updateSpecials() {
 
         <ctxt, var, obj, srcm, stmt, tgtm> newSpecials =
-            newPt{var} >< allSpc{var};
+            newPt{var} >< allSpc{var}
+            | allPt{var} >< newSpc{var};
 
         newSpecials -= resolvedSpecials;
         resolvedSpecials |= newSpecials;
@@ -179,8 +180,11 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         rcv |= newVirtRcv;
 
         <var, dtp, signature, kind> sigs = (srcm=>, stmt=>) newVirtRcv;
-        rcvSigs |= sigs{kind} <> virtual{kind};
-        threadRcvSigs |= sigs{kind} <> new{Kind.THREAD=>kind}{kind};
+        <var, dtp, signature> newRcvSigs = sigs{kind} <> virtual{kind};
+        rcvSigs |= newRcvSigs;
+        <var, dtp, signature> newThreadRcvSigs = sigs{kind} <>
+                               new{Kind.THREAD=>kind}{kind};
+        threadRcvSigs |= newThreadRcvSigs;
 
         // resolve new points-to sets
         <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
@@ -188,6 +192,11 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         <type, dtp, signature> newTypes = ptTypes{var} <> rcvSigs{var};
 
         newTypes |= (ptTypes{type} >< threads{type}){var} <> threadRcvSigs{var};
+
+        ptTypes = allocNodes{obj} <> (ctxt=>) allPt{obj};
+        newTypes |= ptTypes{var} <> newRcvSigs{var};
+        newTypes |= (ptTypes{type} >< threads{type}){var} <>
+                                    newThreadRcvSigs{var};
 
         // close under AnySubType; that is, if the receiver is AnySubType(t),
         // replace it with all subtypes of t

@@ -38,8 +38,9 @@ public class Rvar_method_typeIter extends Rvar_method_type {
                                                "ains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple.pa" +
                                                "ddle.bdddomains.MS, soot.jimple.paddle.bdddomains.type:soot." +
                                                "jimple.paddle.bdddomains.T1> ret = jedd.internal.Jedd.v().fa" +
-                                               "lseBDD(); at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/" +
-                                               "queue/Rvar_method_typeIter.jedd:46,37-40"),
+                                               "lseBDD(); at /home/research/ccl/olhota/olhotak/soot-trunk/sr" +
+                                               "c/soot/jimple/paddle/queue/Rvar_method_typeIter.jedd:46,37-4" +
+                                               "0"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next() },
@@ -48,8 +49,9 @@ public class Rvar_method_typeIter extends Rvar_method_type {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { method.v(), var.v(), type.v() },
                                                    new PhysicalDomain[] { MS.v(), V1.v(), T1.v() },
-                                                   ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
-                                                    "e/queue/Rvar_method_typeIter.jedd:50,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/olhotak/soot-trunk/" +
+                                                    "src/soot/jimple/paddle/queue/Rvar_method_typeIter.jedd:50,8-" +
+                                                    "14"),
                                                    ret);
     }
     

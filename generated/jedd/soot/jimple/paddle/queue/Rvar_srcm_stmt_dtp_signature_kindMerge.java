@@ -40,12 +40,12 @@ public final class Rvar_srcm_stmt_dtp_signature_kindMerge extends Rvar_srcm_stmt
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { signature.v(), dtp.v(), srcm.v(), kind.v(), var.v(), stmt.v() },
-                                                   new PhysicalDomain[] { SG.v(), T1.v(), MS.v(), KD.v(), V1.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), dtp.v(), srcm.v(), var.v(), signature.v(), stmt.v() },
+                                                   new PhysicalDomain[] { KD.v(), T1.v(), MS.v(), V1.v(), SG.v(), ST.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/olhotak/soot-trunk/src/s" +
-                                                    "oot/jimple/paddle/queue/Rvar_srcm_stmt_dtp_signature_kindMer" +
-                                                    "ge.jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/olh" +
+                                                    "otak/soot-trunk/src/soot/jimple/paddle/queue/Rvar_srcm_stmt_" +
+                                                    "dtp_signature_kindMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

@@ -42,8 +42,9 @@ public final class Rsrc_dstMerge extends Rsrc_dst {
         return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
                                                    new PhysicalDomain[] { V2.v(), V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/olhotak/soot-trunk/src/s" +
-                                                    "oot/jimple/paddle/queue/Rsrc_dstMerge.jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/olh" +
+                                                    "otak/soot-trunk/src/soot/jimple/paddle/queue/Rsrc_dstMerge.j" +
+                                                    "edd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }
