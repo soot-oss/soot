@@ -24,18 +24,13 @@
  */
 
 
-
-
-
-
-
 package soot.coffi;
 
 import java.io.*;
 import java.util.Enumeration;
 
 /** A constant pool entry of type CONSTANT_Utf8; note this is <b>not</b>
- * multithread safe.
+ * multithread safe.  It is, however, immutable.
  * @see cp_info
  * @author Clark Verbrugge
  */
@@ -43,10 +38,31 @@ public class CONSTANT_Utf8_info extends cp_info {
    // Some local private objects to help with efficient comparisons.
    private static Utf8_Enumeration e1 = new Utf8_Enumeration();
    private static Utf8_Enumeration e2 = new Utf8_Enumeration();
+   private int sHashCode;
    // for caching the conversion.
    private String s;
    /** Byte array of actual utf8 string. */
-   public byte bytes[];
+   private byte bytes[];
+   /** Constructor from a DataInputSream */
+   public CONSTANT_Utf8_info(DataInputStream d) throws IOException {
+          int len;
+          len = d.readUnsignedShort();
+          bytes = new byte[len+2];
+          bytes[0] = (byte)(len>>8);
+          bytes[1] = (byte)(len & 0xff);
+          if (len>0) {
+          int j;
+                 for (j=0; j<len;j++)
+                    bytes[j+2] = (byte)d.readUnsignedByte();
+          }
+   }
+   /** For writing out the byte stream for this utf8 properly (incl size). */
+   public void writeBytes(DataOutputStream dd) throws IOException {
+          int len;
+          len = bytes.length;
+          dd.writeShort(len-2);
+          dd.write(bytes,2,len-2);
+   }
    /** Length in bytes of byte array. */
    public int length() {
       return (((((int)(bytes[0]))&0xff)<<8) + (((int)(bytes[1]))&0xff));
@@ -64,12 +80,26 @@ public class CONSTANT_Utf8_info extends cp_info {
          try {
             ByteArrayInputStream bs = new ByteArrayInputStream(bytes);
             DataInputStream d = new DataInputStream(bs);
-            s = d.readUTF();
+            String buf = d.readUTF();
+            sHashCode = buf.hashCode();
+            return buf;
          } catch(IOException e) {
             return "!!IOException!!";
          }
       }
       return s;
+   }
+   /** Fixes the actual String used to represent the internal representation.
+    * We must have rep == convert(); we verify hashCodes() to spot-check this.
+    * No user-visible effects.
+    */
+   public void fixConversion(String rep) {
+      if (sHashCode != rep.hashCode())
+         throw new RuntimeException("bad use of fixConversion!");
+
+      if (s == null) {
+         s = rep;
+      }
    }
    /** Answers whether this utf8 string is the same as a given one.
     * @param cu utf8 object with which to compare.

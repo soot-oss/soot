@@ -64,8 +64,8 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Is this method a phantom method? */
     boolean isPhantom = false;
     
-    /** Declared exceptions thrown by this method. */
-    List exceptions = new ArrayList();
+    /** Declared exceptions thrown by this method.  Created upon demand. */
+    List exceptions = null;
 
     /** Active body associated with this method. */
     Body activeBody;
@@ -132,7 +132,11 @@ public class SootMethod extends AbstractHost implements ClassMember
         this.returnType = returnType;
         this.modifiers = modifiers;
 
-        this.exceptions.addAll(thrownExceptions);
+        if (exceptions == null && !thrownExceptions.isEmpty())
+        {
+            exceptions = new ArrayList();
+            this.exceptions.addAll(thrownExceptions);
+        }
     }   
 
     /** Returns the name of this method. */
@@ -309,7 +313,9 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Adds the given exception to the list of exceptions thrown by this method. */
     public void addException(SootClass e) 
     {
-        if(exceptions.contains(e))
+        if (exceptions == null)
+            exceptions = new ArrayList();
+        else if (exceptions.contains(e))
             throw new RuntimeException("already throws exception "+e.getName());
 
         exceptions.add(e);
@@ -318,7 +324,10 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Removes the given exception from the list of exceptions thrown by this method. */
     public void removeException(SootClass e) 
     {
-        if(!exceptions.contains(e))
+        if (exceptions == null)
+            exceptions = new ArrayList();
+
+        if (!exceptions.contains(e))
             throw new RuntimeException("does not throw exception "+e.getName());
 
         exceptions.remove(e);
@@ -327,7 +336,7 @@ public class SootMethod extends AbstractHost implements ClassMember
     /** Returns true if this method throws exception <code>e</code>. */
     public boolean throwsException(SootClass e)
     {
-        return exceptions.contains(e);
+        return exceptions != null && exceptions.contains(e);
     }
 
     /**
@@ -336,6 +345,9 @@ public class SootMethod extends AbstractHost implements ClassMember
 
     public List getExceptions()
     {
+        if (exceptions == null)
+            exceptions = new ArrayList();
+
         return exceptions;
     }
 
@@ -417,7 +429,9 @@ public class SootMethod extends AbstractHost implements ClassMember
         buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
         
-        return buffer.toString();
+        // Again, memory-usage tweak depending on JDK implementation due
+        // to Michael Pan.
+        return new String(buffer.toString());
     }
 
     /**
@@ -523,6 +537,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         buffer.append(")");
 
         // Print exceptions
+        if (exceptions != null)
         {
             Iterator exceptionIt = this.getExceptions().iterator();
             

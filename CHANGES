@@ -11,6 +11,12 @@ Improvements in current version
 5. make SootClass.containsBafBody() public (requested by David Airapetyan);
      avoid creating duplicate names in CommonSubexpressionEliminator
          (requested by Florian Mateoc).  Both changes by plam.
+6. added changes by Michael Pan (pan@math.tau.ac.il) which make Soot 
+     more parsimonious with respect to memory usage:
+     it may use up to 20% less maximum heap space.
+     Changes were: - sharing of coffi CONSTANT_Utf8_info objects
+                   - SootMethod exceptions list created on demand
+                   - get[Sub]Signature() storage hack useful for Sun JDK
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

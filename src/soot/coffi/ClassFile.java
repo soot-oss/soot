@@ -566,18 +566,10 @@ public class ClassFile {
             if (debug) System.out.println("Constant pool[" + i + "]: Name and Type");
             break;
          case cp_info.CONSTANT_Utf8:
-            int len;
-            CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info();
-            len = d.readUnsignedShort();
-            cputf8.bytes = new byte[len+2];
-            cputf8.bytes[0] = (byte)(len>>8);
-            cputf8.bytes[1] = (byte)(len & 0xff);
-            if (len>0) {
-               int j;
-               for (j=0; j<len;j++)
-                  cputf8.bytes[j+2] = (byte)d.readUnsignedByte();
-            }
-            cp = (cp_info)cputf8;
+            CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
+            // If an equivalent CONSTANT_Utf8 already exists, we return
+            // the pre-existing one and allow cputf8 to be GC'd.
+            cp = (cp_info) CONSTANT_Utf8_collector.add(cputf8);
             if (debug)
                System.out.println("Constant pool[" + i + "]: Utf8 = \"" +
                                   cputf8.convert() + "\"");
@@ -864,10 +856,7 @@ public class ClassFile {
             dd.writeShort(((CONSTANT_NameAndType_info)cp).descriptor_index);
             break;
          case cp_info.CONSTANT_Utf8:
-            int len;
-            len = ((CONSTANT_Utf8_info)cp).bytes.length;
-            dd.writeShort(len-2);
-            dd.write(((CONSTANT_Utf8_info)cp).bytes,2,len-2);
+            ((CONSTANT_Utf8_info)cp).writeBytes(dd);
             break;
          default:
             System.out.println("Unknown tag in constant pool: " + cp.tag);
