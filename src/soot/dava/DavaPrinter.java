@@ -127,7 +127,7 @@ public class DavaPrinter {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 
-        UnitPrinter up = new DavaUnitPrinter("        ");
+        UnitPrinter up = new DavaUnitPrinter();
         ((ASTNode) units.getFirst()).toString(up);
         out.print( up.toString() );
     }

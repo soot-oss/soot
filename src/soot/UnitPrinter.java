@@ -44,6 +44,10 @@ public interface UnitPrinter {
     public void fieldRef( SootField f );
     public void unitRef( Unit u );
     public void identityRef( IdentityRef r );
+
+    public void setPositionTagger( AttributesUnitPrinter pt );
+    public AttributesUnitPrinter getPositionTagger();
+    public StringBuffer output();
 }
 
 

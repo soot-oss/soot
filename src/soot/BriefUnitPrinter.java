@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with cl library; if not, write to the
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
@@ -24,9 +24,9 @@ import java.util.*;
 /**
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
 */
-public class BriefUnitPrinter extends NormalUnitPrinter {
-    BriefUnitPrinter( Map labels, String indent ) {
-        super(labels, indent);
+public class BriefUnitPrinter extends LabeledUnitPrinter {
+    BriefUnitPrinter( Body body ) {
+        super(body);
     }
 
     private boolean baf;
@@ -85,7 +85,7 @@ public class BriefUnitPrinter extends NormalUnitPrinter {
                 return;
             }
         }
-        super.literal(s);
+        output.append(s);
     }
 
     public void type( Type t ) {
@@ -93,5 +93,4 @@ public class BriefUnitPrinter extends NormalUnitPrinter {
         output.append( t.toString() );
     }
 }
-
 

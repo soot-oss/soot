@@ -12,7 +12,7 @@
  * Library General Public License for more details.
  *
  * You should have received a copy of the GNU Library General Public
- * License along with cl library; if not, write to the
+ * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
@@ -24,12 +24,7 @@ import soot.jimple.*;
 /**
 * UnitPrinter implementation for Dava.
 */
-public class DavaUnitPrinter extends NormalUnitPrinter {
-    DavaUnitPrinter( String indent ) {
-        super(null, indent);
-        startOfLine = true;
-    }
-
+public class DavaUnitPrinter extends AbstractUnitPrinter {
     public void method( SootMethod m ) {
         handleIndent();
         output.append( m.getName() );
@@ -61,7 +56,7 @@ public class DavaUnitPrinter extends NormalUnitPrinter {
             eatSpace = true;
             return;
         }
-        super.literal(s);
+        output.append(s);
     }
     public void type( Type t ) {
         handleIndent();
@@ -72,6 +67,9 @@ public class DavaUnitPrinter extends NormalUnitPrinter {
         } else {
             output.append( t.toString() );
         }
+    }
+    public void unitRef( Unit u ) {
+        throw new RuntimeException( "Dava doesn't have unit references!" );
     }
 }
 

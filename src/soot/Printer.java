@@ -297,70 +297,25 @@ public class Printer {
         
         UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph(b);
 
-        Map stmtToName = createLabelMap(b, unitGraph);
-        final String indent = "        ";
-        UnitPrinter up;
+        LabeledUnitPrinter up;
+        if( isPrecise ) up = new NormalUnitPrinter(b);
+        else up = new BriefUnitPrinter(b);
+
         if (addJimpleLn()) {
-            up = new AttributesUnitPrinter(stmtToName, indent); 
-        } else {
-            up = isPrecise ?
-            new NormalUnitPrinter(stmtToName, indent) :
-            new BriefUnitPrinter(stmtToName, indent);
+            up.setPositionTagger( new AttributesUnitPrinter() );
         }
 	
-        printLocalsInBody(b, out, up);
+        printLocalsInBody(b, up);
 
-        printStatementsInBody(b, out, up, unitGraph, stmtToName);
+        printStatementsInBody(b, out, up, unitGraph);
 
         out.println("    }");
         incJimpleLnNum();
 
     }
-    private Map createLabelMap(Body body, UnitGraph unitGraph) {
-        boolean isPrecise = !useAbbreviations();
-
-        Chain units = body.getUnits();
-
-        Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
-        
-        // Create statement name table
-        {
-            Iterator boxIt = body.getUnitBoxes().iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                while (boxIt.hasNext()) {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = (Unit) box.getUnit();
-
-                    labelStmts.add(stmt);
-                }
-
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-
-                Iterator stmtIt = units.iterator();
-
-                while (stmtIt.hasNext()) {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if (labelStmts.contains(s)) {
-                        stmtToName.put(s, "label" + (labelCount++));
-                    }
-                }
-            }
-        }
-        return stmtToName;
-    }
-
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
-    private void printStatementsInBody(Body body, java.io.PrintWriter out, UnitPrinter up, UnitGraph unitGraph, Map stmtToName ) {
+    private void printStatementsInBody(Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph ) {
     	Chain units = body.getUnits();
         Iterator unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
@@ -379,7 +334,7 @@ public class Printer {
                 if (currentStmt != units.getFirst()) {
                     if (unitGraph.getSuccsOf(previousStmt).size() != 1
                         || unitGraph.getPredsOf(currentStmt).size() != 1
-                        || stmtToName.containsKey(currentStmt)) {
+                        || up.labels().containsKey(currentStmt)) {
                         up.newline();
                     } else {
                         // Or if the previous node does not have body statement as a successor.
@@ -392,7 +347,7 @@ public class Printer {
                     }
                 }
 
-                if (stmtToName.containsKey(currentStmt)) {
+                if (up.labels().containsKey(currentStmt)) {
                     up.noIndent();
                     up.unitRef( currentStmt );
                     up.literal(":");
@@ -403,7 +358,7 @@ public class Printer {
 
             up.startUnit(currentStmt);
 			if (addJimpleLn()){
-				((AttributesUnitPrinter)up).setEndLn(getJimpleLnNum());
+				up.getPositionTagger().setEndLn(getJimpleLnNum());
 			}
             currentStmt.toString(up);
             up.endUnit(currentStmt);
@@ -412,7 +367,7 @@ public class Printer {
             up.newline();
 
             if (addJimpleLn()) {
-                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt, ((AttributesUnitPrinter)up).getEndLn()));
+                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt, up.getPositionTagger().getEndLn()));
             }
 
             // only print them if not generating attributes files 
@@ -446,11 +401,11 @@ public class Printer {
                     "        catch "
                         + Scene.v().quotedNameOf(trap.getException().getName())
                         + " from "
-                        + stmtToName.get(trap.getBeginUnit())
+                        + up.labels().get(trap.getBeginUnit())
                         + " to "
-                        + stmtToName.get(trap.getEndUnit())
+                        + up.labels().get(trap.getEndUnit())
                         + " with "
-                        + stmtToName.get(trap.getHandlerUnit())
+                        + up.labels().get(trap.getHandlerUnit())
                         + ";");
 
                 incJimpleLnNum();
@@ -485,7 +440,6 @@ public class Printer {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printLocalsInBody(
         Body body,
-        java.io.PrintWriter out,
         UnitPrinter up) {
         // Print out local variables
         {
