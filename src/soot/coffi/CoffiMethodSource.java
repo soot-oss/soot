@@ -103,6 +103,10 @@ public class CoffiMethodSource implements MethodSource
 
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;
+         coffiMethod.attributes = null;
+         coffiMethod.code_attr = null;
+         coffiMethod.jmethod = null;
+         coffiMethod.instructionList = null;
 
          coffiMethod = null;
          coffiClass = null;
