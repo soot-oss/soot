@@ -396,6 +396,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 		    // but arbitrary bytecode could still include such
 		    // dead handlers.)
 
+		    nextTrap:
 		    for (int j = 0; j < trapTable.length; j++) {
 			if (trapTable[j].active) {
 			    Trap trap = trapTable[j].trap;
@@ -415,7 +416,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements ExceptionalGraph
 				     k.hasNext(); ) {
 				    RefType alreadyType = (RefType)k.next();
 				    if (hier.canStoreType(caughtType, alreadyType)) {
-					continue nextThrowable;
+					continue nextTrap;
 				    }
 				}
 				unitDests.add(trap, AnySubType.v(caughtType));
