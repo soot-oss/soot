@@ -21,26 +21,26 @@
 			<alias>v</alias>
 			<alias>verbose</alias>
 			<short_desc>Verbose Mode</short_desc>
-			<long_desc>This option turns on and displays all debugging information.</long_desc>
+			<long_desc>This option causes Soot to display detailed information about what it is doing.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Application Mode</name>
 			<alias>app</alias>
 			<short_desc>Run in Application Mode</short_desc>
-			<long_desc>This option causes Soot to process application classes used by the given class as well as the given class.</long_desc>
+			<long_desc>This option causes Soot to process any application classes referenced by the classes specified on the command line, in addition to the specified classes.</long_desc>
 		</boolopt>
                 <boolopt>
 			<name>Whole-Program Mode</name>
 			<alias>w</alias>
 			<alias>whole-program</alias>
 			<short_desc>Run in Whole-program Mode</short_desc>
-			<long_desc>This option causes Soot to run in whole program, taking into consideration the whole program when performing optimizations.</long_desc>
+			<long_desc>This option causes Soot to run in whole program mode, taking into consideration the whole program when performing optimizations.</long_desc>
                 </boolopt>
                 <boolopt>
 			<name>Debug</name>
 			<alias>debug</alias>
 			<short_desc>Prints Various Soot Debugging Info</short_desc>
-			<long_desc>This option causes Soot to print various debugging info. In particular, in the Baf Body Phase and the Jimple Annotation Pack Phase.</long_desc>
+			<long_desc>This option causes Soot to print various debugging information, particularly from the Baf Body Phase and the Jimple Annotation Pack Phase.</long_desc>
                 </boolopt>
 	</section>
 	<section>
@@ -76,7 +76,7 @@
 			<name>Allow Phantom References</name>
 			<alias>allow-phantom-refs</alias>
 			<short_desc>Allow unresolved classes: may cause errors</short_desc>
-			<long_desc>This option allows Soot to process a class allowing references to be phantoms. This may produce incorrect results.</long_desc>
+			<long_desc>This option causes Soot to process a class even if it cannot find classes referenced by that class. This may cause Soot to produce incorrect results.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -86,7 +86,7 @@
 			<alias>d</alias>
 			<alias>output-dir</alias>
 			<short_desc>Store Produced Files in PATH</short_desc>
-			<long_desc>Specifies that the outputted files are to be stored in PATH. This may be relative to the working directory. This PATH must already exist before running Soot.</long_desc>
+			<long_desc>Specifies that the outputted files are to be stored in PATH. The path may be relative to the working directory. This PATH must already exist before running Soot.</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Output Format</name>
