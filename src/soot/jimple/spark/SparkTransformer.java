@@ -176,7 +176,7 @@ public class SparkTransformer extends SceneTransformer
                         } else if( lhs instanceof FieldRef ) {
                             v = pag.findVarNode( ((FieldRef) lhs).getField() );
                         }
-                        if( false && v != null ) {
+                        if( v != null ) {
                             PointsToSetInternal p2set = v.getP2Set();
                             p2set.forall( new P2SetVisitor() {
                             public final void visit( Node n ) {
