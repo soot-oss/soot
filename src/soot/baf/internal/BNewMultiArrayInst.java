@@ -93,5 +93,9 @@ public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayIns
     {
         ((InstSwitch) sw).caseNewMultiArrayInst(this);
     }
+
+    public boolean containsNewExpr() {
+        return true;
+    }
 }
 

@@ -72,5 +72,9 @@ public class BNewInst extends AbstractRefTypeInst implements NewInst
     {
         ((InstSwitch) sw).caseNewInst(this);
     }
+
+    public boolean containsNewExpr() {
+        return true;
+    }
 }
 

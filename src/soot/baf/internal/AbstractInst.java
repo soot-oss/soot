@@ -106,4 +106,5 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
     public boolean containsInvokeExpr() { return false; }
     public boolean containsArrayRef() { return false; }
     public boolean containsFieldRef() { return false; }
+    public boolean containsNewExpr() { return false; }
 }

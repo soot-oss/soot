@@ -42,5 +42,6 @@ public interface Inst extends Unit
     public boolean containsInvokeExpr();
     public boolean containsFieldRef();
     public boolean containsArrayRef();
+    public boolean containsNewExpr();
 }
 

@@ -82,5 +82,9 @@ public class BNewArrayInst extends AbstractInst implements NewArrayInst
     {
         ((InstSwitch) sw).caseNewArrayInst(this);
     }
+
+    public boolean containsNewExpr() {
+        return true;
+    }
 }
 
