@@ -1,6 +1,6 @@
 %http://freshmeat.net/articles/view/667/
 \documentclass[mcgill,slideColor,colorBG,pdf]{prosper}
-\usepackage{epsfig, pstricks, graphicx, alltt, fancyvrb, qtree}
+\usepackage{epsfig, pstricks, graphicx, alltt, fancyvrb, qtree, ulem}
 
 \title{Optimizing Compilers with the Soot - Eclipse Plugin}
 \author{Jennifer Lhot\'ak\\
@@ -837,18 +837,172 @@ $out(S)_2 = gen(Sbody) \cup (in(S) \cup [ gen(Sbody) \cup (in(S) - kill(Sbody)] 
 \item select Soot - Process Source File - Run Soot ...
 \end{itemize}
 \item enable the 
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Exercise Notes}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Available Expressions}
+\begin{enumerate}
+\item computing: availability of expr at each stmt - sets of exprs
+\item define: an expr e ("x op y") is available at a program point p if for every path from the start point to p the expr e has been computed and has not been changed by something else (ie: there is no assignment to x or y)
+\item direction: forwards
+\item merge operator: intersection ($\cap$ - all paths)
+\end{enumerate}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Available Expressions}
 \begin{itemize}
-\item select Phase Options - Jimple Annotation Pack - CSE Tagger
+\item[5.] flow equations:\\ 
+\begin{center}\epsfig{file=in.eps,height=.6in}\end{center}
+\begin{small}
+avail: x = y + z\\
+not avail: x = x + z\\
+$out(S) =$ \sout{$gen(S) \cup (in(S) - kill(S))$} - doesn't work\\
+$out(S) = (gen(S) \cup in(S)) - kill(S)$\\
+$gen(S) = \{ y + z \}$\\
+$kill(S) = \{i$ any expr using x $\}$
+\end{small}
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Available Expressions}
+\begin{itemize}
+\item[6.] start sets:\\
+$out(start) = \{\}$ $\leftarrow$ most safe\\
+$out(Si) = \{$ all exprs $\} $ $\leftarrow$ most unsafe \\
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Least Fixed Point}
+\begin{center}\epsfig{file=lfp.eps,width=3in}\end{center}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Avail Expr Exercise}
+\begin{itemize}
+\item switch to Eclipse
+\item run Soot on the \texttt{AvailableExpressions.java} sample code
+\begin{itemize}
+\item right click on file in Package Explorer
+\item select Soot - Process Source File - Run Soot ...
+\end{itemize}
+\item enable Interaction 
+\begin{itemize}
+\item select General Options - Interactive Mode
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Avail Expr Exercise}
+\begin{itemize}
+\item output Jimple
+\begin{itemize}
+\item select Output Options - Output Format - Jimple File
+\end{itemize}
+\item enable the Available Expressions Analysis
+\begin{itemize}
+\item select Phase Options - Jimple Annotation Pack - Available Expressions Tagger
 \item check the Enable box
 \end{itemize}
 \end{itemize}
 \end{slide}
 
-\begin{slide} {Intermediate Representations - Exercise Notes}
+\begin{slide} {Data Flow Analysis - Exercise Notes}
 \begin{itemize}
-\item notice the expression in the if statement $if$ $x < \$i3$ and the array access is done in a previous statement
-\item notice the expression $x = x + a[4] + 2$ has been split into three statements
+\item use the interactive tools to see the generated sets of available expressions 
+\item notice this is an optimisitic analysis which starts with full sets everywhere
 \end{itemize}
+\end{slide}
+
+
+\begin{slide} {Data Flow Analysis - Avail Expr Exercise - 2}
+\begin{itemize}
+\item switch to Eclipse
+\item run Soot on the \texttt{AvailableExpressions.java} sample code
+\begin{itemize}
+\item right click on file in Package Explorer
+\item select Soot - Process Source File - Run Soot ...
+\end{itemize}
+\item enable Interaction 
+\begin{itemize}
+\item select General Options - Interactive Mode
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Avail Expr Exercise}
+\begin{itemize}
+\item output Jimple
+\begin{itemize}
+\item select Output Options - Output Format - Jimple File
+\end{itemize}
+\item enable the Available Expressions Analysis
+\begin{itemize}
+\item select Phase Options - Jimple Annotation Pack - Available Expressions Tagger
+\item check the Enable box
+\item select Pessimistic for analysis kind
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Exercise Notes}
+\begin{itemize}
+\item use the interactive tools to see the generated sets of available expressions 
+\item notice this is an pessimistic analysis which starts with empty sets everywhere
+\item compare this with the optimistic analysis
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Very Busy Expressions}
+\begin{center}\epsfig{file=verybusy.eps,width=3in}\end{center}
+\begin{itemize}
+\item $x$ op $y$ is very busy
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Very Busy Expressions}
+\begin{enumerate}
+\item computing: sets of expressions
+\item define: an expr e of the form "x op y" is "very busy" at program point p if for all paths from p to the end of the program the expr e is computed and there are no other assignments to x or y from p to the end of the program
+\item direction: backwards
+\item merge operator: intersection
+\end{enumerate}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Very Busy Expressions}
+\begin{itemize}
+\item[5.] flow equations:\\
+$kill(S) = \{$ any expr involving defs of s$\}$\\
+$gen(S) = \{$ x op y$\}$\\
+$in(S) = (out(S) - kill(S)) \cup gen(S)$\\
+\item[6.] start sets:\\
+$in(end) = \{\}$\\
+$in(Si) = \{$ all exprs $\}$
+\end{itemize}
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Constant Propagation}
+Example: \\
+\ \\
+P1: ((x, 1), (y, ?), (z, 2))\\
+P2: ((x, ?), (y, 3), (z, 2))\\
+MergePoint: ((x, ?), (y, ?), (z, 2))\\
+
+\end{slide}
+
+\begin{slide} {Data Flow Analysis - Constant Propagation}
+\begin{center}\epsfig{file=constant_lattice.eps,width=3in}\end{center}
+\ \\
+\ \\
+\begin{center}
+\begin{tabular}[t]{c|c|c|c} 
+$\bowtie$ & $\bot$ & C1 & $\top$ \\ \hline
+$\bot$ & $\bot$ & C1 & $\top$ \\ \hline
+C2 & C2 & if C1 = C2 C1 else $\top$ & $\top$ \\ \hline
+$\top$ & $\top$ & $\top$ & $\top$ 
+\end{tabular}
+\end{center}
 \end{slide}
 
 
