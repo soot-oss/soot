@@ -512,6 +512,7 @@ public class Scene  //extends AbstractHost
     
     public void setCallGraph(CallGraph cg)
     {
+        reachableMethods = null;
         activeCallGraph = cg;
     }
 

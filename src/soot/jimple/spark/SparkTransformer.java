@@ -129,7 +129,11 @@ public class SparkTransformer extends SceneTransformer
         reportTime( "Propagation", startProp, endProp );
         if( opts.force_gc() ) doGC();
         reportTime( "Solution found", startSimplify, endProp );
-
+        
+        if( !opts.on_fly_cg() ) {
+            CallGraphBuilder cgb = new CallGraphBuilder( pag );
+            cgb.build();
+        }
 
         if( opts.verbose() ) {
             G.v().out.println( "[Spark] Number of reachable methods: "
