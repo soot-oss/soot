@@ -59,13 +59,19 @@ public class Transform implements HasPhaseOptions
     }
 
     /** Allows user-defined phases to have options other than just enabled
-     * without having to mess with the XML. */
+     * without having to mess with the XML. 
+     * Call this method with a space-separated list of options declared
+     * for this Transform.  Only declared options may be passed to this
+     * transform as a phase option. */
     public void setDeclaredOptions( String options ) {
         declaredOpts = options;
     }
 
-    /** Allows user-defined phases to have options other than just enabled
-     * without having to mess with the XML. */
+    /** Allows user-defined phases to have options other than just
+     * enabled without having to mess with the XML.  Call this method
+     * with a space-separated list of option:value pairs that this
+     * Transform is to use as default parameters (eg
+     * `enabled:off').  */
     public void setDefaultOptions( String options ) {
         defaultOpts = options;
     }
