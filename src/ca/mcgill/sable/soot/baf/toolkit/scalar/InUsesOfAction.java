@@ -10,11 +10,11 @@ public class InUsesOfAction implements SimpleAction
 {
     Unit mX, mY;
     Local mLocal;
-    UnitLocalDefs mDefs;
+    LocalDefs mDefs;
     
-    public InUsesOfAction(Unit aX, Unit aY, Local aLocal, UnitLocalDefs aDefs)
+    public InUsesOfAction(Unit aX, Unit aY, Local aLocal, LocalDefs aDefs)
     {        
-        UnitLocalDefs mDefs = aDefs;
+        LocalDefs mDefs = aDefs;
         Unit mX = aX;
         Unit mY = aY;
         Local mLocal = aLocal;        

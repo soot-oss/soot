@@ -159,7 +159,7 @@ public class DeadCodeEliminator
         // for the essential statements, recursively
         {
             CompleteUnitGraph graph = new CompleteUnitGraph(body);
-            UnitLocalDefs defs = new SimpleUnitLocalDefs(graph);
+            LocalDefs defs = new SimpleLocalDefs(graph);
             
             while(!toVisit.isEmpty())
             {

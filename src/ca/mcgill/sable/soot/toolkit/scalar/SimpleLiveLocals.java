@@ -89,22 +89,22 @@ import java.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 
 
-public class SimpleUnitLiveLocals implements UnitLiveLocals
+public class SimpleLiveLocals implements LiveLocals
 {
     Map unitToLocalsAfter;
     Map unitToLocalsBefore;
 
-    public SimpleUnitLiveLocals(CompleteUnitGraph graph)
+    public SimpleLiveLocals(CompleteUnitGraph graph)
     {
         if(Main.isProfilingOptimization)
             Main.liveTimer.start();
         
         if(Main.isVerbose)
             System.out.println("[" + graph.getBody().getMethod().getName() +
-                "]     Constructing SimpleUnitLiveLocals...");
+                "]     Constructing SimpleLiveLocals...");
 
                         
-        SimpleUnitLiveLocalsAnalysis analysis = new SimpleUnitLiveLocalsAnalysis(graph);
+        SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
                 Main.livePostTimer.start();
@@ -146,13 +146,13 @@ public class SimpleUnitLiveLocals implements UnitLiveLocals
     }
 }
 
-class SimpleUnitLiveLocalsAnalysis extends BackwardUnitFlowAnalysis
+class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 {
     FlowSet emptySet;
     Map unitToGenerateSet;
     Map unitToPreserveSet;
 
-    SimpleUnitLiveLocalsAnalysis(UnitGraph g)
+    SimpleLiveLocalsAnalysis(UnitGraph g)
     {
         super(g);
 

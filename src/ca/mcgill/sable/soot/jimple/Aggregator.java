@@ -217,15 +217,15 @@ public class Aggregator
   private static boolean internalAggregate(StmtBody body, Map boxToZone, boolean isConservative)
     {
       Iterator stmtIt;
-      UnitLocalUses localUses;
-      UnitLocalDefs localDefs;
+      LocalUses localUses;
+      LocalDefs localDefs;
       CompleteUnitGraph graph;
       boolean hadAggregation = false;
       Chain units = body.getUnits();
       
       graph = new CompleteUnitGraph(body);
-      localDefs = new SimpleUnitLocalDefs(graph);
-      localUses = new SimpleUnitLocalUses(graph, localDefs);
+      localDefs = new SimpleLocalDefs(graph);
+      localUses = new SimpleLocalUses(graph, localDefs);
           
       stmtIt = graph.pseudoTopologicalOrderIterator();
       

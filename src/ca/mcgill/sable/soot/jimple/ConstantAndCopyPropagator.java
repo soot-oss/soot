@@ -142,11 +142,11 @@ public class ConstantAndCopyPropagator
             
         CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
 
-        UnitLocalDefs localDefs;
+        LocalDefs localDefs;
         
-        localDefs = new SimpleUnitLocalDefs(graph);
+        localDefs = new SimpleLocalDefs(graph);
 
-        UnitLocalUses localUses = new SimpleUnitLocalUses(graph, localDefs);
+        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
         // Perform a constant/local propagation pass.
         {

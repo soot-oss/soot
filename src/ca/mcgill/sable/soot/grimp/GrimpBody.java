@@ -315,18 +315,18 @@ public class GrimpBody extends StmtBody
 //          StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
 //  */
 //          /*
-//          System.out.println("Constructing UnitLocalDefs of " + this.getMethod().getName() + "...");
+//          System.out.println("Constructing LocalDefs of " + this.getMethod().getName() + "...");
 
-//          UnitLocalDefs localDefs = new UnitLocalDefs(graphBody);
+//          LocalDefs localDefs = new LocalDefs(graphBody);
 
-//          System.out.println("Constructing UnitLocalUses of " + getName() + "...");
+//          System.out.println("Constructing LocalUses of " + getName() + "...");
 
-//          UnitLocalUses localUses = new UnitLocalUses(stmtGraph, localDefs);
+//          LocalUses localUses = new LocalUses(stmtGraph, localDefs);
 
 //          LocalCopies localCopies = new LocalCopies(stmtGraph);
 
-//          System.out.println("Constructing UnitLiveLocals of " + this.getMethod().getName() + " ...");
-//          UnitLiveLocals liveLocals = new UnitLiveLocals(stmtGraph);
+//          System.out.println("Constructing LiveLocals of " + this.getMethod().getName() + " ...");
+//          LiveLocals liveLocals = new LiveLocals(stmtGraph);
 //          */
 
 //          // Create statement name table

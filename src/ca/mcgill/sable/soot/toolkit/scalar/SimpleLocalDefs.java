@@ -85,20 +85,20 @@ import java.util.*;
 
 // FSet version
 
-public class SimpleUnitLocalDefs implements UnitLocalDefs
+public class SimpleLocalDefs implements LocalDefs
 {
     Map localUnitPairToDefs;
 
-    public SimpleUnitLocalDefs(CompleteUnitGraph g)
+    public SimpleLocalDefs(CompleteUnitGraph g)
     {
         if(Main.isProfilingOptimization)
             Main.defsTimer.start();
         
         if(Main.isVerbose)
             System.out.println("[" + g.getBody().getMethod().getName() +
-                               "]     Constructing SimpleUnitLocalDefs...");
+                               "]     Constructing SimpleLocalDefs...");
     
-        UnitLocalDefsFlowAnalysis analysis = new UnitLocalDefsFlowAnalysis(g);
+        LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
         
         if(Main.isProfilingOptimization)
             Main.defsPostTimer.start();
@@ -152,7 +152,7 @@ public class SimpleUnitLocalDefs implements UnitLocalDefs
         List toReturn = (List) localUnitPairToDefs.get(pair);
         
         if(toReturn == null)
-            throw new RuntimeException("Illegal UnitLocalDefs query; local " + l + " has no definition at " + 
+            throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
                                        ((ToBriefString) s).toBriefString());
         
         return toReturn;
@@ -264,13 +264,13 @@ class IntPair
 
 }
 
-class UnitLocalDefsFlowAnalysis extends ForwardUnitFlowAnalysis
+class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet;
     Map localToPreserveSet;
     Map localToIntPair;
 
-    public UnitLocalDefsFlowAnalysis(UnitGraph g)
+    public LocalDefsFlowAnalysis(UnitGraph g)
     {
         super(g);
 
@@ -308,7 +308,7 @@ class UnitLocalDefsFlowAnalysis extends ForwardUnitFlowAnalysis
                         List defBoxes = s.getDefBoxes();
                         if(!defBoxes.isEmpty()) {
                             if(!(defBoxes.size() ==1)) 
-                                throw new RuntimeException("UnitFastColorer: invalid number of def boxes");
+                                throw new RuntimeException("FastColorer: invalid number of def boxes");
                             
                             if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
                                 Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
@@ -389,7 +389,7 @@ class UnitLocalDefsFlowAnalysis extends ForwardUnitFlowAnalysis
                     
                     List defBoxes = s.getDefBoxes();
                     if(!(defBoxes.size() ==1)) 
-                        throw new RuntimeException("SimpleUnitLocalDefs: invalid number of def boxes");
+                        throw new RuntimeException("SimpleLocalDefs: invalid number of def boxes");
                             
                     if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
                         Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
@@ -441,7 +441,7 @@ class UnitLocalDefsFlowAnalysis extends ForwardUnitFlowAnalysis
         List defBoxes = unit.getDefBoxes();
         if(!defBoxes.isEmpty()) {
             if(!(defBoxes.size() ==1)) 
-                throw new RuntimeException("UnitFastColorer: invalid number of def boxes");
+                throw new RuntimeException("FastColorer: invalid number of def boxes");
                           
             Value value = ((ValueBox)defBoxes.get(0)).getValue();
             if(value  instanceof Local) {

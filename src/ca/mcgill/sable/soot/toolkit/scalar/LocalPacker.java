@@ -82,7 +82,7 @@ import java.util.*;
 import ca.mcgill.sable.soot.jimple.*;
 
 
-public class UnitLocalPacker
+public class LocalPacker
 {
     public static void packLocals(Body body)
     {
@@ -147,10 +147,10 @@ public class UnitLocalPacker
         
         // Call the graph colorer.
             if(isConservative)
-                UnitFastColorer.unsplitAssignColorsToLocals(body, localToGroup,
+                FastColorer.unsplitAssignColorsToLocals(body, localToGroup,
                     localToColor, groupToColorCount);
             else
-                UnitFastColorer.assignColorsToLocals(body, localToGroup,
+                FastColorer.assignColorsToLocals(body, localToGroup,
                     localToColor, groupToColorCount);
 
                                     

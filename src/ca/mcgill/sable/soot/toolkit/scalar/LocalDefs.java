@@ -65,9 +65,6 @@
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Renamed the uses of Hashtable to HashMap.
-
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -78,37 +75,8 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class UnitFlowAnalysis
+public interface LocalDefs
 {
-    protected Map unitToAfterFlow,
-        unitToBeforeFlow;
-
-    UnitGraph graph;
-
-    public UnitFlowAnalysis(UnitGraph graph)
-    {
-        unitToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-        unitToBeforeFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
-
-        this.graph = graph;
-    }
-
-    protected abstract Object newInitialFlow();
-
-    protected abstract boolean isForward();
-
-    protected abstract void flowThrough(Object in, Unit s, Object out);
-    protected abstract void merge(Object in1, Object in2, Object out);
-    protected abstract void copy(Object source, Object dest);
-    protected abstract void doAnalysis();
-
-    public Object getFlowAfterUnit(Unit s)
-    {
-        return unitToAfterFlow.get(s);
-    }
-
-    public Object getFlowBeforeUnit(Unit s)
-    {
-        return unitToBeforeFlow.get(s);
-    }
+    public List getDefsOfAt(Local l, Unit s);
 }
+

@@ -65,6 +65,9 @@
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
+ - Modified on 23-Jul-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Renamed the uses of Hashtable to HashMap.
+
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -75,8 +78,20 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public interface UnitLocalDefs
+public interface LocalUses
 {
-    public List getDefsOfAt(Local l, Unit s);
+    public List getUsesOf(Unit s);
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

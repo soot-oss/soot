@@ -466,7 +466,7 @@ public class JasminClass
         }
         
         // Call the graph colorer.
-            UnitFastColorer.assignColorsToLocals(body, localToGroup,
+            FastColorer.assignColorsToLocals(body, localToGroup,
                 localToColor, groupToColorCount);
 
         if(Main.isProfilingOptimization)
@@ -502,8 +502,8 @@ public class JasminClass
 
         CompleteUnitGraph stmtGraph = new CompleteUnitGraph(body);
 
-        UnitLocalDefs ld = new SimpleUnitLocalDefs(stmtGraph);
-        UnitLocalUses lu = new SimpleUnitLocalUses(stmtGraph, ld);
+        LocalDefs ld = new SimpleLocalDefs(stmtGraph);
+        LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
 
         int stackLimitIndex = -1;
         
@@ -782,7 +782,7 @@ public class JasminClass
 
                     /* check that we have two uses and that these */
                     /* uses live precisely in nextStmt and nextNextStmt */
-                    /* UnitLocalDefs tells us this: if there was no use, */
+                    /* LocalDefs tells us this: if there was no use, */
                     /* there would be no corresponding def. */
                     if (lu.getUsesOf(stmt).size() != 2 ||
                         ld.getDefsOfAt((Local)lvalue, nextStmt).size() != 1 ||

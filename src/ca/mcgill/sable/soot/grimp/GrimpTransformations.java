@@ -98,8 +98,8 @@ public class GrimpTransformations
 
       CompleteUnitGraph graph = new CompleteUnitGraph(body);
         
-      UnitLocalDefs localDefs = new SimpleUnitLocalDefs(graph);
-      UnitLocalUses localUses = new SimpleUnitLocalUses(graph, localDefs);
+      LocalDefs localDefs = new SimpleLocalDefs(graph);
+      LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
       /* fold in NewExpr's with specialinvoke's */
       for (; it.hasNext(); )

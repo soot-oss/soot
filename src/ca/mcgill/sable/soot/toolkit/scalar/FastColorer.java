@@ -77,7 +77,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class UnitFastColorer
+public class FastColorer
 {   
     public static void unsplitAssignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
@@ -85,10 +85,10 @@ public class UnitFastColorer
         
         CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
 
-        UnitLiveLocals liveLocals;
+        LiveLocals liveLocals;
 
         
-        liveLocals = new SimpleUnitLiveLocals(unitGraph);
+        liveLocals = new SimpleLiveLocals(unitGraph);
         
         
         UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
@@ -227,10 +227,10 @@ public class UnitFastColorer
        
         CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
 
-        UnitLiveLocals liveLocals;
+        LiveLocals liveLocals;
 
        
-        liveLocals = new SimpleUnitLiveLocals(unitGraph);
+        liveLocals = new SimpleLiveLocals(unitGraph);
        
 
         UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
@@ -317,7 +317,7 @@ public class UnitFastColorer
             return locals;
         }
         
-        public UnitInterferenceGraph(Body body, Map localToGroup, UnitLiveLocals liveLocals)
+        public UnitInterferenceGraph(Body body, Map localToGroup, LiveLocals liveLocals)
         {
 
             locals = new ArrayList();
@@ -354,7 +354,7 @@ public class UnitFastColorer
                             if(!defBoxes.isEmpty()) {
                 
                                 if(!(defBoxes.size() ==1)) 
-                                    throw new RuntimeException("UnitFastColorer: invalid number of def boxes");
+                                    throw new RuntimeException("FastColorer: invalid number of def boxes");
                             
                                 if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
                 

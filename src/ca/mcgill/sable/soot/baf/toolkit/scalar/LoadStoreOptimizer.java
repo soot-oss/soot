@@ -39,8 +39,8 @@ public class LoadStoreOptimizer
     protected Chain mUnits;
     protected Body mBody;
     protected CompleteUnitGraph mCompleteUnitGraph;
-    protected UnitLocalDefs mLocalDefs;
-    protected UnitLocalUses mLocalUses;
+    protected LocalDefs mLocalDefs;
+    protected LocalUses mLocalUses;
     protected Map mUnitToBlockMap;
     protected Map mUnitToStackSlotMap;
 
@@ -82,8 +82,8 @@ public class LoadStoreOptimizer
     protected void computeLocalDefsAndLocalUsesInfo() 
     {        
         mCompleteUnitGraph =  new CompleteUnitGraph(mBody);
-        mLocalDefs = new SimpleUnitLocalDefs(mCompleteUnitGraph);
-        mLocalUses = new SimpleUnitLocalUses(mCompleteUnitGraph, mLocalDefs);            
+        mLocalDefs = new SimpleLocalDefs(mCompleteUnitGraph);
+        mLocalUses = new SimpleLocalUses(mCompleteUnitGraph, mLocalDefs);            
     }
 
 

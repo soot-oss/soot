@@ -115,7 +115,7 @@ public class Main
                 Chain units = body.getUnits();
                 CompleteUnitGraph stmtGraph = new CompleteUnitGraph(body);
                 
-                UnitLocalDefs localDefs = new SimpleUnitLocalDefs(stmtGraph);
+                LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
                 Iterator stmtIt = units.iterator();
                 
                 while(stmtIt.hasNext())

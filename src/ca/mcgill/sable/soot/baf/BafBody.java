@@ -170,7 +170,7 @@ public class BafBody extends Body
         {
              LoadStoreOptimizer.v().optimize(this);
              UnusedLocalRemover.removeUnusedLocals(this);
-             UnitLocalPacker.packLocals(this);
+             LocalPacker.packLocals(this);
         }
     }
 }

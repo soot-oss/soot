@@ -375,7 +375,7 @@ public class Body
         UnitGraph unitGraph = new BriefUnitGraph(this);
         
         CompleteUnitGraph completeUnitGraph = new CompleteUnitGraph(this);
-        SimpleUnitLocalDefs localDefs = new SimpleUnitLocalDefs(completeUnitGraph);
+        SimpleLocalDefs localDefs = new SimpleLocalDefs(completeUnitGraph);
 
         // Create statement name table
         {

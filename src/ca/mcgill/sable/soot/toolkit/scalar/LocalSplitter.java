@@ -75,7 +75,7 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class UnitLocalSplitter
+public class LocalSplitter
 {
     public static void splitLocals(Body listBody)
     {
@@ -94,11 +94,11 @@ public class UnitLocalSplitter
         {
             CompleteUnitGraph graph = new CompleteUnitGraph(listBody);
 
-            UnitLocalDefs localDefs;
+            LocalDefs localDefs;
             
-            localDefs = new SimpleUnitLocalDefs(graph);
+            localDefs = new SimpleLocalDefs(graph);
 
-            UnitLocalUses localUses = new SimpleUnitLocalUses(graph, localDefs);
+            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
             
             if(Main.isProfilingOptimization)
                 Main.splitPhase1Timer.end();

@@ -199,7 +199,7 @@ public class JimpleBody extends StmtBody
             if(Main.isProfilingOptimization)
                 Main.splitTimer.start();
 
-            UnitLocalSplitter.splitLocals(this);
+            LocalSplitter.splitLocals(this);
 
             if(!BuildJimpleBodyOption.noTyping(buildOptions))
             {
@@ -244,7 +244,7 @@ public class JimpleBody extends StmtBody
             Transformations.standardizeLocalNames(this);
         else
         {   
-            UnitLocalPacker.unsplitOriginalLocals(this);
+            LocalPacker.unsplitOriginalLocals(this);
             Transformations.standardizeStackLocalNames(this);
         }
         
@@ -252,7 +252,7 @@ public class JimpleBody extends StmtBody
         
         if(BuildJimpleBodyOption.usePacking(buildOptions))
         {
-            UnitLocalPacker.packLocals(this);
+            LocalPacker.packLocals(this);
         }
 
         if(ca.mcgill.sable.soot.Main.isProfilingOptimization)
@@ -362,15 +362,15 @@ public class JimpleBody extends StmtBody
 //          Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
 //          //CompleteUnitGraph stmtGraph = new CompleteUnitGraph(units);
         
-//          //LocalDefs localDefs = new SimpleUnitLocalDefs(stmtGraph);
+//          //LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
 
 //          System.out.println("debug output for " + getMethod().getSignature());
 //          /*
-//          UnitLocalUses localUses = new UnitLocalUses(stmtGraph, localDefs);
+//          LocalUses localUses = new LocalUses(stmtGraph, localDefs);
 //  */
         
 //          //LocalCopies localCopies = new SimpleLocalCopies(stmtGraph);
-//          // UnitLiveLocals liveLocals = new SimpleUnitLiveLocals(stmtGraph);
+//          // LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
 //          //EqualLocals equalLocals = new SimpleEqualLocals(stmtGraph);
         
 //          // Create statement name table

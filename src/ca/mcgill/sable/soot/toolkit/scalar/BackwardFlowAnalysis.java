@@ -75,9 +75,9 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class BackwardUnitFlowAnalysis extends UnitFlowAnalysis
+public abstract class BackwardFlowAnalysis extends FlowAnalysis
 {
-    public BackwardUnitFlowAnalysis(UnitGraph graph)
+    public BackwardFlowAnalysis(UnitGraph graph)
     {
         super(graph);
     }
