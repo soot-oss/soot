@@ -1,3 +1,13 @@
+Improvements in version 1.0.1
+
+1. Eliminated useless Directed interface.
+
+2. Fixed bug in HashChain where null could wheedle its way into a HashChain.  Bad stuff!
+
+3. Added attribute support and null pointer checks / array bounds checks.
+
+4. Added common subexpression elimination.
+
 Improvements in Release 1 (version 1.0.0)
 
 Some of these changes occured earlier but are only mentioned now.

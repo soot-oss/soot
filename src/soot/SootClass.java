@@ -241,7 +241,7 @@ public class SootClass extends AbstractHost
         SootField toReturn = (SootField) Scene.v().fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
         
         if(toReturn == null)
-            throw new RuntimeException("No field " + name + " in class " + getName());
+            throw new RuntimeException("No field " + subsignature + " in class " + getName());
         else
             return toReturn;
     }

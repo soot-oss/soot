@@ -84,7 +84,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
         return Collections.unmodifiableList(l);
     }
 
-    public List getPredsOf(Directed s)
+    public List getPredsOf(Object s)
     {
         List l = (List) nodeToPreds.get(s);
         if (l != null)
@@ -93,7 +93,7 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
             throw new RuntimeException(s+"not in graph!");
     }
 
-    public List getSuccsOf(Directed s)
+    public List getSuccsOf(Object s)
     {
         List l = (List) nodeToSuccs.get(s);
         if (l != null)
@@ -114,6 +114,9 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
 
     public void addEdge(Object from, Object to)
     {
+        if (from == null || to == null)
+	    throw new RuntimeException("edge from or to null");
+
         if (containsEdge(from, to))
             return;
 

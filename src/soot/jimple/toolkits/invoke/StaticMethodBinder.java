@@ -54,7 +54,7 @@ public class StaticMethodBinder extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
     {
         if(Main.isVerbose)
-            System.out.println("<> Binding static methods...");
+            System.out.println("[] Binding static methods...");
 
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
@@ -65,8 +65,8 @@ public class StaticMethodBinder extends SceneTransformer
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
-//        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
-//        vta.trimActiveInvokeGraph();
+        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
+        vta.trimActiveInvokeGraph();
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
                 

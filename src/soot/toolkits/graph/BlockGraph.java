@@ -542,13 +542,13 @@ public class BlockGraph implements DirectedGraph
         throw new RuntimeException("not yet implemented");
     }
 
-    public List getPredsOf(Directed s)
+    public List getPredsOf(Object s)
     {
         Block b = (Block) s;
         return b.getPreds();
     }
 
-    public List getSuccsOf(Directed s)
+    public List getSuccsOf(Object s)
     {
         Block b = (Block) s;
         return b.getSuccs();

@@ -46,12 +46,10 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
         nodeToReachingTypes.put(o, new LinkedList());
     }
 
-    private Type getBaseType(Type t)
+    /** Returns true if t is RefType or ArrayType. */
+    private boolean isRefLikeType(Type t)
     {
-        if (t instanceof ArrayType)
-            return ((ArrayType)t).baseType;
-        else
-            return t;
+        return (t instanceof RefType) || (t instanceof ArrayType);
     }
 
     public VTATypeGraph(InvokeGraph ig)
@@ -68,9 +66,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
             {
                 SootClass c = (SootClass)classesIt.next();
 
-                if (c.isInterface())
-                    continue;
-
+		// Snarky comment about interfaces indeed possibly having fields goes here.
                 // Add fields of c.
                 Iterator fieldsIt = c.getFields().iterator();
 
@@ -78,9 +74,12 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                 {
                     SootField f = (SootField)fieldsIt.next();
 
-                    if (getBaseType(f.getType()) instanceof RefType)
+                    if (isRefLikeType(f.getType()))
                         addNode(getVTALabel(f));
                 }
+
+                if (c.isInterface())
+                    continue;
 
                 // Add nodes for method contents.
                 Iterator methodsIt = c.getMethods().iterator();
@@ -89,15 +88,12 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                 {
                     SootMethod m = (SootMethod)methodsIt.next();
 
-                    if (!m.isConcrete())
-                        continue;
-
                     // For instance methods, add "this" node.
                     if (!m.isStatic())
                         addNode(getVTALabel(m, "this"));
 
                     // Add return node, if appropriate.
-                    if (getBaseType(m.getReturnType()) instanceof RefType)
+                    if (isRefLikeType(m.getReturnType()))
                         addNode(getVTALabel(m, "return"));
 
                     // Add the parameters.
@@ -106,20 +102,23 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                     while (paramIt.hasNext())
                     {
                         Type t = (Type)paramIt.next();
-                        if (getBaseType(t) instanceof RefType)
+                        if (isRefLikeType(t))
                             addNode(getVTALabel(m, "p"+paramCount));
                         paramCount++;
                     }
+
+                    if (!m.isConcrete())
+                        continue;
 
                     // Get the body & add the locals.
                     Body b = m.getActiveBody();
 
                     Iterator localIt = b.getLocals().iterator();
-                    while (paramIt.hasNext())
+                    while (localIt.hasNext())
                     {
                         Local l = (Local)localIt.next();
                         Type t = l.getType();
-                        if (getBaseType(t) instanceof RefType)
+                        if (isRefLikeType(t))
                             addNode(getVTALabel(m, l));
                     }
                 }
@@ -150,9 +149,11 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                 {
                     SootMethod m = (SootMethod)methodsIt.next();
 
+		    if (!m.isConcrete())
+		      continue;
+
                     String methodSig = m.getSignature();
                     JimpleBody b = (JimpleBody)m.getActiveBody();
-                    Type retType = getBaseType(m.getReturnType());
 
                     // Look for assignStmts and method calls.
                     Iterator unitsIt = b.getUnits().iterator();
@@ -184,18 +185,20 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                                 while (paramIt.hasNext())
                                 {
                                     Type t = (Type)paramIt.next();
-                                    if (getBaseType(t) instanceof RefType)
-                                        addEdge(getVTALabel(m, ie.getArg(paramCount)), 
-                                                target.getSignature() + "$p"+paramCount);
-                                    paramCount++;
-                                }
+                                    if (isRefLikeType(t) && 
+					   ie.getArg(paramCount) instanceof Local) 
+				      addEdge(getVTALabel(m, ie.getArg(paramCount)), 
+					      target.getSignature() + "$p"+paramCount);
+				    paramCount++;
+				}
                             }
                         }
 
                         // Add edges corresponding to return statements.
-                        if (s instanceof ReturnStmt && getBaseType(m.getReturnType()) instanceof RefType)
+                        if (s instanceof ReturnStmt && isRefLikeType(((ReturnStmt)s).getOp().getType())
+			     && ((ReturnStmt)s).getOp() instanceof Local)
                         {
-                            Iterator siteIt = ig.getSitesOf(m).iterator();
+                            Iterator siteIt = ig.getCallingSitesOf(m).iterator();
                             while (siteIt.hasNext())
                             {
                                 Stmt caller = (Stmt)siteIt.next();
@@ -232,7 +235,7 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                                     continue;
                                 }
                             }
-                            else if (rhs instanceof ParameterRef)
+                            else if (rhs instanceof ParameterRef && isRefLikeType(rhs.getType()))
                                 addEdge(methodSig+"$p"+((ParameterRef)rhs).getIndex(), getVTALabel(m, lhs));
                             else
                                 /* ignore caughtexceptionrefs */;
@@ -243,36 +246,43 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
                         {
                             AssignStmt as = (AssignStmt)s;
                             Value lhs = as.getLeftOp(), rhs = as.getRightOp();
-                            
-                            if (rhs instanceof CastExpr)
-                                rhs = ((CastExpr)rhs).getOp();
 
-                            String lhsRep = getVTALabel(m, lhs), 
+			    if (isRefLikeType(lhs.getType()))
+			    {
+			      if (rhs instanceof CastExpr)
+                                rhs = ((CastExpr)rhs).getOp();
+			      
+			      String lhsRep = getVTALabel(m, lhs), 
                                 rhsRep = getVTALabel(m, rhs);
 
-                            // add to the reachingTypes sets.
-                            if (rhs instanceof NewExpr)
-                            {
-                                List l = (List)nodeToReachingTypes.get(lhsRep);
-                                l.add(((NewExpr)rhs).getBaseType());
-                            }
-                            else if (rhs instanceof NewArrayExpr)
-                            {
-                                List l = (List)nodeToReachingTypes.get(lhsRep);
-                                l.add(((NewArrayExpr)rhs).getBaseType());
-                            }
-                            else if (rhs instanceof NewMultiArrayExpr)
-                            {
-                                List l = (List)nodeToReachingTypes.get(lhsRep);
-                                l.add(((NewMultiArrayExpr)rhs).getBaseType().baseType);
-                            }
-
-                            // check that we have the right form.
-                            if (lhsRep == null || rhsRep == null)
+			      // add to the reachingTypes sets.
+			      if (rhs instanceof NewExpr)
+				{
+				  List l = (List)nodeToReachingTypes.get(lhsRep);
+				  l.add(((NewExpr)rhs).getType());
+				}
+			      else if (rhs instanceof NewArrayExpr)
+				{
+				  List l = (List)nodeToReachingTypes.get(lhsRep);
+				  l.add(((NewArrayExpr)rhs).getType());
+				}
+			      else if (rhs instanceof NewMultiArrayExpr)
+				{
+				  List l = (List)nodeToReachingTypes.get(lhsRep);
+				  l.add(((NewMultiArrayExpr)rhs).getType());
+				}
+			      
+			      // check that we have the right form.
+			      if (lhsRep == null || rhsRep == null)
                                 continue;
-
-                            addEdge(rhsRep, lhsRep);
-                        }
+			      
+			      addEdge(rhsRep, lhsRep);
+			      if (lhs.getType() instanceof ArrayType || rhs.getType() instanceof ArrayType ||
+				  (lhs.getType().equals(RefType.v("java.lang.Object")) &&
+				   rhs.getType().equals(RefType.v("java.lang.Object"))))
+				addEdge(lhsRep, rhsRep);
+			    }
+			}
                     }
                 }
             }
@@ -296,7 +306,8 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
         else if (v instanceof FieldRef)
             return ((FieldRef)v).getField().getSignature();
         
-        return null;
+// 	System.out.println("WARNING: Don't know how to make VTALabel method: "+m+" value: "+v+" type:"+v.getClass());
+	return null;
     }
 
     /** Returns the name of the VTA node corresponding to the given method, and flagged with <code>id</code>. */
@@ -312,3 +323,4 @@ public class VTATypeGraph extends HashMutableDirectedGraph implements TypeGraph
     }
 
 }
+

@@ -97,14 +97,18 @@ public class StronglyConnectedComponents
 
                     if (nodeToComponent.get(s) == null)
                     {
-                        currentComponent = new ArrayList();
+                        currentComponent = new StationaryArrayList();
+                        nodeToComponent.put(s, currentComponent);
+                        componentList.add(currentComponent);
                         sccGraph.addNode(currentComponent);
                     }
                     else
+                    {
+                        System.out.println("huh, this shouldn't happen");
                         currentComponent = (List)nodeToComponent.get(s);
+                    }
 
                     visitRevNode(g, s, currentComponent); 
-                    componentList.add(Collections.unmodifiableList(currentComponent));
                 }
             }
         }
@@ -124,7 +128,7 @@ public class StronglyConnectedComponents
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Directed toVisitNode = (Directed)nodeStack.getLast();
+            Object toVisitNode = nodeStack.getLast();
             
             toVisitIndex++;
             
@@ -170,7 +174,7 @@ public class StronglyConnectedComponents
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Directed toVisitNode = (Directed)nodeStack.getLast();
+            Object toVisitNode = nodeStack.getLast();
             
             toVisitIndex++;
             
@@ -181,6 +185,8 @@ public class StronglyConnectedComponents
                 // No more nodes.  Add toVisitNode to current component.
                     currentComponent.add(toVisitNode);
                     nodeToComponent.put(toVisitNode, currentComponent);
+               
+                    nodeToColor.put(toVisitNode, new Integer(BLACK));
                
                 // Pop this node off
                     nodeStack.removeLast();
@@ -204,7 +210,7 @@ public class StronglyConnectedComponents
                     {
                         /* we may be visiting a node in another component.  if so, add edge to sccGraph. */
                         if (nodeToComponent.get(childNode) != currentComponent)
-                            sccGraph.addEdge(currentComponent, nodeToComponent.get(childNode));
+                            sccGraph.addEdge(nodeToComponent.get(childNode), currentComponent);
                     }
             }
         }

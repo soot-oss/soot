@@ -49,6 +49,10 @@ public class HashChain extends AbstractCollection
 
     public void swapWith(Object out, Object in)
     {
+	if (in == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
+
+	stateCount++;
         insertBefore(in, out);
         remove(out);
     }
@@ -56,7 +60,8 @@ public class HashChain extends AbstractCollection
     /** Adds the given object to this HashChain. */
     public boolean add(Object item) 
     {
-        stateCount++;
+	if (item == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
         addLast(item);
         return true;
     }
@@ -79,9 +84,7 @@ public class HashChain extends AbstractCollection
     { 
         firstItem = lastItem = null;
     }
-   
 
-   
     public boolean follows(Object someObject, Object someReferenceObject)
     {
         Iterator it = iterator(someObject);
@@ -93,16 +96,16 @@ public class HashChain extends AbstractCollection
          return true;
     }
     
-    public boolean contains( Object o)
+    public boolean contains(Object o)
     {
-        return map.containsKey( o);
+        return map.containsKey(o);
     }
 
     public boolean containsAll(Collection c)
     {
         Iterator it = c.iterator();
         while (it.hasNext())
-            if (!(map.containsKey( it.next())))
+            if (!(map.containsKey(it.next())))
                 return false;
         
         return true;
@@ -110,6 +113,9 @@ public class HashChain extends AbstractCollection
     
     public void insertAfter(Object toInsert, Object point)
     {
+	if (toInsert == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
+
         if(map.containsKey(toInsert))
             throw new RuntimeException("Chain already contains object.");
         stateCount++;
@@ -121,6 +127,9 @@ public class HashChain extends AbstractCollection
 
     public void insertAfter(List toInsert, Object point)
     {
+	if (toInsert == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
+
         Object previousPoint = point;
         Iterator it = toInsert.iterator();
         while (it.hasNext())
@@ -167,6 +176,9 @@ public class HashChain extends AbstractCollection
   
     public boolean remove(Object item)
     { 
+	if (item == null)
+	  throw new RuntimeException("Bad idea!  You tried to remove null from a Chain!  Do not pass GO.");
+
         stateCount++;
         Link link = (Link) map.get(item);
         

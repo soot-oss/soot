@@ -37,17 +37,31 @@ public class InvokeGraph
 {   
     HashMap siteToDeclaringMethod = new HashMap();
     HashMap siteToTargetMethods = new HashMap();
-    HashMap methodToSites = new HashMap();
+    HashMap methodToContainedSites = new HashMap();
+    HashMap targetToCallingSites = new HashMap();
   
     public SootMethod getDeclaringMethod(Stmt site) 
     {
         return (SootMethod)siteToDeclaringMethod.get(site);
     }
 
-    /** Returns the sites of container added via addSite */
+    /** Returns the sites of container added via addSite.
+        This captures all of the callsites within container. 
+	If you want all of the sites which <i>call</i> a given method, use
+	getCallingSitesOf. */
     public List getSitesOf(SootMethod container) 
     {
-        List l = (List)methodToSites.get(container);
+        List l = (List)methodToContainedSites.get(container);
+        if (l != null)
+            return l;
+        else
+            return new ArrayList();
+    }
+
+    /** Returns the callsites which potentially invoke target. */
+    public List getCallingSitesOf(SootMethod target)
+    {
+        List l = (List)targetToCallingSites.get(target);
         if (l != null)
             return l;
         else
@@ -131,10 +145,26 @@ public class InvokeGraph
     {
         List l = (List)siteToTargetMethods.get(site);
         l.remove(target);
+
+	l = (List)targetToCallingSites.get(target);
+	l.remove(site);
+	if (l.isEmpty())
+	  targetToCallingSites.remove(target);
     }
 
     public void removeAllTargets(Stmt site)
     {
+	List l = (List)siteToTargetMethods.get(site);
+	Iterator it = l.iterator();
+	while (it.hasNext())
+	{
+	    SootMethod m = (SootMethod)it.next();
+	    List l0 = (List)targetToCallingSites.get(m);
+	    l0.remove(site);
+	    if (l0.isEmpty())
+	      targetToCallingSites.remove(m);
+	}
+
         siteToTargetMethods.put(site, new ArrayList());
     }
 
@@ -144,6 +174,14 @@ public class InvokeGraph
     {
         List l = (List)siteToTargetMethods.get(site);
         l.add(target);
+
+	l = (List)targetToCallingSites.get(target);
+	if (l == null)
+	{
+	    l = new ArrayList();
+	    targetToCallingSites.put(target, l);
+	}
+	l.add(site);
     }
 
     public void addSite(Stmt site, SootMethod container) 
@@ -151,21 +189,19 @@ public class InvokeGraph
         siteToDeclaringMethod.put(site, container);
         siteToTargetMethods.put(site, new ArrayList());
 
-        List l = (List)methodToSites.get(container);
+        List l = (List)methodToContainedSites.get(container);
         if (l == null) 
             l = new ArrayList();
         l.add(site);
-
-        methodToSites.put(container, l);
     }
 
     public void removeSite(Stmt site) 
     {
         SootMethod d = (SootMethod)siteToDeclaringMethod.remove(site);
         siteToTargetMethods.remove(site);
-        List l = (List)methodToSites.get(d);
+        List l = (List)methodToContainedSites.get(d);
         if (l.size() == 1)
-            methodToSites.remove(d);
+            methodToContainedSites.remove(d);
         else
             l.remove(site);            
     }

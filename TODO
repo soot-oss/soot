@@ -1,2 +1,6 @@
 For the next release of Soot, we will improve the whole-program analysis
 features.
+
+improve soot.toolkits.graph.Block so that we keep a state counter for
+the Body and don't trample stuff; this is needed to keep the BlockLength up
+to date.  Actually, that is somewhat complicated.

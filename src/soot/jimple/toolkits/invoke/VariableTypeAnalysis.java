@@ -42,11 +42,10 @@ public class VariableTypeAnalysis
 
     StronglyConnectedComponents scc;
     DirectedGraph superGraph;
-    HashMap sgNodeToReachingTypes;
 
     List computeReachingTypes(List superNode)
     {
-        Chain retVal = new HashChain();
+        HashSet retVal = new HashSet();
         Iterator snIt = superNode.iterator();
 
         while (snIt.hasNext())
@@ -66,6 +65,9 @@ public class VariableTypeAnalysis
      * to this VTA's results. */
     public VariableTypeAnalysis(InvokeGraph ig)
     {
+        if (Main.isVerbose)
+            System.out.println("[vta] Constructing Variable Type Analysis graph.");
+
         this.ig = ig;
         vtg = new VTATypeGraph(ig);
 
@@ -74,7 +76,6 @@ public class VariableTypeAnalysis
 
         // Now we need a new graph.
         superGraph = scc.getSuperGraph();
-        sgNodeToReachingTypes = new HashMap();
 
         Iterator sgHeadsIt = superGraph.getHeads().iterator();
 
@@ -86,11 +87,16 @@ public class VariableTypeAnalysis
             superNodesToReachingTypes.put(sgNode, sgTypes);
             visitNode(superGraph, sgNode, sgTypes);
         }
+        if (Main.isVerbose)
+            System.out.println("[vta] Done constructing Variable Type Analysis graph.");
     }
 
     /** Uses the results of this analysis to trim the active invoke graph. */
     public void trimActiveInvokeGraph()
     {
+        if (Main.isVerbose)
+            System.out.println("[vta] Trimming active invoke graph.");
+
         // Is there a better way to do this?
 
         List appAndLibClasses = new ArrayList();
@@ -140,7 +146,8 @@ public class VariableTypeAnalysis
                     if (ie instanceof VirtualInvokeExpr ||
                         ie instanceof InterfaceInvokeExpr)
                     {
-                        Type receiverType = ((InstanceInvokeExpr)ie).getBase().getType();
+                        Value base = ((InstanceInvokeExpr)ie).getBase();
+                        Type receiverType = base.getType();
 
                         if(receiverType instanceof RefType)
                         {
@@ -149,8 +156,14 @@ public class VariableTypeAnalysis
                             // the ones that VTA doesn't rule out.)
                             ig.removeAllTargets(s);
 
+                            System.out.println("stmt "+s);
+                            System.out.println("resolving concrete dispatch; list = "+scc.getComponentOf(VTATypeGraph.getVTALabel(m, base)));
+                            System.out.println("reaching types = "+ ((List)superNodesToReachingTypes.get(
+                                           scc.getComponentOf(VTATypeGraph.getVTALabel(m, base)))));
+
                             Iterator targetsIt = h.resolveConcreteDispatch
-                                ((List)sgNodeToReachingTypes.get(scc.getComponentOf(s)), 
+                                ((List)superNodesToReachingTypes.get(
+                                                 scc.getComponentOf(VTATypeGraph.getVTALabel(m, base))), 
                                  ie.getMethod()).iterator();
                             
                             while (targetsIt.hasNext())
@@ -165,6 +178,9 @@ public class VariableTypeAnalysis
                 }
             }
         }
+
+        if (Main.isVerbose)
+            System.out.println("[vta] Done trimming active invoke graph based on VTA results.");
     }
 
     // You can also ask about the reaching types for any variable.
@@ -195,7 +211,7 @@ public class VariableTypeAnalysis
         while(!nodeStack.isEmpty())
         {
             int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Directed toVisitNode = (Directed)nodeStack.getLast();
+            Object toVisitNode = nodeStack.getLast();
             List toVisitTypes = (List)typesStack.getLast();
 
             List outTypes = (List)nodeToOutTypes.get(toVisitNode);
@@ -226,7 +242,8 @@ public class VariableTypeAnalysis
                 Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
                 
                 // Visit this child next if not already visited (or on stack)
-                    if(((Integer) nodeToColor.get(childNode)).intValue() == WHITE)
+                // (not-in-map is tantamount to being WHITE)
+                    if(nodeToColor.get(childNode) == null)
                     {
                         nodeToColor.put(childNode, new Integer(GRAY));
                         

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrice Pominville, Raja Vallee-Rai
+ * Copyright (C) 2000 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,46 +24,16 @@
  */
 
 
-package soot.toolkits.graph;
+package soot.util;
 
-
-import java.util.*;
-import soot.*;
-
-
-/**
- *   Defines the notion of a directed graph.
- */
-public interface DirectedGraph
+/** This class implements an ArrayList where the
+ * equality and hashCode use object equality, not list
+ * equality.  This is important for putting Lists into HashMaps. 
+ *
+ * The notation "Stationary" refers to the fact that the List
+ * stays "fixed" under list changes. */
+public class StationaryArrayList extends java.util.ArrayList 
 {
-    /** 
-     *  Returns a list of entry points for this graph.
-     */
-    public List getHeads();
-
-    /** Returns a list of exit points for this graph. */
-    public List getTails();
-
-    /** 
-     *  Returns a list of predecessors for the given node in the graph.
-     */
-    public List getPredsOf(Object s);
-
-    /**
-     *  Returns a list of successors for the given node in the graph.
-     */
-    public List getSuccsOf(Object s);
-
-    /**
-     *  Returns the node count for this graph.
-     */
-    public int size();
-
-    /**
-     *  Returns an iterator for the nodes in this graph. No specific ordering
-     *  of the nodes is guaranteed.
-     */
-    public Iterator iterator();
+    public int hashCode() { return System.identityHashCode(this); }
+    public boolean equals(Object other) { return this == other; }
 }
-
- 
