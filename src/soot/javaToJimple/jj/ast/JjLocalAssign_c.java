@@ -14,6 +14,7 @@ public class JjLocalAssign_c extends LocalAssign_c {
     
     public Type childExpectedType(Expr child, AscriptionVisitor av){
       if (op == SHL_ASSIGN || op == SHR_ASSIGN || op == USHR_ASSIGN) {
+            //System.out.println("local assign: child type: "+child.type()+" child: "+child);
           return child.type();
       }
       

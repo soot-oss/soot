@@ -16,6 +16,8 @@ public class PolyglotMethodSource implements MethodSource {
     private HashMap localClassMap;
     private HashMap anonClassMap;
     private boolean hasAssert = false;
+    private HashMap finalsMap;
+    private HashMap newToOuterMap;
     
     public PolyglotMethodSource(){
         this.block = null;
@@ -28,12 +30,12 @@ public class PolyglotMethodSource implements MethodSource {
     }
 
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
-        System.out.println("getting body for method: "+sm.getName()+" in class: "+sm.getDeclaringClass().getName());
+        //System.out.println("getting body for method: "+sm.getName()+" in class: "+sm.getDeclaringClass().getName());
         JimpleBodyBuilder jbb = new JimpleBodyBuilder();
         soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
        
-        PackManager.v().getTransform("jb.ne").apply(jb);
-        PackManager.v().getPack("jb").apply(jb);
+        //PackManager.v().getTransform("jb.ne").apply(jb);
+        PackManager.v().getPack("jj").apply(jb);
         return jb;
     }
 
@@ -221,5 +223,20 @@ public class PolyglotMethodSource implements MethodSource {
         body.getUnits().add(fAssign);
         
     }
-    
+
+    public void setFinalsMap(HashMap map){
+        finalsMap = map;
+    }
+
+    public HashMap getFinalsMap(){
+        return finalsMap;
+    }
+
+    public void setNewToOuterMap(HashMap map){
+        newToOuterMap = map;
+    }
+
+    public HashMap getNewToOuterMap(){
+        return newToOuterMap;
+    }
 }

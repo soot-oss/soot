@@ -525,7 +525,8 @@ modifiers ::=
         modifier:a 
             {: RESULT = a; :}
     |   modifiers:a modifier:b
-            {: RESULT = a.set(b); :}
+            {: if (a .intersects(b)) parser.die(parser.position());    
+                 RESULT = a.set(b); :}
     ;
 modifier ::=
                     // Flags
@@ -628,6 +629,8 @@ class_body_declaration ::=
             {: List l = new TypedList(new LinkedList(), ClassMember.class, false);
                l.add(parser.nf.Initializer(parser.pos(a), Flags.NONE, a));
                RESULT = l; :}
+    |   SEMICOLON
+            {: RESULT = Collections.EMPTY_LIST; :}
     ;
 class_member_declaration ::=
                     // List of ClassMember
@@ -878,6 +881,8 @@ interface_member_declaration ::=
             {: List l = new TypedList(new LinkedList(), ClassMember.class, false);
                l.add(a);
                RESULT = l; :}
+    |   SEMICOLON
+            {: RESULT = Collections.EMPTY_LIST; :}
     ;
 constant_declaration ::=
                     // List of ClassMember

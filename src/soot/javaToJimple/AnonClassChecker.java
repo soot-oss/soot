@@ -19,9 +19,10 @@ public class AnonClassChecker extends polyglot.visit.NodeVisitor {
         bodyNameMap = new HashMap();
     }
 
-    public polyglot.ast.Node leave(polyglot.ast.Node old, polyglot.ast.Node n, polyglot.visit.NodeVisitor visitor) {
+    public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     
         if (n instanceof polyglot.ast.New) {
+            //System.out.println("in anon class checker new: "+((polyglot.ast.New)n).arguments());
             if (((polyglot.ast.New)n).anonType() != null){
                 polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
                 while (outerType.isNested()) {
@@ -45,6 +46,6 @@ public class AnonClassChecker extends polyglot.visit.NodeVisitor {
                 }
             }
         }
-        return n;
+        return enter(n);
     }
 }

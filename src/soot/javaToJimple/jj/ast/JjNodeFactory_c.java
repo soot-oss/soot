@@ -53,10 +53,24 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
         return n;
     }
     
+    public LocalDecl LocalDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
+        LocalDecl n = new JjLocalDecl_c(pos, flags, type, name, init);
+        n = (LocalDecl)n.ext(extFactory().extLocalAssign());
+        n = (LocalDecl)n.del(delFactory().delLocalAssign());
+        return n;
+    }
+    
     public FieldAssign FieldAssign(Position pos, Field left, Assign.Operator op, Expr right) {
         FieldAssign n = new JjFieldAssign_c(pos, left, op, right);
         n = (FieldAssign)n.ext(extFactory().extFieldAssign());
         n = (FieldAssign)n.del(delFactory().delFieldAssign());
+        return n;
+    }
+    
+    public FieldDecl FieldDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
+        FieldDecl n = new JjFieldDecl_c(pos, flags, type, name, init);
+        n = (FieldDecl)n.ext(extFactory().extFieldAssign());
+        n = (FieldDecl)n.del(delFactory().delFieldAssign());
         return n;
     }
     

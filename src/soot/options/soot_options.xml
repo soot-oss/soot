@@ -815,6 +815,318 @@ traps whose catch blocks are empty.
 					</boolopt>
 				</sub_phase>
 			</phase>
+            <phase>
+				<name>Java To Jimple Body Creation</name>
+				<alias>jj</alias>
+                                <class>JJOptions</class>
+				<short_desc>Creates a <tt>JimpleBody</tt> for each method directly from source</short_desc>
+                                <long_desc>
+Jimple Body Creation creates a <tt>JimpleBody</tt> for each input
+method, using polyglot, to read <tt>.java</tt> files.
+</long_desc>
+				<boolopt>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<boolopt>
+					<name>Use Original Names</name>
+					<alias>use-original-names</alias>
+                                        <default>true</default>
+					<short_desc/>
+					<long_desc>
+Retain the original names for local variables when the source
+includes those names.  Otherwise, Soot gives variables generic
+names based on their types.
+</long_desc>
+				</boolopt>
+				<sub_phase>
+					<name>Local Splitter</name>
+					<alias>jj.ls</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<short_desc>Local splitter: one local per DU-UD web</short_desc>
+					<long_desc>
+The Local Splitter identifies DU-UD webs for local variables and
+introduces new variables so that each disjoint web is associated
+with a single local.
+</long_desc>
+				</sub_phase>
+				<sub_phase>
+					<name>Jimple Local Aggregator</name>
+					<alias>jj.a</alias>
+					<short_desc>Aggregator: removes some unnecessary copies</short_desc>
+                                        <long_desc>
+<p>
+The Jimple Local Aggregator removes some unnecessary copies by
+combining local variables. Essentially, it finds definitions
+which have only a single use and, if it is safe to do so, removes
+the original definition after replacing the use with the
+definition's right-hand side.</p>
+<p>
+At this stage in <tt>JimpleBody</tt> construction, local
+aggregation serves largely to remove the copies to and from stack
+variables which simulate load and store instructions in the
+original bytecode.</p>
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<long_desc>
+Only aggregate locals that represent stack locations in the
+original bytecode.  (Stack locals can be distinguished in Jimple
+by the <dollar/> character with which their names begin.)
+</long_desc>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unused Local Eliminator</name>
+					<alias>jj.ule</alias>
+					<short_desc>Unused local eliminator</short_desc>
+                                        <long_desc>
+The Unused Local Eliminator removes any unused locals from the
+method.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<short_desc>Assigns types to locals</short_desc>
+                                        <long_desc>
+The Type Assigner gives local variables types which will
+accommodate the values stored in them over the course of the
+method.
+</long_desc>
+					<name>Type Assigner</name>
+					<alias>jj.tr</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>false</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unsplit-originals Local Packer</name>
+					<alias>jj.ulp</alias>
+					<short_desc>Local packer: minimizes number of locals</short_desc>
+					<long_desc>
+The Unsplit-originals Local Packer executes only when the
+`<tt>use-original-names</tt>&apos; option is chosen for the
+`<tt>jb</tt>&apos; phase.  The Local Packer attempts to minimize
+the number of local variables required in a method by reusing the
+same variable for disjoint DU-UD webs. Conceptually, it is the
+inverse of the Local Splitter.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Unsplit Original Locals</name>
+						<alias>unsplit-original-locals</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc>
+Use the variable names in the original source as a guide when
+determining how to share local variables among non-interfering
+variable usages. This recombines named locals which were split by
+the Local Splitter.
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Name Standardizer</name>
+					<alias>jj.lns</alias>
+					<short_desc>Local name standardizer</short_desc>
+					<long_desc>
+The Local Name Standardizer assigns generic names to local variables.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+                                                <default>false</default>
+						<short_desc/>
+						<long_desc>
+Only standardizes the names of variables that represent stack
+locations in the original bytecode. This becomes the default when
+the `<tt>use-original-names</tt>&apos; option is specified for
+the `<tt>jb</tt>&apos; phase.
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Copy Propagator</name>
+					<alias>jj.cp</alias>
+					<short_desc>Copy propagator</short_desc>
+					<long_desc>
+This phase performs cascaded copy propagation.  
+    
+If the propagator encounters situations of the form: 
+<pre>
+  A: a = ...; 
+    ...
+  B:  x = a;
+    ...
+  C: ... = ... x; 
+</pre>
+where <tt>a</tt> and <tt>x</tt> are each defined only once (at
+<tt>A</tt> and <tt>B</tt>, respectively), then it can propagate
+immediately without checking between <tt>B</tt> and <tt>C</tt>
+for redefinitions of <tt>a</tt>.  In
+this case the propagator is global.
+        
+Otherwise, if <tt>a</tt> has multiple definitions then the
+propagator checks for redefinitions and propagates copies
+only within extended basic blocks.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Regular Locals</name>
+						<alias>only-regular-locals</alias>
+                                                <default>false</default>
+						<short_desc/>
+						<long_desc>
+Only propagate copies through ``regular&apos;&apos; locals, that is,
+those declared in the source bytecode.
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+Only propagate copies through locals that represent stack locations in
+the original bytecode.
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Dead Assignment Eliminator</name>
+					<alias>jj.dae</alias>
+					<short_desc>Dead assignment eliminator</short_desc>
+					<long_desc>
+The Dead Assignment Eliminator eliminates assignment statements
+to locals whose values are not subsequently used, unless
+evaluating the right-hand side of the assignment may cause
+side-effects.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
+					<boolopt>
+						<name>Only Stack Locals</name>
+						<alias>only-stack-locals</alias>
+						<default>true</default>
+						<short_desc/>
+						<long_desc>
+Only eliminate dead assignments to locals that represent stack
+locations in the original bytecode.
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Post-copy propagation Unused Local Eliminator</name>
+					<alias>jj.cp-ule</alias>
+					<short_desc>Post-copy propagation unused local eliminator</short_desc>
+                                        <long_desc>
+This phase removes any locals that are unused after copy propagation.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Local Packer</name>
+					<alias>jj.lp</alias>
+					<short_desc>Local packer: minimizes number of locals</short_desc>
+					<long_desc>
+The Local Packer attempts to minimize the number of local
+variables required in a method by reusing the same variable for
+disjoint DU-UD webs. Conceptually, it is the inverse of the
+Local Splitter.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>false</default>
+					</boolopt>
+					<boolopt>
+						<name>Unsplit Original Locals</name>
+						<alias>unsplit-original-locals</alias>
+                                                <default>false</default>
+						<long_desc>
+Use the variable names in the original source as a guide when
+determining how to share local variables across non-interfering
+variable usages. This recombines named locals which were split by
+the Local Splitter. 
+</long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Nop Eliminator</name>
+					<alias>jj.ne</alias>
+					<short_desc>Nop eliminator</short_desc>
+						<long_desc>
+The Nop Eliminator removes <tt>nop</tt> statements from the method.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Unreachable Code Eliminator</name>
+					<alias>jj.uce</alias>
+					<short_desc>Unreachable code eliminator</short_desc>
+					<long_desc>
+The Unreachable Code Eliminator removes unreachable code and
+traps whose catch blocks are empty.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+			</phase>
 			<radio_phase>
 				<name>Call Graph Constructor</name>
 				<alias>cg</alias>

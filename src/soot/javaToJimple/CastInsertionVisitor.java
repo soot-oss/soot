@@ -7,8 +7,11 @@ public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
     }
 
     public polyglot.ast.Expr ascribe(polyglot.ast.Expr e, polyglot.types.Type toType) {
+        //System.out.println("cast ins vis: expr: "+e);
         polyglot.types.Type fromType = e.type();
 
+        //System.out.println("e type: "+fromType);
+        //System.out.println("to type: "+toType);
         if (toType == null){
             return e;
         }

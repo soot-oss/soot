@@ -76,6 +76,8 @@ Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContai
 
 Composite jbChild = jbCreate(getPageContainer());
 
+Composite jjChild = jjCreate(getPageContainer());
+
 Composite cgChild = cgCreate(getPageContainer());
 
 Composite wstpChild = wstpCreate(getPageContainer());
@@ -133,6 +135,30 @@ Composite jbjb_lpChild = jbjb_lpCreate(getPageContainer());
 Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 
 Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
+
+Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
+
+Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
+
+Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
+
+Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
+
+Composite jjjj_ulpChild = jjjj_ulpCreate(getPageContainer());
+
+Composite jjjj_lnsChild = jjjj_lnsCreate(getPageContainer());
+
+Composite jjjj_cpChild = jjjj_cpCreate(getPageContainer());
+
+Composite jjjj_daeChild = jjjj_daeCreate(getPageContainer());
+
+Composite jjjj_cp_uleChild = jjjj_cp_uleCreate(getPageContainer());
+
+Composite jjjj_lpChild = jjjj_lpCreate(getPageContainer());
+
+Composite jjjj_neChild = jjjj_neCreate(getPageContainer());
+
+Composite jjjj_uceChild = jjjj_uceCreate(getPageContainer());
 
 Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
 
@@ -429,6 +455,144 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("jb", "jb.uce", getjbjb_uceenabled_widget(), "enabled");
 		
 		getjbjb_uceenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj");
+		
+		
+		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
+		
+		
+		addToEnableGroup("jj", getjjuse_original_names_widget(), "use-original-names");
+		
+		
+		getjjenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjuse_original_names_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.ls");
+		
+		
+		addToEnableGroup("jj", "jj.ls", getjjjj_lsenabled_widget(), "enabled");
+		
+		getjjjj_lsenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.a");
+		
+		
+		addToEnableGroup("jj", "jj.a", getjjjj_aenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.a", getjjjj_aonly_stack_locals_widget(), "only-stack-locals");
+		
+		getjjjj_aenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_aonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.ule");
+		
+		
+		addToEnableGroup("jj", "jj.ule", getjjjj_uleenabled_widget(), "enabled");
+		
+		getjjjj_uleenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.tr");
+		
+		
+		addToEnableGroup("jj", "jj.tr", getjjjj_trenabled_widget(), "enabled");
+		
+		getjjjj_trenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.ulp");
+		
+		
+		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpunsplit_original_locals_widget(), "unsplit-original-locals");
+		
+		getjjjj_ulpenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_ulpunsplit_original_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.lns");
+		
+		
+		addToEnableGroup("jj", "jj.lns", getjjjj_lnsenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.lns", getjjjj_lnsonly_stack_locals_widget(), "only-stack-locals");
+		
+		getjjjj_lnsenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.cp");
+		
+		
+		addToEnableGroup("jj", "jj.cp", getjjjj_cpenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_regular_locals_widget(), "only-regular-locals");
+		
+		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_stack_locals_widget(), "only-stack-locals");
+		
+		getjjjj_cpenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_cponly_regular_locals_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_cponly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.dae");
+		
+		
+		addToEnableGroup("jj", "jj.dae", getjjjj_daeenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.dae", getjjjj_daeonly_stack_locals_widget(), "only-stack-locals");
+		
+		getjjjj_daeenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.cp-ule");
+		
+		
+		addToEnableGroup("jj", "jj.cp-ule", getjjjj_cp_uleenabled_widget(), "enabled");
+		
+		getjjjj_cp_uleenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.lp");
+		
+		
+		addToEnableGroup("jj", "jj.lp", getjjjj_lpenabled_widget(), "enabled");
+		
+		addToEnableGroup("jj", "jj.lp", getjjjj_lpunsplit_original_locals_widget(), "unsplit-original-locals");
+		
+		getjjjj_lpenabled_widget().getButton().addSelectionListener(this);
+		
+		getjjjj_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.ne");
+		
+		
+		addToEnableGroup("jj", "jj.ne", getjjjj_neenabled_widget(), "enabled");
+		
+		getjjjj_neenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jj", "jj.uce");
+		
+		
+		addToEnableGroup("jj", "jj.uce", getjjjj_uceenabled_widget(), "enabled");
+		
+		getjjjj_uceenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg");
@@ -1727,6 +1891,216 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_uceenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjuse_original_names_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjuse_original_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_lsenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_lsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_aenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_aenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_aonly_stack_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_uleenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_uleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_trenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_trenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_ulpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_ulpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_ulpunsplit_original_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_lnsenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_lnsenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_lnsonly_stack_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_cpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_cpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_cponly_regular_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_cponly_stack_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_daeenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_daeenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_daeonly_stack_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_cp_uleenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_cp_uleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_lpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_lpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_lpunsplit_original_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_neenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_neenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjjjj_uceenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjjjj_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgenabled_widget().getButton().getSelection();
@@ -3697,6 +4071,133 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jb_jb_uce_branch;
 			
 			
+			//Java To Jimple Body Creation
+			SootOption jj_branch = new SootOption("Java To Jimple Body Creation", "jj");
+			parent.addChild(jj_branch);
+			subParent = jj_branch;
+
+
+			
+			SootOption jj_jj_ls_branch = new SootOption("Local Splitter", "jjjj_ls");
+			subParent.addChild(jj_jj_ls_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_ls_branch;
+			
+			
+			SootOption jj_jj_a_branch = new SootOption("Jimple Local Aggregator", "jjjj_a");
+			subParent.addChild(jj_jj_a_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_a_branch;
+			
+			
+			SootOption jj_jj_ule_branch = new SootOption("Unused Local Eliminator", "jjjj_ule");
+			subParent.addChild(jj_jj_ule_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_ule_branch;
+			
+			
+			SootOption jj_jj_tr_branch = new SootOption("Type Assigner", "jjjj_tr");
+			subParent.addChild(jj_jj_tr_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_tr_branch;
+			
+			
+			SootOption jj_jj_ulp_branch = new SootOption("Unsplit-originals Local Packer", "jjjj_ulp");
+			subParent.addChild(jj_jj_ulp_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_ulp_branch;
+			
+			
+			SootOption jj_jj_lns_branch = new SootOption("Local Name Standardizer", "jjjj_lns");
+			subParent.addChild(jj_jj_lns_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_lns_branch;
+			
+			
+			SootOption jj_jj_cp_branch = new SootOption("Copy Propagator", "jjjj_cp");
+			subParent.addChild(jj_jj_cp_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_cp_branch;
+			
+			
+			SootOption jj_jj_dae_branch = new SootOption("Dead Assignment Eliminator", "jjjj_dae");
+			subParent.addChild(jj_jj_dae_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_dae_branch;
+			
+			
+			SootOption jj_jj_cp_ule_branch = new SootOption("Post-copy propagation Unused Local Eliminator", "jjjj_cp_ule");
+			subParent.addChild(jj_jj_cp_ule_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_cp_ule_branch;
+			
+			
+			SootOption jj_jj_lp_branch = new SootOption("Local Packer", "jjjj_lp");
+			subParent.addChild(jj_jj_lp_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_lp_branch;
+			
+			
+			SootOption jj_jj_ne_branch = new SootOption("Nop Eliminator", "jjjj_ne");
+			subParent.addChild(jj_jj_ne_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_ne_branch;
+			
+			
+			SootOption jj_jj_uce_branch = new SootOption("Unreachable Code Eliminator", "jjjj_uce");
+			subParent.addChild(jj_jj_uce_branch);
+
+
+			
+
+			
+			subSectParent = jj_jj_uce_branch;
+			
+			
 			//Call Graph Constructor
 			SootOption cg_branch = new SootOption("Call Graph Constructor", "cg");
 			parent.addChild(cg_branch);
@@ -4737,6 +5238,216 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbjb_uceenabled_widget() {
 		return jbjb_uceenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjenabled_widget;
+	
+	private void setjjenabled_widget(BooleanOptionWidget widget) {
+		jjenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjenabled_widget() {
+		return jjenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjuse_original_names_widget;
+	
+	private void setjjuse_original_names_widget(BooleanOptionWidget widget) {
+		jjuse_original_names_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjuse_original_names_widget() {
+		return jjuse_original_names_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_lsenabled_widget;
+	
+	private void setjjjj_lsenabled_widget(BooleanOptionWidget widget) {
+		jjjj_lsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_lsenabled_widget() {
+		return jjjj_lsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_aenabled_widget;
+	
+	private void setjjjj_aenabled_widget(BooleanOptionWidget widget) {
+		jjjj_aenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_aenabled_widget() {
+		return jjjj_aenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_aonly_stack_locals_widget;
+	
+	private void setjjjj_aonly_stack_locals_widget(BooleanOptionWidget widget) {
+		jjjj_aonly_stack_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_aonly_stack_locals_widget() {
+		return jjjj_aonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_uleenabled_widget;
+	
+	private void setjjjj_uleenabled_widget(BooleanOptionWidget widget) {
+		jjjj_uleenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_uleenabled_widget() {
+		return jjjj_uleenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_trenabled_widget;
+	
+	private void setjjjj_trenabled_widget(BooleanOptionWidget widget) {
+		jjjj_trenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_trenabled_widget() {
+		return jjjj_trenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_ulpenabled_widget;
+	
+	private void setjjjj_ulpenabled_widget(BooleanOptionWidget widget) {
+		jjjj_ulpenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_ulpenabled_widget() {
+		return jjjj_ulpenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_ulpunsplit_original_locals_widget;
+	
+	private void setjjjj_ulpunsplit_original_locals_widget(BooleanOptionWidget widget) {
+		jjjj_ulpunsplit_original_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_ulpunsplit_original_locals_widget() {
+		return jjjj_ulpunsplit_original_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_lnsenabled_widget;
+	
+	private void setjjjj_lnsenabled_widget(BooleanOptionWidget widget) {
+		jjjj_lnsenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_lnsenabled_widget() {
+		return jjjj_lnsenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_lnsonly_stack_locals_widget;
+	
+	private void setjjjj_lnsonly_stack_locals_widget(BooleanOptionWidget widget) {
+		jjjj_lnsonly_stack_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_lnsonly_stack_locals_widget() {
+		return jjjj_lnsonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_cpenabled_widget;
+	
+	private void setjjjj_cpenabled_widget(BooleanOptionWidget widget) {
+		jjjj_cpenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_cpenabled_widget() {
+		return jjjj_cpenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_cponly_regular_locals_widget;
+	
+	private void setjjjj_cponly_regular_locals_widget(BooleanOptionWidget widget) {
+		jjjj_cponly_regular_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_cponly_regular_locals_widget() {
+		return jjjj_cponly_regular_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_cponly_stack_locals_widget;
+	
+	private void setjjjj_cponly_stack_locals_widget(BooleanOptionWidget widget) {
+		jjjj_cponly_stack_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_cponly_stack_locals_widget() {
+		return jjjj_cponly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_daeenabled_widget;
+	
+	private void setjjjj_daeenabled_widget(BooleanOptionWidget widget) {
+		jjjj_daeenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_daeenabled_widget() {
+		return jjjj_daeenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_daeonly_stack_locals_widget;
+	
+	private void setjjjj_daeonly_stack_locals_widget(BooleanOptionWidget widget) {
+		jjjj_daeonly_stack_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_daeonly_stack_locals_widget() {
+		return jjjj_daeonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_cp_uleenabled_widget;
+	
+	private void setjjjj_cp_uleenabled_widget(BooleanOptionWidget widget) {
+		jjjj_cp_uleenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_cp_uleenabled_widget() {
+		return jjjj_cp_uleenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_lpenabled_widget;
+	
+	private void setjjjj_lpenabled_widget(BooleanOptionWidget widget) {
+		jjjj_lpenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_lpenabled_widget() {
+		return jjjj_lpenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_lpunsplit_original_locals_widget;
+	
+	private void setjjjj_lpunsplit_original_locals_widget(BooleanOptionWidget widget) {
+		jjjj_lpunsplit_original_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_lpunsplit_original_locals_widget() {
+		return jjjj_lpunsplit_original_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_neenabled_widget;
+	
+	private void setjjjj_neenabled_widget(BooleanOptionWidget widget) {
+		jjjj_neenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_neenabled_widget() {
+		return jjjj_neenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jjjj_uceenabled_widget;
+	
+	private void setjjjj_uceenabled_widget(BooleanOptionWidget widget) {
+		jjjj_uceenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjjjj_uceenabled_widget() {
+		return jjjj_uceenabled_widget;
 	}	
 	
 	private BooleanOptionWidget cgenabled_widget;
@@ -7834,6 +8545,732 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjbjb_uce;
+	}
+
+
+
+	private Composite jjCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjj = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjj.setLayout(layout);
+	
+	 	editGroupjj.setText("Java To Jimple Body Creation");
+	 	
+		editGroupjj.setData("id", "jj");
+		
+		String descjj = "Creates a JimpleBody for each method directly from source";	
+		if (descjj.length() > 0) {
+			Label descLabeljj = new Label(editGroupjj, SWT.WRAP);
+			descLabeljj.setText(descjj);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjenabled_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Enabled", "p", "jj","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj"+" "+"use-original-names";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p", "jj","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjj;
+	}
+
+
+
+	private Composite jjjj_lsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_ls = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_ls.setLayout(layout);
+	
+	 	editGroupjjjj_ls.setText("Local Splitter");
+	 	
+		editGroupjjjj_ls.setData("id", "jjjj_ls");
+		
+		String descjjjj_ls = "Local splitter: one local per DU-UD web";	
+		if (descjjjj_ls.length() > 0) {
+			Label descLabeljjjj_ls = new Label(editGroupjjjj_ls, SWT.WRAP);
+			descLabeljjjj_ls.setText(descjjjj_ls);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.ls"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_lsenabled_widget(new BooleanOptionWidget(editGroupjjjj_ls, SWT.NONE, new OptionData("Enabled", "p", "jj.ls","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_ls;
+	}
+
+
+
+	private Composite jjjj_aCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_a = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_a.setLayout(layout);
+	
+	 	editGroupjjjj_a.setText("Jimple Local Aggregator");
+	 	
+		editGroupjjjj_a.setData("id", "jjjj_a");
+		
+		String descjjjj_a = "Aggregator: removes some unnecessary copies";	
+		if (descjjjj_a.length() > 0) {
+			Label descLabeljjjj_a = new Label(editGroupjjjj_a, SWT.WRAP);
+			descLabeljjjj_a.setText(descjjjj_a);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.a"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_aenabled_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Enabled", "p", "jj.a","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.a"+" "+"only-stack-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_a;
+	}
+
+
+
+	private Composite jjjj_uleCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_ule = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_ule.setLayout(layout);
+	
+	 	editGroupjjjj_ule.setText("Unused Local Eliminator");
+	 	
+		editGroupjjjj_ule.setData("id", "jjjj_ule");
+		
+		String descjjjj_ule = "Unused local eliminator";	
+		if (descjjjj_ule.length() > 0) {
+			Label descLabeljjjj_ule = new Label(editGroupjjjj_ule, SWT.WRAP);
+			descLabeljjjj_ule.setText(descjjjj_ule);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.ule"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_ule, SWT.NONE, new OptionData("Enabled", "p", "jj.ule","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_ule;
+	}
+
+
+
+	private Composite jjjj_trCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_tr = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_tr.setLayout(layout);
+	
+	 	editGroupjjjj_tr.setText("Type Assigner");
+	 	
+		editGroupjjjj_tr.setData("id", "jjjj_tr");
+		
+		String descjjjj_tr = "Assigns types to locals";	
+		if (descjjjj_tr.length() > 0) {
+			Label descLabeljjjj_tr = new Label(editGroupjjjj_tr, SWT.WRAP);
+			descLabeljjjj_tr.setText(descjjjj_tr);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.tr"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_trenabled_widget(new BooleanOptionWidget(editGroupjjjj_tr, SWT.NONE, new OptionData("Enabled", "p", "jj.tr","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_tr;
+	}
+
+
+
+	private Composite jjjj_ulpCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_ulp = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_ulp.setLayout(layout);
+	
+	 	editGroupjjjj_ulp.setText("Unsplit-originals Local Packer");
+	 	
+		editGroupjjjj_ulp.setData("id", "jjjj_ulp");
+		
+		String descjjjj_ulp = "Local packer: minimizes number of locals";	
+		if (descjjjj_ulp.length() > 0) {
+			Label descLabeljjjj_ulp = new Label(editGroupjjjj_ulp, SWT.WRAP);
+			descLabeljjjj_ulp.setText(descjjjj_ulp);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.ulp"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_ulpenabled_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Enabled", "p", "jj.ulp","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.ulp"+" "+"unsplit-original-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_ulp;
+	}
+
+
+
+	private Composite jjjj_lnsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_lns = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_lns.setLayout(layout);
+	
+	 	editGroupjjjj_lns.setText("Local Name Standardizer");
+	 	
+		editGroupjjjj_lns.setData("id", "jjjj_lns");
+		
+		String descjjjj_lns = "Local name standardizer";	
+		if (descjjjj_lns.length() > 0) {
+			Label descLabeljjjj_lns = new Label(editGroupjjjj_lns, SWT.WRAP);
+			descLabeljjjj_lns.setText(descjjjj_lns);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.lns"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_lnsenabled_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Enabled", "p", "jj.lns","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.lns"+" "+"only-stack-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_lns;
+	}
+
+
+
+	private Composite jjjj_cpCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_cp = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_cp.setLayout(layout);
+	
+	 	editGroupjjjj_cp.setText("Copy Propagator");
+	 	
+		editGroupjjjj_cp.setData("id", "jjjj_cp");
+		
+		String descjjjj_cp = "Copy propagator";	
+		if (descjjjj_cp.length() > 0) {
+			Label descLabeljjjj_cp = new Label(editGroupjjjj_cp, SWT.WRAP);
+			descLabeljjjj_cp.setText(descjjjj_cp);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.cp"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_cpenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Enabled", "p", "jj.cp","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.cp"+" "+"only-regular-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jj.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.cp"+" "+"only-stack-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_cp;
+	}
+
+
+
+	private Composite jjjj_daeCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_dae = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_dae.setLayout(layout);
+	
+	 	editGroupjjjj_dae.setText("Dead Assignment Eliminator");
+	 	
+		editGroupjjjj_dae.setData("id", "jjjj_dae");
+		
+		String descjjjj_dae = "Dead assignment eliminator";	
+		if (descjjjj_dae.length() > 0) {
+			Label descLabeljjjj_dae = new Label(editGroupjjjj_dae, SWT.WRAP);
+			descLabeljjjj_dae.setText(descjjjj_dae);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.dae"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_daeenabled_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Enabled", "p", "jj.dae","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.dae"+" "+"only-stack-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_dae;
+	}
+
+
+
+	private Composite jjjj_cp_uleCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_cp_ule = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_cp_ule.setLayout(layout);
+	
+	 	editGroupjjjj_cp_ule.setText("Post-copy propagation Unused Local Eliminator");
+	 	
+		editGroupjjjj_cp_ule.setData("id", "jjjj_cp_ule");
+		
+		String descjjjj_cp_ule = "Post-copy propagation unused local eliminator";	
+		if (descjjjj_cp_ule.length() > 0) {
+			Label descLabeljjjj_cp_ule = new Label(editGroupjjjj_cp_ule, SWT.WRAP);
+			descLabeljjjj_cp_ule.setText(descjjjj_cp_ule);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.cp-ule"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp_ule, SWT.NONE, new OptionData("Enabled", "p", "jj.cp-ule","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_cp_ule;
+	}
+
+
+
+	private Composite jjjj_lpCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_lp = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_lp.setLayout(layout);
+	
+	 	editGroupjjjj_lp.setText("Local Packer");
+	 	
+		editGroupjjjj_lp.setData("id", "jjjj_lp");
+		
+		String descjjjj_lp = "Local packer: minimizes number of locals";	
+		if (descjjjj_lp.length() > 0) {
+			Label descLabeljjjj_lp = new Label(editGroupjjjj_lp, SWT.WRAP);
+			descLabeljjjj_lp.setText(descjjjj_lp);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.lp"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_lpenabled_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Enabled", "p", "jj.lp","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jj.lp"+" "+"unsplit-original-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_lp;
+	}
+
+
+
+	private Composite jjjj_neCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_ne = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_ne.setLayout(layout);
+	
+	 	editGroupjjjj_ne.setText("Nop Eliminator");
+	 	
+		editGroupjjjj_ne.setData("id", "jjjj_ne");
+		
+		String descjjjj_ne = "Nop eliminator";	
+		if (descjjjj_ne.length() > 0) {
+			Label descLabeljjjj_ne = new Label(editGroupjjjj_ne, SWT.WRAP);
+			descLabeljjjj_ne.setText(descjjjj_ne);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.ne"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_neenabled_widget(new BooleanOptionWidget(editGroupjjjj_ne, SWT.NONE, new OptionData("Enabled", "p", "jj.ne","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_ne;
+	}
+
+
+
+	private Composite jjjj_uceCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjjjj_uce = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjjjj_uce.setLayout(layout);
+	
+	 	editGroupjjjj_uce.setText("Unreachable Code Eliminator");
+	 	
+		editGroupjjjj_uce.setData("id", "jjjj_uce");
+		
+		String descjjjj_uce = "Unreachable code eliminator";	
+		if (descjjjj_uce.length() > 0) {
+			Label descLabeljjjj_uce = new Label(editGroupjjjj_uce, SWT.WRAP);
+			descLabeljjjj_uce.setText(descjjjj_uce);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jj.uce"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjjjj_uceenabled_widget(new BooleanOptionWidget(editGroupjjjj_uce, SWT.NONE, new OptionData("Enabled", "p", "jj.uce","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjjjj_uce;
 	}
 
 

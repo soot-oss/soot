@@ -465,7 +465,10 @@ modifiers_opt ::=
 
 modifiers ::=
     modifier:a {:  RESULT = a;  :}
- |  modifiers:a modifier:b {:  RESULT = a.set(b);  :};
+ |  modifiers:a modifier:b {:
+                           if (a .intersects(b)) parser.die(parser.position());    
+                 RESULT = a.set(b); 
+                           :};
 
 modifier ::=
     PUBLIC:a {:  RESULT = Flags.PUBLIC;  :}
@@ -547,7 +550,8 @@ class_body_declaration ::=
             List l = new TypedList(new LinkedList(), ClassMember.class, false);
                l.add(parser.nf.Initializer(parser.pos(a), Flags.NONE, a));
                RESULT = l; 
-            :};
+            :}
+ |  SEMICOLON {:  RESULT = Collections.EMPTY_LIST;  :};
 
 class_member_declaration ::=
     field_declaration:a {:  RESULT = a;  :}
@@ -782,7 +786,8 @@ interface_member_declaration ::=
                             List l = new TypedList(new LinkedList(), ClassMember.class, false);
                l.add(a);
                RESULT = l; 
-                            :};
+                            :}
+ |  SEMICOLON {:  RESULT = Collections.EMPTY_LIST;  :};
 
 constant_declaration ::=
     field_declaration:a {:  RESULT = a;  :};

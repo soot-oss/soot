@@ -88,6 +88,24 @@ public class PackManager {
             p.add(new Transform("jb.uce", UnreachableCodeEliminator.v()));
         }
 
+        // Java to Jimple - Jimple body creation
+        addPack(p = new JavaToJimpleBodyPack());
+        {
+            p.add(new Transform("jj.ls", LocalSplitter.v()));
+            p.add(new Transform("jj.a", Aggregator.v()));
+            p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
+            p.add(new Transform("jj.ne", NopEliminator.v()));
+            p.add(new Transform("jj.tr", TypeAssigner.v()));
+            p.add(new Transform("jj.ulp", LocalPacker.v()));
+            p.add(new Transform("jj.lns", LocalNameStandardizer.v()));
+            p.add(new Transform("jj.cp", CopyPropagator.v()));
+            p.add(new Transform("jj.dae", DeadAssignmentEliminator.v()));
+            p.add(new Transform("jj.cp-ule", UnusedLocalEliminator.v()));
+            p.add(new Transform("jj.lp", LocalPacker.v()));
+            p.add(new Transform("jj.uce", UnreachableCodeEliminator.v()));
+        
+        }
+        
         // Call graph pack
         addPack(p = new CallGraphPack("cg"));
         {

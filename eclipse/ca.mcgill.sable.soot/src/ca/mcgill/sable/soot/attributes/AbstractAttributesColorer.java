@@ -92,7 +92,7 @@ public abstract class AbstractAttributesColorer {
             public void run(){
                 for (int i = 0; i < srs.length; i++){
                     try{
-                        System.out.println("Style Range: "+srs[i]);
+                        //System.out.println("Style Range: "+srs[i]);
                         getViewer().getTextWidget().setStyleRange(srs[i]);
                     }
                     catch(Exception e){
