@@ -233,7 +233,7 @@ public class VTANativeAdjustor
         s2 = "java.lang.Object";
         includeSubtypesOf(s1, s2);
 
-        s1 = "<java.lang.ClassLoader: java.lang.Class defineClass0(java.lang.String,byte[],int.int)>$return";
+        s1 = "<java.lang.ClassLoader: java.lang.Class defineClass0(java.lang.String,byte[],int,int)>$return";
         s2 = "java.lang.Class";
         includeType(s1, s2);
         
@@ -400,9 +400,9 @@ public class VTANativeAdjustor
             InvokeGraph ig = Scene.v().getActiveInvokeGraph();
             ig.mcg.clearEntryPoints();  // To find more accurate entry points
 
-            for (Iterator localsIt = locals.iterator(); localsIt.hasNext(); ) {
+            for( Iterator localIt = locals.iterator(); localIt.hasNext(); ) {
 
-                String local = (String)localsIt.next();
+                final String local = (String) localIt.next();
                 types = (TypeSet)vtagraph.labelToReachingTypes.get(local);
 
                 HashSet visited = new HashSet(0);
@@ -427,8 +427,8 @@ public class VTANativeAdjustor
                     else {
                         if (vtagraph.castEdges.containsKey(v)) {
                             List pairs = (List)vtagraph.castEdges.get(v);
-                            for (Iterator pairsIt = pairs.iterator(); pairsIt.hasNext(); ) {
-                                NodeTypePair pair = (NodeTypePair)pairsIt.next();
+                            for( Iterator pairIt = pairs.iterator(); pairIt.hasNext(); ) {
+                                final NodeTypePair pair = (NodeTypePair) pairIt.next();
                                 visited.add(pair.getNode());
                                 Type type = pair.getType();
                                 if (type instanceof ArrayType) {
@@ -442,8 +442,8 @@ public class VTANativeAdjustor
                         }
 
                         List succs = vtagraph.getSuccsOf(v);
-                        for (Iterator succsIt = succs.iterator(); succsIt.hasNext(); ) {
-                            String succ = (String)succsIt.next();
+                        for( Iterator succIt = succs.iterator(); succIt.hasNext(); ) {
+                            final String succ = (String) succIt.next();
                             if (!visited.contains(succ))
                                 q.addLast(succ);
                         }
@@ -455,8 +455,8 @@ public class VTANativeAdjustor
                     if(c.isInterface())
                         typeStack.addAll(h.getImplementersOf(c));
                     else
-                        for (Iterator classIt = h.getSubclassesOfIncluding(c).iterator(); classIt.hasNext(); ) {
-                            SootClass clazz = (SootClass)classIt.next();
+                        for( Iterator clazzIt = h.getSubclassesOfIncluding(c).iterator(); clazzIt.hasNext(); ) {
+                            final SootClass clazz = (SootClass) clazzIt.next();
                             types.add(RefType.v(clazz));
                             if (clazz.declaresMethod("void <init>()"))
                                 ig.mcg.addEntryPoint(clazz.getMethod("void <init>()"));

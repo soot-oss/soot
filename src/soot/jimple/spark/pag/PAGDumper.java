@@ -240,6 +240,12 @@ public class PAGDumper {
             ObjectNumberer cl = root.findOrAdd( c );
             ObjectNumberer me = cl.findOrAdd( m );
             ObjectNumberer vr = me.findOrAdd( vn );
+            /*
+            if( vr.num > 256 ) {
+                System.out.println( "Var with num: "+vr.num+" is "+vn+
+                        " in method "+m+" in class "+c );
+            }
+            */
             out.print( ""+cl.num+" "+me.num+" "+vr.num );
         } else if( pag.getOpts().topoSort() && n instanceof VarNode ) {
             out.print( ""+((VarNode) n).finishingNumber );
