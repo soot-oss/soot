@@ -86,7 +86,7 @@ public class Baf implements BodyRepresentation
     
     public Body getBodyOf(SootMethod m)
     {
-        return new InstBody(m);
+        return new BafBody(m);
     }
 }
 

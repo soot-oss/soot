@@ -107,21 +107,21 @@ public class JimpleBody implements Body
      
     JimpleBody(SootMethod m)
     {
-        this((InstBody) Baf.v().getBodyOf(m));
+        this((BafBody) Baf.v().getBodyOf(m));
     }
                 
-    JimpleBody(InstBody instBody)
+    JimpleBody(BafBody bafBody)
     {
         super();
         
-        this.method = instBody.getMethod();
+        this.method = bafBody.getMethod();
         this.stmtList = new StmtList(this);
                 
-        ca.mcgill.sable.soot.coffi.ClassFile coffiClass = instBody.coffiClass;
-        ca.mcgill.sable.soot.coffi.method_info coffiMethod = instBody.coffiMethod;
+        ca.mcgill.sable.soot.coffi.ClassFile coffiClass = bafBody.coffiClass;
+        ca.mcgill.sable.soot.coffi.method_info coffiMethod = bafBody.coffiMethod;
         
-        instBody.coffiClass = null;
-        instBody.coffiMethod = null;
+        bafBody.coffiClass = null;
+        bafBody.coffiMethod = null;
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + "] Jimplifying...");
