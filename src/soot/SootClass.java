@@ -846,9 +846,9 @@ public class SootClass extends AbstractHost implements Numberable
 	    // add history node
 	    // TODO: grab the software version and command line
 	    String cmdlineStr = "";
-	    for( int i = 0; i < Main.getCmdLineArgs().length; i++ )
+	    for( int i = 0; i < Main.cmdLineArgs.length; i++ )
 	    {
-		cmdlineStr += Main.getCmdLineArgs()[ i ] + " ";
+		cmdlineStr += Main.cmdLineArgs[ i ] + " ";
 	    }
 	    String dateStr = new Date().toString();
 	    xmlHistoryNode = xmlRootNode.addChild("history");

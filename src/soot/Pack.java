@@ -31,7 +31,7 @@ import java.util.*;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
-public class Pack
+public abstract class Pack
 {
     Chain opts = new HashChain();
     

@@ -32,6 +32,7 @@ import java.util.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
+import soot.options.Options;
 import soot.jimple.toolkits.pointer.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.spark.PointsToAnalysis;
@@ -136,19 +137,21 @@ public class Scene  //extends AbstractHost
 
     private Scene()
     {
+    	setReservedNames();
+    	
         Pack p;
 
         // Shimple transformation pack
-        packNameToPack.put("stp", p = new Pack());
+        packNameToPack.put("stp", p = new BodyPack());
 
         // Shimple optimization pack (-O)
-        packNameToPack.put("sop", p = new Pack());
+        packNameToPack.put("sop", p = new BodyPack());
 
         // Jimple transformation pack
-        packNameToPack.put("jtp", p = new Pack());
+        packNameToPack.put("jtp", p = new BodyPack());
 
         // Jimple optimization pack (-O)
-        packNameToPack.put("jop", p = new Pack());
+        packNameToPack.put("jop", p = new BodyPack());
         {
             p.add(new Transform("jop.cse",  CommonSubexpressionEliminator.v(),
                   "disabled"));
@@ -166,42 +169,42 @@ public class Scene  //extends AbstractHost
         }
 
         // Jimple annotation pack
-        packNameToPack.put("jap", p = new Pack());
+        packNameToPack.put("jap", p = new BodyPack());
 
         // Call graph pack
-        packNameToPack.put("cg", p = new Pack());
+        packNameToPack.put("cg", p = new ScenePack());
         {
             p.add(new Transform("cg.Spark", SparkTransformer.v(), "disabled"));
         }
 
         // Whole-Jimple transformation pack (--app)
-        packNameToPack.put("wjtp", p = new Pack());
+        packNameToPack.put("wjtp", p = new ScenePack());
 
         // Whole-Jimple Optimization pack (--app -W)
-        packNameToPack.put("wjop", p = new Pack());
+        packNameToPack.put("wjop", p = new ScenePack());
         {
             p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
             p.add(new Transform("wjop.si", StaticInliner.v()));
         }
 
         // Whole-Shimple transformation pack (--app)
-        packNameToPack.put("wstp", p = new Pack());
+        packNameToPack.put("wstp", p = new ScenePack());
 
         // Whole-Shimple Optimization pack (--app -W)
-        packNameToPack.put("wsop", p = new Pack());
+        packNameToPack.put("wsop", p = new ScenePack());
 
 	// Give another chance to do Whole-Jimple transformation
 	// The RectangularArrayFinder will be put into this package.
-	packNameToPack.put("wjtp2", p = new Pack());	
+	packNameToPack.put("wjtp2", p = new ScenePack());	
 		
         // Baf optimization pack
-        packNameToPack.put("bop", p = new Pack());
+        packNameToPack.put("bop", p = new BodyPack());
 
         // Grimp optimization pack
-        packNameToPack.put("gop", p = new Pack());
+        packNameToPack.put("gop", p = new BodyPack());
 
         // Code attribute tag aggregation pack
-        packNameToPack.put("cat", p = new Pack());
+        packNameToPack.put("cat", p = new BodyPack());
 
         // load soot.class.path system property, if defined
         String scp = System.getProperty("soot.class.path");
@@ -739,4 +742,68 @@ public class Scene  //extends AbstractHost
     public Numberer getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public Numberer getLocalNumberer() { return localNumberer; }
+
+    private void setReservedNames()
+    {
+        Set rn = getReservedNames();        
+        rn.add("newarray");
+        rn.add("newmultiarray");
+        rn.add("nop");
+        rn.add("ret");
+        rn.add("specialinvoke");
+        rn.add("staticinvoke");
+        rn.add("tableswitch");
+        rn.add("virtualinvoke");
+        rn.add("null_type");
+        rn.add("unknown");
+        rn.add("cmp");
+        rn.add("cmpg");
+        rn.add("cmpl");
+        rn.add("entermonitor");
+        rn.add("exitmonitor");
+        rn.add("interfaceinvoke");
+        rn.add("lengthof");
+        rn.add("lookupswitch");
+        rn.add("neg");
+        rn.add("if");
+        rn.add("abstract");
+        rn.add("boolean");
+        rn.add("break");
+        rn.add("byte");
+        rn.add("case");
+        rn.add("catch");
+        rn.add("char");
+        rn.add("class");
+        rn.add("final");
+        rn.add("native");
+        rn.add("public");
+        rn.add("protected");
+        rn.add("private");
+        rn.add("static");
+        rn.add("synchronized");
+        rn.add("transient");
+        rn.add("volatile");
+	rn.add("interface");
+        rn.add("void");
+        rn.add("short");
+        rn.add("int");
+        rn.add("long");
+        rn.add("float");
+        rn.add("double");
+        rn.add("extends");
+        rn.add("implements");
+        rn.add("breakpoint");
+        rn.add("default");
+        rn.add("goto");
+        rn.add("instanceof");
+        rn.add("new");
+        rn.add("return");
+        rn.add("throw");
+        rn.add("throws");
+        rn.add("null");
+        rn.add("from");
+	rn.add("to");
+    }
+
+
 }

@@ -60,8 +60,8 @@ public class Main implements Runnable
 
     public static Options opts;
     
-    public Date start;
-    public Date finish;
+    private Date start;
+    private Date finish;
 
     private static List compilationListeners = new ArrayList(1);
     public static void addCompilationListener(ICompilationListener l)
@@ -70,14 +70,6 @@ public class Main implements Runnable
     }
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEDED = 1;
-    
-    static List dynamicPackages = new ArrayList();
-
-    // The following lists are paired.  false is exclude in the first list.
-    static List packageInclusionFlags = new ArrayList();
-    static List packageInclusionMasks = new ArrayList();
-
-    static List dynamicClasses = new ArrayList();
     
     public static String getExtensionFor(int rep)
     {
@@ -130,8 +122,8 @@ public class Main implements Runnable
 
 	StringBuffer b = new StringBuffer();
 
-	if (outputDir != null)
-	    b.append( outputDir);
+	if (opts.outputDir() != null)
+	    b.append(opts.outputDir());
 	
 	if ((b.length() > 0) && (b.charAt( b.length() - 1) != fileSeparator))
 	    b.append( fileSeparator);
@@ -190,15 +182,11 @@ public class Main implements Runnable
 
 
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
+    private static String pathSeparator = System.getProperty("path.separator");
 
     public static boolean isInDebugMode;
    
     static private boolean useJavaStyle = false;
-
-    static boolean doArrayBoundsCheck = false;
-    static boolean doNullPointerCheck = false;
-           
-    static private String outputDir = "";
 
     static private boolean isOptimizing;
     static private boolean isOptimizingWhole;
@@ -213,15 +201,8 @@ public class Main implements Runnable
   //           soot/jimple/toolkits/typing/TypeNode.java
   final static private boolean isJ2ME = false;
 
-    // In application mode, we can choose lazy invocation mode
-    // and also choose no output, this is only used for 
-    // our point-to analysis right now.
-    static private boolean isLazyInvocation = false;
-
     static private SootClass mainClass = null;        
     
-    private static List sTagFileList = new ArrayList(); 
-
     private static List getClassesUnder(String aPath) 
     {
         File file = new File(aPath);
@@ -303,65 +284,37 @@ public class Main implements Runnable
     }
 
 
-    public static void addExclude(String str)
-        throws CompilationDeathException
+        /* This is called after sootClassPath has been defined. */
+    private static Set classesInDynamicPackage(String str)
     {
-        if (!opts.appMode()) {    
-            throw new CompilationDeathException(COMPILATION_ABORTED, "Exclude flag only valid in application mode!");
-        }
-  
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add(str);
-  
-    }
+        HashSet set = new HashSet(0);
+        StringTokenizer strtok = new StringTokenizer(Scene.v().getSootClassPath(), pathSeparator);
+        while(strtok.hasMoreTokens()) {
+            String path = strtok.nextToken();
 
-    public static void addInclude(String str)
-        throws CompilationDeathException
-    {
-        if (!opts.appMode()) {
-            throw new CompilationDeathException(COMPILATION_ABORTED, "Include flag only valid in application mode!");
-        }
-        packageInclusionFlags.add(new Boolean(true));
-        packageInclusionMasks.add(str);
-    }
-
-    public static void addDynamicClasses(String path)
-        throws CompilationDeathException
-    {
-        if (!opts.appMode())
-            {
-                throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-classes flag only valid in application mode!");
+            // For jimple files
+            List l = getClassesUnder(path);
+            for( Iterator filenameIt = l.iterator(); filenameIt.hasNext(); ) {
+                final String filename = (String) filenameIt.next();
+                if (filename.startsWith(str))
+                    set.add(filename);
             }
-                     
-        StringTokenizer tokenizer = new StringTokenizer(path, ":");
-        while(tokenizer.hasMoreTokens())
-            dynamicClasses.add(tokenizer.nextToken());
-    }
 
-    public static void addDynamicPath(String path)
-        throws CompilationDeathException
-    {
-        if (!opts.appMode())
-            {
-                throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-path flag only valid in application mode!");
+            // For class files;
+            path = path + "/";
+            StringTokenizer tokenizer = new StringTokenizer(str, ".");
+            while(tokenizer.hasMoreTokens()) {
+                path = path + tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens())
+                    path = path + "/";
             }
-                     
-        StringTokenizer tokenizer = new StringTokenizer(path, ":");
-        while(tokenizer.hasMoreTokens())
-            dynamicClasses.addAll(getClassesUnder(tokenizer.nextToken()));
+            l = getClassesUnder(path);
+            for (Iterator it = l.iterator(); it.hasNext(); )
+                set.add(str+"."+((String)it.next()));
+        }
+        return set;
     }
 
-    public static void addDynamicPackage(String str)
-	throws CompilationDeathException
-    {
-        if (!opts.appMode()) {
-            throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-package flag only valid in application mode!");
-        }
-        
-        StringTokenizer tokenizer = new StringTokenizer(str, ",");
-        while(tokenizer.hasMoreTokens())
-            dynamicPackages.add(tokenizer.nextToken());
-    }
 
     public static void setDebug(boolean val)
     {
@@ -371,72 +324,6 @@ public class Main implements Runnable
     public static boolean isDebug()
     {
         return isInDebugMode;
-    }
-
-    public static void setOutputDir(String dir)
-    {
-        outputDir = dir;
-    }
-
-    public static String getOutputDir()
-    {
-        return outputDir;
-    }
-
-    public static void setSrcPrecedence(String prec)
-        throws CompilationDeathException
-    {
-        if(prec.equals("jimple"))
-            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_JIMPLE);
-        else if(prec.equals("class"))
-            SourceLocator.setSrcPrecedence(SourceLocator.PRECEDENCE_CLASS);
-        else {                                
-            throw new CompilationDeathException(COMPILATION_ABORTED,
-						"Illegal --src-prec arg: " 
-						+ prec + ". Valid args are:"
-						+ " \"jimple\" or \"class\"");
-        }
-    }
-
-    public static void setAnnotationPhases(String opt)
-    {
-	if (opt.equals("both")) 
-	    {
-		doNullPointerCheck = true;
-		doArrayBoundsCheck = true;
-	    } 
-	else if (opt.equals("arraybounds"))
-	    {
-		doArrayBoundsCheck = true;
-	    }
-	else if (opt.equals("nullpointer"))
-	    {
-		doNullPointerCheck = true;
-	    }
-	else if (opt.equals("LineNumber"))
-	    {
-		CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
-	    }
-	else
-	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
-				
-				// put null pointer check before bounds check for profiling purpose
-	if (doNullPointerCheck)
-	    {
-		Scene.v().getPack("jtp").add(new Transform("jtp.npc", NullPointerChecker.v()));
-	    }
-				
-	if (doArrayBoundsCheck)
-	    {
-		Scene.v().getPack("wjtp2").add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
-		Scene.v().getPack("jtp").add(new Transform("jtp.abc", ArrayBoundsChecker.v()));
-	    }
-	
-	if (doNullPointerCheck || doArrayBoundsCheck) {
-	    Scene.v().getPack("jtp").add(new Transform("jtp.profiling", ProfilingGenerator.v()));
-	    // turn on the tag aggregator
-	    CodeAttributeGenerator.v().registerAggregator(new ArrayNullTagAggregator(true));
-	}
     }
 
     private static void printVersion()
@@ -501,23 +388,7 @@ public class Main implements Runnable
 				
     }
 
-    // called by the new command-line parser
-    private static void processPhaseOptions(String phaseOptions) {
-	int idx = phaseOptions.indexOf(':');
-	if (idx == -1) {
-	    throw new CompilationDeathException(COMPILATION_ABORTED,
-						"Invalid phase option: " 
-						+ phaseOptions);
-	}
-	String phaseName = phaseOptions.substring(0, idx);		
-	StringTokenizer st = new StringTokenizer(phaseOptions.substring(idx+1), ",");
-	while (st.hasMoreTokens()) {
-	    processPhaseOption(phaseName, st.nextToken(), '=');
-	}
-    }
-	
-    // called by the "classic" command-line parser
-    public static void processPhaseOptions(String phaseName, String option) {
+        public static void processPhaseOptions(String phaseName, String option) {
 	StringTokenizer st = new StringTokenizer(option, ",");
 	while (st.hasMoreTokens()) {
 	    processPhaseOption(phaseName, st.nextToken(), ':');
@@ -566,116 +437,27 @@ public class Main implements Runnable
      * Must be called! */
     public static void initApp()
     { 
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("java.");
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("sun.");
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("javax.");                
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("com.sun.");                
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("com.ibm.");                
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("org.xml.");                
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("org.w3c.");                
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("org.apache.");                
+        opts.excPackage().add("java.");
+        opts.excPackage().add("sun.");
+        opts.excPackage().add("javax.");
+        opts.excPackage().add("com.sun.");
+        opts.excPackage().add("com.ibm.");
+        opts.excPackage().add("org.xml.");
+        opts.excPackage().add("org.w3c.");
+        opts.excPackage().add("org.apache.");
     }
 
-
-
-    private static String[] cmdLineArgs;
-    public static String[] getCmdLineArgs()
-    {
-	return cmdLineArgs;
-    }
-    public static void setCmdLineArgs(String[] args)
-    {
-        cmdLineArgs = args;
-    }
-    
+    public static String[] cmdLineArgs;
     /**
      *   Entry point for cmd line invocation of soot.
      */
     public static void main(String[] args)
     {
-        setReservedNames();
-        setCmdLineArgs(args);
+        cmdLineArgs = args;
         Main m = new Main();
         ConsoleCompilationListener ccl = new ConsoleCompilationListener();
         addCompilationListener(ccl);
         m.run();
-    }
-
-    public static void setReservedNames()
-    {
-        Set rn = Scene.v().getReservedNames();        
-        rn.add("newarray");
-        rn.add("newmultiarray");
-        rn.add("nop");
-        rn.add("ret");
-        rn.add("specialinvoke");
-        rn.add("staticinvoke");
-        rn.add("tableswitch");
-        rn.add("virtualinvoke");
-        rn.add("null_type");
-        rn.add("unknown");
-        rn.add("cmp");
-        rn.add("cmpg");
-        rn.add("cmpl");
-        rn.add("entermonitor");
-        rn.add("exitmonitor");
-        rn.add("interfaceinvoke");
-        rn.add("lengthof");
-        rn.add("lookupswitch");
-        rn.add("neg");
-        rn.add("if");
-        rn.add("abstract");
-        rn.add("boolean");
-        rn.add("break");
-        rn.add("byte");
-        rn.add("case");
-        rn.add("catch");
-        rn.add("char");
-        rn.add("class");
-        rn.add("final");
-        rn.add("native");
-        rn.add("public");
-        rn.add("protected");
-        rn.add("private");
-        rn.add("static");
-        rn.add("synchronized");
-        rn.add("transient");
-        rn.add("volatile");
-	rn.add("interface");
-        rn.add("void");
-        rn.add("short");
-        rn.add("int");
-        rn.add("long");
-        rn.add("float");
-        rn.add("double");
-        rn.add("extends");
-        rn.add("implements");
-        rn.add("breakpoint");
-        rn.add("default");
-        rn.add("goto");
-        rn.add("instanceof");
-        rn.add("new");
-        rn.add("return");
-        rn.add("throw");
-        rn.add("throws");
-        rn.add("null");
-        rn.add("from");
-	rn.add("to");
     }
 
   /** 
@@ -700,13 +482,6 @@ public class Main implements Runnable
 
       prepareClasses();
 
-      /* process all reachable methods and generate jimple body */
-      if (isLazyInvocation) {
-	lazyPreprocessClasses();
-      }
-
-      processTagFiles();
-
       // Run the whole-program packs.
       Scene.v().getPack("wjtp").apply();
       if(isOptimizingWhole)
@@ -719,11 +494,7 @@ public class Main implements Runnable
 
       preProcessDAVA();
 
-      if (isLazyInvocation) {
-	lazyProcessClasses(); 
-      } else {
 	processClasses();
-      }
 
       postProcessDAVA();
 	    
@@ -760,41 +531,7 @@ public class Main implements Runnable
     }
   }
 
-  /* lazily preprocess classes, based on invoke graph generated by CHA */
-  private static void lazyPreprocessClasses() {
-     
-    Date start = new Date();
-
-    System.out.println("[] Start building the invoke graph ... ");
-
-    InvokeGraph invokeGraph = 
-      ClassHierarchyAnalysis.newPreciseInvokeGraph(true);
-    Scene.v().setActiveInvokeGraph(invokeGraph);
-
-    Date finish = new Date();
-
-    {
-      System.out.println("[] Finished building the invoke graph ...");
-      long runtime = finish.getTime() - start.getTime();
-      System.out.println("[] Building invoke graph takes "
-			 +(runtime/60000)+" min. "
-			 +((runtime%60000)/1000)+" sec.");
-    }	
-  }
-
-  /* lazily process classes */
-  private static void lazyProcessClasses() {
-    Iterator classIt = Scene.v().getApplicationClasses().iterator();
-
-    while (classIt.hasNext()) {
-      SootClass s = (SootClass)classIt.next();
-      System.out.println(" Transforming " + s.getName() + "...");
-
-      lazyHandleClass(s);
-    }
-  }
-
-  /* process classes */
+      /* process classes */
   private static void processClasses() {
     Iterator classIt = Scene.v().getApplicationClasses().iterator();
     
@@ -874,38 +611,41 @@ public class Main implements Runnable
       setJavaStyle( false);
     }
   }
-    /* load necessary classes
-     */
+  
     private static void loadNecessaryClasses() {
-	Iterator it = opts.classes().iterator();
-        
-	while(it.hasNext()) {
-	    String name = (String) it.next();
-	    SootClass c;
-                            
-	    c = Scene.v().loadClassAndSupport(name);
-                
-	    if(mainClass == null) {
-		mainClass = c;
-		Scene.v().setMainClass(c);
-	    }   
-	    c.setApplicationClass();
-	}
-        
-	// Dynamic packages
-	it = dynamicPackages.iterator();
-	/*
-	while(it.hasNext())
-	    markPackageAsDynamic((String)it.next());
-	    */
-   
-	// Dynamic & process classes
-	it = dynamicClasses.iterator();
-                
-	while(it.hasNext())
-        {
+        Iterator it = opts.classes().iterator();
+
+        while (it.hasNext()) {
+            String name = (String) it.next();
+            SootClass c;
+
+            c = Scene.v().loadClassAndSupport(name);
+
+            if (mainClass == null) {
+                mainClass = c;
+                Scene.v().setMainClass(c);
+            }
+            c.setApplicationClass();
+        }
+
+        HashSet dynClasses = new HashSet();
+        dynClasses.addAll( opts.dynClasses() );
+
+        for( Iterator pathIt = opts.dynPath().iterator(); pathIt.hasNext(); ) {
+
+            final String path = (String) pathIt.next();
+            dynClasses.addAll(getClassesUnder(path));
+        }
+
+        for( Iterator pkgIt = opts.dynPackage().iterator(); pkgIt.hasNext(); ) {
+
+            final String pkg = (String) pkgIt.next();
+            dynClasses.addAll( classesInDynamicPackage( pkg ) );
+        }
+
+        while (it.hasNext()) {
             Object o = it.next();
-	    Scene.v().loadClassAndSupport((String) o);
+            Scene.v().loadClassAndSupport((String) o);
         }
 
         for( Iterator pathIt = opts.processPath().iterator(); pathIt.hasNext(); ) {
@@ -915,7 +655,7 @@ public class Main implements Runnable
                 final String cl = (String) clIt.next();
                 Scene.v().loadClassAndSupport(cl).setApplicationClass();
             }
-	}
+        }
     }
 
   /* Generate classes to process, adding or removing package marked by
@@ -944,23 +684,18 @@ public class Main implements Runnable
       if(opts.classes().contains(s.getName()))
 	continue;
 	    
-      Iterator packageCmdIt = packageInclusionFlags.iterator();
-      Iterator packageMaskIt = packageInclusionMasks.iterator();
-                    
-      while(packageCmdIt.hasNext()) {
-	boolean pkgFlag = 
-	  ((Boolean) packageCmdIt.next()).booleanValue();
-	String pkgMask = (String) packageMaskIt.next();
-                        
-	if (pkgFlag) {
-	  if (s.isContextClass() 
-	      && s.getPackageName().startsWith(pkgMask))
-	    s.setApplicationClass();
-	} else {
+      for( Iterator pkgIt = opts.excPackage().iterator(); pkgIt.hasNext(); ) {
+	    
+          final String pkg = (String) pkgIt.next();
 	  if (s.isApplicationClass() 
-	      && s.getPackageName().startsWith(pkgMask))
+	      && s.getPackageName().startsWith(pkg))
 	    s.setContextClass();
-	}
+      }
+      for( Iterator pkgIt = opts.incPackage().iterator(); pkgIt.hasNext(); ) {
+          final String pkg = (String) pkgIt.next();
+	  if (s.isContextClass() 
+	      && s.getPackageName().startsWith(pkg))
+	    s.setApplicationClass();
       }
     }
 
@@ -972,45 +707,7 @@ public class Main implements Runnable
     }
   }
 
-  /* read in the tag files
-   * Who created this? It calls retrieve jimple body
-   */
-    private static void processTagFiles() {
-      Iterator it = sTagFileList.iterator();
-      while(it.hasNext()) { 
-	try {
-	  File f = new File((String)it.next());
-	  BufferedReader reader = 
-	    new BufferedReader(new InputStreamReader(new FileInputStream(f)));
-								
-	  for(String line = reader.readLine(); 
-	      line  !=  null;  
-	      line = reader.readLine()) {
-	    if(line.startsWith("<") ) {
-	      String signature = line.substring(0,line.indexOf('+'));
-	      int offset = Integer.parseInt(line.substring(line.indexOf('+') 
-					   + 1, line.indexOf('/')));
-	      String name = line.substring(line.indexOf('/')+1, 
-					   line.lastIndexOf(':'));
-	      String value = line.substring(line.lastIndexOf(':')+1);
-
-	      SootMethod m = Scene.v().getMethod(signature);
-	      JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-	      
-	      List unitList = new ArrayList(body.getUnits());
-	      Unit u = (Unit) unitList.get(offset);
-	      
-	      if(Long.valueOf(value) == null)
-		System.out.println(value);
-	    }
-	  }				
-	} catch (IOException e) {
-	  
-	}
-      }
-    }
-
-  /** Attach JimpleBodies to the methods of c. */
+    /** Attach JimpleBodies to the methods of c. */
   private static void attachJimpleBodiesFor(SootClass c) {
     Iterator methodIt = c.methodIterator();
            
@@ -1199,7 +896,7 @@ public class Main implements Runnable
     case Options.outputFormat_dava:
       break;
     case Options.outputFormat_classFile:
-      c.write(outputDir);
+      c.write(opts.outputDir());
       break;    
     case Options.outputFormat_xml:
       writerOut = 

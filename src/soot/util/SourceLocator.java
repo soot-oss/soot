@@ -34,7 +34,9 @@ import java.io.*;
 import java.util.zip.*;
 import java.util.Enumeration;
 import java.util.*;
-import soot.*;
+import soot.Main;
+import soot.Scene;
+import soot.options.Options;
 
 /*
  * xxx should find a .class .jimple or .baf source for a className... presently finds jimple and class
@@ -47,31 +49,11 @@ public class SourceLocator
     private static char pathSeparator = System.getProperty("path.separator").charAt(0);
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
-    /** Constant for default source precedence. */
-    public static final int PRECEDENCE_NONE = 0;
-
-    /** Constant indicating that classfiles (via Coffi) are preferred input stream. */
-    public static final int PRECEDENCE_CLASS = 1;
-
-    /** Constant indicating that Jimple is preferred input stream. */
-    public static final int PRECEDENCE_JIMPLE = 2;
-
-    /** Constant indicating that Baf is preferred input stream. */
-    public static final int PRECEDENCE_BAF = 3;
-
-    private static int srcPrecedence = PRECEDENCE_NONE;
-
     private static List zipFileList = Collections.synchronizedList(new LinkedList()); 
 
     private SourceLocator() // No instances.
     {
     }
-
-    /** Sets the source precedence. */
-    public static void setSrcPrecedence(int precedence)
-    {	
-        srcPrecedence = precedence;
-    }    
 
     /** Given a class name, uses the default soot-class-path to return an input stream for the given class. */
     public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
@@ -165,7 +147,7 @@ public class SourceLocator
             reps.add(ClassInputRep.v());
             reps.add(JimpleInputRep.v());
 
-            if(srcPrecedence == PRECEDENCE_CLASS || srcPrecedence == PRECEDENCE_NONE) {		
+            if( Main.opts.srcPrec() == Options.srcPrec_classFile ) {
                 List lst = new LinkedList();
                 lst.add(ClassInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null) {
@@ -174,8 +156,7 @@ public class SourceLocator
                 if( (res = getFileInputStream(locations, reps, className)) != null) {
                     return res;
 		}
-            } 
-            else if (srcPrecedence == PRECEDENCE_JIMPLE) {
+            } else if( Main.opts.srcPrec() == Options.srcPrec_jimple ) {
                 List lst = new LinkedList();
                 lst.add(JimpleInputRep.v());
                 if( (res = getFileInputStream(locations, lst, className)) != null)
