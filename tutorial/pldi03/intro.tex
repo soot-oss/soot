@@ -40,9 +40,52 @@
 \end{slide}
 
 \begin{slide}{Soot IRs}
+\begin{description}
+\item[Baf:] a compact rep. of bytecode (stack-based)
+\item[Jimple:]  simple, typed,  3-addr (stackless) representation
+\item[Shimple:]  SSA-version of Jimple
+\item[Grimple:] like Jimple, but with expressions aggregated 
+\item[Dava:] structured represenation used for Decompilation 
+\end{description}
 \end{slide}
 
-\begin{slide}{Soot as an end-user tool}
+\begin{slide}{Soot as an end-user tool: Command-line}
+\begin{description}
+\item[Install:]
+\begin{enumerate}
+\item Install Java.
+\item Download two .jar files and put them on your CLASSPATH.
+\end{enumerate}
+\item[{\tt java Soot.main --help}]  Lists options.
+\item[{\tt java Soot.main A}]     Processes {\tt A.class} in current directory
+                        and places produces a new class file in
+                        {\tt sootOutput/A.class}.
+\item[{\tt java Soot.main -o jimple A}]  Same as above, but produces 
+{\tt sootOutput/A.jimple}.
+\item[{\tt java Soot.main -O A}] Produces an optimized {\tt A.class}.
+\item[{\tt java Soot.main -o dava A}] Decompiles {\tt A.class} and produces
+{\tt A.java} in {\tt sootOutput/dava/src/A.java}. 
+\item[{\tt java Soot.main -O -app A}]
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot as an end-user tool:  Eclipse plugin}
+\begin{description}
+\item[Install:]
+\begin{enumerate}
+\item Install Java
+\item Install Eclipse {\tt www.eclipse.org}
+\item Download one .jar file and unjar it into your Eclipse plugin directory.
+\item Make some project settings inside Eclipse.
+\end{enumerate}
+
+\item[Use it:]
+\begin{itemize}
+\item IDE-based optimization, decompilation and visualization
+\item GUI for setting and storing Soot option configurations
+\item Eclipse views for Soot IRs
+\end{itemize}
+\end{description}
 \end{slide}
 
 \begin{slide}{Jimple and Soot Implementation Basics}
