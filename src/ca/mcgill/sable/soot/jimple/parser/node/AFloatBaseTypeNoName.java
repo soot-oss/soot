@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class AFloatBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TFloat _float_;
 
-    public ANameBaseType()
+    public AFloatBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public AFloatBaseTypeNoName(
+        TFloat _float_)
     {
-        setName(_name_);
+        setFloat(_float_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new AFloatBaseTypeNoName(
+            (TFloat) cloneNode(_float_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseAFloatBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TFloat getFloat()
     {
-        return _name_;
+        return _float_;
     }
 
-    public void setName(PName node)
+    public void setFloat(TFloat node)
     {
-        if(_name_ != null)
+        if(_float_ != null)
         {
-            _name_.parent(null);
+            _float_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _float_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_float_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_float_ == child)
         {
-            _name_ = null;
+            _float_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_float_ == oldChild)
         {
-            setName((PName) newChild);
+            setFloat((TFloat) newChild);
             return;
         }
 

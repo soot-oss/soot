@@ -7,9 +7,9 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AFieldSignature extends PFieldSignature
 {
     private TCmplt _cmplt_;
-    private TName _className_;
+    private PName _className_;
     private TColon _first_;
-    private TName _fieldName_;
+    private PName _fieldName_;
     private TColon _second_;
     private PType _type_;
     private TCmpgt _cmpgt_;
@@ -20,9 +20,9 @@ public final class AFieldSignature extends PFieldSignature
 
     public AFieldSignature(
         TCmplt _cmplt_,
-        TName _className_,
+        PName _className_,
         TColon _first_,
-        TName _fieldName_,
+        PName _fieldName_,
         TColon _second_,
         PType _type_,
         TCmpgt _cmpgt_)
@@ -46,9 +46,9 @@ public final class AFieldSignature extends PFieldSignature
     {
         return new AFieldSignature(
             (TCmplt) cloneNode(_cmplt_),
-            (TName) cloneNode(_className_),
+            (PName) cloneNode(_className_),
             (TColon) cloneNode(_first_),
-            (TName) cloneNode(_fieldName_),
+            (PName) cloneNode(_fieldName_),
             (TColon) cloneNode(_second_),
             (PType) cloneNode(_type_),
             (TCmpgt) cloneNode(_cmpgt_));
@@ -84,12 +84,12 @@ public final class AFieldSignature extends PFieldSignature
         _cmplt_ = node;
     }
 
-    public TName getClassName()
+    public PName getClassName()
     {
         return _className_;
     }
 
-    public void setClassName(TName node)
+    public void setClassName(PName node)
     {
         if(_className_ != null)
         {
@@ -134,12 +134,12 @@ public final class AFieldSignature extends PFieldSignature
         _first_ = node;
     }
 
-    public TName getFieldName()
+    public PName getFieldName()
     {
         return _fieldName_;
     }
 
-    public void setFieldName(TName node)
+    public void setFieldName(PName node)
     {
         if(_fieldName_ != null)
         {
@@ -302,7 +302,7 @@ public final class AFieldSignature extends PFieldSignature
 
         if(_className_ == oldChild)
         {
-            setClassName((TName) newChild);
+            setClassName((PName) newChild);
             return;
         }
 
@@ -314,7 +314,7 @@ public final class AFieldSignature extends PFieldSignature
 
         if(_fieldName_ == oldChild)
         {
-            setFieldName((TName) newChild);
+            setFieldName((PName) newChild);
             return;
         }
 

@@ -6,7 +6,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class AArrayRef extends PArrayRef
 {
-    private PLocalName _localName_;
+    private TIdentifier _identifier_;
     private PFixedArrayDescriptor _fixedArrayDescriptor_;
 
     public AArrayRef()
@@ -14,10 +14,10 @@ public final class AArrayRef extends PArrayRef
     }
 
     public AArrayRef(
-        PLocalName _localName_,
+        TIdentifier _identifier_,
         PFixedArrayDescriptor _fixedArrayDescriptor_)
     {
-        setLocalName(_localName_);
+        setIdentifier(_identifier_);
 
         setFixedArrayDescriptor(_fixedArrayDescriptor_);
 
@@ -25,7 +25,7 @@ public final class AArrayRef extends PArrayRef
     public Object clone()
     {
         return new AArrayRef(
-            (PLocalName) cloneNode(_localName_),
+            (TIdentifier) cloneNode(_identifier_),
             (PFixedArrayDescriptor) cloneNode(_fixedArrayDescriptor_));
     }
 
@@ -34,16 +34,16 @@ public final class AArrayRef extends PArrayRef
         ((Analysis) sw).caseAArrayRef(this);
     }
 
-    public PLocalName getLocalName()
+    public TIdentifier getIdentifier()
     {
-        return _localName_;
+        return _identifier_;
     }
 
-    public void setLocalName(PLocalName node)
+    public void setIdentifier(TIdentifier node)
     {
-        if(_localName_ != null)
+        if(_identifier_ != null)
         {
-            _localName_.parent(null);
+            _identifier_.parent(null);
         }
 
         if(node != null)
@@ -56,7 +56,7 @@ public final class AArrayRef extends PArrayRef
             node.parent(this);
         }
 
-        _localName_ = node;
+        _identifier_ = node;
     }
 
     public PFixedArrayDescriptor getFixedArrayDescriptor()
@@ -87,15 +87,15 @@ public final class AArrayRef extends PArrayRef
     public String toString()
     {
         return ""
-            + toString(_localName_)
+            + toString(_identifier_)
             + toString(_fixedArrayDescriptor_);
     }
 
     void removeChild(Node child)
     {
-        if(_localName_ == child)
+        if(_identifier_ == child)
         {
-            _localName_ = null;
+            _identifier_ = null;
             return;
         }
 
@@ -109,9 +109,9 @@ public final class AArrayRef extends PArrayRef
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_localName_ == oldChild)
+        if(_identifier_ == oldChild)
         {
-            setLocalName((PLocalName) newChild);
+            setIdentifier((TIdentifier) newChild);
             return;
         }
 

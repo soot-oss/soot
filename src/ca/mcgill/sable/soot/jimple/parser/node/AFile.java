@@ -8,7 +8,7 @@ public final class AFile extends PFile
 {
     private final LinkedList _modifier_ = new TypedLinkedList(new Modifier_Cast());
     private PFileType _fileType_;
-    private TName _name_;
+    private PName _name_;
     private PExtendsClause _extendsClause_;
     private PImplementsClause _implementsClause_;
     private PFileBody _fileBody_;
@@ -20,7 +20,7 @@ public final class AFile extends PFile
     public AFile(
         List _modifier_,
         PFileType _fileType_,
-        TName _name_,
+        PName _name_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -48,7 +48,7 @@ public final class AFile extends PFile
     public AFile(
         XPModifier _modifier_,
         PFileType _fileType_,
-        TName _name_,
+        PName _name_,
         PExtendsClause _extendsClause_,
         PImplementsClause _implementsClause_,
         PFileBody _fileBody_)
@@ -79,7 +79,7 @@ public final class AFile extends PFile
         return new AFile(
             cloneList(_modifier_),
             (PFileType) cloneNode(_fileType_),
-            (TName) cloneNode(_name_),
+            (PName) cloneNode(_name_),
             (PExtendsClause) cloneNode(_extendsClause_),
             (PImplementsClause) cloneNode(_implementsClause_),
             (PFileBody) cloneNode(_fileBody_));
@@ -129,12 +129,12 @@ public final class AFile extends PFile
         _fileType_ = node;
     }
 
-    public TName getName()
+    public PName getName()
     {
         return _name_;
     }
 
-    public void setName(TName node)
+    public void setName(PName node)
     {
         if(_name_ != null)
         {
@@ -306,7 +306,7 @@ public final class AFile extends PFile
 
         if(_name_ == oldChild)
         {
-            setName((TName) newChild);
+            setName((PName) newChild);
             return;
         }
 

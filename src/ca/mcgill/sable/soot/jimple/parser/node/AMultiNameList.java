@@ -6,7 +6,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class AMultiNameList extends PNameList
 {
-    private TName _name_;
+    private PName _name_;
     private TComma _comma_;
     private PNameList _nameList_;
 
@@ -15,7 +15,7 @@ public final class AMultiNameList extends PNameList
     }
 
     public AMultiNameList(
-        TName _name_,
+        PName _name_,
         TComma _comma_,
         PNameList _nameList_)
     {
@@ -29,7 +29,7 @@ public final class AMultiNameList extends PNameList
     public Object clone()
     {
         return new AMultiNameList(
-            (TName) cloneNode(_name_),
+            (PName) cloneNode(_name_),
             (TComma) cloneNode(_comma_),
             (PNameList) cloneNode(_nameList_));
     }
@@ -39,12 +39,12 @@ public final class AMultiNameList extends PNameList
         ((Analysis) sw).caseAMultiNameList(this);
     }
 
-    public TName getName()
+    public PName getName()
     {
         return _name_;
     }
 
-    public void setName(TName node)
+    public void setName(PName node)
     {
         if(_name_ != null)
         {
@@ -148,7 +148,7 @@ public final class AMultiNameList extends PNameList
     {
         if(_name_ == oldChild)
         {
-            setName((TName) newChild);
+            setName((PName) newChild);
             return;
         }
 

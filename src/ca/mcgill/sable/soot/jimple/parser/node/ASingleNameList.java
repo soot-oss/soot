@@ -6,14 +6,14 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
 public final class ASingleNameList extends PNameList
 {
-    private TName _name_;
+    private PName _name_;
 
     public ASingleNameList()
     {
     }
 
     public ASingleNameList(
-        TName _name_)
+        PName _name_)
     {
         setName(_name_);
 
@@ -21,7 +21,7 @@ public final class ASingleNameList extends PNameList
     public Object clone()
     {
         return new ASingleNameList(
-            (TName) cloneNode(_name_));
+            (PName) cloneNode(_name_));
     }
 
     public void apply(Switch sw)
@@ -29,12 +29,12 @@ public final class ASingleNameList extends PNameList
         ((Analysis) sw).caseASingleNameList(this);
     }
 
-    public TName getName()
+    public PName getName()
     {
         return _name_;
     }
 
-    public void setName(TName node)
+    public void setName(PName node)
     {
         if(_name_ != null)
         {
@@ -74,7 +74,7 @@ public final class ASingleNameList extends PNameList
     {
         if(_name_ == oldChild)
         {
-            setName((TName) newChild);
+            setName((PName) newChild);
             return;
         }
 

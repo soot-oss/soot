@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class ADoubleBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TDouble _double_;
 
-    public ANameBaseType()
+    public ADoubleBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public ADoubleBaseTypeNoName(
+        TDouble _double_)
     {
-        setName(_name_);
+        setDouble(_double_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new ADoubleBaseTypeNoName(
+            (TDouble) cloneNode(_double_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseADoubleBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TDouble getDouble()
     {
-        return _name_;
+        return _double_;
     }
 
-    public void setName(PName node)
+    public void setDouble(TDouble node)
     {
-        if(_name_ != null)
+        if(_double_ != null)
         {
-            _name_.parent(null);
+            _double_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _double_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_double_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_double_ == child)
         {
-            _name_ = null;
+            _double_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_double_ == oldChild)
         {
-            setName((PName) newChild);
+            setDouble((TDouble) newChild);
             return;
         }
 

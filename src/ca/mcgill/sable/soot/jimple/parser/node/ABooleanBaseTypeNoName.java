@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class ABooleanBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TBoolean _boolean_;
 
-    public ANameBaseType()
+    public ABooleanBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public ABooleanBaseTypeNoName(
+        TBoolean _boolean_)
     {
-        setName(_name_);
+        setBoolean(_boolean_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new ABooleanBaseTypeNoName(
+            (TBoolean) cloneNode(_boolean_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseABooleanBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TBoolean getBoolean()
     {
-        return _name_;
+        return _boolean_;
     }
 
-    public void setName(PName node)
+    public void setBoolean(TBoolean node)
     {
-        if(_name_ != null)
+        if(_boolean_ != null)
         {
-            _name_.parent(null);
+            _boolean_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _boolean_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_boolean_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_boolean_ == child)
         {
-            _name_ = null;
+            _boolean_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_boolean_ == oldChild)
         {
-            setName((PName) newChild);
+            setBoolean((TBoolean) newChild);
             return;
         }
 

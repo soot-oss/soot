@@ -660,6 +660,166 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAThrowsClause(node);
     }
 
+    public void inABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
+    {
+        inABooleanBaseTypeNoName(node);
+        if(node.getBoolean() != null)
+        {
+            node.getBoolean().apply(this);
+        }
+        outABooleanBaseTypeNoName(node);
+    }
+
+    public void inAByteBaseTypeNoName(AByteBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAByteBaseTypeNoName(AByteBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAByteBaseTypeNoName(AByteBaseTypeNoName node)
+    {
+        inAByteBaseTypeNoName(node);
+        if(node.getByte() != null)
+        {
+            node.getByte().apply(this);
+        }
+        outAByteBaseTypeNoName(node);
+    }
+
+    public void inACharBaseTypeNoName(ACharBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outACharBaseTypeNoName(ACharBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseACharBaseTypeNoName(ACharBaseTypeNoName node)
+    {
+        inACharBaseTypeNoName(node);
+        if(node.getChar() != null)
+        {
+            node.getChar().apply(this);
+        }
+        outACharBaseTypeNoName(node);
+    }
+
+    public void inAShortBaseTypeNoName(AShortBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAShortBaseTypeNoName(AShortBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAShortBaseTypeNoName(AShortBaseTypeNoName node)
+    {
+        inAShortBaseTypeNoName(node);
+        if(node.getShort() != null)
+        {
+            node.getShort().apply(this);
+        }
+        outAShortBaseTypeNoName(node);
+    }
+
+    public void inAIntBaseTypeNoName(AIntBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIntBaseTypeNoName(AIntBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAIntBaseTypeNoName(AIntBaseTypeNoName node)
+    {
+        inAIntBaseTypeNoName(node);
+        if(node.getInt() != null)
+        {
+            node.getInt().apply(this);
+        }
+        outAIntBaseTypeNoName(node);
+    }
+
+    public void inALongBaseTypeNoName(ALongBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outALongBaseTypeNoName(ALongBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseALongBaseTypeNoName(ALongBaseTypeNoName node)
+    {
+        inALongBaseTypeNoName(node);
+        if(node.getLong() != null)
+        {
+            node.getLong().apply(this);
+        }
+        outALongBaseTypeNoName(node);
+    }
+
+    public void inAFloatBaseTypeNoName(AFloatBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAFloatBaseTypeNoName(AFloatBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAFloatBaseTypeNoName(AFloatBaseTypeNoName node)
+    {
+        inAFloatBaseTypeNoName(node);
+        if(node.getFloat() != null)
+        {
+            node.getFloat().apply(this);
+        }
+        outAFloatBaseTypeNoName(node);
+    }
+
+    public void inADoubleBaseTypeNoName(ADoubleBaseTypeNoName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outADoubleBaseTypeNoName(ADoubleBaseTypeNoName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseADoubleBaseTypeNoName(ADoubleBaseTypeNoName node)
+    {
+        inADoubleBaseTypeNoName(node);
+        if(node.getDouble() != null)
+        {
+            node.getDouble().apply(this);
+        }
+        outADoubleBaseTypeNoName(node);
+    }
+
     public void inABooleanBaseType(ABooleanBaseType node)
     {
         defaultIn(node);
@@ -840,19 +1000,19 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outANameBaseType(node);
     }
 
-    public void inANonvoidType(ANonvoidType node)
+    public void inABaseNonvoidType(ABaseNonvoidType node)
     {
         defaultIn(node);
     }
 
-    public void outANonvoidType(ANonvoidType node)
+    public void outABaseNonvoidType(ABaseNonvoidType node)
     {
         defaultOut(node);
     }
 
-    public void caseANonvoidType(ANonvoidType node)
+    public void caseABaseNonvoidType(ABaseNonvoidType node)
     {
-        inANonvoidType(node);
+        inABaseNonvoidType(node);
         {
             Object temp[] = node.getArrayBrackets().toArray();
             for(int i = temp.length - 1; i >= 0; i--)
@@ -860,11 +1020,65 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
                 ((PArrayBrackets) temp[i]).apply(this);
             }
         }
-        if(node.getBaseType() != null)
+        if(node.getBaseTypeNoName() != null)
         {
-            node.getBaseType().apply(this);
+            node.getBaseTypeNoName().apply(this);
         }
-        outANonvoidType(node);
+        outABaseNonvoidType(node);
+    }
+
+    public void inAQuotedNonvoidType(AQuotedNonvoidType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAQuotedNonvoidType(AQuotedNonvoidType node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAQuotedNonvoidType(AQuotedNonvoidType node)
+    {
+        inAQuotedNonvoidType(node);
+        {
+            Object temp[] = node.getArrayBrackets().toArray();
+            for(int i = temp.length - 1; i >= 0; i--)
+            {
+                ((PArrayBrackets) temp[i]).apply(this);
+            }
+        }
+        if(node.getQuotedName() != null)
+        {
+            node.getQuotedName().apply(this);
+        }
+        outAQuotedNonvoidType(node);
+    }
+
+    public void inAIdentNonvoidType(AIdentNonvoidType node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIdentNonvoidType(AIdentNonvoidType node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAIdentNonvoidType(AIdentNonvoidType node)
+    {
+        inAIdentNonvoidType(node);
+        {
+            Object temp[] = node.getArrayBrackets().toArray();
+            for(int i = temp.length - 1; i >= 0; i--)
+            {
+                ((PArrayBrackets) temp[i]).apply(this);
+            }
+        }
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAIdentNonvoidType(node);
     }
 
     public void inAArrayBrackets(AArrayBrackets node)
@@ -2403,9 +2617,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getFixedArrayDescriptor().apply(this);
         }
-        if(node.getLocalName() != null)
+        if(node.getIdentifier() != null)
         {
-            node.getLocalName().apply(this);
+            node.getIdentifier().apply(this);
         }
         outAArrayRef(node);
     }
@@ -3124,5 +3338,45 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getNeg().apply(this);
         }
         outANegUnop(node);
+    }
+
+    public void inAQuotedName(AQuotedName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAQuotedName(AQuotedName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAQuotedName(AQuotedName node)
+    {
+        inAQuotedName(node);
+        if(node.getQuotedName() != null)
+        {
+            node.getQuotedName().apply(this);
+        }
+        outAQuotedName(node);
+    }
+
+    public void inAIdentName(AIdentName node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAIdentName(AIdentName node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAIdentName(AIdentName node)
+    {
+        inAIdentName(node);
+        if(node.getIdentifier() != null)
+        {
+            node.getIdentifier().apply(this);
+        }
+        outAIdentName(node);
     }
 }

@@ -24,10 +24,11 @@ Helpers
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
   quote = ''';
-  simple_id_char = alpha_char | dec_digit | '_' | '$';
+  simple_id_char = alpha_char | dec_digit | '_' | '$' | '.';
   first_id_char = alpha_char | '_' | '$';
   
   quotable_char = [not_cr_lf - '''];
+
   // string_char = [not_cr_lf - '"'];
   string_char = [all - '"'];
 
@@ -126,8 +127,9 @@ Tokens
   mult = '*';
   div = '/';
 
-  name = quote quotable_char+ quote;
-  identifier = first_id_char simple_id_char*;
+  quoted_name = quote quotable_char+ quote;
+  
+  identifier = first_id_char simple_id_char* | '<clinit>' | '<init>';
   at_identifier = '@' (('parameter' dec_digit+) | 'this' | 'caughtexception');
 
   bool_constant = 'true' | 'false';
@@ -192,6 +194,16 @@ Productions
   throws_clause =
     throws name_list;
 
+  base_type_no_name =
+    {boolean} boolean |
+    {byte}    byte |
+    {char}    char |
+    {short}   short |
+    {int}     int |
+    {long}    long |
+    {float}   float |
+    {double}  double;
+
   base_type =
     {boolean} boolean |
     {byte}    byte |
@@ -204,7 +216,9 @@ Productions
     {name}    name;
   
   nonvoid_type =
-    base_type array_brackets*;
+    {base}   base_type_no_name array_brackets* |
+    {quoted} quoted_name array_brackets* |
+    {ident}  identifier array_brackets*;
 
   array_brackets =
     l_bracket r_bracket;
@@ -312,7 +326,7 @@ Productions
     {field} field_ref;
 
   array_ref =
-    local_name fixed_array_descriptor;
+    identifier fixed_array_descriptor;
 
   field_ref =
     {local} local_name dot field_signature |
@@ -363,7 +377,6 @@ Productions
     {lengthof} lengthof |
     {neg}      neg;
 
-
-
-
-
+  name =
+    {quoted} quoted_name |
+    {ident}  identifier;

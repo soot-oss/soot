@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class AIntBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TInt _int_;
 
-    public ANameBaseType()
+    public AIntBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public AIntBaseTypeNoName(
+        TInt _int_)
     {
-        setName(_name_);
+        setInt(_int_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new AIntBaseTypeNoName(
+            (TInt) cloneNode(_int_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseAIntBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TInt getInt()
     {
-        return _name_;
+        return _int_;
     }
 
-    public void setName(PName node)
+    public void setInt(TInt node)
     {
-        if(_name_ != null)
+        if(_int_ != null)
         {
-            _name_.parent(null);
+            _int_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _int_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_int_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_int_ == child)
         {
-            _name_ = null;
+            _int_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_int_ == oldChild)
         {
-            setName((PName) newChild);
+            setInt((TInt) newChild);
             return;
         }
 

@@ -7,7 +7,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AExtendsClause extends PExtendsClause
 {
     private TExtends _extends_;
-    private TName _name_;
+    private PName _name_;
 
     public AExtendsClause()
     {
@@ -15,7 +15,7 @@ public final class AExtendsClause extends PExtendsClause
 
     public AExtendsClause(
         TExtends _extends_,
-        TName _name_)
+        PName _name_)
     {
         setExtends(_extends_);
 
@@ -26,7 +26,7 @@ public final class AExtendsClause extends PExtendsClause
     {
         return new AExtendsClause(
             (TExtends) cloneNode(_extends_),
-            (TName) cloneNode(_name_));
+            (PName) cloneNode(_name_));
     }
 
     public void apply(Switch sw)
@@ -59,12 +59,12 @@ public final class AExtendsClause extends PExtendsClause
         _extends_ = node;
     }
 
-    public TName getName()
+    public PName getName()
     {
         return _name_;
     }
 
-    public void setName(TName node)
+    public void setName(PName node)
     {
         if(_name_ != null)
         {
@@ -117,7 +117,7 @@ public final class AExtendsClause extends PExtendsClause
 
         if(_name_ == oldChild)
         {
-            setName((TName) newChild);
+            setName((PName) newChild);
             return;
         }
 

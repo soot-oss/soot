@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class AIdentName extends PName
 {
-    private PName _name_;
+    private TIdentifier _identifier_;
 
-    public ANameBaseType()
+    public AIdentName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public AIdentName(
+        TIdentifier _identifier_)
     {
-        setName(_name_);
+        setIdentifier(_identifier_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new AIdentName(
+            (TIdentifier) cloneNode(_identifier_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseAIdentName(this);
     }
 
-    public PName getName()
+    public TIdentifier getIdentifier()
     {
-        return _name_;
+        return _identifier_;
     }
 
-    public void setName(PName node)
+    public void setIdentifier(TIdentifier node)
     {
-        if(_name_ != null)
+        if(_identifier_ != null)
         {
-            _name_.parent(null);
+            _identifier_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _identifier_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_identifier_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_identifier_ == child)
         {
-            _name_ = null;
+            _identifier_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_identifier_ == oldChild)
         {
-            setName((PName) newChild);
+            setIdentifier((TIdentifier) newChild);
             return;
         }
 

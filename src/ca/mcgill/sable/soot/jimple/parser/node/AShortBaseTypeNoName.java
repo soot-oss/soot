@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class AShortBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TShort _short_;
 
-    public ANameBaseType()
+    public AShortBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public AShortBaseTypeNoName(
+        TShort _short_)
     {
-        setName(_name_);
+        setShort(_short_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new AShortBaseTypeNoName(
+            (TShort) cloneNode(_short_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseAShortBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TShort getShort()
     {
-        return _name_;
+        return _short_;
     }
 
-    public void setName(PName node)
+    public void setShort(TShort node)
     {
-        if(_name_ != null)
+        if(_short_ != null)
         {
-            _name_.parent(null);
+            _short_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _short_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_short_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_short_ == child)
         {
-            _name_ = null;
+            _short_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_short_ == oldChild)
         {
-            setName((PName) newChild);
+            setShort((TShort) newChild);
             return;
         }
 

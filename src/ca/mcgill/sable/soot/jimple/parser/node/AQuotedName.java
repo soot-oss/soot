@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class AQuotedName extends PName
 {
-    private PName _name_;
+    private TQuotedName _quotedName_;
 
-    public ANameBaseType()
+    public AQuotedName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public AQuotedName(
+        TQuotedName _quotedName_)
     {
-        setName(_name_);
+        setQuotedName(_quotedName_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new AQuotedName(
+            (TQuotedName) cloneNode(_quotedName_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseAQuotedName(this);
     }
 
-    public PName getName()
+    public TQuotedName getQuotedName()
     {
-        return _name_;
+        return _quotedName_;
     }
 
-    public void setName(PName node)
+    public void setQuotedName(TQuotedName node)
     {
-        if(_name_ != null)
+        if(_quotedName_ != null)
         {
-            _name_.parent(null);
+            _quotedName_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _quotedName_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_quotedName_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_quotedName_ == child)
         {
-            _name_ = null;
+            _quotedName_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_quotedName_ == oldChild)
         {
-            setName((PName) newChild);
+            setQuotedName((TQuotedName) newChild);
             return;
         }
 

@@ -7,7 +7,7 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class ACatchClause extends PCatchClause
 {
     private TCatch _catch_;
-    private TName _name_;
+    private PName _name_;
     private TFrom _from_;
     private PLabelName _fromLabel_;
     private TTo _to_;
@@ -22,7 +22,7 @@ public final class ACatchClause extends PCatchClause
 
     public ACatchClause(
         TCatch _catch_,
-        TName _name_,
+        PName _name_,
         TFrom _from_,
         PLabelName _fromLabel_,
         TTo _to_,
@@ -54,7 +54,7 @@ public final class ACatchClause extends PCatchClause
     {
         return new ACatchClause(
             (TCatch) cloneNode(_catch_),
-            (TName) cloneNode(_name_),
+            (PName) cloneNode(_name_),
             (TFrom) cloneNode(_from_),
             (PLabelName) cloneNode(_fromLabel_),
             (TTo) cloneNode(_to_),
@@ -94,12 +94,12 @@ public final class ACatchClause extends PCatchClause
         _catch_ = node;
     }
 
-    public TName getName()
+    public PName getName()
     {
         return _name_;
     }
 
-    public void setName(TName node)
+    public void setName(PName node)
     {
         if(_name_ != null)
         {
@@ -376,7 +376,7 @@ public final class ACatchClause extends PCatchClause
 
         if(_name_ == oldChild)
         {
-            setName((TName) newChild);
+            setName((PName) newChild);
             return;
         }
 

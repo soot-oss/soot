@@ -38,6 +38,14 @@ public interface Analysis extends Switch
     void caseAMultiParameterList(AMultiParameterList node);
     void caseAParameter(AParameter node);
     void caseAThrowsClause(AThrowsClause node);
+    void caseABooleanBaseTypeNoName(ABooleanBaseTypeNoName node);
+    void caseAByteBaseTypeNoName(AByteBaseTypeNoName node);
+    void caseACharBaseTypeNoName(ACharBaseTypeNoName node);
+    void caseAShortBaseTypeNoName(AShortBaseTypeNoName node);
+    void caseAIntBaseTypeNoName(AIntBaseTypeNoName node);
+    void caseALongBaseTypeNoName(ALongBaseTypeNoName node);
+    void caseAFloatBaseTypeNoName(AFloatBaseTypeNoName node);
+    void caseADoubleBaseTypeNoName(ADoubleBaseTypeNoName node);
     void caseABooleanBaseType(ABooleanBaseType node);
     void caseAByteBaseType(AByteBaseType node);
     void caseACharBaseType(ACharBaseType node);
@@ -47,7 +55,9 @@ public interface Analysis extends Switch
     void caseAFloatBaseType(AFloatBaseType node);
     void caseADoubleBaseType(ADoubleBaseType node);
     void caseANameBaseType(ANameBaseType node);
-    void caseANonvoidType(ANonvoidType node);
+    void caseABaseNonvoidType(ABaseNonvoidType node);
+    void caseAQuotedNonvoidType(AQuotedNonvoidType node);
+    void caseAIdentNonvoidType(AIdentNonvoidType node);
     void caseAArrayBrackets(AArrayBrackets node);
     void caseAEmptyMethodBody(AEmptyMethodBody node);
     void caseAFullMethodBody(AFullMethodBody node);
@@ -139,6 +149,8 @@ public interface Analysis extends Switch
     void caseADivBinop(ADivBinop node);
     void caseALengthofUnop(ALengthofUnop node);
     void caseANegUnop(ANegUnop node);
+    void caseAQuotedName(AQuotedName node);
+    void caseAIdentName(AIdentName node);
 
     void caseTAbstract(TAbstract node);
     void caseTFinal(TFinal node);
@@ -225,7 +237,7 @@ public interface Analysis extends Switch
     void caseTMinus(TMinus node);
     void caseTMult(TMult node);
     void caseTDiv(TDiv node);
-    void caseTName(TName node);
+    void caseTQuotedName(TQuotedName node);
     void caseTIdentifier(TIdentifier node);
     void caseTAtIdentifier(TAtIdentifier node);
     void caseTBoolConstant(TBoolConstant node);

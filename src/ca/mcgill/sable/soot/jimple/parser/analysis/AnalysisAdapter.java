@@ -197,6 +197,46 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseABooleanBaseTypeNoName(ABooleanBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAByteBaseTypeNoName(AByteBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseACharBaseTypeNoName(ACharBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAShortBaseTypeNoName(AShortBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAIntBaseTypeNoName(AIntBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseALongBaseTypeNoName(ALongBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAFloatBaseTypeNoName(AFloatBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseADoubleBaseTypeNoName(ADoubleBaseTypeNoName node)
+    {
+        defaultCase(node);
+    }
+
     public void caseABooleanBaseType(ABooleanBaseType node)
     {
         defaultCase(node);
@@ -242,7 +282,17 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseANonvoidType(ANonvoidType node)
+    public void caseABaseNonvoidType(ABaseNonvoidType node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAQuotedNonvoidType(AQuotedNonvoidType node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAIdentNonvoidType(AIdentNonvoidType node)
     {
         defaultCase(node);
     }
@@ -702,6 +752,16 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAQuotedName(AQuotedName node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAIdentName(AIdentName node)
+    {
+        defaultCase(node);
+    }
+
     public void caseTAbstract(TAbstract node)
     {
         defaultCase(node);
@@ -1127,7 +1187,7 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
-    public void caseTName(TName node)
+    public void caseTQuotedName(TQuotedName node)
     {
         defaultCase(node);
     }

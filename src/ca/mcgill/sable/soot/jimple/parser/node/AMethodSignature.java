@@ -7,9 +7,9 @@ import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 public final class AMethodSignature extends PMethodSignature
 {
     private TCmplt _cmplt_;
-    private TName _className_;
+    private PName _className_;
     private TColon _first_;
-    private TName _methodName_;
+    private PName _methodName_;
     private TColon _second_;
     private TLParen _lParen_;
     private PParameterList _parameterList_;
@@ -24,9 +24,9 @@ public final class AMethodSignature extends PMethodSignature
 
     public AMethodSignature(
         TCmplt _cmplt_,
-        TName _className_,
+        PName _className_,
         TColon _first_,
-        TName _methodName_,
+        PName _methodName_,
         TColon _second_,
         TLParen _lParen_,
         PParameterList _parameterList_,
@@ -62,9 +62,9 @@ public final class AMethodSignature extends PMethodSignature
     {
         return new AMethodSignature(
             (TCmplt) cloneNode(_cmplt_),
-            (TName) cloneNode(_className_),
+            (PName) cloneNode(_className_),
             (TColon) cloneNode(_first_),
-            (TName) cloneNode(_methodName_),
+            (PName) cloneNode(_methodName_),
             (TColon) cloneNode(_second_),
             (TLParen) cloneNode(_lParen_),
             (PParameterList) cloneNode(_parameterList_),
@@ -104,12 +104,12 @@ public final class AMethodSignature extends PMethodSignature
         _cmplt_ = node;
     }
 
-    public TName getClassName()
+    public PName getClassName()
     {
         return _className_;
     }
 
-    public void setClassName(TName node)
+    public void setClassName(PName node)
     {
         if(_className_ != null)
         {
@@ -154,12 +154,12 @@ public final class AMethodSignature extends PMethodSignature
         _first_ = node;
     }
 
-    public TName getMethodName()
+    public PName getMethodName()
     {
         return _methodName_;
     }
 
-    public void setMethodName(TName node)
+    public void setMethodName(PName node)
     {
         if(_methodName_ != null)
         {
@@ -450,7 +450,7 @@ public final class AMethodSignature extends PMethodSignature
 
         if(_className_ == oldChild)
         {
-            setClassName((TName) newChild);
+            setClassName((PName) newChild);
             return;
         }
 
@@ -462,7 +462,7 @@ public final class AMethodSignature extends PMethodSignature
 
         if(_methodName_ == oldChild)
         {
-            setMethodName((TName) newChild);
+            setMethodName((PName) newChild);
             return;
         }
 

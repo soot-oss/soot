@@ -4,41 +4,41 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.jimple.parser.analysis.*;
 
-public final class ANameBaseType extends PBaseType
+public final class ACharBaseTypeNoName extends PBaseTypeNoName
 {
-    private PName _name_;
+    private TChar _char_;
 
-    public ANameBaseType()
+    public ACharBaseTypeNoName()
     {
     }
 
-    public ANameBaseType(
-        PName _name_)
+    public ACharBaseTypeNoName(
+        TChar _char_)
     {
-        setName(_name_);
+        setChar(_char_);
 
     }
     public Object clone()
     {
-        return new ANameBaseType(
-            (PName) cloneNode(_name_));
+        return new ACharBaseTypeNoName(
+            (TChar) cloneNode(_char_));
     }
 
     public void apply(Switch sw)
     {
-        ((Analysis) sw).caseANameBaseType(this);
+        ((Analysis) sw).caseACharBaseTypeNoName(this);
     }
 
-    public PName getName()
+    public TChar getChar()
     {
-        return _name_;
+        return _char_;
     }
 
-    public void setName(PName node)
+    public void setChar(TChar node)
     {
-        if(_name_ != null)
+        if(_char_ != null)
         {
-            _name_.parent(null);
+            _char_.parent(null);
         }
 
         if(node != null)
@@ -51,20 +51,20 @@ public final class ANameBaseType extends PBaseType
             node.parent(this);
         }
 
-        _name_ = node;
+        _char_ = node;
     }
 
     public String toString()
     {
         return ""
-            + toString(_name_);
+            + toString(_char_);
     }
 
     void removeChild(Node child)
     {
-        if(_name_ == child)
+        if(_char_ == child)
         {
-            _name_ = null;
+            _char_ = null;
             return;
         }
 
@@ -72,9 +72,9 @@ public final class ANameBaseType extends PBaseType
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_name_ == oldChild)
+        if(_char_ == oldChild)
         {
-            setName((PName) newChild);
+            setChar((TChar) newChild);
             return;
         }
 

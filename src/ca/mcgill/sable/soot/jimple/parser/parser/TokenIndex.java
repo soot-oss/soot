@@ -432,7 +432,7 @@ class TokenIndex extends AnalysisAdapter
         index = 84;
     }
 
-    public void caseTName(TName node)
+    public void caseTQuotedName(TQuotedName node)
     {
         index = 85;
     }
