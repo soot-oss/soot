@@ -795,6 +795,25 @@ public class SootClass
         write("");
     }
 
+    boolean containsBafBody()
+    {
+        Iterator methodIt = getMethods().iterator();
+        
+        if(!methodIt.hasNext())
+            return false;
+        else
+        {
+            SootMethod m = (SootMethod) methodIt.next();
+            
+            if(m.hasActiveBody() && 
+                m.getActiveBody() instanceof ca.mcgill.sable.soot.baf.BafBody)
+            {
+                return true;
+            }
+        }
+        
+        return false;
+    }
     /**
         Writes the class out to a file.
      */
@@ -812,7 +831,10 @@ public class SootClass
             FileOutputStream streamOut = new FileOutputStream(tempFile);
             PrintWriter writerOut = new PrintWriter(streamOut);
 
-            new ca.mcgill.sable.soot.jimple.JasminClass(this).print(writerOut);
+            if(containsBafBody())
+                new ca.mcgill.sable.soot.baf.JasminClass(this).print(writerOut);
+            else
+                new ca.mcgill.sable.soot.jimple.JasminClass(this).print(writerOut);
 
             writerOut.close();
 

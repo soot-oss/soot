@@ -207,7 +207,8 @@ public class Main
     static private boolean isUsingRTA;
     
     static public long stmtCount;
-                
+    static String jasminSource = "grimp";
+    
     public static void main(String[] args) throws RuntimeException
     {
         int firstNonOption = 0;
@@ -215,14 +216,13 @@ public class Main
         boolean isRecursing = false;
         List excludingPackages = new ArrayList();
         List classesToProcess;
-
         totalTimer.start();
 
 
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.51");
+            System.out.println("Soot version 1.beta.4.dev.52");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -250,6 +250,9 @@ public class Main
             System.out.println("  -x, --exclude PACKAGE      exclude classfiles in PACKAGE (e.g. java)"); 
             System.out.println("                             from transformation");
             System.out.println("");
+            System.out.println("Construction options:");
+            System.out.println("  --jasmin-source REP        produce jasmin from REP (jasmin, grimp, or baf)");
+            System.out.println();
             System.out.println("Jimple construction options:");
             System.out.println("  --no-splitting             do not split local variables");
             System.out.println("  --use-packing              pack locals after conversion");
@@ -303,7 +306,10 @@ public class Main
                 else if(arg.equals("-O") || arg.equals("--optimize"))
                     isOptimizing = true;
                 else if(arg.equals("-W") || arg.equals("--whole-optimize"))
+                {
                     isOptimizingWhole = true;
+                    isOptimizing = true;
+                }
                 else if(arg.equals("--use-vta"))
                 {
                     isUsingVTA = true;
@@ -349,6 +355,19 @@ public class Main
                 {
                     if(++i < args.length)
                         excludingPackages.add(args[i]);
+                }
+                else if(arg.equals("--jasmin-source"))
+                {
+                    if(++i < args.length)
+                        jasminSource = args[i];
+                        
+                    if(!jasminSource.equals("jimple") &&
+                        !jasminSource.equals("grimp") &&
+                        !jasminSource.equals("baf"))
+                    {
+                        System.out.println("Illegal --jasmin-source arg: " + jasminSource);
+                    }
+                    
                 }
                 
                 else if(arg.equals("--debug"))
@@ -592,6 +611,39 @@ public class Main
             }
         }
 
+        boolean produceJimple = false;
+        boolean produceBaf = false;
+        boolean produceGrimp = false;
+        
+        // Determine paths
+        
+        {
+            String endResult;
+            
+            if(targetExtension.startsWith(".jimp"))
+                endResult = "jimple";
+            else if(targetExtension.startsWith(".grimp"))
+                endResult = "grimp";
+            else if(targetExtension.startsWith(".baf"))
+                endResult = "baf";
+            else
+                endResult = jasminSource;
+        
+    
+            if(endResult.equals("jimple"))
+                produceJimple = true;
+            else if(endResult.equals("baf"))
+            {
+                produceBaf = true; 
+                produceJimple = true;
+            }
+            else if(endResult.equals("grimp"))
+            {
+                produceJimple = true; 
+                produceGrimp = true;
+            }
+        }
+            
         // Build all necessary bodies
         {
             Iterator methodIt = c.getMethods().iterator();
@@ -600,71 +652,40 @@ public class Main
             {   
                 SootMethod m = (SootMethod) methodIt.next();
                    
-                if(!isOptimizingWhole)
+                if(produceJimple)
                 {
-                    if(targetExtension.equals(".jimp") || targetExtension.equals(".jimple"))
-                    {
-                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
-                        
-                        if(isOptimizing) 
-                            BaseJimpleOptimizer.optimize(jimpleBody);
-                        
-                        m.setActiveBody(jimpleBody);
-                    }
-                    else if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
-                    {
-                        m.setActiveBody(new BafBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions)));
-                    }
-                    else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || 
-                        targetExtension.equals(".class") || targetExtension.equals(".jasmin"))
-                    {
-                        // JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions | BuildJimpleBodyOption.NO_AGGREGATING);
-                        JimpleBody jimpleBody = new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions);
-                        
-                        if(isOptimizing) 
-                            BaseJimpleOptimizer.optimize(jimpleBody);
-                        
-                        GrimpBody grimpBody;
-                        
-                        if(isOptimizing)
-                            grimpBody = new GrimpBody(jimpleBody, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
-                        else
-                            grimpBody = new GrimpBody(jimpleBody);
-                             
-                        if(isOptimizing)
-                            BaseGrimpOptimizer.optimize(grimpBody);
-                        
-                        m.setActiveBody(grimpBody);
-                    }
-                }
-                else
-                {   
                     if(!m.hasActiveBody())
-                        m.setActiveBody(new JimpleBody(new ClassFileBody(m)));
-                         
-                    Body body = m.getActiveBody();
-
-                    BaseJimpleOptimizer.optimize((JimpleBody) body);
-                    
-                    if(targetExtension.equals(".b") || targetExtension.equals(".baf"))
-                    {
-                        m.setActiveBody(new BafBody(body));
-                    }
-                    else if(targetExtension.equals(".grimple") || targetExtension.equals(".grimp") || 
-                        targetExtension.equals(".class") || targetExtension.equals(".jasmin"))
-                    {
-                        GrimpBody grimpBody = new GrimpBody((JimpleBody) body, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING);
-                             
-                        BaseGrimpOptimizer.optimize(grimpBody);
-                        
-                        m.setActiveBody(grimpBody);
-                    }
+                        m.setActiveBody(new JimpleBody(new ClassFileBody(m), buildJimpleBodyOptions));
+    
+                    if(isOptimizing)
+                        BaseJimpleOptimizer.optimize((JimpleBody) m.getActiveBody());
                 }
+                
+                if(produceGrimp)
+                {
+                    if(isOptimizing)
+                        m.setActiveBody(new GrimpBody(m.getActiveBody(), BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING));
+                    else
+                        m.setActiveBody(new GrimpBody(m.getActiveBody()));
+                        
+                    if(isOptimizing)
+                        BaseGrimpOptimizer.optimize((GrimpBody) m.getActiveBody());
+                }
+                else if(produceBaf)
+                {   
+                     m.setActiveBody(new BafBody((JimpleBody) m.getActiveBody()));
+                }
+                    
             }
         }
             
         if(targetExtension.equals(".jasmin"))
-            new ca.mcgill.sable.soot.jimple.JasminClass(c).print(writerOut);
+        {
+            if(c.containsBafBody())
+                new ca.mcgill.sable.soot.baf.JasminClass(c).print(writerOut);            
+            else
+                new ca.mcgill.sable.soot.jimple.JasminClass(c).print(writerOut);
+        }
         else if(targetExtension.equals(".jimp"))
             c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
         else if(targetExtension.equals(".b"))
