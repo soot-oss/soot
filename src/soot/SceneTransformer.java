@@ -36,6 +36,8 @@ public abstract class SceneTransformer extends Transformer
         Map options = Scene.v().computePhaseOptions(phaseName, 
                                                     getDefaultOptions() + " " + optionsString);
 
+        Options.checkOptions(options, phaseName, getDeclaredOptions());
+
         if (Options.getBoolean(options, "disabled"))
             return;
 
@@ -58,4 +60,7 @@ public abstract class SceneTransformer extends Transformer
     {
         return "";
     }
+
+    /* Returns a String containing the list of phase options understood here. */
+    protected String getDeclaredOptions() { return "disabled"; }
 }

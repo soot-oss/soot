@@ -38,13 +38,15 @@ import java.util.*;
 
 public class Aggregator extends BodyTransformer
 {
-   private static Aggregator instance = new Aggregator();
-   private Aggregator() {}
+    private static Aggregator instance = new Aggregator();
+    private Aggregator() {}
 
-   public static Aggregator v() { return instance; }
+    public static Aggregator v() { return instance; }
+    
+    public static int nodeCount = 0;
+    public static int aggrCount = 0;
 
-   public static int nodeCount = 0;
-   public static int aggrCount = 0;
+    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
 
     /** Traverse the statements in the given body, looking for
       *  aggregation possibilities; that is, given a def d and a use u,
@@ -55,8 +57,7 @@ public class Aggregator extends BodyTransformer
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         StmtBody body = (StmtBody)b;
-        boolean onlyStackVars = options.containsKey("only-stack-locals") &&
-            options.get("only-stack-locals").equals("true");
+        boolean onlyStackVars = Options.getBoolean(options, "only-stack-locals"); 
 
         int aggregateCount = 1;
 

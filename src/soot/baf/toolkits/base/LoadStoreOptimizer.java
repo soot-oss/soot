@@ -136,6 +136,11 @@ public class LoadStoreOptimizer extends BodyTransformer
     }
  
 
+    public String getDeclaredOptions()
+    {
+        return super.getDeclaredOptions() + " debug inter sl sl2 sll sll2";
+    }
+
     /** The method that drives the optimizations. */
     /* This is the public interface to LoadStoreOptimizer */
   
@@ -143,9 +148,9 @@ public class LoadStoreOptimizer extends BodyTransformer
     {        
         mBody = body;        
         mUnits =  mBody.getUnits();
-                
-	gOptions = options;
-	
+
+        gOptions = options;
+
 	if(Options.getBoolean(gOptions, "debug")) {
 	    debug = true;
 	}
@@ -165,7 +170,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 	    if(debug){System.err.println("Calling optimizeLoadStore(1)\n");}
 	    optimizeLoadStores(); 
 	
-	    if(Options.getBoolean(options, "inter") ) {
+	    if(Options.getBoolean(gOptions, "inter") ) {
 		if(debug){System.err.println("Calling doInterBlockOptimizations");}
 		doInterBlockOptimizations(); 
 	   		  
@@ -176,7 +181,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 		//propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6"); 		       
 	    }
 
-	    if(Options.getBoolean(options, "sl2") || Options.getBoolean(options, "sll2")  ) {	
+	    if(Options.getBoolean(gOptions, "sl2") || Options.getBoolean(gOptions, "sll2")  ) {	
 		gPass2 = true;
 		if(debug){System.err.println("Calling optimizeLoadStore(2)");}
 		optimizeLoadStores();   
@@ -260,7 +265,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                             Block block;
                             switch(uses.size()) {
                             case 0:        /*
-					     if(Options.getBoolean(gOptions, "s-elimination")) {
+				if(Options.getBoolean(gOptions, "s-elimination")) {
                                 // replace store by a pop and remove store from store list
 				replaceUnit(unit, Baf.v().newPopInst(((StoreInst)unit).getOpType()));
 				unitIt.remove();

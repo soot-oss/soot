@@ -61,4 +61,32 @@ public class Options
         return options.containsKey(name) ?
             new Integer((String)options.get(name)).intValue() : 0;
     }
+
+    /** Prints a warning if some key in options is not in declaredOptions;
+      * throws an exception in debug mode. */
+    public static void checkOptions(Map options, String phase, String declaredOptions)
+    {
+        HashSet declaredSet = new HashSet();
+
+        StringTokenizer tokenizer = new StringTokenizer(declaredOptions, " ");
+        while(tokenizer.hasMoreElements()) 
+        {
+            String option = tokenizer.nextToken();
+            declaredSet.add(option);
+        }
+
+        Iterator keysIt = options.keySet().iterator();
+        while (keysIt.hasNext())
+        {
+            String usedOption = (String)keysIt.next();
+            if (!(declaredSet.contains(usedOption)))
+            {
+                /* aha! */
+                if (soot.Main.isInDebugMode)
+                    throw new RuntimeException("use of undeclared phase option "+usedOption);
+                else
+                    System.out.println("WARNING: use of undeclared phase option "+usedOption+" in phase "+phase);
+            }
+        }
+    }
 }

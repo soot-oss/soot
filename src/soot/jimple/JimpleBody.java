@@ -104,14 +104,8 @@ public class JimpleBody extends StmtBody
                 if(Main.isProfilingOptimization)
                     Main.assignTimer.start();
 
-                // Jimple.printStmtListBody_debug(this, System.out);
-                //System.out.println("before typing");
-                //printTo(new PrintWriter(System.out, true));
                 TypeAssigner.v().transform(this, "jb.tr");
 
-                //System.out.println("after typing");
-                //printTo(new PrintWriter(System.out, true));
-                
                 if(typingFailed())
                 {
                     patchForTyping();

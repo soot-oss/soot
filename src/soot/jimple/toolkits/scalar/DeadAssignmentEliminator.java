@@ -44,6 +44,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
 
     public static DeadAssignmentEliminator v() { return instance; }
 
+    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
+
     /** Eliminates dead code in a linear fashion.  Complexity is linear 
         with respect to the statements.
         

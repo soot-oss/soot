@@ -158,10 +158,8 @@ public class Scene extends AbstractHost
     private int stateCount;
     public int getState() { return this.stateCount; }
 
-    /** Returns the default options map associated with phaseName.
-     * Note that this map is special and will not return 'null' 
-     * if the option does not exist.  Instead, it returns the string "false". 
-     * If a leading . is present in phaseName, strip it! */
+    /** Returns the options map associated with phaseName. 
+      * If a leading . is present in phaseName, strip it! */
     public Map getPhaseOptions(String phaseName)
     {
         if (phaseName.startsWith("."))
@@ -177,6 +175,9 @@ public class Scene extends AbstractHost
         return m;
     }
 
+    /* Adds optionsString to the Scene's options for phaseName 
+     * and returns the corresponding Map.  Does not change
+     * the getPhaseOptions() map in the Scene. */
     public Map computePhaseOptions(String phaseName, String optionsString)
     {
         Map options = new HashMap();
@@ -202,7 +203,7 @@ public class Scene extends AbstractHost
             options.put(key, value);
         }
 
-        Map oldOptions = Scene.v().getPhaseOptions(phaseName);
+        Map oldOptions = getPhaseOptions(phaseName);
         Iterator optionKeysIt = oldOptions.keySet().iterator();
         while (optionKeysIt.hasNext())
         {

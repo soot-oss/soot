@@ -44,6 +44,11 @@ public class StaticMethodBinder extends SceneTransformer
     {
         return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
     }
+
+    public String getDeclaredOptions() 
+    { 
+        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes";
+    }
     
     protected void internalTransform(String phaseName, Map options)
     {

@@ -38,6 +38,8 @@ public abstract class BodyTransformer extends Transformer
 
         if(Options.getBoolean(options, "disabled"))
             return;
+
+        Options.checkOptions(options, phaseName, getDeclaredOptions());
             
         internalTransform(b, phaseName, options);
     }
@@ -58,4 +60,7 @@ public abstract class BodyTransformer extends Transformer
     }
 
     protected abstract void internalTransform(Body b, String phaseName, Map options);
+
+    /* Returns a String containing the list of phase options understood here. */
+    protected String getDeclaredOptions() { return "disabled"; }
 }

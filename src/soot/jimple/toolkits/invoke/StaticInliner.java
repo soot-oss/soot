@@ -44,6 +44,12 @@ public class StaticInliner extends SceneTransformer
         return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe "+
             "expansion-factor:3 max-container-size:5000 max-inlinee-size:20";
     }
+
+    public String getDeclaredOptions() 
+    {
+        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes"+
+            " expansion-factor max-container-size max-inlinee-size"; 
+    }
     
     protected void internalTransform(String phaseName, Map options)
     {
@@ -57,8 +63,7 @@ public class StaticInliner extends SceneTransformer
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
         float expansionFactor = Options.getFloat(options, "expansion-factor");
         int maxContainerSize = Options.getInt(options, "max-container-size");
-        int maxInlineeSize = Options.getInt(options, "max-inlinee-size");
-        
+        int maxInlineeSize = Options.getInt(options, "max-inlinee-size");        
 
         HashMap instanceToStaticMap = new HashMap();
 

@@ -35,7 +35,7 @@ public class SiteInliner
 {
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
+        return "insert-null-checks insert-redundant-casts";
     }
 
     public static void inlineSites(List sites)

@@ -43,6 +43,8 @@ public class CopyPropagator extends BodyTransformer
     private CopyPropagator() {}
 
     public static CopyPropagator v() { return instance; }
+
+    public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-regular-locals only-stack-locals"; }
     
     /** Cascaded copy propagator.
     
