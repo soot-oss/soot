@@ -47,11 +47,8 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
     FlowSet emptySet;
 
-    private static final Boolean FALSE = new Boolean(false);
-    private static final Boolean TRUE = new Boolean(true);
-    
     public FastAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m,
-            SideEffectTester st )
+            SideEffectTester st)
     {
         super(dg);
         this.st = st;
@@ -149,13 +146,13 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
             // iterate over things (avail) in out set.
             while (it.hasNext())
-	    {
+            {
                 Value avail = (Value) it.next();
                 if (avail instanceof FieldRef)
                 {
                     if (st.unitCanWriteTo(u, avail)) {
                         out.remove(avail, out);
-		    }
+                    }
                 }
                 else
                 {
@@ -168,10 +165,10 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                         
                         if (st.unitCanWriteTo(u, use)) {
                             out.remove(avail, out);
-			}
+                        }
                     }
                 }
-	    }
+            }
     }
 
     protected void merge(Object in1, Object in2, Object out)

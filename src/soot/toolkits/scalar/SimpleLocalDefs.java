@@ -281,7 +281,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                         List defBoxes = s.getDefBoxes();
                         if(!defBoxes.isEmpty()) {
                             if(!(defBoxes.size() ==1)) 
-                                throw new RuntimeException("FastColorer: invalid number of def boxes");
+                                throw new RuntimeException("invalid number of def boxes");
                             
                             if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
                                 Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
