@@ -42,8 +42,9 @@ cp to eclipse/plugins/ca.mcgill.sable.soot/  dir:
 soot-plugin.jar
 plugin.xml
 plugin.properties
-icons/*.jpg 
-icons/*.gif
+
+Make a directory eclipse/plugins/ca.mcgill.sable.soot/icons and copy
+icons/*.jpg and icons/*.gif to it.
 
 Restart Eclipse
 
