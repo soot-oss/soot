@@ -137,7 +137,7 @@ public class SootAttribute {
 	}
 	
 	public boolean attrForJavaLn(int java_ln) {
-		System.out.println("java start line: "+getJavaStartLn()+" java_ln: "+java_ln);
+		//System.out.println("java start line: "+getJavaStartLn()+" java_ln: "+java_ln);
 		if (getJavaStartLn() == java_ln) return true;
 		else return false;
 	}

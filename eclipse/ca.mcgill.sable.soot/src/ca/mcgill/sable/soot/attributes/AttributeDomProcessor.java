@@ -232,12 +232,12 @@ public class AttributeDomProcessor {
 			}
             else if (type.equals("sourceStartOffset")){
                 vbAttr.setSourceStartOffset((new Integer(node.getNodeValue()).intValue()));
-                System.out.println("java start offset: "+vbAttr.getSourceStartOffset());
+                //System.out.println("java start offset: "+vbAttr.getSourceStartOffset());
                            
             }
             else if (type.equals("sourceEndOffset")){ 
                 vbAttr.setSourceEndOffset((new Integer(node.getNodeValue()).intValue()));
-                System.out.println("java end offset: "+vbAttr.getSourceEndOffset());
+                //System.out.println("java end offset: "+vbAttr.getSourceEndOffset());
                  
             }
 			else if (type.equals("red")) {

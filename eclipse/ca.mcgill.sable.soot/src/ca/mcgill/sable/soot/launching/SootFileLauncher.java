@@ -251,6 +251,7 @@ public class SootFileLauncher extends SootLauncher {
     
 	private void handleClassFile(IFile file) {
 		ClassFile cf = new ClassFile( file.getLocation().toOSString());
+		System.out.println("file: "+file.getLocation().toOSString());
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream( file.getLocation().toOSString() );
@@ -274,6 +275,7 @@ public class SootFileLauncher extends SootLauncher {
 		//		System.out.println("classpath append: "+getClasspathAppend());
 		//setToProcess(cf.toString().substring(cf.toString().lastIndexOf(".")));
 		addJars();
+		System.out.println("cf: "+cf.toString());
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
 		
 		//System.out.println("to process: "+getToProcess());

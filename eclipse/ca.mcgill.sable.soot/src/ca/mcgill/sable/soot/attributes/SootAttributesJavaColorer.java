@@ -36,13 +36,31 @@ public class SootAttributesJavaColorer {
 
 	private ITextViewer viewer;
 	private IEditorPart editorPart;
-    private ArrayList textPresList;
+    //private ArrayList textPresList;
+    private Color bgColor;
+    int count = 0;
 	
 	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		setViewer(viewer);
 		setEditorPart(editorPart);
+		if ((handler == null) || (handler.getAttrList() == null)) return;
 		Iterator it = handler.getAttrList().iterator();
-		//TextPresentation tp = new TextPresentation();
+		TextPresentation tp = new TextPresentation();
+		//if (tp.isEmpty()){
+		//	tp.addStyleRange(tp.getDefaultStyleRange());
+		//	System.out.println("tp has no default");
+		//}
+		//Color bgColor
+		Display display = getEditorPart().getSite().getShell().getDisplay();
+		
+		display.asyncExec( new Runnable() {
+			public void run() {
+			Color bgColor = getViewer().getTextWidget().getBackground();
+			setBgColor(bgColor);
+			};
+		});
+		//setBgColor(bgColor);
+        //textPresList = newArrayList();
 		//System.out.println("computing colors");
 		while (it.hasNext()) {
 			// sets colors for stmts
@@ -57,7 +75,7 @@ public class SootAttributesJavaColorer {
                     fg = true;
                 }
                 
-				setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaOffsetStart()+1, sa.getJavaOffsetEnd()+1, sa.getRGBColor(), fg);//, tp);
+				setAttributeTextColor(tp, sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaOffsetStart()+1, sa.getJavaOffsetEnd()+1, sa.getRGBColor(), fg);//, tp);
 			}
 			// sets colors for valueboxes
 			if (sa.getValueAttrs() != null){
@@ -73,31 +91,34 @@ public class SootAttributesJavaColorer {
                         if (vba.getFg() == 1) {
                             fg = true;
                         }
-                        setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), vba.getSourceStartOffset()+1, vba.getSourceEndOffset()+1, vba.getRGBColor(), fg);//, tp);
+                        setAttributeTextColor(tp, sa.getJavaStartLn(), sa.getJavaEndLn(), vba.getSourceStartOffset()+1, vba.getSourceEndOffset()+1, vba.getRGBColor(), fg);//, tp);
 					}
 				}
 			}
 		}
+		
+		//changeTextPres(tp);
 		//return tp;
 					
 	}
 	
-	private void setAttributeTextColor(int sline, int eline, int start, int end, RGB colorKey, boolean fg) {//, TextPresentation tp){
-		System.out.println("setting text color");
+	private void setAttributeTextColor(TextPresentation tp, int sline, int eline, int start, int end, RGB colorKey, boolean fg) {//, TextPresentation tp){
+		System.out.println("startline: "+sline+" soffset: "+start+" endoffset: "+end);
+		//System.out.println("setting text color");
         Display display = getEditorPart().getSite().getShell().getDisplay();
 		//Color backgroundColor = getEditorPart().getSite().getShell().getDisplay().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND);
-		TextPresentation tp = new TextPresentation();
-        if (getTextPresList() == null) {
-            setTextPresList(new ArrayList());
-        }
-        getTextPresList().add(tp);
+		//TextPresentation tp = new TextPresentation();
+        //if (getTextPresList() == null) {
+            //setTextPresList(new ArrayList());
+        //}
+        //getTextPresList().add(tp);
 		ColorManager colorManager = new ColorManager();
 		int sLineOffset = 0;
 		int eLineOffset = 0;
 		try {
 			sLineOffset = getViewer().getDocument().getLineOffset((sline-1));
 			eLineOffset = getViewer().getDocument().getLineOffset((eline-1));
-			System.out.println("slineOffset: "+sLineOffset);
+			//System.out.println("slineOffset: "+sLineOffset);
 		}
 		catch(Exception e){	
 		}
@@ -112,26 +133,35 @@ public class SootAttributesJavaColorer {
 		//final TextPresentation newPresentation = tp;
         final boolean foreground = fg;
 		final int s = sLineOffset + start - 1;
-		System.out.println("start offset: "+s);
+		//System.out.println("start offset: "+s);
 		int e = eLineOffset + end - 1;
-		System.out.println("end offset: "+e);
+		//System.out.println("end offset: "+e);
 		final int l = e - s;
-		System.out.println("length: "+l);
+		//System.out.println("length: "+l);
 		final Color ck = colorManager.getColor(colorKey);
         final Color oldBgC = colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT);
       
 		display.asyncExec( new Runnable() {
 			public void run() {
 				TextPresentation tp = new TextPresentation();
+		//System.out.println("about to create style range");
                 StyleRange sr;
+                //System.out.println("line: "+sline+" start: "+s+" length: "+l);
+                if (l != 0){
+                
                 if (foreground){
-				    sr = new StyleRange(s, l, ck, getViewer().getTextWidget().getBackground());
+				    sr = new StyleRange(s, l, ck, getBgColor());
                 }
                 else {
                     sr = new StyleRange(s, l, oldBgC, ck);
                 }
-				tp.addStyleRange(sr);			
-				getViewer().changeTextPresentation(tp, true);
+                //if (count == 0 | count == 1){
+                
+					tp.addStyleRange(sr);			
+                }
+            //}
+				//count++;
+		getViewer().changeTextPresentation(tp, true);
 				//getViewer().setTextColor(ck, s, l, false);
 			
 			};
@@ -142,6 +172,16 @@ public class SootAttributesJavaColorer {
 		
 	}
     
+    private void changeTextPres(TextPresentation tp) {
+		System.out.println("changing text pres");
+		Display display = getEditorPart().getSite().getShell().getDisplay();
+		final TextPresentation pres = tp;
+		display.asyncExec(new Runnable() {
+			public void run(){
+				getViewer().changeTextPresentation(pres, true);
+			};
+		});
+    }
     /*public void clearTextPresentations(){
         if (getTextPresList() == null) return;
         
@@ -186,15 +226,29 @@ public class SootAttributesJavaColorer {
     /**
      * @return
      */
-    public ArrayList getTextPresList() {
+    /*public ArrayList getTextPresList() {
         return textPresList;
-    }
+    }*/
 
     /**
      * @param list
      */
-    public void setTextPresList(ArrayList list) {
+    /* void setTextPresList(ArrayList list) {
         textPresList = list;
-    }
+    }*/
+
+	/**
+	 * @return
+	 */
+	public Color getBgColor() {
+		return bgColor;
+	}
+
+	/**
+	 * @param color
+	 */
+	public void setBgColor(Color color) {
+		bgColor = color;
+	}
 
 }
