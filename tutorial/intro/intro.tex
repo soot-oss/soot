@@ -33,15 +33,16 @@ like:
 \begin{verbatim}
 ~ $ java soot.Main
 Soot version 2.0
-Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).
+Copyright (C) 1997-2003 Raja Vallee-Rai and others.
 All rights reserved.
 
 Contributions are copyright (C) 1997-2003 by their respective contributors.
+See the file 'credits' for a list of contributors.
 See individual source files for details.
 
 Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,
 and you are welcome to redistribute it under certain conditions.
-See the accompanying file 'license.html' for details.
+See the accompanying file 'COPYING-LESSER.txt' for details.
 
 Visit the Soot website:
   http://www.sable.mcgill.ca/soot/
@@ -75,21 +76,31 @@ the \texttt{--help} option,
 you can see the output formats:
 
 \begin{verbatim}
-> java soot.Main
-<...snip...> Output options:
-  -b, --b                    produce .b (abbreviated .baf) files
-  -B, --baf                  produce .baf code
-  -j, --jimp                 produce .jimp (abbreviated .jimple) files
-  -J, --jimple               produce .jimple code
-  -g, --grimp                produce .grimp (abbreviated .grimple) files
-  -G, --grimple              produce .grimple files
-  -s, --jasmin               produce .jasmin files
-  -c, --class                produce .class files
+> java soot.Main --help
+<...snip...>
+Output Options:
+  -d DIR -output-dir DIR       Store output files in DIR 
+  -f FORMAT -output-format FORMAT
+                               Set output format for Soot 
+     J jimple                    Produce .jimple Files 
+     j jimp                      Produce .jimp (abbreviated Jimple) files 
+     S shimple                   Produce .shimple files 
+     s shimp                     Produce .shimp (abbreviated Shimple) files 
+     B baf                       Produce .baf files 
+     b                           Produce .b (abbreviated Baf) files 
+     G grimple                   Produce .grimple files 
+     g grimp                     Produce .grimp (abbreviated Grimp) files 
+     X xml                       Produce .xml Files 
+     n none                      Produce no output 
+     jasmin                      Produce .jasmin files 
+     c class (default)           Produce .class Files 
+     d dava                      Produce dava-decompiled .java files 
+  -xml-attributes              Save tags to XML attributes for Eclipse 
 <...snip...>
 \end{verbatim}
 
-There are five intermediate representations currently being used in Soot: baf,
-jimple, grimp, jasmin, and classfiles.  A brief explanation of each form
+There are six intermediate representations currently being used in Soot: baf,
+jimple, shimple, grimp, jasmin, and classfiles.  A brief explanation of each form
 follows:
 
 \begin{enumerate}
@@ -102,9 +113,12 @@ files).)
 for performing optimizations and inspecting bytecode.  Has two textual
 representations ({\tt .jimp} files, and {\tt .jimple} files.)
 
+\item[shimple] an SSA variation of jimple. Has two textual
+representations ({\tt .shimp} files, and {\tt .shimple} files.)
+
 \item[grimp] aggregated (with respect to expression trees) jimple.  The best
-intermediate representation for inspecting dissassembled code.  Textual
-representations end with "{\tt .grimp}".
+intermediate representation for inspecting dissassembled code. Has two textual
+representations ({\tt .grimp} files, and {\tt .grimple} files.)
 
 \item[jasmin] a messy assembler format.  Used mainly for debugging 
 Soot.  Jasmin files end with "{\tt .jasmin}".
@@ -116,29 +130,26 @@ representation.  The usual {\tt .class} files.
 \section{Setting up your {\tt CLASSPATH} and generating a Jimple file}
 
 Soot looks for classfiles by examining your {\tt CLASSPATH} environment
-variable or by looking at the contents of the soot-classpath command
+variable or by looking at the contents of the {\tt -soot-classpath} command
 line option.  Included in this lesson is the {\htmladdnormallink{\tt Hello.java}{Hello.java}} program.
 Download this file, compile it (using javac or other compilers), and try the following
 command in the directory where {\tt Hello.class} is located.
 
 \begin{verbatim}
-> java soot.Main --jimple Hello
+> java soot.Main -f jimple Hello
 \end{verbatim}
 
 This may or not work.  If you get the following:
 
 \begin{verbatim}
-> java soot.Main --soot-classpath /localhome/plam Hello --jimple
-Warning: Hello is a phantom class!
-Jimplifying Hello...
-Transforming Hello...
+Exception in thread "main" java.lang.RuntimeException: couldn't find type: java.lang.Object (is your soot-class-path set properly?)
 \end{verbatim}
 
-This means that a classfile is not being located.  Either it can not
+This means that a classfile is not being located.  Either Soot can not
 find the {\tt Hello} classfile, or it can not load the Java
 Development Kit libraries.  Soot resolves classfiles by examining the
 directories in your {\tt CLASSPATH} environment variable or the
-{\tt soot-classpath} command line option.
+{\tt -soot-classpath} command line option.
 
 Potential problem \#1: Soot can not locate the Hello classfile. To make
 sure that it can find the classfile {\tt "Hello"}, (1) add {\tt "."} 
@@ -155,7 +166,7 @@ and on Windows machines,
 
 and to do (2), 
 \begin{verbatim}
-> java soot.Main --soot-classpath . --jimple Hello
+> java soot.Main --soot-classpath . -f jimple Hello
 \end{verbatim}
 
 Potential problem \#2: Soot cannot locate the class libraries.  In this
@@ -195,14 +206,14 @@ Summing up, you must issue a command of the form:
 or if you use the soot-classpath option which is more cumbersome:
 
 \begin{verbatim}
-> java soot.Main --jimple --soot-classpath .:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar Hello
+> java soot.Main -f jimple --soot-classpath .:/usr/local/pkgs/jdk1.2.2/jre/lib/rt.jar Hello
 \end{verbatim}
 
 
 Once your {\em CLASSPATH} is set up properly, you should get:
 
 \begin{verbatim}
-> java soot.Main --jimple Hello
+> java soot.Main -f jimple Hello
 Transforming Hello...
 \end{verbatim}
 
@@ -242,7 +253,7 @@ classfiles.  A particularly good test is a classfile from the JDK
 library.  So a command like:
 
 \begin{verbatim}
-> java soot.Main --baf java.lang.String
+> java soot.Main -f baf java.lang.String
 \end{verbatim}
 
 should yield a file java.lang.String.baf containing text of the form:
@@ -283,6 +294,8 @@ classpath.
 \item January 29, 2001: Add the note of the release 1.2.1 .
 
 \item February 3, 2001: Added a hyperlink to Hello.java.
+
+\item June 6, 2003: Update for Soot 2.0.
 \end{itemize}
 
 \end{document}
