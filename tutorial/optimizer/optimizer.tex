@@ -51,7 +51,7 @@ Sootification is not so obvious.  Soot does, however, eliminate unused
 locals.  Try adding an unused local to {\tt Hello} and giving this command:
 
 \begin{verbatim}
-> java soot.Main -O --jimple Hello
+> java soot.Main -O -f jimple Hello
 Transforming Hello...
 \end{verbatim}
 
