@@ -79,7 +79,7 @@ public class TrapManager
                                          units.getPredOf(t.getEndUnit()));
             while (it.hasNext())
                 if (unit.equals(it.next()))
-                    trapsList.add(unit);
+                    trapsList.add(t);
         }
 
         return trapsList;
