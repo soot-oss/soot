@@ -77,8 +77,6 @@
 \typeout{`mcgill' style for Prosper ---}
 \typeout{ }
 
-\RequirePackage{textpos}
-
 %% Color definitions
 \newrgbcolor{framebackground}{\mywhite}
 \newrgbcolor{textbackground}{\almostwhite}
@@ -180,6 +178,8 @@
 %     }%
  }%
   \PutLogo% Mandatory
+  \rput[tl](-.45,-.45){\sablefootnotetext}
+  \gdef\sablefootnotetext{}
  {#1}}
 
 \NewSlideStyle{t}{5.3,3.2}{BasicFrame}
@@ -202,7 +202,8 @@
 
 \titleSpacing{\vspace*{10pt}}
 
-\newcommand{\sablefootnote}[1]{\begin{textblock*}{100mm}[0,0](-2mm,13.5mm){\footnotesize #1}\end{textblock*}}
+\newcommand{\sablefootnote}[1]{\gdef\sablefootnotetext{{\small #1}}}
+\gdef\sablefootnotetext{}
 
 \endinput
 
