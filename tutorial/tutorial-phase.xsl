@@ -19,9 +19,9 @@ Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@
 
 \maketitle
 
-Soot supports the powerful, but initially confusing, notion of ``phase
-options''.  This document aims to clear up the confusion so you can
-exploit the power of phase options.
+Soot supports the powerful---but initially confusing---notion of
+``phase options''.  This document aims to clear up the confusion so
+you can exploit the power of phase options.
 
 Soot's execution is divided into a number of phases.  For example,
 {\tt JimpleBody}s are built by a phase called {\tt jb}, which is
@@ -43,12 +43,20 @@ separated by commas. For example,
 java soot.Main foo -p cg.spark verbose:true,on-fly-cg:true
 \end{verbatim}
 
-There are five types of phase options. Boolean options take the values
-``true'' and ``false''; if no value is specified, ``true'' is assumed.
-Multi-valued options have a set of valid values. Integer options
-take a value that is an integer. Floating point options take a 
-floating point number as their value. String options take an arbitrary
+There are five types of phase options:
+\begin{enumerate}
+\item Boolean options take the values
+``true'' and ``false''; if you specify the name of a boolean option without adding a value for it, ``true'' is assumed.
+\item
+Multi-valued options take a value from a set of allowed values
+specific to that option.
+\item Integer options
+take a value that is an integer. 
+\item Floating point options take a 
+floating point number as their value. 
+\item String options take an arbitrary
 string as their value.
+\end{enumerate}
 
 Each option has a default value which is used if the option is not
 specified on the command line.
@@ -60,20 +68,30 @@ are equivalent to ``{\tt enabled:true}'' and ``{\tt enabled:false}'',
 respectively. In addition, specifying any options for a phase
 automatically enables that phase.
 
-Soot transfomers are expected to be classes extending either {\tt
-BodyTransformer} or {\tt SceneTransformer}.  In either case, an {\tt
-internalTransform} method on the transformer must be overridden to
-provide an implementation which carries out some transformation.
+\paragraph{Adding your own subphases}
 
-These transformers become the subphases of a phase, which is represented
-by a {\tt Pack}.  The {\tt Pack} keeps a 
-collection of transformers, and can execute them, in order,
-when called.  To add a transformer to some {\tt Pack} without
-modifying Soot itself, create your own class which modifies the
-{\tt Pack}s as needed and then calls {\tt soot.Main}.
+\noindent
+\par
+Within Soot, each phase is implemented by a {\tt Pack}. The {\tt Pack}
+is a collection of transformers, each corresponding to a subphase of
+the phase implemented by the {\tt Pack}. When the {\tt Pack} is
+called, it executes each of its transformers in order.
 
-The remainder of this document describes the various transformations
-belonging to the various Packs of Soot, and their corresponding phase options.
+Soot transformers are usually instances of classes that extend either
+{\tt BodyTransformer} or {\tt SceneTransformer}.  In either case, the
+transformer class must override the {\tt internalTransform} method,
+providing an implementation which carries out some transformation on
+the code being analyzed.
+
+To add a transformer to some {\tt Pack} without modifying Soot itself,
+create your own class which changes the contents of the {\tt Pack}s to
+meet your requirements and then calls {\tt soot.Main}.
+
+\vspace{3ex}
+
+The remainder of this document describes the transformations belonging
+to the various {\tt Pack}s of Soot and their corresponding phase
+options.
 
 \tableofcontents
 
