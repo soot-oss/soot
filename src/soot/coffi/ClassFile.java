@@ -163,6 +163,15 @@ public class ClassFile {
     */
     public ClassFile(String nfn) { fn = nfn; }
 
+
+
+    
+
+
+
+
+
+
     static soot.Timer fieldTimer = new soot.Timer();
     static soot.Timer methodTimer = new soot.Timer();
     static soot.Timer attributeTimer = new soot.Timer();
@@ -206,8 +215,21 @@ public class ClassFile {
       }
 
       locatorTimer.end();
-      
+
+      return loadClassFile(classFileStream);
+   }
+
+
+    public boolean loadClassFile(InputStream is) {
+      InputStream f = null;
+      InputStream classFileStream;
+      DataInputStream d;
+      boolean b;
+
+      classFileStream = is;
+     
       byte[]  data;
+      
       
       readTimer.start();
       
@@ -240,6 +262,23 @@ public class ClassFile {
       //System.out.println("-- Read " + cf + " --");
       return true;
    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
    /** Main entry point for writing a class file.
     * The file name is given in the constructor; this opens the

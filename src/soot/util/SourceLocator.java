@@ -44,14 +44,22 @@ public class SourceLocator
     private static char pathSeparator = System.getProperty("path.separator").charAt(0);
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
 
+    private static final boolean debug = false;
+
     private SourceLocator() // No instances.
     {
     }
+    
+
 
     public static InputStream getInputStreamOf(String className) throws ClassNotFoundException
     {
         return getInputStreamOf(System.getProperty("java.class.path"), className);
     }
+
+
+
+  
 
     public static Map nameToZipFile = new HashMap();
         // cache of zip files
@@ -62,6 +70,8 @@ public class SourceLocator
     public static InputStream getInputStreamOf(String classPath, String className) throws ClassNotFoundException
     {
         List locations = null;
+	if(debug)
+	    System.err.println("classpath is:  " + classPath);
 
         if (classPath.hashCode() == previousCPHashCode)
         {
@@ -84,7 +94,7 @@ public class SourceLocator
                 }
 
                 locations.add(classPath.substring(0, sepIndex));
-
+		
                 classPath = classPath.substring(sepIndex + 1);
             }
             previousCPHashCode = classPath.hashCode();
@@ -135,22 +145,39 @@ public class SourceLocator
 
                     try {
                         File f = new File(fullPath);
+			if(debug)
+			    System.err.println("looking for: " + fullPath);
                         
-                        if (!f.canRead())
-                            continue;
+			InputStream in =  new JimpleInputStream(new FileInputStream(f));                        
+			return in;
+		    }  catch(IOException e) {
+		    }
 
-                        FileInputStream in = new FileInputStream(f);
+		    fileName = className.replace('.', '/') + ".class";
+                    
+
+		    
+			
+                    if(location.endsWith(new Character(fileSeparator).toString()))
+                        fullPath = location + fileName;
+                    else
+                        fullPath = location + fileSeparator + fileName;
+
+                    try {
+                        File f = new File(fullPath);
+			if(debug)
+			    System.err.println("looking for: " + fullPath);
                         
-                        return in;
-                    } catch(IOException e)
-                    {
-                        continue;
-                    }
-                }
-
-            }
-        }
-
+			
+			InputStream in = new ClassInputStream(new FileInputStream(f));                        
+			return in;		      						
+			
+		    } catch(IOException e){
+		    }
+		    
+		}
+	    }
+	}
         throw new ClassNotFoundException(className);
     }
 }

@@ -60,7 +60,7 @@ public class SootMethod extends AbstractHost implements ClassMember
     }
 
     public void setSource(MethodSource ms)
-    {
+    {	
         this.ms = ms;
     }
     public MethodSource getSource() 

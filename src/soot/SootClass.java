@@ -63,8 +63,9 @@ public class SootClass extends AbstractHost
     Chain methods = new HashChain();
     Chain interfaces = new HashChain();
 
-    Scene scene;
+    Scene scene = Scene.v(); /// added -patrice 
     boolean isInScene;
+
 
     SootClass superClass;
 
@@ -99,6 +100,7 @@ public class SootClass extends AbstractHost
     {
         return isInScene;
     }
+
 
     /**
         Returns the number of fields in this class.
@@ -361,7 +363,8 @@ public class SootClass extends AbstractHost
         }
         else
             throw new soot.NoSuchMethodException(getName() + "." + name + "(" + 
-            parameterTypes + ")" + " : " + returnType);
+		     parameterTypes + ")" + " : " + returnType);
+	
     }
 
     /**
@@ -788,16 +791,17 @@ public class SootClass extends AbstractHost
 
                     if(method.isPhantom())
                         continue;
-                        
+		    
                     if(!Modifier.isAbstract(method.getModifiers()) &&
-                        !Modifier.isNative(method.getModifiers()))
-                    {
+		       !Modifier.isNative(method.getModifiers()))								       
+			{
+			    
                         if(!method.hasActiveBody())
                             throw new RuntimeException("method " + method.getName() + " has no active body!");
                         else
                             method.getActiveBody().printTo(out, printBodyOptions);
                             // ((soot.jimple.GrimpBody) method.getActiveBody()).printDebugTo(out);
-                        
+			    
                             
 
                         if(methodIt.hasNext())
@@ -810,7 +814,7 @@ public class SootClass extends AbstractHost
 
                         if(methodIt.hasNext())
                             out.println();
-                    }
+		    }
                 }
             }
         }

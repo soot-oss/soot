@@ -59,6 +59,28 @@ public class Scene extends AbstractHost
     SootClass mainClass;
     String sootClassPath = "<external-class-path>";
     
+
+
+    private Vector classesToResolve = new Vector();
+
+    public void addClassToResolve(String c) 
+    {
+	classesToResolve.add(c);
+    }
+
+    public String getNextClassToResolve()
+    {
+	if(!classesToResolve.isEmpty())
+	    return (String) classesToResolve.firstElement();
+	else
+	    return null;
+    }
+
+    public List getClassesToResolve()
+    {
+	return classesToResolve;
+    }
+
     public static Scene v()
     {
         return constant;
@@ -258,7 +280,9 @@ public class Scene extends AbstractHost
         */
         
         Scene.v().setPhantomRefs(true);
-        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
+	//        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
+	SootResolver resolver = new SootResolver(this);
+	SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
         Scene.v().setPhantomRefs(false);
 
         return toReturn;
@@ -278,18 +302,14 @@ public class Scene extends AbstractHost
         
         if(toReturn == null)
         {	 
-	    if(allowsLazyResolving)
-		toReturn = SootResolver.resolve(className);
-	    
-	    if(toReturn != null) {
-		return toReturn;
-	    }
 
-            else if(Scene.v().allowsPhantomRefs())
+
+            if(Scene.v().allowsPhantomRefs())
             {
                 SootClass c = new SootClass(className);
                 c.setPhantom(true);
                 addClass(c);
+		classesToResolve.add(c.getName());
                 return c;
             }
             else { System.out.println("can find classfile" + className );

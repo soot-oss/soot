@@ -1,3 +1,5 @@
+/* -*- mode:Java; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil; -*- */
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
@@ -41,7 +43,21 @@ import java.io.*;
 import java.text.*;
 
 public class Main
-{
+{        
+     //------> this used to be in Main
+     // DEBUG
+    static boolean isAnalyzingLibraries = false;
+
+    // The following lists are paired.  false is exclude in the first list.
+    static List packageInclusionFlags = new ArrayList();
+    static List packageInclusionMasks = new ArrayList();
+
+    static List dynamicClasses = new ArrayList();
+    static List processClasses = new ArrayList();
+    
+    static Chain cmdLineClasses = new HashChain();
+    // <-------------
+
 
 
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);
@@ -145,7 +161,8 @@ public class Main
             } else {                
                 String fileName = files[i].getName();        
                 int index = fileName.indexOf(".class");
-                if( index != -1) {
+                if( index != -1)
+                {
                     fileNames.add(fileName.substring(0, index));
                 }
             }
@@ -154,35 +171,14 @@ public class Main
     }
 
 
-    
-    public static void main(String[] args)
-    {
-        // DEBUG
-        boolean isAnalyzingLibraries = false;
 
-        // The following lists are paired.  false is exclude in the first list.
-        List packageInclusionFlags = new ArrayList();
-        List packageInclusionMasks = new ArrayList();
 
-        List dynamicClasses = new ArrayList();
-        List processClasses = new ArrayList();
-
-        Chain cmdLineClasses = new HashChain();
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("java.");
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("sun.");
-
-        packageInclusionFlags.add(new Boolean(false));
-        packageInclusionMasks.add("javax.");
-
-        totalTimer.start();
-
-        if(args.length == 0)
+private static void processCmdLine(String[] args)
+{
+ if(args.length == 0)
         {
-// $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.5.dev.62");
+		// $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
+            System.out.println("Soot version 1.beta.5.dev.63");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -258,9 +254,9 @@ public class Main
         }
 
         // Handle all the options
-            for(int i = 0; i < args.length; i++)
-            {
-                String arg = args[i];
+ for(int i = 0; i < args.length; i++)
+     {
+        String arg = args[i];
                 
                 if(arg.equals("-j") || arg.equals("--jimp"))
                     targetExtension = ".jimp";
@@ -272,12 +268,13 @@ public class Main
                     targetExtension = ".jimple";
                 else if(arg.equals("-B") || arg.equals("--baf"))
                     targetExtension = ".baf";
-		else if(arg.equals("--lazy"))
+                else if(arg.equals("--lazy"))
                     Scene.v().setLazyResolving(true);
-		else if(arg.equals("-h")) {
-		    Scene.v().setLazyResolving(true);
-		    xmlInputFile = args[++i];
-		}
+                else if(arg.equals("-h")) 
+                {
+                    Scene.v().setLazyResolving(true);
+                    xmlInputFile = args[++i];
+                }
 		    
 		
 
@@ -450,50 +447,77 @@ public class Main
                 }
             }
 
-        if(cmdLineClasses.isEmpty())
+	    if(cmdLineClasses.isEmpty())
+		{
+		    System.out.println("Nothing to do!");
+		    System.exit(0);
+		}
+	    // Command line classes
+	    if (isApplication && cmdLineClasses.size() > 1)
         {
-            System.out.println("Nothing to do!");
-            System.exit(0);
-        }
-
-        // Load necessary classes.
-        {
-            
-            // Command line classes
-                if (isApplication && cmdLineClasses.size() > 1)
-                {
                     System.out.println("Can only specify one class in application mode!");
                     System.out.println("The transitive closure of the specified class gets loaded.");
                     System.out.println("(Did you mean to use single-file mode?)");
                     System.exit(1);
-                }
-     
-		if(xmlInputFile != null) {
-		    try {
-			XMLParser p = new XMLParser();
-			String file = "file://" + new File(xmlInputFile).getCanonicalPath();
-		   
-			p.parseJimple(file);
-		    
-		    } catch (Exception e ) {
-			throw new RuntimeException("error parsing xml file");
-		    }
-		}
+        }
+    }
 
-		Iterator it = cmdLineClasses.iterator();
+
+
+    public static void initApp()
+    { 
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("java.");
+
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("sun.");
+
+        packageInclusionFlags.add(new Boolean(false));
+        packageInclusionMasks.add("javax.");	
 	
-		while(it.hasNext())
-		    {
+    }
+    
+    private static void readXMLInFile()
+    {
+// XML disabled temporarily.
+//  	try {
+//  	       XMLParser p = new XMLParser();
+//  			String file = "file://" + new File(xmlInputFile).getCanonicalPath();
+		   
+//  			p.parseJimple(file);
+		    
+//  	} catch (Exception e ) {
+//  	    throw new RuntimeException("error parsing xml file");
+//  	}	
+    }
+    
+
+
+    public static void main(String[] args)
+    {       
+	totalTimer.start();
+	
+	initApp();
+	processCmdLine(args);
+
+        // Load necessary classes.
+        {            
+	    if(xmlInputFile != null) {
+		readXMLInFile();		 
+	    }
+
+	    Iterator it = cmdLineClasses.iterator();
+	
+	    while(it.hasNext())
+		{
 			String name = (String) it.next();
 			SootClass c;
 			    
-			if(!Scene.v().allowsLazyResolving()) {
-			    System.out.println("Doing batch resolution...");
-			    c = Scene.v().loadClassAndSupport(name);						  
-			} else { 
-			    c  = Scene.v().getSootClass(name);
-			    
-			}
+            
+            
+            
+            c = Scene.v().loadClassAndSupport(name);						  
+			
 			if(mainClass == null)
 			    {
 				mainClass = c;
@@ -503,7 +527,7 @@ public class Main
 		    }
 	
                
-            // Dynamic & process classes
+        // Dynamic & process classes
                 it = dynamicClasses.iterator();
                 
                 while(it.hasNext())
@@ -512,21 +536,23 @@ public class Main
                 it = processClasses.iterator();
                 
                 while(it.hasNext())
-                {
-                    String s = (String)it.next();
-                    Scene.v().loadClassAndSupport(s);
-                    Scene.v().getSootClass(s).setApplicationClass();
-                }
+                    {
+                        String s = (String)it.next();
+                        Scene.v().loadClassAndSupport(s);
+                        Scene.v().getSootClass(s).setApplicationClass();
+                    }
         }
+
 
         // Generate classes to process
         { 
             if(isApplication)
             {
-                List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
+                  List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
                 Iterator contextClassesIt = cc.iterator();
-                while (contextClassesIt.hasNext())
-                    ((SootClass)contextClassesIt.next()).setApplicationClass();
+                while (contextClassesIt.hasNext()){
+		    ((SootClass)contextClassesIt.next()).setApplicationClass();
+		}
             }   
                          
             // Remove/add all classes from packageInclusionMask as per piFlag
@@ -578,17 +604,65 @@ public class Main
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
         
-        // If creating xml file, first remove old file.
-        String fileName = null;
 
         if (produceXmlOutput) {
+	    produceXMLOutFile();
+        }
+    
+	
+    
+    
+    // Handle each class individually
+	Iterator classIt = Scene.v().getApplicationClasses().iterator();
 
-            if(!outputDir.equals(""))
-                fileName = outputDir + fileSeparator;
-            else
-                fileName = "";
+	while(classIt.hasNext())
+	    {
+                SootClass s = (SootClass) classIt.next();
+                
+                System.out.print("Transforming " + s.getName() + "... " );
+                System.out.flush();
+                
+                if(!isInDebugMode)
+                 {
+                    try {
+                        handleClass(s);
+                    }
+                    catch(Exception e)
+                    {
+                        System.out.println("failed due to: " + e);
+                    }
+                }
+                else {
+                    handleClass(s);
+                }
+                
+                System.out.println();
+	    }
+	
+
+        totalTimer.end();            
+
+	// Print out time stats.
+	if(isProfilingOptimization) {
+	    printProfilingInformation();
+	}
+    }        
+
+
+
+
+    private static void produceXMLOutFile() 
+    {
+    
+	// If creating xml file, first remove old file.
+        String fileName = null;
+
+	if(!outputDir.equals(""))
+	    fileName = outputDir + fileSeparator;
+    else
+        fileName = "";
             
-            fileName = mainClass.getName() + ".xml";
+    fileName = mainClass.getName() + ".xml";
 
             try {
 		
@@ -597,7 +671,7 @@ public class Main
                 writerOut.println("<?xml version=\"1.0\"?>");
                 writerOut.println("<document>");
 
-		Iterator it = Scene.v().getClasses().iterator();
+		Iterator it = Scene.v().getContextClasses().iterator();
 		SootClass sc = null;
 		
 		try {
@@ -619,48 +693,17 @@ public class Main
                 System.out.println("Couldn't write XML output file!");
                 System.exit(1);
 	    }
-        }
+    }
+
+
+
     
-	
-    
-    
-    // Handle each class individually
-
-	Iterator classIt = Scene.v().getApplicationClasses().iterator();
-
-	while(classIt.hasNext())
-		{
-                SootClass s = (SootClass) classIt.next();
-                
-                System.out.print("Transforming " + s.getName() + "... " );
-                System.out.flush();
-                
-                if(!isInDebugMode)
-                 {
-                    try {
-                        handleClass(s);
-                    }
-                    catch(Exception e)
-                    {
-                        System.out.println("failed due to: " + e);
-                    }
-                }
-                else {
-                    handleClass(s);
-                }
-                
-                System.out.println();
-		}
 
 
-                    
-	    // Print out time stats.
-            if(isProfilingOptimization)
-            {
-                totalTimer.end();
-                    
-                
-                long totalTime = totalTimer.getTime();
+
+    private static void printProfilingInformation()
+    {		                                   
+	long totalTime = totalTimer.getTime();
                 
                 System.out.println("Time measurements");
                 System.out.println();
@@ -739,9 +782,15 @@ public class Main
                         truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
         
                 }
-            }
-    }        
-    
+    }
+
+
+
+
+
+
+
+
     private static String toTimeString(Timer timer, long totalTime)
     {
         DecimalFormat format = new DecimalFormat("00.0");
@@ -843,7 +892,7 @@ public class Main
                 {		
                     if(!m.hasActiveBody()) {
                         m.getBodyFromMethodSource("jb");
-		    }
+                    }
 		    
 
                     Scene.v().getPack("jtp").apply(m.getActiveBody());
@@ -936,8 +985,8 @@ public class Main
         return ((long) (d * multiplier)) / multiplier;
     }
     
-    public static String paddedLeftOf(String s, int length)
-    {
+     public static String paddedLeftOf(String s, int length)
+      {
         if(s.length() >= length)
             return s;
         else {

@@ -59,7 +59,7 @@ public class Walker extends DepthFirstAdapter
     public SootClass getSootClass()
     {
 	if(mSootClass == null)
-	    throw new RuntimeException("did parse class yet....");
+	    throw new RuntimeException("did not parse class yet....");
 	
 	return mSootClass;	
     }
@@ -96,8 +96,8 @@ public class Walker extends DepthFirstAdapter
         }
 	
 	String className = (String) mProductions.pop();
-	mSootClass = new SootClass(className);
-	Scene.v().addClass(mSootClass);
+	mSootClass = Scene.v().getSootClass(className);
+
 
 
 
@@ -255,26 +255,28 @@ public class Walker extends DepthFirstAdapter
     }
     public void outAQuotedNonvoidType(AQuotedNonvoidType node)
     {	
-	String typeName = (String) mProductions.pop();
+	/*String typeName = (String) mProductions.pop();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0) 
 	    t = ArrayType.v((BaseType) t, dim);
-	mProductions.push(t);
+	    mProductions.push(t);*/
     }
     public void outAIdentNonvoidType(AIdentNonvoidType node)
     {	
-	String typeName = (String) mProductions.pop();
+	/*String typeName = (String) mProductions.pop();
 	Type t = RefType.v(typeName);
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0)
 	    t = ArrayType.v((BaseType) t, dim);
-	mProductions.push(t);
+	    mProductions.push(t);*/
     }
     public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
     {		
 	String typeName = (String) mProductions.pop();
 	Type t = RefType.v(typeName);
+	Scene.v().addClassToResolve(typeName);
+	
 	int dim = node.getArrayBrackets().size();
 	if(dim > 0)
 	    t = ArrayType.v((BaseType)t, dim);		
@@ -413,7 +415,9 @@ public class Walker extends DepthFirstAdapter
 
     public void outAClassNameBaseType(AClassNameBaseType node)
     {
-	mProductions.push(RefType.v((String) mProductions.pop()));
+	String type = (String) mProductions.pop();
+	mProductions.push(RefType.v(type));
+	Scene.v().addClassToResolve(type);
     }
 
 
@@ -1489,11 +1493,20 @@ public class Walker extends DepthFirstAdapter
 	int descCnt =  node.getArrayDescriptor().size();
 	
 	List sizes = new ArrayList(descCnt); 
-	for(int i = 0; i < descCnt; i++)  
-	    sizes.add((Value) mProductions.pop());
+	Iterator it = sizes.iterator();
+
 	
-	ArrayType type = (ArrayType) mProductions.pop();
-	mProductions.push(Jimple.v().newNewMultiArrayExpr(type, sizes));	
+	for(int i = 0; i < descCnt; i++) {
+	    Object o = mProductions.pop();
+	    System.out.println(o);
+	    sizes.add((Value) o);
+	}
+	
+
+	BaseType type = (BaseType) mProductions.pop();
+	ArrayType arrayType = ArrayType.v(type, descCnt);
+
+	mProductions.push(Jimple.v().newNewMultiArrayExpr(arrayType, sizes));	
     }
 
     public void defaultCase(Node node)
@@ -1537,7 +1550,7 @@ public class Walker extends DepthFirstAdapter
     
     // auxiliary fcts
 
-    private int processModifiers(int aModifierCount)
+    protected int processModifiers(int aModifierCount)
     {
 	int modifier = 0;	
 	String str;

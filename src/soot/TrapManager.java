@@ -1,3 +1,4 @@
+/* -*- mode:Java; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-  */
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1999 Patrick Lam
  *
@@ -42,7 +43,6 @@ public class TrapManager
 
         Hierarchy h = Scene.v().getActiveHierarchy();
         Chain units = b.getUnits();
-
         Iterator trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
@@ -94,8 +94,8 @@ public class TrapManager
         Iterator trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
-        {
-            Trap t = (Trap)trapsIt.next();
+	{
+		Trap t = (Trap)trapsIt.next();
 
             Iterator it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));
@@ -107,15 +107,15 @@ public class TrapManager
 
     /** Splits all traps so that they do not cross the range rangeStart - rangeEnd. 
      * Note that rangeStart is inclusive, rangeEnd is exclusive. */
-    public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd)
+    public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd) 
     {
         Chain traps = b.getTraps(), units = b.getUnits();
         Iterator trapsIt = traps.snapshotIterator();
-
+        
         while (trapsIt.hasNext())
         {
             Trap t = (Trap)trapsIt.next();
-
+            
             Iterator unitIt = units.iterator(t.getBeginUnit(),
                                              t.getEndUnit());
 
@@ -162,12 +162,12 @@ public class TrapManager
      * by the handler. */
     public static List getExceptionTypesOf(Unit u, Body body)
     {
-        List possibleTypes = new ArrayList();
+         List possibleTypes = new ArrayList();
         
-        Iterator trapIt = body.getTraps().iterator();
+         Iterator trapIt = body.getTraps().iterator();
         
-        while(trapIt.hasNext())
-        {
+         while(trapIt.hasNext())
+         {
             Trap trap = (Trap) trapIt.next();
             
             Unit handler = trap.getHandlerUnit();

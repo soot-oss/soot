@@ -34,8 +34,12 @@ import soot.jimple.parser.*;
 
 public class JimpleMethodSource implements MethodSource
 {
-    JimpleMethodSource()
+
+    JimpleAst mJimpleAst;
+
+    JimpleMethodSource(JimpleAst aJimpleAst)
     {
+	mJimpleAst = aJimpleAst;
     }
 
     public void getBody(SootMethod m, Map options)
@@ -46,16 +50,7 @@ public class JimpleMethodSource implements MethodSource
         // in fact we probably want to allow different
         // phase options depending on app vs. lib.
 
-	InputStream classFileStream;
-
-	try {
-	    classFileStream = SourceLocator.getInputStreamOf(Scene.v().getSootClassPath(), m.getDeclaringClass().toString());
-	} 
-	catch(ClassNotFoundException e) {
-	    throw new RuntimeException("Can't find jimple file: " + e);		    
-	}
-		
-	Parse.parse(classFileStream,  m.getDeclaringClass());
+	mJimpleAst.getMethodsForClass( m.getDeclaringClass());
     }
 }
 
