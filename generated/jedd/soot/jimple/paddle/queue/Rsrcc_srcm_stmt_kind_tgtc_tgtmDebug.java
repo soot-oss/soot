@@ -15,8 +15,9 @@ public class Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Rsrcc_srcm_stmt_kind_tg
     protected Rsrcc_srcm_stmt_kind_tgtc_tgtmSet trad;
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug(Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD bdd,
-                                               Rsrcc_srcm_stmt_kind_tgtc_tgtmSet trad) {
-        super();
+                                               Rsrcc_srcm_stmt_kind_tgtc_tgtmSet trad,
+                                               String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -37,7 +38,6 @@ public class Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Rsrcc_srcm_stmt_kind_tg
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -46,8 +46,7 @@ public class Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Rsrcc_srcm_stmt_kind_tg
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

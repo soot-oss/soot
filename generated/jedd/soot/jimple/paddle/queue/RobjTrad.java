@@ -10,7 +10,7 @@ import jedd.*;
 import java.util.*;
 
 public final class RobjTrad extends RobjIter {
-    RobjTrad(QueueReader r) { super(r); }
+    RobjTrad(QueueReader r, String name) { super(r, name); }
     
-    public RobjTrad copy() { return new RobjTrad((QueueReader) ((QueueReader) r).clone()); }
+    public RobjTrad copy() { return new RobjTrad((QueueReader) ((QueueReader) r).clone(), name); }
 }

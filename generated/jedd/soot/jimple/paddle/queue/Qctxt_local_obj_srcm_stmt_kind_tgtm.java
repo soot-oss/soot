@@ -10,6 +10,15 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qctxt_local_obj_srcm_stmt_kind_tgtm {
+    public Qctxt_local_obj_srcm_stmt_kind_tgtm(String name) {
+        super();
+        this.name = name;
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract void add(Context _ctxt,
                              Local _local,
                              AllocNode _obj,
@@ -20,7 +29,7 @@ public abstract class Qctxt_local_obj_srcm_stmt_kind_tgtm {
     
     public abstract void add(final jedd.internal.RelationContainer in);
     
-    public abstract Rctxt_local_obj_srcm_stmt_kind_tgtm reader();
+    public abstract Rctxt_local_obj_srcm_stmt_kind_tgtm reader(String rname);
     
-    public Qctxt_local_obj_srcm_stmt_kind_tgtm() { super(); }
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm revreader(String rname) { return this.reader(rname); }
 }

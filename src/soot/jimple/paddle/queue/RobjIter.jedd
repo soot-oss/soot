@@ -29,7 +29,7 @@ import java.util.*;
 
 public class RobjIter extends Robj{
     protected Iterator r;
-    public RobjIter( Iterator r ) { this.r = r; }
+    public RobjIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

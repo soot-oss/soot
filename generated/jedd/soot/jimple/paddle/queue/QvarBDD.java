@@ -10,18 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public final class QvarBDD extends Qvar {
+    public QvarBDD(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var) {
-        add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
-                                                new PhysicalDomain[] { V1.v() },
-                                                ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
-                                                 ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /tmp/soot-trunk/src/soot/jimple/paddle/queue/QvarBDD.jedd:3" +
-                                                 "3,8-11"),
-                                                jedd.internal.Jedd.v().literal(new Object[] { _var },
-                                                                               new Attribute[] { var.v() },
-                                                                               new PhysicalDomain[] { V1.v() })));
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
+                                                     new PhysicalDomain[] { V1.v() },
+                                                     ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
+                                                      "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
+                                                      ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/" +
+                                                      "QvarBDD.jedd:34,8-11"),
+                                                     jedd.internal.Jedd.v().literal(new Object[] { _var },
+                                                                                    new Attribute[] { var.v() },
+                                                                                    new PhysicalDomain[] { V1.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -29,17 +31,15 @@ public final class QvarBDD extends Qvar {
             RvarBDD reader = (RvarBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                                            new PhysicalDomain[] { V1.v() },
-                                                           ("reader.add(in) at /tmp/soot-trunk/src/soot/jimple/paddle/que" +
-                                                            "ue/QvarBDD.jedd:38,12-18"),
+                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
+                                                            "addle/queue/QvarBDD.jedd:39,12-18"),
                                                            in));
         }
     }
     
-    public Rvar reader() {
-        Rvar ret = new RvarBDD();
+    public Rvar reader(String rname) {
+        Rvar ret = new RvarBDD(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
-    
-    public QvarBDD() { super(); }
 }

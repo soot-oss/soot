@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Rvar_objIter extends Rvar_obj{
     protected Iterator r;
-    public Rvar_objIter( Iterator r ) { this.r = r; }
+    public Rvar_objIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

@@ -17,7 +17,7 @@ public final class Rctxt_methodMerge extends Rctxt_method {
     private Rctxt_method in2;
     
     public Rctxt_methodMerge(Rctxt_method in1, Rctxt_method in2) {
-        super();
+        super(in1.name + "+" + in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
@@ -42,8 +42,8 @@ public final class Rctxt_methodMerge extends Rctxt_method {
         return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                    new PhysicalDomain[] { V1.v(), T1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/queue/Rctxt_methodMerge.jedd:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/Rctxt_methodMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

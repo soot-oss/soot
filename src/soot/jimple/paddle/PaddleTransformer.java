@@ -22,7 +22,9 @@ import soot.*;
 import soot.jimple.paddle.queue.*;
 import soot.jimple.*;
 import java.util.*;
+import soot.util.*;
 import soot.options.PaddleOptions;
+import soot.options.CGOptions;
 import soot.tagkit.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -39,6 +41,18 @@ public class PaddleTransformer extends SceneTransformer
 
     protected void internalTransform( String phaseName, Map options )
     {
+        CGOptions cgoptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+        switch( cgoptions.context() ) {
+            case CGOptions.context_insens:
+                Scene.v().setContextNumberer( new MapNumberer() );
+                break;
+            case CGOptions.context_1cfa:
+                Scene.v().setContextNumberer( Scene.v().getUnitNumberer() );
+                break;
+            case CGOptions.context_objsens:
+                Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
+                break;
+        }
         PaddleOptions opts = new PaddleOptions( options );
 
         if( opts.simulate_natives() ) {
@@ -49,7 +63,7 @@ public class PaddleTransformer extends SceneTransformer
 
         if( opts.pre_jimplify() ) preJimplify();
 
-        Rctxt_method reachableMethods = PaddleScene.v().rcout.reader();
+        Rctxt_method reachableMethods = PaddleScene.v().rcout.reader("paddletransformer");
 
         Date startSolve = new Date();
 
@@ -61,29 +75,17 @@ public class PaddleTransformer extends SceneTransformer
             reportTime( "Propagation", startSolve, endSolve );
         }
 
+        if( opts.verbose() ) {
+            G.v().out.println( "[Paddle] Number of reachable methods: "
+                    +PaddleScene.v().rm.size() );
+            G.v().out.println( "[Paddle] Number of reachable method contexts: "
+                    +PaddleScene.v().rc.size() );
+            G.v().out.println( "[Paddle] Number of call edges: "
+                    +PaddleScene.v().cicg.size() );
+            G.v().out.println( "[Paddle] Number of context call edges: "
+                    +PaddleScene.v().cg.size() );
+        }
         if( opts.set_mass() ) findSetMass();
-
-        /*
-        for( Iterator tIt = reachableMethods.iterator(); tIt.hasNext(); ) {
-            final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
-            System.out.println( t.method() );
-        }
-        */
-
-        try {
-            PrintStream out = new PrintStream(new FileOutputStream("/tmp/jedd_edges.sql"));
-            out.println( "begin transaction;" );
-            out.println( "drop table jedd_edges;" );
-            out.println( "create table jedd_edges ( from string, to string, kind string ) ;" );
-            for( Iterator tIt = PaddleScene.v().cg.edges().iterator(); tIt.hasNext(); ) {
-                final Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t = (Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple) tIt.next();
-                out.println( "insert into jedd_edges values ( '"+t.srcm()+"', '"+t.tgtm()+"', '"+t.kind()+"' ) ;" );
-            }
-            out.println( "end transaction;" );
-            out.close();
-        } catch( IOException e ) {
-            throw new RuntimeException( e );
-        }
 
         CallGraph cg = new CallGraph();
         for( Iterator tIt = PaddleScene.v().cg.edges().iterator(); tIt.hasNext(); ) {
@@ -94,6 +96,8 @@ public class PaddleTransformer extends SceneTransformer
                                   t.kind() ) );
         }
         Scene.v().setCallGraph( cg );
+
+        //Readers.v().checkEmptiness();
 
         /*
         PaddleOptions opts = new PaddleOptions( options );

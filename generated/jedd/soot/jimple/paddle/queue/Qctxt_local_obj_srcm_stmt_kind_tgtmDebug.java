@@ -10,9 +10,11 @@ import jedd.*;
 import java.util.*;
 
 public class Qctxt_local_obj_srcm_stmt_kind_tgtmDebug extends Qctxt_local_obj_srcm_stmt_kind_tgtm {
-    private Qctxt_local_obj_srcm_stmt_kind_tgtmBDD bdd = new Qctxt_local_obj_srcm_stmt_kind_tgtmBDD();
+    public Qctxt_local_obj_srcm_stmt_kind_tgtmDebug(String name) { super(name); }
     
-    private Qctxt_local_obj_srcm_stmt_kind_tgtmSet trad = new Qctxt_local_obj_srcm_stmt_kind_tgtmSet();
+    private Qctxt_local_obj_srcm_stmt_kind_tgtmBDD bdd = new Qctxt_local_obj_srcm_stmt_kind_tgtmBDD(name + "bdd");
+    
+    private Qctxt_local_obj_srcm_stmt_kind_tgtmSet trad = new Qctxt_local_obj_srcm_stmt_kind_tgtmSet(name + "set");
     
     public void add(Context _ctxt,
                     Local _local,
@@ -27,30 +29,30 @@ public class Qctxt_local_obj_srcm_stmt_kind_tgtmDebug extends Qctxt_local_obj_sr
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), obj.v(), local.v(), ctxt.v(), tgtm.v(), srcm.v(), stmt.v() },
-                                              new PhysicalDomain[] { FD.v(), H1.v(), V1.v(), V2.v(), T2.v(), T1.v(), ST.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
-                                               "soot/jimple/paddle/queue/Qctxt_local_obj_srcm_stmt_kind_tgtm" +
-                                               "Debug.jedd:38,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), obj.v(), tgtm.v(), ctxt.v(), local.v() },
+                                              new PhysicalDomain[] { FD.v(), ST.v(), T1.v(), H1.v(), T2.v(), V2.v(), V1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/Qctxt_local_obj_srcm_stmt_" +
+                                               "kind_tgtmDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { ctxt.v(), local.v(), obj.v(), srcm.v(), stmt.v(), kind.v(), tgtm.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
             for (int i = 0; i < 7; i++) {
-                add((Context) tuple[0],
-                    (Local) tuple[1],
-                    (AllocNode) tuple[2],
-                    (SootMethod) tuple[3],
-                    (Unit) tuple[4],
-                    (Kind) tuple[5],
-                    (SootMethod) tuple[6]);
+                this.add((Context) tuple[0],
+                         (Local) tuple[1],
+                         (AllocNode) tuple[2],
+                         (SootMethod) tuple[3],
+                         (Unit) tuple[4],
+                         (Kind) tuple[5],
+                         (SootMethod) tuple[6]);
             }
         }
     }
     
-    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader() {
-        return new Rctxt_local_obj_srcm_stmt_kind_tgtmDebug((Rctxt_local_obj_srcm_stmt_kind_tgtmBDD) bdd.reader(),
-                                                            (Rctxt_local_obj_srcm_stmt_kind_tgtmSet) trad.reader());
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader(String rname) {
+        return new Rctxt_local_obj_srcm_stmt_kind_tgtmDebug((Rctxt_local_obj_srcm_stmt_kind_tgtmBDD) bdd.reader(rname),
+                                                            (Rctxt_local_obj_srcm_stmt_kind_tgtmSet) trad.reader(rname),
+                                                            name + ":" +
+                                                            rname);
     }
-    
-    public Qctxt_local_obj_srcm_stmt_kind_tgtmDebug() { super(); }
 }

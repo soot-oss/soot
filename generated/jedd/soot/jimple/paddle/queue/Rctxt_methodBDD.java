@@ -15,22 +15,22 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                                           new PhysicalDomain[] { V1.v(), T1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.ctxt:soot.jimple.padd" +
                                            "le.bdddomains.V1, soot.jimple.paddle.bdddomains.method:soot." +
-                                           "jimple.paddle.bdddomains.T1> bdd at /tmp/soot-trunk/src/soot" +
-                                           "/jimple/paddle/queue/Rctxt_methodBDD.jedd:31,12-32"));
+                                           "jimple.paddle.bdddomains.T1> bdd at /home/olhotak/soot-trunk" +
+                                           "/src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:31,12-32"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
-    public Rctxt_methodBDD(final jedd.internal.RelationContainer bdd) {
-        this();
-        add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
-                                                new PhysicalDomain[] { V1.v(), T1.v() },
-                                                ("add(bdd) at /tmp/soot-trunk/src/soot/jimple/paddle/queue/Rct" +
-                                                 "xt_methodBDD.jedd:33,65-68"),
-                                                bdd));
+    public Rctxt_methodBDD(final jedd.internal.RelationContainer bdd, String name) {
+        this(name);
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
+                                                     new PhysicalDomain[] { V1.v(), T1.v() },
+                                                     ("this.add(bdd) at /home/olhotak/soot-trunk/src/soot/jimple/pa" +
+                                                      "ddle/queue/Rctxt_methodBDD.jedd:33,82-85"),
+                                                     bdd));
     }
     
-    Rctxt_methodBDD() {
-        super();
+    Rctxt_methodBDD(String name) {
+        super(name);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
     }
     
@@ -51,8 +51,9 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                     it =
                       new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                           new PhysicalDomain[] { V1.v(), T1.v() },
-                                                          ("bdd.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src" +
-                                                           "/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:45,25-28"),
+                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
+                                                           "trunk/src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:45,2" +
+                                                           "5-28"),
                                                           bdd).iterator(new Attribute[] { ctxt.v(), method.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -70,14 +71,14 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                                               new PhysicalDomain[] { V1.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
                                                "mains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
-                                               "addle.bdddomains.T1> ret = bdd; at /tmp/soot-trunk/src/soot/" +
-                                               "jimple/paddle/queue/Rctxt_methodBDD.jedd:55,29-32"),
+                                               "addle.bdddomains.T1> ret = bdd; at /home/olhotak/soot-trunk/" +
+                                               "src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:55,29-32"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                    new PhysicalDomain[] { V1.v(), T1.v() },
-                                                   ("return ret; at /tmp/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                    "Rctxt_methodBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
+                                                    "le/queue/Rctxt_methodBDD.jedd:57,8-14"),
                                                    ret);
     }
     

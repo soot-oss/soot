@@ -10,7 +10,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rctxt_methodTrad extends Rctxt_methodIter {
-    Rctxt_methodTrad(QueueReader r) { super(r); }
+    Rctxt_methodTrad(QueueReader r, String name) { super(r, name); }
     
-    public Rctxt_methodTrad copy() { return new Rctxt_methodTrad((QueueReader) ((QueueReader) r).clone()); }
+    public Rctxt_methodTrad copy() { return new Rctxt_methodTrad((QueueReader) ((QueueReader) r).clone(), name); }
 }

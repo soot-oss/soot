@@ -87,6 +87,8 @@ public class PaddleScene
     private NodeFactory nodeFactory;
     private NodeManager nodeManager = new NodeManager();
     private PaddleOptions options;
+    private CGOptions cgoptions = 
+        new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
     public P2SetFactory setFactory;
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
@@ -154,146 +156,161 @@ public class PaddleScene
     }
 
     private void buildQueuesSet() {
-        rmout = new Qctxt_methodSet();
-        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
-        receivers = new Qlocal_srcm_stmt_signature_kindSet();
-        specials = new Qlocal_srcm_stmt_tgtmSet();
-        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
-        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
-        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
-        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
-        rcout = new Qctxt_methodSet();
+        rmout = new Qctxt_methodSet("rmout");
+        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("scgbout");
+        receivers = new Qlocal_srcm_stmt_signature_kindSet("receivers");
+        specials = new Qlocal_srcm_stmt_tgtmSet("specials");
+        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cicgout");
+        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cscgbout");
+        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cmout");
+        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("cgout");
+        rcout = new Qctxt_methodSet("rcout");
 
-        simple = new Qsrc_dstSet();
-        load = new Qsrc_fld_dstSet();
-        store = new Qsrc_fld_dstSet();
-        alloc = new Qobj_varSet();
+        simple = new Qsrc_dstSet("simple");
+        load = new Qsrc_fld_dstSet("load");
+        store = new Qsrc_fld_dstSet("store");
+        alloc = new Qobj_varSet("alloc");
 
-        pagsimple = new Qsrc_dstSet();
-        pagload = new Qsrc_fld_dstSet();
-        pagstore = new Qsrc_fld_dstSet();
-        pagalloc = new Qobj_varSet();
+        pagsimple = new Qsrc_dstSet("pagsimple");
+        pagload = new Qsrc_fld_dstSet("pagload");
+        pagstore = new Qsrc_fld_dstSet("pagstore");
+        pagalloc = new Qobj_varSet("pagalloc");
 
-        paout = new Qvar_objSet();
+        paout = new Qvar_objSet("paout");
 
-        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmSet();
-        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
+        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmSet("vcrout");
+        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet("vcmout");
     }
 
     private void buildQueuesBDD() {
-        rmout = new Qctxt_methodBDD();
-        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        receivers = new Qlocal_srcm_stmt_signature_kindBDD();
-        specials = new Qlocal_srcm_stmt_tgtmBDD();
-        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        rcout = new Qctxt_methodBDD();
+        rmout = new Qctxt_methodBDD("rmout");
+        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("scgbout");
+        receivers = new Qlocal_srcm_stmt_signature_kindBDD("receivers");
+        specials = new Qlocal_srcm_stmt_tgtmBDD("specials");
+        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cicgout");
+        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cscgbout");
+        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cmout");
+        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("cgout");
+        rcout = new Qctxt_methodBDD("rcout");
 
-        simple = new Qsrc_dstBDD();
-        load = new Qsrc_fld_dstBDD();
-        store = new Qsrc_fld_dstBDD();
-        alloc = new Qobj_varBDD();
+        simple = new Qsrc_dstBDD("simple");
+        load = new Qsrc_fld_dstBDD("load");
+        store = new Qsrc_fld_dstBDD("store");
+        alloc = new Qobj_varBDD("alloc");
 
-        pagsimple = new Qsrc_dstBDD();
-        pagload = new Qsrc_fld_dstBDD();
-        pagstore = new Qsrc_fld_dstBDD();
-        pagalloc = new Qobj_varBDD();
+        pagsimple = new Qsrc_dstBDD("pagsimple");
+        pagload = new Qsrc_fld_dstBDD("pagload");
+        pagstore = new Qsrc_fld_dstBDD("pagstore");
+        pagalloc = new Qobj_varBDD("pagalloc");
 
-        paout = new Qvar_objBDD();
+        paout = new Qvar_objBDD("paout");
 
-        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmBDD();
-        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
+        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmBDD("vcrout");
+        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD("vcmout");
     }
 
     private void buildBDD() {
         buildQueues();
         nodeFactory = new NodeFactory( simple, load, store, alloc );
 
-        cicg = new BDDCallGraph( scgbout.reader(), cicgout );
-        rm = new BDDReachableMethods( cicgout.reader(), rmout, cicg );
-        scgb = new TradStaticCallBuilder( rmout.reader(), scgbout, receivers, specials );
+        cicg = new BDDCallGraph( scgbout.reader("cicg"), cicgout );
+        rm = new BDDReachableMethods( cicgout.reader("rm"), rmout, cicg );
+        scgb = new TradStaticCallBuilder( rmout.reader("scgb"), scgbout, receivers, specials );
 
         cg = new BDDCallGraph( 
                 new Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge(
-                    cmout.reader(), vcmout.reader() ),
+                    cmout.reader("cg"), vcmout.reader("cg") ),
                 cgout );
-        rc = new BDDReachableMethods( cgout.reader(), rcout, cg );
-        cscgb = new BDDContextCallGraphBuilder( rcout.reader(), cscgbout, cicg );
-        scm = new BDDInsensitiveStaticContextManager( cscgbout.reader(), cmout );
+        rc = new BDDReachableMethods( cgout.reader("rc"), rcout, cg );
+        cscgb = new BDDContextCallGraphBuilder( rcout.reader("cscgb"), cscgbout, cicg );
 
-        mpb = new TradMethodPAGBuilder( rcout.reader(), simple, load, store, alloc );
-        pagb = new TradPAGBuilder( cgout.reader(), simple, load, store, alloc );
+        mpb = new TradMethodPAGBuilder( rcout.reader("mpb"), simple, load, store, alloc );
+        pagb = new TradPAGBuilder( cgout.reader("pagb"), simple, load, store, alloc );
 
-        pag = new BDDPAG( simple.reader(), load.reader(), store.reader(),
-                alloc.reader(), pagsimple, pagload, pagstore, pagalloc );
+        pag = new BDDPAG( simple.reader("pag"), load.reader("pag"), store.reader("pag"),
+                alloc.reader("pag"), pagsimple, pagload, pagstore, pagalloc );
         makePropagator();
 
-        vcr = new BDDVirtualCalls( paout.reader(), receivers.reader(), specials.reader(), vcrout, cscgbout );
-        vcm = new BDDInsensitiveVirtualContextManager( vcrout.reader(), vcmout );
-        cs = new BDDContextStripper( vcmout.reader(), cicgout );
+        vcr = new BDDVirtualCalls( paout.reader("vcr"), receivers.reader("vcr"), specials.reader("vcr"), vcrout, cscgbout );
+        cs = new BDDContextStripper( vcmout.reader("cs"), cicgout );
 
         tm = new BDDTypeManager( 
-                new RvarIter( PaddleNumberers.v().varNodeNumberer().iterator() ),
-                new RobjIter( PaddleNumberers.v().allocNodeNumberer().iterator() ), 
+                new RvarIter( PaddleNumberers.v().varNodeNumberer().iterator(), "tm" ),
+                new RobjIter( PaddleNumberers.v().allocNodeNumberer().iterator(), "tm" ), 
                 options.ignore_types() ? null : new BDDHierarchy() );
+
+        switch( cgoptions.context() ) {
+            case CGOptions.context_insens:
+                scm = new BDDInsensitiveStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new BDDInsensitiveVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                break;
+            case CGOptions.context_1cfa:
+                scm = new BDD1CFAStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new BDD1CFAVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                Scene.v().setContextNumberer( Scene.v().getUnitNumberer() );
+                break;
+            case CGOptions.context_objsens:
+                scm = new BDDObjSensStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new BDDObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
+                break;
+        }
     }
 
     private void buildQueuesTrad() {
-        rmout = new Qctxt_methodTrad();
-        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        receivers = new Qlocal_srcm_stmt_signature_kindTrad();
-        specials = new Qlocal_srcm_stmt_tgtmTrad();
-        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        rcout = new Qctxt_methodTrad();
+        rmout = new Qctxt_methodTrad("rmout");
+        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("scgbout");
+        receivers = new Qlocal_srcm_stmt_signature_kindTrad("receivers");
+        specials = new Qlocal_srcm_stmt_tgtmTrad("specials");
+        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cicgout");
+        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cscgbout");
+        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cmout");
+        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("cgout");
+        rcout = new Qctxt_methodTrad("rcout");
 
-        simple = new Qsrc_dstTrad();
-        load = new Qsrc_fld_dstTrad();
-        store = new Qsrc_fld_dstTrad();
-        alloc = new Qobj_varTrad();
+        simple = new Qsrc_dstTrad("simple");
+        load = new Qsrc_fld_dstTrad("load");
+        store = new Qsrc_fld_dstTrad("store");
+        alloc = new Qobj_varTrad("alloc");
 
-        pagsimple = new Qsrc_dstTrad();
-        pagload = new Qsrc_fld_dstTrad();
-        pagstore = new Qsrc_fld_dstTrad();
-        pagalloc = new Qobj_varTrad();
+        pagsimple = new Qsrc_dstTrad("pagsimple");
+        pagload = new Qsrc_fld_dstTrad("pagload");
+        pagstore = new Qsrc_fld_dstTrad("pagstore");
+        pagalloc = new Qobj_varTrad("pagalloc");
 
-        paout = new Qvar_objTrad();
+        paout = new Qvar_objTrad("paout");
 
-        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrad();
-        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
+        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrad("vcrout");
+        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("vcmout");
     }
 
     private void buildQueuesDebug() {
-        rmout = new Qctxt_methodBDD();
-        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
+        rmout = new Qctxt_methodDebug("rmout");
+        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("scgbout");
 
-        receivers = new Qlocal_srcm_stmt_signature_kindBDD();
-        specials = new Qlocal_srcm_stmt_tgtmBDD();
+        receivers = new Qlocal_srcm_stmt_signature_kindDebug("receivers");
+        specials = new Qlocal_srcm_stmt_tgtmDebug("specials");
 
-        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-        rcout = new Qctxt_methodBDD();
+        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cicgout");
+        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cscgbout");
+        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cmout");
+        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("cgout");
+        rcout = new Qctxt_methodDebug("rcout");
 
-        simple = new Qsrc_dstBDD();
-        load = new Qsrc_fld_dstBDD();
-        store = new Qsrc_fld_dstBDD();
-        alloc = new Qobj_varBDD();
+        simple = new Qsrc_dstDebug("simple");
+        load = new Qsrc_fld_dstDebug("load");
+        store = new Qsrc_fld_dstDebug("store");
+        alloc = new Qobj_varDebug("alloc");
 
-        pagsimple = new Qsrc_dstBDD();
-        pagload = new Qsrc_fld_dstBDD();
-        pagstore = new Qsrc_fld_dstBDD();
-        pagalloc = new Qobj_varBDD();
+        pagsimple = new Qsrc_dstDebug("pagsimple");
+        pagload = new Qsrc_fld_dstDebug("pagload");
+        pagstore = new Qsrc_fld_dstDebug("pagstore");
+        pagalloc = new Qobj_varDebug("pagalloc");
 
-        paout = new Qvar_objBDD();
+        paout = new Qvar_objDebug("paout");
 
-        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmBDD();
-        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
+        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmDebug("vcrout");
+        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug("vcmout");
     }
 
     private void buildQueuesTrace() {
@@ -305,7 +322,7 @@ public class PaddleScene
         cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cscgbout");
         cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cmout");
         cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("cgout");
-        rcout = new Qctxt_methodTrace("rcout");
+        rcout = new Qctxt_methodSet("rcout");
 
         simple = new Qsrc_dstTrace("simple");
         load = new Qsrc_fld_dstTrace("load");
@@ -322,6 +339,36 @@ public class PaddleScene
         vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrace("vcrout");
         vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace("vcmout");
     }
+    
+
+    /*
+    private void buildQueuesTrace() {
+        rmout = new Qctxt_methodNumTrace("rmout");
+        scgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("scgbout");
+        receivers = new Qlocal_srcm_stmt_signature_kindNumTrace("receivers");
+        specials = new Qlocal_srcm_stmt_tgtmNumTrace("specials");
+        cicgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cicgout");
+        cscgbout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cscgbout");
+        cmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cmout");
+        cgout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("cgout");
+        rcout = new Qctxt_methodSet("rcout");
+
+        simple = new Qsrc_dstNumTrace("simple");
+        load = new Qsrc_fld_dstNumTrace("load");
+        store = new Qsrc_fld_dstNumTrace("store");
+        alloc = new Qobj_varNumTrace("alloc");
+
+        pagsimple = new Qsrc_dstNumTrace("pagsimple");
+        pagload = new Qsrc_fld_dstNumTrace("pagload");
+        pagstore = new Qsrc_fld_dstNumTrace("pagstore");
+        pagalloc = new Qobj_varNumTrace("pagalloc");
+
+        paout = new Qvar_objNumTrace("paout");
+
+        vcrout = new Qctxt_local_obj_srcm_stmt_kind_tgtmNumTrace("vcrout");
+        vcmout = new Qsrcc_srcm_stmt_kind_tgtc_tgtmNumTrace("vcmout");
+    }
+    */
 
     private void buildQueues() {
         if( options.debugq() ) buildQueuesDebug();
@@ -334,55 +381,70 @@ public class PaddleScene
 
         nodeFactory = new NodeFactory( simple, load, store, alloc );
 
-        cicg = new TradCallGraph( scgbout.reader(), cicgout );
-        rm = new TradReachableMethods( cicgout.reader(), rmout, cicg );
-        scgb = new TradStaticCallBuilder( rmout.reader(), scgbout, receivers, specials );
+        cicg = new TradCallGraph( scgbout.reader("cicg"), cicgout );
+        rm = new TradReachableMethods( cicgout.reader("rm"), rmout, cicg );
+        scgb = new TradStaticCallBuilder( rmout.reader("scgb"), scgbout, receivers, specials );
 
         cg = new TradCallGraph( 
                 new Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge(
-                    cmout.reader(), vcmout.reader() ),
+                    cmout.reader("cg"), vcmout.reader("cg") ),
                 cgout );
-        rc = new TradReachableMethods( cgout.reader(), rcout, cg );
-        cscgb = new TradContextCallGraphBuilder( rcout.reader(), cscgbout, cicg );
-        scm = new TradInsensitiveStaticContextManager( cscgbout.reader(), cmout );
+        rc = new TradReachableMethods( cgout.reader("rc"), rcout, cg );
+        cscgb = new TradContextCallGraphBuilder( rcout.reader("cscgb"), cscgbout, cicg );
 
-        mpb = new TradMethodPAGBuilder( rcout.reader(), simple, load, store, alloc );
-        pagb = new TradPAGBuilder( cgout.reader(), simple, load, store, alloc );
+        mpb = new TradMethodPAGBuilder( rcout.reader("mpb"), simple, load, store, alloc );
+        pagb = new TradPAGBuilder( cgout.reader("pagb"), simple, load, store, alloc );
 
-        pag = new TradPAG( simple.reader(), load.reader(), store.reader(),
-                alloc.reader(), pagsimple, pagload, pagstore, pagalloc );
+        pag = new TradPAG( simple.reader("pag"), load.reader("pag"), store.reader("pag"),
+                alloc.reader("pag"), pagsimple, pagload, pagstore, pagalloc );
         makePropagator();
 
-        vcr = new TradVirtualCalls( paout.reader(), receivers.reader(), specials.reader(), vcrout, cscgbout );
-        vcm = new TradInsensitiveVirtualContextManager( vcrout.reader(), vcmout );
-        cs = new TradContextStripper( vcmout.reader(), cicgout );
+        vcr = new TradVirtualCalls( paout.reader("vcr"), receivers.reader("vcr"), specials.reader("vcr"), vcrout, cscgbout );
+        cs = new TradContextStripper( vcmout.reader("cs"), cicgout );
 
         tm = new TradTypeManager( 
-                new RvarIter( PaddleNumberers.v().varNodeNumberer().iterator() ),
-                new RobjIter( PaddleNumberers.v().allocNodeNumberer().iterator() ), 
+                new RvarIter( PaddleNumberers.v().varNodeNumberer().iterator(), "tm"
+                    ),
+                new RobjIter( PaddleNumberers.v().allocNodeNumberer().iterator(), "tm" ), 
                 options.ignore_types() ? null : Scene.v().getOrMakeFastHierarchy() );
+        switch( cgoptions.context() ) {
+            case CGOptions.context_insens:
+                scm = new TradInsensitiveStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new TradInsensitiveVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                break;
+            case CGOptions.context_1cfa:
+                scm = new Trad1CFAStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new Trad1CFAVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                Scene.v().setContextNumberer( Scene.v().getUnitNumberer() );
+                break;
+            case CGOptions.context_objsens:
+                scm = new TradObjSensStaticContextManager( cscgbout.reader("scm"), cmout );
+                vcm = new TradObjSensVirtualContextManager( vcrout.reader("vcm"), vcmout );
+                Scene.v().setContextNumberer( PaddleNumberers.v().allocNodeNumberer() );
+                break;
+        }
     }
 
     private void makePropagator() {
         switch( options.propagator() ) {
             case PaddleOptions.propagator_worklist:
-                prop = new PropWorklist( pagsimple.reader(), pagload.reader(),
-                    pagstore.reader(), pagalloc.reader(), paout, pag );
+                prop = new PropWorklist( pagsimple.reader("prop"), pagload.reader("prop"),
+                    pagstore.reader("prop"), pagalloc.reader("prop"), paout, pag );
                 p2sets = new TradP2Sets();
                 break;
             case PaddleOptions.propagator_iter:
-                prop = new PropIter( pagsimple.reader(), pagload.reader(),
-                    pagstore.reader(), pagalloc.reader(), paout, pag );
+                prop = new PropIter( pagsimple.reader("prop"), pagload.reader("prop"),
+                    pagstore.reader("prop"), pagalloc.reader("prop"), paout, pag );
                 p2sets = new TradP2Sets();
                 break;
             case PaddleOptions.propagator_alias:
-                prop = new PropAlias( pagsimple.reader(), pagload.reader(),
-                    pagstore.reader(), pagalloc.reader(), paout, pag );
+                prop = new PropAlias( pagsimple.reader("prop"), pagload.reader("prop"),
+                    pagstore.reader("prop"), pagalloc.reader("prop"), paout, pag );
                 p2sets = new TradP2Sets();
                 break;
             case PaddleOptions.propagator_bdd:
-                prop = new PropBDD( pagsimple.reader(), pagload.reader(),
-                    pagstore.reader(), pagalloc.reader(), paout, pag );
+                prop = new PropBDD( pagsimple.reader("prop"), pagload.reader("prop"),
+                    pagstore.reader("prop"), pagalloc.reader("prop"), paout, pag );
                 p2sets = new BDDP2Sets( (PropBDD) prop );
                 break;
             default:

@@ -10,11 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qsrc_fld_dst {
+    public Qsrc_fld_dst(String name) {
+        super();
+        this.name = name;
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract void add(VarNode _src, PaddleField _fld, VarNode _dst);
     
     public abstract void add(final jedd.internal.RelationContainer in);
     
-    public abstract Rsrc_fld_dst reader();
+    public abstract Rsrc_fld_dst reader(String rname);
     
-    public Qsrc_fld_dst() { super(); }
+    public Rsrc_fld_dst revreader(String rname) { return this.reader(rname); }
 }

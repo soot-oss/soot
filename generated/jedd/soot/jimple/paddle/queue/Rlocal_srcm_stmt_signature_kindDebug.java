@@ -15,8 +15,9 @@ public class Rlocal_srcm_stmt_signature_kindDebug extends Rlocal_srcm_stmt_signa
     protected Rlocal_srcm_stmt_signature_kindSet trad;
     
     public Rlocal_srcm_stmt_signature_kindDebug(Rlocal_srcm_stmt_signature_kindBDD bdd,
-                                                Rlocal_srcm_stmt_signature_kindSet trad) {
-        super();
+                                                Rlocal_srcm_stmt_signature_kindSet trad,
+                                                String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -37,7 +38,6 @@ public class Rlocal_srcm_stmt_signature_kindDebug extends Rlocal_srcm_stmt_signa
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -46,8 +46,7 @@ public class Rlocal_srcm_stmt_signature_kindDebug extends Rlocal_srcm_stmt_signa
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

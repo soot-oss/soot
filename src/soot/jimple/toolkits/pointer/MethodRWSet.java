@@ -31,6 +31,7 @@ public class MethodRWSet extends RWSet {
 
     public String toString() {
         StringBuffer ret = new StringBuffer();
+        if( fields == null ) return "empty\n";
         for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); ) {
             final Object field = (Object) fieldIt.next();
             ret.append( "[Field: "+field+" "+fields.get(field)+"]\n" );

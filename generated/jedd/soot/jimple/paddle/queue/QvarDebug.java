@@ -10,9 +10,11 @@ import jedd.*;
 import java.util.*;
 
 public class QvarDebug extends Qvar {
-    private QvarBDD bdd = new QvarBDD();
+    public QvarDebug(String name) { super(name); }
     
-    private QvarSet trad = new QvarSet();
+    private QvarBDD bdd = new QvarBDD(name + "bdd");
+    
+    private QvarSet trad = new QvarSet(name + "set");
     
     public void add(VarNode _var) {
         bdd.add(_var);
@@ -23,16 +25,16 @@ public class QvarDebug extends Qvar {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                               new PhysicalDomain[] { V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
-                                               "soot/jimple/paddle/queue/QvarDebug.jedd:38,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/QvarDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 1; i++) { add((VarNode) tuple[0]); }
+            for (int i = 0; i < 1; i++) { this.add((VarNode) tuple[0]); }
         }
     }
     
-    public Rvar reader() { return new RvarDebug((RvarBDD) bdd.reader(), (RvarSet) trad.reader()); }
-    
-    public QvarDebug() { super(); }
+    public Rvar reader(String rname) {
+        return new RvarDebug((RvarBDD) bdd.reader(rname), (RvarSet) trad.reader(rname), name + ":" + rname);
+    }
 }

@@ -10,19 +10,14 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrc_fld_dstTrace extends Qsrc_fld_dstTrad {
-    public Qsrc_fld_dstTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qsrc_fld_dstTrace(String name) { super(name); }
     
     public void add(VarNode _src, PaddleField _fld, VarNode _dst) {
-        System.out.print(name + ": ");
-        System.out.print(_src + ", ");
-        System.out.print(_fld + ", ");
-        System.out.print(_dst + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_src + ", ");
+        G.v().out.print(_fld + ", ");
+        G.v().out.print(_dst + ", ");
+        G.v().out.println();
         super.add(_src, _fld, _dst);
     }
 }

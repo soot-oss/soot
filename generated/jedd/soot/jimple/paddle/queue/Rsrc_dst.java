@@ -9,7 +9,17 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rsrc_dst {
+public abstract class Rsrc_dst implements Readers.Reader {
+    public Rsrc_dst(String name) {
+        super();
+        this.name = name;
+        Readers.v().add(this);
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract Iterator iterator();
     
     public abstract jedd.internal.RelationContainer get();
@@ -43,14 +53,12 @@ public abstract class Rsrc_dst {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(src());
+            ret.append(this.src());
             ret.append(", ");
-            ret.append(dst());
+            ret.append(this.dst());
             ret.append(", ");
             return ret.toString();
         }
     }
     
-    
-    public Rsrc_dst() { super(); }
 }

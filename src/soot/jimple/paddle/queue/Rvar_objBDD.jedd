@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rvar_objBDD extends Rvar_obj {
     private <var:V1, obj:H1> bdd;
     void add( <var:V1, obj:H1> tuple ) { bdd |= tuple; }
-    public Rvar_objBDD( <var:V1, obj:H1> bdd ) { this(); add(bdd); }
-    Rvar_objBDD() { bdd = 0B; }
+    public Rvar_objBDD( <var:V1, obj:H1> bdd, String name ) { this(name); add(bdd); }
+    Rvar_objBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

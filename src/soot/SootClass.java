@@ -752,6 +752,10 @@ public class SootClass extends AbstractHost implements Numberable
 	return shortName;
     }
 
+    public String getShortName() {
+        return shortName;
+    }
+
     /**
         Returns the package name of this class.
     */

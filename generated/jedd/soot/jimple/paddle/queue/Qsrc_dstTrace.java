@@ -10,18 +10,13 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrc_dstTrace extends Qsrc_dstTrad {
-    public Qsrc_dstTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qsrc_dstTrace(String name) { super(name); }
     
     public void add(VarNode _src, VarNode _dst) {
-        System.out.print(name + ": ");
-        System.out.print(_src + ", ");
-        System.out.print(_dst + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_src + ", ");
+        G.v().out.print(_dst + ", ");
+        G.v().out.println();
         super.add(_src, _dst);
     }
 }

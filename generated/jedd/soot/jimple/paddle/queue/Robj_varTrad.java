@@ -10,7 +10,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Robj_varTrad extends Robj_varIter {
-    Robj_varTrad(QueueReader r) { super(r); }
+    Robj_varTrad(QueueReader r, String name) { super(r, name); }
     
-    public Robj_varTrad copy() { return new Robj_varTrad((QueueReader) ((QueueReader) r).clone()); }
+    public Robj_varTrad copy() { return new Robj_varTrad((QueueReader) ((QueueReader) r).clone(), name); }
 }

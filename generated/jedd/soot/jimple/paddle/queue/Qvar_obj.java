@@ -10,11 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qvar_obj {
+    public Qvar_obj(String name) {
+        super();
+        this.name = name;
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract void add(VarNode _var, AllocNode _obj);
     
     public abstract void add(final jedd.internal.RelationContainer in);
     
-    public abstract Rvar_obj reader();
+    public abstract Rvar_obj reader(String rname);
     
-    public Qvar_obj() { super(); }
+    public Rvar_obj revreader(String rname) { return this.reader(rname); }
 }

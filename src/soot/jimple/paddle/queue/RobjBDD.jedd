@@ -30,8 +30,8 @@ import java.util.*;
 public final class RobjBDD extends Robj {
     private <obj:H1> bdd;
     void add( <obj:H1> tuple ) { bdd |= tuple; }
-    public RobjBDD( <obj:H1> bdd ) { this(); add(bdd); }
-    RobjBDD() { bdd = 0B; }
+    public RobjBDD( <obj:H1> bdd, String name ) { this(name); add(bdd); }
+    RobjBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

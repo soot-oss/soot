@@ -494,6 +494,7 @@ source, to aid program understanding.
 		</boolopt>
 		<boolopt>
 			<name>Print Tags in Output</name>
+			<alias>print-tags</alias>
 			<alias>print-tags-in-output</alias>
 			<short_desc>Print tags in output files after stmt</short_desc>
 			<long_desc>

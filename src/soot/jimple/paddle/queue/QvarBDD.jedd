@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class QvarBDD extends Qvar {
+    public QvarBDD( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( VarNode _var ) {
         add( new { _var=>var } );
@@ -38,8 +39,8 @@ public final class QvarBDD extends Qvar {
             reader.add( in );
         }
     }
-    public Rvar reader() {
-        Rvar ret = new RvarBDD();
+    public Rvar reader( String rname ) {
+        Rvar ret = new RvarBDD( name+":"+rname );
         readers.add( ret );
         return ret;
     }

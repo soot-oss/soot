@@ -1054,4 +1054,10 @@ public class Singletons {
         return instance_soot_javaToJimple_InitialResolver;
     }
 
+    private soot.jimple.paddle.queue.Readers instance_soot_jimple_paddle_queue_Readers;
+    public soot.jimple.paddle.queue.Readers soot_jimple_paddle_queue_Readers() {
+        if( instance_soot_jimple_paddle_queue_Readers == null ) instance_soot_jimple_paddle_queue_Readers = new soot.jimple.paddle.queue.Readers( g );
+        return instance_soot_jimple_paddle_queue_Readers;
+    }
+
 }

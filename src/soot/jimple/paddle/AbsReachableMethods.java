@@ -34,6 +34,8 @@ public abstract class AbsReachableMethods
     }
     abstract void update();
     abstract void add( MethodOrMethodContext m );
+    abstract int size();
+    abstract boolean contains( MethodOrMethodContext m );
 }
 
 

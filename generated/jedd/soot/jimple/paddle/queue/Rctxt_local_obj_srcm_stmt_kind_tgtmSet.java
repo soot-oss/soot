@@ -9,10 +9,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class Rctxt_local_obj_srcm_stmt_kind_tgtmSet extends Rctxt_local_obj_srcm_stmt_kind_tgtm {
-    private HashSet bdd = new HashSet();
+public class Rctxt_local_obj_srcm_stmt_kind_tgtmSet extends Rctxt_local_obj_srcm_stmt_kind_tgtm {
+    public Rctxt_local_obj_srcm_stmt_kind_tgtmSet(String name) { super(name); }
     
-    void add(Tuple tuple) { bdd.add(tuple); }
+    protected LinkedList bdd = new LinkedList();
+    
+    void add(Tuple tuple) { bdd.addLast(tuple); }
     
     public Iterator iterator() {
         ;
@@ -28,7 +30,7 @@ public final class Rctxt_local_obj_srcm_stmt_kind_tgtmSet extends Rctxt_local_ob
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }
@@ -40,6 +42,4 @@ public final class Rctxt_local_obj_srcm_stmt_kind_tgtmSet extends Rctxt_local_ob
     public jedd.internal.RelationContainer get() { throw new RuntimeException(); }
     
     public boolean hasNext() { return !bdd.isEmpty(); }
-    
-    public Rctxt_local_obj_srcm_stmt_kind_tgtmSet() { super(); }
 }

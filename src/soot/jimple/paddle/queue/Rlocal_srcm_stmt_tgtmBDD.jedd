@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rlocal_srcm_stmt_tgtmBDD extends Rlocal_srcm_stmt_tgtm {
     private <local:V1, srcm:T1, stmt:ST, tgtm:T2> bdd;
     void add( <local:V1, srcm:T1, stmt:ST, tgtm:T2> tuple ) { bdd |= tuple; }
-    public Rlocal_srcm_stmt_tgtmBDD( <local:V1, srcm:T1, stmt:ST, tgtm:T2> bdd ) { this(); add(bdd); }
-    Rlocal_srcm_stmt_tgtmBDD() { bdd = 0B; }
+    public Rlocal_srcm_stmt_tgtmBDD( <local:V1, srcm:T1, stmt:ST, tgtm:T2> bdd, String name ) { this(name); add(bdd); }
+    Rlocal_srcm_stmt_tgtmBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

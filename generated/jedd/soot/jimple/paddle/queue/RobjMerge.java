@@ -17,7 +17,7 @@ public final class RobjMerge extends Robj {
     private Robj in2;
     
     public RobjMerge(Robj in1, Robj in2) {
-        super();
+        super(in1.name + "+" + in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
@@ -42,8 +42,8 @@ public final class RobjMerge extends Robj {
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                    new PhysicalDomain[] { H1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/queue/RobjMerge.jedd:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/RobjMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

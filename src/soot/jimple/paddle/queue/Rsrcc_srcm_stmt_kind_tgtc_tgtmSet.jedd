@@ -27,10 +27,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
-    private HashSet bdd = new HashSet();
+public class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtmSet(String name) { super(name); }
+    protected LinkedList bdd = new LinkedList();
     void add( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple tuple ) {
-        bdd.add(tuple);    }
+        bdd.addLast(tuple);
+    }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;
@@ -42,7 +44,7 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kin
             public Object next() {
                 if( it == null || !it.hasNext() ) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }

@@ -112,10 +112,10 @@ public class BDDPAG extends AbsPAG
         return (allocBDD{var} <> new {key=>var}{var}).iterator();
     }
 
-    public Rsrc_dst allSimple() { return new Rsrc_dstBDD(simpleBDD); }
-    public Rsrc_fld_dst allLoad() { return new Rsrc_fld_dstBDD(loadBDD); }
-    public Rsrc_fld_dst allStore() { return new Rsrc_fld_dstBDD(storeBDD); }
-    public Robj_var allAlloc() { return new Robj_varBDD(allocBDD); }
+    public Rsrc_dst allSimple() { return new Rsrc_dstBDD(simpleBDD, "allsimple"); }
+    public Rsrc_fld_dst allLoad() { return new Rsrc_fld_dstBDD(loadBDD, "allload"); }
+    public Rsrc_fld_dst allStore() { return new Rsrc_fld_dstBDD(storeBDD, "allstore"); }
+    public Robj_var allAlloc() { return new Robj_varBDD(allocBDD, "allalloc"); }
 
     private static class FieldRefIterator implements Iterator {
         FieldRefIterator( <var, fld> bdd ) {

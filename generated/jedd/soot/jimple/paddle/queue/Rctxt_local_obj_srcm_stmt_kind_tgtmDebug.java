@@ -15,8 +15,9 @@ public class Rctxt_local_obj_srcm_stmt_kind_tgtmDebug extends Rctxt_local_obj_sr
     protected Rctxt_local_obj_srcm_stmt_kind_tgtmSet trad;
     
     public Rctxt_local_obj_srcm_stmt_kind_tgtmDebug(Rctxt_local_obj_srcm_stmt_kind_tgtmBDD bdd,
-                                                    Rctxt_local_obj_srcm_stmt_kind_tgtmSet trad) {
-        super();
+                                                    Rctxt_local_obj_srcm_stmt_kind_tgtmSet trad,
+                                                    String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -37,7 +38,6 @@ public class Rctxt_local_obj_srcm_stmt_kind_tgtmDebug extends Rctxt_local_obj_sr
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -46,8 +46,7 @@ public class Rctxt_local_obj_srcm_stmt_kind_tgtmDebug extends Rctxt_local_obj_sr
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

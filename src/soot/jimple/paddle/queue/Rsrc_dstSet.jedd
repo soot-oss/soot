@@ -27,10 +27,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class Rsrc_dstSet extends Rsrc_dst {
-    private HashSet bdd = new HashSet();
+public class Rsrc_dstSet extends Rsrc_dst {
+    public Rsrc_dstSet(String name) { super(name); }
+    protected LinkedList bdd = new LinkedList();
     void add( Rsrc_dst.Tuple tuple ) {
-        bdd.add(tuple);    }
+        bdd.addLast(tuple);
+    }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;
@@ -42,7 +44,7 @@ public final class Rsrc_dstSet extends Rsrc_dst {
             public Object next() {
                 if( it == null || !it.hasNext() ) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }

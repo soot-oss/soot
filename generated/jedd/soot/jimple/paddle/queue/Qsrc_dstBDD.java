@@ -10,18 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrc_dstBDD extends Qsrc_dst {
+    public Qsrc_dstBDD(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _src, VarNode _dst) {
-        add(new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v() },
-                                                new PhysicalDomain[] { V1.v(), V2.v() },
-                                                ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
-                                                 ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /tmp/soot-trunk/src/soot/jimple/paddle/queue/Qsrc_dstBDD.je" +
-                                                 "dd:33,8-11"),
-                                                jedd.internal.Jedd.v().literal(new Object[] { _src, _dst },
-                                                                               new Attribute[] { src.v(), dst.v() },
-                                                                               new PhysicalDomain[] { V1.v(), V2.v() })));
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { src.v(), dst.v() },
+                                                     new PhysicalDomain[] { V1.v(), V2.v() },
+                                                     ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
+                                                      "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
+                                                      ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/" +
+                                                      "Qsrc_dstBDD.jedd:34,8-11"),
+                                                     jedd.internal.Jedd.v().literal(new Object[] { _src, _dst },
+                                                                                    new Attribute[] { src.v(), dst.v() },
+                                                                                    new PhysicalDomain[] { V1.v(), V2.v() })));
     }
     
     public void add(final jedd.internal.RelationContainer in) {
@@ -29,17 +31,15 @@ public final class Qsrc_dstBDD extends Qsrc_dst {
             Rsrc_dstBDD reader = (Rsrc_dstBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
                                                            new PhysicalDomain[] { V2.v(), V1.v() },
-                                                           ("reader.add(in) at /tmp/soot-trunk/src/soot/jimple/paddle/que" +
-                                                            "ue/Qsrc_dstBDD.jedd:38,12-18"),
+                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
+                                                            "addle/queue/Qsrc_dstBDD.jedd:39,12-18"),
                                                            in));
         }
     }
     
-    public Rsrc_dst reader() {
-        Rsrc_dst ret = new Rsrc_dstBDD();
+    public Rsrc_dst reader(String rname) {
+        Rsrc_dst ret = new Rsrc_dstBDD(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
-    
-    public Qsrc_dstBDD() { super(); }
 }

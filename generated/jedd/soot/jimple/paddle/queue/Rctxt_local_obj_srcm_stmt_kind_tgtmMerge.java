@@ -18,7 +18,7 @@ public final class Rctxt_local_obj_srcm_stmt_kind_tgtmMerge extends Rctxt_local_
     
     public Rctxt_local_obj_srcm_stmt_kind_tgtmMerge(Rctxt_local_obj_srcm_stmt_kind_tgtm in1,
                                                     Rctxt_local_obj_srcm_stmt_kind_tgtm in2) {
-        super();
+        super(in1.name + "+" + in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
@@ -40,12 +40,12 @@ public final class Rctxt_local_obj_srcm_stmt_kind_tgtmMerge extends Rctxt_local_
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), obj.v(), local.v(), ctxt.v(), tgtm.v(), srcm.v(), stmt.v() },
-                                                   new PhysicalDomain[] { FD.v(), H1.v(), V1.v(), V2.v(), T2.v(), T1.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), stmt.v(), srcm.v(), obj.v(), tgtm.v(), ctxt.v(), local.v() },
+                                                   new PhysicalDomain[] { FD.v(), ST.v(), T1.v(), H1.v(), T2.v(), V2.v(), V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/queue/Rctxt_local_obj_srcm_stmt_kind_tgtmMerge.jed" +
-                                                    "d:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/Rctxt_local_obj_srcm_stmt_kind_tgtm" +
+                                                    "Merge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

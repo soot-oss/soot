@@ -14,8 +14,8 @@ public class Robj_varDebug extends Robj_var {
     
     protected Robj_varSet trad;
     
-    public Robj_varDebug(Robj_varBDD bdd, Robj_varSet trad) {
-        super();
+    public Robj_varDebug(Robj_varBDD bdd, Robj_varSet trad, String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -36,7 +36,6 @@ public class Robj_varDebug extends Robj_var {
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -45,8 +44,7 @@ public class Robj_varDebug extends Robj_var {
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

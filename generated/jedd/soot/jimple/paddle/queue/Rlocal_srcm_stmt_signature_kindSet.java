@@ -9,10 +9,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class Rlocal_srcm_stmt_signature_kindSet extends Rlocal_srcm_stmt_signature_kind {
-    private HashSet bdd = new HashSet();
+public class Rlocal_srcm_stmt_signature_kindSet extends Rlocal_srcm_stmt_signature_kind {
+    public Rlocal_srcm_stmt_signature_kindSet(String name) { super(name); }
     
-    void add(Tuple tuple) { bdd.add(tuple); }
+    protected LinkedList bdd = new LinkedList();
+    
+    void add(Tuple tuple) { bdd.addLast(tuple); }
     
     public Iterator iterator() {
         ;
@@ -28,7 +30,7 @@ public final class Rlocal_srcm_stmt_signature_kindSet extends Rlocal_srcm_stmt_s
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }
@@ -40,6 +42,4 @@ public final class Rlocal_srcm_stmt_signature_kindSet extends Rlocal_srcm_stmt_s
     public jedd.internal.RelationContainer get() { throw new RuntimeException(); }
     
     public boolean hasNext() { return !bdd.isEmpty(); }
-    
-    public Rlocal_srcm_stmt_signature_kindSet() { super(); }
 }

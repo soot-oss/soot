@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Rsrcc_srcm_stmt_kind_tgtc_tgtmIter extends Rsrcc_srcm_stmt_kind_tgtc_tgtm{
     protected Iterator r;
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtmIter( Iterator r ) { this.r = r; }
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtmIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

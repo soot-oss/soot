@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qlocal_srcm_stmt_tgtmSet extends Qlocal_srcm_stmt_tgtm {
+    public Qlocal_srcm_stmt_tgtmSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(Local _local, SootMethod _srcm, Unit _stmt, SootMethod _tgtm) {
@@ -22,11 +24,15 @@ public final class Qlocal_srcm_stmt_tgtmSet extends Qlocal_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rlocal_srcm_stmt_tgtm reader() {
-        Rlocal_srcm_stmt_tgtm ret = new Rlocal_srcm_stmt_tgtmSet();
+    public Rlocal_srcm_stmt_tgtm reader(String rname) {
+        Rlocal_srcm_stmt_tgtm ret = new Rlocal_srcm_stmt_tgtmSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qlocal_srcm_stmt_tgtmSet() { super(); }
+    public Rlocal_srcm_stmt_tgtm revreader(String rname) {
+        Rlocal_srcm_stmt_tgtm ret = new Rlocal_srcm_stmt_tgtmRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

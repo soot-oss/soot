@@ -10,11 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qsrc_dst {
+    public Qsrc_dst(String name) {
+        super();
+        this.name = name;
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract void add(VarNode _src, VarNode _dst);
     
     public abstract void add(final jedd.internal.RelationContainer in);
     
-    public abstract Rsrc_dst reader();
+    public abstract Rsrc_dst reader(String rname);
     
-    public Qsrc_dst() { super(); }
+    public Rsrc_dst revreader(String rname) { return this.reader(rname); }
 }

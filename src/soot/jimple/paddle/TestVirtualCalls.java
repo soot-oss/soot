@@ -31,19 +31,19 @@ import soot.jimple.*;
 public class TestVirtualCalls extends AbsVirtualCalls
 { 
     TradVirtualCalls tradcalls;
-    Qvar_obj tradpt = new Qvar_objTrad();
-    Qlocal_srcm_stmt_signature_kind tradrcv = new Qlocal_srcm_stmt_signature_kindTrad();
-    Qlocal_srcm_stmt_tgtm tradspc = new Qlocal_srcm_stmt_tgtmTrad();
+    Qvar_obj tradpt = new Qvar_objTrad("tradpt");
+    Qlocal_srcm_stmt_signature_kind tradrcv = new Qlocal_srcm_stmt_signature_kindTrad("tradrcv");
+    Qlocal_srcm_stmt_tgtm tradspc = new Qlocal_srcm_stmt_tgtmTrad("tradspc");
     Rctxt_local_obj_srcm_stmt_kind_tgtm tradoutrdr;
     Rsrcc_srcm_stmt_kind_tgtc_tgtm tradstatrdr;
 
 
     BDDVirtualCalls bddcalls;
-    Qvar_obj bddpt = new Qvar_objTrad();
-    Qlocal_srcm_stmt_signature_kind bddrcv = new Qlocal_srcm_stmt_signature_kindTrad();
-    Qlocal_srcm_stmt_tgtm bddspc = new Qlocal_srcm_stmt_tgtmTrad();
-    Qctxt_local_obj_srcm_stmt_kind_tgtm bddout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrad();
-    Qsrcc_srcm_stmt_kind_tgtc_tgtm bddstat = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
+    Qvar_obj bddpt = new Qvar_objTrad("bddpt");
+    Qlocal_srcm_stmt_signature_kind bddrcv = new Qlocal_srcm_stmt_signature_kindTrad("bddrcv");
+    Qlocal_srcm_stmt_tgtm bddspc = new Qlocal_srcm_stmt_tgtmTrad("bddspc");
+    Qctxt_local_obj_srcm_stmt_kind_tgtm bddout = new Qctxt_local_obj_srcm_stmt_kind_tgtmTrad("bddout");
+    Qsrcc_srcm_stmt_kind_tgtc_tgtm bddstat = new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("bddstat");
     Rctxt_local_obj_srcm_stmt_kind_tgtm bddoutrdr;
     Rsrcc_srcm_stmt_kind_tgtc_tgtm bddstatrdr;
 
@@ -56,13 +56,13 @@ public class TestVirtualCalls extends AbsVirtualCalls
         ) {
         super( pt, receivers, specials, out, statics );
 
-        tradcalls = new TradVirtualCalls( tradpt.reader(), tradrcv.reader(), tradspc.reader(), out, statics );
-        bddcalls = new BDDVirtualCalls( bddpt.reader(), bddrcv.reader(), bddspc.reader(), bddout, bddstat );
+        tradcalls = new TradVirtualCalls( tradpt.reader("tradcalls"), tradrcv.reader("tradcalls"), tradspc.reader("tradcalls"), out, statics );
+        bddcalls = new BDDVirtualCalls( bddpt.reader("tradcalls"), bddrcv.reader("tradcalls"), bddspc.reader("tradcalls"), bddout, bddstat );
 
-        tradoutrdr = out.reader();
-        tradstatrdr = statics.reader();
-        bddoutrdr = bddout.reader();
-        bddstatrdr = bddstat.reader();
+        tradoutrdr = out.reader("tradcalls");
+        tradstatrdr = statics.reader("tradcalls");
+        bddoutrdr = bddout.reader("tradcalls");
+        bddstatrdr = bddstat.reader("tradcalls");
     }
 
     public void update() {

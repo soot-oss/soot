@@ -36,7 +36,7 @@ public final class Targets implements Iterator
     }
     public Object next() {
         Edge e = (Edge) edges.next();
-        return e.tgt();
+        return e.getTgt();
     }
     public void remove() { throw new UnsupportedOperationException(); }
 }

@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qlocal_srcm_stmt_signature_kindSet extends Qlocal_srcm_stmt_signature_kind {
+    public Qlocal_srcm_stmt_signature_kindSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(Local _local, SootMethod _srcm, Unit _stmt, NumberedString _signature, Kind _kind) {
@@ -23,11 +25,15 @@ public final class Qlocal_srcm_stmt_signature_kindSet extends Qlocal_srcm_stmt_s
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rlocal_srcm_stmt_signature_kind reader() {
-        Rlocal_srcm_stmt_signature_kind ret = new Rlocal_srcm_stmt_signature_kindSet();
+    public Rlocal_srcm_stmt_signature_kind reader(String rname) {
+        Rlocal_srcm_stmt_signature_kind ret = new Rlocal_srcm_stmt_signature_kindSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qlocal_srcm_stmt_signature_kindSet() { super(); }
+    public Rlocal_srcm_stmt_signature_kind revreader(String rname) {
+        Rlocal_srcm_stmt_signature_kind ret = new Rlocal_srcm_stmt_signature_kindRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

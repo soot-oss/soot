@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public class Qctxt_methodTrad extends Qctxt_method {
+    public Qctxt_methodTrad( String name ) { super(name); }
     private ChunkedQueue q = new ChunkedQueue();
     public void add( Context _ctxt, SootMethod _method ) {
         q.add( _ctxt );
@@ -42,7 +43,7 @@ public class Qctxt_methodTrad extends Qctxt_method {
             }
         }
     }
-    public Rctxt_method reader() {
-        return new Rctxt_methodTrad( q.reader() );
+    public Rctxt_method reader( String rname ) {
+        return new Rctxt_methodTrad( q.reader(), rname );
     }
 }

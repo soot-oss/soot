@@ -33,7 +33,7 @@ public class BDDReachableMethods extends AbsReachableMethods
     BDDReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qctxt_method out, AbsCallGraph cg ) {
         super( in, out );
         this.cg = cg;
-        newMethods = out.reader();
+        newMethods = out.reader("bddrm");
     }
     void update() {
         <srcc, srcm, stmt, kind, tgtc, tgtm> newEdges = in.get() {srcc, srcm} >< reachables {ctxt, method};
@@ -52,6 +52,13 @@ public class BDDReachableMethods extends AbsReachableMethods
             reachables = newReachables;
             out.add( newM );
         }
+    }
+    int size() {
+        return (int) reachables.size();
+    }
+    boolean contains( MethodOrMethodContext m ) {
+        <ctxt, method> newM = new { m.context()=>ctxt, m.method()=>method };
+        return (reachables & newM) != 0B;
     }
 }
 

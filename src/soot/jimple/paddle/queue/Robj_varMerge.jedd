@@ -32,6 +32,7 @@ public final class Robj_varMerge extends Robj_var {
     private Robj_var in1;
     private Robj_var in2;
     public Robj_varMerge( Robj_var in1, Robj_var in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

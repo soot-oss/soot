@@ -9,10 +9,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
-    private HashSet bdd = new HashSet();
+public class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtmSet(String name) { super(name); }
     
-    void add(Tuple tuple) { bdd.add(tuple); }
+    protected LinkedList bdd = new LinkedList();
+    
+    void add(Tuple tuple) { bdd.addLast(tuple); }
     
     public Iterator iterator() {
         ;
@@ -28,7 +30,7 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kin
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }
@@ -40,6 +42,4 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Rsrcc_srcm_stmt_kin
     public jedd.internal.RelationContainer get() { throw new RuntimeException(); }
     
     public boolean hasNext() { return !bdd.isEmpty(); }
-    
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtmSet() { super(); }
 }

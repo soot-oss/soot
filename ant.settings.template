@@ -1,5 +1,8 @@
-## Location of Polyglot classes jar file
-polyglot.jar=${user.home}/polyglot-1.2.0.jar
+## Location of Polyglot classes jar file to link Soot against
+polyglot.jar=${user.home}/polyglot-cvs.jar
+
+## Location of Polyglot classes jar file to run Jedd with
+polyglot.jedd.jar=${user.home}/polyglot-1.2.0.jar
 
 ## Location of Jasmin classes jar file
 jasmin.jar=${user.home}/jasminclasses-sable-1.2.jar

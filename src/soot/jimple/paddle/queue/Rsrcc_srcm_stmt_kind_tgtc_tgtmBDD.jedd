@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kind_tgtc_tgtm {
     private <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> bdd;
     void add( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> tuple ) { bdd |= tuple; }
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> bdd ) { this(); add(bdd); }
-    Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD() { bdd = 0B; }
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD( <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> bdd, String name ) { this(name); add(bdd); }
+    Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

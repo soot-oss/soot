@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class QobjBDD extends Qobj {
+    public QobjBDD( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( AllocNode _obj ) {
         add( new { _obj=>obj } );
@@ -38,8 +39,8 @@ public final class QobjBDD extends Qobj {
             reader.add( in );
         }
     }
-    public Robj reader() {
-        Robj ret = new RobjBDD();
+    public Robj reader( String rname ) {
+        Robj ret = new RobjBDD( name+":"+rname );
         readers.add( ret );
         return ret;
     }

@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
+    public Qsrc_fld_dstTrad(String name) { super(name); }
+    
     private ChunkedQueue q = new ChunkedQueue();
     
     public void add(VarNode _src, PaddleField _fld, VarNode _dst) {
@@ -20,18 +22,17 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
-                                              new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
-                                               "soot/jimple/paddle/queue/Qsrc_fld_dstTrad.jedd:38,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v(), fld.v() },
+                                              new PhysicalDomain[] { V2.v(), V1.v(), FD.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/Qsrc_fld_dstTrad.jedd:39,2" +
+                                               "2-24"),
                                               in).iterator(new Attribute[] { src.v(), fld.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 3; i++) { add((VarNode) tuple[0], (PaddleField) tuple[1], (VarNode) tuple[2]); }
+            for (int i = 0; i < 3; i++) { this.add((VarNode) tuple[0], (PaddleField) tuple[1], (VarNode) tuple[2]); }
         }
     }
     
-    public Rsrc_fld_dst reader() { return new Rsrc_fld_dstTrad(q.reader()); }
-    
-    public Qsrc_fld_dstTrad() { super(); }
+    public Rsrc_fld_dst reader(String rname) { return new Rsrc_fld_dstTrad(q.reader(), rname); }
 }

@@ -411,6 +411,17 @@ public class SootMethod
         return Modifier.isSynchronized(this.getModifiers());
     }
 
+    /** Returns the parameters part of the signature in the format in which
+     * it appears in bytecode. */
+    public String getBytecodeParms() {
+        StringBuffer buffer = new StringBuffer();
+        for( Iterator typeIt = getParameterTypes().iterator(); typeIt.hasNext(); ) {
+            final Type type = (Type) typeIt.next();
+            buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(type));
+        }
+        return buffer.toString();
+    }
+
     /**
         Returns the signature of this method in the format in which it appears
         in bytecode (eg. [Ljava/lang/Object instead of java.lang.Object[]).

@@ -15,22 +15,22 @@ public final class Robj_varBDD extends Robj_var {
                                           new PhysicalDomain[] { H1.v(), V1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
                                            "e.bdddomains.H1, soot.jimple.paddle.bdddomains.var:soot.jimp" +
-                                           "le.paddle.bdddomains.V1> bdd at /tmp/soot-trunk/src/soot/jim" +
-                                           "ple/paddle/queue/Robj_varBDD.jedd:31,12-28"));
+                                           "le.paddle.bdddomains.V1> bdd at /home/olhotak/soot-trunk/src" +
+                                           "/soot/jimple/paddle/queue/Robj_varBDD.jedd:31,12-28"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
-    public Robj_varBDD(final jedd.internal.RelationContainer bdd) {
-        this();
-        add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
-                                                new PhysicalDomain[] { H1.v(), V1.v() },
-                                                ("add(bdd) at /tmp/soot-trunk/src/soot/jimple/paddle/queue/Rob" +
-                                                 "j_varBDD.jedd:33,57-60"),
-                                                bdd));
+    public Robj_varBDD(final jedd.internal.RelationContainer bdd, String name) {
+        this(name);
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
+                                                     new PhysicalDomain[] { H1.v(), V1.v() },
+                                                     ("this.add(bdd) at /home/olhotak/soot-trunk/src/soot/jimple/pa" +
+                                                      "ddle/queue/Robj_varBDD.jedd:33,74-77"),
+                                                     bdd));
     }
     
-    Robj_varBDD() {
-        super();
+    Robj_varBDD(String name) {
+        super(name);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
     }
     
@@ -51,8 +51,8 @@ public final class Robj_varBDD extends Robj_var {
                     it =
                       new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
                                                           new PhysicalDomain[] { H1.v(), V1.v() },
-                                                          ("bdd.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src" +
-                                                           "/soot/jimple/paddle/queue/Robj_varBDD.jedd:45,25-28"),
+                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
+                                                           "trunk/src/soot/jimple/paddle/queue/Robj_varBDD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { obj.v(), var.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -70,14 +70,14 @@ public final class Robj_varBDD extends Robj_var {
                                               new PhysicalDomain[] { H1.v(), V1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.var:soot.jimple.paddl" +
-                                               "e.bdddomains.V1> ret = bdd; at /tmp/soot-trunk/src/soot/jimp" +
-                                               "le/paddle/queue/Robj_varBDD.jedd:55,25-28"),
+                                               "e.bdddomains.V1> ret = bdd; at /home/olhotak/soot-trunk/src/" +
+                                               "soot/jimple/paddle/queue/Robj_varBDD.jedd:55,25-28"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
                                                    new PhysicalDomain[] { H1.v(), V1.v() },
-                                                   ("return ret; at /tmp/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                    "Robj_varBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
+                                                    "le/queue/Robj_varBDD.jedd:57,8-14"),
                                                    ret);
     }
     

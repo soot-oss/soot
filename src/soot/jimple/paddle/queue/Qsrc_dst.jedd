@@ -28,7 +28,11 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qsrc_dst {
+    public Qsrc_dst( String name ) { this.name = name; }
+    protected String name;
+    public final String toString() { return name; }
     public abstract void add( VarNode _src, VarNode _dst );
     public abstract void add( <src:V1, dst:V2> in );
-    public abstract Rsrc_dst reader();
+    public abstract Rsrc_dst reader( String rname );
+    public Rsrc_dst revreader( String rname ) { return reader( rname ); }
 }

@@ -36,7 +36,7 @@ public final class Sources implements Iterator
     }
     public Object next() {
         Edge e = (Edge) edges.next();
-        return e.src();
+        return e.getSrc();
     }
     public void remove() { throw new UnsupportedOperationException(); }
 }

@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rctxt_local_obj_srcm_stmt_kind_tgtmBDD extends Rctxt_local_obj_srcm_stmt_kind_tgtm {
     private <ctxt:V2, local:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> bdd;
     void add( <ctxt:V2, local:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> tuple ) { bdd |= tuple; }
-    public Rctxt_local_obj_srcm_stmt_kind_tgtmBDD( <ctxt:V2, local:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> bdd ) { this(); add(bdd); }
-    Rctxt_local_obj_srcm_stmt_kind_tgtmBDD() { bdd = 0B; }
+    public Rctxt_local_obj_srcm_stmt_kind_tgtmBDD( <ctxt:V2, local:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> bdd, String name ) { this(name); add(bdd); }
+    Rctxt_local_obj_srcm_stmt_kind_tgtmBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

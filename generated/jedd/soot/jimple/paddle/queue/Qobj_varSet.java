@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qobj_varSet extends Qobj_var {
+    public Qobj_varSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(AllocNode _obj, VarNode _var) {
@@ -22,11 +24,15 @@ public final class Qobj_varSet extends Qobj_var {
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Robj_var reader() {
-        Robj_var ret = new Robj_varSet();
+    public Robj_var reader(String rname) {
+        Robj_var ret = new Robj_varSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qobj_varSet() { super(); }
+    public Robj_var revreader(String rname) {
+        Robj_var ret = new Robj_varRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

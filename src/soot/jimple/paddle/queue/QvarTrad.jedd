@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public class QvarTrad extends Qvar {
+    public QvarTrad( String name ) { super(name); }
     private ChunkedQueue q = new ChunkedQueue();
     public void add( VarNode _var ) {
         q.add( _var );
@@ -41,7 +42,7 @@ public class QvarTrad extends Qvar {
             }
         }
     }
-    public Rvar reader() {
-        return new RvarTrad( q.reader() );
+    public Rvar reader( String rname ) {
+        return new RvarTrad( q.reader(), rname );
     }
 }

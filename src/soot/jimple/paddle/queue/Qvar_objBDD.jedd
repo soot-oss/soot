@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Qvar_objBDD extends Qvar_obj {
+    public Qvar_objBDD( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( VarNode _var, AllocNode _obj ) {
         add( new { _var=>var, _obj=>obj } );
@@ -38,8 +39,8 @@ public final class Qvar_objBDD extends Qvar_obj {
             reader.add( in );
         }
     }
-    public Rvar_obj reader() {
-        Rvar_obj ret = new Rvar_objBDD();
+    public Rvar_obj reader( String rname ) {
+        Rvar_obj ret = new Rvar_objBDD( name+":"+rname );
         readers.add( ret );
         return ret;
     }

@@ -10,18 +10,13 @@ import jedd.*;
 import java.util.*;
 
 public final class Qctxt_methodTrace extends Qctxt_methodTrad {
-    public Qctxt_methodTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qctxt_methodTrace(String name) { super(name); }
     
     public void add(Context _ctxt, SootMethod _method) {
-        System.out.print(name + ": ");
-        System.out.print(_ctxt + ", ");
-        System.out.print(_method + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_ctxt + ", ");
+        G.v().out.print(_method + ", ");
+        G.v().out.println();
         super.add(_ctxt, _method);
     }
 }

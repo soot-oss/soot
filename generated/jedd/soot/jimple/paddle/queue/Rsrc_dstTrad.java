@@ -10,7 +10,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rsrc_dstTrad extends Rsrc_dstIter {
-    Rsrc_dstTrad(QueueReader r) { super(r); }
+    Rsrc_dstTrad(QueueReader r, String name) { super(r, name); }
     
-    public Rsrc_dstTrad copy() { return new Rsrc_dstTrad((QueueReader) ((QueueReader) r).clone()); }
+    public Rsrc_dstTrad copy() { return new Rsrc_dstTrad((QueueReader) ((QueueReader) r).clone(), name); }
 }

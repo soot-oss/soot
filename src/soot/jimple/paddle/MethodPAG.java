@@ -31,14 +31,14 @@ public class MethodPAG
 { 
     protected SootMethod method;
 
-    protected Qsrc_dstTrad simple = new Qsrc_dstTrad();
-    protected Qsrc_fld_dstTrad load = new Qsrc_fld_dstTrad();
-    protected Qsrc_fld_dstTrad store = new Qsrc_fld_dstTrad();
-    protected Qobj_varTrad alloc = new Qobj_varTrad();
-    protected Rsrc_dstTrad rsimple = (Rsrc_dstTrad) simple.reader();
-    protected Rsrc_fld_dstTrad rload = (Rsrc_fld_dstTrad) load.reader();
-    protected Rsrc_fld_dstTrad rstore = (Rsrc_fld_dstTrad) store.reader();
-    protected Robj_varTrad ralloc = (Robj_varTrad) alloc.reader();
+    protected Qsrc_dstTrad simple = new Qsrc_dstTrad("mpagsimple");
+    protected Qsrc_fld_dstTrad load = new Qsrc_fld_dstTrad("mpagload");
+    protected Qsrc_fld_dstTrad store = new Qsrc_fld_dstTrad("mpagstore");
+    protected Qobj_varTrad alloc = new Qobj_varTrad("mpagalloc");
+    protected Rsrc_dstTrad rsimple = (Rsrc_dstTrad) simple.reader("mpag");
+    protected Rsrc_fld_dstTrad rload = (Rsrc_fld_dstTrad) load.reader("mpag");
+    protected Rsrc_fld_dstTrad rstore = (Rsrc_fld_dstTrad) store.reader("mpag");
+    protected Robj_varTrad ralloc = (Robj_varTrad) alloc.reader("mpag");
     public Rsrc_dst simple() { return rsimple.copy(); }
     public Rsrc_fld_dst load() { return rload.copy(); }
     public Rsrc_fld_dst store() { return rstore.copy(); }

@@ -27,7 +27,13 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rsrc_dst {
+public abstract class Rsrc_dst implements Readers.Reader {
+    public Rsrc_dst( String name ) {
+        this.name = name;
+        Readers.v().add(this);
+    }
+    protected String name;
+    public final String toString() { return name; }
     public abstract Iterator iterator();
     public abstract <src:V1, dst:V2> get();
     public abstract boolean hasNext();

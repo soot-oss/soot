@@ -32,6 +32,7 @@ public final class Rctxt_methodMerge extends Rctxt_method {
     private Rctxt_method in1;
     private Rctxt_method in2;
     public Rctxt_methodMerge( Rctxt_method in1, Rctxt_method in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

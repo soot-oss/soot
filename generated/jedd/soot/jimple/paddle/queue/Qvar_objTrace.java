@@ -10,18 +10,13 @@ import jedd.*;
 import java.util.*;
 
 public final class Qvar_objTrace extends Qvar_objTrad {
-    public Qvar_objTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qvar_objTrace(String name) { super(name); }
     
     public void add(VarNode _var, AllocNode _obj) {
-        System.out.print(name + ": ");
-        System.out.print(_var + ", ");
-        System.out.print(_obj + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_var + ", ");
+        G.v().out.print(_obj + ", ");
+        G.v().out.println();
         super.add(_var, _obj);
     }
 }

@@ -10,7 +10,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Rvar_objTrad extends Rvar_objIter {
-    Rvar_objTrad(QueueReader r) { super(r); }
+    Rvar_objTrad(QueueReader r, String name) { super(r, name); }
     
-    public Rvar_objTrad copy() { return new Rvar_objTrad((QueueReader) ((QueueReader) r).clone()); }
+    public Rvar_objTrad copy() { return new Rvar_objTrad((QueueReader) ((QueueReader) r).clone(), name); }
 }

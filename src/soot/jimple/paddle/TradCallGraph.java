@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,8 +52,8 @@ public class TradCallGraph extends AbsCallGraph
     }
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesOutOf( Rctxt_method methods ) {
         Qsrcc_srcm_stmt_kind_tgtc_tgtm queue =
-            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader();
+            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("edgesOutOf");
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader("edgesOutOf");
         for( Iterator tIt = methods.iterator(); tIt.hasNext(); ) {
             final Rctxt_method.Tuple t = (Rctxt_method.Tuple) tIt.next();
             edgesOutOfHelper( MethodContext.v( t.method(), t.ctxt() ), queue );
@@ -63,8 +63,8 @@ public class TradCallGraph extends AbsCallGraph
 
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesOutOf( MethodOrMethodContext method ) {
         Qsrcc_srcm_stmt_kind_tgtc_tgtm queue =
-            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader();
+            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("edgesOutOf");
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader("edgesOutOf");
         edgesOutOfHelper( method, queue );
         return ret;
     }
@@ -81,10 +81,13 @@ public class TradCallGraph extends AbsCallGraph
     }
     public Rsrcc_srcm_stmt_kind_tgtc_tgtm edges() {
         Qsrcc_srcm_stmt_kind_tgtc_tgtm queue =
-            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad();
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader();
+            new Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad("edges");
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = queue.reader("edges");
         edgesHelper( cg.listener(), queue );
         return ret;
+    }
+    public int size() {
+        return cg.size();
     }
 }
 

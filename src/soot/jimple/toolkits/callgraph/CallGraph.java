@@ -43,32 +43,21 @@ public class CallGraph
         if( !edges.add( e ) ) return false;
         stream.add( e );
         Edge position = null;
-        if( e.srcUnit() != null ) {
-            position = (Edge) srcUnitToEdge.get( e.srcUnit() );
-            if( position == null ) {
-                srcUnitToEdge.put( e.srcUnit(), e );
-                position = (Edge) srcMethodToEdge.get( e.getSrc() );
-                if( position == null ) {
-                    srcMethodToEdge.put( e.getSrc(), e );
-                    position = dummy;
-                } else {
-                    while( position.nextBySrc().getSrc() == e.getSrc() ) {
-                        position = position.nextBySrc();
-                    }
-                }
-            }
-        } else {
-            position = (Edge) srcMethodToEdge.get( e.getSrc() );
-            if( position == null ) {
-                srcMethodToEdge.put( e.getSrc(), e );
-                position = dummy;
-            } else {
-                while( position.nextBySrc().getSrc() == e.getSrc() ) {
-                    position = position.nextBySrc();
-                }
-            }
+
+        position = (Edge) srcUnitToEdge.get( e.srcUnit() );
+        if( position == null ) {
+            srcUnitToEdge.put( e.srcUnit(), e );
+            position = dummy;
+        }
+        e.insertAfterByUnit( position );
+
+        position = (Edge) srcMethodToEdge.get( e.getSrc() );
+        if( position == null ) {
+            srcMethodToEdge.put( e.getSrc(), e );
+            position = dummy;
         }
         e.insertAfterBySrc( position );
+
         position = (Edge) tgtToEdge.get( e.getTgt() );
         if( position == null ) {
             tgtToEdge.put( e.getTgt(), e );
@@ -82,6 +71,15 @@ public class CallGraph
     public boolean removeEdge( Edge e ) {
         if( !edges.remove( e ) ) return false;
         e.remove();
+
+        if( srcUnitToEdge.get(e.srcUnit()) == e ) {
+            if( e.nextByUnit().srcUnit() == e.srcUnit() ) {
+                srcUnitToEdge.put(e.srcUnit(), e.nextByUnit() );
+            } else {
+                srcUnitToEdge.put(e.srcUnit(), null);
+            }
+        }
+
         if( srcMethodToEdge.get(e.getSrc()) == e ) {
             if( e.nextBySrc().getSrc() == e.getSrc() ) {
                 srcMethodToEdge.put(e.getSrc(), e.nextBySrc() );
@@ -89,13 +87,7 @@ public class CallGraph
                 srcMethodToEdge.put(e.getSrc(), null);
             }
         }
-        if( srcUnitToEdge.get(e.srcUnit()) == e ) {
-            if( e.nextBySrc().srcUnit() == e.srcUnit() ) {
-                srcUnitToEdge.put(e.srcUnit(), e.nextBySrc() );
-            } else {
-                srcUnitToEdge.put(e.srcUnit(), null);
-            }
-        }
+
         if( tgtToEdge.get(e.getTgt()) == e ) {
             if( e.nextByTgt().getTgt() == e.getTgt() ) {
                 tgtToEdge.put(e.getTgt(), e.nextByTgt() );
@@ -103,6 +95,7 @@ public class CallGraph
                 tgtToEdge.put(e.getTgt(), null);
             }
         }
+
         return true;
     }
 
@@ -131,7 +124,7 @@ public class CallGraph
         }
         public Object next() {
             Edge ret = position;
-            position = position.nextBySrc();
+            position = position.nextByUnit();
             return ret;
         }
         public void remove() {
@@ -212,6 +205,10 @@ public class CallGraph
             out.append( e.toString() + "\n" );
         }
         return out.toString();
+    }
+    /** Returns the number of edges in the call graph. */
+    public int size() {
+        return edges.size();
     }
 }
 

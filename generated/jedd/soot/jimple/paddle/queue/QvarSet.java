@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class QvarSet extends Qvar {
+    public QvarSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _var) {
@@ -22,11 +24,15 @@ public final class QvarSet extends Qvar {
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rvar reader() {
-        Rvar ret = new RvarSet();
+    public Rvar reader(String rname) {
+        Rvar ret = new RvarSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public QvarSet() { super(); }
+    public Rvar revreader(String rname) {
+        Rvar ret = new RvarRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

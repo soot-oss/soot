@@ -10,9 +10,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Rsrcc_srcm_stmt_kind_tgtc_tgtmIter {
-    Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad(QueueReader r) { super(r); }
+    Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad(QueueReader r, String name) { super(r, name); }
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad copy() {
-        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad((QueueReader) ((QueueReader) r).clone());
+        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad((QueueReader) ((QueueReader) r).clone(), name);
     }
 }

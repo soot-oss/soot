@@ -9,7 +9,17 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rvar {
+public abstract class Rvar implements Readers.Reader {
+    public Rvar(String name) {
+        super();
+        this.name = name;
+        Readers.v().add(this);
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract Iterator iterator();
     
     public abstract jedd.internal.RelationContainer get();
@@ -37,12 +47,10 @@ public abstract class Rvar {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(var());
+            ret.append(this.var());
             ret.append(", ");
             return ret.toString();
         }
     }
     
-    
-    public Rvar() { super(); }
 }

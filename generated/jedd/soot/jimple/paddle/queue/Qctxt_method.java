@@ -10,11 +10,20 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qctxt_method {
+    public Qctxt_method(String name) {
+        super();
+        this.name = name;
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract void add(Context _ctxt, SootMethod _method);
     
     public abstract void add(final jedd.internal.RelationContainer in);
     
-    public abstract Rctxt_method reader();
+    public abstract Rctxt_method reader(String rname);
     
-    public Qctxt_method() { super(); }
+    public Rctxt_method revreader(String rname) { return this.reader(rname); }
 }

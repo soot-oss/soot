@@ -28,8 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public class Qctxt_methodDebug extends Qctxt_method {
-    private Qctxt_methodBDD bdd = new Qctxt_methodBDD();
-    private Qctxt_methodSet trad = new Qctxt_methodSet();
+    public Qctxt_methodDebug( String name ) { super(name); }
+    private Qctxt_methodBDD bdd = new Qctxt_methodBDD(name+"bdd");
+    private Qctxt_methodSet trad = new Qctxt_methodSet(name+"set");
     public void add( Context _ctxt, SootMethod _method ) {
         bdd.add( _ctxt, _method );
         trad.add( _ctxt, _method );
@@ -43,7 +44,7 @@ public class Qctxt_methodDebug extends Qctxt_method {
             }
         }
     }
-    public Rctxt_method reader() {
-        return new Rctxt_methodDebug( (Rctxt_methodBDD) bdd.reader(), (Rctxt_methodSet) trad.reader() );
+    public Rctxt_method reader( String rname ) {
+        return new Rctxt_methodDebug( (Rctxt_methodBDD) bdd.reader(rname), (Rctxt_methodSet) trad.reader(rname), name+":"+rname );
     }
 }

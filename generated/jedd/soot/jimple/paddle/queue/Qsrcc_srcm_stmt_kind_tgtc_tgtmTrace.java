@@ -10,22 +10,17 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace extends Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad {
-    public Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtmTrace(String name) { super(name); }
     
     public void add(Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm) {
-        System.out.print(name + ": ");
-        System.out.print(_srcc + ", ");
-        System.out.print(_srcm + ", ");
-        System.out.print(_stmt + ", ");
-        System.out.print(_kind + ", ");
-        System.out.print(_tgtc + ", ");
-        System.out.print(_tgtm + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_srcc + ", ");
+        G.v().out.print(_srcm + ", ");
+        G.v().out.print(_stmt + ", ");
+        G.v().out.print(_kind + ", ");
+        G.v().out.print(_tgtc + ", ");
+        G.v().out.print(_tgtm + ", ");
+        G.v().out.println();
         super.add(_srcc, _srcm, _stmt, _kind, _tgtc, _tgtm);
     }
 }

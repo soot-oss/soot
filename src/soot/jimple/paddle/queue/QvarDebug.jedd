@@ -28,8 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public class QvarDebug extends Qvar {
-    private QvarBDD bdd = new QvarBDD();
-    private QvarSet trad = new QvarSet();
+    public QvarDebug( String name ) { super(name); }
+    private QvarBDD bdd = new QvarBDD(name+"bdd");
+    private QvarSet trad = new QvarSet(name+"set");
     public void add( VarNode _var ) {
         bdd.add( _var );
         trad.add( _var );
@@ -43,7 +44,7 @@ public class QvarDebug extends Qvar {
             }
         }
     }
-    public Rvar reader() {
-        return new RvarDebug( (RvarBDD) bdd.reader(), (RvarSet) trad.reader() );
+    public Rvar reader( String rname ) {
+        return new RvarDebug( (RvarBDD) bdd.reader(rname), (RvarSet) trad.reader(rname), name+":"+rname );
     }
 }

@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrc_dstBDD extends Qsrc_dst {
+    public Qsrc_dstBDD( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( VarNode _src, VarNode _dst ) {
         add( new { _src=>src, _dst=>dst } );
@@ -38,8 +39,8 @@ public final class Qsrc_dstBDD extends Qsrc_dst {
             reader.add( in );
         }
     }
-    public Rsrc_dst reader() {
-        Rsrc_dst ret = new Rsrc_dstBDD();
+    public Rsrc_dst reader( String rname ) {
+        Rsrc_dst ret = new Rsrc_dstBDD( name+":"+rname );
         readers.add( ret );
         return ret;
     }

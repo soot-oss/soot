@@ -117,8 +117,8 @@ public class TradPAG extends AbsPAG
     }
 
     public Rsrc_dst allSimple() {
-        Qsrc_dst q = new Qsrc_dstTrad();
-        Rsrc_dst ret = q.reader();
+        Qsrc_dst q = new Qsrc_dstTrad("allsimple");
+        Rsrc_dst ret = q.reader("allsimple");
         for( Iterator srcIt = simpleSources(); srcIt.hasNext(); ) {
             final VarNode src = (VarNode) srcIt.next();
             Iterator dstIt = simpleLookup(src);
@@ -130,8 +130,8 @@ public class TradPAG extends AbsPAG
         return ret;
     }
     public Rsrc_fld_dst allLoad() {
-        Qsrc_fld_dst q = new Qsrc_fld_dstTrad();
-        Rsrc_fld_dst ret = q.reader();
+        Qsrc_fld_dst q = new Qsrc_fld_dstTrad("allload");
+        Rsrc_fld_dst ret = q.reader("allload");
         for( Iterator srcIt = loadSources(); srcIt.hasNext(); ) {
             final FieldRefNode src = (FieldRefNode) srcIt.next();
             Iterator dstIt = loadLookup(src);
@@ -143,8 +143,8 @@ public class TradPAG extends AbsPAG
         return ret;
     }
     public Rsrc_fld_dst allStore() {
-        Qsrc_fld_dst q = new Qsrc_fld_dstTrad();
-        Rsrc_fld_dst ret = q.reader();
+        Qsrc_fld_dst q = new Qsrc_fld_dstTrad("allstore");
+        Rsrc_fld_dst ret = q.reader("allstore");
         for( Iterator srcIt = storeSources(); srcIt.hasNext(); ) {
             final VarNode src = (VarNode) srcIt.next();
             Iterator dstIt = storeLookup(src);
@@ -156,8 +156,8 @@ public class TradPAG extends AbsPAG
         return ret;
     }
     public Robj_var allAlloc() {
-        Qobj_var q = new Qobj_varTrad();
-        Robj_var ret = q.reader();
+        Qobj_var q = new Qobj_varTrad("allalloc");
+        Robj_var ret = q.reader("allalloc");
         for( Iterator objIt = allocSources(); objIt.hasNext(); ) {
             final AllocNode obj = (AllocNode) objIt.next();
             Iterator varIt = allocLookup(obj);

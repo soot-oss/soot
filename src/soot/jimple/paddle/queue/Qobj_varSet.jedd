@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Qobj_varSet extends Qobj_var {
+    public Qobj_varSet( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( AllocNode _obj, VarNode _var ) {
         Robj_var.Tuple in = new Robj_var.Tuple( _obj, _var );
@@ -39,8 +40,13 @@ public final class Qobj_varSet extends Qobj_var {
     public void add( <obj:H1, var:V1> in ) {
         throw new RuntimeException();
     }
-    public Robj_var reader() {
-        Robj_var ret = new Robj_varSet();
+    public Robj_var reader( String rname ) {
+        Robj_var ret = new Robj_varSet(name+":"+rname);
+        readers.add( ret );
+        return ret;
+    }
+    public Robj_var revreader(String rname) {
+        Robj_var ret = new Robj_varRev(name+":"+rname);
         readers.add( ret );
         return ret;
     }

@@ -386,7 +386,7 @@
         <apply executable="java" failonerror="true" parallel="true">
             <arg value="-Xincgc"/>
             <arg value="-cp"/>
-            <arg path="${jedd.translator.jar}:${polyglot.jar}"/>
+            <arg path="${jedd.translator.jar}:${polyglot.jedd.jar}"/>
             <arg value="-Xmx800m"/>
             <arg value="jedd.Main"/>
             <arg value="-sourcepath"/>

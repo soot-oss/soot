@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Qsrcc_srcm_stmt_kind_tgtc_tgtm {
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm ) {
         add( new { _srcc=>srcc, _srcm=>srcm, _stmt=>stmt, _kind=>kind, _tgtc=>tgtc, _tgtm=>tgtm } );
@@ -38,8 +39,8 @@ public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Qsrcc_srcm_stmt_kin
             reader.add( in );
         }
     }
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader() {
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = new Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader( String rname ) {
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = new Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD( name+":"+rname );
         readers.add( ret );
         return ret;
     }

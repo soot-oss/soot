@@ -32,6 +32,7 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge extends Rsrcc_srcm_stmt_k
     private Rsrcc_srcm_stmt_kind_tgtc_tgtm in1;
     private Rsrcc_srcm_stmt_kind_tgtc_tgtm in2;
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmMerge( Rsrcc_srcm_stmt_kind_tgtc_tgtm in1, Rsrcc_srcm_stmt_kind_tgtc_tgtm in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

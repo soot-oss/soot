@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Rctxt_local_obj_srcm_stmt_kind_tgtmIter extends Rctxt_local_obj_srcm_stmt_kind_tgtm{
     protected Iterator r;
-    public Rctxt_local_obj_srcm_stmt_kind_tgtmIter( Iterator r ) { this.r = r; }
+    public Rctxt_local_obj_srcm_stmt_kind_tgtmIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

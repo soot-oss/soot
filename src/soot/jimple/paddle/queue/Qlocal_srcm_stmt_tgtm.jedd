@@ -28,7 +28,11 @@ import jedd.*;
 import java.util.*;
 
 public abstract class Qlocal_srcm_stmt_tgtm {
+    public Qlocal_srcm_stmt_tgtm( String name ) { this.name = name; }
+    protected String name;
+    public final String toString() { return name; }
     public abstract void add( Local _local, SootMethod _srcm, Unit _stmt, SootMethod _tgtm );
     public abstract void add( <local:V1, srcm:T1, stmt:ST, tgtm:T2> in );
-    public abstract Rlocal_srcm_stmt_tgtm reader();
+    public abstract Rlocal_srcm_stmt_tgtm reader( String rname );
+    public Rlocal_srcm_stmt_tgtm revreader( String rname ) { return reader( rname ); }
 }

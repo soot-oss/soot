@@ -32,6 +32,7 @@ public final class Rctxt_local_obj_srcm_stmt_kind_tgtmMerge extends Rctxt_local_
     private Rctxt_local_obj_srcm_stmt_kind_tgtm in1;
     private Rctxt_local_obj_srcm_stmt_kind_tgtm in2;
     public Rctxt_local_obj_srcm_stmt_kind_tgtmMerge( Rctxt_local_obj_srcm_stmt_kind_tgtm in1, Rctxt_local_obj_srcm_stmt_kind_tgtm in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

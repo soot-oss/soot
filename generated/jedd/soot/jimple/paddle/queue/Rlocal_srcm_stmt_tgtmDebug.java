@@ -14,8 +14,8 @@ public class Rlocal_srcm_stmt_tgtmDebug extends Rlocal_srcm_stmt_tgtm {
     
     protected Rlocal_srcm_stmt_tgtmSet trad;
     
-    public Rlocal_srcm_stmt_tgtmDebug(Rlocal_srcm_stmt_tgtmBDD bdd, Rlocal_srcm_stmt_tgtmSet trad) {
-        super();
+    public Rlocal_srcm_stmt_tgtmDebug(Rlocal_srcm_stmt_tgtmBDD bdd, Rlocal_srcm_stmt_tgtmSet trad, String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -36,7 +36,6 @@ public class Rlocal_srcm_stmt_tgtmDebug extends Rlocal_srcm_stmt_tgtm {
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -45,8 +44,7 @@ public class Rlocal_srcm_stmt_tgtmDebug extends Rlocal_srcm_stmt_tgtm {
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

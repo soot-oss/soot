@@ -436,6 +436,7 @@ public class Options extends OptionsBase {
                 xml_attributes = true;
   
             else if( false 
+            || option.equals( "print-tags" )
             || option.equals( "print-tags-in-output" )
             )
                 print_tags_in_output = true;
@@ -1003,7 +1004,7 @@ public class Options extends OptionsBase {
 +padVal(" c class (default)", "Produce .class Files" )
 +padVal(" d dava", "Produce dava-decompiled .java files" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
-+padOpt(" -print-tags-in-output", "Print tags in output files after stmt" )
++padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )
 +padOpt(" -dump-body PHASENAME", "Dump the internal representation of each method before and after phase PHASENAME" )
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )

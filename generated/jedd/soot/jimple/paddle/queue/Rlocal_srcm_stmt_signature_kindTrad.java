@@ -10,9 +10,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rlocal_srcm_stmt_signature_kindTrad extends Rlocal_srcm_stmt_signature_kindIter {
-    Rlocal_srcm_stmt_signature_kindTrad(QueueReader r) { super(r); }
+    Rlocal_srcm_stmt_signature_kindTrad(QueueReader r, String name) { super(r, name); }
     
     public Rlocal_srcm_stmt_signature_kindTrad copy() {
-        return new Rlocal_srcm_stmt_signature_kindTrad((QueueReader) ((QueueReader) r).clone());
+        return new Rlocal_srcm_stmt_signature_kindTrad((QueueReader) ((QueueReader) r).clone(), name);
     }
 }

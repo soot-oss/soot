@@ -14,8 +14,8 @@ public class Rsrc_dstDebug extends Rsrc_dst {
     
     protected Rsrc_dstSet trad;
     
-    public Rsrc_dstDebug(Rsrc_dstBDD bdd, Rsrc_dstSet trad) {
-        super();
+    public Rsrc_dstDebug(Rsrc_dstBDD bdd, Rsrc_dstSet trad, String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -36,7 +36,6 @@ public class Rsrc_dstDebug extends Rsrc_dst {
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -45,8 +44,7 @@ public class Rsrc_dstDebug extends Rsrc_dst {
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

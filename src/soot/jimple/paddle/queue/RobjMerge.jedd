@@ -32,6 +32,7 @@ public final class RobjMerge extends Robj {
     private Robj in1;
     private Robj in2;
     public RobjMerge( Robj in1, Robj in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

@@ -169,3 +169,4 @@ soot.SootResolver
 soot.jimple.paddle.PaddleNumberers
 soot.jimple.paddle.PaddleScene
 soot.javaToJimple.InitialResolver
+soot.jimple.paddle.queue.Readers

@@ -28,8 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrc_fld_dstDebug extends Qsrc_fld_dst {
-    private Qsrc_fld_dstBDD bdd = new Qsrc_fld_dstBDD();
-    private Qsrc_fld_dstSet trad = new Qsrc_fld_dstSet();
+    public Qsrc_fld_dstDebug( String name ) { super(name); }
+    private Qsrc_fld_dstBDD bdd = new Qsrc_fld_dstBDD(name+"bdd");
+    private Qsrc_fld_dstSet trad = new Qsrc_fld_dstSet(name+"set");
     public void add( VarNode _src, PaddleField _fld, VarNode _dst ) {
         bdd.add( _src, _fld, _dst );
         trad.add( _src, _fld, _dst );
@@ -43,7 +44,7 @@ public class Qsrc_fld_dstDebug extends Qsrc_fld_dst {
             }
         }
     }
-    public Rsrc_fld_dst reader() {
-        return new Rsrc_fld_dstDebug( (Rsrc_fld_dstBDD) bdd.reader(), (Rsrc_fld_dstSet) trad.reader() );
+    public Rsrc_fld_dst reader( String rname ) {
+        return new Rsrc_fld_dstDebug( (Rsrc_fld_dstBDD) bdd.reader(rname), (Rsrc_fld_dstSet) trad.reader(rname), name+":"+rname );
     }
 }

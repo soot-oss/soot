@@ -33,7 +33,7 @@ public class TradReachableMethods extends AbsReachableMethods
     TradReachableMethods( Rsrcc_srcm_stmt_kind_tgtc_tgtm in, Qctxt_method out, AbsCallGraph cg ) {
         super( in, out );
         this.cg = cg;
-        newMethods = out.reader();
+        newMethods = out.reader("tradrm");
     }
     private void processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
         if( !reachables.contains( MethodContext.v( t.srcm(), t.srcc() ) ) ) return;
@@ -55,6 +55,12 @@ public class TradReachableMethods extends AbsReachableMethods
         if( reachables.add( m ) ) {
             out.add( m.context(), m.method() );
         }
+    }
+    int size() {
+        return reachables.size();
+    }
+    boolean contains( MethodOrMethodContext m ) {
+        return reachables.contains(m);
     }
 }
 

@@ -12,8 +12,8 @@ import java.util.*;
 public class Robj_varIter extends Robj_var {
     protected Iterator r;
     
-    public Robj_varIter(Iterator r) {
-        super();
+    public Robj_varIter(Iterator r, String name) {
+        super(name);
         this.r = r;
     }
     
@@ -37,8 +37,8 @@ public class Robj_varIter extends Robj_var {
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
                                                "ains.H1, soot.jimple.paddle.bdddomains.var:soot.jimple.paddl" +
                                                "e.bdddomains.V1> ret = jedd.internal.Jedd.v().falseBDD(); at" +
-                                               " /tmp/soot-trunk/src/soot/jimple/paddle/queue/Robj_varIter.j" +
-                                               "edd:46,25-28"),
+                                               " /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Robj_" +
+                                               "varIter.jedd:46,25-28"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
@@ -47,8 +47,8 @@ public class Robj_varIter extends Robj_var {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
                                                    new PhysicalDomain[] { H1.v(), V1.v() },
-                                                   ("return ret; at /tmp/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                    "Robj_varIter.jedd:50,8-14"),
+                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
+                                                    "le/queue/Robj_varIter.jedd:50,8-14"),
                                                    ret);
     }
     

@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
+    public Qsrc_fld_dstTrad( String name ) { super(name); }
     private ChunkedQueue q = new ChunkedQueue();
     public void add( VarNode _src, PaddleField _fld, VarNode _dst ) {
         q.add( _src );
@@ -43,7 +44,7 @@ public class Qsrc_fld_dstTrad extends Qsrc_fld_dst {
             }
         }
     }
-    public Rsrc_fld_dst reader() {
-        return new Rsrc_fld_dstTrad( q.reader() );
+    public Rsrc_fld_dst reader( String rname ) {
+        return new Rsrc_fld_dstTrad( q.reader(), rname );
     }
 }

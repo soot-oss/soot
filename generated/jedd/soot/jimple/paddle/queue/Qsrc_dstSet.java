@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrc_dstSet extends Qsrc_dst {
+    public Qsrc_dstSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(VarNode _src, VarNode _dst) {
@@ -22,11 +24,15 @@ public final class Qsrc_dstSet extends Qsrc_dst {
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rsrc_dst reader() {
-        Rsrc_dst ret = new Rsrc_dstSet();
+    public Rsrc_dst reader(String rname) {
+        Rsrc_dst ret = new Rsrc_dstSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qsrc_dstSet() { super(); }
+    public Rsrc_dst revreader(String rname) {
+        Rsrc_dst ret = new Rsrc_dstRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

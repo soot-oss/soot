@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qctxt_methodSet extends Qctxt_method {
+    public Qctxt_methodSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(Context _ctxt, SootMethod _method) {
@@ -22,11 +24,15 @@ public final class Qctxt_methodSet extends Qctxt_method {
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rctxt_method reader() {
-        Rctxt_method ret = new Rctxt_methodSet();
+    public Rctxt_method reader(String rname) {
+        Rctxt_method ret = new Rctxt_methodSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qctxt_methodSet() { super(); }
+    public Rctxt_method revreader(String rname) {
+        Rctxt_method ret = new Rctxt_methodRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

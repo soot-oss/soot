@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Rsrc_fld_dstIter extends Rsrc_fld_dst{
     protected Iterator r;
-    public Rsrc_fld_dstIter( Iterator r ) { this.r = r; }
+    public Rsrc_fld_dstIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

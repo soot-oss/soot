@@ -14,8 +14,8 @@ public class Rctxt_methodDebug extends Rctxt_method {
     
     protected Rctxt_methodSet trad;
     
-    public Rctxt_methodDebug(Rctxt_methodBDD bdd, Rctxt_methodSet trad) {
-        super();
+    public Rctxt_methodDebug(Rctxt_methodBDD bdd, Rctxt_methodSet trad, String name) {
+        super(name);
         this.bdd = bdd;
         this.trad = trad;
     }
@@ -36,7 +36,6 @@ public class Rctxt_methodDebug extends Rctxt_method {
                                                bddIt.hasNext());
                 if (!tradIt.hasNext() && !tradSet.equals(bddSet))
                     throw new RuntimeException("tradSet=" + tradSet + "\nbddSet=" + bddSet);
-                if (!tradIt.hasNext()) System.out.println("DONE");
                 return tradIt.hasNext();
             }
             
@@ -45,8 +44,7 @@ public class Rctxt_methodDebug extends Rctxt_method {
                 Tuple tradt = (Tuple) tradIt.next();
                 tradSet.add(tradt);
                 bddSet.add(bddt);
-                System.out.println("bdd:" + bddt + "\ntrad:" + tradt);
-                return bddt;
+                return tradt;
             }
             
             public void remove() { throw new UnsupportedOperationException(); }

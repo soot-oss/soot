@@ -10,17 +10,12 @@ import jedd.*;
 import java.util.*;
 
 public final class QobjTrace extends QobjTrad {
-    public QobjTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public QobjTrace(String name) { super(name); }
     
     public void add(AllocNode _obj) {
-        System.out.print(name + ": ");
-        System.out.print(_obj + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_obj + ", ");
+        G.v().out.println();
         super.add(_obj);
     }
 }

@@ -124,10 +124,18 @@ public final class Edge
         return kind.toString()+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
     }
 
+    private Edge nextByUnit = this;
+    private Edge prevByUnit = this;
     private Edge nextBySrc = this;
     private Edge prevBySrc = this;
     private Edge nextByTgt = this;
     private Edge prevByTgt = this;
+    void insertAfterByUnit( Edge other ) {
+        nextByUnit = other.nextByUnit;
+        nextByUnit.prevByUnit = this;
+        other.nextByUnit = this;
+        prevByUnit = other;
+    }
     void insertAfterBySrc( Edge other ) {
         nextBySrc = other.nextBySrc;
         nextBySrc.prevBySrc = this;
@@ -139,6 +147,12 @@ public final class Edge
         nextByTgt.prevByTgt = this;
         other.nextByTgt = this;
         prevByTgt = other;
+    }
+    void insertBeforeByUnit( Edge other ) {
+        prevByUnit = other.prevByUnit;
+        prevByUnit.nextByUnit = this;
+        other.prevByUnit = this;
+        nextByUnit = other;
     }
     void insertBeforeBySrc( Edge other ) {
         prevBySrc = other.prevBySrc;
@@ -153,16 +167,24 @@ public final class Edge
         nextByTgt = other;
     }
     void remove() {
+        nextByUnit.prevByUnit = prevByUnit;
+        prevByUnit.nextByUnit = nextByUnit;
         nextBySrc.prevBySrc = prevBySrc;
         prevBySrc.nextBySrc = nextBySrc;
         nextByTgt.prevByTgt = prevByTgt;
         prevByTgt.nextByTgt = nextByTgt;
+    }
+    Edge nextByUnit() {
+        return nextByUnit;
     }
     Edge nextBySrc() {
         return nextBySrc;
     }
     Edge nextByTgt() {
         return nextByTgt;
+    }
+    Edge prevByUnit() {
+        return prevByUnit;
     }
     Edge prevBySrc() {
         return prevBySrc;

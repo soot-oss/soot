@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public class Qctxt_local_obj_srcm_stmt_kind_tgtmTrad extends Qctxt_local_obj_srcm_stmt_kind_tgtm {
+    public Qctxt_local_obj_srcm_stmt_kind_tgtmTrad( String name ) { super(name); }
     private ChunkedQueue q = new ChunkedQueue();
     public void add( Context _ctxt, Local _local, AllocNode _obj, SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm ) {
         q.add( _ctxt );
@@ -47,7 +48,7 @@ public class Qctxt_local_obj_srcm_stmt_kind_tgtmTrad extends Qctxt_local_obj_src
             }
         }
     }
-    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader() {
-        return new Rctxt_local_obj_srcm_stmt_kind_tgtmTrad( q.reader() );
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader( String rname ) {
+        return new Rctxt_local_obj_srcm_stmt_kind_tgtmTrad( q.reader(), rname );
     }
 }

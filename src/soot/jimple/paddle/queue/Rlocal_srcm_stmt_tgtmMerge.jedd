@@ -32,6 +32,7 @@ public final class Rlocal_srcm_stmt_tgtmMerge extends Rlocal_srcm_stmt_tgtm {
     private Rlocal_srcm_stmt_tgtm in1;
     private Rlocal_srcm_stmt_tgtm in2;
     public Rlocal_srcm_stmt_tgtmMerge( Rlocal_srcm_stmt_tgtm in1, Rlocal_srcm_stmt_tgtm in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

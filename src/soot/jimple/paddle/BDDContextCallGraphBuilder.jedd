@@ -36,7 +36,8 @@ public class BDDContextCallGraphBuilder extends AbsContextCallGraphBuilder
         // get all edges out of all the methods, ignoring context
         Rsrcc_srcm_stmt_kind_tgtc_tgtm edges = cicg.edgesOutOf(
             new Rctxt_methodBDD(
-                (ctxt=>) methods{} >< new { null=>ctxt } {} ) );
+                (ctxt=>) methods{} >< new { null=>ctxt } {},
+            "ccgb" ) );
         // add in the contexts as source contexts
         out.add( (srcc=>) edges.get(){srcm} >< (ctxt=>srcc) methods{method} );
     }

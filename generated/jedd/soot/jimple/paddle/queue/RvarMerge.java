@@ -17,7 +17,7 @@ public final class RvarMerge extends Rvar {
     private Rvar in2;
     
     public RvarMerge(Rvar in1, Rvar in2) {
-        super();
+        super(in1.name + "+" + in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
@@ -42,8 +42,8 @@ public final class RvarMerge extends Rvar {
         return new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                                    new PhysicalDomain[] { V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/queue/RvarMerge.jedd:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/RvarMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

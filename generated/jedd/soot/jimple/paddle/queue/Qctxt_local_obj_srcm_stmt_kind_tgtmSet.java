@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qctxt_local_obj_srcm_stmt_kind_tgtmSet extends Qctxt_local_obj_srcm_stmt_kind_tgtm {
+    public Qctxt_local_obj_srcm_stmt_kind_tgtmSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(Context _ctxt,
@@ -29,11 +31,15 @@ public final class Qctxt_local_obj_srcm_stmt_kind_tgtmSet extends Qctxt_local_ob
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader() {
-        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmSet();
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader(String rname) {
+        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qctxt_local_obj_srcm_stmt_kind_tgtmSet() { super(); }
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm revreader(String rname) {
+        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

@@ -76,7 +76,7 @@ public class Scene  //extends AbstractHost
     ArrayNumberer typeNumberer = new ArrayNumberer();
     ArrayNumberer methodNumberer = new ArrayNumberer();
     Numberer unitNumberer = new MapNumberer();
-    Numberer contextNumberer = new MapNumberer();
+    Numberer contextNumberer = null;
     ArrayNumberer fieldNumberer = new ArrayNumberer();
     ArrayNumberer classNumberer = new ArrayNumberer();
     StringNumberer subSigNumberer = new StringNumberer();

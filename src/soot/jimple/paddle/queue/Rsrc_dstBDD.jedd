@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rsrc_dstBDD extends Rsrc_dst {
     private <src:V1, dst:V2> bdd;
     void add( <src:V1, dst:V2> tuple ) { bdd |= tuple; }
-    public Rsrc_dstBDD( <src:V1, dst:V2> bdd ) { this(); add(bdd); }
-    Rsrc_dstBDD() { bdd = 0B; }
+    public Rsrc_dstBDD( <src:V1, dst:V2> bdd, String name ) { this(name); add(bdd); }
+    Rsrc_dstBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

@@ -27,10 +27,12 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public final class RvarSet extends Rvar {
-    private HashSet bdd = new HashSet();
+public class RvarSet extends Rvar {
+    public RvarSet(String name) { super(name); }
+    protected LinkedList bdd = new LinkedList();
     void add( Rvar.Tuple tuple ) {
-        bdd.add(tuple);    }
+        bdd.addLast(tuple);
+    }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;
@@ -42,7 +44,7 @@ public final class RvarSet extends Rvar {
             public Object next() {
                 if( it == null || !it.hasNext() ) {
                     it = bdd.iterator();
-                    bdd = new HashSet();
+                    bdd = new LinkedList();
                 }
                 return it.next();
             }

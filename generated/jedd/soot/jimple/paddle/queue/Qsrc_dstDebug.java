@@ -10,9 +10,11 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrc_dstDebug extends Qsrc_dst {
-    private Qsrc_dstBDD bdd = new Qsrc_dstBDD();
+    public Qsrc_dstDebug(String name) { super(name); }
     
-    private Qsrc_dstSet trad = new Qsrc_dstSet();
+    private Qsrc_dstBDD bdd = new Qsrc_dstBDD(name + "bdd");
+    
+    private Qsrc_dstSet trad = new Qsrc_dstSet(name + "set");
     
     public void add(VarNode _src, VarNode _dst) {
         bdd.add(_src, _dst);
@@ -23,16 +25,17 @@ public class Qsrc_dstDebug extends Qsrc_dst {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
                                               new PhysicalDomain[] { V2.v(), V1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
-                                               "soot/jimple/paddle/queue/Qsrc_dstDebug.jedd:38,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/Qsrc_dstDebug.jedd:39,22-2" +
+                                               "4"),
                                               in).iterator(new Attribute[] { src.v(), dst.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 2; i++) { add((VarNode) tuple[0], (VarNode) tuple[1]); }
+            for (int i = 0; i < 2; i++) { this.add((VarNode) tuple[0], (VarNode) tuple[1]); }
         }
     }
     
-    public Rsrc_dst reader() { return new Rsrc_dstDebug((Rsrc_dstBDD) bdd.reader(), (Rsrc_dstSet) trad.reader()); }
-    
-    public Qsrc_dstDebug() { super(); }
+    public Rsrc_dst reader(String rname) {
+        return new Rsrc_dstDebug((Rsrc_dstBDD) bdd.reader(rname), (Rsrc_dstSet) trad.reader(rname), name + ":" + rname);
+    }
 }

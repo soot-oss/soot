@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgtc_tgtm {
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad( String name ) { super(name); }
     private ChunkedQueue q = new ChunkedQueue();
     public void add( Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm ) {
         q.add( _srcc );
@@ -46,7 +47,7 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmTrad extends Qsrcc_srcm_stmt_kind_tgt
             }
         }
     }
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader() {
-        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad( q.reader() );
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader( String rname ) {
+        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmTrad( q.reader(), rname );
     }
 }

@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rctxt_methodBDD extends Rctxt_method {
     private <ctxt:V1, method:T1> bdd;
     void add( <ctxt:V1, method:T1> tuple ) { bdd |= tuple; }
-    public Rctxt_methodBDD( <ctxt:V1, method:T1> bdd ) { this(); add(bdd); }
-    Rctxt_methodBDD() { bdd = 0B; }
+    public Rctxt_methodBDD( <ctxt:V1, method:T1> bdd, String name ) { this(name); add(bdd); }
+    Rctxt_methodBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

@@ -27,7 +27,13 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm {
+public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm implements Readers.Reader {
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm( String name ) {
+        this.name = name;
+        Readers.v().add(this);
+    }
+    protected String name;
+    public final String toString() { return name; }
     public abstract Iterator iterator();
     public abstract <srcc:V1, srcm:T1, stmt:ST, kind:FD, tgtc:V2, tgtm:T2> get();
     public abstract boolean hasNext();

@@ -10,9 +10,11 @@ import jedd.*;
 import java.util.*;
 
 public class QobjDebug extends Qobj {
-    private QobjBDD bdd = new QobjBDD();
+    public QobjDebug(String name) { super(name); }
     
-    private QobjSet trad = new QobjSet();
+    private QobjBDD bdd = new QobjBDD(name + "bdd");
+    
+    private QobjSet trad = new QobjSet(name + "set");
     
     public void add(AllocNode _obj) {
         bdd.add(_obj);
@@ -23,16 +25,16 @@ public class QobjDebug extends Qobj {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                               new PhysicalDomain[] { H1.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /tmp/soot-trunk/src/" +
-                                               "soot/jimple/paddle/queue/QobjDebug.jedd:38,22-24"),
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk/src/soot/jimple/paddle/queue/QobjDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
-            for (int i = 0; i < 1; i++) { add((AllocNode) tuple[0]); }
+            for (int i = 0; i < 1; i++) { this.add((AllocNode) tuple[0]); }
         }
     }
     
-    public Robj reader() { return new RobjDebug((RobjBDD) bdd.reader(), (RobjSet) trad.reader()); }
-    
-    public QobjDebug() { super(); }
+    public Robj reader(String rname) {
+        return new RobjDebug((RobjBDD) bdd.reader(rname), (RobjSet) trad.reader(rname), name + ":" + rname);
+    }
 }

@@ -28,6 +28,7 @@ import jedd.*;
 import java.util.*;
 
 public final class Qctxt_local_obj_srcm_stmt_kind_tgtmSet extends Qctxt_local_obj_srcm_stmt_kind_tgtm {
+    public Qctxt_local_obj_srcm_stmt_kind_tgtmSet( String name ) { super(name); }
     private LinkedList readers = new LinkedList();
     public void add( Context _ctxt, Local _local, AllocNode _obj, SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm ) {
         Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple in = new Rctxt_local_obj_srcm_stmt_kind_tgtm.Tuple( _ctxt, _local, _obj, _srcm, _stmt, _kind, _tgtm );
@@ -39,8 +40,13 @@ public final class Qctxt_local_obj_srcm_stmt_kind_tgtmSet extends Qctxt_local_ob
     public void add( <ctxt:V2, local:V1, obj:H1, srcm:T1, stmt:ST, kind:FD, tgtm:T2> in ) {
         throw new RuntimeException();
     }
-    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader() {
-        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmSet();
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm reader( String rname ) {
+        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmSet(name+":"+rname);
+        readers.add( ret );
+        return ret;
+    }
+    public Rctxt_local_obj_srcm_stmt_kind_tgtm revreader(String rname) {
+        Rctxt_local_obj_srcm_stmt_kind_tgtm ret = new Rctxt_local_obj_srcm_stmt_kind_tgtmRev(name+":"+rname);
         readers.add( ret );
         return ret;
     }

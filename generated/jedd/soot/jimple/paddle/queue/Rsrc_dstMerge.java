@@ -17,7 +17,7 @@ public final class Rsrc_dstMerge extends Rsrc_dst {
     private Rsrc_dst in2;
     
     public Rsrc_dstMerge(Rsrc_dst in1, Rsrc_dst in2) {
-        super();
+        super(in1.name + "+" + in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
@@ -42,8 +42,8 @@ public final class Rsrc_dstMerge extends Rsrc_dst {
         return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), src.v() },
                                                    new PhysicalDomain[] { V2.v(), V1.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /tmp/soot-trunk/src/soot/jimp" +
-                                                    "le/paddle/queue/Rsrc_dstMerge.jedd:51,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
+                                                    "soot/jimple/paddle/queue/Rsrc_dstMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

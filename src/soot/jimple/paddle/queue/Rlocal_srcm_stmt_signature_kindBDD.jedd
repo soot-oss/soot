@@ -30,8 +30,8 @@ import java.util.*;
 public final class Rlocal_srcm_stmt_signature_kindBDD extends Rlocal_srcm_stmt_signature_kind {
     private <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> bdd;
     void add( <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> tuple ) { bdd |= tuple; }
-    public Rlocal_srcm_stmt_signature_kindBDD( <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> bdd ) { this(); add(bdd); }
-    Rlocal_srcm_stmt_signature_kindBDD() { bdd = 0B; }
+    public Rlocal_srcm_stmt_signature_kindBDD( <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> bdd, String name ) { this(name); add(bdd); }
+    Rlocal_srcm_stmt_signature_kindBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
             private Iterator it;

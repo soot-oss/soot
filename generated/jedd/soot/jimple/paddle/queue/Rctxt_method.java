@@ -9,7 +9,17 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rctxt_method {
+public abstract class Rctxt_method implements Readers.Reader {
+    public Rctxt_method(String name) {
+        super();
+        this.name = name;
+        Readers.v().add(this);
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract Iterator iterator();
     
     public abstract jedd.internal.RelationContainer get();
@@ -43,14 +53,12 @@ public abstract class Rctxt_method {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(ctxt());
+            ret.append(this.ctxt());
             ret.append(", ");
-            ret.append(method());
+            ret.append(this.method());
             ret.append(", ");
             return ret.toString();
         }
     }
     
-    
-    public Rctxt_method() { super(); }
 }

@@ -10,17 +10,12 @@ import jedd.*;
 import java.util.*;
 
 public final class QvarTrace extends QvarTrad {
-    public QvarTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public QvarTrace(String name) { super(name); }
     
     public void add(VarNode _var) {
-        System.out.print(name + ": ");
-        System.out.print(_var + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_var + ", ");
+        G.v().out.println();
         super.add(_var);
     }
 }

@@ -28,8 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public class Qobj_varDebug extends Qobj_var {
-    private Qobj_varBDD bdd = new Qobj_varBDD();
-    private Qobj_varSet trad = new Qobj_varSet();
+    public Qobj_varDebug( String name ) { super(name); }
+    private Qobj_varBDD bdd = new Qobj_varBDD(name+"bdd");
+    private Qobj_varSet trad = new Qobj_varSet(name+"set");
     public void add( AllocNode _obj, VarNode _var ) {
         bdd.add( _obj, _var );
         trad.add( _obj, _var );
@@ -43,7 +44,7 @@ public class Qobj_varDebug extends Qobj_var {
             }
         }
     }
-    public Robj_var reader() {
-        return new Robj_varDebug( (Robj_varBDD) bdd.reader(), (Robj_varSet) trad.reader() );
+    public Robj_var reader( String rname ) {
+        return new Robj_varDebug( (Robj_varBDD) bdd.reader(rname), (Robj_varSet) trad.reader(rname), name+":"+rname );
     }
 }

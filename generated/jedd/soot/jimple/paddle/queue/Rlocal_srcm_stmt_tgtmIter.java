@@ -12,8 +12,8 @@ import java.util.*;
 public class Rlocal_srcm_stmt_tgtmIter extends Rlocal_srcm_stmt_tgtm {
     protected Iterator r;
     
-    public Rlocal_srcm_stmt_tgtmIter(Iterator r) {
-        super();
+    public Rlocal_srcm_stmt_tgtmIter(Iterator r, String name) {
+        super(name);
         this.r = r;
     }
     
@@ -41,18 +41,18 @@ public class Rlocal_srcm_stmt_tgtmIter extends Rlocal_srcm_stmt_tgtm {
                                                "ddle.bdddomains.T1, soot.jimple.paddle.bdddomains.stmt:soot." +
                                                "jimple.paddle.bdddomains.ST, soot.jimple.paddle.bdddomains.t" +
                                                "gtm:soot.jimple.paddle.bdddomains.T2> ret = jedd.internal.Je" +
-                                               "dd.v().falseBDD(); at /tmp/soot-trunk/src/soot/jimple/paddle" +
-                                               "/queue/Rlocal_srcm_stmt_tgtmIter.jedd:46,46-49"),
+                                               "dd.v().falseBDD(); at /home/olhotak/soot-trunk/src/soot/jimp" +
+                                               "le/paddle/queue/Rlocal_srcm_stmt_tgtmIter.jedd:46,46-49"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next(), r.next(), r.next() },
                                                        new Attribute[] { local.v(), srcm.v(), stmt.v(), tgtm.v() },
                                                        new PhysicalDomain[] { V1.v(), T1.v(), ST.v(), T2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { local.v(), tgtm.v(), srcm.v(), stmt.v() },
-                                                   new PhysicalDomain[] { V1.v(), T2.v(), T1.v(), ST.v() },
-                                                   ("return ret; at /tmp/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                    "Rlocal_srcm_stmt_tgtmIter.jedd:50,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtm.v(), local.v() },
+                                                   new PhysicalDomain[] { ST.v(), T1.v(), T2.v(), V1.v() },
+                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
+                                                    "le/queue/Rlocal_srcm_stmt_tgtmIter.jedd:50,8-14"),
                                                    ret);
     }
     

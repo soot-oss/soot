@@ -9,7 +9,17 @@ import soot.util.queue.*;
 import jedd.*;
 import java.util.*;
 
-public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm {
+public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm implements Readers.Reader {
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm(String name) {
+        super();
+        this.name = name;
+        Readers.v().add(this);
+    }
+    
+    protected String name;
+    
+    public final String toString() { return name; }
+    
     public abstract Iterator iterator();
     
     public abstract jedd.internal.RelationContainer get();
@@ -67,22 +77,20 @@ public abstract class Rsrcc_srcm_stmt_kind_tgtc_tgtm {
         
         public String toString() {
             StringBuffer ret = new StringBuffer();
-            ret.append(srcc());
+            ret.append(this.srcc());
             ret.append(", ");
-            ret.append(srcm());
+            ret.append(this.srcm());
             ret.append(", ");
-            ret.append(stmt());
+            ret.append(this.stmt());
             ret.append(", ");
-            ret.append(kind());
+            ret.append(this.kind());
             ret.append(", ");
-            ret.append(tgtc());
+            ret.append(this.tgtc());
             ret.append(", ");
-            ret.append(tgtm());
+            ret.append(this.tgtm());
             ret.append(", ");
             return ret.toString();
         }
     }
     
-    
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtm() { super(); }
 }

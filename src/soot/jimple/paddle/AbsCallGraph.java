@@ -36,6 +36,8 @@ public abstract class AbsCallGraph
     public abstract Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesOutOf( Rctxt_method methods );
     public abstract Rsrcc_srcm_stmt_kind_tgtc_tgtm edgesOutOf( MethodOrMethodContext method );
     public abstract Rsrcc_srcm_stmt_kind_tgtc_tgtm edges();
+    /** Returns the number of edges in the call graph. */
+    public abstract int size();
 }
 
 

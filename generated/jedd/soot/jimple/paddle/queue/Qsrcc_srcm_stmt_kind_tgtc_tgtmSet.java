@@ -10,6 +10,8 @@ import jedd.*;
 import java.util.*;
 
 public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Qsrcc_srcm_stmt_kind_tgtc_tgtm {
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtmSet(String name) { super(name); }
+    
     private LinkedList readers = new LinkedList();
     
     public void add(Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm) {
@@ -23,11 +25,15 @@ public final class Qsrcc_srcm_stmt_kind_tgtc_tgtmSet extends Qsrcc_srcm_stmt_kin
     
     public void add(final jedd.internal.RelationContainer in) { throw new RuntimeException(); }
     
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader() {
-        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = new Rsrcc_srcm_stmt_kind_tgtc_tgtmSet();
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader(String rname) {
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = new Rsrcc_srcm_stmt_kind_tgtc_tgtmSet(name + ":" + rname);
         readers.add(ret);
         return ret;
     }
     
-    public Qsrcc_srcm_stmt_kind_tgtc_tgtmSet() { super(); }
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm revreader(String rname) {
+        Rsrcc_srcm_stmt_kind_tgtc_tgtm ret = new Rsrcc_srcm_stmt_kind_tgtc_tgtmRev(name + ":" + rname);
+        readers.add(ret);
+        return ret;
+    }
 }

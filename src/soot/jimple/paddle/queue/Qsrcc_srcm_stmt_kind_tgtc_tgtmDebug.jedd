@@ -28,8 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tgtc_tgtm {
-    private Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD bdd = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD();
-    private Qsrcc_srcm_stmt_kind_tgtc_tgtmSet trad = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet();
+    public Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug( String name ) { super(name); }
+    private Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD bdd = new Qsrcc_srcm_stmt_kind_tgtc_tgtmBDD(name+"bdd");
+    private Qsrcc_srcm_stmt_kind_tgtc_tgtmSet trad = new Qsrcc_srcm_stmt_kind_tgtc_tgtmSet(name+"set");
     public void add( Context _srcc, SootMethod _srcm, Unit _stmt, Kind _kind, Context _tgtc, SootMethod _tgtm ) {
         bdd.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
         trad.add( _srcc, _srcm, _stmt, _kind, _tgtc, _tgtm );
@@ -43,7 +44,7 @@ public class Qsrcc_srcm_stmt_kind_tgtc_tgtmDebug extends Qsrcc_srcm_stmt_kind_tg
             }
         }
     }
-    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader() {
-        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug( (Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD) bdd.reader(), (Rsrcc_srcm_stmt_kind_tgtc_tgtmSet) trad.reader() );
+    public Rsrcc_srcm_stmt_kind_tgtc_tgtm reader( String rname ) {
+        return new Rsrcc_srcm_stmt_kind_tgtc_tgtmDebug( (Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD) bdd.reader(rname), (Rsrcc_srcm_stmt_kind_tgtc_tgtmSet) trad.reader(rname), name+":"+rname );
     }
 }

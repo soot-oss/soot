@@ -32,6 +32,7 @@ public final class Rlocal_srcm_stmt_signature_kindMerge extends Rlocal_srcm_stmt
     private Rlocal_srcm_stmt_signature_kind in1;
     private Rlocal_srcm_stmt_signature_kind in2;
     public Rlocal_srcm_stmt_signature_kindMerge( Rlocal_srcm_stmt_signature_kind in1, Rlocal_srcm_stmt_signature_kind in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

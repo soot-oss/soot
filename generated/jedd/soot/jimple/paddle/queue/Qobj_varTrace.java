@@ -10,18 +10,13 @@ import jedd.*;
 import java.util.*;
 
 public final class Qobj_varTrace extends Qobj_varTrad {
-    public Qobj_varTrace(String name) {
-        super();
-        this.name = name;
-    }
-    
-    private String name;
+    public Qobj_varTrace(String name) { super(name); }
     
     public void add(AllocNode _obj, VarNode _var) {
-        System.out.print(name + ": ");
-        System.out.print(_obj + ", ");
-        System.out.print(_var + ", ");
-        System.out.println();
+        G.v().out.print(name + ": ");
+        G.v().out.print(_obj + ", ");
+        G.v().out.print(_var + ", ");
+        G.v().out.println();
         super.add(_obj, _var);
     }
 }

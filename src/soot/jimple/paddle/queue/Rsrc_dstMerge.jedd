@@ -32,6 +32,7 @@ public final class Rsrc_dstMerge extends Rsrc_dst {
     private Rsrc_dst in1;
     private Rsrc_dst in2;
     public Rsrc_dstMerge( Rsrc_dst in1, Rsrc_dst in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }

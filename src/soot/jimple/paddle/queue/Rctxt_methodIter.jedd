@@ -29,7 +29,7 @@ import java.util.*;
 
 public class Rctxt_methodIter extends Rctxt_method{
     protected Iterator r;
-    public Rctxt_methodIter( Iterator r ) { this.r = r; }
+    public Rctxt_methodIter( Iterator r, String name ) { super(name); this.r = r; }
     public Iterator iterator() {
         return new Iterator() {
             public boolean hasNext() {

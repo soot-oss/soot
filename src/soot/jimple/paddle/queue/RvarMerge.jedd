@@ -32,6 +32,7 @@ public final class RvarMerge extends Rvar {
     private Rvar in1;
     private Rvar in2;
     public RvarMerge( Rvar in1, Rvar in2 ) {
+        super(in1.name+"+"+in2.name);
         this.in1 = in1;
         this.in2 = in2;
     }
