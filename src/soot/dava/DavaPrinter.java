@@ -256,7 +256,8 @@ public class DavaPrinter {
             Iterator interfaceIt = cl.getInterfaces().iterator();
 
             if (interfaceIt.hasNext()) {
-                out.print(" implements ");
+                if( cl.isInterface() ) out.print(" extends ");
+                else out.print(" implements ");
 
                 out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
 
