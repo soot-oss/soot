@@ -60,7 +60,7 @@ public final class MethodPAG {
                 buildNative();
             }
         } else {
-            if( method.isConcrete() ) {
+            if( method.isConcrete() && !method.isPhantom() ) {
                 buildNormal();
             }
         }

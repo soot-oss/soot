@@ -21,6 +21,7 @@ public class FieldTagger extends BodyTransformer
         if( processedMethods.contains(m) ) return;
         processedMethods.add(m);
         if( !m.isConcrete() ) return;
+        if( m.isPhantom() ) return;
         for( Iterator sIt = m.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
@@ -52,6 +53,7 @@ statement: for( Iterator sIt = body.getUnits().iterator(); sIt.hasNext(); ) {   
                 SootMethod target = (SootMethod) it.next();
                 ensureProcessed( target );
                 if( target.isNative() ) continue statement;
+                if( target.isPhantom() ) continue statement;
                 read.addAll( methodToRead.get( target ) );
                 write.addAll( methodToWrite.get( target ) );
                 if( read.size() + write.size() > threshold ) {

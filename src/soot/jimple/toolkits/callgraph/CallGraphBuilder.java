@@ -92,7 +92,7 @@ public final class CallGraphBuilder
     }
 
     private void processNewMethod( SootMethod m ) {
-        if( m.isNative() ) {
+        if( m.isNative() || m.isPhantom() ) {
             return;
         }
         Body b = m.retrieveActiveBody();
@@ -263,7 +263,7 @@ public final class CallGraphBuilder
     }
     public void getImplicitTargets( SootMethod source ) {
         final SootClass scl = source.getDeclaringClass();
-        if( source.isNative() ) return;
+        if( source.isNative() || source.isPhantom() ) return;
         if( source.getSubSignature().indexOf( "<init>" ) >= 0 ) {
             handleInit(source, scl);
         }

@@ -43,6 +43,8 @@ public class ContextInsensitiveBuilder implements Builder {
             for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
                 final SootMethod m = (SootMethod) mIt.next();
                 if( !m.isConcrete() ) continue;
+                if( m.isNative() ) continue;
+                if( m.isPhantom() ) continue;
                 m.retrieveActiveBody();
             }
         }
