@@ -23,9 +23,9 @@ Soot supports the powerful, but initially confusing, notion of ``phase
 options''.  This document will permit the reader to
 successfully use the Soot phase options.
 
-Soot's execution is divided into a number of phases.  Building the
+Soot's execution is divided into a number of phases.  For example, building the
 JimpleBody is a phase (called {\tt jb}), and it has a number of
-subphases, like aggregation of stack variables ({\tt jb.asv}).
+subphases, like aggregation of stack variables ({\tt jb.a1}).
 
 Soot allows the user to specify options for each phase; these options
 will change the behaviour of the phase.  This is specified by giving Soot
@@ -33,30 +33,45 @@ the command-line option {\tt -p phase.name option:value}.  For instance,
 to instruct Soot to use original names in Jimple, we would invoke Soot
 like this:
 \begin{verbatim}
-[plam@cannanore test] java soot.Main foo -p jb use-original-names
+java soot.Main foo -p jb use-original-names:true
+\end{verbatim}
+Multiple option-value pairs may be specified in a single {\tt -p} option
+separated by commas. For example,
+\begin{verbatim}
+java soot.Main foo -p cg.spark verbose:true,on-fly-cg:true
 \end{verbatim}
 
-Unless specified otherwise, all options are boolean; allowed
-values are ``true'' or ``false''.  When an option is omitted, the
-default value is ``false''; specifying an option without a value
-is the same as saying ``true''.
+There are five types of phase options. Boolean options take the values
+``true'' and ``false''; if no value is specified, ``true'' is assumed.
+Multi-valued options have a set of valid values. Integer options
+take a value that is an integer. Floating point options take a 
+floating point number as their value. String options take an arbitrary
+string as their value.
 
-All transformers accept the option ``{\tt disabled}'', which,
-when set to {\tt true}, causes the given transformer to not execute.
+Each option has a default value which is used if the option is not
+specified on the command line.
 
-Soot transformers are expected to be classes extending either {\tt
+All phases and subphases accept the option ``{\tt enabled}'', which
+must be ``{\tt true}'' for the phase/subphase to execute. To save
+you some typing, the pseudo-options ``{\tt on}'' and ``{\tt off}''
+are equivalent to ``{\tt enabled:true}'' and ``{\tt enabled:false}'',
+respectively. In addition, specifying any options for a phase
+automatically enables that phase.
+
+Soot transfomers are expected to be classes extending either {\tt
 BodyTransformer} or {\tt SceneTransformer}.  In either case, an {\tt
 internalTransform} method on the transformer must be overridden to
 provide an implementation which carries out some transformation.
 
-These transformers belong to a {\tt Pack}.  The {\tt Pack} keeps a 
+These transformers become the subphases of a phase, which is represented
+by a {\tt Pack}.  The {\tt Pack} keeps a 
 collection of transformers, and can execute them, in order,
 when called.  To add a transformer to some {\tt Pack} without
 modifying Soot itself, create your own class, which modifies the
-{\tt Packs} as needed and then calls {\tt soot.Main}.
+{\tt Pack}s as needed and then calls {\tt soot.Main}.
 
 The remainder of this document describes the various transformations
-belonging to the various Packs of Soot.
+belonging to the various Packs of Soot, and their corresponding phase options.
 
 \tableofcontents
 

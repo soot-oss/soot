@@ -423,7 +423,7 @@ public class PackManager {
     }
 
     private Iterator reachableClasses() {
-        if( Options.v().whole_program() ) {
+        if( false && Options.v().whole_program() ) {
             QueueReader methods = Scene.v().getReachableMethods().listener();
             HashSet reachableClasses = new HashSet();
             

@@ -62,7 +62,7 @@ Soot Command Line Options
 
 <h1>Phases and phase options</h1>
 <ul>
-<xsl:for-each select="options/section/phaseopt/phase">
+<xsl:for-each select="options/section/phaseopt/phase|options/section/phaseopt/radio_phase">
 <li/><xsl:value-of select="alias|alias"/>
 <ul>
 <ul>
