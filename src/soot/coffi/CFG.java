@@ -187,7 +187,43 @@ public class CFG {
         }
 
    }
+    
+    private void dumpInstructionToNext()
+    {
+	System.out.println("InstructionToNext :");
+	Instruction ins = method.instructions;
+	while (ins != null)
+	{
+	    System.out.println(ins);
+	    ins = (Instruction)instructionToNext.get(ins);
+	}
+    }
 
+    private void dumpMethodInstructions()
+    {
+	System.out.println("MethodInstructions :");
+	Instruction ins = method.instructions;
+	while (ins != null)
+	{
+	    System.out.println(ins);
+	    ins = ins.next;
+	}
+    }
+
+    private void dumpExceptionTable() 
+    {
+	System.out.println("Exception table.");
+
+	Code_attribute codeAttribute = method.locate_code_attribute();
+
+	for(int i = 0; i < codeAttribute.exception_table_length; i++)
+	{
+	    Instruction startIns = codeAttribute.exception_table[i].start_inst;
+	    Instruction endIns = codeAttribute.exception_table[i].end_inst;
+	    Instruction targetIns = codeAttribute.exception_table[i].handler_inst;
+	    System.out.println("From: "+startIns+" To: "+endIns+" Handler: "+targetIns);
+	}
+    }
 
 
    HashMap JsrToNext = new HashMap();
@@ -1646,18 +1682,39 @@ public class CFG {
                     Instruction ins = startIns;
 
                     for(;;)
-                    {
-
-                  
+                    {                  
                         Set successors = (Set) instructionToSuccessors.get(ins);
-
                         successors.add(handlerIns);
 
-                        ins = (Instruction) instructionToNext.get(ins);
+                        Instruction newIns = (Instruction) instructionToNext.get(ins);
+			if (newIns == null)
+			{
+			    // debug, dump all instructions.
+			    /* there is a bug to handle new created exception
+			       handler, if the handler is in a catch block.
+			       Tempararily, fix the exception table here.
+			    */
+			    /*
+			    newIns = ins.next;
+			    System.out.println("oldIns :"+ ins);
+			    System.out.println("startIns :"+ startIns);
+			    System.out.println("endIns :"+ endIns);
+
+			    dumpInstructionToNext();
+			    dumpExceptionTable();
+			    */
+			    /* change the table end to current instruction and
+			       break; Feng, feb. 6, 2001
+			    */
+			    
+      			    endIns = ins;
+			    codeAttribute.exception_table[i].end_inst = endIns;			    
+			}
+			else
+			    ins = newIns;
 
                         if ( (ins == endIns ) ) 
                         {
-
                             break;
                         }
           
