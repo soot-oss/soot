@@ -18,8 +18,8 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	public void run(IAction action) {
 	  	super.run(action);
 
-		String cmd = getCmd();
-		runSootAsProcess(cmd);
+		setCmd();
+		runSootDirectly();
 		runFinish();
 	
 	}
@@ -28,10 +28,11 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	 * Method getCmd.
 	 * @return String
 	 */
-	private String getCmd() {
+	private void setCmd() {
 		
+		getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
 			
-		StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
+		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
 		classpath.append(getSootClasspath().getSeparator());
 		classpath.append(getProcessPath());
@@ -41,11 +42,15 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 				
 		StringBuffer cmd = new StringBuffer();
 		cmd.append(classpath+" ");
-		cmd.append(output_path+" ");
-		cmd.append(LaunchCommands.PROCESS_PATH + getProcessPath()+" ");
-		cmd.append(LaunchCommands.DAVA);
+		cmd.append(output_path+" ");*/
+		getSootCommandList().addDoubleOpt(LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		getSootCommandList().addDoubleOpt(LaunchCommands.KEEP_LINE_NUMBER, Boolean.toString(true));
+		getSootCommandList().addDoubleOpt(LaunchCommands.XML_ATTRIBUTES, Boolean.toString(true));
 		
-	  	return cmd.toString();
+		getSootCommandList().addDoubleOpt(LaunchCommands.PROCESS_PATH, getProcessPath());
+		getSootCommandList().addSingleOpt(LaunchCommands.DAVA);
+		
+	  	//return cmd.toString();
 	}
 
 }	

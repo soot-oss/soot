@@ -19,6 +19,8 @@ public class SootFileLauncher extends SootLauncher {
 	//private String OutputLocation;
 	private String extraCmd;
 	private boolean isExtraCmd;
+	private String srcPrec;
+	private boolean isSrcPrec;
 	
 	public void run(IAction action){
 		super.run(action);
@@ -40,10 +42,10 @@ public class SootFileLauncher extends SootLauncher {
 		}
 		else if (getSootSelection().getType() == getSootSelection().FILE_SELECTED_TYPE) {
 			IFile file = getSootSelection().getFile();
-			if (file.getFileExtension().compareTo(LaunchCommands.JIMPLE_IN) == 0) {
+			if (file.getFileExtension().compareTo("jimple") == 0) {
 				setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
-				setIsExtraCmd(true);
-				setExtraCmd(LaunchCommands.SRC_PREC+LaunchCommands.JIMPLE_IN);
+				setIsSrcPrec(true);
+				setSrcPrec(LaunchCommands.JIMPLE_IN);
 				setToProcess(removeFileExt(file.getName()));
 			}
 			else if (file.getFileExtension().compareTo(LaunchCommands.CLASS_IN) == 0) {
@@ -137,6 +139,38 @@ public class SootFileLauncher extends SootLauncher {
 	 */
 	public void setIsExtraCmd(boolean isExtraCmd) {
 		this.isExtraCmd = isExtraCmd;
+	}
+
+	/**
+	 * Returns the isSrcPrec.
+	 * @return boolean
+	 */
+	public boolean isSrcPrec() {
+		return isSrcPrec;
+	}
+
+	/**
+	 * Returns the srcPrec.
+	 * @return String
+	 */
+	public String getSrcPrec() {
+		return srcPrec;
+	}
+
+	/**
+	 * Sets the isSrcPrec.
+	 * @param isSrcPrec The isSrcPrec to set
+	 */
+	public void setIsSrcPrec(boolean isSrcPrec) {
+		this.isSrcPrec = isSrcPrec;
+	}
+
+	/**
+	 * Sets the srcPrec.
+	 * @param srcPrec The srcPrec to set
+	 */
+	public void setSrcPrec(String srcPrec) {
+		this.srcPrec = srcPrec;
 	}
 
 }

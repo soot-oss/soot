@@ -32,27 +32,27 @@ public class SootDefaultCommands {
 	}
 	
 	public void setSootClassPath(String val) {
-		getDialog().addToDefList("cp", val);
+		getDialog().addToEclipseDefList(LaunchCommands.SOOT_CLASSPATH, val);
 	}
 	
 	public void setProcessPath(String val) {
-		getDialog().addToDefList("process-path", val);
+		getDialog().addToEclipseDefList(LaunchCommands.PROCESS_PATH, val);
 	}
 	
 	public void setOutputDir(String val) {
-		getDialog().addToDefList("d", val);
+		getDialog().addToEclipseDefList(LaunchCommands.OUTPUT_DIR, val);
 	}
 	
 	public void setKeepLineNum() {
-		getDialog().addToDefList("keep-line-number", new Boolean(true));
+		getDialog().addToEclipseDefList(LaunchCommands.KEEP_LINE_NUMBER, new Boolean(true));
 	}
 	
 	public void setPrintTags() {
-		getDialog().addToDefList("xml-attributes", new Boolean(true));
+		getDialog().addToEclipseDefList(LaunchCommands.XML_ATTRIBUTES, new Boolean(true));
 	}
 	
 	public void setSrcPrec(String val) {
-		
+		getDialog().addToEclipseDefList(LaunchCommands.SRC_PREC, val);
 	}
 	
 	

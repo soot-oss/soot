@@ -3,7 +3,7 @@ package ca.mcgill.sable.soot.testing;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.*;
+//import org.eclipse.ui.views.*;
 
 /**
  * @author jlhotak

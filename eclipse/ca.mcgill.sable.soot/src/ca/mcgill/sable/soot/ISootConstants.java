@@ -23,7 +23,7 @@ package ca.mcgill.sable.soot;
 public interface ISootConstants {
 
 	public static final String SOOT_OUTPUT_VIEW_ID =
-		"ca.mcgill.sable.soot.launching.sootoutputview.view";
+		"ca.mcgill.sable.soot.ui.sootoutputview.view";
 	
 	public static final String SOOT_PLUGIN_ID = 
 		"ca.mcgill.sable.soot";	

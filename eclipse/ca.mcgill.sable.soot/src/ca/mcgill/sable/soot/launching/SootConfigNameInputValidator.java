@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.IInputValidator;
 
 /**
@@ -22,6 +24,8 @@ import org.eclipse.jface.dialogs.IInputValidator;
  */
 public class SootConfigNameInputValidator implements IInputValidator {
 
+	private ArrayList alreadyUsed;
+	
 	/**
 	 * Constructor for SootConfigNameInputValidator.
 	 */
@@ -36,7 +40,26 @@ public class SootConfigNameInputValidator implements IInputValidator {
 		if (newText == null) {
 			return "Must not be null!";
 		}
+		/*if (getAlreadyUsed().contains(newText)) {
+			return "A configuration with that name already exists!";
+		}*/
 		return null;
+	}
+
+	/**
+	 * Returns the alreadyUsed.
+	 * @return ArrayList
+	 */
+	public ArrayList getAlreadyUsed() {
+		return alreadyUsed;
+	}
+
+	/**
+	 * Sets the alreadyUsed.
+	 * @param alreadyUsed The alreadyUsed to set
+	 */
+	public void setAlreadyUsed(ArrayList alreadyUsed) {
+		this.alreadyUsed = alreadyUsed;
 	}
 
 }

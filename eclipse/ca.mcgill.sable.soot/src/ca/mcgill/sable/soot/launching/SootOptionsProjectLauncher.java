@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.HashMap;
+
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
 import ca.mcgill.sable.soot.SootPlugin;
@@ -57,12 +59,27 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
         presetDialog();
         dialog.open();
         if (dialog.getReturnCode() == Dialog.CANCEL) {	
+        	SavedConfigManager scm = new SavedConfigManager();
+			scm.setEditMap(dialog.getEditMap());
+			scm.handleEdits();
       	}
       	else {
-      		TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
-      		setCmd(handler.getCmdLine());
+      		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", dialog.getConfig());
+      		ssc.toSaveString();
+      		
+      		
+      		//HashMap temp = dialog.getOkMap();
+      		//System.out.println("ok map: "+temp.get("test"));
+      		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
+      		setCmd(ssc.toRunString());
+      		System.out.println("to run String: "+ssc.toRunString());
 			runSootDirectly();
 			runFinish();
+			
+			// save config if nessesary
+			SavedConfigManager scm = new SavedConfigManager();
+			scm.setEditMap(dialog.getEditMap());
+			scm.handleEdits();
       	}
 	}
 	

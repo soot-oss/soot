@@ -26,9 +26,11 @@ public class SootSavedConfiguration {
 	private HashMap config;
 	private String name;
 	private String saved;
+	private HashMap eclipseDefs;
 
 	
 	private static final String SPACE = " ";
+	private static final String COLON = ":";
 	private static final String DASH = "--";
 	
 	/**
@@ -47,7 +49,70 @@ public class SootSavedConfiguration {
 		setSaved(saved);
 	}
 	
+	private void removeEclipseDefs(){
+		if (getEclipseDefs() == null) return;
+		System.out.println("removing eclipse defs");
+		Iterator it = getEclipseDefs().keySet().iterator();
+		while (it.hasNext()) {
+			String key = (String)it.next();
+			System.out.println("test to remove: "+key);
+			if (getConfig().containsKey(key)) {
+				if (getConfig().get(key).equals(getEclipseDefs().get(key))) {
+					System.out.println("removing: "+key);
+					getConfig().remove(key);
+				}
+			}
+			else {
+				getConfig().put(key, getOppositeVal(getEclipseDefs().get(key)) );
+			}
+		}
+		Iterator temp = getConfig().entrySet().iterator();
+		while (temp.hasNext()) {
+			System.out.println("Testing : "+temp.next().toString());
+		}
+	}
+	
+	private Object getOppositeVal(Object val) {
+		if (val instanceof Boolean) {
+			if (((Boolean)val).booleanValue()) return new Boolean(false);
+			else return new Boolean(true);
+		}
+		else {
+			return "";
+		}
+	}
+	
+	private void addEclipseDefs() {
+		System.out.println("adding eclipse defs");
+		if (getEclipseDefs() == null) return;
+		Iterator it = getEclipseDefs().keySet().iterator();
+		System.out.println("before adding saved is: "+getSaved());
+		StringBuffer tempSaved = new StringBuffer(getSaved());
+		while (it.hasNext()) {
+			String key = (String)it.next();
+			System.out.println("going to add : "+key);
+			if (getSaved().indexOf((DASH+key)) != -1) {
+				// already there don't add (implies user changed val)	
+			}
+			else {
+				// add it to end
+				tempSaved.append(SPACE);
+				tempSaved.append(DASH);
+				tempSaved.append(key);
+				tempSaved.append(SPACE);
+				tempSaved.append(getEclipseDefs().get(key).toString());
+				tempSaved.append(SPACE);
+				System.out.println("added : "+key);
+			}
+		}
+		setSaved(tempSaved.toString());
+	}
+	
+	// goes from save String to HashMap
 	public HashMap toHashMap() {
+		
+		// first add eclipse defs
+		addEclipseDefs();
 		HashMap config = new HashMap();
 		String temp = getSaved();
 		temp = temp.replaceAll("--", "&&");
@@ -86,7 +151,11 @@ public class SootSavedConfiguration {
 		return config;
 	}
 	
+	// goes from save String to run String
 	public String toRunString() {
+		
+		// first add eclipse defs
+		addEclipseDefs();
 		StringBuffer toRun = new StringBuffer(); 
 		String temp = getSaved();
 		temp = temp.replaceAll("--", "&&");
@@ -101,11 +170,17 @@ public class SootSavedConfiguration {
 					String val = next.nextToken();
 					val = val.trim();
 					System.out.println("value: /"+val+"/");
-					if ((val.equals("true")) || (val.equals("false"))) {
+					
+					// if true its a boolean and want to send
+					if (val.equals("true")) {
 						toRun.append(DASH);
 						toRun.append(key);
 						toRun.append(SPACE);
 					}
+					// if false its a boolean but don't want to send
+					else if (val.equals("false")) {
+					}
+					// non boolean
 					else {
 						toRun.append(DASH);
 						toRun.append(key);
@@ -140,7 +215,66 @@ public class SootSavedConfiguration {
 		return toRun.toString();
 	}
 	
+	
+	// goeas from HashMap to String
 	public String toSaveString() {
+		
+		// first remove eclipse defs
+		removeEclipseDefs();
+		System.out.println("removed eclipse defs");
+		StringBuffer toSave = new StringBuffer();
+		Iterator keysIt = getConfig().keySet().iterator();
+		while (keysIt.hasNext()) {
+			String key = (String)keysIt.next();
+			StringTokenizer st = new StringTokenizer(key);
+			System.out.println("about to find val");
+			Object val = getConfig().get(key);
+			System.out.println("found val");
+			switch(st.countTokens()) {
+				case 1: {
+					toSave.append(DASH);
+					toSave.append(st.nextToken());
+					toSave.append(SPACE);
+					if (val instanceof Boolean) {
+						toSave.append(val.toString());	
+					}	
+					else if (val instanceof String) {
+						toSave.append(val);
+					}			
+					toSave.append(SPACE);
+					break;
+				}
+				case 3: {
+					toSave.append(DASH);
+					toSave.append(st.nextToken());
+					toSave.append(SPACE);
+					toSave.append(st.nextToken());
+					toSave.append(SPACE);
+					toSave.append(st.nextToken());
+					toSave.append(COLON);
+					if (val instanceof Boolean) {
+						toSave.append(val.toString());	
+					}	
+					else if (val instanceof String) {
+						toSave.append(val);
+					}			
+					toSave.append(SPACE);
+					break;
+				}
+				default: {
+					//unhandled non option
+					break;
+				}
+			}
+			
+			
+		}
+		setSaved(toSave.toString());
+		System.out.println("about to return toSave string");
+		return toSave.toString();
+	}
+	
+	/*public String toSaveString() {
 		
 		Iterator it = getConfig().entrySet().iterator();
 		System.out.println(getConfig().size());
@@ -174,7 +308,7 @@ public class SootSavedConfiguration {
 							toSave.append(separator);
 							toSave.append(result);
 							toSave.append(SPACE);	
-						//}*/
+						//}
 					}
 					else if (((SootCmdFormat)valTemp).getVal() instanceof Boolean) {
 						result = ((Boolean)((SootCmdFormat)valTemp).getVal()).toString();
@@ -196,11 +330,11 @@ public class SootSavedConfiguration {
 							toSave.append(result);
 							toSave.append(SPACE);
 						}*/
-					}
+					//}
 					/*else {
 						result = "";		
 						System.out.println("no result: "+result);
-					}*/
+					}
 					
 					separator = ((SootCmdFormat)valTemp).getSeparator();
 				
@@ -216,7 +350,7 @@ public class SootSavedConfiguration {
 		}
 		
 		return toSave.toString();
-	}
+	}*/
 
 	/**
 	 * Returns the config.
@@ -267,5 +401,21 @@ public class SootSavedConfiguration {
 	}
 
 	
+
+	/**
+	 * Returns the eclipseDefs.
+	 * @return HashMap
+	 */
+	public HashMap getEclipseDefs() {
+		return eclipseDefs;
+	}
+
+	/**
+	 * Sets the eclipseDefs.
+	 * @param eclipseDefs The eclipseDefs to set
+	 */
+	public void setEclipseDefs(HashMap eclipseDefs) {
+		this.eclipseDefs = eclipseDefs;
+	}
 
 }

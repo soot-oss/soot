@@ -3,6 +3,8 @@ package ca.mcgill.sable.soot.util;
 import java.io.*;
 import java.util.*;
 
+import org.eclipse.swt.widgets.Display;
+
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.launching.*;
 
@@ -21,11 +23,13 @@ public class StreamGobbler extends Thread {
 	
 	private InputStream is;
 	private int type;
+	private Display display;
 	
 	
-	public StreamGobbler(InputStream is, int type) {
+	public StreamGobbler(Display display, InputStream is, int type) {
 		setIs(is);
 		setType(type);
+		setDisplay(display);
 		
 	}
 	
@@ -37,12 +41,37 @@ public class StreamGobbler extends Thread {
 			
 			while (true) {
 				String temp = br.readLine();
+				//int temp = isr.read();
 				//String temp = (new Character((char)isr.read())).toString();
 				if (temp == null) break;
+				//if (temp == -1) break;
+				//System.out.print((char)temp);
 				SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
+       			//se.setTextToAppend(Character.toString((char)temp));
        			se.setTextToAppend(temp);
-       			SootPlugin.getDefault().fireSootOutputEvent(se);         	
-				System.out.println(temp);
+       			final SootOutputEvent toSend = se;
+       			getDisplay().asyncExec(new Runnable(){
+       				public void run() {
+       					SootPlugin.getDefault().fireSootOutputEvent(toSend);
+       				};
+       			});
+       			se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
+       			//se.setTextToAppend(Character.toString((char)temp));
+       			se.setTextToAppend("\n");
+       			final SootOutputEvent newline = se;
+       			getDisplay().asyncExec(new Runnable(){
+       				public void run() {
+       					SootPlugin.getDefault().fireSootOutputEvent(newline);
+       				};
+       			});
+       			//SootOutputEventThread eventThread = new SootOutputEventThread(se);
+       			
+       			//getDisplay().asyncExec(eventThread);
+       			//eventThread.start();
+       			//se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
+       			//se.setTextToAppend("\n");
+       			//SootPlugin.getDefault().fireSootOutputEvent(se);         	
+				//System.out.println(temp);
 			}
 			//System.out.println("exited while loop from gobbler");
 		}
@@ -83,6 +112,20 @@ public class StreamGobbler extends Thread {
 		this.type = type;
 	}
 
-	
+	/**
+	 * Returns the display.
+	 * @return Display
+	 */
+	public Display getDisplay() {
+		return display;
+	}
+
+	/**
+	 * Sets the display.
+	 * @param display The display to set
+	 */
+	public void setDisplay(Display display) {
+		this.display = display;
+	}
 
 }

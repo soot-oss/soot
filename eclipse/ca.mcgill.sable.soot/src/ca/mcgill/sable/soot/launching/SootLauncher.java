@@ -2,6 +2,8 @@ package ca.mcgill.sable.soot.launching;
 
 import org.eclipse.ui.*;
 import org.eclipse.jface.dialogs.*;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.core.resources.*;
@@ -28,7 +30,7 @@ import java.util.*;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class SootLauncher implements IWorkbenchWindowActionDelegate {
+public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	private IWorkbenchPart part;
  	protected IWorkbenchWindow window;
@@ -38,30 +40,30 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 	protected String external_jars_location;
 	public SootClasspath sootClasspath = new SootClasspath();
 	public SootSelection sootSelection;
-	private IFolder sootOutputFolder;
+	//private IFolder sootOutputFolder;
 	private SootCommandList sootCommandList;
 	private String outputLocation;
 	private SootDefaultCommands sdc;
+	private SootOutputFilesHandler fileHandler;
 
 	public void run(IAction action) {
-
+		
 		setSootSelection(new SootSelection(structured));		
  		getSootSelection().initialize(); 		
-		
-		resetSootOutputFolder();		
+		setFileHandler(new SootOutputFilesHandler(window));
+		getFileHandler().resetSootOutputFolder(getSootSelection().getProject());		
 		initPaths();
 		initCommandList();
+
 		
 	}
+	
 	
 	private void initCommandList() {
 		setSootCommandList(new SootCommandList());
-		//getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath());		
-		//getSootCommandList().addDoubleOpt(LaunchCommands.OUTPUT_DIR, getOutputLocation());
-		
 	}
 	
-	public void resetSootOutputFolder() {
+	/*public void resetSootOutputFolder() {
 		try {
 			setSootOutputFolder(getSootSelection().getProject().getFolder("sootOutput"));
 			if (!getSootOutputFolder().exists()) {
@@ -71,7 +73,7 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 		catch (Exception e1) {
 			System.out.println(e1.getMessage());
 		}	
-	}
+	}*/
 	
 	protected void runSootDirectly() {
 		
@@ -89,89 +91,37 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 		}
 		System.out.println("about to make list be array of strings");
 		//final String [] cmdAsArray = (String []) temp;
-		SootRunner op;    
-        try {   
+		IRunnableWithProgress op; 
+		try {   
         	newProcessStarting();
-            op = new SootRunner(Display.getCurrent(), cmdAsArray);
-            if (window == null) {
-            	window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-            }
-            new  ProgressMonitorDialog(window.getShell()).run(true, true, op);
+            op = new SootRunner(temp, Display.getCurrent());
+            ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
+            //if (window == null) {
+            //	window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+            //}
+            //new  ProgressMonitorDialog(window.getShell()).run(true, true, op);
  			//ProgressIndicator pIndicator = new ProgressIndicator(pMonitorDialog.getShell());
  			//pIndicator.beginAnimatedTask();
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
+    		System.out.println("InvocationTargetException: "+e1.getMessage());
  		} 
  		catch (InterruptedException e2) {
     		// handle cancelation
-    		System.out.println(e2.getMessage());
+    		System.out.println("InterruptedException: "+e2.getMessage());
     		//op.getProc().destroy();
  		}
-		/*try {
-		final String [] cmdLine = formCmdLine(cmd);
-		final PipedInputStream pis = new PipedInputStream();
-		//StreamGobbler sootIn = new StreamGobbler(new PipedInputStream(),0);
-      	final PipedOutputStream pos = new PipedOutputStream(pis);
-      	final PrintStream sootOut = new PrintStream(pos);
-      	
-      	//StreamGobbler out = new StreamGobbler(pis,0);
-      	//out.run();
-        	(new Thread() {
-            	public void run() {
-                	Main.main(cmdLine, sootOut);
-                	try {
-                	BufferedReader br = new BufferedReader(new InputStreamReader(pis));
-                	while (true) {
-                	
-                	String temp = (String)br.readLine();
-                	if (temp == null) break;
-                	System.out.println(temp);
-                	}
-                	}
-                	catch(IOException e1) {
-                		System.out.println(e1.getMessage());
-                	}
-        		}
-            }).start();
-            //StreamGobbler out = new StreamGobbler(pis,0);        	
-              
-      	}
-      	catch (Exception e1) {
-      		System.out.println(e1.getMessage());
-      	}*/
+
 	}
-	
-	/*public void printText(String text) {
-		SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-       	se.setTextToAppend(text);
-       	//SootPlugin.getDefault().fireSootOutputEvent(se);         	
-	}
-	
-	public void handleOutput(Process proc) {
-		StreamGobbler outputGobbler = new StreamGobbler(proc.getInputStream(), StreamGobbler.OUTPUT_STREAM_TYPE);
-        StreamGobbler errorGobbler = new StreamGobbler(proc.getErrorStream(), StreamGobbler.ERROR_STREAM_TYPE);
-        Display.getCurrent().asyncExec(
-    		outputGobbler
-    	);
-        Display.getCurrent().asyncExec(
-        	errorGobbler
-        );
-	}*/
 	
 	protected void runSootAsProcess(String cmd) {
-		//try {
-                              
-        	//String exec1 = "java -cp "+sootClasspath.getSootClasspath()+" soot.Main " + cmd;
-            //System.out.println(exec1);
+		
         SootProcessRunner op;    
         try {   
         	newProcessStarting();
             op = new SootProcessRunner(Display.getCurrent(), cmd, sootClasspath);
-            //op.run(null);
-            //op.setCmd(cmd);
-            //op.setSootClasspath(sootClasspath);
-            //newProcessStarting();
+
             if (window == null) {
             	window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
             }
@@ -189,35 +139,12 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
     		//op.getProc().destroy();
  		}
  
-            //Process proc = Runtime.getRuntime().exec(exec1);
-            //StreamGobbler outputGobbler = new StreamGobbler(this, proc.getInputStream(), StreamGobbler.OUTPUT_STREAM_TYPE);
-            //StreamGobbler errorGobbler = new StreamGobbler(this, proc.getErrorStream(), StreamGobbler.ERROR_STREAM_TYPE);
-            //Display.getCurrent().asyncExec(
-    		//	outputGobbler
-    	    //);
-            //Display.getCurrent().asyncExec(
-            //	errorGobbler
-            //);
-            //outputGobbler.start()});
-            //errorGobbler.start();
-            //proc.waitFor();*/
-        	//BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-			//BufferedReader br2 = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
-			//handleSootOutput(br);
-			//handleSootOutput(br2);
-			//proc.waitFor();
-		
-		/*}
-        catch (Exception e1) {
-        	System.out.println(e1.getMessage());
-        }*/
-        //System.out.println(getSootSelection().getProject().getName());
-        //for demo only if (getSootSelection().getProject().getName().equals("test")) { 
+   
         SootAttributesHandler temp = new SootAttributesHandler();
 		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		safr.readFiles(getSootSelection().getProject().getName());
-        //}
+      
 		
         
 	}
@@ -228,25 +155,7 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
         se.setTextToAppend("Starting ...");
         SootPlugin.getDefault().fireSootOutputEvent(se);
 	}
-	
-	/*private void handleSootOutput(BufferedReader br) {
-		try {
-			//SootOutputEvent clear_event = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_CLEAR_EVENT);
-            //SootPlugin.getDefault().fireSootOutputEvent(clear_event);
-            while (true) {
-               	String temp = (String)br.readLine();
-               	if (temp == null) break;
-               	SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-               	se.setTextToAppend(temp);
-               	SootPlugin.getDefault().fireSootOutputEvent(se);
-              	//System.out.println(temp);
-            }
-		}
-		catch(Exception e1) {
-			System.out.println(e1.getMessage());
-		}
-	}*/
-	
+			
 	private String[] formCmdLine(String cmd) {
 	 
 	  	
@@ -269,22 +178,15 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 		
 		// platform location 
 		platform_location = Platform.getLocation().toOSString();
-		// external jars location - may need to change
+		// external jars location - may need to change don't think I use this anymore
 		external_jars_location = Platform.getLocation().removeLastSegments(2).toOSString();
-		setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
+		setOutputLocation(platform_location+getFileHandler().getSootOutputFolder().getFullPath().toOSString());
 		
 	}
 	
 	public void runFinish() {
-		try {
-			getSootOutputFolder().refreshLocal(IResource.DEPTH_INFINITE,null);
-			//SootOutputEvent se = new SootOutputEvent(this, ISootOutputEventConstants.SOOT_NEW_TEXT_EVENT);
-			//se.setTextToAppend("Attributes Ready");
-			//SootPlugin.getDefault().fireSootOutputEvent(se);
-		} 
-		catch (CoreException e1) {
-			System.out.println(e1.getMessage());
-		}
+		getFileHandler().refreshFolder();
+		getFileHandler().handleFilesChanged();
 	}
 	
 
@@ -347,7 +249,7 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 	 * Returns the sootOutputFolder.
 	 * @return IFolder
 	 */
-	public IFolder getSootOutputFolder() {
+	/*public IFolder getSootOutputFolder() {
 		return sootOutputFolder;
 	}
 
@@ -355,7 +257,7 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 	 * Sets the sootOutputFolder.
 	 * @param sootOutputFolder The sootOutputFolder to set
 	 */
-	public void setSootOutputFolder(IFolder sootOutputFolder) {
+	/*public void setSootOutputFolder(IFolder sootOutputFolder) {
 		this.sootOutputFolder = sootOutputFolder;
 	}
 
@@ -413,6 +315,22 @@ public class SootLauncher implements IWorkbenchWindowActionDelegate {
 	 */
 	public void setSdc(SootDefaultCommands sdc) {
 		this.sdc = sdc;
+	}
+
+	/**
+	 * Returns the fileHandler.
+	 * @return SootOutputFilesHandler
+	 */
+	public SootOutputFilesHandler getFileHandler() {
+		return fileHandler;
+	}
+
+	/**
+	 * Sets the fileHandler.
+	 * @param fileHandler The fileHandler to set
+	 */
+	public void setFileHandler(SootOutputFilesHandler fileHandler) {
+		this.fileHandler = fileHandler;
 	}
 
 }

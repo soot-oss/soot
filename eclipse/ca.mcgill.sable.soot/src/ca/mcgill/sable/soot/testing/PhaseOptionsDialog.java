@@ -39,6 +39,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
+import ca.mcgill.sable.soot.ui.*;
 import ca.mcgill.sable.soot.util.*;
 import java.util.HashMap;
 
@@ -222,384 +223,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 * all options get saved as <alias, value> pair
 	 */ 
 	protected void okPressed() {
-		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		
-		settings.put(getGeneral_Optionshelp_widget().getAlias(), getGeneral_Optionshelp_widget().getButton().getSelection());
-		
-		settings.put(getGeneral_Optionsversion_widget().getAlias(), getGeneral_Optionsversion_widget().getButton().getSelection());
-		
-		settings.put(getGeneral_Optionsverbose_widget().getAlias(), getGeneral_Optionsverbose_widget().getButton().getSelection());
-		
-		settings.put(getGeneral_Optionsapp_widget().getAlias(), getGeneral_Optionsapp_widget().getButton().getSelection());
-		
-		settings.put(getGeneral_Optionswhole_program_widget().getAlias(), getGeneral_Optionswhole_program_widget().getButton().getSelection());
-		
-		settings.put(getInput_Optionsallow_phantom_refs_widget().getAlias(), getInput_Optionsallow_phantom_refs_widget().getButton().getSelection());
-		
-		settings.put(getInput_Optionssoot_classpath_widget().getAlias(), getInput_Optionssoot_classpath_widget().getText().getText());
-		 
-		settings.put(getInput_Optionssrc_prec_widget().getAlias(), getInput_Optionssrc_prec_widget().getSelectedAlias());
-		
-		settings.put(getOutput_Optionsvia_grimp_widget().getAlias(), getOutput_Optionsvia_grimp_widget().getButton().getSelection());
-		
-		settings.put(getOutput_Optionsxml_attributes_widget().getAlias(), getOutput_Optionsxml_attributes_widget().getButton().getSelection());
-		
-		settings.put(getOutput_Optionsoutput_dir_widget().getAlias(), getOutput_Optionsoutput_dir_widget().getText().getText());
-		 
-		settings.put(getOutput_Optionsoutput_format_widget().getAlias(), getOutput_Optionsoutput_format_widget().getSelectedAlias());
-		
-		settings.put(getProcessing_Optionsoptimize_widget().getAlias(), getProcessing_Optionsoptimize_widget().getButton().getSelection());
-		
-		settings.put(getProcessing_Optionswhole_optimize_widget().getAlias(), getProcessing_Optionswhole_optimize_widget().getButton().getSelection());
-		
-		settings.put(getProcessing_Optionsvia_shimple_widget().getAlias(), getProcessing_Optionsvia_shimple_widget().getButton().getSelection());
-		
-		settings.put(getSingle_File_Mode_Optionsprocess_path_widget().getAlias(), getSingle_File_Mode_Optionsprocess_path_widget().getText().getText());
-		
-		settings.put(getApplication_Mode_Optionsanalyze_context_widget().getAlias(), getApplication_Mode_Optionsanalyze_context_widget().getButton().getSelection());
-		
-		settings.put(getApplication_Mode_Optionsinclude_widget().getAlias(), getApplication_Mode_Optionsinclude_widget().getText().getText());
-		
-		settings.put(getApplication_Mode_Optionsexclude_widget().getAlias(), getApplication_Mode_Optionsexclude_widget().getText().getText());
-		
-		settings.put(getApplication_Mode_Optionsdynamic_classes_widget().getAlias(), getApplication_Mode_Optionsdynamic_classes_widget().getText().getText());
-		
-		settings.put(getApplication_Mode_Optionsdynamic_path_widget().getAlias(), getApplication_Mode_Optionsdynamic_path_widget().getText().getText());
-		
-		settings.put(getApplication_Mode_Optionsdynamic_package_widget().getAlias(), getApplication_Mode_Optionsdynamic_package_widget().getText().getText());
-		
-		settings.put(getInput_Attribute_Optionskeep_line_number_widget().getAlias(), getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection());
-		
-		settings.put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), getInput_Attribute_Optionskeep_offset_widget().getButton().getSelection());
-		
-		settings.put(getAnnotation_Optionsannot_nullpointer_widget().getAlias(), getAnnotation_Optionsannot_nullpointer_widget().getButton().getSelection());
-		
-		settings.put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), getAnnotation_Optionsannot_arraybounds_widget().getButton().getSelection());
-		
-		settings.put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection());
-		
-		settings.put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection());
-		
-		settings.put(getMiscellaneous_Optionstime_widget().getAlias(), getMiscellaneous_Optionstime_widget().getButton().getSelection());
-		
-		settings.put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), getMiscellaneous_Optionssubtract_gc_widget().getButton().getSelection());
-		
-		settings.put(getjbdisabled_widget().getAlias(), getjbdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbno_splitting_widget().getAlias(), getjbno_splitting_widget().getButton().getSelection());
-		
-		settings.put(getjbno_typing_widget().getAlias(), getjbno_typing_widget().getButton().getSelection());
-		
-		settings.put(getjbaggregate_all_locals_widget().getAlias(), getjbaggregate_all_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbno_aggregating_widget().getAlias(), getjbno_aggregating_widget().getButton().getSelection());
-		
-		settings.put(getjbuse_original_names_widget().getAlias(), getjbuse_original_names_widget().getButton().getSelection());
-		
-		settings.put(getjbpack_locals_widget().getAlias(), getjbpack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbno_cp_widget().getAlias(), getjbno_cp_widget().getButton().getSelection());
-		
-		settings.put(getjbno_nop_elimination_widget().getAlias(), getjbno_nop_elimination_widget().getButton().getSelection());
-		
-		settings.put(getjbno_unreachable_code_elimination_widget().getAlias(), getjbno_unreachable_code_elimination_widget().getButton().getSelection());
-		
-		settings.put(getjbverbatim_widget().getAlias(), getjbverbatim_widget().getButton().getSelection());
-		
-		settings.put(getcgdisabled_widget().getAlias(), getcgdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwstpdisabled_widget().getAlias(), getwstpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwsopdisabled_widget().getAlias(), getwsopdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwjtpdisabled_widget().getAlias(), getwjtpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwjopdisabled_widget().getAlias(), getwjopdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwjapdisabled_widget().getAlias(), getwjapdisabled_widget().getButton().getSelection());
-		
-		settings.put(getstpdisabled_widget().getAlias(), getstpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getsopdisabled_widget().getAlias(), getsopdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjtpdisabled_widget().getAlias(), getjtpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopdisabled_widget().getAlias(), getjopdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapdisabled_widget().getAlias(), getjapdisabled_widget().getButton().getSelection());
-		
-		settings.put(getgbdisabled_widget().getAlias(), getgbdisabled_widget().getButton().getSelection());
-		
-		settings.put(getgopdisabled_widget().getAlias(), getgopdisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbdisabled_widget().getAlias(), getbbdisabled_widget().getButton().getSelection());
-		
-		settings.put(getbopdisabled_widget().getAlias(), getbopdisabled_widget().getButton().getSelection());
-		
-		settings.put(gettagdisabled_widget().getAlias(), gettagdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_asvdisabled_widget().getAlias(), getjbjb_asvdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_asvonly_stack_locals_widget().getAlias(), getjbjb_asvonly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_ulpdisabled_widget().getAlias(), getjbjb_ulpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_ulpunsplit_original_locals_widget().getAlias(), getjbjb_ulpunsplit_original_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_lnsdisabled_widget().getAlias(), getjbjb_lnsdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_lnsonly_stack_locals_widget().getAlias(), getjbjb_lnsonly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_cpdisabled_widget().getAlias(), getjbjb_cpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_cponly_regular_locals_widget().getAlias(), getjbjb_cponly_regular_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_cponly_stack_locals_widget().getAlias(), getjbjb_cponly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_daedisabled_widget().getAlias(), getjbjb_daedisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_daeonly_stack_locals_widget().getAlias(), getjbjb_daeonly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_lsdisabled_widget().getAlias(), getjbjb_lsdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_adisabled_widget().getAlias(), getjbjb_adisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_aonly_stack_locals_widget().getAlias(), getjbjb_aonly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_uledisabled_widget().getAlias(), getjbjb_uledisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_trdisabled_widget().getAlias(), getjbjb_trdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_cp_uledisabled_widget().getAlias(), getjbjb_cp_uledisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_lpdisabled_widget().getAlias(), getjbjb_lpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_lpunsplit_original_locals_widget().getAlias(), getjbjb_lpunsplit_original_locals_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_nedisabled_widget().getAlias(), getjbjb_nedisabled_widget().getButton().getSelection());
-		
-		settings.put(getjbjb_ucedisabled_widget().getAlias(), getjbjb_ucedisabled_widget().getButton().getSelection());
-		
-		settings.put(getcgcg_oldchadisabled_widget().getAlias(), getcgcg_oldchadisabled_widget().getButton().getSelection());
-		
-		settings.put(getcgcg_vtadisabled_widget().getAlias(), getcgcg_vtadisabled_widget().getButton().getSelection());
-		
-		settings.put(getcgcg_vtapasses_widget().getAlias(), getcgcg_vtapasses_widget().getText().getText());
-		
-		settings.put(getcgcg_chadisabled_widget().getAlias(), getcgcg_chadisabled_widget().getButton().getSelection());
-		
-		settings.put(getcgcg_chaverbose_widget().getAlias(), getcgcg_chaverbose_widget().getButton().getSelection());
-		
-		settings.put(getcgcg_sparkdisabled_widget().getAlias(), getcgcg_sparkdisabled_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_General_Optionsverbose_widget().getAlias(), getcgSpark_General_Optionsverbose_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_General_Optionsignore_types_widget().getAlias(), getcgSpark_General_Optionsignore_types_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_General_Optionsforce_gc_widget().getAlias(), getcgSpark_General_Optionsforce_gc_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_General_Optionspre_jimplify_widget().getAlias(), getcgSpark_General_Optionspre_jimplify_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget().getAlias(), getcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget().getButton().getSelection());
-		 
-		settings.put(getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().getAlias(), getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().getSelectedAlias());
-		 
-		settings.put(getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().getAlias(), getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().getSelectedAlias());
-		 
-		settings.put(getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().getAlias(), getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().getSelectedAlias());
-		 
-		settings.put(getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().getAlias(), getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().getSelectedAlias());
-		
-		settings.put(getcgSpark_Output_Optionsdump_html_widget().getAlias(), getcgSpark_Output_Optionsdump_html_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsdump_pag_widget().getAlias(), getcgSpark_Output_Optionsdump_pag_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsdump_solution_widget().getAlias(), getcgSpark_Output_Optionsdump_solution_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionstopo_sort_widget().getAlias(), getcgSpark_Output_Optionstopo_sort_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsdump_types_widget().getAlias(), getcgSpark_Output_Optionsdump_types_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsclass_method_var_widget().getAlias(), getcgSpark_Output_Optionsclass_method_var_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsdump_answer_widget().getAlias(), getcgSpark_Output_Optionsdump_answer_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionstrim_invoke_graph_widget().getAlias(), getcgSpark_Output_Optionstrim_invoke_graph_widget().getButton().getSelection());
-		
-		settings.put(getcgSpark_Output_Optionsadd_tags_widget().getAlias(), getcgSpark_Output_Optionsadd_tags_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_smbdisabled_widget().getAlias(), getwjopwjop_smbdisabled_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_smbinsert_null_checks_widget().getAlias(), getwjopwjop_smbinsert_null_checks_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_smbinsert_redundant_casts_widget().getAlias(), getwjopwjop_smbinsert_redundant_casts_widget().getButton().getSelection());
-		 
-		settings.put(getwjopwjop_smballowed_modifier_changes_widget().getAlias(), getwjopwjop_smballowed_modifier_changes_widget().getSelectedAlias());
-		
-		settings.put(getwjopwjop_sidisabled_widget().getAlias(), getwjopwjop_sidisabled_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_siinsert_null_checks_widget().getAlias(), getwjopwjop_siinsert_null_checks_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_siinsert_redundant_casts_widget().getAlias(), getwjopwjop_siinsert_redundant_casts_widget().getButton().getSelection());
-		
-		settings.put(getwjopwjop_siexpansion_factor_widget().getAlias(), getwjopwjop_siexpansion_factor_widget().getText().getText());
-		
-		settings.put(getwjopwjop_simax_container_size_widget().getAlias(), getwjopwjop_simax_container_size_widget().getText().getText());
-		
-		settings.put(getwjopwjop_simax_inlinee_size_widget().getAlias(), getwjopwjop_simax_inlinee_size_widget().getText().getText());
-		 
-		settings.put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), getwjopwjop_siallowed_modifier_changes_widget().getSelectedAlias());
-		
-		settings.put(getwjapwjap_radisabled_widget().getAlias(), getwjapwjap_radisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_csedisabled_widget().getAlias(), getjopjop_csedisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_csenaive_side_effect_widget().getAlias(), getjopjop_csenaive_side_effect_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_bcmdisabled_widget().getAlias(), getjopjop_bcmdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_bcmnaive_side_effect_widget().getAlias(), getjopjop_bcmnaive_side_effect_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_lcmdisabled_widget().getAlias(), getjopjop_lcmdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_lcmunroll_widget().getAlias(), getjopjop_lcmunroll_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_lcmnaive_side_effect_widget().getAlias(), getjopjop_lcmnaive_side_effect_widget().getButton().getSelection());
-		 
-		settings.put(getjopjop_lcmsafe_widget().getAlias(), getjopjop_lcmsafe_widget().getSelectedAlias());
-		
-		settings.put(getjopjop_cpdisabled_widget().getAlias(), getjopjop_cpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_cponly_regular_locals_widget().getAlias(), getjopjop_cponly_regular_locals_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_cponly_stack_locals_widget().getAlias(), getjopjop_cponly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_cpfdisabled_widget().getAlias(), getjopjop_cpfdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_cbfdisabled_widget().getAlias(), getjopjop_cbfdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_daedisabled_widget().getAlias(), getjopjop_daedisabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_daeonly_stack_locals_widget().getAlias(), getjopjop_daeonly_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_uce1disabled_widget().getAlias(), getjopjop_uce1disabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_uce2disabled_widget().getAlias(), getjopjop_uce2disabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_ubf1disabled_widget().getAlias(), getjopjop_ubf1disabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_ubf2disabled_widget().getAlias(), getjopjop_ubf2disabled_widget().getButton().getSelection());
-		
-		settings.put(getjopjop_uledisabled_widget().getAlias(), getjopjop_uledisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_npcdisabled_widget().getAlias(), getjapjap_npcdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_npconly_array_ref_widget().getAlias(), getjapjap_npconly_array_ref_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_npcprofiling_widget().getAlias(), getjapjap_npcprofiling_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcdisabled_widget().getAlias(), getjapjap_abcdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_all_widget().getAlias(), getjapjap_abcwith_all_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_fieldref_widget().getAlias(), getjapjap_abcwith_fieldref_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_arrayref_widget().getAlias(), getjapjap_abcwith_arrayref_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_cse_widget().getAlias(), getjapjap_abcwith_cse_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_classfield_widget().getAlias(), getjapjap_abcwith_classfield_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcwith_rectarray_widget().getAlias(), getjapjap_abcwith_rectarray_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_abcprofiling_widget().getAlias(), getjapjap_abcprofiling_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_profilingdisabled_widget().getAlias(), getjapjap_profilingdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_profilingnotmainentry_widget().getAlias(), getjapjap_profilingnotmainentry_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_seadisabled_widget().getAlias(), getjapjap_seadisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_seanaive_widget().getAlias(), getjapjap_seanaive_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_fieldrwdisabled_widget().getAlias(), getjapjap_fieldrwdisabled_widget().getButton().getSelection());
-		
-		settings.put(getjapjap_fieldrwthreshold_widget().getAlias(), getjapjap_fieldrwthreshold_widget().getText().getText());
-		
-		settings.put(getgbgb_a1disabled_widget().getAlias(), getgbgb_a1disabled_widget().getButton().getSelection());
-		
-		settings.put(getgbgb_a1only_stack_locals_widget().getAlias(), getgbgb_a1only_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getgbgb_cfdisabled_widget().getAlias(), getgbgb_cfdisabled_widget().getButton().getSelection());
-		
-		settings.put(getgbgb_a2disabled_widget().getAlias(), getgbgb_a2disabled_widget().getButton().getSelection());
-		
-		settings.put(getgbgb_a2only_stack_locals_widget().getAlias(), getgbgb_a2only_stack_locals_widget().getButton().getSelection());
-		
-		settings.put(getgbgb_uledisabled_widget().getAlias(), getgbgb_uledisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsodisabled_widget().getAlias(), getbbbb_lsodisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsodebug_widget().getAlias(), getbbbb_lsodebug_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsointer_widget().getAlias(), getbbbb_lsointer_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsosl_widget().getAlias(), getbbbb_lsosl_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsosl2_widget().getAlias(), getbbbb_lsosl2_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsosll_widget().getAlias(), getbbbb_lsosll_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lsosll2_widget().getAlias(), getbbbb_lsosll2_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_phodisabled_widget().getAlias(), getbbbb_phodisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_uledisabled_widget().getAlias(), getbbbb_uledisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lpdisabled_widget().getAlias(), getbbbb_lpdisabled_widget().getButton().getSelection());
-		
-		settings.put(getbbbb_lpunsplit_original_locals_widget().getAlias(), getbbbb_lpunsplit_original_locals_widget().getButton().getSelection());
-		
-		settings.put(gettagtag_lndisabled_widget().getAlias(), gettagtag_lndisabled_widget().getButton().getSelection());
-		
-		settings.put(gettagtag_andisabled_widget().getAlias(), gettagtag_andisabled_widget().getButton().getSelection());
-		
-		settings.put(gettagtag_depdisabled_widget().getAlias(), gettagtag_depdisabled_widget().getButton().getSelection());
-		
-		settings.put(gettagtag_fieldrwdisabled_widget().getAlias(), gettagtag_fieldrwdisabled_widget().getButton().getSelection());
-		
-
-
+			createNewConfig();	
 		super.okPressed();
-				
 	}
 
-	protected HashMap savePressed() {
-		HashMap config = new HashMap();
+	private void createNewConfig() {
+	
+		setConfig(new HashMap());
+		
 		boolean boolRes = false;
 		String stringRes = "";
 		boolean defBoolRes = false;
@@ -613,7 +244,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getGeneral_Optionshelp_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getGeneral_Optionshelp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionsversion_widget().getButton().getSelection();
@@ -623,7 +254,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getGeneral_Optionsversion_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getGeneral_Optionsversion_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionsverbose_widget().getButton().getSelection();
@@ -633,7 +264,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getGeneral_Optionsverbose_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getGeneral_Optionsverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionsapp_widget().getButton().getSelection();
@@ -643,7 +274,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getGeneral_Optionsapp_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getGeneral_Optionsapp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionswhole_program_widget().getButton().getSelection();
@@ -653,7 +284,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getGeneral_Optionswhole_program_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getGeneral_Optionswhole_program_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
@@ -663,16 +294,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getInput_Optionssoot_classpath_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
 		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionssoot_classpath_widget().getAlias(), stringRes);
+		}
+		 
 		stringRes = getInput_Optionssrc_prec_widget().getSelectedAlias();
 
 		
@@ -680,8 +313,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (!stringRes.equals(defStringRes)) {
-
-			config.put(getInput_Optionssrc_prec_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
+			getConfig().put(getInput_Optionssrc_prec_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getOutput_Optionsvia_grimp_widget().getButton().getSelection();
@@ -691,7 +323,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getOutput_Optionsvia_grimp_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getOutput_Optionsvia_grimp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
@@ -701,16 +333,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getOutput_Optionsxml_attributes_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getOutput_Optionsxml_attributes_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getOutput_Optionsoutput_dir_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
 		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getOutput_Optionsoutput_dir_widget().getAlias(), stringRes);
+		}
+		 
 		stringRes = getOutput_Optionsoutput_format_widget().getSelectedAlias();
 
 		
@@ -718,8 +352,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (!stringRes.equals(defStringRes)) {
-
-			config.put(getOutput_Optionsoutput_format_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
+			getConfig().put(getOutput_Optionsoutput_format_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getProcessing_Optionsoptimize_widget().getButton().getSelection();
@@ -729,7 +362,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getProcessing_Optionsoptimize_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getProcessing_Optionsoptimize_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getProcessing_Optionswhole_optimize_widget().getButton().getSelection();
@@ -739,7 +372,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getProcessing_Optionswhole_optimize_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getProcessing_Optionswhole_optimize_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getProcessing_Optionsvia_shimple_widget().getButton().getSelection();
@@ -749,139 +382,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getProcessing_Optionsvia_shimple_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		stringRes = getSingle_File_Mode_Optionsprocess_path_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getSingle_File_Mode_Optionsprocess_path_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		boolRes = getApplication_Mode_Optionsanalyze_context_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getApplication_Mode_Optionsanalyze_context_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getApplication_Mode_Optionsinclude_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		stringRes = getApplication_Mode_Optionsexclude_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getApplication_Mode_Optionsexclude_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		stringRes = getApplication_Mode_Optionsdynamic_classes_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getApplication_Mode_Optionsdynamic_classes_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		stringRes = getApplication_Mode_Optionsdynamic_path_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getApplication_Mode_Optionsdynamic_path_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		stringRes = getApplication_Mode_Optionsdynamic_package_widget().getText().getText();
-
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-
-		config.put(getApplication_Mode_Optionsdynamic_package_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		
-		boolRes = getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getInput_Attribute_Optionskeep_line_number_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getInput_Attribute_Optionskeep_offset_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getAnnotation_Optionsannot_nullpointer_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getAnnotation_Optionsannot_nullpointer_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getAnnotation_Optionsannot_arraybounds_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getMiscellaneous_Optionstime_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getMiscellaneous_Optionstime_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		
-		boolRes = getMiscellaneous_Optionssubtract_gc_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
+			getConfig().put(getProcessing_Optionsvia_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbdisabled_widget().getButton().getSelection();
@@ -891,7 +392,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_splitting_widget().getButton().getSelection();
@@ -901,7 +402,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_splitting_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_splitting_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_typing_widget().getButton().getSelection();
@@ -911,7 +412,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_typing_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_typing_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbaggregate_all_locals_widget().getButton().getSelection();
@@ -921,7 +422,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbaggregate_all_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbaggregate_all_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_aggregating_widget().getButton().getSelection();
@@ -931,7 +432,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_aggregating_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_aggregating_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbuse_original_names_widget().getButton().getSelection();
@@ -941,7 +442,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbuse_original_names_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbpack_locals_widget().getButton().getSelection();
@@ -951,7 +452,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbpack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbpack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_cp_widget().getButton().getSelection();
@@ -961,7 +462,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_cp_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_cp_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_nop_elimination_widget().getButton().getSelection();
@@ -971,7 +472,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_nop_elimination_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_nop_elimination_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbno_unreachable_code_elimination_widget().getButton().getSelection();
@@ -981,7 +482,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbno_unreachable_code_elimination_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbno_unreachable_code_elimination_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbverbatim_widget().getButton().getSelection();
@@ -991,167 +492,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbverbatim_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getcgdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getcgdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getwstpdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getwstpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getwsopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getwsopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getwjtpdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getwjtpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getwjopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getwjopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getwjapdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getwjapdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getstpdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getstpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getsopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getsopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getjtpdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getjtpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getjopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getjopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getjapdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getjapdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getgbdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getgbdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getgopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getgopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getbbdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getbbdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = getbopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(getbopdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		
-		boolRes = gettagdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			config.put(gettagdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbverbatim_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_asvdisabled_widget().getButton().getSelection();
@@ -1161,7 +502,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_asvdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_asvdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_asvonly_stack_locals_widget().getButton().getSelection();
@@ -1171,7 +512,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_asvonly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_asvonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpdisabled_widget().getButton().getSelection();
@@ -1181,7 +522,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_ulpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_ulpdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpunsplit_original_locals_widget().getButton().getSelection();
@@ -1191,7 +532,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_ulpunsplit_original_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lnsdisabled_widget().getButton().getSelection();
@@ -1201,7 +542,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_lnsdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_lnsdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lnsonly_stack_locals_widget().getButton().getSelection();
@@ -1211,7 +552,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cpdisabled_widget().getButton().getSelection();
@@ -1221,7 +562,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_cpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_cpdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cponly_regular_locals_widget().getButton().getSelection();
@@ -1231,7 +572,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_cponly_regular_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cponly_stack_locals_widget().getButton().getSelection();
@@ -1241,7 +582,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_cponly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_daedisabled_widget().getButton().getSelection();
@@ -1251,7 +592,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_daedisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_daedisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_daeonly_stack_locals_widget().getButton().getSelection();
@@ -1261,7 +602,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_daeonly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lsdisabled_widget().getButton().getSelection();
@@ -1271,7 +612,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_lsdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_lsdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_adisabled_widget().getButton().getSelection();
@@ -1281,7 +622,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_adisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_adisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_aonly_stack_locals_widget().getButton().getSelection();
@@ -1291,7 +632,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_aonly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_uledisabled_widget().getButton().getSelection();
@@ -1301,7 +642,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_uledisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_uledisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_trdisabled_widget().getButton().getSelection();
@@ -1311,7 +652,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_trdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_trdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cp_uledisabled_widget().getButton().getSelection();
@@ -1321,7 +662,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_cp_uledisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_cp_uledisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lpdisabled_widget().getButton().getSelection();
@@ -1331,7 +672,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_lpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_lpdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lpunsplit_original_locals_widget().getButton().getSelection();
@@ -1341,7 +682,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_lpunsplit_original_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_nedisabled_widget().getButton().getSelection();
@@ -1351,7 +692,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_nedisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_nedisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ucedisabled_widget().getButton().getSelection();
@@ -1361,7 +702,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjbjb_ucedisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjbjb_ucedisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_oldchadisabled_widget().getButton().getSelection();
@@ -1371,7 +722,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgcg_oldchadisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_oldchadisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_vtadisabled_widget().getButton().getSelection();
@@ -1381,13 +732,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgcg_vtadisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_vtadisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getcgcg_vtapasses_widget().getText().getText();
+		
+		defStringRes = "1";
+		
 
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-			config.put(getcgcg_vtapasses_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getcgcg_vtapasses_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getcgcg_chadisabled_widget().getButton().getSelection();
@@ -1397,7 +751,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgcg_chadisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_chadisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_chaverbose_widget().getButton().getSelection();
@@ -1407,7 +761,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgcg_chaverbose_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_chaverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkdisabled_widget().getButton().getSelection();
@@ -1417,307 +771,347 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgcg_sparkdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_General_Optionsverbose_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkverbose_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_General_Optionsverbose_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_General_Optionsignore_types_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkignore_types_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_General_Optionsignore_types_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkignore_types_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_General_Optionsforce_gc_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkforce_gc_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_General_Optionsforce_gc_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkforce_gc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_General_Optionspre_jimplify_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkpre_jimplify_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_General_Optionspre_jimplify_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkpre_jimplify_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkvta_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkvta_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkrta_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkrta_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkfield_based_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkfield_based_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget().getButton().getSelection();
+		boolRes = getcgcg_sparktypes_for_sites_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparktypes_for_sites_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkmerge_stringbuffer_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget().getButton().getSelection();
+		boolRes = getcgcg_sparksimulate_natives_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparksimulate_natives_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget().getButton().getSelection();
+		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparksimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkon_fly_cg_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkon_fly_cg_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkparms_as_fields_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkparms_as_fields_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkreturns_as_fields_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkreturns_as_fields_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget().getButton().getSelection();
+		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparksimplify_offline_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget().getButton().getSelection();
+		boolRes = getcgcg_sparksimplify_sccs_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparksimplify_sccs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkignore_types_for_sccs_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
-		stringRes = getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().getSelectedAlias();
+		stringRes = getcgcg_sparkpropagator_widget().getSelectedAlias();
 
 		
 		defStringRes = "worklist";
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getcgcg_sparkpropagator_widget().getAlias(), stringRes);
 		}
 		 
-		stringRes = getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().getSelectedAlias();
+		stringRes = getcgcg_sparkset_impl_widget().getSelectedAlias();
 
 		
 		defStringRes = "double";
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getcgcg_sparkset_impl_widget().getAlias(), stringRes);
 		}
 		 
-		stringRes = getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().getSelectedAlias();
+		stringRes = getcgcg_sparkdouble_set_old_widget().getSelectedAlias();
 
 		
 		defStringRes = "hybrid";
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getcgcg_sparkdouble_set_old_widget().getAlias(), stringRes);
 		}
 		 
-		stringRes = getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().getSelectedAlias();
+		stringRes = getcgcg_sparkdouble_set_new_widget().getSelectedAlias();
 
 		
 		defStringRes = "hybrid";
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getcgcg_sparkdouble_set_new_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getcgSpark_Output_Optionsdump_html_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkdump_html_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsdump_html_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdump_html_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsdump_pag_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkdump_pag_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsdump_pag_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdump_pag_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsdump_solution_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkdump_solution_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsdump_solution_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdump_solution_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionstopo_sort_widget().getButton().getSelection();
+		boolRes = getcgcg_sparktopo_sort_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionstopo_sort_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparktopo_sort_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsdump_types_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkdump_types_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsdump_types_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdump_types_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsclass_method_var_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkclass_method_var_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsclass_method_var_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkclass_method_var_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsdump_answer_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkdump_answer_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsdump_answer_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkdump_answer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionstrim_invoke_graph_widget().getButton().getSelection();
+		boolRes = getcgcg_sparktrim_invoke_graph_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionstrim_invoke_graph_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparktrim_invoke_graph_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgSpark_Output_Optionsadd_tags_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkadd_tags_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getcgSpark_Output_Optionsadd_tags_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getcgcg_sparkadd_tags_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwstpdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwstpdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwsopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwsopdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjtpdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjopdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_smbdisabled_widget().getButton().getSelection();
@@ -1727,7 +1121,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_smbdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_smbdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_smbinsert_null_checks_widget().getButton().getSelection();
@@ -1737,7 +1131,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_smbinsert_null_checks_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_smbinsert_null_checks_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_smbinsert_redundant_casts_widget().getButton().getSelection();
@@ -1747,7 +1141,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_smbinsert_redundant_casts_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_smbinsert_redundant_casts_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
 		stringRes = getwjopwjop_smballowed_modifier_changes_widget().getSelectedAlias();
@@ -1757,7 +1151,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getwjopwjop_smballowed_modifier_changes_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getwjopwjop_smballowed_modifier_changes_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getwjopwjop_sidisabled_widget().getButton().getSelection();
@@ -1767,7 +1161,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_sidisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_sidisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_siinsert_null_checks_widget().getButton().getSelection();
@@ -1777,7 +1171,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_siinsert_null_checks_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_siinsert_null_checks_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_siinsert_redundant_casts_widget().getButton().getSelection();
@@ -1787,25 +1181,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjopwjop_siinsert_redundant_casts_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjopwjop_siinsert_redundant_casts_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getwjopwjop_siexpansion_factor_widget().getText().getText();
+		
+		defStringRes = "3";
+		
 
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-			config.put(getwjopwjop_siexpansion_factor_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getwjopwjop_siexpansion_factor_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getwjopwjop_simax_container_size_widget().getText().getText();
+		
+		defStringRes = "5000";
+		
 
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-			config.put(getwjopwjop_simax_container_size_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getwjopwjop_simax_container_size_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getwjopwjop_simax_inlinee_size_widget().getText().getText();
+		
+		defStringRes = "20";
+		
 
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-			config.put(getwjopwjop_simax_inlinee_size_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getwjopwjop_simax_inlinee_size_widget().getAlias(), stringRes);
 		}
 		 
 		stringRes = getwjopwjop_siallowed_modifier_changes_widget().getSelectedAlias();
@@ -1815,7 +1218,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getwjapdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjapwjap_radisabled_widget().getButton().getSelection();
@@ -1825,7 +1238,47 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getwjapwjap_radisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getwjapwjap_radisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getstpdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getstpdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getsopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getsopdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjtpdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjtpdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_csedisabled_widget().getButton().getSelection();
@@ -1835,7 +1288,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_csedisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_csedisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_csenaive_side_effect_widget().getButton().getSelection();
@@ -1845,7 +1298,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_csenaive_side_effect_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_csenaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_bcmdisabled_widget().getButton().getSelection();
@@ -1855,7 +1308,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_bcmdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_bcmdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_bcmnaive_side_effect_widget().getButton().getSelection();
@@ -1865,7 +1318,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_bcmnaive_side_effect_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_bcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_lcmdisabled_widget().getButton().getSelection();
@@ -1875,7 +1328,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_lcmdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_lcmdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_lcmunroll_widget().getButton().getSelection();
@@ -1885,7 +1338,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_lcmunroll_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_lcmunroll_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_lcmnaive_side_effect_widget().getButton().getSelection();
@@ -1895,7 +1348,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_lcmnaive_side_effect_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_lcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		 
 		stringRes = getjopjop_lcmsafe_widget().getSelectedAlias();
@@ -1905,7 +1358,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (!stringRes.equals(defStringRes)) {
-			config.put(getjopjop_lcmsafe_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+			getConfig().put(getjopjop_lcmsafe_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getjopjop_cpdisabled_widget().getButton().getSelection();
@@ -1915,7 +1368,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_cpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_cpdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_cponly_regular_locals_widget().getButton().getSelection();
@@ -1925,7 +1378,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_cponly_regular_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_cponly_stack_locals_widget().getButton().getSelection();
@@ -1935,7 +1388,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_cponly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_cpfdisabled_widget().getButton().getSelection();
@@ -1945,7 +1398,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_cpfdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_cpfdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_cbfdisabled_widget().getButton().getSelection();
@@ -1955,7 +1408,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_cbfdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_cbfdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_daedisabled_widget().getButton().getSelection();
@@ -1965,7 +1418,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_daedisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_daedisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_daeonly_stack_locals_widget().getButton().getSelection();
@@ -1975,7 +1428,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_daeonly_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_uce1disabled_widget().getButton().getSelection();
@@ -1985,7 +1438,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_uce1disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_uce1disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_uce2disabled_widget().getButton().getSelection();
@@ -1995,7 +1448,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_uce2disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_uce2disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_ubf1disabled_widget().getButton().getSelection();
@@ -2005,7 +1458,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_ubf1disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_ubf1disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_ubf2disabled_widget().getButton().getSelection();
@@ -2015,7 +1468,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_ubf2disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_ubf2disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_uledisabled_widget().getButton().getSelection();
@@ -2025,7 +1478,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjopjop_uledisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjopjop_uledisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_npcdisabled_widget().getButton().getSelection();
@@ -2035,7 +1498,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_npcdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_npcdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_npconly_array_ref_widget().getButton().getSelection();
@@ -2045,7 +1508,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_npconly_array_ref_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_npconly_array_ref_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_npcprofiling_widget().getButton().getSelection();
@@ -2055,7 +1518,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_npcprofiling_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_npcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcdisabled_widget().getButton().getSelection();
@@ -2065,7 +1528,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_all_widget().getButton().getSelection();
@@ -2075,7 +1538,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_all_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_all_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_fieldref_widget().getButton().getSelection();
@@ -2085,7 +1548,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_fieldref_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_arrayref_widget().getButton().getSelection();
@@ -2095,7 +1558,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_arrayref_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_arrayref_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_cse_widget().getButton().getSelection();
@@ -2105,7 +1568,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_cse_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_classfield_widget().getButton().getSelection();
@@ -2115,7 +1578,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_classfield_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_classfield_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_rectarray_widget().getButton().getSelection();
@@ -2125,7 +1588,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcwith_rectarray_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcwith_rectarray_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcprofiling_widget().getButton().getSelection();
@@ -2135,7 +1598,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_abcprofiling_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_abcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_profilingdisabled_widget().getButton().getSelection();
@@ -2145,7 +1608,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_profilingdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_profilingdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_profilingnotmainentry_widget().getButton().getSelection();
@@ -2155,7 +1618,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_profilingnotmainentry_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_profilingnotmainentry_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_seadisabled_widget().getButton().getSelection();
@@ -2165,7 +1628,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_seadisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_seadisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_seanaive_widget().getButton().getSelection();
@@ -2175,7 +1638,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_seanaive_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_seanaive_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_fieldrwdisabled_widget().getButton().getSelection();
@@ -2185,13 +1648,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getjapjap_fieldrwdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getjapjap_fieldrwdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getjapjap_fieldrwthreshold_widget().getText().getText();
+		
+		defStringRes = "100";
+		
 
-	        if ((stringRes != null) && (stringRes.length() != 0)) {
-			config.put(getjapjap_fieldrwthreshold_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getjapjap_fieldrwthreshold_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getgbdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getgbdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a1disabled_widget().getButton().getSelection();
@@ -2201,7 +1677,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_a1disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_a1disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a1only_stack_locals_widget().getButton().getSelection();
@@ -2211,7 +1687,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_a1only_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_cfdisabled_widget().getButton().getSelection();
@@ -2221,7 +1697,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_cfdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_cfdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a2disabled_widget().getButton().getSelection();
@@ -2231,7 +1707,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_a2disabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_a2disabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a2only_stack_locals_widget().getButton().getSelection();
@@ -2241,7 +1717,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_a2only_stack_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_uledisabled_widget().getButton().getSelection();
@@ -2251,7 +1727,27 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getgbgb_uledisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getgbgb_uledisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getgopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getgopdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getbbdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsodisabled_widget().getButton().getSelection();
@@ -2261,7 +1757,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsodisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsodisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsodebug_widget().getButton().getSelection();
@@ -2271,7 +1767,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsodebug_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsodebug_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsointer_widget().getButton().getSelection();
@@ -2281,7 +1777,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsointer_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsointer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsosl_widget().getButton().getSelection();
@@ -2291,7 +1787,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsosl_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsosl_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsosl2_widget().getButton().getSelection();
@@ -2301,7 +1797,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsosl2_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsosl2_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsosll_widget().getButton().getSelection();
@@ -2311,7 +1807,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsosll_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsosll_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsosll2_widget().getButton().getSelection();
@@ -2321,7 +1817,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lsosll2_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lsosll2_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_phodisabled_widget().getButton().getSelection();
@@ -2331,7 +1827,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_phodisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_phodisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_uledisabled_widget().getButton().getSelection();
@@ -2341,7 +1837,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_uledisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_uledisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lpdisabled_widget().getButton().getSelection();
@@ -2351,7 +1847,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lpdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lpdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lpunsplit_original_locals_widget().getButton().getSelection();
@@ -2361,7 +1857,27 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getbopdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbopdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = gettagdisabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(gettagdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = gettagtag_lndisabled_widget().getButton().getSelection();
@@ -2371,7 +1887,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(gettagtag_lndisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(gettagtag_lndisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = gettagtag_andisabled_widget().getButton().getSelection();
@@ -2381,7 +1897,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(gettagtag_andisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(gettagtag_andisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = gettagtag_depdisabled_widget().getButton().getSelection();
@@ -2391,7 +1907,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(gettagtag_depdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(gettagtag_depdisabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = gettagtag_fieldrwdisabled_widget().getButton().getSelection();
@@ -2401,11 +1917,163 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 		if (boolRes != defBoolRes) {
-			config.put(gettagtag_fieldrwdisabled_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
+			getConfig().put(gettagtag_fieldrwdisabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getSingle_File_Mode_Optionsprocess_path_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getSingle_File_Mode_Optionsprocess_path_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getApplication_Mode_Optionsanalyze_context_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getApplication_Mode_Optionsanalyze_context_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getApplication_Mode_Optionsinclude_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getApplication_Mode_Optionsexclude_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getApplication_Mode_Optionsexclude_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getApplication_Mode_Optionsdynamic_classes_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getApplication_Mode_Optionsdynamic_classes_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getApplication_Mode_Optionsdynamic_path_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getApplication_Mode_Optionsdynamic_path_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getApplication_Mode_Optionsdynamic_package_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getApplication_Mode_Optionsdynamic_package_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Attribute_Optionskeep_line_number_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getInput_Attribute_Optionskeep_offset_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getAnnotation_Optionsannot_nullpointer_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getAnnotation_Optionsannot_nullpointer_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getAnnotation_Optionsannot_arraybounds_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getMiscellaneous_Optionstime_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getMiscellaneous_Optionstime_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getMiscellaneous_Optionssubtract_gc_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		
-		return config;
+				
+	}
+
+	protected HashMap savePressed() {
+	
+
+		createNewConfig();
+		
+		return getConfig();
 	}
 	
 
@@ -2912,7 +2580,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 
 
-		
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -3071,168 +2738,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Processing_Optionsvia_shimple_widget;
 	}	
 	
-
-	private ListOptionWidget Single_File_Mode_Optionsprocess_path_widget;
-	
-	private void setSingle_File_Mode_Optionsprocess_path_widget(ListOptionWidget widget) {
-		Single_File_Mode_Optionsprocess_path_widget = widget;
-	}
-	
-	public ListOptionWidget getSingle_File_Mode_Optionsprocess_path_widget() {
-		return Single_File_Mode_Optionsprocess_path_widget;
-	}	
-	
-	
-	private BooleanOptionWidget Application_Mode_Optionsanalyze_context_widget;
-	
-	private void setApplication_Mode_Optionsanalyze_context_widget(BooleanOptionWidget widget) {
-		Application_Mode_Optionsanalyze_context_widget = widget;
-	}
-	
-	public BooleanOptionWidget getApplication_Mode_Optionsanalyze_context_widget() {
-		return Application_Mode_Optionsanalyze_context_widget;
-	}	
-	
-
-	private ListOptionWidget Application_Mode_Optionsinclude_widget;
-	
-	private void setApplication_Mode_Optionsinclude_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsinclude_widget = widget;
-	}
-	
-	public ListOptionWidget getApplication_Mode_Optionsinclude_widget() {
-		return Application_Mode_Optionsinclude_widget;
-	}	
-	
-	
-
-	private ListOptionWidget Application_Mode_Optionsexclude_widget;
-	
-	private void setApplication_Mode_Optionsexclude_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsexclude_widget = widget;
-	}
-	
-	public ListOptionWidget getApplication_Mode_Optionsexclude_widget() {
-		return Application_Mode_Optionsexclude_widget;
-	}	
-	
-	
-
-	private ListOptionWidget Application_Mode_Optionsdynamic_classes_widget;
-	
-	private void setApplication_Mode_Optionsdynamic_classes_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsdynamic_classes_widget = widget;
-	}
-	
-	public ListOptionWidget getApplication_Mode_Optionsdynamic_classes_widget() {
-		return Application_Mode_Optionsdynamic_classes_widget;
-	}	
-	
-	
-
-	private ListOptionWidget Application_Mode_Optionsdynamic_path_widget;
-	
-	private void setApplication_Mode_Optionsdynamic_path_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsdynamic_path_widget = widget;
-	}
-	
-	public ListOptionWidget getApplication_Mode_Optionsdynamic_path_widget() {
-		return Application_Mode_Optionsdynamic_path_widget;
-	}	
-	
-	
-
-	private ListOptionWidget Application_Mode_Optionsdynamic_package_widget;
-	
-	private void setApplication_Mode_Optionsdynamic_package_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsdynamic_package_widget = widget;
-	}
-	
-	public ListOptionWidget getApplication_Mode_Optionsdynamic_package_widget() {
-		return Application_Mode_Optionsdynamic_package_widget;
-	}	
-	
-	
-	private BooleanOptionWidget Input_Attribute_Optionskeep_line_number_widget;
-	
-	private void setInput_Attribute_Optionskeep_line_number_widget(BooleanOptionWidget widget) {
-		Input_Attribute_Optionskeep_line_number_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Attribute_Optionskeep_line_number_widget() {
-		return Input_Attribute_Optionskeep_line_number_widget;
-	}	
-	
-	private BooleanOptionWidget Input_Attribute_Optionskeep_offset_widget;
-	
-	private void setInput_Attribute_Optionskeep_offset_widget(BooleanOptionWidget widget) {
-		Input_Attribute_Optionskeep_offset_widget = widget;
-	}
-	
-	public BooleanOptionWidget getInput_Attribute_Optionskeep_offset_widget() {
-		return Input_Attribute_Optionskeep_offset_widget;
-	}	
-	
-	private BooleanOptionWidget Annotation_Optionsannot_nullpointer_widget;
-	
-	private void setAnnotation_Optionsannot_nullpointer_widget(BooleanOptionWidget widget) {
-		Annotation_Optionsannot_nullpointer_widget = widget;
-	}
-	
-	public BooleanOptionWidget getAnnotation_Optionsannot_nullpointer_widget() {
-		return Annotation_Optionsannot_nullpointer_widget;
-	}	
-	
-	private BooleanOptionWidget Annotation_Optionsannot_arraybounds_widget;
-	
-	private void setAnnotation_Optionsannot_arraybounds_widget(BooleanOptionWidget widget) {
-		Annotation_Optionsannot_arraybounds_widget = widget;
-	}
-	
-	public BooleanOptionWidget getAnnotation_Optionsannot_arraybounds_widget() {
-		return Annotation_Optionsannot_arraybounds_widget;
-	}	
-	
-	private BooleanOptionWidget Annotation_Optionsannot_side_effect_widget;
-	
-	private void setAnnotation_Optionsannot_side_effect_widget(BooleanOptionWidget widget) {
-		Annotation_Optionsannot_side_effect_widget = widget;
-	}
-	
-	public BooleanOptionWidget getAnnotation_Optionsannot_side_effect_widget() {
-		return Annotation_Optionsannot_side_effect_widget;
-	}	
-	
-	private BooleanOptionWidget Annotation_Optionsannot_fieldrw_widget;
-	
-	private void setAnnotation_Optionsannot_fieldrw_widget(BooleanOptionWidget widget) {
-		Annotation_Optionsannot_fieldrw_widget = widget;
-	}
-	
-	public BooleanOptionWidget getAnnotation_Optionsannot_fieldrw_widget() {
-		return Annotation_Optionsannot_fieldrw_widget;
-	}	
-	
-	private BooleanOptionWidget Miscellaneous_Optionstime_widget;
-	
-	private void setMiscellaneous_Optionstime_widget(BooleanOptionWidget widget) {
-		Miscellaneous_Optionstime_widget = widget;
-	}
-	
-	public BooleanOptionWidget getMiscellaneous_Optionstime_widget() {
-		return Miscellaneous_Optionstime_widget;
-	}	
-	
-	private BooleanOptionWidget Miscellaneous_Optionssubtract_gc_widget;
-	
-	private void setMiscellaneous_Optionssubtract_gc_widget(BooleanOptionWidget widget) {
-		Miscellaneous_Optionssubtract_gc_widget = widget;
-	}
-	
-	public BooleanOptionWidget getMiscellaneous_Optionssubtract_gc_widget() {
-		return Miscellaneous_Optionssubtract_gc_widget;
-	}	
-	
 	private BooleanOptionWidget jbdisabled_widget;
 	
 	private void setjbdisabled_widget(BooleanOptionWidget widget) {
@@ -3341,166 +2846,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getjbverbatim_widget() {
 		return jbverbatim_widget;
-	}	
-	
-	private BooleanOptionWidget cgdisabled_widget;
-	
-	private void setcgdisabled_widget(BooleanOptionWidget widget) {
-		cgdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgdisabled_widget() {
-		return cgdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget wstpdisabled_widget;
-	
-	private void setwstpdisabled_widget(BooleanOptionWidget widget) {
-		wstpdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwstpdisabled_widget() {
-		return wstpdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget wsopdisabled_widget;
-	
-	private void setwsopdisabled_widget(BooleanOptionWidget widget) {
-		wsopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwsopdisabled_widget() {
-		return wsopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget wjtpdisabled_widget;
-	
-	private void setwjtpdisabled_widget(BooleanOptionWidget widget) {
-		wjtpdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwjtpdisabled_widget() {
-		return wjtpdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget wjopdisabled_widget;
-	
-	private void setwjopdisabled_widget(BooleanOptionWidget widget) {
-		wjopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwjopdisabled_widget() {
-		return wjopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget wjapdisabled_widget;
-	
-	private void setwjapdisabled_widget(BooleanOptionWidget widget) {
-		wjapdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getwjapdisabled_widget() {
-		return wjapdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget stpdisabled_widget;
-	
-	private void setstpdisabled_widget(BooleanOptionWidget widget) {
-		stpdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getstpdisabled_widget() {
-		return stpdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget sopdisabled_widget;
-	
-	private void setsopdisabled_widget(BooleanOptionWidget widget) {
-		sopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getsopdisabled_widget() {
-		return sopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget jtpdisabled_widget;
-	
-	private void setjtpdisabled_widget(BooleanOptionWidget widget) {
-		jtpdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjtpdisabled_widget() {
-		return jtpdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget jopdisabled_widget;
-	
-	private void setjopdisabled_widget(BooleanOptionWidget widget) {
-		jopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjopdisabled_widget() {
-		return jopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget japdisabled_widget;
-	
-	private void setjapdisabled_widget(BooleanOptionWidget widget) {
-		japdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjapdisabled_widget() {
-		return japdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget gbdisabled_widget;
-	
-	private void setgbdisabled_widget(BooleanOptionWidget widget) {
-		gbdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getgbdisabled_widget() {
-		return gbdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget gopdisabled_widget;
-	
-	private void setgopdisabled_widget(BooleanOptionWidget widget) {
-		gopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getgopdisabled_widget() {
-		return gopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget bbdisabled_widget;
-	
-	private void setbbdisabled_widget(BooleanOptionWidget widget) {
-		bbdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getbbdisabled_widget() {
-		return bbdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget bopdisabled_widget;
-	
-	private void setbopdisabled_widget(BooleanOptionWidget widget) {
-		bopdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getbopdisabled_widget() {
-		return bopdisabled_widget;
-	}	
-	
-	private BooleanOptionWidget tagdisabled_widget;
-	
-	private void settagdisabled_widget(BooleanOptionWidget widget) {
-		tagdisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget gettagdisabled_widget() {
-		return tagdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_asvdisabled_widget;
@@ -3713,6 +3058,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_ucedisabled_widget;
 	}	
 	
+	private BooleanOptionWidget cgdisabled_widget;
+	
+	private void setcgdisabled_widget(BooleanOptionWidget widget) {
+		cgdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgdisabled_widget() {
+		return cgdisabled_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_oldchadisabled_widget;
 	
 	private void setcgcg_oldchadisabled_widget(BooleanOptionWidget widget) {
@@ -3775,312 +3130,352 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkdisabled_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_General_Optionsverbose_widget;
+	private BooleanOptionWidget cgcg_sparkverbose_widget;
 	
-	private void setcgSpark_General_Optionsverbose_widget(BooleanOptionWidget widget) {
-		cgSpark_General_Optionsverbose_widget = widget;
+	private void setcgcg_sparkverbose_widget(BooleanOptionWidget widget) {
+		cgcg_sparkverbose_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_General_Optionsverbose_widget() {
-		return cgSpark_General_Optionsverbose_widget;
+	public BooleanOptionWidget getcgcg_sparkverbose_widget() {
+		return cgcg_sparkverbose_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_General_Optionsignore_types_widget;
+	private BooleanOptionWidget cgcg_sparkignore_types_widget;
 	
-	private void setcgSpark_General_Optionsignore_types_widget(BooleanOptionWidget widget) {
-		cgSpark_General_Optionsignore_types_widget = widget;
+	private void setcgcg_sparkignore_types_widget(BooleanOptionWidget widget) {
+		cgcg_sparkignore_types_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_General_Optionsignore_types_widget() {
-		return cgSpark_General_Optionsignore_types_widget;
+	public BooleanOptionWidget getcgcg_sparkignore_types_widget() {
+		return cgcg_sparkignore_types_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_General_Optionsforce_gc_widget;
+	private BooleanOptionWidget cgcg_sparkforce_gc_widget;
 	
-	private void setcgSpark_General_Optionsforce_gc_widget(BooleanOptionWidget widget) {
-		cgSpark_General_Optionsforce_gc_widget = widget;
+	private void setcgcg_sparkforce_gc_widget(BooleanOptionWidget widget) {
+		cgcg_sparkforce_gc_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_General_Optionsforce_gc_widget() {
-		return cgSpark_General_Optionsforce_gc_widget;
+	public BooleanOptionWidget getcgcg_sparkforce_gc_widget() {
+		return cgcg_sparkforce_gc_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_General_Optionspre_jimplify_widget;
+	private BooleanOptionWidget cgcg_sparkpre_jimplify_widget;
 	
-	private void setcgSpark_General_Optionspre_jimplify_widget(BooleanOptionWidget widget) {
-		cgSpark_General_Optionspre_jimplify_widget = widget;
+	private void setcgcg_sparkpre_jimplify_widget(BooleanOptionWidget widget) {
+		cgcg_sparkpre_jimplify_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_General_Optionspre_jimplify_widget() {
-		return cgSpark_General_Optionspre_jimplify_widget;
+	public BooleanOptionWidget getcgcg_sparkpre_jimplify_widget() {
+		return cgcg_sparkpre_jimplify_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget;
+	private BooleanOptionWidget cgcg_sparkvta_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget = widget;
+	private void setcgcg_sparkvta_widget(BooleanOptionWidget widget) {
+		cgcg_sparkvta_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget;
+	public BooleanOptionWidget getcgcg_sparkvta_widget() {
+		return cgcg_sparkvta_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget;
+	private BooleanOptionWidget cgcg_sparkrta_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget = widget;
+	private void setcgcg_sparkrta_widget(BooleanOptionWidget widget) {
+		cgcg_sparkrta_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget;
+	public BooleanOptionWidget getcgcg_sparkrta_widget() {
+		return cgcg_sparkrta_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget;
+	private BooleanOptionWidget cgcg_sparkfield_based_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget = widget;
+	private void setcgcg_sparkfield_based_widget(BooleanOptionWidget widget) {
+		cgcg_sparkfield_based_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget;
+	public BooleanOptionWidget getcgcg_sparkfield_based_widget() {
+		return cgcg_sparkfield_based_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget;
+	private BooleanOptionWidget cgcg_sparktypes_for_sites_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget = widget;
+	private void setcgcg_sparktypes_for_sites_widget(BooleanOptionWidget widget) {
+		cgcg_sparktypes_for_sites_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget;
+	public BooleanOptionWidget getcgcg_sparktypes_for_sites_widget() {
+		return cgcg_sparktypes_for_sites_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget;
+	private BooleanOptionWidget cgcg_sparkmerge_stringbuffer_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget = widget;
+	private void setcgcg_sparkmerge_stringbuffer_widget(BooleanOptionWidget widget) {
+		cgcg_sparkmerge_stringbuffer_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget;
+	public BooleanOptionWidget getcgcg_sparkmerge_stringbuffer_widget() {
+		return cgcg_sparkmerge_stringbuffer_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget;
+	private BooleanOptionWidget cgcg_sparksimulate_natives_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget = widget;
+	private void setcgcg_sparksimulate_natives_widget(BooleanOptionWidget widget) {
+		cgcg_sparksimulate_natives_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget;
+	public BooleanOptionWidget getcgcg_sparksimulate_natives_widget() {
+		return cgcg_sparksimulate_natives_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget;
+	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget = widget;
+	private void setcgcg_sparksimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
+		cgcg_sparksimple_edges_bidirectional_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget;
+	public BooleanOptionWidget getcgcg_sparksimple_edges_bidirectional_widget() {
+		return cgcg_sparksimple_edges_bidirectional_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget;
+	private BooleanOptionWidget cgcg_sparkon_fly_cg_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget = widget;
+	private void setcgcg_sparkon_fly_cg_widget(BooleanOptionWidget widget) {
+		cgcg_sparkon_fly_cg_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget;
+	public BooleanOptionWidget getcgcg_sparkon_fly_cg_widget() {
+		return cgcg_sparkon_fly_cg_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget;
+	private BooleanOptionWidget cgcg_sparkparms_as_fields_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget = widget;
+	private void setcgcg_sparkparms_as_fields_widget(BooleanOptionWidget widget) {
+		cgcg_sparkparms_as_fields_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget;
+	public BooleanOptionWidget getcgcg_sparkparms_as_fields_widget() {
+		return cgcg_sparkparms_as_fields_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget;
+	private BooleanOptionWidget cgcg_sparkreturns_as_fields_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget = widget;
+	private void setcgcg_sparkreturns_as_fields_widget(BooleanOptionWidget widget) {
+		cgcg_sparkreturns_as_fields_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget;
+	public BooleanOptionWidget getcgcg_sparkreturns_as_fields_widget() {
+		return cgcg_sparkreturns_as_fields_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget;
+	private BooleanOptionWidget cgcg_sparksimplify_offline_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget = widget;
+	private void setcgcg_sparksimplify_offline_widget(BooleanOptionWidget widget) {
+		cgcg_sparksimplify_offline_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget;
+	public BooleanOptionWidget getcgcg_sparksimplify_offline_widget() {
+		return cgcg_sparksimplify_offline_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget;
+	private BooleanOptionWidget cgcg_sparksimplify_sccs_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget = widget;
+	private void setcgcg_sparksimplify_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_sparksimplify_sccs_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget;
+	public BooleanOptionWidget getcgcg_sparksimplify_sccs_widget() {
+		return cgcg_sparksimplify_sccs_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget;
+	private BooleanOptionWidget cgcg_sparkignore_types_for_sccs_widget;
 	
-	private void setcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget(BooleanOptionWidget widget) {
-		cgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget = widget;
+	private void setcgcg_sparkignore_types_for_sccs_widget(BooleanOptionWidget widget) {
+		cgcg_sparkignore_types_for_sccs_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget() {
-		return cgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget;
-	}	
-	
-	
-	private MultiOptionWidget cgSpark_Points_To_Set_Flowing_Optionspropagator_widget;
-	
-	private void setcgSpark_Points_To_Set_Flowing_Optionspropagator_widget(MultiOptionWidget widget) {
-		cgSpark_Points_To_Set_Flowing_Optionspropagator_widget = widget;
-	}
-	
-	public MultiOptionWidget getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget() {
-		return cgSpark_Points_To_Set_Flowing_Optionspropagator_widget;
+	public BooleanOptionWidget getcgcg_sparkignore_types_for_sccs_widget() {
+		return cgcg_sparkignore_types_for_sccs_widget;
 	}	
 	
 	
+	private MultiOptionWidget cgcg_sparkpropagator_widget;
 	
-	private MultiOptionWidget cgSpark_Points_To_Set_Flowing_Optionsset_impl_widget;
-	
-	private void setcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget(MultiOptionWidget widget) {
-		cgSpark_Points_To_Set_Flowing_Optionsset_impl_widget = widget;
+	private void setcgcg_sparkpropagator_widget(MultiOptionWidget widget) {
+		cgcg_sparkpropagator_widget = widget;
 	}
 	
-	public MultiOptionWidget getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget() {
-		return cgSpark_Points_To_Set_Flowing_Optionsset_impl_widget;
+	public MultiOptionWidget getcgcg_sparkpropagator_widget() {
+		return cgcg_sparkpropagator_widget;
 	}	
 	
 	
 	
-	private MultiOptionWidget cgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget;
+	private MultiOptionWidget cgcg_sparkset_impl_widget;
 	
-	private void setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget(MultiOptionWidget widget) {
-		cgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget = widget;
+	private void setcgcg_sparkset_impl_widget(MultiOptionWidget widget) {
+		cgcg_sparkset_impl_widget = widget;
 	}
 	
-	public MultiOptionWidget getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget() {
-		return cgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget;
+	public MultiOptionWidget getcgcg_sparkset_impl_widget() {
+		return cgcg_sparkset_impl_widget;
 	}	
 	
 	
 	
-	private MultiOptionWidget cgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget;
+	private MultiOptionWidget cgcg_sparkdouble_set_old_widget;
 	
-	private void setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget(MultiOptionWidget widget) {
-		cgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget = widget;
+	private void setcgcg_sparkdouble_set_old_widget(MultiOptionWidget widget) {
+		cgcg_sparkdouble_set_old_widget = widget;
 	}
 	
-	public MultiOptionWidget getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget() {
-		return cgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget;
+	public MultiOptionWidget getcgcg_sparkdouble_set_old_widget() {
+		return cgcg_sparkdouble_set_old_widget;
 	}	
 	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsdump_html_widget;
 	
-	private void setcgSpark_Output_Optionsdump_html_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsdump_html_widget = widget;
+	private MultiOptionWidget cgcg_sparkdouble_set_new_widget;
+	
+	private void setcgcg_sparkdouble_set_new_widget(MultiOptionWidget widget) {
+		cgcg_sparkdouble_set_new_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsdump_html_widget() {
-		return cgSpark_Output_Optionsdump_html_widget;
+	public MultiOptionWidget getcgcg_sparkdouble_set_new_widget() {
+		return cgcg_sparkdouble_set_new_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsdump_pag_widget;
 	
-	private void setcgSpark_Output_Optionsdump_pag_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsdump_pag_widget = widget;
+	private BooleanOptionWidget cgcg_sparkdump_html_widget;
+	
+	private void setcgcg_sparkdump_html_widget(BooleanOptionWidget widget) {
+		cgcg_sparkdump_html_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsdump_pag_widget() {
-		return cgSpark_Output_Optionsdump_pag_widget;
+	public BooleanOptionWidget getcgcg_sparkdump_html_widget() {
+		return cgcg_sparkdump_html_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsdump_solution_widget;
+	private BooleanOptionWidget cgcg_sparkdump_pag_widget;
 	
-	private void setcgSpark_Output_Optionsdump_solution_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsdump_solution_widget = widget;
+	private void setcgcg_sparkdump_pag_widget(BooleanOptionWidget widget) {
+		cgcg_sparkdump_pag_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsdump_solution_widget() {
-		return cgSpark_Output_Optionsdump_solution_widget;
+	public BooleanOptionWidget getcgcg_sparkdump_pag_widget() {
+		return cgcg_sparkdump_pag_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionstopo_sort_widget;
+	private BooleanOptionWidget cgcg_sparkdump_solution_widget;
 	
-	private void setcgSpark_Output_Optionstopo_sort_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionstopo_sort_widget = widget;
+	private void setcgcg_sparkdump_solution_widget(BooleanOptionWidget widget) {
+		cgcg_sparkdump_solution_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionstopo_sort_widget() {
-		return cgSpark_Output_Optionstopo_sort_widget;
+	public BooleanOptionWidget getcgcg_sparkdump_solution_widget() {
+		return cgcg_sparkdump_solution_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsdump_types_widget;
+	private BooleanOptionWidget cgcg_sparktopo_sort_widget;
 	
-	private void setcgSpark_Output_Optionsdump_types_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsdump_types_widget = widget;
+	private void setcgcg_sparktopo_sort_widget(BooleanOptionWidget widget) {
+		cgcg_sparktopo_sort_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsdump_types_widget() {
-		return cgSpark_Output_Optionsdump_types_widget;
+	public BooleanOptionWidget getcgcg_sparktopo_sort_widget() {
+		return cgcg_sparktopo_sort_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsclass_method_var_widget;
+	private BooleanOptionWidget cgcg_sparkdump_types_widget;
 	
-	private void setcgSpark_Output_Optionsclass_method_var_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsclass_method_var_widget = widget;
+	private void setcgcg_sparkdump_types_widget(BooleanOptionWidget widget) {
+		cgcg_sparkdump_types_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsclass_method_var_widget() {
-		return cgSpark_Output_Optionsclass_method_var_widget;
+	public BooleanOptionWidget getcgcg_sparkdump_types_widget() {
+		return cgcg_sparkdump_types_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsdump_answer_widget;
+	private BooleanOptionWidget cgcg_sparkclass_method_var_widget;
 	
-	private void setcgSpark_Output_Optionsdump_answer_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsdump_answer_widget = widget;
+	private void setcgcg_sparkclass_method_var_widget(BooleanOptionWidget widget) {
+		cgcg_sparkclass_method_var_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsdump_answer_widget() {
-		return cgSpark_Output_Optionsdump_answer_widget;
+	public BooleanOptionWidget getcgcg_sparkclass_method_var_widget() {
+		return cgcg_sparkclass_method_var_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionstrim_invoke_graph_widget;
+	private BooleanOptionWidget cgcg_sparkdump_answer_widget;
 	
-	private void setcgSpark_Output_Optionstrim_invoke_graph_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionstrim_invoke_graph_widget = widget;
+	private void setcgcg_sparkdump_answer_widget(BooleanOptionWidget widget) {
+		cgcg_sparkdump_answer_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionstrim_invoke_graph_widget() {
-		return cgSpark_Output_Optionstrim_invoke_graph_widget;
+	public BooleanOptionWidget getcgcg_sparkdump_answer_widget() {
+		return cgcg_sparkdump_answer_widget;
 	}	
 	
-	private BooleanOptionWidget cgSpark_Output_Optionsadd_tags_widget;
+	private BooleanOptionWidget cgcg_sparktrim_invoke_graph_widget;
 	
-	private void setcgSpark_Output_Optionsadd_tags_widget(BooleanOptionWidget widget) {
-		cgSpark_Output_Optionsadd_tags_widget = widget;
+	private void setcgcg_sparktrim_invoke_graph_widget(BooleanOptionWidget widget) {
+		cgcg_sparktrim_invoke_graph_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgSpark_Output_Optionsadd_tags_widget() {
-		return cgSpark_Output_Optionsadd_tags_widget;
+	public BooleanOptionWidget getcgcg_sparktrim_invoke_graph_widget() {
+		return cgcg_sparktrim_invoke_graph_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkadd_tags_widget;
+	
+	private void setcgcg_sparkadd_tags_widget(BooleanOptionWidget widget) {
+		cgcg_sparkadd_tags_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkadd_tags_widget() {
+		return cgcg_sparkadd_tags_widget;
+	}	
+	
+	private BooleanOptionWidget wstpdisabled_widget;
+	
+	private void setwstpdisabled_widget(BooleanOptionWidget widget) {
+		wstpdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwstpdisabled_widget() {
+		return wstpdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget wsopdisabled_widget;
+	
+	private void setwsopdisabled_widget(BooleanOptionWidget widget) {
+		wsopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwsopdisabled_widget() {
+		return wsopdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjtpdisabled_widget;
+	
+	private void setwjtpdisabled_widget(BooleanOptionWidget widget) {
+		wjtpdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpdisabled_widget() {
+		return wjtpdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget wjopdisabled_widget;
+	
+	private void setwjopdisabled_widget(BooleanOptionWidget widget) {
+		wjopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjopdisabled_widget() {
+		return wjopdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget wjopwjop_smbdisabled_widget;
@@ -4203,6 +3598,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
+	private BooleanOptionWidget wjapdisabled_widget;
+	
+	private void setwjapdisabled_widget(BooleanOptionWidget widget) {
+		wjapdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapdisabled_widget() {
+		return wjapdisabled_widget;
+	}	
+	
 	private BooleanOptionWidget wjapwjap_radisabled_widget;
 	
 	private void setwjapwjap_radisabled_widget(BooleanOptionWidget widget) {
@@ -4211,6 +3616,46 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getwjapwjap_radisabled_widget() {
 		return wjapwjap_radisabled_widget;
+	}	
+	
+	private BooleanOptionWidget stpdisabled_widget;
+	
+	private void setstpdisabled_widget(BooleanOptionWidget widget) {
+		stpdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getstpdisabled_widget() {
+		return stpdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget sopdisabled_widget;
+	
+	private void setsopdisabled_widget(BooleanOptionWidget widget) {
+		sopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getsopdisabled_widget() {
+		return sopdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget jtpdisabled_widget;
+	
+	private void setjtpdisabled_widget(BooleanOptionWidget widget) {
+		jtpdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjtpdisabled_widget() {
+		return jtpdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget jopdisabled_widget;
+	
+	private void setjopdisabled_widget(BooleanOptionWidget widget) {
+		jopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjopdisabled_widget() {
+		return jopdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_csedisabled_widget;
@@ -4415,6 +3860,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_uledisabled_widget;
 	}	
 	
+	private BooleanOptionWidget japdisabled_widget;
+	
+	private void setjapdisabled_widget(BooleanOptionWidget widget) {
+		japdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapdisabled_widget() {
+		return japdisabled_widget;
+	}	
+	
 	private BooleanOptionWidget japjap_npcdisabled_widget;
 	
 	private void setjapjap_npcdisabled_widget(BooleanOptionWidget widget) {
@@ -4587,6 +4042,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 	
 	
+	private BooleanOptionWidget gbdisabled_widget;
+	
+	private void setgbdisabled_widget(BooleanOptionWidget widget) {
+		gbdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getgbdisabled_widget() {
+		return gbdisabled_widget;
+	}	
+	
 	private BooleanOptionWidget gbgb_a1disabled_widget;
 	
 	private void setgbgb_a1disabled_widget(BooleanOptionWidget widget) {
@@ -4645,6 +4110,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getgbgb_uledisabled_widget() {
 		return gbgb_uledisabled_widget;
+	}	
+	
+	private BooleanOptionWidget gopdisabled_widget;
+	
+	private void setgopdisabled_widget(BooleanOptionWidget widget) {
+		gopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getgopdisabled_widget() {
+		return gopdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget bbdisabled_widget;
+	
+	private void setbbdisabled_widget(BooleanOptionWidget widget) {
+		bbdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbdisabled_widget() {
+		return bbdisabled_widget;
 	}	
 	
 	private BooleanOptionWidget bbbb_lsodisabled_widget;
@@ -4757,6 +4242,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return bbbb_lpunsplit_original_locals_widget;
 	}	
 	
+	private BooleanOptionWidget bopdisabled_widget;
+	
+	private void setbopdisabled_widget(BooleanOptionWidget widget) {
+		bopdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbopdisabled_widget() {
+		return bopdisabled_widget;
+	}	
+	
+	private BooleanOptionWidget tagdisabled_widget;
+	
+	private void settagdisabled_widget(BooleanOptionWidget widget) {
+		tagdisabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget gettagdisabled_widget() {
+		return tagdisabled_widget;
+	}	
+	
 	private BooleanOptionWidget tagtag_lndisabled_widget;
 	
 	private void settagtag_lndisabled_widget(BooleanOptionWidget widget) {
@@ -4795,6 +4300,168 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget gettagtag_fieldrwdisabled_widget() {
 		return tagtag_fieldrwdisabled_widget;
+	}	
+	
+
+	private ListOptionWidget Single_File_Mode_Optionsprocess_path_widget;
+	
+	private void setSingle_File_Mode_Optionsprocess_path_widget(ListOptionWidget widget) {
+		Single_File_Mode_Optionsprocess_path_widget = widget;
+	}
+	
+	public ListOptionWidget getSingle_File_Mode_Optionsprocess_path_widget() {
+		return Single_File_Mode_Optionsprocess_path_widget;
+	}	
+	
+	
+	private BooleanOptionWidget Application_Mode_Optionsanalyze_context_widget;
+	
+	private void setApplication_Mode_Optionsanalyze_context_widget(BooleanOptionWidget widget) {
+		Application_Mode_Optionsanalyze_context_widget = widget;
+	}
+	
+	public BooleanOptionWidget getApplication_Mode_Optionsanalyze_context_widget() {
+		return Application_Mode_Optionsanalyze_context_widget;
+	}	
+	
+
+	private ListOptionWidget Application_Mode_Optionsinclude_widget;
+	
+	private void setApplication_Mode_Optionsinclude_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsinclude_widget = widget;
+	}
+	
+	public ListOptionWidget getApplication_Mode_Optionsinclude_widget() {
+		return Application_Mode_Optionsinclude_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Application_Mode_Optionsexclude_widget;
+	
+	private void setApplication_Mode_Optionsexclude_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsexclude_widget = widget;
+	}
+	
+	public ListOptionWidget getApplication_Mode_Optionsexclude_widget() {
+		return Application_Mode_Optionsexclude_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Application_Mode_Optionsdynamic_classes_widget;
+	
+	private void setApplication_Mode_Optionsdynamic_classes_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsdynamic_classes_widget = widget;
+	}
+	
+	public ListOptionWidget getApplication_Mode_Optionsdynamic_classes_widget() {
+		return Application_Mode_Optionsdynamic_classes_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Application_Mode_Optionsdynamic_path_widget;
+	
+	private void setApplication_Mode_Optionsdynamic_path_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsdynamic_path_widget = widget;
+	}
+	
+	public ListOptionWidget getApplication_Mode_Optionsdynamic_path_widget() {
+		return Application_Mode_Optionsdynamic_path_widget;
+	}	
+	
+	
+
+	private ListOptionWidget Application_Mode_Optionsdynamic_package_widget;
+	
+	private void setApplication_Mode_Optionsdynamic_package_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsdynamic_package_widget = widget;
+	}
+	
+	public ListOptionWidget getApplication_Mode_Optionsdynamic_package_widget() {
+		return Application_Mode_Optionsdynamic_package_widget;
+	}	
+	
+	
+	private BooleanOptionWidget Input_Attribute_Optionskeep_line_number_widget;
+	
+	private void setInput_Attribute_Optionskeep_line_number_widget(BooleanOptionWidget widget) {
+		Input_Attribute_Optionskeep_line_number_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Attribute_Optionskeep_line_number_widget() {
+		return Input_Attribute_Optionskeep_line_number_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Attribute_Optionskeep_offset_widget;
+	
+	private void setInput_Attribute_Optionskeep_offset_widget(BooleanOptionWidget widget) {
+		Input_Attribute_Optionskeep_offset_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Attribute_Optionskeep_offset_widget() {
+		return Input_Attribute_Optionskeep_offset_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_nullpointer_widget;
+	
+	private void setAnnotation_Optionsannot_nullpointer_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_nullpointer_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_nullpointer_widget() {
+		return Annotation_Optionsannot_nullpointer_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_arraybounds_widget;
+	
+	private void setAnnotation_Optionsannot_arraybounds_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_arraybounds_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_arraybounds_widget() {
+		return Annotation_Optionsannot_arraybounds_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_side_effect_widget;
+	
+	private void setAnnotation_Optionsannot_side_effect_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_side_effect_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_side_effect_widget() {
+		return Annotation_Optionsannot_side_effect_widget;
+	}	
+	
+	private BooleanOptionWidget Annotation_Optionsannot_fieldrw_widget;
+	
+	private void setAnnotation_Optionsannot_fieldrw_widget(BooleanOptionWidget widget) {
+		Annotation_Optionsannot_fieldrw_widget = widget;
+	}
+	
+	public BooleanOptionWidget getAnnotation_Optionsannot_fieldrw_widget() {
+		return Annotation_Optionsannot_fieldrw_widget;
+	}	
+	
+	private BooleanOptionWidget Miscellaneous_Optionstime_widget;
+	
+	private void setMiscellaneous_Optionstime_widget(BooleanOptionWidget widget) {
+		Miscellaneous_Optionstime_widget = widget;
+	}
+	
+	public BooleanOptionWidget getMiscellaneous_Optionstime_widget() {
+		return Miscellaneous_Optionstime_widget;
+	}	
+	
+	private BooleanOptionWidget Miscellaneous_Optionssubtract_gc_widget;
+	
+	private void setMiscellaneous_Optionssubtract_gc_widget(BooleanOptionWidget widget) {
+		Miscellaneous_Optionssubtract_gc_widget = widget;
+	}
+	
+	public BooleanOptionWidget getMiscellaneous_Optionssubtract_gc_widget() {
+		return Miscellaneous_Optionssubtract_gc_widget;
 	}	
 	
 
@@ -6227,7 +5894,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_General_Optionsverbose_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed information.\n        ", defaultBool)));
+		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed information.\n        ", defaultBool)));
 		
 		
 		
@@ -6243,7 +5910,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_General_Optionsignore_types_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely ignore\ndeclared types of variables and casts.\n        ", defaultBool)));
+		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely ignore\ndeclared types of variables and casts.\n        ", defaultBool)));
 		
 		
 		
@@ -6259,7 +5926,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_General_Optionsforce_gc_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Force Garbages Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be made at\nvarious points to allow memory usage to be measured.\n        ", defaultBool)));
+		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Force Garbages Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be made at\nvarious points to allow memory usage to be measured.\n        ", defaultBool)));
 		
 		
 		
@@ -6275,7 +5942,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_General_Optionspre_jimplify_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\n        When this option is set to true, convert all available methods to Jimple\nbefore starting the points-to analysis. This allows the Jimplification\ntime to be separated from the points-to time. However, it increases the\ntotal time and memory requirement, because all methods are Jimplified,\nrather than only those deemed reachable by the points-to analysis.\n        ", defaultBool)));
+		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\n        When this option is set to true, convert all available methods to Jimple\nbefore starting the points-to analysis. This allows the Jimplification\ntime to be separated from the points-to time. However, it increases the\ntotal time and memory requirement, because all methods are Jimplified,\nrather than only those deemed reachable by the points-to analysis.\n        ", defaultBool)));
 		
 		
 
@@ -6311,7 +5978,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsvta_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting ignoreBaseObjects,\ntypesForSites, and simplifySCCs to true to simulate Variable Type\nAnalysis, described in sund.hend.ea00. Note that the\nalgorithm differs from the original VTA in that it handles array\nelements more precisely. To use the results of the analysis to trim the\ninvoke graph, set the trimInvokeGraph option to true as well.\n        ", defaultBool)));
+		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting ignoreBaseObjects,\ntypesForSites, and simplifySCCs to true to simulate Variable Type\nAnalysis, described in sund.hend.ea00. Note that the\nalgorithm differs from the original VTA in that it handles array\nelements more precisely. To use the results of the analysis to trim the\ninvoke graph, set the trimInvokeGraph option to true as well.\n        ", defaultBool)));
 		
 		
 		
@@ -6327,7 +5994,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsrta_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets typesForSites to true, and causes Spark to use\na single points-to set for all variables, giving Rapid Type\nAnalysis baco.swee96.\nTo use the results of the analysis to trim the invoke graph, set the\ntrimInvokeGraph option to true as well.\n        ", defaultBool)));
+		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets typesForSites to true, and causes Spark to use\na single points-to set for all variables, giving Rapid Type\nAnalysis baco.swee96.\nTo use the results of the analysis to trim the invoke graph, set the\ntrimInvokeGraph option to true as well.\n        ", defaultBool)));
 		
 		
 		
@@ -6343,7 +6010,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsfield_based_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by variable\n(Green) nodes, and the object that the field belongs to is ignored\n(all objects are lumped together), giving a field-based analysis. Otherwise, fields are represented by\nfield reference (Red) nodes, and the objects that they belong to are\ndistinguished, giving a field-sensitive analysis.\n        ", defaultBool)));
+		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by variable\n(Green) nodes, and the object that the field belongs to is ignored\n(all objects are lumped together), giving a field-based analysis. Otherwise, fields are represented by\nfield reference (Red) nodes, and the objects that they belong to are\ndistinguished, giving a field-sensitive analysis.\n        ", defaultBool)));
 		
 		
 		
@@ -6359,7 +6026,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionstypes_for_sites_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation sites are\nused as the elements of the points-to sets.\n        ", defaultBool)));
+		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation sites are\nused as the elements of the points-to sets.\n        ", defaultBool)));
 		
 		
 		
@@ -6375,7 +6042,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsmerge_stringbuffer_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating\njava.lang.StringBuffer objects are grouped together as a single\nallocation site.\n        ", defaultBool)));
+		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating\njava.lang.StringBuffer objects are grouped together as a single\nallocation site.\n        ", defaultBool)));
 		
 		
 		
@@ -6391,7 +6058,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionssimulate_natives_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, effects of native methods are simulated.\n        ", defaultBool)));
+		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, effects of native methods are simulated.\n        ", defaultBool)));
 		
 		
 		
@@ -6407,7 +6074,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionssimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable (Green)\nnodes are made bidirectional, as in Steensgaard's analysis stee96*1.\n        ", defaultBool)));
+		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable (Green)\nnodes are made bidirectional, as in Steensgaard's analysis stee96*1.\n        ", defaultBool)));
 		
 		
 		
@@ -6423,7 +6090,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionson_fly_cg_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed on-the-fly\nas points-to information is computed. Otherwise, an initial\napproximation to the call graph is used.\n        ", defaultBool)));
+		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed on-the-fly\nas points-to information is computed. Otherwise, an initial\napproximation to the call graph is used.\n        ", defaultBool)));
 		
 		
 		
@@ -6439,7 +6106,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsparms_as_fields_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Parms As Fields", "p", "cg.spark","parms-as-fields", "\nWhen this option is set to true, parameters to methods are represented\nas fields (Red nodes) of the this object; otherwise, parameters are\nrepresented as variable (Green) nodes.\n        ", defaultBool)));
+		setcgcg_sparkparms_as_fields_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Parms As Fields", "p", "cg.spark","parms-as-fields", "\nWhen this option is set to true, parameters to methods are represented\nas fields (Red nodes) of the this object; otherwise, parameters are\nrepresented as variable (Green) nodes.\n        ", defaultBool)));
 		
 		
 		
@@ -6455,7 +6122,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Building_Optionsreturns_as_fields_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.spark","returns-as-fields", "\nWhen this option is set to true, return values from methods are\nrepresented as fields (Red nodes) of the this object; otherwise,\nreturn values are represented as variable (Green) nodes.\n        ", defaultBool)));
+		setcgcg_sparkreturns_as_fields_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Returns As Fields", "p", "cg.spark","returns-as-fields", "\nWhen this option is set to true, return values from methods are\nrepresented as fields (Red nodes) of the this object; otherwise,\nreturn values are represented as variable (Green) nodes.\n        ", defaultBool)));
 		
 		
 
@@ -6491,7 +6158,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_offline_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which are\nconnected by simple paths (so they must have the same points-to set) are\nmerged together.\n        ", defaultBool)));
+		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which are\nconnected by simple paths (so they must have the same points-to set) are\nmerged together.\n        ", defaultBool)));
 		
 		
 		
@@ -6507,7 +6174,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Simplification_Optionssimplify_sccs_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which form\nstrongly-connected components (so they must have the same points-to set)\nare merged together.\n        ", defaultBool)));
+		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which form\nstrongly-connected components (so they must have the same points-to set)\nare merged together.\n        ", defaultBool)));
 		
 		
 		
@@ -6523,7 +6190,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Pointer_Assignment_Graph_Simplification_Optionsignore_types_for_sccs_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing strongly-connected\ncomponents, nodes forming SCCs are collapsed regardless of their type.\nThe collapsed SCC is given the most general type of all the nodes in the\ncomponent.\n\nWhen this option is set to false, only edges connecting nodes of the\nsame type are considered when detecting SCCs.\n\nThis option has no effect unless simplifySCCs is true.\n        ", defaultBool)));
+		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing strongly-connected\ncomponents, nodes forming SCCs are collapsed regardless of their type.\nThe collapsed SCC is given the most general type of all the nodes in the\ncomponent.\n\nWhen this option is set to false, only edges connecting nodes of the\nsame type are considered when detecting SCCs.\n\nThis option has no effect unless simplifySCCs is true.\n        ", defaultBool)));
 		
 		
 
@@ -6582,7 +6249,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgSpark_Points_To_Set_Flowing_Optionspropagator_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use.\n\nIter is a simple, iterative algorithm, which propagates everything until the\ngraph does not change.\n\nWorklist is a worklist-based algorithm that tries\nto do as little work as possible. This is currently the fastest algorithm.\n\nAlias is an alias-edge based algorithm. This algorithm tends to take\nthe least memory for very large problems, because it does not represent\nexplicitly points-to sets of fields of heap objects.\n\nMerge is an algorithm that merges all yellow nodes with their corresponding\nred nodes. This algorithm is not yet finished.\n\nNone means that propagation is not done; the graph is only built and\nsimplified.\n        ")));
+		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use.\n\nIter is a simple, iterative algorithm, which propagates everything until the\ngraph does not change.\n\nWorklist is a worklist-based algorithm that tries\nto do as little work as possible. This is currently the fastest algorithm.\n\nAlias is an alias-edge based algorithm. This algorithm tends to take\nthe least memory for very large problems, because it does not represent\nexplicitly points-to sets of fields of heap objects.\n\nMerge is an algorithm that merges all yellow nodes with their corresponding\nred nodes. This algorithm is not yet finished.\n\nNone means that propagation is not done; the graph is only built and\nsimplified.\n        ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"propagator";
 		defKey = defKey.trim();
@@ -6590,7 +6257,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
 		
-			getcgSpark_Points_To_Set_Flowing_Optionspropagator_widget().setDef(defaultString);
+			getcgcg_sparkpropagator_widget().setDef(defaultString);
 		}
 		
 		
@@ -6630,7 +6297,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should use.\n\nHash is an implementation based on Java's built-in hash-set.\n\nBit is an implementation using a bit vector.\n\nHybrid is an implementation that keeps an explicit list of up to\n16 elements, and switches to using a bit-vector when the set gets\nlarger than this.\n\nArray is an implementation that keeps the elements of the points-to set\nin an array that is always maintained in sorted order. Set membership is\ntested using binary search, and set union and intersection are computed\nusing an algorithm based on the merge step from merge sort.\n\nDouble is an implementation that itself uses a pair of sets for\neach points-to set. The first set in the pair stores new pointed-to\nobjects that have not yet been propagated, while the second set stores\nold pointed-to objects that have been propagated and need not be\nreconsidered. This allows the propagation algorithms to be incremental,\noften speeding them up significantly.\n        ")));
+		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should use.\n\nHash is an implementation based on Java's built-in hash-set.\n\nBit is an implementation using a bit vector.\n\nHybrid is an implementation that keeps an explicit list of up to\n16 elements, and switches to using a bit-vector when the set gets\nlarger than this.\n\nArray is an implementation that keeps the elements of the points-to set\nin an array that is always maintained in sorted order. Set membership is\ntested using binary search, and set union and intersection are computed\nusing an algorithm based on the merge step from merge sort.\n\nDouble is an implementation that itself uses a pair of sets for\neach points-to set. The first set in the pair stores new pointed-to\nobjects that have not yet been propagated, while the second set stores\nold pointed-to objects that have been propagated and need not be\nreconsidered. This allows the propagation algorithms to be incremental,\noften speeding them up significantly.\n        ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
 		defKey = defKey.trim();
@@ -6638,7 +6305,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
 		
-			getcgSpark_Points_To_Set_Flowing_Optionsset_impl_widget().setDef(defaultString);
+			getcgcg_sparkset_impl_widget().setDef(defaultString);
 		}
 		
 		
@@ -6672,7 +6339,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
+		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
 		defKey = defKey.trim();
@@ -6680,7 +6347,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
 		
-			getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_old_widget().setDef(defaultString);
+			getcgcg_sparkdouble_set_old_widget().setDef(defaultString);
 		}
 		
 		
@@ -6714,7 +6381,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
+		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the double\npoints-to set implementation.\n\nThis option has no effect unless setImpl is set to double.\n        ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
 		defKey = defKey.trim();
@@ -6722,7 +6389,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
 		
-			getcgSpark_Points_To_Set_Flowing_Optionsdouble_set_new_widget().setDef(defaultString);
+			getcgcg_sparkdouble_set_new_widget().setDef(defaultString);
 		}
 		
 		
@@ -6759,7 +6426,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsdump_html_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML representation of the\npointer assignment graph is output after the analysis completes. Note\nthat this representation is typically very large.\n        ", defaultBool)));
+		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML representation of the\npointer assignment graph is output after the analysis completes. Note\nthat this representation is typically very large.\n        ", defaultBool)));
 		
 		
 		
@@ -6775,7 +6442,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsdump_pag_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the pointer assignment graph\nsuitable for processing with other solvers (such as the BDD-based solver) is\noutput before the analysis begins.\n        ", defaultBool)));
+		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the pointer assignment graph\nsuitable for processing with other solvers (such as the BDD-based solver) is\noutput before the analysis begins.\n        ", defaultBool)));
 		
 		
 		
@@ -6791,7 +6458,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsdump_solution_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the resulting points-to\nsets is dumped. The format is similar to that of the dumpPAG\noption, and is therefore suitable for comparison with the results of other\nsolvers.\n        ", defaultBool)));
+		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the resulting points-to\nsets is dumped. The format is similar to that of the dumpPAG\noption, and is therefore suitable for comparison with the results of other\nsolvers.\n        ", defaultBool)));
 		
 		
 		
@@ -6807,7 +6474,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionstopo_sort_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nis dumped with the green nodes in (pseudo-)topological order.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
+		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nis dumped with the green nodes in (pseudo-)topological order.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
 		
 		
 		
@@ -6823,7 +6490,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsdump_types_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nincludes type information for all nodes.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
+		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nincludes type information for all nodes.\n\nThis option has no effect unless dumpPAG is true.\n        ", defaultBool)));
 		
 		
 		
@@ -6839,7 +6506,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsclass_method_var_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nrepresents nodes by numbering each class, method, and variable within\nthe method separately, rather than assigning a single integer to each\nnode.\n\nThis option has no effect unless dumpPAG is true.\nSetting classMethodVar to true has the effect of setting topoSort to false.\n        ", defaultBool)));
+		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by the dumpPAG option\nrepresents nodes by numbering each class, method, and variable within\nthe method separately, rather than assigning a single integer to each\nnode.\n\nThis option has no effect unless dumpPAG is true.\nSetting classMethodVar to true has the effect of setting topoSort to false.\n        ", defaultBool)));
 		
 		
 		
@@ -6855,7 +6522,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsdump_answer_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types for each variable are\ndumped to a file, so that they can be compared with the results of\nother analyses (such as the old VTA).\n        ", defaultBool)));
+		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types for each variable are\ndumped to a file, so that they can be compared with the results of\nother analyses (such as the old VTA).\n        ", defaultBool)));
 		
 		
 		
@@ -6871,7 +6538,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionstrim_invoke_graph_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Trim Invoke Graph", "p", "cg.spark","trim-invoke-graph", "\nWhen this option is set to true, the results of the analysis are used to make the invoke graph\nmore precise after the analysis completes.\n        ", defaultBool)));
+		setcgcg_sparktrim_invoke_graph_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Trim Invoke Graph", "p", "cg.spark","trim-invoke-graph", "\nWhen this option is set to true, the results of the analysis are used to make the invoke graph\nmore precise after the analysis completes.\n        ", defaultBool)));
 		
 		
 		
@@ -6887,7 +6554,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgSpark_Output_Optionsadd_tags_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\n        When this option is set to true, the results of the analysis are encoded inside\ntags, and printed with the resulting Jimple code.\n\n        ", defaultBool)));
+		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\n        When this option is set to true, the results of the analysis are encoded inside\ntags, and printed with the resulting Jimple code.\n\n        ", defaultBool)));
 		
 		
 

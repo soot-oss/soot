@@ -5,6 +5,7 @@ import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
 import org.eclipse.jface.dialogs.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.ui.*;
 
 /**
  * @author jlhotak

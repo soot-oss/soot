@@ -66,15 +66,15 @@ public class SootProcessRunner implements IRunnableWithProgress {
       			System.out.println(e1.getMessage());
       		}*/
             
-            StreamGobbler outputGobbler = new StreamGobbler(getProc().getInputStream(), StreamGobbler.OUTPUT_STREAM_TYPE);
-            StreamGobbler errorGobbler = new StreamGobbler(getProc().getErrorStream(), StreamGobbler.ERROR_STREAM_TYPE);
+            //StreamGobbler outputGobbler = new StreamGobbler(getProc().getInputStream(), StreamGobbler.OUTPUT_STREAM_TYPE);
+            //StreamGobbler errorGobbler = new StreamGobbler(getProc().getErrorStream(), StreamGobbler.ERROR_STREAM_TYPE);
                         
-            getDisplay().asyncExec(
-    			outputGobbler
-    	    );
-            getDisplay().asyncExec(
-            	errorGobbler
-            );
+            //getDisplay().asyncExec(
+    		//	outputGobbler
+    	    //);
+            //getDisplay().asyncExec(
+            //	errorGobbler
+            //);
             
             System.out.println("just before wait for");
 			getProc().waitFor();

@@ -6,6 +6,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.LabelProvider;
 
 import ca.mcgill.sable.soot.SootPlugin;
+import ca.mcgill.sable.soot.ui.EditSavedConfigDialog;
 
 /**
  * @author jlhotak
