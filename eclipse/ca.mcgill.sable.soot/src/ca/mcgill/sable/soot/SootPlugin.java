@@ -125,7 +125,7 @@ public class SootPlugin extends AbstractUIPlugin {
 		//getManager().initialize();
 		
 		PlatformUI.getWorkbench().addWindowListener(new SootWorkbenchListener());
-		System.out.println("added window listener");
+		//System.out.println("added window listener");
 		setPartManager(new SootPartManager());
 	}
 	

@@ -158,17 +158,17 @@ public class SootFileLauncher extends SootLauncher {
 				IFile exists = null;
 				if (pkf.isDefaultPackage()) {
 					exists = output.getFile(removeFileExt(cu.getElementName())+".class");
-					System.out.println("No Pck: "+exists.getLocation().toOSString());
+					//System.out.println("No Pck: "+exists.getLocation().toOSString());
 				}
 				else {
 					IFolder pkg = output.getFolder(dotsToSlashes(pf.getElementName()));
-					System.out.println("pkg folder: "+pkg.getLocation().toOSString());
-                    System.out.println("pf path: "+pf.getPath().toOSString());
-                    if (pkg.exists()){
-                        System.out.println("pkg exists");
-                    }
+					//System.out.println("pkg folder: "+pkg.getLocation().toOSString());
+                    //System.out.println("pf path: "+pf.getPath().toOSString());
+                    //if (pkg.exists()){
+                    //    System.out.println("pkg exists");
+                    //}
                     exists = pkg.getFile(removeFileExt(cu.getElementName())+".class");
-					System.out.println("Pck: "+exists.getLocation().toOSString());
+					//System.out.println("Pck: "+exists.getLocation().toOSString());
 				}
 				if (!exists.exists()){
 					//System.out.println("underlying class file cannot be found.");
@@ -195,7 +195,7 @@ public class SootFileLauncher extends SootLauncher {
     
 	private void handleClassFile(IFile file) {
 		ClassFile cf = new ClassFile( file.getLocation().toOSString());
-		System.out.println("file: "+file.getLocation().toOSString());
+		//System.out.println("file: "+file.getLocation().toOSString());
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream( file.getLocation().toOSString() );
@@ -215,7 +215,7 @@ public class SootFileLauncher extends SootLauncher {
 		//setToProcess(replaceWithDot(cf.toString()));
 		getToProcessList().add(replaceWithDot(cf.toString()));
 		addJars();
-		System.out.println("cf: "+cf.toString());
+		//System.out.println("cf: "+cf.toString());
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
 		
 	}
@@ -252,11 +252,11 @@ public class SootFileLauncher extends SootLauncher {
 	 * @param classpathAppend The classpathAppend to set
 	 */
 	public void setClasspathAppend(String ca) {
-		System.out.println("Before adding claspath is: "+classpathAppend);
-		System.out.println("ca is: "+ca);
+		//System.out.println("Before adding claspath is: "+classpathAppend);
+		//System.out.println("ca is: "+ca);
 		
 		if ((this.classpathAppend == null) || (this.classpathAppend.equals(""))){
-			System.out.println("classpathAppend found to be null");
+			//System.out.println("classpathAppend found to be null");
 			this.classpathAppend = ca;
 		}
 		else {
@@ -264,7 +264,7 @@ public class SootFileLauncher extends SootLauncher {
 				this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
 			}
 		}
-		System.out.println("classpathAppend: "+this.classpathAppend);
+		//System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
 	/**

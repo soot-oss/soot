@@ -81,7 +81,7 @@ public class SootAttribute {
 			setLinkList(new ArrayList());
 		}
 		getLinkList().add(link);
-		System.out.println("added link for line: "+getJavaStartLn()+" "+link.getLabel());
+		//System.out.println("added link for line: "+getJavaStartLn()+" "+link.getLabel());
 		addTextAttr(link.getLabel());
 	}
 	

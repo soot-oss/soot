@@ -113,7 +113,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 
 	public String getArrayDef(String key){
 		String res = "";
-		System.out.println(getDefList().get(key).getClass());
+		//System.out.println(getDefList().get(key).getClass());
 		if (getDefList().get(key) instanceof ArrayList){
 		
 		ArrayList list = (ArrayList)getDefList().get(key);
@@ -488,7 +488,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		}
 		
 		getEditMap().put(name, newConfig.toSaveArray());
-		System.out.println("put in editMap: "+name); //$NON-NLS-1$
+		//System.out.println("put in editMap: "+name); //$NON-NLS-1$
 					
 	}
 		

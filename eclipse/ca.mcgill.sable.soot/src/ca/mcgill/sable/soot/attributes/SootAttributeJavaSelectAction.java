@@ -48,12 +48,12 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 	 */
 	public ArrayList getMarkerLinks(){
 		SootAttributesHandler handler = SootPlugin.getDefault().getManager().getAttributesHandlerForFile((IFile)getResource(getEditor()));
-		if (handler == null ) System.out.println("handler is null");
+		//if (handler == null ) System.out.println("handler is null");
 		ArrayList links = handler.getJavaLinks(getLineNumber()+1);
 		Iterator it = links.iterator();
-		while (it.hasNext()){
+		/*while (it.hasNext()){
 			System.out.println("link for line: "+(getLineNumber()+1)+" is: "+it.next());
-		}
+		}*/
 		return links;
 	}
 	
@@ -73,7 +73,7 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 	
 		IProject proj = getResource(getEditor()).getProject();
 	
-		System.out.println("proj: "+proj);
+		//System.out.println("proj: "+proj);
 	
 		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
 		String classNameToFind = slashedClassName+"."+ext;
@@ -86,7 +86,7 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 	
 			IPackageFragmentRoot [] roots = jProj.getAllPackageFragmentRoots();
 			for (int i = 0; i < roots.length; i++){
-				System.out.println(roots[i].getResource());
+				//System.out.println(roots[i].getResource());
 				if (!(roots[i].getResource() instanceof IContainer)) continue;
 				IResource fileToFind = ((IContainer)roots[i].getResource()).findMember(classNameToFind);
 				if (fileToFind == null) continue;

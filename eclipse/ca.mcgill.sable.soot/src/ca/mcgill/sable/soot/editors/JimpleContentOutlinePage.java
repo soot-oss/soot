@@ -118,7 +118,7 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 		if (selection.isEmpty()) {
-			System.out.println("selection empty");	
+			//System.out.println("selection empty");	
 		}
 		else {
 			Object elem = selection.getFirstElement();

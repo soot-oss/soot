@@ -477,7 +477,7 @@ public class JimpleBodyBuilder {
         // handle cond 
         polyglot.ast.Expr condition = ifExpr.cond();
         soot.Value sootCond = createExpr(condition);
-        System.out.println("sootCond: "+sootCond.getClass()+" "+sootCond);
+        //System.out.println("sootCond: "+sootCond.getClass()+" "+sootCond);
         boolean needIf = needSootIf(sootCond);
         if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
             sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));

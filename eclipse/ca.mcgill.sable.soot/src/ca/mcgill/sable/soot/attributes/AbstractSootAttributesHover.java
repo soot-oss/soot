@@ -50,7 +50,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 * @param ed
 	 */
 	public void setEditor(IEditorPart ed) {
-		System.out.println("editor set");
+		//System.out.println("editor set");
 		editor = ed;
 		//formTextViewer(editor);
 	}
@@ -104,7 +104,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public org.eclipse.jface.text.IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 	    try {
 			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
-			System.out.println("getting hover region and setting text viewer.");
+			//System.out.println("getting hover region and setting text viewer.");
 			//handleViewer(textViewer);
 			setDocument(textViewer.getDocument());
 			//System.out.println(getLineNum());

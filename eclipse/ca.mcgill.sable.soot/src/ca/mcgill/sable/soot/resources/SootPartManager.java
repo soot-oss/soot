@@ -43,11 +43,11 @@ public class SootPartManager {
 			
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
-			System.out.println("Part Manager for Jimple: Handler: "+handler);
+			//System.out.println("Part Manager for Jimple: Handler: "+handler);
 			if (handler != null){
-				System.out.println("jimple hanlder is not null");
-				System.out.println("jimple should update for open?: "+isUpdateForOpen());
-				System.out.println("jimple should update?: "+handler.isUpdate());
+				//System.out.println("jimple hanlder is not null");
+				//System.out.println("jimple should update for open?: "+isUpdateForOpen());
+				//System.out.println("jimple should update?: "+handler.isUpdate());
 				
 				if (isUpdateForOpen() || handler.isUpdate()){
 				
@@ -80,11 +80,11 @@ public class SootPartManager {
 			
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
-			System.out.println("Part Manager for Java: Handler: "+handler);
+			//System.out.println("Part Manager for Java: Handler: "+handler);
 			if (handler != null){
-				System.out.println("java hanlder is not null");
-				System.out.println("java should update for open?: "+isUpdateForOpen());
-				System.out.println("java should update?: "+handler.isUpdate());
+				//System.out.println("java hanlder is not null");
+				//System.out.println("java should update for open?: "+isUpdateForOpen());
+				//System.out.println("java should update?: "+handler.isUpdate());
 				if (isUpdateForOpen() || handler.isUpdate()){
 				
 					//System.out.println("updating colors");

@@ -136,7 +136,7 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 		if (image == null) {
 		 	//System.out.println("image was null");
 		  	image = descriptor.createImage();
-		  	System.out.println("created image");
+		  	//System.out.println("created image");
 		   	getImageCache().put(descriptor, image);
             
 		}
@@ -165,7 +165,7 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
-        System.out.println("disposing images");
+        //System.out.println("disposing images");
 		if (getImageCache() != null){
 			Iterator it = getImageCache().values().iterator();
 			while (it.hasNext()){

@@ -88,31 +88,31 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		try {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 			for (int i = 0; i < markers.length; i++){
-				System.out.println("document: "+getDocument());
-				System.out.println("model: "+getModel());
-				System.out.println("model marker pos: "+getModel().getMarkerPosition(markers[i]));
+				//System.out.println("document: "+getDocument());
+				//System.out.println("model: "+getModel());
+				//System.out.println("model marker pos: "+getModel().getMarkerPosition(markers[i]));
 				if (getModel().getMarkerPosition(markers[i]) == null) continue;
 				setLineNumber(getDocument().getLineOfOffset(getModel().getMarkerPosition(markers[i]).getOffset()));
   
                 
 				if (getLineNumber() == markerLine){
 					
-					System.out.println("just before getMarkerLinks()");
+					//System.out.println("just before getMarkerLinks()");
 					ArrayList links = getMarkerLinks();
 					Iterator lit = links.iterator();
-					while (lit.hasNext()){
-						System.out.println("link: "+lit.next());
-					}
+					//while (lit.hasNext()){
+						//System.out.println("link: "+lit.next());
+					//}
 					String [] list = getMarkerLabels(links);
 					if ((list == null) || (list.length == 0)) {
-						System.out.println("no links");
+						//System.out.println("no links");
 						// show no links
 					}
 					else {
 						IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getWorkbenchWindow();
-						if (window == null ){
-							System.out.println("window is null");
-						}
+						//if (window == null ){
+							//System.out.println("window is null");
+						//}
 						PopupListSelector popup = new PopupListSelector(window.getShell());
 						popup.setItems(list);
 						
@@ -125,23 +125,23 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 							Rectangle rect = new Rectangle(400, (getLineNumber()+1-topIndex), 650, 45 );
 							
 							popup.open(rect);
-                            System.out.println("popup open");
+                            //System.out.println("popup open");
                             //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
 						}	
 						else {
 							int topIndex = ((ITextViewer)((AbstractTextEditor)getEditor()).getAdapter(ITextOperationTarget.class)).getTopIndex();
-							System.out.println(getEditor().getClass());
-							System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
+							//System.out.println(getEditor().getClass());
+							//System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
 							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
 							pos = pos / getLineNumber();
 							Rectangle rect = new Rectangle(320, getLineNumber()+1-topIndex, 660, 45 );
-							System.out.println("popup open");
+							//System.out.println("popup open");
 							popup.open(rect);
 
 						}
 						
 						handleSelection(popup.getSelected(), links);
-						System.out.println("popup should be closed");
+						//System.out.println("popup should be closed");
 					}
 				}			
 			}
@@ -168,15 +168,15 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 					
 					className = la.getClassName();
 					findClass(className);
-					System.out.println("return from findClass");
+					//System.out.println("return from findClass");
 				}
 			}
 		
-			System.out.println("line to show: "+toShow);
+			//System.out.println("line to show: "+toShow);
 			
 			int selOffset = getLinkToEditor().getDocumentProvider().getDocument(getLinkToEditor().getEditorInput()).getLineOffset(toShow);
-			System.out.println("line to show: "+toShow);
-			System.out.println("offset of line to show: "+selOffset);
+			//System.out.println("line to show: "+toShow);
+			//System.out.println("offset of line to show: "+selOffset);
 			if ((selOffset != -1) && (selOffset != 0)){
 				
 				if (getLinkToEditor() instanceof JimpleEditor){

@@ -90,7 +90,7 @@ public abstract class AbstractAttributesComputer {
 		if (handler != null){
 		
 			long valuesSetTime = handler.getValuesSetTime();
-			System.out.println("value set time: "+valuesSetTime);
+			//System.out.println("value set time: "+valuesSetTime);
 			boolean update = false;
 		
 			Iterator it = files.iterator();
@@ -98,7 +98,7 @@ public abstract class AbstractAttributesComputer {
 				IFile next = (IFile)it.next();
 				//System.out.println(next.getModificationStamp());
 				File realFile = new File(next.getLocation().toOSString());
-				System.out.println(realFile.lastModified());
+				//System.out.println(realFile.lastModified());
 				
 				if (realFile.lastModified() > valuesSetTime){
 					update = true;

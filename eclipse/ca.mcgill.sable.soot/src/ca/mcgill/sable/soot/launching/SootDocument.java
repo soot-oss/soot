@@ -38,7 +38,7 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	}
 	
 	public void startUp() {
-		System.out.println("Soot doc registers as listener");
+		//System.out.println("Soot doc registers as listener");
 		SootPlugin.getDefault().addSootOutputEventListener(this);
 		//notifySootOutputView();
 	}
@@ -91,11 +91,11 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 				IViewPart part= iWorkbenchPage.findView(ISootConstants.SOOT_OUTPUT_VIEW_ID);
 				//System.out.println("asked to find part");
 				if (part == null) {
-					System.out.println("part is null");
+					//System.out.println("part is null");
 					IViewReference refs [] = iWorkbenchPage.getViewReferences();
-					for (int k = 0; k < refs.length; k++) {
+					/*for (int k = 0; k < refs.length; k++) {
 						System.out.println(refs[k].getPart(true).getClass().toString());
-					}
+					}*/
 					//System.out.println("part is null");
 				}
 				//System.out.println(part.getClass().toString());

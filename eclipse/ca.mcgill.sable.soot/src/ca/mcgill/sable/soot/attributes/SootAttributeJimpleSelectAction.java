@@ -48,7 +48,7 @@ public class SootAttributeJimpleSelectAction
 	
 	public ArrayList getMarkerLinks(){
 		SootAttributesHandler handler = SootPlugin.getDefault().getManager().getAttributesHandlerForFile((IFile)getResource(getEditor()));
-		if (handler == null ) System.out.println("handler is null");
+		//if (handler == null ) System.out.println("handler is null");
 		ArrayList links = handler.getJimpleLinks(getLineNumber()+1);
 		return links;
 	}
@@ -68,7 +68,7 @@ public class SootAttributeJimpleSelectAction
 	
 		IProject proj = getResource(getEditor()).getProject();
 	
-		System.out.println("proj: "+proj);
+		//System.out.println("proj: "+proj);
 	
 		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
 		String classNameToFind = slashedClassName+"."+ext;
@@ -82,9 +82,9 @@ public class SootAttributeJimpleSelectAction
 	
 		if (!resource.equals(className)){
 			IContainer parent = getResource(getEditor()).getParent();
-			System.out.println("parent: "+parent);
+			//System.out.println("parent: "+parent);
 			IResource file = parent.findMember(className+"."+ext);
-			System.out.println("file: "+file);
+			//System.out.println("file: "+file);
 			try {
 				setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor((IFile)file));
 					//System.out.println("after setting link to editor - diff file");

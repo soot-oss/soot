@@ -39,7 +39,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		super.run(action);
         super.handleMultipleFiles();
         
-        System.out.println("do not continue: "+isDoNotContinue());
+        //System.out.println("do not continue: "+isDoNotContinue());
 		if (isDoNotContinue()) return;
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		
@@ -53,7 +53,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 	
 	public void launch(String name, String mainClass) {
 				
-		System.out.println("launch called");	
+		//System.out.println("launch called");	
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
 		setSootCommandList(new SootCommandList());

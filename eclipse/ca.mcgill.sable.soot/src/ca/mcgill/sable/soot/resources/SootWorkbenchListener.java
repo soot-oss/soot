@@ -25,10 +25,10 @@ public class SootWorkbenchListener implements IWindowListener {
 	 * @see org.eclipse.ui.IWindowListener#windowActivated(org.eclipse.ui.IWorkbenchWindow)
 	 */
 	public void windowActivated(IWorkbenchWindow window) {
-		System.out.println("window activated");
+		//System.out.println("window activated");
         if (!initialized){
 		    window.getActivePage().addPartListener(new EditorActivationListener());
-		    System.out.println("workbench listener invoked");
+		    //System.out.println("workbench listener invoked");
 		    IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		    SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
             initialized = true;
@@ -56,7 +56,7 @@ public class SootWorkbenchListener implements IWindowListener {
 	 */
 	public void windowOpened(IWorkbenchWindow window) {
 		window.getActivePage().addPartListener(new EditorActivationListener());
-		System.out.println("workbench listener invoked");
+		//System.out.println("workbench listener invoked");
 		IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
 	}

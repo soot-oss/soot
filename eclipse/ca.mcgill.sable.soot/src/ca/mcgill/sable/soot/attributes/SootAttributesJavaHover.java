@@ -150,7 +150,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 		StringBuffer sb = new StringBuffer();
 		sb.append(SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getLocation().toOSString());
 		sb.append("/sootOutput/attributes/");
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 		String dir = sb.toString();
 		IContainer c = (IContainer)SootPlugin.getWorkspace().getRoot().getProject(getSelectedProj()).getFolder("sootOutput/attributes/");
 		try {
@@ -161,11 +161,11 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 				while (it.hasNext()){
 					
 					String fileNameToMatch = (String)it.next();
-					System.out.println("file to match: "+fileNameToMatch);
-					System.out.println(files[i].getName());
+					//System.out.println("file to match: "+fileNameToMatch);
+					//System.out.println(files[i].getName());
 					//System.out.println(getPackFileName());
 					if (files[i].getName().matches(fileNameToMatch+"[$].*") || files[i].getName().matches(fileNameToMatch+"\\."+"xml")){
-						System.out.println(files[i]);
+						//System.out.println(files[i]);
 						fileNames.add(files[i].getLocation());
 					}
 				}

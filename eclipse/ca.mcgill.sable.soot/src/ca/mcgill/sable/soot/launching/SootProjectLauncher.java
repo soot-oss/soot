@@ -75,7 +75,7 @@ public class SootProjectLauncher extends SootLauncher {
 		else {
 			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
 		}
-		System.out.println("classpathAppend: "+this.classpathAppend);
+		//System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
 	/**

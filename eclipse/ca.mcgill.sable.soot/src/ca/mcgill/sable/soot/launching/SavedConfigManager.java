@@ -101,11 +101,11 @@ public class SavedConfigManager {
 				String name = (String)it.next();
 				//System.out.println("will save: "+name);
 				if (alreadyInList(name)) {
-					System.out.println("claims it will update: "+name);
+					//System.out.println("claims it will update: "+name);
 					update(name, (ArrayList)getEditMap().get(name));
 				}
 				else {
-					System.out.println("claims it will add: "+name);
+					//System.out.println("claims it will add: "+name);
 					//System.out.println(getEditMap().get(name).getClass().toString());
 					add(name, (ArrayList)getEditMap().get(name));
 				}
@@ -154,10 +154,10 @@ public class SavedConfigManager {
 		// TODO test this - I think it doesn't ever put "default" 
 		// keyword -- test using it also
 		if (val != null) {
-			System.out.println("about to update "+name);
+			//System.out.println("about to update "+name);
 			//SootSavedConfiguration ssc = new SootSavedConfiguration(name, val);
 			settings.put(name, val);
-			System.out.println("updated");
+			//System.out.println("updated");
 		}
 		else {
 			settings.put(name, "default");
