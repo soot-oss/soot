@@ -151,14 +151,15 @@ public final class PropWorklist extends Propagator {
                 ret = true;
                 if( addedSrc instanceof VarNode ) {
                     if( addedTgt instanceof VarNode ) {
-                        VarNode edgeSrc = (VarNode) addedSrc;
-                        VarNode edgeTgt = (VarNode) addedTgt;
-                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) )
+                        VarNode edgeSrc = (VarNode) addedSrc.getReplacement();
+                        VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
+
+                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) ) 
                             varNodeWorkList.add( edgeTgt );
                     }
                 } else if( addedSrc instanceof AllocNode ) {
                     AllocNode edgeSrc = (AllocNode) addedSrc;
-                    VarNode edgeTgt = (VarNode) addedTgt;
+                    VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
                     if( edgeTgt.makeP2Set().add( edgeSrc ) )
                         varNodeWorkList.add( edgeTgt );
                 }
@@ -273,7 +274,7 @@ public final class PropWorklist extends Propagator {
 	    }
 	} );
     }
-
+    
     protected PAG pag;
     protected OnFlyCallGraph ofcg;
 }
