@@ -34,6 +34,7 @@ public final class LargeNumberedMap {
     }
     public boolean put( Numberable key, Object value ) {
         int number = key.getNumber();
+        if( number == 0 ) throw new RuntimeException( "oops, forgot to initialize" );
         if( number >= values.length ) {
             Object[] oldValues = values;
             values = new Object[ universe.size()*2+5 ];

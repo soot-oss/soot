@@ -28,7 +28,13 @@ public final class NumberedString implements Numberable {
     public NumberedString( String s ) {
         this.s = s;
     }
-    public final String getString() { return s; }
+    public final String toString() {
+        return getString();
+    }
+    public final String getString() {
+        if( number == 0 ) throw new RuntimeException( "oops" );
+        return s;
+    }
     public final void setNumber( int number ) { 
         this.number = number;
     }
