@@ -140,7 +140,7 @@ class BafLocal implements Local
     
     public List getUseBoxes()
     {
-        return AbstractInst.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public void apply(Switch s)

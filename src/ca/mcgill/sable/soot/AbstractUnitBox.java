@@ -1,10 +1,8 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -64,78 +62,49 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added changes in support of the Grimp intermediate
-   representation (with aggregated-expressions).
-
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+  - Modified on May 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+    Initial release.
+   
+  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
+public abstract class AbstractUnitBox implements UnitBox
 {
-    JimpleBody body;
+    private Unit unit;
     
-    JCaughtExceptionRef(JimpleBody b)
-    {
-        this.body = b;
-    }
-
-    public String toString()
-    {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
+    public abstract boolean canContainUnit(Unit u);
     
-    public List getUseBoxes()
+    public void setUnit(Unit unit)
     {
-        return AbstractUnit.emptyList;
-    }
-
-    public List getExceptionTypes()
-    {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
+        if(!canContainUnit(unit))
+            throw new RuntimeException("attempting to put invalid unit in UnitBox");
             
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
+        // Remove this from set of back pointers.
+            if(this.unit != null)
             {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
+                List boxesPointingToThis = this.unit.getBoxesPointingToThis();
+                boxesPointingToThis.remove(this);
             }
-        }
-        
-        return possibleTypes;
-    }
-    
-    public Type getType()
-    {
-        return RefType.v("java.lang.Throwable");
+
+        // Perform link
+            this.unit = unit;
+
+        // Add this to back pointers
+            if(this.unit != null)
+            {
+                List boxesPointingToThis = this.unit.getBoxesPointingToThis();
+                boxesPointingToThis.add(this);
+            }
     }
 
-    public void apply(Switch sw)
+    public Unit getUnit()
     {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
+        return unit;
     }
 }

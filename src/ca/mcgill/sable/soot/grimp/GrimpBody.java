@@ -145,8 +145,8 @@ public class GrimpBody implements StmtBody
         while (it.hasNext())
         {
             Stmt oldStmt = (Stmt)(it.next());
-            final StmtBox newStmtBox = new StmtBox(null);
-            final StmtBox updateStmtBox = new StmtBox(null);
+            final StmtBox newStmtBox = (StmtBox) Grimp.v().newStmtBox(null);
+            final StmtBox updateStmtBox = (StmtBox) Grimp.v().newStmtBox(null);
 
             /* we can't have a general StmtSwapper on Grimp.v() */
             /* because we need to collect a list of updates */

@@ -106,7 +106,7 @@ public class NullType extends Type
 
     public String toString()
     {
-        return "<null>";
+        return "null";
     }
 
     public void apply(Switch sw)

@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on May 13, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Moved AbstractStmt's contents to AbstractUnit.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -76,66 +79,135 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
+public abstract class AbstractUnit implements Unit
 {
-    JimpleBody body;
+    Map allMapToUnnamed = new AllMapTo("<unnamed>");
     
-    JCaughtExceptionRef(JimpleBody b)
-    {
-        this.body = b;
-    }
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     * Note that they are returned in usual evaluation order.
+     * (this is important for aggregation)
+     */
 
-    public String toString()
-    {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public List getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return emptyList;
     }
 
-    public List getExceptionTypes()
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     */
+
+    public List getDefBoxes()
     {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
-        
-        return possibleTypes;
+        return emptyList;
     }
-    
-    public Type getType()
+
+    /**
+     * The list of boxes is dynamically updated as the structure changes.
+     */
+
+    public List getUnitBoxes()
     {
-        return RefType.v("java.lang.Throwable");
+        return emptyList;
+    }
+
+    static final public List emptyList = Collections.unmodifiableList(new ArrayList());
+
+    List boxesPointingToThis = new ArrayList();
+    List valueBoxes = null;
+
+    public List getBoxesPointingToThis()
+    {
+        return boxesPointingToThis;
+    }
+
+    public List getUseAndDefBoxes()
+    {
+        if(valueBoxes == null)
+        {
+            valueBoxes = new ArrayList();
+
+            valueBoxes.addAll(getUseBoxes());
+            valueBoxes.addAll(getDefBoxes());
+
+            valueBoxes = Collections.unmodifiableList(valueBoxes);
+        }
+
+        return valueBoxes;
     }
 
     public void apply(Switch sw)
     {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
     }
+
+    public String toBriefString()
+    {
+        return toString(true, allMapToUnnamed, "");
+    }
+    
+    public String toBriefString(Map stmtToName)
+    {
+        return toString(true, stmtToName, "");
+    }
+    
+    public String toBriefString(String indentation)
+    {
+        return toString(true, allMapToUnnamed, indentation);
+    }
+    
+    public String toBriefString(Map stmtToName, String indentation)
+    {
+        return toString(true, stmtToName, indentation);
+    }
+    
+    public String toString()
+    {
+        return toString(false, allMapToUnnamed, "");
+    }
+    
+    public String toString(Map stmtToName)
+    {
+        return toString(false, stmtToName, "");
+    }
+    
+    public String toString(String indentation)
+    {
+        return toString(false, allMapToUnnamed, indentation);
+    }
+    
+    public String toString(Map stmtToName, String indentation)
+    {
+        return toString(false, stmtToName, indentation);
+    }
+    
+    abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
+
+    class AllMapTo extends AbstractMap
+    {
+        Object dest;
+        
+        public AllMapTo(Object dest)
+        {
+            this.dest = dest;
+        }
+        
+        public Object get(Object key)
+        {
+            return dest;
+        }
+        
+        public Set entrySet()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
 }
+

@@ -117,7 +117,7 @@ public class StaticFieldRef implements FieldRef, ToBriefString
 
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public Type getType()

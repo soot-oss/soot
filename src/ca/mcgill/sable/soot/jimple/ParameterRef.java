@@ -115,7 +115,7 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
 
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public Type getType()

@@ -94,11 +94,6 @@ public class JimpleToBafContext
     public void setBafLocalOfJimpleLocal(Local jimpleLocal, Local bafLocal)
     {
         jimpleLocalToBafLocal.put(jimpleLocal, bafLocal);
-    }   
-    
-    public Stmt newFutureBafStmt(Stmt jimpleStmt)
-    {
-        return null;
-    }
+    }       
 }
 

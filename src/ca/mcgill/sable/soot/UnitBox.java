@@ -79,4 +79,6 @@ public interface UnitBox
 {
     public void setUnit(Unit u);
     public Unit getUnit();
+    public boolean canContainUnit(Unit u);
+    
 }

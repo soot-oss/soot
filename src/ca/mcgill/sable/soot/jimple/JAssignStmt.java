@@ -126,9 +126,175 @@ public class JAssignStmt extends AbstractDefinitionStmt
     {
         ((StmtSwitch) sw).caseAssignStmt(this);
     }
-    
+
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-    }
+        final Value lvalue = this.getLeftOp();
+        final Value rvalue = this.getRightOp();
+
+        // Handle simple subcase where you can use the efficient iinc bytecode
+            if(lvalue instanceof Local && (rvalue instanceof AddExpr || rvalue instanceof SubExpr))
+            {
+                Local l = (Local) lvalue;
+                BinopExpr expr = (BinopExpr) rvalue;
+                Value op1 = expr.getOp1();
+                Value op2 = expr.getOp2();
+                                
+                if(l.getType().equals(IntType.v()))
+                {
+                    boolean isValidCase = false;
+                    int x = 0;
+                    
+                    if(op1 == l && op2 instanceof IntConstant) 
+                    {
+                        x = ((IntConstant) op2).value;
+                        isValidCase = true;
+                    }
+                    else if(expr instanceof AddExpr && 
+                        op2 == l && op1 instanceof IntConstant)
+                    {
+                        // Note expr can't be a SubExpr because that would be x = 3 - x
+                        
+                        x = ((IntConstant) op1).value;
+                        isValidCase = true;
+                    }
+                    
+                    if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
+                    {
+                        throw new RuntimeException("missing conversion");
+                        
+                        //emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
+                        //    ((expr instanceof AddExpr) ? x : -x), 0);
+                        return;
+                    }        
+                }
+            }
+
+            lvalue.apply(new AbstractJimpleValueSwitch()
+            {
+                public void caseArrayRef(ArrayRef v)
+                {
+                    throw new RuntimeException("missing conversion");
+                }
+                
+                public void defaultCase(Value v)
+                {
+                    throw new RuntimeException("Can't store in value " + v);
+                }
+                
+                public void caseInstanceFieldRef(InstanceFieldRef v)
+                {
+                    throw new RuntimeException("missing conversion");
+                }
+                
+                public void caseLocal(final Local v)
+                {
+                    final int slot = ((Integer) localToSlot.get(v)).intValue();
+                        
+                    v.getType().apply(new TypeSwitch()
+                    {
+                        public void caseArrayType(ArrayType t)
+                        {
+                            emitValue(rvalue);
+
+                            if(slot >= 0 && slot <= 3)
+                                emit("astore_" + slot, -1);
+                            else
+                                emit("astore " + slot, -1);
+                        }
+
+                        public void caseDoubleType(DoubleType t)
+                        {
+                            emitValue(rvalue);
+
+                            if(slot >= 0 && slot <= 3)
+                                emit("dstore_" + slot, -2);
+                            else
+                                emit("dstore " + slot, -2);
+                        }
+                        
+                        public void caseFloatType(FloatType t)
+                        {
+                            emitValue(rvalue);
+                            
+                            if(slot >= 0 && slot <= 3)
+                                emit("fstore_" + slot, -1);
+                            else
+                                emit("fstore " + slot, -1);
+                        }
+
+                        public void caseIntType(IntType t)
+                            {
+                                emitValue(rvalue);
+                                
+                                if(slot >= 0 && slot <= 3)
+                                    emit("istore_" + slot, -1);
+                                else
+                                    emit("istore " + slot, -1);
+                            }
+
+                        public void caseLongType(LongType t)
+                            {
+                                emitValue(rvalue);
+                                
+                                if(slot >= 0 && slot <= 3)
+                                    emit("lstore_" + slot, -2);
+                                else
+                                    emit("lstore " + slot, -2);
+                            }
+                        
+                        public void caseRefType(RefType t)
+                            {
+                                emitValue(rvalue);
+                                
+                                if(slot >= 0 && slot <= 3)
+                                    emit("astore_" + slot, -1);
+                                else
+                                    emit("astore " + slot, -1);
+                            }
+
+                        public void caseStmtAddressType(StmtAddressType t)
+                            {
+                                isNextGotoAJsr = true;
+                                returnAddressSlot = slot;
+                                
+                                /*
+                                  if ( slot >= 0 && slot <= 3)
+                                  emit("astore_" + slot,  );
+                                  else
+                                  emit("astore " + slot,  );
+                                  
+                                */
+                                
+                            }
+                        
+                        public void caseNullType(NullType t)
+                            {
+                                emitValue(rvalue);
+                                
+                                if(slot >= 0 && slot <= 3)
+                                    emit("astore_" + slot, -1);
+                                else
+                                    emit("astore " + slot, -1);
+                            }
+                        
+                        public void defaultCase(Type t)
+                            {
+                                throw new RuntimeException("Invalid local type: " + t);
+                            }
+                    });
+                }
+                
+                public void caseStaticFieldRef(StaticFieldRef v)
+                    {
+                        SootField field = v.getField();
+                        
+                        emitValue(rvalue);
+                        emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
+                             field.getName() + " " + jasminDescriptorOf(field.getType()),
+                             -sizeOfType(v.getField().getType()));
+                    }
+            });
+    }    
 }
 

@@ -134,10 +134,6 @@ public class JEnterMonitorStmt extends AbstractStmt implements EnterMonitorStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseEnterMonitorStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }
 

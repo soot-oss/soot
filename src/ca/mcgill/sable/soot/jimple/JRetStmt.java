@@ -137,9 +137,5 @@ public class JRetStmt extends AbstractStmt implements RetStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseRetStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

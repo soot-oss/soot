@@ -90,7 +90,7 @@ public class BNopInst extends AbstractInst implements NopInst
 
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return indentation + "return";
+        return indentation + "nop";
     }
     
     public void apply(Switch sw)
@@ -98,3 +98,8 @@ public class BNopInst extends AbstractInst implements NopInst
         ((InstSwitch) sw).caseNopInst(this);
     }   
 }
+
+
+
+
+

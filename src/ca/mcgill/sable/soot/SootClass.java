@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
@@ -868,6 +868,48 @@ public class SootClass
     public String toString()
     {
         return getName();
+    }
+
+    // gives numeric names to private fields and methods.
+    public void renameFieldsAndMethods(boolean privateOnly)
+    {
+        // Rename fields.  Ignore collisions for now.
+        {
+            Iterator fieldIt = this.getFields().iterator();
+            int fieldCount = 0;
+
+            if(fieldIt.hasNext())
+            {
+                while(fieldIt.hasNext())
+                  {
+                      SootField f = (SootField)fieldIt.next();
+                      if (!privateOnly || Modifier.isPrivate(f.getModifiers()))
+                        {
+                          String newFieldName = "__field"+(fieldCount++);
+                          f.setName(newFieldName);
+                        }
+                  }
+            }
+        }
+
+        // Rename methods.  Again, ignore collisions for now.
+        {
+            Iterator methodIt = this.getMethods().iterator();
+            int methodCount = 0;
+
+            if(methodIt.hasNext())
+            {
+                while(methodIt.hasNext())
+                  {
+                      SootMethod m = (SootMethod)methodIt.next();
+                      if (!privateOnly || Modifier.isPrivate(m.getModifiers()))
+                        {
+                          String newMethodName = "__method"+(methodCount++);
+                          m.setName(newMethodName);
+                        }
+                  }
+            }
+        }
     }
 
 }

@@ -161,7 +161,7 @@ class JimpleLocal implements Local
     
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public void apply(Switch sw)

@@ -131,8 +131,28 @@ public class BafBody implements Body
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
+                List conversionList = new ArrayList();
                 
-                ((ConvertToBaf) s).convertToBaf(context, instList);
+                ((ConvertToBaf) s).convertToBaf(context, conversionList);
+                
+                stmtToFirstInstruction.put(s, conversionList.get(0));
+                instList.addAll(conversionList);
+            }
+        }
+        
+        // Change all place holders
+        {
+            Iterator boxIt = getUnitBoxes().iterator();
+            
+            while(boxIt.hasNext())
+            {
+                UnitBox box = (UnitBox) boxIt.next();
+                
+                if(box.getUnit() instanceof PlaceholderInst)
+                {
+                    Unit source = ((PlaceholderInst) box.getUnit()).getSource();
+                    box.setUnit((Unit) stmtToFirstInstruction.get(source));
+                }
             }
         }
     }

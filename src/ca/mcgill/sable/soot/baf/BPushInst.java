@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
@@ -76,66 +76,39 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
+public class BPushInst extends AbstractInst implements PushInst
 {
-    JimpleBody body;
+    private Constant constant;
     
-    JCaughtExceptionRef(JimpleBody b)
+    BPushInst(Constant c)
     {
-        this.body = b;
+        this.constant = c;
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
+        return indentation + "push " + constant.toString();
     }
     
-    public List getUseBoxes()
-    {
-        return AbstractUnit.emptyList;
-    }
-
-    public List getExceptionTypes()
-    {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
-        
-        return possibleTypes;
-    }
-    
-    public Type getType()
-    {
-        return RefType.v("java.lang.Throwable");
-    }
-
     public void apply(Switch sw)
     {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
+        ((InstSwitch) sw).casePushInst(this);
+    }   
+    
+    public Constant getConstant()
+    {
+        return constant;
+    }
+    
+    public void setConstant(Constant c)
+    {
+        this.constant = c;
     }
 }

@@ -132,9 +132,5 @@ public class JThrowStmt extends AbstractStmt implements ThrowStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseThrowStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

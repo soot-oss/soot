@@ -82,40 +82,16 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public class StmtBox implements UnitBox
+public class StmtBox extends AbstractUnitBox
 {
-    private Stmt stmt;
-
-    public StmtBox(Stmt stmt)
+    StmtBox(Stmt s)
     {
-        setUnit(stmt);
+        setUnit(s);
     }
-
-    public void setUnit(Unit unit)
+    
+    public boolean canContainUnit(Unit u)
     {
-        Stmt stmt = (Stmt) unit;
-
-        // Remove this from set of back pointers.
-            if(this.stmt != null)
-            {
-                List boxesPointingToThis = this.stmt.getBoxesPointingToThis();
-                boxesPointingToThis.remove(this);
-            }
-
-
-        // Perform link
-            this.stmt = stmt;
-
-        // Add this to back pointers
-            if(this.stmt != null)
-            {
-                List boxesPointingToThis = this.stmt.getBoxesPointingToThis();
-                boxesPointingToThis.add(this);
-            }
-    }
-
-    public Unit getUnit()
-    {
-        return stmt;
+        return u instanceof Stmt || u == null;
     }
 }
+

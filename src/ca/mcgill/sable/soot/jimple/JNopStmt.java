@@ -78,6 +78,7 @@
 
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
@@ -96,9 +97,10 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseNopStmt(this);
-    }
+    }    
     
     public void convertToBaf(JimpleToBafContext context, List out)
     {
+        out.add(Baf.v().newNopInst());
     }
 }

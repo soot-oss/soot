@@ -78,14 +78,21 @@
 
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Value
+public abstract class Constant implements ca.mcgill.sable.util.ValueObject, Value, ConvertToBaf
 {
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
+    }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        out.add(Baf.v().newPushInst(this));
     }
 }
+

@@ -71,6 +71,7 @@
 
 package ca.mcgill.sable.soot.baf;
 
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
@@ -107,6 +108,27 @@ public class Baf implements BodyRepresentation
     {
         return new BNopInst();
     }
+
+    public GotoInst newGotoInst(Unit unit)
+    {
+        return new BGotoInst(unit);
+    }
+
+    public PlaceholderInst newPlaceholderInst(Unit source)
+    {
+        return new PlaceholderInst(source);
+    }
+        
+    public UnitBox newInstBox(Unit unit)
+    {
+        return new InstBox((Inst) unit);
+    }
+    
+    public PushInst newPushInst(Constant c)
+    {
+        return new BPushInst(c);
+    }
+
 }
 
 

@@ -150,7 +150,8 @@ public class SimpleLocalDefs implements LocalDefs
         List toReturn = (List) localStmtPairToDefs.get(pair);
         
         if(toReturn == null)
-            throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + s.toBriefString());
+            throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
+                ((ToBriefString) s).toBriefString());
         
         return toReturn;
     }

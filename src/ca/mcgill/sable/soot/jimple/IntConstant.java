@@ -116,4 +116,5 @@ public class IntConstant extends Constant implements Switchable, ToBriefString
     {
         ((ConstantSwitch) sw).caseIntConstant(this);
     }
+    
 }

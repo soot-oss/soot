@@ -83,13 +83,8 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 
-public interface Stmt extends Unit, ToBriefString
+public interface Stmt extends Unit
 {
-    public List getUseBoxes();
-    public List getDefBoxes();
-    public List getUnitBoxes();
-    public List getBoxesPointingToThis();
-    public List getUseAndDefBoxes();
     public String toBriefString();
     public String toBriefString(Map stmtToName);
     public String toBriefString(String indentation);

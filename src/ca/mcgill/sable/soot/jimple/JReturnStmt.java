@@ -133,9 +133,5 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
     {
         ((StmtSwitch) sw).caseReturnStmt(this);
     }
-
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
 }
 

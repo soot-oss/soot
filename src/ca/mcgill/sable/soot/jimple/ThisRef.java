@@ -103,7 +103,7 @@ public class ThisRef implements IdentityRef, ToBriefString
     
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public Type getType()

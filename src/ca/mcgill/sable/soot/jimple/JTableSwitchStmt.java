@@ -253,11 +253,8 @@ public class JTableSwitchStmt extends AbstractStmt implements TableSwitchStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseTableSwitchStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }
+
 
 

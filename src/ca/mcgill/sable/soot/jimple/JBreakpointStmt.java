@@ -96,9 +96,5 @@ public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseBreakpointStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

@@ -132,9 +132,5 @@ public class JExitMonitorStmt extends AbstractStmt implements ExitMonitorStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

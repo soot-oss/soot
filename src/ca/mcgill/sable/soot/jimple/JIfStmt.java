@@ -167,9 +167,5 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIfStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

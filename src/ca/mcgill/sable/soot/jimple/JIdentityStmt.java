@@ -124,9 +124,5 @@ public class JIdentityStmt extends AbstractDefinitionStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseIdentityStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }

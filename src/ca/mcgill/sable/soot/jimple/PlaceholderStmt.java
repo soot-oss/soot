@@ -1,10 +1,7 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
+ /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Soot, a Java(TM) classfile optimization framework.                *
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -64,16 +61,9 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added changes in support of the Grimp intermediate
-   representation (with aggregated-expressions).
-
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+ - Modified on May 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Initial release.
+   
 */
 
 package ca.mcgill.sable.soot.jimple;
@@ -81,61 +71,24 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
+import java.io.*;
 
-public class JCaughtExceptionRef implements CaughtExceptionRef
+public class PlaceholderStmt extends AbstractStmt
 {
-    JimpleBody body;
-    
-    JCaughtExceptionRef(JimpleBody b)
-    {
-        this.body = b;
-    }
+    private Unit source;
 
-    public String toString()
+    protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return "@caughtexception";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
+        return indentation + "<placeholder: " + ((ToBriefString) source).toBriefString() + ">";
     }
     
-    public List getUseBoxes()
+    PlaceholderStmt(Unit source)
     {
-        return AbstractUnit.emptyList;
-    }
-
-    public List getExceptionTypes()
-    {
-        List possibleTypes = new ArrayList();
-        
-        Iterator trapIt = body.getTraps().iterator();
-        
-        while(trapIt.hasNext())
-        {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler instanceof IdentityStmt
-                && ((IdentityStmt) handler).getRightOp() == this)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
-        
-        return possibleTypes;
+        this.source = source;
     }
     
-    public Type getType()
+    public Unit getSource()
     {
-        return RefType.v("java.lang.Throwable");
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseCaughtExceptionRef(this);
+        return source;
     }
 }

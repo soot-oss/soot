@@ -259,11 +259,7 @@ public class JLookupSwitchStmt extends AbstractStmt implements LookupSwitchStmt
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseLookupSwitchStmt(this);
-    }
-    
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-    }
+    }    
 }
 
 

@@ -103,7 +103,7 @@ class NextNextStmtRef implements ConcreteRef, ToBriefString
     
     public List getUseBoxes()
     {
-        return AbstractStmt.emptyList;
+        return AbstractUnit.emptyList;
     }
 
     public Type getType()
