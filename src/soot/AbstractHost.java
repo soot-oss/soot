@@ -32,7 +32,7 @@ import java.util.*;
 /** This class is the reference implementation for
  * the Host interface, which allows arbitrary taggable
  * data to be stored with Soot objects. */
-public abstract class AbstractHost implements Host 
+public  class AbstractHost implements Host 
 {
     List mTagList = new ArrayList(1);
     

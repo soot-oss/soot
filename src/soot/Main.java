@@ -88,6 +88,7 @@ public class Main implements Runnable, ICompilationListener
 
 
 
+
     public static String getExtensionFor(int rep)
     {
         String str = null;
@@ -214,6 +215,9 @@ public class Main implements Runnable, ICompilationListener
     
     static public long stmtCount;
     static int finalRep = GRIMP;
+
+
+    private static List sTagFileList = new ArrayList();
  
 
     private static List getClassesUnder(String aPath) 
@@ -446,7 +450,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.53");
+            System.out.println("Soot version 1.beta.6.dev.54");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -618,7 +622,11 @@ public class Main implements Runnable, ICompilationListener
             {                    
                 if(++i < args.length)                    
                     setSrcPrecedence(args[i]);
-            }  
+            } 
+	     else if(arg.equals("--tag-file")) {
+		if(++i < args.length)
+		    sTagFileList.add(args[i]);
+	    }
              else if(arg.startsWith("-"))
              {
                  System.out.println("Unrecognized option: " + arg);
@@ -921,11 +929,50 @@ public class Main implements Runnable, ICompilationListener
             }
         }
 
+
+
+	// read in the tag files
+	Iterator it = sTagFileList.iterator();
+	while(it.hasNext()) { 
+	    try {
+		File f = new File((String)it.next());
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+		
+		for(String line = reader.readLine(); line  !=  null;  line = reader.readLine()) {
+		    if(line.startsWith("<") ) {
+			String signature = line.substring(0,line.indexOf('+'));
+			int offset = Integer.parseInt(line.substring(line.indexOf('+') + 1, line.indexOf('/')));
+		
+			String name = line.substring(line.indexOf('/')+1, line.lastIndexOf(':'));
+			String value = line.substring(line.lastIndexOf(':')+1);
+	       
+			//System.out.println(signature + "+" + offset + "/" + name + ":" + value);		       
+			SootMethod m = Scene.v().getMethod(signature);
+			
+			JimpleBody body = (JimpleBody) m.retrieveActiveBody();
+			List unitList = new ArrayList(body.getUnits());
+			Unit u = (Unit) unitList.get(offset);
+
+			
+			if(Long.valueOf(value) == null)
+			    System.out.println(value);
+			((Host) u).newTag(name, Long.valueOf(value));
+			
+		    }
+		}				
+	    } catch (IOException e) {
+		
+	    }
+	}
+
+
+
     // Run the whole-program packs.
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
-    
+
+
     // Handle each class individually
     {
         Iterator classIt = Scene.v().getApplicationClasses().iterator();
@@ -1176,7 +1223,8 @@ public class Main implements Runnable, ICompilationListener
                 // Build Jimple body and transform it.
                 {
                     JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-                    
+              		    
+		    
                     Scene.v().getPack("jtp").apply(body);
                     
                     if(isOptimizing) 

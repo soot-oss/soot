@@ -34,7 +34,7 @@ import soot.util.*;
 import java.util.*;
 
 /** Provides default implementations for the methods in Unit. */
-public abstract class AbstractUnit implements Unit
+public abstract class AbstractUnit extends AbstractHost implements Unit 
 {
     static Map allMapToUnnamed = Collections.unmodifiableMap(new AllMapTo("<unnamed>"));
 

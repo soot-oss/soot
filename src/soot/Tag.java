@@ -26,6 +26,8 @@
 package soot;
 
 import java.util.*;
+import javax.swing.*;
+
 
 /** Represents a tag; these get attached to implementations of Host.
  *
@@ -40,7 +42,7 @@ public class Tag
     Tag(String aName, Object aValue)
     {
         mName = aName;
-        mValue = aValue;
+        mValue = (Long) aValue;
         validateType();
     }
     
@@ -70,12 +72,20 @@ public class Tag
     }
     
     /** Checks that the suffix of the tag matches its type. */
-    private void validateType()
+    private void validateType()    
     {
-        if(mName.endsWith(".l") && !(mValue instanceof Long) ||
-           mName.endsWith(".d") && !(mValue instanceof Double) ||
-           mName.endsWith(".s") && !(mValue instanceof String) )
-            throw new RuntimeException("invalid type for tag: " + mName);            
+	int value = 0;
+	JFrame f;
+	List l;
+
+	if(mValue == null)
+	    throw new RuntimeException("Tag value is null");
+        else if((mName.endsWith(".l") && !(mValue instanceof Long)) ||
+		(mName.endsWith(".d") && !(mValue instanceof Double)) ||
+		(mName.endsWith(".s") && !(mValue instanceof String))) 
+	    throw new RuntimeException("invalid type for tag: " + mName);            
+	
     }
      
 }
+

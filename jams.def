@@ -1,13 +1,1 @@
-classes/soot/jimple/parser/parser/parser.dat: src/soot/jimple/parser/parser/parser.dat
-	cp src/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/parser
-
-classes/soot/jimple/parser/lexer/lexer.dat: src/soot/jimple/parser/lexer/lexer.dat
-	cp src/soot/jimple/parser/lexer/lexer.dat classes/soot/jimple/parser/lexer
-
-classes/soot/baf/toolkits/base/peephole.dat: src/soot/baf/toolkits/base/peephole.dat
-	cp src/soot/baf/toolkits/base/peephole.dat classes/soot/baf/toolkits/base/peephole.dat
-
-foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat
-
-JC=jikes -d classes
-
+JC=javac -d classes
