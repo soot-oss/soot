@@ -113,7 +113,7 @@ public class BFieldGetInst extends AbstractInst implements FieldGetInst
     }
     
 
-    final String getName() { return "get"; }
+    final String getName() { return "fieldget"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     { 
         return " " + (isBrief ? 

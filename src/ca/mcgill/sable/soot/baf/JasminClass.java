@@ -1959,6 +1959,16 @@ public class JasminClass
 
                 emit("default : " + instToLabel.get(i.getDefaultTarget()));
             }
+            
+            public void caseDupInst(DupInst i)
+            {
+                throw new RuntimeException("not handled yet!");
+            }
+            
+            public void caseSwapInst(SwapInst i)
+            {
+                throw new RuntimeException("not handled yet!");
+            }
         });
     }
 

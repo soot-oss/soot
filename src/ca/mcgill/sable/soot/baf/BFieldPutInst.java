@@ -113,7 +113,7 @@ public class BFieldPutInst extends AbstractInst implements FieldPutInst
     }
         
 
-    final String getName() { return "put"; }
+    final String getName() { return "fieldput"; }
     final String getParameters(boolean isBrief, Map unitToName) 
     { 
         return " " + (isBrief ? 
