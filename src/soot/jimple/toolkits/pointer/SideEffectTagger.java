@@ -1,5 +1,4 @@
 package soot.jimple.toolkits.pointer;
-import soot.jimple.toolkits.pointer.kloj.*;
 import soot.tagkit.*;
 import soot.*;
 import java.util.*;
