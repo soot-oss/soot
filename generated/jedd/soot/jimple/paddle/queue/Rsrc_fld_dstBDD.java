@@ -24,8 +24,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
     
     public Rsrc_fld_dstBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
-                                                new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
+        add(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
+                                                new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
                                                 ("add(bdd) at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/q" +
                                                  "ueue/Rsrc_fld_dstBDD.jedd:33,86-89"),
                                                 bdd));
@@ -51,8 +51,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
-                                                          new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
+                                                          new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-t" +
                                                            "runk/src/soot/jimple/paddle/queue/Rsrc_fld_dstBDD.jedd:45,25" +
                                                            "-28"),
@@ -79,8 +79,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
                                                "6"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dst.v(), src.v() },
-                                                   new PhysicalDomain[] { FD.v(), V2.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), src.v() },
+                                                   new PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Rsrc_fld_dstBDD.jedd:57,8-14"),
                                                    ret);

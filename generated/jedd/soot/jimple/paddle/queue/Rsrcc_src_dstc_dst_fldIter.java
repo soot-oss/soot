@@ -54,8 +54,8 @@ public class Rsrcc_src_dstc_dst_fldIter extends Rsrcc_src_dstc_dst_fld {
                                                        new Attribute[] { srcc.v(), src.v(), dstc.v(), dst.v(), fld.v() },
                                                        new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), V2.v(), FD.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { dstc.v(), fld.v(), dst.v(), src.v(), srcc.v() },
-                                                   new PhysicalDomain[] { C2.v(), FD.v(), V2.v(), V1.v(), C1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { dst.v(), fld.v(), dstc.v(), srcc.v(), src.v() },
+                                                   new PhysicalDomain[] { V2.v(), FD.v(), C2.v(), C1.v(), V1.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Rsrcc_src_dstc_dst_fldIter.jedd:50,8-14"),
                                                    ret);

@@ -31,8 +31,8 @@ public final class Qvar_srcm_stmt_tgtmBDD extends Qvar_srcm_stmt_tgtm {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_tgtmBDD reader = (Rvar_srcm_stmt_tgtmBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), var.v(), tgtm.v() },
-                                                           new PhysicalDomain[] { ST.v(), MS.v(), V1.v(), MT.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), var.v(), stmt.v() },
+                                                           new PhysicalDomain[] { MT.v(), MS.v(), V1.v(), ST.v() },
                                                            ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                             "ddle/queue/Qvar_srcm_stmt_tgtmBDD.jedd:40,12-18"),
                                                            in));

@@ -21,10 +21,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                                                                            new jedd.PhysicalDomain[] { T1.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(globalSet),
-                                           globalSet.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(globals.get(),
-                                                                                                                           new jedd.PhysicalDomain[] { T1.v() }),
-                                                                                            new jedd.PhysicalDomain[] { V1.v() },
-                                                                                            new jedd.PhysicalDomain[] { V2.v() }))))
+                                           globalSet.eqUnion(jedd.internal.Jedd.v().project(globals.get(),
+                                                                                            new jedd.PhysicalDomain[] { T1.v() }))))
             ret = true;
         if (!jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(localallocMap),
                                            localallocMap.eqUnion(jedd.internal.Jedd.v().project(localallocs.get(),
@@ -48,7 +46,7 @@ public class BDDNodeInfo extends AbsNodeInfo {
     
     private final jedd.internal.RelationContainer globalSet =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                          new jedd.PhysicalDomain[] { V2.v() },
+                                          new jedd.PhysicalDomain[] { V1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var> globalSet = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /tmp/olhotak/soot-trunk/src" +
                                            "/soot/jimple/paddle/BDDNodeInfo.jedd:54,12-17"),
@@ -72,8 +70,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer localMap() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), method.v() },
-                                                   new jedd.PhysicalDomain[] { V1.v(), MS.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), var.v() },
+                                                   new jedd.PhysicalDomain[] { MS.v(), V1.v() },
                                                    ("return localMap; at /tmp/olhotak/soot-trunk/src/soot/jimple/" +
                                                     "paddle/BDDNodeInfo.jedd:58,38-44"),
                                                    localMap);
@@ -81,15 +79,15 @@ public class BDDNodeInfo extends AbsNodeInfo {
     
     public jedd.internal.RelationContainer globalSet() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                                   new jedd.PhysicalDomain[] { V2.v() },
+                                                   new jedd.PhysicalDomain[] { V1.v() },
                                                    ("return globalSet; at /tmp/olhotak/soot-trunk/src/soot/jimple" +
                                                     "/paddle/BDDNodeInfo.jedd:59,31-37"),
                                                    globalSet);
     }
     
     public jedd.internal.RelationContainer localallocMap() {
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), obj.v() },
-                                                   new jedd.PhysicalDomain[] { MS.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), method.v() },
+                                                   new jedd.PhysicalDomain[] { H1.v(), MS.v() },
                                                    ("return localallocMap; at /tmp/olhotak/soot-trunk/src/soot/ji" +
                                                     "mple/paddle/BDDNodeInfo.jedd:60,43-49"),
                                                    localallocMap);

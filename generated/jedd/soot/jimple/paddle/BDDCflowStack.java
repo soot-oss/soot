@@ -154,8 +154,8 @@ public class BDDCflowStack {
                                                    ".paddle.bdddomains.MT> targets = targetsOfShadow(new jedd.in" +
                                                    "ternal.RelationContainer(...)); at /tmp/olhotak/soot-trunk/s" +
                                                    "rc/soot/jimple/paddle/BDDCflowStack.jedd:96,29-36"),
-                                                  targetsOfShadow(new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), shadow.v() },
-                                                                                                      new jedd.PhysicalDomain[] { ST.v(), V1.v() },
+                                                  targetsOfShadow(new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v(), stmt.v() },
+                                                                                                      new jedd.PhysicalDomain[] { V1.v(), ST.v() },
                                                                                                       ("targetsOfShadow(ret) at /tmp/olhotak/soot-trunk/src/soot/jim" +
                                                                                                        "ple/paddle/BDDCflowStack.jedd:96,39-54"),
                                                                                                       ret)));
@@ -167,8 +167,8 @@ public class BDDCflowStack {
                                                                                                             targets)))))
                 break;
         }
-        return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), shadow.v() },
-                                                   new jedd.PhysicalDomain[] { ST.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new jedd.Attribute[] { shadow.v(), stmt.v() },
+                                                   new jedd.PhysicalDomain[] { V1.v(), ST.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/BDDCflowStack.jedd:99,8-14"),
                                                    ret);

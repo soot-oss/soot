@@ -45,8 +45,8 @@ public class Robj_varIter extends Robj_var {
                                                        new Attribute[] { obj.v(), var.v() },
                                                        new PhysicalDomain[] { H1.v(), V1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                                   new PhysicalDomain[] { V1.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), var.v() },
+                                                   new PhysicalDomain[] { H1.v(), V1.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Robj_varIter.jedd:50,8-14"),
                                                    ret);

@@ -31,8 +31,8 @@ public final class Qvar_srcm_stmt_dtp_signature_kindBDD extends Qvar_srcm_stmt_d
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_dtp_signature_kindBDD reader = (Rvar_srcm_stmt_dtp_signature_kindBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { dtp.v(), stmt.v(), srcm.v(), var.v(), signature.v(), kind.v() },
-                                                           new PhysicalDomain[] { T1.v(), ST.v(), MS.v(), V1.v(), SG.v(), KD.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { signature.v(), dtp.v(), srcm.v(), kind.v(), var.v(), stmt.v() },
+                                                           new PhysicalDomain[] { SG.v(), T1.v(), MS.v(), KD.v(), V1.v(), ST.v() },
                                                            ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                             "ddle/queue/Qvar_srcm_stmt_dtp_signature_kindBDD.jedd:40,12-1" +
                                                             "8"),

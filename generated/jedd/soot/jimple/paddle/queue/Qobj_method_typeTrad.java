@@ -23,8 +23,8 @@ public class Qobj_method_typeTrad extends Qobj_method_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { type.v(), method.v(), obj.v() },
-                                              new PhysicalDomain[] { T1.v(), MS.v(), H1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
+                                              new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
                                                "unk/src/soot/jimple/paddle/queue/Qobj_method_typeTrad.jedd:4" +
                                                "0,22-24"),

@@ -24,8 +24,8 @@ public class Qobj_typeDebug extends Qobj_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
-                                              new PhysicalDomain[] { T1.v(), H1.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
+                                              new PhysicalDomain[] { H1.v(), T1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-tr" +
                                                "unk/src/soot/jimple/paddle/queue/Qobj_typeDebug.jedd:40,22-2" +
                                                "4"),

@@ -31,8 +31,8 @@ public final class Qsrcm_stmt_kind_tgtm_src_dstBDD extends Qsrcm_stmt_kind_tgtm_
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rsrcm_stmt_kind_tgtm_src_dstBDD reader = (Rsrcm_stmt_kind_tgtm_src_dstBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), dst.v(), tgtm.v(), src.v(), kind.v() },
-                                                           new PhysicalDomain[] { ST.v(), MS.v(), V2.v(), MT.v(), V1.v(), KD.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { dst.v(), tgtm.v(), srcm.v(), kind.v(), stmt.v(), src.v() },
+                                                           new PhysicalDomain[] { V2.v(), MT.v(), MS.v(), KD.v(), ST.v(), V1.v() },
                                                            ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                             "ddle/queue/Qsrcm_stmt_kind_tgtm_src_dstBDD.jedd:40,12-18"),
                                                            in));

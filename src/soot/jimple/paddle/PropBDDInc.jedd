@@ -36,8 +36,9 @@ public final class PropBDDInc extends PropBDD {
         super( simple, load, store, alloc, propout, pag );
     }
 
+    private <varc, var, objc, obj> ptFromLoad = 0B;
+
     public final boolean update() {
-        <varc, var, objc, obj> ptFromLoad = 0B;
 
         <varc, var, objc, obj> veryOldPt = pt;
 

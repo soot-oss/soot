@@ -24,8 +24,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
     
     public Robj_method_typeBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), method.v(), obj.v() },
-                                                new PhysicalDomain[] { T1.v(), MS.v(), H1.v() },
+        add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
+                                                new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                                 ("add(bdd) at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/q" +
                                                  "ueue/Robj_method_typeBDD.jedd:33,94-97"),
                                                 bdd));
@@ -51,8 +51,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { type.v(), method.v(), obj.v() },
-                                                          new PhysicalDomain[] { T1.v(), MS.v(), H1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
+                                                          new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-t" +
                                                            "runk/src/soot/jimple/paddle/queue/Robj_method_typeBDD.jedd:4" +
                                                            "5,25-28"),
@@ -79,8 +79,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
                                                ":55,37-40"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), method.v(), obj.v() },
-                                                   new PhysicalDomain[] { T1.v(), MS.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), method.v(), type.v() },
+                                                   new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Robj_method_typeBDD.jedd:57,8-14"),
                                                    ret);
