@@ -131,7 +131,9 @@ public class JimpleConstructorFolder extends BodyTransformer
               use.redirectJumpsToThisTo(constructStmt);
               // insert new one here
               units.insertBefore(constructStmt, use);
-              constructStmt.addTag((SourceLnPosTag)s.getTag("SourceLnPosTag"));
+              if (s.hasTag("SourceLnPosTag")){
+                constructStmt.addTag((SourceLnPosTag)s.getTag("SourceLnPosTag"));
+              }
             }
           if (MadeNewInvokeExpr)
             {
