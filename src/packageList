@@ -19,6 +19,7 @@ soot.jimple.toolkits.scalar
 soot.jimple.toolkits.scalar.pre
 soot.jimple.toolkits.typing
 soot.jimple.toolkits.graph
+soot.jimple.toolkits.pointer
 soot.tagkit
 soot.toolkits.graph
 soot.toolkits.scalar
