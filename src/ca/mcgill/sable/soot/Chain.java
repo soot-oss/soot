@@ -21,6 +21,7 @@ public interface Chain extends Collection
     
     public Object getSuccOf(Object point);
     public Object getPredOf(Object point);
+    public Iterator snapshotIterator();
     public Iterator iterator();
     public Iterator iterator(Object u);
     public Iterator iterator(Object head, Object tail);

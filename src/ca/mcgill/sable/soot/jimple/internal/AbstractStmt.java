@@ -104,4 +104,9 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
     {
         throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
     }
+
+    public ValueBox getInvokeExprBox()
+    {
+        throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
+    }
 }

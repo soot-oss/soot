@@ -420,10 +420,10 @@ public interface JimpleRepresentation extends BodyRepresentation
     public ThisRef newThisRef(SootClass c);
 
     /**
-        Constructs a ParameterRef(SootMethod, int) grammar chunk.
+        Constructs a ParameterRef(Type, int) grammar chunk.
      */
 
-    public ParameterRef newParameterRef(SootMethod m, int number);
+    public ParameterRef newParameterRef(Type paramType, int number);
 
     /**
         Constructs a NextNextStmtRef() grammar chunk.

@@ -103,18 +103,24 @@ import java.io.*;
 import ca.mcgill.sable.soot.toolkit.scalar.*;
 
 
-public class Body 
+public abstract class Body
 {
-
     /* temp */
     SootMethod method;
 
     Chain localChain, trapChain;
     PatchingChain unitChain;
 
+    abstract public Object clone();
+
     public SootMethod getMethod()
     {
         return method;
+    }
+
+    public void setMethod(SootMethod method)
+    {
+        this.method = method;
     }
     
     public int getLocalCount()
@@ -129,10 +135,13 @@ public class Body
         unitChain = new PatchingChain(new HashChain());
 
         this.method = m;
-        Chain units = getUnits();
+    }
 
-        Iterator it = units.iterator();
+    public void importBodyContentsFrom(Body b)
+    {
         HashMap bindings = new HashMap();
+
+        Iterator it = b.getUnits().iterator();
 
         // Clone units in body's statement list 
         while(it.hasNext()) {
@@ -146,11 +155,10 @@ public class Body
             // within the cloned units. (these are still refering to the original
             // unit objects).
             bindings.put(original, copy);
-            //            stmtList.add(copy); //hack
         }
 
         // Clone trap units.
-        it = getTraps().iterator();
+        it = b.getTraps().iterator();
         while(it.hasNext()) {
             Trap original = (Trap) it.next();
             Trap copy = (Trap) original.clone();
@@ -164,7 +172,7 @@ public class Body
 
         
         // Clone local units.
-        it = getLocals().iterator();
+        it = b.getLocals().iterator();
         while(it.hasNext()) {
             Value original = (Value) it.next();
             Value copy = (Value) original.clone();

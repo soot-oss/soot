@@ -196,9 +196,9 @@ public class Baf implements BodyRepresentation
         Constructs a ParameterRef(SootMethod, int) grammar chunk.
      */
 
-    public ParameterRef newParameterRef(SootMethod m, int number)
+    public ParameterRef newParameterRef(Type paramType, int number)
     {
-        return new ParameterRef(m, number);
+        return new ParameterRef(paramType, number);
     }
     
     public StoreInst newStoreInst(Type opType, Local l)

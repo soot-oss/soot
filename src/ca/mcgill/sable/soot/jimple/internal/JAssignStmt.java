@@ -164,6 +164,14 @@ public class JAssignStmt extends AbstractDefinitionStmt
         return (InvokeExpr)rightBox.getValue();
     }
 
+    public ValueBox getInvokeExprBox()
+    {
+        if (!containsInvokeExpr())
+            throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
+
+        return rightBox;
+    }
+
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         if(isBrief)

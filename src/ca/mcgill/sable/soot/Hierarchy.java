@@ -1,5 +1,6 @@
 package ca.mcgill.sable.soot;
 
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -18,9 +19,9 @@ public class Hierarchy
     int state;
     Scene sc;
 
-    public Hierarchy(Scene sc)
+    public Hierarchy()
     {
-        this.sc = sc;
+        this.sc = Scene.v();
         state = sc.getState();
 
         // Well, this used to be describable by 'Duh'.
@@ -334,10 +335,11 @@ public class Hierarchy
         return Collections.unmodifiableList(l);
     }
 
-    public boolean isClassSubclassOf(SootClass c, SootClass c2)
+    public boolean isClassSubclassOf(SootClass child, SootClass possibleParent)
     {
-        throw new RuntimeException("Not implemented yet!");
+        return getSuperclassesOf(child).contains(possibleParent);
     }
+
     public boolean isInterfaceSubinterfaceOf(SootClass c, SootClass c2)
     {
         throw new RuntimeException("Not implemented yet!");
@@ -422,5 +424,19 @@ public class Hierarchy
 
         List l = new ArrayList(); l.addAll(s);
         return Collections.unmodifiableList(l);
+    }
+
+    public SootMethod resolveSpecialDispatch(SpecialInvokeExpr ie, SootMethod container)
+    {
+        SootMethod target = ie.getMethod();
+
+        /* This is a bizarre condition!  Hopefully the implementation is correct.
+           See VM Spec, 2nd Edition, Chapter 6, in the definition of invokespecial. */
+        if (target.getName().equals("<init>") || target.isPrivate())
+            return target;
+        else if (isClassSubclassOf(target.getDeclaringClass(), container.getDeclaringClass()))
+            return resolveConcreteDispatch(container.getDeclaringClass(), target);
+        else
+            return target;
     }
 }

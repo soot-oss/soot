@@ -1634,7 +1634,7 @@ public class CFG {
                     initialLocals.add(local);
                     listBody.getLocals().add(local);
 
-                    units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(jmethod, argCount)));
+                    units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, argCount)));
 
                     if(type.equals(DoubleType.v()) ||
                         type.equals(LongType.v()))

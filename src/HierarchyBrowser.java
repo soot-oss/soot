@@ -62,7 +62,7 @@ public class HierarchyBrowser
         }
 
         System.out.print("Building hierarchy... ");
-        Hierarchy h = new Hierarchy(Scene.v());
+        Hierarchy h = new Hierarchy();
         System.out.println("done!");
 
         if (command.equals("interactive"))

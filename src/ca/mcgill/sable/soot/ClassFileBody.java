@@ -85,6 +85,9 @@ public class ClassFileBody extends Body
         this.coffiClass = method.coffiClass;
         this.coffiMethod = method.coffiMethod;
     }
+
+    public Object clone() 
+    { throw new UnsupportedOperationException("can't clone ClassfileBody"); }
 }
 
 

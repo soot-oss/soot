@@ -16,7 +16,7 @@ public class ClassHierarchyAnalysis
 
         if (!Scene.v().hasActiveHierarchy())
         {
-            h = new Hierarchy(Scene.v());
+            h = new Hierarchy();
             Scene.v().setActiveHierarchy(h);
         }
         else
@@ -52,6 +52,16 @@ public class ClassHierarchyAnalysis
                             
                             while (targetsIt.hasNext())
                                 g.addTarget(ie, (SootMethod)targetsIt.next());
+                        }
+                        else if (ie instanceof StaticInvokeExpr)
+                        {
+                            g.addInvokeExpr(ie, m);
+                            g.addTarget(ie, ie.getMethod());
+                        }
+                        else if (ie instanceof SpecialInvokeExpr)
+                        {
+                            g.addInvokeExpr(ie, m);
+                            g.addTarget(ie, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
                         }
                     }
                 }

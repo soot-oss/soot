@@ -79,11 +79,13 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import java.util.*;
 
 public interface InvokeExpr extends Expr
 {
     public SootMethod getMethod();
     public void setMethod(SootMethod m);
+    public List getArgs();
     public Value getArg(int index);
     public int getArgCount();
     public void setArg(int index, Value arg);

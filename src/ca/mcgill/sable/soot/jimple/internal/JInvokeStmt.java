@@ -149,9 +149,7 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
     public void convertToBaf(JimpleToBafContext context, List out)
     {
         ((ConvertToBaf) getInvokeExpr()).convertToBaf(context, out);
-    }
-
-    
+    }    
 
     public boolean fallsThrough() {return true;}        
     public boolean branches() {return false;}

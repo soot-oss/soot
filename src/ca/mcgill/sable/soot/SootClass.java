@@ -558,7 +558,6 @@ public class SootClass
         */
         
         methods.add(m);
-        
         m.isDeclared = true;
         m.declaringClass = this;
         

@@ -679,9 +679,9 @@ public class Grimp implements JimpleRepresentation
         Constructs a ParameterRef(SootMethod, int) grammar chunk.
      */
 
-    public ParameterRef newParameterRef(SootMethod m, int number)
+    public ParameterRef newParameterRef(Type paramType, int number)
     {
-        return Jimple.v().newParameterRef(m, number);
+        return Jimple.v().newParameterRef(paramType, number);
     }
 
 

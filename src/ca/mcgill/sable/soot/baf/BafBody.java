@@ -82,6 +82,13 @@ import java.io.*;
 
 public class BafBody extends Body
 {
+    public Object clone()
+    {
+        Body b = new JimpleBody(getMethod());
+        b.importBodyContentsFrom(this);
+        return b;
+    }
+
     public BafBody(Body body)
     {
         super(body.getMethod());

@@ -80,6 +80,7 @@ package ca.mcgill.sable.soot.jimple.internal;
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
+import java.util.*;
 
 abstract public class AbstractInvokeExpr implements InvokeExpr
 {
@@ -101,6 +102,15 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     public Value getArg(int index)
     {
         return argBoxes[index].getValue();
+    }
+
+    public List getArgs()
+    {
+        List l = new ArrayList();
+        for (int i = 0; i < argBoxes.length; i++)
+            l.add(argBoxes[i].getValue());
+
+        return l;
     }
 
     public int getArgCount()

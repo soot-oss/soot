@@ -130,6 +130,13 @@ public class JimpleBody extends StmtBody
         this(body, 0);
     }
 
+    public Object clone()
+    {
+        Body b = new JimpleBody(getMethod());
+        b.importBodyContentsFrom(this);
+        return b;
+    }
+
     /**
         Constructs a JimpleBody from the given Body.
      */

@@ -96,5 +96,6 @@ public interface Stmt extends Unit
 
     public boolean containsInvokeExpr();
     public Value getInvokeExpr();
+    public ValueBox getInvokeExprBox();
 }
 

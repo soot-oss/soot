@@ -113,7 +113,8 @@ public class Main
                 body.getLocals().add(tmpRef);
                 
             // add "l0 = @parameter0"
-                units.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(method, 0)));
+                units.add(Jimple.v().newIdentityStmt(arg, 
+                     Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0)));
             
             // add "tmpRef = java.lang.System.out"
                 units.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(

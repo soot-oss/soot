@@ -99,6 +99,13 @@ public class GrimpBody extends StmtBody
         this(body, 0);
     }
     
+    public Object clone()
+    {
+        Body b = new JimpleBody(getMethod());
+        b.importBodyContentsFrom(this);
+        return b;
+    }
+
     /**
         Constructs a GrimpBody from the given Body.
      */

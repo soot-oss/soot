@@ -244,6 +244,8 @@ public class SootMethod
     {
         if (declaringClass.isContextClass() || declaringClass.isSignatureClass())
             throw new RuntimeException("cannot set active body for context or signature class!");
+        if (body.getMethod() != this)
+            body.setMethod(this);
 
         activeBody = body;
     }
@@ -302,6 +304,13 @@ public class SootMethod
         return Modifier.isStatic(this.getModifiers());
     }
 
+    /**
+     * For more convenience.
+     */
+    public boolean isPrivate()
+    {
+        return Modifier.isPrivate(this.getModifiers());
+    }
     
     /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.

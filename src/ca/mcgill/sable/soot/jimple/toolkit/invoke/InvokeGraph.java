@@ -18,7 +18,11 @@ public class InvokeGraph
     /** Returns the invoke expressions of container added via addInvokeExpr */
     public List getInvokeExprsIn(SootMethod container) 
     {
-        return (List)methodToInvokeExprs.get(container);
+        List l = (List)methodToInvokeExprs.get(container);
+        if (l != null)
+            return l;
+        else
+            return new ArrayList();
     }
 
     public List getTargetsOf(SootMethod m) 
@@ -72,5 +76,13 @@ public class InvokeGraph
             methodToInvokeExprs.remove(d);
         else
             l.remove(ie);            
+    }
+
+    /** This method is to be called after the imitator has been addInvokeExpr'd. */
+    public void imitateInvokeExpr(InvokeExpr imitator, InvokeExpr roleModel)
+    {
+        Iterator it = getTargetsOf(roleModel).iterator();
+        while (it.hasNext())
+            addTarget(imitator, (SootMethod)it.next());
     }
 }

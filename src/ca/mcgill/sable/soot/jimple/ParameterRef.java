@@ -85,27 +85,27 @@ import java.util.*;
 public class ParameterRef implements IdentityRef, Switchable, ToBriefString
 {
     int n;
-    SootMethod method;
+    Type paramType;
 
-    public ParameterRef(SootMethod m, int number)
+    public ParameterRef(Type paramType, int number)
     {
         this.n = number;
-        this.method = m;
+        this.paramType = paramType;
     }
     
     public Object clone() 
     {
-        return new ParameterRef(method, n);
+        return new ParameterRef(paramType, n);
     }
     
     public String toString()
     {
-        return "@parameter" + n;
+        return "@parameter" + n + ":" + paramType;
     }
 
     public String toBriefString()
     {
-        return toString();
+        return "@parameter" + n;
     }
     
     public int getIndex()
@@ -113,9 +113,9 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
         return n;
     }
 
-    public SootMethod getMethod()
+    public void setIndex(int index)
     {
-        return method;
+        n = index;
     }
 
     public List getUseBoxes()
@@ -125,7 +125,7 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
 
     public Type getType()
     {
-        return method.getParameterType(n);
+        return paramType;
     }
 
     public void apply(Switch sw)

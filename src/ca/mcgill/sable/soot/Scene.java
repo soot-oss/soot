@@ -153,12 +153,18 @@ public class Scene
 
     public SootField getField(String fieldSignature)
     {
-        return (SootField) fieldSignatureToField.get(fieldSignature);
+        SootField f = (SootField) fieldSignatureToField.get(fieldSignature);
+        if (f != null)
+            return f;
+        throw new RuntimeException("tried to get nonexistent field!");
     }
 
     public SootMethod getMethod(String methodSignature)
     {
-        return (SootMethod) methodSignatureToMethod.get(methodSignature);
+        SootMethod m = (SootMethod) methodSignatureToMethod.get(methodSignature);
+        if (m != null)
+            return m;
+        throw new RuntimeException("tried to get nonexistent method!");
     }
 
     /** 

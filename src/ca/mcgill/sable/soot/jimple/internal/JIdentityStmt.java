@@ -142,7 +142,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
         if(currentRhs instanceof ThisRef)
             newRhs = Baf.v().newThisRef(((ThisRef) currentRhs).getSootClass());
         else if(currentRhs instanceof ParameterRef)
-            newRhs = Baf.v().newParameterRef(((ParameterRef) currentRhs).getMethod(), ((ParameterRef) currentRhs).getIndex());
+            newRhs = Baf.v().newParameterRef(((ParameterRef)currentRhs).getType(), ((ParameterRef) currentRhs).getIndex());
         else if(currentRhs instanceof CaughtExceptionRef)
             { out.add(Baf.v().newStoreInst(RefType.v(), context.getBafLocalOfJimpleLocal((Local) getLeftOp()))); return; }
         else

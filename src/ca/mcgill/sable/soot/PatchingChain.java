@@ -119,6 +119,12 @@ class PatchingChain extends AbstractCollection implements Chain {
         }
     }
 
+    public Iterator snapshotIterator() 
+    {
+        List l = new ArrayList(); l.addAll(this);
+        return l.iterator();
+    }
+   
     public Iterator iterator() { return new PatchingIterator(innerChain); }
     public Iterator iterator(Object u) { return new PatchingIterator(innerChain, u); }
     public Iterator iterator(Object head, Object tail) { return new PatchingIterator(innerChain, head, tail); }

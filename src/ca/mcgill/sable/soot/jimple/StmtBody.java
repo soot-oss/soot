@@ -79,7 +79,7 @@ import ca.mcgill.sable.util.*;
 import java.util.*;
 import java.io.*;
 
-public class StmtBody extends Body
+abstract public class StmtBody extends Body
 {
     protected StmtBody(SootMethod m)
     {
