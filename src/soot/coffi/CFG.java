@@ -88,357 +88,47 @@ public class CFG {
       BasicBlock bb,blast;
       method = m;
 
-      /* fixup JSR/RET instructions.
-	 Feng.
-      */
-      feng_fixupjsrs:
-      {	  
-	  /* goes through bytecode, collect jsr/ret info */
-	  Instruction ins = m.instructions;
-	  Instruction prev = null;
-	  HashMap localJsrs = new HashMap(2);
-	  HashMap localRets = new HashMap(2);
-	  HashMap replacedInst = new HashMap(5);
-	  while (ins != null)
-	  {
-	      ins.prev = prev;
-	      prev = ins;
-
-	      Instruction tgt = null;
-
-	      if (ins instanceof Instruction_Jsr) 
-		  tgt = ((Instruction_Jsr)ins).target;
-	      if (ins instanceof Instruction_Jsr_w)
-		  tgt = ((Instruction_Jsr_w)ins).target;
-	      
-	      if (tgt != null)
-	      {
-		  int arg = -1;
-		  if (tgt instanceof Instruction_Astore_0)
-		      arg = 0;
-		  else
-		  if (tgt instanceof Instruction_Astore_1)
-		      arg = 1;
-		  else
-		  if (tgt instanceof Instruction_Astore_2)
-		      arg = 2;
-		  else
-		  if (tgt instanceof Instruction_Astore_3)
-		      arg = 3;
-		  else
-		  if (tgt instanceof Instruction_Astore)
-		      arg = ((Instruction_Astore)tgt).arg_b;
-
-		  if (arg >= 0)
-		  {
-		      Integer local = new Integer(arg);
-		      HashSet jsrs = (HashSet)localJsrs.get(local);
-		      if (jsrs == null)
-		      {
-			  jsrs = new HashSet();
-			  localJsrs.put(local, jsrs);
-		      }
-		      jsrs.add(ins);
-		  }
-		  else
-		  {
-		      if (soot.Main.isInDebugMode)
-			  System.out.println("Feng's fixup of JSRs failed.");
-		      break feng_fixupjsrs;
-		  } 
-	      }
-
-	      /* now let's check the rets. */
-	      int arg = -1;
-	      if (ins instanceof Instruction_Ret)
-		  arg = ((Instruction_Ret)ins).arg_b;
-	      else
-	      if (ins instanceof Instruction_Ret_w)
-		  arg = ((Instruction_Ret_w)ins).arg_i;
-	      
-	      if (arg >= 0)
-	      {
-		  Integer local = new Integer(arg);
-		  HashSet rets = (HashSet)localRets.get(local);
-		  if (rets == null)
-		  {
-		      rets = new HashSet();
-		      localRets.put(local, rets);
-		  }
-		  rets.add(ins);
-	      }
-
-	      ins = ins.next;
-	  }
-
-	  /* now fixup the jsrs. */
-	  {
-	      Set keys = localJsrs.keySet();
-	      if (!keys.equals(localRets.keySet()))
-	      {
-		  if (soot.Main.isInDebugMode)
-		      System.out.println("Feng's fixup JSRs failed.");
-		  break feng_fixupjsrs;
-	      }
-
-	      Iterator localsIt = keys.iterator();
-	      while (localsIt.hasNext())
-	      {
-		  Integer local = (Integer)localsIt.next();
-		  int arg = local.intValue();
-		 
-		  /* change jsr, astore to push, goto, istore. */
-		  ArrayList jsrs = new ArrayList((Set)localJsrs.get(local));
-		  HashSet rets = (HashSet)localRets.get(local);
-
-		  Instruction tgt;
-		  Instruction jsr = (Instruction)jsrs.get(0);
-		  if (jsr instanceof Instruction_Jsr)
-		      tgt = ((Instruction_Jsr)jsr).target;
-		  else
-		      tgt = ((Instruction_Jsr_w)jsr).target;
-
-		  if (jsrs.size() == 1)
-		  {
-		      /* keep target, and get a new target. */
-		      Instruction newtgt = tgt.next;
-		      
-		      /* replace jsr by goto target. */
-		      Instruction_Goto togo = new Instruction_Goto();
-		      togo.target = newtgt;
-
-		      togo.prev = jsr.prev;
-		      togo.next = jsr.next;
-		      if (togo.next != null)
-			  togo.next.prev = togo;
-		      if (togo.prev != null)
-			  togo.prev.next = togo;
-
-		      replacedInst.put(jsr, togo);
-
-		      /* fix the rets */
-		      Iterator retsIt = rets.iterator();
-		      while (retsIt.hasNext())
-		      {
-			  Instruction ret = (Instruction)retsIt.next();
-			  togo = new Instruction_Goto();
-			  togo.target = jsr.next;
-
-			  togo.prev = ret.prev;
-			  togo.next = ret.next;
-
-			  if (togo.next != null)
-			      togo.next.prev = togo;
-			  if (togo.prev != null)
-			      togo.prev.next = togo;
-			  
-			  replacedInst.put(ret, togo);
-		      }
-		  }
-		  else
-		  {
-		      /* replace astore to istore. */
-		      Instruction store;
-		      switch (arg) {
-		      case 0:
-			  store = new Instruction_Istore_0();
-			  break;
-		      case 1:
-			  store = new Instruction_Istore_1();
-			  break;
-		      case 2:
-			  store = new Instruction_Istore_2();
-			  break;
-		      case 3:
-			  store = new Instruction_Istore_3();
-			  break;
-		      default:
-			  Instruction_Istore s1 = new Instruction_Istore();
-			  s1.arg_b = arg;
-			  store = s1;
-			  break;
-		      }
-		      store.next = tgt.next;
-		      store.prev = tgt.prev;
-		      if (store.prev != null)
-			  store.prev.next = store;
-		      if (store.next != null)
-			  store.next.prev = store;
-
-		      replacedInst.put(tgt, store);
-
-		      tgt = store;		      
-
-		      for (int j=0; j<jsrs.size(); j++)
-		      {
-			  Instruction_Bipush ind = 
-			      new Instruction_Bipush((byte)j);
-			  Instruction_Goto togo =
-			      new Instruction_Goto();
-			  togo.target = tgt;
-			  ind.next = togo;
-			  togo.prev = ind;
-
-			  Instruction jsrInst = (Instruction)jsrs.get(j);
-
-			  ind.prev = jsrInst.prev;
-			  togo.next = jsrInst.next;
-
-			  if (ind.prev != null)
-			      ind.prev.next = ind;
-			  if (togo.next != null)
-			      togo.next.prev = togo;
-
-			  replacedInst.put(jsrInst, ind);
-		      }
-		      
-		      Instruction jsrInst0 = (Instruction)jsrs.get(0);
-		      Instruction jsrInst1 = (Instruction)jsrs.get(1);
-
-		      /* fix the rets */
-		      Iterator retsIt = rets.iterator();
-		      while (retsIt.hasNext())
-		      {
-			  Instruction ret = (Instruction)retsIt.next();
-
-			  /* replace ret by iload and goto. */
-			  Instruction load;
-			  switch (arg) {
-			  case 0:
-			      load = new Instruction_Iload_0();
-			      break;
-			  case 1:
-			      load = new Instruction_Iload_1();
-			      break;
-			  case 2:
-			      load = new Instruction_Iload_2();
-			      break;
-			  case 3:
-			      load = new Instruction_Iload_3();
-			      break;
-			  default:
-			      Instruction_Iload s1 = new Instruction_Iload();
-			      s1.arg_b = arg;
-			      load = s1;
-			      break;
-			  }
-
-			  replacedInst.put(ret, load);
-
-			  /* only two sources. */
-			  if (jsrs.size() == 2)
-			  {
-			      Instruction_Ifeq ifeq = new Instruction_Ifeq();
-			      ifeq.target = jsrInst0.next;
-			      Instruction_Goto togo = new Instruction_Goto();
-			      togo.target = jsrInst1.next;
-
-			      load.next = ifeq;
-			      ifeq.next = togo;
-			      ifeq.prev = load;
-			      togo.prev = ifeq;
-			      
-			      load.prev = ret.prev;
-			      togo.next = ret.next;
-			      if (load.prev != null)
-				  load.prev.next = load;
-			      if (togo.next != null)
-				  togo.next.prev = togo;
-			  }
-			  else
-			  {
-			      Instruction_Tableswitch tsInst =
-				  new Instruction_Tableswitch();
-			      tsInst.low = 0;
-			      tsInst.high = jsrs.size()-2;
-			      tsInst.default_offset = jsrs.size()-1;
-			      tsInst.jump_insts = new Instruction[jsrs.size()-1];
-			      int k=0;
-			      for (; k<tsInst.jump_insts.length; k++)
-			      {
-				  Instruction jsrInst =
-				      (Instruction)jsrs.get(k);
-				  tsInst.jump_insts[k] = jsrInst.next; 
-			      }
-			      
-			      {
-				  Instruction jsrInst =
-				      (Instruction)jsrs.get(k);
-				  tsInst.default_inst = jsrInst.next;
-			      }
-			     
-			      load.next = tsInst;
-			      tsInst.prev = load;
-
-			      load.prev = ret.prev;
-			      tsInst.next = ret.next;
-			      if (load.prev != null)
-				  load.prev.next = load;
-			      if (tsInst.next != null)
-				  tsInst.next.prev = tsInst;
-			  }
-		      }		      
-		  }
-	      }
-	  }
-	  /* fixup branch target. */
-	  fixupBranchTargets(replacedInst, m.instructions);
-	  /* a goto elimination is necessary here. */	  
-	  fixupExceptionTable(replacedInst);
-      }
-      
       // Copy all the instructions to a list
       {
-	  Instruction ins = m.instructions;
+        Instruction ins = m.instructions;
 
-	  m.instructionList = new ArrayList();
+        m.instructionList = new ArrayList();
  
-	  while(ins != null && ins.next != null)
-	  {
-	      m.instructionList.add(ins);
+        while(ins != null && ins.next != null)
+        {
+            m.instructionList.add(ins);
 
-	      if (ins instanceof Instruction_Jsr)
-		  JsrToNext.put (ins, ins.next);
+             if (ins instanceof Instruction_Jsr)
+               JsrToNext.put (ins, ins.next);
 
-	      ins = ins.next;
-	  }
+           ins = ins.next;
+        }
       }
 
       h = new java.util.Hashtable(100,25);
       if (m.instructions!=null) {
-	  i = buildBasicBlock(m.instructions);
+         i = buildBasicBlock(m.instructions);
 
-	  cfg = new BasicBlock(m.instructions);
-	  blast = cfg;
-	  h.put(m.instructions,cfg);
-	  while (i != null) {
-	      head = buildBasicBlock(i);
+         cfg = new BasicBlock(m.instructions);
+         blast = cfg;
+         h.put(m.instructions,cfg);
+         while (i != null) {
+            head = buildBasicBlock(i);
 
-	      bb = new BasicBlock(i);
-	      blast.next = bb;
-	      blast = bb;
-	      h.put(i,bb);
+            bb = new BasicBlock(i);
+            blast.next = bb;
+            blast = bb;
+            h.put(i,bb);
     
-	      i = head;
+            i = head;
          }
 
          buildCFG();
 
          endofBBList = getEndOfBBList();
 
-       
          // Vijay's JSR eliminator
-	 /* Problem with Vijay's JSR eliminator:
-	    try{
-	    }catch(){
-	    }finally{
-	       try{
-	       }catch(){
-	       }finally{
-	       }
-	    }   
-	    which causes problems.
-	 	    
+
          {
 
             buildJsrRetPairs();
@@ -454,7 +144,8 @@ public class CFG {
             prepareForGC();
 
          }
-	 */
+  
+
              
          cfg.beginCode = true;
       }
@@ -645,128 +336,6 @@ public class CFG {
  }
 
 
-    private void fixupExceptionTable(HashMap replacedInst) 
-    {
-	Code_attribute codeAttribute = method.locate_code_attribute();
-
-	for(int i = 0; i < codeAttribute.exception_table_length; i++)
-	{
-	    Instruction startIns = codeAttribute.exception_table[i].start_inst;
-	    if (replacedInst.get(startIns) != null) 
-		codeAttribute.exception_table[i].start_inst = 
-		    (Instruction)replacedInst.get(startIns);
-
-	    Instruction endIns = codeAttribute.exception_table[i].end_inst;
-
-	    if (replacedInst.get(endIns)!= null) 
-		codeAttribute.exception_table[i].end_inst = 
-		    (Instruction) replacedInst.get(endIns);
-
-	    Instruction targetIns = 
-		codeAttribute.exception_table[i].handler_inst;
-
-	    if (replacedInst.get(targetIns) != null) 
-		codeAttribute.exception_table[i].handler_inst = 
-		    (Instruction)replacedInst.get ( targetIns );
-	}
-    }
-
-    private void fixupBranchTargets(HashMap replacedInst, Instruction head) 
-    {
-	Instruction i = head;
-	
-	while ( i != null )
-        {
-	    i.labelled = false;
-	    i = i.next;
-	}
-
-	i = head;
-
-	while ( i != null ) 
-	{
-	    if ( i.branches )
-	    {
-		Instruction tgt = null;
-
-		if ( i instanceof Instruction_intbranch )
-		    tgt = ((Instruction_intbranch)i).target; 
-		else if ( i instanceof Instruction_longbranch )
-		    tgt = ((Instruction_longbranch)i).target; 
-
-		if ( tgt != null )
-		{
-		    Instruction newInst =
-			(Instruction)replacedInst.get(tgt);
-
-		    if ( newInst != null ) 
-		    {
-			if ( i instanceof Instruction_intbranch )
-			{
-			    ((Instruction_intbranch)i).target = 
-				(Instruction)replacedInst.get ( tgt );
-			}
-			else if ( i instanceof Instruction_longbranch )
-			    ((Instruction_longbranch)i).target = 
-				(Instruction) replacedInst.get ( tgt );
-			
-			tgt = newInst;
-		    }
-
-		    tgt.labelled = true;
-		}
-
-		if ( i instanceof Instruction_Lookupswitch )
-		{
-		    Instruction_Lookupswitch ilookup 
-			= ( Instruction_Lookupswitch ) i;
-
-		    Instruction defaultinst =
-			ilookup.default_inst;
-		    if (replacedInst.get(defaultinst) != null)
-			ilookup.default_inst = 
-			    (Instruction)replacedInst.get(defaultinst);
-		    ilookup.default_inst.labelled = true;
-		    
-		    for(int cnt=0; cnt<ilookup.npairs; cnt++)
-		    {
-			Instruction matchinst = ilookup.match_insts[cnt];
-			Object newInst = replacedInst.get(matchinst);
-			if (newInst != null)
-			    ilookup.match_insts[cnt] = 
-				(Instruction)newInst;
-
-			ilookup.match_insts[cnt].labelled = true;
-		    }
-		}
-
-		if ( i instanceof Instruction_Tableswitch )
-		{
-		    Instruction_Tableswitch tlookup = 
-			( Instruction_Tableswitch ) i;
-
-		    Instruction defaultinst =
-			tlookup.default_inst;
-
-		    if (replacedInst.get(defaultinst) != null)
-			tlookup.default_inst = 
-			    (Instruction)replacedInst.get(defaultinst);
-		    tlookup.default_inst.labelled = true;
-
-		    for(int cnt=0; cnt<(tlookup.high-tlookup.low+1); cnt++)
-		    {
-			Instruction jumpinst =
-			    tlookup.jump_insts[cnt];
-			Object newInst = replacedInst.get(jumpinst);
-			if (newInst != null)
-			    tlookup.jump_insts[cnt] = (Instruction) newInst;
-			tlookup.jump_insts[cnt].labelled = true;
-		    }
-		}
-	    }
-	    i = i.next;
-	}
-    }
 
 
 
@@ -2134,17 +1703,14 @@ public class CFG {
 			    dumpInstructionToNext();
 			    dumpExceptionTable();
 			    */
-
 			    /* change the table end to current instruction and
 			       break; Feng, feb. 6, 2001
+
+				   It is not the firnal solution, but currently it is a solution.
 			    */
 			    
-			    /* The correct solution should set the end_inst
-			       to null, since exception_table defines it as
-			       the way.
-			    */
-      			    endIns = null;
-			    codeAttribute.exception_table[i].end_inst = null;			    
+      			    endIns = ins;
+			    codeAttribute.exception_table[i].end_inst = endIns;			    
 			}
 			else
 			    ins = newIns;
