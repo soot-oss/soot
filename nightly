@@ -152,6 +152,12 @@ function buildSootClasses(){
     fi
 }
 
+# build soot javadoc
+function buildSootJavaDoc(){
+    cd $HOME/autobuild/tmp/soot;
+    ant javadoc;
+}
+
 # build soot tutorials
 function buildSootTutorials(){
     cd $HOME/autobuild/tmp/soot/tutorial;
@@ -196,6 +202,7 @@ function makeStable(){
     setUpSoot;
     buildSootBarebones;
     buildSootClasses;
+    buildSootJavaDoc;
     buildSootTutorials;
     buildComplete;
     updateNightlyHtml;
@@ -214,6 +221,7 @@ function makeNightly(){
     setUpSoot;
     buildSootBarebones;
     buildSootClasses;
+    buildSootJavaDoc;
     buildSootTutorials;
     buildComplete;
     updateNightlyHtml;
