@@ -19,6 +19,8 @@ def, use were not correctly handled.
 7. Changed format of Jimple source again, now removing the dots
 for keywords.
 
+8. Fixed issue with absolute paths in dos/windows
+
 Improvements in 021400
 
 1. Fixed the SootResolver so that it displays the name of
