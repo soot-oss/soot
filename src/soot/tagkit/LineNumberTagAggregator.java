@@ -40,12 +40,17 @@ public class LineNumberTagAggregator extends FirstTagAggregator
     /** Decide whether this tag should be aggregated by this aggregator. */
     public boolean wantTag(Tag t)
     {
-	return (t instanceof LineNumberTag);
+	return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);
     }
     
     public String aggregatedName()
     {
         return "LineNumberTable";
+    }
+
+    public void considerTag(Tag t, Unit u){
+        //System.out.println("consider tag for unit: "+u.getClass());
+        if (!(u instanceof IdentityUnit)) super.considerTag(t, u);
     }
 }
 

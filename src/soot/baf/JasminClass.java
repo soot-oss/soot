@@ -220,6 +220,11 @@ public class JasminClass
         {
             int modifiers = sootClass.getModifiers();
 
+            
+            if (sootClass.getTag("SourceFileTag") != null){
+                String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
+                emit(".source "+srcName);
+            }
             if(Modifier.isInterface(modifiers))
                 {
                 modifiers -= Modifier.INTERFACE;

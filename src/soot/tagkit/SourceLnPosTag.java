@@ -35,8 +35,10 @@ public class SourceLnPosTag implements Tag {
     }
 
     public byte[] getValue() {
-        byte[] v = new byte[4];
-        return v;
+	    byte[] v = new byte[2];
+	    v[0] = (byte)(startLn/256);
+	    v[1] = (byte)(startLn%256);
+	    return v;
     }
 
     public String toString(){
