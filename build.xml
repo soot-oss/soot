@@ -195,6 +195,12 @@
             <fileset dir="eclipse/ca.mcgill.sable.soot/classes"/>
             <fileset dir="eclipse/ca.mcgill.sable.soot/src" includes="**/*.properties"/>
         </jar>
+        <replaceregexp
+            match="sootclasses-.*\.jar"
+            replace="sootclasses-${soot.version}.jar"
+        >
+            <fileset dir="eclipse/ca.mcgill.sable.soot" includes="plugin.xml"/>
+        </replaceregexp>
     </target>
 
     <!-- Build a JFlex lexer based on parameters supplied to the target.
