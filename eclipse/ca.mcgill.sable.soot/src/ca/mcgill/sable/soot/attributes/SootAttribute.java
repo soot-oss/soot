@@ -22,18 +22,21 @@ public class SootAttribute {
 
 	private int java_ln;
 	private int jimple_ln;
+	private int jimple_offset_start;
+	private int jimple_offset_end;
+	private int colorKey;
 	private String text;
 	
 	private String filename;
 	
 	
-	public SootAttribute(int java_ln, int jimple_ln, 
+	/*public SootAttribute(int java_ln, int jimple_ln, 
 		String text, String filename) {
 		setJava_ln(java_ln);
 		setJimple_ln(jimple_ln);
 		setText(text);
 		setFilename(filename);
-	}
+	}*/
 	
 	public boolean attrForJimpleLn(int jimple_ln) {
 		if (getJimple_ln() == jimple_ln) return true;
@@ -135,6 +138,48 @@ public class SootAttribute {
 	 */
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getColorKey() {
+		return colorKey;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJimple_offset_end() {
+		return jimple_offset_end;
+	}
+
+	/**
+	 * @return
+	 */
+	public int getJimple_offset_start() {
+		return jimple_offset_start;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setColorKey(int i) {
+		colorKey = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJimple_offset_end(int i) {
+		jimple_offset_end = i;
+	}
+
+	/**
+	 * @param i
+	 */
+	public void setJimple_offset_start(int i) {
+		jimple_offset_start = i;
 	}
 
 }

@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.ui;
 
+import java.util.*;
+
 import org.eclipse.swt.widgets.*;
 //import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.swt.*;
@@ -25,12 +27,13 @@ import org.eclipse.swt.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class BooleanOptionWidget {//extends Composite {
+public class BooleanOptionWidget implements ISootOptionWidget {//extends Composite {
 
 	private Button button;
 	private String alias;
 	private String labelText;
 	private Composite dialogParent;
+	private OptionData data;
 	
 	/**
 	 * Constructor for BooleanOptionWidget.
@@ -45,6 +48,7 @@ public class BooleanOptionWidget {//extends Composite {
 	 OptionData data){
 		//super(parent, style);
 		setAlias(data.getRealAlias());
+		setData(data);
 		//setLabelText(data.getText());
 		
 		
@@ -61,7 +65,14 @@ public class BooleanOptionWidget {//extends Composite {
 		getButton().setSelection(data.isDefaultVal());
 		getButton().setText(data.getText());
 		getButton().setToolTipText(data.getTooltip());
+		
 		//getButton().setLayoutData(gridData);
+	}
+	
+	public ArrayList getControls() {
+		ArrayList controls = new ArrayList();
+		controls.add(getButton());
+		return controls;
 	}
 	
 	public void getWidget() {
@@ -114,6 +125,20 @@ public class BooleanOptionWidget {//extends Composite {
 	 */
 	public void setLabelText(String labelText) {
 		this.labelText = labelText;
+	}
+
+	/**
+	 * @return
+	 */
+	public OptionData getData() {
+		return data;
+	}
+
+	/**
+	 * @param data
+	 */
+	public void setData(OptionData data) {
+		this.data = data;
 	}
 
 }

@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.core.resources.*;
 import org.eclipse.jface.preference.*;
 import org.eclipse.jface.resource.*;
+import org.eclipse.jface.text.source.ISourceViewer;
 
 import java.net.*;
 import java.util.*;
@@ -45,6 +46,9 @@ public class SootPlugin extends AbstractUIPlugin {
 	
 	// listeners for soot output events
 	private Vector sootOutputEventListeners = new Vector();
+	
+	// list of jimple editor viewers
+	private ArrayList editorViewers = new ArrayList();
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -186,6 +190,25 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setManager(SootResourceManager manager) {
 		this.manager = manager;
+	}
+	
+	public void addEditorViewer(ISourceViewer viewer) {
+		viewer.addTextListener(getManager());
+		getEditorViewers().add(viewer);
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getEditorViewers() {
+		return editorViewers;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setEditorViewers(ArrayList list) {
+		editorViewers = list;
 	}
 
 }

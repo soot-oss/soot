@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.testing;
 
+import java.util.ArrayList;
+
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 import org.eclipse.swt.*;
@@ -25,7 +27,7 @@ import ca.mcgill.sable.soot.ui.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class StringOptionWidget {//extends Composite {
+public class StringOptionWidget implements ISootOptionWidget {//extends Composite {
 
 	private Text text;
 	private Label label;
@@ -75,12 +77,15 @@ public class StringOptionWidget {//extends Composite {
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
 		setText(new Text(path,  SWT.SINGLE | SWT.BORDER));
+		
 		//if (defaultVal != null) {
 		//	getText().setText(defaultVal);
 		//	
 		//}
 		getText().setText(data.getInitText());
-		getText().setToolTipText(data.getTooltip());		
+		getText().setToolTipText(data.getTooltip());	
+		getText().setSize(300, 20);	
+		
 		// this makes label fill available space		
 		//GridData gridData = new GridData(GridData.BEGINNING | GridData.HORIZONTAL_ALIGN_FILL);
         //gridData.horizontalSpan = 1;
@@ -94,6 +99,11 @@ public class StringOptionWidget {//extends Composite {
 		getText().setLayoutData(gridData);
 		
 		
+	}
+	public ArrayList getControls(){
+		ArrayList controls = new ArrayList();
+		controls.add(getText());
+		return controls;
 	}
 	
 	public void setLabelText(String text) {

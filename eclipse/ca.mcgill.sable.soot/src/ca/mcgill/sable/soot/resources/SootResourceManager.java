@@ -10,6 +10,15 @@ import java.util.*;
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.text.ITextListener;
+import org.eclipse.jface.text.TextEvent;
+import org.eclipse.jface.text.source.*;
+import org.eclipse.ui.*;
+
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.editors.JimpleEditor;
+
+
 
 /**
  * @author jlhotak
@@ -30,7 +39,7 @@ import org.eclipse.core.runtime.CoreException;
  * Boston, MA 02111-1307, USA.
  */
 
-public class SootResourceManager implements IResourceChangeListener {
+public class SootResourceManager implements IResourceChangeListener, ITextListener {
 
 	private static final String JAVA_FILE_EXT = Messages.getString("SootResourceManager.java"); //$NON-NLS-1$
 	public static final String JIMPLE_FILE_EXT = Messages.getString("SootResourceManager.jimple"); //$NON-NLS-1$
@@ -45,8 +54,30 @@ public class SootResourceManager implements IResourceChangeListener {
 	
 	public SootResourceManager() {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
+		/*Iterator it = SootPlugin.getDefault().getEditorViewers().iterator();
+		while (it.hasNext()){
+			SourceViewer sv = (SourceViewer)it.next();
+			sv.addTextListener(this);
+			System.out.println("added listener for source viewer"+sv);
+		}*/
+		
 	}
 	
+	public void textChanged(TextEvent e){
+		System.out.println("textChanged event occured");
+		/*IWorkbench workbench = SootPlugin.getDefault().getWorkbench();
+		if (workbench != null) {
+			IEditorPart edPart = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			JimpleEditor ed = (JimpleEditor) edPart.getAdapter(JimpleEditor.class);
+			if (ed != null && ed.getPage() != null){
+				ed.getPage().getContentOutline();
+				ed.getPage().getViewer().setInput(ed.getPage().getContentOutline());
+				ed.getPage().getViewer().refresh();
+				ed.getPage().getViewer().expandAll();
+			}
+		}*/
+		//System.out.println(e.getDocumentEvent().getDocument())
+	}
 	// here do nothing on start up - just not calling this method 
 	/*public void initialize() {
 		setProjects(new HashMap());
@@ -279,5 +310,6 @@ public class SootResourceManager implements IResourceChangeListener {
 	public void setChangedResources(HashMap map) {
 		changedResources = map;
 	}
-
+	
+	
 }

@@ -4,13 +4,13 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.TextAttribute;
+
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-
 import ca.mcgill.sable.soot.attributes.SootAttributesJimpleHover;
 
 /**
@@ -78,7 +78,7 @@ public class JimpleConfiguration extends SourceViewerConfiguration {
  		dr= new DefaultDamagerRepairer(getJimpleScanner());
   		reconciler.setDamager(dr, JimplePartitionScanner.JIMPLE_STRING);
   		reconciler.setRepairer(dr, JimplePartitionScanner.JIMPLE_STRING);
-  		
+		
   		return reconciler;
 
 	}

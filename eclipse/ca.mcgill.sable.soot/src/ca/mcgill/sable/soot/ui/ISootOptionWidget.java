@@ -1,7 +1,3 @@
-package ca.mcgill.sable.soot.editors;
-
-import org.eclipse.swt.graphics.RGB;
-
 /**
  * @author jlhotak
  *
@@ -20,16 +16,12 @@ import org.eclipse.swt.graphics.RGB;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+package ca.mcgill.sable.soot.ui;
 
-public interface IJimpleColorConstants {
-    RGB JIMPLE_DOC  = new RGB(0,0,0);
-    RGB JIMPLE_BACKGROUND = new RGB(220,220,220);
-    RGB JIMPLE_MULTI_COMMENT= new RGB(0,0,0);
-    RGB JIMPLE_SINGLE_COMMENT= new RGB(0,0,0);
-    RGB JIMPLE_DEFAULT= new RGB(0,0,0);
-    RGB JIMPLE_KEYWORD= new RGB(131,111,255);
-    RGB JIMPLE_STRING= new RGB(200,100,0);
-    
-    RGB JIMPLE_ATTRIBUTE_GOOD = new RGB(90,200,100);
-        
+import java.util.ArrayList;
+
+
+public interface ISootOptionWidget {
+	
+	public ArrayList getControls();
 }

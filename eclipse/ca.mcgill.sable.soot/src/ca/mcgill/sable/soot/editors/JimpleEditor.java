@@ -6,10 +6,15 @@ package ca.mcgill.sable.soot.editors;
 //import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.core.runtime.IAdaptable;
 //import org.eclipse.ui.IEditorInput;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import ca.mcgill.sable.soot.*;
+
 //import org.eclipse.ui.texteditor.MarkerUtilities;
 /**
  * @author jlhotak
@@ -33,6 +38,7 @@ public class JimpleEditor extends TextEditor {
 
 	private ColorManager colorManager;
 	protected JimpleContentOutlinePage page;
+	private ISourceViewer viewer;
 	
 	/**
 	 * Constructor for JimpleEditor.
@@ -42,6 +48,13 @@ public class JimpleEditor extends TextEditor {
 		colorManager = new ColorManager();
 		setSourceViewerConfiguration(new JimpleConfiguration(colorManager, this));
 		setDocumentProvider(new JimpleDocumentProvider());
+		setViewer(this.getSourceViewer());
+		if (this.getSourceViewer() == null){
+			System.out.println("JimpleEditor viewer is always null");
+		}
+		//ColorManager colorManager = new ColorManager();
+		//getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, true);
+		
 		
 	}
 	
@@ -77,6 +90,27 @@ public class JimpleEditor extends TextEditor {
 	 */
 	public void setPage(JimpleContentOutlinePage page) {
 		this.page = page;
+	}
+
+	protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+		System.out.println("source viewer created");
+		setViewer(super.createSourceViewer(parent, ruler, styles));
+		SootPlugin.getDefault().addEditorViewer(getViewer());
+		return getViewer();
+	}
+	
+	/**
+	 * @return
+	 */
+	public ISourceViewer getViewer() {
+		return viewer;
+	}
+
+	/**
+	 * @param viewer
+	 */
+	public void setViewer(ISourceViewer viewer) {
+		this.viewer = viewer;
 	}
 
 }

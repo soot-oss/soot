@@ -46,6 +46,8 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	private String selectedProj;
 	private SootAttributesHandler attrsHandler;
 	private IResource rec;
+	private ITextViewer viewer;
+	private IDocument document;
 	
 	
 	/**
@@ -100,6 +102,8 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public org.eclipse.jface.text.IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 	    try {
 			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
+			setViewer(textViewer);
+			setDocument(textViewer.getDocument());
 			//System.out.println(getLineNum());
 			return textViewer.getDocument().getLineInformationOfOffset(offset);
 		} catch (BadLocationException e) {
@@ -236,6 +240,34 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 */
 	public void setRec(IResource rec) {
 		this.rec = rec;
+	}
+
+	/**
+	 * @return
+	 */
+	public IDocument getDocument() {
+		return document;
+	}
+
+	/**
+	 * @return
+	 */
+	public ITextViewer getViewer() {
+		return viewer;
+	}
+
+	/**
+	 * @param document
+	 */
+	public void setDocument(IDocument document) {
+		this.document = document;
+	}
+
+	/**
+	 * @param viewer
+	 */
+	public void setViewer(ITextViewer viewer) {
+		this.viewer = viewer;
 	}
 
 }

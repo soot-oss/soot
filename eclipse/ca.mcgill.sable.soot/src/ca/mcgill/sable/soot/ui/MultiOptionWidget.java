@@ -4,6 +4,7 @@ import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.*;
 //import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.*;
+import java.util.*;
 
 
 /**
@@ -24,7 +25,7 @@ import org.eclipse.swt.layout.*;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-public class MultiOptionWidget {//extends Composite {
+public class MultiOptionWidget implements ISootOptionWidget {//extends Composite {
 
 	private String alias;
 	private OptionData [] dataVals;
@@ -86,6 +87,7 @@ public class MultiOptionWidget {//extends Composite {
 			buttons[i] = new Button(multi, SWT.RADIO);
 			buttons[i].setText(dataVals[i].getText());
 			buttons[i].setToolTipText(dataVals[i].getTooltip());
+			buttons[i].setEnabled(false);
 			//System.out.println(defaultVal);
 			if (dataVals[i].isDefaultVal()) {
 				buttons[i].setSelection(true);
@@ -107,6 +109,13 @@ public class MultiOptionWidget {//extends Composite {
         categories.setLayoutData(gridData);*/
 	}
 	
+	public ArrayList getControls(){
+		ArrayList controls = new ArrayList();
+		for (int i = 0; i < getDataVals().length; i++){
+			controls.add(buttons[i]);
+		}
+		return controls;
+	}
 	public void setDef(String id) {
 		for (int i = 0; i < buttons.length; i++) {
 			if (dataVals[i].getAlias().equals(id)) {

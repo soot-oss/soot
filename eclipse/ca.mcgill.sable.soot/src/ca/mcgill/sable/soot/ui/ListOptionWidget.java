@@ -75,6 +75,7 @@ public class ListOptionWidget {//extends Composite {
 		setLabel(new Label(path, SWT.NONE));
 		setLabelText(data.getText());
 		setText(new Text(path,  SWT.MULTI | SWT.BORDER));
+		
 		//if (defaultVal != null) {
 		//	getText().setText(defaultVal);
 		//}

@@ -124,7 +124,7 @@ public class SavedConfigManager {
 		return false;
 	}
 
-	//	TODO use this instaed of with String, String
+	//	TODO use this instead of with String, String
 	private void update(String name, ArrayList val){
 		String [] temp = new String [val.size()];
 		val.toArray(temp);
@@ -133,7 +133,7 @@ public class SavedConfigManager {
 		settings.put(name, temp);
 	}
 	 
-	// TODO use this instaed of with String, String
+	// TODO use this instead of with String, String
 	private void update(String name, String [] val){
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		

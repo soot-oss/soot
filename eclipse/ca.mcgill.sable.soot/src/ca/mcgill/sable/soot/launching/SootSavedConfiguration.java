@@ -176,7 +176,7 @@ public class SootSavedConfiguration {
 				config.put(((String)getSaveArray().get(counter)).substring(2), (String)getSaveArray().get(counter+1));
 				counter = counter + 2;
 			}
-			else if (bits.get(counter+3)){
+			else if ((bits.get(counter+3)) || ((counter+3) >= getSaveArray().size())){
 				// phase opt
 				String key = getSaveArray().get(counter)+SPACE+getSaveArray().get(counter+1);
 				StringTokenizer valTemp = new StringTokenizer((String)getSaveArray().get(counter+2), ":");

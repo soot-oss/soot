@@ -6,6 +6,9 @@ import java.util.Iterator;
 
 //import org.eclipse.jface.text.*;
 //import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
@@ -15,9 +18,11 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.text.TextPresentation;
 //import org.eclipse.jdt.ui.text.java.hover.*;
 //import org.eclipse.jdt.core.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.editors.*;
 
 /**
  * @author jlhotak
@@ -60,6 +65,9 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 	public void setEditor(IEditorPart ed) {
 		
 		super.setEditor(ed);
+		if (ed instanceof JimpleEditor){
+			System.out.println("editor is a jimple editor");
+		}
 		if (ed instanceof AbstractTextEditor) {
 			IResource rec = getResource((AbstractTextEditor)ed);
 			setRec(rec);
@@ -73,6 +81,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 		}
 		
 	}
+	
 	
 	private void computeAttributes() {
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
@@ -124,6 +133,30 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 	
 	protected String getAttributes() {
 		
+		/*Display display = getEditor().getSite().getShell().getDisplay();
+		//Display display = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell().getDisplay();
+		TextPresentation tp = new TextPresentation();
+		ColorManager colorManager = new ColorManager();
+		StyleRange sr = new StyleRange(0, 10, colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD));
+		tp.addStyleRange(sr);
+		if (((JimpleEditor)getEditor()).getViewer() == null){
+			System.out.println("viewer is null");
+		}
+		else {
+			display.asyncExec( new Runnable() {
+				public void run() {
+					TextPresentation tp = new TextPresentation();
+					ColorManager colorManager = new ColorManager();
+					StyleRange sr = new StyleRange(0, 10, colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD));
+					tp.addStyleRange(sr);
+					//((JimpleEditor)getEditor()).getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, false);
+					((JimpleEditor)getEditor()).getViewer().changeTextPresentation(tp, false);
+				};
+			});
+		}*/
+		
+				
+		
 		if (SootPlugin.getDefault().getManager().isFileMarkersUpdate((IFile)getRec())){
 			SootPlugin.getDefault().getManager().setToFalseUpdate((IFile)getRec());
 			try {
@@ -137,6 +170,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			//System.out.println("need to update markers from: "+getRec().getFullPath().toOSString());
 			computeAttributes();
 			addSootAttributeMarkers();
+			
 		}
 		else if (SootPlugin.getDefault().getManager().isFileMarkersRemove((IFile)getRec())) {
 			SootPlugin.getDefault().getManager().setToFalseRemove((IFile)getRec());
@@ -149,13 +183,18 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			return null;
 		}
 		if (getAttrsHandler() != null) {
-			
+			SootAttributesJimpleColorer sajc = new SootAttributesJimpleColorer();
+			sajc.computeColors(getAttrsHandler(), getViewer(), getEditor());
+		
 			return getAttrsHandler().getJimpleAttributes(
 			getLineNum());
+			
 		}
 		else {
 			return null;
 		}
+		
+		
 	}
 
 	

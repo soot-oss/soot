@@ -6,14 +6,12 @@
  */
 package ca.mcgill.sable.soot.resources;
 
-import java.io.*;
-import java.util.ArrayList;
+
 
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.*;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.views.contentoutline.*;
+
 
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.editors.*;
@@ -95,4 +93,5 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 
 		
 	}
+	
 }

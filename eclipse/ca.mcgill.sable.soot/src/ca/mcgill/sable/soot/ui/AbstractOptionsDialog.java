@@ -1,14 +1,13 @@
 package ca.mcgill.sable.soot.ui;
 
 //import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 //import java.util.Iterator;
 
 import org.eclipse.jface.dialogs.*;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.custom.*;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.*;
 //import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.*;
 //import org.eclipse.ui.dialogs.ElementListSelectionDialog;
@@ -19,9 +18,7 @@ import org.eclipse.swt.*;
 import ca.mcgill.sable.soot.launching.SavedConfigManager;
 //import ca.mcgill.sable.soot.launching.SootConfigNameInputValidator;
 import ca.mcgill.sable.soot.launching.SootSavedConfiguration;
-import ca.mcgill.sable.soot.testing.SootOption;
-import ca.mcgill.sable.soot.testing.SootOptionsContentProvider;
-import ca.mcgill.sable.soot.testing.SootOptionsLabelProvider;
+import ca.mcgill.sable.soot.testing.*;
 
 
 /**
@@ -52,7 +49,8 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	private HashMap editMap;
 	//private ArrayList deleteList;
 	private boolean canRun = true;
-	
+	private HashMap radioGroups;
+	private ArrayList enableGroups;
 	
 	/**
 	 * Constructor for AbstractOptionsDialog.
@@ -101,6 +99,64 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		shell.setText(Messages.getString("AbstractOptionsDialog.Soot_Options")); //$NON-NLS-1$
 	}
 	
+	public boolean isEnableButton(String alias){
+		if (alias.equals("enabled")) return true;
+		return false;
+	}
+	
+	public void handleWidgetSelected(SelectionEvent e){
+		
+		System.out.println(e.getSource().getClass().toString());
+		if (getRadioGroups() == null) return;
+		System.out.println("radioGroups not null");
+		Iterator it = getRadioGroups().keySet().iterator();
+		while (it.hasNext()){
+			Integer key = (Integer)it.next();
+			System.out.println("Key is: "+key);
+			if (getRadioGroups().get(key) == null) break;
+			ArrayList buttons = (ArrayList)getRadioGroups().get(key);
+			Iterator itButtons = buttons.iterator();
+			System.out.println(buttons.size());
+			while (itButtons.hasNext()){
+				System.out.println("Testing Button");
+				if (((BooleanOptionWidget)itButtons.next()).getButton().equals(e.getSource())) {
+					System.out.println("radio phase button changed");
+					switchButtons(buttons, (Button)e.getSource());
+				}
+			}
+		}
+		
+	}
+	
+	public void switchButtons(ArrayList buttons, Button change){
+		if (change.getSelection()){
+			Iterator it = buttons.iterator();
+			while (it.hasNext()){
+				BooleanOptionWidget nextWidget = (BooleanOptionWidget)it.next();
+				System.out.println(nextWidget.getButton()+" and change button: "+change); 
+				if (!nextWidget.getButton().equals(change)){
+					nextWidget.getButton().setSelection(false);
+				}
+				else {
+					nextWidget.getButton().setSelection(true);
+				}
+			}
+		}
+		else {
+			Iterator it = buttons.iterator();
+			while (it.hasNext()){
+				BooleanOptionWidget defWidget = (BooleanOptionWidget)it.next();
+				if (defWidget.getData().isDefaultVal()){
+					defWidget.getButton().setSelection(true);
+				}
+				else {
+					defWidget.getButton().setSelection(false);
+				}
+			}
+		}
+	}
+	
+		
 	/**
 	 * creates a sash form - one side for a selection tree 
 	 * and the other for the options 
@@ -571,6 +627,34 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	 */
 	public void setCanRun(boolean canRun) {
 		this.canRun = canRun;
+	}
+
+	/**
+	 * @return
+	 */
+	public HashMap getRadioGroups() {
+		return radioGroups;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setRadioGroups(HashMap map) {
+		radioGroups = map;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getEnableGroups() {
+		return enableGroups;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setEnableGroups(ArrayList list) {
+		enableGroups = list;
 	}
 
 }

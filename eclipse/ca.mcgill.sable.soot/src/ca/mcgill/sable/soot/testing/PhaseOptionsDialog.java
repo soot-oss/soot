@@ -41,10 +41,10 @@ import org.eclipse.swt.layout.*;
 //import ca.mcgill.sable.soot.SootPlugin;
 //import ca.mcgill.sable.soot.util.*;
 import ca.mcgill.sable.soot.ui.*;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.*;
+import org.eclipse.swt.events.*;
 
-public class PhaseOptionsDialog extends AbstractOptionsDialog {
+public class PhaseOptionsDialog extends AbstractOptionsDialog implements SelectionListener {
 
 	public PhaseOptionsDialog(Shell parentShell) {
 		super(parentShell);
@@ -137,10 +137,6 @@ Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
 
 Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
 
-Composite cgcg_oldchaChild = cgcg_oldchaCreate(getPageContainer());
-
-Composite cgcg_vtaChild = cgcg_vtaCreate(getPageContainer());
-
 Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
 
 Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
@@ -219,14 +215,67 @@ Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
 
 Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
+
+		initializeRadioGroups();
+		//initializeDisableGroups();
 		
+	}
+
+	private void initializeRadioGroups(){
+		setRadioGroups(new HashMap());
+		int counter = 0;
+		ArrayList buttonList;
+
+		
+		buttonList = new ArrayList();
+
+			
+		if (isEnableButton("enabled")) {
+			buttonList.add(getcgcg_chaenabled_widget());	
+			getcgcg_chaenabled_widget().getButton().addSelectionListener(this);
+		}
+
+			
+		if (isEnableButton("verbose")) {
+			buttonList.add(getcgcg_chaverbose_widget());	
+			getcgcg_chaverbose_widget().getButton().addSelectionListener(this);
+		}
+
+			
+		if (isEnableButton("all-clinit")) {
+			buttonList.add(getcgcg_chaall_clinit_widget());	
+			getcgcg_chaall_clinit_widget().getButton().addSelectionListener(this);
+		}
+
+			
+		if (isEnableButton("enabled")) {
+			buttonList.add(getcgcg_sparkenabled_widget());	
+			getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
+		}
+
+		
+		getRadioGroups().put(new Integer(counter), buttonList);
+
+		counter++;
+		
+	}
+
+	
+	
+	
+	
+	public void widgetSelected(SelectionEvent e){
+		handleWidgetSelected(e);
+	}
+
+	public void widgetDefaultSelected(SelectionEvent e){
 	}
 	
 	/**
 	 * all options get saved as <alias, value> pair
 	 */ 
 	protected void okPressed() {
-			createNewConfig();	
+		createNewConfig();	
 		super.okPressed();
 	}
 
@@ -400,14 +449,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getProcessing_Optionsvia_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbdisabled_widget().getButton().getSelection();
+		boolRes = getjbenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbuse_original_names_widget().getButton().getSelection();
@@ -420,24 +469,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_lsdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_lsdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_a1disabled_widget().getButton().getSelection();
+		boolRes = getjbjb_a1enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a1disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_a1only_stack_locals_widget().getButton().getSelection();
@@ -450,34 +499,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_ule1disabled_widget().getButton().getSelection();
+		boolRes = getjbjb_ule1enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ule1disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_ule1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_trdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_trenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_trdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_a2disabled_widget().getButton().getSelection();
+		boolRes = getjbjb_a2enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_a2disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_a2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_a2only_stack_locals_widget().getButton().getSelection();
@@ -490,24 +539,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_ule2disabled_widget().getButton().getSelection();
+		boolRes = getjbjb_ule2enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ule2disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_ule2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_ulpdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ulpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_ulpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpunsplit_original_locals_widget().getButton().getSelection();
@@ -520,14 +569,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_lnsdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_lnsenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_lnsdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_lnsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lnsonly_stack_locals_widget().getButton().getSelection();
@@ -540,14 +589,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_cpdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_cpenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_cpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_cpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cponly_regular_locals_widget().getButton().getSelection();
@@ -570,14 +619,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_daedisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_daeenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_daedisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_daeonly_stack_locals_widget().getButton().getSelection();
@@ -590,24 +639,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_cp_uledisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_cp_uledisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_lpdisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_cp_uleenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_lpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_cp_uleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_lpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_lpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lpunsplit_original_locals_widget().getButton().getSelection();
@@ -620,73 +669,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjbjb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjbjb_nedisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_nedisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_ucedisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_ucedisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_oldchadisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_neenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_oldchadisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_neenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_vtadisabled_widget().getButton().getSelection();
+		boolRes = getjbjb_uceenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_vtadisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjbjb_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		stringRes = getcgcg_vtapasses_widget().getText().getText();
-		
-		defStringRes = "1";
-		
-
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getcgcg_vtapasses_widget().getAlias(), stringRes);
-		}
-		
-		boolRes = getcgcg_chadisabled_widget().getButton().getSelection();
+		boolRes = getcgenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_chadisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_chaenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_chaverbose_widget().getButton().getSelection();
@@ -709,14 +729,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_chaall_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_sparkdisabled_widget().getButton().getSelection();
+		boolRes = getcgcg_sparkenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_sparkdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getcgcg_sparkenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkverbose_widget().getButton().getSelection();
@@ -1009,16 +1029,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkdump_answer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_sparktrim_invoke_graph_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_sparktrim_invoke_graph_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getcgcg_sparkadd_tags_widget().getButton().getSelection();
 		
 		
@@ -1039,54 +1049,54 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwstpdisabled_widget().getButton().getSelection();
+		boolRes = getwstpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwstpenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwsopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwstpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwsopdisabled_widget().getButton().getSelection();
+		boolRes = getwjtpenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwsopdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjtpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwjtpdisabled_widget().getButton().getSelection();
+		boolRes = getwjopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwjtpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwjopdisabled_widget().getButton().getSelection();
+		boolRes = getwjopwjop_smbenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwjopdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getwjopwjop_smbdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getwjopwjop_smbdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjopwjop_smbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_smbinsert_null_checks_widget().getButton().getSelection();
@@ -1119,14 +1129,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getwjopwjop_smballowed_modifier_changes_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getwjopwjop_sidisabled_widget().getButton().getSelection();
+		boolRes = getwjopwjop_sienabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwjopwjop_sidisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjopwjop_sienabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getwjopwjop_siinsert_null_checks_widget().getButton().getSelection();
@@ -1186,74 +1196,74 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getwjapdisabled_widget().getButton().getSelection();
+		boolRes = getwjapenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_raenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwjapdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getwjapwjap_raenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getwjapwjap_radisabled_widget().getButton().getSelection();
+		boolRes = getstpenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getwjapwjap_radisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getstpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getstpdisabled_widget().getButton().getSelection();
+		boolRes = getsopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getstpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getsopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getsopdisabled_widget().getButton().getSelection();
+		boolRes = getjtpenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getsopdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjtpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjtpdisabled_widget().getButton().getSelection();
+		boolRes = getjopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjtpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_cseenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjopjop_csedisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_csedisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_cseenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_csenaive_side_effect_widget().getButton().getSelection();
@@ -1266,14 +1276,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_csenaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_bcmdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_bcmenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_bcmdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_bcmenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_bcmnaive_side_effect_widget().getButton().getSelection();
@@ -1286,14 +1296,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_bcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_lcmdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_lcmenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_lcmdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_lcmenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_lcmunroll_widget().getButton().getSelection();
@@ -1326,14 +1336,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_lcmsafe_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getjopjop_cpdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_cpenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_cpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_cpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_cponly_regular_locals_widget().getButton().getSelection();
@@ -1356,34 +1366,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_cpfdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_cpfenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_cpfdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_cpfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_cbfdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_cbfenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_cbfdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_cbfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_daedisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_daeenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_daedisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjopjop_daeonly_stack_locals_widget().getButton().getSelection();
@@ -1396,74 +1406,74 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjopjop_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjopjop_uce1disabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_uce1disabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjopjop_uce2disabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_uce2disabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjopjop_ubf1disabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_ubf1disabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjopjop_ubf2disabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_ubf2disabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjopjop_uledisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjopjop_uledisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjapdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjapdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjapjap_npcdisabled_widget().getButton().getSelection();
+		boolRes = getjopjop_uce1enabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_npcdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjopjop_uce1enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_uce2enabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_uce2enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_ubf1enabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_ubf1enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_ubf2enabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_ubf2enabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjopjop_uleenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjopjop_uleenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapjap_npcenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_npcenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_npconly_array_ref_widget().getButton().getSelection();
@@ -1486,14 +1496,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_npcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_abcdisabled_widget().getButton().getSelection();
+		boolRes = getjapjap_abcenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_abcdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_abcenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_abcwith_all_widget().getButton().getSelection();
@@ -1566,14 +1576,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_abcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_profilingdisabled_widget().getButton().getSelection();
+		boolRes = getjapjap_profilingenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_profilingdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_profilingenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_profilingnotmainentry_widget().getButton().getSelection();
@@ -1586,14 +1596,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_profilingnotmainentry_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_seadisabled_widget().getButton().getSelection();
+		boolRes = getjapjap_seaenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_seadisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_seaenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjapjap_seanaive_widget().getButton().getSelection();
@@ -1606,14 +1616,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_seanaive_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getjapjap_fieldrwdisabled_widget().getButton().getSelection();
+		boolRes = getjapjap_fieldrwenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getjapjap_fieldrwdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getjapjap_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getjapjap_fieldrwthreshold_widget().getText().getText();
@@ -1625,24 +1635,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getjapjap_fieldrwthreshold_widget().getAlias(), stringRes);
 		}
 		
-		boolRes = getgbdisabled_widget().getButton().getSelection();
+		boolRes = getgbenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getgbdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getgbgb_a1disabled_widget().getButton().getSelection();
+		boolRes = getgbgb_a1enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getgbgb_a1disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgbgb_a1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a1only_stack_locals_widget().getButton().getSelection();
@@ -1655,24 +1665,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getgbgb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getgbgb_cfdisabled_widget().getButton().getSelection();
+		boolRes = getgbgb_cfenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getgbgb_cfdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgbgb_cfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getgbgb_a2disabled_widget().getButton().getSelection();
+		boolRes = getgbgb_a2enabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getgbgb_a2disabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgbgb_a2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbgb_a2only_stack_locals_widget().getButton().getSelection();
@@ -1685,44 +1695,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getgbgb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getgbgb_uledisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getgbgb_uledisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getgopdisabled_widget().getButton().getSelection();
+		boolRes = getgbgb_uleenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getgopdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgbgb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbbdisabled_widget().getButton().getSelection();
+		boolRes = getgopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getbbdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getgopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbbbb_lsodisabled_widget().getButton().getSelection();
+		boolRes = getbbenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getbbbb_lsodisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getbbenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getbbbb_lsoenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_lsoenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lsodebug_widget().getButton().getSelection();
@@ -1785,34 +1795,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getbbbb_lsosll2_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbbbb_phodisabled_widget().getButton().getSelection();
+		boolRes = getbbbb_phoenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getbbbb_phodisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getbbbb_phoenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbbbb_uledisabled_widget().getButton().getSelection();
+		boolRes = getbbbb_uleenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getbbbb_uledisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getbbbb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbbbb_lpdisabled_widget().getButton().getSelection();
+		boolRes = getbbbb_lpenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getbbbb_lpdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getbbbb_lpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getbbbb_lpunsplit_original_locals_widget().getButton().getSelection();
@@ -1825,64 +1835,64 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getbopdisabled_widget().getButton().getSelection();
-		
-		
-		defBoolRes = true;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getbopdisabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = gettagdisabled_widget().getButton().getSelection();
+		boolRes = getbopenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(gettagdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getbopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = gettagtag_lndisabled_widget().getButton().getSelection();
+		boolRes = gettagenabled_widget().getButton().getSelection();
 		
 		
 		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_lndisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(gettagenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = gettagtag_andisabled_widget().getButton().getSelection();
+		boolRes = gettagtag_lnenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_andisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(gettagtag_lnenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = gettagtag_depdisabled_widget().getButton().getSelection();
+		boolRes = gettagtag_anenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_depdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(gettagtag_anenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = gettagtag_fieldrwdisabled_widget().getButton().getSelection();
+		boolRes = gettagtag_depenabled_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(gettagtag_fieldrwdisabled_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(gettagtag_depenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = gettagtag_fieldrwenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getSingle_File_Mode_Optionsprocess_path_widget().getText().getText();
@@ -2024,7 +2034,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 
 	protected HashMap savePressed() {
-	
 
 		createNewConfig();
 		
@@ -2174,21 +2183,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			parent.addChild(cg_branch);
 			subParent = cg_branch;
 
-			SootOption cg_cg_oldcha_branch = new SootOption("Old Class Hierarchy Analysis");
-			subParent.addChild(cg_cg_oldcha_branch);
-
-			
-			subSectParent = cg_cg_oldcha_branch;
-			
-			
-			SootOption cg_cg_vta_branch = new SootOption("Variable Type Analysis");
-			subParent.addChild(cg_cg_vta_branch);
-
-			
-			subSectParent = cg_cg_vta_branch;
-			
-			
-			SootOption cg_cg_cha_branch = new SootOption("Spark Class Hierarchy Analysis");
+			SootOption cg_cg_cha_branch = new SootOption("Class Hierarchy Analysis");
 			subParent.addChild(cg_cg_cha_branch);
 
 			
@@ -2714,14 +2709,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Processing_Optionsvia_shimple_widget;
 	}	
 	
-	private BooleanOptionWidget jbdisabled_widget;
+	private BooleanOptionWidget jbenabled_widget;
 	
-	private void setjbdisabled_widget(BooleanOptionWidget widget) {
-		jbdisabled_widget = widget;
+	private void setjbenabled_widget(BooleanOptionWidget widget) {
+		jbenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbdisabled_widget() {
-		return jbdisabled_widget;
+	public BooleanOptionWidget getjbenabled_widget() {
+		return jbenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbuse_original_names_widget;
@@ -2734,24 +2729,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbuse_original_names_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_lsdisabled_widget;
+	private BooleanOptionWidget jbjb_lsenabled_widget;
 	
-	private void setjbjb_lsdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_lsdisabled_widget = widget;
+	private void setjbjb_lsenabled_widget(BooleanOptionWidget widget) {
+		jbjb_lsenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_lsdisabled_widget() {
-		return jbjb_lsdisabled_widget;
+	public BooleanOptionWidget getjbjb_lsenabled_widget() {
+		return jbjb_lsenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_a1disabled_widget;
+	private BooleanOptionWidget jbjb_a1enabled_widget;
 	
-	private void setjbjb_a1disabled_widget(BooleanOptionWidget widget) {
-		jbjb_a1disabled_widget = widget;
+	private void setjbjb_a1enabled_widget(BooleanOptionWidget widget) {
+		jbjb_a1enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_a1disabled_widget() {
-		return jbjb_a1disabled_widget;
+	public BooleanOptionWidget getjbjb_a1enabled_widget() {
+		return jbjb_a1enabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_a1only_stack_locals_widget;
@@ -2764,34 +2759,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_a1only_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_ule1disabled_widget;
+	private BooleanOptionWidget jbjb_ule1enabled_widget;
 	
-	private void setjbjb_ule1disabled_widget(BooleanOptionWidget widget) {
-		jbjb_ule1disabled_widget = widget;
+	private void setjbjb_ule1enabled_widget(BooleanOptionWidget widget) {
+		jbjb_ule1enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_ule1disabled_widget() {
-		return jbjb_ule1disabled_widget;
+	public BooleanOptionWidget getjbjb_ule1enabled_widget() {
+		return jbjb_ule1enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_trdisabled_widget;
+	private BooleanOptionWidget jbjb_trenabled_widget;
 	
-	private void setjbjb_trdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_trdisabled_widget = widget;
+	private void setjbjb_trenabled_widget(BooleanOptionWidget widget) {
+		jbjb_trenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_trdisabled_widget() {
-		return jbjb_trdisabled_widget;
+	public BooleanOptionWidget getjbjb_trenabled_widget() {
+		return jbjb_trenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_a2disabled_widget;
+	private BooleanOptionWidget jbjb_a2enabled_widget;
 	
-	private void setjbjb_a2disabled_widget(BooleanOptionWidget widget) {
-		jbjb_a2disabled_widget = widget;
+	private void setjbjb_a2enabled_widget(BooleanOptionWidget widget) {
+		jbjb_a2enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_a2disabled_widget() {
-		return jbjb_a2disabled_widget;
+	public BooleanOptionWidget getjbjb_a2enabled_widget() {
+		return jbjb_a2enabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_a2only_stack_locals_widget;
@@ -2804,24 +2799,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_a2only_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_ule2disabled_widget;
+	private BooleanOptionWidget jbjb_ule2enabled_widget;
 	
-	private void setjbjb_ule2disabled_widget(BooleanOptionWidget widget) {
-		jbjb_ule2disabled_widget = widget;
+	private void setjbjb_ule2enabled_widget(BooleanOptionWidget widget) {
+		jbjb_ule2enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_ule2disabled_widget() {
-		return jbjb_ule2disabled_widget;
+	public BooleanOptionWidget getjbjb_ule2enabled_widget() {
+		return jbjb_ule2enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_ulpdisabled_widget;
+	private BooleanOptionWidget jbjb_ulpenabled_widget;
 	
-	private void setjbjb_ulpdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_ulpdisabled_widget = widget;
+	private void setjbjb_ulpenabled_widget(BooleanOptionWidget widget) {
+		jbjb_ulpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_ulpdisabled_widget() {
-		return jbjb_ulpdisabled_widget;
+	public BooleanOptionWidget getjbjb_ulpenabled_widget() {
+		return jbjb_ulpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_ulpunsplit_original_locals_widget;
@@ -2834,14 +2829,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_ulpunsplit_original_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_lnsdisabled_widget;
+	private BooleanOptionWidget jbjb_lnsenabled_widget;
 	
-	private void setjbjb_lnsdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_lnsdisabled_widget = widget;
+	private void setjbjb_lnsenabled_widget(BooleanOptionWidget widget) {
+		jbjb_lnsenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_lnsdisabled_widget() {
-		return jbjb_lnsdisabled_widget;
+	public BooleanOptionWidget getjbjb_lnsenabled_widget() {
+		return jbjb_lnsenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_lnsonly_stack_locals_widget;
@@ -2854,14 +2849,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_lnsonly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_cpdisabled_widget;
+	private BooleanOptionWidget jbjb_cpenabled_widget;
 	
-	private void setjbjb_cpdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_cpdisabled_widget = widget;
+	private void setjbjb_cpenabled_widget(BooleanOptionWidget widget) {
+		jbjb_cpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_cpdisabled_widget() {
-		return jbjb_cpdisabled_widget;
+	public BooleanOptionWidget getjbjb_cpenabled_widget() {
+		return jbjb_cpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_cponly_regular_locals_widget;
@@ -2884,14 +2879,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_cponly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_daedisabled_widget;
+	private BooleanOptionWidget jbjb_daeenabled_widget;
 	
-	private void setjbjb_daedisabled_widget(BooleanOptionWidget widget) {
-		jbjb_daedisabled_widget = widget;
+	private void setjbjb_daeenabled_widget(BooleanOptionWidget widget) {
+		jbjb_daeenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_daedisabled_widget() {
-		return jbjb_daedisabled_widget;
+	public BooleanOptionWidget getjbjb_daeenabled_widget() {
+		return jbjb_daeenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_daeonly_stack_locals_widget;
@@ -2904,24 +2899,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_daeonly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_cp_uledisabled_widget;
+	private BooleanOptionWidget jbjb_cp_uleenabled_widget;
 	
-	private void setjbjb_cp_uledisabled_widget(BooleanOptionWidget widget) {
-		jbjb_cp_uledisabled_widget = widget;
+	private void setjbjb_cp_uleenabled_widget(BooleanOptionWidget widget) {
+		jbjb_cp_uleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_cp_uledisabled_widget() {
-		return jbjb_cp_uledisabled_widget;
+	public BooleanOptionWidget getjbjb_cp_uleenabled_widget() {
+		return jbjb_cp_uleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_lpdisabled_widget;
+	private BooleanOptionWidget jbjb_lpenabled_widget;
 	
-	private void setjbjb_lpdisabled_widget(BooleanOptionWidget widget) {
-		jbjb_lpdisabled_widget = widget;
+	private void setjbjb_lpenabled_widget(BooleanOptionWidget widget) {
+		jbjb_lpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_lpdisabled_widget() {
-		return jbjb_lpdisabled_widget;
+	public BooleanOptionWidget getjbjb_lpenabled_widget() {
+		return jbjb_lpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_lpunsplit_original_locals_widget;
@@ -2934,76 +2929,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jbjb_lpunsplit_original_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_nedisabled_widget;
+	private BooleanOptionWidget jbjb_neenabled_widget;
 	
-	private void setjbjb_nedisabled_widget(BooleanOptionWidget widget) {
-		jbjb_nedisabled_widget = widget;
+	private void setjbjb_neenabled_widget(BooleanOptionWidget widget) {
+		jbjb_neenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_nedisabled_widget() {
-		return jbjb_nedisabled_widget;
+	public BooleanOptionWidget getjbjb_neenabled_widget() {
+		return jbjb_neenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jbjb_ucedisabled_widget;
+	private BooleanOptionWidget jbjb_uceenabled_widget;
 	
-	private void setjbjb_ucedisabled_widget(BooleanOptionWidget widget) {
-		jbjb_ucedisabled_widget = widget;
+	private void setjbjb_uceenabled_widget(BooleanOptionWidget widget) {
+		jbjb_uceenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjbjb_ucedisabled_widget() {
-		return jbjb_ucedisabled_widget;
+	public BooleanOptionWidget getjbjb_uceenabled_widget() {
+		return jbjb_uceenabled_widget;
 	}	
 	
-	private BooleanOptionWidget cgdisabled_widget;
+	private BooleanOptionWidget cgenabled_widget;
 	
-	private void setcgdisabled_widget(BooleanOptionWidget widget) {
-		cgdisabled_widget = widget;
+	private void setcgenabled_widget(BooleanOptionWidget widget) {
+		cgenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgdisabled_widget() {
-		return cgdisabled_widget;
+	public BooleanOptionWidget getcgenabled_widget() {
+		return cgenabled_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_oldchadisabled_widget;
+	private BooleanOptionWidget cgcg_chaenabled_widget;
 	
-	private void setcgcg_oldchadisabled_widget(BooleanOptionWidget widget) {
-		cgcg_oldchadisabled_widget = widget;
+	private void setcgcg_chaenabled_widget(BooleanOptionWidget widget) {
+		cgcg_chaenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_oldchadisabled_widget() {
-		return cgcg_oldchadisabled_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_vtadisabled_widget;
-	
-	private void setcgcg_vtadisabled_widget(BooleanOptionWidget widget) {
-		cgcg_vtadisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_vtadisabled_widget() {
-		return cgcg_vtadisabled_widget;
-	}	
-	
-	
-	private StringOptionWidget cgcg_vtapasses_widget;
-	
-	private void setcgcg_vtapasses_widget(StringOptionWidget widget) {
-		cgcg_vtapasses_widget = widget;
-	}
-	
-	public StringOptionWidget getcgcg_vtapasses_widget() {
-		return cgcg_vtapasses_widget;
-	}
-	
-	
-	private BooleanOptionWidget cgcg_chadisabled_widget;
-	
-	private void setcgcg_chadisabled_widget(BooleanOptionWidget widget) {
-		cgcg_chadisabled_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_chadisabled_widget() {
-		return cgcg_chadisabled_widget;
+	public BooleanOptionWidget getcgcg_chaenabled_widget() {
+		return cgcg_chaenabled_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_chaverbose_widget;
@@ -3026,14 +2989,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_chaall_clinit_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_sparkdisabled_widget;
+	private BooleanOptionWidget cgcg_sparkenabled_widget;
 	
-	private void setcgcg_sparkdisabled_widget(BooleanOptionWidget widget) {
-		cgcg_sparkdisabled_widget = widget;
+	private void setcgcg_sparkenabled_widget(BooleanOptionWidget widget) {
+		cgcg_sparkenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getcgcg_sparkdisabled_widget() {
-		return cgcg_sparkdisabled_widget;
+	public BooleanOptionWidget getcgcg_sparkenabled_widget() {
+		return cgcg_sparkenabled_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparkverbose_widget;
@@ -3334,16 +3297,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkdump_answer_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_sparktrim_invoke_graph_widget;
-	
-	private void setcgcg_sparktrim_invoke_graph_widget(BooleanOptionWidget widget) {
-		cgcg_sparktrim_invoke_graph_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_sparktrim_invoke_graph_widget() {
-		return cgcg_sparktrim_invoke_graph_widget;
-	}	
-	
 	private BooleanOptionWidget cgcg_sparkadd_tags_widget;
 	
 	private void setcgcg_sparkadd_tags_widget(BooleanOptionWidget widget) {
@@ -3364,54 +3317,54 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkset_mass_widget;
 	}	
 	
-	private BooleanOptionWidget wstpdisabled_widget;
+	private BooleanOptionWidget wstpenabled_widget;
 	
-	private void setwstpdisabled_widget(BooleanOptionWidget widget) {
-		wstpdisabled_widget = widget;
+	private void setwstpenabled_widget(BooleanOptionWidget widget) {
+		wstpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwstpdisabled_widget() {
-		return wstpdisabled_widget;
+	public BooleanOptionWidget getwstpenabled_widget() {
+		return wstpenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wsopdisabled_widget;
+	private BooleanOptionWidget wsopenabled_widget;
 	
-	private void setwsopdisabled_widget(BooleanOptionWidget widget) {
-		wsopdisabled_widget = widget;
+	private void setwsopenabled_widget(BooleanOptionWidget widget) {
+		wsopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwsopdisabled_widget() {
-		return wsopdisabled_widget;
+	public BooleanOptionWidget getwsopenabled_widget() {
+		return wsopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjtpdisabled_widget;
+	private BooleanOptionWidget wjtpenabled_widget;
 	
-	private void setwjtpdisabled_widget(BooleanOptionWidget widget) {
-		wjtpdisabled_widget = widget;
+	private void setwjtpenabled_widget(BooleanOptionWidget widget) {
+		wjtpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjtpdisabled_widget() {
-		return wjtpdisabled_widget;
+	public BooleanOptionWidget getwjtpenabled_widget() {
+		return wjtpenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjopdisabled_widget;
+	private BooleanOptionWidget wjopenabled_widget;
 	
-	private void setwjopdisabled_widget(BooleanOptionWidget widget) {
-		wjopdisabled_widget = widget;
+	private void setwjopenabled_widget(BooleanOptionWidget widget) {
+		wjopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjopdisabled_widget() {
-		return wjopdisabled_widget;
+	public BooleanOptionWidget getwjopenabled_widget() {
+		return wjopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjopwjop_smbdisabled_widget;
+	private BooleanOptionWidget wjopwjop_smbenabled_widget;
 	
-	private void setwjopwjop_smbdisabled_widget(BooleanOptionWidget widget) {
-		wjopwjop_smbdisabled_widget = widget;
+	private void setwjopwjop_smbenabled_widget(BooleanOptionWidget widget) {
+		wjopwjop_smbenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjopwjop_smbdisabled_widget() {
-		return wjopwjop_smbdisabled_widget;
+	public BooleanOptionWidget getwjopwjop_smbenabled_widget() {
+		return wjopwjop_smbenabled_widget;
 	}	
 	
 	private BooleanOptionWidget wjopwjop_smbinsert_null_checks_widget;
@@ -3446,14 +3399,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget wjopwjop_sidisabled_widget;
+	private BooleanOptionWidget wjopwjop_sienabled_widget;
 	
-	private void setwjopwjop_sidisabled_widget(BooleanOptionWidget widget) {
-		wjopwjop_sidisabled_widget = widget;
+	private void setwjopwjop_sienabled_widget(BooleanOptionWidget widget) {
+		wjopwjop_sienabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjopwjop_sidisabled_widget() {
-		return wjopwjop_sidisabled_widget;
+	public BooleanOptionWidget getwjopwjop_sienabled_widget() {
+		return wjopwjop_sienabled_widget;
 	}	
 	
 	private BooleanOptionWidget wjopwjop_siinsert_null_checks_widget;
@@ -3524,74 +3477,74 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget wjapdisabled_widget;
+	private BooleanOptionWidget wjapenabled_widget;
 	
-	private void setwjapdisabled_widget(BooleanOptionWidget widget) {
-		wjapdisabled_widget = widget;
+	private void setwjapenabled_widget(BooleanOptionWidget widget) {
+		wjapenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjapdisabled_widget() {
-		return wjapdisabled_widget;
+	public BooleanOptionWidget getwjapenabled_widget() {
+		return wjapenabled_widget;
 	}	
 	
-	private BooleanOptionWidget wjapwjap_radisabled_widget;
+	private BooleanOptionWidget wjapwjap_raenabled_widget;
 	
-	private void setwjapwjap_radisabled_widget(BooleanOptionWidget widget) {
-		wjapwjap_radisabled_widget = widget;
+	private void setwjapwjap_raenabled_widget(BooleanOptionWidget widget) {
+		wjapwjap_raenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getwjapwjap_radisabled_widget() {
-		return wjapwjap_radisabled_widget;
+	public BooleanOptionWidget getwjapwjap_raenabled_widget() {
+		return wjapwjap_raenabled_widget;
 	}	
 	
-	private BooleanOptionWidget stpdisabled_widget;
+	private BooleanOptionWidget stpenabled_widget;
 	
-	private void setstpdisabled_widget(BooleanOptionWidget widget) {
-		stpdisabled_widget = widget;
+	private void setstpenabled_widget(BooleanOptionWidget widget) {
+		stpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getstpdisabled_widget() {
-		return stpdisabled_widget;
+	public BooleanOptionWidget getstpenabled_widget() {
+		return stpenabled_widget;
 	}	
 	
-	private BooleanOptionWidget sopdisabled_widget;
+	private BooleanOptionWidget sopenabled_widget;
 	
-	private void setsopdisabled_widget(BooleanOptionWidget widget) {
-		sopdisabled_widget = widget;
+	private void setsopenabled_widget(BooleanOptionWidget widget) {
+		sopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getsopdisabled_widget() {
-		return sopdisabled_widget;
+	public BooleanOptionWidget getsopenabled_widget() {
+		return sopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jtpdisabled_widget;
+	private BooleanOptionWidget jtpenabled_widget;
 	
-	private void setjtpdisabled_widget(BooleanOptionWidget widget) {
-		jtpdisabled_widget = widget;
+	private void setjtpenabled_widget(BooleanOptionWidget widget) {
+		jtpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjtpdisabled_widget() {
-		return jtpdisabled_widget;
+	public BooleanOptionWidget getjtpenabled_widget() {
+		return jtpenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopdisabled_widget;
+	private BooleanOptionWidget jopenabled_widget;
 	
-	private void setjopdisabled_widget(BooleanOptionWidget widget) {
-		jopdisabled_widget = widget;
+	private void setjopenabled_widget(BooleanOptionWidget widget) {
+		jopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopdisabled_widget() {
-		return jopdisabled_widget;
+	public BooleanOptionWidget getjopenabled_widget() {
+		return jopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_csedisabled_widget;
+	private BooleanOptionWidget jopjop_cseenabled_widget;
 	
-	private void setjopjop_csedisabled_widget(BooleanOptionWidget widget) {
-		jopjop_csedisabled_widget = widget;
+	private void setjopjop_cseenabled_widget(BooleanOptionWidget widget) {
+		jopjop_cseenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_csedisabled_widget() {
-		return jopjop_csedisabled_widget;
+	public BooleanOptionWidget getjopjop_cseenabled_widget() {
+		return jopjop_cseenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_csenaive_side_effect_widget;
@@ -3604,14 +3557,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_csenaive_side_effect_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_bcmdisabled_widget;
+	private BooleanOptionWidget jopjop_bcmenabled_widget;
 	
-	private void setjopjop_bcmdisabled_widget(BooleanOptionWidget widget) {
-		jopjop_bcmdisabled_widget = widget;
+	private void setjopjop_bcmenabled_widget(BooleanOptionWidget widget) {
+		jopjop_bcmenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_bcmdisabled_widget() {
-		return jopjop_bcmdisabled_widget;
+	public BooleanOptionWidget getjopjop_bcmenabled_widget() {
+		return jopjop_bcmenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_bcmnaive_side_effect_widget;
@@ -3624,14 +3577,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_bcmnaive_side_effect_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_lcmdisabled_widget;
+	private BooleanOptionWidget jopjop_lcmenabled_widget;
 	
-	private void setjopjop_lcmdisabled_widget(BooleanOptionWidget widget) {
-		jopjop_lcmdisabled_widget = widget;
+	private void setjopjop_lcmenabled_widget(BooleanOptionWidget widget) {
+		jopjop_lcmenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_lcmdisabled_widget() {
-		return jopjop_lcmdisabled_widget;
+	public BooleanOptionWidget getjopjop_lcmenabled_widget() {
+		return jopjop_lcmenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_lcmunroll_widget;
@@ -3666,14 +3619,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 	
-	private BooleanOptionWidget jopjop_cpdisabled_widget;
+	private BooleanOptionWidget jopjop_cpenabled_widget;
 	
-	private void setjopjop_cpdisabled_widget(BooleanOptionWidget widget) {
-		jopjop_cpdisabled_widget = widget;
+	private void setjopjop_cpenabled_widget(BooleanOptionWidget widget) {
+		jopjop_cpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_cpdisabled_widget() {
-		return jopjop_cpdisabled_widget;
+	public BooleanOptionWidget getjopjop_cpenabled_widget() {
+		return jopjop_cpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_cponly_regular_locals_widget;
@@ -3696,34 +3649,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_cponly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_cpfdisabled_widget;
+	private BooleanOptionWidget jopjop_cpfenabled_widget;
 	
-	private void setjopjop_cpfdisabled_widget(BooleanOptionWidget widget) {
-		jopjop_cpfdisabled_widget = widget;
+	private void setjopjop_cpfenabled_widget(BooleanOptionWidget widget) {
+		jopjop_cpfenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_cpfdisabled_widget() {
-		return jopjop_cpfdisabled_widget;
+	public BooleanOptionWidget getjopjop_cpfenabled_widget() {
+		return jopjop_cpfenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_cbfdisabled_widget;
+	private BooleanOptionWidget jopjop_cbfenabled_widget;
 	
-	private void setjopjop_cbfdisabled_widget(BooleanOptionWidget widget) {
-		jopjop_cbfdisabled_widget = widget;
+	private void setjopjop_cbfenabled_widget(BooleanOptionWidget widget) {
+		jopjop_cbfenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_cbfdisabled_widget() {
-		return jopjop_cbfdisabled_widget;
+	public BooleanOptionWidget getjopjop_cbfenabled_widget() {
+		return jopjop_cbfenabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_daedisabled_widget;
+	private BooleanOptionWidget jopjop_daeenabled_widget;
 	
-	private void setjopjop_daedisabled_widget(BooleanOptionWidget widget) {
-		jopjop_daedisabled_widget = widget;
+	private void setjopjop_daeenabled_widget(BooleanOptionWidget widget) {
+		jopjop_daeenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_daedisabled_widget() {
-		return jopjop_daedisabled_widget;
+	public BooleanOptionWidget getjopjop_daeenabled_widget() {
+		return jopjop_daeenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jopjop_daeonly_stack_locals_widget;
@@ -3736,74 +3689,74 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return jopjop_daeonly_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_uce1disabled_widget;
+	private BooleanOptionWidget jopjop_uce1enabled_widget;
 	
-	private void setjopjop_uce1disabled_widget(BooleanOptionWidget widget) {
-		jopjop_uce1disabled_widget = widget;
+	private void setjopjop_uce1enabled_widget(BooleanOptionWidget widget) {
+		jopjop_uce1enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_uce1disabled_widget() {
-		return jopjop_uce1disabled_widget;
+	public BooleanOptionWidget getjopjop_uce1enabled_widget() {
+		return jopjop_uce1enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_uce2disabled_widget;
+	private BooleanOptionWidget jopjop_uce2enabled_widget;
 	
-	private void setjopjop_uce2disabled_widget(BooleanOptionWidget widget) {
-		jopjop_uce2disabled_widget = widget;
+	private void setjopjop_uce2enabled_widget(BooleanOptionWidget widget) {
+		jopjop_uce2enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_uce2disabled_widget() {
-		return jopjop_uce2disabled_widget;
+	public BooleanOptionWidget getjopjop_uce2enabled_widget() {
+		return jopjop_uce2enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_ubf1disabled_widget;
+	private BooleanOptionWidget jopjop_ubf1enabled_widget;
 	
-	private void setjopjop_ubf1disabled_widget(BooleanOptionWidget widget) {
-		jopjop_ubf1disabled_widget = widget;
+	private void setjopjop_ubf1enabled_widget(BooleanOptionWidget widget) {
+		jopjop_ubf1enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_ubf1disabled_widget() {
-		return jopjop_ubf1disabled_widget;
+	public BooleanOptionWidget getjopjop_ubf1enabled_widget() {
+		return jopjop_ubf1enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_ubf2disabled_widget;
+	private BooleanOptionWidget jopjop_ubf2enabled_widget;
 	
-	private void setjopjop_ubf2disabled_widget(BooleanOptionWidget widget) {
-		jopjop_ubf2disabled_widget = widget;
+	private void setjopjop_ubf2enabled_widget(BooleanOptionWidget widget) {
+		jopjop_ubf2enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_ubf2disabled_widget() {
-		return jopjop_ubf2disabled_widget;
+	public BooleanOptionWidget getjopjop_ubf2enabled_widget() {
+		return jopjop_ubf2enabled_widget;
 	}	
 	
-	private BooleanOptionWidget jopjop_uledisabled_widget;
+	private BooleanOptionWidget jopjop_uleenabled_widget;
 	
-	private void setjopjop_uledisabled_widget(BooleanOptionWidget widget) {
-		jopjop_uledisabled_widget = widget;
+	private void setjopjop_uleenabled_widget(BooleanOptionWidget widget) {
+		jopjop_uleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjopjop_uledisabled_widget() {
-		return jopjop_uledisabled_widget;
+	public BooleanOptionWidget getjopjop_uleenabled_widget() {
+		return jopjop_uleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget japdisabled_widget;
+	private BooleanOptionWidget japenabled_widget;
 	
-	private void setjapdisabled_widget(BooleanOptionWidget widget) {
-		japdisabled_widget = widget;
+	private void setjapenabled_widget(BooleanOptionWidget widget) {
+		japenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapdisabled_widget() {
-		return japdisabled_widget;
+	public BooleanOptionWidget getjapenabled_widget() {
+		return japenabled_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_npcdisabled_widget;
+	private BooleanOptionWidget japjap_npcenabled_widget;
 	
-	private void setjapjap_npcdisabled_widget(BooleanOptionWidget widget) {
-		japjap_npcdisabled_widget = widget;
+	private void setjapjap_npcenabled_widget(BooleanOptionWidget widget) {
+		japjap_npcenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_npcdisabled_widget() {
-		return japjap_npcdisabled_widget;
+	public BooleanOptionWidget getjapjap_npcenabled_widget() {
+		return japjap_npcenabled_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_npconly_array_ref_widget;
@@ -3826,14 +3779,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_npcprofiling_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_abcdisabled_widget;
+	private BooleanOptionWidget japjap_abcenabled_widget;
 	
-	private void setjapjap_abcdisabled_widget(BooleanOptionWidget widget) {
-		japjap_abcdisabled_widget = widget;
+	private void setjapjap_abcenabled_widget(BooleanOptionWidget widget) {
+		japjap_abcenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_abcdisabled_widget() {
-		return japjap_abcdisabled_widget;
+	public BooleanOptionWidget getjapjap_abcenabled_widget() {
+		return japjap_abcenabled_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_abcwith_all_widget;
@@ -3906,14 +3859,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_abcprofiling_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_profilingdisabled_widget;
+	private BooleanOptionWidget japjap_profilingenabled_widget;
 	
-	private void setjapjap_profilingdisabled_widget(BooleanOptionWidget widget) {
-		japjap_profilingdisabled_widget = widget;
+	private void setjapjap_profilingenabled_widget(BooleanOptionWidget widget) {
+		japjap_profilingenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_profilingdisabled_widget() {
-		return japjap_profilingdisabled_widget;
+	public BooleanOptionWidget getjapjap_profilingenabled_widget() {
+		return japjap_profilingenabled_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_profilingnotmainentry_widget;
@@ -3926,14 +3879,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_profilingnotmainentry_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_seadisabled_widget;
+	private BooleanOptionWidget japjap_seaenabled_widget;
 	
-	private void setjapjap_seadisabled_widget(BooleanOptionWidget widget) {
-		japjap_seadisabled_widget = widget;
+	private void setjapjap_seaenabled_widget(BooleanOptionWidget widget) {
+		japjap_seaenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_seadisabled_widget() {
-		return japjap_seadisabled_widget;
+	public BooleanOptionWidget getjapjap_seaenabled_widget() {
+		return japjap_seaenabled_widget;
 	}	
 	
 	private BooleanOptionWidget japjap_seanaive_widget;
@@ -3946,14 +3899,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_seanaive_widget;
 	}	
 	
-	private BooleanOptionWidget japjap_fieldrwdisabled_widget;
+	private BooleanOptionWidget japjap_fieldrwenabled_widget;
 	
-	private void setjapjap_fieldrwdisabled_widget(BooleanOptionWidget widget) {
-		japjap_fieldrwdisabled_widget = widget;
+	private void setjapjap_fieldrwenabled_widget(BooleanOptionWidget widget) {
+		japjap_fieldrwenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getjapjap_fieldrwdisabled_widget() {
-		return japjap_fieldrwdisabled_widget;
+	public BooleanOptionWidget getjapjap_fieldrwenabled_widget() {
+		return japjap_fieldrwenabled_widget;
 	}	
 	
 	
@@ -3968,24 +3921,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}
 	
 	
-	private BooleanOptionWidget gbdisabled_widget;
+	private BooleanOptionWidget gbenabled_widget;
 	
-	private void setgbdisabled_widget(BooleanOptionWidget widget) {
-		gbdisabled_widget = widget;
+	private void setgbenabled_widget(BooleanOptionWidget widget) {
+		gbenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgbdisabled_widget() {
-		return gbdisabled_widget;
+	public BooleanOptionWidget getgbenabled_widget() {
+		return gbenabled_widget;
 	}	
 	
-	private BooleanOptionWidget gbgb_a1disabled_widget;
+	private BooleanOptionWidget gbgb_a1enabled_widget;
 	
-	private void setgbgb_a1disabled_widget(BooleanOptionWidget widget) {
-		gbgb_a1disabled_widget = widget;
+	private void setgbgb_a1enabled_widget(BooleanOptionWidget widget) {
+		gbgb_a1enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgbgb_a1disabled_widget() {
-		return gbgb_a1disabled_widget;
+	public BooleanOptionWidget getgbgb_a1enabled_widget() {
+		return gbgb_a1enabled_widget;
 	}	
 	
 	private BooleanOptionWidget gbgb_a1only_stack_locals_widget;
@@ -3998,24 +3951,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return gbgb_a1only_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget gbgb_cfdisabled_widget;
+	private BooleanOptionWidget gbgb_cfenabled_widget;
 	
-	private void setgbgb_cfdisabled_widget(BooleanOptionWidget widget) {
-		gbgb_cfdisabled_widget = widget;
+	private void setgbgb_cfenabled_widget(BooleanOptionWidget widget) {
+		gbgb_cfenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgbgb_cfdisabled_widget() {
-		return gbgb_cfdisabled_widget;
+	public BooleanOptionWidget getgbgb_cfenabled_widget() {
+		return gbgb_cfenabled_widget;
 	}	
 	
-	private BooleanOptionWidget gbgb_a2disabled_widget;
+	private BooleanOptionWidget gbgb_a2enabled_widget;
 	
-	private void setgbgb_a2disabled_widget(BooleanOptionWidget widget) {
-		gbgb_a2disabled_widget = widget;
+	private void setgbgb_a2enabled_widget(BooleanOptionWidget widget) {
+		gbgb_a2enabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgbgb_a2disabled_widget() {
-		return gbgb_a2disabled_widget;
+	public BooleanOptionWidget getgbgb_a2enabled_widget() {
+		return gbgb_a2enabled_widget;
 	}	
 	
 	private BooleanOptionWidget gbgb_a2only_stack_locals_widget;
@@ -4028,44 +3981,44 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return gbgb_a2only_stack_locals_widget;
 	}	
 	
-	private BooleanOptionWidget gbgb_uledisabled_widget;
+	private BooleanOptionWidget gbgb_uleenabled_widget;
 	
-	private void setgbgb_uledisabled_widget(BooleanOptionWidget widget) {
-		gbgb_uledisabled_widget = widget;
+	private void setgbgb_uleenabled_widget(BooleanOptionWidget widget) {
+		gbgb_uleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgbgb_uledisabled_widget() {
-		return gbgb_uledisabled_widget;
+	public BooleanOptionWidget getgbgb_uleenabled_widget() {
+		return gbgb_uleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget gopdisabled_widget;
+	private BooleanOptionWidget gopenabled_widget;
 	
-	private void setgopdisabled_widget(BooleanOptionWidget widget) {
-		gopdisabled_widget = widget;
+	private void setgopenabled_widget(BooleanOptionWidget widget) {
+		gopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getgopdisabled_widget() {
-		return gopdisabled_widget;
+	public BooleanOptionWidget getgopenabled_widget() {
+		return gopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget bbdisabled_widget;
+	private BooleanOptionWidget bbenabled_widget;
 	
-	private void setbbdisabled_widget(BooleanOptionWidget widget) {
-		bbdisabled_widget = widget;
+	private void setbbenabled_widget(BooleanOptionWidget widget) {
+		bbenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbbdisabled_widget() {
-		return bbdisabled_widget;
+	public BooleanOptionWidget getbbenabled_widget() {
+		return bbenabled_widget;
 	}	
 	
-	private BooleanOptionWidget bbbb_lsodisabled_widget;
+	private BooleanOptionWidget bbbb_lsoenabled_widget;
 	
-	private void setbbbb_lsodisabled_widget(BooleanOptionWidget widget) {
-		bbbb_lsodisabled_widget = widget;
+	private void setbbbb_lsoenabled_widget(BooleanOptionWidget widget) {
+		bbbb_lsoenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbbbb_lsodisabled_widget() {
-		return bbbb_lsodisabled_widget;
+	public BooleanOptionWidget getbbbb_lsoenabled_widget() {
+		return bbbb_lsoenabled_widget;
 	}	
 	
 	private BooleanOptionWidget bbbb_lsodebug_widget;
@@ -4128,34 +4081,34 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return bbbb_lsosll2_widget;
 	}	
 	
-	private BooleanOptionWidget bbbb_phodisabled_widget;
+	private BooleanOptionWidget bbbb_phoenabled_widget;
 	
-	private void setbbbb_phodisabled_widget(BooleanOptionWidget widget) {
-		bbbb_phodisabled_widget = widget;
+	private void setbbbb_phoenabled_widget(BooleanOptionWidget widget) {
+		bbbb_phoenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbbbb_phodisabled_widget() {
-		return bbbb_phodisabled_widget;
+	public BooleanOptionWidget getbbbb_phoenabled_widget() {
+		return bbbb_phoenabled_widget;
 	}	
 	
-	private BooleanOptionWidget bbbb_uledisabled_widget;
+	private BooleanOptionWidget bbbb_uleenabled_widget;
 	
-	private void setbbbb_uledisabled_widget(BooleanOptionWidget widget) {
-		bbbb_uledisabled_widget = widget;
+	private void setbbbb_uleenabled_widget(BooleanOptionWidget widget) {
+		bbbb_uleenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbbbb_uledisabled_widget() {
-		return bbbb_uledisabled_widget;
+	public BooleanOptionWidget getbbbb_uleenabled_widget() {
+		return bbbb_uleenabled_widget;
 	}	
 	
-	private BooleanOptionWidget bbbb_lpdisabled_widget;
+	private BooleanOptionWidget bbbb_lpenabled_widget;
 	
-	private void setbbbb_lpdisabled_widget(BooleanOptionWidget widget) {
-		bbbb_lpdisabled_widget = widget;
+	private void setbbbb_lpenabled_widget(BooleanOptionWidget widget) {
+		bbbb_lpenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbbbb_lpdisabled_widget() {
-		return bbbb_lpdisabled_widget;
+	public BooleanOptionWidget getbbbb_lpenabled_widget() {
+		return bbbb_lpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget bbbb_lpunsplit_original_locals_widget;
@@ -4168,64 +4121,64 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return bbbb_lpunsplit_original_locals_widget;
 	}	
 	
-	private BooleanOptionWidget bopdisabled_widget;
+	private BooleanOptionWidget bopenabled_widget;
 	
-	private void setbopdisabled_widget(BooleanOptionWidget widget) {
-		bopdisabled_widget = widget;
+	private void setbopenabled_widget(BooleanOptionWidget widget) {
+		bopenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget getbopdisabled_widget() {
-		return bopdisabled_widget;
+	public BooleanOptionWidget getbopenabled_widget() {
+		return bopenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagdisabled_widget;
+	private BooleanOptionWidget tagenabled_widget;
 	
-	private void settagdisabled_widget(BooleanOptionWidget widget) {
-		tagdisabled_widget = widget;
+	private void settagenabled_widget(BooleanOptionWidget widget) {
+		tagenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget gettagdisabled_widget() {
-		return tagdisabled_widget;
+	public BooleanOptionWidget gettagenabled_widget() {
+		return tagenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagtag_lndisabled_widget;
+	private BooleanOptionWidget tagtag_lnenabled_widget;
 	
-	private void settagtag_lndisabled_widget(BooleanOptionWidget widget) {
-		tagtag_lndisabled_widget = widget;
+	private void settagtag_lnenabled_widget(BooleanOptionWidget widget) {
+		tagtag_lnenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget gettagtag_lndisabled_widget() {
-		return tagtag_lndisabled_widget;
+	public BooleanOptionWidget gettagtag_lnenabled_widget() {
+		return tagtag_lnenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagtag_andisabled_widget;
+	private BooleanOptionWidget tagtag_anenabled_widget;
 	
-	private void settagtag_andisabled_widget(BooleanOptionWidget widget) {
-		tagtag_andisabled_widget = widget;
+	private void settagtag_anenabled_widget(BooleanOptionWidget widget) {
+		tagtag_anenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget gettagtag_andisabled_widget() {
-		return tagtag_andisabled_widget;
+	public BooleanOptionWidget gettagtag_anenabled_widget() {
+		return tagtag_anenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagtag_depdisabled_widget;
+	private BooleanOptionWidget tagtag_depenabled_widget;
 	
-	private void settagtag_depdisabled_widget(BooleanOptionWidget widget) {
-		tagtag_depdisabled_widget = widget;
+	private void settagtag_depenabled_widget(BooleanOptionWidget widget) {
+		tagtag_depenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget gettagtag_depdisabled_widget() {
-		return tagtag_depdisabled_widget;
+	public BooleanOptionWidget gettagtag_depenabled_widget() {
+		return tagtag_depenabled_widget;
 	}	
 	
-	private BooleanOptionWidget tagtag_fieldrwdisabled_widget;
+	private BooleanOptionWidget tagtag_fieldrwenabled_widget;
 	
-	private void settagtag_fieldrwdisabled_widget(BooleanOptionWidget widget) {
-		tagtag_fieldrwdisabled_widget = widget;
+	private void settagtag_fieldrwenabled_widget(BooleanOptionWidget widget) {
+		tagtag_fieldrwenabled_widget = widget;
 	}
 	
-	public BooleanOptionWidget gettagtag_fieldrwdisabled_widget() {
-		return tagtag_fieldrwdisabled_widget;
+	public BooleanOptionWidget gettagtag_fieldrwenabled_widget() {
+		return tagtag_fieldrwenabled_widget;
 	}	
 	
 
@@ -4391,7 +4344,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("General Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -4507,7 +4466,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Input Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -4588,7 +4553,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Output Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -4739,7 +4710,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Processing Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -4807,11 +4784,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Jimple Body Creation");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb"+" "+"disabled";
+		defKey = "p"+" "+"jb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4819,11 +4802,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb","disabled", "", defaultBool)));
+		setjbenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb","enabled", "", defaultBool)));
 		
 		
 		
@@ -4859,11 +4842,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Local Splitter");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ls"+" "+"disabled";
+		defKey = "p"+" "+"jb.ls"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4871,11 +4860,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_lsdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ls","disabled", "", defaultBool)));
+		setjbjb_lsenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.ls","enabled", "", defaultBool)));
 		
 		
 
@@ -4895,11 +4884,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Pre-typing Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.a1"+" "+"disabled";
+		defKey = "p"+" "+"jb.a1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4907,11 +4902,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_a1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.a1","disabled", "", defaultBool)));
+		setjbjb_a1enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.a1","enabled", "", defaultBool)));
 		
 		
 		
@@ -4947,11 +4942,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Pre-typing Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ule1"+" "+"disabled";
+		defKey = "p"+" "+"jb.ule1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4959,11 +4960,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_ule1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ule1","disabled", "", defaultBool)));
+		setjbjb_ule1enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.ule1","enabled", "", defaultBool)));
 		
 		
 
@@ -4983,11 +4984,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Type Assigner");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.tr"+" "+"disabled";
+		defKey = "p"+" "+"jb.tr"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -4995,11 +5002,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_trdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.tr","disabled", "", defaultBool)));
+		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "", defaultBool)));
 		
 		
 
@@ -5019,11 +5026,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Post-typing Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.a2"+" "+"disabled";
+		defKey = "p"+" "+"jb.a2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5031,11 +5044,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_a2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.a2","disabled", "", defaultBool)));
+		setjbjb_a2enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.a2","enabled", "", defaultBool)));
 		
 		
 		
@@ -5071,11 +5084,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Post-typing Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ule2"+" "+"disabled";
+		defKey = "p"+" "+"jb.ule2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5083,11 +5102,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_ule2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ule2","disabled", "", defaultBool)));
+		setjbjb_ule2enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.ule2","enabled", "", defaultBool)));
 		
 		
 
@@ -5107,11 +5126,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unsplit-originals Local Packer");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThis phase only executes when the `use-original-names' option is chosen\nfor the `jb' phase.  It unsplits the locals according to the original names\nfound for them.";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ulp"+" "+"disabled";
+		defKey = "p"+" "+"jb.ulp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5119,11 +5144,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_ulpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ulp","disabled", "", defaultBool)));
+		setjbjb_ulpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.ulp","enabled", "", defaultBool)));
 		
 		
 		
@@ -5159,11 +5184,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Local Name Standardizer");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThis phase assigns standard names to local variables.  It only\nexecutes when `use-original-names' is not chosen.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.lns"+" "+"disabled";
+		defKey = "p"+" "+"jb.lns"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5171,11 +5202,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_lnsdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.lns","disabled", "", defaultBool)));
+		setjbjb_lnsenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.lns","enabled", "", defaultBool)));
 		
 		
 		
@@ -5211,11 +5242,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Copy Propagator");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThis phase provides a cascaded copy propagator.  It is executed only\nwhen `no-cp' is not chosen in the `jb' phase.\n    \nIf it encounters situations of the form: A: a = ...; B: ... x = a;\nC:... use (x); where a has only one definition, and x has only one\ndefinition (B), then it can propagate immediately without checking\nbetween B and C for redefinitions of a (namely A) because they cannot\noccur.  In this case the propagator is global.\n        \nOtherwise, if a has multiple definitions then it only checks for\nredefinitions of constants and copies in extended basic blocks.\n        \nFrom bytecode, we get some number of declared locals; we call these\n``regular locals''.  In Jimple, we have converted the stack elements\nto locals.  The new locals thus introduced are called ``stack\nlocals''. These locals have names which usually begin with .  \n\nThe default behaviour in this phase is to propagate only on the\n`stack' locals.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.cp"+" "+"disabled";
+		defKey = "p"+" "+"jb.cp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5223,11 +5260,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_cpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.cp","disabled", "", defaultBool)));
+		setjbjb_cpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.cp","enabled", "", defaultBool)));
 		
 		
 		
@@ -5279,11 +5316,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Dead Assignment Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.dae"+" "+"disabled";
+		defKey = "p"+" "+"jb.dae"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5291,11 +5334,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_daedisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.dae","disabled", "\nThis phase eliminates assignment statements (to locals) with no uses.\n                        ", defaultBool)));
+		setjbjb_daeenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.dae","enabled", "\nThis phase eliminates assignment statements (to locals) with no uses.\n                        ", defaultBool)));
 		
 		
 		
@@ -5331,11 +5374,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.cp-ule"+" "+"disabled";
+		defKey = "p"+" "+"jb.cp-ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5343,11 +5392,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_cp_uledisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.cp-ule","disabled", "", defaultBool)));
+		setjbjb_cp_uleenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.cp-ule","enabled", "", defaultBool)));
 		
 		
 
@@ -5367,11 +5416,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Local Packer");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.lp"+" "+"disabled";
+		defKey = "p"+" "+"jb.lp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5379,11 +5434,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjbjb_lpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.lp","disabled", "", defaultBool)));
+		setjbjb_lpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.lp","enabled", "", defaultBool)));
 		
 		
 		
@@ -5419,11 +5474,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Nop Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.ne"+" "+"disabled";
+		defKey = "p"+" "+"jb.ne"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5431,11 +5492,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_nedisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.ne","disabled", "", defaultBool)));
+		setjbjb_neenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.ne","enabled", "", defaultBool)));
 		
 		
 
@@ -5455,11 +5516,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unreachable Code Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jb.uce"+" "+"disabled";
+		defKey = "p"+" "+"jb.uce"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5467,11 +5534,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjbjb_ucedisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jb.uce","disabled", "", defaultBool)));
+		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jb.uce","enabled", "", defaultBool)));
 		
 		
 
@@ -5491,47 +5558,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Call Graph");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"cg"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
+	 	
+		String desc = "The purpose of this pack is to compute\nan invoke graph. When this pack finishes, the Scene should have an active invoke\ngraph. The different phases represent different ways to construct the invoke\ngraph. Only one phase may be enabled; Soot will raise an error otherwise.\nIf no phases are enabled, the Old Class Hierarchy Analysis phase\ncg.cha is used as the default.";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
 		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "cg","disabled", "", defaultBool)));
-		
+		OptionData [] data;	
 		
 
 		
-		return editGroup;
-	}
-
-
-
-	private Composite cgcg_oldchaCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Old Class Hierarchy Analysis");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"cg.oldcha"+" "+"disabled";
+		defKey = "p"+" "+"cg"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5543,59 +5580,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_oldchadisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "cg.oldcha","disabled", "", defaultBool)));
+		setcgenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "cg","enabled", "", defaultBool)));
 		
-		
-
-		
-		return editGroup;
-	}
-
-
-
-	private Composite cgcg_vtaCreate(Composite parent) {
-		String defKey;
-		String defaultString;
-		boolean defaultBool = false;
-		
-		Group editGroup = new Group(parent, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		editGroup.setLayout(layout);
-	
-	 	editGroup.setText("Variable Type Analysis");
-	 	OptionData [] data;	
-		
-
-		
-		defKey = "p"+" "+"cg.vta"+" "+"disabled";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setcgcg_vtadisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "cg.vta","disabled", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.vta"+" "+"passes";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
-			defaultString = "1";
-			
-		}
-
-		setcgcg_vtapasses_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("Number of passes",  "p", "cg.vta","passes", "", defaultString)));
 		
 
 		
@@ -5613,12 +5599,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroup.setLayout(layout);
 	
-	 	editGroup.setText("Spark Class Hierarchy Analysis");
-	 	OptionData [] data;	
+	 	editGroup.setText("Class Hierarchy Analysis");
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"cg.cha"+" "+"disabled";
+		defKey = "p"+" "+"cg.cha"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5630,7 +5622,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_chadisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "cg.cha","disabled", "", defaultBool)));
+		setcgcg_chaenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "cg.cha","enabled", "", defaultBool)));
 		
 		
 		
@@ -5682,11 +5674,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"cg.spark"+" "+"disabled";
+		defKey = "p"+" "+"cg.spark"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -5694,11 +5692,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setcgcg_sparkdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "cg.spark","disabled", "", defaultBool)));
+		setcgcg_sparkenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "cg.spark","enabled", "", defaultBool)));
 		
 		
 
@@ -5718,7 +5716,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark General Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -5802,7 +5806,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark Pointer Assignment Graph Building Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -5998,7 +6008,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark Pointer Assignment Graph Simplification Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -6066,7 +6082,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark Points-To Set Flowing Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -6290,7 +6312,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Spark Output Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -6406,22 +6434,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
-		defKey = "p"+" "+"cg.spark"+" "+"trim-invoke-graph";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = true;
-			
-		}
-
-		setcgcg_sparktrim_invoke_graph_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Trim Invoke Graph", "p", "cg.spark","trim-invoke-graph", "\nWhen this option is set to true, the results of the analysis are used to make the invoke graph\nmore precise after the analysis completes.\n        ", defaultBool)));
-		
-		
-		
 		defKey = "p"+" "+"cg.spark"+" "+"add-tags";
 		defKey = defKey.trim();
 
@@ -6470,11 +6482,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Whole Shimple Transformation Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wstp"+" "+"disabled";
+		defKey = "p"+" "+"wstp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6482,11 +6500,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setwstpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wstp","disabled", "", defaultBool)));
+		setwstpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wstp","enabled", "", defaultBool)));
 		
 		
 
@@ -6506,11 +6524,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Whole Shimple Optimization Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wsop"+" "+"disabled";
+		defKey = "p"+" "+"wsop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6518,11 +6542,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setwsopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wsop","disabled", "", defaultBool)));
+		setwsopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "", defaultBool)));
 		
 		
 
@@ -6542,11 +6566,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Whole-Jimple Transformation Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nSoot can do whole-program analyses.  For the current version of Soot,\nthis means that Jimple bodies are created for each method in the\napplication, and analyses run on this set of Jimple bodies.  The\napplication consists of one class, specified on the command-line, plus\nall classes referenced (directly or indirectly) by it.  It excludes\nclasses in java.*, javax.*, and sun.*.  This mode is\ntriggered by the --app option.\n\nIn whole-program mode, Soot will always apply the contents of the\nWhole-Jimple transformation pack to each method under analysis.  This\noccurs after all Jimple bodies have been created.  This pack is called\nwjtp.  In an\nunmodified version of Soot, the only transformation in wjtp is the\nSpark pointer analysis kit. Spark has many options, which are\nlisted at spark.ps.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjtp"+" "+"disabled";
+		defKey = "p"+" "+"wjtp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6554,11 +6584,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setwjtpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjtp","disabled", "", defaultBool)));
+		setwjtpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjtp","enabled", "", defaultBool)));
 		
 		
 
@@ -6578,11 +6608,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Whole-Jimple Optimization Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nTo run optimizing transformations on the whole program, use the -W\ncommand-line option.  This tells Soot that the whole-jimple\noptimization pack is to be applied (phase name wjop).\n\nThe default behaviour of this Pack has static method binding disabled\nand static inlining enabled.  To reverse this, give the options\n-p wjop.smb enabled:true -p wjop.si disabled.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjop"+" "+"disabled";
+		defKey = "p"+" "+"wjop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6590,11 +6626,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setwjopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjop","disabled", "", defaultBool)));
+		setwjopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjop","enabled", "", defaultBool)));
 		
 		
 
@@ -6614,11 +6650,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Static Method Binding");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nStatic method binding uses CHA or VTA to statically bind \nmonomorphic call sites. That is, smb takes the call graph returned\nby CHA or VTA; if the analysis result shows that any virtual invoke\nstatement in the Jimple bodies actually only calls one method, then a\nstatic copy of the method is made, and the virtual invoke is changed\nto a static invoke.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjop.smb"+" "+"disabled";
+		defKey = "p"+" "+"wjop.smb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6626,11 +6668,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setwjopwjop_smbdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjop.smb","disabled", "", defaultBool)));
+		setwjopwjop_smbenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjop.smb","enabled", "", defaultBool)));
 		
 		
 		
@@ -6718,11 +6760,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Static Inlining");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThe StaticInliner talkes an call graph returned by CHA or VTA and visits\nall call sites in the application in a bottom-up fashion, inlining \ninvoke statements which is determined to be monomorphic by analysis result.\nNote that the modifier ``static'' is supposed to be compared to a\n(not-currently-implemented) profile-guided inliner.\n \n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjop.si"+" "+"disabled";
+		defKey = "p"+" "+"wjop.si"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6730,11 +6778,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setwjopwjop_sidisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjop.si","disabled", "", defaultBool)));
+		setwjopwjop_sienabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjop.si","enabled", "", defaultBool)));
 		
 		
 		
@@ -6867,11 +6915,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Whole Jimple Annotation Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjap"+" "+"disabled";
+		defKey = "p"+" "+"wjap"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6879,11 +6933,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setwjapdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjap","disabled", "", defaultBool)));
+		setwjapenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "", defaultBool)));
 		
 		
 
@@ -6903,11 +6957,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Rectangular Array Finder");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"wjap.ra"+" "+"disabled";
+		defKey = "p"+" "+"wjap.ra"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6915,11 +6975,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setwjapwjap_radisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "wjap.ra","disabled", "", defaultBool)));
+		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "", defaultBool)));
 		
 		
 
@@ -6939,11 +6999,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Shimple Transformation Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"stp"+" "+"disabled";
+		defKey = "p"+" "+"stp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6951,11 +7017,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setstpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "stp","disabled", "", defaultBool)));
+		setstpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "", defaultBool)));
 		
 		
 
@@ -6975,11 +7041,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Shimple Optimization Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"sop"+" "+"disabled";
+		defKey = "p"+" "+"sop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -6987,11 +7059,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setsopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "sop","disabled", "", defaultBool)));
+		setsopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "", defaultBool)));
 		
 		
 
@@ -7011,11 +7083,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Jimple Transformations Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jtp"+" "+"disabled";
+		defKey = "p"+" "+"jtp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7023,11 +7101,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjtpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jtp","disabled", "", defaultBool)));
+		setjtpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "", defaultBool)));
 		
 		
 
@@ -7047,11 +7125,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Jimple Optimizations Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nWhen Soot is given the -O command-line option, the \nJimpleOptimizationPack is applied to every JimpleBody in an\napplication class.  This section lists the default transformations in\nthe JimpleOptimizationPack.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop"+" "+"disabled";
+		defKey = "p"+" "+"jop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7059,11 +7143,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop","disabled", "", defaultBool)));
+		setjopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop","enabled", "", defaultBool)));
 		
 		
 
@@ -7083,11 +7167,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Common Subexpression Elimination");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nRuns an available expressions analysis on a body, then eliminates\ncommon subexpressions.\n\nThis implementation is especially slow, as it does not run on basic\nblocks.  A better implementation (which wouldn't catch every single\ncommon subexpression, but would get most) would use basic blocks\ninstead.\n\nIt is also slow because the flow universe is explicitly created; it\nneed not be.  A better implementation would implicitly compute the kill\nsets at every node.\n\nBecause of the current slowness, this transformation is not enabled in\nthe default settings.  To enable it, specify -p jop.cse\nenabled:true on the command line.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.cse"+" "+"disabled";
+		defKey = "p"+" "+"jop.cse"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7095,11 +7185,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjopjop_csedisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.cse","disabled", "", defaultBool)));
+		setjopjop_cseenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.cse","enabled", "", defaultBool)));
 		
 		
 		
@@ -7135,11 +7225,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Busy Code Motion");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nBusy Code Motion is a straightforward implementation of Partial\nRedundancy Elimination. This implementation is not very aggressive.\nThe Lazy Code Motion\nis an improved version of the Busy Code Motion, and should be used\ninstead of it.\n\nBusy Code Motion is not enabled by default. To enable it, specify\n-p jop.bcm enabled:true on the command line.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.bcm"+" "+"disabled";
+		defKey = "p"+" "+"jop.bcm"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7147,11 +7243,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjopjop_bcmdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.bcm","disabled", "", defaultBool)));
+		setjopjop_bcmenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.bcm","enabled", "", defaultBool)));
 		
 		
 		
@@ -7187,11 +7283,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Lazy Code Motion");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nLazy Code Motion is the enhanced version of the Busy Code Motion, a\nPartial Redundancy Eliminator. Before doing Partial Redundancy Elimination,\nthis optimization performs loop inversion (turning while loops\ninto do while loops inside an if statement).\nThis allows the Partial Redundancy Eliminator\nto optimize loop invariants of while loops.\n\nBy default, this transformation is disabled. To enable it, specify\n-p jop.lcm enabled:true on the command line.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.lcm"+" "+"disabled";
+		defKey = "p"+" "+"jop.lcm"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7199,11 +7301,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjopjop_lcmdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.lcm","disabled", "", defaultBool)));
+		setjopjop_lcmenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.lcm","enabled", "", defaultBool)));
 		
 		
 		
@@ -7291,11 +7393,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Copy Propogator");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThe default behaviour here is to propagate on all locals.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.cp"+" "+"disabled";
+		defKey = "p"+" "+"jop.cp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7303,11 +7411,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_cpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.cp","disabled", "", defaultBool)));
+		setjopjop_cpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.cp","enabled", "", defaultBool)));
 		
 		
 		
@@ -7359,11 +7467,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Constant Propagator and Folder");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.cpf"+" "+"disabled";
+		defKey = "p"+" "+"jop.cpf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7371,11 +7485,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_cpfdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.cpf","disabled", "", defaultBool)));
+		setjopjop_cpfenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.cpf","enabled", "", defaultBool)));
 		
 		
 
@@ -7395,11 +7509,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Conditional Branch Folder");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nStatically evaluates the condition-expression of Jimple \nIfStmts.  If the condition is identically `true' or `false',\nchanges the conditional branch instruction to a `goto' statement.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.cbf"+" "+"disabled";
+		defKey = "p"+" "+"jop.cbf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7407,11 +7527,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_cbfdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.cbf","disabled", "", defaultBool)));
+		setjopjop_cbfenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.cbf","enabled", "", defaultBool)));
 		
 		
 
@@ -7431,11 +7551,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Dead Assignment Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThis phase eliminates assignment statements (to locals) with no uses.\n\nIn this incarnation, the default value for only-stack-locals\nis false.\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.dae"+" "+"disabled";
+		defKey = "p"+" "+"jop.dae"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7443,11 +7569,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_daedisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.dae","disabled", "", defaultBool)));
+		setjopjop_daeenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.dae","enabled", "", defaultBool)));
 		
 		
 		
@@ -7483,11 +7609,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unreachable Code Eliminator 1");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nRemoves unreachable codes and empty traps.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.uce1"+" "+"disabled";
+		defKey = "p"+" "+"jop.uce1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7495,11 +7627,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_uce1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.uce1","disabled", "", defaultBool)));
+		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.uce1","enabled", "", defaultBool)));
 		
 		
 
@@ -7519,11 +7651,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unreachable Code Eliminator 2");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.uce2"+" "+"disabled";
+		defKey = "p"+" "+"jop.uce2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7531,11 +7669,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_uce2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.uce2","disabled", "", defaultBool)));
+		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.uce2","enabled", "", defaultBool)));
 		
 		
 
@@ -7555,11 +7693,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unconditional Branch Folder 1");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nRemoves unnecessary `goto' statements from a JimpleBody.\n\nIf a GotoStmt's target is the next instruction, then it is\nremoved.  If a GotoStmtx's target is another GotoStmt,\nwith target y, then x's target can be changed to y's target.\n\nIf some IfStmt's target is a GotoStmt, then the\nIfStmt's target can be updated to the GotoStmt's target.\n        \n(These situations could result from other optimizations; after folding\nbranches, we might generate more unreachable code.)\n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.ubf1"+" "+"disabled";
+		defKey = "p"+" "+"jop.ubf1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7567,11 +7711,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_ubf1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.ubf1","disabled", "", defaultBool)));
+		setjopjop_ubf1enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf1","enabled", "", defaultBool)));
 		
 		
 
@@ -7591,11 +7735,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unconditional Branch Folder 2");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.ubf2"+" "+"disabled";
+		defKey = "p"+" "+"jop.ubf2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7603,11 +7753,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_ubf2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.ubf2","disabled", "", defaultBool)));
+		setjopjop_ubf2enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf2","enabled", "", defaultBool)));
 		
 		
 
@@ -7627,11 +7777,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nRemoves locals with no uses in the method body.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jop.ule"+" "+"disabled";
+		defKey = "p"+" "+"jop.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7639,11 +7795,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjopjop_uledisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jop.ule","disabled", "", defaultBool)));
+		setjopjop_uleenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jop.ule","enabled", "", defaultBool)));
 		
 		
 
@@ -7663,11 +7819,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Jimple Annotation Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nSoot has a number of phase options to configure the annotation process.\nArray bounds check and null pointer check detection have \nseparate phases and phase options.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap"+" "+"disabled";
+		defKey = "p"+" "+"jap"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7675,11 +7837,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setjapdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap","disabled", "", defaultBool)));
+		setjapenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap","enabled", "", defaultBool)));
 		
 		
 
@@ -7699,11 +7861,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Null Pointer Check Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThe null pointer check analysis has the phase name jtp.npc. \nIt has one phase option (aside from the default disabled option). \n\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap.npc"+" "+"disabled";
+		defKey = "p"+" "+"jap.npc"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7711,11 +7879,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjapjap_npcdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap.npc","disabled", "", defaultBool)));
+		setjapjap_npcenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap.npc","enabled", "", defaultBool)));
 		
 		
 		
@@ -7767,11 +7935,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Array Bound Check Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nThe array bounds check analysis has the phase name jtp.abc. \nIf whole-program analysis is required, an extra\nphase wjap.ra for finding rectangular arrays occurs.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap.abc"+" "+"disabled";
+		defKey = "p"+" "+"jap.abc"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7779,11 +7953,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjapjap_abcdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap.abc","disabled", "", defaultBool)));
+		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap.abc","enabled", "", defaultBool)));
 		
 		
 		
@@ -7915,11 +8089,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Profiling Generator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap.profiling"+" "+"disabled";
+		defKey = "p"+" "+"jap.profiling"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7927,11 +8107,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjapjap_profilingdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap.profiling","disabled", "", defaultBool)));
+		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap.profiling","enabled", "", defaultBool)));
 		
 		
 		
@@ -7967,11 +8147,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Side effect tagger");
-	 	OptionData [] data;	
+	 	
+		String desc = "Uses the active invoke graph to\nproduce side-effect attributes as described in the Spark thesis, chapter 6.\n";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap.sea"+" "+"disabled";
+		defKey = "p"+" "+"jap.sea"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -7979,11 +8165,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjapjap_seadisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap.sea","disabled", "", defaultBool)));
+		setjapjap_seaenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap.sea","enabled", "", defaultBool)));
 		
 		
 		
@@ -8019,11 +8205,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Field Read/Write Tagger");
-	 	OptionData [] data;	
+	 	
+		String desc = "\nUses the active invoke graph to produce tags indicating which fields may\nbe read or written by each statement, including invoke statements.\n                        ";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"jap.fieldrw"+" "+"disabled";
+		defKey = "p"+" "+"jap.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8031,11 +8223,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setjapjap_fieldrwdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "jap.fieldrw","disabled", "", defaultBool)));
+		setjapjap_fieldrwenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "jap.fieldrw","enabled", "", defaultBool)));
 		
 		
 		
@@ -8070,11 +8262,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Grimp Body Creation");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gb"+" "+"disabled";
+		defKey = "p"+" "+"gb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8082,11 +8280,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setgbdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gb","disabled", "", defaultBool)));
+		setgbenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gb","enabled", "", defaultBool)));
 		
 		
 
@@ -8106,11 +8304,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Aggregator 1");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gb.a1"+" "+"disabled";
+		defKey = "p"+" "+"gb.a1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8118,11 +8322,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setgbgb_a1disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gb.a1","disabled", "", defaultBool)));
+		setgbgb_a1enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gb.a1","enabled", "", defaultBool)));
 		
 		
 		
@@ -8158,11 +8362,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Constructor Folder");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gb.cf"+" "+"disabled";
+		defKey = "p"+" "+"gb.cf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8170,11 +8380,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setgbgb_cfdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gb.cf","disabled", "", defaultBool)));
+		setgbgb_cfenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gb.cf","enabled", "", defaultBool)));
 		
 		
 
@@ -8194,11 +8404,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Aggregator 2");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gb.a2"+" "+"disabled";
+		defKey = "p"+" "+"gb.a2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8206,11 +8422,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setgbgb_a2disabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gb.a2","disabled", "", defaultBool)));
+		setgbgb_a2enabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gb.a2","enabled", "", defaultBool)));
 		
 		
 		
@@ -8246,11 +8462,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gb.ule"+" "+"disabled";
+		defKey = "p"+" "+"gb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8258,11 +8480,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setgbgb_uledisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gb.ule","disabled", "", defaultBool)));
+		setgbgb_uleenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gb.ule","enabled", "", defaultBool)));
 		
 		
 
@@ -8282,11 +8504,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Grimp Optimization Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"gop"+" "+"disabled";
+		defKey = "p"+" "+"gop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8294,11 +8522,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setgopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "gop","disabled", "", defaultBool)));
+		setgopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "gop","enabled", "", defaultBool)));
 		
 		
 
@@ -8318,11 +8546,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Baf Body Creation");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bb"+" "+"disabled";
+		defKey = "p"+" "+"bb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8330,11 +8564,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setbbdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bb","disabled", "", defaultBool)));
+		setbbenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bb","enabled", "", defaultBool)));
 		
 		
 
@@ -8354,11 +8588,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Load Store Optimizer");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bb.lso"+" "+"disabled";
+		defKey = "p"+" "+"bb.lso"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8366,11 +8606,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setbbbb_lsodisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bb.lso","disabled", "", defaultBool)));
+		setbbbb_lsoenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bb.lso","enabled", "", defaultBool)));
 		
 		
 		
@@ -8486,11 +8726,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Peephole Optimizer");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bb.pho"+" "+"disabled";
+		defKey = "p"+" "+"bb.pho"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8498,11 +8744,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setbbbb_phodisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bb.pho","disabled", "", defaultBool)));
+		setbbbb_phoenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bb.pho","enabled", "", defaultBool)));
 		
 		
 
@@ -8522,11 +8768,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Unused Local Eliminator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bb.ule"+" "+"disabled";
+		defKey = "p"+" "+"bb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8534,11 +8786,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setbbbb_uledisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bb.ule","disabled", "", defaultBool)));
+		setbbbb_uleenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bb.ule","enabled", "", defaultBool)));
 		
 		
 
@@ -8558,11 +8810,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Local Packer");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bb.lp"+" "+"disabled";
+		defKey = "p"+" "+"bb.lp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8570,11 +8828,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setbbbb_lpdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bb.lp","disabled", "", defaultBool)));
+		setbbbb_lpenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bb.lp","enabled", "", defaultBool)));
 		
 		
 		
@@ -8610,11 +8868,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Baf Optimization Pack");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"bop"+" "+"disabled";
+		defKey = "p"+" "+"bop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8622,11 +8886,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setbopdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "bop","disabled", "", defaultBool)));
+		setbopenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "bop","enabled", "", defaultBool)));
 		
 		
 
@@ -8646,11 +8910,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Tag");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"tag"+" "+"disabled";
+		defKey = "p"+" "+"tag"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8658,11 +8928,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		settagdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "tag","disabled", "", defaultBool)));
+		settagenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "tag","enabled", "", defaultBool)));
 		
 		
 
@@ -8682,11 +8952,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Line Number Tag Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"tag.ln"+" "+"disabled";
+		defKey = "p"+" "+"tag.ln"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8694,11 +8970,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		settagtag_lndisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "tag.ln","disabled", "", defaultBool)));
+		settagtag_lnenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "tag.ln","enabled", "", defaultBool)));
 		
 		
 
@@ -8718,11 +8994,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Array Bounds and Null Pointer Check Tag Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"tag.an"+" "+"disabled";
+		defKey = "p"+" "+"tag.an"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8730,11 +9012,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		settagtag_andisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "tag.an","disabled", "", defaultBool)));
+		settagtag_anenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "tag.an","enabled", "", defaultBool)));
 		
 		
 
@@ -8754,11 +9036,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Dependence Tag Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"tag.dep"+" "+"disabled";
+		defKey = "p"+" "+"tag.dep"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8766,11 +9054,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		settagtag_depdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "tag.dep","disabled", "", defaultBool)));
+		settagtag_depenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "tag.dep","enabled", "", defaultBool)));
 		
 		
 
@@ -8790,11 +9078,17 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Field Read/Write Tag Aggregator");
-	 	OptionData [] data;	
+	 	
+		String desc = "Aggregates field read/write\ntags produced by the Field Read/Write Tagger, phase jap.fieldrw.";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
-		defKey = "p"+" "+"tag.fieldrw"+" "+"disabled";
+		defKey = "p"+" "+"tag.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8802,11 +9096,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		settagtag_fieldrwdisabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Disabled", "p", "tag.fieldrw","disabled", "", defaultBool)));
+		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("Enabled", "p", "tag.fieldrw","enabled", "", defaultBool)));
 		
 		
 
@@ -8826,7 +9120,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Single File Mode Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 
@@ -8861,7 +9161,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Application Mode Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 
@@ -8956,7 +9262,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Input Attribute Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -9008,7 +9320,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Annotation Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		
@@ -9092,7 +9410,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("Miscellaneous Options");
-	 	OptionData [] data;	
+	 	
+		String desc = "";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 
 		

@@ -46,10 +46,10 @@ import org.eclipse.swt.layout.*;
 //import ca.mcgill.sable.soot.SootPlugin;
 //import ca.mcgill.sable.soot.util.*;
 import ca.mcgill.sable.soot.ui.*;
-import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.*;
+import org.eclipse.swt.events.*;
 
-public class PhaseOptionsDialog extends AbstractOptionsDialog {
+public class PhaseOptionsDialog extends AbstractOptionsDialog implements SelectionListener {
 
 	public PhaseOptionsDialog(Shell parentShell) {
 		super(parentShell);
@@ -67,8 +67,9 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:for-each select="section">
 		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>-->
 		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="pageCon" select="phase"/>
-		<xsl:for-each select="phase">
+		<xsl:apply-templates mode="pageCon" select="(phase|radio_phase)"/>
+		
+		<xsl:for-each select="(phase|radio_phase)">
 		<xsl:apply-templates mode="pageCon" select="sub_phase">
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		</xsl:apply-templates>
@@ -82,40 +83,119 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
+
+		initializeRadioGroups();
+		//initializeDisableGroups();
 		
+	}
+
+	private void initializeRadioGroups(){
+		setRadioGroups(new HashMap());
+		int counter = 0;
+		ArrayList buttonList;
+
+		<xsl:for-each select="section/phaseopt/radio_phase">
+		buttonList = new ArrayList();
+
+		<xsl:variable name="phase_alias" select="alias"/> 
+		<xsl:for-each select="sub_phase">
+		
+		<xsl:variable name="sub_phase_alias" select="translate(alias[last()],'-. ','___')"/>
+		
+		<xsl:for-each select="boolopt">	
+		if (isEnableButton("<xsl:value-of select="alias"/>")) {
+			buttonList.add(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget());	
+			get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().addSelectionListener(this);
+		}
+
+		</xsl:for-each>
+		</xsl:for-each>
+		getRadioGroups().put(new Integer(counter), buttonList);
+
+		counter++;
+		</xsl:for-each>
+	}
+
+	
+	
+	<!--private void initializeDisableGroups(){
+		setDisableGroups(new ArrayList());
+		DisableGroup dGroup;
+		DisableGroup subDGroup;
+		
+		<xsl:for-each select="section/phaseopt">
+		<xsl:for-each select="(phase|radio_phase)">
+		
+		<xsl:variable name="phase_alias" select="alias"/>
+		
+		dGroup = new DisableGroup();
+		
+		<xsl:for-each select="boolopt">
+		if (isDisableButton("<xsl:value-of select="alias"/>")) {
+		  	dGroup.setLeader(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton());	
+			
+		}
+		</xsl:for-each>
+		<xsl:for-each select="(boolopt|stringopt|intopt|flopt|multiopt)">
+		if (!isDisableButton("<xsl:value-of select="alias"/>")) {
+			dGroup.addControls(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getControls());
+		}
+		</xsl:for-each>
+		<xsl:for-each select="sub_phase">
+		<xsl:variable name="sub_phase_alias" select="translate(alias[last()],'-. ','___')"/>
+
+		subDGroup = new DisableGroup();
+		
+		<xsl:for-each select="boolopt">
+		if (isDisableButton("<xsl:value-of select="alias"/>")) {
+		 	dGroup.addControl(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton());	
+			subDGroup.setLeader(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton());
+		}
+		</xsl:for-each>
+
+		<xsl:for-each select="(boolopt|stringopt|intopt|flopt|multiopt)">
+		if (!isDisableButton("<xsl:value-of select="alias"/>")) {
+			dGroup.addControls(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getControls());
+		}
+		</xsl:for-each>
+
+		<xsl:for-each select="section">
+		<xsl:for-each select="(boolopt|stringopt|intopt|flopt|multiopt)">
+		dGroup.addControls(get<xsl:value-of select="$phase_alias"/><xsl:value-of select="$sub_phase_alias"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getControls());
+		
+		</xsl:for-each>
+		
+		</xsl:for-each>
+		
+		if (subDGroup.getLeader().getSelection() | !subDGroup.getLeader().getEnabled()){
+			subDGroup.changeControlState(false);
+		}
+		
+		
+		subDGroup.changeControlState((!subDGroup.getLeader().getSelection() | subDGroup.getLeader().getEnabled()));
+		getDisableGroups().add(subDGroup);
+		
+		</xsl:for-each>
+	
+		dGroup.changeControlState(!dGroup.getLeader().getSelection());
+		getDisableGroups().add(dGroup);
+		
+		</xsl:for-each>
+		</xsl:for-each>
+	}-->
+	
+	public void widgetSelected(SelectionEvent e){
+		handleWidgetSelected(e);
+	}
+
+	public void widgetDefaultSelected(SelectionEvent e){
 	}
 	
 	/**
 	 * all options get saved as &#60;alias, value&#62; pair
 	 */ 
 	protected void okPressed() {
-	<!--
-		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		<xsl:apply-templates mode="okPressed" select="/options/section"/>
-
-		<xsl:for-each select="section">-->
-		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>--><!--
-		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="okPressed" select="phase"/>
-		<xsl:for-each select="phase">
-		<xsl:apply-templates mode="okPressed" select="sub_phase">
-		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
-		</xsl:apply-templates>
-		
-		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
-		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="okPressed" select="section">
-		<xsl:with-param name="parent" select="$sectionParent"/>
-		</xsl:apply-templates>
-		
-		
-		</xsl:for-each>
-
-		</xsl:for-each>
-		</xsl:for-each>
-		</xsl:for-each>
-
--->		createNewConfig();	
+		createNewConfig();	
 		super.okPressed();
 	}
 
@@ -135,7 +215,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:with-param name="subParent" select="name"/>
 		</xsl:call-template>
 		
-		<xsl:for-each select="phaseopt/phase">
+		<xsl:for-each select="(phaseopt/phase|phaseopt/radio_phase)">
 		<xsl:call-template name="createConfig">
 		<xsl:with-param name="subParent" select="alias"/>
 		</xsl:call-template>
@@ -163,35 +243,6 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 	}
 
 	protected HashMap savePressed() {
-	<!--	HashMap config = new HashMap();
-		boolean boolRes = false;
-		String stringRes = "";
-		boolean defBoolRes = false;
-		String defStringRes = "";
-		
-		<xsl:apply-templates mode="savePressed" select="/options/section"/>
-
-		<xsl:for-each select="section">-->
-		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>--><!--
-		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="savePressedPhase" select="phase"/>
-		<xsl:for-each select="phase">
-		<xsl:apply-templates mode="savePressedPhase" select="sub_phase">
-		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
-		</xsl:apply-templates>
-		
-		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
-		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="savePressedPhase" select="section">
-		<xsl:with-param name="parent" select="$sectionParent"/>
-		</xsl:apply-templates>
-		
-		
-		</xsl:for-each>
-
-		</xsl:for-each>
-		</xsl:for-each>
-		</xsl:for-each>-->
 
 		createNewConfig();
 		
@@ -223,7 +274,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		parent = <xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch;	
 		//<xsl:value-of select="name"/>
 <!--create branches for phase pages-->
-			<xsl:for-each select="phase">
+			<xsl:for-each select="(phase|radio_phase)">
 			<xsl:variable name="parent" select="translate(alias[last()],'-. ','___')"/>
 			//<xsl:value-of select="name"/>
 			SootOption <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_branch = new SootOption("<xsl:value-of select="name"/>");
@@ -261,7 +312,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
 		<xsl:for-each select="phaseopt">
 	
-		<xsl:for-each select="phase">
+		<xsl:for-each select="(phase|radio_phase)">
 		
 		<xsl:call-template name="objCreation">
 		<xsl:with-param name="subParent" select="alias"/>
@@ -291,36 +342,12 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		</xsl:for-each>
 		</xsl:for-each>
 
-	<!--	<xsl:for-each select="section">
-		<xsl:call-template
-		<xsl:apply-templates mode="objCreation" select="/options/section"/>
-
-		<xsl:for-each select="section">-->
-		<!--<xsl:variable name="parent" select="translate(name[last()],'-. ','___')"/>--><!--
-		<xsl:for-each select="phaseopt">
-		<xsl:apply-templates mode="objCreation" select="phase"/>
-		<xsl:for-each select="phase">
-		
-		<xsl:apply-templates mode="objCreation" select="sub_phase">
-		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
-		</xsl:apply-templates>
-		
-		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
-		<xsl:for-each select="sub_phase">
-		<xsl:apply-templates mode="objCreation" select="section">
-		<xsl:with-param name="parent" select="$sectionParent"/>
-		</xsl:apply-templates>
-		
-		</xsl:for-each>
-
-		</xsl:for-each>
-		</xsl:for-each>
-		</xsl:for-each>-->
 
 <!--Component Initialization-->
 
 		<xsl:for-each select="/options/section">
 		<xsl:call-template name="compInit">
+		<xsl:with-param name="description" select="(long_desc|short_desc)"/>
 		<xsl:with-param name="subParent" select="translate(name[last()],'-. ','___')"/>
 		<xsl:with-param name="name" select="name"/>
 		<xsl:with-param name="callName" select="translate(name[last()],'-. ','___')"/>
@@ -329,9 +356,10 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:for-each select="phaseopt">
 		<xsl:variable name="phaseOptAlias" select="alias"/>
 	
-		<xsl:for-each select="phase">
+		<xsl:for-each select="(phase|radio_phase)">
 		
 		<xsl:call-template name="compInit">
+		<xsl:with-param name="description" select="(long_desc|short_desc)"/>
 		<xsl:with-param name="subParent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
 		<xsl:with-param name="subParentAlias" select="alias"/>
@@ -344,6 +372,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:for-each select="sub_phase">
 		
 		<xsl:call-template name="compInit">
+		<xsl:with-param name="description" select="(long_desc|short_desc)"/>
 		<xsl:with-param name="parent" select="$phaseAlias"/>
 		<xsl:with-param name="subParent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
@@ -356,6 +385,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:for-each select="section">
 		
 		<xsl:call-template name="compInit">
+		<xsl:with-param name="description" select="(long_desc|short_desc)"/>
 		<xsl:with-param name="parent" select="$phaseAlias"/>
 		<xsl:with-param name="subParent" select="translate($subPhaseAlias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseOptAlias"/>
@@ -378,7 +408,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
 <!--PAGE CONTAINER CREATION TEMPLATE-->
 
-<xsl:template mode="pageCon" match="section|phase|sub_phase">
+<xsl:template mode="pageCon" match="section|phase|radio_phase|sub_phase">
 <xsl:param name="parent"/>
 <xsl:variable name="java_name" select="translate((alias|name)[last()],'-. ','___')"/>
 Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child = <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Create(getPageContainer());
@@ -405,34 +435,6 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		}
 		</xsl:for-each>
 		
-	<!--	<xsl:for-each select="listopt">
-		stringRes = get<xsl:value-of select="translate($parent[last()],'-. ','___')"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-
-		if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-			config.put(get<xsl:value-of select="translate($parent[last()],'-. ','___')"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), stringRes);
-		}
-		</xsl:for-each>-->
-
-		<!--
-		<xsl:for-each select="listopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-		<xsl:if test="default">
-		defStringRes = "<xsl:value-of select="default"/>";
-		</xsl:if>
-		<xsl:if test="not(default)">
-		defStringRes = "";
-		</xsl:if>
-
-	        if ( (&#33;(stringRes.equals(defStringRes))) &#38;&#38; (stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-
-			listOptTokens = new StringTokenizer(stringRes);
-			while (listOptTokens.hasMoreTokens()) {
-				nextListToken = listOptTokens.nextToken();
-				getConfig().put(get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), nextListToken);
-			}
-		}
-		</xsl:for-each>
-		-->
 		
 		<xsl:for-each select="stropt|intopt|flopt|listopt">
 		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
@@ -464,147 +466,11 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 
 </xsl:template>
 
-<!--SAVE PRESSED FOR PHASE TEMPLATE-->
-
-<!--<xsl:template mode="savePressedPhase" match="section|phase|sub_phase">
-<xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
-
-		
-		<xsl:for-each select="boolopt|macroopt">
-		boolRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection();
-		
-		<xsl:if test="default">
-		defBoolRes = <xsl:value-of select="default"/>;
-		</xsl:if>
-		<xsl:if test="not(default)">
-		defBoolRes = false;
-		</xsl:if>
-
-		if (boolRes &#33;&#61; defBoolRes) {
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, new Boolean(boolRes)));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="listopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-
-		if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="stropt|intopt|flopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-
-	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="multiopt"> 
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias();
-
-		<xsl:for-each select="value">
-		<xsl:if test="default">
-		defStringRes = "<xsl:value-of select="alias"/>";
-		</xsl:if>
-		</xsl:for-each>
-
-		if (!stringRes.equals(defStringRes)) {
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.COLON, stringRes));
-		}
-		</xsl:for-each>
-</xsl:template>	
--->
-		
-<!--SAVE PRESSED TEMPLATE-->
-
-<!--<xsl:template mode="savePressed" match="section|phase|sub_phase">
-<xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
-
-
-		<xsl:for-each select="boolopt|macroopt">
-		boolRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection();
-		
-		<xsl:if test="default">
-		defBoolRes = <xsl:value-of select="default"/>;
-		</xsl:if>
-		<xsl:if test="not(default)">
-		defBoolRes = false;
-		</xsl:if>
-
-		if (boolRes &#33;&#61; defBoolRes) {
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, new Boolean(boolRes)));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="listopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-
-	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="stropt|intopt|flopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText();
-
-	        if ((stringRes &#33;&#61; null) &#38;&#38; (stringRes.length() &#33;&#61; 0)) {
-
-		config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		</xsl:for-each>
-		
-		<xsl:for-each select="multiopt">
-		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias();
-
-		<xsl:for-each select="value">
-		<xsl:if test="default">
-		defStringRes = "<xsl:value-of select="alias"/>";
-		</xsl:if>
-		</xsl:for-each>
-
-		if (!stringRes.equals(defStringRes)) {
-
-			config.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), new SootCmdFormat(SootCmdFormat.SPACE, stringRes));
-		}
-		</xsl:for-each>
-</xsl:template>	
--->
-	
-<!--OK PRESSED TEMPLATE-->
-<!--
-<xsl:template mode="okPressed" match="section|phase|sub_phase">
-<xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
-
-
-		<xsl:for-each select="boolopt|macroopt">
-		settings.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection());
-		</xsl:for-each>
-		
-		<xsl:for-each select="listopt">
-		settings.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
-		</xsl:for-each>
-		
-		<xsl:for-each select="stropt|intopt|flopt">
-		settings.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
-		</xsl:for-each>
-		
-		<xsl:for-each select="multiopt"> 
-		settings.put(get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias());
-		</xsl:for-each>
-
-</xsl:template>	
-
--->
 
 <!--COMPOSITE INITIALIZATION TEMPLATE-->
 <xsl:template name="compInit">
 
+<xsl:param name="description"/>
 <xsl:param name="parent"/>
 <xsl:param name="subParent"/>
 <xsl:param name="parentAlias"/>
@@ -622,7 +488,13 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("<xsl:value-of select="$name"/>");
-	 	OptionData [] data;	
+	 	
+		String desc = "<xsl:call-template name="string-replace"><xsl:with-param name="text" select="$description"/><xsl:with-param name="from" select="'&#10;'"/><xsl:with-param name="to" select="'&#92;n'"/></xsl:call-template>";	
+		if (desc.length() > 0) {
+			Label descLabel = new Label(editGroup, SWT.WRAP);
+			descLabel.setText(desc);
+		}
+		OptionData [] data;	
 		
 <!--Boolean and Macro Widget-->		
 		<xsl:for-each select="boolopt|macroopt">
