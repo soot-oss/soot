@@ -1,7 +1,8 @@
 Improvements in version 1.2.4 (Fri, 14 Jun 2002)
 
 1. main change is the inclusion of development version of Spark: Soot Pointer
-   Analysis Research Kit. Available documentation for Spark includes the
+   Analysis Research Kit. Spark still contains known bugs; do not (yet) rely
+   on its results. Available documentation for Spark includes the
    Spark poster (http://www.sable.mcgill.ca/publications/#poster-2002-1)
    and the Spark options 
    (http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps).

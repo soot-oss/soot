@@ -106,7 +106,6 @@ public class Node implements ReferenceVariable {
     }
 
     protected int id;
-    protected int topoSortIndex;
     protected Type type;
     protected Node replacement;
     protected PAG pag;

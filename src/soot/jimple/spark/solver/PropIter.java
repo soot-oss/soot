@@ -32,7 +32,8 @@ public class PropIter extends Propagator {
     public PropIter( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public void propagate() {
-        final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+ //       final OnFlyCallGraph ofcg = pag.getOnFlyCallGraph();
+        final OnFlyCallGraph ofcg = null;
         new TopoSorter( pag, false ).sort();
 	for( Iterator it = pag.allocSources().iterator(); it.hasNext(); ) {
 	    handleAllocNode( (AllocNode) it.next() );
