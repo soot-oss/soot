@@ -3203,7 +3203,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
                 
             soot.Value left = base().createLHS(unary.expr());
-    
+            
+            // do necessary cloning
+            soot.Value leftClone = soot.jimple.Jimple.v().cloneIfNecessary(left);
+            
+            
             soot.Local tmp = lg.generateLocal(left.getType());
             soot.jimple.AssignStmt stmt1 = soot.jimple.Jimple.v().newAssignStmt(tmp, left);
             body.getUnits().add(stmt1);
@@ -3227,7 +3231,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
               //  base().handlePrivateFieldSet(unary.expr(), tmp2);
             //}
             //else {  
-                soot.jimple.AssignStmt stmt3 = soot.jimple.Jimple.v().newAssignStmt(left, tmp2);
+                soot.jimple.AssignStmt stmt3 = soot.jimple.Jimple.v().newAssignStmt(leftClone, tmp2);
                 body.getUnits().add(stmt3);
             //}
             

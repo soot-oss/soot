@@ -300,8 +300,13 @@ public abstract class Body extends AbstractHost implements Serializable
                     // This throws an exception if there is
                     // no def already; we check anyhow.
                     List l = ld.getDefsOfAt((Local)v, u);
-                    if (l.size() == 0)
-                        throw new RuntimeException("no defs for value!"+" in "+getMethod());
+                    if (l.size() == 0){
+                        for( Iterator uIt = getUnits().iterator(); uIt.hasNext(); ) {
+                            final Unit uu = (Unit) uIt.next();
+                            System.err.println(""+uu);
+                        }
+                        throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());
+                    }
                 }
             }
         }
