@@ -19,7 +19,7 @@ public class BDDTypeManager extends AbsTypeManager {
     
     final jedd.internal.RelationContainer result =
       new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                          new PhysicalDomain[] { V1.v(), H1.v() },
+                                          new PhysicalDomain[] { V1.v(), H2.v() },
                                           ("<soot.jimple.paddle.bdddomains.var, soot.jimple.paddle.bdddo" +
                                            "mains.obj> result = jedd.internal.Jedd.v().falseBDD() at /tm" +
                                            "p/soot-trunk-saved/src/soot/jimple/paddle/BDDTypeManager.jed" +
@@ -28,7 +28,7 @@ public class BDDTypeManager extends AbsTypeManager {
     
     final jedd.internal.RelationContainer allVars =
       new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                          new PhysicalDomain[] { V1.v(), T1.v() },
+                                          new PhysicalDomain[] { V1.v(), T2.v() },
                                           ("<soot.jimple.paddle.bdddomains.var, soot.jimple.paddle.bdddo" +
                                            "mains.type> allVars = jedd.internal.Jedd.v().falseBDD() at /" +
                                            "tmp/soot-trunk-saved/src/soot/jimple/paddle/BDDTypeManager.j" +
@@ -37,7 +37,7 @@ public class BDDTypeManager extends AbsTypeManager {
     
     final jedd.internal.RelationContainer allObjs =
       new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                          new PhysicalDomain[] { H1.v(), T2.v() },
+                                          new PhysicalDomain[] { H2.v(), T1.v() },
                                           ("<soot.jimple.paddle.bdddomains.obj, soot.jimple.paddle.bdddo" +
                                            "mains.type> allObjs = jedd.internal.Jedd.v().falseBDD() at /" +
                                            "tmp/soot-trunk-saved/src/soot/jimple/paddle/BDDTypeManager.j" +
@@ -58,41 +58,45 @@ public class BDDTypeManager extends AbsTypeManager {
                                                "/jimple/paddle/BDDTypeManager.jedd:46,20-27"));
         newVars.eq(jedd.internal.Jedd.v().project(locals.get(), new PhysicalDomain[] { MS.v() }));
         newVars.eqUnion(globals.get());
-        allVars.eqUnion(newVars);
+        allVars.eqUnion(jedd.internal.Jedd.v().replace(newVars,
+                                                       new PhysicalDomain[] { T1.v() },
+                                                       new PhysicalDomain[] { T2.v() }));
         final jedd.internal.RelationContainer newObjs =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), T2.v() },
+                                              new PhysicalDomain[] { H2.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.obj:soot.jimple.paddle.bdddom" +
-                                               "ains.H1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
-                                               "le.bdddomains.T2> newObjs; at /tmp/soot-trunk-saved/src/soot" +
+                                               "ains.H2, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
+                                               "le.bdddomains.T1> newObjs; at /tmp/soot-trunk-saved/src/soot" +
                                                "/jimple/paddle/BDDTypeManager.jedd:51,20-27"));
         newObjs.eq(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(localallocs.get(),
                                                                                  new PhysicalDomain[] { MS.v() }),
-                                                  new PhysicalDomain[] { T1.v() },
-                                                  new PhysicalDomain[] { T2.v() }));
+                                                  new PhysicalDomain[] { H1.v() },
+                                                  new PhysicalDomain[] { H2.v() }));
         newObjs.eqUnion(jedd.internal.Jedd.v().replace(globalallocs.get(),
-                                                       new PhysicalDomain[] { T1.v() },
-                                                       new PhysicalDomain[] { T2.v() }));
+                                                       new PhysicalDomain[] { H1.v() },
+                                                       new PhysicalDomain[] { H2.v() }));
         allObjs.eqUnion(newObjs);
         final jedd.internal.RelationContainer subtypeRelation =
           new jedd.internal.RelationContainer(new Attribute[] { subt.v(), supt.v() },
-                                              new PhysicalDomain[] { T2.v(), T1.v() },
+                                              new PhysicalDomain[] { T1.v(), T2.v() },
                                               ("<soot.jimple.paddle.bdddomains.subt:soot.jimple.paddle.bdddo" +
-                                               "mains.T2, soot.jimple.paddle.bdddomains.supt:soot.jimple.pad" +
-                                               "dle.bdddomains.T1> subtypeRelation = fh.subtypeRelation(); a" +
+                                               "mains.T1, soot.jimple.paddle.bdddomains.supt:soot.jimple.pad" +
+                                               "dle.bdddomains.T2> subtypeRelation = fh.subtypeRelation(); a" +
                                                "t /tmp/soot-trunk-saved/src/soot/jimple/paddle/BDDTypeManage" +
                                                "r.jedd:56,21-36"),
                                               fh.subtypeRelation());
         result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
-                                                                                                                 newVars,
-                                                                                                                 new PhysicalDomain[] { T1.v() })),
+                                                                                                                 jedd.internal.Jedd.v().replace(newVars,
+                                                                                                                                                new PhysicalDomain[] { T1.v() },
+                                                                                                                                                new PhysicalDomain[] { T2.v() }),
+                                                                                                                 new PhysicalDomain[] { T2.v() })),
                                                       allObjs,
-                                                      new PhysicalDomain[] { T2.v() }));
+                                                      new PhysicalDomain[] { T1.v() }));
         result.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(subtypeRelation),
                                                                                                                  allVars,
-                                                                                                                 new PhysicalDomain[] { T1.v() })),
+                                                                                                                 new PhysicalDomain[] { T2.v() })),
                                                       newObjs,
-                                                      new PhysicalDomain[] { T2.v() }));
+                                                      new PhysicalDomain[] { T1.v() }));
         return true;
     }
     
@@ -101,7 +105,7 @@ public class BDDTypeManager extends AbsTypeManager {
     public jedd.internal.RelationContainer get() {
         update();
         return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v() },
-                                                   new PhysicalDomain[] { V1.v(), H1.v() },
+                                                   new PhysicalDomain[] { V1.v(), H2.v() },
                                                    ("return result; at /tmp/soot-trunk-saved/src/soot/jimple/padd" +
                                                     "le/BDDTypeManager.jedd:66,8-14"),
                                                    result);
@@ -118,7 +122,7 @@ public class BDDTypeManager extends AbsTypeManager {
                                               jedd.internal.Jedd.v().intersect(jedd.internal.Jedd.v().read(fh.subtypeRelation()),
                                                                                jedd.internal.Jedd.v().literal(new Object[] { from, to },
                                                                                                               new Attribute[] { subt.v(), supt.v() },
-                                                                                                              new PhysicalDomain[] { T2.v(), T1.v() })));
+                                                                                                              new PhysicalDomain[] { T1.v(), T2.v() })));
     }
     
     private BDDHierarchy fh;

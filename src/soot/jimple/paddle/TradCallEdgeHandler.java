@@ -83,6 +83,10 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
                 Node newObject = PaddleScene.v().nodeFactory().caseNewInstance( cls );
 
                 addParmEdge( t, newObject, tgtnf.caseThis() );
+                if( t.stmt() instanceof AssignStmt ) {
+                    AssignStmt as = (AssignStmt) t.stmt();
+                    addRetEdge( t, newObject, srcnf.getNode(as.getLeftOp()) );
+                }
             } else {
                 throw new RuntimeException( "Unhandled edge "+t );
             }

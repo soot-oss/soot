@@ -18,11 +18,13 @@ public class BDDP2Sets extends AbsP2Sets {
                                                                       new jedd.PhysicalDomain[] { H1.v(), C1.v() },
                                                                       ("new soot.jimple.paddle.BDDPointsToSet(...) at /tmp/soot-trun" +
                                                                        "k-saved/src/soot/jimple/paddle/BDDP2Sets.jedd:39,15-18"),
-                                                                      jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pt),
-                                                                                                     jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
-                                                                                                                                    new jedd.Attribute[] { varc.v(), var.v() },
-                                                                                                                                    new jedd.PhysicalDomain[] { C2.v(), V2.v() }),
-                                                                                                     new jedd.PhysicalDomain[] { C2.v(), V2.v() })));
+                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pt),
+                                                                                                                                    jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
+                                                                                                                                                                   new jedd.Attribute[] { varc.v(), var.v() },
+                                                                                                                                                                   new jedd.PhysicalDomain[] { C3.v(), V1.v() }),
+                                                                                                                                    new jedd.PhysicalDomain[] { C3.v(), V1.v() }),
+                                                                                                     new jedd.PhysicalDomain[] { H2.v() },
+                                                                                                     new jedd.PhysicalDomain[] { H1.v() })));
     }
     
     public PointsToSetReadOnly get(Context ctxt, AllocDotField adf) {
@@ -30,15 +32,13 @@ public class BDDP2Sets extends AbsP2Sets {
                                                                       new jedd.PhysicalDomain[] { H1.v(), C1.v() },
                                                                       ("new soot.jimple.paddle.BDDPointsToSet(...) at /tmp/soot-trun" +
                                                                        "k-saved/src/soot/jimple/paddle/BDDP2Sets.jedd:43,15-18"),
-                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.fieldPt),
-                                                                                                                                                                   jedd.internal.Jedd.v().literal(new Object[] { ctxt, adf.base(), adf.field() },
-                                                                                                                                                                                                  new jedd.Attribute[] { basec.v(), base.v(), fld.v() },
-                                                                                                                                                                                                  new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
+                                                                      jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.fieldPt),
+                                                                                                                                    jedd.internal.Jedd.v().literal(new Object[] { ctxt, adf.base(), adf.field() },
+                                                                                                                                                                   new jedd.Attribute[] { basec.v(), base.v(), fld.v() },
                                                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
-                                                                                                                                    new jedd.PhysicalDomain[] { C2.v() },
-                                                                                                                                    new jedd.PhysicalDomain[] { C1.v() }),
-                                                                                                     new jedd.PhysicalDomain[] { H2.v() },
-                                                                                                     new jedd.PhysicalDomain[] { H1.v() })));
+                                                                                                                                    new jedd.PhysicalDomain[] { C1.v(), H1.v(), FD.v() }),
+                                                                                                     new jedd.PhysicalDomain[] { H2.v(), C2.v() },
+                                                                                                     new jedd.PhysicalDomain[] { H1.v(), C1.v() })));
     }
     
     public PointsToSetInternal make(Context c, VarNode v) { throw new RuntimeException("Not implemented"); }
