@@ -1128,7 +1128,8 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "jb.a1" ) )
-            return "";
+            return ""
+              +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.ule1" ) )
             return "";
@@ -1137,7 +1138,8 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "jb.a2" ) )
-            return "";
+            return ""
+              +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.ule2" ) )
             return "";

@@ -111,7 +111,7 @@
 				<short_desc>produce .baf code</short_desc>
 			</value>
 			<value>
-				<name>Aggregated Baf File</name>
+				<name>Abbreviated Baf File</name>
 				<alias>b</alias>
 				<short_desc>produce .b (abbreviated .baf) files</short_desc>
 			</value>
@@ -220,6 +220,7 @@ standard names to local variables, according to the variable type.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -249,6 +250,7 @@ standard names to local variables, according to the variable type.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
