@@ -97,48 +97,16 @@ public class XMLPrinter {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
 	LabeledUnitPrinter up = new NormalUnitPrinter(body);
+        Map stmtToName = up.labels();
+
         Chain units = body.getUnits();
 
-        Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
         //UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph( body );
         CompleteUnitGraph completeUnitGraph =
             new soot.toolkits.graph.CompleteUnitGraph(body);
 
         // include any analysis which will be used in the xml output
         SimpleLiveLocals sll = new SimpleLiveLocals(completeUnitGraph);
-
-        // Create statement name table
-        {
-            Iterator boxIt = body.getUnitBoxes(true).iterator();
-
-            Set labelStmts = new HashSet();
-
-            // Build labelStmts
-            {
-                {
-                    while (boxIt.hasNext()) {
-                        UnitBox box = (UnitBox) boxIt.next();
-                        Unit stmt = (Unit) box.getUnit();
-
-                        labelStmts.add(stmt);
-                    }
-                }
-            }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-                Iterator stmtIt = units.iterator();
-
-                while (stmtIt.hasNext()) {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if (labelStmts.contains(s)) {
-                        stmtToName.put(s, "label" + (labelCount++));
-                    }
-                }
-            }
-        }
 
         // iterate through each statement
         String cleanMethodName = cleanMethod(body.getMethod().getName());
