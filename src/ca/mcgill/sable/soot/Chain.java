@@ -8,6 +8,7 @@ public interface Chain extends Collection
 {
     public void insertAfter(Object toInsert, Object point);
     public void insertBefore(Object toInsert, Object point);
+    public void swapWith(Object out, Object in);
     public boolean remove(Object u);
     public void addFirst(Object u);
     public void addLast(Object u);

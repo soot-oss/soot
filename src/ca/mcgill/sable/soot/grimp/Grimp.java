@@ -527,7 +527,7 @@ public class Grimp implements JimpleRepresentation
 
     public ReturnStmt newReturnStmt(ReturnStmt s)
     {
-        return new GReturnStmt(s.getReturnValue());
+        return new GReturnStmt(s.getOp());
     }
 
     /**

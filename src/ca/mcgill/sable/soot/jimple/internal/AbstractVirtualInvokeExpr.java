@@ -91,7 +91,7 @@ import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class AbstractVirtualInvokeExpr extends AbstractNonStaticInvokeExpr
+public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
   implements VirtualInvokeExpr, ConvertToBaf                                               
 {
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethod method,

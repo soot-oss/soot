@@ -103,7 +103,10 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         return new JInvokeStmt(Jimple.cloneIfNecessary(getInvokeExpr()));
     }
 
-
+    public boolean containsInvokeExpr()
+    {
+        return true;
+    }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {

@@ -88,7 +88,7 @@ import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.jimple.*;
 import java.util.*;
 
-public abstract class AbstractSpecialInvokeExpr extends AbstractNonStaticInvokeExpr 
+public abstract class AbstractSpecialInvokeExpr extends AbstractInstanceInvokeExpr 
            implements SpecialInvokeExpr, ConvertToBaf
 {
     protected AbstractSpecialInvokeExpr(ValueBox baseBox, SootMethod method,

@@ -84,8 +84,8 @@ import java.util.*;
 
 public interface ReturnStmt extends Stmt
 {
-    public ValueBox getReturnValueBox();
-    public void setReturnValue(Value returnValue);
-    public Value getReturnValue();
+    public ValueBox getOpBox();
+    public void setOp(Value returnValue);
+    public Value getOp();
 }
 

@@ -222,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.90");
+            System.out.println("Soot version 1.beta.4.dev.91");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -687,6 +687,19 @@ public class Main
                 } 
             }
         }
+
+        {
+            Iterator methodIt = c.getMethods().iterator();
+            
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+                Body body = m.getActiveBody();
+
+                ca.mcgill.sable.soot.jimple.toolkit.temp.JimpleInliner.inlineAll(body);
+            }
+        }
+
             
         if(targetExtension.equals(".jasmin"))
         {

@@ -132,8 +132,6 @@ public class JAssignStmt extends AbstractDefinitionStmt
     {
         leftBox = new LinkedVariableBox(variable);
         rightBox = new LinkedRValueBox(rvalue);
-//          leftBox = Jimple.v().newVariableBox(variable);
-//          rightBox = Jimple.v().newRValueBox(rvalue);
 
         ((LinkedVariableBox)leftBox).setOtherBox(rightBox); 
         ((LinkedRValueBox)rightBox).setOtherBox(leftBox);
@@ -151,6 +149,19 @@ public class JAssignStmt extends AbstractDefinitionStmt
         defBoxes = new ArrayList();
         defBoxes.add(leftBox);
         defBoxes = Collections.unmodifiableList(defBoxes);
+    }
+
+    public boolean containsInvokeExpr()
+    {
+        return rightBox.getValue() instanceof InvokeExpr;
+    }
+
+    public Value getInvokeExpr()
+    {
+        if (!containsInvokeExpr())
+            throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
+
+        return (InvokeExpr)rightBox.getValue();
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)

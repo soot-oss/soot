@@ -85,6 +85,6 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public interface SpecialInvokeExpr extends NonStaticInvokeExpr
+public interface SpecialInvokeExpr extends InstanceInvokeExpr
 {
 }

@@ -94,5 +94,14 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
     {
         out.add(Baf.v().newNopInst());
     }
-    
+
+    public boolean containsInvokeExpr()
+    {
+        return false;
+    }
+
+    public Value getInvokeExpr()
+    {
+        throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
+    }
 }

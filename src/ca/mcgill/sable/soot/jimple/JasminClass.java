@@ -1690,9 +1690,9 @@ public class JasminClass
 
             public void caseReturnStmt(ReturnStmt s)
             {
-                emitValue(s.getReturnValue());
+                emitValue(s.getOp());
 
-                Value returnValue = s.getReturnValue();
+                Value returnValue = s.getOp();
 
                 returnValue.getType().apply(new TypeSwitch()
                 {

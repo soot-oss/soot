@@ -2387,9 +2387,9 @@ class TypeResolver
 
         public void caseReturnStmt(ReturnStmt stmt)
         {
-            if(stmt.getReturnValue() instanceof Local)
+            if(stmt.getOp() instanceof Local)
             {
-                getTypeVariable((Local) stmt.getReturnValue()).ecrAddParent(
+                getTypeVariable((Local) stmt.getOp()).ecrAddParent(
                     getTypeVariable(currentMethod.getReturnType()));
             }
         }

@@ -111,6 +111,12 @@ public class HashChain extends AbstractCollection
         firstItem = lastItem = null;
         map.clear();
     }
+
+    public void swapWith(Object out, Object in)
+    {
+        insertBefore(in, out);
+        remove(out);
+    }
     
     public boolean add(Object item) 
     {

@@ -76,49 +76,16 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple.internal;
+package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.jimple.*;
-import ca.mcgill.sable.soot.baf.*;
-import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class AbstractNonStaticInvokeExpr extends AbstractInvokeExpr 
-                      implements NonStaticInvokeExpr
+public interface InstanceInvokeExpr extends InvokeExpr
 {
-    ValueBox baseBox;
-    
-    public Value getBase()
-    {
-        return baseBox.getValue();
-    }
-
-    public ValueBox getBaseBox()
-    {
-        return baseBox;
-    }
-
-    public void setBase(Value base)
-    {
-        baseBox.setValue(base);
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.addAll(baseBox.getValue().getUseBoxes());
-        list.add(baseBox);
-
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            list.addAll(argBoxes[i].getValue().getUseBoxes());
-            list.add(argBoxes[i]);
-            
-        }
-        
-        return list;
-    }
+    public Value getBase();
+    public ValueBox getBaseBox();
+    public void setBase(Value base);
+    public List getUseBoxes();
 }
