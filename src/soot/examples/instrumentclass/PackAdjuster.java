@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 2000 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,33 +24,29 @@
  */
 
 
-package soot;
-import soot.coffi.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
-import soot.jimple.parser.*;
+/* To enable this file:
+ *
+ * 1. Change the package name to Soot.
+ * 2. Create a directory, say ~/soot-extensions/soot
+ * 3. Move this file to ~/soot-extensions/soot
+ * 4. Add ~/soot-extensions to your classpath before Soot.
+ * 5. From ~/soot-extensions, run javac PackAdjuster.java.
+ */
 
+package soot.examples.instrumentclass;
+import soot.examples.instrumentclass.*;
+import soot.*;
 
-public class JimpleMethodSource implements MethodSource
-{
-
-    JimpleAST mJimpleAST;
-
-    JimpleMethodSource(JimpleAST aJimpleAST)
+/** An example PackAdjuster enabling goto instrumentation. */
+public class PackAdjuster
+{ 
+    public static void adjustPacks(Scene s)
     {
-	mJimpleAST = aJimpleAST;
-    }
+        Pack p = s.getPack("jtp");
 
-    public void getBody(SootMethod m, Map options)
-    {  
-        // we ignore options here.
-        // actually we should have default option verbatim,
-        // and apply phase options.
-        // in fact we probably want to allow different
-        // phase options depending on app vs. lib.
-
-	mJimpleAST.getMethodsForClass(m.getDeclaringClass());
+        /* You can override this class and provide your 
+         * own implementation of adjustPacks.  It would add the necessary
+         * Transformer classes annotating something.  */
+        p.add(new Transform("jtp.gi", GotoInstrumenter.v()));
     }
 }
-

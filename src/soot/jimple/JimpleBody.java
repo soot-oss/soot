@@ -55,19 +55,7 @@ public class JimpleBody extends StmtBody
     {
     }
 
-    /**
-        Constructs a JimpleBody from the given Body.
-     */  
-    
-//      public JimpleBody(Body body, Map options)
-//      {
-//          super(body.getMethod());
-
-//          applyPhaseOptions(options);
-//      }
-
     /** Clones the current body, making deep copies of the contents. */
-
     public Object clone()
     {
         Body b = new JimpleBody(getMethod());
@@ -75,6 +63,7 @@ public class JimpleBody extends StmtBody
         return b;
     }
 
+    /** Applies the transformations corresponding to the given options. */
     public void applyPhaseOptions(Map options) 
     { 
         Options.checkOptions(options, "jb", "no-splitting no-typing "+
@@ -166,11 +155,9 @@ public class JimpleBody extends StmtBody
             soot.Main.stmtCount += getUnits().size();
     }
 
-
     /** Make sure that the JimpleBody is well formed.  If not, throw an exception.
         Right now, performs only a handful of checks.
-      */
-      
+      */      
     public void validate()
     {
         super.validate();
@@ -193,10 +180,8 @@ public class JimpleBody extends StmtBody
         }
     }
     
-    
     /** Temporary patch to get the typing algorithm working.
-      */
-      
+      */      
     private void patchForTyping()
     {
         int localCount = 0;
@@ -290,6 +275,7 @@ public class JimpleBody extends StmtBody
         return false;
     }
 
+    /** Inserts usual statements for handling this & parameters into body. */
     public void insertIdentityStmts()
     {
         int i = 0;
@@ -313,6 +299,7 @@ public class JimpleBody extends StmtBody
         }
     }
 
+    /** Returns the first non-identity stmt in this body. */
     public Stmt getFirstNonIdentityStmt()
     {
         Iterator it = getUnits().iterator();
@@ -325,64 +312,51 @@ public class JimpleBody extends StmtBody
         return (Stmt)o;
     }
 
+    /* Return LHS of the first identity stmt assigning from \@this. */
     public Local getThisLocal()
     {
-        // Look for the first identity stmt assigning from @this.
+        Iterator unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
         {
-            Iterator unitsIt = getUnits().iterator();
-            while (unitsIt.hasNext())
-            {
-                Stmt s = (Stmt)unitsIt.next();
-                if (s instanceof IdentityStmt && 
-                    ((IdentityStmt)s).getRightOp() instanceof ThisRef)
-                    return (Local)(((IdentityStmt)s).getLeftOp());
-            }
+            Stmt s = (Stmt)unitsIt.next();
+            if (s instanceof IdentityStmt && 
+                ((IdentityStmt)s).getRightOp() instanceof ThisRef)
+                return (Local)(((IdentityStmt)s).getLeftOp());
         }
 
         throw new RuntimeException("couldn't find identityref!");
     }
 
+    /* Return LHS of the first identity stmt assigning from \@parameter i. */
     public Local getParameterLocal(int i)
     {
-        // Look for the first identity stmt assigning from @this.
+        Iterator unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
         {
-            Iterator unitsIt = getUnits().iterator();
-            while (unitsIt.hasNext())
+            Stmt s = (Stmt)unitsIt.next();
+            if (s instanceof IdentityStmt && 
+                ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
             {
-                Stmt s = (Stmt)unitsIt.next();
-                if (s instanceof IdentityStmt && 
-                    ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
-                {
-                    IdentityStmt is = (IdentityStmt)s;
-                    ParameterRef pr = (ParameterRef)is.getRightOp();
-                    if (pr.getIndex() == i)
-                        return (Local)is.getLeftOp();
-                }
+                IdentityStmt is = (IdentityStmt)s;
+                ParameterRef pr = (ParameterRef)is.getRightOp();
+                if (pr.getIndex() == i)
+                    return (Local)is.getLeftOp();
             }
         }
 
         throw new RuntimeException("couldn't find parameterref!");
     }
 
-
-
+    /** Prints contents of current body to out, with given options. */
     public void printTo(PrintWriter out, int printBodyOptions)
     {
-      	
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
-        
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
-
-
 	String decl = getMethod().getDeclaration();
 
-
         out.println("    " + decl);        
-	
-	
         out.println("    {");
-
 
         // Print out local variables
         {
@@ -449,7 +423,6 @@ public class JimpleBody extends StmtBody
         // Print out statements
         // Use an external class so that it can be overridden.
 	StmtPrinter.printStatementsInBody(this, out, isPrecise, isNumbered);
-
 	
         out.println("    }");
     }

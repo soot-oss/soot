@@ -24,23 +24,24 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
+/** Represents types within Soot, e.g. int, java.lang.String. */
 public abstract class Type implements Switchable, ToBriefString
 {
+    /** Returns a textual representation of this type. */
     public abstract String toString();
     
+    /** Returns a brief textual representation of this type. */
     public String toBriefString()
     {
         return toString();
     }
-    
+
+    /** Converts the int-like types (short, byte, boolean and char) to IntType. */
     public static Type toMachineType(Type t)
     {
         if(t.equals(ShortType.v()) || t.equals(ByteType.v()) ||
@@ -52,40 +53,13 @@ public abstract class Type implements Switchable, ToBriefString
             return t;
     }
 
+    /** Returns the XML representation of this type. */
     public String getXML() 
     {
 	return XMLManager.getXML(this);
     }
 
-    /*
-    public static Type v(String aType)
-    {
-	Type t;
-	
-	if(aType.equals("boolean")) {
-	    t = BooleanType.v();
-	} else if(aType.equals("byte")) {
-	    t = ByteType.v();
-	} else if(aType.equals("char")) {
-	    t = CharType.v();
-	} else if(aType.equals("short")) {
-	    t = ShortType.v();
-	} else if(aType.equals("int")) {
-	    t= IntType.v();
-	} else if(aType.equals("long")) {
-	    t = LongType.v();
-	} else if(aType.equals("float")) {
-	    t = FloatType.v();
-	} else if(aType.equals("double")) {
-	    t = DoubleType.v();
-	} else
-	    t = RefType.v(aType);	
-	
-	return t;
-    }
-    */
-
-
+    /** Returns the least common superclass of this type and other. */
     public Type merge(Type other, Scene cm)
     {
         if(this.equals(UnknownType.v()))
@@ -153,8 +127,8 @@ public abstract class Type implements Switchable, ToBriefString
             throw new IllegalTypeMergeException(this + " and " + other);
     }
 
+    /** Method required for use of Switchable. */
     public void apply(Switch sw)
     {
     }
-
 }

@@ -114,11 +114,15 @@ public class VariableTypeAnalysis
                 
                 if(!m.isConcrete())
                     continue;
-                    
-                if (!m.hasActiveBody())
-                    m.getBodyFromMethodSource("vta.jb");
 
-                Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+                Body b = null;
+
+                if (!m.hasActiveBody())
+                    b = m.getBodyFromMethodSource("vta.jb");
+                else
+                    b = m.getActiveBody();
+
+                Iterator unitsIt = b.getUnits().iterator();
                 while (unitsIt.hasNext())
                 {
                     Stmt s = (Stmt)unitsIt.next();

@@ -24,14 +24,12 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
+/** Represents the Java void type. */
 public class VoidType extends Type
 {
     private static final VoidType constant = new VoidType();

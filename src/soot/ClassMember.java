@@ -27,15 +27,26 @@ package soot;
 
 import java.util.*;
 
-// implemented by SootField, SootMethod
-
+/** Declares methods common to Soot objects belonging to classes,
+ * namely SootField and SootMethod. */
 public interface ClassMember
 {
+    /** Returns the SootClass declaring this one. */
     public SootClass getDeclaringClass();
+
+    /** Convenience class returning true if this class member is protected. */
     public boolean isProtected();
+
+    /** Convenience class returning true if this class member is private. */
     public boolean isPrivate();
+
+    /** Convenience class returning true if this class member is public. */
     public boolean isPublic();
+
+    /** Sets modifiers of this class member. */
     public void setModifiers(int modifiers);
+
+    /** Returns modifiers of this class member. */
     public int getModifiers();
 }
 

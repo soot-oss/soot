@@ -24,15 +24,13 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
+/** Describes a unit that assigns to a variable from {parameters, this, caughtexception}. */
 public interface IdentityUnit extends Unit
 { 
     public Value getLeftOp();

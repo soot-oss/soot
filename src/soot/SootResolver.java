@@ -1,50 +1,73 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2000 Patrice Pominville
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+
 package soot;
 
 import soot.coffi.*;
 import java.util.*;
 import java.io.*;
 import soot.util.*;
+import soot.jimple.*;
 
-
+/** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
-    private Scene mScene;
-    private Set markedClasses;
-    private LinkedList classesToResolve;
+    private Set markedClasses = new HashSet();
+    private LinkedList classesToResolve = new LinkedList();
 
-    public SootResolver(Scene aScene)
+    /** Creates a new SootResolver. */
+    public SootResolver()
     {
-	mScene = aScene;
-	markedClasses = new HashSet();
-	classesToResolve = new LinkedList();
     }
 
-    public  SootClass getResolvedClass(String className)
+    /** Returns a SootClass object for the given className. 
+     * Creates a new context class if needed. */
+    public SootClass getResolvedClass(String className)
     {
-        if(mScene.containsClass(className))
-            return mScene.getSootClass(className);
+        if(Scene.v().containsClass(className))
+            return Scene.v().getSootClass(className);
             
         SootClass newClass = new SootClass(className);
-        mScene.addClass(newClass);
+        Scene.v().addClass(newClass);
         newClass.setContextClass();
-        
 	
 	markedClasses.add(newClass);
-		    if(className.equals("int")) throw new RuntimeException();
         classesToResolve.addLast(newClass);
 	
 	return newClass;
     }
 
-
-
+    /** Resolves the given className and all dependent classes. */
     public SootClass resolveClassAndSupportClasses(String className)
     {
 	SootClass resolvedClass = getResolvedClass(className);
 	
 	while(!classesToResolve.isEmpty()) {
 	    
-	    InputStream is= null;	    
+	    InputStream is = null;
 	    SootClass sc = (SootClass) classesToResolve.removeFirst();
 	    className = sc.getName();
 	    
@@ -58,12 +81,11 @@ public class SootResolver
 	    if(is instanceof ClassInputStream) {
 		if(soot.Main.isVerbose)
 		    System.err.println("resolving [from .class]: " + className );
-		soot.coffi.Util.resolveFromClassFile(sc, this, mScene);
+		soot.coffi.Util.resolveFromClassFile(sc, this, Scene.v());
 	    } else if(is instanceof JimpleInputStream) {
 		if(soot.Main.isVerbose)
 		    System.err.println("resolving [from .jimple]: " + className );
 		if(sc == null) throw new RuntimeException("sc is null!!");
-
 		
 		soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST((JimpleInputStream) is);		
 		jimpAST.getSkeleton(sc, this);
@@ -93,7 +115,9 @@ public class SootResolver
 	}	
 	
 	return resolvedClass;
-    }   
+    }
+
+    /** Asserts that type is resolved. */
     public void assertResolvedClassForType(Type type)
     {
         if(type instanceof RefType)
@@ -102,12 +126,13 @@ public class SootResolver
             assertResolvedClassForType(((ArrayType) type).baseType);
     }
     
+    /** Asserts that class is resolved. */
     public void assertResolvedClass(String className)
     {
-        if(!mScene.containsClass(className))
+        if(!Scene.v().containsClass(className))
         {
             SootClass newClass = new SootClass(className);
-            mScene.addClass(newClass);
+            Scene.v().addClass(newClass);
             newClass.setContextClass();
             
             markedClasses.add(newClass);
@@ -115,7 +140,4 @@ public class SootResolver
             classesToResolve.addLast(newClass);
         }
     }
-
-
-
 }

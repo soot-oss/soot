@@ -1,5 +1,30 @@
-package soot.jimple.parser;
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2000 Patrice Pominville
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
+
+package soot.jimple.parser;
 
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
@@ -11,97 +36,25 @@ import java.util.*;
 import soot.util.*;
 import soot.*;
 
-
-
 /** 
-    This class encapsulates a JimpleAst instance and provides methods
+    This class encapsulates a JimpleAST instance and provides methods
     to act on it.      
 */
-
-
 public class JimpleAST
 {
-    private static final String EXT = ".jimple";
-    private static boolean debug = false;
-    private static boolean verbose = false;
-
     private Start mTree = null;
-    private InputStream mInputStream = null;
-    boolean hasInputStream = false;
-    
-    private static final String USAGE = "usage: java JimpleAST [options] " +
-        "jimple_file [jimple_file ...]";
+    private HashMap methodToParsedBodyMap = null;
 
-
-    /** 
-     * @param aInputStream The JimpleInputStream
+    /** Constructs a JimpleAST and generates its parse tree from the given JimpleInputStream.
+     *
+     * @param aInputStream The JimpleInputStream to parse
      */
-
     public JimpleAST(JimpleInputStream aJIS)
     {
-	mInputStream = aJIS;
-	generateParseTree(mInputStream);
-    }
-
-
-    public SootClass getSkeleton(SootClass sc, SootResolver resolver)
-    {
-	Walker w = new SkeletonExtractorWalker(resolver, sc);	
-	mTree.apply(w);  	
-	return w.getSootClass();	
-    }
-
-
-
-    /*
-      Parses a jimple input stream.
-      If you just want to get the method bodies for a SootClass, pass as the second
-      argument the SootClass you want method bodies for.
-      If you want to create a SootClass for the inputStream set the 2nd arg to null.
-    */
-
-    public SootClass getMethodsForClass(SootClass sc) 
-    {  	
-	Walker w;
-
-	if(sc == null)
-	    w = new Walker();
-	else {
-	    w = new BodyExtractorWalker(sc);
-	} 
-
-        boolean oldPhantomValue = Scene.v().getPhantomRefs();
-
-        Scene.v().setPhantomRefs(true);
-	mTree.apply(w);  	
-        Scene.v().setPhantomRefs(oldPhantomValue);
-       	
-	return w.getSootClass();	
-    }
-
-
-
-    public Set getCstPool() 
-    {  
-		
-	CstPoolExtractorWalker w = new CstPoolExtractorWalker(); 
-	
-	mTree.apply(w);  	
-		
-	return w.getCstPool();	
-    }
-
-
-
-
-    
-
-    private void generateParseTree(InputStream istream)
-    {	
 	Parser p =
 	    new Parser(new Lexer(
 		    new PushbackReader(new BufferedReader(
-                    new InputStreamReader(istream)), 1024)));
+                    new InputStreamReader(aJIS)), 1024)));
 	try {
 	    mTree = p.parse();
 	} catch(ParserException e) {
@@ -111,75 +64,48 @@ public class JimpleAST
 	} catch(IOException e) {
 	    throw new RuntimeException("IOException occurred: " + e);
 	}
-	
-	mInputStream = null; // allow garbage collection of the inputstream
     }
 
-    
-
-    /*
-    public static void main(String args[])  
-	throws java.lang.Exception
-	      
+    /** Applies a SkeletonExtractorWalker to the given SootClass, using the given Resolver. */
+    public SootClass getSkeleton(SootClass sc, SootResolver resolver)
     {
-        InputStream inFile;
-        
-        // check arguments
-        if (args.length < 1) {
-            System.out.println(USAGE);
-            System.exit(0);
-        }
+	Walker w = new SkeletonExtractorWalker(resolver, sc);	
+	mTree.apply(w);  	
+	return w.getSootClass();	
+    }
 
+    /** Runs a Walker on the JimpleInputStream associated to this object.
+     * The SootClass which we want bodies for is passed as the argument. 
+     */
+    public void stashBodiesForClass(SootClass sc) 
+    {  	
+        methodToParsedBodyMap = new HashMap();
 
-	Scene.v().setPhantomRefs(true);
+	Walker w = new BodyExtractorWalker(sc, methodToParsedBodyMap);
 
-        for (int i = 0; i < args.length; i++) {
-            String arg = args[i];
-            if (arg.startsWith("-")) {
-                arg = arg.substring(1);
-                if (arg.equals("d"))
-                    debug = true;
-                else if (arg.equals("v"))
-                    verbose = true;
-            }
-            else {
+        boolean oldPhantomValue = Scene.v().getPhantomRefs();
 
-	       
-                try {
-                    if (verbose)
-                        System.out.println(" ... looking for " + arg);
-                    inFile = new FileInputStream(arg);
-                } catch (FileNotFoundException e) {
-                    if (arg.endsWith(EXT)) {
-                        System.out.println(" *** can't find " + arg);
-                        continue;
-                    }
-                    arg = arg + EXT;
-                    try {
-                        if (verbose)
-                            System.out.println(" ... looking for " + arg);
-                        inFile = new BufferedInputStream(new FileInputStream(arg));
-                    } catch (FileNotFoundException ee) {
-                        System.out.println(" *** can't find " + arg);
-                        continue;
-                    }
-                }
+        Scene.v().setPhantomRefs(true);
+	mTree.apply(w);
+        Scene.v().setPhantomRefs(oldPhantomValue);
+    }
+
+    /** Returns a body corresponding to the parsed jimple for m. 
+     * If necessary, applies the BodyExtractorWalker to initialize the bodies map. */
+    public Body getBody(SootMethod m)
+    {
+        if (methodToParsedBodyMap == null)
+            stashBodiesForClass(m.getDeclaringClass());
+        return (Body)methodToParsedBodyMap.get(m);
+    } 
+
+    /** Extracts the constant pool from the given AST. */
+    public Set getCstPool() 
+    {  
+	CstPoolExtractorWalker w = new CstPoolExtractorWalker(); 
+	
+	mTree.apply(w);  	
 		
-		setInputStream(inFile);
-
-		Walker walker = new Walker();
-		mTree.apply(walker);
-		
-            }
-        }
-    } // main
-
-    */
-
-
+	return w.getCstPool();	
+    }
 } // Parse
-
-
-
-
-

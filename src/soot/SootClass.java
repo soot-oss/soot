@@ -47,12 +47,11 @@ import soot.*;
  * notifyOfNameChange() method, and register fields which belong to classes, because the hashtable
  * will need to be updated.  I will do this later. - kor  16-Sep-97
  */
+
 /**
-    Instances of this class represent Java classes.  They are usually created by a Scene,
+    Represents a Java class.  They are usually created by a Scene,
     but can also be constructed manually through the given constructors.
-
 */
-
 public class SootClass extends AbstractHost
 {
     private static char fileSeparator = System.getProperty("file.separator").charAt(0);

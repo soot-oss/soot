@@ -24,14 +24,15 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
+/** The Unit interface describes a code fragment (Stmt or Inst), used within Body
+ * classes.  Intermediate representations must use an implementation
+ * of Unit for their code.
+ */
 public interface Unit extends Switchable, Directed
 {
     public List getUseBoxes();

@@ -1,3 +1,28 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2000 Patrice Pominville
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 2 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU Library General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.  
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
 package soot.jimple.parser;
 
 import soot.baf.*;
@@ -13,7 +38,7 @@ import java.io.*;
 import java.util.*;
 
 
-/* 
+/**
    Walks a jimple AST and constructs the method bodies for all the methods of 
    the SootClass associated with this walker (see constructor). 
    note: Contrary to the plain "Walker", this walker does not create a SootClass,
@@ -23,10 +48,14 @@ import java.util.*;
    
 public class BodyExtractorWalker extends Walker
 {
-           
-    public BodyExtractorWalker(SootClass sc) 
+    Map methodToParsedBodyMap;
+
+    /** Constructs a walker, and attaches it to the given SootClass, sending bodies to
+     * the given methodToParsedBodyMap. */
+    public BodyExtractorWalker(SootClass sc, Map methodToParsedBodyMap) 
     {
-	mSootClass = sc;		
+	mSootClass = sc;
+        this.methodToParsedBodyMap = methodToParsedBodyMap;
     }
     
     /*
@@ -35,8 +64,6 @@ public class BodyExtractorWalker extends Walker
     */
     public void inAFile(AFile node)
     {
-	if(debug)
-	    System.out.println("reading class " + node.getClassName());
     } 
     
     public void caseAFile(AFile node)
@@ -145,7 +172,7 @@ public class BodyExtractorWalker extends Walker
               System.out.println("[Parsed] "+sm.getDeclaration());
 
 	  methodBody.setMethod(sm);
-          sm.setActiveBody(methodBody);
+          methodToParsedBodyMap.put(sm, methodBody);
 	} 
         else if(node.getMethodBody() instanceof AFullMethodBody) {
 	    if(sm.isPhantom() && soot.Main.isVerbose)

@@ -31,6 +31,7 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+/** Utility methods for dealing with traps. */
 public class TrapManager
 {
     /** If exception e is caught at unit u in body b, return true;

@@ -29,6 +29,9 @@ package soot;
 import soot.jimple.*;
 import java.util.*;
 
+/**
+    Represents a Java field.  Can be declared to belong to a SootClass.
+*/
 public class SootField extends AbstractHost implements ClassMember, EquivTo
 {
     String name;

@@ -38,7 +38,7 @@ public class UnknownMethodSource implements MethodSource
     {
     }
 
-    public void getBody(SootMethod m, Map options)
+    public Body getBody(SootMethod m, String phaseName)
     {  
         // we ignore options here.
         // actually we should have default option verbatim,

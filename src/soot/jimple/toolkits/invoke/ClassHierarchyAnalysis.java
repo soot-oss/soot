@@ -60,11 +60,15 @@ public class ClassHierarchyAnalysis
                 
                 if(!m.isConcrete())
                     continue;
-                    
-                if (!m.hasActiveBody())
-                    m.getBodyFromMethodSource("cha.jb");
 
-                Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+                Body b = null;
+
+                if (!m.hasActiveBody())
+                    b = m.getBodyFromMethodSource("cha.jb");
+                else
+                    b = m.getActiveBody();
+
+                Iterator unitsIt = b.getUnits().iterator();
                 while (unitsIt.hasNext())
                 {
                     Stmt s = (Stmt)unitsIt.next();

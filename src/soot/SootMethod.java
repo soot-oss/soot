@@ -34,6 +34,11 @@ import java.util.*;
 import soot.baf.*;
 import soot.jimple.*;
 
+/**
+    Represents a Java method.  Can be declared to belong to a SootClass. 
+    Does not contain the actual code, which belongs to a Body.
+    The getActiveBody() method points to the currently-active body.
+*/
 public class SootMethod extends AbstractHost implements ClassMember, Directed
 {
     /** Name of the current method. */
@@ -67,10 +72,13 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     /** Tells this method how to find out where its body lives. */
     protected MethodSource ms;
 
-    /** Uses methodSource to load the method body in question. */
-    public void getBodyFromMethodSource(String phaseName)
+    /** Uses methodSource to retrieve the method body in question; does not set it
+     * to be the active body.
+     *
+     * @param phaseName       Phase name for body loading. */
+    public Body getBodyFromMethodSource(String phaseName)
     {
-        ms.getBody(this, Scene.v().getPhaseOptions(phaseName));
+        return ms.getBody(this, phaseName);
     }
 
     /** Sets the MethodSource of the current SootMethod. */

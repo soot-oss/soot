@@ -3,13 +3,14 @@
 <title></title>
 </head>
 <body>
-Toolkit to produce and manipulate various types CFG graphs for Body instances. The CFG graphs
-can have as nodes either Unit elements or Block elements the latter corresponding
-to BasicBlocks of Units. Some of the classes produce graphs where the control flow for exceptions 
-is taken into account, while others produce graph making abstraction of extra exception related 
-edges. 
+Toolkit to produce and manipulate various types CFG graphs.  The CFG
+graphs can have as nodes any implementation of Directed; typically,
+Unit elements or Block elements.  The latter corresponds to
+BasicBlocks of Units.  Some of the classes produce UnitGraphs where
+the control flow for exceptions is taken into account, while others
+produce graphs abstracting away extra exception-related edges.
 
-<b>All classes in this package should now  be thread save. (Thu Feb 10 00:03:48 EST 2000)</b>
+<b>All classes in this package should now  be thread safe. (Thu Feb 10 00:03:48 EST 2000)</b>
 
 
 </body>

@@ -26,6 +26,8 @@
 
 package soot;
 
+/** Encapsulates the Value class, but uses EquivTo for equality comparisons. 
+ * Also uses equivHashCode as its hash code. */
 public class EquivalentValue
 {
     Value e;

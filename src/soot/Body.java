@@ -36,12 +36,15 @@ import java.util.*;
 import java.io.*;
 import soot.toolkits.scalar.*;
 
+/**
+    Represents the code of a Java method, in some intermediate representation.  
+*/
 public abstract class Body
 {
     protected SootMethod method = null;
 
-    protected Chain localChain =  new HashChain();
-    protected Chain  trapChain = new HashChain();
+    protected Chain localChain = new HashChain();
+    protected Chain trapChain = new HashChain();
     protected PatchingChain unitChain = new PatchingChain(new HashChain());
 
     abstract public Object clone();
@@ -58,6 +61,7 @@ public abstract class Body
     {       	
     }
 
+    /** Returns the method associated with this Body. */
     public SootMethod getMethod()
     {
 	if(method == null)

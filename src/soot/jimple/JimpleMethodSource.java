@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2000 Patrice Pominville
+ * Copyright (C) 1999 Patrick Lam
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,13 +23,32 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot.util;
 
+package soot.jimple;
+
+import soot.*;
+import soot.coffi.*;
+import soot.util.*;
+import java.util.*;
 import java.io.*;
+import soot.jimple.parser.*;
 
-interface SootInputRepresentation 
+public class JimpleMethodSource implements MethodSource
 {
-    InputStream createInputStream(InputStream is);
-    String getFileExtension();
-	
+    JimpleAST mJimpleAST;
+
+    public JimpleMethodSource(JimpleAST aJimpleAST)
+    {
+	mJimpleAST = aJimpleAST;
+    }
+
+    public Body getBody(SootMethod m, String phaseName)
+    {  
+        JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
+
+        Map options = Scene.v().computePhaseOptions(phaseName, "verbatim");
+        jb.applyPhaseOptions(options);
+        return jb;
+    }
 }
+

@@ -34,6 +34,7 @@ import soot.jimple.toolkits.scalar.*;
 import soot.jimple.toolkits.scalar.pre.*;
 import soot.toolkits.scalar.*;
 
+/** Manages the SootClasses of the application being analyzed. */
 public class Scene extends AbstractHost
 {
     private static Scene constant = new Scene();
@@ -194,7 +195,9 @@ public class Scene extends AbstractHost
 
     /* Adds optionsString to the Scene's options for phaseName 
      * and returns the corresponding Map.  Does not change
-     * the getPhaseOptions() map in the Scene. */
+     * the getPhaseOptions() map in the Scene. 
+     *
+     * The previous options (getPhaseOptions()) get precedence. */
     public Map computePhaseOptions(String phaseName, String optionsString)
     {
         Map options = new HashMap();
@@ -305,8 +308,7 @@ public class Scene extends AbstractHost
         */
         
         Scene.v().setPhantomRefs(true);
-	//        SootClass toReturn = soot.coffi.Util.resolveClassAndSupportClasses(className, this);
-	SootResolver resolver = new SootResolver(this);
+	SootResolver resolver = new SootResolver();
 	SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
         Scene.v().setPhantomRefs(false);
 

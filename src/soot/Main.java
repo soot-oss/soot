@@ -1,5 +1,3 @@
-/* -*- mode:Java; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil; -*- */
-
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
@@ -42,6 +40,7 @@ import java.io.*;
 
 import java.text.*;
 
+/** Main class for Soot; provides Soot's command-line user interface. */
 public class Main
 {        
      //------> this used to be in Main
@@ -58,7 +57,7 @@ public class Main
     static Chain cmdLineClasses = new HashChain();
     // <-------------
 
-     public static final int BAF = 0;
+    public static final int BAF = 0;
     public static final int B = 1;
 
     public static final int JIMPLE = 2;
@@ -269,21 +268,18 @@ public class Main
         }
   
         isOptimizingWhole = val;
-        isOptimizing = val;
     }
+
     public static boolean isOptimizingWhole()
     {
         return isOptimizingWhole;
     }
 
-
-
-
-
     public static void setProfiling(boolean val)
     {
         isProfilingOptimization = val;
     }
+
     public static boolean isProfiling()
     {
         return isProfilingOptimization;
@@ -378,8 +374,6 @@ public class Main
         return outputDir;
     }
 
-
-
     public static void setSrcPrecedence(String prec)
     {
         if(prec.equals("jimple"))
@@ -392,9 +386,6 @@ public class Main
             System.exit(1);
         }
     }
-
-
-
 
     public static void setFinalRep(String rep)
     {
@@ -433,18 +424,16 @@ public class Main
     {
         isSubtractingGC = val;
     }
+
     public static boolean isSubstractingGC()
     {
         return isSubtractingGC;
     }
 
-
-
-
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.23");
+            System.out.println("Soot version 1.beta.6.dev.24");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -486,17 +475,11 @@ public class Main
             System.out.println("  --final-rep REP            produce classfile/jasmin from REP ");
             System.out.println("                                  (jimple, grimp, or baf)");
             System.out.println();
-//            System.out.println("Jimple construction options:");
-//            System.out.println("  --no-splitting             do not split local variables");
-//            System.out.println("  --use-packing              pack locals after conversion");
-//            System.out.println("  --no-typing                do not assign types to the local variables");
-//            System.out.println("  --no-jimple-aggregating    do not perform any Jimple-level aggregation");
-//            System.out.println("  --use-original-names       retain variables name from local variable table");
             System.out.println("");
             System.out.println("Optimization options:");
             System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
             System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
-//            System.out.println("                             classfiles");
+            System.out.println("                             classfiles");
             System.out.println("");
             System.out.println("Miscellaneous options:");
             System.out.println("  --soot-class-path PATH     uses PATH as the classpath for finding classes");
@@ -828,17 +811,46 @@ public class Main
                     ((SootClass)contextClassesIt.next()).setLibraryClass();
             }
         }
-        
+
+    // Jimplify all needed bodies.
+        Iterator classIt = Scene.v().getApplicationClasses().iterator();
+
+        while(classIt.hasNext())
+	    {
+            SootClass s = (SootClass) classIt.next();
+                
+            System.out.print("Jimplifying " + s.getName() + "... " );
+            System.out.flush();
+            
+            if(!isInDebugMode)
+                 {
+                    try 
+                    {
+                        attachJimpleBodiesFor(s);
+                    }
+                    catch(RuntimeException e)
+                    {
+                        System.out.println("failed due to: " + e);
+                    }
+                }
+                else {
+                    attachJimpleBodiesFor(s);
+                }
+                
+                System.out.println();
+	    }
+
+    // Run the whole-program packs.
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
-        
 
+    // (Don't) produce XML output.
         if (produceXmlOutput)
             produceXMLOutFile();
     
     // Handle each class individually
-        Iterator classIt = Scene.v().getApplicationClasses().iterator();
+        classIt = Scene.v().getApplicationClasses().iterator();
 
         while(classIt.hasNext())
 	    {
@@ -849,10 +861,11 @@ public class Main
             
             if(!isInDebugMode)
                  {
-                    try {
+                    try 
+                    {
                         handleClass(s);
                     }
-                    catch(Exception e)
+                    catch(RuntimeException e)
                     {
                         System.out.println("failed due to: " + e);
                     }
@@ -863,19 +876,14 @@ public class Main
                 
                 System.out.println();
 	    }
-	
 
         totalTimer.end();            
 
 	// Print out time stats.
 
-	if(isProfilingOptimization) {
+	if(isProfilingOptimization)
 	    printProfilingInformation();
-	}
     }        
-
-
-
 
     private static void produceXMLOutFile() 
     {
@@ -919,67 +927,56 @@ public class Main
 	    }
     }
 
-
-
-    
-
-
-
     private static void printProfilingInformation()
     {		                                   
-	long totalTime = totalTimer.getTime();
+        long totalTime = totalTimer.getTime();
                 
-                System.out.println("Time measurements");
-                System.out.println();
+        System.out.println("Time measurements");
+        System.out.println();
                 
-                System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
-                System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+        System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
+        System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
 //                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
 //                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
 //                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
-                System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+        System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
 //                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
 //                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
 //                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
 
-                System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
-                System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
-                System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+        System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
+        System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
+        System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
 //                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
 //                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
 //                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
                 
-                System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
+        System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
                 
-                System.out.println();
+        System.out.println();
 
-                // Print out time stats.
-                {
-                    float timeInSecs;
+        // Print out time stats.
+        {
+            float timeInSecs;
 
-                    System.out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
-                    System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
-                    System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
-                    System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
-                    System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
-                    System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-                    System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
-                    System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
-                    System.out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-                    System.out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
-
+            System.out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
+            System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
+            System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
+            System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
+            System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+            System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+            System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+            System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
+            System.out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
+            System.out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
+            
                                             
 //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
 //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
                     
-
-                       
-                       
 //                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
 //                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
-                    
-                        
                 
                         /*
                     System.out.println("cleanup2Timer:   " + cleanup2Time +
@@ -987,33 +984,25 @@ public class Main
                         cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
 */
 
-                    timeInSecs = (float) totalTime / 1000.0f;
-                    float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+            timeInSecs = (float) totalTime / 1000.0f;
+            float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
+            
+            System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+            
+            if(isSubtractingGC)
+            {
+                System.out.println("Garbage collection was subtracted from these numbers.");
+                System.out.println("           forcedGC:" + 
+                                   toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
+            }
 
-                    System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+            System.out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
                     
-                    if(isSubtractingGC)
-                    {
-                        System.out.println("Garbage collection was subtracted from these numbers.");
-                        System.out.println("           forcedGC:" + 
-                            toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
-                    }
-
-                    System.out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
-                    
-                    System.out.println("totalFlowNodes: " + totalFlowNodes + 
-                        " totalFlowComputations: " + totalFlowComputations + " avg: " + 
-                        truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
-        
-                }
+            System.out.println("totalFlowNodes: " + totalFlowNodes + 
+                               " totalFlowComputations: " + totalFlowComputations + " avg: " + 
+                               truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
+        }
     }
-
-
-
-
-
-
-
 
     private static String toTimeString(Timer timer, long totalTime)
     {
@@ -1031,7 +1020,29 @@ public class Main
     {
         return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
-    
+
+    /** Attach JimpleBodies to the methods of c. */
+    private static void attachJimpleBodiesFor(SootClass c)
+    {
+        Iterator methodIt = c.getMethods().iterator();
+	   
+        while(methodIt.hasNext())
+        {   
+            SootMethod m = (SootMethod) methodIt.next();
+	
+            if(!m.isConcrete())
+                continue;
+				
+            if(!m.hasActiveBody()) 
+            {
+                m.setActiveBody(m.getBodyFromMethodSource("jb"));
+
+                Scene.v().getPack("jtp").apply(m.getActiveBody());
+                if(isOptimizing) 
+                    Scene.v().getPack("jop").apply(m.getActiveBody());
+            }            
+        }
+    }
 
     private static void handleClass(SootClass c)
     {
@@ -1060,7 +1071,6 @@ public class Main
             }
         }
 
-        boolean produceJimple = false;
         boolean produceBaf = false;
         boolean produceGrimp = false;
         boolean produceDava = false;
@@ -1091,31 +1101,25 @@ public class Main
                 endResult = getExtensionFor(finalRep).substring(1);
             }
         
-    
-            if(endResult.equals("jimple"))
-                produceJimple = true;
-            else if(endResult.equals("baf"))
+            if(endResult.equals("baf"))
             {
                 produceBaf = true; 
-                produceJimple = true;
             }
             else if(endResult.equals("grimp"))
             {
-                produceJimple = true; 
                 produceGrimp = true;
             }
             else if(endResult.equals("dava"))
             {
-                produceJimple = true; 
                 produceGrimp = true;
                 produceDava = true;
             }
         }
 
         // Build all necessary bodies
+        // At this point, JimpleBodies should be active.
         {
             Iterator methodIt = c.getMethods().iterator();
-	    
 	   
             while(methodIt.hasNext())
             {   
@@ -1123,19 +1127,7 @@ public class Main
 	
                 if(!m.isConcrete())
                     continue;
-				
-                if(produceJimple)
-                {		
-                    if(!m.hasActiveBody()) {
-                        m.getBodyFromMethodSource("jb");                        
-                    }
-		    
-
-                    Scene.v().getPack("jtp").apply(m.getActiveBody());
-                    if(isOptimizing) 
-                        Scene.v().getPack("jop").apply(m.getActiveBody());
-                }
-                
+				                
                 if(produceGrimp)
                 {
                     if(isOptimizing)
@@ -1162,7 +1154,6 @@ public class Main
             }
             
         }
-
 
         switch(targetExtension) {
         case JASMIN:
@@ -1224,179 +1215,6 @@ public class Main
             }
         }
     }
-
-
-
-    /*
-    private static void handleClass(SootClass c)
-    {
-        FileOutputStream streamOut = null;
-        PrintWriter writerOut = null;
-        
-        String fileName;
-        
-        if(!outputDir.equals(""))
-            fileName = outputDir + fileSeparator;
-        else
-            fileName = "";
-        
-        fileName += c.getName() + targetExtension;
-        
-      
-        if(!targetExtension.equals(".class"))
-        {   
-            try {
-                streamOut = new FileOutputStream(fileName);
-                writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-            }
-            catch (IOException e)
-            {
-                System.out.println("Cannot output file " + c.getName() + targetExtension);
-            }
-        }
-
-        boolean produceJimple = false;
-        boolean produceBaf = false;
-        boolean produceGrimp = false;
-        boolean produceDava = false;
-        
-        // Determine paths
-        
-        {
-            String endResult;
-            
-            if(targetExtension.startsWith(".jimp") || targetExtension.startsWith(".njimple"))
-                endResult = "jimple";
-            else if(targetExtension.startsWith(".grimp"))
-                endResult = "grimp";
-            else if(targetExtension.startsWith(".dava"))
-                endResult = "dava";
-            else if(targetExtension.startsWith(".baf"))
-                endResult = "baf";
-            else
-                endResult = finalRep;
-        
-    
-            if(endResult.equals("jimple"))
-                produceJimple = true;
-            else if(endResult.equals("baf"))
-            {
-                produceBaf = true; 
-                produceJimple = true;
-            }
-            else if(endResult.equals("grimp"))
-            {
-                produceJimple = true; 
-                produceGrimp = true;
-            }
-            else if(endResult.equals("dava"))
-            {
-                produceJimple = true; 
-                produceGrimp = true;
-                produceDava = true;
-            }
-        }
-
-        // Build all necessary bodies
-        {
-            Iterator methodIt = c.getMethods().iterator();
-	    
-	   
-            while(methodIt.hasNext())
-            {   
-                SootMethod m = (SootMethod) methodIt.next();
-	
-                if(!m.isConcrete())
-                    continue;
-				
-                if(produceJimple)
-                {		
-                    if(!m.hasActiveBody()) {
-                        m.getBodyFromMethodSource("jb");
-                    }
-		    
-
-                    Scene.v().getPack("jtp").apply(m.getActiveBody());
-                    if(isOptimizing) 
-                        Scene.v().getPack("jop").apply(m.getActiveBody());
-                }
-                
-                if(produceGrimp)
-                {
-                    if(isOptimizing)
-                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb", "aggregate-all-locals"));
-                    else
-                        m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
-                        
-                    if(isOptimizing)
-                        Scene.v().getPack("gop").apply(m.getActiveBody());
-                        
-                }
-                else if(produceBaf)
-                {   
-                     m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
-
-                     if(isOptimizing) 
-                        Scene.v().getPack("bop").apply(m.getActiveBody());
-                } 
-                
-                if(produceDava)
-                {
-                    m.setActiveBody(Dava.v().newBody(m.getActiveBody(), "db"));
-                }    
-            }
-            
-        }
-
-        if(targetExtension.equals(".jasmin"))
-        {
-            if(c.containsBafBody())
-                new soot.baf.JasminClass(c).print(writerOut);            
-            else
-                new soot.jimple.JasminClass(c).print(writerOut);
-        }
-        else if(targetExtension.equals(".jimp"))
-            c.printTo(writerOut, PrintJimpleBodyOption.USE_ABBREVIATIONS);
-        else if(targetExtension.equals(".njimple"))
-            c.printTo(writerOut, PrintJimpleBodyOption.NUMBERED);
-        else if(targetExtension.equals(".b"))
-            c.printTo(writerOut, soot.baf.PrintBafBodyOption.USE_ABBREVIATIONS);
-        else if(targetExtension.equals(".baf") || targetExtension.equals(".jimple") || targetExtension.equals(".grimple")) {
-            writerOut = new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
-            c.printJimpleStyleTo(writerOut, 0);
-        }
-        else if(targetExtension.equals(".dava"))
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-        else if(targetExtension.equals(".grimp"))
-            c.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
-        else if(targetExtension.equals(".class"))
-            c.write(outputDir);
-        
-        if(!targetExtension.equals(".class"))
-        {
-            try {
-                writerOut.flush();
-                streamOut.close();
-            }
-            catch(IOException e)
-            {
-                System.out.println("Cannot close output file " + fileName);
-            }
-        }
-
-        // Release bodies
-        {
-            Iterator methodIt = c.getMethods().iterator();
-                
-            while(methodIt.hasNext())
-            {   
-                SootMethod m = (SootMethod) methodIt.next();
-                
-                if(m.hasActiveBody())
-                    m.releaseActiveBody();
-            }
-        }
-        }*/
     
     public static double truncatedOf(double d, int numDigits)
     {

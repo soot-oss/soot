@@ -161,7 +161,11 @@ public class SiteInliner
                 if (ie instanceof InstanceInvokeExpr)
                     SynchronizerManager.synchronizeStmtOn(toInline, containerB, (Local)((InstanceInvokeExpr)ie).getBase());
                 else
-                    ; // QUACK
+                {
+                    // Whew!
+                    Local l = SynchronizerManager.addStmtsToFetchClassBefore(containerB, toInline);
+                    SynchronizerManager.synchronizeStmtOn(toInline, containerB, l);
+                }
             }
         }
 

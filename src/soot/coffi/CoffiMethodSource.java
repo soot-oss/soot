@@ -41,11 +41,12 @@ public class CoffiMethodSource implements MethodSource
         this.coffiMethod = coffiMethod;
     }
 
-    public void getBody(SootMethod m, Map options)
+    public Body getBody(SootMethod m, String phaseName)
     {
         ClassFileBody fileBody = new ClassFileBody(m);
         JimpleBody jb = Jimple.v().newBody(m);
 	
+        Map options = Scene.v().getPhaseOptions(phaseName);
 	boolean useOriginalNames = Options.getBoolean(options, "use-original-names");
 
         if(useOriginalNames)
@@ -61,7 +62,7 @@ public class CoffiMethodSource implements MethodSource
             System.out.println("[" + m.getName() + "] Constructing JimpleBody...");
 
         if(m.isAbstract() || m.isNative() || m.isPhantom())
-            return;
+            return jb;
             
         if(soot.Main.isProfilingOptimization)
             soot.Main.conversionTimer.start();
@@ -101,8 +102,7 @@ public class CoffiMethodSource implements MethodSource
          coffiMethod.instructions = null;
          coffiMethod.cfg = null;
 	 
-         m.setActiveBody(jb);
-
          jb.applyPhaseOptions(options);
+         return jb;
     }
 }

@@ -30,8 +30,87 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+/** Utility methods for dealing with synchronization. */
 public class SynchronizerManager
 {
+    /** Maps classes to class$ fields.  Don't trust default. */
+    public static HashMap classToClassField = new HashMap();
+
+    /** Adds code to fetch the static Class object to the given JimpleBody
+     * before the target Stmt.
+     *
+     * Uses our custom classToClassField field to cache the results.
+     *
+     * The code will look like this:
+     *
+<pre>
+        $r3 = <quack: java.lang.Class class$quack>;
+        .if $r3 != .null .goto label2;
+
+        $r3 = .staticinvoke <quack: java.lang.Class class$(java.lang.String)>("quack");
+        <quack: java.lang.Class class$quack> = $r3;
+
+     label2:
+</pre>
+     */
+    public static Local addStmtsToFetchClassBefore(JimpleBody jb, Stmt target)
+    {
+        SootClass sc = jb.getMethod().getDeclaringClass();
+        SootField classCacher = (SootField)classToClassField.get(sc);
+        if (classCacher == null)
+        {
+            // Add a unique field named [__]class$name
+            String n = "class$"+sc.getName();
+            while (sc.declaresFieldByName(n))
+                n = "_" + n;
+
+            classCacher = new SootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
+            sc.addField(classCacher);
+            classToClassField.put(sc, classCacher);
+        }
+
+        String lName = "$uniqueClass";
+
+        // Find unique name.  Not strictly necessary unless we parse Jimple code.
+        while (true)
+        {
+            Iterator it = jb.getLocals().iterator();
+            boolean oops = false;
+            while (it.hasNext())
+            {
+                Local jbLocal = (Local)it.next();
+                if (jbLocal.getName().equals(lName))
+                    oops = true;
+            }
+            if (!oops)
+                break;
+            lName = "_" + lName;
+        }
+
+        Local l = Jimple.v().newLocal(lName, RefType.v("java.lang.Class"));
+        jb.getLocals().add(l);
+        Chain units = jb.getUnits();
+        units.insertBefore(Jimple.v().newAssignStmt(l, 
+                                  Jimple.v().newStaticFieldRef(classCacher)), 
+                           target);
+
+        IfStmt ifStmt;
+        units.insertBefore(ifStmt = Jimple.v().newIfStmt
+                           (Jimple.v().newNeExpr(l, NullConstant.v()),
+                            target), target);
+
+        units.insertBefore(Jimple.v().newAssignStmt
+            (l, Jimple.v().newStaticInvokeExpr(getClassFetcherFor(sc),
+            Arrays.asList(new Value[] {StringConstant.v(sc.getName())}))),
+                           target);
+        units.insertBefore(Jimple.v().newAssignStmt
+                           (Jimple.v().newStaticFieldRef(classCacher),
+                            l), target);
+
+        ifStmt.setTarget(target);
+        return l;
+    }
+
     /** Finds a method which calls java.lang.Class.forName(String).
      * Searches for names class$, _class$, __class$, etc. 
      * If no such method is found, creates one and returns it.
@@ -54,7 +133,23 @@ public class SynchronizerManager
                       methodName+"(java.lang.String)>"))
                 continue;
 
-            Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+            Body b = null;
+            if (m.hasActiveBody())
+                b = m.getActiveBody();
+            else
+                b = m.getBodyFromMethodSource("jb");
+
+            Iterator unitsIt = b.getUnits().iterator();
+            
+            /* we now look for the following fragment: */
+            /*    r0 := @parameter0: java.lang.String;
+             *    $r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0);
+             *    .return $r2; 
+             *
+             * Ignore the catching code; this is enough. */
+
+            if (!unitsIt.hasNext())
+                continue;
 
             Stmt s = (Stmt)unitsIt.next();
             if (!(s instanceof IdentityStmt))
@@ -70,20 +165,151 @@ public class SynchronizerManager
             if (pr.getIndex() != 0)
                 continue;
 
+            if (!unitsIt.hasNext())
+                continue;
+
+            s = (Stmt)unitsIt.next();
+            if (!(s instanceof AssignStmt))
+                continue;
+
+            AssignStmt as = (AssignStmt)s;
+            Value retVal = as.getLeftOp(), ie = as.getRightOp();
+
+            if (!ie.toString().equals(".staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>("+lo+")"))
+                continue;
+           
+            if (!unitsIt.hasNext())
+                continue;
+
             s = (Stmt)unitsIt.next();
             if (!(s instanceof ReturnStmt))
                 continue;
 
             ReturnStmt rs = (ReturnStmt) s;
+            if (!rs.getOp().equivTo(retVal))
+                continue;
 
+            /* don't care about rest.  we have sufficient code. */
+            /* in particular, it certainly returns Class.forName(arg). */
+            return m;
         }
     }
 
-    /** Creates a method which calls java.lang.Class.forName(String). */
+    /** Creates a method which calls java.lang.Class.forName(String). 
+     *
+     * The method should look like the following:
+<pre>
+         .static java.lang.Class class$(java.lang.String)
+         {
+             java.lang.String r0, $r5;
+             java.lang.ClassNotFoundException r1, $r3;
+             java.lang.Class $r2;
+             java.lang.NoClassDefFoundError $r4;
+
+             r0 := @parameter0: java.lang.String;
+
+         label0:
+             $r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0);
+             .return $r2;
+
+         label1:
+             $r3 := @caughtexception;
+             r1 = $r3;
+             $r4 = .new java.lang.NoClassDefFoundError;
+             $r5 = .virtualinvoke r1.<java.lang.Throwable: java.lang.String getMessage()>();
+             .specialinvoke $r4.<java.lang.NoClassDefFoundError: .void <init>(java.lang.String)>($r5);
+             .throw $r4;
+
+             .catch java.lang.ClassNotFoundException .from label0 .to label1 .with label1;
+         }
+</pre>
+    */
     public static SootMethod createClassFetcherFor(SootClass c, 
                                                    String methodName)
     {
-        return null;
+        // Create the method
+            SootMethod method = new SootMethod(methodName, 
+                Arrays.asList(new Type[] {RefType.v("java.lang.String")}),
+                RefType.v("java.lang.Class"), Modifier.STATIC);
+        
+           c.addMethod(method);
+           
+        // Create the method body
+        {    
+            JimpleBody body = Jimple.v().newBody(method);
+            
+            method.setActiveBody(body);
+            Chain units = body.getUnits();
+            Local l_r0, l_r1, l_r2, l_r3, l_r4, l_r5;
+            
+            // Add some locals
+                l_r0 = Jimple.v().newLocal
+                    ("r0", RefType.v("java.lang.String"));
+                l_r1 = Jimple.v().newLocal
+                    ("r1", RefType.v("java.lang.ClassNotFoundException"));
+                l_r2 = Jimple.v().newLocal
+                    ("$r2", RefType.v("java.lang.Class"));
+                l_r3 = Jimple.v().newLocal
+                    ("$r3", RefType.v("java.lang.ClassNotFoundException"));
+                l_r4 = Jimple.v().newLocal
+                    ("$r4", RefType.v("java.lang.NoClassDefFoundError"));
+                l_r5 = Jimple.v().newLocal
+                    ("$r5", RefType.v("java.lang.String"));
+
+                body.getLocals().add(l_r0);
+                body.getLocals().add(l_r1);
+                body.getLocals().add(l_r2);
+                body.getLocals().add(l_r3);
+                body.getLocals().add(l_r4);
+                body.getLocals().add(l_r5);
+
+            // add "r0 := @parameter0: java.lang.String"
+                units.add(Jimple.v().newIdentityStmt(l_r0, 
+                      Jimple.v().newParameterRef
+                        (RefType.v("java.lang.String"), 0)));
+            
+            // add "$r2 = .staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>(r0); 
+                AssignStmt asi;
+                units.add(asi = Jimple.v().newAssignStmt(l_r2, 
+                    Jimple.v().newStaticInvokeExpr(
+                          Scene.v().getMethod(
+                               "<java.lang.Class: java.lang.Class"+
+                               " forName(java.lang.String)>"), 
+                          Arrays.asList(new Value[] {l_r0}))));
+
+            // insert "return $r2;"
+                units.add(Jimple.v().newReturnStmt(l_r2));
+
+            // add "r3 := @caughtexception;"
+                Stmt handlerStart;
+                units.add(handlerStart = Jimple.v().newIdentityStmt(l_r3, 
+                        Jimple.v().newCaughtExceptionRef()));
+
+            // add "r1 = r3;"
+                units.add(Jimple.v().newAssignStmt(l_r1, l_r3));
+                            
+            // add "$r4 = .new java.lang.NoClassDefFoundError;"
+                units.add(Jimple.v().newAssignStmt(l_r4,
+                    Jimple.v().newNewExpr(RefType.v
+                              ("java.lang.NoClassDefFoundError"))));
+
+            // add .specialinvoke $r4.<java.lang.NoClassDefFoundError: .void <init>(java.lang.String)>($r5);
+                units.add(Jimple.v().newInvokeStmt(
+                     Jimple.v().newSpecialInvokeExpr(l_r4,
+                          Scene.v().getMethod(
+                               "<java.lang.NoClassDefFoundError: .void"+
+                               " <init>(java.lang.String)>"), 
+                          Arrays.asList(new Value[] {l_r5}))));
+
+            // add .throw $r4;
+                units.add(Jimple.v().newThrowStmt(l_r4));
+
+            body.getTraps().add(Jimple.v().newTrap
+                  (Scene.v().getSootClass("java.lang.ClassNotFoundException"), 
+                    asi, handlerStart, handlerStart));
+        }
+
+        return method;
     }
 
     /** Wraps stmt around a monitor associated with local lock. 
