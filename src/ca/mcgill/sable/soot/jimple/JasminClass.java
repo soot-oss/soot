@@ -2228,8 +2228,12 @@ public class JasminClass
                     
                     if(s.equals("Infinity"))
                         s="+DoubleInfinity";
+                    
                     if(s.equals("-Infinity"))
                         s="-DoubleInfinity";
+                    
+                    if(s.equals("NaN"))
+                        s="+DoubleNaN";
                         
                     emit("ldc2_w " + s, 2);
                 }
@@ -2251,6 +2255,9 @@ public class JasminClass
                     if(s.equals("-InfinityF"))
                         s="-FloatInfinity";
                         
+                    if(s.equals("NaN"))
+                        s="+FloatNaN";
+                    
                     emit("ldc " + s, 1);
                 }
             }

@@ -688,7 +688,7 @@ public class Inliner {
 
        // if ( stmtsAtSite < 60  )
 
-       if ( ( stmtsAtSite < 20  ) && ( listBody.getStmtList().size() < ( 8*origSize ) ) )
+       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 8*origSize ) ) && ( listBody.getStmtList().size() < 10000 ) ) )
 
        // if ( stmtsAtSite < 10  )
        {
@@ -5681,7 +5681,7 @@ Iterator target, int fixupNumStmts ) {
 
   public void adjustSubMethods ( SootMethod m, int newmodifiers ) {
 
-   System.out.println("REACHED ADJUSTSUBMETHODS");
+    // System.out.println("REACHED ADJUSTSUBMETHODS");
 
    adjustingSubMethods = true;
 
