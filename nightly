@@ -204,7 +204,7 @@ function makeStable(){
 function makeNightly(){
     getReleasedPolyglot;
     getJasminAndSoot;
-    getCurrentDate;
+    #getCurrentDate;
     getJasminSootRevision;
     buildPolyglotBarebones;
     buildPolyglotClasses;
@@ -220,8 +220,8 @@ function makeNightly(){
 }
 
 
-makeStable
-#makeNightly
+#makeStable
+makeNightly
 
 #cd $HOME/autobuild &&
 
