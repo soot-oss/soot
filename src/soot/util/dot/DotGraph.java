@@ -110,13 +110,15 @@ public class DotGraph implements Renderable{
    * specified name.
    */
   public DotGraphNode drawNode(String name){
-    DotGraphNode node = (DotGraphNode)nodes.get(name);
-    if (node == null) {
-      node = new DotGraphNode(name);
-      nodes.put(name, node);
-      this.drawElements.add(node);
-    }
-    return node;
+      DotGraphNode node = getNode(name);
+
+      if(node == null)
+          throw new RuntimeException("Assertion failed.");
+
+      if(!this.drawElements.contains(node))
+          this.drawElements.add(node);
+
+      return node;
   }
 
   /**
@@ -126,7 +128,12 @@ public class DotGraph implements Renderable{
    * if there is no such node.
    */
   public DotGraphNode getNode(String name){
-    return (DotGraphNode)nodes.get(name);
+      DotGraphNode node = (DotGraphNode)nodes.get(name);
+      if (node == null) {
+          node = new DotGraphNode(name);
+          nodes.put(name, node);
+      }
+      return node;
   }
 
   /**
