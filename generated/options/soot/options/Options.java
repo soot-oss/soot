@@ -1098,6 +1098,7 @@ public class Options extends OptionsBase {
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
                 +padOpt( "types-for-sites (false)", "Represent objects by their actual type rather than allocation site" )
                 +padOpt( "merge-stringbuffer (true)", "Represent all StringBuffers as one object" )
+                +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
@@ -1176,6 +1177,7 @@ public class Options extends OptionsBase {
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
                 +padOpt( "types-for-sites (false)", "Represent objects by their actual type rather than allocation site" )
                 +padOpt( "merge-stringbuffer (true)", "Represent all StringBuffers as one object" )
+                +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
@@ -1690,6 +1692,7 @@ public class Options extends OptionsBase {
                 +"field-based "
                 +"types-for-sites "
                 +"merge-stringbuffer "
+                +"string-constants "
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
@@ -1722,6 +1725,7 @@ public class Options extends OptionsBase {
                 +"field-based "
                 +"types-for-sites "
                 +"merge-stringbuffer "
+                +"string-constants "
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
@@ -2098,6 +2102,7 @@ public class Options extends OptionsBase {
               +"field-based:false "
               +"types-for-sites:false "
               +"merge-stringbuffer:true "
+              +"string-constants:false "
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
@@ -2130,6 +2135,7 @@ public class Options extends OptionsBase {
               +"field-based:false "
               +"types-for-sites:false "
               +"merge-stringbuffer:true "
+              +"string-constants:false "
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "

@@ -512,6 +512,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkmerge_stringbuffer_widget(), "merge-stringbuffer");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkstring_constants_widget(), "string-constants");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimulate_natives_widget(), "simulate-natives");
 
 		
@@ -602,6 +605,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		addToEnableGroup("cg", "cg.bdd", getcgcg_bddmerge_stringbuffer_widget(), "merge-stringbuffer");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddstring_constants_widget(), "string-constants");
 
 		
 		addToEnableGroup("cg", "cg.bdd", getcgcg_bddsimulate_natives_widget(), "simulate-natives");
@@ -1899,6 +1905,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgcg_sparkmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgcg_sparkstring_constants_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkstring_constants_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_sparksimulate_natives_widget().getButton().getSelection();
 		
 		
@@ -2187,6 +2203,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_bddmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddstring_constants_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddstring_constants_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_bddsimulate_natives_widget().getButton().getSelection();
@@ -4861,6 +4887,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_sparkmerge_stringbuffer_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_sparkstring_constants_widget;
+	
+	private void setcgcg_sparkstring_constants_widget(BooleanOptionWidget widget) {
+		cgcg_sparkstring_constants_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkstring_constants_widget() {
+		return cgcg_sparkstring_constants_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_sparksimulate_natives_widget;
 	
 	private void setcgcg_sparksimulate_natives_widget(BooleanOptionWidget widget) {
@@ -5157,6 +5193,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_bddmerge_stringbuffer_widget() {
 		return cgcg_bddmerge_stringbuffer_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddstring_constants_widget;
+	
+	private void setcgcg_bddstring_constants_widget(BooleanOptionWidget widget) {
+		cgcg_bddstring_constants_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddstring_constants_widget() {
+		return cgcg_bddstring_constants_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_bddsimulate_natives_widget;
@@ -8174,6 +8220,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg.spark"+" "+"string-constants";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkstring_constants_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.spark","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
+		
+		
+		
 		defKey = "p"+" "+"cg.spark"+" "+"simulate-natives";
 		defKey = defKey.trim();
 
@@ -8949,6 +9011,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_bddmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.bdd","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"string-constants";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddstring_constants_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.bdd","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
 		
 		
 		

@@ -53,6 +53,9 @@ public class AbstractSparkOptions
     public boolean merge_stringbuffer() {
         throw new RuntimeException( "This variation of Spark doesn't have that option" );
     }
+    public boolean string_constants() {
+        throw new RuntimeException( "This variation of Spark doesn't have that option" );
+    }
     public boolean simulate_natives() {
         throw new RuntimeException( "This variation of Spark doesn't have that option" );
     }

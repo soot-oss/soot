@@ -1067,6 +1067,19 @@ allocation site.
         </long_desc>
 						</boolopt>
 						<boolopt>
+							<name>Propagate All String Constants</name>
+							<alias>string-constants</alias>
+							<default>false</default>
+                                                        <short_desc>Propagate all string constants, not just class names</short_desc>
+							<long_desc>
+When this option is set to false, Spark only distinguishes string constants that
+may be the name of a class loaded dynamically using reflection, and all other
+string constants are lumped together into a single string constant node.
+Setting this option to true causes all string constants to be propagated
+individually.
+        </long_desc>
+						</boolopt>
+						<boolopt>
 							<name>Simulate Natives</name>
 							<alias>simulate-natives</alias>
 							<default>true</default>
@@ -1618,6 +1631,19 @@ used as the elements of the points-to sets.
 When this option is set to true, all allocation sites creating
 <tt>java.lang.StringBuffer</tt> objects are grouped together as a single
 allocation site.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Propagate All String Constants</name>
+							<alias>string-constants</alias>
+							<default>false</default>
+                                                        <short_desc>Propagate all string constants, not just class names</short_desc>
+							<long_desc>
+When this option is set to false, Spark only distinguishes string constants that
+may be the name of a class loaded dynamically using reflection, and all other
+string constants are lumped together into a single string constant node.
+Setting this option to true causes all string constants to be propagated
+individually.
         </long_desc>
 						</boolopt>
 						<boolopt>

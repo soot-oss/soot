@@ -214,7 +214,8 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     final public void caseStringConstant( StringConstant sc ) {
         AllocNode stringConstant;
-        if( Scene.v().containsClass(sc.value) 
+        if( pag.getOpts().string_constants()
+        || Scene.v().containsClass(sc.value) 
         || ( sc.value.length() > 0 && sc.value.charAt(0) == '[' ) ) {
             stringConstant = pag.makeStringConstantNode( sc.value );
         } else {

@@ -157,6 +157,21 @@ public class SparkOptions extends AbstractSparkOptions
         return soot.PhaseOptions.getBoolean( options, "merge-stringbuffer" );
     }
     
+    /** Propagate All String Constants --
+    
+     * Propagate all string constants, not just class names.
+    
+     * When this option is set to false, Spark only distinguishes 
+     * string constants that may be the name of a class loaded 
+     * dynamically using reflection, and all other string constants are 
+     * lumped together into a single string constant node. Setting this 
+     * option to true causes all string constants to be propagated 
+     * individually. 
+     */
+    public boolean string_constants() {
+        return soot.PhaseOptions.getBoolean( options, "string-constants" );
+    }
+    
     /** Simulate Natives --
     
      * Simulate effects of native methods in standard class library.
