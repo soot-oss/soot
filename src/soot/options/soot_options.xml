@@ -10,6 +10,21 @@
 			<short_desc>Display Help and Exit</short_desc>
 			<long_desc>This option displays the textual help message and exits immediately without doing any further processing.</long_desc>
 		</boolopt>
+                <boolopt>
+                        <name>Phase List</name>
+                        <alias>pl</alias>
+                        <alias>phase-list</alias>
+                        <short_desc>Print list of available phases</short_desc>
+                        <long_desc>This option causes Soot to print a list of the available phases and sub-phases, and exit.</long_desc>
+                </boolopt>
+                <listopt>
+                        <name>Phase Help</name>
+                        <alias>ph</alias>
+                        <alias>phase-help</alias>
+                        <short_desc>Print help for specified phase</short_desc>
+                        <long_desc>This option causes Soot to print a help message about the phase or sub-phase specified by its argument, and exit.
+                        </long_desc>
+                </listopt>
 		<boolopt>
 			<name>Version</name>
 			<alias>version</alias>

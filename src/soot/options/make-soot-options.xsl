@@ -70,9 +70,10 @@ public class Options extends OptionsBase {
 
     public String getUsage() {
         return ""
-<xsl:apply-templates mode="usage" select="/options/section"/>
-        + getPhaseUsage();
+<xsl:apply-templates mode="usage" select="/options/section"/>;
     }
+
+<xsl:apply-templates mode="phaselist" select="/options/section/phaseopt"/>
 <xsl:apply-templates mode="declphaseopts" select="/options/section/phaseopt"/>
 <xsl:apply-templates mode="warnforeign" select="/options/section/phaseopt"/>
 }
@@ -434,6 +435,41 @@ public class <xsl:copy-of select="$filename"/>
   </xsl:template>
 
 <!--*************************************************************************-->
+<!--* PHASE LIST TEMPLATES **************************************************-->
+<!--*************************************************************************-->
+
+  <xsl:template mode="phaselist" match="phaseopt">
+    public String getPhaseList() {
+        return ""
+    <xsl:for-each select="phase|radio_phase"><!---->
+        +padOpt("<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")<!---->
+      <xsl:for-each select="sub_phase"><!---->
+        +padVal("<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")<!---->
+      </xsl:for-each>
+    </xsl:for-each>;
+    }
+
+    public String getPhaseHelp( String phaseName ) {
+    <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase">
+        if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) )
+            return "Phase "+phaseName+":\n"+
+                "<xsl:call-template name="wrap-string"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>"<!---->
+                +"\n\nRecognized options (with default values):\n"<!---->
+      <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><!---->
+                +padOpt( "<xsl:value-of select="alias"/><xsl:if test="default"> (<xsl:value-of select="default"/>)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )<!---->
+        <xsl:if test="value">
+                <xsl:for-each select="value">
+                +padVal( "<xsl:value-of select="alias"/><xsl:if test="default"> (default)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )
+                </xsl:for-each>
+        </xsl:if>
+      </xsl:for-each>;
+    </xsl:for-each>
+
+        return "Unrecognized phase: "+phaseName;
+    }
+  </xsl:template>
+
+<!--*************************************************************************-->
 <!--* DECLARED PHASE OPTION TEMPLATES ***************************************-->
 <!--*************************************************************************-->
 
@@ -494,36 +530,57 @@ public class <xsl:copy-of select="$filename"/>
 
 
 <!-- code to justify comments -->
-  <xsl:template name="wrap-comment">
+  <xsl:template name="wrap-string">
     <xsl:param name="text"/>
-    <xsl:call-template name="wrap-comment-guts">
-      <xsl:with-param name="text" select="translate($text,'&#10;',' ')"/>
-      <xsl:with-param name="width" select='0'/>
+    <xsl:call-template name="wrap">
+      <xsl:with-param name="text" select="$text"/>
+      <xsl:with-param name="newline"><xsl:text>\n</xsl:text></xsl:with-param>
     </xsl:call-template>
   </xsl:template>
 
-  <xsl:template name="wrap-comment-guts">
+  <xsl:template name="wrap-comment">
+    <xsl:param name="text"/>
+    <xsl:call-template name="wrap">
+      <xsl:with-param name="text" select="$text"/>
+      <xsl:with-param name="newline"><xsl:text>
+     * </xsl:text></xsl:with-param>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="wrap">
+    <xsl:param name="text"/>
+    <xsl:param name="newline"/>
+    <xsl:call-template name="wrap-guts">
+      <xsl:with-param name="text" select="translate($text,'&#10;',' ')"/>
+      <xsl:with-param name="width" select='0'/>
+      <xsl:with-param name="newline" select="$newline"/>
+    </xsl:call-template>
+  </xsl:template>
+
+  <xsl:template name="wrap-guts">
     <xsl:param name="text"/>
     <xsl:param name="width"/>
+    <xsl:param name="newline"/>
     <xsl:variable name="print" select="concat(substring-before(concat($text,' '),' '),' ')"/>
     <xsl:choose>
       <xsl:when test="string-length($print) > number($width)">
-      <xsl:text>
-     * </xsl:text>
-          <xsl:call-template name="wrap-comment-guts">
-            <xsl:with-param name="text" select="$text"/>
-            <xsl:with-param name="width" select='65'/>
-          </xsl:call-template>
-       </xsl:when>
-       <xsl:otherwise>
+        <xsl:copy-of select="$newline"/>
+        <xsl:call-template name="wrap-guts">
+          <xsl:with-param name="text" select="$text"/>
+          <xsl:with-param name="width" select='65'/>
+          <xsl:with-param name="newline" select="$newline"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
         <xsl:copy-of select="substring($print,1,string-length($print)-1)"/>
         <xsl:if test="contains($text,' ')">
           <xsl:if test="string-length($print) > 1">
             <xsl:text> </xsl:text>
           </xsl:if>
-          <xsl:call-template name="wrap-comment-guts">
+          <xsl:call-template name="wrap-guts">
             <xsl:with-param name="text" select="substring-after($text,' ')"/>
             <xsl:with-param name="width" select="number($width) - string-length($print)"/>
+            <xsl:with-param name="newline" select="$newline"/>
           </xsl:call-template>
         </xsl:if>
       </xsl:otherwise>

@@ -79,10 +79,6 @@ public class Main {
         G.v().out.println("  java soot.Main --help");
     }
 
-    private void printHelp() {
-        G.v().out.println(Options.v().getUsage());
-    }
-
     private void processCmdLine(String[] args) {
 
         if (!Options.v().parse(args))
@@ -102,7 +98,20 @@ public class Main {
         Options.v().warnNonexistentPhase();
 
         if (Options.v().help()) {
-            printHelp();
+            G.v().out.println(Options.v().getUsage());
+            throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+        }
+
+        if (Options.v().phase_list()) {
+            G.v().out.println(Options.v().getPhaseList());
+            throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
+        }
+
+        if(!Options.v().phase_help().isEmpty()) {
+            for( Iterator phaseIt = Options.v().phase_help().iterator(); phaseIt.hasNext(); ) {
+                final String phase = (String) phaseIt.next();
+                G.v().out.println(Options.v().getPhaseHelp(phase));
+            }
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
