@@ -292,7 +292,6 @@ public class GrimpBody extends AbstractBody implements StmtBody
                             (Unit)(oldToNew.get(oldTrap.getEndUnit())),
                             (Unit)(oldToNew.get(oldTrap.getHandlerUnit()))));
         }
-
         
         if(BuildGrimpBodyOption.aggressiveAggregating(buildOptions))
         {
@@ -307,8 +306,7 @@ public class GrimpBody extends AbstractBody implements StmtBody
             GrimpTransformations.foldConstructors(this);
             Aggregator.aggregateStackVariables(this);   
             Transformations.removeUnusedLocals(this);
-        }
-    
+        }    
     }
 
 

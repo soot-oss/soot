@@ -90,12 +90,12 @@ public class CallSite{
     possibleMethods = null;
   }
 
-
+/*
   protected void finalize() throws Throwable{
     System.out.println( "GC:  CallSite " + invokeExpr );
 
   }
-
+*/
 
 }
 

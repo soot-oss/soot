@@ -86,41 +86,41 @@ public class Inliner {
 
   private Jimple jimple = Jimple.v();
 
-  Integer priv = new Integer ( 0 );
+  private Integer priv = new Integer ( 0 );
 
-  Integer def = new Integer ( 1 );
+  private Integer def = new Integer ( 1 );
 
-  Integer prot = new Integer ( 2 );
+  private Integer prot = new Integer ( 2 );
 
-  Integer pub = new Integer ( 3 );
+  private Integer pub = new Integer ( 3 );
 
-  HashMap classesHT = new HashMap();
+  private HashMap classesHT = new HashMap();
 
-  HashMap methodsHT = new HashMap();
+  private HashMap methodsHT = new HashMap();
 
-  HashMap fieldsHT = new HashMap();
+  private HashMap fieldsHT = new HashMap();
 
-  HashMap resolverclassesHT;
+  private HashMap resolverclassesHT;
 
-  HashMap resolvermethodsHT;
+  private HashMap resolvermethodsHT;
 
-  HashMap resolverfieldsHT;
+  private HashMap resolverfieldsHT;
 
-  SootClassManager scm;
+  private SootClassManager scm;
 
-  ClassGraphBuilder clgb;
+  private ClassGraphBuilder clgb;
 
-  CallGraphBuilder cagb;
+  private CallGraphBuilder cagb;
 
-  Resolver resolver;
+  private Resolver resolver;
 
-  Set changedclasses = new HashSet();
+  private Set changedclasses = new HashSet();
 
-  Set incorrectlyjimplified;
+  private Set incorrectlyjimplified;
 
-  Type returnvartype;
+  private Type returnvartype;
 
-  Set removedmethods = new HashSet();
+  private Set removedmethods = new HashSet();
 
 
 
@@ -144,8 +144,6 @@ public class Inliner {
 
   public Inliner () {}
 
-  public void dummy() {}
-
 
 
 
@@ -158,12 +156,12 @@ public class Inliner {
 
 
 
-  HashMap methodsToMinDepth = new HashMap();
+  private HashMap methodsToMinDepth = new HashMap();
 
 
-  List classesToProcess = null;
+  private List classesToProcess = null;
 
-  boolean includeLibraries = false;
+  private boolean includeLibraries = false;
 
 
 
@@ -447,7 +445,6 @@ public class Inliner {
 
     MethodNode nextmn = ( MethodNode ) it1.next();
 
-
     int nextdepth = ( ( Integer ) methodsToMinDepth.get ( nextmn.getMethod().getSignature() ) ).intValue();
 
     if ( nextdepth < i ) 
@@ -479,7 +476,7 @@ public class Inliner {
 
 
 
-  public int numBenchmarkNodes = 0;
+  private int numBenchmarkNodes = 0;
 
 
 
@@ -556,24 +553,24 @@ public class Inliner {
 
 
 
-  public boolean unimportantmethod = false;
+  private boolean unimportantmethod = false;
 
-  public boolean syncflag = false;
+  private boolean syncflag = false;
 
-  public HashMap invokeExprsToMethods = new HashMap();
+  private HashMap invokeExprsToMethods = new HashMap();
 
-  public boolean looking = true;
+  private boolean looking = true;
  
-  MethodNode inliningInsideMethod;
+  private MethodNode inliningInsideMethod;
 
-  public ArrayList workQ;
-
-
+  private ArrayList workQ;
 
 
 
 
- int numpotentiallyinlined = 0, numactuallyseen = 0, allowedtochange = 0, 
+
+
+ private int numpotentiallyinlined = 0, numactuallyseen = 0, allowedtochange = 0, 
      initnum = 0, criteria0 = 0, criteria1 = 0, criteria2 = 0, criteria3 = 0, 
      criteria4 = 0, criteria5 = 0, criteria6 = 0, criteria7 = 0, criteria8 = 
      0, inlinemono = 0, actuallyinlined = 0;
@@ -614,7 +611,7 @@ public class Inliner {
 
     SootMethod meth = mn.getMethod();
 
-    //    System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature());
+    // System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature());
     if ( ( ! meth.getName().equals ( "<clinit>" ) ) && ( ! Modifier.isNative( meth.getModifiers() ) ) )
     {
 
@@ -623,7 +620,7 @@ public class Inliner {
 
       allowedtochange++;
 
-      //      System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature()+" "+( ( Integer ) methodsToMinDepth.get ( meth.getSignature() ) ) );
+      // System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature());
 
       try {
 
@@ -755,8 +752,6 @@ public class Inliner {
         });
 
         CallSite cs = getCorrectCallSite ( currInvokeExpr , mn );    
-
-        // System.out.println ( "TRYING 1 FOR "+currInvokeExpr );
 
         if ( ( cs.getMethods().size() == 1 ) && ( invokeflag || assignflag ) ) 
         {
@@ -905,6 +900,12 @@ public class Inliner {
 
            InlineMethod ( melistBody.getStmtList() , listBody.getStmtList(), stmtIter );
 
+           // System.out.println ("INLINED SUCCESS");
+             
+           // PrintWriter out = new PrintWriter(System.out, true);
+
+           // listBody.printTo ( out );
+
           }
 
          } // ADDED NOW
@@ -938,7 +939,7 @@ public class Inliner {
 
 
 
- public HashMap invokeExprsHT = new HashMap();
+ private HashMap invokeExprsHT = new HashMap();
 
 
 
@@ -955,15 +956,15 @@ public class Inliner {
 
 
 
- public ArrayList ImportantQ = new ArrayList();
+ private ArrayList ImportantQ = new ArrayList();
 
- public ArrayList ImportantCS = new ArrayList();
+ private ArrayList ImportantCS = new ArrayList();
 
- public ArrayList UnimportantQ = new ArrayList();
+ private ArrayList UnimportantQ = new ArrayList();
 
- public ArrayList ImprovedCallSites = new ArrayList(); 
+ private ArrayList ImprovedCallSites = new ArrayList(); 
 
- public HashMap origSizeHT = new HashMap();
+ private HashMap origSizeHT = new HashMap();
 
 
 
@@ -1294,7 +1295,7 @@ public class Inliner {
 
     SootClass changedclass = ( SootClass ) changedit.next();
 
-    System.out.println ( "Generating optimized class : "+ changedclass.getName() );
+    // System.out.println ( "Generating optimized class : "+ changedclass.getName() );
  
     // System.out.println ( "CHANGGED CLASS "+changedclass );
 
@@ -1316,7 +1317,13 @@ public class Inliner {
       JimpleBody changedjb = null;
 
       if ( changedmethod.hasActiveBody() )
-      changedjb = ( JimpleBody ) changedmethod.getActiveBody();  
+      {
+
+        // System.out.println ( changedmethod.getSignature()+"ACTIVE ? "+changedmethod.hasActiveBody() ); 
+
+       changedjb = ( JimpleBody ) changedmethod.getActiveBody();  
+
+      }
       else
       throw new java.lang.RuntimeException();
 
@@ -1326,7 +1333,10 @@ public class Inliner {
 
       gotoEliminate ( changedjb );
 
+
       Transformations.cleanupCode ( changedjb ); 
+
+
 
 //    Transformations.removeUnusedLocals ( changedjb ); 
 
@@ -1334,6 +1344,8 @@ public class Inliner {
 //    Transformations.removeUnusedLocals ( changedjb ); 
 
       changedmethod.setActiveBody ( new GrimpBody ( (JimpleBody) changedmethod.getActiveBody() ) );
+
+
 
       usefulmethods.add ( changedmethod );
      
@@ -1364,7 +1376,7 @@ public class Inliner {
 
    changedclass.write();
 
-   //   System.out.println ( "Generating optimized class : "+ changedclass.getName() );
+     System.out.println ( "Generating optimized class : "+ changedclass.getName() );
 
   } catch ( java.lang.RuntimeException e ) { System.out.println ("FAILURE"); e.printStackTrace ( System.out ); }
 
@@ -1373,6 +1385,7 @@ public class Inliner {
  */
 
  return changedclasses;
+
 
 }
 
@@ -1487,7 +1500,7 @@ public class Inliner {
 
 
 
-  int examined = 0;
+  private int examined = 0;
 
 
 
@@ -1836,9 +1849,9 @@ public class Inliner {
 
 
 
- Local syncaddress;
+ private Local syncaddress;
 
- Local syncthrow;
+ private Local syncthrow;
 
 
 
@@ -2866,7 +2879,7 @@ args );
 
      invokeExprsHT.put ( correctinvokeexpr, ( CallSite ) invokeExprsHT.get ( invokeexpr ) );
 
-     workQ.add ( correctinvokeexpr );
+      workQ.add ( correctinvokeexpr );
 
     }
 
@@ -3480,7 +3493,7 @@ invokeexpr ) );
 
 */
 
-    // System.out.println ( nextstmt.toString() ); 
+    //    System.out.println ( "ORIG STMT "+nextstmt.toString() ); 
 
     try {
 
@@ -3488,7 +3501,7 @@ invokeexpr ) );
 
      
     
-   // System.out.println ( "REPLACED BY : "+newstmt.toString()+" FROM "+inmethname+" INTO "+tamethname );
+     // System.out.println ( "REPLACED BY : "+newstmt.toString()+" FROM "+inmethname+" INTO "+tamethname );
  
 /*
      if ( nextstmt instanceof IdentityStmt )
@@ -3624,10 +3637,9 @@ invokeexpr ) );
 
    } 
 
-   // System.out.println ( "REACHED FIXUP 0" );
 
    FixupMethod ( targetmethod, fixupiterator, target, fixupnumstmts );
-
+   
    Iterator syncexitit = syncexits.iterator();
      
    Iterator syncexittargetit = syncexittargets.iterator();
@@ -4022,23 +4034,31 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
   public void FixupMethod ( StmtList targetMethod, Iterator fixupIterator,
 Iterator target, int fixupNumStmts ) {
 
-   // System.out.println ( "REACHED FIXUP METHOD" );
+    // System.out.println ( "REACHED FIXUP ");
 
    targetMethod.remove ( fixupNumStmts );      
 
    targetMethod.add ( fixupNumStmts, jimple.newNopStmt() );
+
+   int numiter = 0; 
+
 
    // ADDED DEC 18
    // COMMENTED OUT targetMethod.remove ( fixupNumStmts + 1 );
 
    fixupNumStmts++;
 
-   fixupIterator.next();
+   // try {
+
+//        fixupIterator.next();
+
+        // } catch ( java.lang.RuntimeException e ) { e.printStackTrace ( System.out ); }
 
    // numstmts--;
 
-   Stmt s = ( Stmt ) fixupIterator.next();
 
+//   Stmt s = ( Stmt ) fixupIterator.next();
+     Stmt s = ( Stmt ) targetMethod.get ( fixupNumStmts );
    
 
 // while ( !( s.equals ( returnstmt ) ) )
@@ -4083,7 +4103,7 @@ Iterator target, int fixupNumStmts ) {
 
       targetMethod.add ( fixupNumStmts + 1, syncgoto );
 
-      fixupIterator.next();
+//      fixupIterator.next();
 
       numstmts++;
        
@@ -4168,7 +4188,8 @@ Iterator target, int fixupNumStmts ) {
 
       targetMethod.add ( fixupNumStmts + 1, syncgoto );
 
-      fixupIterator.next();
+
+//      fixupIterator.next();
 
       numstmts++;
        
@@ -4185,9 +4206,11 @@ Iterator target, int fixupNumStmts ) {
     }
 
 
-     targetMethod.add ( fixupNumStmts+1 , jimple.newAssignStmt ( dummyreturn , r ) );
+    // System.out.println ( "FIXUP "+targetMethod.get(fixupNumStmts) );
 
-//     System.out.println ( "REACHED FIXUP METHOD 1" );
+    // System.out.println ( "FIXUP - 1 "+targetMethod.get(fixupNumStmts - 1) );
+
+     targetMethod.add ( fixupNumStmts+1 , jimple.newAssignStmt ( dummyreturn , r ) );
 
      fixupNumStmts++;
 
@@ -4202,25 +4225,32 @@ Iterator target, int fixupNumStmts ) {
      if ( syncflag )
      targetMethod.remove ( fixupNumStmts - 2 );
      else
-     targetMethod.remove ( fixupNumStmts - 1 );
+     {
+      targetMethod.remove ( fixupNumStmts - 1 );
+     } 
 
-//     System.out.println ( "REACHED FIXUP METHOD 2" );
+
+     // System.out.println ( "REACHED FIXUP METHOD 2" );
 
      // ADDED DEC 24 
-     fixupIterator.next();
+//     fixupIterator.next();
 
+     numiter++;
      numstmts++;
      
      // target.next();
 
     }     
 
-    s = ( Stmt ) fixupIterator.next();
+    // s = ( Stmt ) fixupIterator.next();
+
+    s = (Stmt) targetMethod.get ( fixupNumStmts+ /* numiter */ +1); 
 
     fixupNumStmts++;
 
    }
 
+   //     System.out.println ( "LAST "+s); 
    //   System.out.println ( " FIXED UP METHOD " );
 
 
@@ -4512,14 +4542,16 @@ Iterator target, int fixupNumStmts ) {
 
   StmtList stmtlist = jb.getStmtList();
 
-  Iterator stmtit = stmtlist.iterator();
+  // Iterator stmtit = stmtlist.iterator();
+
+  int size = stmtlist.size();
 
   int index = 0;
 
-  while ( stmtit.hasNext() )
+  while ( index < size )
   {
 
-   Stmt s = ( Stmt) stmtit.next();
+   Stmt s = ( Stmt) stmtlist.get(index);
 
    if ( s instanceof GotoStmt )
    {

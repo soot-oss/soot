@@ -2,6 +2,7 @@
 
 package ca.mcgill.sable.soot.jimple.toolkit.invoke;
 
+import java.io.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
@@ -178,6 +179,21 @@ public class Jimplifier{
 
         jimpleBody = ( JimpleBody ) basb;
         MethodNameToJimpleBody.put( methodName , jimpleBody );
+        /*
+        if ( method.getName().equals("toString") && method.getDeclaringClass().getName().equals("java.lang.Throwable") )
+        { 
+
+         Iterator stmtit = jimpleBody.getStmtList().iterator();
+
+         while ( stmtit.hasNext() )
+         System.out.println ( stmtit.next() );
+
+         PrintWriter out = new PrintWriter(System.out, true);
+
+         jimpleBody.printTo( out );
+
+        }
+        */
         jimplifiedNum++;
         boolean isJava = ClassGraphBuilder.isLibraryNode("java.",method.getDeclaringClass().getName());
         boolean isSun = ClassGraphBuilder.isLibraryNode("sun.",method.getDeclaringClass().getName());

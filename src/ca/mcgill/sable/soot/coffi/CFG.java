@@ -166,11 +166,13 @@ import java.util.*;
  */
 public class CFG {
 
+/*
     protected void finalize() throws Throwable 
     {
         if(ca.mcgill.sable.soot.Main.isVerbose)
             System.out.println("***CFG has been garbage collected for method: " + jmethod.getSignature() + "***");
     }
+  */
     
    /** Method for which this is a control flow graph.
     * @see method_info
