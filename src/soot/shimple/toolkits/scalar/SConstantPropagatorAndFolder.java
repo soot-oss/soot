@@ -33,28 +33,29 @@ import java.util.*;
  * <p> This analysis is already more powerful than the simplistic
  * soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder and
  * demonstrates some of the benefits of SSA -- particularly the fact
- * that Phi nodes represent natural merge points in the control
- * flow.  This implementation also shows how ShimpleLocalDefs and
- * SimpleLocalUses provide Use/Definition Definition/Use chains in
- * SSA.
+ * that Phi nodes represent natural merge points in the control flow.
+ * This implementation also shows how to access U/D and D/U chains in
+ * Shimple.
  *
  * <p> To use this analysis from the command line in Soot, try
  * something like: <code>soot.Main -f shimple -p sop on
  * &lt;classname&gt;</code> or <code>soot.Main -f jimple --via-shimple
- * -p sop on -p sb naive-phi-elimination &lt;classname&gt;</code>.
+ * -p sop on -p shimple naive-phi-elimination
+ * &lt;classname&gt;</code>.
  *
  * <p> To compare the results with the non-SSA propagator, you can use
  * (this disables all optimizations but constant propagation and
- * folding): <code>soot.Main -f jimple -p jop on -p jop.cp off -p
- * jop.cbf off -p jop.dae off -p jop.uce1 off -p jop.uce2 off -p
- * jop.ubf1 off -p jop.ubf2 off -p jop.ule off
- * &lt;classname&gt;</code>
+ * folding): <code>soot.Main -f jimple -p jop on -p jop.cpf on -p
+ * jop.cse off -p jop.bcm off -p off jop.lcm -p off jop.cp -p jop.cbf
+ * off -p jop.dae off -p jop.uce1 off -p jop.ubf1 off -p jop.uce2 off
+ * -p jop.ubf2 off -p jop.ubf2 off * &lt;classname&gt;</code>
  * 
  *  <p> The analysis is based on the efficient linear algorithm
  *  described in section 1.1, P5 of the Cytron paper with the
  *  exception that conditional control flow is not considered
  *  (conservatively estimated).  This is not necessarily the best
- *  implementation -- improvements and suggestions are welcome.
+ *  implementation (in fact, it's a somewhat brute force approach to
+ *  programming!) -- improvements and suggestions are welcome.
  *
  * @author Navindra Umanee
  * @see soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder
@@ -112,8 +113,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             }
         }
 
-        localDefs = new ShimpleLocalDefs(sBody);
-        localUses = new SimpleLocalUses(sBody, localDefs);
+        localDefs = sBody.getLocalDefs();
+        localUses = sBody.getLocalUses();
 
         // flow analysis
         {

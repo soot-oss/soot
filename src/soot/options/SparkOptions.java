@@ -109,7 +109,7 @@ public class SparkOptions
     
      * Emulate Rapid Type Analysis.
     
-     * Setting RTA to true sets typesForSites to true, and causes 
+     * Setting RTA to true sets types-for-sites to true, and causes 
      * Spark to use a single points-to set for all variables, giving 
      * Rapid Type Analysis. 
      */
@@ -160,8 +160,8 @@ public class SparkOptions
     
      * Simulate effects of native methods in standard class library.
     
-     * When this option is set to true, effects of native methods in 
-     * the standard Java class library are simulated. 
+     * When this option is set to true, the effects of native methods 
+     * in the standard Java class library are simulated. 
      */
     public boolean simulate_natives() {
         return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
@@ -382,7 +382,7 @@ public class SparkOptions
     public static final int propagator_none = 6;
     /** Propagator --
     
-     * Select algorihm to use for propagation.
+     * Select propagation algorithm.
     
      * This option tells Spark which propagation algorithm to use. 
      * 

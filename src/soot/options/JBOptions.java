@@ -46,7 +46,7 @@ public class JBOptions
     
      * .
     
-     * Use the original names for local variables when the source 
+     * Retain the original names for local variables when the source 
      * includes those names. Otherwise, Soot gives variables generic 
      * names based on their types. 
      */

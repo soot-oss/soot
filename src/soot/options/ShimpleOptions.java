@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Shimple Body Options. */
+/** Option parser for Shimple Phase Options. */
 public class ShimpleOptions
 {
     private Map options;
@@ -64,7 +64,7 @@ public class ShimpleOptions
      * Phi nodes are eliminated..
     
      * If set to true, some recommended optimizations such as 
-     * dead code elimination and aggregation are applied 
+     * dead code elimination and local packing are applied 
      * before Phi node elimination. This does not appear to be as 
      * effective as post-optimization, but the option is provided 
      * for future testing and investigation.
@@ -79,8 +79,8 @@ public class ShimpleOptions
      * nodes are eliminated..
     
      * Applies recommended optimizations such as dead code 
-     * elimination and aggregation after Phi node elimination. 
-     * This appears to be more effective than 
+     * elimination and local packing after Phi node 
+     * elimination. This appears to be more effective than 
      * pre-optimization.
      */
     public boolean post_optimize_phi_elimination() {

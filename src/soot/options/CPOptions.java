@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Copy Propogator. */
+/** Option parser for Copy Propagator. */
 public class CPOptions
 {
     private Map options;
@@ -56,7 +56,8 @@ public class CPOptions
     
      * .
     
-     * Copy propagation only occurs on the ``stack'' locals.
+     * Only propagate copies to locals that represent stack locations 
+     * in the original bytecode. 
      */
     public boolean only_stack_locals() {
         return soot.PhaseOptions.getBoolean( options, "only-stack-locals" );

@@ -93,53 +93,57 @@
 			<alias>f</alias>
 			<alias>output-format</alias>
 			<value>
-				<name>Jimp File</name>
-				<alias>j</alias>
-				<alias>jimp</alias>
-				<short_desc>Produce .jimp (abbreviated .jimple) Files</short_desc>
-                <long_desc>Produces .jimp files. These contain an abbreviated textual form for Soot's Jimple internal representation. Can contain ambiguous references.</long_desc>
-			</value>
-			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
-				<short_desc>Produce .jimple Files</short_desc>
+				<short_desc>Produces .jimple Files</short_desc>
                 <long_desc>Produces .jimple files that contain a textual representation for types in Soot's Jimple internal representation.</long_desc>
 			</value>
 			<value>
-				<name>Shimp File</name>
-				<alias>s</alias>
-				<alias>shimp</alias>
-				<short_desc>produce .shimp (abbreviated .shimple) files</short_desc>
-                                <long_desc>Produces .shimp files. These contain an abbreviated textual form for Soot's Shimple internal representation. Can contain ambiguous references.</long_desc>
+				<name>Jimp File</name>
+				<alias>j</alias>
+				<alias>jimp</alias>
+				<short_desc>Produces .jimp (abbreviated Jimple) Files</short_desc>
+        <long_desc>Produces .jimp files which contain an abbreviated
+        textual form for Soot's Jimple internal representation.  The
+        abbreviated form is easier to read than the non-abbreviated
+        counterpart, but may also contain ambiguities; for instance,
+        method signatures are not uniquely determined.</long_desc>
 			</value>
 			<value>
 				<name>Shimple File</name>
 				<alias>S</alias>
 				<alias>shimple</alias>
-				<short_desc>produce .shimple code</short_desc>
-        <long_desc>Produces .shimple files for Shimple, an SSA version
-        of Jimple.</long_desc>
+				<short_desc>Produces .shimple Files</short_desc>
+        <long_desc>Produces .shimple files containing the textual
+          representation of Soot's SSA Shimple internal
+          representation.  Shimple is very similar to Jimple except
+          that it supports Phi nodes.</long_desc>
+			</value>
+			<value>
+				<name>Shimp File</name>
+				<alias>s</alias>
+				<alias>shimp</alias>
+				<short_desc>Produce .shimp (abbreviated Shimple) Files</short_desc>
+        <long_desc>Produces .shimp files which contain an abbreviated
+        textual form for Soot's SSA Shimple internal representation.
+        The abbreviated form is easier to read than the
+        non-abbreviated counterpart, but may also contain ambiguities;
+        for instance, method signatures are not uniquely
+        determined.</long_desc>
 			</value>
 			<value>
 				<name>Baf File</name>
 				<alias>B</alias>
 				<alias>baf</alias>
-				<short_desc>Produce .baf Files</short_desc>
+				<short_desc>Produces .baf Files</short_desc>
                 <long_desc>Produces .baf files that contain a textual representation for types in Soot's Baf internal representation.</long_desc>
 			</value>
 			<value>
 				<name>Abbreviated Baf File</name>
 				<alias>b</alias>
-				<short_desc>Produce .b (abbreviated .baf) Files</short_desc>
+				<short_desc>Produce .b (abbreviated Baf) Files</short_desc>
                 <long_desc>Produces .b files. These contain an abbreviated textual form for Soot's Baf internal representation. It is easier to read than its non-abbreviated counterpart, but can also contain ambiguities; for instance, method signatures are not uniquely determined.</long_desc>
-			</value>
-			<value>
-				<name>Grimp File</name>
-				<alias>g</alias>
-				<alias>grimp</alias>
-				<short_desc>Produce .grimp (abbreviated .grimple) Files</short_desc>
-                <long_desc>Produces .grimp files. These contain an abbreviated textual form for Soot's Grimp internal representation. Can contain ambiguous references.</long_desc>
 			</value>
 			<value>
 				<name>Grimple File</name>
@@ -147,6 +151,18 @@
 				<alias>grimple</alias>
 				<short_desc>Produce .grimple Files</short_desc>
                 <long_desc>Produces .grimple files that contain a textual representation for types in Soot's Grimp internal representation.</long_desc>
+			</value>
+			<value>
+				<name>Grimp File</name>
+				<alias>g</alias>
+				<alias>grimp</alias>
+				<short_desc>Produces .grimp (abbreviated Grimple) Files</short_desc>
+        <long_desc>Produces .grimp files which contain an abbreviated
+        textual form for Soot's Grimple internal representation.
+        The abbreviated form is easier to read than the
+        non-abbreviated counterpart, but may also contain ambiguities;
+        for instance, method signatures are not uniquely
+        determined.</long_desc>
 			</value>
 			<value>
 				<name>Xml File</name>
@@ -1413,9 +1429,13 @@ This phase does not change the program.
 				</sub_phase>
 			</phase>
       <phase>
-        <name>Shimple Body Options</name>
-        <alias>sb</alias>
+        <name>Shimple Phase Options</name>
+        <alias>shimple</alias>
         <class>ShimpleOptions</class>
+        <short_desc>Miscellaneous Shimple Options.</short_desc>
+        <long_desc>These options affect the Shimple body behaviour --
+          currently the only available options affect Shimple during Phi 
+	  node elimination.</long_desc>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
@@ -1441,7 +1461,7 @@ This phase does not change the program.
           <short_desc>If enabled, some optimizations are applied
             before Phi nodes are eliminated.</short_desc>
           <long_desc>If set to true, some recommended optimizations
-          such as dead code elimination and aggregation are applied
+          such as dead code elimination and local packing are applied
           before Phi node elimination.  This does not appear to be as
           effective as post-optimization, but the option is provided
           for future testing and investigation.</long_desc>
@@ -1453,8 +1473,8 @@ This phase does not change the program.
           <short_desc>If enabled, some optimizations are applied after
           Phi nodes are eliminated.</short_desc>
           <long_desc>Applies recommended optimizations such as dead
-          code elimination and aggregation after Phi node elimination.
-          This appears to be more effective than
+          code elimination and local packing after Phi node
+          elimination.  This appears to be more effective than
           pre-optimization.</long_desc>
         </boolopt>
       </phase>
@@ -1464,7 +1484,12 @@ This phase does not change the program.
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>true</default>
+          <short_desc>When enabled, Shimple-based transformations are applied.</short_desc>
+          <long_desc>If the Shimple phase is enabled, Soot applies the
+          contents of the Shimple Transformation Pack to each method
+          under analysis.  This pack contains no transformations in an
+          unmodified version of Soot.</long_desc>
+          <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1476,8 +1501,11 @@ This phase does not change the program.
           <default>false</default>
           <short_desc>When enabled, Shimple-based optimizations are
           applied.</short_desc>
-          <long_desc>When enabled, available Shimple-based
-          optimizations are applied.</long_desc>
+          <long_desc>When enabled, Soot applies the Shimple
+          Optimization Pack to every <tt>ShimpleBody</tt> in
+          application classes.  This section lists the default
+          transformations in the Shimple Optimization
+          Pack.</long_desc>
 				</boolopt>
 				<sub_phase>
 					<name>Constant Propagator and Folder</name>
@@ -1485,19 +1513,19 @@ This phase does not change the program.
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
-                                                <default>true</default>
+            <default>true</default>
 						<short_desc>An example optimization written for
 						Shimple.</short_desc>
-						<long_desc>An example of constant propagation using
-						Shimple. Informal tests show that this analysis is already
-						more powerful than the simplistic
+						<long_desc>An example implementation of constant
+						propagation using Shimple. Informal tests show that this
+						analysis is already more powerful than the simplistic
 						ConstantPropagatorAndFolder optimization provided by
-						Jimple.  This optimization demonstrates some of the
-						benefits of SSA -- particularly the fact that Phi nodes
-						represent natural merge points in the control flow.  This
-						implementation also shows how ShimpleLocalDefs and
-						SimpleLocalUses provide Use/Definition Definition/Use
-						chains in SSA.</long_desc>
+						Jimple, particularly when control flow is involved.  This
+						optimization demonstrates some of the benefits of SSA --
+						particularly the fact that Phi nodes represent natural
+						merge points in the control flow.  This implementation
+						also demonstrates how to access U/D and D/U chains in
+						Shimple.</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
