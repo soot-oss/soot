@@ -107,9 +107,9 @@ public class NodeManager {
 	return (GlobalVarNode) valToGlobalVarNode.get( value );
     }
     /** Finds the LocalVarNode for the variable value, or returns null. */
-    public LocalVarNode findLocalVarNode( Object value ) {
+    public VarNode findLocalVarNode( Object value ) {
         if( PaddleScene.v().options().rta() ) {
-            value = null;
+            return findGlobalVarNode(value);
         } else if( value instanceof Local ) {
             return (LocalVarNode) localToNodeMap.get( (Local) value );
         }
@@ -134,11 +134,9 @@ public class NodeManager {
 	return ret;
     }
     /** Finds or creates the LocalVarNode for the variable value, of type type. */
-    public LocalVarNode makeLocalVarNode( Object value, Type type, SootMethod method ) {
+    public VarNode makeLocalVarNode( Object value, Type type, SootMethod method ) {
         if( PaddleScene.v().options().rta() ) {
-            value = null;
-            type = RefType.v("java.lang.Object");
-            method = null;
+            return makeGlobalVarNode(value, type);
         } else if( value instanceof Local ) {
             Local val = (Local) value;
             if( val.getNumber() == 0 ) Scene.v().getLocalNumberer().add(val);
