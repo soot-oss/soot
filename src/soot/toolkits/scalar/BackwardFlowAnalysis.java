@@ -134,14 +134,29 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                     beforeFlow = unitToBeforeFlow.get(s);
                     if (Options.v().interactive_mode()){
                         Object savedFlow = newInitialFlow();
-                        copy(afterFlow, savedFlow);
+                        if (filterUnitToAfterFlow != null){
+                            savedFlow = filterUnitToAfterFlow.get(s);
+                            copy(filterUnitToAfterFlow.get(s), savedFlow);
+                        }
+                        else {
+                            copy(afterFlow, savedFlow);
+                        }
                         FlowInfo fi = new FlowInfo(savedFlow, s, false);
+                        if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){
+                            InteractionHandler.v().handleStopAtNodeEvent(s);
+                        }
                         InteractionHandler.v().handleAfterAnalysisEvent(fi);
                     }
                     flowThrough(afterFlow, s, beforeFlow);
                     if (Options.v().interactive_mode()){
                         Object bSavedFlow = newInitialFlow();
-                        copy(beforeFlow, bSavedFlow);
+                        if (filterUnitToBeforeFlow != null){
+                            bSavedFlow = filterUnitToBeforeFlow.get(s);
+                            copy(filterUnitToBeforeFlow.get(s), bSavedFlow);
+                        }
+                        else {
+                            copy(beforeFlow, bSavedFlow);
+                        }
                         FlowInfo fi = new FlowInfo(bSavedFlow, s, true);
                         InteractionHandler.v().handleBeforeAnalysisEvent(fi);
                     }

@@ -243,6 +243,9 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                         Object savedFlow = newInitialFlow();
                         copy(beforeFlow, savedFlow);
                         FlowInfo fi = new FlowInfo(savedFlow, s, true);
+                        if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){
+                            InteractionHandler.v().handleStopAtNodeEvent(s);
+                        }
                         InteractionHandler.v().handleBeforeAnalysisEvent(fi);
                     }
                     flowThrough(beforeFlow, s, (List) afterFallFlow, (List) afterBranchFlow);

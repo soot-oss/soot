@@ -165,6 +165,7 @@ public class CFGNodeFigure extends Figure {
 			indicatorFigure = new Label(indicatorImage);
 		}
 		this.add(indicatorFigure,0);*/
+		
 		this.setBorder(new LineBorder());
 		//getData().setBackgroundColor(c);
 		/*if (indicatorImage == null){

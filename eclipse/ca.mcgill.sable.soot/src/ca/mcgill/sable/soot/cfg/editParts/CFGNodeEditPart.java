@@ -290,6 +290,16 @@ public class CFGNodeEditPart
 	}
 	
 	protected void highlightThis(){
+		if (((CFGNode)getModel()).getBefore() == null){
+			CFGFlowData data = new CFGFlowData();
+			CFGFlowInfo info = new CFGFlowInfo();
+			info.setText("");
+			CFGPartialFlowData pInfo = new CFGPartialFlowData();
+			pInfo.addChild(info);
+			data.addChild(pInfo);
+			
+			((CFGNode)getModel()).setBefore(data);
+		}
 		((CFGNodeFigure)getFigure()).addIndicator();
 	}
 	

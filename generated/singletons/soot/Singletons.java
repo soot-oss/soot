@@ -628,6 +628,12 @@ public class Singletons {
         return instance_soot_tagkit_InnerClassTagAggregator;
     }
 
+    private soot.jimple.toolkits.annotation.LineNumberAdder instance_soot_jimple_toolkits_annotation_LineNumberAdder;
+    public soot.jimple.toolkits.annotation.LineNumberAdder soot_jimple_toolkits_annotation_LineNumberAdder() {
+        if( instance_soot_jimple_toolkits_annotation_LineNumberAdder == null ) instance_soot_jimple_toolkits_annotation_LineNumberAdder = new soot.jimple.toolkits.annotation.LineNumberAdder( g );
+        return instance_soot_jimple_toolkits_annotation_LineNumberAdder;
+    }
+
     private soot.baf.toolkits.base.LoadStoreOptimizer instance_soot_baf_toolkits_base_LoadStoreOptimizer;
     public soot.baf.toolkits.base.LoadStoreOptimizer soot_baf_toolkits_base_LoadStoreOptimizer() {
         if( instance_soot_baf_toolkits_base_LoadStoreOptimizer == null ) instance_soot_baf_toolkits_base_LoadStoreOptimizer = new soot.baf.toolkits.base.LoadStoreOptimizer( g );
