@@ -178,8 +178,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
  * with an unknown value, Top.  Assumptions are corrected until they
  * stabilise.
  *
- * <p> For example if x is found to be not a constant (Bottom) in
- * <tt>if(q == 0) goto label1</tt> then both edges leaving the the
+ * <p> For example, if <tt>q</tt> is found to be not a constant (Bottom)
+ * in <tt>if(q == 0) goto label1</tt> then both edges leaving the the
  * statement are considered executable, if <tt>q</tt> is found to be a
  * constant then only one of the edges are executable.
  *
@@ -192,7 +192,6 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
  * assumed as follows:
  *
  * <ul>
- *
  *  <li>If <tt>x_1</tt> and <tt>x_2</tt> are the same assumed
  *  constant, <tt>x</tt> is assumed to be that constant.  If they are
  *  not the same constant, <tt>x</tt> is Bottom.</li>
@@ -219,8 +218,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     protected Map localToConstant;
 
     /**
-     * A map from conditional branches that are found to be
-     * unconditional branches.
+     * A map from conditional branches to their possible replacement 
+     * unit, an unconditional branch.
      **/
     protected Map stmtToReplacement;
 
@@ -239,7 +238,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     }
 
     /**
-     * Returns the list of fall-through IfStmts.
+     * Returns the list of fall through IfStmts.
      **/
     public List getDeadStmts()
     {
@@ -291,13 +290,17 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     }
 
     /**
-     * All nodes are assumed to be unreachable by default.
+     * All other nodes are assumed to be unreachable by default.
      **/
     protected Object newInitialFlow()
     {
         return emptySet.emptySet();
     }
 
+    /**
+     * Since we are interested in control flow from all branches,
+     * take the union.
+     **/
     protected void merge(Object in1, Object in2, Object out)
     {
         FlowSet fin1 = (FlowSet) in1;
@@ -307,6 +310,9 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         fin1.union(fin2, fout);
     }
 
+    /**
+     * Defer copy to FlowSet.
+     **/
     protected void copy(Object source, Object dest)
     {
         FlowSet fource = (FlowSet) source;
@@ -510,8 +516,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
     }
 
     /**
-     * Returns null or (Unit, Constant) pair if an assumption has
-     * changed due to the fact that u is reachable.
+     * Returns (Unit, Constant) pair if an assumption has  changed 
+     * due to the fact that u is reachable.  Else returns null.
      **/
     protected Pair processDefinitionStmt(Unit u)
     {

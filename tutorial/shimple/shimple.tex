@@ -253,7 +253,7 @@ nodes, you can tell it to eliminate them naively with `{\tt soot.Main
         return i0_1;
 \end{verbatim}
 
-Now you can see that all Shimple did was to replace the Phi nodes
+Now you can see that all Shimple did was to replace the Phi node
 with equivalent copy statements.
 
 \subsection{Applying Shimple Optimizations}
@@ -263,8 +263,8 @@ So, what good is Shimple?
 If you were paying attention, you may have noticed that despite the
 control flow and different assignments to {\tt x}, {\tt x} is in fact
 a constant 100 and is only ever used by a single return statement.  In
-other words, {\tt x} is a constant and all the computations are quite
-useless.  Obviously, this needs to be optimized away.
+other words, {\tt x} all the computations are quite useless.  Obviously, 
+this needs to be optimized away.
 
 Let's try to apply Jimple's Constant Propagator and Folder.  In fact,
 to be fair, let's try all the available  Jimple optimizations activated
@@ -291,12 +291,11 @@ with `{\tt soot.Main -f jimple -O ShimpleTest}':
 \end{verbatim}
 
 As you can see in this case, the Jimple optimizations failed to deduce
-that {\tt x} is a constant and that the assignments and computations
-are quite useless.  Jimple may be forgiven for this since reasoning
-about control flow is not always an easy task to automate.  Shimple,
-on the other hand, encodes control flow information explicitly in the
-Phi nodes thereby allowing optimizations to make use of the
-information.
+that {\tt x} is a constant.  Jimple may be forgiven for this since
+reasoning about control flow is not always an easy task to automate.
+Shimple, on the other hand, encodes control flow information
+explicitly in the Phi nodes thereby allowing optimizations to make use
+of the information.
 
 Currently, the only optimization we have implemented specifically for
 Shimple is a version of the powerful constant propagation algorithm
@@ -325,7 +324,7 @@ eliminated.
 To understand what is really going on, you can look at the output from
 `{\tt soot.Main -f shimple -p sop on}', `{\tt soot.Main -f shimple -p sop
 on -p sop.cpf prune-cfg:false}' and `{\tt soot.Main -f jimple
---via-shimple -p shimple phi-elim-opt:none -p sop on -p
+--via-shimple -p shimple phi-elim-opt:none -p sop on -p sop.cpf
 prune-cfg:false}' on this and other examples:
 
 \begin{verbatim}
@@ -355,7 +354,8 @@ public int test2()
 
 Thanks and credits go alphabetically to Laurie Hendren, John
 Jorgensen, Patrick Lam and Ondrej Lhotak for helping with the design
-of Shimple and general implementation issues.
+of Shimple and general implementation issues.  I am most grateful for
+their help and advice.
 
 \section{Future Work}
 

@@ -227,7 +227,7 @@ jimple -via-shimple -p shimple phi-elim-opt:none ShimpleTest':
 
         return i0_1;
 
-Now you can see that all Shimple did was to replace the Phi nodes
+Now you can see that all Shimple did was to replace the Phi node
 with equivalent copy statements.
 
 
@@ -239,8 +239,8 @@ So, what good is Shimple?
 If you were paying attention, you may have noticed that despite the
 control flow and different assignments to x, x is in fact a constant
 100 and is only ever used by a single return statement. In other
-words, x is a constant and all the computations are quite useless.
-Obviously, this needs to be optimized away.
+words, all the computations are quite useless.  Obviously, this needs 
+to be optimized away.
 
 Let's try to apply Jimple's Constant Propagator and Folder. In fact,
 to be fair, let's try all the available Jimple optimizations
@@ -264,12 +264,11 @@ activated with `soot.Main -f jimple -O ShimpleTest':
         return i0;
 
 As you can see in this case, the Jimple optimizations failed to
-deduce that x is a constant and that the assignments and computations
-are quite useless. Jimple may be forgiven for this since reasoning
-about control flow is not always an easy task to automate. Shimple,
-on the other hand, encodes control flow information explicitly in the
-Phi nodes thereby allowing optimizations to make use of the
-information.
+deduce that x is a constant. Jimple may be forgiven for this since 
+reasoning about control flow is not always an easy task to automate. 
+Shimple, on the other hand, encodes control flow information
+explicitly in the Phi nodes thereby allowing optimizations to make 
+use of the information.
 
 Currently, the only optimization we have implemented specifically for
 Shimple is a version of the powerful constant propagation algorithm
@@ -295,8 +294,8 @@ eliminated.
 To understand what is really going on, you can look at the output
 from `soot.Main -f shimple -p sop on', `soot.Main -f shimple -p sop
 on -p sop.cpf prune-cfg:false' and `soot.Main -f jimple -via-shimple
--p shimple phi-elim-opt:none -p sop on -p prune-cfg:false' on this
-and other examples:
+-p shimple phi-elim-opt:none -p sop on -p sop.cpf prune-cfg:false' 
+on this and other examples:
 
 public int test2()
 {
@@ -325,7 +324,8 @@ Thanks and Credits
 
 Thanks and credits go alphabetically to Laurie Hendren, John
 Jorgensen, Patrick Lam and Ondrej Lhotak for helping with the design
-of Shimple and general implementation issues.
+of Shimple and general implementation issues.  I am most grateful
+for their help and advice.
 
 
 Future Work
