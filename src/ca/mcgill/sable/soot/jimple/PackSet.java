@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 19, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Fixed the toString()
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -281,6 +284,13 @@ class ArrayPackSet extends PackSet
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = ~(this.bits[i]);
+            
+        // Clear the bits which are outside of this universe
+            if(bits.length >= 1)
+            {
+                int lastValidBitCount = map.getSize() % 32;
+                dest.bits[bits.length - 1] &= ~(0xFFFFFFFF << lastValidBitCount);  
+            }
     }
 
     public void remove(Object obj, FlowSet destFlow)
@@ -342,7 +352,6 @@ class ArrayPackSet extends PackSet
         StringBuffer buffer = new StringBuffer("{");
         Iterator it = toList().iterator();
 
-        buffer.append("{");
 
         if(it.hasNext())
         {
