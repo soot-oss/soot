@@ -50,11 +50,14 @@ import soot.toolkits.graph.*;
  */
 public abstract class AbstractInterproceduralAnalysis {
 
+    public static final boolean doCheck = false;
+
     protected CallGraph     cg;        // analysed call-graph
     protected DirectedGraph dg;        // filtered trimed call-graph
     protected Map data;                // SootMethod -> summary
     protected Map order;               // SootMethod -> topo order
     protected Map unanalysed;          // SootMethod -> summary
+
 
     /** Initial summary value for analysed funtions. */
     protected abstract Object newInitialSummary();
@@ -160,10 +163,11 @@ public abstract class AbstractInterproceduralAnalysis {
      */
     public AbstractInterproceduralAnalysis(CallGraph        cg,
 					   SootMethodFilter filter,
-					   Iterator         heads)
+					   Iterator         heads,
+					   boolean          verbose)
     {
 	this.cg         = cg;
-	this.dg         = new DirectedCallGraph(cg, filter, heads);
+	this.dg         = new DirectedCallGraph(cg, filter, heads, verbose);
 	this.data       = new HashMap();
 	this.unanalysed = new HashMap();
 
@@ -183,9 +187,10 @@ public abstract class AbstractInterproceduralAnalysis {
      * One node / subgraph for each analysed method that contains the 
      * method summary, and call-to edges.
      *
-     * BUG: this graph does not show filtered-out methods for which a 
-     * conservative summary was needed.
+     * <p> Note: this graph does not show filtered-out methods for which a 
+     * conservative summary was asked via summaryOfUnanalysedMethod.
      *
+     * @param name output filename
      * @see fillDotGraph
      */
     public void drawAsOneDot(String name)
@@ -238,14 +243,13 @@ public abstract class AbstractInterproceduralAnalysis {
      * Dump the each summary computed by the interprocedural analysis as
      * a seperate graph.
      *
-     * Unlike drawAsOneDot, this method outputs summaries for filtered-out
-     * methods whose summary was required...
-     *
-     * @param prefix is prepended before the method name.
+     * @param prefix is prepended before method name in output filename
+     * @param drawUnanalysed do you also want info for the unanalysed methods
+     * required by the analysis via summaryOfUnanalysedMethod ?
      *
      * @see fillDotGraph
      */
-    public void drawAsManyDot(String prefix)
+    public void drawAsManyDot(String prefix, boolean drawUnanalysed)
     {
 	Iterator it = data.keySet().iterator();
 	while (it.hasNext()) {
@@ -258,15 +262,18 @@ public abstract class AbstractInterproceduralAnalysis {
 	    dot.plot(f.getPath());
 	}
 	
-	it = unanalysed.keySet().iterator();
-	while (it.hasNext()) {
-	    SootMethod m = (SootMethod)it.next();
-	    DotGraph dot = new DotGraph(m.toString());
-	    dot.setGraphLabel(m.toString());
-	    fillDotGraph("X", unanalysed.get(m), dot);
-	    File f = new File (SourceLocator.v().getOutputDir(),
-			       prefix+m.toString()+DotGraph.DOT_EXTENSION);
-	    dot.plot(f.getPath());
+	if (drawUnanalysed) {
+	    it = unanalysed.keySet().iterator();
+	    while (it.hasNext()) {
+		SootMethod m = (SootMethod)it.next();
+		DotGraph dot = new DotGraph(m.toString());
+		dot.setGraphLabel(m.toString()+" (unanalysed)");
+		fillDotGraph("X", unanalysed.get(m), dot);
+		File f = new File (SourceLocator.v().getOutputDir(),
+				   prefix+m.toString()+"_u"+
+				   DotGraph.DOT_EXTENSION);
+		dot.plot(f.getPath());
+	    }
 	}
     }
 
@@ -294,7 +301,7 @@ public abstract class AbstractInterproceduralAnalysis {
      * just after super(cg).
      * Then , you will be able to call drawAsDot, for instance.
      */
-    protected void doAnalysis()
+    protected void doAnalysis(boolean verbose)
     {
 	// queue class
 	class IntComparator implements Comparator {
@@ -330,17 +337,42 @@ public abstract class AbstractInterproceduralAnalysis {
 	    Object newSummary = newInitialSummary();
 	    Object oldSummary = data.get(m);
 
-	      if (nb.containsKey(m)) nb.put(m,new Integer(((Integer)nb.get(m)).intValue()+1));
-	      else nb.put(m,new Integer(1));
-	      G.v().out.println(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");
+	    if (nb.containsKey(m)) nb.put(m,new Integer(((Integer)nb.get(m)).intValue()+1));
+	    else nb.put(m,new Integer(1));
+	    if (verbose)
+		G.v().out.println(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");
 
-	    analyseMethod(m, newSummary);
+	    analyseMethod(m,newSummary);
 	    if (!oldSummary.equals(newSummary)) {
 		// summary for m changed!
 		data.put(m,newSummary);
 		queue.addAll(dg.getPredsOf(m));
 	    }
 	}
+
+	// fixpoint verification
+	if (doCheck) {
+	    it = order.keySet().iterator();
+	    while (it.hasNext()) {
+		SootMethod m = (SootMethod)it.next();
+		Object newSummary = newInitialSummary();
+		Object oldSummary = data.get(m);
+		analyseMethod(m,newSummary);
+		if (!oldSummary.equals(newSummary)) {
+		    G.v().out.println("inter-procedural fixpoint not reached for method "+m.toString());
+		    DotGraph gm  = new DotGraph("false_fixpoint");
+		    DotGraph gmm = new	DotGraph("next_iterate");
+		    gm.setGraphLabel("false fixpoint: "+m.toString());
+		    gmm.setGraphLabel("fixpoint next iterate: "+m.toString());
+		    fillDotGraph("", oldSummary, gm);
+		    fillDotGraph("", newSummary, gmm);
+		    gm.plot(m.toString()+"_false_fixpoint.dot");
+		    gmm.plot(m.toString()+"_false_fixpoint_next.dot");
+		    throw new Error("AbstractInterproceduralAnalysis sanity check failed!!!");
+		}
+	    }
+	}
+
     }
 }
 

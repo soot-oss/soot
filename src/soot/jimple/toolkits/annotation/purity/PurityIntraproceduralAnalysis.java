@@ -105,6 +105,8 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	// => we could optimize the pattern matching a little bit
 
 	//G.v().out.println(" | |- exec "+stmt);
+
+
 	///////////
 	// Calls //
 	///////////
@@ -338,6 +340,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 
 	else throw new Error("Stmt match faliure "+stmt);
 
+	//o.g.updateStat();
     }
 
 
@@ -359,9 +362,12 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	    Unit stmt = (Unit)it.next();
 	    PurityGraphBox ref = (PurityGraphBox) getFlowAfter(stmt);
 	    DotGraph       sub = dot.createSubGraph("cluster"+id);
-	    sub.setGraphLabel("");
 	    DotGraphNode label = sub.drawNode("head"+id);
-	    label.setLabel(stmt.toString());
+	    String lbl = stmt.toString();
+	    if (lbl.startsWith("lookupswitch")) lbl = "lookupswitch...";
+	    if (lbl.startsWith("tableswitch"))  lbl = "tableswitch...";
+	    sub.setGraphLabel(" ");
+	    label.setLabel(lbl);
 	    label.setAttribute("fontsize","18");
 	    label.setShape("box");
 	    ref.g.fillDotGraph("X"+id,sub);
@@ -403,8 +409,10 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	    PurityGraphBox ref = (PurityGraphBox) getFlowAfter(stmt);
 	    r.union(ref.g);
 	}
-	r.simplifyLoad();
-	r.simplifyInside();
+	r.removeLocals();
+	//r.simplifyLoad();
+	//r.simplifyInside();
+	//r.updateStat();
 	((PurityGraphBox)dst).g = r;
     }
 

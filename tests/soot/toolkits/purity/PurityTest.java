@@ -74,7 +74,7 @@ class Point {
     }
 }
 
-public class Test {
+public class PurityTest {
 
     static float sumX(List list) {
 	float s = 0;
@@ -109,12 +109,12 @@ public class Test {
 	List list = new List();
 	list.add(new Point(1,2));
 	list.add(new Point(2,3));
-	//list.add(new Point(3,4));
-	//print(list);
-	//System.out.println("sum="+sumX(list));
+	list.add(new Point(3,4));
+	print(list);
+	System.out.println("sum="+sumX(list));
 	sumX(list);
-	//print(list);
+	print(list);
 	flipAll(list);
-	//print(list);
+	print(list);
     }
 }

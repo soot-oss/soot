@@ -1744,6 +1744,18 @@ public class AntTask extends MatchingTask {
             addArg("dump-intra:"+(arg?"true":"false"));
           }
       
+          public void setprint(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("print:"+(arg?"true":"false"));
+          }
+      
+          public void setverbose(boolean arg) {
+            addArg("-p");
+            addArg("wjap.purity");
+            addArg("verbose:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_shimple() {

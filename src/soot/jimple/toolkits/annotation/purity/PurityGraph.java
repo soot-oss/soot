@@ -19,6 +19,52 @@ import soot.jimple.*;
  * You can safely hash graphs. Equality comparison means isomorphism
  * (equal nodes, equal edges).
  */
+
+/**
+ * Modifications with respect to the article:
+ *
+ * - "unanalizable call" are treated by first constructing a conservative
+ * calee graph where all parameters escape globally and return points to
+ * the global node, and then applying the standard analysable call construction
+ *
+ * - unanalysable calls add a mutation on the global node; the "field" is named
+ * "outside-world" and models the mutation of any static field, but also
+ * side-effects by native methods, such as I/O, that make methods impure
+ * (see below).
+ *
+ * - Whenever a method mutates the global node, it is marked as "impure"
+ * (this can be due to a side-effect or static field mutation), even if the
+ * global node is not rechable from parameter nodes through outside edges.
+ * It seems to me it was a defect from the article ?
+ * TODO: see if we must take the global node  into account also when stating
+ * whether a parameter is read-only or safe.
+ *
+ * - "simplifyXXX" functions are experimiental... they may be unsound, and
+ * thus, not used now.
+ *
+ *
+ *
+ *
+ * NOTE:
+ * A lot of precision degradation comes from sequences of the form
+ *   this.field = y; z = this.field
+ * in initialisers: the second statment creates a load node because, as a
+ * parameter, this may have escaped and this.field may be externally modified
+ * in-between the two instructions. I am not sure this can actually happend
+ * in an initialiser... in a a function called directly and only by
+ * initialisers.
+ *
+ * For the moment, summary of unanalised methods are either pure, completely
+ * impure (modify args & side-effects) or partially impure (modify args but
+ * not the gloal node). We should really be able to specify more precisely
+ * which arguments are r/o or safe within this methods.
+ * E.g., the analysis java.lang.String: void getChars(int,int,char [],int)
+ * imprecisely finds that this is not safe (because of the internal call to
+ * System.arraycopy that, in general, may introduce aliases) => it pollutes 
+ * many things (e.g., StringBuffer append(String), and thus, exception 
+ * constructors, etc.)
+ *
+ */
 public class PurityGraph
 {
     public static final boolean doCheck = false;
@@ -103,10 +149,16 @@ public class PurityGraph
      *
      * <p>Note: this gives a valid summary for all native methods, including
      * Thread.start().
+     *
+     * @param withEffect add a mutated abstract field for the global node to
+     * account for side-effects in the environment (I/O, etc.).
      */
-    public static PurityGraph conservativeGraph(SootMethod m)
+    public static PurityGraph conservativeGraph(SootMethod m,
+						boolean withEffect)
     {
 	PurityGraph g = new PurityGraph();
+	PurityNode glob = new PurityGlobalNode();
+	g.nodes.add(glob);
 
 	// parameters & this escape globally
 	Iterator it = m.getParameterTypes().iterator();
@@ -122,15 +174,33 @@ public class PurityGraph
 	}
 
 	// return value escapes globally
-	if (m.getReturnType() instanceof RefLikeType) {
-	    PurityNode n = new PurityGlobalNode();
-	    g.ret.add(n);
-	    g.nodes.add(n);
-	}
-	
+	if (m.getReturnType() instanceof RefLikeType) g.ret.add(glob);
+
+	// add a side-effect on the environment
+	// added by [AM]
+	if (withEffect) g.mutated.put(glob,"outside-world");
+
 	if (doCheck) g.sanityCheck();
 	return g;
     }
+
+
+    /**
+     * Special constructor for "pure" methods returning a fresh object.
+     * (or simply pure if returns void or primitive).
+     */
+    public static PurityGraph freshGraph(SootMethod m)
+    {
+	PurityGraph g = new PurityGraph();
+	if (m.getReturnType() instanceof RefLikeType) {
+	    PurityNode n = new PurityMethodNode(m);
+	    g.ret.add(n);
+	    g.nodes.add(n);
+	}
+	if (doCheck) g.sanityCheck();
+	return g;
+    }
+
 
     /**
      * Replace the current graph with its union with arg.
@@ -248,6 +318,7 @@ public class PurityGraph
 		{G.v().out.println("mutated node not in nodes "+n);err=true;}
 	}
 	if (err) {
+	    dump();
 	    DotGraph dot = new DotGraph("sanityCheckFailure");
 	    fillDotGraph("chk",dot);
 	    dot.plot("sanityCheckFailure.dot");
@@ -310,6 +381,7 @@ public class PurityGraph
      */
     public boolean isPure()
     {
+	if (!mutated.get(new PurityGlobalNode()).isEmpty()) return false;
 	Set A = new HashSet();
 	Set B = new HashSet();
 	internalPassNodes(paramNodes, A, false);
@@ -331,6 +403,7 @@ public class PurityGraph
     */
     public boolean isPureConstructor()
     {
+	if (!mutated.get(new PurityGlobalNode()).isEmpty()) return false;
 	Set A = new HashSet();
 	Set B = new HashSet();
 	internalPassNodes(paramNodes, A, false);
@@ -520,7 +593,7 @@ public class PurityGraph
 	if (dst.isParam()) paramNodes.add(dst);
     }
 
-    /** Experimental simplification: remove redundant load nodes. */
+    /** Experimental simplification: merge redundant load nodes. */
     void simplifyLoad()
     {
 	Iterator it = (new LinkedList(nodes)).iterator();
@@ -564,6 +637,19 @@ public class PurityGraph
 	if (doCheck) sanityCheck();
     }
 
+    /** 
+     * Remove all local bindings (except ret).
+     * This info is indeed superfluous on summary purity graphs representing
+     * the effect of a method. This saves a little memory, but also,
+     * simplify summary graph drawings a lot!
+     *
+     * DO NOT USE DURING INTRA-PROCEDURAL ANALYSIS!
+     */
+    void removeLocals()
+    {
+	locals = new HashMultiMap();
+	backLocals = new HashMultiMap();
+    }
 
     /** Copy assignment left = right. */
     void assignParamToLocal(int right, Local left)
@@ -908,6 +994,7 @@ public class PurityGraph
 
 	if (doCheck) sanityCheck();
 
+
 	// simplification
 	/////////////////	
 		
@@ -916,7 +1003,9 @@ public class PurityGraph
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (!escaping.contains(n)) 
-		if (n.isLoad()) removeNode(n);
+		if (n.isLoad()) 
+		    // remove captured load nodes
+		    removeNode(n);
 		else {
 		    // ... and outside edges from captured nodes
 		    Iterator itt = (new LinkedList(edges.get(n))).iterator();
@@ -972,9 +1061,9 @@ public class PurityGraph
      * inside edges and nodes are solid black.
      * Globally escaping nodes have a red label.
      */
-    void fillDotGraph(final String prefix, final DotGraph out)
+    void fillDotGraph(String prefix, DotGraph out)
     {
-	final Map nodeId = new HashMap();
+        Map nodeId = new HashMap();
 	int id = 0;
 
 	// add nodes 
@@ -1043,7 +1132,6 @@ public class PurityGraph
 	}
 
 	// add mutated
-	/*
 	it = mutated.keySet().iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
@@ -1059,7 +1147,97 @@ public class PurityGraph
 		id++;
 	    }
 	}
-	*/
     }
 
+    /** Debugging... */
+
+    static private void dumpSet(String name, Set s) {
+	G.v().out.println(name);
+	Iterator it = s.iterator();
+	while (it.hasNext()) G.v().out.println("  "+it.next().toString());
+    }
+
+    static private void dumpMultiMap(String name, MultiMap s) {
+	G.v().out.println(name);
+	Iterator it = s.keySet().iterator();
+	while (it.hasNext()) {
+	    Object o = it.next();
+	    G.v().out.println("  "+o.toString());
+	    Iterator itt = s.get(o).iterator();
+	    while (itt.hasNext()) 
+		G.v().out.println("    "+itt.next().toString());
+	}
+    }
+
+    void dump()
+    {
+	dumpSet("nodes Set:",nodes);
+	dumpSet("paramNodes Set:",paramNodes);
+	dumpMultiMap("edges MultiMap:",edges);
+	dumpMultiMap("locals MultiMap:",locals);
+	dumpSet("ret Set:",ret);
+	dumpSet("globEscape Set:",globEscape);
+	dumpMultiMap("backEdges MultiMap:",backEdges);
+	dumpMultiMap("backLocals MultiMap:",backLocals);
+	dumpMultiMap("mutated MultiMap:",mutated);
+	G.v().out.println("");
+    }
+
+
+    /** Simple statistics on maximal graph sizes.*/
+
+    static private int maxInsideNodes = 0;
+    static private int maxLoadNodes = 0;
+    static private int maxInsideEdges = 0;
+    static private int maxOutsideEdges = 0;
+    static private int maxMutated = 0;
+
+    void dumpStat()
+    {
+	G.v().out.println("Stat: "+
+			  maxInsideNodes+" inNodes, "+
+			  maxLoadNodes+" loadNodes, "+
+			  maxInsideEdges+" inEdges, "+
+			  maxOutsideEdges+" outEdges, "+
+			  maxMutated+" mutated.");
+    }
+
+    void updateStat()
+    {
+	Iterator it = nodes.iterator();
+	int insideNodes = 0;
+	int loadNodes = 0;
+	while (it.hasNext()) {
+	    PurityNode n = (PurityNode)it.next();
+	    if (n.isInside()) insideNodes++;
+	    else if (n.isLoad()) loadNodes++;
+	}
+	int insideEdges = 0;
+	int outsideEdges = 0;
+	it = edges.keySet().iterator();
+	while (it.hasNext()) {
+	    Iterator itt = edges.get(it.next()).iterator();
+	    while (itt.hasNext()) {
+		PurityEdge e = (PurityEdge)itt.next();
+		if (e.isInside()) insideEdges++;
+		else outsideEdges++;
+	    }
+	}
+	int mutatedFields = 0;
+	it = mutated.keySet().iterator();
+	while (it.hasNext()) mutatedFields += mutated.get(it.next()).size();
+
+	boolean changed = false;
+	if (insideNodes>maxInsideNodes) 
+	    { maxInsideNodes=insideNodes; changed=true; }
+	if (loadNodes>maxLoadNodes)
+	    { maxLoadNodes=loadNodes; changed=true; }
+	if (insideEdges>maxInsideEdges)
+	    { maxInsideEdges=insideEdges; changed=true; }
+	if ( outsideEdges>maxOutsideEdges)
+	    { maxOutsideEdges=outsideEdges; changed=true; }
+	if (mutatedFields>maxMutated)
+	    { maxMutated=mutatedFields; changed=true; }
+	if (changed) dumpStat();
+    }
 }

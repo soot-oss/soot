@@ -46,19 +46,6 @@ public class PurityAnalysis extends SceneTransformer
 
 	CallGraph cg = Scene.v().getCallGraph();
 
-	// Filter: for now, keep everything
-	class Filter implements SootMethodFilter {
-	    public boolean want(SootMethod m) { 
-		String s = m.toString();
-		if (s.indexOf("<sun.")!=-1 ||
-		    s.indexOf("<com.")!=-1 ||
-		    s.indexOf("<org.")!=-1 ||
-		    s.indexOf("<javax.")!=-1)
-		    return false;
-		return true; 
-	    }
-	}
-
 	// Find main methods
 	List heads = new LinkedList();
 	Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -77,9 +64,6 @@ public class PurityAnalysis extends SceneTransformer
 
 	// launch the analysis
 	PurityInterproceduralAnalysis p =
-	    new PurityInterproceduralAnalysis(cg, 
-					      new Filter(), 
-					      heads.iterator(),
-					      opts); 
+	    new PurityInterproceduralAnalysis(cg, heads.iterator(), opts); 
     }
 }

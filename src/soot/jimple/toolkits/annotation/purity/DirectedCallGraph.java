@@ -47,7 +47,8 @@ public class DirectedCallGraph implements DirectedGraph {
      */
     public DirectedCallGraph(CallGraph        cg,
 			     SootMethodFilter filter,
-			     Iterator         heads)
+			     Iterator         heads,
+			     boolean          verbose)
     {
 	// filter heads by filter
 	List filteredHeads = new LinkedList();
@@ -63,25 +64,34 @@ public class DirectedCallGraph implements DirectedGraph {
 
 	// simple breadth-first visit
 	Set remain = new HashSet(filteredHeads);
+	int nb = 0;
+	if (verbose) G.v().out.println("[AM] dumping method dependencies");
 	while (!remain.isEmpty()) {
 	    Set newRemain = new HashSet();
 	    Iterator it = remain.iterator();
 	    while (it.hasNext()) {
 		SootMethod m = (SootMethod)it.next();
 		Iterator itt = cg.edgesOutOf(m);
+		if (verbose) 
+		    G.v().out.println(" |- "+m.toString()+" calls");
 		while (itt.hasNext())  {
 		    Edge edge = (Edge)itt.next();
 		    SootMethod mm = edge.tgt();
-		    if (mm.isConcrete() && filter.want(mm))
-			if (this.nodes.add(mm)) {
-			    newRemain.add(mm);
-			    s.put(m,mm);
-			    p.put(mm,m);
-			}
+		    boolean keep = mm.isConcrete() && filter.want(mm);
+		    if (verbose)
+			G.v().out.println(" |  |- "+mm.toString()+
+					  (keep?"":" (filtered out)"));
+		    if (keep) {
+			if (this.nodes.add(mm)) newRemain.add(mm);
+			s.put(m,mm);
+			p.put(mm,m);
+		    }
 		}
+		nb++;
 	    }
 	    remain = newRemain;
 	}
+	G.v().out.println("[AM] number of methods to be analysed: "+nb);
 
 	// MultiMap -> Map of List
 	this.succ   = new HashMap();

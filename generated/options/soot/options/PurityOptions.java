@@ -52,7 +52,7 @@ public class PurityOptions
         return soot.PhaseOptions.getBoolean( options, "dump-summaries" );
     }
     
-    /** Dump .dot call-graph annotated with method summaries --
+    /** Dump .dot call-graph annotated with method summaries (huge) --
     
      * .
     
@@ -62,7 +62,7 @@ public class PurityOptions
         return soot.PhaseOptions.getBoolean( options, "dump-cg" );
     }
     
-    /** Dump one .dot for each intra-procedural method analysis --
+    /** Dump one .dot for each intra-procedural method analysis (long) --
     
      * .
     
@@ -70,6 +70,26 @@ public class PurityOptions
      */
     public boolean dump_intra() {
         return soot.PhaseOptions.getBoolean( options, "dump-intra" );
+    }
+    
+    /** Print analysis results --
+    
+     * .
+    
+     * 
+     */
+    public boolean print() {
+        return soot.PhaseOptions.getBoolean( options, "print" );
+    }
+    
+    /** Be (quite) verbose --
+    
+     * .
+    
+     * 
+     */
+    public boolean verbose() {
+        return soot.PhaseOptions.getBoolean( options, "verbose" );
     }
     
 }

@@ -3210,14 +3210,24 @@ Alexandru Salcianu and Martin Rinard.
 		       <default>true</default>
 		    </boolopt>
    	   	    <boolopt>
-  		       <name>Dump .dot call-graph annotated with method summaries</name>
+  		       <name>Dump .dot call-graph annotated with method summaries (huge)</name>
 		       <alias>dump-cg</alias>
+		       <default>false</default>
+		    </boolopt>
+   	   	    <boolopt>
+  		       <name>Dump one .dot for each intra-procedural method analysis (long)</name>
+		       <alias>dump-intra</alias>
+		       <default>false</default>
+		    </boolopt>
+   	   	    <boolopt>
+  		       <name>Print analysis results</name>
+		       <alias>print</alias>
 		       <default>true</default>
 		    </boolopt>
    	   	    <boolopt>
-  		       <name>Dump one .dot for each intra-procedural method analysis</name>
-		       <alias>dump-intra</alias>
-		       <default>true</default>
+  		       <name>Be (quite) verbose</name>
+		       <alias>verbose</alias>
+		       <default>false</default>
 		    </boolopt>
                 </sub_phase>
 			</phase>
@@ -5075,13 +5085,16 @@ transformations.
 			<short_desc>Attach bytecode offset to IR</short_desc>
 			<long_desc>Maintain bytecode offset tables for class files throughout the transformations.</long_desc>
 		</boolopt>
-	</section>
+	</section>cg.spark
 	<section>
 		<name>Annotation Options</name>
 		<macroopt>
 			<name>Purity Annotation [AM]</name>
 			<alias>annot-purity</alias>
 			<expansion>-w</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>cg.spark</expansion>
+                        <expansion>enabled:true</expansion>
                         <expansion>-p</expansion>
                         <expansion>wjap.purity</expansion>
                         <expansion>enabled:true</expansion>

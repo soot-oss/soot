@@ -759,6 +759,9 @@ public class Options extends OptionsBase {
                 pushOptions( "enabled:true" );
                 pushOptions( "wjap.purity" );
                 pushOptions( "-p" );
+                pushOptions( "enabled:true" );
+                pushOptions( "cg.spark" );
+                pushOptions( "-p" );
                 pushOptions( "-w" );
             }
   
@@ -1754,8 +1757,10 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "dump-summaries (true)", "" )
-                +padOpt( "dump-cg (true)", "" )
-                +padOpt( "dump-intra (true)", "" );
+                +padOpt( "dump-cg (false)", "" )
+                +padOpt( "dump-intra (false)", "" )
+                +padOpt( "print (true)", "" )
+                +padOpt( "verbose (false)", "" );
     
         if( phaseName.equals( "shimple" ) )
             return "Phase "+phaseName+":\n"+
@@ -2413,7 +2418,9 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"dump-summaries "
                 +"dump-cg "
-                +"dump-intra ";
+                +"dump-intra "
+                +"print "
+                +"verbose ";
     
         if( phaseName.equals( "shimple" ) )
             return ""
@@ -2948,8 +2955,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false "
               +"dump-summaries:true "
-              +"dump-cg:true "
-              +"dump-intra:true ";
+              +"dump-cg:false "
+              +"dump-intra:false "
+              +"print:true "
+              +"verbose:false ";
     
         if( phaseName.equals( "shimple" ) )
             return ""

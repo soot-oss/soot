@@ -1048,6 +1048,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_intra_widget(), "dump-intra");
 		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityprint_widget(), "print");
+		
+		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityverbose_widget(), "verbose");
+		
 		getwjapwjap_purityenabled_widget().getButton().addSelectionListener(this);
 		
 		getwjapwjap_puritydump_summaries_widget().getButton().addSelectionListener(this);
@@ -1055,6 +1059,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getwjapwjap_puritydump_cg_widget().getButton().addSelectionListener(this);
 		
 		getwjapwjap_puritydump_intra_widget().getButton().addSelectionListener(this);
+		
+		getwjapwjap_purityprint_widget().getButton().addSelectionListener(this);
+		
+		getwjapwjap_purityverbose_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("shimple");
@@ -3522,7 +3530,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getwjapwjap_puritydump_cg_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -3532,11 +3540,31 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getwjapwjap_puritydump_intra_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_puritydump_intra_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_purityprint_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_purityprint_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getwjapwjap_purityverbose_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjapwjap_purityverbose_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getshimpleenabled_widget().getButton().getSelection();
@@ -7543,6 +7571,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getwjapwjap_puritydump_intra_widget() {
 		return wjapwjap_puritydump_intra_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_purityprint_widget;
+	
+	private void setwjapwjap_purityprint_widget(BooleanOptionWidget widget) {
+		wjapwjap_purityprint_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_purityprint_widget() {
+		return wjapwjap_purityprint_widget;
+	}	
+	
+	private BooleanOptionWidget wjapwjap_purityverbose_widget;
+	
+	private void setwjapwjap_purityverbose_widget(BooleanOptionWidget widget) {
+		wjapwjap_purityverbose_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjapwjap_purityverbose_widget() {
+		return wjapwjap_purityverbose_widget;
 	}	
 	
 	private BooleanOptionWidget shimpleenabled_widget;
@@ -13846,11 +13894,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
-		setwjapwjap_puritydump_cg_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump .dot call-graph annotated with method summaries", "p", "wjap.purity","dump-cg", "\n", defaultBool)));
+		setwjapwjap_puritydump_cg_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump .dot call-graph annotated with method summaries (huge)", "p", "wjap.purity","dump-cg", "\n", defaultBool)));
 		
 		
 		
@@ -13862,11 +13910,43 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_puritydump_intra_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot for each intra-procedural method analysis (long)", "p", "wjap.purity","dump-intra", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"print";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
 			defaultBool = true;
 			
 		}
 
-		setwjapwjap_puritydump_intra_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot for each intra-procedural method analysis", "p", "wjap.purity","dump-intra", "\n", defaultBool)));
+		setwjapwjap_purityprint_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Print analysis results", "p", "wjap.purity","print", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjap.purity"+" "+"verbose";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjapwjap_purityverbose_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Be (quite) verbose", "p", "wjap.purity","verbose", "\n", defaultBool)));
 		
 		
 
