@@ -678,7 +678,7 @@ public class Inliner {
 
        // if ( stmtsAtSite < 60  )
 
-       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 4*origSize ) ) && ( listBody.getStmtList().size() < 10000 ) ) )
+       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 8*origSize ) ) && ( listBody.getStmtList().size() < 10000 ) ) )
 
        // if ( stmtsAtSite < 10  )
        {
@@ -1012,7 +1012,7 @@ public class Inliner {
 
 
 
-
+ int averageSize = 0;
 
 
  public Set examineMethodsToFixCallSites ( Collection callgraph, Resolver res ) {
@@ -1091,6 +1091,8 @@ public class Inliner {
 
   // System.out.println ( "LOOPS SIZE = "+sortedbydepths.size() );
 
+ int totalSize = 0;
+
  Iterator finalit = sortedbydepths.iterator();
 
  while ( finalit.hasNext() )
@@ -1099,6 +1101,8 @@ public class Inliner {
   MethodNode nextmn = ( MethodNode ) finalit.next();
 
   int origSize = Jimplifier.getJimpleBody( nextmn.getMethod() ).getStmtList().size();
+
+  totalSize = totalSize + origSize;
 
   origSizeHT.put ( nextmn.getMethod().getSignature(), new Integer ( origSize ) );
 
@@ -1149,7 +1153,7 @@ public class Inliner {
  }
 
 
-
+ averageSize = totalSize / sortedbydepths.size(); 
 
  ArrayList ImportantMethods = new ArrayList();
 
@@ -1346,6 +1350,8 @@ public class Inliner {
   PrintWriter out = new PrintWriter(System.out, true);
 
   Iterator changedit = changedclasses.iterator();
+
+  // System.out.println ("AVERAGE SIZE = "+averageSize);
 
   /*
   //  System.out.println ( "+++++++++ NO. OF CHANGED CLASSES "+changedclasses.size() );
@@ -2153,7 +2159,7 @@ public class Inliner {
 
     }
 
-    if ( ( Jimplifier.getJimpleBody ( m ).getStmtList().size() > 60 )   /* && unimportantmethod */  )  
+    if ( ( Jimplifier.getJimpleBody ( m ).getStmtList().size() > averageSize )   /* && unimportantmethod */  )  
     {
 
      criteria2++;
