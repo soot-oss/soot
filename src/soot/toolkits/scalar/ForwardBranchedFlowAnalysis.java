@@ -64,7 +64,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
     }
 
     // Accumulate the previous afterFlow sets.
-    private void accumulateAfterFlowSets(Unit s, FlowSet[] flowRepositories, List previousAfterFlows)
+    private void accumulateAfterFlowSets(Unit s, Object[] flowRepositories, List previousAfterFlows)
     {
         int repCount = 0;
         
@@ -82,7 +82,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 	    
 	    while (it.hasNext())
             {
-                FlowSet fs = (FlowSet) (it.next());
+                Object fs = (Object) (it.next());
                 copy(fs, flowRepositories[repCount]);
                 previousAfterFlows.add(flowRepositories[repCount++]);
             }
@@ -131,7 +131,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                 {
                     ArrayList fl = new ArrayList();
 
-                    fl.add((FlowSet) (newInitialFlow()));
+                    fl.add((Object) (newInitialFlow()));
                     unitToAfterFallFlow.put(s, fl);
 
 		    List l = (List) (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
@@ -149,7 +149,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
 		    while (boxIt.hasNext())
                     {
-                        FlowSet f = (FlowSet) (newInitialFlow());
+                        Object f = (Object) (newInitialFlow());
 
                         l.add(f);
 			Unit ss = ((UnitBox) (boxIt.next())).getUnit();
@@ -186,12 +186,12 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         {
             List previousAfterFlows = new ArrayList(); 
 	    List afterFlows = new ArrayList();
-            FlowSet[] flowRepositories = new FlowSet[maxBranchSize+1];
+            Object[] flowRepositories = new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
-                flowRepositories[i] = (FlowSet) newInitialFlow();
-            FlowSet[] previousFlowRepositories = new FlowSet[maxBranchSize+1];
+                flowRepositories[i] = (Object) newInitialFlow();
+            Object[] previousFlowRepositories = new Object[maxBranchSize+1];
             for (int i = 0; i < maxBranchSize+1; i++)
-                previousFlowRepositories[i] = (FlowSet) newInitialFlow();
+                previousFlowRepositories[i] = (Object) newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
