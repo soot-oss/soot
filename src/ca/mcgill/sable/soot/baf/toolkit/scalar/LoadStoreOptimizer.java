@@ -89,16 +89,20 @@ public class LoadStoreOptimizer
     {
 	mBody = body;	
 	mUnits =  mBody.getUnits();
-	if(mUnits == null) {
+	if(mUnits.isEmpty()) {
 	    return;
 	}
+
+	
+
 	//delme[
 	System.out.println("Optimizing: " + body.getMethod().toString());
 	//delme] 
 	buildStoreListAndUnitToBlockMap();
 	createTrapBoundryPlaceholders(); 
 	optimizeLoadStores();	
-	//doInterBlockOptimizations(); 	
+	doInterBlockOptimizations(); 	
+	optimizeLoadStores();	
 	pushLoadsUp();
 	optimizeLoadStores();
 	propagateLoadsForward();
@@ -143,7 +147,10 @@ public class LoadStoreOptimizer
 	while(hasChanged) {
 	    hasChanged = false;
 		
-	    Iterator it = mUnits.iterator();
+	    List tempList = new ArrayList();
+	    tempList.addAll(mUnits);
+
+	    Iterator it = tempList.iterator();
 	    while(it.hasNext()) {
 		Unit currentInst = (Unit) it.next();
 		    
@@ -153,7 +160,7 @@ public class LoadStoreOptimizer
 			
 		    if(insertPoint != null) {
 			if(block.getTail() != currentInst) { // xxx deal with this better
-			    it.remove();
+			    block.remove(currentInst);
 			    block.insertBefore(currentInst, insertPoint);
 			    hasChanged = true;
 			} else {
@@ -535,6 +542,8 @@ public class LoadStoreOptimizer
 	
 	boolean hasChanged = true;
 
+	System.out.println("Stack height= " + stackHeight + "minattained: " + minStackHeightAttained + "from succ: " + block.getSuccOf(from));
+	System.out .println(mUnitToBlockMap.get(from));
 	while(hasChanged) {
 	    hasChanged = false;
 
@@ -982,11 +991,14 @@ public class LoadStoreOptimizer
 	while(hasChanged) {
 	    hasChanged = false;
 	    
-	    Iterator it = mUnits.iterator();	
+	    List tempList = new ArrayList();
+	    tempList.addAll(mUnits);
+	    Iterator it = tempList.iterator();	
 	    while(it.hasNext()) {
 		Unit u = (Unit) it.next();
 		
 		if(u instanceof LoadInst) {
+		    System.out.println("inter trying: " + u);
 		    Block loadBlock = (Block) mUnitToBlockMap.get(u);
 		    List defs = mLocalDefs.getDefsOfAt(((LoadInst)u).getLocal(), u);
 		    if(defs.size() ==  1) {
@@ -1026,36 +1038,42 @@ public class LoadStoreOptimizer
 				}
 			    }
 			}
-			/* else if(defs.size() == 2) {
+		    }
+		    else if(defs.size() == 2) {
 			
-			Unit def0 = (Unit) defs.get(0);
-			Unit def1 = (Unit) defs.get(1);
-			Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
-			Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
-			if(defBlock0 != loadBlock && defBlock1 != loadBlock) {
-			    if(assertPositiveStackHeightBetween(def0, defBlock0.getTail()) && assertPositiveStackHeightBetween(def1, defBlock1.getTail())) {
+			    Unit def0 = (Unit) defs.get(0);
+			    Unit def1 = (Unit) defs.get(1);
+			    Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
+			    Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
+			    if(defBlock0 != loadBlock && defBlock1 != loadBlock) {				
 				if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
 				    List def0Succs = defBlock0.getSuccessors();
 				    List def1Succs  = defBlock1.getSuccessors();
 				    if(def0Succs.size()==1 && def1Succs.size()==1) {
 					if(def0Succs.get(0) == loadBlock && def1Succs.get(0)== loadBlock) {					 
-					    defBlock0.remove(def0);			    
-					    defBlock1.remove(def1);
-					    loadBlock.insertBefore(def0, loadBlock.getHead());
-					    mUnitToBlockMap.put(def0, loadBlock);
-					    hasChanged = true;
-					    System.out.println("inter-block opti occurred " + def0);
-					}					
-				    }
-				}				
-			    }
-			}
-			} */
-		    }	
-		}
+					    if(loadBlock.getPreds().size() == 2) {
+						if( (def0 == defBlock0.getTail()|| 
+						     getDeltaStackHeightFromTo((Unit)defBlock0.getSuccOf(def0),(Unit) defBlock0.getTail())  == 0) && 
+						    (def1 == defBlock1.getTail() ||
+						     getDeltaStackHeightFromTo((Unit)defBlock1.getSuccOf(def1), (Unit) defBlock1.getTail()) == 0)) {
+						    defBlock0.remove(def0);			    
+						    defBlock1.remove(def1);
+						    loadBlock.insertBefore(def0, loadBlock.getHead());
+						    mUnitToBlockMap.put(def0, loadBlock);
+						    hasChanged = true;
+						    System.out.println("inter-block opti2 occurred " + def0);
+						} else { System.out.println("failed: inter1");}
+					    } else { System.out.println("failed: inter2");}
+					} else { System.out.println("failed: inter3");}					
+				    } else { System.out.println("failed: inter4");}
+				}	else { System.out.println("failed: inter5");}			
+			    } else { System.out.println("failed: inter6");}
+		    } 			
+		}	
 	    }
 	}
     }
+    
     
 
     
@@ -1215,7 +1233,10 @@ public class LoadStoreOptimizer
     protected void propagateLoadsForward()
     { 
 	buildStoreListAndUnitToBlockMap();
-	Iterator it = mUnits.iterator();
+	List tempList = new ArrayList();
+	tempList.addAll(mUnits);
+	Iterator it = tempList.iterator();
+	
 	while(it.hasNext()) {
 	    Unit u = (Unit) it.next();
 	    if( u instanceof LoadInst) {
