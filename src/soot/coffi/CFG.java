@@ -637,7 +637,7 @@ public class CFG {
 	}
 	
 	// do we need to copy a new exception table entry? 
-	// new exception table has new exception range, but use old handler
+	// new exception table has new exception range, and the new exception handler.
 	{
 	    Code_attribute ca = method.locate_code_attribute();
 
