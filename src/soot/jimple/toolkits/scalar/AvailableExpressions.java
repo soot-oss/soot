@@ -34,100 +34,17 @@ import soot.util.*;
 
 /** Provides an user-interface for the AvailableExpressionsAnalysis class.
  * Returns, for each statement, the list of expressions available before and after it. */
-public class AvailableExpressions
+public interface AvailableExpressions
 {
-    Map unitToPairsAfter;
-    Map unitToPairsBefore;
-
-    Map unitToEquivsAfter;
-    Map unitToEquivsBefore;
-
-    /** Wrapper for AvailableExpressionsAnalysis. */ 
-    public AvailableExpressions(Body b)
-    {
-        AvailableExpressionsAnalysis analysis = 
-            new AvailableExpressionsAnalysis(new CompleteUnitGraph(b));
-
-        // Build unitToExprs map
-        {
-            unitToPairsAfter = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToPairsBefore = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToEquivsAfter = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-            unitToEquivsBefore = new HashMap(b.getUnits().size() * 2 + 1, 0.7f);
-
-            Iterator unitIt = b.getUnits().iterator();
-
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
- 
-                FlowSet set = (FlowSet) analysis.getFlowBefore(s);
-
-                List pairsBefore = new ArrayList();
-                List pairsAfter = new ArrayList();
-
-                HashChain equivsBefore = new HashChain();
-                HashChain equivsAfter = new HashChain();
-
-                List setAsList = set.toList();
-                Iterator si = setAsList.iterator();
-                while (si.hasNext())
-                {
-                    Value v = (Value)si.next();
-                    Stmt containingStmt = (Stmt)analysis.rhsToContainingStmt.get(v);
-                    UnitValueBoxPair p = new UnitValueBoxPair
-                        (containingStmt, ((AssignStmt)containingStmt).getRightOpBox());
-                    EquivalentValue ev = new EquivalentValue(v);
-                    pairsBefore.add(p);
-                    if (!equivsBefore.contains(ev))
-                        equivsBefore.add(ev);
-                }
-
-                unitToPairsBefore.put(s, pairsBefore);
-                unitToEquivsBefore.put(s, equivsBefore);
-                
-                set = (FlowSet) analysis.getFlowAfter(s);
-                setAsList = set.toList();
-                si = setAsList.iterator();
-                while (si.hasNext())
-                {
-                    Value v = (Value)si.next();
-                    Stmt containingStmt = (Stmt)analysis.rhsToContainingStmt.get(v);
-                    UnitValueBoxPair p = new UnitValueBoxPair
-                        (containingStmt, ((AssignStmt)containingStmt).getRightOpBox());
-                    EquivalentValue ev = new EquivalentValue(v);
-                    pairsAfter.add(p);
-                    if (!equivsAfter.contains(ev))
-                        equivsAfter.add(ev);
-                }
-
-                unitToPairsAfter.put(s, pairsAfter);
-                unitToEquivsAfter.put(s, equivsAfter);
-            }  
-        }
-    }
-
     /** Returns a List containing the UnitValueBox pairs corresponding to expressions available before u. */
-    public List getAvailablePairsBefore(Unit u)
-    {
-        return (List)unitToPairsBefore.get(u);
-    }
+    public List getAvailablePairsBefore(Unit u);
 
     /** Returns a List containing the UnitValueBox pairs corresponding to expressions available after u. */
-    public List getAvailablePairsAfter(Unit u)
-    {
-        return (List)unitToPairsAfter.get(u);
-    }
+    public List getAvailablePairsAfter(Unit u);
 
     /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available before u. */
-    public Chain getAvailableEquivsBefore(Unit u)
-    {
-        return (Chain)unitToEquivsBefore.get(u);
-    }
+    public Chain getAvailableEquivsBefore(Unit u);
 
     /** Returns a Chain containing the EquivalentValue objects corresponding to expressions available after u. */
-    public Chain getAvailableEquivsAfter(Unit u)
-    {
-        return (Chain)unitToEquivsAfter.get(u);
-    }
+    public Chain getAvailableEquivsAfter(Unit u);
 }

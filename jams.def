@@ -8,3 +8,6 @@ classes/soot/baf/toolkits/base/peephole.dat: src/soot/baf/toolkits/base/peephole
 	cp src/soot/baf/toolkits/base/peephole.dat classes/soot/baf/toolkits/base/peephole.dat
 
 foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat classes/soot/baf/toolkits/base/peephole.dat
+
+JC=jikes -d classes
+
