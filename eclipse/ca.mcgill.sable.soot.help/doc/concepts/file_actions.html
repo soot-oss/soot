@@ -1,25 +1,15 @@
 <html>
 <body>
 <h3>File Actions</h3>
-<p>These actions are available when you right click on a .class file, a .java file or a .jimple file. If a .java file is selected the corresponding .class file will be procesed if one can be found.
+<p>These actions are available when you right click on a .class file, a .java file or a .jimple file. In the Package Explorer, if a .java file is selected then there are twice as many options available: each option detailed below with src-prec java, causing the source file to be processed or src-prec class causing the corresponding class file to be procesed if one can be found. In the Navigator view (where one can actually see the class files) the options are more straightforward.</p>
+
+<h5>Actions Available</h5>
 <ul>
-<li>Create Jimple - Selecting this menu item will create a Jimple file corresponding to the selected file. This is not currently available.</li>
-<li>Dava Decompile App - Selecting this menu item will cause Soot to decompile in application mode. It only works for files with a main method.</li>
-<li>Soot Options - There are about 182 options that one can use to in Soot (and the number grows frequently). Selecting this menu item will display a dialog box where you can choose from all the available options. This dialog makes no assumptions about how options interact with one another. For example: if you select an option that requires another option you must also select the other option, otherwise Soot will run and give you an error message.</li>
-	<ul>
-	<li>Run - Runs the selected configuration.</li>
-	<li>Close - Closes the dialog.</li>
-	</ul>		
-<li>Manage Soot Configurations - Selecting this menu item will display a dialog where you can create, edit, delete, etc your favorite Soot configurations. 
-	<ul>
-	<li>New - Creates a new configuration by first asking for a name (duplicate names are not permitted) and displaying the Soot Options dialog where you will have a "Save" instead of "Run" button available.</li>
-	<li>Edit - Displays the Soot Options dialog and allows you to make any changes (or none) and to Save them.</li>
-	<li>Delete - Deletes the selected configuration. Don't worry, a confirmation dialog pops up when this is selected in case you didn't really mean it.</li>
-	<li>Rename - This gives you the option to give a new name to the selected configuration.</li>
-	<li>Clone - This gives you the ability to make an exact copy of the options in the selected configuration but with a different name.</li>
-	<li>Run - Runs the selected configuration.</li>
-	<li>Close - Closes the dialog.</li>
-	</ul>
+<li><tt>Create Jimple</tt> - Selecting this menu item will create a Jimple file corresponding to the selected file.</li>
+<li><tt>Create Grimp</tt> - Selecting this menu item will create a Grimp file corresponding to the selected file.</li>
+<li><tt>Dava Decompile App</tt> - Selecting this menu item will cause Soot to decompile in application mode. It only works for files with a main method.</li>
+<li><tt>Run Soot ...</tt> - see <a href="options_dialog.html">Options Dialog</a>
+<li><tt>Manage Configurations ...</tt> - see <a href="config_dialog.html">Configurations Dialog</a>
 </ul>
 </body>
 </html>
