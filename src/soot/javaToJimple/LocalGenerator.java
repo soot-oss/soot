@@ -56,7 +56,7 @@ public class LocalGenerator{
 		}
         else if (type instanceof soot.CharType) {
             while (true){
-                name = nextIntName();
+                name = nextCharName();
                 if (!bodyContainsLocal(name)) break;
             }
             type = soot.CharType.v();
@@ -102,10 +102,16 @@ public class LocalGenerator{
     private int tempRefLikeType = -1;
     private int tempByte = -1;
     private int tempShort = -1;
+    private int tempChar = -1;
 	
     private String nextIntName(){
 		tempInt++;
 		return "$i"+tempInt;
+	}
+
+    private String nextCharName(){
+		tempChar++;
+		return "$c"+tempChar;
 	}
 
 	private String nextVoidName(){
@@ -150,9 +156,9 @@ public class LocalGenerator{
     
     // this should be used for generated locals only
     private soot.Local createLocal(String name, soot.Type sootType) {
-        if (sootType instanceof soot.CharType) {
+        /*if (sootType instanceof soot.CharType) {
             sootType = soot.IntType.v();
-        }
+        }*/
         soot.Local sootLocal = soot.jimple.Jimple.v().newLocal(name, sootType);
         //System.out.println("will try and create local: "+name+" of type: "+sootType);
         body.getLocals().add(sootLocal);

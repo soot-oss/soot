@@ -11,7 +11,8 @@ public class JimpleBodyBuilder {
     Stack endControlNoop = new Stack();     // for break
     Stack condControlNoop = new Stack();    // continue
     Stack monitorStack;     // for synchronized blocks
-    polyglot.ast.Try currentTryStmt = null;
+    Stack tryStack; // for try stmts in case of returns
+    Stack catchStack; // for catch stmts in case of returns
 
     HashMap labelBreakMap; // for break label --> nop to jump to
     HashMap labelContinueMap; // for continue label --> nop to jump to
@@ -1256,8 +1257,30 @@ public class JimpleBodyBuilder {
         }
         
         //handle finally blocks before return if inside try block
-        if (currentTryStmt != null){
-            createBlock(currentTryStmt.finallyBlock());
+        if (tryStack != null && !tryStack.isEmpty()){
+            polyglot.ast.Try currentTry = (polyglot.ast.Try)tryStack.pop();
+            createBlock(currentTry.finallyBlock());
+            tryStack.push(currentTry);
+            // if return stmt contains a return don't create the other return
+            ReturnStmtChecker rsc = new ReturnStmtChecker();
+            currentTry.finallyBlock().visit(rsc);
+            if (rsc.hasRet()){
+                return;
+            }
+            
+        }
+       
+        //handle finally blocks before return if inside catch block
+        if (catchStack != null && !catchStack.isEmpty()){
+            polyglot.ast.Try currentTry = (polyglot.ast.Try)catchStack.pop();
+            createBlock(currentTry.finallyBlock());
+            catchStack.push(currentTry);
+            // if return stmt contains a return don't create the other return
+            ReturnStmtChecker rsc = new ReturnStmtChecker();
+            currentTry.finallyBlock().visit(rsc);
+            if (rsc.hasRet()){
+                return;
+            }
         }
         
         // return
@@ -1315,8 +1338,13 @@ public class JimpleBodyBuilder {
         // this nop is for the fromStmt of try     
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(noop1);
-        
+       
+        if (tryStack == null){
+            tryStack = new Stack();
+        }
+        tryStack.push(tryStmt);
         createBlock(tryBlock);
+        tryStack.pop();
         
         // this nop is for the toStmt of try
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
@@ -1340,7 +1368,12 @@ public class JimpleBodyBuilder {
             // create catch ref
             createCatchFormal(catchBlock.formal());
           
+            if (catchStack == null){
+                catchStack = new Stack();
+            }
+            catchStack.push(tryStmt);
             createBlock(catchBlock.body());
+            catchStack.pop();
         
             soot.jimple.Stmt catchEndGoto = soot.jimple.Jimple.v().newGotoStmt(endNoop);
             body.getUnits().add(catchEndGoto);
@@ -1369,9 +1402,12 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(noop1);
         
-        currentTryStmt = tryStmt;
+        if (tryStack == null){
+            tryStack = new Stack();
+        }
+        tryStack.push(tryStmt);
         createBlock(tryBlock);
-        currentTryStmt = null;
+        tryStack.pop();
         
         // this nop is for the toStmt of try
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
@@ -1418,7 +1454,13 @@ public class JimpleBodyBuilder {
           
             soot.jimple.Stmt catchStmtsNoop = soot.jimple.Jimple.v().newNopStmt();
             body.getUnits().add(catchStmtsNoop);
+
+            if (catchStack == null){
+                catchStack = new Stack();
+            }
+            catchStack.push(tryStmt);
             createBlock(catchBlock.body());
+            catchStack.pop();
         
             // to finally
             soot.jimple.Stmt catchGotoFinallyNoop = soot.jimple.Jimple.v().newNopStmt();
@@ -2375,7 +2417,7 @@ public class JimpleBodyBuilder {
                 soot.jimple.CastExpr castExpr = soot.jimple.Jimple.v().newCastExpr(rVal, soot.IntType.v());
                 soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(intVal, castExpr);
                 body.getUnits().add(assignStmt);
-			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, intVal);
+			    rValue = soot.jimple.Jimple.v().newShrExpr(lVal, intVal);
             }
             else {
 			    rValue = soot.jimple.Jimple.v().newShrExpr(lVal, rVal);
@@ -2399,7 +2441,7 @@ public class JimpleBodyBuilder {
                 soot.jimple.CastExpr castExpr = soot.jimple.Jimple.v().newCastExpr(rVal, soot.IntType.v());
                 soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(intVal, castExpr);
                 body.getUnits().add(assignStmt);
-			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, intVal);
+			    rValue = soot.jimple.Jimple.v().newShlExpr(lVal, intVal);
             }
             else {
 			    rValue = soot.jimple.Jimple.v().newShlExpr(lVal, rVal);
@@ -3092,7 +3134,11 @@ public class JimpleBodyBuilder {
      * Cast Expression Creation
      */
     private soot.Value getCastLocal(polyglot.ast.Cast castExpr){
-  
+ 
+        //System.out.println("castExpr: "+castExpr);
+        //System.out.println("castExpr type: "+castExpr.type());
+        //System.out.println("castExpr.expr type: "+castExpr.expr().type());
+        
         // if its already the right type
         if (castExpr.expr().type().equals(castExpr.type())) {
             return createExpr(castExpr.expr());
@@ -3107,12 +3153,15 @@ public class JimpleBodyBuilder {
             val = createExpr(castExpr.expr());
         }
         soot.Type type = Util.getSootType(castExpr.type());
+        //System.out.println("soot type: "+type);
 
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
+        //System.out.println("cast: "+cast+" cast type: "+cast.getCastType());
         Util.addLnPosTags(cast.getOpBox(), castExpr.expr().position());
         soot.Local retLocal = lg.generateLocal(cast.getCastType());
         soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(retLocal, cast);
         body.getUnits().add(castAssign);
+        //System.out.println("castAssign: "+castAssign);
         Util.addLnPosTags(castAssign, castExpr.position());
 
         return retLocal;
