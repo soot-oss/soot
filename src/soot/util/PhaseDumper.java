@@ -206,13 +206,17 @@ public class PhaseDumper {
     // soot.Printer itself needs to create a BriefUnitGraph in order
     // to format the text for a method's instructions, so this flag is
     // a hack to avoid dumping graphs that we create in the course of
-    // dumping bodies or other graphs.
+    // dumping bodies or other graphs.  
+    //
+    // Note that this hack would not work if a PhaseDumper might be
+    // accessed by multiple threads.  So long as there is a single
+    // active PhaseDumper accessed through soot.G, it seems
+    // safe to assume it will be accessed by only a single thread.
     private boolean alreadyDumping = false;
-
-
+    
     private void dumpBody(Body b, String baseName) {
-	alreadyDumping = true;
 	try {
+	    alreadyDumping = true;
 	    java.io.PrintWriter out = openBodyFile(b, baseName);
 	    soot.Printer.v().setOption(Printer.USE_ABBREVIATIONS);
 	    soot.Printer.v().printTo(b, out);
@@ -222,8 +226,9 @@ public class PhaseDumper {
 	    // the user know.
 	    G.v().out.println("PhaseDumper.dumpBody() caught: " + e.toString());
 	    e.printStackTrace(G.v().out);
+	} finally {
+	    alreadyDumping = false;
 	}
-	alreadyDumping = false;
     }
 
     private void dumpAllBodies(String baseName, 
@@ -341,28 +346,27 @@ public class PhaseDumper {
 	if (alreadyDumping) {
 	    return;
 	}
-	alreadyDumping = true;
-	String phaseName = phaseStack.currentPhase();
-	if (cfgDumpingPhases.size() > 0 && 
-	    phaseName.equals(PhaseStack.EMPTY_STACK_PHASE_NAME)) {
-	    printCurrentStackTrace();
-	}
-	if (isCFGDumpingPhase(phaseName)) { 
-	    try {
-		String outputFile = nextGraphFileName(b, phaseName + "-" + 
-						      getClassIdent(g) + "-");
-		DotGraph dotGraph = new CFGToDotGraph().drawCFG(g, b);
-		dotGraph.plot(outputFile);
+	try {
+	    alreadyDumping = true;
+	    String phaseName = phaseStack.currentPhase();
+	    if (isCFGDumpingPhase(phaseName)) { 
+		try {
+		    String outputFile = nextGraphFileName(b, phaseName + "-" + 
+							  getClassIdent(g) + "-");
+		    DotGraph dotGraph = new CFGToDotGraph().drawCFG(g, b);
+		    dotGraph.plot(outputFile);
 
-	    } catch (java.io.IOException e) {
-		// Don't abort execution because of an I/O error, but 
-		// report the error.
-		G.v().out.println("PhaseDumper.dumpBody() caught: " + 
-				  e.toString());
-		e.printStackTrace(G.v().out);
+		} catch (java.io.IOException e) {
+		    // Don't abort execution because of an I/O error, but 
+		    // report the error.
+		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+				      e.toString());
+		    e.printStackTrace(G.v().out);
+		}
 	    }
+	} finally {
+	    alreadyDumping = false;
 	}
-	alreadyDumping = false;
     }
 
 
@@ -376,30 +380,30 @@ public class PhaseDumper {
 	if (alreadyDumping) {
 	    return;
 	}
-	alreadyDumping = true;
-	String phaseName = phaseStack.currentPhase();
-	if (phaseName.equals(PhaseStack.EMPTY_STACK_PHASE_NAME)) {
-	    printCurrentStackTrace();
-	}
-	if (isCFGDumpingPhase(phaseName)) {
-	    try {
-		String outputFile = nextGraphFileName(g.getBody(), 
-						      phaseName + "-" + 
-						      getClassIdent(g) + "-");
-		CFGToDotGraph drawer = new CFGToDotGraph();
-		drawer.setShowExceptions(Options.v().show_exception_dests());
-		DotGraph dotGraph = drawer.drawCFG(g);
-		dotGraph.plot(outputFile);
+	try {
+	    alreadyDumping = true;
+	    String phaseName = phaseStack.currentPhase();
+	    if (isCFGDumpingPhase(phaseName)) {
+		try {
+		    String outputFile = nextGraphFileName(g.getBody(), 
+							  phaseName + "-" + 
+							  getClassIdent(g) + "-");
+		    CFGToDotGraph drawer = new CFGToDotGraph();
+		    drawer.setShowExceptions(Options.v().show_exception_dests());
+		    DotGraph dotGraph = drawer.drawCFG(g);
+		    dotGraph.plot(outputFile);
 
-	    } catch (java.io.IOException e) {
-		// Don't abort execution because of an I/O error, but 
-		// report the error.
-		G.v().out.println("PhaseDumper.dumpBody() caught: " + 
-				  e.toString());
-		e.printStackTrace(G.v().out);
+		} catch (java.io.IOException e) {
+		    // Don't abort execution because of an I/O error, but 
+		    // report the error.
+		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+				      e.toString());
+		    e.printStackTrace(G.v().out);
+		}
 	    }
+	} finally {
+	    alreadyDumping = false;
 	}
-	alreadyDumping = false;
     }
 
     /**
