@@ -602,6 +602,27 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
     }
     
     /**
+        Returns the signature of this method in the format in which it appears
+        in bytecode (eg. [Ljava/lang/Object instead of java.lang.Object[]).
+     */
+    public String getBytecodeSignature()
+    {
+        String name = getName();
+        List params =  getParameterTypes();
+        Type returnType = getReturnType();
+        
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("<" + Scene.v().quotedNameOf(getDeclaringClass().getName()) + ": ");
+        buffer.append(name);
+        buffer.append(soot.jimple.JasminClass.jasminDescriptorOf(this));
+        buffer.append(">");
+        
+        // Again, memory-usage tweak depending on JDK implementation due
+        // to Michael Pan.
+        return new String(buffer.toString());
+    }
+
+    /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.
      */
     public String getSignature()

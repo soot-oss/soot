@@ -56,12 +56,12 @@ public class JasminClass
     Map groupToColorCount;
     Map localToColor; 
             
-    String slashify(String s)
+    static String slashify(String s)
     {
         return s.replace('.', '/');
     }
 
-    int sizeOfType(Type t)
+    static int sizeOfType(Type t)
     {
         if(t instanceof DoubleType || t instanceof LongType)
             return 2;
@@ -71,7 +71,7 @@ public class JasminClass
             return 1;
     }
 
-    int argCountOf(SootMethod m)
+    static int argCountOf(SootMethod m)
     {
         int argCount = 0;
         Iterator typeIt = m.getParameterTypes().iterator();
@@ -86,7 +86,7 @@ public class JasminClass
         return argCount;
     }
 
-    String jasminDescriptorOf(Type type)
+    static String jasminDescriptorOf(Type type)
     {
         TypeSwitch sw;
 
@@ -162,7 +162,7 @@ public class JasminClass
 
     }
 
-    String jasminDescriptorOf(SootMethod m)
+    public static String jasminDescriptorOf(SootMethod m)
     {
         StringBuffer buffer = new StringBuffer();
 
