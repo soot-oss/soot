@@ -1,5 +1,10 @@
 #!/bin/sh
-for i in `cd tests && ls`; do
+if [ $# -eq 0 ]; then
+    TESTS=`cd tests && ls`;
+else
+    TESTS=$*;
+fi
+for i in $TESTS; do
     for j in `cd tests/$i/runs && ls`; do
         echo -n -e "Running: $i.$j\r"
         (
