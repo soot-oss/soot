@@ -53,6 +53,8 @@ public abstract class AbstractAttributesComputer {
 	 */
 	protected abstract ArrayList computeNames(AbstractTextEditor editor);
 	
+	protected abstract ArrayList computeNames(IFile file);
+	
 	/**
 	 * initialize rec and proj
 	 */
@@ -61,14 +63,14 @@ public abstract class AbstractAttributesComputer {
 	/**
 	 * compute attributes
 	 */
-	protected SootAttributesHandler computeAttributes(AbstractTextEditor editor, ArrayList files) {
-		SootAttributesHandler sah = new SootAttributesHandler();	
+	protected SootAttributesHandler computeAttributes(ArrayList files, SootAttributesHandler sah) {
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		Iterator it = files.iterator();
 		while (it.hasNext()){
 			String fileName = ((IPath)((IFile)it.next()).getLocation()).toOSString();
 			AttributeDomProcessor adp = safr.readFile(fileName);
-			if (adp != null) {	
+			if (adp != null) {
+				System.out.println("updating attrs in sah");	
 				sah.setAttrList(adp.getAttributes());
 				sah.setKeyList(adp.getKeys());
 			}
@@ -78,11 +80,20 @@ public abstract class AbstractAttributesComputer {
 		return sah;
 	}
 	
+	public SootAttributesHandler getAttributesHandler(IFile file){
+		ArrayList files = computeFiles(computeNames(file));
+		return getHandler(files);
+	}
+	
 	public SootAttributesHandler getAttributesHandler(AbstractTextEditor editor){
 		// init
 		init(editor);
 		// computeFileNames
 		ArrayList files = computeFiles(computeNames(editor));
+		return getHandler(files);
+	}
+	
+	private SootAttributesHandler getHandler(ArrayList files){
 		// check if any have changed since creation of attributes in handler
 		if (!(getRec() instanceof IFile)) return null;
 		
@@ -91,30 +102,35 @@ public abstract class AbstractAttributesComputer {
 		
 			long valuesSetTime = handler.getValuesSetTime();
 			//System.out.println("value set time: "+valuesSetTime);
-			boolean update = false;
+			boolean update = handler.isUpdate();
 		
 			Iterator it = files.iterator();
 			while (it.hasNext()){
 				IFile next = (IFile)it.next();
 				//System.out.println(next.getModificationStamp());
 				File realFile = new File(next.getLocation().toOSString());
-				//System.out.println(realFile.lastModified());
+				System.out.println("val set mod time: "+valuesSetTime);
+				System.out.println("real set time: "+realFile.lastModified());
 				
 				if (realFile.lastModified() > valuesSetTime){
 					update = true;
 				}
 			}
+			handler.setUpdate(update);
 			// if no return handler
 			if (!update){
-				handler.setUpdate(false);
+				//handler.setUpdate(false);
+				System.out.println("attr already set");
 				return handler;
+				//return computeAttributes(files, handler);
 			}
 			else {
-				return computeAttributes(editor, files);
+				System.out.println("compute attr");
+				return computeAttributes(files, handler);
 			}
 		}
 		else {
-			return computeAttributes(editor, files);
+			return computeAttributes(files, new SootAttributesHandler());
 		}
 	}
 	/**

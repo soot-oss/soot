@@ -144,30 +144,33 @@ public class ArrayBoundsChecker extends BodyTransformer
                
                         if (addColorTags){
                             if (res == 0) {
-                                aref.getIndexBox().addTag(new ColorTag(255, 0, 0, false));
+                                aref.getIndexBox().addTag(new ColorTag(255, 0, 0, false, "ArrayCheckTag"));
                             }
                             else if (res == 1) {
-                                aref.getIndexBox().addTag(new ColorTag(255, 248, 35, false));
+                                aref.getIndexBox().addTag(new ColorTag(255, 248, 35, false, "ArrayCheckTag"));
                             }
                             else if (res == 2) {
-                                aref.getIndexBox().addTag(new ColorTag(255, 163, 0, false));
+                                aref.getIndexBox().addTag(new ColorTag(255, 163, 0, false, "ArrayCheckTag"));
                             }
                             else if (res == 3) {
-                                aref.getIndexBox().addTag(new ColorTag(45, 255, 84, false));
+                                aref.getIndexBox().addTag(new ColorTag(45, 255, 84, false, "ArrayCheckTag"));
                             }
                             SootClass bodyClass = body.getMethod().getDeclaringClass();
                             Iterator keysIt = bodyClass.getTags().iterator();
                             boolean keysAdded = false;
                             while (keysIt.hasNext()){
-                                if (keysIt.next() instanceof KeyTag){
-                                    keysAdded = true;
+                                Object next = keysIt.next();
+                                if (next instanceof KeyTag){
+                                    if (((KeyTag)next).analysisType().equals("Array Bounds Analysis")){
+                                        keysAdded = true;
+                                    }
                                 }
                             }
                             if (!keysAdded){
-                                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper"));
-                                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper"));
-                                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper"));
-                                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper"));
+                                bodyClass.addTag(new KeyTag(255, 0, 0, "ArrayBounds: Unsafe Lower and Unsafe Upper", "Array Bounds Analysis"));
+                                bodyClass.addTag(new KeyTag(255, 248, 35, "ArrayBounds: Unsafe Lower and Safe Upper", "Array Bounds Analysis"));
+                                bodyClass.addTag(new KeyTag(255, 163, 0, "ArrayBounds: Safe Lower and Unsafe Upper", "Array Bounds Analysis"));
+                                bodyClass.addTag(new KeyTag(45, 255, 84, "ArrayBounds: Safe Lower and Safe Upper", "Array Bounds Analysis"));
                             }
                         }
 

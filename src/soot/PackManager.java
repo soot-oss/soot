@@ -56,6 +56,7 @@ import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
+import soot.toolkits.graph.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
@@ -156,7 +157,7 @@ public class PackManager {
 
         // Jimple transformation pack
         addPack(p = new BodyPack("jtp"));
-
+        
         // Jimple optimization pack
         addPack(p = new BodyPack("jop"));
         {
@@ -187,7 +188,14 @@ public class PackManager {
             p.add(new Transform("jap.parity", ParityTagger.v()));
             p.add(new Transform("jap.pat", ParameterAliasTagger.v()));
             p.add(new Transform("jap.rdtagger", ReachingDefsTagger.v()));
+            p.add(new Transform("jap.che", CastCheckEliminatorDumper.v()));
 	    
+        }
+
+        // CFG Viewer 
+        addPack(p = new BodyPack("cfg"));
+        {
+            p.add(new Transform("cfg.output", CFGPrinter.v()));
         }
         
         // Grimp body creation
@@ -483,7 +491,9 @@ public class PackManager {
                     tc.collectBodyTags(body);
                 }
             }
-             
+            
+            PackManager.v().getPack("cfg").apply(m.retrieveActiveBody());
+
             if (produceGrimp) {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                 PackManager.v().getPack("gop").apply(m.getActiveBody());

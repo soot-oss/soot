@@ -6,6 +6,8 @@
 		<project>org.eclipse.core.boot</project>
 		<project>org.eclipse.core.resources</project>
 		<project>org.eclipse.core.runtime</project>
+		<project>org.eclipse.draw2d</project>
+		<project>org.eclipse.gef</project>
 		<project>org.eclipse.jdt.core</project>
 		<project>org.eclipse.jdt.launching</project>
 		<project>org.eclipse.jdt.ui</project>

@@ -60,12 +60,28 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
 			SootAttribute sa = (SootAttribute)it.next();
             if ((sa.getJimpleStartLn() != 0) && (sa.getJimpleEndLn() != 0)) {
                 if ((sa.getJimpleStartPos() != 0) && (sa.getJimpleEndPos() != 0)){
-			        if (sa.getColor() != null){
+			       if (sa.getColorList() != null){
+						Iterator cit = sa.getColorList().iterator();
+						while (cit.hasNext()){
+							ColorAttribute ca = (ColorAttribute)cit.next();
+							if (getHandler().isShowAllTypes()){
+								boolean fg = ca.fg() == 1 ? true: false;
+								setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleStartPos()+1, sa.getJimpleEndPos()+1, ca.getRGBColor(), fg);//, tp);
+							}
+							else {
+								if (getHandler().getTypesToShow().contains(ca.type())){
+									boolean fg = ca.fg() == 1 ? true: false;
+									setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleStartPos()+1, sa.getJimpleEndPos()+1, ca.getRGBColor(), fg);//, tp);
+								}
+							}
+						}
+					}
+			        /*if (sa.getColor() != null){
 			
                         boolean fg = sa.getColor().fg() == 1 ? true: false;
                    
 			    	    setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleStartPos()+1, sa.getJimpleEndPos()+1, sa.getRGBColor(), fg);//, tp);
-                    }
+                    }*/
                 }
 			}
 			        

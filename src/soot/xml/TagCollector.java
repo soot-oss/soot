@@ -44,6 +44,7 @@ public class TagCollector {
             if (next instanceof KeyTag){
                 KeyTag kt = (KeyTag)next;
                 Key k = new Key(kt.red(), kt.green(), kt.blue(), kt.key());
+                k.aType(kt.analysisType());
                 keys.add(k);
             }
         }
@@ -99,7 +100,7 @@ public class TagCollector {
                 if (t instanceof JimpleLineNumberTag){
                     jlnt = (JimpleLineNumberTag)t;
                 }
-                //System.out.println("unit tag: "+t);
+                //System.out.println("adding unit tag: "+t);
             }
             attributes.add(ua);
 			Iterator valBoxIt = u.getUseAndDefBoxes().iterator();

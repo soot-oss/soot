@@ -61,14 +61,17 @@ public class NullPointerColorer extends BodyTransformer {
         Iterator keysIt = b.getMethod().getDeclaringClass().getTags().iterator();
         boolean keysAdded = false;
         while (keysIt.hasNext()){
-            if (keysIt.next() instanceof KeyTag){
-                keysAdded = true;  
+            Object next = keysIt.next();
+            if (next instanceof KeyTag){
+                if (((KeyTag)next).analysisType().equals("Null Pointer Analysis")){
+                    keysAdded = true;  
+                }
             }
         }
         if (!keysAdded){
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.RED, "Nullness: Null"));
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null"));
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.RED, "Nullness: Null", "NullCheckTag"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.GREEN, "Nullness: Not Null", "NullCheckTag"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(ColorTag.BLUE, "Nullness: Nullness Unknown", "NullCheckTag"));
         }
 	}
 	
@@ -83,26 +86,26 @@ public class NullPointerColorer extends BodyTransformer {
 			switch (vInfo) {
 				case 1 : {
 					// analysis.kNull
-					s.addTag(new StringTag(val+": Null"));
-					vBox.addTag(new ColorTag(ColorTag.RED));
+					s.addTag(new StringTag(val+": Null", "Null Pointer Analysis"));
+					vBox.addTag(new ColorTag(ColorTag.RED, "Null Pointer Analysis"));
 					break;
 						 }
 				case 2 : {
 					// analysis.kNonNull 
-					s.addTag(new StringTag(val+": NonNull"));
-					vBox.addTag(new ColorTag(ColorTag.GREEN));
+					s.addTag(new StringTag(val+": NonNull", "Null Pointer Analysis"));
+					vBox.addTag(new ColorTag(ColorTag.GREEN, "Null Pointer Analysis"));
 					break;
 						 }
 				case 99 : {
 					// analysis.KTop:
-					s.addTag(new StringTag(val+": Nullness Unknown"));
-					vBox.addTag(new ColorTag(ColorTag.BLUE));
+					s.addTag(new StringTag(val+": Nullness Unknown", "Null Pointer Analysis"));
+					vBox.addTag(new ColorTag(ColorTag.BLUE, "Null Pointer Analysis"));
 					break;
 						  }
 				case 0 : {
 					// analysis.kBottom
-					s.addTag(new StringTag(val+": Nullness Unknown"));
-					vBox.addTag(new ColorTag(ColorTag.BLUE));
+					s.addTag(new StringTag(val+": Nullness Unknown", "Null Pointer Analysis"));
+					vBox.addTag(new ColorTag(ColorTag.BLUE, "Null Pointer Analysis"));
 					break;
 						 }
 			}

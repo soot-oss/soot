@@ -21,11 +21,18 @@ import org.eclipse.ui.texteditor.*;
  */
 public class JimpleAttributesComputer extends AbstractAttributesComputer {
 
-
+	protected ArrayList computeNames(IFile file){
+		return getNames();
+	}
+	
 	/* (non-Javadoc)
 	 * @see ca.mcgill.sable.soot.attributes.AbstractAttributesComputer#computeNames(org.eclipse.ui.texteditor.AbstractTextEditor)
 	 */
 	protected ArrayList computeNames(AbstractTextEditor editor) {
+		return getNames();
+	}
+	
+	private ArrayList getNames(){
 		ArrayList names = new ArrayList();
 		names.add(fileToNoExt(getRec().getName()));
 		return names;

@@ -60,11 +60,27 @@ public class SootAttributesJavaColorer extends AbstractAttributesColorer impleme
 			SootAttribute sa = (SootAttribute)it.next();
 			if ((sa.getJavaStartLn() != 0) && (sa.getJavaEndLn() != 0)){
 				if (sa.getJavaStartPos() != 0 && sa.getJavaEndPos() != 0){
-					if (sa.getColor() != null){
+					if (sa.getColorList() != null){
+						Iterator cit = sa.getColorList().iterator();
+						while (cit.hasNext()){
+							ColorAttribute ca = (ColorAttribute)cit.next();
+							if (getHandler().isShowAllTypes()){
+								boolean fg = ca.fg() == 1 ? true: false;
+								setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaStartPos()+1, sa.getJavaEndPos()+1, ca.getRGBColor(), fg);//, tp);
+							}
+							else { 
+								if (getHandler().getTypesToShow().contains(ca.type())){
+									boolean fg = ca.fg() == 1 ? true: false;
+									setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaStartPos()+1, sa.getJavaEndPos()+1, ca.getRGBColor(), fg);//, tp);
+								}
+							}
+						}
+					}	
+					/*if (sa.getColor() != null){
 					
                 		boolean fg = sa.getColor().fg() == 1 ? true: false;
                 		setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaStartPos()+1, sa.getJavaEndPos()+1, sa.getRGBColor(), fg);//, tp);
-					}
+					}*/
 				}
 			}
 	

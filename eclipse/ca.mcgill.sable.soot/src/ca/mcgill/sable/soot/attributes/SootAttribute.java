@@ -21,7 +21,7 @@ package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
 
-import org.eclipse.swt.graphics.RGB;
+//import org.eclipse.swt.graphics.RGB;
 
 
 public class SootAttribute {
@@ -34,47 +34,66 @@ public class SootAttribute {
 	private int jimpleEndPos;
     private int javaStartPos;
     private int javaEndPos;
-	private ColorAttribute color;
+	//private ColorAttribute color;
 	//private String text;
+	private ArrayList colorList;
 	private ArrayList textList;
-	//private ArrayList valueAttrs;
-	//private String filename;
-	//private int red;
-	//private int green;
-	//private int blue;
-	//private int fg;
+
 	private ArrayList linkList;
 	
 	private int jimpleLength;
 	private int javaLength;
 	
-	/*public String toString(){
-		StringBuffer sb = new StringBuffer();
-		sb.append("\n");
-		sb.append("Java Line: "+javaEndLn+"\n");
-		sb.append("Jimple Line: "+jimpleEndLn+"\n");
-		sb.append("Jimple Offset Start: "+jimpleOffsetStart+"\n");
-		sb.append("Jimple Offset End: "+jimpleOffsetEnd+"\n");
-		sb.append("Texts: \n");
-		sb.append(getAllTextAttrs("\n"));
-		if (getLinkList() != null){
-			Iterator it = getLinkList().iterator();
-			while(it.hasNext()){
-				sb.append("link: "+((LinkAttribute)it.next()).getLabel());
+
+	public ArrayList getAnalysisTypes(){
+		ArrayList types = new ArrayList();
+		if (getTextList() != null){
+			Iterator it = getTextList().iterator();
+			while (it.hasNext()){
+				TextAttribute ta = (TextAttribute)it.next();
+				if (!types.contains(ta.getType())){
+					//System.out.println("adding type: "+ta.getType());
+					types.add(ta.getType());
+				}
 			}
 		}
+		if (getLinkList() != null){
+			Iterator lit = getLinkList().iterator();
+			while (lit.hasNext()){
+				LinkAttribute la = (LinkAttribute)lit.next();
+				if (!types.contains(la.getType())){
+					//System.out.println("adding type: "+la.getType());
+					types.add(la.getType());
+				}
+			}
+		}
+		/*if (color != null){
+			if (!types.contains(color.type())){
+				//System.out.println("adding type: "+color.type());
+				types.add(color.type());
+			}
+		}*/
+		if (getColorList() != null){
+			Iterator cit = getColorList().iterator();
+			while (cit.hasNext()){
+				ColorAttribute ca = (ColorAttribute)cit.next();
+				if (!types.contains(ca.type())){
+					types.add(ca.type());
+				}
+			}
+		}
+		return types;
+	}
+	
+	public void addColorAttr(ColorAttribute color){
+		if (getColorList() == null){
+			setColorList(new ArrayList());
+		}
+		getColorList().add(color);
 		
-		return sb.toString();
-	}*/
+	}
 	
 	private static final String NEWLINE = "\n";
-		
-	/*public void addValueAttr(PosColAttribute valAttr){
-		if (getValueAttrs() == null){
-			setValueAttrs(new ArrayList());
-		}
-		getValueAttrs().add(valAttr);
-	}*/
 	
 	public void addLinkAttr(LinkAttribute link){
 		if (getLinkList() == null){
@@ -82,21 +101,29 @@ public class SootAttribute {
 		}
 		getLinkList().add(link);
 		//System.out.println("added link for line: "+getJavaStartLn()+" "+link.getLabel());
-		addTextAttr(link.getLabel());
+		TextAttribute ta = new TextAttribute();
+		ta.setInfo(link.getLabel());
+		ta.setType(link.getType());
+		addTextAttr(ta);
 	}
 	
 	public ArrayList getAllLinkAttrs(){
 		return getLinkList();
 	}
 
-	public void addTextAttr(String text){
+	public void addTextAttr(TextAttribute text){
 		if (getTextList() == null){
 			setTextList(new ArrayList());
 		}
+		text.setInfo(formatText(text.getInfo()));
+		getTextList().add(text);
+	}
+	
+	public String formatText(String text){
 		text = text.replaceAll("&lt;", "<");
 		text = text.replaceAll("&gt;", ">");
 		text = text.replaceAll("&amp;", "&");
-		getTextList().add(text);
+		return text;
 	}
 	
 	public StringBuffer getAllTextAttrs(String lineSep){
@@ -104,13 +131,37 @@ public class SootAttribute {
 		if (getTextList() != null){
 			Iterator it = getTextList().iterator();
 			while (it.hasNext()){
-				String next = (String)it.next();
+				//String next = (String)it.next();
+				TextAttribute ta = (TextAttribute)it.next();
+				String next = ta.getInfo();
 				if (lineSep.equals("<br>")){
 					// implies java tooltip
 					next = convertHTMLTags(next);
 				}
 				sb.append(next);
 				sb.append(lineSep);
+			}
+		}
+		return sb;
+	}
+	
+	public StringBuffer getTextAttrsForType(String lineSep, String type){
+		StringBuffer sb = new StringBuffer();
+		
+		if (getTextList() != null){
+			Iterator it = getTextList().iterator();
+			while (it.hasNext()){
+				//String next = (String)it.next();
+				TextAttribute ta = (TextAttribute)it.next();
+				if (ta.getType().equals(type)){
+					String next = ta.getInfo();
+					if (lineSep.equals("<br>")){
+						// implies java tooltip
+						next = convertHTMLTags(next);
+					}
+					sb.append(next);
+					sb.append(lineSep);
+				}
 			}
 		}
 		return sb;
@@ -127,11 +178,11 @@ public class SootAttribute {
 		}
 	}
 	
-	public RGB getRGBColor(){
+	/*public RGB getRGBColor(){
 
 		//System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
 		return new RGB(color.red(), color.green(), color.blue());
-	}
+	}*/
 
 	// these two are maybe not accurate maybe
 	// need to check if ln in question is between
@@ -189,9 +240,9 @@ public class SootAttribute {
 	/**
 	 * @return
 	 */
-	public ColorAttribute getColor() {
+	/*public ColorAttribute getColor() {
 		return color;
-	}
+	}*/
 
 	/**
 	 * @return
@@ -210,9 +261,9 @@ public class SootAttribute {
 	/**
 	 * @param i
 	 */
-	public void setColor(ColorAttribute i) {
+	/*public void setColor(ColorAttribute i) {
 		color = i;
-	}
+	}*/
 
 	/**
 	 * @param i
@@ -441,6 +492,20 @@ public class SootAttribute {
 	 */
 	public void setJimpleLength(int i) {
 		jimpleLength = i;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getColorList() {
+		return colorList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setColorList(ArrayList list) {
+		colorList = list;
 	}
 
 }

@@ -30,6 +30,8 @@ public class SootAttributesHandler {
 	private long valuesSetTime;
 	private boolean update = true;
 	private ArrayList keyList;
+	private ArrayList typesToShow;
+	private boolean showAllTypes = true;
 
 	private static final String NEWLINE = "\n\r";
 	
@@ -38,9 +40,10 @@ public class SootAttributesHandler {
 	}
 	
 	public void setAttrList(ArrayList attrList) {
-		if (this.attrList == null){
+		//if (this.attrList == null){
 			this.attrList = new ArrayList();
-		}
+		//}
+		System.out.println("adding all attr");
 		this.attrList.addAll(attrList);
 	}
 
@@ -53,7 +56,17 @@ public class SootAttributesHandler {
 			SootAttribute sa = (SootAttribute)it.next();
 			if (sa.attrForJimpleLn(lnNum)) {
 				//if (sa.getTextList() == null) return null;
-				sb.append(sa.getAllTextAttrs("\n"));
+				if (showAllTypes){
+					sb.append(sa.getAllTextAttrs("\n"));
+				}
+				else {
+					Iterator typesIt = typesToShow.iterator();
+					while (typesIt.hasNext()){
+						sb.append(sa.getTextAttrsForType("\n", (String)typesIt.next()));
+					}
+					
+				}
+				
 			}
 		}	
 		String result = sb.toString();
@@ -84,7 +97,16 @@ public class SootAttributesHandler {
 				//System.out.println("Soot Attribute:");
 				//System.out.println(sa);
 				//if (sa.getTextList() == null) return null;
-				sb.append(sa.getAllTextAttrs("<br>"));
+				if (showAllTypes){
+					sb.append(sa.getAllTextAttrs("<br>"));
+				}
+				else {
+					System.out.println("tooltips types to show: "+typesToShow);
+					Iterator typesIt = typesToShow.iterator();
+					while (typesIt.hasNext()){
+						sb.append(sa.getTextAttrsForType("<br>", (String)typesIt.next()));
+					}
+				}
 			}
 		}	
 		return sb.toString();
@@ -130,7 +152,37 @@ public class SootAttributesHandler {
 	 * @return Vector
 	 */
 	public ArrayList getAttrList() {
+		/*if (isShowAllTypes()){
+			return attrList;
+		}
+		else{
+			System.out.println("types to show: "+getTypesToShow());
+			ArrayList typeList = new ArrayList();
+			if (attrList != null){
+				Iterator it = attrList.iterator();
+				while (it.hasNext()){
+					SootAttribute sa = (SootAttribute)it.next();
+					boolean inclSa = true;
+				
+					Iterator typeIt = getTypesToShow().iterator();
+					while (typeIt.hasNext()){
+						String type = (String)typeIt.next();
+						//System.out.println("next type: "+type);
+						if (!sa.getAnalysisTypes().contains(type)){
+							//System.out.println("not contained");
+							inclSa = false;
+							break;
+						}
+					}
+					if (inclSa){
+						typeList.add(sa);
+					}
+				}
+			}
+			return typeList;
+		}*/
 		return attrList;
+	
 	}
 
 	/**
@@ -181,7 +233,21 @@ public class SootAttributesHandler {
 	 * @return
 	 */
 	public ArrayList getKeyList() {
-		return keyList;
+		if (keyList == null) return keyList;
+		if (isShowAllTypes()){
+			return keyList;
+		}
+		else {
+			ArrayList typeList = new ArrayList();
+			Iterator kIt = keyList.iterator();
+			while (kIt.hasNext()){
+				AnalysisKey key = (AnalysisKey)kIt.next();
+				if (getTypesToShow().contains(key.getType())){
+					typeList.add(key);
+				}
+			}
+			return typeList;
+		}
 	}
 
 	/**
@@ -189,6 +255,34 @@ public class SootAttributesHandler {
 	 */
 	public void setKeyList(ArrayList list) {
 		keyList = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getTypesToShow() {
+		return typesToShow;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setTypesToShow(ArrayList list) {
+		typesToShow = list;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isShowAllTypes() {
+		return showAllTypes;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setShowAllTypes(boolean b) {
+		showAllTypes = b;
 	}
 
 }

@@ -58,4 +58,7 @@ public interface ISootConstants {
 	
 	public static final String ANALYSIS_KEY_VIEW_ID =
 		"ca.mcgill.sable.soot.ui.analysiskeyview.view";
+		
+	public static final String ANALYSIS_TYPES_VIEW_ID = 
+		"ca.mcgill.sable.soot.ui.analysistypesview.view";
 }

@@ -28,23 +28,38 @@ public class SootAttrJavaIconGenerator implements Runnable{
 		addSootAttributeMarkers();		
 	}
 	
+	private boolean typesContainsOneOf(ArrayList list){
+		boolean result = false;
+		Iterator it = list.iterator();
+		while (it.hasNext()){
+			if (getHandler().getTypesToShow().contains(it.next())) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+	
 	public void addSootAttributeMarkers(){//SootAttributesHandler handler, IFile rec) {
 		
 		if (getHandler().getAttrList() == null) return;
+		System.out.println("Are attrs");
 		Iterator it = getHandler().getAttrList().iterator();
 		HashMap markerAttr = new HashMap();
 	
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
-			if (((sa.getAllTextAttrs("<br>") == null) || (sa.getAllTextAttrs("<br>").length() == 0)) && 
-				((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
-			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
-	
-			try {
-				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
-			}
-			catch(CoreException e) {
-				System.out.println(e.getMessage());
+			if (getHandler().isShowAllTypes() || typesContainsOneOf(sa.getAnalysisTypes())) {
+				if (((sa.getAllTextAttrs("<br>") == null) || (sa.getAllTextAttrs("<br>").length() == 0)) && 
+					((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
+				markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
+				//System.out.println("add marker: "+sa.getJavaStartLn());
+				try {
+					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				}
+				catch(CoreException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		}
 	}

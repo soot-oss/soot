@@ -19,6 +19,8 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.attributes.*;
+import org.eclipse.ui.texteditor.*;
+
 
 /**
  * @author jlhotak
@@ -34,7 +36,7 @@ public class EditorActivationListener implements IPartListener {
 	public void partActivated(IWorkbenchPart part) {
 		//System.out.println("part activated");
 		//System.out.println("part activated: "+part.getTitle());
-		if (!(part instanceof IEditorPart)) return;
+		if (!(part instanceof ITextEditor)) return;
 		IEditorPart activeEdPart = (IEditorPart)part;
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
 	}

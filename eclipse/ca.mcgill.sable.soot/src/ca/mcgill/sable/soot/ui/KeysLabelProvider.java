@@ -53,7 +53,7 @@ public class KeysLabelProvider implements ITableLabelProvider {
 				RGB next = (RGB)it.next();
 				if (next.red == key.getRed() && next.green == key.getGreen() && next.blue == key.getBlue()){
 					image = (Image)images.get(next);
-					System.out.println("reusing key image");
+					//System.out.println("reusing key image");
 				}
 			}
 		}
@@ -61,7 +61,7 @@ public class KeysLabelProvider implements ITableLabelProvider {
 		//Image image;// = (Image)images.get(id);
 		if (image == null) {
 			image = id.createImage();
-			System.out.println("creating new key image");
+			//System.out.println("creating new key image");
 			images.put(rgb, image);
 		}
 		//images.put(id, image);

@@ -85,6 +85,7 @@ public class AttributeDomProcessor {
 				key.setGreen((new Integer(map.getNamedItem("green").getNodeValue())).intValue());
 				key.setBlue((new Integer(map.getNamedItem("blue").getNodeValue())).intValue());
 				key.setKey(map.getNamedItem("key").getNodeValue());
+				key.setType(map.getNamedItem("aType").getNodeValue());
 				keys.add(key);
 			}
 			else {
@@ -126,7 +127,7 @@ public class AttributeDomProcessor {
 				la.setJavaLink((new Integer(map.getNamedItem("srcLink").getNodeValue()).intValue()));
 				la.setJimpleLink((new Integer(map.getNamedItem("jmpLink").getNodeValue()).intValue()));
 				la.setClassName(map.getNamedItem("clssNm").getNodeValue());
-				
+				la.setType(map.getNamedItem("aType").getNodeValue());
 				
 				/*for (int i = 0; i < children.getLength(); i++){
 					processLinkNode(la,children.item(i));	
@@ -144,7 +145,8 @@ public class AttributeDomProcessor {
 					fg = true;
 				}
 				ColorAttribute ca = new ColorAttribute(r, g, b, fg);
-				current.setColor(ca);
+				ca.type(map.getNamedItem("aType").getNodeValue());
+				current.addColorAttr(ca);//.setColor(ca);
 			}
 			else if (node.getNodeName().equals("srcPos")){
 				NamedNodeMap map = node.getAttributes();
@@ -170,6 +172,13 @@ public class AttributeDomProcessor {
 				current.setJimpleStartPos(spos);
 				current.setJimpleEndPos(epos);
 			}
+			else if (node.getNodeName().equals("text")){
+				NamedNodeMap map = node.getAttributes();
+				TextAttribute ta = new TextAttribute();
+				ta.setInfo(map.getNamedItem("info").getNodeValue());
+				ta.setType(map.getNamedItem("aType").getNodeValue());
+				current.addTextAttr(ta);
+			}
 			else {
 				NodeList children = node.getChildNodes();
 				for (int i = 0; i < children.getLength(); i++) {
@@ -181,10 +190,10 @@ public class AttributeDomProcessor {
 			String type = node.getParentNode().getNodeName();
 			
 
-			if (type.equals("text")) {
+			/*if (type.equals("text")) {
 				//System.out.println("reading text node");
 				current.addTextAttr(node.getNodeValue());
-			}
+			}*/
 		}
 	}
 	

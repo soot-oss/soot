@@ -30,9 +30,12 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.text"/>
       <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.draw2d"/>
+      <import plugin="org.eclipse.gef"/>
    </requires>
 
-   <!--<extension point = "org.eclipse.ui.preferencePages">
+	
+<!--<extension point = "org.eclipse.ui.preferencePages">
        <page id="ca.mcgill.sable.soot.ui.SootPreference.Page1"
 	    class="ca.mcgill.sable.soot.ui.SootMainClassPreferencePage"
             name="Soot Main Class">
@@ -48,14 +51,14 @@
          enabled="true">
       </filter>
    </extension> -->
-   
-   <extension point="org.eclipse.ui.markerImageProviders">
-    <imageprovider id="ca.mcgill.sable.soot.sootAttributeProvider"
-        markertype="ca.mcgill.sable.soot.sootattributemarker"
-        icon="icons/soot_attribute.png">
-    </imageprovider>
+   <extension
+         point="org.eclipse.ui.markerImageProviders">
+      <imageprovider
+            markertype="ca.mcgill.sable.soot.sootattributemarker"
+            icon="icons/soot_attribute.png"
+            id="ca.mcgill.sable.soot.sootAttributeProvider">
+      </imageprovider>
    </extension>
-   
    <extension
          id="sootattributemarker"
          name="Soot Attribute Marker"
@@ -63,27 +66,24 @@
       <persistent
             value="false">
       </persistent>
-      <!--<super
+<!--<super
             type="org.eclipse.core.resources.bookmark">
       </super>-->
-      <!--<super
+<!--<super
             type="org.eclipse.core.resources.taskmarker">
       </super>-->
       <super
             type="org.eclipse.core.resources.textmarker">
       </super>
    </extension>
-   
-   <!--<extension point="org.eclipse.ui.markerResolution"> 
+<!--<extension point="org.eclipse.ui.markerResolution"> 
    	<markerResolutionGenerator 
       class="ca.mcgill.sable.soot.attributes.SootAttributeResolutionGenerator" 
       markerType="ca.mcgill.sable.soot.sootattributemarker"> 
        
    </markerResolutionGenerator> 
    
-   </extension>--> 
-
-   
+   </extension>-->
    <extension
          point="org.eclipse.jdt.ui.javaEditorTextHovers">
       <hover
@@ -102,37 +102,44 @@
             id="ca.mcgill.sable.soot.editors.JimpleEditor">
       </editor>
    </extension>
-   
-   <extension point="org.eclipse.ui.editorActions">
-	<editorContribution
-		id="ca.mcgill.sable.soot.ruler.actions"
-		targetID="ca.mcgill.sable.soot.editors.JimpleEditor">
-	
-        <action
-           id="ca.mcgill.sable.soot.editors.sootattributesselectaction"
-           actionID="RulerClick"
-           label="none"
-           class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate">
-        </action>
-	</editorContribution>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="CFG Editor"
+            icon="icons/soot.png"
+            extensions="cfg"
+            contributorClass="ca.mcgill.sable.soot.cfg.actions.CFGActionBarContributor"
+            class="ca.mcgill.sable.soot.cfg.CFGEditor"
+            id="ca.mcgill.sable.soot.cfg.CFGEditor">
+      </editor>
    </extension>
-   
-   <extension point="org.eclipse.ui.editorActions">
-	<editorContribution
-		id="ca.mcgill.sable.soot.ruler.actions"
-		targetID="org.eclipse.jdt.ui.CompilationUnitEditor">
-
-        <action
-           id="ca.mcgill.sable.soot.editors.sootattributesselectaction"
-           actionID="RulerClick"
-           label="none"
-           class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate">
-        </action>
-	</editorContribution>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="ca.mcgill.sable.soot.editors.JimpleEditor"
+            id="ca.mcgill.sable.soot.ruler.actions">
+         <action
+               label="none"
+               class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate"
+               actionID="RulerClick"
+               id="ca.mcgill.sable.soot.editors.sootattributesselectaction">
+         </action>
+      </editorContribution>
    </extension>
-   
-   
-   <!--<extension point="org.eclipse.ui.editorActions">
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            targetID="org.eclipse.jdt.ui.CompilationUnitEditor"
+            id="ca.mcgill.sable.soot.ruler.actions">
+         <action
+               label="none"
+               class="ca.mcgill.sable.soot.attributes.SootAttributeRulerActionDelegate"
+               actionID="RulerClick"
+               id="ca.mcgill.sable.soot.editors.sootattributesselectaction">
+         </action>
+      </editorContribution>
+   </extension>
+<!--<extension point="org.eclipse.ui.editorActions">
 	<editorContribution
 		id="ca.mcgill.sable.soot.ruler.actions"
 		targetID="org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorr">
@@ -145,18 +152,32 @@
         </action>
 	</editorContribution>
    </extension>-->
- 
    <extension
          point="org.eclipse.ui.views">
       <category
             name="Soot"
-            id="ca.mcgill.sable.soot.ui.sootoutput.view">
+            id="ca.mcgill.sable.soot.ui.soot.view">
       </category>
       <view
             name="Soot Output"
-            category="ca.mcgill.sable.soot.ui.sootoutput.view"
+            category="ca.mcgill.sable.soot.ui.soot.view"
             class="ca.mcgill.sable.soot.ui.SootOutputView"
             id="ca.mcgill.sable.soot.ui.sootoutputview.view">
+      </view>
+    
+      <view
+            name="Analysis Keys"
+            category="ca.mcgill.sable.soot.ui.soot.view"
+            class="ca.mcgill.sable.soot.ui.AnalysisKeyView"
+            id="ca.mcgill.sable.soot.ui.analysiskeyview.view">
+            
+      </view>
+
+      <view 
+      		name="Analysis Types"
+      		category="ca.mcgill.sable.soot.ui.soot.view"
+      		class="ca.mcgill.sable.soot.ui.AnalysisTypeView"
+      		id="ca.mcgill.sable.soot.ui.analysistypesview.view">
       </view>
    </extension>
 <!--<extension
@@ -210,22 +231,36 @@
             </separator>
          </menu>
          <menu
-            label="%PopupMenus.action41"
-            path="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
-            id="sourcesPath">
+               label="%PopupMenus.action41"
+               path="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
+               id="sourcesPath">
             <separator
-                name="slot3">
+                  name="slot3">
             </separator>
          </menu>
          <menu
-            label="%PopupMenus.action40"
-            path="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
-            id="classesPath">
+               label="%PopupMenus.action40"
+               path="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
+               id="classesPath">
             <separator
-                name="slot2">
+                  name="slot2">
             </separator>
          </menu>
-         <!--<action
+         <action
+               label="CFG Tests"
+               class="ca.mcgill.sable.soot.cfg.CFGTests"
+               menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
+               enablesFor="+"
+               id="CFG Tests">
+         </action>
+        <!-- <action
+               label="Visualiztion Manipulations"
+               class="ca.mcgill.sable.soot.attributes.VisManLauncher"
+               menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.launchingaction46">
+         </action>-->
+<!--<action
                label="Test"
                class="ca.mcgill.sable.soot.launching.Test"
                menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/slot1"
@@ -240,11 +275,11 @@
                id="ca.mcgill.sable.soot.launchingaction6">
          </action>
          <action
-            label="%PopupMenus.action11"
-            class="ca.mcgill.sable.soot.launching.SootConfigJavaProjectLauncher"
-            menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/sourcesPath/slot3"
-            enablesFor="+"
-            id="ca.mcgill.sable.soot.java.launchingact1">
+               label="%PopupMenus.action11"
+               class="ca.mcgill.sable.soot.launching.SootConfigJavaProjectLauncher"
+               menubarPath="project/ca.mcgill.sable.soot.launching.soot.sootMenu/sourcesPath/slot3"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.java.launchingact1">
          </action>
 <!--<action
                label="%PopupMenus.action10"
@@ -323,6 +358,13 @@
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction5">
+         </action>
+         <action
+               label="%PopupMenus.action4"
+               class="ca.mcgill.sable.soot.launching.SootOptionsFolderLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction56">
          </action>
       </objectContribution>
       <objectContribution
@@ -515,23 +557,22 @@
                   name="slot1">
             </separator>
          </menu>
-            <menu
-            label="%PopupMenus.action42"
-            path="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-            id="ccp">
+         <menu
+               label="%PopupMenus.action42"
+               path="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               id="ccp">
             <separator
-                name="slot2">
+                  name="slot2">
             </separator>
          </menu>
          <menu
-            label="%PopupMenus.action43"
-            path="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-            id="sp">
+               label="%PopupMenus.action43"
+               path="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               id="sp">
             <separator
-                name="slot3">
+                  name="slot3">
             </separator>
          </menu>
-         
          <action
                label="%PopupMenus.action11"
                class="ca.mcgill.sable.soot.launching.SootConfigFromJavaFileLauncher"
@@ -622,7 +663,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction36">
          </action>
-         <!--<action
+<!--<action
                label="%PopupMenus.action21"
                class="ca.mcgill.sable.soot.launching.SootConfigFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
@@ -636,7 +677,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction35">
          </action>
-         <!--<action
+<!--<action
                label="%PopupMenus.action22"
                class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
@@ -650,7 +691,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction28">
          </action>
-         <!--<action
+<!--<action
                label="%PopupMenus.action23"
                class="ca.mcgill.sable.soot.launching.DavaDecompileAppFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
@@ -664,7 +705,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction27">
          </action>
-         <!--<action
+<!--<action
                label="%PopupMenus.action25"
                class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
@@ -678,13 +719,6 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction26">
          </action>
-         <!--<action
-               label="%PopupMenus.action24"
-               class="ca.mcgill.sable.soot.launching.SootJimpleFileLauncher"
-               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-               enablesFor="+"
-               id="ca.mcgill.sable.soot.popupaction2">
-         </action>-->
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
@@ -777,17 +811,21 @@
          </action>
       </objectContribution>
    </extension>
-
-
-   <extension point="org.eclipse.help.toc">
-      <toc file="toc.xml" primary="true" />
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc_Concepts.xml">
+      </toc>
+      <toc
+            file="toc_Reference.xml">
+      </toc>
    </extension>
 
-
-   <extension point="org.eclipse.help.toc">
-       <toc file="toc_Concepts.xml" />
-       <toc file="toc_Reference.xml" />
-   </extension>
 </plugin>
-
-

@@ -3503,7 +3503,101 @@ information in these tags.  For example, even variables (such as
 						<default>false</default>
 					</boolopt>
                 </sub_phase>
+                <sub_phase>
+					<name>Cast Elimination Check Tagger</name>
+					<alias>jap.che</alias>
+					<short_desc>Indicates whether cast checks can be eliminated</short_desc>
+					<long_desc>Indicates whether cast checks can be eliminated.</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+					</boolopt>
+                </sub_phase>
 			</phase>
+            <phase>
+                <name>CFG Viewer</name>
+                <alias>cfg</alias>
+                <short_desc>Produces CFGs for viewing purposes</short_desc>
+                <long_desc>Produces CFGs in the form of dot files when run from the command line runs or graphs when run from within Eclipse.</long_desc>
+                <boolopt>
+                    <name>Enabled</name>
+                    <alias>enabled</alias>
+                    <default>false</default>
+                    <short_desc/>
+                    <long_desc/>
+                </boolopt>
+                <sub_phase>
+                    <name>CFG Output Options</name>
+                    <class>CFGOutputOptions</class>
+                    <alias>cfg.output</alias>
+                    <short_desc>Determines the type of graphs to output</short_desc>
+                    <long_desc>Determines the type of graphs to output</long_desc>
+                    <boolopt>
+                        <name>Enabled</name>
+                        <alias>enabled</alias>
+                        <default>false</default>
+                        <short_desc/>
+                        <long_desc/>
+                    </boolopt>
+                    
+                    <multiopt>
+                        <name>Graph Type</name>
+                        <alias>graph-type</alias>
+                        <short_desc>Determines which type of graph to output</short_desc>
+                        <long_desc>Determines which type of graph to output based on whether nodes are units or blocks and whether control flow associated with Exceptions is taken into consideration or not.</long_desc>
+                        <value>
+                            <name>Complete Unit Graph</name>
+                            <alias>complete-unit-graph</alias>
+                            <short_desc>Output a complete Unit Graph</short_desc>
+                            <long_desc>Output a complete Unit Graph, where nodes are units and control flow associated with Exceptions is taken into account.</long_desc>
+                            <default/>
+                        </value>
+                        <value>
+                            <name>Unit Graph</name>
+                            <alias>unit-graph</alias>
+                            <short_desc>Output a Unit Graph</short_desc>
+                            <long_desc>Output a Unit Graph, where nodes are units and control flow associated with Exceptions is not taken into account.</long_desc>
+                        </value>
+                        <value>
+                            <name>Complete Block Graph</name>
+                            <alias>complete-block-graph</alias>
+                            <short_desc>Output a complete Block Graph</short_desc>
+                            <long_desc>Output a complete Block Graph, where nodes are blocks and control flow associated with Exceptions is taken into account.</long_desc>
+                        </value>
+                        <value>
+                            <name>Brief Block Graph</name>
+                            <alias>brief-block-graph</alias>
+                            <short_desc>Output a brief Block Graph</short_desc>
+                            <long_desc>Output a brief Block Graph, where nodes are blocks and control flow associated with Exceptions is ignored.</long_desc>
+                        </value>
+                        <value>
+                            <name>Array Block Graph</name>
+                            <alias>array-block-graph</alias>
+                            <short_desc>Output an array Block Graph</short_desc>
+                            <long_desc>Output an array Block Graph</long_desc>
+                        </value>
+                    </multiopt>
+                    <multiopt>
+                        <name>Output Type</name>
+                        <alias>output-type</alias>
+                        <short_desc>Determines which type of files to generate</short_desc>
+                        <long_desc>Determines which type of files to generate</long_desc>
+                        <value>
+                            <name>Dot Files</name>
+                            <alias>dot-files</alias>
+                            <short_desc>Generate graphs as dot files</short_desc>
+                            <long_desc>Generate graphs as dot files that can be then be converted to post-script for viewing.</long_desc>
+                         </value>
+                         <value>
+                            <name>Eclipse Graphs</name>
+                            <alias>eclipse-graphs</alias>
+                            <short_desc>Generate graphs that can be manipulated within Eclipse</short_desc>
+                            <long_desc>Generate graphs that can be manipulated within Eclipse.</long_desc>
+                           </value>
+                           </multiopt>
+               </sub_phase>
+            </phase>
 			<phase>
 				<name>Grimp Body Creation</name>
 				<alias>gb</alias>

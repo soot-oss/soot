@@ -53,7 +53,7 @@ public class ParameterAliasTagger extends BodyTransformer {
     }
     private void fill( Set parms, IdentityStmt parm, int colour, PointsToAnalysis pa ) {
         if( !parms.contains(parm) ) return;
-        parm.getRightOpBox().addTag( new ColorTag(colour) );
+        parm.getRightOpBox().addTag( new ColorTag(colour, "Parameter Alias") );
         parms.remove( parm );
         PointsToSet ps = pa.reachingObjects( (Local) parm.getLeftOp() );
         for( Iterator parm2It = (new LinkedList(parms)).iterator(); parm2It.hasNext(); ) {

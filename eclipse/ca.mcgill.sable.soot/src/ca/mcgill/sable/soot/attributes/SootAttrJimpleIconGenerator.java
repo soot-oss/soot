@@ -20,6 +20,18 @@ public class SootAttrJimpleIconGenerator implements Runnable {
 		addSootAttributeMarkers();	
 	}
 	
+	private boolean typesContainsOneOf(ArrayList list){
+		boolean result = false;
+		Iterator it = list.iterator();
+		while (it.hasNext()){
+			if (getHandler().getTypesToShow().contains(it.next())) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+	
 	public void addSootAttributeMarkers(){//SootAttributesHandler handler, IFile rec) {
 		
 		if (getHandler().getAttrList() == null) return;
@@ -28,15 +40,17 @@ public class SootAttrJimpleIconGenerator implements Runnable {
 
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
-			if (((sa.getAllTextAttrs("") == null) || (sa.getAllTextAttrs("").length() == 0)) && 
-				((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
-			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimpleStartLn()));
+			if (getHandler().isShowAllTypes() || typesContainsOneOf(sa.getAnalysisTypes())){
+				if (((sa.getAllTextAttrs("") == null) || (sa.getAllTextAttrs("").length() == 0)) && 
+					((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
+				markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJimpleStartLn()));
 
-			try {
-				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
-			}
-			catch(CoreException e) {
-				System.out.println(e.getMessage());
+				try {
+					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				}
+				catch(CoreException e) {
+					System.out.println(e.getMessage());
+				}
 			}
 		}
 	}

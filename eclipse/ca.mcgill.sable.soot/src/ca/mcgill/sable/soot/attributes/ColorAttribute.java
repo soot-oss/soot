@@ -1,6 +1,7 @@
 package ca.mcgill.sable.soot.attributes;
 
 import soot.*;
+import org.eclipse.swt.graphics.RGB;
 
 public class ColorAttribute{
             
@@ -8,6 +9,7 @@ public class ColorAttribute{
     private int green;
     private int blue;
     private int fg;
+    private String type;
 
     public ColorAttribute(int red, int green, int blue, boolean fg){
         this.red = red;
@@ -37,4 +39,21 @@ public class ColorAttribute{
         return fg;
     }
 
+	/**
+	 * @return
+	 */
+	public String type() {
+		return type;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void type(String string) {
+		type = string;
+	}
+
+	public RGB getRGBColor(){
+		return new RGB(red(), green(), blue());
+	}
 }

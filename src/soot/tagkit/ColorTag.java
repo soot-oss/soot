@@ -39,6 +39,7 @@ public class ColorTag implements Tag
     /* for highlighting foreground of text default is to
      * higlight background */
     private boolean foreground = false;
+    private String analysisType = "Unknown";
     
     public static final int RED = 0;
 	public static final int GREEN = 1;
@@ -57,11 +58,27 @@ public class ColorTag implements Tag
     
 	public ColorTag(int r, int g, int b)
     {
-		red = r;
-		green = g;
-		blue = b;
+	    this(r, g, b, false);
     }
 
+    public ColorTag(int r, int g, int b, String type){
+        this(r, g, b, false, type);
+    }
+    
+    public ColorTag(int r, int g, int b, boolean fg, String type){
+        this(r, g, b, false);
+        analysisType = type;
+    }
+
+    public ColorTag(int color, String type){
+        this(color, false, type);
+    }
+    
+    public ColorTag(int color, boolean fg, String type){
+        this(color, fg);
+        analysisType = type;
+    }
+    
     public ColorTag(int color){
         this(color, false);
     }
@@ -115,6 +132,10 @@ public class ColorTag implements Tag
         foreground = fg;
 	}
 
+    public String getAnalysisType(){
+        return analysisType;
+    }
+    
 	public int getRed(){
 		return red;
 	}

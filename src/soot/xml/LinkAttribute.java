@@ -10,28 +10,16 @@ public class LinkAttribute {
     private String className;
     private boolean isJimpleLink;
     private boolean isJavaLink;
+    private String analysisType;
     
-    /*public LinkAttribute(String info, int jimpleLink, String className){
-        this.info = info;
-        this.jimpleLink = jimpleLink;
-        this.className = className; 
-        isJimpleLink = true;
-    }
-
-    public LinkAttribute(String info, int javaLink, String className){
-        this.info = info;
-        this.javaLink = javaLink;
-        this.className = className;
-        isJavaLink = true;
-    }*/
-
-    public LinkAttribute(String info, int jimpleLink, int javaLink, String className){
+    public LinkAttribute(String info, int jimpleLink, int javaLink, String className, String type){
         this.info = info;
         this.jimpleLink = jimpleLink;
         this.javaLink = javaLink;
         this.className = className; 
         isJimpleLink = true;
         isJavaLink = true;
+        analysisType = type;
     }
 
     public String info(){
@@ -56,6 +44,10 @@ public class LinkAttribute {
 
     public boolean isJavaLink(){
         return isJavaLink;
+    }
+
+    public String analysisType(){
+        return analysisType;
     }
 }   
 

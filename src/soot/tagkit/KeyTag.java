@@ -6,12 +6,23 @@ public class KeyTag implements Tag {
     private int green;
     private int blue;
     private String key;
+    private String analysisType;
     
-    public KeyTag(int r, int g, int b, String k){
+    /*public KeyTag(int r, int g, int b, String k){
+        this(r, g, b, k, "Unknown");
+    }*/
+
+    public KeyTag(int r, int g, int b, String k, String type){
         red = r;
         green = g;
         blue = b;
         key = k;
+        analysisType = type;
+    }
+
+    public KeyTag(int color, String k, String type){
+        this(color, k);
+        analysisType = type;
     }
 
     public KeyTag(int color, String k){
@@ -79,6 +90,10 @@ public class KeyTag implements Tag {
         return key;
     }
 
+    public String analysisType(){
+        return analysisType;
+    }
+    
     public String getName(){
         return "KeyTag";
     }

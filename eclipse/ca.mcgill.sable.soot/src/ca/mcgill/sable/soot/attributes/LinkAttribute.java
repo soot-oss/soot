@@ -26,6 +26,8 @@ public class LinkAttribute {
 	private int javaLink;
 	
 	private String className;
+	private String type;
+	
 		
 	/**
 	 * @return
@@ -83,6 +85,20 @@ public class LinkAttribute {
 	 */
 	public void setJavaLink(int i) {
 		javaLink = i;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setType(String string) {
+		type = string;
 	}
 
 }

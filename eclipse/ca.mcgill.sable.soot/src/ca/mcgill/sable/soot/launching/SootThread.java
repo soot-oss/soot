@@ -21,6 +21,7 @@ package ca.mcgill.sable.soot.launching;
 
 
 import java.io.PrintStream;
+import java.util.*;
 import java.lang.reflect.*;
 
 //import org.eclipse.jface.preference.IPreferenceStore;
@@ -53,6 +54,7 @@ public class SootThread extends Thread {
 
 	private Display display;
 	private String mainClass;
+	private ArrayList cfgList;
 	
 	/**
 	 * Constructor for SootThread.
@@ -96,6 +98,7 @@ public class SootThread extends Thread {
 					}
 				}
 			}
+			setCfgList(soot.Scene.v().cfgList);
 			
 			//Main.main(cmdFinal, sootOutFinal);
 		}
@@ -165,6 +168,20 @@ public class SootThread extends Thread {
 	 */
 	public void setMainClass(String string) {
 		mainClass = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getCfgList() {
+		return cfgList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setCfgList(ArrayList list) {
+		cfgList = list;
 	}
 
 }

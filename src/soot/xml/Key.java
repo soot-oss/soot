@@ -8,6 +8,7 @@ public class Key {
     private int green;
     private int blue;
     private String key;
+    private String aType;
     
     public Key(int r, int g, int b, String k){
         red = r;
@@ -33,7 +34,14 @@ public class Key {
     }
 
     public void print(PrintWriter writerOut){
-        writerOut.println("<key red=\""+red()+"\" green=\""+green()+"\" blue=\""+blue()+"\" key=\""+key()+"\"/>");
+        writerOut.println("<key red=\""+red()+"\" green=\""+green()+"\" blue=\""+blue()+"\" key=\""+key()+"\" aType=\""+aType()+"\"/>");
     }
     
+    public String aType(){
+        return aType;
+    }
+
+    public void aType(String s){
+        aType = s;
+    }
 }

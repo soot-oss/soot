@@ -8,8 +8,9 @@ public class ColorAttribute{
     private int green;
     private int blue;
     private int fg;
-
-    public ColorAttribute(int red, int green, int blue, boolean fg){
+    private String analysisType;
+    
+    public ColorAttribute(int red, int green, int blue, boolean fg, String type){
         this.red = red;
         this.green = green;
         this.blue = blue;
@@ -19,6 +20,7 @@ public class ColorAttribute{
         else {
             this.fg = 0;
         }
+        analysisType = type;
     }
 
     public int red(){
@@ -35,6 +37,10 @@ public class ColorAttribute{
 
     public int fg(){
         return fg;
+    }
+
+    public String analysisType(){
+        return analysisType;
     }
 
 }

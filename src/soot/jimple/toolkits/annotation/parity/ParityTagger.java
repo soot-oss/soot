@@ -53,7 +53,7 @@ public class ParityTagger extends BodyTransformer
                 final Value variable = (Value) it.next();
 
                 StringTag t = new StringTag(
-                        "Parity variable: "+variable+" "+parityVars.get(variable) );
+                        "Parity variable: "+variable+" "+parityVars.get(variable) , "Parity Analysis");
                 s.addTag( t );
             }
 
@@ -92,34 +92,37 @@ public class ParityTagger extends BodyTransformer
         Iterator keyIt = b.getMethod().getDeclaringClass().getTags().iterator();
         boolean keysAdded = false;
         while (keyIt.hasNext()){
-            if (keyIt.next() instanceof KeyTag){
-                keysAdded = true;
+            Object next = keyIt.next();
+            if (next instanceof KeyTag){
+                if (((KeyTag)next).analysisType().equals("Parity Analysis")){
+                    keysAdded = true;
+                }
             }
         }
         if (!keysAdded){
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,0,0, "Parity: Top"));
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(45,255,84, "Parity: Bottom"));
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,248,35, "Parity: Even"));
-            b.getMethod().getDeclaringClass().addTag(new KeyTag(174,210,255, "Parity: Odd"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,0,0, "Parity: Top", "Parity Analysis"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(45,255,84, "Parity: Bottom", "Parity Analysis"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(255,248,35, "Parity: Even", "Parity Analysis"));
+            b.getMethod().getDeclaringClass().addTag(new KeyTag(174,210,255, "Parity: Odd", "Parity Analysis"));
         }
     }
 
 	private void addColorTag(ValueBox vb, String type) {
 		if (type.equals("bottom")){
 			//green
-			vb.addTag(new ColorTag(ColorTag.GREEN));
+			vb.addTag(new ColorTag(ColorTag.GREEN, "Parity Analysis"));
 		}
 		else if (type.equals("top")){
 			//red
-			vb.addTag(new ColorTag(ColorTag.RED));
+			vb.addTag(new ColorTag(ColorTag.RED, "Parity Analysis"));
 		}
 		else if (type.equals("even")){
 			//yellow
-			vb.addTag(new ColorTag(ColorTag.YELLOW));
+			vb.addTag(new ColorTag(ColorTag.YELLOW, "Parity Analysis"));
 		}
 		else if (type.equals("odd")){
 			//blue
-			vb.addTag(new ColorTag(ColorTag.BLUE));
+			vb.addTag(new ColorTag(ColorTag.BLUE, "Parity Analysis"));
 		}
 	}
 }

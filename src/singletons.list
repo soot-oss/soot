@@ -158,3 +158,4 @@ UnreachableFieldsTagger
 TightestQualifiersTagger
 ParameterAliasTagger
 ReachingDefsTagger
+CFGPrinter

@@ -8,7 +8,8 @@ import soot.util.*;
 
 public class Attribute {
     
-    private ColorAttribute color;
+    //private ColorAttribute color;
+    private ArrayList colors;
     private int jimpleStartPos;
     private int jimpleEndPos;
     private int javaStartPos;
@@ -18,14 +19,24 @@ public class Attribute {
     private int jimpleStartLn;
     private int jimpleEndLn;
 
+    public ArrayList colors(){
+        return colors;
+    }
 
-    public ColorAttribute color(){
+    public void addColor(ColorAttribute ca){
+        if (colors == null){
+            colors = new ArrayList();
+        }
+        colors.add(ca);
+    }
+
+    /*public ColorAttribute color(){
         return color;
     }
 
     public void color(ColorAttribute c){
         color = c;
-    }
+    }*/
 
     public int jimpleStartPos(){
         return jimpleStartPos;
@@ -92,14 +103,14 @@ public class Attribute {
     }
 
     public boolean hasColor(){
-        if (color() != null) return true;
+        if (colors != null) return true;
         else return false;
     }
 
     ArrayList texts;
     ArrayList links;
 
-    public void addText(String s){
+    public void addText(StringAttribute s){
         if (texts == null) {
             texts = new ArrayList();
         }
@@ -134,12 +145,14 @@ public class Attribute {
 		else if (t instanceof LinkTag) {
 			LinkTag lt = (LinkTag)t;
 			Host h = lt.getLink();
-            LinkAttribute link = new LinkAttribute(lt.toString(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName());
+            LinkAttribute link = new LinkAttribute(lt.getInfo(), getJimpleLnOfHost(h), getJavaLnOfHost(h), lt.getClassName(), lt.getAnalysisType());
             addLink(link);
 
 		}
 		else if (t instanceof StringTag) {
-            addText(formatForXML(((StringTag)t).toString()));
+            StringTag st = (StringTag)t;
+            StringAttribute string = new StringAttribute(formatForXML(st.getInfo()), st.getAnalysisType());
+            addText(string);
 		}
         else if (t instanceof PositionTag){
 			PositionTag pt = (PositionTag)t;
@@ -148,15 +161,18 @@ public class Attribute {
 		}
 		else if (t instanceof ColorTag){
 			ColorTag ct = (ColorTag)t;
-            ColorAttribute ca = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground());
-            color(ca);
+            ColorAttribute ca = new ColorAttribute(ct.getRed(), ct.getGreen(), ct.getBlue(), ct.isForeground(), ct.getAnalysisType());
+            //color(ca);
+            addColor(ca);
 		}
         else if (t instanceof SourcePositionTag){
         }
         else if (t instanceof SourceLineNumberTag){
         }
 		else {
-            addText(t.toString());
+            System.out.println("t is: "+t.getClass());
+            StringAttribute sa = new StringAttribute(t.toString(), t.getName());
+            addText(sa);
 		}
         
     }
@@ -165,6 +181,7 @@ public class Attribute {
 		in = StringTools.replaceAll(in, "<", "&lt;");
 		in = StringTools.replaceAll(in, ">", "&gt;");
 		in = StringTools.replaceAll(in, "&", "&amp;");
+        in = StringTools.replaceAll(in, "\"", "&quot;");
 		return in;
 	}
 	
@@ -201,7 +218,7 @@ public class Attribute {
     }
 
     public void print(PrintWriter writerOut){
-        if (color() == null && texts == null && links == null) {
+        if (colors == null && texts == null && links == null) {
             //System.out.println("no data found for: ");
             //System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
             //System.out.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
@@ -210,20 +227,25 @@ public class Attribute {
         writerOut.println("<attribute>");
         writerOut.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
         writerOut.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
-        if (color() != null){
-            writerOut.println("<color r=\""+color().red()+"\" g=\""+color().green()+"\" b=\""+color().blue()+"\" fg=\""+color().fg()+"\"/>");
+        if (colors != null){
+            Iterator cIt = colors.iterator();
+            while (cIt.hasNext()){
+                ColorAttribute ca = (ColorAttribute)cIt.next();
+                writerOut.println("<color r=\""+ca.red()+"\" g=\""+ca.green()+"\" b=\""+ca.blue()+"\" fg=\""+ca.fg()+"\" aType=\""+ca.analysisType()+"\"/>");
+            }
         }
         if (texts != null){
             Iterator textsIt = texts.iterator();
             while (textsIt.hasNext()){
-                writerOut.println("<text>"+(String)textsIt.next()+"</text>");
+                StringAttribute sa = (StringAttribute)textsIt.next();
+                writerOut.println("<text info=\""+sa.info()+"\" aType=\""+sa.analysisType()+"\"/>");
             }
         }
         if (links != null){
             Iterator linksIt = links.iterator();
             while (linksIt.hasNext()){
                 LinkAttribute la = (LinkAttribute)linksIt.next();
-                writerOut.println("<link label=\""+formatForXML(la.info())+"\" jmpLink=\""+la.jimpleLink()+"\" srcLink=\""+la.javaLink()+"\" clssNm=\""+la.className()+"\"/>");
+                writerOut.println("<link label=\""+formatForXML(la.info())+"\" jmpLink=\""+la.jimpleLink()+"\" srcLink=\""+la.javaLink()+"\" clssNm=\""+la.className()+"\" aType=\""+la.analysisType()+"\"/>");
             }
         }
         writerOut.println("</attribute>");

@@ -1050,4 +1050,10 @@ public class Singletons {
         return instanceReachingDefsTagger;
     }
 
+    private CFGPrinter instanceCFGPrinter;
+    public CFGPrinter CFGPrinter() {
+        if( instanceCFGPrinter == null ) instanceCFGPrinter = new CFGPrinter( g );
+        return instanceCFGPrinter;
+    }
+
 }

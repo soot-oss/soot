@@ -17,6 +17,8 @@ public class AnalysisKey {
 	private int green;
 	private int blue;
 	private String key;
+	private String type;
+	
 	/**
 	 * @return
 	 */
@@ -71,6 +73,20 @@ public class AnalysisKey {
 	 */
 	public void setRed(int i) {
 		red = i;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getType() {
+		return type;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setType(String string) {
+		type = string;
 	}
 
 }

@@ -27,6 +27,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 //import soot.*;
 import ca.mcgill.sable.soot.util.*;
+import java.util.*;
 
 /**
  * Runs Soot and creates Handler for Soot output.
@@ -36,6 +37,7 @@ public class SootRunner implements IRunnableWithProgress {
 	Display display;
 	String [] cmd;
 	String mainClass;
+	ArrayList cfgList;
 	
 	/**
 	 * Constructor for SootRunner.
@@ -74,7 +76,8 @@ public class SootRunner implements IRunnableWithProgress {
         	
         	
         	sootThread.join();
-            
+        	setCfgList(sootThread.getCfgList());
+            System.out.println("CFG List: "+getCfgList());
       	}
       	catch (Exception e) {
       		System.out.println(e.getStackTrace());
@@ -125,6 +128,20 @@ public class SootRunner implements IRunnableWithProgress {
 	 */
 	public void setMainClass(String string) {
 		mainClass = string;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getCfgList() {
+		return cfgList;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setCfgList(ArrayList list) {
+		cfgList = list;
 	}
 
 }

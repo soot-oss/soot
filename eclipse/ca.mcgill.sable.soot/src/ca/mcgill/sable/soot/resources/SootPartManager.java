@@ -17,8 +17,9 @@ import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ca.mcgill.sable.soot.attributes.*;
 import ca.mcgill.sable.soot.editors.JimpleEditor;
-import ca.mcgill.sable.soot.ui.AnalysisKeyView;
+import ca.mcgill.sable.soot.ui.*;
 import ca.mcgill.sable.soot.*;
+import java.util.*;
 
 
 /**
@@ -33,7 +34,7 @@ public class SootPartManager {
 	
 	public void updatePart(IEditorPart part){
 		
-		//System.out.println("part in update: "+part);
+		System.out.println("part in update: "+part);
 		if (part == null) return;
 		
 		if (part instanceof JimpleEditor){
@@ -64,11 +65,13 @@ public class SootPartManager {
 					saji.setRec((IFile)aac.getRec());
 					Thread iThread = new Thread(saji);
 					iThread.start();
+					handler.setUpdate(false);
 				}
 			}
-			//handleKeys(handler);
+			handleKeys(handler);
+			handleTypes(handler, (IFile)aac.getRec());
 		}
-		else {
+		else if (part instanceof AbstractTextEditor){
 			
 			IEditorInput input= ((AbstractTextEditor)part).getEditorInput();
 			IJavaElement jElem = (IJavaElement) ((IAdaptable) input).getAdapter(IJavaElement.class);
@@ -80,14 +83,14 @@ public class SootPartManager {
 			
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
-			//System.out.println("Part Manager for Java: Handler: "+handler);
+			System.out.println("Part Manager for Java: Handler: "+handler);
 			if (handler != null){
 				//System.out.println("java hanlder is not null");
 				//System.out.println("java should update for open?: "+isUpdateForOpen());
-				//System.out.println("java should update?: "+handler.isUpdate());
+				System.out.println("java should update?: "+handler.isUpdate());
 				if (isUpdateForOpen() || handler.isUpdate()){
 				
-					//System.out.println("updating colors");
+					System.out.println("updating colors");
 					//saji.removeOldMarkers((IFile)aac.getRec());
 					sajc.setEditorPart(part);
 					sajc.setViewer(viewer);
@@ -95,21 +98,85 @@ public class SootPartManager {
 					Thread cThread = new Thread(sajc);
 					cThread.start();
 				
-				
+					System.out.println("updating sa icons");
 					//sajc.computeColors();//handler, viewer, part);
 					saji.setHandler(handler);
 					saji.setRec((IFile)aac.getRec());
 					Thread iThread = new Thread(saji);
 					iThread.start();
 					//saji.addSootAttributeMarkers();//handler, (IFile)aac.getRec());
+					handler.setUpdate(false);
 				}
 				
 			}
 	
 			//System.out.println("active Ed: "+part.getTitle());
-			//handleKeys(handler);
+			handleKeys(handler);
+			handleTypes(handler, (IFile)aac.getRec());
 		}
 		setUpdateForOpen(false);
+	}
+	
+	private void handleTypes(SootAttributesHandler handler, IFile file){
+		System.out.println("handler all types: "+handler.isShowAllTypes());
+		System.out.println("handler types: "+handler.getTypesToShow());
+		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		ArrayList types = computeTypes(handler);
+		if (!types.isEmpty()){
+			IViewPart view = page.findView(ISootConstants.ANALYSIS_TYPES_VIEW_ID);
+			try {
+				if (view == null) {
+					//System.out.println("view part was null");
+					IWorkbenchPart activePart = page.getActivePart();
+					page.showView(ISootConstants.ANALYSIS_TYPES_VIEW_ID);
+					//restore focus stolen by the creation of the console
+					IViewPart shownPart = page.findView(ISootConstants.ANALYSIS_TYPES_VIEW_ID);
+		
+					if (shownPart != null){
+						((AnalysisTypeView)shownPart).setFile(file);
+						((AnalysisTypeView)shownPart).setAllTypesChecked(handler.isShowAllTypes());
+						((AnalysisTypeView)shownPart).setTypesChecked(handler.getTypesToShow());
+						((AnalysisTypeView)shownPart).setInputTypes(types);
+					}		
+					page.activate(activePart);
+				} 
+				else {
+					if (view != null){
+						//System.out.println("view part was not null");
+						((AnalysisTypeView)view).setFile(file);
+						((AnalysisTypeView)view).setAllTypesChecked(handler.isShowAllTypes());
+						((AnalysisTypeView)view).setTypesChecked(handler.getTypesToShow());
+						((AnalysisTypeView)view).setInputTypes(types);
+					}
+					page.bringToTop(view);
+				}
+			} 
+			catch (PartInitException pie) {
+				System.out.println(pie.getMessage());	
+			}
+			
+		}
+	}
+	
+	private ArrayList computeTypes(SootAttributesHandler handler){
+		ArrayList types = new ArrayList();
+		if ((handler != null) && (handler.getAttrList() != null)){
+			Iterator attrsIt = handler.getAttrList().iterator();
+			while (attrsIt.hasNext()){
+				SootAttribute sa = (SootAttribute)attrsIt.next();
+				//System.out.println("sa: "+sa);
+				Iterator typesIt = sa.getAnalysisTypes().iterator();
+				while (typesIt.hasNext()){
+					String val = (String)typesIt.next();
+					//System.out.println("will add: "+val+" if not there");
+					if (!types.contains(val)){
+						types.add(val);
+					}
+				}
+			}
+			
+		}
+		return types;
 	}
 	
 	private void handleKeys(SootAttributesHandler handler){
@@ -135,6 +202,7 @@ public class SootPartManager {
 					page.activate(activePart);
 				} 
 				else {
+					
 					if (viewPart != null){
 						//System.out.println("view part was not null");
 						((AnalysisKeyView)viewPart).setInputKeys(handler.getKeyList());

@@ -22,6 +22,11 @@ import org.eclipse.ui.texteditor.*;
  */
 public class JavaAttributesComputer extends AbstractAttributesComputer {
 
+	protected ArrayList computeNames(IFile file){
+		IJavaElement jElem = getJavaElement(file);
+		ICompilationUnit cu = (ICompilationUnit)jElem;
+		return getNames(cu);
+	}
 	
 	/**
 	 * compute top-level names
@@ -30,7 +35,11 @@ public class JavaAttributesComputer extends AbstractAttributesComputer {
 		IJavaElement jElem = getJavaElement(editor);
 		ArrayList names = new ArrayList();
 		ICompilationUnit cu = (ICompilationUnit)jElem;
-						
+		return getNames(cu);
+	}
+	
+	private ArrayList getNames(ICompilationUnit cu){
+		ArrayList names = new ArrayList();					
 		try {
 			IType [] topLevelDecls = cu.getTypes();
 			for (int i = 0; i < topLevelDecls.length; i++){
@@ -54,6 +63,10 @@ public class JavaAttributesComputer extends AbstractAttributesComputer {
 	public IJavaElement getJavaElement(AbstractTextEditor textEditor) {
 		IEditorInput input= textEditor.getEditorInput();
 		return (IJavaElement) ((IAdaptable) input).getAdapter(IJavaElement.class);
+	}
+	
+	public IJavaElement getJavaElement(IFile file) {
+		return (IJavaElement) ((IAdaptable) file).getAdapter(IJavaElement.class);
 	}
 	
 	

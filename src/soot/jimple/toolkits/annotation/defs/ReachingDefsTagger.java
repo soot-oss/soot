@@ -31,7 +31,7 @@ public class ReachingDefsTagger extends BodyTransformer {
                     while (rDefsIt.hasNext()){
                         Stmt next = (Stmt)rDefsIt.next();
                         String info = l+" has reaching def: "+next.toString();
-                        s.addTag(new LinkTag(info, next, b.getMethod().getDeclaringClass().getName()));
+                        s.addTag(new LinkTag(info, next, b.getMethod().getDeclaringClass().getName(), "Reaching Defs"));
                     }
                 }
             }
