@@ -1023,7 +1023,8 @@ public class Options extends OptionsBase {
                 +padOpt( "safe-forname (true)", "Handle Class.forName() calls conservatively" )
                 +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
-                +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." );
+                +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
+                +padOpt( "trim-clinit (true)", "Remove redundant static initializer calls." );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -1550,7 +1551,8 @@ public class Options extends OptionsBase {
                 +"safe-forname "
                 +"safe-newinstance "
                 +"verbose "
-                +"all-reachable ";
+                +"all-reachable "
+                +"trim-clinit ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -1900,7 +1902,8 @@ public class Options extends OptionsBase {
               +"safe-forname:true "
               +"safe-newinstance:true "
               +"verbose:false "
-              +"all-reachable:false ";
+              +"all-reachable:false "
+              +"trim-clinit:true ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

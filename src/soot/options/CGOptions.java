@@ -111,5 +111,23 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "all-reachable" );
     }
     
+    /** Trim Static Initializer Edges --
+    
+     * Remove redundant static initializer calls..
+    
+     * The call graph contains an edge from each statement that could 
+     * trigger execution of a static initializer to that static 
+     * initializer. However, each static initializer is triggered only 
+     * once. When this option is enabled, after the call graph is 
+     * built, an intra-procedural analysis is performed to detect 
+     * static initializer edges leading to methods that must have 
+     * already been executed. Since these static initializers cannot be 
+     * executed again, the corresponding call graph edges are removed 
+     * from the call graph. 
+     */
+    public boolean trim_clinit() {
+        return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
+    }
+    
 }
         

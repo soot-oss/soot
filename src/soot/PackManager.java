@@ -41,6 +41,7 @@ import soot.jimple.toolkits.annotation.parity.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
@@ -77,7 +78,7 @@ public class PackManager {
         }
 
         // Call graph pack
-        addPack(p = new RadioScenePack("cg"));
+        addPack(p = new CallGraphPack("cg"));
         {
             p.add(new Transform("cg.cha", CHATransformer.v()));
             p.add(new Transform("cg.spark", SparkTransformer.v()));

@@ -843,6 +843,20 @@ are assumed not to call the constructor of the created object.
                                         <short_desc>Assume all methods of application classes are reachable.</short_desc>
                                         <long_desc>When this option is false, the call graph is built starting at a set of entry points, and only methods reachable from those entry points are processed. Unreachable methods will not have any call graph edges generated out of them. Setting this option to true makes Soot consider all methods of application classes to be reachable, so call edges are generated for all of them. This leads to a larger call graph. For program visualization purposes, it is sometimes desirable to include edges from unreachable methods; although these methods are unreachable in the version being analyzed, they may become reachable if the program is modified.</long_desc>
                                 </boolopt>
+                                <boolopt>
+                                        <name>Trim Static Initializer Edges</name>
+                                        <alias>trim-clinit</alias>
+                                        <default>true</default>
+                                        <short_desc>Remove redundant static initializer calls.</short_desc>
+                                        <long_desc>The call graph contains an edge
+from each statement that could trigger execution of a static initializer to that
+static initializer. However, each static initializer is triggered only once.
+When this option is enabled, after the call graph is built, an intra-procedural
+analysis is performed to detect static initializer edges leading to methods
+that must have already been executed. Since these static initializers cannot be
+executed again, the corresponding call graph edges are removed from the call graph.
+</long_desc>
+                                </boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
