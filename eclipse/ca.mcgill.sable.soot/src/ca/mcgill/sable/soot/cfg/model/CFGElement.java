@@ -18,7 +18,7 @@ import java.beans.*;
  */
 public class CFGElement implements IPropertySource {
 
-	public static final String WIDTH = "node width";
+	//public static final String WIDTH = "node width";
 	public static final String TEXT = "node text";
 	public static final String CHILDREN = "children";
 	public static final String INPUTS = "inputs";
@@ -28,6 +28,11 @@ public class CFGElement implements IPropertySource {
 	public static final String BEFORE_INFO = "before";
 	public static final String AFTER_INFO = "after";
 	public static final String NEW_FLOW_DATA = "new_flow_data";
+	public static final String FLOW_INFO = "flow_info";
+	public static final String FLOW_CHILDREN = "flow_children";
+	public static final String NODE_DATA = "node_data";
+	
+	public static final String REVEAL = "reveal";
 	
 	protected PropertyChangeSupport listeners = new PropertyChangeSupport(this);
 	

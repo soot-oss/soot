@@ -11,6 +11,7 @@ import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import ca.mcgill.sable.soot.interaction.*;
+import org.eclipse.ui.*;
 
 /**
  * @author jlhotak
@@ -27,6 +28,12 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
+	private StepForwardAction stepForward;
+	private StepBackwardAction stepBackward;
+	private FinishMethodAction finishMethod;
+	private NextMethodAction nextMethod;
+	private FlowSelectAction flowSelect;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
@@ -35,6 +42,18 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		// TODO Auto-generated method stub
 		addRetargetAction(new ZoomInRetargetAction());
 		addRetargetAction(new ZoomOutRetargetAction());
+		
+		flowSelect = new FlowSelectAction(null);
+		addAction(flowSelect);
+		
+		stepForward = new StepForwardAction(null);
+		addAction(stepForward);
+		stepBackward = new StepBackwardAction(null);
+		addAction(stepBackward);
+		finishMethod = new FinishMethodAction(null);
+		addAction(finishMethod);
+		nextMethod = new NextMethodAction(null);
+		addAction(nextMethod);
 		
 	}
 
@@ -47,12 +66,16 @@ public class CFGActionBarContributor extends ActionBarContributor {
 	}
 	
 	//  this is for zoom toolbar buttons
-	/*public void contributeToToolBar(IToolBarManager toolBarManager){
+	public void contributeToToolBar(IToolBarManager toolBarManager){
 		super.contributeToToolBar(toolBarManager);
 		
 		toolBarManager.add(new Separator());
-		toolBarManager.add(new InteractionContinuer());	
-	}*/
+		toolBarManager.add(getAction(StepForwardAction.STEP_FORWARD));
+		toolBarManager.add(getAction(StepBackwardAction.STEP_BACKWARD));
+		toolBarManager.add(getAction(FinishMethodAction.FINISH_METHOD));	
+		toolBarManager.add(getAction(NextMethodAction.NEXT_METHOD));	
+
+	}
 	
 	public void contributeToMenu(IMenuManager menuManager){
 		super.contributeToMenu(menuManager);
@@ -64,5 +87,13 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		menuManager.insertAfter(IWorkbenchActionConstants.M_EDIT, viewMenu);
 	}
 	
+	public void setActiveEditor(IEditorPart editor) { 
+		super.setActiveEditor(editor); 
+		stepForward.setEditorPart( editor );
+		stepBackward.setEditorPart(editor);
+		finishMethod.setEditorPart(editor);
+		nextMethod.setEditorPart(editor);
+		flowSelect.setEditorPart(editor);
+	}
 
 }

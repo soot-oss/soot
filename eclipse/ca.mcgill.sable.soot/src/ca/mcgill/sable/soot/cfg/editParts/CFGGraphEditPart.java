@@ -82,7 +82,7 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 	}
 	
 	public void contributeNodesToGraph(DirectedGraph graph, HashMap map){
-		System.out.println("adding nodes to graph - graph");
+		//System.out.println("adding nodes to graph - graph");
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();
@@ -198,4 +198,7 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 		figureWidth = i;
 	}
 
+	public void handleClickEvent(Object evt){
+		((CFGGraph)getModel()).handleClickEvent(evt);
+	}
 }

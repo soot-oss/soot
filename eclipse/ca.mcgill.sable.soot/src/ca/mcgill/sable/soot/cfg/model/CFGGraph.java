@@ -112,4 +112,16 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 		firePropertyChange(CFGElement.NEW_FLOW_DATA, null);
 	}
 
+	public void handleClickEvent(Object evt){
+		Iterator it = getChildren().iterator();
+		while (it.hasNext()){
+			CFGNode child = (CFGNode)it.next();
+			ArrayList list = child.getData().getText();
+			if (list.size() == 1){
+				if (list.get(0).equals(evt)){
+					child.handleClickEvent(evt);
+				}
+			}
+		}
+	}
 }

@@ -270,7 +270,7 @@
                enablesFor="+"
                id="CFG Tests">
          </action>
-         <action
+         <!--<action
    			label="Continue"
    			style="push"
    			icon="icons/resume_co.gif"
@@ -287,7 +287,7 @@
    			toolbarPath="Normal/Soot"
    			class="ca.mcgill.sable.soot.interaction.InteractionBackStepper"
    			id="ca.mcgill.sable.soot.stepback">
-   		</action>
+   		</action>-->
         <!-- <action
                label="Visualiztion Manipulations"
                class="ca.mcgill.sable.soot.attributes.VisManLauncher"

@@ -245,13 +245,14 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                     }
                     flowThrough(beforeFlow, s, (List) afterFallFlow, (List) afterBranchFlow);
                     if (Options.v().interactive_mode()){
-                        Object aSavedFlow = newInitialFlow();
-                        copy(afterFallFlow, aSavedFlow);
-                        Object bSavedFlow = newInitialFlow();
-                        copy(afterBranchFlow, bSavedFlow);
-                        List l = (List)aSavedFlow;
+                        //Object aSavedFlow = newInitialFlow();
+                        //copy(afterFallFlow, aSavedFlow);
+                        //Object bSavedFlow = newInitialFlow();
+                        //copy(afterBranchFlow, bSavedFlow);
+                        List l = new ArrayList();
                         if (s instanceof soot.jimple.IfStmt){
-                            l.addAll((List)bSavedFlow);
+                            l.addAll((List)afterFallFlow);
+                            l.addAll((List)afterBranchFlow);
                         }
                         FlowInfo fi = new FlowInfo(l, s, false);
                         InteractionHandler.v().handleAfterAnalysisEvent(fi);

@@ -48,6 +48,9 @@ public class BodyPack extends Pack
                 InteractionHandler.v().handleNewAnalysis(t, b);
             }
             t.apply(b);
+            if (Options.v().interactive_mode()){
+                InteractionHandler.v().handleTransformDone(t, b);
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import org.eclipse.gef.palette.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
 
+import java.util.*;
 
 /**
  * @author jlhotak
@@ -161,6 +162,7 @@ public class CFGEditor extends GraphicalEditor {
 	public void setTitleTooltip(String text){
 		super.setTitleToolTip(text);
 	}
+	
 	
 	
 }

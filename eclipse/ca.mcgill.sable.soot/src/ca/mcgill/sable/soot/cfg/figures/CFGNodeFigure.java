@@ -22,14 +22,14 @@ import ca.mcgill.sable.soot.editors.*;
 public class CFGNodeFigure extends Figure {
 
 	private Panel nodeFigure;//RectangleFigure rect;
-	private RectangleFigure rect;
-	private Label beforeLabel;
-	private Label afterLabel;
+	//private RectangleFigure rect;
+	//private Label beforeLabel;
+	//private Label afterLabel;
 	
-	private int width;
-	private ArrayList data;
-	private String before;
-	private String after;
+	//private int width;
+	private CFGNodeDataFigure data;
+	private CFGFlowFigure before;
+	private CFGFlowFigure after;
 	
 	private boolean hasBefore;
 	private boolean hasAfter;
@@ -42,27 +42,33 @@ public class CFGNodeFigure extends Figure {
 	 */
 	public CFGNodeFigure() {
 		super();
-		setRect(new RectangleFigure());
-		setNodeFigure(new Panel());
+		
+		//setRect(new RectangleFigure());
+		//setNodeFigure(new Panel());
 		//Font f = new Font(null, "Arial", 8, SWT.NORMAL);
 		
-		setBeforeLabel(new Label());
-		getBeforeLabel().setFont(f);
-		this.add(getRect());
+		//setBeforeLabel(new Label());
+		//getBeforeLabel().setFont(f);
+		//this.add(getRect());
 		
-		setAfterLabel(new Label());
-		getAfterLabel().setFont(f);
+		//setAfterLabel(new Label());
+		//getAfterLabel().setFont(f);
+		
+		//getNodeFigure().add(getBefore());
+		//getNodeFigure().add(getData());
+		//getNodeFigure().add(getAfter());
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
 	
 		this.setLayoutManager(layout);
-		getRect().setLayoutManager(layout);
+		//getNodeFigure().setLayoutManager(layout);
 		layout.setStretchMinorAxis(false);
+	
 	}
 	
 	public void resetColors(){
-		getBeforeLabel().setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,0,0)));	
-		getAfterLabel().setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,0,0)));	
+	//	getBeforeLabel().setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,0,0)));	
+	//	getAfterLabel().setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,0,0)));	
 		
 	}
 	
@@ -70,7 +76,7 @@ public class CFGNodeFigure extends Figure {
 		return text.lastIndexOf(" ", 50);
 	}
 	
-	public void addBeforeFigure(){
+	/*public void addBeforeFigure(){
 		if (getBefore() != null){
 			int height = this.getSize().height;
 			
@@ -84,7 +90,7 @@ public class CFGNodeFigure extends Figure {
 				System.out.println("part: "+part);			
 			}
 			*/
-			getBeforeLabel().setText(getBefore());
+		/*	getBeforeLabel().setText(getBefore());
 			getBeforeLabel().setForegroundColor(SootPlugin.getDefault().getColorManager().getColor(new RGB(0,153,0)));
 			if (getBefore().length()*7 > getWidth()){
 				setWidth(getBefore().length()*7);
@@ -100,7 +106,7 @@ public class CFGNodeFigure extends Figure {
 		}
 	}
 	
-	public void addAfterFigure(){
+	/*public void addAfterFigure(){
 		if (getAfter() != null){
 			int height = this.getSize().height;//getNodeFigure().getBounds().height;
 			getAfterLabel().setText(getAfter());
@@ -116,98 +122,11 @@ public class CFGNodeFigure extends Figure {
 			}
 			this.setSize(getWidth()+10, height);
 		}
-	}
-	
-	public void updateFigure(){
-		if (getData() == null) return;
-		
-		int height = 0;
-		Iterator it = getData().iterator();
-		while (it.hasNext()){
-			String next = (String)it.next();
-			Label l = new Label(next);
-			l.setFont(f);
-			l.getInsets().top = 1;
-			l.getInsets().bottom = 1;
-			l.getInsets().right = 1;
-			l.getInsets().left = 1;
-			height = height + l.getSize().height/2;
-			getRect().add(l);
-			
-		}
-			
-		getRect().setSize(getWidth()+10, height+10);
-		this.setSize(getWidth()+10, height+10);
-		
-	}
-
-	
-	/**
-	 * @return
-	 */
-	public RectangleFigure getRect() {
-		return rect;
-	}
-
-	
+	}*/
 	
 	
 
-	/**
-	 * @return
-	 */
-	public ArrayList getData() {
-		return data;
-	}
 
-	/**
-	 * @return
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * @param list
-	 */
-	public void setData(ArrayList list) {
-		data = list;
-	}
-
-	/**
-	 * @param i
-	 */
-	public void setWidth(int i) {
-		width = i;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getAfter() {
-		return after;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getBefore() {
-		return before;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setAfter(String string) {
-		after = string;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setBefore(String string) {
-		before = string;
-	}
 
 	/**
 	 * @return
@@ -223,67 +142,50 @@ public class CFGNodeFigure extends Figure {
 		nodeFigure = panel;
 	}
 
+
+
+	
+
 	/**
 	 * @param figure
 	 */
-	public void setRect(RectangleFigure figure) {
-		rect = figure;
+	public void setAfter(CFGFlowFigure figure) {
+		after = figure;
+	}
+
+	/**
+	 * @param figure
+	 */
+	public void setBefore(CFGFlowFigure figure) {
+		before = figure;
+	}
+
+	/**
+	 * @param figure
+	 */
+	public void setData(CFGNodeDataFigure figure) {
+		data = figure;
 	}
 
 	/**
 	 * @return
 	 */
-	public Label getAfterLabel() {
-		return afterLabel;
+	public CFGFlowFigure getAfter() {
+		return after;
 	}
 
 	/**
 	 * @return
 	 */
-	public Label getBeforeLabel() {
-		return beforeLabel;
-	}
-
-	/**
-	 * @param label
-	 */
-	public void setAfterLabel(Label label) {
-		afterLabel = label;
-	}
-
-	/**
-	 * @param label
-	 */
-	public void setBeforeLabel(Label label) {
-		beforeLabel = label;
+	public CFGFlowFigure getBefore() {
+		return before;
 	}
 
 	/**
 	 * @return
 	 */
-	public boolean isHasAfter() {
-		return hasAfter;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isHasBefore() {
-		return hasBefore;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setHasAfter(boolean b) {
-		hasAfter = b;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setHasBefore(boolean b) {
-		hasBefore = b;
+	public CFGNodeDataFigure getData() {
+		return data;
 	}
 
 }

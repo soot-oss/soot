@@ -14,6 +14,7 @@ public class InteractionHandler {
             String name = t.getPhaseName()+" for method: "+b.getMethod().getName();
             currentPhaseName(name);
             currentPhaseEnabled(true);
+            doneCurrent(false);
         }
         else {
             currentPhaseEnabled(false);
@@ -23,6 +24,7 @@ public class InteractionHandler {
 
     public void handleCfgEvent(DirectedGraph g){
         if (currentPhaseEnabled()){
+            G.v().out.println("Analyzing: "+currentPhaseName());
             doInteraction(new InteractionEvent(IInteractionConstants.NEW_ANALYSIS, currentPhaseName()));
         }
         if (isInteractThisAnalysis()){
@@ -32,16 +34,33 @@ public class InteractionHandler {
 
     public void handleBeforeAnalysisEvent(Object beforeFlow){
         if (isInteractThisAnalysis()){
-            doInteraction(new InteractionEvent(IInteractionConstants.NEW_BEFORE_ANALYSIS_INFO, beforeFlow));
+            if (autoCon()){
+                doInteraction(new InteractionEvent(IInteractionConstants.NEW_BEFORE_ANALYSIS_INFO_AUTO, beforeFlow));
+            }
+            else{
+                doInteraction(new InteractionEvent(IInteractionConstants.NEW_BEFORE_ANALYSIS_INFO, beforeFlow));
+            }
         }
     }
 
     public void handleAfterAnalysisEvent(Object afterFlow){
         if (isInteractThisAnalysis()){
-            doInteraction(new InteractionEvent(IInteractionConstants.NEW_AFTER_ANALYSIS_INFO, afterFlow));
+            if (autoCon()){
+                doInteraction(new InteractionEvent(IInteractionConstants.NEW_AFTER_ANALYSIS_INFO_AUTO, afterFlow));
+            }
+            else {
+                doInteraction(new InteractionEvent(IInteractionConstants.NEW_AFTER_ANALYSIS_INFO, afterFlow));
+            }
         }
     }
 
+    public void handleTransformDone(Transform t, Body b){
+        doneCurrent(true);
+        if (isInteractThisAnalysis()){
+            doInteraction(new InteractionEvent(IInteractionConstants.DONE, null));
+        }
+    }
+    
     private synchronized void doInteraction(InteractionEvent event){
         getInteractionListener().setEvent(event);
         getInteractionListener().handleEvent();
@@ -96,5 +115,21 @@ public class InteractionHandler {
     }
     public boolean currentPhaseEnabled(){
         return currentPhaseEnabled;
+    }
+
+    private boolean doneCurrent;
+    public void doneCurrent(boolean b){
+        doneCurrent = b;
+    }
+    public boolean doneCurrent(){
+        return doneCurrent;
+    }
+
+    private boolean autoCon;
+    public void autoCon(boolean b){
+        autoCon = b;
+    }
+    public boolean autoCon(){
+        return autoCon;
     }
 }

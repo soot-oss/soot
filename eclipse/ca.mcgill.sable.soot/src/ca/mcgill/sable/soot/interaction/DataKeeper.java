@@ -99,6 +99,20 @@ public class DataKeeper {
 		return true;
 	}
 	
+	public boolean canGoBack(){
+		System.out.println("first cond");
+		if (getFlowInfoList() == null) return false;
+		System.out.println("second cond");
+		
+		if (getFlowInfoList().size() == 0) return false;
+		System.out.println("third cond");
+		
+		if (getCurrent().equals(getFlowInfoList().get(0))) return false;
+		System.out.println("fourth cond");
+		
+		return true;
+	}
+	
 	public void stepForward(){
 		int index = getFlowInfoList().indexOf(getCurrent());
 		FlowInfo next = (FlowInfo)getFlowInfoList().get(index+1);
@@ -106,7 +120,16 @@ public class DataKeeper {
 		getController().handleEvent();
 		setCurrent(next);
 		
-		
+	}
+	
+	public void stepForwardAuto(){
+		int index = getFlowInfoList().indexOf(getCurrent());
+		for (int i = index + 1; i < getFlowInfoList().size(); i++){
+			FlowInfo next = (FlowInfo)getFlowInfoList().get(i);
+			getController().setEvent(new InteractionEvent(IInteractionConstants.REPLACE, next));
+			getController().handleEvent();
+			setCurrent(next);
+		}
 	}
 	
 	/**

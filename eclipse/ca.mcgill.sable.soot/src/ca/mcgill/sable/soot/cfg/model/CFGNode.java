@@ -18,20 +18,14 @@ import org.eclipse.draw2d.graph.*;
  */
 public class CFGNode extends CFGElement {
 
-	private boolean head;
-	private boolean tail;
-	private ArrayList succs;
-	private ArrayList preds;
-	private int xpos;
-	private int ypos;
-	private int width;
-	private Object in_out_gen_kill;
-	private ArrayList text;
+	
 	private ArrayList inputs = new ArrayList();
 	private ArrayList outputs = new ArrayList();
-	private String before;
-	private String after;
+	private CFGFlowData before;
+	private CFGFlowData after;
+	private CFGNodeData data;
 	
+	private ArrayList children = new ArrayList();
 	
 	/**
 	 * 
@@ -49,141 +43,6 @@ public class CFGNode extends CFGElement {
 	public void addOutput(CFGEdge output){
 		getOutputs().add(output);
 		fireStructureChange(CFGElement.OUTPUTS, output);
-	}
-	
-	public String toString(){
-		return getText().toString();
-	}
-	
-	/**
-	 * @return
-	 */
-	public boolean isHead() {
-		return head;
-	}
-
-	/**
-	 * @return
-	 */
-	public Object getIn_out_gen_kill() {
-		return in_out_gen_kill;
-	}
-
-	/**
-	 * @return
-	 */
-	public ArrayList getPreds() {
-		return preds;
-	}
-
-	/**
-	 * @return
-	 */
-	public ArrayList getSuccs() {
-		return succs;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean isTail() {
-		return tail;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getWidth() {
-		return width;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getXpos() {
-		return xpos;
-	}
-
-	/**
-	 * @return
-	 */
-	public int getYpos() {
-		return ypos;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setHead(boolean b) {
-		head = b;
-		firePropertyChange(HEAD, new Boolean(head));
-	}
-
-	/**
-	 * @param object
-	 */
-	public void setIn_out_gen_kill(Object object) {
-		in_out_gen_kill = object;
-	}
-
-	/**
-	 * @param list
-	 */
-	public void setPreds(ArrayList list) {
-		preds = list;
-	}
-
-	/**
-	 * @param list
-	 */
-	public void setSuccs(ArrayList list) {
-		succs = list;
-	}
-
-	/**
-	 * @param b
-	 */
-	public void setTail(boolean b) {
-		tail = b;
-		firePropertyChange(TAIL, new Boolean(tail));
-	}
-
-	/**
-	 * @param i
-	 */
-	public void setWidth(int i) {
-		width = i;
-		firePropertyChange(WIDTH, new Integer(width));
-	}
-
-	/**
-	 * @param i
-	 */
-	public void setXpos(int i) {
-		xpos = i;
-	}
-
-	/**
-	 * @param i
-	 */
-	public void setYpos(int i) {
-		ypos = i;
-	}
-
-	/**
-	 * @return
-	 */
-	public ArrayList getText() {
-		return text;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setText(ArrayList list) {
-		
-		text = list;
-		firePropertyChange(TEXT, text);
 	}
 
 	/**
@@ -217,31 +76,75 @@ public class CFGNode extends CFGElement {
 	/**
 	 * @return
 	 */
-	public String getAfter() {
+	public CFGFlowData getAfter() {
 		return after;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getBefore() {
+	public CFGFlowData getBefore() {
 		return before;
 	}
 
 	/**
 	 * @param string
 	 */
-	public void setAfter(String string) {
-		after = string;
+	public void setAfter(CFGFlowData data) {
+		after = data;
+		int last = getChildren().size() - 1;
+		if (getChildren().get(last) instanceof CFGFlowData){
+			getChildren().remove(last);
+		}
+		getChildren().add(after);
+		
 		firePropertyChange(AFTER_INFO, after);
 	}
 
 	/**
 	 * @param string
 	 */
-	public void setBefore(String string) {
-		before = string;
+	public void setBefore(CFGFlowData data) {
+		before = data;
+		if (getChildren().get(0) instanceof CFGFlowData){
+			getChildren().remove(0);
+		}
+		getChildren().add(0, before);
+		
 		firePropertyChange(BEFORE_INFO, before);
 	}
 
+	/**
+	 * @return
+	 */
+	public CFGNodeData getData() {
+		return data;
+	}
+
+	/**
+	 * @param data
+	 */
+	public void setData(CFGNodeData data) {
+		this.data = data;
+		getChildren().add(data);
+		firePropertyChange(NODE_DATA, data);
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getChildren() {
+		return children;
+	}
+
+	/**
+	 * @param list
+	 */
+	public void setChildren(ArrayList list) {
+		children = list;
+	}
+
+	public void handleClickEvent(Object evt){
+		firePropertyChange(REVEAL, this);
+	}
 }
