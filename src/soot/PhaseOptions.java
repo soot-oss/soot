@@ -166,6 +166,10 @@ public class PhaseOptions {
         }
     }
     private boolean checkParentEnabled( String phaseName ) {
+        if( true ) return true;
+        // This check for the parent being enabled
+        // has been taken out, because it caused problems with the order in
+        // which the options are specified.
         for( Iterator pIt = PackManager.v().allPacks().iterator(); pIt.hasNext(); ) {
             final Pack p = (Pack) pIt.next();
             if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue;
