@@ -215,6 +215,16 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             return r instanceof InstanceFieldRef || r instanceof StaticFieldRef;
     } // end isAlwaysTop
 
+    private final boolean isAlwaysNonNull(Value ro) {
+        if( ro instanceof NewExpr ) return true;
+        if( ro instanceof NewArrayExpr ) return true;
+        if( ro instanceof NewMultiArrayExpr ) return true;
+        if( ro instanceof ThisRef ) return true;
+        if( ro instanceof CaughtExceptionRef ) return true;
+        return false;
+    }
+
+
 
     // isAnalyzedRef returns true if the reference r is to be analyzed by this analysis
     // i.e. its value is not always known (or undecidable)
@@ -263,6 +273,8 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
             return kNull;
         else if (isAlwaysTop(r))
             return kTop;
+        else if( isAlwaysNonNull(r) )
+            return kNonNull;
         else
             return refInfo(r, f);
     } // end anyRefInfo
@@ -621,11 +633,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
                     ro = ((CastExpr) ro).getOp();
                 
                 if (isAnalyzedRef(lo)) {
-                    if (ro instanceof NewExpr ||
-                        ro instanceof NewArrayExpr ||
-                        ro instanceof NewMultiArrayExpr ||
-                        ro instanceof ThisRef ||
-                        ro instanceof CaughtExceptionRef) {
+                    if (isAlwaysNonNull(ro)) {
                         uAddInfoToFlowSet(lo, kNonNull, genSet, preSet);
                     } else if (isAlwaysNull(ro)) {
                         uAddInfoToFlowSet(lo, kNull, genSet, preSet);
