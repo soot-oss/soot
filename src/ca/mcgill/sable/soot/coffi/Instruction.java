@@ -134,7 +134,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public abstract class Instruction {
+ abstract class Instruction {
    
    /** String used to separate arguments in printing. */
    public static final String argsep = " ";

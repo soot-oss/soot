@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Putstatic extends Instruction_intindex {
+class Instruction_Putstatic extends Instruction_intindex {
    public Instruction_Putstatic() { super((byte)ByteCode.PUTSTATIC); name = "putstatic"; }
 }

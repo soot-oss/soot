@@ -108,7 +108,7 @@ import java.io.*;
  * @see ClassFile
  * @author Clark Verbrugge
  */
-public class field_info {
+class field_info {
    /** Access flags for this field. */
    public short access_flags;
    /** Constant pool index of the name of this field. 

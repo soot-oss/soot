@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lushr extends Instruction_noargs {
+class Instruction_Lushr extends Instruction_noargs {
    public Instruction_Lushr() { super((byte)ByteCode.LUSHR); name = "lushr"; }
 }

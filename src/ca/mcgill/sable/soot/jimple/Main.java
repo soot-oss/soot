@@ -98,7 +98,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
@@ -166,7 +166,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version dev0pt0.1");
+            System.out.println("Jimple version dev0pt0.2");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");  
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -256,7 +256,7 @@ public class Main
             
             for(int i = firstNonOption; i < args.length; i++)
             {
-                BClass c = cm.getClass(args[i]);
+                SootClass c = cm.getClass(args[i]);
                 String postFix;
                 PrintWriter writerOut = null;
                 FileOutputStream streamOut = null;
@@ -292,7 +292,7 @@ public class Main
                     try {   
                         while(methodIt.hasNext())
                         {
-                            Method m = (Method) methodIt.next();                        
+                            SootMethod m = (SootMethod) methodIt.next();                        
                             StmtListBody listBody = new StmtListBody(m.getInstListBody());
                     
                             listBodies.add(listBody);        
@@ -417,7 +417,7 @@ public class Main
 
     }
         
-    private static void handleClass(BClass c, String postFix, PrintWriter writerOut)
+    private static void handleClass(SootClass c, String postFix, PrintWriter writerOut)
     {
         if(postFix.equals(".jasmin"))
             new JasminClass(c).print(writerOut);

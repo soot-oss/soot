@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_longbranch extends Instruction {
+class Instruction_longbranch extends Instruction {
    public int arg_i;
    public Instruction target;
    public Instruction_longbranch(byte c) { super(c); branches = true; }

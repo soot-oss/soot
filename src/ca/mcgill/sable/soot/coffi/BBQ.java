@@ -110,7 +110,7 @@ import java.util.NoSuchElementException;
  * @author Clark Verbrugge
  * @see BasicBlock
  */
-public final class BBQ {
+final class BBQ {
    
    private Vector q = new Vector();
    

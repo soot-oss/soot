@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Sipush extends Instruction_int {
+class Instruction_Sipush extends Instruction_int {
    public Instruction_Sipush() { super((byte)ByteCode.SIPUSH); name = "sipush"; }
    public Instruction_Sipush(int i) { this(); arg_i = i; }
 }

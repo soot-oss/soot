@@ -108,7 +108,7 @@ import java.io.*;
  * @see LocalVariableTable_attribute
  * @author Clark Verbrugge
  */
-public class local_variable_table_entry {
+class local_variable_table_entry {
    /** Code offset of start of code wherein this entry applies. */
    public short start_pc;
    /** Length of code sequence in which this name applies. */

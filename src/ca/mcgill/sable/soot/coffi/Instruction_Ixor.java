@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ixor extends Instruction_noargs {
+class Instruction_Ixor extends Instruction_noargs {
    public Instruction_Ixor() { super((byte)ByteCode.IXOR); name = "ixor"; }
 }

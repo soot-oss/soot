@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_NameAndType_info extends cp_info {
+class CONSTANT_NameAndType_info extends cp_info {
    /** Constant pool index of the CONSTANT_Utf8 object for the name.
     * @see CONSTANT_Utf8_info
     */

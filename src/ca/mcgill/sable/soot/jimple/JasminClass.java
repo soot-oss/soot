@@ -106,7 +106,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
@@ -137,7 +137,7 @@ class JasminClass
             return 1;
     }
 
-    int argCountOf(Method m)
+    int argCountOf(SootMethod m)
     {
         int argCount = 0;
         Iterator typeIt = m.getParameterTypes().iterator();
@@ -228,7 +228,7 @@ class JasminClass
         
     }
     
-    String jasminDescriptorOf(Method m)
+    String jasminDescriptorOf(SootMethod m)
     {
         StringBuffer buffer = new StringBuffer();
         
@@ -264,49 +264,49 @@ class JasminClass
             System.out.println(s);
     }
 
-    public JasminClass(BClass BClass)
+    public JasminClass(SootClass SootClass)
     {
         code = new LinkedList();
         
         // Emit the header
         {
-            int modifiers = BClass.getModifiers();
+            int modifiers = SootClass.getModifiers();
             
             if(Modifier.isInterface(modifiers))
             {
                 modifiers -= Modifier.INTERFACE;
                 
-                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(BClass.getName()));
+                emit(".interface " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName()));
             }
             else
-                emit(".class " + Modifier.toString(modifiers) + " " + slashify(BClass.getName())); 
+                emit(".class " + Modifier.toString(modifiers) + " " + slashify(SootClass.getName())); 
             
-            if(BClass.hasSuperClass())
-                emit(".super " + slashify(BClass.getSuperClass().getName()));
+            if(SootClass.hasSuperClass())
+                emit(".super " + slashify(SootClass.getSuperClass().getName()));
             else
-                emit(".super " + slashify(BClass.getName()));
+                emit(".super " + slashify(SootClass.getName()));
                 
             emit("");
         }
         
         // Emit the interfaces
         {
-            Iterator interfaceIt = BClass.getInterfaces().iterator();
+            Iterator interfaceIt = SootClass.getInterfaces().iterator();
             
             while(interfaceIt.hasNext())
             {
-                BClass inter = (BClass) interfaceIt.next();
+                SootClass inter = (SootClass) interfaceIt.next();
             
                 emit(".implements " + slashify(inter.getName()));
             }
             
-            if(BClass.getInterfaceCount() != 0)
+            if(SootClass.getInterfaceCount() != 0)
                 emit("");
         }
         
         // Emit the fields
         {
-            Iterator fieldIt = BClass.getFields().iterator();
+            Iterator fieldIt = SootClass.getFields().iterator();
             
             while(fieldIt.hasNext())
             {
@@ -316,23 +316,23 @@ class JasminClass
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
             }
             
-            if(BClass.getFieldCount() != 0)
+            if(SootClass.getFieldCount() != 0)
                 emit(""); 
         }
         
         // Emit the methods
         {
-            Iterator methodIt = BClass.getMethods().iterator();
+            Iterator methodIt = SootClass.getMethods().iterator();
             
             while(methodIt.hasNext())
             {
-                emitMethod((Method) methodIt.next());
+                emitMethod((SootMethod) methodIt.next());
                 emit("");
             }
         }
     }
         
-    void emitMethod(Method method)
+    void emitMethod(SootMethod method)
     {
         StmtListBody listBody = new StmtListBody(method.getInstListBody());
         StmtList stmtList = listBody.getStmtList();
@@ -1477,7 +1477,7 @@ class JasminClass
             
             public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
             {
-                Method m = v.getMethod();
+                SootMethod m = v.getMethod();
                 
                 emitValue(v.getBase());
                 
@@ -2034,7 +2034,7 @@ class JasminClass
             
             public void caseSpecialInvokeExpr(SpecialInvokeExpr v)
             {
-                Method m = v.getMethod();
+                SootMethod m = v.getMethod();
                 
                 emitValue(v.getBase());
                 
@@ -2047,7 +2047,7 @@ class JasminClass
             
             public void caseStaticInvokeExpr(StaticInvokeExpr v)
             {
-                Method m = v.getMethod();
+                SootMethod m = v.getMethod();
                 
                 for(int i = 0; i < m.getParameterCount(); i++)
                     emitValue(v.getArg(i)); 
@@ -2139,7 +2139,7 @@ class JasminClass
             
             public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
             {
-                Method m = v.getMethod();
+                SootMethod m = v.getMethod();
                 
                 emitValue(v.getBase());
                 

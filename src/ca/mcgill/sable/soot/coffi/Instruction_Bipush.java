@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Bipush extends Instruction_byte {
+class Instruction_Bipush extends Instruction_byte {
    public Instruction_Bipush() { super((byte)ByteCode.BIPUSH); name = "bipush"; }
    public Instruction_Bipush(byte b) { this(); arg_b = b; }
 }

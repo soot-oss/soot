@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Multianewarray extends Instruction_intindex {
+class Instruction_Multianewarray extends Instruction_intindex {
    public byte dims;
    public Instruction_Multianewarray() { 
       super((byte)ByteCode.MULTIANEWARRAY); 

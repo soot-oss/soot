@@ -113,7 +113,7 @@ import java.util.NoSuchElementException;
  * @see ClassFile#constant_pool
  * @author Clark Verbrugge
  */
-public abstract class cp_info {
+abstract class cp_info {
 
    public static final byte CONSTANT_Utf8 = 1;
    public static final byte CONSTANT_Integer = 3;

@@ -111,44 +111,44 @@ import java.util.Vector;
  */
 public class method_info {
    /** Access flags for this field. */
-   public short access_flags;
+    short access_flags;
    /** Constant pool index of the name of this method. 
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info 
     */
-   public short name_index;
+    short name_index;
    /** Constant pool index of the type descriptor of this method.
     * @see ClassFile#constant_pool
     * @see CONSTANT_Utf8_info 
     */
-   public short descriptor_index;
+    short descriptor_index;
    /** Count of attributes this method contains. */
-   public short attributes_count;
+    short attributes_count;
    /** Array of attribute_info objects for this method.
     * @see attribute_info
     */
-   public attribute_info attributes[];
+    attribute_info attributes[];
    /** List of Instructions constructed when the method is parsed.
     * @see ClassFile@parse
     * @see ClassFile@parseMethod
     * @see Instruction
     */
-   public Instruction instructions;
+    Instruction instructions;
    /** Control Flow Graph constructed when the method is parsed.
     * @see ClassFile@parse
     * @see CFG
     */
-   public CFG cfg;
+    public CFG cfg;
    
-   public ca.mcgill.sable.soot.baf.Method jmethod;
+    ca.mcgill.sable.soot.SootMethod jmethod;
     
-   public ca.mcgill.sable.util.List instructionList;
+    ca.mcgill.sable.util.List instructionList;
    
    /** Returns the name of this method. 
     * @param constant_pool the constant_pool for this class.
     * @return the name of this method.
     */
-   public String toName(cp_info constant_pool[]) {
+    String toName(cp_info constant_pool[]) {
       CONSTANT_Utf8_info ci;
       ci = (CONSTANT_Utf8_info)(constant_pool[name_index]);
       return ci.convert();
@@ -158,7 +158,7 @@ public class method_info {
     * @return the single code attribute, or null if not found.
     * @see Code_attribute
     */
-   public Code_attribute locate_code_attribute() {
+    Code_attribute locate_code_attribute() {
       attribute_info ai;
       int i;
       
@@ -174,7 +174,7 @@ public class method_info {
     * @param constant_pool the constant_pool for this class.
     * @return the prototype (access + return + name + parameters) of this method.
     */
-   public String prototype(cp_info constant_pool[]) {
+    String prototype(cp_info constant_pool[]) {
       String access,rt,name,params;
       Code_attribute c = locate_code_attribute();
       
@@ -195,7 +195,7 @@ public class method_info {
     * @see prototype
     * @see ByteCode#showCode
     */
-   public void print(cp_info constant_pool[]) {
+    void print(cp_info constant_pool[]) {
       System.out.println(prototype(constant_pool));
       ByteCode.showCode(instructions,constant_pool);
    }

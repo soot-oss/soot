@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Astore_2 extends Instruction_noargs {
+class Instruction_Astore_2 extends Instruction_noargs {
    public Instruction_Astore_2() { super((byte)ByteCode.ASTORE_2); name = "astore_2"; }
 }

@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Invokenonvirtual extends Instruction_intindex {
+class Instruction_Invokenonvirtual extends Instruction_intindex {
    public Instruction_Invokenonvirtual() { 
       super((byte)ByteCode.INVOKENONVIRTUAL); 
       name = "invokenonvirtual"; 

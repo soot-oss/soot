@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Int2short extends Instruction_noargs {
+class Instruction_Int2short extends Instruction_noargs {
    public Instruction_Int2short() { super((byte)ByteCode.INT2SHORT); name = "int2short"; }
 }

@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Goto extends Instruction_intbranch {
+class Instruction_Goto extends Instruction_intbranch {
    public Instruction_Goto() { super((byte)ByteCode.GOTO); name = "goto"; }
    public Instruction[] branchpoints(Instruction next) { 
       Instruction i[] = new Instruction[1];

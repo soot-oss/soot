@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Invokestatic extends Instruction_intindex {
+class Instruction_Invokestatic extends Instruction_intindex {
    public Instruction_Invokestatic() { 
       super((byte)ByteCode.INVOKESTATIC); 
       name = "invokestatic"; 

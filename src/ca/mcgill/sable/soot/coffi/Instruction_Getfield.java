@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Getfield extends Instruction_intindex {
+class Instruction_Getfield extends Instruction_intindex {
    public Instruction_Getfield() { super((byte)ByteCode.GETFIELD); name = "getfield"; }
 }

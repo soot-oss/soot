@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Athrow extends Instruction_noargs {
+class Instruction_Athrow extends Instruction_noargs {
    public Instruction_Athrow() { super((byte)ByteCode.ATHROW); 
    name = "athrow"; branches = true; }
    public Instruction[] branchpoints(Instruction next) { 

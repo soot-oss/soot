@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ifnull extends Instruction_intbranch {
+class Instruction_Ifnull extends Instruction_intbranch {
    public Instruction_Ifnull() { super((byte)ByteCode.IFNULL); name = "ifnull"; }
 }

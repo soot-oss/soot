@@ -109,7 +109,7 @@ import java.io.*;
  * @see field_info#attributes
  * @author Clark Verbrugge
  */
-public class ConstantValue_attribute extends attribute_info {
+class ConstantValue_attribute extends attribute_info {
    /** The constant pool index of the actual constant. */
    public short constantvalue_index;    
 }

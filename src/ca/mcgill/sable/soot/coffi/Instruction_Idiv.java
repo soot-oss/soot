@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Idiv extends Instruction_noargs {
+class Instruction_Idiv extends Instruction_noargs {
    public Instruction_Idiv() { super((byte)ByteCode.IDIV); name = "idiv"; }
 }

@@ -71,7 +71,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 
 public class RValueBox extends ValueBox
 {

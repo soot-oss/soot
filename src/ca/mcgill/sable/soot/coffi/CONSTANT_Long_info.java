@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Long_info extends cp_info {
+class CONSTANT_Long_info extends cp_info {
    /** the upper 32 bits of the long. */
    public int high;
    /** the lower 32 bits of the long. */

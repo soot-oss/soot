@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Dadd extends Instruction_noargs {
+class Instruction_Dadd extends Instruction_noargs {
    public Instruction_Dadd() { super((byte)ByteCode.DADD); name = "dadd"; }
 }

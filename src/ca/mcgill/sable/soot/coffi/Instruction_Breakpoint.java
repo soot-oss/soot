@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Breakpoint extends Instruction_noargs {
+class Instruction_Breakpoint extends Instruction_noargs {
    public Instruction_Breakpoint() { super((byte)ByteCode.BREAKPOINT); name = "breakpoint"; }
 }

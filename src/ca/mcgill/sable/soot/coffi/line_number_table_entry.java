@@ -108,7 +108,7 @@ import java.io.*;
  * @see LineNumberTable_attribute
  * @author Clark Verbrugge
  */
-public class line_number_table_entry {
+class line_number_table_entry {
    /** Offset within bytecode of the start of the code for this line number. */
    public short start_pc;
    /** Line number within the source code. */

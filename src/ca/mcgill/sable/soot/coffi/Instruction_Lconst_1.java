@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lconst_1 extends Instruction_noargs {
+class Instruction_Lconst_1 extends Instruction_noargs {
    public Instruction_Lconst_1() { super((byte)ByteCode.LCONST_1); name = "lconst_1"; }
 }

@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_noargs extends Instruction {
+class Instruction_noargs extends Instruction {
    public Instruction_noargs(byte c) { super(c); }
    public int parse(byte bc[],int index) { return index; }
    public int compile(byte bc[],int index) { bc[index++] = code; return index; }

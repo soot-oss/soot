@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ifgt extends Instruction_intbranch {
+class Instruction_Ifgt extends Instruction_intbranch {
    public Instruction_Ifgt() { super((byte)ByteCode.IFGT); name = "ifgt"; }
 }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Monitorenter extends Instruction_noargs {
+class Instruction_Monitorenter extends Instruction_noargs {
    public Instruction_Monitorenter() { super((byte)ByteCode.MONITORENTER); name = "monitorenter"; }
 }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Aconst_null extends Instruction_noargs {
+class Instruction_Aconst_null extends Instruction_noargs {
    public Instruction_Aconst_null() { super((byte)ByteCode.ACONST_NULL); name = "aconst_null"; }
 }

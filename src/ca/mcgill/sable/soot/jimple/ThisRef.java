@@ -68,16 +68,16 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class ThisRef implements IdentityValue
 {
-    BClass BClass;
+    SootClass SootClass;
     
-    public ThisRef(BClass BClass)
+    public ThisRef(SootClass SootClass)
     {
-        this.BClass = BClass;
+        this.SootClass = SootClass;
     }
     
     public String toString()
@@ -92,7 +92,7 @@ public class ThisRef implements IdentityValue
 
     public Type getType()
     {
-        return RefType.v(BClass.getName());
+        return RefType.v(SootClass.getName());
     }    
     
     public void apply(Switch sw)

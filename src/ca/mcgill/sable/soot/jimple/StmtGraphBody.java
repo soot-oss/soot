@@ -71,12 +71,12 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class StmtGraphBody implements MethodBody
 {
-    Method method;
+    SootMethod method;
     List locals;
     StmtGraph stmtGraph;
     boolean isComplete;
@@ -128,7 +128,7 @@ public class StmtGraphBody implements MethodBody
         this.stmtGraph = new StmtGraph(this, listBody, isComplete);
     }        
         
-    public Method getMethod()
+    public SootMethod getMethod()
     {
         return method;
     }

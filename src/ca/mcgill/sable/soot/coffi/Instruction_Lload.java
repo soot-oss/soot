@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lload extends Instruction_bytevar {
+class Instruction_Lload extends Instruction_bytevar {
    public Instruction_Lload() { super((byte)ByteCode.LLOAD); name = "lload"; }
 }

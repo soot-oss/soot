@@ -110,7 +110,7 @@ import java.util.Enumeration;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Utf8_info extends cp_info {
+class CONSTANT_Utf8_info extends cp_info {
    // Some local private objects to help with efficient comparisons.
    private static Utf8_Enumeration e1 = new Utf8_Enumeration();
    private static Utf8_Enumeration e2 = new Utf8_Enumeration();

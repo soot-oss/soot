@@ -107,7 +107,7 @@ import java.io.*;
 /** Generic superclass for all attributes.
  * @author Clark Verbrugge 
  */
-public class attribute_info {
+class attribute_info {
    /** String by which a SourceFile attribute is recognized.
     * @see SourceFile_attribute
     */

@@ -110,7 +110,7 @@ import java.io.*;
  * @see method_info#attributes
  * @author Clark Verbrugge
  */
-public class Exception_attribute extends attribute_info {
+class Exception_attribute extends attribute_info {
    /** Length of exception table array. */
    public short number_of_exceptions;
    /** Constant pool indices of CONSTANT_Class types representing exceptions

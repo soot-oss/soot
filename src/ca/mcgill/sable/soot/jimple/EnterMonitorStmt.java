@@ -70,7 +70,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class EnterMonitorStmt extends Stmt 

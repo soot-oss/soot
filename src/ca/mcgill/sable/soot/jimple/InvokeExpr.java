@@ -68,19 +68,19 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 
 public abstract class InvokeExpr extends Expr
 {    
-    Method method;
+    SootMethod method;
     ImmediateBox[] argBoxes;
         
-    public Method getMethod()
+    public SootMethod getMethod()
     {
         return method;
     }
     
-    public void setMethod(Method m)
+    public void setMethod(SootMethod m)
     {
         method = m;
     }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ret extends Instruction_bytevar {
+class Instruction_Ret extends Instruction_bytevar {
    public Instruction_Ret() { super((byte)ByteCode.RET); name = "ret"; branches = true; returns = true; }
 }

@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Tableswitch extends Instruction {
+class Instruction_Tableswitch extends Instruction {
    public Instruction_Tableswitch() { 
       super((byte)ByteCode.TABLESWITCH); 
       name = "tableswitch"; 

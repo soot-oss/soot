@@ -133,7 +133,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Iinc extends Instruction_bytevar {
+class Instruction_Iinc extends Instruction_bytevar {
    public int arg_c;
    public Instruction_Iinc() { super((byte)ByteCode.IINC); name = "iinc"; }
    public String toString(cp_info constant_pool[]) {

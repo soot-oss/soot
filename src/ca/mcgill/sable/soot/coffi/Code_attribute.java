@@ -113,7 +113,7 @@ import java.io.*;
  * @see ClassFile@attributes
  * @author Clark Verbrugge
  */
-public class Code_attribute extends attribute_info {
+class Code_attribute extends attribute_info {
    /** Maximum size of the operand stack. */
    public short max_stack;
    /** Maximum number of locals required. */

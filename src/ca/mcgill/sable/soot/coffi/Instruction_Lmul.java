@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lmul extends Instruction_noargs {
+class Instruction_Lmul extends Instruction_noargs {
    public Instruction_Lmul() { super((byte)ByteCode.LMUL); name = "lmul"; }
 }

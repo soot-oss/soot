@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Bastore extends Instruction_noargs {
+class Instruction_Bastore extends Instruction_noargs {
    public Instruction_Bastore() { super((byte)ByteCode.BASTORE); name = "bastore"; }
 }

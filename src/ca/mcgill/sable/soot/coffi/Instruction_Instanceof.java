@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Instanceof extends Instruction_intindex {
+class Instruction_Instanceof extends Instruction_intindex {
    public Instruction_Instanceof() { super((byte)ByteCode.INSTANCEOF); name = "instanceof"; }
 }

@@ -114,7 +114,7 @@ import java.util.Enumeration;
  * @see Utf8_Enumeration#nextElement
  * @author Clark Verbrugge
  */
-public class Utf8_Enumeration implements Enumeration {
+class Utf8_Enumeration implements Enumeration {
    
    /** The latest character, as determined by nextElement.
     * @see Utf8_Enumeration#nextElement

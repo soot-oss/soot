@@ -108,7 +108,7 @@ import java.io.*;
  * @see attribute_info
  * @author Clark Verbrugge
  */
-public class Generic_attribute extends attribute_info {
+class Generic_attribute extends attribute_info {
    /** Actual attribute information in byte form. */
    public byte info[];
 }

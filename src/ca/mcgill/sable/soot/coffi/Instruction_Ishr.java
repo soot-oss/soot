@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ishr extends Instruction_noargs {
+class Instruction_Ishr extends Instruction_noargs {
    public Instruction_Ishr() { super((byte)ByteCode.ISHR); name = "ishr"; }
 }

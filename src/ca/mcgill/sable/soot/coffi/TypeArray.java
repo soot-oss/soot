@@ -106,14 +106,15 @@
 package ca.mcgill.sable.soot.coffi;
 
 import java.io.*;
+import ca.mcgill.sable.soot.*;
 
 class TypeArray implements ca.mcgill.sable.util.ValueObject
 {
-    private static ca.mcgill.sable.soot.baf.ClassManager cm;
+    private static ClassManager cm;
     
-    private ca.mcgill.sable.soot.baf.Type[] types;
+    private Type[] types;
     
-    public static void setClassManager(ca.mcgill.sable.soot.baf.ClassManager cm)
+    public static void setClassManager(ClassManager cm)
     {
         TypeArray.cm = cm;
     } 
@@ -131,7 +132,7 @@ class TypeArray implements ca.mcgill.sable.util.ValueObject
     {
         TypeArray newArray = new TypeArray();
         
-        newArray.types = new ca.mcgill.sable.soot.baf.Type[size];
+        newArray.types = new Type[size];
         
         for(int i =  0; i < size; i++)
             newArray.types[i] = UnusuableType.v();
@@ -139,16 +140,16 @@ class TypeArray implements ca.mcgill.sable.util.ValueObject
         return newArray;    
     }
     
-    public ca.mcgill.sable.soot.baf.Type get(int index)
+    public Type get(int index)
     {
         return types[index];
     }
     
-    public TypeArray set(int index, ca.mcgill.sable.soot.baf.Type type)
+    public TypeArray set(int index, Type type)
     {
         TypeArray newArray = new TypeArray();
         
-        newArray.types = (ca.mcgill.sable.soot.baf.Type[]) types.clone();
+        newArray.types = (Type[]) types.clone();
         newArray.types[index] = type;
         
         return newArray;
@@ -180,20 +181,20 @@ class TypeArray implements ca.mcgill.sable.util.ValueObject
         if(types.length != otherArray.types.length)
             throw new RuntimeException("Merging of type arrays failed; unequal array length");
             
-        newArray.types = new ca.mcgill.sable.soot.baf.Type[types.length];
+        newArray.types = new Type[types.length];
         
         for(int i = 0; i < types.length; i++)
         {
             if(types[i].equals(otherArray.types[i]))
                 newArray.types[i] = types[i];
-            else if((types[i] instanceof ca.mcgill.sable.soot.baf.ArrayType || 
-                types[i] instanceof ca.mcgill.sable.soot.baf.RefType) && 
-                (otherArray.types[i] instanceof ca.mcgill.sable.soot.baf.ArrayType 
-                    || otherArray.types[i] instanceof ca.mcgill.sable.soot.baf.RefType))
+            else if((types[i] instanceof ArrayType || 
+                types[i] instanceof RefType) && 
+                (otherArray.types[i] instanceof ArrayType 
+                    || otherArray.types[i] instanceof RefType))
             {
                 // This type merge does not need to be accurate, because it is not really used
                 
-                newArray.types[i] = ca.mcgill.sable.soot.baf.RefType.v("java.lang.Object");
+                newArray.types[i] = RefType.v("java.lang.Object");
             }
             else {
                 newArray.types[i] = UnusuableType.v();

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Iflt extends Instruction_intbranch {
+class Instruction_Iflt extends Instruction_intbranch {
    public Instruction_Iflt() { super((byte)ByteCode.IFLT); name = "iflt"; }
 }

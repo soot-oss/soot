@@ -102,7 +102,9 @@
 
 package ca.mcgill.sable.soot.coffi;
 
-class Long2ndHalfType extends ca.mcgill.sable.soot.baf.Type
+import ca.mcgill.sable.soot.*;
+
+class Long2ndHalfType extends Type
 {
     private static Long2ndHalfType constant = new Long2ndHalfType();
     
@@ -115,7 +117,7 @@ class Long2ndHalfType extends ca.mcgill.sable.soot.baf.Type
         return constant;
     }
     
-    public boolean equals(ca.mcgill.sable.soot.baf.Type otherType)
+    public boolean equals(Type otherType)
     {
         return otherType instanceof Long2ndHalfType;
     }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Dstore extends Instruction_bytevar {
+class Instruction_Dstore extends Instruction_bytevar {
    public Instruction_Dstore() { super((byte)ByteCode.DSTORE); name = "dstore"; }
 }

@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Integer_info extends cp_info {
+class CONSTANT_Integer_info extends cp_info {
    /** Internal representation. */
    public int bytes;
    /** Returns the size of this cp_info object.

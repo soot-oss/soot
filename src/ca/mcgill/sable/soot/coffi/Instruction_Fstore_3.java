@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Fstore_3 extends Instruction_noargs {
+class Instruction_Fstore_3 extends Instruction_noargs {
    public Instruction_Fstore_3() { super((byte)ByteCode.FSTORE_3); name = "fstore_3"; }
 }

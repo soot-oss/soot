@@ -88,13 +88,14 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.baf.*;
 
 public class StmtListBody implements MethodBody
 {
     List locals = new ArrayList();
-    Method method;
+    SootMethod method;
         
     Local thisLocal;
     StmtTrapTable stmtTrapTable;
@@ -104,7 +105,7 @@ public class StmtListBody implements MethodBody
      * Builds the StmtListBody for this method from the Baf InstList.
      */
      
-    public StmtListBody(Method m)
+    public StmtListBody(SootMethod m)
     {
         this(m.getInstListBody());
     }
@@ -363,7 +364,7 @@ public class StmtListBody implements MethodBody
         return false;
     }
     
-    public Method getMethod()
+    public SootMethod getMethod()
     {
         return method;
     }

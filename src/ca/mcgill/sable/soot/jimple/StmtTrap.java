@@ -68,18 +68,18 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class StmtTrap
 {
-    BClass exception;
+    SootClass exception;
     StmtBox beginStmtBox;
     StmtBox endStmtBox;
     StmtBox handlerStmtBox;
     List stmtBoxes;
     
-    public StmtTrap(BClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
+    public StmtTrap(SootClass exception, Stmt beginStmt, Stmt endStmt, Stmt handlerStmt)
     {
         this.exception = exception;
         
@@ -129,7 +129,7 @@ public class StmtTrap
         return stmtBoxes;
     }
     
-    public BClass getException()
+    public SootClass getException()
     {
         return exception;
     }
@@ -149,7 +149,7 @@ public class StmtTrap
         handlerStmtBox.setStmt(handlerStmt);
     }
     
-    public void setException(BClass exception)
+    public void setException(SootClass exception)
     {
         this.exception = exception;
     }

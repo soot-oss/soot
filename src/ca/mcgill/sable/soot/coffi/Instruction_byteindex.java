@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_byteindex extends Instruction {
+class Instruction_byteindex extends Instruction {
     /**
     * arg_b needs to be short in order to contain all the possible values for an unsigned byte
     */

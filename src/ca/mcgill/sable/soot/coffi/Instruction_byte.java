@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_byte extends Instruction {
+class Instruction_byte extends Instruction {
    public byte arg_b;
    public Instruction_byte(byte c) { super(c); }
    public String toString(cp_info constant_pool[]) {

@@ -105,7 +105,7 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.io.*;
 
-public class Info {
+class Info {
 
   public ClassFile cf;
   public long flength;    // file length

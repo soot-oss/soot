@@ -68,12 +68,12 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class StaticInvokeExpr extends InvokeExpr
 {    
-    public StaticInvokeExpr(Method method, List args)
+    public StaticInvokeExpr(SootMethod method, List args)
     {
         this.method = method;
         

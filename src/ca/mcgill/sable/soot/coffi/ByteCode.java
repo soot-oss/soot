@@ -108,7 +108,7 @@ package ca.mcgill.sable.soot.coffi;
 /** Procedural code for parsing and otherwise handling bytecode.
  * @author Clark Verbrugge
  */
-public class ByteCode {
+class ByteCode {
    
    public static final int NOP = 0;
    public static final int ACONST_NULL = 1;

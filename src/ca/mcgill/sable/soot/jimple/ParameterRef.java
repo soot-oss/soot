@@ -68,15 +68,15 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class ParameterRef implements IdentityValue, Switchable
 {
     int n;
-    Method method;
+    SootMethod method;
     
-    public ParameterRef(Method m, int number)
+    public ParameterRef(SootMethod m, int number)
     {
         this.n = number;
         this.method = m;
@@ -92,7 +92,7 @@ public class ParameterRef implements IdentityValue, Switchable
         return n;
     }
     
-    public Method getMethod()
+    public SootMethod getMethod()
     {
         return method;
     }

@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Class_info extends cp_info {
+class CONSTANT_Class_info extends cp_info {
    /** Constant pool index of name of this class. */
    public short name_index;
 

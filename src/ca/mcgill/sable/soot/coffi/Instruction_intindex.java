@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_intindex extends Instruction {
+class Instruction_intindex extends Instruction {
    public int arg_i;
    public Instruction_intindex(byte c) { super(c); }
    public String toString(cp_info constant_pool[]) {

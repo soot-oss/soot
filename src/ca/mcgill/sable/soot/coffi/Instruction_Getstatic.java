@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Getstatic extends Instruction_intindex {
+class Instruction_Getstatic extends Instruction_intindex {
    public Instruction_Getstatic() { super((byte)ByteCode.GETSTATIC); name = "getstatic"; }
 }

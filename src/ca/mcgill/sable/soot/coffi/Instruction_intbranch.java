@@ -134,7 +134,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_intbranch extends Instruction {
+class Instruction_intbranch extends Instruction {
    public int arg_i;
    public Instruction target;         // pointer to target instruction
    public Instruction_intbranch(byte c) { super(c); branches = true; }

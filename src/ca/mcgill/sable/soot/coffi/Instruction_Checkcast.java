@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Checkcast extends Instruction_intindex {
+class Instruction_Checkcast extends Instruction_intindex {
    public Instruction_Checkcast() { super((byte)ByteCode.CHECKCAST); name = "checkcast"; }
 }

@@ -110,7 +110,7 @@ import java.util.Vector;
  * @see ClassFile#parse
  * @author Clark Verbrugge
  */
-public class BasicBlock {
+class BasicBlock {
    /** Number of instructions in this block. */
    public int size;
    /** Head of the list of instructions. */

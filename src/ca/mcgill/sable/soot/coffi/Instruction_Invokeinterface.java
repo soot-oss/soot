@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Invokeinterface extends Instruction_intindex {
+class Instruction_Invokeinterface extends Instruction_intindex {
    public Instruction_Invokeinterface() { 
       super((byte)ByteCode.INVOKEINTERFACE); 
       name = "invokeinterface"; 

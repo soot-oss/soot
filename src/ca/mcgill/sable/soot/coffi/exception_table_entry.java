@@ -110,7 +110,7 @@ import java.io.*;
  * @see Code_attribute
  * @author Clark Verbrugge
  */
-public class exception_table_entry {
+class exception_table_entry {
    /** Code offset of start of code protected by this handler (inclusive). 
     * @see exception_table_entry#start_inst
     */

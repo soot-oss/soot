@@ -112,7 +112,7 @@ package ca.mcgill.sable.soot.coffi;
 
 import ca.mcgill.sable.util.*;
 
-public class FutureStmt extends ca.mcgill.sable.soot.jimple.Stmt
+class FutureStmt extends ca.mcgill.sable.soot.jimple.Stmt
 {   
     public Object object;
     

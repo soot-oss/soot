@@ -128,59 +128,59 @@ import ca.mcgill.sable.soot.jimple.Main;
 public class ClassFile {
    
    /** Magic number. */
-   public static final int MAGIC = 0xCAFEBABE;
+    static final int MAGIC = 0xCAFEBABE;
    
    /** Access bit flag. */
-   public static final short ACC_PUBLIC =    0x0001;
+    static final short ACC_PUBLIC =    0x0001;
    /** Access bit flag. */
-   public static final short ACC_PRIVATE =   0x0002;
+    static final short ACC_PRIVATE =   0x0002;
    /** Access bit flag. */
-   public static final short ACC_PROTECTED = 0x0004;
+    static final short ACC_PROTECTED = 0x0004;
    /** Access bit flag. */
-   public static final short ACC_STATIC =    0x0008;
+    static final short ACC_STATIC =    0x0008;
    /** Access bit flag. */
-   public static final short ACC_FINAL =     0x0010;
+    static final short ACC_FINAL =     0x0010;
    /** Access bit flag. */
-   public static final short ACC_SUPER =     0x0020;
+    static final short ACC_SUPER =     0x0020;
    /** Access bit flag. */
-   public static final short ACC_VOLATILE =  0x0040;
+    static final short ACC_VOLATILE =  0x0040;
    /** Access bit flag. */
-   public static final short ACC_TRANSIENT = 0x0080;
+    static final short ACC_TRANSIENT = 0x0080;
    /** Access bit flag. */
-   public static final short ACC_INTERFACE = 0x0200;
+    static final short ACC_INTERFACE = 0x0200;
    /** Access bit flag. */
-   public static final short ACC_ABSTRACT =  0x0400;
+    static final short ACC_ABSTRACT =  0x0400;
    /** Remaining bits in the access bit flag. */
-   public static final short ACC_UNKNOWN =   0x7800; 
+    static final short ACC_UNKNOWN =   0x7800; 
    
    /** Descriptor code string. */
-   public static final String DESC_BYTE =    "B";
+    static final String DESC_BYTE =    "B";
    /** Descriptor code string. */
-   public static final String DESC_CHAR =    "C";
+    static final String DESC_CHAR =    "C";
    /** Descriptor code string. */
-   public static final String DESC_DOUBLE =  "D";
+    static final String DESC_DOUBLE =  "D";
    /** Descriptor code string. */
-   public static final String DESC_FLOAT=    "F";
+    static final String DESC_FLOAT=    "F";
    /** Descriptor code string. */
-   public static final String DESC_INT =     "I";
+    static final String DESC_INT =     "I";
    /** Descriptor code string. */
-   public static final String DESC_LONG =    "J";
+    static final String DESC_LONG =    "J";
    /** Descriptor code string. */
-   public static final String DESC_OBJECT =  "L";
+    static final String DESC_OBJECT =  "L";
    /** Descriptor code string. */
-   public static final String DESC_SHORT =   "S";
+    static final String DESC_SHORT =   "S";
    /** Descriptor code string. */
-   public static final String DESC_BOOLEAN = "Z";
+    static final String DESC_BOOLEAN = "Z";
    /** Descriptor code string. */
-   public static final String DESC_VOID =    "V";
+    static final String DESC_VOID =    "V";
    /** Descriptor code string. */
-   public static final String DESC_ARRAY =   "[";
+    static final String DESC_ARRAY =   "[";
    
    /** Debugging flag. */
-   public boolean debug;
+    boolean debug;
    
    /** File name of the <tt>.class</tt> this represents. */
-   public String fn;
+    String fn;
    
    /* For chaining ClassFiles into a list. 
       ClassFile next;*/
@@ -188,59 +188,59 @@ public class ClassFile {
    /** Magic number read in.  
     * @see ClassFile#MAGIC 
     */
-   public int magic;
+    int magic;
    /** Minor version. */
-   public short minor_version;
+    short minor_version;
    /** Major version. */
-   public short major_version;
+    short major_version;
    /** Number of items in the constant pool. */
-   public short constant_pool_count;
+    short constant_pool_count;
    /** Array of constant pool items. 
     * @see cp_info
     */
-   public cp_info constant_pool[];
+    public cp_info constant_pool[];
    /** Access flags for this Class.  
     */
-   public short access_flags;
+    short access_flags;
    /** Constant pool index of the Class constant describing <i>this</i>.
     * @see CONSTANT_Class_info
     */
-   public short this_class;
+    public short this_class;
    /** Constant pool index of the Class constant describing <i>super</i>.
     * @see CONSTANT_Class_info
     */
-   public short super_class;
+    short super_class;
    /** Count of interfaces implemented. */
-   public short interfaces_count;
+    short interfaces_count;
    /** Array of constant pool indices of Class constants describing each
     * interace implemented by this class, as given in the source for this
     * class. 
     * @see CONSTANT_Class_info
     */
-   public short interfaces[];
+    short interfaces[];
    /** Count of fields this Class contains. */
-   public short fields_count;
+    short fields_count;
    /** Array of field_info objects describing each field.
     * @see field_info
     */
-   public field_info fields[];
+    field_info fields[];
    /** Count of methods this Class contains. */
-   public short methods_count;
+    short methods_count;
    /** Array of method_info objects describing each field.
     * @see method_info
     */
-   public method_info methods[];
+    method_info methods[];
    /** Count of attributes this class contains. */
-   public short attributes_count;
+    short attributes_count;
    /** Array of attribute_info objects for this class.
     * @see attribute_info
     */
-   public attribute_info attributes[];
+    attribute_info attributes[];
    
    /** Creates a new ClassFile object given the name of the file. 
     * @param nfn file name which this ClassFile will represent.
     */
-   public ClassFile(String nfn) { fn = nfn; }
+    ClassFile(String nfn) { fn = nfn; }
    
    /** Returns the name of this Class. */
    public String toString() {
@@ -252,7 +252,7 @@ public class ClassFile {
     * file and reads in the contents, building the representation.
     * @return <i>true</i> on success.
     */
-   public boolean loadClassFile() {
+    boolean loadClassFile() {
       InputStream f;
       DataInputStream d;
       boolean b;
@@ -289,7 +289,7 @@ public class ClassFile {
     * file and writes the internal representation.
     * @return <i>true</i> on success.
     */
-   public boolean saveClassFile() {
+    boolean saveClassFile() {
       FileOutputStream f;
       DataOutputStream d;
       boolean b;
@@ -340,7 +340,7 @@ public class ClassFile {
     * @see method_info#access_flags
     * @see field_info#access_flags
     */
-   public static String access_string(short af,String separator) {
+    static String access_string(short af,String separator) {
       boolean hasone = false;
       String s = "";
       if ((af & ACC_PUBLIC) != 0) {
@@ -987,7 +987,7 @@ public class ClassFile {
     * @param dd output stream.
     * @return <i>true</i> if write was successful, <i>false</i> on some error.
     */
-   public boolean writeClass(DataOutputStream dd) {
+    boolean writeClass(DataOutputStream dd) {
       // outputs the .class file from the loaded one
       try {
          // first write magic number
@@ -1031,7 +1031,7 @@ public class ClassFile {
       // attempts to locate a Utf8 entry in the constant pool matching the
       // given string.  Returns the index in the constant pool of the entry
       // or 0 if not found
-      public short locateUtf8(String s) {
+       short locateUtf8(String s) {
       int i;
       // note that we start at 1 in the constant pool
       for (i=1;i<constant_pool_count;i++) {
@@ -1048,7 +1048,7 @@ public class ClassFile {
       }
       
       // attempts to locate a NameAndType entry in the constant pool
-      public short locateNameAndType(int name,int type) {
+       short locateNameAndType(int name,int type) {
       int i;
       // note that we start at 1 in the constant pool
       for (i=1;i<constant_pool_count;i++) {
@@ -1066,7 +1066,7 @@ public class ClassFile {
       }
       
       // attempts to locate a NameAndType entry in the constant pool
-      public short locateClass(int name) {
+       short locateClass(int name) {
       int i;
       // note that we start at 1 in the constant pool
       for (i=1;i<constant_pool_count;i++) {
@@ -1084,7 +1084,7 @@ public class ClassFile {
       }
       
       // returns a new CONSTANT_Utf8_info for the given string
-      public CONSTANT_Utf8_info newUtf8(String s) {
+       CONSTANT_Utf8_info newUtf8(String s) {
       CONSTANT_Utf8_info cu = new CONSTANT_Utf8_info();
       cu.tag = cp_info.CONSTANT_Utf8;
       cu.bytes = CONSTANT_Utf8_info.toUtf8(s);
@@ -1100,7 +1100,7 @@ public class ClassFile {
     * @see ByteCode
     * @see ByteCode#disassemble_bytecode
     */
-   public Instruction parseMethod(method_info m) {
+    Instruction parseMethod(method_info m) {
       // first task, look through attributes for a code attribute
       int j;
       Code_attribute ca;
@@ -1160,7 +1160,7 @@ public class ClassFile {
     * @see ClassFile#parseMethod
     * @see CFG
     */
-   public void parse() {
+    void parse() {
       method_info mi;
       int i;
       
@@ -1178,7 +1178,7 @@ public class ClassFile {
     * @return length of corresponding bytecode.
     * @see Instruction#nextOffset
     */
-   public int relabel(Instruction i) {
+    int relabel(Instruction i) {
       int index = 0;
       while (i!=null) {
          i.label = index;
@@ -1198,7 +1198,7 @@ public class ClassFile {
     * @see ClassFile#relabel
     * @see Instruction#compile
     */
-   public byte[] unparseMethod(method_info m) {
+    byte[] unparseMethod(method_info m) {
       int codesize;
       byte bc[];
       Instruction i;
@@ -1234,7 +1234,7 @@ public class ClassFile {
     * attribute, and recomputing offsets for exception handlers.
     * @see ClassFile#unparseMethod
     */
-   public void unparse() {
+    void unparse() {
       int i,j;
       Code_attribute ca;
       byte bc[];
@@ -1272,7 +1272,7 @@ public class ClassFile {
     * @see ClassFile#parseDesc
     * @see ClassFile#parseMethodDesc_params
     */
-   public static String parseMethodDesc_return(String s) {
+    static String parseMethodDesc_return(String s) {
       int j;
       j = s.lastIndexOf(')');
       if (j>=0) {
@@ -1287,7 +1287,7 @@ public class ClassFile {
     * @see ClassFile#parseDesc
     * @see ClassFile#parseMethodDesc_return
     */
-   public static String parseMethodDesc_params(String s) {
+    static String parseMethodDesc_params(String s) {
       int i,j;
       i = s.indexOf('(');
       if (i>=0) {
@@ -1306,7 +1306,7 @@ public class ClassFile {
     * @see ClassFile#parseDesc
     * @see ClassFile#parseMethodDesc_return
     */
-   public static String parseDesc(String desc,String sep) {
+    static String parseDesc(String desc,String sep) {
       String params = "",param;
       char c;
       int i,len,arraylevel=0;
@@ -1371,7 +1371,7 @@ public class ClassFile {
     * @return method_info object representing method, or <i>null</i> if not found.
     * @see method_info#toName
     */
-   public method_info findMethod(String s) {
+    method_info findMethod(String s) {
       method_info m;
       int i;
       
@@ -1389,7 +1389,7 @@ public class ClassFile {
     * @see ClassFile#methods_count
     * @see method_info#prototype
     */
-   public void listMethods() {
+    void listMethods() {
       int i;
       
       for (i=0;i<methods_count;i++) {
@@ -1402,7 +1402,7 @@ public class ClassFile {
     * @see ClassFile#constant_pool_count
     * @see cp_info#toString
     */
-   public void listConstantPool() {
+    void listConstantPool() {
       cp_info c;
       int i;
       
@@ -1426,7 +1426,7 @@ public class ClassFile {
     * @see field_info#prototype
     * @see ConstantValue_attribute
     */
-   public void listFields() {
+    void listFields() {
       field_info fi;
       ConstantValue_attribute cva;
       CONSTANT_Utf8_info cm;
@@ -1456,7 +1456,7 @@ public class ClassFile {
     * @param pos desired index.
     * @see ClassFile#methods
     */
-   public void moveMethod(String m,int pos) {
+    void moveMethod(String m,int pos) {
       int i,j;
       method_info mthd;
       System.out.println("Moving " + m + " to position " + pos + 
@@ -1485,7 +1485,7 @@ public class ClassFile {
     * @return <i>true</i> if it is a parent, <i>false</i> otherwise.
     * @see ClassFile#descendsFrom(String)
     */
-   public boolean descendsFrom(ClassFile cf) { return descendsFrom(cf.toString()); }
+    boolean descendsFrom(ClassFile cf) { return descendsFrom(cf.toString()); }
 
    /** Answers whether this class is an immediate descendant (as subclass or
     * as an implementation of an interface) of the given class.
@@ -1493,7 +1493,7 @@ public class ClassFile {
     * @return <i>true</i> if it is a parent, <i>false</i> otherwise.
     * @see ClassFile#descendsFrom(ClassFile)
     */
-   public boolean descendsFrom(String cname) {
+    boolean descendsFrom(String cname) {
       cp_info cf;
       int i;
       cf = constant_pool[super_class];
@@ -1508,7 +1508,7 @@ public class ClassFile {
    /** Answers whether this class can have subclasses outside its package.
     * @return <i>true</i> if it cannot, <i>false</i> if it might.
     */
-   public boolean isSterile() {
+    boolean isSterile() {
       if ((access_flags&ACC_PUBLIC)!=0 && (access_flags&ACC_FINAL)==0) return false;
       return true;
    }
@@ -1517,7 +1517,7 @@ public class ClassFile {
     * this answers whether the class might refer to this ClassFile object.
     * @return <i>true</i> if it does, <i>false</i> if it doesn't.
     */
-   public boolean sameClass(String cfn) {
+    boolean sameClass(String cfn) {
       String s = cfn;
       int i = s.lastIndexOf(".class");
       if (i>0) {  // has .class after it
@@ -1532,7 +1532,7 @@ public class ClassFile {
     * @param i index of field in field array.
     * @return name of field.
     */
-   public String fieldName(int i) {
+    String fieldName(int i) {
       return fields[i].toName(constant_pool);
    }
 
@@ -1540,7 +1540,7 @@ public class ClassFile {
    // Locates the given classfile, and extracts it from the list. 
    // It cannot be the first one in the list, and this returns null
    // or the classfile.
-   public static ClassFile removeClassFile(ClassFile cfhead,String cfn) {
+    static ClassFile removeClassFile(ClassFile cfhead,String cfn) {
       ClassFile cf,cfprev;
       cf = cfhead;
       cfprev = null;
@@ -1672,7 +1672,7 @@ public class ClassFile {
    // However, the variable size of the entries makes using a heapsort
    // or quicksort rather cumbersome, so since it is quite close to the
    // limits of efficient insertion/selection sort, we'll use that anyway.
-   public void sortConstantPool() {
+    void sortConstantPool() {
       cp_info newcp[] = new cp_info[constant_pool_count];
       short redirect[] = new short[constant_pool_count];
       newcp[0] = constant_pool[0];  // the 0-entry stays put
@@ -1711,7 +1711,7 @@ public class ClassFile {
    
    // just a wrapper for the debigulation, so we can elegantly allocate
    // a new debigulator, debigualte and then produce some output
-   public void debigulate(boolean attribs,boolean privates) {
+    void debigulate(boolean attribs,boolean privates) {
       Debig debigulator = new Debig(this);
       debigulator.debigulate(attribs,privates);
       debigulator.setCF(null);

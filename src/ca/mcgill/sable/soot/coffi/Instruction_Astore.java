@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Astore extends Instruction_bytevar {
+class Instruction_Astore extends Instruction_bytevar {
    public Instruction_Astore() { super((byte)ByteCode.ASTORE); name = "astore"; }
 }

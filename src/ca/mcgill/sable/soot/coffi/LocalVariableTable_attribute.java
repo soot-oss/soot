@@ -109,7 +109,7 @@ import java.io.*;
  * @see attribute_info
  * @author Clark Verbrugge
  */
-public class LocalVariableTable_attribute extends attribute_info {
+class LocalVariableTable_attribute extends attribute_info {
    /** Length of the local variable table. */
    public short local_variable_table_length;
    /** Actual table of local variables. */

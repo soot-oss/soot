@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Drem extends Instruction_noargs {
+class Instruction_Drem extends Instruction_noargs {
    public Instruction_Drem() { super((byte)ByteCode.DREM); name = "drem"; }
 }

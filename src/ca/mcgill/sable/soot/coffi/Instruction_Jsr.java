@@ -135,7 +135,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Jsr extends Instruction_intbranch {
+class Instruction_Jsr extends Instruction_intbranch {
    public Instruction_Jsr() { super((byte)ByteCode.JSR); name = "jsr"; 
     // calls = true;
     }

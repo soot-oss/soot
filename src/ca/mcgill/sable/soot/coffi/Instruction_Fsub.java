@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Fsub extends Instruction_noargs {
+class Instruction_Fsub extends Instruction_noargs {
    public Instruction_Fsub() { super((byte)ByteCode.FSUB); name = "fsub"; }
 }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_If_acmpne extends Instruction_intbranch {
+class Instruction_If_acmpne extends Instruction_intbranch {
    public Instruction_If_acmpne() { super((byte)ByteCode.IF_ACMPNE); name = "if_acmpne"; }
 }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lreturn extends Instruction_noargs {
+class Instruction_Lreturn extends Instruction_noargs {
    public Instruction_Lreturn() { super((byte)ByteCode.LRETURN); name = "lreturn"; branches = true; returns = true; }
 }

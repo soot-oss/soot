@@ -102,7 +102,9 @@
 
 package ca.mcgill.sable.soot.coffi;
 
-class UnusuableType extends ca.mcgill.sable.soot.baf.Type
+import ca.mcgill.sable.soot.*;
+
+class UnusuableType extends Type
 {
     private static UnusuableType constant = new UnusuableType();
     
@@ -115,7 +117,7 @@ class UnusuableType extends ca.mcgill.sable.soot.baf.Type
         return constant;
     }
     
-    public boolean equals(ca.mcgill.sable.soot.baf.Type otherType)
+    public boolean equals(Type otherType)
     {
         return otherType instanceof UnusuableType;
     }

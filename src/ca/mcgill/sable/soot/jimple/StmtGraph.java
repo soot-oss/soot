@@ -74,7 +74,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class StmtGraph
@@ -84,7 +84,7 @@ public class StmtGraph
         
     Map stmtToSuccs;        // Stmt to List
     Map stmtToPreds;        // Stmt to List
-    Method method;
+    SootMethod method;
     List stmts;
     int size;
     StmtGraphBody body;

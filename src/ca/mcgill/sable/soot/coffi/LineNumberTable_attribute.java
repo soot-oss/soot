@@ -109,7 +109,7 @@ import java.io.*;
  * @see attribute_info
  * @author Clark Verbrugge
  */
-public class LineNumberTable_attribute extends attribute_info {
+class LineNumberTable_attribute extends attribute_info {
    /** Length of the line_number_table array. */
    public short line_number_table_length;
    /** Line number table.

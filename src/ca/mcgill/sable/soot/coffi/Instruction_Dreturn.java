@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Dreturn extends Instruction_noargs {
+class Instruction_Dreturn extends Instruction_noargs {
    public Instruction_Dreturn() { super((byte)ByteCode.DRETURN); name = "dreturn"; branches = true; returns = true; }
 }

@@ -110,6 +110,8 @@ package ca.mcgill.sable.soot.coffi;
 
 import java.io.*;
 
+import ca.mcgill.sable.soot.*;
+
 /*
  * A less resource hungry implementation of the TypeStack would just have pointers to
  * 'sub-stacks' instead of copying the entire array around.
@@ -117,16 +119,16 @@ import java.io.*;
  
 class TypeStack implements ca.mcgill.sable.util.ValueObject
 {
-    private static ca.mcgill.sable.soot.baf.ClassManager cm;
+    private static ClassManager cm;
     
-    private ca.mcgill.sable.soot.baf.Type[] types;
+    private Type[] types;
     
     private TypeStack() 
     {
         // no constructor
     }  
     
-    public static void setClassManager(ca.mcgill.sable.soot.baf.ClassManager cm)
+    public static void setClassManager(ClassManager cm)
     {
         TypeStack.cm = cm;
     }
@@ -136,7 +138,7 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
         TypeStack newTypeStack = new TypeStack();
         
         newTypeStack.cm = this.cm;
-        newTypeStack.types = (ca.mcgill.sable.soot.baf.Type[]) types.clone();
+        newTypeStack.types = (Type[]) types.clone();
         
         return newTypeStack;
     }
@@ -149,7 +151,7 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
     {
         TypeStack typeStack = new TypeStack();
         
-        typeStack.types = new ca.mcgill.sable.soot.baf.Type[0];
+        typeStack.types = new Type[0];
         
         return typeStack;
     }
@@ -158,17 +160,17 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
     {
         TypeStack newStack = new TypeStack();
         
-        newStack.types = new ca.mcgill.sable.soot.baf.Type[types.length - 1];
+        newStack.types = new Type[types.length - 1];
         System.arraycopy(types, 0, newStack.types, 0, types.length - 1);
         
         return newStack;
     }
     
-    public TypeStack push(ca.mcgill.sable.soot.baf.Type type)
+    public TypeStack push(Type type)
     {
         TypeStack newStack = new TypeStack();
         
-        newStack.types = new ca.mcgill.sable.soot.baf.Type[types.length + 1];
+        newStack.types = new Type[types.length + 1];
         System.arraycopy(types, 0, newStack.types, 0, types.length);
         
         newStack.types[types.length] = type;
@@ -176,7 +178,7 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
         return newStack;
     }
     
-    public ca.mcgill.sable.soot.baf.Type get(int index)
+    public Type get(int index)
     {
         return types[index];
     }
@@ -186,7 +188,7 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
         return types.length - 1;
     }
     
-    public ca.mcgill.sable.soot.baf.Type top()
+    public Type top()
     {
         if(types.length == 0)
             throw new RuntimeException("TypeStack is empty");
@@ -222,21 +224,21 @@ class TypeStack implements ca.mcgill.sable.util.ValueObject
             
         TypeStack newStack = new TypeStack();
         
-        newStack.types = new ca.mcgill.sable.soot.baf.Type[other.types.length];
+        newStack.types = new Type[other.types.length];
         
         for(int i = 0; i < types.length; i++)
             if(types[i].equals(other.types[i]))
                 newStack.types[i] = types[i];
             else {
-                if(!(types[i] instanceof ca.mcgill.sable.soot.baf.RefType) || !(other.types[i] instanceof 
-                    ca.mcgill.sable.soot.baf.RefType))
+                if(!(types[i] instanceof RefType) || !(other.types[i] instanceof 
+                    RefType))
                 {
                     throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
                 } 
                 
                 // System.out.println("Merging: " + types[i] + " with " + other.types[i]);
                 
-                newStack.types[i] = ca.mcgill.sable.soot.baf.RefType.v("java.lang.Object");
+                newStack.types[i] = RefType.v("java.lang.Object");
             }
             
         return newStack;

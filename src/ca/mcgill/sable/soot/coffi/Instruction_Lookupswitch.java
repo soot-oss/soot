@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Lookupswitch extends Instruction {
+class Instruction_Lookupswitch extends Instruction {
    public Instruction_Lookupswitch() { super((byte)ByteCode.LOOKUPSWITCH); name = "lookupswitch"; branches = true; }
    public byte pad;  // number of bytes used for padding
    public int default_offset;

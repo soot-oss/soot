@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Double_info extends cp_info {
+class CONSTANT_Double_info extends cp_info {
    /** High-order 32 bits of the double. */
    public int high;
    /** High-order 32 bits of the double. */

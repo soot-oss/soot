@@ -102,7 +102,7 @@
 
 package ca.mcgill.sable.soot.coffi;
 
-public class Main
+class Main
 {
     public static void main(String[] args) throws RuntimeException
     {

@@ -85,7 +85,7 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
@@ -382,10 +382,10 @@ public class Jimple
         }
     }
     
-     static void printMethodBody(Method method, java.io.PrintWriter out, boolean isPrecise)
+     static void printMethodBody(SootMethod method, java.io.PrintWriter out, boolean isPrecise)
     {         
         //System.out.println("Constructing the graph of " + getName() + "...");
-        InstListBody instListBody = method.getInstListBody();
+        ca.mcgill.sable.soot.baf.InstListBody instListBody = method.getInstListBody();
         StmtListBody listBody = new StmtListBody(instListBody);
         StmtList stmtList = listBody.getStmtList();
         
@@ -500,7 +500,7 @@ public class Jimple
         out.println("    }");
     }
 
-     static void printMethodSignature(Method method, java.io.PrintWriter out)
+     static void printMethodSignature(SootMethod method, java.io.PrintWriter out)
     {
         StringBuffer buffer = new StringBuffer();
         
@@ -534,12 +534,12 @@ public class Jimple
             if(exceptionIt.hasNext())
             {
                 buffer.append(" throws ");
-                buffer.append(((BClass) exceptionIt.next()).getName());  
+                buffer.append(((SootClass) exceptionIt.next()).getName());  
                 
                 while(exceptionIt.hasNext())
                 {
                     buffer.append(", ");
-                    buffer.append(((BClass) exceptionIt.next()).getName());  
+                    buffer.append(((SootClass) exceptionIt.next()).getName());  
                 }
             }
             
@@ -553,12 +553,12 @@ public class Jimple
      * Use printClass instead.
      */
 
-    public static void printBClass(BClass bclass, PrintWriter out, boolean isPrecise)
+    public static void printSootClass(SootClass bclass, PrintWriter out, boolean isPrecise)
     {   
         printClass(bclass, out, isPrecise);
     }    
     
-    public static void printClass(BClass bclass, PrintWriter out, boolean isPrecise)
+    public static void printClass(SootClass bclass, PrintWriter out, boolean isPrecise)
     {   
         // Print class name + modifiers
         {
@@ -590,12 +590,12 @@ public class Jimple
             {
                 out.print(" implements ");
             
-                out.print(((BClass) interfaceIt.next()).getName());
+                out.print(((SootClass) interfaceIt.next()).getName());
                     
                 while(interfaceIt.hasNext())
                 {
                     out.print(",");           
-                    out.print(" " + ((BClass) interfaceIt.next()).getName());
+                    out.print(" " + ((SootClass) interfaceIt.next()).getName());
                 }
             }
         }
@@ -625,7 +625,7 @@ public class Jimple
 
                 while(methodIt.hasNext())
                 {
-                    Method method = (Method) methodIt.next();
+                    SootMethod method = (SootMethod) methodIt.next();
                     
                     if(!Modifier.isAbstract(method.getModifiers()) && 
                         !Modifier.isNative(method.getModifiers()))

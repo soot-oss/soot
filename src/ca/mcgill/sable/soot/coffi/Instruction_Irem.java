@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Irem extends Instruction_noargs {
+class Instruction_Irem extends Instruction_noargs {
    public Instruction_Irem() { super((byte)ByteCode.IREM); name = "irem"; }
 }

@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_F2d extends Instruction_noargs {
+class Instruction_F2d extends Instruction_noargs {
    public Instruction_F2d() { super((byte)ByteCode.F2D); name = "f2d"; }
 }

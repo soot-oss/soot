@@ -105,6 +105,7 @@ package ca.mcgill.sable.soot.coffi;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 
 public class Util
 {
@@ -112,12 +113,12 @@ public class Util
     
     static ClassManager classManager;
     
-    public static void setActiveClassManager(ClassManager manager)
+    static void setActiveClassManager(ClassManager manager)
     {
         classManager = manager;
     }
         
-    public static void resolveClass(BClass bclass)
+    public static void resolveClass(SootClass bclass)
     {
         if(ca.mcgill.sable.soot.jimple.Main.isVerbose)
             System.out.println("Resolving " + bclass.getName() + "...");
@@ -175,7 +176,7 @@ public class Util
                 
                 interfaceName = interfaceName.replace('/', '.');
                 
-                BClass interfaceClass = cm.getClass(interfaceName);
+                SootClass interfaceClass = cm.getClass(interfaceName);
                 
                 interfaceClass.setModifiers(Modifier.INTERFACE);                
                 bclass.addInterface(interfaceClass);
@@ -237,7 +238,7 @@ public class Util
                 
                 int modifiers = methodInfo.access_flags;
                 
-                Method method;
+                SootMethod method;
                 
                 if(bclass.declaresMethod(methodName, parameterTypes))
                 {
@@ -247,7 +248,7 @@ public class Util
                     method.setModifiers(modifiers);
                 }
                 else {
-                    method = new Method(methodName, 
+                    method = new SootMethod(methodName, 
                         parameterTypes, returnType, modifiers);
                     bclass.addMethod(method);
                 }
@@ -540,7 +541,7 @@ public class Util
         return className;
     }
 
-    public static Local 
+     static Local 
         getLocalCreatingIfNecessary(StmtListBody listBody, String name, Type type)
     {        
         if(listBody.declaresLocal(name))

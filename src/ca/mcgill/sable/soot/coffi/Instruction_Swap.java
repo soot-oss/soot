@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Swap extends Instruction_noargs {
+class Instruction_Swap extends Instruction_noargs {
    public Instruction_Swap() { super((byte)ByteCode.SWAP); name = "swap"; }
 }

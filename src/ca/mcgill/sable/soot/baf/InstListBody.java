@@ -68,16 +68,17 @@
  
 package ca.mcgill.sable.soot.baf;
 
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class InstListBody implements MethodBody
 {
-    Method method; 
+    SootMethod method; 
     
     public    ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
-    InstListBody(Method method,
+    public InstListBody(SootMethod method,
             ca.mcgill.sable.soot.coffi.ClassFile coffiClass,
             ca.mcgill.sable.soot.coffi.method_info coffiMethod)
     {
@@ -86,7 +87,7 @@ public class InstListBody implements MethodBody
         this.coffiMethod = coffiMethod;
     }
     
-    public Method getMethod()
+    public SootMethod getMethod()
     {
         return method;
     }

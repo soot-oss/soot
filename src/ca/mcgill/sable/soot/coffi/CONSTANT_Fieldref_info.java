@@ -108,7 +108,7 @@ import java.io.*;
  * @see cp_info
  * @author Clark Verbrugge
  */
-public class CONSTANT_Fieldref_info extends cp_info {
+class CONSTANT_Fieldref_info extends cp_info {
    /** Constant pool index of a CONSTANT_Class object.
     * @see CONSTANT_Class_info
     */

@@ -130,7 +130,7 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Jsr_w extends Instruction_longbranch {
+class Instruction_Jsr_w extends Instruction_longbranch {
    public Instruction_Jsr_w() { super((byte)ByteCode.JSR_W); name = "jsr_w"; calls = true; }
    public Instruction[] branchpoints(Instruction next) { 
       Instruction i[] = new Instruction[1];

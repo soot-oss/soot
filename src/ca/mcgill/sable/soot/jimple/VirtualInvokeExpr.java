@@ -74,14 +74,14 @@
  
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.baf.*;
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
 public class VirtualInvokeExpr extends InvokeExpr
 {
     LocalBox baseBox;
     
-    public VirtualInvokeExpr(Local base, Method method, List args)
+    public VirtualInvokeExpr(Local base, SootMethod method, List args)
     {
         this.baseBox = new LocalBox(base);
         this.method = method;

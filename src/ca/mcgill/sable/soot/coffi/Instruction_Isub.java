@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Isub extends Instruction_noargs {
+class Instruction_Isub extends Instruction_noargs {
    public Instruction_Isub() { super((byte)ByteCode.ISUB); name = "isub"; }
 }

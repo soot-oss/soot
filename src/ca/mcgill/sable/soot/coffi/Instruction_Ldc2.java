@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ldc2 extends Instruction_intindex {
+class Instruction_Ldc2 extends Instruction_intindex {
    public Instruction_Ldc2() { super((byte)ByteCode.LDC2); name = "ldc2"; }
 }

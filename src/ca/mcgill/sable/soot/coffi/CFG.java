@@ -122,6 +122,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.util.NoSuchElementException;
 
+import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
@@ -136,11 +137,11 @@ public class CFG {
    /** Method for which this is a control flow graph. 
     * @see method_info
     */
-   public method_info method;
+    method_info method;
    /** Ordered list of BasicBlocks comprising the code of this CFG.
     * @see BasicBlock
     */
-   public BasicBlock cfg;
+    BasicBlock cfg;
    /** For associating Instruction leaders with basic blocks. */
    private java.util.Hashtable h;
    private int bbcount;        // statistics, number of BBs processed
@@ -150,7 +151,7 @@ public class CFG {
    
    Map instructionToFirstStmt;
    Map instructionToLastStmt;
-   Method jmethod;
+   SootMethod jmethod;
    ClassManager cm;
 
    Map instructionToNext;
@@ -163,7 +164,7 @@ public class CFG {
     * @see method_info
     * @see ClassFile@parse
     */
-   public CFG(method_info m) {
+    public CFG(method_info m) {
       Instruction i,head;
       BasicBlock bb,blast;
       method = m;
@@ -372,7 +373,7 @@ public class CFG {
     * @see BasicBlock#head
     * @see BasicBlock#tail
     */
-   public Instruction reconstructInstructions() {
+    Instruction reconstructInstructions() {
       BasicBlock b;
       Instruction last = null;
       b = cfg;
@@ -396,7 +397,7 @@ public class CFG {
     * @see Stmt
     * @see BasicBlock#jhead
     */
-   public boolean jimplify(cp_info constant_pool[],int this_class, StmtListBody listBody)
+    public boolean jimplify(cp_info constant_pool[],int this_class, StmtListBody listBody)
    {
         Util.setClassNameToAbbreviation(new HashMap());
         
@@ -502,7 +503,7 @@ public class CFG {
     * @see BasicBlock#sout
     */
     
-    public void jimplify(cp_info constant_pool[],int this_class)
+     void jimplify(cp_info constant_pool[],int this_class)
     {
         Map instructionToSuccessors = new HashMap();
         Code_attribute codeAttribute = method.locate_code_attribute();
@@ -568,7 +569,7 @@ public class CFG {
                     {   
                         int catchType = codeAttribute.exception_table[i].catch_type;
                         
-                        BClass exception;
+                        SootClass exception;
                         
                         if(catchType != 0)
                         {     
@@ -694,7 +695,7 @@ public class CFG {
                             if(handlerInstructions.contains(s)) 
                             {
                                 TypeStack exceptionTypeStack = (TypeStack.v()).push(RefType.v(
-                                    ((BClass) handlerInstructionToException.get(s)).getName()));
+                                    ((SootClass) handlerInstructionToException.get(s)).getName()));
                 
                                 instructionToTypeStack.put(s, exceptionTypeStack);
                             }
@@ -718,7 +719,7 @@ public class CFG {
                                 // single object on the stack.
                 
                                 TypeStack exceptionTypeStack = (TypeStack.v()).push(RefType.v(
-                                    ((BClass) handlerInstructionToException.get(s)).getName()));
+                                    ((SootClass) handlerInstructionToException.get(s)).getName()));
                                 
                                 newTypeStack = exceptionTypeStack;
                             }
@@ -867,7 +868,7 @@ public class CFG {
                             ("Exception handler does not coincide with jimple instruction");
                     }
                     
-                    BClass exception;
+                    SootClass exception;
                     
                     // Determine exception to catch
                     {        
@@ -945,7 +946,7 @@ public class CFG {
             return type;
     }       
     
-    public OutFlow processFlow(Instruction ins, TypeStack typeStack, 
+     OutFlow processFlow(Instruction ins, TypeStack typeStack, 
         cp_info[] constant_pool) 
     {
         int x;
@@ -1931,7 +1932,7 @@ public class CFG {
     
     private OutFlow processCPEntry(cp_info constant_pool[],int i,
                             TypeStack typeStack,
-                            Method jmethod) 
+                            SootMethod jmethod) 
     {
         cp_info c = constant_pool[i];
       
@@ -2140,7 +2141,7 @@ public class CFG {
     * @param c code attribute of this method.
     * @see CFG#jimplify
     */
-   public void jimpleTargetFixup() {
+    void jimpleTargetFixup() {
       BasicBlock b;
       BBQ bbq = new BBQ();
 
@@ -2183,7 +2184,7 @@ public class CFG {
    
    private void generateJimpleForCPEntry(cp_info constant_pool[], int i,
                             TypeStack typeStack, TypeStack postTypeStack,
-                            Method jmethod, List statements)
+                            SootMethod jmethod, List statements)
    {
       Expr e;
       Stmt stmt;
@@ -2257,7 +2258,7 @@ public class CFG {
       statements.add(stmt);  
     }
 
-   public void generateJimple(Instruction ins, TypeStack typeStack, TypeStack postTypeStack,
+    void generateJimple(Instruction ins, TypeStack typeStack, TypeStack postTypeStack,
         cp_info constant_pool[], 
         List statements, BasicBlock basicBlock)
    {
@@ -3518,7 +3519,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
                 
-            BClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getClass(className);
 
             Field field = bclass.getField(fieldName);
                 
@@ -3551,7 +3552,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
                 
-            BClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getClass(className);
                 
             Field field = bclass.getField(fieldName);
             
@@ -3584,7 +3585,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
             
-            BClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getClass(className);
             Field field = bclass.getField(fieldName);
                 
             fr = new StaticFieldRef(field);
@@ -3614,7 +3615,7 @@ public class CFG {
             String fieldDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
                 
-            BClass bclass = cm.getClass(className);            
+            SootClass bclass = cm.getClass(className);            
             Field field = bclass.getField(fieldName);
 
             fr = new StaticFieldRef(field);
@@ -3630,7 +3631,7 @@ public class CFG {
             Instruction_Invokevirtual iv = (Instruction_Invokevirtual)ins;
             args = cp_info.countParams(constant_pool,iv.arg_i);
             
-            Method method = null;
+            SootMethod method = null;
             
             CONSTANT_Methodref_info methodInfo = 
                 (CONSTANT_Methodref_info) constant_pool[iv.arg_i];
@@ -3648,7 +3649,7 @@ public class CFG {
             String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                 convert();
                 
-            BClass bclass = cm.getClass(className);
+            SootClass bclass = cm.getClass(className);
                 
             Local[] parameters;
             List parameterTypes;
@@ -3704,7 +3705,7 @@ public class CFG {
             Instruction_Invokenonvirtual iv = (Instruction_Invokenonvirtual)ins;
             args = cp_info.countParams(constant_pool,iv.arg_i);
             
-            Method method = null;
+            SootMethod method = null;
             
                 CONSTANT_Methodref_info methodInfo = 
                     (CONSTANT_Methodref_info) constant_pool[iv.arg_i];
@@ -3722,7 +3723,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
                 
-                BClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getClass(className);
                 
                 Local[] parameters;
                 List parameterTypes;
@@ -3778,7 +3779,7 @@ public class CFG {
             Instruction_Invokestatic is = (Instruction_Invokestatic)ins;
             args = cp_info.countParams(constant_pool,is.arg_i);
             
-            Method method = null;
+            SootMethod method = null;
             
                 CONSTANT_Methodref_info methodInfo = 
                     (CONSTANT_Methodref_info) constant_pool[is.arg_i];
@@ -3796,7 +3797,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
                 
-                BClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getClass(className);
                 
                 Local[] parameters;
                 List parameterTypes;
@@ -3859,7 +3860,7 @@ public class CFG {
             Instruction_Invokeinterface ii = (Instruction_Invokeinterface)ins;
             args = cp_info.countParams(constant_pool,ii.arg_i);
             
-            Method method = null;
+            SootMethod method = null;
             
                 CONSTANT_InterfaceMethodref_info methodInfo = 
                     (CONSTANT_InterfaceMethodref_info) constant_pool[ii.arg_i];
@@ -3877,7 +3878,7 @@ public class CFG {
                 String methodDescriptor = ((CONSTANT_Utf8_info) (constant_pool[i.descriptor_index])).
                     convert();
                 
-                BClass bclass = cm.getClass(className);
+                SootClass bclass = cm.getClass(className);
 
                 Local[] parameters;
                 List parameterTypes;
@@ -3935,7 +3936,7 @@ public class CFG {
             
          case ByteCode.NEW:
          {
-            BClass bclass = cm.getClass(getClassName(constant_pool, 
+            SootClass bclass = cm.getClass(getClassName(constant_pool, 
                 ((Instruction_New)ins).arg_i));
             
             stmt = new AssignStmt(Util.getLocalForStackOp(listBody, postTypeStack, 
@@ -4000,7 +4001,7 @@ public class CFG {
         statements.add(stmt);        
    }
    
-    public Type jimpleTypeOfAtype(int atype)
+     Type jimpleTypeOfAtype(int atype)
     {
         switch(atype)
         {

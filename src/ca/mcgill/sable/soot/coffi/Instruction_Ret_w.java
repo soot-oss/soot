@@ -130,6 +130,6 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-public class Instruction_Ret_w extends Instruction_intvar {
+class Instruction_Ret_w extends Instruction_intvar {
    public Instruction_Ret_w() { super((byte)ByteCode.RET_W); name = "ret_w"; branches = true; returns = true; }
 }
