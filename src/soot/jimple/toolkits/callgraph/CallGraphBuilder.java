@@ -283,6 +283,10 @@ public final class CallGraphBuilder
                         warnedAlready = true;
                     }
                 }
+                if( ie instanceof StaticInvokeExpr ) {
+                    addEdge( source, s, ie.getMethod().getDeclaringClass(),
+                        sigClinit, Edge.CLINIT );
+                }
                 if( ie.getMethod().getNumberedSubSignature() == sigForName ) {
                     Value name = ie.getArg(0);
                     if( name instanceof StringConstant ) {
@@ -311,8 +315,6 @@ public final class CallGraphBuilder
                         }
                     }
                 }
-                addEdge( source, s, ie.getMethod().getDeclaringClass(),
-                        sigClinit, Edge.CLINIT );
             }
             if( s.containsFieldRef() ) {
                 FieldRef fr = (FieldRef) s.getFieldRef();
