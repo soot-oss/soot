@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -47,7 +47,7 @@ import soot.options.*;
  *   In particular the classes GrimpBody, JimpleBody and BafBody all extend this
  *   class. This class provides methods that are common to any IR, such as methods
  *   to get the body's units (statements), traps, and locals.
- *   
+ *
  *  @see soot.grimp.GrimpBody
  *  @see soot.jimple.JimpleBody
  *  @see soot.baf.BafBody
@@ -69,21 +69,21 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Creates a deep copy of this Body. */
     abstract public Object clone();
 
-    /** Creates a Body associated to the given method.  Used by subclasses during initialization. 
+    /** Creates a Body associated to the given method.  Used by subclasses during initialization.
      *  Creation of a Body is triggered by e.g. Jimple.v().newBody(options).
      */
-    protected Body(SootMethod m) 
-    {       
+    protected Body(SootMethod m)
+    {
         this.method = m;
     }
 
     /** Creates an extremely empty Body.  The Body is not associated to any method. */
-    protected Body() 
-    {               
+    protected Body()
+    {
     }
 
-    /** 
-     * Returns the method associated with this Body. 
+    /**
+     * Returns the method associated with this Body.
      * @return the method that owns this body.
      */
     public SootMethod getMethod()
@@ -94,16 +94,16 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
 
-    /** 
-     * Sets the method associated with this Body. 
+    /**
+     * Sets the method associated with this Body.
      * @param method the method that owns this body.
-     * 
-     */    
+     *
+     */
     public void setMethod(SootMethod method)
     {
         this.method = method;
     }
-    
+
     /** Returns the number of locals declared in this body. */
     public int getLocalCount()
     {
@@ -117,15 +117,17 @@ public abstract class Body extends AbstractHost implements Serializable
 
         Iterator it = b.getUnits().iterator();
 
-        // Clone units in body's statement list 
+        // Clone units in body's statement list
         while(it.hasNext()) {
             Unit original = (Unit) it.next();
             Unit copy = (Unit) original.clone();
-             
+
+            copy.addAllTagsOf(original);
+
             // Add cloned unit to our unitChain.
             unitChain.addLast(copy);
 
-            // Build old <-> new map to be able to patch up references to other units 
+            // Build old <-> new map to be able to patch up references to other units
             // within the cloned units. (these are still refering to the original
             // unit objects).
             bindings.put(original, copy);
@@ -136,7 +138,7 @@ public abstract class Body extends AbstractHost implements Serializable
         while(it.hasNext()) {
             Trap original = (Trap) it.next();
             Trap copy = (Trap) original.clone();
-            
+
             // Add cloned unit to our trap list.
             trapChain.addLast(copy);
 
@@ -144,20 +146,20 @@ public abstract class Body extends AbstractHost implements Serializable
             bindings.put(original, copy);
         }
 
-        
+
         // Clone local units.
         it = b.getLocals().iterator();
         while(it.hasNext()) {
             Value original = (Value) it.next();
             Value copy = (Value) original.clone();
-            
+
             // Add cloned unit to our trap list.
             localChain.addLast(copy);
 
             // Build old <-> new mapping.
             bindings.put(original, copy);
         }
-        
+
 
 
         // Patch up references within units using our (old <-> new) map.
@@ -165,13 +167,13 @@ public abstract class Body extends AbstractHost implements Serializable
         while(it.hasNext()) {
             UnitBox box = (UnitBox) it.next();
             Unit newObject, oldObject = box.getUnit();
-            
-            // if we have a reference to an old object, replace it 
+
+            // if we have a reference to an old object, replace it
             // it's clone.
             if( (newObject = (Unit)  bindings.get(oldObject)) != null )
                 box.setUnit(newObject);
-                
-        }        
+
+        }
 
 
 
@@ -179,18 +181,18 @@ public abstract class Body extends AbstractHost implements Serializable
         it = getUseBoxes().iterator();
         while(it.hasNext()) {
             ValueBox vb = (ValueBox) it.next();
-            if(vb.getValue() instanceof Local) 
+            if(vb.getValue() instanceof Local)
                 vb.setValue((Value) bindings.get(vb.getValue()));
         }
         it = getDefBoxes().iterator();
         while(it.hasNext()) {
             ValueBox vb = (ValueBox) it.next();
-            if(vb.getValue() instanceof Local) 
+            if(vb.getValue() instanceof Local)
                 vb.setValue((Value) bindings.get(vb.getValue()));
         }
         return bindings;
     }
-    
+
     /** Verifies a few sanity conditions on the contents on this body. */
     public void validate()
     {
@@ -220,7 +222,7 @@ public abstract class Body extends AbstractHost implements Serializable
         if( (value = vb.getValue()) instanceof Local) {
             //System.out.println("localChain: "+localChain);
             if(!localChain.contains(value))
-                throw new RuntimeException("Local not in chain : "+value);                
+                throw new RuntimeException("Local not in chain : "+value);
         }
     }
 
@@ -281,7 +283,7 @@ public abstract class Body extends AbstractHost implements Serializable
     }
 
     /** Returns a backed chain of the locals declared in this Body. */
-    public Chain getLocals() {return localChain;} 
+    public Chain getLocals() {return localChain;}
 
     /** Returns a backed view of the traps found in this Body. */
     public Chain getTraps() {return trapChain;}
@@ -309,7 +311,7 @@ public abstract class Body extends AbstractHost implements Serializable
         while (unitsIt.hasNext())
         {
             Stmt s = (Stmt)unitsIt.next();
-            if (s instanceof IdentityStmt && 
+            if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
             {
                 IdentityStmt is = (IdentityStmt)s;
@@ -325,16 +327,16 @@ public abstract class Body extends AbstractHost implements Serializable
     /**
      *  Returns the Chain of Units that make up this body. The units are
      *  returned as a PatchingChain. The client can then manipulate the chain,
-     *  adding and removing units, and the changes will be reflected in the body.  
+     *  adding and removing units, and the changes will be reflected in the body.
      *  Since a PatchingChain is returned the client need <i>not</i> worry about removing exception
      *  boundary units or otherwise corrupting the chain.
-     * 
-     *  @return the units in this Body 
+     *
+     *  @return the units in this Body
      *
      *  @see PatchingChain
      *  @see Unit
      */
-    public PatchingChain getUnits() 
+    public PatchingChain getUnits()
     {
         return unitChain;
     }
@@ -356,34 +358,34 @@ public abstract class Body extends AbstractHost implements Serializable
      * @see Unit#getUnitBoxes()
      * @see soot.shimple.PhiExpr#getUnitBoxes()
      **/
-    public List getAllUnitBoxes() 
+    public List getAllUnitBoxes()
     {
         ArrayList unitBoxList = new ArrayList();
         {
-	    Iterator it = unitChain.iterator();
-	    while(it.hasNext()) {
-		Unit item = (Unit) it.next();
-		unitBoxList.addAll(item.getUnitBoxes());  
-	    }
-	}
-        
-	{
-	    Iterator it = trapChain.iterator();
-	    while(it.hasNext()) {
-		Trap item = (Trap) it.next();
-		unitBoxList.addAll(item.getUnitBoxes());  
-	    }
+            Iterator it = unitChain.iterator();
+            while(it.hasNext()) {
+                Unit item = (Unit) it.next();
+                unitBoxList.addAll(item.getUnitBoxes());
+            }
         }
 
-	{
-	    Iterator it = getTags().iterator();
-	    while(it.hasNext()) {
-		Tag t = (Tag) it.next();
-		if( t instanceof CodeAttribute) 		    
-		    unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-	    }
-	}
-	
+        {
+            Iterator it = trapChain.iterator();
+            while(it.hasNext()) {
+                Trap item = (Trap) it.next();
+                unitBoxList.addAll(item.getUnitBoxes());
+            }
+        }
+
+        {
+            Iterator it = getTags().iterator();
+            while(it.hasNext()) {
+                Tag t = (Tag) it.next();
+                if( t instanceof CodeAttribute)
+                    unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
+            }
+        }
+
         return unitBoxList;
     }
 
@@ -398,22 +400,22 @@ public abstract class Body extends AbstractHost implements Serializable
      * through the non-branching Units in this body and querying them
      * for their UnitBoxes.  Any such UnitBoxes (typically from
      * PhiExpr) contain a Unit that indicates the end of a CFG block.
-     *   
+     *
      * @return a list of all the UnitBoxes held by this body's
      * branching units.
-     *     
+     *
      * @see UnitBox
      * @see #getAllUnitBoxes()
      * @see Unit#getUnitBoxes()
      * @see soot.shimple.PhiExpr#getUnitBoxes()
      **/
-    public List getUnitBoxes(boolean branchTarget) 
+    public List getUnitBoxes(boolean branchTarget)
     {
         ArrayList unitBoxList = new ArrayList();
         {
-	    Iterator it = unitChain.iterator();
-	    while(it.hasNext()) {
-		Unit item = (Unit) it.next();
+            Iterator it = unitChain.iterator();
+            while(it.hasNext()) {
+                Unit item = (Unit) it.next();
                 if(branchTarget){
                     if(item.branches())
                         unitBoxList.addAll(item.getUnitBoxes());
@@ -422,51 +424,51 @@ public abstract class Body extends AbstractHost implements Serializable
                     if(!item.branches())
                         unitBoxList.addAll(item.getUnitBoxes());
                 }
-	    }
-	}
-
-	{
-	    Iterator it = trapChain.iterator();
-	    while(it.hasNext()) {
-		Trap item = (Trap) it.next();
-		unitBoxList.addAll(item.getUnitBoxes());  
-	    }
+            }
         }
 
-	{
-	    Iterator it = getTags().iterator();
-	    while(it.hasNext()) {
-		Tag t = (Tag) it.next();
-		if( t instanceof CodeAttribute) 		    
-		    unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-	    }
-	}
-	
+        {
+            Iterator it = trapChain.iterator();
+            while(it.hasNext()) {
+                Trap item = (Trap) it.next();
+                unitBoxList.addAll(item.getUnitBoxes());
+            }
+        }
+
+        {
+            Iterator it = getTags().iterator();
+            while(it.hasNext()) {
+                Tag t = (Tag) it.next();
+                if( t instanceof CodeAttribute)
+                    unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
+            }
+        }
+
         return unitBoxList;
     }
 
 
     /**
      *   Returns the result of iterating through all Units in this
-     *   body and querying them for ValueBoxes used. 
+     *   body and querying them for ValueBoxes used.
      *   All of the ValueBoxes found are then returned as a List.
      *
      *   @return a list of all the ValueBoxes for the Values used this body's units.
-     *     
+     *
      *   @see Value
      *   @see Unit#getUseBoxes
      *   @see ValueBox
      *   @see Value
      *
-     */   
+     */
     public List getUseBoxes()
     {
         ArrayList useBoxList = new ArrayList();
-        
+
         Iterator it = unitChain.iterator();
         while(it.hasNext()) {
             Unit item = (Unit) it.next();
-            useBoxList.addAll(item.getUseBoxes());  
+            useBoxList.addAll(item.getUseBoxes());
         }
         return useBoxList;
     }
@@ -478,44 +480,44 @@ public abstract class Body extends AbstractHost implements Serializable
      *   All of the ValueBoxes found are then returned as a List.
      *
      *   @return a list of all the ValueBoxes for Values defined by this body's units.
-     *     
+     *
      *   @see Value
      *   @see Unit#getDefBoxes
      *   @see ValueBox
      *   @see Value
-     */   
+     */
     public List getDefBoxes()
     {
         ArrayList defBoxList = new ArrayList();
-        
+
         Iterator it = unitChain.iterator();
         while(it.hasNext()) {
             Unit item = (Unit) it.next();
-            defBoxList.addAll(item.getDefBoxes());  
+            defBoxList.addAll(item.getDefBoxes());
         }
         return defBoxList;
     }
 
      /**
-     *   Returns a list of boxes corresponding to Values 
+     *   Returns a list of boxes corresponding to Values
      * either used or defined in any unit of this Body.
      *
      *   @return a list of ValueBoxes for held by the body's Units.
-     *     
+     *
      *   @see Value
      *   @see Unit#getUseAndDefBoxes
      *   @see ValueBox
      *   @see Value
-     */       
+     */
     public List getUseAndDefBoxes()
-    {        
+    {
         ArrayList useAndDefBoxList = new ArrayList();
-        
+
         Iterator it = unitChain.iterator();
         while(it.hasNext()) {
             Unit item = (Unit) it.next();
-            useAndDefBoxList.addAll(item.getUseBoxes());  
-            useAndDefBoxList.addAll(item.getDefBoxes());  
+            useAndDefBoxList.addAll(item.getUseBoxes());
+            useAndDefBoxList.addAll(item.getDefBoxes());
         }
         return useAndDefBoxList;
     }
