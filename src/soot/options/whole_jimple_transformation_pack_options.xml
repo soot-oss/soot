@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <phase>
-	<phase_name>Whole-Jimple Transformation Pack</phase_name>
+	<name>Whole-Jimple Transformation Pack</name>
 	<phase_java_name>wholeJimpleTransPack</phase_java_name>
-	<phase_alias>wjtp</phase_alias>
-		<boolean_option>
+	<alias>wjtp</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 <sub_phase>
-<sub_phase_name>Spark</sub_phase_name>
+<name>Spark</name>
 <sub_phase_java_name>Spark</sub_phase_java_name>
-<phase_option_class>SparkOptions</phase_option_class>
-		<boolean_option>
+<phaseopt_class>SparkOptions</phaseopt_class>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-<sub_phase_alias>wjtp.Spark</sub_phase_alias>
-    <boolean_option>
+		</boolopt>
+<alias>wjtp.Spark</alias>
+    <boolopt>
         <name>verbose</name>
 <java_name>verbose</java_name>
-<alias_name>verbose</alias_name>
-        <default_value>false</default_value>
+<alias>verbose</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, Spark prints detailed information.
         </long_desc>
-    </boolean_option>
-    <boolean_option>
+    </boolopt>
+    <boolopt>
         <name>ignoreTypesEntirely</name>
 <java_name>ignoreTypesEntirely</java_name>
-<alias_name>ignoreTypesEntirely</alias_name>
-        <default_value>false</default_value>
+<alias>ignoreTypesEntirely</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, all parts of Spark completely ignore
 declared types of variables and casts.
         </long_desc>
-    </boolean_option>
-    <boolean_option> 
+    </boolopt>
+    <boolopt> 
         <name>forceGCs</name>
 <java_name>forceGCs</java_name>
-<alias_name>forceGCs</alias_name>
-        <default_value>false</default_value>
+<alias>forceGCs</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, calls to System.gc() will be made at
 various points to allow memory usage to be measured.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         
         <name>preJimplify</name>
 <java_name>preJimplify</java_name>
-<alias_name>preJimplify</alias_name>
-        <default_value>false</default_value>
+<alias>preJimplify</alias>
+        <default>false</default>
         <long_desc>
         When this option is set to true, convert all available methods to Jimple
 before starting the points-to analysis. This allows the Jimplification
@@ -68,13 +68,13 @@ time to be separated from the points-to time. However, it increases the
 total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>VTA</name>
 <java_name>VTA</java_name>
-<alias_name>VTA</alias_name>
-        <default_value>false</default_value>
+<alias>VTA</alias>
+        <default>false</default>
         <long_desc>
 Setting VTA to true has the effect of setting ignoreBaseObjects,
 typesForSites, and simplifySCCs to true to simulate Variable Type
@@ -83,13 +83,13 @@ algorithm differs from the original VTA in that it handles array
 elements more precisely. To use the results of the analysis to trim the
 invoke graph, set the trimInvokeGraph option to true as well.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>RTA</name>
 <java_name>RTA</java_name>
-<alias_name>RTA</alias_name>
-        <default_value>false</default_value>
+<alias>RTA</alias>
+        <default>false</default>
         <long_desc>
 Setting RTA to true sets typesForSites to true, and causes Spark to use
 a single points-to set for all variables, giving Rapid Type
@@ -97,13 +97,13 @@ Analysis~\cite{baco.swee96}.
 To use the results of the analysis to trim the invoke graph, set the
 trimInvokeGraph option to true as well.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>ignoreBaseObjects</name>
 <java_name>ignoreBaseObjects</java_name>
-<alias_name>ignoreBaseObjects</alias_name>
-        <default_value>false</default_value>
+<alias>ignoreBaseObjects</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, fields are represented by variable
 (Green) nodes, and the object that the field belongs to is ignored
@@ -111,116 +111,116 @@ When this option is set to true, fields are represented by variable
 field reference (Red) nodes, and the objects that they belong to are
 distinguished.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>typesForSites</name>
 <java_name>typesForSites</java_name>
-<alias_name>typesForSites</alias_name>
-        <default_value>false</default_value>
+<alias>typesForSites</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, types rather than allocation sites are
 used as the elements of the points-to sets.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>mergeStringBuffer</name>
 <java_name>mergeStringBuffer</java_name>
-<alias_name>mergeStringBuffer</alias_name>
-        <default_value>true</default_value>
+<alias>mergeStringBuffer</alias>
+        <default>true</default>
         <long_desc>
 When this option is set to true, all allocation sites creating
 {\tt java.lang.StringBuffer} objects are grouped together as a single
 allocation site.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>simulateNatives</name>
 <java_name>simulateNatives</java_name>
-<alias_name>simulateNatives</alias_name>
-        <default_value>true</default_value>
+<alias>simulateNatives</alias>
+        <default>true</default>
         <long_desc>
 When this option is set to true, effects of native methods are simulated.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>simpleEdgesBidirectional</name>
 <java_name>simpleEdgesBidirectional</java_name>
-<alias_name>simpleEdgesBidirectional</alias_name>
-        <default_value>false</default_value>
+<alias>simpleEdgesBidirectional</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, all edges connecting variable (Green)
 nodes are made bidirectional, as in Steensgaard's analysis~\cite{stee96*1}.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>onFlyCallGraph</name>
 <java_name>onFlyCallGraph</java_name>
-<alias_name>onFlyCallGraph</alias_name>
-        <default_value>false</default_value>
+<alias>onFlyCallGraph</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, the call graph is computed on-the-fly
 as points-to information is computed. Otherwise, an initial
 approximation to the call graph is used.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>parmsAsFields</name>
 <java_name>parmsAsFields</java_name>
-<alias_name>parmsAsFields</alias_name>
-        <default_value>false</default_value>
+<alias>parmsAsFields</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, parameters to methods are represented
 as fields (Red nodes) of the this object; otherwise, parameters are
 represented as variable (Green) nodes.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>returnsAsFields</name>
 <java_name>returnsAsFields</java_name>
-<alias_name>returnsAsFields</alias_name>
-        <default_value>false</default_value>
+<alias>returnsAsFields</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, return values from methods are
 represented as fields (Red nodes) of the this object; otherwise,
 return values are represented as variable (Green) nodes.
         </long_desc>
-    </boolean_option>
-    <boolean_option>
+    </boolopt>
+    <boolopt>
         <name>simplifyOffline</name>
 <java_name>simplifyOffline</java_name>
-<alias_name>simplifyOffline</alias_name>
-        <default_value>false</default_value>
+<alias>simplifyOffline</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, variable (Green) nodes which are
 connected by simple paths (so they must have the same points-to set) are
 merged together.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>simplifySCCs</name>
 <java_name>simplifySCCs</java_name>
-<alias_name>simplifySCCs</alias_name>
-        <default_value>false</default_value>
+<alias>simplifySCCs</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, variable (Green) nodes which form
 strongly-connected components (so they must have the same points-to set)
 are merged together.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>ignoreTypesForSCCs</name>
 <java_name>ignoreTypesForSCCs</java_name>
-<alias_name>ignoreTypesForSCCs</alias_name>
-        <default_value>false</default_value>
+<alias>ignoreTypesForSCCs</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, when collapsing strongly-connected
 components, nodes forming SCCs are collapsed regardless of their type.
@@ -232,17 +232,17 @@ same type are considered when detecting SCCs.
 
 This option has no effect unless simplifySCCs is true.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <multi_option>
+    <multiopt>
         <name>propagator</name>
 <java_name>propagator</java_name>
-<alias_name>propagator</alias_name>
-        <value><value_name>iter</value_name><java_name>iter</java_name><alias>iter</alias></value>
-        <value><value_name>worklist</value_name><java_name>worklist</java_name><alias>worklist</alias><default/></value>
-        <value><value_name>merge</value_name><java_name>merge</java_name><alias>merge</alias></value>
-        <value><value_name>alias</value_name><java_name>alias</java_name><alias>alias</alias></value>
-        <value><value_name>none</value_name><java_name>none</java_name><alias>none</alias></value>
+<alias>propagator</alias>
+        <value><value>iter</value><java_name>iter</java_name><alias>iter</alias></value>
+        <value><value>worklist</value><java_name>worklist</java_name><alias>worklist</alias><default/></value>
+        <value><value>merge</value><java_name>merge</java_name><alias>merge</alias></value>
+        <value><value>alias</value><java_name>alias</java_name><alias>alias</alias></value>
+        <value><value>none</value><java_name>none</java_name><alias>none</alias></value>
         <long_desc>
 This option tells Spark which propagation algorithm to use.
 
@@ -262,17 +262,17 @@ red nodes. This algorithm is not yet finished.
 None means that propagation is not done; the graph is only built and
 simplified.
         </long_desc>
-    </multi_option>
+    </multiopt>
 
-    <multi_option>
+    <multiopt>
         <name>setImpl</name>
 <java_name>setImpl</java_name>
-<alias_name>setImpl</alias_name>
-        <value><value_name>hash</value_name><java_name>hash</java_name><alias>hash</alias></value>
-        <value><value_name>bit</value_name><java_name>bit</java_name><alias>bit</alias></value>
-        <value><value_name>hybrid</value_name><java_name>hybrid</java_name><alias>hybrid</alias></value>
-        <value><value_name>array</value_name><java_name>array</java_name><alias>array</alias></value>
-        <value><value_name>double</value_name><java_name>double</java_name><alias>double</alias><default/></value>
+<alias>setImpl</alias>
+        <value><value>hash</value><java_name>hash</java_name><alias>hash</alias></value>
+        <value><value>bit</value><java_name>bit</java_name><alias>bit</alias></value>
+        <value><value>hybrid</value><java_name>hybrid</java_name><alias>hybrid</alias></value>
+        <value><value>array</value><java_name>array</java_name><alias>array</alias></value>
+        <value><value>double</value><java_name>double</java_name><alias>double</alias><default/></value>
         <long_desc>
 Selects an implementation of a points-to set that Spark should use.
 
@@ -296,108 +296,108 @@ old pointed-to objects that have been propagated and need not be
 reconsidered. This allows the propagation algorithms to be incremental,
 often speeding them up significantly.
         </long_desc>
-    </multi_option>
+    </multiopt>
 
-    <multi_option>
+    <multiopt>
         <name>doubleSetOld</name>
 <java_name>doubleSetOld</java_name>
-<alias_name>doubleSetOld</alias_name>
-        <value><value_name>hash</value_name><java_name>hash</java_name><alias>hash</alias></value>
-        <value><value_name>bit</value_name><java_name>bit</java_name><alias>bit</alias></value>
-        <value><value_name>hybrid</value_name><java_name>hybrid</java_name><alias>hybrid</alias><default/></value>
-        <value><value_name>array</value_name><java_name>array</java_name><alias>array</alias></value>
+<alias>doubleSetOld</alias>
+        <value><value>hash</value><java_name>hash</java_name><alias>hash</alias></value>
+        <value><value>bit</value><java_name>bit</java_name><alias>bit</alias></value>
+        <value><value>hybrid</value><java_name>hybrid</java_name><alias>hybrid</alias><default/></value>
+        <value><value>array</value><java_name>array</java_name><alias>array</alias></value>
         <long_desc>
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
 
 This option has no effect unless setImpl is set to double.
         </long_desc>
-    </multi_option>
+    </multiopt>
 
-    <multi_option>
+    <multiopt>
         <name>doubleSetNew</name>
 <java_name>doubleSetNew</java_name>
-<alias_name>doubleSetNew</alias_name>
-        <value><value_name>hash</value_name><java_name>hash</java_name><alias>hash</alias></value>
-        <value><value_name>bit</value_name><java_name>bit</java_name><alias>bit</alias></value>
-        <value><value_name>hybrid</value_name><java_name>hybrid</java_name><alias>hybrid</alias><default/></value>
-        <value><value_name>array</value_name><java_name>array</java_name><alias>array</alias></value>
+<alias>doubleSetNew</alias>
+        <value><value>hash</value><java_name>hash</java_name><alias>hash</alias></value>
+        <value><value>bit</value><java_name>bit</java_name><alias>bit</alias></value>
+        <value><value>hybrid</value><java_name>hybrid</java_name><alias>hybrid</alias><default/></value>
+        <value><value>array</value><java_name>array</java_name><alias>array</alias></value>
         <long_desc>
 Selects an implementation for the sets of new objects in the double
 points-to set implementation.
 
 This option has no effect unless setImpl is set to double.
         </long_desc>
-    </multi_option>
+    </multiopt>
 
-    <boolean_option>
+    <boolopt>
         <name>dumpHTML</name>
 <java_name>dumpHTML</java_name>
-<alias_name>dumpHTML</alias_name>
-        <default_value>false</default_value>
+<alias>dumpHTML</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, a browseable HTML representation of the
 pointer assignment graph is output after the analysis completes. Note
 that this representation is typically very large.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>dumpPAG</name>
 <java_name>dumpPAG</java_name>
-<alias_name>dumpPAG</alias_name>
-        <default_value>false</default_value>
+<alias>dumpPAG</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, a representation of the pointer assignment graph
 suitable for processing with other solvers (such as the BDD-based solver) is
 output before the analysis begins.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>dumpSolution</name>
 <java_name>dumpSolution</java_name>
-<alias_name>dumpSolution</alias_name>
-        <default_value>false</default_value>
+<alias>dumpSolution</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, a representation of the resulting points-to
 sets is dumped. The format is similar to that of the dumpPAG
 option, and is therefore suitable for comparison with the results of other
 solvers.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>topoSort</name>
 <java_name>topoSort</java_name>
-<alias_name>topoSort</alias_name>
-        <default_value>false</default_value>
+<alias>topoSort</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 is dumped with the green nodes in (pseudo-)topological order.
 
 This option has no effect unless dumpPAG is true.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>dumpTypes</name>
 <java_name>dumpTypes</java_name>
-<alias_name>dumpTypes</alias_name>
-        <default_value>true</default_value>
+<alias>dumpTypes</alias>
+        <default>true</default>
         <long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 includes type information for all nodes.
 
 This option has no effect unless dumpPAG is true.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>classMethodVar</name>
 <java_name>classMethodVar</java_name>
-<alias_name>classMethodVar</alias_name>
-        <default_value>true</default_value>
+<alias>classMethodVar</alias>
+        <default>true</default>
         <long_desc>
 When this option is set to true, the representation dumped by the dumpPAG option
 represents nodes by numbering each class, method, and variable within
@@ -407,40 +407,40 @@ node.
 This option has no effect unless dumpPAG is true.
 Setting classMethodVar to true has the effect of setting topoSort to false.
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>dumpAnswer</name>
 <java_name>dumpAnswer</java_name>
-<alias_name>dumpAnswer</alias_name>
-        <default_value>false</default_value>
+<alias>dumpAnswer</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, the computed reaching types for each variable are
 dumped to a file, so that they can be compared with the results of
 other analyses (such as the old VTA).
         </long_desc>
-    </boolean_option>
+    </boolopt>
 
-    <boolean_option>
+    <boolopt>
         <name>trimInvokeGraph</name>
 <java_name>trimInvokeGraph</java_name>
-<alias_name>trimInvokeGraph</alias_name>
-        <default_value>false</default_value>
+<alias>trimInvokeGraph</alias>
+        <default>false</default>
         <long_desc>
 When this option is set to true, the results of the analysis are used to make the invoke graph
 more precise after the analysis completes.
         </long_desc>
-    </boolean_option>
-    <boolean_option>
+    </boolopt>
+    <boolopt>
         <name>addTags</name>
 <java_name>addTags</java_name>
-<alias_name>addTags</alias_name>
-        <default_value>false</default_value>
+<alias>addTags</alias>
+        <default>false</default>
         <long_desc>
         When this option is set to true, the results of the analysis are encoded inside
 tags, and printed with the resulting Jimple code.
 
         </long_desc>
-    </boolean_option>
+    </boolopt>
 </sub_phase>
 </phase>

@@ -509,17 +509,30 @@ public abstract class Body extends AbstractHost implements Serializable
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
         boolean isNumbered = PrintJimpleBodyOption.numbered(printBodyOptions);
 	boolean xmlOutput = PrintJimpleBodyOption.xmlOutput(printBodyOptions);
+	
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
         String decl = getMethod().getDeclaration();
+	int currentJimpleLnNum;
 
         if(!xmlOutput)
 	{
 	    out.println("    " + decl);        
+	    if (this.getMethod().getDeclaringClass().isAddJimpleLn()) {
+		    this.getMethod().getDeclaringClass().incJimpleLnNum();
+	    }
             for( Iterator tIt = getMethod().getTags().iterator(); tIt.hasNext(); ) {        
                 final Tag t = (Tag) tIt.next();
                 out.println(t);
+		if (this.getMethod().getDeclaringClass().isAddJimpleLn()) {
+			this.getMethod().getDeclaringClass().incJimpleLnNum();
+		}
+				    
             }
 	    out.println("    {");
+	    if (this.getMethod().getDeclaringClass().isAddJimpleLn()) {
+	    	this.getMethod().getDeclaringClass().incJimpleLnNum();
+	    }
+			    
 	
 	    Scene.v().getLocalPrinter().printLocalsInBody( this, out, isPrecise);
 	}
@@ -532,8 +545,13 @@ public abstract class Body extends AbstractHost implements Serializable
             Scene.v().getJimpleStmtPrinter().printStatementsInBody(this, out, isPrecise, isNumbered);
         }
         
-        if(!xmlOutput)
+        if(!xmlOutput) {
 	    out.println("    }");
+	    if (this.getMethod().getDeclaringClass().isAddJimpleLn()) {
+	    	this.getMethod().getDeclaringClass().incJimpleLnNum();
+	    }
+			    
+	}
     }
     
 }

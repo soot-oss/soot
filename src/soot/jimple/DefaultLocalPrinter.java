@@ -94,12 +94,19 @@ public class DefaultLocalPrinter implements LocalPrinter
                     }
 
                     out.println(";");
+		    if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+		    	body.getMethod().getDeclaringClass().incJimpleLnNum();
+		    }
                 }
             }
 
 
-            if(!typeToLocals.isEmpty())
+            if(!typeToLocals.isEmpty()){
                 out.println();
+		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+	        	body.getMethod().getDeclaringClass().incJimpleLnNum();
+		}				    
+	    }
         }
     }
 }

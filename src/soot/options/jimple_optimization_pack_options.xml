@@ -1,378 +1,378 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <phase>
-	<phase_name>Jimple Optimizations Pack</phase_name>
+	<name>Jimple Optimizations Pack</name>
 	<phase_java_name>jimpleOptPack</phase_java_name>
-	<phase_alias>jop</phase_alias>
-	<boolean_option>
+	<alias>jop</alias>
+	<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	<sub_phase>
-		<sub_phase_name>Common Subexpression Elimination</sub_phase_name>
+		<name>Common Subexpression Elimination</name>
 		<sub_phase_java_name>commonSubexpElimin</sub_phase_java_name>
-		<sub_phase_alias>jop.cse</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.cse</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Naive Side Effect Tester</name>
 			<java_name>naiveSE</java_name>
-			<alias_name>naive-side-effect</alias_name>
+			<alias>naive-side-effect</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Busy Code Motion</sub_phase_name>
+		<name>Busy Code Motion</name>
 		<sub_phase_java_name>busyCodeMotion</sub_phase_java_name>
-		<sub_phase_alias>jop.bcm</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.bcm</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Naive Side Effect Tester</name>
 			<java_name>naiveSE</java_name>
-			<alias_name>naive-side-effect</alias_name>
+			<alias>naive-side-effect</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-                <sub_phase_name>Lazy Code Motion</sub_phase_name>
+                <name>Lazy Code Motion</name>
 		<sub_phase_java_name>lazyCodeMotion</sub_phase_java_name>
-                <phase_option_class>LCMOptions</phase_option_class>
-		<sub_phase_alias>jop.lcm</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>LCMOptions</phaseopt_class>
+		<alias>jop.lcm</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<multi_option>
+		</boolopt>
+		<multiopt>
 			<name>Safe</name>
 			<java_name>safe</java_name>
-			<alias_name>safe</alias_name>
+			<alias>safe</alias>
 				<value>
-					<value_name>Safe</value_name>
+					<value>Safe</value>
 					<java_name>safe</java_name>
 					<alias>safe</alias>
 					<short_desc></short_desc>
                                         <default/>
 				</value>
 				<value>
-					<value_name>Medium</value_name>
+					<value>Medium</value>
 					<java_name>medium</java_name>
 					<alias>medium</alias>
 					<short_desc></short_desc>
 				</value>
 				<value>
-					<value_name>Unsafe</value_name>
+					<value>Unsafe</value>
 					<java_name>unsafe</java_name>
 					<alias>unsafe</alias>
 					<short_desc></short_desc>
 				</value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</multi_option>
-		<boolean_option>
+		</multiopt>
+		<boolopt>
 			<name>Unroll</name>
 			<java_name>unroll</java_name>
-			<alias_name>unroll</alias_name>
+			<alias>unroll</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-                        <default_value>true</default_value>
-		</boolean_option>
-		<boolean_option>
+                        <default>true</default>
+		</boolopt>
+		<boolopt>
 			<name>Naive Side Effect Tester</name>
 			<java_name>naiveSE</java_name>
-			<alias_name>naive-side-effect</alias_name>
+			<alias>naive-side-effect</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Copy Propogator</sub_phase_name>
+		<name>Copy Propogator</name>
 		<sub_phase_java_name>copyPropogator</sub_phase_java_name>
-                <phase_option_class>CPOptions</phase_option_class>
-		<sub_phase_alias>jop.cp</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>CPOptions</phaseopt_class>
+		<alias>jop.cp</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>Only Regular Locals</name>
 			<java_name>onlyRegLocals</java_name>
-			<alias_name>only-regular-locals</alias_name>
+			<alias>only-regular-locals</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>	
-                <boolean_option>
+		</boolopt>	
+                <boolopt>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
-			<alias_name>only-stack-locals</alias_name>
+			<alias>only-stack-locals</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Constant Propagator and Folder</sub_phase_name>
+		<name>Constant Propagator and Folder</name>
 		<sub_phase_java_name>constPropagator</sub_phase_java_name>
-		<sub_phase_alias>jop.cpf</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.cpf</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Conditional Branch Folder</sub_phase_name>
+		<name>Conditional Branch Folder</name>
 		<sub_phase_java_name>condBranchFolder</sub_phase_java_name>
-		<sub_phase_alias>jop.cbf</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.cbf</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Dead Assignment Eliminator</sub_phase_name>
+		<name>Dead Assignment Eliminator</name>
 		<sub_phase_java_name>deadAssignElimin</sub_phase_java_name>
-		<sub_phase_alias>jop.dae</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.dae</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-                <boolean_option>
+		</boolopt>
+                <boolopt>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
-			<alias_name>only-stack-locals</alias_name>
+			<alias>only-stack-locals</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Unreachable Code Eliminator</sub_phase_name>
+		<name>Unreachable Code Eliminator</name>
 		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
-		<sub_phase_alias>jop.uce1</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.uce1</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Unreachable Code Eliminator</sub_phase_name>
+		<name>Unreachable Code Eliminator</name>
 		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
-		<sub_phase_alias>jop.uce2</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.uce2</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Unconditional Branch Folder</sub_phase_name>
+		<name>Unconditional Branch Folder</name>
 		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
-		<sub_phase_alias>jop.ubf1</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.ubf1</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Unconditional Branch Folder</sub_phase_name>
+		<name>Unconditional Branch Folder</name>
 		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
-		<sub_phase_alias>jop.ubf2</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.ubf2</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Unused Local Eliminator</sub_phase_name>
+		<name>Unused Local Eliminator</name>
 		<sub_phase_java_name>unusedLocalElimin</sub_phase_java_name>
-		<sub_phase_alias>jop.ule</sub_phase_alias>
-		<boolean_option>
+		<alias>jop.ule</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	</sub_phase>
 </phase>
-<phase><phase_name>jap</phase_name><phase_java_name>jap</phase_java_name><phase_alias>jap</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
+<phase><name>jap</name><phase_java_name>jap</phase_java_name><alias>jap</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
 
 	<sub_phase>
-		<sub_phase_name>Null Pointer Check Options</sub_phase_name>
+		<name>Null Pointer Check Options</name>
 		<sub_phase_java_name>nullPointerCheckOpts</sub_phase_java_name>
-                <phase_option_class>NPCOptions</phase_option_class>
-		<sub_phase_alias>jap.npc</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>NPCOptions</phaseopt_class>
+		<alias>jap.npc</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>Only Array Ref</name>
 			<java_name>onlyArrayRef</java_name>
-			<alias_name>only-array-ref</alias_name>
+			<alias>only-array-ref</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Profiling</name>
 			<java_name>profiling</java_name>
-			<alias_name>profiling</alias_name>
+			<alias>profiling</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Array Bound Check Options</sub_phase_name>
+		<name>Array Bound Check Options</name>
 		<sub_phase_java_name>arrayBndsCheckOpts</sub_phase_java_name>
-                <phase_option_class>ABCOptions</phase_option_class>
-		<sub_phase_alias>jap.abc</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>ABCOptions</phaseopt_class>
+		<alias>jap.abc</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>With All</name>
 			<java_name>withAll</java_name>
-			<alias_name>with-all</alias_name>
+			<alias>with-all</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>With Field References</name>
 			<java_name>withFieldRef</java_name>
-			<alias_name>with-fieldref</alias_name>
+			<alias>with-fieldref</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>With Array References</name>
 			<java_name>withArrayRef</java_name>
-			<alias_name>with-arrayref</alias_name>
+			<alias>with-arrayref</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>With Common Sub-expressions</name>
 			<java_name>withCse</java_name>
-			<alias_name>with-cse</alias_name>
+			<alias>with-cse</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>With Class Field</name>
 			<java_name>withClassField</java_name>
-			<alias_name>with-classfield</alias_name>
+			<alias>with-classfield</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>With Rectangular Array</name>
 			<java_name>withRectArray</java_name>
-			<alias_name>with-rectarray</alias_name>
+			<alias>with-rectarray</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Profiling</name>
 			<java_name>profiling</java_name>
-			<alias_name>profiling</alias_name>
+			<alias>profiling</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Profiling Generator</sub_phase_name>
+		<name>Profiling Generator</name>
 		<sub_phase_java_name>profilingGen</sub_phase_java_name>
-		<sub_phase_alias>jap.profiling</sub_phase_alias>
-                <phase_option_class>ProfilingOptions</phase_option_class>
-		<boolean_option>
+		<alias>jap.profiling</alias>
+                <phaseopt_class>ProfilingOptions</phaseopt_class>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Enable</name>
 			<java_name>enable</java_name>
-			<alias_name>enable</alias_name>
-                        <default_value>false</default_value>
+			<alias>enable</alias>
+                        <default>false</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Not Main Entry</name>
 			<java_name>notMainEntry</java_name>
-			<alias_name>notmainentry</alias_name>
-                        <default_value>false</default_value>
+			<alias>notmainentry</alias>
+                        <default>false</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
         </sub_phase>
 </phase>

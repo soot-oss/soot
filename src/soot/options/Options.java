@@ -22,7 +22,7 @@
 
 package soot.options;
 import java.util.*;
-import soot.*;
+import soot.PackManager;
 
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
@@ -335,6 +335,11 @@ public class Options extends OptionsBase {
             )
                 via_grimp = true;
   
+            else if( false 
+            || option.equals( "xml-attributes" )
+            )
+                xml_attributes = true;
+  
             else if( false
             || option.equals( "p" )
             || option.equals( "phase-option" )
@@ -533,6 +538,8 @@ public class Options extends OptionsBase {
     private int output_format = 0;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
+    public boolean xml_attributes() { return xml_attributes; }
+    private boolean xml_attributes = false;
     public List process_path() { 
         if( process_path == null )
             return java.util.Collections.EMPTY_LIST;
@@ -619,6 +626,7 @@ public class Options extends OptionsBase {
 +padVal(" c class", "Class File" )
 +padVal(" d dava", "Dava Decompiled File" )
 +padOpt(" -via-grimp", "convert jimple to bytecode via grimp instead of via baf" )
++padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"
       
 +padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "set run-time option KEY to VALUE for PHASE-NAME" )

@@ -49,6 +49,8 @@ public class DefaultStmtPrinter implements StmtPrinter
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {
+
+	
         Chain units = body.getUnits();
 
         Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
@@ -103,6 +105,7 @@ public class DefaultStmtPrinter implements StmtPrinter
         Unit currentStmt = null, previousStmt;
         String indent = (isNumbered) ? "    " : "        ";
         
+	
         while(unitIt.hasNext()) {
             
             previousStmt = currentStmt;
@@ -121,20 +124,35 @@ public class DefaultStmtPrinter implements StmtPrinter
                         {       
                             if(unitGraph.getSuccsOf(previousStmt).size() != 1 ||
                                unitGraph.getPredsOf(currentStmt).size() != 1 ||
-                               stmtToName.containsKey(currentStmt))
+                               stmtToName.containsKey(currentStmt)) {
                                 out.println();
+				if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+                            		body.getMethod().getDeclaringClass().incJimpleLnNum();
+				}
+			    }
                             else {
                                 // Or if the previous node does not have body statement as a successor.
                                 
                                 List succs = unitGraph.getSuccsOf(previousStmt);
                                 
-                                if(succs.get(0) != currentStmt)
+                                if(succs.get(0) != currentStmt) {
                                     out.println();
+				    if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+					body.getMethod().getDeclaringClass().incJimpleLnNum();
+				    }
+				    
+				}
                             }
                         }
                     
-                     if(stmtToName.containsKey(currentStmt))
+                     if(stmtToName.containsKey(currentStmt)) {
                          out.println("     " + stmtToName.get(currentStmt) + ":");
+			 if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+				body.getMethod().getDeclaringClass().incJimpleLnNum();
+			 }
+			 
+		     }
+		     
                 }
                    
 
@@ -145,20 +163,31 @@ public class DefaultStmtPrinter implements StmtPrinter
 	
 		out.print(";"); 
 		out.println();
+		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) { 
+			body.getMethod().getDeclaringClass().setJimpleLnNum(addJimpleLnTags(body.getMethod().getDeclaringClass().getJimpleLnNum(), currentStmt));
+	        }
 		
+		// only print them if not generating attributes files 
+		// because they mess up line number
+		if (!body.getMethod().getDeclaringClass().isAddJimpleLn()){
 		Iterator tagIterator = currentStmt.getTags().iterator();
 		while(tagIterator.hasNext()) {
 		    Tag t = (Tag) tagIterator.next();		   		    
 		    out.println(t);
 		}		 
         }
+        }
 
         // Print out exceptions
         {
             Iterator trapIt = body.getTraps().iterator();
 
-            if(trapIt.hasNext())
+            if(trapIt.hasNext()) {
                 out.println();
+		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+	  		body.getMethod().getDeclaringClass().incJimpleLnNum();
+		}
+	    }
 
             while(trapIt.hasNext())
             {
@@ -167,11 +196,22 @@ public class DefaultStmtPrinter implements StmtPrinter
                 out.println("        catch " + Scene.v().quotedNameOf(trap.getException().getName()) + " from " +
                     stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
                     " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
+		
+		if (body.getMethod().getDeclaringClass().isAddJimpleLn()) {
+			body.getMethod().getDeclaringClass().incJimpleLnNum();
+		}
+						
             }
         }
 
     }
 
+    private int addJimpleLnTags(int lnNum, Unit stmt) {
+	stmt.addTag(new JimpleLineNumberTag(lnNum));
+	lnNum++;
+	return lnNum;
+    }
+    
     // moved here from body ; should be factorized with the above
     public void printDebugStatementsInBody(Body b, java.io.PrintWriter out, boolean isPrecise)
     {

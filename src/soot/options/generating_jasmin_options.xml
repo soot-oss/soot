@@ -1,133 +1,133 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <phase>
-	<phase_name>Grimp Body Creation</phase_name>
+	<name>Grimp Body Creation</name>
 	<phase_java_name>grimpBodyCreation</phase_java_name>
-	<phase_alias>gb</phase_alias>
-		<boolean_option>
+	<alias>gb</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>No Aggregating</name>
 			<java_name>noAggregating</java_name>
-			<alias_name>no-aggregating</alias_name>
+			<alias>no-aggregating</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Aggregate All Locals</name>
 			<java_name>aggAllLocals</java_name>
-			<alias_name>aggregate-all-locals</alias_name>
+			<alias>aggregate-all-locals</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-        <sub_phase><sub_phase_name>gb.a</sub_phase_name><sub_phase_java_name>a</sub_phase_java_name><sub_phase_alias>gb.a</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option><boolean_option><name>Only Stack Locals</name><java_name>osl</java_name><alias_name>only-stack-locals</alias_name></boolean_option></sub_phase>
+		</boolopt>
+        <sub_phase><name>gb.a</name><sub_phase_java_name>a</sub_phase_java_name><alias>gb.a</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt><boolopt><name>Only Stack Locals</name><java_name>osl</java_name><alias>only-stack-locals</alias></boolopt></sub_phase>
 	<sub_phase>
-		<sub_phase_name>ASV1</sub_phase_name>
+		<name>ASV1</name>
 		<sub_phase_java_name>asv1</sub_phase_java_name>
-		<sub_phase_alias>gb.asv1</sub_phase_alias>
-		<boolean_option>
+		<alias>gb.asv1</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-                    <boolean_option>
+                    <boolopt>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
-			<alias_name>only-stack-locals</alias_name>
-                        <default_value>true</default_value>
+			<alias>only-stack-locals</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 			</sub_phase>
 	<sub_phase>
-		<sub_phase_name>ASV2</sub_phase_name>
+		<name>ASV2</name>
 		<sub_phase_java_name>asv2</sub_phase_java_name>
-		<sub_phase_alias>gb.asv2</sub_phase_alias>
-		<boolean_option>
+		<alias>gb.asv2</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-                    <boolean_option>
+                    <boolopt>
 			<name>Only Stack Locals</name>
 			<java_name>onlyStackLocals</java_name>
-			<alias_name>only-stack-locals</alias_name>
-                        <default_value>true</default_value>
+			<alias>only-stack-locals</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
             </sub_phase>
-<sub_phase><sub_phase_name>gb.cf</sub_phase_name><sub_phase_java_name>cf</sub_phase_java_name><sub_phase_alias>gb.cf</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></sub_phase>
-<sub_phase><sub_phase_name>gb.ule</sub_phase_name><sub_phase_java_name>ule</sub_phase_java_name><sub_phase_alias>gb.ule</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></sub_phase>
+<sub_phase><name>gb.cf</name><sub_phase_java_name>cf</sub_phase_java_name><alias>gb.cf</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></sub_phase>
+<sub_phase><name>gb.ule</name><sub_phase_java_name>ule</sub_phase_java_name><alias>gb.ule</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></sub_phase>
 
 </phase>
-<phase><phase_name>gop</phase_name><phase_java_name>gop</phase_java_name><phase_alias>gop</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
-<phase><phase_name>bb</phase_name><phase_java_name>bb</phase_java_name><phase_alias>bb</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
+<phase><name>gop</name><phase_java_name>gop</phase_java_name><alias>gop</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></phase>
+<phase><name>bb</name><phase_java_name>bb</phase_java_name><alias>bb</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
 
-<sub_phase><sub_phase_name>bb.lso</sub_phase_name><sub_phase_java_name>lso</sub_phase_java_name><sub_phase_alias>bb.lso</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
-<boolean_option><name>debug</name><java_name>debug</java_name><alias_name>debug</alias_name></boolean_option>
-<boolean_option><name>inter</name><java_name>inter</java_name><alias_name>inter</alias_name></boolean_option>
-<boolean_option><name>sl</name><java_name>sl</java_name><alias_name>sl</alias_name><default_value>true</default_value></boolean_option>
-<boolean_option><name>sl2</name><java_name>sl2</java_name><alias_name>sl2</alias_name></boolean_option>
-<boolean_option><name>sll</name><java_name>sll</java_name><alias_name>sll</alias_name><default_value>true</default_value></boolean_option>
-<boolean_option><name>sll2</name><java_name>sll2</java_name><alias_name>sll2</alias_name></boolean_option>
+<sub_phase><name>bb.lso</name><sub_phase_java_name>lso</sub_phase_java_name><alias>bb.lso</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
+<boolopt><name>debug</name><java_name>debug</java_name><alias>debug</alias></boolopt>
+<boolopt><name>inter</name><java_name>inter</java_name><alias>inter</alias></boolopt>
+<boolopt><name>sl</name><java_name>sl</java_name><alias>sl</alias><default>true</default></boolopt>
+<boolopt><name>sl2</name><java_name>sl2</java_name><alias>sl2</alias></boolopt>
+<boolopt><name>sll</name><java_name>sll</java_name><alias>sll</alias><default>true</default></boolopt>
+<boolopt><name>sll2</name><java_name>sll2</java_name><alias>sll2</alias></boolopt>
 </sub_phase>
-<sub_phase><sub_phase_name>bb.pho</sub_phase_name><sub_phase_java_name>pho</sub_phase_java_name><sub_phase_alias>bb.pho</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></sub_phase>
-<sub_phase><sub_phase_name>bb.ule</sub_phase_name><sub_phase_java_name>ule</sub_phase_java_name><sub_phase_alias>bb.ule</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></sub_phase>
-<sub_phase><sub_phase_name>bb.lp</sub_phase_name><sub_phase_java_name>lp</sub_phase_java_name><sub_phase_alias>bb.lp</sub_phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
-<boolean_option><name>unsplit-original-locals</name><java_name>unsplit-original-locals</java_name><alias_name>unsplit-original-locals</alias_name></boolean_option>
+<sub_phase><name>bb.pho</name><sub_phase_java_name>pho</sub_phase_java_name><alias>bb.pho</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></sub_phase>
+<sub_phase><name>bb.ule</name><sub_phase_java_name>ule</sub_phase_java_name><alias>bb.ule</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></sub_phase>
+<sub_phase><name>bb.lp</name><sub_phase_java_name>lp</sub_phase_java_name><alias>bb.lp</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
+<boolopt><name>unsplit-original-locals</name><java_name>unsplit-original-locals</java_name><alias>unsplit-original-locals</alias></boolopt>
 </sub_phase>
 </phase>
-<phase><phase_name>bop</phase_name><phase_java_name>bop</phase_java_name><phase_alias>bop</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
+<phase><name>bop</name><phase_java_name>bop</phase_java_name><alias>bop</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></phase>
 
-<phase><phase_name>tag</phase_name><phase_java_name>tag</phase_java_name><phase_alias>tag</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
+<phase><name>tag</name><phase_java_name>tag</phase_java_name><alias>tag</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
 	<sub_phase>
-		<sub_phase_name>Line Number Tag Aggregator</sub_phase_name>
+		<name>Line Number Tag Aggregator</name>
 		<sub_phase_java_name>lineNum</sub_phase_java_name>
-		<sub_phase_alias>tag.ln</sub_phase_alias>
-		<boolean_option>
+		<alias>tag.ln</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Array Bounds and Null Pointer Check Tag Aggregator</sub_phase_name>
+		<name>Array Bounds and Null Pointer Check Tag Aggregator</name>
 		<sub_phase_java_name>abnpc</sub_phase_java_name>
-		<sub_phase_alias>tag.an</sub_phase_alias>
-		<boolean_option>
+		<alias>tag.an</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Dependence Tag Aggregator</sub_phase_name>
+		<name>Dependence Tag Aggregator</name>
 		<sub_phase_java_name>depTag</sub_phase_java_name>
-		<sub_phase_alias>tag.dep</sub_phase_alias>
-		<boolean_option>
+		<alias>tag.dep</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 </phase>

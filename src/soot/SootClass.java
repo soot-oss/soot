@@ -74,6 +74,13 @@ public class SootClass extends AbstractHost implements Numberable
 
     boolean isPhantom;
     
+    
+    boolean addJimpleLn;	// if true jimple line number tags are 
+    				// added to each statement
+				
+    int jimpleLnNum = 0;	// actual line number
+    
+    
     /**
         Constructs an empty SootClass with the given name and modifiers.
     */
@@ -100,6 +107,25 @@ public class SootClass extends AbstractHost implements Numberable
         A class may be unmanaged while it is being constructed.
     */
 
+    // these five methods are for accessing vars associated with adding
+    // jimple line number tags to stmts
+    public boolean isAddJimpleLn() {
+    	return addJimpleLn;
+    }
+    private void setAddJimpleLn(boolean val) {
+    	addJimpleLn = val;
+    }
+    public int getJimpleLnNum() {
+    	return jimpleLnNum;
+    }
+    public void setJimpleLnNum(int newVal) {
+        jimpleLnNum = newVal;
+    }
+    public void incJimpleLnNum() {
+    	jimpleLnNum++;
+    }
+    
+    
     public boolean isInScene()
     {
         return isInScene;
@@ -149,7 +175,6 @@ public class SootClass extends AbstractHost implements Numberable
             throw new RuntimeException("Field already exists : "+f.getName());
  
         fields.add(f);
-        
         f.isDeclared = true;
         f.declaringClass = this;
         
@@ -955,6 +980,12 @@ public class SootClass extends AbstractHost implements Numberable
             return;
         }
 
+	// add jimple line number tags
+	setAddJimpleLn(PrintJimpleBodyOption.addJimpleLn(printBodyOptions));
+	if (isAddJimpleLn()) {
+		incJimpleLnNum();
+	}
+	
        // Print class name + modifiers
         {
             StringTokenizer st = new StringTokenizer(Modifier.toString(this.getModifiers()));
@@ -997,7 +1028,14 @@ public class SootClass extends AbstractHost implements Numberable
         }
         
         out.println();
+	
+	if (isAddJimpleLn()) {
+		incJimpleLnNum();
+	}
         out.println("{");
+	if (isAddJimpleLn()) {
+		incJimpleLnNum();
+	}
         
         // Print fields
         {
@@ -1013,6 +1051,9 @@ public class SootClass extends AbstractHost implements Numberable
                         continue;
                     
                     out.println("    " + f.getDeclaration() + ";");
+		    if (isAddJimpleLn()) {
+			    incJimpleLnNum();
+	 	    }
                 }
             }
         }
@@ -1023,8 +1064,12 @@ public class SootClass extends AbstractHost implements Numberable
 
             if(methodIt.hasNext())
             {
-                if(getMethodCount() != 0)
+                if(getMethodCount() != 0) {
                     out.println();
+		    if (isAddJimpleLn()) {
+			    incJimpleLnNum();  	
+	            }
+		}
                 
                 while(methodIt.hasNext())
                 {
@@ -1041,22 +1086,35 @@ public class SootClass extends AbstractHost implements Numberable
                         else
                             method.getActiveBody().printTo(out, printBodyOptions);
 
-                        if(methodIt.hasNext())
+                        if(methodIt.hasNext()){
                             out.println();
+			    if (isAddJimpleLn()) {
+				    incJimpleLnNum();
+		            }		    
+			}
                     }
                     else 
                     {
                         out.print("    ");
                         out.print(method.getDeclaration());
                         out.println(";");
-                        
-                        if(methodIt.hasNext())
+                        if (isAddJimpleLn()) {
+				incJimpleLnNum();
+			}
+                        if(methodIt.hasNext()) {
                             out.println();
+			    if (isAddJimpleLn()) {
+				    incJimpleLnNum();
+			    }
+			}
                     }
                 }
             }
         }
         out.println("}");
+	if (isAddJimpleLn()) {
+		incJimpleLnNum();
+	}	
     }
     
     public void printTo( PrintWriter out, int printBodyOptions)

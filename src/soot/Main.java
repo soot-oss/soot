@@ -878,7 +878,12 @@ public class Main implements Runnable
     case Options.output_format_grimple:
       writerOut = 
 	new PrintWriter(new EscapedWriter(new OutputStreamWriter(streamOut)));
+      if (opts.xml_attributes()) {
+	c.printJimpleStyleTo(writerOut, PrintJimpleBodyOption.ADD_JIMPLE_LN);
+      }
+      else {
       c.printJimpleStyleTo(writerOut, 0);
+      }
       break;
     case Options.output_format_dava:
       break;
@@ -902,6 +907,11 @@ public class Main implements Runnable
       }	catch(IOException e) {
 	System.out.println("Cannot close output file " + fileName);
       }
+    }
+
+    if (opts.xml_attributes()) {
+    	XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName);
+	xap.printAttrs(c);
     }
 
     // Release bodies

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,60 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot;
 
-
-
-
-package soot.jimple;
-
-import soot.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
-
-public class PrintJimpleBodyOption
+/** A class to group together all the global variables in Soot. */
+public class Singletons 
 {
-    public static final int USE_ABBREVIATIONS = 0x0001,
-                            DEBUG_MODE        = 0x0002,
-                            NUMBERED          = 0x0004,
-			    XML_OUTPUT	      = 0x0008,
-			    ADD_JIMPLE_LN     = 0x0010;	
-
-    protected PrintJimpleBodyOption()
-    {
-    }
-
-    public static boolean useAbbreviations(int m)
-    {
-        return (m & USE_ABBREVIATIONS) != 0;
-    }
-
-    public static boolean numbered(int m)
-    {
-        return (m & NUMBERED) != 0;
-    }
-    
-    public static boolean debugMode(int m)
-    {
-        return (m & DEBUG_MODE) != 0;
-    }
-
-    public static boolean xmlOutput(int m)
-    {
-	return (m & XML_OUTPUT) != 0;
-    }
-
-    public static boolean addJimpleLn(int m)
-    {
-	return (m & ADD_JIMPLE_LN) != 0;
-    }
-     
 }
-
-
-    
-
-
-
-
 

@@ -58,7 +58,7 @@ public class OptionsDialog extends AbstractOptionsDialog {
 	 */ 
 	protected void initializePageContainer() {
 		<xsl:for-each select="section">
-		Composite <xsl:value-of select="section_java_name"/>Child = <xsl:value-of select="section_java_name"/>Create(getPageContainer());
+		Composite <xsl:value-of select="translate(name[last()],'-. ','___')"/>Child = <xsl:value-of select="translate(name[last()],'-. ','___')"/>Create(getPageContainer());
 		</xsl:for-each>
 	}
 
@@ -71,24 +71,24 @@ public class OptionsDialog extends AbstractOptionsDialog {
 		Control [] elements;
 		<xsl:for-each select="section"> 
 		
-		<xsl:for-each select="boolean_option">
-		settings.put(get<xsl:value-of select="java_name"/>_widget().getAlias(), get<xsl:value-of select="java_name"/>_widget().getButton().getSelection());
+		<xsl:for-each select="boolopt">
+		settings.put(get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection());
 		</xsl:for-each>
 		
-		<xsl:for-each select="macro_option">
-		settings.put(get<xsl:value-of select="java_name"/>_widget().getAlias(), get<xsl:value-of select="java_name"/>_widget().getButton().getSelection());
+		<xsl:for-each select="macroopt">
+		settings.put(get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getButton().getSelection());
 		</xsl:for-each>
 		
-		<xsl:for-each select="path_option">
-		settings.put(get<xsl:value-of select="java_name"/>_widget().getAlias(), get<xsl:value-of select="java_name"/>_widget().getText().getText());
+		<xsl:for-each select="listopt">
+		settings.put(get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
 		</xsl:for-each>
 		
-		<xsl:for-each select="string_option">
-		settings.put(get<xsl:value-of select="java_name"/>_widget().getAlias(), get<xsl:value-of select="java_name"/>_widget().getText().getText());
+		<xsl:for-each select="stropt">
+		settings.put(get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getText().getText());
 		</xsl:for-each>
 		
-		<xsl:for-each select="multi_option"> 
-		settings.put(get<xsl:value-of select="java_name"/>_widget().getAlias(), get<xsl:value-of select="java_name"/>_widget().getSelectedAlias());
+		<xsl:for-each select="multiopt"> 
+		settings.put(get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias());
 		</xsl:for-each>
 		
 		</xsl:for-each>
@@ -106,8 +106,8 @@ public class OptionsDialog extends AbstractOptionsDialog {
 	protected SootOption getInitialInput() {
 		SootOption root = new SootOption("");
 		<xsl:for-each select="section">
-		SootOption <xsl:value-of select="section_java_name"/>_branch = new SootOption("<xsl:value-of select="section_name"/>");
-		root.addChild(<xsl:value-of select="section_java_name"/>_branch);
+		SootOption <xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch = new SootOption("<xsl:value-of select="name"/>");
+		root.addChild(<xsl:value-of select="translate(name[last()],'-. ','___')"/>_branch);
 		</xsl:for-each>
 		return root;
 	
@@ -121,77 +121,77 @@ public class OptionsDialog extends AbstractOptionsDialog {
 	 */
 	<xsl:for-each select="section">
 
-	<xsl:for-each select="boolean_option">
-	private BooleanOptionWidget <xsl:value-of select="java_name"/>_widget;
-	private void set<xsl:value-of select="java_name"/>_widget(BooleanOptionWidget widget) {
-		<xsl:value-of select="java_name"/>_widget = widget;
+	<xsl:for-each select="boolopt">
+	private BooleanOptionWidget <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
+	private void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(BooleanOptionWidget widget) {
+		<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget = widget;
 	}
-	private BooleanOptionWidget get<xsl:value-of select="java_name"/>_widget() {
-		return <xsl:value-of select="java_name"/>_widget;
+	private BooleanOptionWidget get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget() {
+		return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
 	}	
 	</xsl:for-each>
 
-	<xsl:for-each select="path_option">
-	private PathOptionWidget <xsl:value-of select="java_name"/>_widget;
-	private void set<xsl:value-of select="java_name"/>_widget(PathOptionWidget widget) {
-		<xsl:value-of select="java_name"/>_widget = widget;
+	<xsl:for-each select="listopt">
+	private PathOptionWidget <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
+	private void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(PathOptionWidget widget) {
+		<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget = widget;
 	}
-	private PathOptionWidget get<xsl:value-of select="java_name"/>_widget() {
-		return <xsl:value-of select="java_name"/>_widget;
+	private PathOptionWidget get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget() {
+		return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
 	}	
 	</xsl:for-each>
 
-	<xsl:for-each select="string_option">
-	private StringOptionWidget <xsl:value-of select="java_name"/>_widget;
-	private void set<xsl:value-of select="java_name"/>_widget(StringOptionWidget widget) {
-		<xsl:value-of select="java_name"/>_widget = widget;
+	<xsl:for-each select="stropt">
+	private StringOptionWidget <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
+	private void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(StringOptionWidget widget) {
+		<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget = widget;
 	}
-	private StringOptionWidget get<xsl:value-of select="java_name"/>_widget() {
-		return <xsl:value-of select="java_name"/>_widget;
+	private StringOptionWidget get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget() {
+		return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
 	}	
 	</xsl:for-each>
 
-	<xsl:for-each select="macro_option">
-	private BooleanOptionWidget <xsl:value-of select="java_name"/>_widget;
-	private void set<xsl:value-of select="java_name"/>_widget(BooleanOptionWidget widget) {
-		<xsl:value-of select="java_name"/>_widget = widget;
+	<xsl:for-each select="macroopt">
+	private BooleanOptionWidget <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
+	private void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(BooleanOptionWidget widget) {
+		<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget = widget;
 	}
-	private BooleanOptionWidget get<xsl:value-of select="java_name"/>_widget() {
-		return <xsl:value-of select="java_name"/>_widget;
+	private BooleanOptionWidget get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget() {
+		return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
 	}	
 	</xsl:for-each>
 	
-	<xsl:for-each select="multi_option">
-	MultiOptionWidget <xsl:value-of select="java_name"/>_widget;
-	private void set<xsl:value-of select="java_name"/>_widget(MultiOptionWidget widget) {
-		<xsl:value-of select="java_name"/>_widget = widget;
+	<xsl:for-each select="multiopt">
+	MultiOptionWidget <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
+	private void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(MultiOptionWidget widget) {
+		<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget = widget;
 	}
-	private MultiOptionWidget get<xsl:value-of select="java_name"/>_widget() {
-		return <xsl:value-of select="java_name"/>_widget;
+	private MultiOptionWidget get<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget() {
+		return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget;
 	}	
 	</xsl:for-each>
 
 	
 	
-	private Composite <xsl:value-of select="section_java_name"/>Create(Composite parent) {
+	private Composite <xsl:value-of select="translate(name[last()],'-. ','___')"/>Create(Composite parent) {
 
 		Group editGroup = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroup.setLayout(layout);
 	
-	 	editGroup.setText("<xsl:value-of select="section_name"/>");
+	 	editGroup.setText("<xsl:value-of select="name"/>");
 		
 		
 		
-		<xsl:for-each select="boolean_option">
-		set<xsl:value-of select="java_name"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias_name"/>", "<xsl:value-of select="short_desc"/>")));
+		<xsl:for-each select="boolopt">
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
 		</xsl:for-each>
 		
-		<xsl:for-each select="multi_option">
+		<xsl:for-each select="multiopt">
 		
 		OptionData [] data = new OptionData [] {
 		<xsl:for-each select="value">
-		new OptionData("<xsl:value-of select="value_name"/>",
+		new OptionData("<xsl:value-of select="value"/>",
 		"<xsl:value-of select="alias"/>",
 		"<xsl:value-of select="short_desc"/>",
 		<xsl:if test="default">
@@ -205,19 +205,19 @@ public class OptionsDialog extends AbstractOptionsDialog {
 		};
 		
 										
-		set<xsl:value-of select="java_name"/>_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias_name"/>", "<xsl:value-of select="short_desc"/>")));
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new MultiOptionWidget(editGroup, SWT.NONE, data, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
 		</xsl:for-each>
 		
-		<xsl:for-each select="path_option">
-		set<xsl:value-of select="java_name"/>_widget(new PathOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias_name"/>", "<xsl:value-of select="short_desc"/>")));
+		<xsl:for-each select="listopt">
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new PathOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
 		</xsl:for-each>
 		
-		<xsl:for-each select="string_option">
-		set<xsl:value-of select="java_name"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias_name"/>", "<xsl:value-of select="short_desc"/>")));
+		<xsl:for-each select="stropt">
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new StringOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")));
 		</xsl:for-each>
 
-		<xsl:for-each select="macro_option">
-		set<xsl:value-of select="java_name"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias_name"/>",  "<xsl:value-of select="short_desc"/>")));
+		<xsl:for-each select="macroopt">
+		set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget(new BooleanOptionWidget(editGroup, SWT.NONE, new OptionData("<xsl:value-of select="name"/>", "<xsl:value-of select="alias"/>",  "<xsl:value-of select="short_desc"/>")));
 		</xsl:for-each>
 		
 		return editGroup;

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<phase><phase_name>stp</phase_name><phase_java_name>stp</phase_java_name><phase_alias>stp</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
-<phase><phase_name>sop</phase_name><phase_java_name>sop</phase_java_name><phase_alias>sop</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option></phase>
+<phase><name>stp</name><phase_java_name>stp</phase_java_name><alias>stp</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></phase>
+<phase><name>sop</name><phase_java_name>sop</phase_java_name><alias>sop</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt></phase>
 <phase>
-	<phase_name>Jimple Transformations Pack</phase_name>
+	<name>Jimple Transformations Pack</name>
 	<phase_java_name>jimpleTransPack</phase_java_name>
-	<phase_alias>jtp</phase_alias>
-		<boolean_option>
+	<alias>jtp</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 
 </phase>

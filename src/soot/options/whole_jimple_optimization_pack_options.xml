@@ -1,194 +1,194 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <phase>
-	<phase_name>Whole-Jimple Optimization Pack</phase_name>
+	<name>Whole-Jimple Optimization Pack</name>
 	<phase_java_name>wholeJimpleOptPack</phase_java_name>
-	<phase_alias>wjop</phase_alias>
-		<boolean_option>
+	<alias>wjop</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
 	<sub_phase>
-		<sub_phase_name>Static Method Binding</sub_phase_name>
+		<name>Static Method Binding</name>
 		<sub_phase_java_name>staticMethodBinding</sub_phase_java_name>
-                <phase_option_class>SMBOptions</phase_option_class>
-		<sub_phase_alias>wjop.smb</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>SMBOptions</phaseopt_class>
+		<alias>wjop.smb</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>Insert Null Checks</name>
 			<java_name>insertNullChecks</java_name>
-			<alias_name>insert-null-checks</alias_name>
-                        <default_value>true</default_value>
+			<alias>insert-null-checks</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>								<boolean_option>
+		</boolopt>								<boolopt>
 			<name>Insert Redundant Casts</name>
 			<java_name>insertRedundantCasts</java_name>
-			<alias_name>insert-redundant-casts</alias_name>
-                        <default_value>true</default_value>
+			<alias>insert-redundant-casts</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<multi_option>
+		</boolopt>
+		<multiopt>
 			<name>Allow Modifier Changes</name>
 			<java_name>allowModChanges</java_name>
-			<alias_name>allowed-modifier-changes</alias_name>
+			<alias>allowed-modifier-changes</alias>
 				<value>
-					<value_name>Unsafe</value_name>
+					<value>Unsafe</value>
 					<java_name>unsafe</java_name>
 					<alias>unsafe</alias>
 					<short_desc></short_desc>
                                         <default/>
 				</value>
 				<value>
-					<value_name>Safe</value_name>
+					<value>Safe</value>
 					<java_name>safe</java_name>
 					<alias>safe</alias>
 					<short_desc></short_desc>
 				</value>
 				<value>
-					<value_name>None</value_name>
+					<value>None</value>
 					<java_name>none</java_name>
 					<alias>none</alias>
 					<short_desc></short_desc>
 				</value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</multi_option>
-		<int_option>
+		</multiopt>
+		<intopt>
 			<name>VTA Passes</name>
 			<java_name>vtaPasses</java_name>
-			<alias_name>VTA-passes</alias_name>
-			<default_value>0</default_value>
+			<alias>VTA-passes</alias>
+			<default>0</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</int_option>
+		</intopt>
 	</sub_phase>
 	<sub_phase>
-		<sub_phase_name>Static Inlining</sub_phase_name>
+		<name>Static Inlining</name>
 		<sub_phase_java_name>staticInlining</sub_phase_java_name>
-                <phase_option_class>SIOptions</phase_option_class>
-		<sub_phase_alias>wjop.si</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>SIOptions</phaseopt_class>
+		<alias>wjop.si</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
+			<alias>disabled</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>Insert Null Checks</name>
 			<java_name>insertNullChecks</java_name>
-			<alias_name>insert-null-checks</alias_name>
-                        <default_value>true</default_value>
+			<alias>insert-null-checks</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<boolean_option>
+		</boolopt>
+		<boolopt>
 			<name>Insert Redundant Casts</name>
 			<java_name>insertRedundantCasts</java_name>
-			<alias_name>insert-redundant-casts</alias_name>
-                        <default_value>true</default_value>
+			<alias>insert-redundant-casts</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
-		<multi_option>
+		</boolopt>
+		<multiopt>
 			<name>Allow Modifier Changes</name>
 			<java_name>allowModChanges</java_name>
-			<alias_name>allowed-modifier-changes</alias_name>
+			<alias>allowed-modifier-changes</alias>
 				<value>
-					<value_name>Unsafe</value_name>
+					<value>Unsafe</value>
 					<java_name>unsafe</java_name>
 					<alias>unsafe</alias>
 					<short_desc></short_desc>
                                         <default/>
 				</value>
 				<value>
-					<value_name>Safe</value_name>
+					<value>Safe</value>
 					<java_name>safe</java_name>
 					<alias>safe</alias>
 					<short_desc></short_desc>
 				</value>
 				<value>
-					<value_name>None</value_name>
+					<value>None</value>
 					<java_name>none</java_name>
 					<alias>none</alias>
 					<short_desc></short_desc>
 				</value>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</multi_option>
-		<float_option>
+		</multiopt>
+		<flopt>
 			<name>Expansion Factor</name>
 			<java_name>expansionFactor</java_name>
-			<alias_name>expansion-factor</alias_name>
-			<default_value>3</default_value>
+			<alias>expansion-factor</alias>
+			<default>3</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</float_option>
-		<int_option>
+		</flopt>
+		<intopt>
 			<name>Max Container Size</name>
 			<java_name>maxContainerSize</java_name>
-			<alias_name>max-container-size</alias_name>
-			<default_value>5000</default_value>
+			<alias>max-container-size</alias>
+			<default>5000</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</int_option>
-		<int_option>
+		</intopt>
+		<intopt>
 			<name>Max Inline Size</name>
 			<java_name>maxInlineSize</java_name>
-			<alias_name>max-inlinee-size</alias_name>
-			<default_value>20</default_value>
+			<alias>max-inlinee-size</alias>
+			<default>20</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</int_option>
-		<int_option>
+		</intopt>
+		<intopt>
 			<name>VTA Passes</name>
 			<java_name>vtaPasses</java_name>
-			<alias_name>VTA-passes</alias_name>
-			<default_value>0</default_value>
+			<alias>VTA-passes</alias>
+			<default>0</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</int_option>
+		</intopt>
 
 	</sub_phase>
 
 </phase>
-<phase><phase_name>wjtp2</phase_name><phase_java_name>wjtp2</phase_java_name><phase_alias>wjtp2</phase_alias><boolean_option><name>Disabled</name><java_name>disabled</java_name><alias_name>disabled</alias_name></boolean_option>
+<phase><name>wjtp2</name><phase_java_name>wjtp2</phase_java_name><alias>wjtp2</alias><boolopt><name>Disabled</name><java_name>disabled</java_name><alias>disabled</alias></boolopt>
 	<sub_phase>
-		<sub_phase_name>Rectangular Array Finder</sub_phase_name>
+		<name>Rectangular Array Finder</name>
 		<sub_phase_java_name>rectArrFind</sub_phase_java_name>
-                <phase_option_class>RAOptions</phase_option_class>
-		<sub_phase_alias>wjtp2.ra</sub_phase_alias>
-		<boolean_option>
+                <phaseopt_class>RAOptions</phaseopt_class>
+		<alias>wjtp2.ra</alias>
+		<boolopt>
 			<name>Disabled</name>
 			<java_name>disabled</java_name>
-			<alias_name>disabled</alias_name>
-                        <default_value>true</default_value>
+			<alias>disabled</alias>
+                        <default>true</default>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 
-		<boolean_option>
+		<boolopt>
 			<name>With Whole Application</name>
 			<java_name>withWholeApp</java_name>
-			<alias_name>with-wholeapp</alias_name>
+			<alias>with-wholeapp</alias>
 			<short_desc></short_desc>
 			<long_desc></long_desc>
-		</boolean_option>
+		</boolopt>
 	</sub_phase>
 </phase>

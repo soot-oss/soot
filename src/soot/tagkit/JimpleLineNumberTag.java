@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2003 Jennifer Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,59 +24,38 @@
  */
 
 
+package soot.tagkit;
 
-
-
-package soot.jimple;
-
-import soot.*;
-import soot.util.*;
-import java.util.*;
-import java.io.*;
-
-public class PrintJimpleBodyOption
+public class JimpleLineNumberTag implements Tag
 {
-    public static final int USE_ABBREVIATIONS = 0x0001,
-                            DEBUG_MODE        = 0x0002,
-                            NUMBERED          = 0x0004,
-			    XML_OUTPUT	      = 0x0008,
-			    ADD_JIMPLE_LN     = 0x0010;	
-
-    protected PrintJimpleBodyOption()
+    /* it is a value representing line number. */
+    private int lineNumber;
+    
+    public JimpleLineNumberTag(int ln)
     {
+	lineNumber = ln;
     }
 
-    public static boolean useAbbreviations(int m)
-    {
-        return (m & USE_ABBREVIATIONS) != 0;
-    }
-
-    public static boolean numbered(int m)
-    {
-        return (m & NUMBERED) != 0;
+    public int getLineNumber() {
+    	return lineNumber;
     }
     
-    public static boolean debugMode(int m)
+    public String getName()
     {
-        return (m & DEBUG_MODE) != 0;
+	return "JimpleLineNumberTag";
     }
 
-    public static boolean xmlOutput(int m)
+    public byte[] getValue()
     {
-	return (m & XML_OUTPUT) != 0;
+	byte[] v = new byte[2];
+	v[0] = (byte)(lineNumber/256);
+	v[1] = (byte)(lineNumber%256);
+	return v;
     }
 
-    public static boolean addJimpleLn(int m)
+    public String toString()
     {
-	return (m & ADD_JIMPLE_LN) != 0;
+   	return ""+lineNumber;
     }
-     
+
 }
-
-
-    
-
-
-
-
-

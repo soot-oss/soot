@@ -59,42 +59,64 @@ public class TestOptionsDialogHandler {
 		StringBuffer cmd = new StringBuffer();
 		String path = null;
 		String defaultVal = null;
-		String phaseOptsAlias = null;
-		String phaseAlias = null;
-		String subPhaseAlias = null;
+		//String phaseOptsAlias = null;
+		//String phaseAlias = null;
+		//String subPhaseAlias = null;
 		String key = null;
 		boolean value = false;
-		HashMap phasePairs = new HashMap();
+		//HashMap phasePairs = new HashMap();
 		
+		<xsl:apply-templates mode="handle" select="/options/section"/>
 		<xsl:for-each select="section"> 
+		<xsl:for-each select="phaseopt">
+		<xsl:apply-templates mode="handle" select="phase">
+		<xsl:with-param name="parentAlias" select="alias"/>
+		</xsl:apply-templates>
+
+		<xsl:variable name="phaseAlias" select="alias"/>
+
+		<xsl:for-each select="phase">
+		<xsl:apply-templates mode="handle" select="sub_phase">
+		<xsl:with-param name="parentAlias" select="$phaseAlias"/>
+		</xsl:apply-templates>
 		
-		<xsl:for-each select="boolean_option">
-		value = settings.getBoolean("<xsl:value-of select="alias_name"/>");
+		</xsl:for-each>
+		</xsl:for-each>
+		</xsl:for-each>
+		
+		return cmd.toString();
+	}
+
+}
+
+</xsl:template>
+
+<xsl:template mode="handle" match="section|phase|sub_phase">
+<xsl:param name="parentAlias"/>
+<xsl:variable name="subParentAlias" select="alias|alias"/>
+
+		<xsl:for-each select="boolopt|macroopt">
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		value = settings.getBoolean(key.trim());
 		if (value) {
 			cmd.append(DASH);
-			cmd.append("<xsl:value-of select="alias_name"/>");
+			cmd.append(key.trim());
 			cmd.append(SPACE);
 		}
 		</xsl:for-each>
 		
-		<xsl:for-each select="macro_option">
-		value = settings.getBoolean("<xsl:value-of select="alias_name"/>");
-		if (value) {
-			cmd.append(DASH);
-			cmd.append("<xsl:value-of select="alias_name"/>");
-			cmd.append(SPACE);
-		}
-		</xsl:for-each>
 		
-		<xsl:for-each select="path_option">
-		path = settings.get("<xsl:value-of select="alias_name"/>");
+		<xsl:for-each select="listopt">
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		
+		path = settings.get(key.trim());
 		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0)) {
 
 			StringTokenizer st = new StringTokenizer(path);
 			while (st.hasMoreTokens()) {
 			
 				cmd.append(DASH);
-				cmd.append("<xsl:value-of select="alias_name"/>");
+				cmd.append(key.trim());
 				cmd.append(SPACE);
 				cmd.append(st.nextToken());
 				cmd.append(SPACE);
@@ -102,19 +124,22 @@ public class TestOptionsDialogHandler {
 		}
 		</xsl:for-each>
 		
-		<xsl:for-each select="string_option">
-		path = settings.get("<xsl:value-of select="alias_name"/>");
+		<xsl:for-each select="stropt|intopt|flopt">
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+
+		path = settings.get(key.trim());
 		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0)) {
 			cmd.append(DASH);
-			cmd.append("<xsl:value-of select="alias_name"/>");
+			cmd.append(key.trim());
 			cmd.append(SPACE);
 			cmd.append(path);
 			cmd.append(SPACE);
 		}
 		</xsl:for-each>
 		
-		<xsl:for-each select="multi_option"> 
-		path = settings.get("<xsl:value-of select="alias_name"/>");
+		<xsl:for-each select="multiopt"> 
+		key = "<xsl:value-of select="$parentAlias"/>"+" "+"<xsl:value-of select="$subParentAlias"/>"+" "+"<xsl:value-of select="alias"/>";
+		path = settings.get(key.trim());
 		<xsl:for-each select="value">
 		<xsl:if test="default">
 		defaultVal = "<xsl:value-of select="alias"/>";
@@ -123,36 +148,12 @@ public class TestOptionsDialogHandler {
 		
 		if ((path &#33;&#61; null) &#38;&#38; (path.length() &#33;&#61; 0) &#38;&#38; (!path.equals(defaultVal))) {
 			cmd.append(DASH);
-			cmd.append("<xsl:value-of select="alias_name"/>");
+			cmd.append(key.trim());
 			cmd.append(SPACE);
 			cmd.append(path);
 			cmd.append(SPACE);
-		}
-
-		<xsl:for-each select="phase_option">
-		phaseOptsAlias = "<xsl:variable name="phaseOptAlias" select="alias_name"/>";
-		
-		<xsl:for-each select="phase">
-		phaseAlias = <xsl:variable name="phaseAlias" select="phase_alias"/>
-		phasePairs = new HashMap();
-		
-		<xsl:for-each select="boolean_option"> 
-		key = phaseOptsAlias+" "+"phaseAlias+" "+<xsl:value-of select="alias_name"/>
-		path = 
+		}	
 		</xsl:for-each>
-		
-		</xsl:for-each>
-		
-		</xsl:for-each>
-				
-		</xsl:for-each>
-		
-		</xsl:for-each>
-			
-		return cmd.toString();
-	}
-
-}
 
 </xsl:template>
 
