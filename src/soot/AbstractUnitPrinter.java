@@ -54,12 +54,15 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
     public void decIndent() {
         if( indent.length() >= 4 ) indent = indent.substring(4);
     }
+    public void setIndent(String indent) { this.indent = indent; }
+    public String getIndent() { return indent; }
+    
     public abstract void literal( String s );
     public abstract void type( Type t ); 
     public abstract void method( SootMethod m );
     public abstract void fieldRef( SootField f );
     public abstract void identityRef( IdentityRef r );
-    public abstract void unitRef( Unit u );
+    public abstract void unitRef( Unit u, boolean branchTarget );
 
     public void newline() {
         output.append("\n");

@@ -58,6 +58,10 @@ public abstract class BodyTransformer extends Transformer
         transform(b, phaseName, dummyOptions);
     }
 
+    public final void transform(Body b)
+    {
+	transform(b, "");
+    }
 
     /**
      *  This method is called to perform the transformation itself. It is declared

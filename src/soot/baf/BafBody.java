@@ -115,7 +115,7 @@ public class BafBody extends Body
         
         // Change all place holders
         {
-            Iterator boxIt = getUnitBoxes().iterator();
+            Iterator boxIt = getAllUnitBoxes().iterator();
             
             while(boxIt.hasNext())
             {

@@ -27,13 +27,17 @@ import java.util.*;
 * such as Jimple, Grimp, and Baf
 */
 public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
+    /** branch targets **/
     protected Map labels;
+    /** for unit references in Phi nodes **/
+    protected Map references;
 
     public LabeledUnitPrinter( Body b ) {
-        this.labels = createLabelMap(b);
+        createLabelMaps(b);
     }
 
     public Map labels() { return labels; }
+    public Map references() { return references; }
 
     public abstract void literal( String s );
     public abstract void method( SootMethod m );
@@ -41,32 +45,58 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     public abstract void identityRef( IdentityRef r );
     public abstract void type( Type t );
 
-    public void unitRef( Unit u ) {
-        handleIndent();
-        String label = (String) labels.get( u );
-        if( label == null || label.equals( "<unnamed>" ) )
-            label = "[?= "+u+"]";
-        output.append(label);
-    }
+    public void unitRef( Unit u, boolean branchTarget ) {
+        String oldIndent = getIndent();
+        
+        // normal case, ie labels
+        if(branchTarget){
+            setIndent(labelIndent);
+            handleIndent();
+            setIndent(oldIndent);
+            String label = (String) labels.get( u );
+            if( label == null || label.equals( "<unnamed>" ) )
+                label = "[?= "+u+"]";
+            output.append(label);
+        }
+        // refs to control flow predecessors (for Shimple)
+        else{
+            String ref = (String) references.get( u );
 
-    private Map createLabelMap(Body body) {
+            if(startOfLine){
+                String newIndent = "(" + ref + ")" +
+                    indent.substring(ref.length() + 2);
+                setIndent(newIndent);
+                handleIndent();
+                setIndent(oldIndent);
+            }
+            else
+                output.append(ref);
+        }
+    }
+    
+    private void createLabelMaps(Body body) {
         Chain units = body.getUnits();
 
-        Map stmtToName = new HashMap(units.size() * 2 + 1, 0.7f);
+        labels = new HashMap(units.size() * 2 + 1, 0.7f);
+        references = new HashMap(units.size() * 2 + 1, 0.7f);
         
         // Create statement name table
         {
-            Iterator boxIt = body.getUnitBoxes().iterator();
+            Iterator boxIt = body.getAllUnitBoxes().iterator();
 
             Set labelStmts = new HashSet();
-
-            // Build labelStmts
+            Set refStmts = new HashSet();
+            
+            // Build labelStmts and refStmts
             {
                 while (boxIt.hasNext()) {
                     UnitBox box = (UnitBox) boxIt.next();
                     Unit stmt = (Unit) box.getUnit();
 
-                    labelStmts.add(stmt);
+                    if(box.isBranchTarget())
+                        labelStmts.add(stmt);
+                    else
+                        refStmts.add(stmt);
                 }
 
             }
@@ -74,20 +104,23 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
             // Traverse the stmts and assign a label if necessary
             {
                 int labelCount = 0;
-
+                int refCount = 0;
+                
                 Iterator stmtIt = units.iterator();
 
                 while (stmtIt.hasNext()) {
                     Unit s = (Unit) stmtIt.next();
 
-                    if (labelStmts.contains(s)) {
-                        stmtToName.put(s, "label" + (labelCount++));
-                    }
+                    if (labelStmts.contains(s)) 
+                        labels.put(s, "label" + (labelCount++));
+
+                    if (refStmts.contains(s))
+                        references.put(s, Integer.toString(refCount++));
                 }
             }
         }
-        return stmtToName;
     }
 
+    protected String labelIndent = "     ";
 }
 

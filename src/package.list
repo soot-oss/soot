@@ -51,3 +51,5 @@ soot.toolkits.graph
 soot.toolkits.scalar
 soot.util
 soot.util.queue
+soot.shimple
+soot.shimple.toolkits.scalar

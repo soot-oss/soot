@@ -417,6 +417,8 @@ public class SourceLocator
             case Options.output_format_b:        return ".b";
             case Options.output_format_jimple:   return ".jimple";
             case Options.output_format_jimp:     return ".jimp";
+            case Options.output_format_shimple:  return ".shimple";
+            case Options.output_format_shimp:    return ".shimp";
             case Options.output_format_grimp:    return ".grimp";
             case Options.output_format_grimple:  return ".grimple";
             case Options.output_format_class:    return ".class";

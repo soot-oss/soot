@@ -23,10 +23,12 @@ import java.io.*;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.jimple.*;
+import soot.shimple.*;
 import soot.grimp.*;
 import soot.baf.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.base.*;
+import soot.shimple.toolkits.scalar.*;
 import soot.grimp.toolkits.base.*;
 import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.typing.*;
@@ -80,13 +82,13 @@ public class PackManager {
             p.add(new Transform("cg.spark", SparkTransformer.v()));
         }
 
-        // Whole-Shimple transformation pack
-        addPack(p = new ScenePack("wstp"));
+        // Whole-Shimple transformation pack (DISABLED)
+        // addPack(p = new ScenePack("wstp"));
 
-        // Whole-Shimple Optimization pack
-        addPack(p = new ScenePack("wsop"));
+        // Whole-Shimple Optimization pack (DISABLED)
+        // addPack(p = new ScenePack("wsop"));
 
-        // Whole-Jimple transformation pack
+        // Whole-Jimple transformation pack 
         addPack(p = new ScenePack("wjtp"));
         {
         }
@@ -105,11 +107,17 @@ public class PackManager {
             p.add(new Transform("wjap.ra", RectangularArrayFinder.v()));
         }
 
+        // Shimple pack
+        addPack(p = new BodyPack(Shimple.PHASE));
+        
         // Shimple transformation pack
         addPack(p = new BodyPack("stp"));
-
+            
         // Shimple optimization pack
         addPack(p = new BodyPack("sop"));
+        {
+            p.add(new Transform("sop.cpf", SConstantPropagatorAndFolder.v()));
+        }
 
         // Jimple transformation pack
         addPack(p = new BodyPack("jtp"));
@@ -142,7 +150,7 @@ public class PackManager {
             p.add(new Transform("jap.cgtagger", CallGraphTagger.v()));
 	    
         }
-
+        
         // Grimp body creation
         addPack(p = new BodyPack("gb"));
         {
@@ -230,14 +238,17 @@ public class PackManager {
 
     private void runWholeProgramPacks() {
         getPack("cg").apply();
-        if (Options.v().via_shimple()) {
-            getPack("wstp").apply();
-            getPack("wsop").apply();
-        } else {
+
+        // DISABLED
+        //if (Options.v().via_shimple()) {
+        //getPack("wstp").apply();
+        //getPack("wsop").apply();
+        //} else {
+
             getPack("wjtp").apply();
             getPack("wjop").apply();
             getPack("wjap").apply();
-        }
+        //}
     }
 
     /* preprocess classes for DAVA */
@@ -341,13 +352,21 @@ public class PackManager {
         }
         G.v().out.println(c.getName() + "... ");
 
-        boolean produceBaf = false, produceGrimp = false, produceDava = false;
+        boolean produceBaf = false, produceGrimp = false, produceDava = false,
+            produceJimple = true, produceShimple = false;
 
         switch (Options.v().output_format()) {
             case Options.output_format_none :
             case Options.output_format_xml :
             case Options.output_format_jimple :
             case Options.output_format_jimp :
+                produceJimple = true;
+                break;
+            case Options.output_format_shimp:
+            case Options.output_format_shimple:
+                produceShimple = true;
+                // FLIP produceJimple
+                produceJimple = false;
                 break;
             case Options.output_format_dava :
                 produceDava = true;
@@ -375,22 +394,30 @@ public class PackManager {
 
             if (!m.isConcrete()) continue;
 
-            JimpleBody body = (JimpleBody) m.retrieveActiveBody();
-
-            if (Options.v().via_shimple()) {
+            if (produceShimple || Options.v().via_shimple()) {
+                ShimpleBody body = Shimple.v().newBody(m.retrieveActiveBody());
                 PackManager.v().getPack("stp").apply(body);
                 PackManager.v().getPack("sop").apply(body);
+
+                if (produceShimple)
+                    m.setActiveBody(body);
+                else
+                    m.setActiveBody(body.toJimpleBody());
             }
-            PackManager.v().getPack("jtp").apply(body);
-            PackManager.v().getPack("jop").apply(body);
-            PackManager.v().getPack("jap").apply(body);
+
+            if (produceJimple) {
+                JimpleBody body =(JimpleBody) m.retrieveActiveBody();
+                PackManager.v().getPack("jtp").apply(body);
+                PackManager.v().getPack("jop").apply(body);
+                PackManager.v().getPack("jap").apply(body);
+            }
 
             if (produceGrimp) {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                 PackManager.v().getPack("gop").apply(m.getActiveBody());
             } else if (produceBaf) {
-                m.setActiveBody(
-                    Baf.v().newBody((JimpleBody) m.getActiveBody()));
+                m.setActiveBody(Baf.v().newBody
+                                ((JimpleBody) m.getActiveBody()));
                 PackManager.v().getPack("bop").apply(m.getActiveBody());
                 PackManager.v().getPack("tag").apply(m.getActiveBody());
             }
@@ -440,6 +467,7 @@ public class PackManager {
                     new soot.jimple.JasminClass(c).print(writerOut);
                 break;
             case Options.output_format_jimp :
+            case Options.output_format_shimp :
             case Options.output_format_b :
             case Options.output_format_grimp :
                 Printer.v().setOption(Printer.USE_ABBREVIATIONS);
@@ -447,6 +475,7 @@ public class PackManager {
                 break;
             case Options.output_format_baf :
             case Options.output_format_jimple :
+            case Options.output_format_shimple :
             case Options.output_format_grimple :
                 writerOut =
                     new PrintWriter(

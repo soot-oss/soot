@@ -74,6 +74,8 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
 import soot.util.queue.*;
+import soot.shimple.*;
+import soot.shimple.toolkits.scalar.*;
 
 /** A class to group together all the global variables in Soot. */
 public class Singletons {
@@ -974,6 +976,18 @@ public class Singletons {
     public CallGraphTagger CallGraphTagger() {
         if( instanceCallGraphTagger == null ) instanceCallGraphTagger = new CallGraphTagger( g );
         return instanceCallGraphTagger;
+    }
+
+    private Shimple instanceShimple;
+    public Shimple Shimple() {
+        if( instanceShimple == null ) instanceShimple = new Shimple( g );
+        return instanceShimple;
+    }
+
+    private SConstantPropagatorAndFolder instanceSConstantPropagatorAndFolder;
+    public SConstantPropagatorAndFolder SConstantPropagatorAndFolder() {
+        if( instanceSConstantPropagatorAndFolder == null ) instanceSConstantPropagatorAndFolder = new SConstantPropagatorAndFolder( g );
+        return instanceSConstantPropagatorAndFolder;
     }
 
 }

@@ -348,12 +348,14 @@ public class Printer {
                 }
 
                 if (up.labels().containsKey(currentStmt)) {
-                    up.noIndent();
-                    up.unitRef( currentStmt );
+                    up.unitRef( currentStmt, true );
                     up.literal(":");
                     up.newline();
                 }
 
+                if (up.references().containsKey(currentStmt)) {
+                    up.unitRef( currentStmt, false );
+                }
             }
 
             up.startUnit(currentStmt);

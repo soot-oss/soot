@@ -1,0 +1,31 @@
+Shimple (aka SSA Jimple)
+========================
+
+This is a first cut at an SSA version of Jimple, dubbed Shimple.  The
+idea is that Shimple can be treated almost identically to Jimple with
+the added benefit of SSA form.
+
+The public API is described in soot.shimple.Shimple,
+soot.shimple.ShimpleBody and soot.shimple.PhiExpr.
+
+Use/Definition and Definition/Use chains for Shimple can be obtained
+with soot.shimple.toolkits.scalar.ShimpleLocalDefs and
+soot.toolkits.scalar.SimpleLocalUses.
+
+Available example analyses for Shimple currently include:
+soot.shimple.toolkits.scalar.{ShimpleLocalDefs,SEvaluator,SConstantPropagatorAndFolder}
+
+Suggestions, improvements and bug reports/fixes welcome!  Please send
+these either to the Soot mailing list at soot-list@sable.mcgill.ca, or
+directly to myself at navindra@cs.mcgill.ca.
+
+TODO: Make internal analyses more useful and generic for external use.
+TODO: Investigate why the Aggregator doesn't seem to work too well.
+TODO: Write a Shimple parser?
+TODO: Implement a Control Dependence Graph?  Any interest in that?
+
+6 Feb 2003
+Navindra Umanee
+Sable Research Group
+School Of Computer Science
+McGill University

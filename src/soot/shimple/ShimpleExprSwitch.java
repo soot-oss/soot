@@ -17,21 +17,15 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot;
 
-import java.util.*;
+package soot.shimple;
+
+import soot.jimple.*;
 
 /**
- * An implementor of this interface indicates that it may contain
- * UnitBoxes.
- * 
- * <p> Currently this is implemented by soot.shimple.PhiExpr and used by
- * soot.jimple.internal.JAssignStmt.
- *
  * @author Navindra Umanee
  **/
-public interface UnitBoxOwner
+public interface ShimpleExprSwitch extends ExprSwitch
 {
-    public List getUnitBoxes();
+    public abstract void casePhiExpr(PhiExpr v);
 }
-    

@@ -108,7 +108,7 @@ public class XMLPrinter {
 
         // Create statement name table
         {
-            Iterator boxIt = body.getUnitBoxes().iterator();
+            Iterator boxIt = body.getUnitBoxes(true).iterator();
 
             Set labelStmts = new HashSet();
 

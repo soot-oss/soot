@@ -38,15 +38,17 @@ public class Options extends OptionsBase {
     public static final int src_prec_jimple = 2;
     public static final int output_format_jimp = 1;
     public static final int output_format_jimple = 2;
-    public static final int output_format_baf = 3;
-    public static final int output_format_b = 4;
-    public static final int output_format_grimp = 5;
-    public static final int output_format_grimple = 6;
-    public static final int output_format_xml = 7;
-    public static final int output_format_none = 8;
-    public static final int output_format_jasmin = 9;
-    public static final int output_format_class = 10;
-    public static final int output_format_dava = 11;
+    public static final int output_format_shimp = 3;
+    public static final int output_format_shimple = 4;
+    public static final int output_format_baf = 5;
+    public static final int output_format_b = 6;
+    public static final int output_format_grimp = 7;
+    public static final int output_format_grimple = 8;
+    public static final int output_format_xml = 9;
+    public static final int output_format_none = 10;
+    public static final int output_format_jasmin = 11;
+    public static final int output_format_class = 12;
+    public static final int output_format_dava = 13;
 
     public boolean parse( String[] argv ) {
         for( int i = argv.length; i > 0; i-- ) {
@@ -213,6 +215,30 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_jimple;
+                }
+    
+                else if( false
+                || value.equals( "s" )
+                || value.equals( "shimp" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_shimp ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_shimp;
+                }
+    
+                else if( false
+                || value.equals( "S" )
+                || value.equals( "shimple" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_shimple ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_shimple;
                 }
     
                 else if( false
@@ -703,22 +729,24 @@ public class Options extends OptionsBase {
 +padOpt(" -h -help", "Display Help and Exit" )
 +padOpt(" -version", "Display Version Information and Exit" )
 +padOpt(" -v -verbose", "Verbose Mode" )
-+padOpt(" -app", "runs in application mode" )
-+padOpt(" -w -whole-program", "runs in whole-program mode" )
++padOpt(" -app", "Run in Application Mode" )
++padOpt(" -w -whole-program", "Run in Whole-program Mode" )
 +padOpt(" -debug", "prints various Soot debugging info" )
 +"\nInput Options:\n"
       
-+padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "uses given PATH as the classpath for finding classes for Soot processing" )
-+padOpt(" -src-prec ARG", "sets the source precedence for Soot" )
++padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Uses given PATH as the classpath for finding classes for Soot processing." )
++padOpt(" -src-prec ARG", "Sets Source Precedence for Soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
-+padOpt(" -allow-phantom-refs", "allow unresolved classes; may cause errors" )
++padOpt(" -allow-phantom-refs", "Allow unresolved classes: may cause errors" )
 +"\nOutput Options:\n"
       
-+padOpt(" -d ARG -output-dir ARG", "store produced files in PATH" )
++padOpt(" -d ARG -output-dir ARG", "Store Produced Files in PATH" )
 +padOpt(" -f ARG -output-format ARG", "sets the output format for Soot" )
 +padVal(" j jimp", "" )
 +padVal(" J jimple", "" )
++padVal(" s shimp", "" )
++padVal(" S shimple", "" )
 +padVal(" B baf", "" )
 +padVal(" b", "" )
 +padVal(" g grimp", "" )
@@ -879,14 +907,6 @@ public class Options extends OptionsBase {
                 +"add-tags "
                 +"set-mass ";
     
-        if( phaseName.equals( "wstp" ) )
-            return ""
-                +"enabled ";
-    
-        if( phaseName.equals( "wsop" ) )
-            return ""
-                +"enabled ";
-    
         if( phaseName.equals( "wjtp" ) )
             return ""
                 +"enabled ";
@@ -920,11 +940,22 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "sb" ) )
+            return ""
+                +"enabled "
+                +"naive-phi-elimination "
+                +"pre-optimize-phi-elimination "
+                +"post-optimize-phi-elimination ";
+    
         if( phaseName.equals( "stp" ) )
             return ""
                 +"enabled ";
     
         if( phaseName.equals( "sop" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "sop.cpf" ) )
             return ""
                 +"enabled ";
     
@@ -1225,14 +1256,6 @@ public class Options extends OptionsBase {
               +"add-tags:false "
               +"set-mass:false ";
     
-        if( phaseName.equals( "wstp" ) )
-            return ""
-              +"enabled:true ";
-    
-        if( phaseName.equals( "wsop" ) )
-            return ""
-              +"enabled:false ";
-    
         if( phaseName.equals( "wjtp" ) )
             return ""
               +"enabled:true ";
@@ -1266,6 +1289,13 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false ";
     
+        if( phaseName.equals( "sb" ) )
+            return ""
+              +"enabled:true "
+              +"naive-phi-elimination:false "
+              +"pre-optimize-phi-elimination:false "
+              +"post-optimize-phi-elimination:true ";
+    
         if( phaseName.equals( "stp" ) )
             return ""
               +"enabled:true ";
@@ -1273,6 +1303,10 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "sop" ) )
             return ""
               +"enabled:false ";
+    
+        if( phaseName.equals( "sop.cpf" ) )
+            return ""
+              +"enabled:true ";
     
         if( phaseName.equals( "jtp" ) )
             return ""
@@ -1459,16 +1493,16 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
-        if( phaseName.equals( "wstp" ) ) return;
-        if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
         if( phaseName.equals( "wjap" ) ) return;
         if( phaseName.equals( "wjap.ra" ) ) return;
+        if( phaseName.equals( "sb" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
         if( phaseName.equals( "sop" ) ) return;
+        if( phaseName.equals( "sop.cpf" ) ) return;
         if( phaseName.equals( "jtp" ) ) return;
         if( phaseName.equals( "jop" ) ) return;
         if( phaseName.equals( "jop.cse" ) ) return;
@@ -1548,10 +1582,6 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
         if( !PackManager.v().hasPhase( "cg.spark" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
-        if( !PackManager.v().hasPhase( "wstp" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wstp" );
-        if( !PackManager.v().hasPhase( "wsop" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
         if( !PackManager.v().hasPhase( "wjop" ) )
@@ -1564,10 +1594,14 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wjap" );
         if( !PackManager.v().hasPhase( "wjap.ra" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjap.ra" );
+        if( !PackManager.v().hasPhase( "sb" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase sb" );
         if( !PackManager.v().hasPhase( "stp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase stp" );
         if( !PackManager.v().hasPhase( "sop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase sop" );
+        if( !PackManager.v().hasPhase( "sop.cpf" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase sop.cpf" );
         if( !PackManager.v().hasPhase( "jtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jtp" );
         if( !PackManager.v().hasPhase( "jop" ) )

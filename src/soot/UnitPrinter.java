@@ -34,7 +34,9 @@ public interface UnitPrinter {
     public void incIndent();
     public void decIndent();
     public void noIndent();
-
+    public void setIndent(String newIndent);
+    public String getIndent();
+    
     public void literal( String s );
     public void newline();
     public void local( Local l );
@@ -42,7 +44,7 @@ public interface UnitPrinter {
     public void method( SootMethod m );
     public void constant( Constant c );
     public void fieldRef( SootField f );
-    public void unitRef( Unit u );
+    public void unitRef( Unit u, boolean branchTarget );
     public void identityRef( IdentityRef r );
 
     public void setPositionTagger( AttributesUnitPrinter pt );

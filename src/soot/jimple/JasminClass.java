@@ -438,7 +438,7 @@ public class JasminClass
 
         // Determine the stmtToLabel map
         {
-            Iterator boxIt = body.getUnitBoxes().iterator();
+            Iterator boxIt = body.getUnitBoxes(true).iterator();
 
             stmtToLabel = new HashMap(units.size() * 2 + 1, 0.7f);
             labelCount = 0;

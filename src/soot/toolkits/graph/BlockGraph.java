@@ -58,8 +58,6 @@ public class BlockGraph implements DirectedGraph
 
     public static final int ARRAYREF = 99;
 
-    private Map blockToSuccs;
-    private Map blockToPreds;
    
     /**
      *  Constructs a BriefBlockGraph from a given Body instance.
@@ -88,7 +86,7 @@ public class BlockGraph implements DirectedGraph
         Map trapBeginUnits = new HashMap(); // Maps a unit to a list of traps whose scopes start at that unit.
         List trapsInScope = null;           //  List of Traps that can catch an exception at a given unit.
         Chain traps = null;                 // All traps for this Body
-
+        List handlerList = new ArrayList(); // list of handler units
 
         /*
          *  Compute basic block leaders.
@@ -100,12 +98,14 @@ public class BlockGraph implements DirectedGraph
         traps = mBody.getTraps();
         trapsInScope = new ArrayList(traps.size());   // no more than traps.size() traps can be in scope for any given unit.
             
-        // Populate the trapBeginUnits Map
+        // Populate the trapBeginUnits Map and handler list
         Iterator trapIt = traps.iterator();
         while(trapIt.hasNext()) {
             Trap someTrap = (Trap) trapIt.next();
             Unit firstUnit = someTrap.getBeginUnit();
-                    
+
+            handlerList.add(someTrap.getHandlerUnit());
+
             List trapList = (List) trapBeginUnits.get(firstUnit);
             if(trapList == null) {
                 trapList = new ArrayList(4);
@@ -332,36 +332,32 @@ public class BlockGraph implements DirectedGraph
             int blockLength = 1;
             boolean isHandler = false;
 
+            if(it.hasNext())
+                it.next();
+            
             while(it.hasNext()) {
                 Unit  unit = (Unit) it.next();
                 blockLength++;
-                if(leaders.containsKey(unit)){
 
-                    // this happens if the first unit of the method is under an exception context.(ie first unit is a block and has no pred unit)
-                    if((blockTail =(Unit) mUnits.getPredOf(unit)) == null) {
-                        blockTail = blockHead;
-                    }
-                    
-                   
+                if(leaders.containsKey(unit)){
+                    blockTail = (Unit) mUnits.getPredOf(unit);
                     block = new Block(blockHead, blockTail, mBody, indexInMethod++, blockLength -1, this);
                     block.setPreds((List) leaders.get(blockHead));
                     basicBlockList.add(block);
                     blockHead = unit;
                     blockLength = 1;
                 }                
-                
             }
-            
             
             block = new Block(blockHead, (Unit) mUnits.getLast(),mBody, indexInMethod++, blockLength, this);
             block.setPreds((List) leaders.get(blockHead));
             basicBlockList.add(block);
             
-
-            
-            // Important: the predecessor list built previously for each bb, contains
-            // the tail unit of each predecessor block for a given bb. We need to replace each of these
-            // unit references by a reference to the unit's enclosing bb.
+            // Important: the predecessor list built previously for
+            // each bb, contains the tail unit of each predecessor
+            // block for a given bb. We need to replace each of these
+            // unit references by a reference to the unit's enclosing
+            // bb.
             it = basicBlockList.iterator();
             while(it.hasNext() ) {
                 List newl = new ArrayList();
@@ -480,23 +476,17 @@ public class BlockGraph implements DirectedGraph
                     }
                     }
 	    */
-            
+
             mBlocks = basicBlockList;
             
             // build head list
             {
-                List handlerList = new ArrayList();
-                Iterator trapIt2 = mBody.getTraps().iterator();
-                while(trapIt2.hasNext()) {
-                    Trap trap = (Trap) trapIt2.next();
-                    handlerList.add(trap.getHandlerUnit());    
-                }
-                
-                //                G.v().out.println("unit first " + mUnits.getFirst());
                 Iterator blockIt =  mBlocks.iterator();
                 while(blockIt.hasNext()) {
                     Block b = (Block) blockIt.next();
-                    if(b.getHead() == mUnits.getFirst() || handlerList.contains(b.getHead())) {
+                    if(b.getHead() == mUnits.getFirst() ||
+                       (type != COMPLETE && handlerList.contains(b.getHead())))
+                    {
                         mHeads.add(b);
                     }
                 }
@@ -509,6 +499,61 @@ public class BlockGraph implements DirectedGraph
                 }
                 G.v().out.println("done heads");
                 */
+            }
+        }
+
+        // Add edges from the predecessors of trapped blocks directly
+        // to the handlers. This is necessary because sometimes the
+        // first statement of a trapped block is not even fully
+        // executed before an exception is thrown.  Directly
+        // inspired/copied from code in UnitGraph. (applicable to
+        // complete graph only)
+        if(type == COMPLETE){
+            Iterator blockIt = mBlocks.iterator();
+            while(blockIt.hasNext()){
+                Block block = (Block) blockIt.next();
+                Unit head = block.getHead();
+                List preds;
+                
+                // are we in a catch block? 
+                if(!handlerList.contains(head))
+                    continue;
+
+                // no preds to add
+                preds = block.getPreds();
+                if(preds == null || preds.isEmpty())
+                    continue;
+                
+                // need to clone preds since we are potentially
+                // modifying it
+                List predsClone = new ArrayList();
+                predsClone.addAll(preds);
+
+                // iterate through the trapped blocks
+                Iterator predsIt = predsClone.iterator();
+                while(predsIt.hasNext()){
+                    Block trapped = (Block) predsIt.next();
+
+                    List newPreds = trapped.getPreds();
+                    if(newPreds == null)
+                        continue;
+
+                    Iterator newPredsIt = newPreds.iterator();
+
+                    // Add an edge from each predecessor of the try
+                    // block to the catch block and vice-versa
+                    while(newPredsIt.hasNext()){
+                        Block newPred = (Block) newPredsIt.next();
+                        if(!preds.contains(newPred)){
+                            // from block to newPred
+                            preds.add(0, newPred);
+
+                            // from newPred to block
+                            List newPredSuccs = newPred.getSuccs();
+                            newPredSuccs.add(newPredSuccs.size(), block);
+                        }
+                    }
+                }
             }
         }
     }   

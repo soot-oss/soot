@@ -35,13 +35,38 @@ import soot.util.*;
 public class PatchingChain extends AbstractCollection implements Chain 
 {
     private Chain innerChain;
+
+    /**
+     * May be used to find trapped Units.
+     **/
+    private Body body;
     
     /** Constructs a PatchingChain from the given Chain. */
     public PatchingChain(Chain aChain)
     {
         innerChain = aChain;
+        body = null;
     }
 
+    /** Constructs a PatchingChain from the given Chain. */
+    public PatchingChain(Chain aChain, Body aBody)
+    {
+        innerChain = aChain;
+        body = body;
+    }
+
+    /**
+     * Returns the inner chain used by the PatchingChain.  In general,
+     * this should not be used.  However, direct access to the inner
+     * chain may be necessary if you wish to perform perform certain
+     * operations (such as control-flow manipulations) without
+     * interference from the patching algorithms. 
+     **/
+    public Chain getNonPatchingChain()
+    {
+        return innerChain;
+    }
+    
     /** Adds the given object to this Chain. */
     public boolean add(Object o)
     {
@@ -58,6 +83,7 @@ public class PatchingChain extends AbstractCollection implements Chain
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
     public void insertAfter(Object toInsert, Object point)
     {
+        ((Unit) point).redirectPointersToThisTo((Unit) toInsert, body, false);
         innerChain.insertAfter(toInsert, point);
     }
 
@@ -114,6 +140,9 @@ public class PatchingChain extends AbstractCollection implements Chain
             if((successor = (Unit)getSuccOf(obj)) == null)
                 successor = (Unit)getPredOf(obj);
             
+            // Fix up any PhiExpr's first if necessary.
+            soot.shimple.Shimple.redirectToPreds((Unit)obj, this);
+
             res = innerChain.remove(obj);
 
             ((Unit)obj).redirectJumpsToThisTo(successor);

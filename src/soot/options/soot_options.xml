@@ -107,6 +107,21 @@
                                 <long_desc>Produces .jimple files that contain a textual representation for types in soot's Jimple internal representation.</long_desc>
 			</value>
 			<value>
+				<name>Shimp File</name>
+				<alias>s</alias>
+				<alias>shimp</alias>
+				<short_desc>produce .shimp (abbreviated .shimple) files</short_desc>
+                                <long_desc>Produces .shimp files. These contain an abbreviated textual form for soot's Shimple internal representation. Can contain ambiguous references.</long_desc>
+			</value>
+			<value>
+				<name>Shimple File</name>
+				<alias>S</alias>
+				<alias>shimple</alias>
+				<short_desc>produce .shimple code</short_desc>
+        <long_desc>Produces .shimple files for Shimple, an SSA version
+        of Jimple.</long_desc>
+			</value>
+			<value>
 				<name>Baf File</name>
 				<alias>B</alias>
 				<alias>baf</alias>
@@ -1065,13 +1080,15 @@ cryptic statistics about the size of the points-to sets computed.
 					</section>
 				</sub_phase>
 			</radio_phase>
+
+<!-- DISABLED FOR NOW ++
 			<phase>
 				<name>Whole Shimple Transformation Pack</name>
 				<alias>wstp</alias>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>true</default>
+          <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1080,9 +1097,11 @@ cryptic statistics about the size of the points-to sets computed.
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>false</default>
+          <default>false</default>
 				</boolopt>
 			</phase>
+++ DISABLED FOR NOW -->
+
 			<phase>
 				<name>Whole-Jimple Transformation Pack</name>
 				<alias>wjtp</alias>
@@ -1330,6 +1349,52 @@ This phase does not change the program.
 					</boolopt>
 				</sub_phase>
 			</phase>
+      <phase>
+        <name>Shimple Body Options</name>
+        <alias>sb</alias>
+        <class>ShimpleOptions</class>
+        <boolopt>
+          <name>Enabled</name>
+          <alias>enabled</alias>
+          <default>true</default>
+        </boolopt>
+        <boolopt>
+          <name>Naive Phi Node Elimination</name>
+          <alias>naive-phi-elimination</alias>
+          <default>false</default>
+          <short_desc>If enabled, no pre- or post- optimizations are
+            applied before eliminating Phi nodes.</short_desc>
+          <long_desc>If set to true, neither pre-optimization nor
+          post-optimization will be applied to the Phi elimination
+          process.  This is useful for monitoring and understanding
+          the behaviour of Shimple optimizations or transformations.
+          Note that setting this option to true takes precedence over
+          other Phi elimination options.</long_desc>
+        </boolopt>
+        <boolopt>
+          <name>Pre-optimize Phi Elimination</name>
+          <alias>pre-optimize-phi-elimination</alias>
+          <default>false</default>
+          <short_desc>If enabled, some optimizations are applied
+            before Phi nodes are eliminated.</short_desc>
+          <long_desc>If set to true, some recommended optimizations
+          such as dead code elimination and aggregation are applied
+          before Phi node elimination.  This does not appear to be as
+          effective as post-optimization, but the option is provided
+          for future testing and investigation.</long_desc>
+        </boolopt>
+        <boolopt>
+          <name>Post-optimize Phi Elimination</name>
+          <alias>post-optimize-phi-elimination</alias>
+          <default>true</default>
+          <short_desc>If enabled, some optimizations are applied after
+          Phi nodes are eliminated.</short_desc>
+          <long_desc>Applies recommended optimizations such as dead
+          code elimination and aggregation after Phi node elimination.
+          This appears to be more effective than
+          pre-optimization.</long_desc>
+        </boolopt>
+      </phase>
 			<phase>
 				<name>Shimple Transformation Pack</name>
 				<alias>stp</alias>
@@ -1345,8 +1410,33 @@ This phase does not change the program.
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>false</default>
+          <default>false</default>
+          <short_desc>When enabled, Shimple-based optimizations are
+          applied.</short_desc>
+          <long_desc>When enabled, available Shimple-based
+          optimizations are applied.</long_desc>
 				</boolopt>
+				<sub_phase>
+					<name>Constant Propagator and Folder</name>
+					<alias>sop.cpf</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+						<short_desc>An example optimization written for
+						Shimple.</short_desc>
+						<long_desc>An example of constant propagation using
+						Shimple. Informal tests show that this analysis is already
+						more powerful than the simplistic
+						ConstantPropagatorAndFolder optimization provided by
+						Jimple.  This optimization demonstrates some of the
+						benefits of SSA -- particularly the fact that Phi nodes
+						represent natural merge points in the control flow.  This
+						implementation also shows how ShimpleLocalDefs and
+						SimpleLocalUses provide Use/Definition Definition/Use
+						chains in SSA.</long_desc>
+					</boolopt>
+				</sub_phase>
 			</phase>
 			<phase>
 				<name>Jimple Transformations Pack</name>

@@ -147,3 +147,5 @@ FieldWriteTagAggregator
 FieldTagAggregator
 EntryPoints
 CallGraphTagger
+Shimple    
+SConstantPropagatorAndFolder

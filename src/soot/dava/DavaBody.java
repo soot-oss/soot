@@ -268,7 +268,7 @@ public class DavaBody extends Body
             
     
             // Patch up references within units using our (old <-> new) map.
-            it = getUnitBoxes().iterator();
+            it = getAllUnitBoxes().iterator();
             while(it.hasNext()) {
                 UnitBox box = (UnitBox) it.next();
                 Unit newObject, oldObject = box.getUnit();

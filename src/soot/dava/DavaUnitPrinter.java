@@ -68,7 +68,7 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
             output.append( t.toString() );
         }
     }
-    public void unitRef( Unit u ) {
+    public void unitRef( Unit u, boolean branchTarget ) {
         throw new RuntimeException( "Dava doesn't have unit references!" );
     }
 }
