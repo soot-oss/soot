@@ -77,31 +77,35 @@ public class ShimpleBodyBuilder
     protected GuaranteedDefs gd;
 
     /**
+     * Contains a list of all the Phi nodes added to the body by
+     * current invocation.  Pre-existing Phi nodes are treated as
+     * normal def/uses in the renaming algorithm.
+     **/
+    protected Set newPhiNodes;
+    
+    /**
      * Transforms the provided body to pure SSA form.
      **/
-    public ShimpleBodyBuilder(ShimpleBody body, boolean hasPhiNodes)
+    public ShimpleBodyBuilder(ShimpleBody body)
     {
         this.body = body;
-
-        // our SSA building algorithm currently assumes there are no
-        // foreign Phi nodes in the given body, therefore, any such
-	// Phi nodes must be eliminated first. The results may not 
-	// be as pretty as expected and it's possible that as part of 
-	// the process of eliminating and subsequent recomputation of 
-	// SSA form, minimality (to the original source) is not 
-	// maintained.
-        if(hasPhiNodes)
-            eliminatePhiNodes(body);
-        
+        initialize();
+        transform();
+    }
+    
+    public void initialize()
+    {
         cfg = new CompleteBlockGraph(body);
         OneHeadBlockGraph.convert(cfg);
 
         dt = new DominatorTree(cfg, true);
         gd = new GuaranteedDefs(new CompleteUnitGraph(body));
         origLocals = new ArrayList(body.getLocals());
-        
-        /* Carry out the transformations. */
-        
+        newPhiNodes = new HashSet();
+    }
+
+    public void transform()
+    {
         insertTrivialPhiNodes();
         renameLocals();
         trimExceptionalPhiNodes();
@@ -242,6 +246,8 @@ public class ShimpleBodyBuilder
             frontierBlock.insertAfter(trivialPhi, frontierBlock.getHead());
         else
             frontierBlock.insertBefore(trivialPhi, frontierBlock.getHead());
+
+        newPhiNodes.add(trivialPhi);
     }
 
     /**
@@ -369,15 +375,8 @@ public class ShimpleBodyBuilder
                     List useBoxes = new ArrayList();
 
                     // process all Ordinary Uses
-                    if(unit instanceof AssignStmt){
-                        Value rValue = ((AssignStmt) unit).getRightOp();
-                        
-                        if(!(rValue instanceof PhiExpr))
-                            useBoxes.addAll(unit.getUseBoxes());
-                    }
-                    else{
+                    if(!newPhiNodes.contains(unit))
                         useBoxes.addAll(unit.getUseBoxes());
-                    }
 
                     Iterator useBoxesIt = useBoxes.iterator();
                 
@@ -405,18 +404,18 @@ public class ShimpleBodyBuilder
 
                 // Step 1 of 1
                 {
-                    if(!(unit instanceof AssignStmt))
+                    if(!(unit instanceof DefinitionStmt))
                         continue;
                 
-                    AssignStmt assignStmt = (AssignStmt) unit;
+                    DefinitionStmt defStmt = (DefinitionStmt) unit;
                     
-                    Value lhsValue = assignStmt.getLeftOp();
+                    Value lhsValue = defStmt.getLeftOp();
                     
                     // not something we're interested in
                     if(!origLocals.contains(lhsValue))
                         continue;
 
-                    ValueBox lhsLocalBox = assignStmt.getLeftOpBox();
+                    ValueBox lhsLocalBox = defStmt.getLeftOpBox();
                     Local lhsLocal = (Local) lhsValue;
 
                     // re-processed in Step 4
@@ -450,18 +449,10 @@ public class ShimpleBodyBuilder
                 while(unitsIt.hasNext()){
                     Unit unit = (Unit) unitsIt.next();
 
-                    if(!(unit instanceof AssignStmt))
+                    if(!(newPhiNodes.contains(unit)))
                         continue;
-
-                    AssignStmt assignStmt = (AssignStmt) unit;
-
-                    Value rhsRValue = assignStmt.getRightOp();
-
-                    // only interested in Phi expressions
-                    if(!(rhsRValue instanceof PhiExpr))
-                        continue;
-
-                    PhiExpr phiExpr = (PhiExpr) rhsRValue;
+                    
+                    PhiExpr phiExpr = Shimple.getPhiExpr(unit);
 
                     // simulate whichPred
                     int argIndex = phiExpr.getArgIndex(block);
@@ -598,10 +589,11 @@ public class ShimpleBodyBuilder
                 Iterator unitsIt = block.iterator();
                 while(unitsIt.hasNext()){
                     Unit unit = (Unit) unitsIt.next();
-                    PhiExpr phi = Shimple.getPhiExpr(unit);
-                    if(phi == null)
+
+                    if(!(newPhiNodes.contains(unit)))
                         continue;
 
+                    PhiExpr phi = Shimple.getPhiExpr(unit);
                     trimPhiNode(phi);
                 }
             }

@@ -126,7 +126,7 @@ public class ShimpleBody extends StmtBody
      **/
     public void rebuild(boolean hasPhiNodes)
     {
-        new ShimpleBodyBuilder(this, hasPhiNodes);
+        new ShimpleBodyBuilder(this);
         setSSA(true);
     }
     
