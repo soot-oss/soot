@@ -35,7 +35,6 @@ import java.util.*;
 import java.io.*;
 import soot.baf.toolkits.base.*;
 import soot.jimple.toolkits.base.*;
-import soot.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.jimple.*;
@@ -1311,7 +1310,7 @@ public class SootClass extends AbstractHost implements Numberable
             writerOut.close();
 
             if(soot.Main.opts.time())
-                soot.Main.assembleJasminTimer.start(); 
+                Timers.assembleJasminTimer.start(); 
 
             // Invoke jasmin
             {
@@ -1338,7 +1337,7 @@ public class SootClass extends AbstractHost implements Numberable
             tempFile.delete();
             
             if(soot.Main.opts.time())
-                soot.Main.assembleJasminTimer.end(); 
+                Timers.assembleJasminTimer.end(); 
             
         } catch(IOException e)
         {

@@ -516,7 +516,7 @@ public class Util
         soot.Timer timer = new soot.Timer("timer");
         soot.Timer buildTimer = new soot.Timer("build");
 
-        soot.Main.resolverTimer.start();
+        Timers.resolverTimer.start();
         
         setActiveClassManager(cm);
         
@@ -723,7 +723,7 @@ public class Util
         //System.out.println("loading" + timer.getTime());
         //System.out.println("building" + buildTimer.getTime());
 
-        soot.Main.resolverTimer.end();
+        Timers.resolverTimer.end();
 
         return newClass;
     }

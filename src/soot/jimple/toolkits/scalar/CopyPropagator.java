@@ -73,7 +73,7 @@ public class CopyPropagator extends BodyTransformer
                 "] Propagating copies...");
 
         if(Main.opts.time())
-            Main.propagatorTimer.start();                
+            Timers.propagatorTimer.start();                
                 
         Chain units = stmtBody.getUnits();
 
@@ -224,7 +224,7 @@ public class CopyPropagator extends BodyTransformer
                 slowCopyPropagationCount + " slow copies");
      
         if(Main.opts.time())
-            Main.propagatorTimer.end();
+            Timers.propagatorTimer.end();
     
     }
     

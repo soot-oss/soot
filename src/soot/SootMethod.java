@@ -286,91 +286,29 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
      * Please call setApplicationClass() on the relevant class.
      */
      
-    public Body retrieveActiveBody()
-    {
+    public Body retrieveActiveBody() {
         if (declaringClass.isContextClass())
-	    throw new RuntimeException("cannot get resident body for context class : "
-				       + getSignature()
-				       + "; maybe you want to call c.setApplicationClass() on this class!");
-	if (declaringClass.isPhantomClass())
-            throw new RuntimeException("cannot get resident body for phantom class : " 
-				       + getSignature()
-				       + "; maybe you want to call c.setApplicationClass() on this class!");
+            throw new RuntimeException(
+                "cannot get resident body for context class : "
+                    + getSignature()
+                    + "; maybe you want to call c.setApplicationClass() on this class!");
+        if (declaringClass.isPhantomClass())
+            throw new RuntimeException(
+                "cannot get resident body for phantom class : "
+                    + getSignature()
+                    + "; maybe you want to call c.setApplicationClass() on this class!");
 
-        if(!hasActiveBody())
-	{
-//	    System.out.println("Retrieving "+this.getSignature());
+        if (!hasActiveBody()) {
+            //	    System.out.println("Retrieving "+this.getSignature());
 
-	    if (Main.getWithCache()) {
-		if (getCachedActiveBody() == false) {
-		    setActiveBody( this.getBodyFromMethodSource("jb"));
-		    cacheActiveBody();
-		}
-	    }
-	    else setActiveBody( this.getBodyFromMethodSource("jb"));
+            setActiveBody(this.getBodyFromMethodSource("jb"));
             ms = null;
         }
         return getActiveBody();
     }
         
 
-    private boolean getCachedActiveBody() 
-    {
-	JimpleBody jb = null;
-	
-	try {
-	    ObjectInputStream in = new ObjectInputStream( new BufferedInputStream( new FileInputStream( getCacheFileName())));
-	    jb = (JimpleBody) in.readObject();
-	    in.close();
-	}
-	catch (IOException ioe) {
-	    return false;
-	}
-	catch (ClassNotFoundException cnfe) {
-	    return false;
-	}
-	finally {
-	    if (jb == null)
-		return false;
-	}
-
-	jb.setMethod( this);
-	setActiveBody( jb);
-
-	return true;
-    }
-
     private static String cachePathName = null;
-
-    private String getCacheFileName()
-    {
-	if (cachePathName == null) {
-	    String 
-		fileSep = System.getProperty( "file.separator"),
-		rootDir = null;
-	    
-	    cachePathName = Main.getCacheDir();
-
-	    if (cachePathName == null)
-		cachePathName = System.getProperty( "user.home") + fileSep + ".soot" + fileSep + "cache";
-
-	    File dir = new File( cachePathName);
-	    if (!dir.exists()) {
-		try {
-		    dir.mkdirs();
-		}
-		catch( SecurityException se) {
-		    System.err.println( "Unable to create " + cachePathName);
-		    System.exit(0);
-		}
-	    }
-
-	    if ((cachePathName.length() > 0) && (cachePathName.charAt( cachePathName.length() - 1) != fileSep.charAt( 0)))
-		cachePathName += fileSep;
-	}
-
-	return cachePathName + getSignature() + getCacheFileAttr();
-    }
 
     private String classFileAttr = null;
 
@@ -441,25 +379,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
 	return classFileAttr;
     }
 
-
-    private void cacheActiveBody()
-    {
-	Body b = getActiveBody();
-
-	if ((b instanceof JimpleBody) == false)  // silently avoid caching non-JimpleBodies
-	    return;
-
-	try {
-	    ObjectOutputStream out = new ObjectOutputStream( new BufferedOutputStream( new FileOutputStream( getCacheFileName())));
-	    out.writeObject( (JimpleBody) b);
-	    out.close();
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	    System.exit(0);
-	}
-    }
-   
 
     /**
         Sets the active body for this method. 

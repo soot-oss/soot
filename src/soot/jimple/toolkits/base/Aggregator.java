@@ -60,7 +60,7 @@ public class Aggregator extends BodyTransformer
         int aggregateCount = 1;
 
         if(Main.opts.time())
-            Main.aggregationTimer.start();
+            Timers.aggregationTimer.start();
          boolean changed = false;
 
         Map boxToZone = new HashMap(body.getUnits().size() * 2 + 1, 0.7f);
@@ -104,7 +104,7 @@ public class Aggregator extends BodyTransformer
         } while(changed);
         
         if(Main.opts.time())
-            Main.aggregationTimer.end();
+            Timers.aggregationTimer.end();
             
     }
   

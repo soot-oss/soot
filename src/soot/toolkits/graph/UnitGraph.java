@@ -101,7 +101,7 @@ public class UnitGraph implements DirectedGraph
                                "]     Constructing UnitGraph...");
       
         if(Main.opts.time())
-            Main.graphTimer.start();
+            Timers.graphTimer.start();
       
         
         // Build successors
@@ -303,7 +303,7 @@ public class UnitGraph implements DirectedGraph
         }
 
         if(Main.opts.time())
-            Main.graphTimer.end();        
+            Timers.graphTimer.end();        
     }
 
 

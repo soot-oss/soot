@@ -45,7 +45,6 @@ package soot.toolkits.scalar;
 
 import soot.*;
 import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
 import soot.util.*;
 import java.util.*;
 
@@ -257,8 +256,8 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
         // System.out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
         
-        Main.totalFlowNodes += numNodes;
-        Main.totalFlowComputations += numComputations;
+        Timers.totalFlowNodes += numNodes;
+        Timers.totalFlowComputations += numComputations;
 
     } // end doAnalysis
 

@@ -193,64 +193,11 @@ public class Main implements Runnable
 
     public static boolean isInDebugMode;
    
-    static private boolean withCache = false;
-    static private String cacheDir = null;
     static private boolean useJavaStyle = false;
-
-    static public int totalFlowNodes, totalFlowComputations;
 
     static boolean doArrayBoundsCheck = false;
     static boolean doNullPointerCheck = false;
            
-    static public Timer copiesTimer = new Timer("copies"),
-        defsTimer = new Timer("defs"),
-        usesTimer = new Timer("uses"),
-        liveTimer = new Timer("live"),
-        splitTimer = new Timer("split"),
-        packTimer = new Timer("pack"),
-        cleanup1Timer = new Timer("cleanup1"),
-        cleanup2Timer = new Timer("cleanup2"),
-        conversionTimer = new Timer("conversion"),
-        cleanupAlgorithmTimer = new Timer("cleanupAlgorithm"),
-        graphTimer = new Timer("graphTimer"),
-        assignTimer = new Timer("assignTimer"),
-        resolveTimer = new Timer("resolveTimer"),
-        totalTimer = new Timer("totalTimer"),
-        splitPhase1Timer = new Timer("splitPhase1"),
-        splitPhase2Timer = new Timer("splitPhase2"),
-        usePhase1Timer = new Timer("usePhase1"),
-        usePhase2Timer = new Timer("usePhase2"),
-        usePhase3Timer = new Timer("usePhase3"),
-        defsSetupTimer = new Timer("defsSetup"),
-        defsAnalysisTimer = new Timer("defsAnalysis"),
-        defsPostTimer = new Timer("defsPost"),
-        liveSetupTimer = new Timer("liveSetup"),
-        liveAnalysisTimer = new Timer("liveAnalysis"),
-        livePostTimer = new Timer("livePost"),
-        aggregationTimer = new Timer("aggregation"),
-        grimpAggregationTimer = new Timer("grimpAggregation"),
-        deadCodeTimer = new Timer("deadCode"),
-        propagatorTimer = new Timer("propagator"),
-        buildJasminTimer = new Timer("buildjasmin"),
-        assembleJasminTimer = new Timer("assembling jasmin");
-        
-    static public Timer
-        resolverTimer = new Timer("resolver");
-        
-    static public int conversionLocalCount,
-        cleanup1LocalCount,
-        splitLocalCount,
-        assignLocalCount,
-        packLocalCount,
-        cleanup2LocalCount;
-
-    static public int conversionStmtCount,
-        cleanup1StmtCount,
-        splitStmtCount,
-        assignStmtCount,
-        packStmtCount,
-        cleanup2StmtCount;
-
     static private String outputDir = "";
 
     static private boolean isOptimizing;
@@ -273,8 +220,6 @@ public class Main implements Runnable
 
     static private SootClass mainClass = null;        
     
-    static public long stmtCount;
-
     private static List sTagFileList = new ArrayList(); 
 
     private static List getClassesUnder(String aPath) 
@@ -341,26 +286,6 @@ public class Main implements Runnable
     {
         return isOptimizingWhole;
     }
-
-    public static void setWithCache(boolean val)
-    {
-	withCache = val;
-    }
-    public static boolean getWithCache()
-    {
-	return withCache;
-    }
-    
-    public static void setCacheDir( String s)
-    {
-	cacheDir = s;
-	setWithCache( true);
-    }
-    public static String getCacheDir()
-    {
-	return cacheDir;
-    }
-    
 
   /* hack for J2ME */
   public static boolean isJ2ME(){
@@ -436,37 +361,6 @@ public class Main implements Runnable
         StringTokenizer tokenizer = new StringTokenizer(str, ",");
         while(tokenizer.hasMoreTokens())
             dynamicPackages.add(tokenizer.nextToken());
-    }
-
-    /* This is called after sootClassPath has been defined. */
-    public static void markPackageAsDynamic(String str)
-    {
-        StringTokenizer strtok = new StringTokenizer(Scene.v().getSootClassPath(), ":");
-        while(strtok.hasMoreTokens()) {
-            HashSet set = new HashSet(0);
-            String path = strtok.nextToken();
-
-            // For jimple files
-            List l = getClassesUnder(path);
-            for( Iterator filenameIt = l.iterator(); filenameIt.hasNext(); ) {
-                final String filename = (String) filenameIt.next();
-                if (filename.startsWith(str))
-                    set.add(filename);
-            }
-
-            // For class files;
-            path = path + "/";
-            StringTokenizer tokenizer = new StringTokenizer(str, ".");
-            while(tokenizer.hasMoreTokens()) {
-                path = path + tokenizer.nextToken();
-                if (tokenizer.hasMoreTokens())
-                    path = path + "/";
-            }
-            l = getClassesUnder(path);
-            for (Iterator it = l.iterator(); it.hasNext(); )
-                set.add(str+"."+((String)it.next()));
-            dynamicClasses.addAll(set);
-        }
     }
 
     public static void setDebug(boolean val)
@@ -573,9 +467,20 @@ public class Main implements Runnable
         throws CompilationDeathException
     {
         opts = new Options( args );
+
         if( !opts.parse() ) 
             throw new CompilationDeathException(COMPILATION_ABORTED,
                     "Option parse error" );
+
+        if( args.length == 0 || opts.help() ) {
+            printHelp();
+            throw new CompilationDeathException(COMPILATION_SUCCEDED);
+        }
+
+        if( opts.version() ) {
+            printVersion();
+            throw new CompilationDeathException(COMPILATION_SUCCEDED);
+        }
 
         postCmdLineCheck();
     }
@@ -783,7 +688,7 @@ public class Main implements Runnable
     start = new Date();
 
     try {
-      totalTimer.start();
+      Timers.totalTimer.start();
 
       initApp();
 
@@ -822,14 +727,14 @@ public class Main implements Runnable
 
       postProcessDAVA();
 	    
-      totalTimer.end();            
+      Timers.totalTimer.end();            
 				
       // Print out time stats.				
       if(opts.time())
-	printProfilingInformation();
+	Timers.printProfilingInformation();
         
     } catch (CompilationDeathException e) {
-      totalTimer.end();            
+      Timers.totalTimer.end();            
       exitCompilation(e.getStatus(), e.getMessage());
       return;
     }   
@@ -989,8 +894,10 @@ public class Main implements Runnable
         
 	// Dynamic packages
 	it = dynamicPackages.iterator();
+	/*
 	while(it.hasNext())
 	    markPackageAsDynamic((String)it.next());
+	    */
    
 	// Dynamic & process classes
 	it = dynamicClasses.iterator();
@@ -1101,100 +1008,6 @@ public class Main implements Runnable
 	  
 	}
       }
-    }
-
-    private static void printProfilingInformation()
-    {                                                   
-        long totalTime = totalTimer.getTime();
-                
-        System.out.println("Time measurements");
-        System.out.println();
-                
-        System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
-        System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
-	//                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
-	//                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
-	//                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
-        System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
-	//                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
-	//                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
-	//                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
-
-        System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
-        System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
-        System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
-	//                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
-	//                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
-	//                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
-                
-        System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
-
-                
-        System.out.println();
-
-        // Print out time stats.
-        {
-            float timeInSecs;
-
-            System.out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
-            System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
-            System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
-            System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
-            System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
-            System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-            System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
-            System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
-            System.out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-            System.out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
-            
-                                            
-	    //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
-	    //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
-                    
-	    //                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
-	    //                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
-                
-	    /*
-	      System.out.println("cleanup2Timer:   " + cleanup2Time +
-	      "(" + (cleanup2Time * 100 / totalTime) + "%) " +
-	      cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
-	    */
-
-            timeInSecs = (float) totalTime / 1000.0f;
-            float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
-            
-            System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
-            
-            if(opts.subGC())
-		{
-		    System.out.println("Garbage collection was subtracted from these numbers.");
-		    System.out.println("           forcedGC:" + 
-				       toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
-		}
-
-            System.out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
-                    
-            System.out.println("totalFlowNodes: " + totalFlowNodes + 
-                               " totalFlowComputations: " + totalFlowComputations + " avg: " + 
-                               truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
-        }
-    }
-
-    private static String toTimeString(Timer timer, long totalTime)
-    {
-        DecimalFormat format = new DecimalFormat("00.0");
-        DecimalFormat percFormat = new DecimalFormat("00.0");
-        
-        long time = timer.getTime();
-        
-        String timeString = format.format(time / 1000.0); // paddedLeftOf(new Double(truncatedOf(time / 1000.0, 1)).toString(), 5);
-        
-        return (timeString + "s" + " (" + percFormat.format(time * 100.0 / totalTime) + "%" + ")");   
-    }
-    
-    private static String toFormattedString(double value)
-    {
-        return paddedLeftOf(new Double(truncatedOf(value, 2)).toString(), 5);
     }
 
   /** Attach JimpleBodies to the methods of c. */
@@ -1420,28 +1233,4 @@ public class Main implements Runnable
     }
   }
     
-    public static double truncatedOf(double d, int numDigits)
-    {
-        double multiplier = 1;
-        
-        for(int i = 0; i < numDigits; i++)
-            multiplier *= 10;
-            
-        return ((long) (d * multiplier)) / multiplier;
-    }
-    
-    public static String paddedLeftOf(String s, int length)
-    {
-        if(s.length() >= length)
-            return s;
-        else {
-            int diff = length - s.length();
-            char[] padding = new char[diff];
-            
-            for(int i = 0; i < diff; i++)
-                padding[i] = ' ';
-            
-            return new String(padding) + s;
-        }    
-    }
 }

@@ -224,7 +224,7 @@ public class JasminClass
         Map options = new HashMap();
 
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.start();
+            Timers.buildJasminTimer.start();
 
         if(soot.Main.opts.verbose())
             System.out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
@@ -295,7 +295,7 @@ public class JasminClass
         }
         
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.end();
+            Timers.buildJasminTimer.end();
     }
 
     void assignColorsToLocals(StmtBody body)
@@ -305,7 +305,7 @@ public class JasminClass
                 "] Assigning colors to locals...");
         
         if(Main.opts.time())
-            Main.packTimer.start();
+            Timers.packTimer.start();
 
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -364,7 +364,7 @@ public class JasminClass
                 localToColor, groupToColorCount);
 
         if(Main.opts.time())
-            Main.packTimer.end();
+            Timers.packTimer.end();
                     
     }
     
@@ -392,7 +392,7 @@ public class JasminClass
     void emitMethodBody(SootMethod method, Map options)
     {
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.end();
+            Timers.buildJasminTimer.end();
                     
      
         Body activeBody = method.getActiveBody();
@@ -407,7 +407,7 @@ public class JasminClass
         if(body == null)
             
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.start();
+            Timers.buildJasminTimer.start();
         
         Chain units = body.getUnits();
 

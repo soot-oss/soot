@@ -209,7 +209,7 @@ public class JasminClass
     public JasminClass(SootClass sootClass)
     {
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.start();
+            Timers.buildJasminTimer.start();
         
         if(soot.Main.opts.verbose())
             System.out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
@@ -305,7 +305,7 @@ public class JasminClass
         }
         
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.end();
+            Timers.buildJasminTimer.end();
     }
 
     void assignColorsToLocals(BafBody body)
@@ -315,7 +315,7 @@ public class JasminClass
                 "] Assigning colors to locals...");
         
         if(Main.opts.time())
-            Main.packTimer.start();
+            Timers.packTimer.start();
 
         localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
@@ -374,7 +374,7 @@ public class JasminClass
 //                  localToColor, groupToColorCount);
 
         if(Main.opts.time())
-            Main.packTimer.end();
+            Timers.packTimer.end();
                     
     }
 
@@ -409,7 +409,7 @@ public class JasminClass
     void emitMethodBody(SootMethod method)
     {
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.end();
+            Timers.buildJasminTimer.end();
         
         Body activeBody = method.getActiveBody();
         
@@ -422,7 +422,7 @@ public class JasminClass
             throw new RuntimeException("method: " + method.getName() + " has no active body!");
             
         if(soot.Main.opts.time())
-            soot.Main.buildJasminTimer.start();
+            Timers.buildJasminTimer.start();
         
         Chain instList = body.getUnits();
 

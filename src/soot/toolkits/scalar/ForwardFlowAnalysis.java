@@ -159,8 +159,8 @@ next());
         // System.out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
         
-        Main.totalFlowNodes += numNodes;
-        Main.totalFlowComputations += numComputations;
+        Timers.totalFlowNodes += numNodes;
+        Timers.totalFlowComputations += numComputations;
     }
 
 }

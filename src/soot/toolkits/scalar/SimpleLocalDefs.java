@@ -58,7 +58,7 @@ public class SimpleLocalDefs implements LocalDefs
     public SimpleLocalDefs(CompleteUnitGraph g)
     {
         if(Main.opts.time())
-            Main.defsTimer.start();
+            Timers.defsTimer.start();
         
         if(Main.opts.verbose())
             System.out.println("[" + g.getBody().getMethod().getName() +
@@ -67,7 +67,7 @@ public class SimpleLocalDefs implements LocalDefs
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
         
         if(Main.opts.time())
-            Main.defsPostTimer.start();
+            Timers.defsPostTimer.start();
 
         // Build localUnitPairToDefs map
         {
@@ -106,10 +106,10 @@ public class SimpleLocalDefs implements LocalDefs
         }
 
         if(Main.opts.time())
-            Main.defsPostTimer.end();
+            Timers.defsPostTimer.end();
                 
         if(Main.opts.time())
-            Main.defsTimer.end();
+            Timers.defsTimer.end();
 
 	if(Main.opts.verbose())
 	    System.out.println("[" + g.getBody().getMethod().getName() +
@@ -250,7 +250,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         FlowUniverse defUniverse;
 
         if(Main.opts.time())
-            Main.defsSetupTimer.start();
+            Timers.defsSetupTimer.start();
 
         // Create a list of all the definitions and group defs of the same local together
         {
@@ -389,15 +389,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
         }
 
         if(Main.opts.time())
-            Main.defsSetupTimer.end();
+            Timers.defsSetupTimer.end();
 
         if(Main.opts.time())
-            Main.defsAnalysisTimer.start();
+            Timers.defsAnalysisTimer.start();
 
         doAnalysis();
         
         if(Main.opts.time())
-            Main.defsAnalysisTimer.end();
+            Timers.defsAnalysisTimer.end();
     }
     
     protected Object newInitialFlow()
