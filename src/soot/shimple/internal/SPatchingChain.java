@@ -289,17 +289,17 @@ public class SPatchingChain extends PatchingChain
 
     protected class SPatchingIterator extends PatchingIterator
     {
-        SPatchingIterator()
+        SPatchingIterator(Chain innerChain)
         {
             super(innerChain);
         }
 
-        SPatchingIterator(Object u)
+        SPatchingIterator(Chain innerChain, Object u)
         {
             super(innerChain, u);
         }
 
-        SPatchingIterator(Object head, Object tail)
+        SPatchingIterator(Chain innerChain, Object head, Object tail)
         {
             super(innerChain, head, tail);
         }
@@ -309,22 +309,31 @@ public class SPatchingChain extends PatchingChain
             if(!state)
                 throw new IllegalStateException("remove called before first next() call");
             Shimple.redirectToPreds(SPatchingChain.this, (Unit) lastObject);
-            super.remove();
+
+            // work around for inadequate inner class support in javac 1.2
+            // super.remove();
+            Unit successor;
+
+            if((successor = (Unit)getSuccOf(lastObject)) == null)
+                successor = (Unit)getPredOf(lastObject);
+
+            innerIterator.remove();
+            ((Unit)lastObject).redirectJumpsToThisTo(successor);
         }
     }
 
     public Iterator iterator()
     {
-        return new SPatchingIterator();
+        return new SPatchingIterator(innerChain);
     }
 
     public Iterator iterator(Object u)
     {
-        return new SPatchingIterator(u);
+        return new SPatchingIterator(innerChain, u);
     }
 
     public Iterator iterator(Object head, Object tail)
     {
-        return new SPatchingIterator(head, tail);
+        return new SPatchingIterator(innerChain, head, tail);
     }
 }
