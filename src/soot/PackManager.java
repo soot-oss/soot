@@ -62,34 +62,50 @@ public class PackManager {
             p.add(new Transform("jb.uce", UnreachableCodeEliminator.v()));
         }
 
-        // Grimp body creation
-        addPack(p = new BodyPack("gb"));
+        // Call graph pack
+        addPack(p = new RadioScenePack("cg"));
         {
-            p.add(new Transform("gb.a1", Aggregator.v()));
-            p.add(new Transform("gb.cf", ConstructorFolder.v()));
-            p.add(new Transform("gb.a2", Aggregator.v()));
-            p.add(new Transform("gb.ule", UnusedLocalEliminator.v()));
+            p.add(new Transform("cg.oldcha", OldCHATransformer.v()));
+            p.add(new Transform("cg.vta", VTATransformer.v()));
+            p.add(new Transform("cg.cha", CHATransformer.v()));
+            p.add(new Transform("cg.spark", SparkTransformer.v()));
         }
 
-        // Baf body creation
-        addPack(p = new BodyPack("bb"));
+        // Whole-Shimple transformation pack
+        addPack(p = new ScenePack("wstp"));
+
+        // Whole-Shimple Optimization pack
+        addPack(p = new ScenePack("wsop"));
+
+        // Whole-Jimple transformation pack
+        addPack(p = new ScenePack("wjtp"));
         {
-            p.add(new Transform("bb.lso", LoadStoreOptimizer.v()));
-            p.add(new Transform("bb.pho", PeepholeOptimizer.v()));
-            p.add(new Transform("bb.ule", UnusedLocalEliminator.v()));
-            p.add(new Transform("bb.lp", LocalPacker.v()));
+        }
+
+        // Whole-Jimple Optimization pack
+        addPack(p = new ScenePack("wjop"));
+        {
+            p.add(new Transform("wjop.smb", StaticMethodBinder.v()));
+            p.add(new Transform("wjop.si", StaticInliner.v()));
+        }
+
+        // Give another chance to do Whole-Jimple transformation
+        // The RectangularArrayFinder will be put into this package.
+        addPack(p = new ScenePack("wjap"));
+        {
+            p.add(new Transform("wjap.ra", RectangularArrayFinder.v()));
         }
 
         // Shimple transformation pack
         addPack(p = new BodyPack("stp"));
 
-        // Shimple optimization pack (-O)
+        // Shimple optimization pack
         addPack(p = new BodyPack("sop"));
 
         // Jimple transformation pack
         addPack(p = new BodyPack("jtp"));
 
-        // Jimple optimization pack (-O)
+        // Jimple optimization pack
         addPack(p = new BodyPack("jop"));
         {
             p.add(new Transform("jop.cse", CommonSubexpressionEliminator.v()));
@@ -116,45 +132,29 @@ public class PackManager {
             p.add(new Transform("jap.fieldrw", FieldTagger.v()));
         }
 
-        // Call graph pack
-        addPack(p = new RadioScenePack("cg"));
+        // Grimp body creation
+        addPack(p = new BodyPack("gb"));
         {
-            p.add(new Transform("cg.oldcha", OldCHATransformer.v()));
-            p.add(new Transform("cg.vta", VTATransformer.v()));
-            p.add(new Transform("cg.cha", CHATransformer.v()));
-            p.add(new Transform("cg.spark", SparkTransformer.v()));
+            p.add(new Transform("gb.a1", Aggregator.v()));
+            p.add(new Transform("gb.cf", ConstructorFolder.v()));
+            p.add(new Transform("gb.a2", Aggregator.v()));
+            p.add(new Transform("gb.ule", UnusedLocalEliminator.v()));
         }
 
-        // Whole-Jimple transformation pack (--app)
-        addPack(p = new ScenePack("wjtp"));
+        // Grimp optimization pack
+        addPack(p = new BodyPack("gop"));
+
+        // Baf body creation
+        addPack(p = new BodyPack("bb"));
         {
-        }
-
-        // Whole-Jimple Optimization pack (--app -W)
-        addPack(p = new ScenePack("wjop"));
-        {
-            p.add(new Transform("wjop.smb", StaticMethodBinder.v()));
-            p.add(new Transform("wjop.si", StaticInliner.v()));
-        }
-
-        // Whole-Shimple transformation pack (--app)
-        addPack(p = new ScenePack("wstp"));
-
-        // Whole-Shimple Optimization pack (--app -W)
-        addPack(p = new ScenePack("wsop"));
-
-        // Give another chance to do Whole-Jimple transformation
-        // The RectangularArrayFinder will be put into this package.
-        addPack(p = new ScenePack("wjtp2"));
-        {
-            p.add(new Transform("wjtp2.ra", RectangularArrayFinder.v()));
+            p.add(new Transform("bb.lso", LoadStoreOptimizer.v()));
+            p.add(new Transform("bb.pho", PeepholeOptimizer.v()));
+            p.add(new Transform("bb.ule", UnusedLocalEliminator.v()));
+            p.add(new Transform("bb.lp", LocalPacker.v()));
         }
 
         // Baf optimization pack
         addPack(p = new BodyPack("bop"));
-
-        // Grimp optimization pack
-        addPack(p = new BodyPack("gop"));
 
         // Code attribute tag aggregation pack
         addPack(p = new BodyPack("tag"));

@@ -46,7 +46,7 @@ public class JimpleBodyPack extends BodyPack
 
 
     /** Applies the transformations corresponding to the given options. */
-    public void applyPhaseOptions(JimpleBody b, Map opts) 
+    private void applyPhaseOptions(JimpleBody b, Map opts) 
     { 
         JBOptions options = new JBOptions( opts );
         if (options.verbatim())
@@ -157,7 +157,7 @@ public class JimpleBodyPack extends BodyPack
 
 
 
-    public void apply(Body b)
+    protected void internalApply(Body b)
     {
         applyPhaseOptions( (JimpleBody) b,
                 PackManager.v().getPhaseOptions( getPhaseName() ) );

@@ -204,8 +204,8 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 <xsl:for-each select="expansion">
-                <xsl:sort select="position()" order="descending"/>
-                pushOptions( "<xsl:value-of select="."/>" );
+                <xsl:sort select="position()" data-type="number" order="descending"/><!---->
+                pushOptions( "<xsl:value-of select="."/>" );<!---->
                 </xsl:for-each>
             }
   </xsl:template>

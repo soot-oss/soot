@@ -30,15 +30,19 @@ public class RadioScenePack extends ScenePack
         super(name);
     }
 
-    public void apply()
+    protected void internalApply()
     {
+        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
+            final Transform t = (Transform) tIt.next();
+            t.apply();
+        }
         LinkedList enableds = new LinkedList();
 
         for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
 
             final Transform t = (Transform) tIt.next();
-            Map options = PackManager.v().getPhaseOptions( t );
-            if( PackManager.getBoolean( options, "disabled" ) ) continue;
+            Map opts = PackManager.v().getPhaseOptions( t );
+            if( PackManager.getBoolean( opts, "disabled" ) ) continue;
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {

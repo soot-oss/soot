@@ -355,30 +355,21 @@ public class Options extends OptionsBase {
             || option.equals( "optimize" )
             ) {
                 
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "gop" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "sop" );
                 pushOptions( "-p" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "bop" );
-                
-                pushOptions( "-p" );
-                
-                pushOptions( "aggregate-all-locals:true" );
-                
-                pushOptions( "gb" );
-                
-                pushOptions( "enabled:true" );
-                
+                pushOptions( "disabled:false" );
                 pushOptions( "jop" );
-                
                 pushOptions( "-p" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "gop" );
                 pushOptions( "-p" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "bop" );
+                pushOptions( "-p" );
+                pushOptions( "aggregate-all-locals:true" );
+                pushOptions( "gb" );
+                pushOptions( "-p" );
             }
   
             else if( false
@@ -386,12 +377,10 @@ public class Options extends OptionsBase {
             || option.equals( "whole-optimize" )
             ) {
                 
-                pushOptions( "enabled:true" );
-                
+                pushOptions( "-w" );
+                pushOptions( "disabled:false" );
                 pushOptions( "wjop" );
-                
                 pushOptions( "-p" );
-                
             }
   
             else if( false 
@@ -512,54 +501,59 @@ public class Options extends OptionsBase {
             || option.equals( "annot-nullpointer" )
             ) {
                 
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "agg.an" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "tag.an" );
                 pushOptions( "-p" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "jtp.profiling" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.profiling" );
                 pushOptions( "-p" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "jtp.npc" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.npc" );
                 pushOptions( "-p" );
-                
             }
   
             else if( false
             || option.equals( "annot-arraybounds" )
             ) {
                 
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "jtp.profiling" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "tag.an" );
                 pushOptions( "-p" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "jtp.abc" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.profiling" );
                 pushOptions( "-p" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "wjtp2.ra" );
-                
-                pushOptions( "enabled:true" );
-                
-                pushOptions( "agg.an" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.abc" );
                 pushOptions( "-p" );
-                
+                pushOptions( "disabled:false" );
+                pushOptions( "wjap.ra" );
                 pushOptions( "-p" );
+            }
+  
+            else if( false
+            || option.equals( "annot-side-effect" )
+            ) {
                 
+                pushOptions( "disabled:false" );
+                pushOptions( "tag.sea" );
+                pushOptions( "-p" );
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.sea" );
+                pushOptions( "-p" );
+                pushOptions( "-w" );
+            }
+  
+            else if( false
+            || option.equals( "annot-fieldrw" )
+            ) {
+                
+                pushOptions( "disabled:false" );
+                pushOptions( "tag.fieldrw" );
+                pushOptions( "-p" );
+                pushOptions( "disabled:false" );
+                pushOptions( "jap.fieldrw" );
+                pushOptions( "-p" );
+                pushOptions( "-w" );
             }
   
             else if( false 
@@ -724,6 +718,8 @@ public class Options extends OptionsBase {
       
 +padOpt(" -annot-nullpointer", "turn on the annotation for null pointer" )
 +padOpt(" -annot-arraybounds", "turn on the annotation for array bounds check" )
++padOpt(" -annot-side-effect", "turn on side-effect attributes" )
++padOpt(" -annot-fieldrw", "turn on field read/write attributes" )
 +"\nMiscellaneous Options:\n"
       
 +padOpt(" -time", "print out time statistics about tranformations" )
@@ -892,11 +888,11 @@ public class Options extends OptionsBase {
                 +"max-container-size "
                 +"max-inlinee-size ";
     
-        if( phaseName.equals( "wjtp2" ) )
+        if( phaseName.equals( "wjap" ) )
             return ""
                 +"disabled ";
     
-        if( phaseName.equals( "wjtp2.ra" ) )
+        if( phaseName.equals( "wjap.ra" ) )
             return ""
                 +"disabled ";
     
@@ -1191,7 +1187,8 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "wsop" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "wjtp" ) )
             return ""
@@ -1217,10 +1214,10 @@ public class Options extends OptionsBase {
               +"max-container-size:5000 "
               +"max-inlinee-size:20 ";
     
-        if( phaseName.equals( "wjtp2" ) )
+        if( phaseName.equals( "wjap" ) )
             return "";
     
-        if( phaseName.equals( "wjtp2.ra" ) )
+        if( phaseName.equals( "wjap.ra" ) )
             return ""
               +"disabled:true ";
     
@@ -1228,13 +1225,15 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "sop" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "jtp" ) )
             return "";
     
         if( phaseName.equals( "jop" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "jop.cse" ) )
             return ""
@@ -1321,7 +1320,8 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "gop" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "bb" ) )
             return "";
@@ -1341,7 +1341,8 @@ public class Options extends OptionsBase {
             return "";
     
         if( phaseName.equals( "bop" ) )
-            return "";
+            return ""
+              +"disabled:true ";
     
         if( phaseName.equals( "tag" ) )
             return "";
@@ -1393,8 +1394,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
-        if( phaseName.equals( "wjtp2" ) ) return;
-        if( phaseName.equals( "wjtp2.ra" ) ) return;
+        if( phaseName.equals( "wjap" ) ) return;
+        if( phaseName.equals( "wjap.ra" ) ) return;
         if( phaseName.equals( "stp" ) ) return;
         if( phaseName.equals( "sop" ) ) return;
         if( phaseName.equals( "jtp" ) ) return;
@@ -1489,10 +1490,10 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wjop.smb" );
         if( !PackManager.v().hasPhase( "wjop.si" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjop.si" );
-        if( !PackManager.v().hasPhase( "wjtp2" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wjtp2" );
-        if( !PackManager.v().hasPhase( "wjtp2.ra" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase wjtp2.ra" );
+        if( !PackManager.v().hasPhase( "wjap" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap" );
+        if( !PackManager.v().hasPhase( "wjap.ra" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjap.ra" );
         if( !PackManager.v().hasPhase( "stp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase stp" );
         if( !PackManager.v().hasPhase( "sop" ) )

@@ -991,6 +991,7 @@ tags, and printed with the resulting Jimple code.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1206,15 +1207,15 @@ then it will not be inlined into other methods.
 				</sub_phase>
 			</phase>
 			<phase>
-				<name>Whole Jimple Transformation Pack 2</name>
-				<alias>wjtp2</alias>
+				<name>Whole Jimple Annotation Pack</name>
+				<alias>wjap</alias>
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
 				</boolopt>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
-					<alias>wjtp2.ra</alias>
+					<alias>wjap.ra</alias>
 					<boolopt>
 						<name>Disabled</name>
 						<alias>disabled</alias>
@@ -1238,6 +1239,7 @@ then it will not be inlined into other methods.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1267,6 +1269,7 @@ the <tt>JimpleOptimizationPack</tt>.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
+                                        <default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -1610,7 +1613,7 @@ It has one phase option (aside from the default <tt>disabled</tt> option).
 					<long_desc>
 The array bounds check analysis has the phase name <tt>jtp.abc</tt>. 
 If whole-program analysis is required, an extra
-phase <tt>wjtp2.ra</tt> for finding rectangular arrays occurs.
+phase <tt>wjap.ra</tt> for finding rectangular arrays occurs.
                         </long_desc>
 					<boolopt>
 						<name>Disabled</name>
@@ -1625,7 +1628,7 @@ phase <tt>wjtp2.ra</tt> for finding rectangular arrays occurs.
 						<short_desc/>
 						<long_desc>
 A macro.  Instead of typing a long string of phase options, this option 
-will turn on all options of the phase ``<tt>jtp.abc</tt>&apos;&apos;.
+will turn on all options of the phase ``<tt>jap.abc</tt>&apos;&apos;.
                         </long_desc>
 					</boolopt>
 					<boolopt>
@@ -1683,7 +1686,7 @@ dramatically.
 						<alias>with-rectarray</alias>
 						<short_desc/>
 						<long_desc>
-This option is used together with wjtp2.ra with-wholeapp to make Soot run the whole-program
+This option is used together with wjap.ra with-wholeapp to make Soot run the whole-program
 analysis for rectangular array objects. This analysis is based on the
 call graph, and it usually takes a long time. If the application uses
 rectangular arrays, these options can improve the analysis
@@ -1835,6 +1838,7 @@ produced for it, in order to keep the size of the tags reasonable.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1913,6 +1917,7 @@ produced for it, in order to keep the size of the tags reasonable.
 				<boolopt>
 					<name>Disabled</name>
 					<alias>disabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
@@ -1979,13 +1984,16 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>aggregate-all-locals:true</expansion>
 			<expansion>-p</expansion>
                         <expansion>bop</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>disabled:false</expansion>
 			<expansion>-p</expansion>
                         <expansion>gop</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>disabled:false</expansion>
 			<expansion>-p</expansion>
                         <expansion>jop</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>disabled:false</expansion>
+			<expansion>-p</expansion>
+                        <expansion>sop</expansion>
+                        <expansion>disabled:false</expansion>
 			<short_desc>perform scalar optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -1995,7 +2003,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<alias>whole-optimize</alias>
 			<expansion>-p</expansion>
                         <expansion>wjop</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>disabled:false</expansion>
+                        <expansion>-w</expansion>
 			<short_desc>perform whole program optimizations on the classfiles</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2079,14 +2088,14 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Null Pointer Annotation</name>
 			<alias>annot-nullpointer</alias>
 			<expansion>-p</expansion>
-                        <expansion>jtp.npc</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>jap.npc</expansion>
+                        <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>jtp.profiling</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>jap.profiling</expansion>
+                        <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>agg.an</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>tag.an</expansion>
+                        <expansion>disabled:false</expansion>
 			<short_desc>turn on the annotation for null pointer</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
@@ -2094,18 +2103,44 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Array Bounds Annotation</name>
 			<alias>annot-arraybounds</alias>
 			<expansion>-p</expansion>
-                        <expansion>wjtp2.ra</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>wjap.ra</expansion>
+                        <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>jtp.abc</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>jap.abc</expansion>
+                        <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>jtp.profiling</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>jap.profiling</expansion>
+                        <expansion>disabled:false</expansion>
                         <expansion>-p</expansion>
-                        <expansion>agg.an</expansion>
-                        <expansion>enabled:true</expansion>
+                        <expansion>tag.an</expansion>
+                        <expansion>disabled:false</expansion>
 			<short_desc>turn on the annotation for array bounds check</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+		<macroopt>
+			<name>Side effect annotation</name>
+			<alias>annot-side-effect</alias>
+                        <expansion>-w</expansion>
+			<expansion>-p</expansion>
+                        <expansion>jap.sea</expansion>
+                        <expansion>disabled:false</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>tag.sea</expansion>
+                        <expansion>disabled:false</expansion>
+			<short_desc>turn on side-effect attributes</short_desc>
+			<long_desc>This option ...</long_desc>
+		</macroopt>
+		<macroopt>
+			<name>Field read/write annotation</name>
+			<alias>annot-fieldrw</alias>
+                        <expansion>-w</expansion>
+			<expansion>-p</expansion>
+                        <expansion>jap.fieldrw</expansion>
+                        <expansion>disabled:false</expansion>
+                        <expansion>-p</expansion>
+                        <expansion>tag.fieldrw</expansion>
+                        <expansion>disabled:false</expansion>
+			<short_desc>turn on field read/write attributes</short_desc>
 			<long_desc>This option ...</long_desc>
 		</macroopt>
 	</section>

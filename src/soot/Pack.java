@@ -90,12 +90,24 @@ public abstract class Pack implements HasPhaseOptions
         return null;
     }
 
-    public void apply() {
+    protected void internalApply() {
         throw new RuntimeException("wrong type of pack");
     }
 
-    public void apply(Body b) {
+    protected void internalApply(Body b) {
         throw new RuntimeException("wrong type of pack");
+    }
+
+    public final void apply() {
+        Map options = PackManager.v().getPhaseOptions( this );
+        if( PackManager.getBoolean( options, "disabled" ) ) return;
+        internalApply();
+    }
+
+    public final void apply(Body b) {
+        Map options = PackManager.v().getPhaseOptions( this );
+        if( PackManager.getBoolean( options, "disabled" ) ) return;
+        internalApply(b);
     }
 
     public String getDeclaredOptions() { return soot.options.Options.getDeclaredOptionsForPhase( getPhaseName() ); }

@@ -37,12 +37,10 @@ public class BodyPack extends Pack
         super(name);
     }
 
-    public void apply(Body b)
+    protected void internalApply(Body b)
     {
-        Iterator it = iterator();
-        while (it.hasNext())
-        {
-            Transform t = (Transform)it.next();
+        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
+            final Transform t = (Transform) tIt.next();
             t.apply(b);
         }
     }
