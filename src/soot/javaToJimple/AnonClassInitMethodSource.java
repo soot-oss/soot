@@ -76,6 +76,13 @@ public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodS
         return thisOuterType;
     }
 
+    private polyglot.types.ClassType polyglotType;
+    public void polyglotType(polyglot.types.ClassType type){
+        polyglotType = type;
+    }
+    public polyglot.types.ClassType polyglotType() {
+        return polyglotType;
+    }
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         AnonInitBodyBuilder aibb = new AnonInitBodyBuilder();

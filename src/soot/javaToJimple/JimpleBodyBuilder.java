@@ -3514,6 +3514,22 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         return Util.getThis(sootType, body, getThisMap, lg);
     }
     
+    protected boolean needsOuterClassRef(polyglot.types.ClassType typeToInvoke){
+        //System.out.println("needs outer class ref? class type: "+typeToInvoke+" as soot type: "+Util.getSootType(typeToInvoke));
+        //  nSystem.out.println("alci: "+InitialResolver.v().finalLocalInfo());
+        // anon and local
+        AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(typeToInvoke));
+        if ((info != null) && (!info.inStaticMethod())){
+            return true;
+        }
+        
+        // other nested
+        else if (typeToInvoke.isNested() && !typeToInvoke.flags().isStatic() && !typeToInvoke.isAnonymous() && !typeToInvoke.isLocal()){
+            return true;
+        }
+        
+        return false;
+    }
 
     /**
      * adds outer class params
@@ -3523,7 +3539,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
         ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
 
-        boolean addRef = (needsRef != null) && (needsRef.contains(Util.getSootType(typeToInvoke)));
+        boolean addRef = needsOuterClassRef(typeToInvoke);//(needsRef != null) && (needsRef.contains(Util.getSootType(typeToInvoke)));
         if (addRef){
             // if adding an outer type ref always add exact type
             soot.SootClass outerClass = ((soot.RefType)Util.getSootType(typeToInvoke.outer())).getSootClass();

@@ -218,11 +218,14 @@ public class ClassResolver {
         soot.Type outerSootType = Util.getSootType(outerType);
         soot.SootField field = new soot.SootField("this$0", outerSootType, soot.Modifier.PRIVATE | soot.Modifier.FINAL);
         sootClass.addField(field);
+        field.addTag(new soot.tagkit.SyntheticTag());
     }
 
     private void addOuterClassThisRefToInit(polyglot.types.Type outerType){
         soot.Type outerSootType = Util.getSootType(outerType);
         Iterator it = sootClass.getMethods().iterator();
+        //System.out.println("adding outer class thie ref to init of: "+sootClass);
+        //System.out.println("outer class is: "+Util.getSootType(outerType));
         while (it.hasNext()){
             soot.SootMethod meth = (soot.SootMethod)it.next();
             if (meth.getName().equals("<init>")){
@@ -374,6 +377,7 @@ public class ClassResolver {
                 src.thisOuterType(Util.getSootType(aNew.anonType().outer()));
                 src.hasOuterRef(true);
             }
+            src.polyglotType((polyglot.types.ClassType)aNew.anonType().superType());
             
             src.inStaticMethod(info.inStaticMethod());
             if (info != null){

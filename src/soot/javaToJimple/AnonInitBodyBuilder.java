@@ -38,7 +38,8 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         soot.Type thisOuterType = acims.thisOuterType();
         ArrayList fieldInits = acims.getFieldInits();
         soot.Type outerClassType = acims.outerClassType();
-
+        polyglot.types.ClassType polyglotType = acims.polyglotType();
+        
         boolean hasOuterRef = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasOuterRef();
         boolean hasQualifier = ((AnonClassInitMethodSource)body.getMethod().getSource()).hasQualifier();
         
@@ -109,12 +110,13 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         }
         SootClass superClass = sootMethod.getDeclaringClass().getSuperclass();
 
-        ArrayList needsRef = soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
-        if ((needsRef != null) && (needsRef.contains(superClass.getType())) ){
+        //ArrayList needsRef = needsOuterClassRef(polyglotOuterType);//soot.javaToJimple.InitialResolver.v().getHasOuterRefInInit();
+        if (needsOuterClassRef(polyglotType)){
+        //if ((needsRef != null) && (needsRef.contains(superClass.getType())) ){
             invokeTypeList.add(0, superOuterType);
         }
         SootMethodRef callMethod = Scene.v().makeMethodRef( sootMethod.getDeclaringClass().getSuperclass(), "<init>",  invokeTypeList, VoidType.v(), false);
-        if ((!hasQualifier) && (needsRef != null) && (needsRef.contains(superClass.getType()))){
+        if ((!hasQualifier) && (needsOuterClassRef(polyglotType))){// && (needsRef.contains(superClass.getType()))){
             if (isSubType){
                 invokeList.add(0, outerLocal);
             }

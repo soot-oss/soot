@@ -286,6 +286,7 @@ public class InitialResolver {
     private int getLocalClassNum(String realName, String simpleName){
         // a local inner class is named outer$NsimpleName where outer 
         // is the very outer most class
+        //System.out.println("real name: "+realName+" simple name: "+simpleName);
         int dIndex = realName.indexOf("$");
         int nIndex = realName.indexOf(simpleName, dIndex);
         if (nIndex == -1) return NO_MATCH;

@@ -306,15 +306,23 @@ public abstract class AbstractJasminClass
             {
                 SootField field = (SootField) fieldIt.next();
 
-                emit(".field " + Modifier.toString(field.getModifiers()) + " " +
+                if (field.hasTag("SyntheticTag")){
+                    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
+                     "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType())+" .synthetic");
+                }
+                else {
+                    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
-
+                }
 
 		Iterator attributeIt =  field.getTags().iterator(); 
 		while(attributeIt.hasNext()) {
 		    Tag tag = (Tag) attributeIt.next();
 		    if(tag instanceof Attribute)
 			emit(".field_attribute " + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue())) +"\"");
+            /*else if (tag instanceof SyntheticTag){
+                emit(".synthetic");
+            }*/
 		}
 
             }
