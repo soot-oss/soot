@@ -85,3 +85,81 @@ numerous other Java programs.
 
 4. Process times are reasonable: a program can be usually put through Soot
 within 2.5 times the execution time of javac on the original program.
+
+Improvements in 1.beta.4
+
+Date: Thu, 18 Mar 1999 01:05:44 -0500
+From: Raja Vallee-Rai <rvalleerai@sable.mcgill.ca>
+To: soot-list@sable.mcgill.ca
+Subject: Soot-1.beta.4 released.
+
+Hello soot-list subscribers,
+
+
+A new version of Soot has been released!  The notable improvements are:
+
+1. Grimp, an aggregated Jimple has been added to Soot. This is a
+medium-high level intermediate representation which
+allows you to manipulate statements as trees instead of 3-address code.
+This is particularly useful for code generation and
+decompilation. 
+
+2. The code produced by Soot from Jimple code (by first converting it to
+Grimp code) has been substantially improved. We
+are now 2 to 3 percent away from the original classfile in performance.
+(this is without any optimizations performed) 
+
+3. A subroutine duplicator has been installed as a temporary solution
+for the jsr bytecode. This means that there is no
+concept of the subroutines in the framework and that the classfiles
+produced by Soot are 'jsrless'. 
+
+4. The speed of the transformations has been improved. 
+
+5. Numerous bug fixes have been made. 
+
+
+See http://www.sable.mcgill.ca/soot for more details.
+
+
+Best regards,
+
+Raja Vallee-Rai
+Sable Research Group
+
+Improvements in 1.beta.3
+
+Date: Wed, 27 Jan 1999 21:11:49 -0500
+From: Raja Vallee-Rai <rvalleerai@sable.mcgill.ca>
+To: soot-list@sable.mcgill.ca
+Subject: Soot version 1.beta.3 available.
+
+Hello,
+
+A new version of Soot has just been released.  This version fixes
+numerous bugs and provides improved performance.  You can acquire the
+new version at
+
+http://www.sable.mcgill.ca/software
+
+See the release notes at
+http://www.sable.mcgill.ca/soot/releaseNotes.html for more details. 
+Make sure you download the latest version of SableUtil to benefit from
+the bug fixes and improvements in that package as well.
+
+--------------------------------
+
+For our next version we would like some feedback from our users.  Please
+vote on the feature you would like to see implemented next:
+
+A. Fix the handling of the JSR bytecode.
+B. Improve the efficiency of the bytecode being generated.
+C. Improve the speed of the bytecode -> Jimple transformation.
+
+Only one vote per person, please. :)
+
+
+Best regards,
+
+Raja Vallee-Rai
+Sable Research Group
