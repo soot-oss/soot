@@ -28,6 +28,8 @@ import ca.mcgill.sable.soot.ui.EditSavedConfigDialog;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+
+// I think this class is not used
 public class SootEditSavedConfigurationLauncher extends SootLauncher {
 	
 	public void run(IAction action) {

@@ -2,12 +2,13 @@ package ca.mcgill.sable.soot.launching;
 
 
 import java.io.PrintStream;
+import java.lang.reflect.*;
 
 import org.eclipse.swt.widgets.Display;
 
 //import ca.mcgill.sable.soot.SootPlugin;
 
-import soot.*;
+//import soot.*;
 /**
  * @author jlhotak
  *
@@ -37,84 +38,32 @@ public class SootThread extends Thread {
 		setDisplay(display);
 	}
 
-	/**
-	 * Constructor for SootThread.
-	 * @param target
-	 */
-	/*public SootThread(Runnable target) {
-		super(target);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param group
-	 * @param target
-	 */
-	/*(public SootThread(ThreadGroup group, Runnable target) {
-		super(group, target);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param name
-	 */
-	/*public SootThread(String name) {
-		super(name);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param group
-	 * @param name
-	 */
-	/*public SootThread(ThreadGroup group, String name) {
-		super(group, name);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param target
-	 * @param name
-	 */
-	/*public SootThread(Runnable target, String name) {
-		super(target, name);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param group
-	 * @param target
-	 * @param name
-	 */
-	/*public SootThread(ThreadGroup group, Runnable target, String name) {
-		super(group, target, name);
-	}
-
-	/**
-	 * Constructor for SootThread.
-	 * @param group
-	 * @param target
-	 * @param name
-	 * @param stackSize
-	 */
-	/*public SootThread(
-		ThreadGroup group,
-		Runnable target,
-		String name,
-		long stackSize) {
-		super(group, target, name, stackSize);
-	}
-	*/
+	
 	
 	private String [] cmd;
 	private PrintStream sootOut;
 
 	public void run() {
+		String className = "soot.Main";
 		
 		final String [] cmdFinal = getCmd();
 		final PrintStream sootOutFinal = getSootOut();
 		try {
-			Main.main(cmdFinal, sootOutFinal);
+			Class toRun = Class.forName(className);
+			Method [] meths = toRun.getDeclaredMethods();
+			Object [] args = new Object [2];
+			args[0] = cmdFinal;
+			args[1] = sootOutFinal;
+			for (int i = 0; i < meths.length; i++){
+				if (meths[i].getName().equals("main")){
+					Class [] fields = meths[i].getParameterTypes();
+					if (fields.length == 2){
+						meths[i].invoke(toRun, args);
+					}
+				}
+			}
+			
+			//Main.main(cmdFinal, sootOutFinal);
 		}
 		catch (Exception e) {
 			e.printStackTrace(sootOutFinal);

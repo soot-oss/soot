@@ -1,5 +1,10 @@
-/*
- * Created on 21-Mar-2003
+
+package ca.mcgill.sable.soot.editors;
+
+import java.util.*;
+
+/**
+ * @author jlhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,16 +20,6 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- */
-package ca.mcgill.sable.soot.editors;
-
-import java.util.*;
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class JimpleOutlineObject {
 

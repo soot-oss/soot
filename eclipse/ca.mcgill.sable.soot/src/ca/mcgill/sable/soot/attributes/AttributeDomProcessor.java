@@ -110,7 +110,7 @@ public class AttributeDomProcessor {
 			else if (node.getParentNode().getNodeName().compareTo("text") == 0) {
 			System.out.println(node.getNodeValue());
 				current.setText(node.getNodeValue());
-				System.out.println("just before add "+current.java_ln+" "+current.jimple_ln+" "+current.text);
+				//System.out.println("just before add "+current.java_ln+" "+current.jimple_ln+" "+current.text);
 				getAttributes().add(current);
 				System.out.println("in attrList "+getAttributes().capacity()+"size: "+getAttributes().size());
 			}

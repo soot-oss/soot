@@ -276,13 +276,22 @@ public class Printer {
 
         {
             out.println("    " + decl);
-            incJimpleLnNum();
-            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-                final Tag t = (Tag) tIt.next();
-                out.println(t);
-                incJimpleLnNum();
+            //incJimpleLnNum();
+	
+	    // only print tags if not printing attributes in a file 
+	    if (!addJimpleLn()) {
+            	for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
+                    final Tag t = (Tag) tIt.next();
+                    out.println(t);
+                    incJimpleLnNum();
 
+            	}
+	    }
+	    
+            if (addJimpleLn()) {
+                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));
             }
+
             out.println("    {");
             incJimpleLnNum();
 
@@ -436,6 +445,12 @@ public class Printer {
         stmt.addTag(new JimpleLineNumberTag(lnNum));
         lnNum++;
         return lnNum;
+    }
+
+    private int addJimpleLnTags(int lnNum, SootMethod meth) {
+    	meth.addTag(new JimpleLineNumberTag(lnNum));
+	lnNum++;
+	return lnNum;
     }
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */

@@ -2,6 +2,7 @@ package ca.mcgill.sable.soot.launching;
 
 import org.eclipse.jface.action.IAction;
 //import ca.mcgill.sable.soot.util.*;
+import java.util.*;
 /**
  * @author jlhotak
  *
@@ -41,27 +42,38 @@ public class DavaDecompileAppFileLauncher extends SootFileLauncher {
 	 */
 	private void setCmd() {
 		
-		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		ArrayList commands = new ArrayList();
+		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
+		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
 		classpath.append(getSootClasspath().getSeparator());
 		classpath.append(getClasspathAppend());
-	
-		
-		String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
+		*/
+		commands.add("--"+LaunchCommands.OUTPUT_DIR);
+		commands.add(getOutputLocation());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		/*String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
 				
 		StringBuffer cmd = new StringBuffer();
 		cmd.append(classpath+" ");
 		cmd.append(output_path+" ");
 		cmd.append(getToProcess()+" ");*/
+		
+		// I think we need these two options here for consistency
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		if (isExtraCmd()) {
 			getSootCommandList().addSingleOpt("--"+getExtraCmd());
 		}
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.APP);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
-		getSootCommandList().addSingleOpt(getToProcess());
+		commands.add(getToProcess());
+		//getSootCommandList().addSingleOpt(getToProcess());
+		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();*/
 	}
 }

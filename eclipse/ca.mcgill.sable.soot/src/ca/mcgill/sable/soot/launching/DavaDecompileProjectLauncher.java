@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.*;
 
 /**
@@ -24,7 +26,10 @@ public class DavaDecompileProjectLauncher extends SootProjectLauncher {
 	
 	private void setCmd() {
 		
-		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		ArrayList commands = new ArrayList();
+		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
+		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 			
 				/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 				classpath.append(getSootClasspath().getSootClasspath());
@@ -37,13 +42,20 @@ public class DavaDecompileProjectLauncher extends SootProjectLauncher {
 				StringBuffer cmd = new StringBuffer();
 				cmd.append(classpath+" ");
 				cmd.append(output_path+" ");*/
-				getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
-				getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
-				getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
-		
-				getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
-				getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 			
+		commands.add("--"+LaunchCommands.OUTPUT_DIR);
+		commands.add(getOutputLocation());
+		
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
+		
+		commands.add("--"+LaunchCommands.PROCESS_PATH);
+		commands.add(getProcess_path());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
+		
+		getSootCommandList().addSingleOpt(commands);	
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
 		classpath.append(getSootClasspath().getSeparator());

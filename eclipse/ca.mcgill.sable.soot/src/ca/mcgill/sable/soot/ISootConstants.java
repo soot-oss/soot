@@ -28,6 +28,12 @@ public interface ISootConstants {
 	public static final String SOOT_PLUGIN_ID = 
 		"ca.mcgill.sable.soot";	
 		
+	public static final String SOOT_PLUGIN_RESOURCES_ID = 
+		"ca.mcgill.sable.soot.SootPluginResources";
+		
 	public static final String JIMPLE_EXT = "jimple";
 	public static final String CLASS_EXT = "class";
+	public static final String JAVA_EXT = "java";
+	
+	public static final String ICON_PATH = "icons/";
 }

@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.*;
 
 /**
@@ -15,7 +17,7 @@ public class SootJimpleFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 	super.run(action);
 
-		//String cmd = getCmd();
+		
 		setCmd();
 		runSootDirectly();
 		runFinish();
@@ -24,25 +26,26 @@ public class SootJimpleFileLauncher extends SootFileLauncher {
 	
 	private void setCmd() {
 		
-			
-		//StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-		//classpath.append(getSootClasspath().getSootClasspath());
-		//classpath.append(getSootClasspath().getSeparator());
-		getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
-		//classpath.append(getClasspathAppend());
-		
-		
-		//String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
-				
-		//StringBuffer cmd = new StringBuffer();
-		//cmd.append(classpath+" ");
-		//cmd.append(output_path+" ");
-		
+		ArrayList commands = new ArrayList();
+		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
+		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+	  	
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		commands.add("--"+LaunchCommands.OUTPUT_DIR);
+		commands.add(getOutputLocation());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
+	
+
 		if (isExtraCmd()) {
-			getSootCommandList().addSingleOpt(getExtraCmd());
+			getSootCommandList().addSingleOpt("--"+getExtraCmd());
 		}
-		getSootCommandList().addDoubleOpt(LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
-		getSootCommandList().addSingleOpt(getToProcess());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
+		commands.add(getToProcess());
+		//getSootCommandList().addSingleOpt(getToProcess());
+		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();
 	}
 }

@@ -11,6 +11,8 @@ import org.eclipse.jface.action.*;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
+
+// not used
 public class DavaDecompileFileLauncher extends SootFileLauncher {
 
 	/**

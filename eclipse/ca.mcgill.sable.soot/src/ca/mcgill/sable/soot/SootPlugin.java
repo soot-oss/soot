@@ -8,8 +8,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import java.net.*;
 import java.util.*;
 
-//import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
-import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
 import ca.mcgill.sable.soot.attributes.SootResourceManager;
 import ca.mcgill.sable.soot.launching.*;
 
@@ -47,8 +45,6 @@ public class SootPlugin extends AbstractUIPlugin {
 	// listeners for soot output events
 	private Vector sootOutputEventListeners = new Vector();
 	
-	// attribute handler - only one
-	private SootAttributesHandler sootAttributesHandler;
 	/**
 	 * Method addSootOutputEventListener.
 	 * @param listener
@@ -85,13 +81,9 @@ public class SootPlugin extends AbstractUIPlugin {
 		// should work from startUp method
 		soot_output_doc = new SootDocument();
 		soot_output_doc.startUp();
-		// should go somewhere else - here for testing
-		//setSootAttributesHandler(new SootAttributesHandler());
-		//SootAttributeFilesReader safr = new SootAttributeFilesReader();
-		//safr.readFiles();
-		
+	
 		try {
-			resourceBundle= ResourceBundle.getBundle("ca.mcgill.sable.soot.SootPluginResources");
+			resourceBundle= ResourceBundle.getBundle(ISootConstants.SOOT_PLUGIN_RESOURCES_ID);
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
@@ -103,11 +95,12 @@ public class SootPlugin extends AbstractUIPlugin {
 		
 	}
 	
+	// used for getting any needed images for content outline
+	// and possibly for attribute markers
 	public static ImageDescriptor getImageDescriptor(String name){
-		String iconPath = "icons/";
 		try {
 			URL installURL = getDefault().getDescriptor().getInstallURL();
-			URL iconURL = new URL(installURL, iconPath + name);
+			URL iconURL = new URL(installURL, ISootConstants.ICON_PATH + name);
 			return ImageDescriptor.createFromURL(iconURL);
 		}
 		catch (MalformedURLException e){
@@ -170,21 +163,7 @@ public class SootPlugin extends AbstractUIPlugin {
 		super.shutdown();
 		sootOutputEventListeners.removeAllElements();
 	}
-	/**
-	 * Returns the sootAttributesHandler.
-	 * @return SootAttributesHandler
-	 */
-	public SootAttributesHandler getSootAttributesHandler() {
-		return sootAttributesHandler;
-	}
-
-	/**
-	 * Sets the sootAttributesHandler.
-	 * @param sootAttributesHandler The sootAttributesHandler to set
-	 */
-	public void setSootAttributesHandler(SootAttributesHandler sootAttributesHandler) {
-		this.sootAttributesHandler = sootAttributesHandler;
-	}
+	
 
 	/**
 	 * @return

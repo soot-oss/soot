@@ -100,7 +100,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public org.eclipse.jface.text.IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 	    try {
 			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
-			System.out.println(getLineNum());
+			//System.out.println(getLineNum());
 			return textViewer.getDocument().getLineInformationOfOffset(offset);
 		} catch (BadLocationException e) {
 			return null;
@@ -111,10 +111,8 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	protected void removeOldMarkers() {
 		try {
 			
-			//SootPlugin.getWorkspace().getRoot().deleteMarkers("ca.mgill.sable.soot.sootattributemarker", false, IResource.DEPTH_INFINITE);
 			SootPlugin.getWorkspace().getRoot().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
-			//SootPlugin.getWorkspace().getRoot().deleteMarkers("org.eclipse.core.resource.textmarker", true, IResource.DEPTH_INFINITE);
-			System.out.println("removed old markers");
+			//System.out.println("removed old markers");
 		}
 		catch(CoreException e) {
 		}

@@ -97,15 +97,7 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	}
 	
 	private void appendText(final String text) {
-		//StringBuffer sb = new StringBuffer(get());
-		//sb.append("\n");
-		//sb.append(text);
-		//set(sb.toString());
-		//System.out.print("doc append: "+text);
-		//setAppendInProgress(true);
-		//System.out.println("trying to scroll");
-		//getViewer().getTextViewer().setTopIndex(this.getNumberOfLines());
-		//System.out.println("scrolled");
+		
 		update(new Runnable() {
 			public void run() {
 				int appendedLength= text.length();

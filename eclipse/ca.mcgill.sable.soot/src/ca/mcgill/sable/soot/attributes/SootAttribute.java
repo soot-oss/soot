@@ -20,16 +20,12 @@ package ca.mcgill.sable.soot.attributes;
  */
 public class SootAttribute {
 
-	int java_ln;
-	int jimple_ln;
-	String text;
+	private int java_ln;
+	private int jimple_ln;
+	private String text;
 	
-	String filename;
+	private String filename;
 	
-	// todo: these three aren't used - remove
-	//String root_filename;
-	//String project_name;
-	//String pkg_name;
 	
 	public SootAttribute(int java_ln, int jimple_ln, 
 		String text, String filename) {
@@ -38,6 +34,7 @@ public class SootAttribute {
 		setText(text);
 		setFilename(filename);
 	}
+	
 	public boolean attrForJimpleLn(int jimple_ln) {
 		if (getJimple_ln() == jimple_ln) return true;
 		else return false;
@@ -131,29 +128,6 @@ public class SootAttribute {
 		this.jimple_ln = jimple_ln;
 	}
 
-	/**
-	 * Sets the pkg_name.
-	 * @param pkg_name The pkg_name to set
-	 */
-	/*public void setPkg_name(String pkg_name) {
-		this.pkg_name = pkg_name;
-	}
-
-	/**
-	 * Sets the project_name.
-	 * @param project_name The project_name to set
-	 */
-	/*public void setProject_name(String project_name) {
-		this.project_name = project_name;
-	}
-
-	/**
-	 * Sets the root_filename.
-	 * @param root_filename The root_filename to set
-	 */
-	/*public void setRoot_filename(String root_filename) {
-		this.root_filename = root_filename;
-	}
 
 	/**
 	 * Sets the text.

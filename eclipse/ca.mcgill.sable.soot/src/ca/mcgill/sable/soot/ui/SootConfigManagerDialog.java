@@ -360,7 +360,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	}
 	
 	protected void createButtonsForButtonBar(Composite parent){
-		//empty method to override OK and Cancel buttons
+		//run and close will close dialog
+		createButton(parent, 5, "Run", false);
+		createButton(parent, 6, "Close", true);
 	}
 	protected void createSpecialButtonsForButtonBar(Composite parent) {
 		createSpecialButton(parent, 0, "New", false);
@@ -369,8 +371,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		createSpecialButton(parent, 2, "Delete", false);
 		createSpecialButton(parent, 3, "Rename", false);
 		createSpecialButton(parent, 4, "Clone", false);
-		createSpecialButton(parent, 5, "Run", false);
-		createSpecialButton(parent, 6, "Close", true);
+		//createSpecialButton(parent, 5, "Run", false);
+		//createSpecialButton(parent, 6, "Close", true);
 	}
 	
 	protected void buttonPressed(int id) {
@@ -646,6 +648,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 
 	// runs the config
 	private void runPressed() {
+		super.okPressed();
 		if (getSelected() == null) return;
 		
 		if (getLauncher() instanceof SootConfigProjectLauncher) {
@@ -654,6 +657,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		else if (getLauncher() instanceof SootConfigFileLauncher) {
 			((SootConfigFileLauncher)getLauncher()).launch(getSelected());
 		}
+		
 		
 		// only necessary for viewing code while running
 		// i.e. for demos??

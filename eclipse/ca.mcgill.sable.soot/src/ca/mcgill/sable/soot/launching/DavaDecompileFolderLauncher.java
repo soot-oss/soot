@@ -1,5 +1,7 @@
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import org.eclipse.jface.action.*;
 
 /**
@@ -39,8 +41,10 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	 * @return String
 	 */
 	private void setCmd() {
-		
-		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
+		ArrayList commands = new ArrayList();
+		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
+		commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
@@ -53,13 +57,18 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 		StringBuffer cmd = new StringBuffer();
 		cmd.append(classpath+" ");
 		cmd.append(output_path+" ");*/
-		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		commands.add("--"+LaunchCommands.OUTPUT_DIR);
+		commands.add(getOutputLocation());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		
-		getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcessPath());
+		commands.add("--"+LaunchCommands.PROCESS_PATH);
+		commands.add(getProcessPath());
+		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcessPath());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
+		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();
 	}
 

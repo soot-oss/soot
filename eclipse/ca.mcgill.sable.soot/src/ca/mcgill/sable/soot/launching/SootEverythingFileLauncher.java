@@ -20,6 +20,7 @@ import org.eclipse.jface.action.IAction;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+// not used
 public class SootEverythingFileLauncher extends SootFileLauncher {
 	public void run(IAction action) {
 	super.run(action);

@@ -20,6 +20,6 @@ package ca.mcgill.sable.soot.launching;
  */
 public interface IStreamPrinter {
 
-	//TODO: this is not - remove
+	//TODO: this is not used - remove
 	public void printText(String text);
 }

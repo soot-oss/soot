@@ -9,6 +9,8 @@
    <runtime>
       <library name="soot-plugin.jar"/>
       <library name="soot/classes/"/>
+      <!--<library name="sootclasses.jar"/>-->
+      <!--<library name="myclasses/"/>-->
       <library name="jasminclasses-sable-1.2.jar">	
       </library>
    </runtime>
@@ -258,6 +260,13 @@
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction1">
+         </action>-->
+         <action
+               label="%PopupMenus.action5"
+               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction5">
          </action>
          <action
                label="%PopupMenus.action2"
@@ -266,13 +275,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction2">
          </action>
-         <action
-               label="%PopupMenus.action5"
-               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
-               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-               enablesFor="+"
-               id="ca.mcgill.sable.soot.popupaction5">
-         </action>-->
+         
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.jdt.core.IClassFile"
@@ -347,6 +350,13 @@
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction1">
+         </action>-->
+         <action
+               label="%PopupMenus.action5"
+               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction5">
          </action>
          <action
                label="%PopupMenus.action2"
@@ -355,13 +365,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction2">
          </action>
-         <action
-               label="%PopupMenus.action5"
-               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
-               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-               enablesFor="+"
-               id="ca.mcgill.sable.soot.popupaction5">
-         </action>-->
+         
       </objectContribution>
       <objectContribution
             objectClass="org.eclipse.jdt.core.ICompilationUnit"
@@ -381,6 +385,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction10">
          </action>
+
          <action
                label="%PopupMenus.action22"
                class="ca.mcgill.sable.soot.launching.SootOptionsFileLauncher"
@@ -394,6 +399,20 @@
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction8">
+         </action>
+         <action
+               label="%PopupMenus.action25"
+               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction5">
+         </action>
+         <action
+               label="%PopupMenus.action24"
+               class="ca.mcgill.sable.soot.launching.SootJimpleFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction2">
          </action>
       </objectContribution>
       <objectContribution
@@ -470,6 +489,13 @@
                menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction1">
+         </action>-->
+         <action
+               label="%PopupMenus.action5"
+               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
+               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
+               enablesFor="+"
+               id="ca.mcgill.sable.soot.popupaction5">
          </action>
          <action
                label="%PopupMenus.action2"
@@ -478,13 +504,7 @@
                enablesFor="+"
                id="ca.mcgill.sable.soot.popupaction2">
          </action>
-         <action
-               label="%PopupMenus.action5"
-               class="ca.mcgill.sable.soot.launching.SootGrimpFileLauncher"
-               menubarPath="ca.mcgill.sable.soot.launching.soot.sootPopupMenu/slot1"
-               enablesFor="+"
-               id="ca.mcgill.sable.soot.popupaction5">
-         </action>-->
+        
       </objectContribution>
    </extension>
 

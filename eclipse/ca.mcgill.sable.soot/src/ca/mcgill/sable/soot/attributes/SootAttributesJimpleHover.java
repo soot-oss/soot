@@ -22,11 +22,22 @@ import ca.mcgill.sable.soot.*;
 /**
  * @author jlhotak
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
 public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//implements ITextHover {
 
 	
@@ -56,20 +67,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			//System.out.println(rec.getProject().getFullPath().toOSString());
 			setFileName(rec.getFullPath().toOSString());
 			setPackFileName(fileToNoExt(rec.getName()));
-			//System.out.println(getPackFileName());
-			//System.out.println(getLineNum());
 			
-			//createAttrFileName();
-			/*SootAttributeFilesReader safr = new SootAttributeFilesReader();
-			AttributeDomProcessor adp = safr.readFile(createAttrFileName());
-			if (adp != null) {
-				//System.out.println(adp.getAttributes().size());
-				setAttrsHandler(new SootAttributesHandler());
-				getAttrsHandler().setAttrList(adp.getAttributes());
-				//System.out.println(adp.getAttributes().size());
-				//getAttrsHandler().printAttrs();
-				//addSootAttributeMarkers();
-			}*/
 			computeAttributes();
 			addSootAttributeMarkers();
 		}
@@ -83,9 +81,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 			//System.out.println(adp.getAttributes().size());
 			setAttrsHandler(new SootAttributesHandler());
 			getAttrsHandler().setAttrList(adp.getAttributes());
-			//System.out.println(adp.getAttributes().size());
-			//getAttrsHandler().printAttrs();
-			//addSootAttributeMarkers();
+			
 		}
 	}
 	
@@ -121,16 +117,7 @@ public class SootAttributesJimpleHover extends AbstractSootAttributesHover {//im
 				System.out.println(e.getMessage());
 			}
 		}
-		/*try {
-			IMarker [] markers = getRec().findMarkers("ca.mcgill.sable.soot.sootattributemarker", false, IResource.DEPTH_INFINITE);
-			//System.out.println(markers.length+" sootattributemarkers were created");
-			//markers = getRec().findMarkers("org.eclipse.core.resources.marker", true, IResource.DEPTH_INFINITE);
-			//System.out.println(markers.length+" markers were created");
-			
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		
 		
 
 	}

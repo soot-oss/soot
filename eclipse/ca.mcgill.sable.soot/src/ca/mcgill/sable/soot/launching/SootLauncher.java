@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 
 //import soot.*;
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
-import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
+//import ca.mcgill.sable.soot.attributes.SootAttributeFilesReader;
+//import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
 //import ca.mcgill.sable.soot.util.*;
 import org.eclipse.swt.widgets.*;
 
@@ -68,17 +68,6 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		setSootCommandList(new SootCommandList());
 	}
 	
-	/*public void resetSootOutputFolder() {
-		try {
-			setSootOutputFolder(getSootSelection().getProject().getFolder("sootOutput"));
-			if (!getSootOutputFolder().exists()) {
-				getSootOutputFolder().create(false, true, null);
-			}
-		}
-		catch (Exception e1) {
-			System.out.println(e1.getMessage());
-		}	
-	}*/
 	
 	protected void runSootDirectly() {
 		
@@ -101,12 +90,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
         	newProcessStarting();
             op = new SootRunner(temp, Display.getCurrent());
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
-            //if (window == null) {
-            //	window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-            //}
-            //new  ProgressMonitorDialog(window.getShell()).run(true, true, op);
- 			//ProgressIndicator pIndicator = new ProgressIndicator(pMonitorDialog.getShell());
- 			//pIndicator.beginAnimatedTask();
+            
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
@@ -132,8 +116,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
             }
             new  ProgressMonitorDialog(window.getShell()).run(true, true, op);
  			
- 			//ProgressIndicator pIndicator = new ProgressIndicator(pMonitorDialog.getShell());
- 			//pIndicator.beginAnimatedTask();
+ 			
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
@@ -145,12 +128,6 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		}
  
    
-        SootAttributesHandler temp = new SootAttributesHandler();
-		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
-		SootAttributeFilesReader safr = new SootAttributeFilesReader();
-		safr.readFiles(getSootSelection().getProject().getName());
-      
-		
         
 	}
 	private void newProcessStarting() {
@@ -195,11 +172,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
 		//getDavaHandler().handleAfter();
 		//getFileHandler().handleFilesChanged();
-		/*SootAttributesHandler temp = new SootAttributesHandler();
-		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
-		SootAttributeFilesReader safr = new SootAttributeFilesReader();
-		safr.readFiles(getSootSelection().getProject().getName());
-      */
+		
 	}
 	
 
@@ -258,21 +231,7 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		this.sootSelection = sootSelection;
 	}
 
-	/**
-	 * Returns the sootOutputFolder.
-	 * @return IFolder
-	 */
-	/*public IFolder getSootOutputFolder() {
-		return sootOutputFolder;
-	}
-
-	/**
-	 * Sets the sootOutputFolder.
-	 * @param sootOutputFolder The sootOutputFolder to set
-	 */
-	/*public void setSootOutputFolder(IFolder sootOutputFolder) {
-		this.sootOutputFolder = sootOutputFolder;
-	}
+	
 
 	/**
 	 * Returns the window.

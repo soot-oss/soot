@@ -31,9 +31,7 @@ public class SootAttributesHandler {
 	private static final String NEWLINE = "\r\n";
 	
 	public SootAttributesHandler() {
-		//setFileList(new HashMap());
-		//setProjList(new HashMap());
-		//setAttrList(new Vector());		
+				
 	}
 	
 	public void setAttrList(Vector attrList) {
@@ -60,24 +58,8 @@ public class SootAttributesHandler {
 		HashMap temp = new HashMap();
 		temp.put(filename, attrList);
 		
-		//Object temp = getProjList().get(project);		
-		//if (temp == null) {
-		//	System.out.println("temp was null");
-			//getProjList().put(project, new HashMap());
-			//if (((HashMap)getProjList().get(project)).get(filename) == null) {
-		//		System.out.println("filename was null");
-				getProjList().put(project, temp);
-		//		System.out.println(getProjList().get(project));
-		//	}
-		//	else {
-		//		System.out.println("filename was not null");
-		//		((HashMap)((HashMap)getProjList().get(project)).get(filename)).put(filename, attrList);
-		//	}
-		//}
+		getProjList().put(project, temp);
 		
-		//getProjList().put(project, ((HashMap)projList().get(filename)).put()	
-		//getFileList().put(filename, attrList);
-	//	System.out.println("AttributeHandler "+filename+attrList.toString());
 	}
 
 	public void printAttrs() {
@@ -205,28 +187,7 @@ public class SootAttributesHandler {
 		}
 	}
 
-	/*public boolean attrExistsForFile(String filename) {
-		System.out.println(filename);
-		if (getFileList().get(filename) == null) return false;
-		else return true;
-	}
 	
-	
-	/**
-	 * Returns the fileList.
-	 * @return HashMap
-	 */
-	/*public HashMap getFileList() {
-		return fileList;
-	}
-
-	/**
-	 * Sets the fileList.
-	 * @param fileList The fileList to set
-	 */
-/*	public void setFileList(HashMap fileList) {
-		this.fileList = fileList;
-	}
 
 	/**
 	 * Returns the projList.

@@ -120,8 +120,10 @@ public class SootOptionsFileLauncher extends SootFileLauncher {
 			cmd.append(getExtraCmd()+" ");
 		}*/
 		getSootCommandList().addSingleOpt(user_cmd);
-		getSootCommandList().addSingleOpt(getToProcess());
-		
+		ArrayList commands = new ArrayList();
+		commands.add(getToProcess());
+		//getSootCommandList().addSingleOpt(getToProcess());
+		getSootCommandList().addSingleOpt(commands);
 	  	//return cmd.toString();
 	  	
 		

@@ -14,9 +14,22 @@ import org.eclipse.core.runtime.CoreException;
 /**
  * @author jlhotak
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
 public class SootResourceManager implements IResourceChangeListener {
 
 	private static final String JAVA_FILE_EXT = "java";
@@ -27,9 +40,7 @@ public class SootResourceManager implements IResourceChangeListener {
 	private HashMap projects;
 	
 	public SootResourceManager() {
-		//System.out.println("soot resource manager created");
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		//System.out.println("added resource change listener");
 	}
 	
 	public void initialize() {
@@ -101,6 +112,7 @@ public class SootResourceManager implements IResourceChangeListener {
 		if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 			(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 			HashMap files = (HashMap)getProjects().get(file.getProject());
+			if (files == null) return;
 			if (files.get(file) == null) return;
 			((BitSet)files.get(file)).set(REMOVE_BIT);
 			}
@@ -112,6 +124,8 @@ public class SootResourceManager implements IResourceChangeListener {
 		HashMap files = (HashMap)getProjects().get(file.getProject());
 		//System.out.println(file.getFullPath().toOSString());
 		//System.out.println("files: "+files);
+		if (files == null) return false;
+		if (files.get(file) == null) return false;
 		return ((BitSet)files.get(file)).get(UPDATE_BIT);
 	}
 	
@@ -119,6 +133,8 @@ public class SootResourceManager implements IResourceChangeListener {
 		HashMap files = (HashMap)getProjects().get(file.getProject());
 		//System.out.println(file.getFullPath().toOSString());
 		//System.out.println("files: "+files);
+		if (files == null) return;
+		if (files.get(file) == null) return;
 		((BitSet)files.get(file)).clear(UPDATE_BIT);	
 	}
 	
@@ -126,6 +142,8 @@ public class SootResourceManager implements IResourceChangeListener {
 		HashMap files = (HashMap)getProjects().get(file.getProject());
 		//System.out.println(file.getFullPath().toOSString());
 		//System.out.println("files: "+files);
+		if (files == null) return;
+		if (files.get(file) == null) return;
 		((BitSet)files.get(file)).clear(REMOVE_BIT);
 	}
 	
@@ -134,6 +152,8 @@ public class SootResourceManager implements IResourceChangeListener {
 		HashMap files = (HashMap)getProjects().get(file.getProject());
 		//System.out.println(file.getFullPath().toOSString());
 		//System.out.println("files: "+files);
+		if (files == null) return false;
+		if (files.get(file) == null) return false;
 		return ((BitSet)files.get(file)).get(REMOVE_BIT);
 	}
 	
@@ -173,51 +193,11 @@ public class SootResourceManager implements IResourceChangeListener {
 				}
 				break;
 			}
-			/*case IResourceChangeEvent.PRE_AUTO_BUILD:{
-				System.out.println("pre auto build event");
-				break;
-			}
-			case IResourceChangeEvent.PRE_CLOSE:{
-				System.out.println("pre close event");
-				break;
-			}
-			case IResourceChangeEvent.PRE_DELETE:{
-				System.out.println("pre delete build event");
-				break;
-			}*/
-			/*default: {
-				System.out.println("other event");
-				break;
-			}*/
 		}
-		/*IResource res = event.getResource();
-		System.out.println("Resource change event: "+res.getFullPath().toOSString());
-		if (isImportant(res)) {
-			switch(event.getType()){
-				case IResourceChangeEvent.POST_CHANGE: {
-					try {
-						event.getDelta().accept(new SootDeltaVisitor());
-					}
-					catch (CoreException e){ 
-					}
-					break;
-				}
-			}
-		}*/
 
 	}
 	
-	/*private boolean isImportant(IResource res) {
-		if (res instanceof IFile){
-			if ((res.getFileExtension().equals(JAVA_FILE_EXT)) ||
-				(res.getFileExtension().equals(JIMPLE_FILE_EXT))) {
-				return true;		
-				}
-			return false;
-		}
-		return false;
-	
-	}*/
+
 	/**
 	 * @return
 	 */
