@@ -50,7 +50,9 @@ public class TypeAssigner extends BodyTransformer
 	throw new NullPointerException();
       }
 
+    //System.out.println("typing started");
     TypeResolver.resolve((JimpleBody)b, Scene.v());
+    //System.out.println("typing done");
   }
 }
 

@@ -175,6 +175,7 @@ public class TypeResolver
       {
 	if(DEBUG)
 	  {
+	    e1.printStackTrace();
 	    System.out.println("Step 1 Exception-->" + e1.getMessage());
 	  }
 	
@@ -1060,6 +1061,7 @@ public class TypeResolver
 			    // System.out.println(pair.getValueBox().getValue() + ": [" + assign1 + "] <--> [" + pair.getUnit() + "]");
 			    pair.getValueBox().setValue(assign1.getRightOp());
 			    units.remove(assign1);
+			    stmtBody.getLocals().remove(assign1.getLeftOp());
 			    modified++;
 			    // System.out.println(" --> [" + pair.getUnit() + "]");
 			  }
@@ -1069,7 +1071,7 @@ public class TypeResolver
 	  }
       }
 
-    System.out.println("remove spurious locals done: " + modified);
+    //System.out.println("remove spurious locals done: " + modified);
   }
 
   private void split_new()
@@ -1114,7 +1116,7 @@ public class TypeResolver
 			    else if(assign.getRightOp() instanceof NewExpr)
 			      {			
 				// We split the local.
-				
+				//System.out.println("split: [" + assign + "] and [" + stmt + "]");
 				Local newlocal = Jimple.v().newLocal("tmp", null);
 				stmtBody.getLocals().add(newlocal);
 				
