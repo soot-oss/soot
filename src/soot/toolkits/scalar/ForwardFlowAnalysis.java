@@ -125,7 +125,9 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                         {
                             Object otherBranchFlow = unitToAfterFlow.get(predIt.
 next());
-                            merge(beforeFlow, otherBranchFlow, beforeFlow);
+                            Object newBeforeFlow = newInitialFlow();
+                            merge(beforeFlow, otherBranchFlow, newBeforeFlow);
+                            copy(newBeforeFlow, beforeFlow);
                         }
                     }
                 }

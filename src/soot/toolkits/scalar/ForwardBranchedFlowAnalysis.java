@@ -228,7 +228,9 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                         while(predIt.hasNext())
                         {
                             Object otherBranchFlow = predIt.next();
-                            merge(beforeFlow, otherBranchFlow, beforeFlow);
+                            Object newBeforeFlow = newInitialFlow();
+                            merge(beforeFlow, otherBranchFlow, newBeforeFlow);
+                            copy(newBeforeFlow, beforeFlow);
                         }
                     }
                 }
