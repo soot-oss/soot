@@ -1335,6 +1335,18 @@ public class AntTask extends MatchingTask {
             addArg("on-fly-cg:"+(arg?"true":"false"));
           }
       
+          public void setcontext_heap(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("context-heap:"+(arg?"true":"false"));
+          }
+      
+          public void setprecise_newinstance(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("precise-newinstance:"+(arg?"true":"false"));
+          }
+      
           public void setsimplify_offline(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");

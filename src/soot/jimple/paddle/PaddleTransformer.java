@@ -76,6 +76,11 @@ public class PaddleTransformer extends SceneTransformer
     }
 
     public void solve(PaddleOptions opts) {
+        Iterator rcoutIt = null;
+        if( opts.add_tags() ) {
+            rcoutIt = PaddleScene.v().rcout.reader("tags").iterator();
+        }
+
         if( opts.pre_jimplify() ) preJimplify();
 
         Date startSolve = new Date();
@@ -223,12 +228,20 @@ public class PaddleTransformer extends SceneTransformer
         Scene.v().setPointsToAnalysis( pag );
         */
         if( opts.add_tags() ) {
-            addTags();
+            addTags(rcoutIt);
         }
 
         //BDDCflow bddcflow = new BDDCflow( PaddleScene.v().cg );
         //bddcflow.addEntryPoints( Scene.v().getEntryPoints() );
         //bddcflow.update();
+    }
+    private void addContext( Host h, Context c, Map contextToTag ) {
+        Tag t = (Tag) contextToTag.get(c);
+        if( t == null ) {
+            t = new StringTag( c == null ? "null context" : "context "+c.toString() );
+            contextToTag.put(c, t);
+        }
+        h.addTag( t );
     }
     private void addTag( Host h, Node n, Map nodeToTag ) {
         Tag t = (Tag) nodeToTag.get(n);
@@ -238,15 +251,15 @@ public class PaddleTransformer extends SceneTransformer
         }
         h.addTag( t );
     }
-    private void addTags() {
+    private void addTags(Iterator rcoutIt) {
         final NodeManager nm = PaddleScene.v().nodeManager();
         final AbsPAG pag = PaddleScene.v().pag;
 
         final Map nodeToTag = new HashMap();
+        final Map contextToTag = new HashMap();
 
-        Iterator mIt = Scene.v().getReachableMethods().listener();
-        while( mIt.hasNext() ) {
-            MethodOrMethodContext momc = (MethodOrMethodContext) mIt.next();
+        while( rcoutIt.hasNext() ) {
+            final Rctxt_method.Tuple momc = (Rctxt_method.Tuple) rcoutIt.next();
             SootMethod m = momc.method();
             if( !m.isConcrete() ) continue;
             if( !m.hasActiveBody() ) continue;
@@ -261,24 +274,42 @@ public class PaddleTransformer extends SceneTransformer
                         v = nm.findGlobalVarNode( ((FieldRef) lhs).getField() );
                     }
                     if( v != null ) {
-                        ContextVarNode cvn = ContextVarNode.make(momc.context(), v);
+                        final boolean[] addedContext = new boolean[1];
+                        addedContext[0] = false;
+                        ContextVarNode cvn = ContextVarNode.make(momc.ctxt(), v);
                         PointsToSetReadOnly p2set = 
                             PaddleScene.v().p2sets.get(cvn);
                         p2set.forall( new P2SetVisitor() {
                         public final void visit( ContextAllocNode n ) {
+                            if( !addedContext[0] ) {
+                                addContext(s, momc.ctxt(), contextToTag);
+                                addedContext[0] = true;
+                            }
                             addTag( s, n, nodeToTag );
                         }} );
                         Iterator it;
                         it = pag.simpleInvLookup(cvn);
                         while( it.hasNext() ) {
+                            if( !addedContext[0] ) {
+                                addContext(s, momc.ctxt(), contextToTag);
+                                addedContext[0] = true;
+                            }
                             addTag( s, (Node) it.next(), nodeToTag );
                         }
                         it = pag.allocInvLookup(cvn);
                         while( it.hasNext() ) {
+                            if( !addedContext[0] ) {
+                                addContext(s, momc.ctxt(), contextToTag);
+                                addedContext[0] = true;
+                            }
                             addTag( s, (Node) it.next(), nodeToTag );
                         }
                         it = pag.loadInvLookup(cvn);
                         while( it.hasNext() ) {
+                            if( !addedContext[0] ) {
+                                addContext(s, momc.ctxt(), contextToTag);
+                                addedContext[0] = true;
+                            }
                             addTag( s, (Node) it.next(), nodeToTag );
                         }
                     }

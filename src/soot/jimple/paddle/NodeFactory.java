@@ -22,6 +22,8 @@ import soot.*;
 import soot.jimple.paddle.queue.*;
 import soot.util.*;
 import java.util.*;
+import soot.jimple.toolkits.pointer.representations.TypeConstants;
+import soot.toolkits.scalar.Pair;
 
 /** Factory for nodes not specific to a given method.
  * @author Ondrej Lhotak
@@ -57,7 +59,7 @@ public class NodeFactory {
     final public Node caseDefaultClassLoader() {
 	AllocNode a = nm.makeGlobalAllocNode( 
 		PointsToAnalysis.DEFAULT_CLASS_LOADER,
-		AnySubType.v( RefType.v( "java.lang.ClassLoader" ) ) );
+                TypeConstants.v().CLASSLOADERCLASS );
 	VarNode v = nm.makeGlobalVarNode(
 		PointsToAnalysis.DEFAULT_CLASS_LOADER_LOCAL,
 		RefType.v( "java.lang.ClassLoader" ) );
@@ -128,9 +130,17 @@ public class NodeFactory {
     }
 
     final public Node caseNewInstance( VarNode cls ) {
-        AllocNode site = nm.makeGlobalAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ) );
-	VarNode local = nm.makeGlobalVarNode( site, RefType.v( "java.lang.Object" ) );
-        addEdge( site, local );
+	VarNode local = nm.makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
+        if( PaddleScene.v().options().precise_newinstance() ) {
+            for( Iterator clIt = Scene.v().dynamicClasses().iterator(); clIt.hasNext(); ) {
+                final SootClass cl = (SootClass) clIt.next();
+                AllocNode site = nm.makeGlobalAllocNode( new Pair(cls, cl), cl.getType() );
+                addEdge( site, local );
+            }
+        } else {
+            AllocNode site = nm.makeGlobalAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ) );
+            addEdge( site, local );
+        }
         return local;
     }
     /* End of public methods. */

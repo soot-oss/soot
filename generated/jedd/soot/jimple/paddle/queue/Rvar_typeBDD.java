@@ -16,17 +16,17 @@ public final class Rvar_typeBDD extends Rvar_type {
                                           ("private <soot.jimple.paddle.bdddomains.var:soot.jimple.paddl" +
                                            "e.bdddomains.V1, soot.jimple.paddle.bdddomains.type:soot.jim" +
                                            "ple.paddle.bdddomains.T1> bdd at /home/research/ccl/olhota/s" +
-                                           "oot-trunk/src/soot/jimple/paddle/queue/Rvar_typeBDD.jedd:31," +
-                                           "12-29"));
+                                           "oot-jedd/src/soot/jimple/paddle/queue/Rvar_typeBDD.jedd:31,1" +
+                                           "2-29"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
     public Rvar_typeBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                                new PhysicalDomain[] { V1.v(), T1.v() },
-                                                ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
-                                                 "mple/paddle/queue/Rvar_typeBDD.jedd:33,76-79"),
+        add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
+                                                new PhysicalDomain[] { T1.v(), V1.v() },
+                                                ("add(bdd) at /home/research/ccl/olhota/soot-jedd/src/soot/jim" +
+                                                 "ple/paddle/queue/Rvar_typeBDD.jedd:33,76-79"),
                                                 bdd));
     }
     
@@ -50,11 +50,11 @@ public final class Rvar_typeBDD extends Rvar_type {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                                          new PhysicalDomain[] { V1.v(), T1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
+                                                          new PhysicalDomain[] { T1.v(), V1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                                           "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rvar_typeBDD." +
-                                                           "jedd:45,25-28"),
+                                                           "olhota/soot-jedd/src/soot/jimple/paddle/queue/Rvar_typeBDD.j" +
+                                                           "edd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { var.v(), type.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -73,14 +73,14 @@ public final class Rvar_typeBDD extends Rvar_type {
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.type:soot.jimple.padd" +
                                                "le.bdddomains.T1> ret = bdd; at /home/research/ccl/olhota/so" +
-                                               "ot-trunk/src/soot/jimple/paddle/queue/Rvar_typeBDD.jedd:55,2" +
-                                               "6-29"),
+                                               "ot-jedd/src/soot/jimple/paddle/queue/Rvar_typeBDD.jedd:55,26" +
+                                               "-29"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                                   new PhysicalDomain[] { V1.v(), T1.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/queue/Rvar_typeBDD.jedd:57,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
+                                                   new PhysicalDomain[] { T1.v(), V1.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-jedd/src/soot/" +
+                                                    "jimple/paddle/queue/Rvar_typeBDD.jedd:57,8-14"),
                                                    ret);
     }
     

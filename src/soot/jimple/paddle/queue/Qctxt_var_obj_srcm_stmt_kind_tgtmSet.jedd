@@ -38,7 +38,7 @@ public final class Qctxt_var_obj_srcm_stmt_kind_tgtmSet extends Qctxt_var_obj_sr
             reader.add( in );
         }
     }
-    public void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
+    public void add( <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
         throw new RuntimeException();
     }
     public Rctxt_var_obj_srcm_stmt_kind_tgtm reader( String rname ) {

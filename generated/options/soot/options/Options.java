@@ -1429,8 +1429,8 @@ public class Options extends OptionsBase {
                 "\nThe Call Graph Constructor computes a call graph for whole \nprogram analysis. When this pack finishes, a call graph is \navailable in the Scene. The different phases in this pack are \ndifferent ways to construct the call graph. Exactly one phase in \nthis pack must be enabled; Soot will raise an error otherwise. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "safe-forname (true)", "Handle Class.forName() calls conservatively" )
-                +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
+                +padOpt( "safe-forname (false)", "Handle Class.forName() calls conservatively" )
+                +padOpt( "safe-newinstance (false)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
                 +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
@@ -1568,6 +1568,8 @@ public class Options extends OptionsBase {
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
+                +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
+                +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
                 +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
                 +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
@@ -2270,6 +2272,8 @@ public class Options extends OptionsBase {
                 +"simulate-natives "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
+                +"context-heap "
+                +"precise-newinstance "
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
@@ -2709,8 +2713,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) )
             return ""
               +"enabled:true "
-              +"safe-forname:true "
-              +"safe-newinstance:true "
+              +"safe-forname:false "
+              +"safe-newinstance:false "
               +"verbose:false "
               +"all-reachable:false "
               +"trim-clinit:true "
@@ -2778,6 +2782,8 @@ public class Options extends OptionsBase {
               +"simulate-natives:true "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
+              +"context-heap:false "
+              +"precise-newinstance:true "
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "

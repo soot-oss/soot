@@ -24,11 +24,11 @@ public class Qvar_srcm_stmt_signature_kindDebug extends Qvar_srcm_stmt_signature
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { signature.v(), srcm.v(), var.v(), kind.v(), stmt.v() },
-                                              new PhysicalDomain[] { SG.v(), MS.v(), V1.v(), KD.v(), ST.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), signature.v(), srcm.v(), kind.v(), stmt.v() },
+                                              new PhysicalDomain[] { V1.v(), SG.v(), MS.v(), KD.v(), ST.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qvar_srcm_stmt" +
-                                               "_signature_kindDebug.jedd:40,22-24"),
+                                               "lhota/soot-jedd/src/soot/jimple/paddle/queue/Qvar_srcm_stmt_" +
+                                               "signature_kindDebug.jedd:40,22-24"),
                                               in).iterator(new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

@@ -1351,7 +1351,7 @@ this pack must be enabled; Soot will raise an error otherwise.
                                 <boolopt>
                                         <name>Safe forName</name>
                                         <alias>safe-forname</alias>
-                                        <default>true</default>
+                                        <default>false</default>
                                         <short_desc>Handle Class.forName() calls conservatively</short_desc>
                                         <long_desc>When a program calls
 Class.forName(), the named class is resolved, and its static initializer
@@ -1367,7 +1367,7 @@ static initializers.
                                 <boolopt>
                                         <name>Safe newInstance</name>
                                         <alias>safe-newinstance</alias>
-                                        <default>true</default>
+                                        <default>false</default>
                                         <short_desc>Handle Class.newInstance() calls conservatively</short_desc>
                                         <long_desc>When a program calls
 Class.newInstance(), a new object is created and its constructor
@@ -2319,6 +2319,30 @@ When this option is set to true, the call graph is computed on-the-fly
 as points-to information is computed. Otherwise, an initial
 CHA approximation to the call graph is used.
         </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Context-sensitive Heap Locations</name>
+							<alias>context-heap</alias>
+							<default>false</default>
+                                                        <short_desc>Treat allocation sites context-sensitively</short_desc>
+							<long_desc>
+When this option is set to true, the context-sensitivity level that is set
+for the context-sensitive call graph and for pointer variables is also used
+to model heap locations context-sensitively. When this option is false,
+heap locations are modelled context-insensitively regardless of the
+context-sensitivity level.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Precise newInstance</name>
+							<alias>precise-newinstance</alias>
+							<default>true</default>
+                                                        <short_desc>Make newInstance only allocate objects of dynamic classes</short_desc>
+                                                            <long_desc>
+    Normally, newInstance() calls are treated as if they may return an object
+    of any type. Setting this option to true causes them to be treated as if
+    they return only objects of the type of some dynamic class.
+            </long_desc>
 						</boolopt>
 					</section>
 					<section>

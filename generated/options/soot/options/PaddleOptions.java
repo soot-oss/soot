@@ -275,6 +275,34 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
     }
     
+    /** Context-sensitive Heap Locations --
+    
+     * Treat allocation sites context-sensitively.
+    
+     * When this option is set to true, the context-sensitivity level 
+     * that is set for the context-sensitive call graph and for pointer 
+     * variables is also used to model heap locations 
+     * context-sensitively. When this option is false, heap locations 
+     * are modelled context-insensitively regardless of the 
+     * context-sensitivity level. 
+     */
+    public boolean context_heap() {
+        return soot.PhaseOptions.getBoolean( options, "context-heap" );
+    }
+    
+    /** Precise newInstance --
+    
+     * Make newInstance only allocate objects of dynamic classes.
+    
+     * Normally, newInstance() calls are treated as if they may 
+     * return an object of any type. Setting this option to true 
+     * causes them to be treated as if they return only objects of 
+     * the type of some dynamic class. 
+     */
+    public boolean precise_newinstance() {
+        return soot.PhaseOptions.getBoolean( options, "precise-newinstance" );
+    }
+    
     /** Simplify Offline --
     
      * Collapse single-entry subgraphs of the PAG.

@@ -19,8 +19,8 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
                                                 new PhysicalDomain[] { H1.v(), MS.v(), T1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle" +
-                                                 "/queue/Qobj_method_typeBDD.jedd:34,8-11"),
+                                                 " /home/research/ccl/olhota/soot-jedd/src/soot/jimple/paddle/" +
+                                                 "queue/Qobj_method_typeBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _obj, _method, _type },
                                                                                new Attribute[] { obj.v(), method.v(), type.v() },
                                                                                new PhysicalDomain[] { H1.v(), MS.v(), T1.v() })));
@@ -33,8 +33,8 @@ public final class Qobj_method_typeBDD extends Qobj_method_type {
             Robj_method_typeBDD reader = (Robj_method_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
                                                            new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qobj_method_typeBDD.jedd:40,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-jedd/src/so" +
+                                                            "ot/jimple/paddle/queue/Qobj_method_typeBDD.jedd:40,12-18"),
                                                            in));
         }
     }

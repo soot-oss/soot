@@ -20,19 +20,19 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
                                            "mains.kind:soot.jimple.paddle.bdddomains.KD, soot.jimple.pad" +
                                            "dle.bdddomains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.j" +
                                            "imple.paddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.M" +
-                                           "T> bdd at /home/research/ccl/olhota/soot-trunk/src/soot/jimp" +
-                                           "le/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:31,12" +
-                                           "-66"));
+                                           "T> bdd at /home/research/ccl/olhota/soot-jedd/src/soot/jimpl" +
+                                           "e/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:31,12-" +
+                                           "66"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
     public Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
-                                                ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
-                                                 "mple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:33," +
-                                                 "134-137"),
+        add(new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                new PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
+                                                ("add(bdd) at /home/research/ccl/olhota/soot-jedd/src/soot/jim" +
+                                                 "ple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:33,1" +
+                                                 "34-137"),
                                                 bdd));
     }
     
@@ -56,11 +56,11 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                          new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                          new PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                                           "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rsrcc_srcm_st" +
-                                                           "mt_kind_tgtc_tgtmBDD.jedd:45,25-28"),
+                                                           "olhota/soot-jedd/src/soot/jimple/paddle/queue/Rsrcc_srcm_stm" +
+                                                           "t_kind_tgtc_tgtmBDD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -88,16 +88,16 @@ public final class Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD extends Rsrcc_srcm_stmt_kin
                                                "nd:soot.jimple.paddle.bdddomains.KD, soot.jimple.paddle.bddd" +
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.C2, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.MT> ret =" +
-                                               " bdd; at /home/research/ccl/olhota/soot-trunk/src/soot/jimpl" +
-                                               "e/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:55,63-" +
-                                               "66"),
+                                               " bdd; at /home/research/ccl/olhota/soot-jedd/src/soot/jimple" +
+                                               "/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:55,63-6" +
+                                               "6"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                   new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:" +
-                                                    "57,8-14"),
+        return new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                   new PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
+                                                   ("return ret; at /home/research/ccl/olhota/soot-jedd/src/soot/" +
+                                                    "jimple/paddle/queue/Rsrcc_srcm_stmt_kind_tgtc_tgtmBDD.jedd:5" +
+                                                    "7,8-14"),
                                                    ret);
     }
     

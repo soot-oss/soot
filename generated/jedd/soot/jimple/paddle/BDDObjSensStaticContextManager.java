@@ -22,17 +22,17 @@ public class BDDObjSensStaticContextManager extends AbsStaticContextManager {
                                                "t = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().proje" +
                                                "ct(in.get(), new jedd.PhysicalDomain[...]), new jedd.Physica" +
                                                "lDomain[...], new jedd.PhysicalDomain[...]); at /home/resear" +
-                                               "ch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDObjSensSt" +
-                                               "aticContextManager.jedd:35,45-51"),
+                                               "ch/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDObjSensSta" +
+                                               "ticContextManager.jedd:35,45-51"),
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(in.get(),
                                                                                                          new jedd.PhysicalDomain[] { C2.v() }),
                                                                           new jedd.PhysicalDomain[] { C1.v() },
                                                                           new jedd.PhysicalDomain[] { C2.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
-                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
-                                                     "soot/jimple/paddle/BDDObjSensStaticContextManager.jedd:37,8-" +
-                                                     "11"),
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                    new jedd.PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
+                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-jedd/src/s" +
+                                                     "oot/jimple/paddle/BDDObjSensStaticContextManager.jedd:37,8-1" +
+                                                     "1"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

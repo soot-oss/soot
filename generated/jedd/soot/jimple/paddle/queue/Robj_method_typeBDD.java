@@ -17,8 +17,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
                                            "e.bdddomains.H1, soot.jimple.paddle.bdddomains.method:soot.j" +
                                            "imple.paddle.bdddomains.MS, soot.jimple.paddle.bdddomains.ty" +
                                            "pe:soot.jimple.paddle.bdddomains.T1> bdd at /home/research/c" +
-                                           "cl/olhota/soot-trunk/src/soot/jimple/paddle/queue/Robj_metho" +
-                                           "d_typeBDD.jedd:31,12-40"));
+                                           "cl/olhota/soot-jedd/src/soot/jimple/paddle/queue/Robj_method" +
+                                           "_typeBDD.jedd:31,12-40"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
@@ -26,8 +26,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
         this(name);
         add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
                                                 new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
-                                                ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
-                                                 "mple/paddle/queue/Robj_method_typeBDD.jedd:33,94-97"),
+                                                ("add(bdd) at /home/research/ccl/olhota/soot-jedd/src/soot/jim" +
+                                                 "ple/paddle/queue/Robj_method_typeBDD.jedd:33,94-97"),
                                                 bdd));
     }
     
@@ -54,8 +54,8 @@ public final class Robj_method_typeBDD extends Robj_method_type {
                       new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
                                                           new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                                           "olhota/soot-trunk/src/soot/jimple/paddle/queue/Robj_method_t" +
-                                                           "ypeBDD.jedd:45,25-28"),
+                                                           "olhota/soot-jedd/src/soot/jimple/paddle/queue/Robj_method_ty" +
+                                                           "peBDD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { obj.v(), method.v(), type.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -75,14 +75,14 @@ public final class Robj_method_typeBDD extends Robj_method_type {
                                                "ains.H1, soot.jimple.paddle.bdddomains.method:soot.jimple.pa" +
                                                "ddle.bdddomains.MS, soot.jimple.paddle.bdddomains.type:soot." +
                                                "jimple.paddle.bdddomains.T1> ret = bdd; at /home/research/cc" +
-                                               "l/olhota/soot-trunk/src/soot/jimple/paddle/queue/Robj_method" +
-                                               "_typeBDD.jedd:55,37-40"),
+                                               "l/olhota/soot-jedd/src/soot/jimple/paddle/queue/Robj_method_" +
+                                               "typeBDD.jedd:55,37-40"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
                                                    new PhysicalDomain[] { MS.v(), T1.v(), H1.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/queue/Robj_method_typeBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/soot-jedd/src/soot/" +
+                                                    "jimple/paddle/queue/Robj_method_typeBDD.jedd:57,8-14"),
                                                    ret);
     }
     

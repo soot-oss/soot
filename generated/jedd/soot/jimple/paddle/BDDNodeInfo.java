@@ -40,8 +40,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                           new jedd.PhysicalDomain[] { V1.v(), MS.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                            "le.bdddomains.method> localMap = jedd.internal.Jedd.v().fals" +
-                                           "eBDD() at /home/research/ccl/olhota/soot-trunk/src/soot/jimp" +
-                                           "le/paddle/BDDNodeInfo.jedd:53,12-25"),
+                                           "eBDD() at /home/research/ccl/olhota/soot-jedd/src/soot/jimpl" +
+                                           "e/paddle/BDDNodeInfo.jedd:53,12-25"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer globalSet =
@@ -49,7 +49,7 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                           new jedd.PhysicalDomain[] { V1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var> globalSet = jedd" +
                                            ".internal.Jedd.v().falseBDD() at /home/research/ccl/olhota/s" +
-                                           "oot-trunk/src/soot/jimple/paddle/BDDNodeInfo.jedd:54,12-17"),
+                                           "oot-jedd/src/soot/jimple/paddle/BDDNodeInfo.jedd:54,12-17"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer localallocMap =
@@ -57,8 +57,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                           new jedd.PhysicalDomain[] { H1.v(), MS.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj, soot.jimple.padd" +
                                            "le.bdddomains.method> localallocMap = jedd.internal.Jedd.v()" +
-                                           ".falseBDD() at /home/research/ccl/olhota/soot-trunk/src/soot" +
-                                           "/jimple/paddle/BDDNodeInfo.jedd:55,12-25"),
+                                           ".falseBDD() at /home/research/ccl/olhota/soot-jedd/src/soot/" +
+                                           "jimple/paddle/BDDNodeInfo.jedd:55,12-25"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer globalallocSet =
@@ -66,8 +66,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                           new jedd.PhysicalDomain[] { H1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj> globalallocSet =" +
                                            " jedd.internal.Jedd.v().falseBDD() at /home/research/ccl/olh" +
-                                           "ota/soot-trunk/src/soot/jimple/paddle/BDDNodeInfo.jedd:56,12" +
-                                           "-17"),
+                                           "ota/soot-jedd/src/soot/jimple/paddle/BDDNodeInfo.jedd:56,12-" +
+                                           "17"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     public jedd.internal.RelationContainer localMap() {
@@ -75,8 +75,8 @@ public class BDDNodeInfo extends AbsNodeInfo {
                                                    new jedd.PhysicalDomain[] { MS.v(), V2.v() },
                                                    ("return jedd.internal.Jedd.v().replace(localMap, new jedd.Phy" +
                                                     "sicalDomain[...], new jedd.PhysicalDomain[...]); at /home/re" +
-                                                    "search/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDNodeI" +
-                                                    "nfo.jedd:58,38-44"),
+                                                    "search/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDNodeIn" +
+                                                    "fo.jedd:58,38-44"),
                                                    jedd.internal.Jedd.v().replace(localMap,
                                                                                   new jedd.PhysicalDomain[] { V1.v() },
                                                                                   new jedd.PhysicalDomain[] { V2.v() }));
@@ -85,24 +85,24 @@ public class BDDNodeInfo extends AbsNodeInfo {
     public jedd.internal.RelationContainer globalSet() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
                                                    new jedd.PhysicalDomain[] { V1.v() },
-                                                   ("return globalSet; at /home/research/ccl/olhota/soot-trunk/sr" +
-                                                    "c/soot/jimple/paddle/BDDNodeInfo.jedd:59,31-37"),
+                                                   ("return globalSet; at /home/research/ccl/olhota/soot-jedd/src" +
+                                                    "/soot/jimple/paddle/BDDNodeInfo.jedd:59,31-37"),
                                                    globalSet);
     }
     
     public jedd.internal.RelationContainer localallocMap() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), obj.v() },
                                                    new jedd.PhysicalDomain[] { MS.v(), H1.v() },
-                                                   ("return localallocMap; at /home/research/ccl/olhota/soot-trun" +
-                                                    "k/src/soot/jimple/paddle/BDDNodeInfo.jedd:60,43-49"),
+                                                   ("return localallocMap; at /home/research/ccl/olhota/soot-jedd" +
+                                                    "/src/soot/jimple/paddle/BDDNodeInfo.jedd:60,43-49"),
                                                    localallocMap);
     }
     
     public jedd.internal.RelationContainer globalallocSet() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v() },
                                                    new jedd.PhysicalDomain[] { H1.v() },
-                                                   ("return globalallocSet; at /home/research/ccl/olhota/soot-tru" +
-                                                    "nk/src/soot/jimple/paddle/BDDNodeInfo.jedd:61,36-42"),
+                                                   ("return globalallocSet; at /home/research/ccl/olhota/soot-jed" +
+                                                    "d/src/soot/jimple/paddle/BDDNodeInfo.jedd:61,36-42"),
                                                    globalallocSet);
     }
 }

@@ -38,26 +38,25 @@ public class BDDKCFAStaticContextManager extends AbsStaticContextManager {
                                                "ges = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().pro" +
                                                "ject(in.get(), new jedd.PhysicalDomain[...]), new jedd.Physi" +
                                                "calDomain[...], new jedd.PhysicalDomain[...]); at /home/rese" +
-                                               "arch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDKCFASta" +
-                                               "ticContextManager.jedd:48,51-59"),
+                                               "arch/ccl/olhota/soot-jedd/src/soot/jimple/paddle/BDDKCFAStat" +
+                                               "icContextManager.jedd:48,51-59"),
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(in.get(),
                                                                                                          new PhysicalDomain[] { C2.v() }),
                                                                           new PhysicalDomain[] { ST.v() },
                                                                           new PhysicalDomain[] { C2.v() }));
         newEdges.eq(jedd.internal.Jedd.v().cast((jedd.internal.RelationContainer)
-                                                  new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                                                      new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
+                                                  new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                                                      new PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
                                                                                       ("newEdges.applyShifter(shifter) at /home/research/ccl/olhota/" +
-                                                                                       "soot-trunk/src/soot/jimple/paddle/BDDKCFAStaticContextManage" +
-                                                                                       "r.jedd:51,12-20"),
+                                                                                       "soot-jedd/src/soot/jimple/paddle/BDDKCFAStaticContextManager" +
+                                                                                       ".jedd:51,12-20"),
                                                                                       newEdges).applyShifter(shifter),
                                                 new Attribute[] { srcc.v(), srcm.v(), stmt.v(), kind.v(), tgtc.v(), tgtm.v() },
                                                 new PhysicalDomain[] { C1.v(), MS.v(), ST.v(), KD.v(), C2.v(), MT.v() }));
-        out.add(new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), srcc.v(), kind.v(), stmt.v(), tgtc.v() },
-                                                    new PhysicalDomain[] { MT.v(), MS.v(), C1.v(), KD.v(), ST.v(), C2.v() },
-                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk/sr" +
-                                                     "c/soot/jimple/paddle/BDDKCFAStaticContextManager.jedd:52,8-1" +
-                                                     "1"),
+        out.add(new jedd.internal.RelationContainer(new Attribute[] { tgtc.v(), tgtm.v(), srcc.v(), srcm.v(), kind.v(), stmt.v() },
+                                                    new PhysicalDomain[] { C2.v(), MT.v(), C1.v(), MS.v(), KD.v(), ST.v() },
+                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-jedd/src" +
+                                                     "/soot/jimple/paddle/BDDKCFAStaticContextManager.jedd:52,8-11"),
                                                     newEdges));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newEdges), jedd.internal.Jedd.v().falseBDD());
     }

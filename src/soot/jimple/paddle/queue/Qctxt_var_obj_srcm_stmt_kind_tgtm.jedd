@@ -32,7 +32,7 @@ public abstract class Qctxt_var_obj_srcm_stmt_kind_tgtm implements soot.jimple.p
     protected String name;
     public final String toString() { return name; }
     public abstract void add( Context _ctxt, VarNode _var, AllocNode _obj, SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm );
-    public abstract void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in );
+    public abstract void add( <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in );
     public abstract Rctxt_var_obj_srcm_stmt_kind_tgtm reader( String rname );
     public Rctxt_var_obj_srcm_stmt_kind_tgtm revreader( String rname ) { return reader( rname ); }
     public void add( Rctxt_var_obj_srcm_stmt_kind_tgtm.Tuple in ) {

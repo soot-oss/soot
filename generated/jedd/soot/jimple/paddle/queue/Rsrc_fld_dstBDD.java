@@ -17,8 +17,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
                                            "e.bdddomains.V1, soot.jimple.paddle.bdddomains.fld:soot.jimp" +
                                            "le.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:s" +
                                            "oot.jimple.paddle.bdddomains.V2> bdd at /home/research/ccl/o" +
-                                           "lhota/soot-trunk/src/soot/jimple/paddle/queue/Rsrc_fld_dstBD" +
-                                           "D.jedd:31,12-36"));
+                                           "lhota/soot-jedd/src/soot/jimple/paddle/queue/Rsrc_fld_dstBDD" +
+                                           ".jedd:31,12-36"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
@@ -26,8 +26,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
         this(name);
         add(new jedd.internal.RelationContainer(new Attribute[] { fld.v(), src.v(), dst.v() },
                                                 new PhysicalDomain[] { FD.v(), V1.v(), V2.v() },
-                                                ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
-                                                 "mple/paddle/queue/Rsrc_fld_dstBDD.jedd:33,86-89"),
+                                                ("add(bdd) at /home/research/ccl/olhota/soot-jedd/src/soot/jim" +
+                                                 "ple/paddle/queue/Rsrc_fld_dstBDD.jedd:33,86-89"),
                                                 bdd));
     }
     
@@ -54,8 +54,8 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
                       new jedd.internal.RelationContainer(new Attribute[] { fld.v(), src.v(), dst.v() },
                                                           new PhysicalDomain[] { FD.v(), V1.v(), V2.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                                           "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rsrc_fld_dstB" +
-                                                           "DD.jedd:45,25-28"),
+                                                           "olhota/soot-jedd/src/soot/jimple/paddle/queue/Rsrc_fld_dstBD" +
+                                                           "D.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { src.v(), fld.v(), dst.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -75,14 +75,14 @@ public final class Rsrc_fld_dstBDD extends Rsrc_fld_dst {
                                                "ains.V1, soot.jimple.paddle.bdddomains.fld:soot.jimple.paddl" +
                                                "e.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:soot.jimp" +
                                                "le.paddle.bdddomains.V2> ret = bdd; at /home/research/ccl/ol" +
-                                               "hota/soot-trunk/src/soot/jimple/paddle/queue/Rsrc_fld_dstBDD" +
-                                               ".jedd:55,33-36"),
+                                               "hota/soot-jedd/src/soot/jimple/paddle/queue/Rsrc_fld_dstBDD." +
+                                               "jedd:55,33-36"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { fld.v(), src.v(), dst.v() },
                                                    new PhysicalDomain[] { FD.v(), V1.v(), V2.v() },
-                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
-                                                    "/jimple/paddle/queue/Rsrc_fld_dstBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/soot-jedd/src/soot/" +
+                                                    "jimple/paddle/queue/Rsrc_fld_dstBDD.jedd:57,8-14"),
                                                    ret);
     }
     

@@ -138,19 +138,26 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
 	setResult( nm.makeLocalVarNode( l,  l.getType(), method ) );
     }
     final public void caseNewArrayExpr( NewArrayExpr nae ) {
-        setResult( nm.makeGlobalAllocNode( nae, nae.getType(), method ) );
+        setResult( makeAllocNode( nae, nae.getType(), method ) );
     }
     final public void caseNewExpr( NewExpr ne ) {
         if( PaddleScene.v().options().merge_stringbuffer() 
         && ne.getType().equals( RefType.v("java.lang.StringBuffer" ) ) ) {
             setResult( nm.makeGlobalAllocNode( ne.getType(), ne.getType() ) );
         } else {
-            setResult( nm.makeGlobalAllocNode( ne, ne.getType(), method ) );
+            setResult( makeAllocNode( ne, ne.getType(), method ) );
+        }
+    }
+    private AllocNode makeAllocNode( Object ne, Type type, SootMethod method ) {
+        if( PaddleScene.v().options().context_heap() ) {
+            return nm.makeLocalAllocNode(ne, type, method);
+        } else {
+            return nm.makeGlobalAllocNode(ne, type, method);
         }
     }
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
-        AllocNode prevAn = nm.makeGlobalAllocNode(
+        AllocNode prevAn = makeAllocNode(
             new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
         VarNode prevVn = nm.makeLocalVarNode( prevAn, prevAn.getType(), method );
         gnf.addEdge( prevAn, prevVn );
@@ -159,7 +166,7 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
             Type t = type.getElementType();
             if( !( t instanceof ArrayType ) ) break;
             type = (ArrayType) t;
-            AllocNode an = nm.makeGlobalAllocNode(
+            AllocNode an = makeAllocNode(
                 new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
             VarNode vn = nm.makeLocalVarNode( an, an.getType(), method );
             gnf.addEdge( an, vn );

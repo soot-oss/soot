@@ -28,9 +28,9 @@ import jedd.*;
 import java.util.*;
 
 public final class Rctxt_var_obj_srcm_stmt_kind_tgtmBDD extends Rctxt_var_obj_srcm_stmt_kind_tgtm {
-    private <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> bdd;
-    void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> tuple ) { bdd |= tuple; }
-    public Rctxt_var_obj_srcm_stmt_kind_tgtmBDD( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> bdd, String name ) { this(name); add(bdd); }
+    private <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> bdd;
+    void add( <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> tuple ) { bdd |= tuple; }
+    public Rctxt_var_obj_srcm_stmt_kind_tgtmBDD( <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> bdd, String name ) { this(name); add(bdd); }
     Rctxt_var_obj_srcm_stmt_kind_tgtmBDD(String name) { super(name); bdd = 0B; }
     public Iterator iterator() {;
         return new Iterator() {
@@ -51,8 +51,8 @@ public final class Rctxt_var_obj_srcm_stmt_kind_tgtmBDD extends Rctxt_var_obj_sr
             public void remove() { throw new UnsupportedOperationException(); }
         };
     }
-    public <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> get() {
-        <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> ret = bdd;
+    public <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> get() {
+        <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> ret = bdd;
         bdd = 0B;
         return ret;
     }

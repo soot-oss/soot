@@ -25,8 +25,8 @@ public class Qobj_typeTrad extends Qobj_type {
           new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
                                               new PhysicalDomain[] { T1.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobj_typeTrad." +
-                                               "jedd:39,22-24"),
+                                               "lhota/soot-jedd/src/soot/jimple/paddle/queue/Qobj_typeTrad.j" +
+                                               "edd:39,22-24"),
                                               in).iterator(new Attribute[] { obj.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

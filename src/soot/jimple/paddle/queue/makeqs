@@ -14,7 +14,7 @@ $HOME/makeq Context objc C2 AllocNode obj H1 Context varc C1 VarNode var V1
 $HOME/makeq Context varc C1 VarNode var V1 Context objc C2 AllocNode obj H1
 $HOME/makeq AllocNode obj H1
 $HOME/makeq VarNode var V1
-$HOME/makeq Context ctxt C2 VarNode var V1 AllocNode obj H1 SootMethod srcm MS Unit stmt ST Kind kind KD SootMethod tgtm MT
+$HOME/makeq Context ctxt C1 VarNode var V1 AllocNode obj H1 SootMethod srcm MS Unit stmt ST Kind kind KD SootMethod tgtm MT
 $HOME/makeq VarNode var V1 SootMethod method MS Type type T1
 $HOME/makeq VarNode var V1 Type type T1
 $HOME/makeq AllocNode obj H1 SootMethod method MS Type type T1

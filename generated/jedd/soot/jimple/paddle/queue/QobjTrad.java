@@ -24,8 +24,8 @@ public class QobjTrad extends Qobj {
           new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                               new PhysicalDomain[] { H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/QobjTrad.jedd:" +
-                                               "38,22-24"),
+                                               "lhota/soot-jedd/src/soot/jimple/paddle/queue/QobjTrad.jedd:3" +
+                                               "8,22-24"),
                                               in).iterator(new Attribute[] { obj.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

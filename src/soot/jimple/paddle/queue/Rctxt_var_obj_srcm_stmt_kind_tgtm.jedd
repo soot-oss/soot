@@ -35,7 +35,7 @@ public abstract class Rctxt_var_obj_srcm_stmt_kind_tgtm implements Readers.Reade
     protected String name;
     public final String toString() { return name; }
     public abstract Iterator iterator();
-    public abstract <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> get();
+    public abstract <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> get();
     public abstract boolean hasNext();
     public static class Tuple {
         private Context _ctxt;

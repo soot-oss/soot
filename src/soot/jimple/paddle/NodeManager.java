@@ -54,6 +54,19 @@ public class NodeManager {
             nodeToTag.put( node, tag );
         }
     }
+    public AllocNode makeLocalAllocNode( Object newExpr, Type type, SootMethod m ) {
+        if( PaddleScene.v().options().types_for_sites() || PaddleScene.v().options().vta() ) return makeGlobalAllocNode( type, type, m );
+	AllocNode ret = (AllocNode) valToLocalAllocNode.get( newExpr );
+	if( ret == null ) {
+	    valToLocalAllocNode.put( newExpr, ret = new LocalAllocNode( newExpr, type, m ) );
+            localallocs.add( ret, m, type );
+            addNodeTag( ret, m );
+	} else if( !( ret.getType().equals( type ) ) ) {
+	    throw new RuntimeException( "NewExpr "+newExpr+" of type "+type+
+		    " previously had type "+ret.getType() );
+	}
+	return ret;
+    }
     public AllocNode makeGlobalAllocNode( Object newExpr, Type type ) {
         return makeGlobalAllocNode(newExpr, type, null);
     }
@@ -242,6 +255,7 @@ public class NodeManager {
 
     private Map valToLocalVarNode = new HashMap(1000);
     private Map valToGlobalVarNode = new HashMap(1000);
+    private Map valToLocalAllocNode = new HashMap(1000);
     private Map valToGlobalAllocNode = new HashMap(1000);
     private LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;

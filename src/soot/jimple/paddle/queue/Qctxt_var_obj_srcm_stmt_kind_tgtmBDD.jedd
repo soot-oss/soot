@@ -33,7 +33,7 @@ public final class Qctxt_var_obj_srcm_stmt_kind_tgtmBDD extends Qctxt_var_obj_sr
     public void add( Context _ctxt, VarNode _var, AllocNode _obj, SootMethod _srcm, Unit _stmt, Kind _kind, SootMethod _tgtm ) {
         add( new { _ctxt=>ctxt, _var=>var, _obj=>obj, _srcm=>srcm, _stmt=>stmt, _kind=>kind, _tgtm=>tgtm } );
     }
-    public void add( <ctxt:C2, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
+    public void add( <ctxt:C1, var:V1, obj:H1, srcm:MS, stmt:ST, kind:KD, tgtm:MT> in ) {
         if( in != 0B ) invalidate();
         for( Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_var_obj_srcm_stmt_kind_tgtmBDD reader = (Rctxt_var_obj_srcm_stmt_kind_tgtmBDD) it.next();

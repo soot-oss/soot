@@ -39,12 +39,12 @@ public final class Rsrcm_stmt_kind_tgtm_src_dstMerge extends Rsrcm_stmt_kind_tgt
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), src.v(), srcm.v(), dst.v(), kind.v(), stmt.v() },
-                                                   new PhysicalDomain[] { MT.v(), V1.v(), MS.v(), V2.v(), KD.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), src.v(), dst.v(), srcm.v(), kind.v(), stmt.v() },
+                                                   new PhysicalDomain[] { MT.v(), V1.v(), V2.v(), MS.v(), KD.v(), ST.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
                                                     "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
-                                                    "t-trunk/src/soot/jimple/paddle/queue/Rsrcm_stmt_kind_tgtm_sr" +
-                                                    "c_dstMerge.jedd:52,8-14"),
+                                                    "t-jedd/src/soot/jimple/paddle/queue/Rsrcm_stmt_kind_tgtm_src" +
+                                                    "_dstMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

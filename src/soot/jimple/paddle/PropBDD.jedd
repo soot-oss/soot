@@ -36,7 +36,7 @@ public class PropBDD extends AbsPropagator {
         super( simple, load, store, alloc, propout, pag );
     }
 
-    /*package*/ <varc:C1, var, objc:C2, obj> pt = 0B;
+    /*package*/ <varc, var, objc, obj> pt = 0B;
     /*package*/ <basec:C1, base, fld, objc:C2, obj> fieldPt = 0B;
 
     protected <varc, var, objc, obj> typeFilter() {

@@ -19,8 +19,8 @@ public final class Qvar_srcm_stmt_signature_kindBDD extends Qvar_srcm_stmt_signa
                                                 new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), SG.v(), KD.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle" +
-                                                 "/queue/Qvar_srcm_stmt_signature_kindBDD.jedd:34,8-11"),
+                                                 " /home/research/ccl/olhota/soot-jedd/src/soot/jimple/paddle/" +
+                                                 "queue/Qvar_srcm_stmt_signature_kindBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _var, _srcm, _stmt, _signature, _kind },
                                                                                new Attribute[] { var.v(), srcm.v(), stmt.v(), signature.v(), kind.v() },
                                                                                new PhysicalDomain[] { V1.v(), MS.v(), ST.v(), SG.v(), KD.v() })));
@@ -31,11 +31,11 @@ public final class Qvar_srcm_stmt_signature_kindBDD extends Qvar_srcm_stmt_signa
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_srcm_stmt_signature_kindBDD reader = (Rvar_srcm_stmt_signature_kindBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { signature.v(), srcm.v(), var.v(), kind.v(), stmt.v() },
-                                                           new PhysicalDomain[] { SG.v(), MS.v(), V1.v(), KD.v(), ST.v() },
-                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
-                                                            "oot/jimple/paddle/queue/Qvar_srcm_stmt_signature_kindBDD.jed" +
-                                                            "d:40,12-18"),
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), signature.v(), srcm.v(), kind.v(), stmt.v() },
+                                                           new PhysicalDomain[] { V1.v(), SG.v(), MS.v(), KD.v(), ST.v() },
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-jedd/src/so" +
+                                                            "ot/jimple/paddle/queue/Qvar_srcm_stmt_signature_kindBDD.jedd" +
+                                                            ":40,12-18"),
                                                            in));
         }
     }
