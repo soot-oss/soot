@@ -46,7 +46,7 @@ public class VariableTypeAnalysis
 
     List computeReachingTypes(List superNode)
     {
-        Chain retVal = new HashChain();
+        Chain retVal = new ArrayChain();
         Iterator snIt = superNode.iterator();
 
         while (snIt.hasNext())

@@ -39,11 +39,11 @@ public class Scene extends AbstractHost
 {
     private static Scene constant = new Scene();
 
-    Chain classes = new HashChain();
-    Chain applicationClasses = new HashChain();
-    Chain libraryClasses = new HashChain();
-    Chain contextClasses = new HashChain();
-    Chain phantomClasses = new HashChain();
+    Chain classes = new ArrayChain();
+    Chain applicationClasses = new ArrayChain();
+    Chain libraryClasses = new ArrayChain();
+    Chain contextClasses = new ArrayChain();
+    Chain phantomClasses = new ArrayChain();
     
     Map nameToClass = new HashMap();
     Map methodSignatureToMethod = new HashMap();

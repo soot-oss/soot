@@ -66,8 +66,8 @@ public class SlowAvailableExpressions
                 List pairsBefore = new ArrayList();
                 List pairsAfter = new ArrayList();
 
-                HashChain equivsBefore = new HashChain();
-                HashChain equivsAfter = new HashChain();
+                Chain equivsBefore = new ArrayChain();
+                Chain equivsAfter = new ArrayChain();
 
                 List setAsList = set.toList();
                 Iterator si = setAsList.iterator();

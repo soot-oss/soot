@@ -33,7 +33,7 @@ import java.util.*;
  * Provides chain-like operations, except that the key is the phase name. */
 public class Pack
 {
-    Chain opts = new HashChain();
+    Chain opts = new ArrayChain();
     
     public Iterator iterator() { return opts.iterator(); }
 

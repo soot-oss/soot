@@ -80,7 +80,7 @@ public class DavaBody extends Body
         
         GrimpBody grimpBody = (GrimpBody) body;
 
-	originalUnits = new PatchingChain( new HashChain());
+	originalUnits = new PatchingChain( new ArrayChain());
             
         // Convert all locals
         {

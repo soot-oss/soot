@@ -44,7 +44,7 @@ public class StronglyConnectedComponents
         WHITE = 0,
         GRAY = 1,
         BLACK = 2;
-    Chain finishingOrder = new HashChain();
+    Chain finishingOrder = new ArrayChain();
 
     private List componentList = new ArrayList();
     private HashMap nodeToComponent = new HashMap();

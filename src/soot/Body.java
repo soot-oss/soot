@@ -54,13 +54,13 @@ public abstract class Body
     protected SootMethod method = null;
 
     /** The chain of locals for this Body. */
-    protected Chain localChain = new HashChain();
+    protected Chain localChain = new ArrayChain();
 
     /** The chain of traps for this Body. */
-    protected Chain trapChain = new HashChain();
+    protected Chain trapChain = new ArrayChain();
 
     /** The chain of units for this Body. */
-    protected PatchingChain unitChain = new PatchingChain(new HashChain());
+    protected PatchingChain unitChain = new PatchingChain(new ArrayChain());
 
     /** Creates a deep copy of this Body. */
     abstract public Object clone();

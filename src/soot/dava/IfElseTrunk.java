@@ -20,7 +20,7 @@ public class IfElseTrunk extends AbstractTrunk
 	Removed = false;
 	successors = new ArrayList();
 	predecessors = new ArrayList();
-	contents = new HashChain();
+	contents = new ArrayChain();
 	contents.add( ifTrunk);
 	contents.add( elseTrunk);
 	Branches = false;

@@ -11,7 +11,7 @@ public class BlockTrunk extends AbstractTrunk
 
     public BlockTrunk()
     {
-        contents = new HashChain();
+        contents = new ArrayChain();
 	successors = new ArrayList();
 	predecessors = new ArrayList();
 	condition = null;
@@ -20,7 +20,7 @@ public class BlockTrunk extends AbstractTrunk
     public BlockTrunk( Block b) 
     {
 	Branches = false; 
-	contents = new HashChain();
+	contents = new ArrayChain();
 	successors = new ArrayList();
 	predecessors = new ArrayList();
 	condition = null;

@@ -63,9 +63,9 @@ public class SootClass extends AbstractHost
 
     String name;
     int modifiers;
-    Chain fields = new HashChain();
-    Chain methods = new HashChain();
-    Chain interfaces = new HashChain();
+    Chain fields = new ArrayChain();
+    Chain methods = new ArrayChain();
+    Chain interfaces = new ArrayChain();
 
     boolean isInScene;
     SootClass superClass;

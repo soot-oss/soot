@@ -61,10 +61,10 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
     private HashMap nodeToPreds = new HashMap();
     private HashMap nodeToSuccs = new HashMap();
     private HashSet edgePairs = new HashSet();
-    private Chain nodes = new HashChain();
+    private Chain nodes = new ArrayChain();
 
-    private Chain heads = new HashChain();
-    private Chain tails = new HashChain();
+    private Chain heads = new ArrayChain();
+    private Chain tails = new ArrayChain();
 
     public HashMutableDirectedGraph()
     {

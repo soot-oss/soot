@@ -18,7 +18,7 @@ public class IfTrunk extends AbstractTrunk
 	Removed = false;
 	successors = new ArrayList();
 	predecessors = new ArrayList();
-	contents = new HashChain();
+	contents = new ArrayChain();
 	contents.add( ifTrunk);
 	Branches = false;
 
