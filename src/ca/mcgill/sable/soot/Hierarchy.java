@@ -4,27 +4,37 @@ import java.util.*;
 
 public class Hierarchy
 {
+    // These two maps are not filled in the constructor.
     HashMap classToSubclasses;
     HashMap interfaceToSubinterfaces;
 
+    HashMap classToDirSubclasses;
+    HashMap interfaceToDirSubinterfaces;
+
     // This holds the direct implementers.
-    HashMap interfaceToImplementers;
+    HashMap interfaceToDirImplementers;
 
     int state;
     Scene sc;
 
     public Hierarchy(Scene sc)
     {
+        this.sc = sc;
+        state = sc.getState();
+
         // Well, this used to be describable by 'Duh'.
         // Construct the subclasses hierarchy and the subinterfaces hierarchy.
         {
             List allClasses = sc.getClasses();
 
-            classToSubclasses = new HashMap
+            classToSubclasses = new HashMap(allClasses.size() * 2 + 1, 0.7f);
+            interfaceToSubinterfaces = new HashMap(allClasses.size() * 2 + 1, 0.7f);
+
+            classToDirSubclasses = new HashMap
                 (allClasses.size() * 2 + 1, 0.7f);
-            interfaceToSubinterfaces = new HashMap
+            interfaceToDirSubinterfaces = new HashMap
                 (allClasses.size() * 2 + 1, 0.7f);
-            interfaceToImplementers = new HashMap
+            interfaceToDirImplementers = new HashMap
                 (allClasses.size() * 2 + 1, 0.7f);
 
             Iterator classesIt = allClasses.iterator();
@@ -34,11 +44,11 @@ public class Hierarchy
 
                 if (c.isInterface())
                 {
-                    interfaceToSubinterfaces.put(c, new ArrayList());
-                    interfaceToImplementers.put(c, new ArrayList());
+                    interfaceToDirSubinterfaces.put(c, new ArrayList());
+                    interfaceToDirImplementers.put(c, new ArrayList());
                 }
                 else
-                    classToSubclasses.put(c, new ArrayList());
+                    classToDirSubclasses.put(c, new ArrayList());
             }
 
             classesIt = allClasses.iterator();
@@ -54,13 +64,13 @@ public class Hierarchy
                         while (subIt.hasNext())
                         {
                             SootClass i = (SootClass)subIt.next();
-                            List l = (List)interfaceToSubinterfaces.get(i);
+                            List l = (List)interfaceToDirSubinterfaces.get(i);
                             l.add(c);
                         }
                     }
                     else
                     {
-                        List l = (List)classToSubclasses.get(c.getSuperclass());
+                        List l = (List)classToDirSubclasses.get(c.getSuperclass());
                         l.add(c);
 
                     
@@ -69,9 +79,32 @@ public class Hierarchy
                         while (subIt.hasNext())
                         {
                             SootClass i = (SootClass)subIt.next();
-                            l = (List)interfaceToImplementers.get(i);
+                            l = (List)interfaceToDirImplementers.get(i);
                             l.add(c);
                         }
+                    }
+                }
+            }
+
+            // Fill the directImplementers lists with subclasses.
+            {
+                classesIt = allClasses.iterator();
+                while (classesIt.hasNext())
+                {
+                    SootClass c = (SootClass)classesIt.next();
+                    if (c.isInterface())
+                    {
+                        List imp = (List)interfaceToDirImplementers.get(c);
+                        Set s = new HashSet(imp.size() * 2 + 1, 0.7f);
+                        
+                        Iterator impIt = imp.iterator();
+                        while (impIt.hasNext())
+                        {
+                            SootClass c0 = (SootClass)impIt.next();
+                            s.addAll(getSubclassesOfIncluding(c0));
+                        }
+
+                        imp.clear(); imp.addAll(s);
                     }
                 }
             }
@@ -82,19 +115,16 @@ public class Hierarchy
                 SootClass c = (SootClass)classesIt.next();
                 if (c.isInterface())
                 {
-                    interfaceToSubinterfaces.put(c, Collections.unmodifiableList
-                                          ((List)interfaceToSubinterfaces.get(c)));
-                    interfaceToImplementers.put(c, Collections.unmodifiableList
-                                                ((List)interfaceToImplementers.get(c)));
+                    interfaceToDirSubinterfaces.put(c, Collections.unmodifiableList
+                                          ((List)interfaceToDirSubinterfaces.get(c)));
+                    interfaceToDirImplementers.put(c, Collections.unmodifiableList
+                                                ((List)interfaceToDirImplementers.get(c)));
                 }
                 else
-                    classToSubclasses.put(c, Collections.unmodifiableList
-                                          ((List)classToSubclasses.get(c)));
+                    classToDirSubclasses.put(c, Collections.unmodifiableList
+                                          ((List)classToDirSubclasses.get(c)));
             }
         }
-
-        this.sc = sc;
-        state = sc.getState();
     }
 
     private void checkState()
@@ -109,13 +139,37 @@ public class Hierarchy
         if (c.isInterface())
             throw new RuntimeException("class needed!");
 
-        checkState();
-
         List l = new ArrayList();
-        l.addAll((List)classToSubclasses.get(c));
+        l.addAll(getSubclassesOf(c));
         l.add(c);
 
         return Collections.unmodifiableList(l);
+    }
+
+    public List getSubclassesOf(SootClass c)
+    {
+        if (c.isInterface())
+            throw new RuntimeException("class needed!");
+
+        checkState();
+
+        // If already cached, return the value.
+        if (classToSubclasses.get(c) != null)
+            return (List)classToSubclasses.get(c);
+
+        // Otherwise, build up the hashmap.
+        List l = new ArrayList();
+
+        ListIterator it = ((List)classToDirSubclasses.get(c)).listIterator();
+        while (it.hasNext())
+        {
+            l.addAll(getSubclassesOfIncluding((SootClass)it.next()));
+        }
+        
+        l = Collections.unmodifiableList(l);
+        classToSubclasses.put(c, l);
+
+        return l;
     }
 
     // Return all strict superclasses of c.
@@ -143,11 +197,34 @@ public class Hierarchy
         if (!c.isInterface())
             throw new RuntimeException("interface needed!");
 
+        List l = new ArrayList();
+        l.addAll(getSubinterfacesOf(c));
+        l.add(c);
+
+        return Collections.unmodifiableList(l);
+    }
+
+    public List getSubinterfacesOf(SootClass c)
+    {
+        if (!c.isInterface())
+            throw new RuntimeException("interface needed!");
+
         checkState();
 
+        // If already cached, return the value.
+        if (interfaceToSubinterfaces.get(c) != null)
+            return (List)interfaceToSubinterfaces.get(c);
+
+        // Otherwise, build up the hashmap.
         List l = new ArrayList();
-        l.addAll((List)interfaceToSubinterfaces.get(c));
-        l.add(c);
+
+        ListIterator it = ((List)interfaceToDirSubinterfaces.get(c)).listIterator();
+        while (it.hasNext())
+        {
+            l.addAll(getSubinterfacesOfIncluding((SootClass)it.next()));
+        }
+        
+        interfaceToSubinterfaces.put(c, Collections.unmodifiableList(l));
 
         return Collections.unmodifiableList(l);
     }
@@ -161,17 +238,59 @@ public class Hierarchy
     {
         throw new RuntimeException("Not implemented yet!");
     }
+
     public List getDirectSubclassesOf(SootClass c)
     {
-        throw new RuntimeException("Not implemented yet!");
+        if (c.isInterface())
+            throw new RuntimeException("class needed!");
+
+        checkState();
+
+        return Collections.unmodifiableList((List)classToDirSubclasses.get(c));
     }
+
+    // This includes c in the list of subclasses.
+    public List getDirectSubclassesOfIncluding(SootClass c)
+    {
+        if (c.isInterface())
+            throw new RuntimeException("class needed!");
+
+        checkState();
+
+        List l = new ArrayList();
+        l.addAll((List)classToDirSubclasses.get(c));
+        l.add(c);
+
+        return Collections.unmodifiableList(l);
+    }
+
     public List getDirectSuperinterfacesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
+
     public List getDirectSubinterfacesOf(SootClass c)
     {
-        throw new RuntimeException("Not implemented yet!");
+        if (!c.isInterface())
+            throw new RuntimeException("interface needed!");
+
+        checkState();
+
+        return (List)interfaceToDirSubinterfaces.get(c);
+    }
+
+    public List getDirectSubinterfacesOfIncluding(SootClass c)
+    {
+        if (!c.isInterface())
+            throw new RuntimeException("interface needed!");
+
+        checkState();
+
+        List l = new ArrayList();
+        l.addAll((List)interfaceToDirSubinterfaces.get(c));
+        l.add(c);
+
+        return Collections.unmodifiableList(l);
     }
 
     public List getDirectImplementersOf(SootClass i)
@@ -181,7 +300,7 @@ public class Hierarchy
 
         checkState();
 
-        return Collections.unmodifiableList((List)interfaceToImplementers.get(i));
+        return Collections.unmodifiableList((List)interfaceToDirImplementers.get(i));
     }
 
     public List getImplementersOf(SootClass i)
