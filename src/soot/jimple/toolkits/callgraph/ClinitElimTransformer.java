@@ -27,30 +27,24 @@ import soot.tagkit.*;
 import soot.jimple.*;
 
 public class ClinitElimTransformer extends BodyTransformer {
-	
-	protected void internalTransform(Body b, String phaseName, Map options){
-		ClinitElimAnalysis a = new ClinitElimAnalysis( new BriefUnitGraph(b));
+    
+    protected void internalTransform(Body b, String phaseName, Map options){
+        ClinitElimAnalysis a = new ClinitElimAnalysis( new BriefUnitGraph(b));
 
-		CallGraph cg = Scene.v().getCallGraph();
-		
-		SootMethod m = b.getMethod();
+        CallGraph cg = Scene.v().getCallGraph();
+        
+        SootMethod m = b.getMethod();
 
-		Iterator edgeIt = cg.edgesOutOf(m);
+        Iterator edgeIt = cg.edgesOutOf(m);
 
-		while (edgeIt.hasNext()){
-			Edge e = (Edge)edgeIt.next();
-			if (e.srcStmt() == null) continue;
-			if (!e.isClinit()) continue;
-			FlowSet methods = (FlowSet) a.getFlowBefore(e.srcStmt());
-            e.srcStmt().addTag(new StringTag(methods.toString()));
-			if (methods.contains(e.tgt())){
-				cg.removeEdge(e);
-                e.srcStmt().addTag(new StringTag("Removing edge: "+ e));
-			}
-			
-		
-		}
-
-	}
-	
+        while (edgeIt.hasNext()){
+            Edge e = (Edge)edgeIt.next();
+            if (e.srcStmt() == null) continue;
+            if (!e.isClinit()) continue;
+            FlowSet methods = (FlowSet) a.getFlowBefore(e.srcStmt());
+            if (methods.contains(e.tgt())){
+                cg.removeEdge(e);
+            }
+        }
+    }
 }
