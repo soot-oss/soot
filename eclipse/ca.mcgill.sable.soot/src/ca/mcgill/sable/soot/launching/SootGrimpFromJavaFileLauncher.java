@@ -49,7 +49,7 @@ public class SootGrimpFromJavaFileLauncher extends SootFileLauncher {
 	  	
 	  	ArrayList commands = new ArrayList();
 	  	commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
-	  	commands.add(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+	  	commands.add(getClasspathAppend());
 	  	
 		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);

@@ -80,11 +80,13 @@ public class SootConfigJavaProjectLauncher extends SootProjectLauncher {
 		defs.put(LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		//System.out.println("setting eclipse defs");
 		//System.out.println(getOutputLocation());
-		String cp = getClasspathAppend();
 		Iterator it = getJavaProcessPath().iterator();
+		String cp = (String)it.next();
 		while (it.hasNext()){
 			cp = cp + getSootClasspath().getSeparator() + (String)it.next();
 		}
+		cp = cp + getSootClasspath().getSeparator() + getClasspathAppend();
+		System.out.println("cp: "+cp);
 		defs.put(LaunchCommands.SOOT_CLASSPATH, cp);
 		//System.out.println(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 		/*Iterator it2 = getJavaProcessPath().iterator();
@@ -120,11 +122,12 @@ public class SootConfigJavaProjectLauncher extends SootProjectLauncher {
 		defs.put(LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		//System.out.println("setting eclipse defs");
 		//System.out.println(getOutputLocation());
-		String cp = getClasspathAppend();
 		Iterator it = getJavaProcessPath().iterator();
+		String cp = (String)it.next();
 		while (it.hasNext()){
 			cp = cp + getSootClasspath().getSeparator() + (String)it.next();
 		}
+		cp = cp + getSootClasspath().getSeparator() + getClasspathAppend();
 		defs.put(LaunchCommands.SOOT_CLASSPATH, cp);
 		//System.out.println(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 		Iterator it2 = getJavaProcessPath().iterator();

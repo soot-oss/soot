@@ -78,11 +78,13 @@ public class SootOptionsJavaProjectLauncher extends SootProjectLauncher {
 		//System.out.println("presetting dialog");
 		getSdc().setOutputDir(getOutputLocation());
 		//System.out.println("presetting output dir");
-		String cp = getClasspathAppend();
+	
 		Iterator it = getJavaProcessPath().iterator();
+		String cp = (String)it.next();
 		while (it.hasNext()){
 			cp = cp + getSootClasspath().getSeparator() + (String)it.next();
 		}
+		cp = cp + getSootClasspath().getSeparator()+ getClasspathAppend();
 		//getSdc().setSootClassPath(getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend()+getSootClasspath().getSeparator()+getProcess_path());
 		getSdc().setSootClassPath(cp);
 		//System.out.println("presetting cp");

@@ -86,7 +86,7 @@ public class SootConfigFileLauncher extends SootFileLauncher {
 		HashMap defs = new HashMap();
 		defs.put(LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		
-		defs.put(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
+		defs.put(LaunchCommands.SOOT_CLASSPATH, getClasspathAppend());
 		
 		if (isSrcPrec()) {
 			defs.put(LaunchCommands.SRC_PREC, getSrcPrec());

@@ -144,7 +144,7 @@ public class SootFileLauncher extends SootLauncher {
     private void handleSourceFile(ICompilationUnit cu){
 		IPackageFragmentRoot pfr = (IPackageFragmentRoot) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 		IPackageFragment pf = (IPackageFragment) cu.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
-        addJars();
+        //addJars();
         if (isSrcPrec() && getSrcPrec().equals("java")){
             setClasspathAppend(platform_location+pfr.getPath().toOSString());    
         }
@@ -182,6 +182,7 @@ public class SootFileLauncher extends SootLauncher {
 			catch (CoreException e){
 			}
         }
+        addJars();
 		if (pf.isDefaultPackage()) {
 			//setToProcess(removeFileExt(cu.getElementName()));
 			getToProcessList().add(removeFileExt(cu.getElementName()));
@@ -214,10 +215,10 @@ public class SootFileLauncher extends SootLauncher {
 		
 		//setToProcess(replaceWithDot(cf.toString()));
 		getToProcessList().add(replaceWithDot(cf.toString()));
-		addJars();
+		//addJars();
 		//System.out.println("cf: "+cf.toString());
 		setClasspathAppend(file.getLocation().toOSString().substring(0, file.getLocation().toOSString().indexOf(cf.toString())));
-		
+		addJars();
 	}
 	
 	private String replaceWithDot(String in){
