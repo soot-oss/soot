@@ -121,7 +121,17 @@ public class ExceptionChecker extends BodyTransformer{
     }
 
     private void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
+	if(ie instanceof InstanceInvokeExpr &&
+	   ((InstanceInvokeExpr) ie).getBase().getType() instanceof ArrayType &&
+	   ie.getMethodRef().name().equals("clone") && 
+	   ie.getMethodRef().parameterTypes().size()==0) 
+	    return;  // the call is to the clone() method of an array type, which
+	             // is defined not to throw any exceptions; if we left this to
+                     // normal resolution we'd get the method in Object which does
+                     // throw CloneNotSupportedException
+
         SootMethod meth = ie.getMethod();
+
         Iterator it = meth.getExceptions().iterator();
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();
