@@ -47,6 +47,20 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
         inners = new ArrayList();
     }
 
+    public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n){
+        if (n instanceof polyglot.ast.LocalClassDecl){
+            inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
+            return n;
+        }
+        else if (n instanceof polyglot.ast.New) {
+            if (((polyglot.ast.New)n).anonType() != null) {
+                inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
+                return n;
+            }
+        }
+        return null;
+    }
+    
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     
         
@@ -70,7 +84,7 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
                 }
             }
         }
-        if (n instanceof polyglot.ast.New) {
+        /*if (n instanceof polyglot.ast.New) {
             //System.out.println("in mfc and parent is: "+parent+" parent type: "+parent.getClass());
             //System.out.println("in mfc and n is: "+n);
             //System.out.println("current outer class name is: "+currentSootClass);
@@ -78,11 +92,11 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
                 //inners.add(n);
                 inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
             }
-        }
+        }*/
 
-        if (n instanceof polyglot.ast.LocalClassDecl){
+        /*if (n instanceof polyglot.ast.LocalClassDecl){
             inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
-        }
+        }*/
           /*      polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
                 while (outerType.isNested()) {
                     outerType = outerType.outer();

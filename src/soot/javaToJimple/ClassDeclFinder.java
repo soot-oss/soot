@@ -3,28 +3,29 @@ import java.util.*;
 
 public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
 
-    private polyglot.types.ClassType typeToFind;
-    private polyglot.ast.ClassDecl declFound;
+    //private polyglot.types.ClassType typeToFind;
+    private ArrayList typesToFind;
+    private ArrayList declsFound;
 
     
-    public void typeToFind(polyglot.types.ClassType type){
-        typeToFind = type;
+    public void typesToFind(ArrayList types){
+        typesToFind = types;
     }
     
-    public polyglot.ast.ClassDecl declFound(){
-        return declFound;
+    public ArrayList declsFound(){
+        return declsFound;
     }
     
 
     public ClassDeclFinder(){
-        declFound = null;
+        declsFound = new ArrayList();
     }
 
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     
         if (n instanceof polyglot.ast.ClassDecl) {
-            if (((polyglot.ast.ClassDecl)n).type().equals(typeToFind)){
-                declFound = (polyglot.ast.ClassDecl)n;
+            if (typesToFind.contains(((polyglot.ast.ClassDecl)n).type())){
+                declsFound.add((polyglot.ast.ClassDecl)n);
             }
         }
         return enter(n);

@@ -161,14 +161,29 @@ public class InitialResolver {
         
         sootClassType = Util.getSootType(classType);
        
+        if (classTypesFound == null){
+            classTypesFound = new ArrayList();
+        }
+        classTypesFound.add(classType);
         // saves classnames mapped to AST 
-        ClassDeclFinder finder = new ClassDeclFinder();
+        /*ClassDeclFinder finder = new ClassDeclFinder();
         finder.typeToFind(classType);
         astNode.visit(finder);
         if (finder.declFound() != null){
             addNameToAST(((soot.RefType)sootClassType).getClassName());
-        }
+        }*/
         SootResolver.v().assertResolvedClassForType(sootClassType);
+    }
+
+    private ArrayList classTypesFound;
+    private void makeASTMap(){
+        ClassDeclFinder finder = new ClassDeclFinder();
+        finder.typesToFind(classTypesFound);
+        astNode.visit(finder);
+        Iterator it = finder.declsFound().iterator();
+        while (it.hasNext()){
+            addNameToAST(Util.getSootType(((polyglot.ast.ClassDecl)it.next()).type()).toString());
+        }
     }
     
     /**
@@ -192,6 +207,7 @@ public class InitialResolver {
         // get types and resolve them in the Scene
         resolveTypes();
 
+        makeASTMap();
         // determine is ".class" literal is used
         ClassLiteralChecker classLitChecker = new ClassLiteralChecker();
         astNode.visit(classLitChecker);

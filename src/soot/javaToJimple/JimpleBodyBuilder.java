@@ -326,11 +326,12 @@ public class JimpleBodyBuilder {
      * Literal Creation
      */
     private soot.Value createLiteral(polyglot.ast.Lit lit) {
+        //System.out.println("lit: "+lit+" type: "+lit.getClass()); 
 		if (lit instanceof polyglot.ast.IntLit) {
 			polyglot.ast.IntLit intLit = (polyglot.ast.IntLit)lit;
 			long litValue = intLit.value();
 			if (intLit.kind() == polyglot.ast.IntLit.INT) {
-				return soot.jimple.IntConstant.v((int)litValue);		
+                return soot.jimple.IntConstant.v((int)litValue);
 			}
 			else {
 				return soot.jimple.LongConstant.v(litValue);
@@ -356,7 +357,7 @@ public class JimpleBodyBuilder {
 		}
 		else if (lit instanceof polyglot.ast.CharLit) {
 			char litValue = ((polyglot.ast.CharLit)lit).value();
-            return soot.jimple.IntConstant.v((int)litValue);
+            return soot.jimple.IntConstant.v(litValue);
 		}
 		else if (lit instanceof polyglot.ast.BooleanLit) {
 			boolean litValue = ((polyglot.ast.BooleanLit)lit).value();
@@ -2119,13 +2120,40 @@ public class JimpleBodyBuilder {
 			rValue = soot.jimple.Jimple.v().newDivExpr(lVal, rVal);
 		}
 		else if (operator == polyglot.ast.Binary.SHR){
-			rValue = soot.jimple.Jimple.v().newShrExpr(lVal, rVal);
+            if (rVal.getType().equals(soot.LongType.v())){
+                soot.Local intVal = lg.generateLocal(soot.IntType.v());
+                soot.jimple.CastExpr castExpr = soot.jimple.Jimple.v().newCastExpr(rVal, soot.IntType.v());
+                soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(intVal, castExpr);
+                body.getUnits().add(assignStmt);
+			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, intVal);
+            }
+            else {
+			    rValue = soot.jimple.Jimple.v().newShrExpr(lVal, rVal);
+            }
 		}
 		else if (operator == polyglot.ast.Binary.USHR){
-			rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, rVal);
+            if (rVal.getType().equals(soot.LongType.v())){
+                soot.Local intVal = lg.generateLocal(soot.IntType.v());
+                soot.jimple.CastExpr castExpr = soot.jimple.Jimple.v().newCastExpr(rVal, soot.IntType.v());
+                soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(intVal, castExpr);
+                body.getUnits().add(assignStmt);
+			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, intVal);
+            }
+            else {
+			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, rVal);
+            }
 		}
 		else if (operator == polyglot.ast.Binary.SHL){
-			rValue = soot.jimple.Jimple.v().newShlExpr(lVal, rVal);
+            if (rVal.getType().equals(soot.LongType.v())){
+                soot.Local intVal = lg.generateLocal(soot.IntType.v());
+                soot.jimple.CastExpr castExpr = soot.jimple.Jimple.v().newCastExpr(rVal, soot.IntType.v());
+                soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(intVal, castExpr);
+                body.getUnits().add(assignStmt);
+			    rValue = soot.jimple.Jimple.v().newUshrExpr(lVal, intVal);
+            }
+            else {
+			    rValue = soot.jimple.Jimple.v().newShlExpr(lVal, rVal);
+            }
 		}
 		else if (operator == polyglot.ast.Binary.BIT_AND){
 			rValue = soot.jimple.Jimple.v().newAndExpr(lVal, rVal);
@@ -2814,7 +2842,8 @@ public class JimpleBodyBuilder {
      * Cast Expression Creation
      */
     private soot.Value getCastLocal(polyglot.ast.Cast castExpr){
-   
+  
+        //System.out.println("castExpr: "+castExpr);
 
         // if its already the right type
         if (castExpr.expr().type().equals(castExpr.type())) {
@@ -2831,10 +2860,13 @@ public class JimpleBodyBuilder {
         }
         soot.Type type = Util.getSootType(castExpr.type());
 
+        /*if (type.equals(soot.CharType.v())) {
+            return val;
+        }*/
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
         Util.addLnPosTags(cast.getOpBox(), castExpr.position().line(), castExpr.position().line(), castExpr.position().column() + castExpr.toString().indexOf(')') , castExpr.position().endColumn());
         soot.Local retLocal = lg.generateLocal(cast.getCastType());
-
+        //System.out.println("cast ret type: "+retLocal.getType());
         soot.jimple.Stmt castAssign = soot.jimple.Jimple.v().newAssignStmt(retLocal, cast);
         body.getUnits().add(castAssign);
         Util.addLnPosTags(castAssign, castExpr.position());
