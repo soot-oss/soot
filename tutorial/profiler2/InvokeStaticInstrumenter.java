@@ -83,7 +83,7 @@ public class InvokeStaticInstrumenter extends BodyTransformer{
       // call Chain.insertBefore() to insert instructions
       //
       // 1. first, make a new invoke expression
-      InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(increaseCounter,
+      InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(increaseCounter.makeRef(),
 						  IntConstant.v(1));
       // 2. then, make a invoke statement
       Stmt incStmt = Jimple.v().newInvokeStmt(incExpr);
@@ -112,7 +112,7 @@ public class InvokeStaticInstrumenter extends BodyTransformer{
 	if ((stmt instanceof ReturnStmt) 
 	    ||(stmt instanceof ReturnVoidStmt)) {
 	  // 1. make invoke expression of MyCounter.report()
-	  InvokeExpr reportExpr= Jimple.v().newStaticInvokeExpr(reportCounter);
+	  InvokeExpr reportExpr= Jimple.v().newStaticInvokeExpr(reportCounter.makeRef());
 
 	  // 2. then, make a invoke statement
 	  Stmt reportStmt = Jimple.v().newInvokeStmt(reportExpr);

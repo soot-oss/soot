@@ -213,7 +213,7 @@ by passing in the body of each method.
     83        // call Chain.insertBefore() to insert instructions
     84        //
     85        // 1. first, make a new invoke expression
-    86        InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(increaseCounter,
+    86        InvokeExpr incExpr= Jimple.v().newStaticInvokeExpr(increaseCounter.makeRef(),
     87                                                    IntConstant.v(1));
     88        // 2. then, make a invoke statement
     89        Stmt incStmt = Jimple.v().newInvokeStmt(incExpr);
@@ -242,7 +242,7 @@ by passing in the body of each method.
    112          if ((stmt instanceof ReturnStmt)
    113              ||(stmt instanceof ReturnVoidStmt)) {
    114            // 1. make invoke expression of MyCounter.report()
-   115            InvokeExpr reportExpr= Jimple.v().newStaticInvokeExpr(reportCounter);
+   115            InvokeExpr reportExpr= Jimple.v().newStaticInvokeExpr(reportCounter.makeRef());
    116
    117            // 2. then, make a invoke statement
    118            Stmt reportStmt = Jimple.v().newInvokeStmt(reportExpr);
@@ -280,8 +280,15 @@ Soot has run for 0 min. 3 sec.
 \end{verbatim}
 
 \noindent
-Run the benchmark again:
+This puts a transformed TestInvoke.class in {\tt ./sootOutput}.
+Run this newly transformed benchmark (and notice how you need the
+MyCounter.class file on your classpath now):
 \begin{verbatim}
+[cochin] [621tutorial] cd sootOutput
+[cochin] [621tutorial] java TestInvoke
+Exception in thread ``main'' java.lang.NoClassDefFoundError: MyCounter
+        at TestInvoke.main(TestInvoke.java)
+[cochin] [621tutorial] cp ../MyCounter.class .
 [cochin] [621tutorial] java TestInvoke
 I made 20 static calls
 counter : 20
