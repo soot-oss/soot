@@ -33,7 +33,7 @@ public final class BDDHierarchy {
      */
     public <subt, supt> subtypeRelation() { 
         update();
-        return closure;
+        return closure | (anyst=>subt, type=>supt) anySub;
     }
 
     /** Update hierarchy for any types that have been newly added since it was
@@ -152,7 +152,7 @@ public final class BDDHierarchy {
         anySub |= anySub {type} <> (supt=>T3)(subt=>type) closure {supt};
 
         // Add anySub into closure, closing it with closure first.
-        closure |= (anyst=>subt) anySub {type} <> (supt=>T3) closure {subt};
+        //closure |= (anyst=>subt) anySub {type} <> (supt=>T3) closure {subt};
     }
 
 }

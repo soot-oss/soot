@@ -195,7 +195,13 @@ public class SootMethod
 
     /** Sets the name of this method. */
     public void setName(String name) {
+        boolean wasDeclared = isDeclared;
+        SootClass oldDeclaringClass = declaringClass;
+        if( wasDeclared ) oldDeclaringClass.removeMethod(this);
         this.name = name;
+        subsignature =
+            Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        if( wasDeclared) oldDeclaringClass.addMethod(this);
     }
 
     /** Gets the modifiers of this method.
@@ -219,7 +225,13 @@ public class SootMethod
 
     /** Sets the return type of this method. */
     public void setReturnType(Type t) {
+        boolean wasDeclared = isDeclared;
+        SootClass oldDeclaringClass = declaringClass;
+        if( wasDeclared ) oldDeclaringClass.removeMethod(this);
         returnType = t;
+        subsignature =
+            Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        if( wasDeclared) oldDeclaringClass.addMethod(this);
     }
 
     /** Returns the number of parameters taken by this method. */

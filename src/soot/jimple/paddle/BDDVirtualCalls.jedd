@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2003, 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -159,32 +159,21 @@ public class BDDVirtualCalls extends AbsVirtualCalls
         if( newSpecials != 0B ) change = true;
     }
 
-    private <var, srcm, stmt, signature, kind> allVirtRcv = 0B;
-    private <var, srcm, stmt, signature, kind> allThreadRcv = 0B;
-
     private void updateVirtuals() {
-        <var, srcm, stmt, signature, kind> newVirtRcv = 
-            newRcv{kind} >< virtual{kind};
-        allVirtRcv |= newVirtRcv;
+        <var, srcm, stmt, signature, kind> rcv = 
+            allRcv{kind} >< virtual{kind};
 
-        <var, srcm, stmt, signature, kind> newThreadRcv = 
-            newRcv{kind} >< new{Kind.THREAD=>kind}{kind};
-        allThreadRcv |= newThreadRcv;
-
-        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
-            (newVirtRcv|newThreadRcv){signature} 
-            <> (method=>tgtm) targets{signature};
-
-        <type, signature, method> newTargets = 0B;
+        <var, srcm, stmt, signature, kind> threadRcv = 
+            allRcv{kind} >< new{Kind.THREAD=>kind}{kind};
 
         // resolve new points-to sets
         <var, type> ptTypes = allocNodes{obj} <> (ctxt=>) newPt{obj}; 
 
         <type, signature> newTypes = ptTypes{var} 
-                <> (stmt=>,srcm=>,kind=>)newVirtRcv{var};
+                <> (stmt=>,srcm=>,kind=>)rcv{var};
 
         newTypes |= (ptTypes{type} >< threads{type}) {var}
-                  <> (stmt=>,srcm=>,kind=>)newThreadRcv {var};
+                  <> (stmt=>,srcm=>,kind=>)threadRcv {var};
 
         // close under AnySubType; that is, if the receiver is AnySubType(t),
         // replace it with all subtypes of t
@@ -207,36 +196,63 @@ public class BDDVirtualCalls extends AbsVirtualCalls
             toResolve -= (method=>) resolved;
 
             // add resolved ones to targets
-            newTargets |= (subt=>type, supt=>) resolved;
+            targets |= (subt=>type, supt=>) resolved;
 
             // move one step up the hierarchy for the other receiver types
             toResolve =                          toResolve {supt} 
                 <> (supt=>T3) (hier.extend()|hier.array()) {subt};
         } while( toResolve != 0B );
 
-        newTargets -= targets;
-        targets |= newTargets;
-
         <var, obj, type, ctxt> typedPt = allocNodes{obj}><newPt{obj};
 
 
-        // close typedPt under AnySubType
-        typedPt |= typedPt{type} <> (hier.anySub()){anyst};
+        // close typedPt under AnySubType, but filter out according to
+        // declared type
+        /*
+        <var, obj, type, ctxt> unfiltered = typedPt{type} 
+                                 <> (hier.anySub()){anyst};
+        <var, dtp, obj, type, ctxt> withDeclaredTypes = unfiltered{var} ><
+                                               (type=>dtp)varNodes{var};
 
-        <ctxt, var, supt, obj, type> varCtxtPt =
-            typedPt{var} >< (type=>supt) varNodes{var};
+        <var, dtp, obj, type, ctxt> filtered = withDeclaredTypes{dtp,  type} ><
+                                          hier.subtypeRelation(){supt, subt};
+        typedPt |= (dtp=>) filtered;
+
+        */
+        typedPt |= typedPt{type} <> hier.anySub(){anyst};
+        <ctxt, var, dtp, obj, type> varCtxtPt =
+            typedPt{var} >< (type=>dtp) varNodes{var};
 
         // Weed out types coming from AnySubType that are not compatible
         // with the declared type of the variable.
-        varCtxtPt =     varCtxtPt{type, supt} 
+        varCtxtPt =     varCtxtPt{type, dtp} 
             >< hier.subtypeRelation(){subt, supt};
 
-        callSiteTargets |= (allVirtRcv|allThreadRcv){signature} 
-                        <> (method=>tgtm) newTargets{signature};
+        <var, srcm, stmt, type, kind, tgtm> callSiteTargets =
+            (rcv|threadRcv){signature} 
+                        <> (method=>tgtm) targets{signature};
+
+        SootMethod m = Scene.v().getMethod( "<java.util.Collections$UnmodifiableMap$UnmodifiableEntrySet$UnmodifiableEntry: int hashCode()>" );
+        Local r1 = null;
+        for( Iterator lIt = m.getActiveBody().getLocals().iterator(); lIt.hasNext(); ) {
+            final Local l = (Local) lIt.next();
+            if( l.getName().equals("$r1") ) r1 = l;
+        }
+        if( r1 == null ) throw new RuntimeException();
+        VarNode r1node = PaddleScene.v().nodeManager().findLocalVarNode(r1);
+        if( r1node != null ) {
+            <var> r1bdd = new {r1node=>var};
+            System.out.println( "varCtxtPt" + (varCtxtPt{var}><r1bdd{var}).toString() );
+            System.out.println( "callSiteTargets" + (callSiteTargets{var}><r1bdd{var}).toString() );
+            System.out.println( "newVirtuals"+
+            ((
+                      (dtp=>) varCtxtPt{type, var}
+                    >< callSiteTargets {type, var} ){var}><r1bdd{var}).toString());
+        }
 
         <ctxt, var, obj, srcm, stmt, kind, tgtm> newVirtuals =
             (type=>) (
-                   (supt=>) varCtxtPt{type, var}
+                      (dtp=>) varCtxtPt{type, var}
                     >< callSiteTargets {type, var} );
         out.add( newVirtuals );
         if( newVirtuals != 0B ) change = true;
