@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
+   Made the packer work on StmtBody's.
+   
  - Modified on February 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Improved the interference graph builder.
 
@@ -76,12 +79,12 @@ import ca.mcgill.sable.util.*;
 
 public class FastAllocator
 {   
-    public static void packLocals(JimpleBody body)
+    public static void packLocals(StmtBody body)
     {
         new FastAllocator(body);
     } 
     
-    public FastAllocator(JimpleBody body)
+    public FastAllocator(StmtBody body)
     {
         StmtList stmtList = body.getStmtList();
 
@@ -272,14 +275,15 @@ public class FastAllocator
                     // Remove all locals with this type.
                     {
                         Iterator localIt = body.getLocals().iterator();
-
+                        List locals = body.getLocals();
+                        
                         while(localIt.hasNext())
                         {
                             Local l = (Local) localIt.next();
 
                             if(l.getType().equals(type))
                             {
-                                body.removeLocal(l);
+                                locals.remove(l);
                                 originalLocals.add(l);
                             }
                         }
@@ -302,9 +306,10 @@ public class FastAllocator
                     // Add new locals to the method
                     {
                         Iterator itr = usedColors.iterator();
-
+                        List locals = body.getLocals();
+                        
                         while(itr.hasNext())
-                            body.addLocal((Local) itr.next());
+                            locals.add((Local) itr.next());
                     }
 
                     // Go through all valueBoxes of this method and perform changes
@@ -349,7 +354,7 @@ public class FastAllocator
             return localToLocals.keySet();
         }
         
-        public InterferenceGraph(JimpleBody body, Type type, LiveLocals liveLocals)
+        public InterferenceGraph(StmtBody body, Type type, LiveLocals liveLocals)
         {
             StmtList stmtList = body.getStmtList();
     

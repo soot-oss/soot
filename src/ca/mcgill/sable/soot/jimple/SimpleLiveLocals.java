@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on February 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added getLiveLocalsAfter();
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -79,66 +82,57 @@ import ca.mcgill.sable.util.*;
 
 public class SimpleLiveLocals implements LiveLocals
 {
-    Map stmtToLocals;
-    //Map stmtToLocalsBefore;
+    Map stmtToLocalsAfter;
+    Map stmtToLocalsBefore;
 
     public SimpleLiveLocals(CompleteStmtGraph graph)
     {
-        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);
+        SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
                 Main.livePostTimer.start();
 
         // Build stmtToLocals map
         {
-            // long liveCount = 0;
-            
-            stmtToLocals = new HashMap(graph.size() * 2 + 1, 0.7f);
+            stmtToLocalsAfter = new HashMap(graph.size() * 2 + 1, 0.7f);
+            stmtToLocalsBefore = new HashMap(graph.size() * 2 + 1, 0.7f);
 
             Iterator stmtIt = graph.iterator();
 
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-
+ 
                 FlowSet set = (FlowSet) analysis.getFlowBeforeStmt(s);
-                //List localList = set.toList();
+                stmtToLocalsBefore.put(s, Collections.unmodifiableList(set.toList()));
                 
-                //liveCount += localList.size();
-                
-                stmtToLocals.put(s, Collections.unmodifiableList(set.toList()));
-            }
-            
-            // System.out.println((((double) liveCount) / graph.size()) + " live locals per stmt on avg" + (graph.size())); 
+                set = (FlowSet) analysis.getFlowAfterStmt(s);
+                stmtToLocalsAfter.put(s, Collections.unmodifiableList(set.toList()));
+            }            
         }
-
+        
         if(Main.isProfilingOptimization)
-            Main.livePostTimer.end();
-
+                Main.livePostTimer.end();
     }
-
-    /*
-    public List getLiveLocalsBefore(Stmt s)
-    {
-        FSet set = (FSet) analysis.getValueBeforeStmt(s);
-
-        return set.toList();
-    }
-      */
 
     public List getLiveLocalsAfter(Stmt s)
     {
-        return (List) stmtToLocals.get(s);
+        return (List) stmtToLocalsAfter.get(s);
+    }
+    
+    public List getLiveLocalsBefore(Stmt s)
+    {
+        return (List) stmtToLocalsAfter.get(s);
     }
 }
 
-class LiveLocalsAnalysis extends BackwardFlowAnalysis
+class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 {
     FlowSet emptySet;
     Map stmtToGenerateSet;
     Map stmtToPreserveSet;
 
-    LiveLocalsAnalysis(StmtGraph g)
+    SimpleLiveLocalsAnalysis(StmtGraph g)
     {
         super(g);
 

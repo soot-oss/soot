@@ -149,7 +149,11 @@ public class JasminClass
     int returnAddressSlot;
     int currentStackHeight = 0;
     int maxStackHeight = 0;
-    
+
+    Map localToGroup;
+    Map groupToColorCount;
+    Map localToColor; 
+            
     String slashify(String s)
     {
         return s.replace('.', '/');
@@ -381,6 +385,66 @@ public class JasminClass
         }
     }
 
+    void assignColorsToLocals(StmtBody body)
+    {
+        Map localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        
+        // Assign each local to a group, and set that group's color count to 0.
+        {
+            Iterator localIt = body.getLocals().iterator();
+
+            while(localIt.hasNext())
+            {
+                Local l = (Local) localIt.next();
+                Object g;
+                
+                if(sizeOfType(l.getType()) == 1)
+                    g = IntType.v();
+                else
+                    g = LongType.v();
+                
+                localToGroup.put(l, g);
+                
+                if(!groupToColorCount.containsKey(g))
+                {
+                    groupToColorCount.put(g, new Integer(0));
+                }
+            }
+        }
+
+        // Assign colors to the parameter locals.
+        {
+            Iterator codeIt = body.getStmtList().iterator();
+
+            while(codeIt.hasNext())
+            {
+                Stmt s = (Stmt) codeIt.next();
+
+                if(s instanceof IdentityStmt &&
+                    ((IdentityStmt) s).getLeftOp() instanceof Local)
+                {
+                    Local l = (Local) ((IdentityStmt) s).getLeftOp();
+                    
+                    Object group = localToGroup.get(l);
+                    int count = ((Integer) groupToColorCount.get(group)).intValue();
+                    
+                    localToColor.put(l, new Integer(count));
+                    
+                    count++;
+                    
+                    groupToColorCount.put(group, new Integer(count));
+                }
+            }
+        }
+        
+        // Call the graph colorer.
+            FastColorer.assignColorsToLocals(body, localToGroup,
+                localToColor, groupToColorCount);
+                    
+    }
+    
     void emitMethod(SootMethod method, BodyExpr bodyExpr)
     {
         StmtBody body = (StmtBody) bodyExpr.resolveFor(method);

@@ -257,7 +257,7 @@ public class JimpleBody implements StmtBody
                         if(l.getType().equals(UnknownType.v()) ||
                             l.getType().equals(ErroneousType.v()))
                         {
-			  throw new RuntimeException("type inference failed!");
+			                throw new RuntimeException("type inference failed!");
                         }
                     }
                 }
@@ -278,7 +278,9 @@ public class JimpleBody implements StmtBody
                 if(Main.isProfilingOptimization)
                     Main.packTimer.start();
 
-                FastAllocator.packLocals(this);
+                Transformations.packLocals(this);
+                
+                //FastAllocator.packLocals(this);
                 Transformations.removeUnusedLocals(this);
 
                 if(Main.isProfilingOptimization)
@@ -465,11 +467,13 @@ public class JimpleBody implements StmtBody
     {
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
 
+        /*
         if(PrintJimpleBodyOption.debugMode(printBodyOptions))
         {
             print_debug(out);
             return;
         }
+        */
         
         //System.out.println("Constructing the graph of " + getName() + "...");
 
@@ -684,15 +688,12 @@ public class JimpleBody implements StmtBody
         }
     }
 
-    void print_debug(java.io.PrintWriter out)
-    {
-        StmtList stmtList = this.getStmtList();
-
-        
+    public static void printStmtList_debug(StmtBody stmtBody, java.io.PrintWriter out)
+    {   
+        StmtList stmtList = stmtBody.getStmtList();
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
-/*
-        StmtGraph stmtGraph = new BriefStmtGraph(stmtList);
-*/
+        CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+        
         /*
         System.out.println("Constructing LocalDefs of " + this.getMethod().getName() + "...");
 
@@ -703,10 +704,10 @@ public class JimpleBody implements StmtBody
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);
 
         LocalCopies localCopies = new LocalCopies(stmtGraph);
+*/
 
-        System.out.println("Constructing LiveLocals of " + this.getMethod().getName() + " ...");
-        LiveLocals liveLocals = new LiveLocals(stmtGraph);
-        */
+        System.out.println("Constructing LiveLocals of " + stmtBody.getMethod().getName() + " ...");
+        LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
 
         // Create statement name table
         {
@@ -730,26 +731,11 @@ public class JimpleBody implements StmtBody
 
             out.print(s.toString(stmtToName, "        "));
             out.print(";");
-        /*
 
             // Print info about live locals
             {
-                Iterator localIt = liveLocals.getLiveLocalsAfter(s).iterator();
-
-                out.print("   [");
-
-                while(localIt.hasNext())
-                {
-                    out.print(localIt.next());
-
-                    if(localIt.hasNext())
-                        out.print(", ");
-
-                }
-
-                out.print("]");
+                out.print(liveLocals.getLiveLocalsAfter(s));
             }
-        */
 
 
              /*
@@ -844,7 +830,7 @@ public class JimpleBody implements StmtBody
 
         // Print out exceptions
         {
-            Iterator trapIt = this.getTraps().iterator();
+            Iterator trapIt = stmtBody.getTraps().iterator();
 
             while(trapIt.hasNext())
             {

@@ -107,7 +107,7 @@ public class Transformations
         if(Main.isVerbose)
             System.out.println("[" + listBody.getMethod().getName() + "] assigning types to locals...");
 
-        // Jimple.printStmtListBody(listBody, System.out, false);
+        //Jimple.printStmtListBody(listBody, System.out, false);
 
         if(!Main.oldTyping)
         {
@@ -911,4 +911,145 @@ public class Transformations
 	}
       return hadAggregation;
     }
- }
+    
+    public static void packLocals(StmtBody body)
+    {
+        Map localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map localToNewLocal;
+        
+        // Assign each local to a group, and set that group's color count to 0.
+        {
+            Iterator localIt = body.getLocals().iterator();
+
+            while(localIt.hasNext())
+            {
+                Local l = (Local) localIt.next();
+                Object g = l.getType();
+                
+                localToGroup.put(l, g);
+                
+                if(!groupToColorCount.containsKey(g))
+                {
+                    groupToColorCount.put(g, new Integer(0));
+                }
+            }
+        }
+
+        // Assign colors to the parameter locals.
+        {
+            Iterator codeIt = body.getStmtList().iterator();
+
+            while(codeIt.hasNext())
+            {
+                Stmt s = (Stmt) codeIt.next();
+
+                if(s instanceof IdentityStmt &&
+                    ((IdentityStmt) s).getLeftOp() instanceof Local)
+                {
+                    Local l = (Local) ((IdentityStmt) s).getLeftOp();
+                    
+                    Object group = localToGroup.get(l);
+                    int count = ((Integer) groupToColorCount.get(group)).intValue();
+                    
+                    localToColor.put(l, new Integer(count));
+                    
+                    count++;
+                    
+                    groupToColorCount.put(group, new Integer(count));
+                }
+            }
+        }
+        
+        // Call the graph colorer.
+            FastColorer.assignColorsToLocals(body, localToGroup,
+                localToColor, groupToColorCount);
+                    
+        // Map each local to a new local.
+        {
+            List originalLocals = new ArrayList();
+            localToNewLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            Map groupIntToLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            
+            originalLocals.addAll(body.getLocals());
+            body.getLocals().clear();
+
+            Iterator localIt = originalLocals.iterator();
+
+            while(localIt.hasNext())
+            {
+                Local original = (Local) localIt.next();
+                
+                Object group = localToGroup.get(original);
+                int color = ((Integer) localToColor.get(original)).intValue();
+                GroupIntPair pair = new GroupIntPair(group, color);
+                
+                Local newLocal;
+                
+                if(groupIntToLocal.containsKey(pair))
+                    newLocal = (Local) groupIntToLocal.get(pair);
+                else {
+                    newLocal = new Local(original.getName(), (Type) group);
+                    groupIntToLocal.put(pair, newLocal);
+                    body.getLocals().add(newLocal);
+                }
+                
+                localToNewLocal.put(original, newLocal);
+            }
+        }
+
+        
+        // Go through all valueBoxes of this method and perform changes
+        {
+            Iterator codeIt = body.getStmtList().iterator();
+
+            while(codeIt.hasNext())
+            {
+                Stmt s = (Stmt) codeIt.next();
+
+                Iterator boxIt = s.getUseAndDefBoxes().iterator();
+
+                while(boxIt.hasNext())
+                {
+                    ValueBox box = (ValueBox) boxIt.next();
+
+                    if(box.getValue() instanceof Local)
+                    {
+                        Local l = (Local) box.getValue();
+                        box.setValue((Local) localToNewLocal.get(l));
+                    }
+                }
+            }
+        }
+    }
+    
+        
+}
+
+class GroupIntPair
+{
+    Object group;
+    int x;
+    
+    GroupIntPair(Object group, int x)
+    {
+        this.group = group;
+        this.x = x;
+    }
+    
+    public boolean equals(Object other)
+    {
+        if(other instanceof GroupIntPair)
+            return ((GroupIntPair) other).group.equals(this.group) &&
+                    ((GroupIntPair) other).x == this.x;
+        else
+            return false;
+    }
+    
+    public int hashCode()
+    {
+        return group.hashCode() + 1013 * x;
+    }
+    
+}
