@@ -752,11 +752,11 @@ public class Transformations
 	  /* in fact, we should check that this path is unique. */
 	  /* if the RHS uses only locals, then we know what
 	     to do; if RHS has a method invocation f(a, b,
-	     c) we must ban field writes and other method
+             c) or field access, we must ban field writes, other method
 	     calls and (as usual) writes to a, b, c. */
 	  
 	  boolean cantAggr = false;
-	  boolean foundInvokation = false;
+	  boolean foundSideEffect = false;
 	  
 	  Value rhs = ((AssignStmt)s).getRightOp();
 	  LinkedList localsUsed = new LinkedList();
@@ -766,8 +766,10 @@ public class Transformations
 	      Value v = ((ValueBox)(useIt.next())).getValue();
 	      if (v instanceof Local)
 		localsUsed.add(v);
-	      if (v instanceof InvokeExpr)
-		foundInvokation = true;
+	      if (v instanceof InvokeExpr
+                  || v instanceof InstanceFieldRef
+                  || v instanceof StaticFieldRef)
+		foundSideEffect = true;
 	    }
 	  
 	  // look for a path from s to use in graph.
@@ -776,13 +778,20 @@ public class Transformations
 	  Stmt between = s;
 	  while(!cantAggr)
 	    {
+	      // check uniqueness of between's successor
 	      List l = graph.getSuccsOf(between);
 	      if (l.size() != 1)
 		{ cantAggr = true; break; }
-	      
+
+	      // increment between
 	      between = (Stmt)l.get(0);
 	      if (between == use)
 		break;
+
+	      // check pred of the new between
+	      l = graph.getPredsOf(between);
+	      if (l.size() != 1)
+		{ cantAggr = true; break; }
 	      
 	      for (Iterator it = between.getDefBoxes().iterator();
 		   it.hasNext(); )
@@ -790,7 +799,7 @@ public class Transformations
 		  Value v = ((ValueBox)(it.next())).getValue();
 		  if (localsUsed.contains(v))
 		    { cantAggr = true; break; }
-		  if (foundInvokation)
+		  if (foundSideEffect)
 		    {
 		      if (v instanceof StaticFieldRef ||
 			  v instanceof InstanceFieldRef)
@@ -798,7 +807,7 @@ public class Transformations
 		    }
 		}
 	      
-	      if (foundInvokation)
+	      if (foundSideEffect)
 		{
 		  for (Iterator useIt = (s.getUseBoxes()).iterator();
 		       useIt.hasNext(); )

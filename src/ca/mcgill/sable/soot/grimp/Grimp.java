@@ -987,7 +987,7 @@ public class Grimp implements JimpleRepresentation
 		    {
 			returnedExpr.setValue(newInstanceOfExpr
 					      (newExpr(v.getOp()),
-					       v.getType()));
+					       v.getCheckType()));
 		    }
 
 		    public void caseNewArrayExpr(NewArrayExpr v)
@@ -1016,7 +1016,7 @@ public class Grimp implements JimpleRepresentation
 
 		    public void caseNegExpr(NegExpr v)
 		    {
-			returnedExpr.setValue(newExpr(v.getOp()));
+			returnedExpr.setValue(newNegExpr(newExpr(v.getOp())));
 		    }
 
 		    public void defaultCase(Object v)

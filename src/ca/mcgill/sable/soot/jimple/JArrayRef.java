@@ -157,7 +157,7 @@ public class JArrayRef implements ArrayRef
 
     public Type getType()
     {
-        Local base = (Local) baseBox.getValue();
+        Value base = (Value) baseBox.getValue();
         Type type = base.getType();
 
         if(type.equals(UnknownType.v()))

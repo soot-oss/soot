@@ -86,8 +86,9 @@ public class SimpleLocalDefs implements LocalDefs
     public SimpleLocalDefs(CompleteStmtGraph g)
     {
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
+        
         if(Main.isProfilingOptimization)
-                Main.defsPostTimer.start();
+            Main.defsPostTimer.start();
 
         // Build localStmtPairToDefs map
         {
@@ -124,6 +125,8 @@ public class SimpleLocalDefs implements LocalDefs
             }
         }
 
+        if(Main.isProfilingOptimization)
+                Main.defsPostTimer.end();
     }
 
     public List getDefsOfAt(Local l, Stmt s)

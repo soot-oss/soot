@@ -88,8 +88,11 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         LinkedList changedStmts = new LinkedList();
-        // HashSet changedStmtsSet = new HashSet();
+        HashSet changedStmtsSet = new HashSet();
 
+        int numNodes = graph.size();
+        int numComputations = 0;
+        
         // Set initial values and nodes to visit.
         {
             Iterator it = graph.iterator();
@@ -99,7 +102,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 Stmt s = (Stmt) it.next();
 
                 changedStmts.addLast(s);
-                // changedStmtsSet.add(s);
+                changedStmtsSet.add(s);
 
                 stmtToBeforeFlow.put(s, newInitialFlow());
                 stmtToAfterFlow.put(s, newInitialFlow());
@@ -117,7 +120,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                 Stmt s = (Stmt) changedStmts.removeFirst();
 
-                // changedStmtsSet.remove(s);
+                changedStmtsSet.remove(s);
 
                 copy(stmtToAfterFlow.get(s), previousAfterFlow);
 
@@ -148,6 +151,7 @@ next());
                 {
                     afterFlow = stmtToAfterFlow.get(s);
                     flowThrough(beforeFlow, s, afterFlow);
+                    numComputations++;
                 }
 
                 // Update queue appropriately
@@ -157,12 +161,23 @@ next());
 
                         while(succIt.hasNext())
                         {
-                            // if(!changedStmts.contains(succs[i]))
-                            changedStmts.addLast(succIt.next());
+                            Stmt succ = (Stmt) succIt.next();
+                            
+                            if(!changedStmtsSet.contains(succ))
+                            {
+                                changedStmts.addLast(succ);
+                                changedStmtsSet.add(succ);
+                            }
                         }
                     }
             }
         }
+        
+        System.out.println("{" + graph.getBody().getMethod().getSignature() + "} numNodes: " + numNodes + 
+            " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
+        
+        Main.totalFlowNodes += numNodes;
+        Main.totalFlowComputations += numComputations;
     }
 
 }

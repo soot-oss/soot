@@ -71,7 +71,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 
-public class GThrowStmt extends JThrowStmt implements ThrowStmt
+class GThrowStmt extends JThrowStmt implements ThrowStmt
 {
     public GThrowStmt(Value op)
     {

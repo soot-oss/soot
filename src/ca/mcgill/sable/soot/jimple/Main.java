@@ -133,6 +133,9 @@ public class Main
         produceJasminFile,
         produceJimpFile = true;
 
+    static int totalFlowNodes,
+           totalFlowComputations;
+           
     static Timer copiesTimer = new Timer(),
         defsTimer = new Timer(),
         usesTimer = new Timer(),
@@ -185,7 +188,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.4");
+            System.out.println("Jimple version 1.beta.3.dev.5");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -462,6 +465,11 @@ public class Main
                         System.out.println(toFormattedString((float) memoryUsed / stmtCount) + " k/stmt");
                         
                     }
+                    
+                    System.out.println("totalFlowNodes: " + totalFlowNodes + 
+                        " totalFlowComputations: " + totalFlowComputations + " avg: " + 
+                        truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
+        
                 }
             }
         }

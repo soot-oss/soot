@@ -89,7 +89,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         LinkedList changedStmts = new LinkedList();
-        // HashSet changedStmtsSet = new HashSet();
+        HashSet changedStmtsSet = new HashSet();
 
         // Set initial Flows and nodes to visit.
         {
@@ -100,7 +100,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 Stmt s = (Stmt) it.next();
 
                 changedStmts.addLast(s);
-                // changedStmtsSet.add(s);
+                changedStmtsSet.add(s);
 
                 stmtToBeforeFlow.put(s, newInitialFlow());
                 stmtToAfterFlow.put(s, newInitialFlow());
@@ -118,7 +118,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
                 Stmt s = (Stmt) changedStmts.removeFirst();
 
-                // changedStmtsSet.remove(s);
+                changedStmtsSet.remove(s);
 
                 copy(stmtToBeforeFlow.get(s), previousBeforeFlow);
 
@@ -157,8 +157,13 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
 
                         while(predIt.hasNext())
                         {
-                            // if(!changedStmts.contains(succs[i]))
-                            changedStmts.addLast(predIt.next());
+                            Stmt pred = (Stmt) predIt.next();
+                            
+                            if(!changedStmtsSet.contains(pred))
+                            {
+                                changedStmtsSet.add(pred);
+                                changedStmts.addLast(pred);
+                            }
                         }
                     }
             }
