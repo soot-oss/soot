@@ -27,8 +27,6 @@ import soot.jimple.*;
 /**
  * @author Navindra Umanee
  **/
-public interface ShimpleValueSwitch extends JimpleValueSwitch
+public interface ShimpleValueSwitch extends JimpleValueSwitch, ShimpleExprSwitch
 {
-    public abstract void casePhiExpr(PhiExpr e);
 }
-
