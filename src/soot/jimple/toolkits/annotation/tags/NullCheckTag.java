@@ -65,6 +65,6 @@ public class NullCheckTag implements OneByteCodeTag
 
     public String toString()
     {
-	return ((value==0)?"[Unknown]":"[NonNULL]");
+	return ((value==0)?"[not null]":"[unknown]");
     }
 }
