@@ -1,0 +1,18 @@
+\newcommand{\ph}[1]{\Rnode{#1}{\psframebox{\begin{tabular}{c}{#1}\end{tabular}}}}
+\newcommand{\ar}[2]{\ncline{->}{#1}{#2}}
+\begin{slide}{Intra-procedural phases}
+\vspace*{-5mm}
+\begin{psmatrix}[colsep=.6,rowsep=.6]
+&\ph{stp} & \ph{sop} & \ph{sap}&SSA\\
+\ovalnode{start}{start}
+&\ph{jtp} & \ph{jop} & \ph{jap}&Jimple\\
+& \ph{bb} & \ph{bop} & \ph{tag}&Baf\\
+& \ph{gb} & \ph{gop} &&Grimp\\
+&&\ovalnode{Dava}{Dava}&\ovalnode{end}{end}&Output
+\nccurve[angleA=90,angleB=180]{->}{start}{stp}\ar{start}{jtp}\ar{jtp}{jop}\ar{jop}{jap}\ar{bb}{bop}\ar{bop}{tag}\ar{gb}{gop}\ar{gop}{Dava}\ar{stp}{sop}\ar{sop}{sap}
+\ncloop[angleB=180,loopsize=-1]{->}{sap}{jtp}
+\ncloop[angleB=180,loopsize=-1]{->}{jap}{bb}
+\ncloop[angleB=180,loopsize=-1]{->}{jap}{gb}
+\ar{tag}{end}\ar{gop}{end}
+\end{psmatrix}
+\end{slide}

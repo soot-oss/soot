@@ -1,0 +1,69 @@
+\begin{slide}{Soot Phases Naming Scheme}
+\begin{itemize}
+\item w $\Rightarrow$ Whole-program phase
+\item j, s, b, g $\Rightarrow$ Jimple, SSA, Baf, Grimp
+\item b, t, o, a $\Rightarrow$
+\begin{itemize}
+\item (b) Body creation
+\item (t) User-defined transformations
+\item (o) Optimizations with -O option
+\item (a) Attribute generation
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Soot Phases (Jimple Body)}
+\begin{description}
+\item[jb] converts naive Jimple generated from bytecode into
+typed Jimple with split variables
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot Phases (Whole Program)}
+\begin{description}
+\item[cg] generates a call graph using CHA or more precise methods
+\item[wjtp] performs user-defined whole-program transformations
+\item[wjop] performs whole-program optimizations
+\begin{itemize}
+\item static inlining
+\item static method binding
+\end{itemize}
+\item[wjap] generates annotations using whole-program analyses
+\begin{itemize}
+\item rectangular array analysis
+\end{itemize}
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot Phases (Jimple)}
+\begin{description}
+\item[jtp] performs user-defined intra-procedural transformations
+\item[jop] performs intra-procedural optimizations
+\begin{itemize}
+\item CSE, PRE, constant propagation, \ldots
+\end{itemize}
+\item[jap] generates annotations using whole-program analyses
+\begin{itemize}
+\item null-pointer check
+\item array bounds check
+\item side-effect analysis
+\end{itemize}
+\end{description}
+\end{slide}
+
+\begin{slide}{Soot Phases (Back-end)}
+\begin{description}
+\item[bb] performs transformations to create Baf
+\item[bop] performs user-defined Baf optimizations
+\end{description}
+\begin{description}
+\item[gb] performs transformations to create Grimp
+\item[gop] performs user-defined Grimp optimizations
+\end{description}
+\begin{description}
+\item[tag] aggregates annotations into bytecode attributes
+\end{description}
+\end{slide}
+
+\input{phase}
+\input{intraprocphases}

@@ -1,0 +1,122 @@
+\begin{slide}{Call Graph}
+\begin{itemize}
+\item Collection of edges representing {\red all} method invocations known to Soot
+\begin{itemize}
+\item explicit method invocations
+\item implicit invocations of static initializers
+\item implicit calls of {\tt Thread.run()}
+\item implicit calls of finalizers
+\item implicit calls by {\tt AccessController}
+\item \ldots
+\end{itemize}
+\item {\tt Filter} can be used to select edges of specific type
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Updating Call Graph}
+\begin{itemize}
+\item {\tt addEdge( Edge )}
+\item {\tt removeEdge( Edge )}
+\item Call graph queries always give up-to-date information
+\end{itemize}
+\end{slide}
+
+
+\begin{slide}{Call Graph Edge}
+\begin{itemize}
+\item Each {\tt Edge} contains
+\begin{itemize}
+\item Source method
+\item Source statement (if applicable)
+\item Target method
+\item Edge type
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Querying Call Graph}
+\begin{description}
+\item[\tt targetsOf(SootMethod)] iterator over edges with given source method
+\item[\tt targetsOf(Unit)] iterator over edges with given source statement
+\item[\tt callersOf(SootMethod)] iterator over edges with given target method
+\end{description}
+\end{slide}
+
+\begin{slide}{Adapters}
+\begin{itemize}
+\item Adapters make an iterator over edges into an iterator over
+\begin{description}
+\item[{\tt Sources}] source methods
+\item[{\tt Units}] source statements
+\item[{\tt Targets}] target methods
+\end{description}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Transitive Targets}
+\begin{itemize}
+\item {\tt TransitiveTargets} class takes a {\tt CallGraph} and
+optional {\tt Filter} to select edges
+\end{itemize}
+\begin{description}
+\item {\tt iterator(SootMethod)} iterator over methods transitively
+called from given method
+\item {\tt iterator(Unit)} iterator over methods transitively
+called from targets of given statement
+\end{description}
+\end{slide}
+
+\begin{slide}{Entry Points}
+\begin{itemize}
+\item Kept separate from call graph edges
+\item {\tt EntryPoints} class returns default entry points
+\begin{description}
+\item[\tt application()] main method and main class static initializer
+\item[\tt implicit()] methods implicitly called by VM
+\item[\tt all()] all of the above
+\end{description}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Reachable Methods}
+\begin{itemize}
+\item {\tt ReachableMethods} class requires
+\begin{itemize}
+\item collection of entry points
+\item call graph
+\item optional edge filter
+\end{itemize}
+\item Updates list of reachable methods as edges added to call graph
+\item Edge removals are ignored
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Queues}
+\begin{itemize}
+\item Used throughout Soot to communicate events
+\item Objects added to queue can be read by multiple QueueReaders
+\begin{itemize}
+\item QueueReaders are like Iterators
+\end{itemize}
+\item In Call Graph, there are Queues for
+\begin{itemize}
+\item added edges
+\item methods that become reachable
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Call Graph Builder}
+\begin{itemize}
+\item Analyzes methods that become reachable, adding edges
+to call graph
+\item Uses {\tt PointsToAnalysis} interface to resolve receiver
+types for virtual calls
+\begin{itemize}
+\item {\tt DumbPointsToAnalysis} gives CHA
+\item Spark gives RTA, VTA, more precise analyses
+\end{itemize}
+\end{itemize}
+\end{slide}
+
+
