@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="ca.mcgill.sable.soot.help"
+   name="ca.mcgill.sable.soot.help"
+   version="1.0.0">
+
+
+   <extension point="org.eclipse.help.toc">
+      <toc file="toc.xml" primary="true" />
+   </extension>
+
+
+   <extension point="org.eclipse.help.toc">
+       <toc file="toc_Concepts.xml" />
+       <toc file="toc_Tasks.xml" />
+       <toc file="toc_Reference.xml" />
+   </extension>
+</plugin>
