@@ -63,5 +63,12 @@ public class JjAccessField_c extends Expr_c implements Expr {
     public Term entry(){
         return field.entry();
     }
+
+    public Node visitChildren(NodeVisitor v){
+        visitChild(field, v);
+        visitChild(getMeth, v);
+        visitChild(setMeth, v);
+        return this;
+    }
 }
 
