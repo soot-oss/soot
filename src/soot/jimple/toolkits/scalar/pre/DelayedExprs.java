@@ -20,7 +20,7 @@ class DelayedExprs
 
     public BoundedFlowSet getDelayedExprsBefore(Block b)
     {
-        BoundedFlowSet res = (BoundedFlowSet)del.getFlowBefore(b);
+        BoundedFlowSet res = (BoundedFlowSet)(((BoundedFlowSet)del.getFlowBefore(b)).clone());
         res.union(anea.getAnticipEarliestExprsBefore(b), res);
         return res;
     }

@@ -6,5 +6,5 @@ classes/soot/jimple/parser/lexer/lexer.dat: src/soot/jimple/parser/lexer/lexer.d
 
 foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lexer/lexer.dat
 
-JC=javac -d classes
+JC=jikes -d classes
 

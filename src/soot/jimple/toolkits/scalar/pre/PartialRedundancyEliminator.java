@@ -53,8 +53,8 @@ public class PartialRedundancyEliminator extends BodyTransformer
 
         AnticipatableExprs antExprs = new AnticipatableExprs(g, exprUniv);
         AnticipEarliestExprs aneaExprs = new AnticipEarliestExprs(g, antExprs, exprUniv);
-//          DelayedExprs delExprs = new DelayedExprs(g, aneaExprs, exprUniv);
-//          LatestExprs latExprs = new LatestExprs(g, delExprs, exprUniv);
+        DelayedExprs delExprs = new DelayedExprs(g, aneaExprs, exprUniv);
+        LatestExprs latExprs = new LatestExprs(g, delExprs, exprUniv);
 //          IsolatedExprs isoExprs = new IsolatedExprs(g, latExprs, exprUniv);
 //          OptimalExprs optExprs = new OptimalExprs(g, latExprs, isoExprs, exprUniv);
 //          RedundantExprs rednExprs = new RedundantExprs(g, latExprs, isoExprs, exprUniv);
@@ -65,9 +65,12 @@ public class PartialRedundancyEliminator extends BodyTransformer
             {
                 Block bl = (Block)it.next();
                 System.out.println("---\n"+bl);
+                System.out.println("transExprs: "+LocallyTransparentExprs.getTransLocExprsOf(bl, exprUniv));
                 System.out.println("antLocExprs: "+ LocallyAnticipatableExprs.getAntLocExprsOf(bl, exprUniv));
                 System.out.println("antExprs: "+antExprs.getAnticipatableExprsBefore(bl));
                 System.out.println("anteaExprs: "+aneaExprs.getAnticipEarliestExprsBefore(bl));
+                System.out.println("delExprs: "+delExprs.getDelayedExprsBefore(bl));
+                System.out.println("latExprs: "+latExprs.getLatestExprsBefore(bl));
 //                  System.out.println("optBefore: "+optExprs.getOptimalExprsBefore(bl));
 //                  System.out.println("rednBefore: "+rednExprs.getRedundantExprsOf(bl));
                 System.out.println();

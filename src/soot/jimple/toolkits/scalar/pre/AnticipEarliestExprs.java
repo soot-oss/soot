@@ -22,7 +22,7 @@ class AnticipEarliestExprs
     public BoundedFlowSet getAnticipEarliestExprsBefore(Block b)
     {
         BoundedFlowSet res = (BoundedFlowSet)ant.getAnticipatableExprsBefore(b).clone();
-        res.intersection((FlowSet)earl.getFlowBefore(b), res);
+        res.intersection((FlowSet)earl.getFlowAfter(b), res);
 
         return res;
     }
