@@ -69,6 +69,8 @@ foo: classes/soot/jimple/parser/parser/parser.dat classes/soot/jimple/parser/lex
 #
 #
 
+javadoc: document
+
 document: 
 	javadoc -d doc -sourcepath src -windowtitle "Soot API" @src/packageList
 

@@ -26,6 +26,7 @@ soot.tagkit
 soot.toolkits.graph
 soot.toolkits.scalar
 soot.util
+soot.util.queue
 soot.jimple.spark
 soot.jimple.spark.builder
 soot.jimple.spark.pag
