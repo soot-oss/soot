@@ -425,7 +425,7 @@ public class JasminClass extends AbstractJasminClass
                 {
                     DoubleConstant v = (DoubleConstant)(i.getConstant());
 
-                    if(v.value == 0)
+                    if((v.value == 0) && ((1.0/v.value) > 0.0))
                         emit("dconst_0");
                     else if(v.value == 1)
                         emit("dconst_1");
@@ -447,7 +447,7 @@ public class JasminClass extends AbstractJasminClass
                 else if (i.getConstant() instanceof FloatConstant)
                 {
                     FloatConstant v = (FloatConstant)(i.getConstant());
-                    if(v.value == 0)
+                    if((v.value == 0) && ((1.0f/v.value) > 1.0f))
                         emit("fconst_0");
                     else if(v.value == 1)
                         emit("fconst_1");

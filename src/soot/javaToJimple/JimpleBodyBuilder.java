@@ -1920,8 +1920,11 @@ public class JimpleBodyBuilder {
             boolean val = ((Boolean)field.constantValue()).booleanValue();
             return soot.jimple.IntConstant.v(val ? 1 : 0);
         }
-        else if (field.fieldInstance().constantValue() instanceof Character){
-            char val = ((Character)field.constantValue()).charValue();
+        else if (field.type().isChar()){//.constantValue() instanceof Character){
+            
+            char val = (char)((Integer)field.constantValue()).intValue();
+            //System.out.println("field: "+field);
+            //System.out.println("char val const: "+val);
             return soot.jimple.IntConstant.v(val);
         }
         else {//if (field.fieldInstance().constantValue() instanceof Number){
@@ -2169,6 +2172,7 @@ public class JimpleBodyBuilder {
                 return soot.jimple.StringConstant.v(result);
             }
             else {
+                //System.out.println("binary not string constant: "+binary);
                 soot.Local sb = (soot.Local)createStringBuffer(binary);
                 generateAppends(binary.left(), sb);
                 generateAppends(binary.right(), sb);
@@ -2207,6 +2211,9 @@ public class JimpleBodyBuilder {
     } 
 
     private boolean areAllStringLits(polyglot.ast.Node node){
+        //System.out.println("node class: "+node.getClass());
+        //System.out.println("node constant: "+((polyglot.ast.Expr)node).constantValue());
+        
         if (node instanceof polyglot.ast.StringLit) return true;
         else if ( node instanceof polyglot.ast.Field) {
             if (shouldReturnConstant((polyglot.ast.Field)node)) return true;
@@ -2214,6 +2221,21 @@ public class JimpleBodyBuilder {
         }
         else if (node instanceof polyglot.ast.Binary){
             if (areAllStringLitsBinary((polyglot.ast.Binary)node)) return true;
+            return false;
+        }
+        else if (node instanceof polyglot.ast.Cast){
+            polyglot.ast.Cast cast = (polyglot.ast.Cast)node;
+            if (cast.isConstant()){
+                //System.out.println("cast const: "+cast.constantValue());
+                return true;
+            }
+            return false;
+        }
+        else if (node instanceof polyglot.ast.Lit){
+            polyglot.ast.Lit lit = (polyglot.ast.Lit)node;
+            if (lit.isConstant()){
+                return true;
+            }
             return false;
         }
         return false;
@@ -2229,8 +2251,95 @@ public class JimpleBodyBuilder {
         if (node instanceof polyglot.ast.StringLit){
             s = ((polyglot.ast.StringLit)node).value();
         }
+        else if (node instanceof polyglot.ast.Cast){
+            polyglot.ast.Cast cast = (polyglot.ast.Cast)node;
+            if (cast.type().isChar()){
+                //System.out.println("cast const class: "+cast.constantValue().getClass());
+                s = "" + (char)((Character)cast.constantValue()).charValue();
+            }
+            else {
+                s = "" + cast.constantValue();
+            }
+        }
+        else if (node instanceof polyglot.ast.CharLit){
+            s = "" + ((polyglot.ast.CharLit)node).value();
+        }
+        else if (node instanceof polyglot.ast.BooleanLit){
+            s = "" + ((polyglot.ast.BooleanLit)node).value();
+        }
+        else if (node instanceof polyglot.ast.IntLit){
+            s = "" + ((polyglot.ast.IntLit)node).value();
+        }
+        else if (node instanceof polyglot.ast.FloatLit){
+            s = "" + ((polyglot.ast.FloatLit)node).value();
+        }
         else if (node instanceof polyglot.ast.Field){
-            s = (((polyglot.ast.Field)node).fieldInstance().constantValue()).toString();
+            polyglot.ast.Field field = (polyglot.ast.Field)node;
+            //System.out.println("field: "+field);
+            //System.out.println("field inst cons string concat: "+field.fieldInstance().constantValue());
+            //System.out.println("field cons string concat: "+field.constantValue());
+            //System.out.println("field type:: "+field.type());
+            //System.out.println("field cons string concat: class: "+field.fieldInstance().constantValue().getClass());
+            //System.out.println("field cons string concat: class: "+field.constantValue().getClass());
+            //polyglot.ast.Field field = (polyglot.ast.Field)node;
+            if (field.fieldInstance().constantValue() instanceof String){
+                s = (String)field.constantValue();
+            }
+            else if (field.fieldInstance().constantValue() instanceof Boolean){
+                boolean val = ((Boolean)field.constantValue()).booleanValue();
+                int temp = val ? 1 : 0;
+                s = "" + temp;
+            }
+            else if (field.type().isChar()){
+            
+                char val = (char)((Integer)field.constantValue()).intValue();
+                //System.out.println("field: "+field);
+                //System.out.println("char val const: "+val);
+                s = "" + val;
+            }
+            else {//if (field.fieldInstance().constantValue() instanceof Number){
+                Number num = (Number)field.fieldInstance().constantValue();
+                num = createConstantCast(field.type(), num);
+                if (num instanceof Long) {
+                    s = "" + ((Long)num).longValue();
+                }
+                else if (num instanceof Double) {
+                    s = "" + ((Double)num).doubleValue();
+                }
+                else if (num instanceof Float) {
+                    s = "" + ((Float)num).floatValue();
+                }
+                else if (num instanceof Byte) {
+                    s = "" + ((Byte)num).byteValue();
+                }
+                else if (num instanceof Short) {
+                    s = "" + ((Short)num).shortValue();
+                }
+                else {//if (num instanceof Long) {
+                    //System.out.println("num class: "+num.getClass());
+                    s = "" + ((Integer)num).intValue();
+                }
+            }
+            /*soot.jimple.Constant cons = getReturnConstant(((polyglot.ast.Field)node));
+            if (cons instanceof soot.jimple.StringConstant){
+                s = ((soot.jimple.StringConstant)cons).value;
+            }
+            else if (cons instanceof soot.jimple.IntConstant){
+                s = "" + ((soot.jimple.IntConstant)cons).value;
+            }
+            else if (cons instanceof soot.jimple.LongConstant){
+                s = "" + ((soot.jimple.LongConstant)cons).value;
+            }
+            else if (cons instanceof soot.jimple.FloatConstant){
+                s = "" + ((soot.jimple.FloatConstant)cons).value;
+            }
+            else if (cons instanceof soot.jimple.DoubleConstant){
+                s = "" + ((soot.jimple.DoubleConstant)cons).value;
+            }
+            else {
+                s = "";
+            }*/
+            
         }
         else if (node instanceof polyglot.ast.Binary){
             s = createStringConstantBinary((polyglot.ast.Binary)node);
@@ -2242,7 +2351,7 @@ public class JimpleBodyBuilder {
     }
     
     private String createStringConstantBinary(polyglot.ast.Binary binary){
-        String s = createStringConstant(binary.left())+ createStringConstant(binary.right());
+        String s = createStringConstant(binary.left()) + createStringConstant(binary.right());
         return s;
         
     }

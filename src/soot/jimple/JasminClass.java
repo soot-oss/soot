@@ -1965,7 +1965,7 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseDoubleConstant(DoubleConstant v)
             {
-                if(v.value == 0)
+                if((v.value == 0) && ((1.0/v.value) > 0.0))
                     emit("dconst_0", 2);
                 else if(v.value == 1)
                     emit("dconst_1", 2);
@@ -1987,7 +1987,7 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseFloatConstant(FloatConstant v)
             {
-                if(v.value == 0)
+                if((v.value == 0) && ((1.0f/v.value) > 0.0f))
                     emit("fconst_0", 1);
                 else if(v.value == 1)
                     emit("fconst_1", 1);
