@@ -376,7 +376,7 @@ public class Transformations
 
     }
 
-    public static void removeUnusedLocals(JimpleBody listBody)
+    public static void removeUnusedLocals(StmtBody listBody)
     {
         StmtList stmtList = listBody.getStmtList();
         Set unusedLocals = new HashSet();
@@ -424,12 +424,13 @@ public class Transformations
         // Remove all locals in unusedLocals
         {
             Iterator it = unusedLocals.iterator();
-
+            List locals = listBody.getLocals();
+            
             while(it.hasNext())
             {
                 Local local = (Local) it.next();
 
-                listBody.removeLocal(local);
+                locals.remove(local);
             }
         }
     }
@@ -1025,31 +1026,4 @@ public class Transformations
     }
     
         
-}
-
-class GroupIntPair
-{
-    Object group;
-    int x;
-    
-    GroupIntPair(Object group, int x)
-    {
-        this.group = group;
-        this.x = x;
-    }
-    
-    public boolean equals(Object other)
-    {
-        if(other instanceof GroupIntPair)
-            return ((GroupIntPair) other).group.equals(this.group) &&
-                    ((GroupIntPair) other).x == this.x;
-        else
-            return false;
-    }
-    
-    public int hashCode()
-    {
-        return group.hashCode() + 1013 * x;
-    }
-    
 }

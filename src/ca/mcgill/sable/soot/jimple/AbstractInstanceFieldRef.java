@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Fixed bug with use boxes.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -88,16 +91,11 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
 {
     SootField field;
     ValueBox baseBox;
-    List useBoxes;
 
     protected AbstractInstanceFieldRef(ValueBox baseBox, SootField field)
     {
         this.baseBox = baseBox;
         this.field = field;
-
-        useBoxes = new ArrayList();
-        useBoxes.add(baseBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
     public String toString()
@@ -137,6 +135,11 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
 
     public List getUseBoxes()
     {
+        List useBoxes = new ArrayList();
+
+        useBoxes.add(baseBox);
+        useBoxes.addAll(baseBox.getValue().getUseBoxes());
+
         return useBoxes;
     }
 

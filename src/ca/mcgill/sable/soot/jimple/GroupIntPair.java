@@ -1,10 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Copyright (C) 1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)   *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -65,123 +62,34 @@
  B) Changes:
 
  - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Fixed bug with use boxes.
-
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added changes in support of the Grimp intermediate
-   representation (with aggregated-expressions).
-
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Changed the base from Immediate to Local.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+   First internal release.
 */
 
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.util.*;
-
-public class JArrayRef implements ArrayRef
+class GroupIntPair
 {
-    ValueBox baseBox;
-    ValueBox indexBox;
-
-
-    JArrayRef(Value base, Value index)
+    Object group;
+    int x;
+    
+    GroupIntPair(Object group, int x)
     {
-	this(Jimple.v().newLocalBox(base),
-	     Jimple.v().newImmediateBox(index));
+        this.group = group;
+        this.x = x;
     }
-
-    protected JArrayRef(ValueBox baseBox, ValueBox indexBox)
+    
+    public boolean equals(Object other)
     {
-        this.baseBox = baseBox;
-        this.indexBox = indexBox;
+        if(other instanceof GroupIntPair)
+            return ((GroupIntPair) other).group.equals(this.group) &&
+                    ((GroupIntPair) other).x == this.x;
+        else
+            return false;
     }
-
-    public String toString()
+    
+    public int hashCode()
     {
-        return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
+        return group.hashCode() + 1013 * x;
     }
-
-    public String toBriefString()
-    {
-        return ((ToBriefString) baseBox.getValue()).toBriefString() + 
-            "[" + ((ToBriefString) indexBox.getValue()).toBriefString() 
-            + "]";
-    }
-
-    public Value getBase()
-    {
-        return baseBox.getValue();
-    }
-
-    public void setBase(Local base)
-    {
-        baseBox.setValue(base);
-    }
-
-    public ValueBox getBaseBox()
-    {
-        return baseBox;
-    }
-
-    public Value getIndex()
-    {
-        return indexBox.getValue();
-    }
-
-    public void setIndex(Value index)
-    {
-        indexBox.setValue(index);
-    }
-
-    public ValueBox getIndexBox()
-    {
-        return indexBox;
-    }
-
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-
-        useBoxes.add(baseBox);
-        useBoxes.addAll(baseBox.getValue().getUseBoxes());
-
-        useBoxes.add(indexBox);
-        useBoxes.addAll(indexBox.getValue().getUseBoxes());
-
-        return useBoxes;
-    }
-
-    public Type getType()
-    {
-        Value base = (Value) baseBox.getValue();
-        Type type = base.getType();
-
-        if(type.equals(UnknownType.v()))
-            return UnknownType.v();
-        else {
-            ArrayType arrayType = (ArrayType) type;
-
-            if(arrayType.numDimensions == 1)
-                return arrayType.baseType;
-            else
-                return ArrayType.v(arrayType.baseType, arrayType.numDimensions - 1);
-        }
-    }
-
-    public void apply(Switch sw)
-    {
-        ((RefSwitch) sw).caseArrayRef(this);
-    }
+    
 }
-
-
-

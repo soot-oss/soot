@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Fixed bug with use boxes.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -85,15 +88,10 @@ public class AbstractNewArrayExpr implements NewArrayExpr
 {
     Type baseType;
     ValueBox sizeBox;
-    List useBoxes;
 
     protected AbstractNewArrayExpr(Type type, ValueBox sizeBox)
     {
         this.baseType = type; this.sizeBox = sizeBox;
-
-        useBoxes = new ArrayList();
-        useBoxes.add(sizeBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
     public String toString()
@@ -144,8 +142,14 @@ public class AbstractNewArrayExpr implements NewArrayExpr
 
     public List getUseBoxes()
     {
+        List useBoxes = new ArrayList();
+
+        useBoxes.add(sizeBox);
+        useBoxes.addAll(sizeBox.getValue().getUseBoxes());
+
         return useBoxes;
     }
+
 
     public Type getType()
     {

@@ -387,9 +387,9 @@ public class JasminClass
 
     void assignColorsToLocals(StmtBody body)
     {
-        Map localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-        Map localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        localToGroup = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        groupToColorCount = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        localToColor = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
         
         // Assign each local to a group, and set that group's color count to 0.
         {
@@ -498,9 +498,12 @@ public class JasminClass
             int[] paramSlots = new int[method.getParameterCount()];
             int thisSlot = 0;
             Set assignedLocals = new HashSet();
-
+            Map groupColorPairToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            
             localToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
 
+            assignColorsToLocals(body);
+            
             // Determine slots for 'this' and parameters
             {
                 List paramTypes = method.getParameterTypes();
@@ -531,20 +534,35 @@ public class JasminClass
                         Local l = (Local) ((IdentityStmt) s).getLeftOp();
                         IdentityRef identity = (IdentityRef) ((IdentityStmt) s).getRightOp();
 
+                        int slot = 0;
+                                                
                         if(identity instanceof ThisRef)
                         {
                             if(method.isStatic())
                                 throw new RuntimeException("Attempting to use 'this' in static method");
 
-                            localToSlot.put(l, new Integer(thisSlot));
-                            assignedLocals.add(l);
+                            slot = thisSlot;
                         }
                         else if(identity instanceof ParameterRef)
-                        {
-                            localToSlot.put(l, new Integer(
-                                paramSlots[((ParameterRef) identity).getIndex()]));
-                            assignedLocals.add(l);
+                            slot = paramSlots[((ParameterRef) identity).getIndex()];
+                        else {
+                            // Exception ref.  Skip over this
+                            continue;
                         }
+                        
+                        // Make this (group, color) point to the given slot,
+                        // so that all locals of the same color can be pointed here too
+                        {
+                            
+                            GroupIntPair pair = new GroupIntPair(localToGroup.get(l), 
+                                ((Integer) localToColor.get(l)).intValue());
+                                
+                            groupColorPairToSlot.put(pair, new Integer(slot));
+                        }
+                            
+                        localToSlot.put(l, new Integer(slot));
+                        assignedLocals.add(l);
+                        
                     }
                 }
             }
@@ -559,8 +577,26 @@ public class JasminClass
 
                     if(!assignedLocals.contains(local))
                     {
-                        localToSlot.put(local, new Integer(localCount));
-                        localCount += sizeOfType(local.getType());
+                        GroupIntPair pair = new GroupIntPair(localToGroup.get(local), 
+                                ((Integer) localToColor.get(local)).intValue());
+                            
+                        int slot;
+                        
+                        if(groupColorPairToSlot.containsKey(pair))
+                        {
+                            // This local should share the same slot as the previous local with
+                            // the same (group, color);
+                            
+                            slot = ((Integer) groupColorPairToSlot.get(pair)).intValue();
+                        }
+                        else { 
+                            slot = localCount;           
+                            localCount += sizeOfType(local.getType());
+                    
+                            groupColorPairToSlot.put(pair, new Integer(slot));
+                        }
+                            
+                        localToSlot.put(local, new Integer(slot));
                         assignedLocals.add(local);
                     }
                 }
@@ -882,6 +918,8 @@ public class JasminClass
                     emit("ifnonnull "+ label, -1);
                 else
                     throw new RuntimeException("invalid condition");
+                    
+                return;
             }
 
         // Handle simple subcase where op2 is 0  

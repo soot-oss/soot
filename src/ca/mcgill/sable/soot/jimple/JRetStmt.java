@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Fixed bug with use boxes.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -93,12 +96,8 @@ public class JRetStmt extends AbstractStmt implements RetStmt
 
     protected JRetStmt(ValueBox stmtAddressBox)
     {
-	this.stmtAddressBox = stmtAddressBox;
+	    this.stmtAddressBox = stmtAddressBox;
 
-        useBoxes = new ArrayList();
-
-        useBoxes.add(stmtAddressBox);
-        useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
     protected String toString(boolean isBrief, Map stmtToName, String indentation)
@@ -124,15 +123,19 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         stmtAddressBox.setValue(stmtAddress);
     }
 
+    public List getUseBoxes()
+    {
+        List useBoxes = new ArrayList();
+
+        useBoxes.add(stmtAddressBox);
+        useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
+
+        return useBoxes;
+    }
 
     public List getDefBoxes()
     {
         return emptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return useBoxes;
     }
 
     public List getUnitBoxes()
