@@ -167,23 +167,26 @@ public class LongConstant extends ArithmeticConstant implements Switchable, ToBr
 
     public ArithmeticConstant shiftLeft(ArithmeticConstant c)
     {
-        if (!(c instanceof LongConstant))
-            throw new IllegalArgumentException("LongConstant expected");
-        return LongConstant.v(this.value << ((LongConstant)c).value);
+        // NOTE CAREFULLY: the RHS of a shift op is not (!)
+        // of Long type.  It is, in fact, an IntConstant.
+
+        if (!(c instanceof IntConstant))
+            throw new IllegalArgumentException("IntConstant expected");
+        return LongConstant.v(this.value << ((IntConstant)c).value);
     }
 
     public ArithmeticConstant shiftRight(ArithmeticConstant c)
     {
-        if (!(c instanceof LongConstant))
-            throw new IllegalArgumentException("LongConstant expected");
-        return LongConstant.v(this.value >> ((LongConstant)c).value);
+        if (!(c instanceof IntConstant))
+            throw new IllegalArgumentException("IntConstant expected");
+        return LongConstant.v(this.value >> ((IntConstant)c).value);
     }
 
     public ArithmeticConstant unsignedShiftRight(ArithmeticConstant c)
     {
-        if (!(c instanceof LongConstant))
-            throw new IllegalArgumentException("LongConstant expected");
-        return LongConstant.v(this.value >>> ((LongConstant)c).value);
+        if (!(c instanceof IntConstant))
+            throw new IllegalArgumentException("IntConstant expected");
+        return LongConstant.v(this.value >>> ((IntConstant)c).value);
     }
 
     public String toString()

@@ -276,6 +276,16 @@ public class SootMethod extends AbstractHost
         return Modifier.isPrivate(this.getModifiers());
     }
 
+    public boolean isPublic()
+    {
+        return Modifier.isPublic(this.getModifiers());
+    }
+
+    public boolean isProtected()
+    {
+        return Modifier.isProtected(this.getModifiers());
+    }
+
     public boolean isAbstract()
     {
         return Modifier.isAbstract(this.getModifiers());

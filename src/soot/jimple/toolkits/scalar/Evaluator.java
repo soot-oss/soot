@@ -47,7 +47,27 @@ public class Evaluator {
             if (isValueConstantValued(((UnopExpr)op).getOp()))
                 return true;
         }
-        else if (op instanceof BinopExpr) {
+        else if (op instanceof BinopExpr) 
+        {
+            /* Handle weird cases. */
+            if (op instanceof DivExpr || op instanceof RemExpr)
+            {
+                if (!isValueConstantValued(((BinopExpr)op).getOp1()) ||
+                    !isValueConstantValued(((BinopExpr)op).getOp2()))
+                    return false;
+
+                Value c1 = getConstantValueOf(((BinopExpr)op).getOp1());
+                Value c2 = getConstantValueOf(((BinopExpr)op).getOp2());
+
+                /* check for a 0 value.  If so, punt. */
+                if (c2 instanceof IntConstant && ((IntConstant)c2).value == 0)
+                    return false;
+
+                if (c2 instanceof LongConstant && 
+                         ((LongConstant)c2).value == 0)
+                    return false;
+            }
+
             if (isValueConstantValued(((BinopExpr)op).getOp1()) &&
                 isValueConstantValued(((BinopExpr)op).getOp2()))
                 return true;
@@ -55,6 +75,8 @@ public class Evaluator {
         return false;
     } // isValueConstantValued
 
+    /** Returns the constant value of <code>op</code> if it is easy
+     * to find the constant value; else returns <code>null</code>. */
     public static Value getConstantValueOf(Value op) {
         
         if (!isValueConstantValued(op))
@@ -76,14 +98,40 @@ public class Evaluator {
                 return ((NumericConstant)c1).subtract((NumericConstant)c2);
             else if (op instanceof MulExpr)
                 return ((NumericConstant)c1).multiply((NumericConstant)c2);
+            // punting handled by isValueConstantValued().
             else if (op instanceof DivExpr)
                 return ((NumericConstant)c1).divide((NumericConstant)c2);
             else if (op instanceof RemExpr)
                 return ((NumericConstant)c1).remainder((NumericConstant)c2);
-            else if (op instanceof EqExpr)
-                return ((NumericConstant)c1).equalEqual((NumericConstant)c2);
-            else if (op instanceof NeExpr)
-                return ((NumericConstant)c1).notEqual((NumericConstant)c2);
+            else if (op instanceof EqExpr || op instanceof NeExpr)
+            {
+                if (c1 instanceof NumericConstant)
+                {
+                    if (op instanceof EqExpr)
+                        return ((NumericConstant)c1).equalEqual
+                            ((NumericConstant)c2);
+                    else if (op instanceof NeExpr)
+                        return ((NumericConstant)c1).notEqual
+                            ((NumericConstant)c2);
+                }
+                else if (c1 instanceof StringConstant)
+                {
+                    boolean equality = ((StringConstant)c1).equals
+                        ((StringConstant)c2);
+
+                    boolean truth = (op instanceof EqExpr) ? equality :
+                        !equality;
+
+                    // Yeah, this variable name sucks, but I couldn't resist.
+                    IntConstant beauty = IntConstant.v(truth ? 1 : 0);
+                    return beauty;
+                }
+                else if (c1 instanceof NullConstant)
+                    return IntConstant.v
+                        (((NullConstant)c1).equals(c2) ? 1 : 0);
+                throw new RuntimeException
+                    ("constant neither numeric nor string");
+            }
             else if (op instanceof GtExpr)
                 return ((NumericConstant)c1).greaterThan((NumericConstant)c2);
             else if (op instanceof GeExpr)
@@ -122,7 +170,7 @@ public class Evaluator {
                 throw new RuntimeException("unknown binop: " + op);
         }
 
-        return null;
+        throw new RuntimeException("couldn't getConstantValueOf");
     } // getConstantValueOf
 
 } // Evaluator
