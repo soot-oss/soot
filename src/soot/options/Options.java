@@ -851,7 +851,7 @@ public class Options extends OptionsBase {
 +padOpt(" -annot-fieldrw", "Emit field read/write attributes" )
 +"\nMiscellaneous Options:\n"
       
-+padOpt(" -time", "Report time required for tranformations" )
++padOpt(" -time", "Report time required for transformations" )
 +padOpt(" -subtract-gc", "Subtract gc from time" );
     }
 
@@ -859,72 +859,72 @@ public class Options extends OptionsBase {
     public String getPhaseList() {
         return ""
     
-        +padOpt("jb", "Create a JimpleBody for each method")
-        +padVal("jb.ls", "Associates separate locals with each DU-UD web")
-        +padVal("jb.a", "Removes some unnecessary copies")
-        +padVal("jb.ule", "Removes unused locals")
+        +padOpt("jb", "Creates a JimpleBody for each method")
+        +padVal("jb.ls", "Local splitter: one local per DU-UD web")
+        +padVal("jb.a", "Aggregator: removes some unnecessary copies")
+        +padVal("jb.ule", "Unused local eliminator")
         +padVal("jb.tr", "Assigns types to locals")
-        +padVal("jb.ulp", "Minimizes number of locals")
-        +padVal("jb.lns", "Gives names to locals")
-        +padVal("jb.cp", "Removes unnecessary copies")
-        +padVal("jb.dae", "")
-        +padVal("jb.cp-ule", "Removes unused locals")
-        +padVal("jb.lp", "Minimizes number of locals")
-        +padVal("jb.ne", "")
-        +padVal("jb.uce", "")
-        +padOpt("cg", "Build a call graph")
-        +padVal("cg.cha", "Build a call graph using Class Hierarchy Analysis")
+        +padVal("jb.ulp", "Local packer: minimizes number of locals")
+        +padVal("jb.lns", "Local name standardizer")
+        +padVal("jb.cp", "Copy propagator")
+        +padVal("jb.dae", "Dead assignment eliminator")
+        +padVal("jb.cp-ule", "Post-copy propagation unused local eliminator")
+        +padVal("jb.lp", "Local packer: minimizes number of locals")
+        +padVal("jb.ne", "Nop eliminator")
+        +padVal("jb.uce", "Unreachable code eliminator")
+        +padOpt("cg", "Call graph constructor")
+        +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
         +padVal("cg.spark", "Spark points-to analysis framework")
-        +padOpt("wjtp", "")
-        +padOpt("wjop", "")
-        +padVal("wjop.smb", "")
-        +padVal("wjop.si", "")
-        +padOpt("wjap", "")
-        +padVal("wjap.ra", " Find array variables always pointing to rectangular two-dimensional array objects. ")
-        +padOpt("shimple", "")
-        +padOpt("stp", "Apply Shimple-based transformations")
-        +padOpt("sop", "Apply Shimple-based optimizations")
-        +padVal("sop.cpf", "Performs constant propagation and folding on Shimple.")
-        +padOpt("jtp", "")
-        +padOpt("jop", "")
-        +padVal("jop.cse", "")
-        +padVal("jop.bcm", "")
-        +padVal("jop.lcm", "")
-        +padVal("jop.cp", "Removes unnecessary copies")
-        +padVal("jop.cpf", "")
-        +padVal("jop.cbf", "")
-        +padVal("jop.dae", "")
-        +padVal("jop.uce1", "")
-        +padVal("jop.ubf1", "")
-        +padVal("jop.uce2", "")
-        +padVal("jop.ubf2", "")
-        +padVal("jop.ule", "Removes unused locals")
-        +padOpt("jap", "")
-        +padVal("jap.npc", "")
-        +padVal("jap.npcolorer", "Produce color tags for null and non-null references")
-        +padVal("jap.abc", "")
-        +padVal("jap.profiling", "")
-        +padVal("jap.sea", "")
-        +padVal("jap.fieldrw", "")
-        +padVal("jap.cgtagger", "")
-        +padVal("jap.parity", "")
-        +padOpt("gb", "")
-        +padVal("gb.a1", "")
-        +padVal("gb.cf", "")
-        +padVal("gb.a2", "")
-        +padVal("gb.ule", "Removes unused locals")
-        +padOpt("gop", "")
-        +padOpt("bb", "")
-        +padVal("bb.lso", "")
-        +padVal("bb.pho", "")
-        +padVal("bb.ule", "Removes unused locals")
-        +padVal("bb.lp", "Minimizes number of locals")
-        +padOpt("bop", "")
-        +padOpt("tag", "")
-        +padVal("tag.ln", "")
-        +padVal("tag.an", "")
-        +padVal("tag.dep", "")
-        +padVal("tag.fieldrw", "");
+        +padOpt("wjtp", "Whole-jimple transformation pack")
+        +padOpt("wjop", "Whole-jimple optimization pack")
+        +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
+        +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
+        +padOpt("wjap", "Whole-jimple annotation pack: adds interprocedural tags")
+        +padVal("wjap.ra", "Rectangular array finder")
+        +padOpt("shimple", "Sets parameters for Shimple SSA form")
+        +padOpt("stp", "Shimple transformation pack")
+        +padOpt("sop", "Shimple optimization pack")
+        +padVal("sop.cpf", "Shimple constant propagator and folder")
+        +padOpt("jtp", "Jimple transformation pack: intraprocedural analyses added to Soot")
+        +padOpt("jop", "Jimple optimization pack (intraprocedural)")
+        +padVal("jop.cse", "Common subexpression eliminator")
+        +padVal("jop.bcm", "Busy code motion: unaggressive partial redundancy elimination")
+        +padVal("jop.lcm", "Lazy code motion: aggressive partial redundancy elimination")
+        +padVal("jop.cp", "Copy propagator")
+        +padVal("jop.cpf", "Constant propagator and folder")
+        +padVal("jop.cbf", "Conditional branch folder")
+        +padVal("jop.dae", "Dead assignment eliminator")
+        +padVal("jop.uce1", "Unreachable code eliminator, pass 1")
+        +padVal("jop.ubf1", "Unconditional branch folder, pass 1")
+        +padVal("jop.uce2", "Unreachable code eliminator, pass 2")
+        +padVal("jop.ubf2", "Unconditional branch folder, pass 2")
+        +padVal("jop.ule", "Unused local eliminator")
+        +padOpt("jap", "Jimple annotation pack: adds intraprocedural tags")
+        +padVal("jap.npc", "Null pointer checker")
+        +padVal("jap.npcolorer", "Null pointer colourer: tags references for eclipse")
+        +padVal("jap.abc", "Array bound checker")
+        +padVal("jap.profiling", "Instruments null pointer and array checks")
+        +padVal("jap.sea", "Side effect tagger")
+        +padVal("jap.fieldrw", "Field read/write tagger")
+        +padVal("jap.cgtagger", "Call graph tagger")
+        +padVal("jap.parity", "Parity tagger")
+        +padOpt("gb", "Creates a GrimpBody for each method")
+        +padVal("gb.a1", "Aggregator: removes some copies, pre-folding")
+        +padVal("gb.cf", "Constructor folder")
+        +padVal("gb.a2", "Aggregator: removes some copies, post-folding")
+        +padVal("gb.ule", "Unused local eliminator")
+        +padOpt("gop", "Grimp optimization pack")
+        +padOpt("bb", "Creates Baf bodies")
+        +padVal("bb.lso", "Load store optimizer")
+        +padVal("bb.pho", "Peephole optimizer")
+        +padVal("bb.ule", "Unused local eliminator")
+        +padVal("bb.lp", "Local packer: minimizes number of locals")
+        +padOpt("bop", "Baf optimization pack")
+        +padOpt("tag", "Tag aggregator: turns tags into attributes")
+        +padVal("tag.ln", "Line number aggregator")
+        +padVal("tag.an", "Array bounds and null pointer check aggregator")
+        +padVal("tag.dep", "Dependence aggregator")
+        +padVal("tag.fieldrw", "Field read/write aggregator");
     }
 
     public String getPhaseHelp( String phaseName ) {
@@ -1024,7 +1024,7 @@ public class Options extends OptionsBase {
                 +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
-                +padOpt( "trim-clinit (true)", "Remove redundant static initializer calls." );
+                +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -1115,7 +1115,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSoot can perform whole-program analyses. In whole-program \nmode, Soot applies the contents of the Whole-Jimple \nTransformation Pack to the scene as a whole after construcing a \ncall graph for the program. In an unmodified copy of Soot the \nWhole-Jimple Transformation Pack is empty."
+                "\nSoot can perform whole-program analyses. In whole-program \nmode, Soot applies the contents of the Whole-Jimple \nTransformation Pack to the scene as a whole after constructing a \ncall graph for the program. In an unmodified copy of Soot the \nWhole-Jimple Transformation Pack is empty."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1214,7 +1214,7 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nWhen Soot's Optimize option is on, Soot applies the Jimple \nOptimization Pack to every JimpleBody in application classes. \nThis section lists the default transformations in the Jimple \nOptimization Pack. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (false)", "Eliminates common subexpressions" );
     
         if( phaseName.equals( "jop.cse" ) )
             return "Phase "+phaseName+":\n"+
@@ -1318,7 +1318,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.npcolorer" ) )
             return "Phase "+phaseName+":\n"+
-                "\nProduce color tags that the Soot plug-in for Eclipse can use to \nhighlight null and non-null references. "
+                "\nProduce colour tags that the Soot plug-in for Eclipse can use \nto highlight null and non-null references. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled", "" );
     
@@ -1358,15 +1358,15 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.cgtagger" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Call Graph Tagger produces LinkTags based on the call \ngraph. The Eclipse plugin uses these tags to produce linked \npopup lists which indicate the source and target methods of the \nstatement. Selecting a link from the list moves the cursor to \nthe indicated method. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "Produce LinkTags which target source and target methods." );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "jap.parity" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Parity Tagger produces StringTags and ColorTags indicating \nthe parity of a variable (even, odd, top, or bottom). The \neclipse plugin can use tooltips and variable colouring to \ndisplay the information in these tags. For example, even \nvariables (such as x in x = 2) are coloured yellow. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "Produce StringTags and ColorTags indicating the parity of a variable." );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+

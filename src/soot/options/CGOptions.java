@@ -113,7 +113,7 @@ public class CGOptions
     
     /** Trim Static Initializer Edges --
     
-     * Remove redundant static initializer calls..
+     * Removes redundant static initializer calls.
     
      * The call graph contains an edge from each statement that could 
      * trigger execution of a static initializer to that static 

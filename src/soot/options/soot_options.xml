@@ -477,7 +477,7 @@ details about the available phases and options.</p>
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
                                 <class>JBOptions</class>
-				<short_desc>Create a <tt>JimpleBody</tt> for each method</short_desc>
+				<short_desc>Creates a <tt>JimpleBody</tt> for each method</short_desc>
                                 <long_desc>
 Jimple Body Creation creates a <tt>JimpleBody</tt> for each input
 method, using either coffi, to read <tt>.class</tt> files, or the
@@ -508,7 +508,7 @@ names based on their types.
 						<alias>enabled</alias>
                                                 <default>true</default>
 					</boolopt>
-					<short_desc>Associates separate locals with each DU-UD web</short_desc>
+					<short_desc>Local splitter: one local per DU-UD web</short_desc>
 					<long_desc>
 The Local Splitter identifies DU-UD webs for local variables and
 introduces new variables so that each disjoint web is associated
@@ -518,7 +518,7 @@ with a single local.
 				<sub_phase>
 					<name>Jimple Local Aggregator</name>
 					<alias>jb.a</alias>
-					<short_desc>Removes some unnecessary copies</short_desc>
+					<short_desc>Aggregator: removes some unnecessary copies</short_desc>
                                         <long_desc>
 <p>
 The Jimple Local Aggregator removes some unnecessary copies by
@@ -551,7 +551,7 @@ by the <dollar/> character with which their names begin.)
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>jb.ule</alias>
-					<short_desc>Removes unused locals</short_desc>
+					<short_desc>Unused local eliminator</short_desc>
                                         <long_desc>
 The Unused Local Eliminator removes any unused locals from the
 method.
@@ -580,7 +580,7 @@ method.
 				<sub_phase>
 					<name>Unsplit-originals Local Packer</name>
 					<alias>jb.ulp</alias>
-					<short_desc>Minimizes number of locals</short_desc>
+					<short_desc>Local packer: minimizes number of locals</short_desc>
 					<long_desc>
 The Unsplit-originals Local Packer executes only when the
 `<tt>use-original-names</tt>&apos; option is chosen for the
@@ -612,7 +612,7 @@ the Local Splitter.
 				<sub_phase>
 					<name>Local Name Standardizer</name>
 					<alias>jb.lns</alias>
-					<short_desc>Gives names to locals</short_desc>
+					<short_desc>Local name standardizer</short_desc>
 					<long_desc>
 The Local Name Standardizer assigns generic names to local variables.
 </long_desc>
@@ -638,7 +638,7 @@ the `<tt>jb</tt>&apos; phase.
 				<sub_phase>
 					<name>Copy Propagator</name>
 					<alias>jb.cp</alias>
-					<short_desc>Removes unnecessary copies</short_desc>
+					<short_desc>Copy propagator</short_desc>
 					<long_desc>
 This phase performs cascaded copy propagation.  
     
@@ -690,6 +690,7 @@ the original bytecode.
 				<sub_phase>
 					<name>Dead Assignment Eliminator</name>
 					<alias>jb.dae</alias>
+					<short_desc>Dead assignment eliminator</short_desc>
 					<long_desc>
 The Dead Assignment Eliminator eliminates assignment statements
 to locals whose values are not subsequently used, unless
@@ -717,7 +718,7 @@ locations in the original bytecode.
 				<sub_phase>
 					<name>Post-copy propagation Unused Local Eliminator</name>
 					<alias>jb.cp-ule</alias>
-					<short_desc>Removes unused locals</short_desc>
+					<short_desc>Post-copy propagation unused local eliminator</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused after copy propagation.
 </long_desc>
@@ -730,7 +731,7 @@ This phase removes any locals that are unused after copy propagation.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>jb.lp</alias>
-					<short_desc>Minimizes number of locals</short_desc>
+					<short_desc>Local packer: minimizes number of locals</short_desc>
 					<long_desc>
 The Local Packer attempts to minimize the number of local
 variables required in a method by reusing the same variable for
@@ -757,6 +758,7 @@ the Local Splitter.
 				<sub_phase>
 					<name>Nop Eliminator</name>
 					<alias>jb.ne</alias>
+					<short_desc>Nop eliminator</short_desc>
 						<long_desc>
 The Nop Eliminator removes <tt>nop</tt> statements from the method.
 </long_desc>
@@ -769,7 +771,8 @@ The Nop Eliminator removes <tt>nop</tt> statements from the method.
 				<sub_phase>
 					<name>Unreachable Code Eliminator</name>
 					<alias>jb.uce</alias>
-						<long_desc>
+					<short_desc>Unreachable code eliminator</short_desc>
+					<long_desc>
 The Unreachable Code Eliminator removes unreachable code and
 traps whose catch blocks are empty.
 </long_desc>
@@ -784,7 +787,7 @@ traps whose catch blocks are empty.
 				<name>Call Graph Constructor</name>
 				<alias>cg</alias>
                                 <class>CGOptions</class>
-                                <short_desc>Build a call graph</short_desc>
+                                <short_desc>Call graph constructor</short_desc>
                                 <long_desc>
 The Call Graph Constructor computes a call graph for whole
 program analysis. When this pack finishes, a call graph is
@@ -847,7 +850,7 @@ are assumed not to call the constructor of the created object.
                                         <name>Trim Static Initializer Edges</name>
                                         <alias>trim-clinit</alias>
                                         <default>true</default>
-                                        <short_desc>Remove redundant static initializer calls.</short_desc>
+                                        <short_desc>Removes redundant static initializer calls</short_desc>
                                         <long_desc>The call graph contains an edge
 from each statement that could trigger execution of a static initializer to that
 static initializer. However, each static initializer is triggered only once.
@@ -861,7 +864,7 @@ executed again, the corresponding call graph edges are removed from the call gra
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
                                         <class>CHAOptions</class>
-                                        <short_desc>Build a call graph using Class Hierarchy Analysis</short_desc>
+                                        <short_desc>Builds call graph using Class Hierarchy Analysis</short_desc>
                                         <long_desc>This phase uses Class Hierarchy Analysis to generate a call graph.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -1477,11 +1480,12 @@ cryptic statistics about the size of the points-to sets computed.
 			<phase>
 				<name>Whole-Jimple Transformation Pack</name>
 				<alias>wjtp</alias>
+				<short_desc>Whole-jimple transformation pack</short_desc>
 				<long_desc>
 <p>
 Soot can perform whole-program analyses.  In whole-program mode,
 Soot applies the contents of the Whole-Jimple Transformation Pack
-to the scene as a whole after construcing a call graph for the
+to the scene as a whole after constructing a call graph for the
 program.</p>
 <p>
 In an unmodified copy of Soot the Whole-Jimple Transformation
@@ -1498,6 +1502,7 @@ Pack is empty.</p>
 			<phase>
 				<name>Whole-Jimple Optimization Pack</name>
 				<alias>wjop</alias>
+				<short_desc>Whole-jimple optimization pack</short_desc>
 				<long_desc>
 <p>
 If Soot is running in whole program mode and the Whole-Jimple
@@ -1517,6 +1522,7 @@ Transformations.</p>
 					<name>Static Method Binder</name>
 					<class>SMBOptions</class>
 					<alias>wjop.smb</alias>
+					<short_desc>Static method binder: Devirtualizes monomorphic calls</short_desc>
 					<long_desc>
 The Static Method Binder statically binds monomorphic call
 sites. That is, it searches the call graph for virtual method
@@ -1611,6 +1617,7 @@ are allowed.
 					<name>Static Inliner</name>
 					<class>SIOptions</class>
 					<alias>wjop.si</alias>
+					<short_desc>Static inliner: inlines monomorphic calls</short_desc>
 					<long_desc>
 The Static Inliner visits all call sites in the call graph in a
 bottom-up fashion, replacing monomorphic calls with inlined
@@ -1733,6 +1740,7 @@ then it will not be inlined into other methods.
 			</phase>
 			<phase>
 				<name>Whole-Jimple Annotation Pack</name>
+				<short_desc>Whole-jimple annotation pack: adds interprocedural tags</short_desc>
 				<alias>wjap</alias>
 				<long_desc>
 <p>
@@ -1748,7 +1756,7 @@ a place for annotation-oriented analyses in whole program mode.</p>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
 					<alias>wjap.ra</alias>
-					<short_desc> Find array variables always pointing to rectangular two-dimensional array objects. </short_desc>
+					<short_desc>Rectangular array finder</short_desc>
 					<long_desc> 
 <p>
 The Rectangular Array Finder traverses Jimple statements
@@ -1776,7 +1784,7 @@ Checker.</p>
         <name>Shimple Control</name>
         <alias>shimple</alias>
         <class>ShimpleOptions</class>
-        <short_desc/>
+	<short_desc>Sets parameters for Shimple SSA form</short_desc>
         <long_desc>
 <p>
 Shimple Control sets parameters which apply throughout the
@@ -1861,7 +1869,7 @@ more effective than post-optimization.</p>
 			<phase>
 				<name>Shimple Transformation Pack</name>
 				<alias>stp</alias>
-				<short_desc>Apply Shimple-based transformations</short_desc>
+				<short_desc>Shimple transformation pack</short_desc>
           <long_desc>
 <p>
 When the Shimple representation is produced, Soot applies the
@@ -1878,7 +1886,7 @@ unmodified version of Soot.</p>
 			<phase>
 				<name>Shimple Optimization Pack</name>
 				<alias>sop</alias>
-				<short_desc>Apply Shimple-based optimizations</short_desc>
+				<short_desc>Shimple optimization pack</short_desc>
 				<long_desc>
 <p>
 The Shimple Optimization Pack contains transformations that
@@ -1891,7 +1899,7 @@ perform optimizations on Shimple, Soot's SSA representation.</p>
 				</boolopt>
 				<sub_phase>
 					<name>Shimple Constant Propagator and Folder</name>
-					<short_desc>Performs constant propagation and folding on Shimple.</short_desc>
+					<short_desc>Shimple constant propagator and folder</short_desc>
 					<long_desc>
 <p>
 An example implementation of constant propagation using
@@ -1914,7 +1922,7 @@ and D/U chains in Shimple.</p>
 			<phase>
 				<name>Jimple Transformation Pack</name>
 				<alias>jtp</alias>
-				<short_desc/>
+				<short_desc>Jimple transformation pack: intraprocedural analyses added to Soot</short_desc>
 				<long_desc>
 Soot applies the contents of the Jimple Transformation Pack to
 each method under analysis.  This pack contains no
@@ -1929,6 +1937,7 @@ transformations in an unmodified version of Soot.
 			<phase>
 				<name>Jimple Optimization Pack</name>
 				<alias>jop</alias>
+				<short_desc>Jimple optimization pack (intraprocedural)</short_desc>
 				<long_desc>
 When Soot's Optimize option is on, Soot applies the
 Jimple Optimization Pack to every <tt>JimpleBody</tt> in
@@ -1939,12 +1948,13 @@ transformations in the Jimple Optimization Pack.
 					<name>Enabled</name>
 					<alias>enabled</alias>
                                         <default>false</default>
-					<short_desc/>
+					<short_desc>Eliminates common subexpressions</short_desc>
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
 					<name>Common Subexpression Eliminator</name>
 					<alias>jop.cse</alias>
+					<short_desc>Common subexpression eliminator</short_desc>
 					<long_desc>
 <p>
 The Common Subexpression Eliminator runs an available expressions
@@ -2010,6 +2020,7 @@ Naive Side Effect Tester.
 					<name>Busy Code Motion</name>
 					<alias>jop.bcm</alias>
 					<class>BCMOptions</class>
+					<short_desc>Busy code motion: unaggressive partial redundancy elimination</short_desc>
 					<long_desc>
 Busy Code Motion is a straightforward implementation of Partial
 Redundancy Elimination. This implementation is not very
@@ -2057,6 +2068,7 @@ Naive Side Effect Tester.
 					<name>Lazy Code Motion</name>
 					<class>LCMOptions</class>
 					<alias>jop.lcm</alias>
+					<short_desc>Lazy code motion: aggressive partial redundancy elimination</short_desc>
 					<long_desc>
 Lazy Code Motion is an enhanced version of Busy Code Motion, a
 Partial Redundancy Eliminator. Before doing Partial Redundancy Elimination,
@@ -2154,7 +2166,7 @@ Naive Side Effect Tester.
 					<name>Copy Propagator</name>
 					<class>CPOptions</class>
 					<alias>jop.cp</alias>
-					<short_desc>Removes unnecessary copies</short_desc>
+					<short_desc>Copy propagator</short_desc>
 					<long_desc>
 <p>
 This phase performs cascaded copy propagation.</p>
@@ -2188,7 +2200,7 @@ the original bytecode.
 				<sub_phase>
 					<name>Jimple Constant Propagator and Folder</name>
 					<alias>jop.cpf</alias>
-					<short_desc/>
+					<short_desc>Constant propagator and folder</short_desc>
 					<long_desc>
 The Jimple Constant Propagator and Folder evaluates any expressions
 consisting entirely of compile-time constants, for example <tt>2
@@ -2204,6 +2216,7 @@ in this case <tt>6</tt>.
 				<sub_phase>
 					<name>Conditional Branch Folder</name>
 					<alias>jop.cbf</alias>
+					<short_desc>Conditional branch folder</short_desc>
 					<long_desc>
 The Conditional Branch Folder statically evaluates the
 conditional expression of Jimple <tt>if</tt> statements.  If the
@@ -2222,6 +2235,7 @@ statement with an unconditional <tt>goto</tt> statement.
 				<sub_phase>
 					<name>Dead Assignment Eliminator</name>
 					<alias>jop.dae</alias>
+					<short_desc>Dead assignment eliminator</short_desc>
 					<long_desc>
 The Dead Assignment Eliminator eliminates assignment statements
 to locals whose values are not subsequently used, unless
@@ -2248,6 +2262,7 @@ locations in the original bytecode.
 				<sub_phase>
 					<name>Unreachable Code Eliminator 1</name>
 					<alias>jop.uce1</alias>
+					<short_desc>Unreachable code eliminator, pass 1</short_desc>
 					<long_desc>
 The Unreachable Code Eliminator removes unreachable code and
 traps whose catch blocks are empty.
@@ -2263,6 +2278,7 @@ traps whose catch blocks are empty.
 				<sub_phase>
 					<name>Unconditional Branch Folder 1</name>
 					<alias>jop.ubf1</alias>
+					<short_desc>Unconditional branch folder, pass 1</short_desc>
 					<long_desc>
 <p>
 The Unconditional Branch Folder removes unnecessary `<tt>goto</tt>&apos;
@@ -2291,6 +2307,7 @@ folding may itself generate more unreachable code.)</p>
 				<sub_phase>
 					<name>Unreachable Code Eliminator 2</name>
 					<alias>jop.uce2</alias>
+					<short_desc>Unreachable code eliminator, pass 2</short_desc>
 					<long_desc>
 Another iteration of the Unreachable Code Eliminator.
 </long_desc>
@@ -2305,6 +2322,7 @@ Another iteration of the Unreachable Code Eliminator.
 				<sub_phase>
 					<name>Unconditional Branch Folder 2</name>
 					<alias>jop.ubf2</alias>
+					<short_desc>Unconditional branch folder, pass 2</short_desc>
 					<long_desc>
 Another iteration of the Unconditional Branch Folder.
 </long_desc>
@@ -2319,7 +2337,7 @@ Another iteration of the Unconditional Branch Folder.
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>jop.ule</alias>
-					<short_desc>Removes unused locals</short_desc>
+					<short_desc>Unused local eliminator</short_desc>
 					<long_desc>
 The Unused Local Eliminator phase removes any unused locals from
 the method.
@@ -2336,6 +2354,7 @@ the method.
 			<phase>
 				<name>Jimple Annotation Pack</name>
 				<alias>jap</alias>
+				<short_desc>Jimple annotation pack: adds intraprocedural tags</short_desc>
 				<long_desc>
 The Jimple Annotation Pack contains phases which add annotations
 to Jimple bodies individually (as opposed to the Whole-Jimple
@@ -2351,6 +2370,7 @@ the whole program).
 					<name>Null Pointer Checker</name>
 					<class>NPCOptions</class>
 					<alias>jap.npc</alias>
+					<short_desc>Null pointer checker</short_desc>
 					<long_desc>
 The Null Pointer Checker finds instruction which have the potential
 to throw <tt>NullPointerException</tt>s and adds annotations
@@ -2388,12 +2408,12 @@ implementing the methods invoked. For details, see the
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Null Pointer Coloring</name>
+					<name>Null Pointer Colourer</name>
 					<alias>jap.npcolorer</alias>
 					<default>true</default>
-					<short_desc>Produce color tags for null and non-null references</short_desc>
+					<short_desc>Null pointer colourer: tags references for eclipse</short_desc>
 					<long_desc>
-Produce color tags that the Soot plug-in for Eclipse can use to
+Produce colour tags that the Soot plug-in for Eclipse can use to
 highlight null and non-null references.
 </long_desc>
 				<boolopt>
@@ -2406,6 +2426,7 @@ highlight null and non-null references.
 					<name>Array Bound Checker</name>
 					<class>ABCOptions</class>
 					<alias>jap.abc</alias>
+					<short_desc>Array bound checker</short_desc>
 					<long_desc>
 <p>
 The Array Bound Checker performs a static analysis to determine
@@ -2521,6 +2542,7 @@ class implementing the methods invoked. For details, see the
 					<name>Profiling Generator</name>
 					<alias>jap.profiling</alias>
 					<class>ProfilingOptions</class>
+					<short_desc>Instruments null pointer and array checks</short_desc>
 					<long_desc>
 <p>
 The Profiling Generator inserts the method invocations required
@@ -2557,6 +2579,7 @@ instead of the signature
 					<name>Side Effect tagger</name>
 					<alias>jap.sea</alias>
 					<class>SETOptions</class>
+					<short_desc>Side effect tagger</short_desc>
                                         <long_desc>
 <p>
 The Side Effect Tagger
@@ -2591,6 +2614,7 @@ dependence graph.</p>
 					<name>Field Read/Write Tagger</name>
                                         <class>FRWOptions</class>
 					<alias>jap.fieldrw</alias>
+					<short_desc>Field read/write tagger</short_desc>
 					<long_desc>
 <p>
 The Field Read/Write Tagger uses the active invoke graph to
@@ -2618,29 +2642,42 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Call Graph Tagger</name>
 					<alias>jap.cgtagger</alias>
+					<short_desc>Call graph tagger</short_desc> 
+					<long_desc>
+The Call Graph Tagger produces LinkTags based on the call
+graph. The Eclipse plugin uses these tags to produce
+linked popup lists which indicate the source and target methods
+of the statement. Selecting a link from the list moves the
+cursor to the indicated method.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc>Produce LinkTags which target source and target methods.</short_desc> 
-						<long_desc>Produces LinkTags based on the call graph. These tags and are used in the Eclipse plugin to produce linked popup lists which indicate the source and target methods of the statement. When a link is selected in the popup list the cursor repositions to the indicated method.</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Parity Tagger</name>
 					<alias>jap.parity</alias>
+					<short_desc>Parity tagger</short_desc>
+					<long_desc>
+The Parity Tagger produces StringTags and ColorTags indicating
+the parity of a variable (even, odd, top, or bottom).  The eclipse
+plugin can use tooltips and variable colouring to display the
+information in these tags.  For example, even variables (such as
+<tt>x</tt> in <tt>x = 2</tt>) are coloured yellow.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc>Produce StringTags and ColorTags indicating the parity of a variable.</short_desc>
-						<long_desc>Produces StringTags and ColorTags indicating the parity of a variable (even, odd, top, bottom). These tags are used in the Eclipse plugin to show tooltips about parity information and to highlight the background tect color of the variables based on their parity. For example; even variables (eg: x = 2) are colored yellow.</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
 			<phase>
 				<name>Grimp Body Creation</name>
 				<alias>gb</alias>
+				<short_desc>Creates a GrimpBody for each method</short_desc>
 				<long_desc>
 The Grimp Body Creation phase creates a <tt>GrimpBody</tt> for
 each source method. It is run only if the output format is
@@ -2657,6 +2694,7 @@ output and the Via Grimp option has been specified.
 				<sub_phase>
 					<name>Grimp Pre-folding Aggregator</name>
 					<alias>gb.a1</alias>
+					<short_desc>Aggregator: removes some copies, pre-folding</short_desc>
 	  				<long_desc>
 The Grimp Pre-folding Aggregator combines some local variables,
 finding definitions with only a single use and removing the
@@ -2686,6 +2724,7 @@ Aggregate only values stored in stack locals.
 				<sub_phase>
 					<name>Grimp Constructor Folder</name>
 					<alias>gb.cf</alias>
+					<short_desc>Constructor folder</short_desc>
 					<long_desc>
 The Grimp Constructor Folder combines <tt>new</tt> statements
 with the <tt>specialinvoke</tt> statement that calls the new
@@ -2708,6 +2747,7 @@ r2 = new java.util.ArrayList();
 				<sub_phase>
 					<name>Grimp Post-folding Aggregator</name>
 					<alias>gb.a2</alias>
+					<short_desc>Aggregator: removes some copies, post-folding</short_desc>
 	  				<long_desc>
 The Grimp Post-folding Aggregator combines local variables after
 constructors have been folded. Constructor folding typically
@@ -2747,7 +2787,7 @@ Aggregate only values stored in stack locals.
 				<sub_phase>
 					<name>Grimp Unused Local Eliminator</name>
 					<alias>gb.ule</alias>
-					<short_desc>Removes unused locals</short_desc>
+					<short_desc>Unused local eliminator</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused after constructor
 folding and aggregation.
@@ -2762,8 +2802,14 @@ folding and aggregation.
 			<phase>
 				<name>Grimp Optimization</name>
 				<alias>gop</alias>
+				<short_desc>Grimp optimization pack</short_desc>
 				<long_desc>
-The Grimp Optimization pack performs optimizations on <tt>GrimpBody</tt>s (currently there are no optimizations performed specifically on <tt>GrimpBody</tt>s, and the pack is empty). It is run only if the output format is <tt>grimp</tt> or <tt>grimple</tt>, or if class files are being output and the Via Grimp option has been specified.
+The Grimp Optimization pack performs optimizations on
+<tt>GrimpBody</tt>s (currently there are no optimizations
+performed specifically on <tt>GrimpBody</tt>s, and the pack is
+empty). It is run only if the output format is <tt>grimp</tt> or
+<tt>grimple</tt>, or if class files are being output and the Via
+Grimp option has been specified.
 </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -2774,6 +2820,7 @@ The Grimp Optimization pack performs optimizations on <tt>GrimpBody</tt>s (curre
 			<phase>
 				<name>Baf Body Creation</name>
 				<alias>bb</alias>
+				<short_desc>Creates Baf bodies</short_desc>
 				<long_desc>
 The Baf Body Creation phase creates a
 <tt>BafBody</tt> from each source method. It is
@@ -2789,7 +2836,8 @@ has not been specified.
 				<sub_phase>
 					<name>Load Store Optimizer</name>
 					<alias>bb.lso</alias>
-				<long_desc>
+					<short_desc>Load store optimizer</short_desc>
+					<long_desc>
 The Load Store Optimizer replaces some combinations of loads to and stores from local variables with stack instructions. A simple example would be the replacement of
 <pre>
 store.r $r2;
@@ -2865,6 +2913,7 @@ some variant of <tt>dup</tt>.
 				<sub_phase>
 					<name>Peephole Optimizer</name>
 					<alias>bb.pho</alias>
+					<short_desc>Peephole optimizer</short_desc>
 					<long_desc>
 Applies peephole optimizations to the Baf intermediate
 representation.  Individual optimizations must be implemented by
@@ -2890,7 +2939,7 @@ instructions.</p>
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>bb.ule</alias>
-					<short_desc>Removes unused locals</short_desc>
+					<short_desc>Unused local eliminator</short_desc>
                                         <long_desc>
 This phase removes any locals that are unused after load store optimization
 and peephole optimization.
@@ -2904,7 +2953,7 @@ and peephole optimization.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>bb.lp</alias>
-					<short_desc>Minimizes number of locals</short_desc>
+					<short_desc>Local packer: minimizes number of locals</short_desc>
 					<long_desc>
 The Local Packer attempts to minimize the number of local
 variables required in a method by reusing the same variable for
@@ -2931,6 +2980,7 @@ the Local Splitter.
 			<phase>
 				<name>Baf Optimization</name>
 				<alias>bop</alias>
+				<short_desc>Baf optimization pack</short_desc>
 				<long_desc>
 The Baf Optimization pack performs optimizations on
 <tt>BafBody</tt>s (currently there are no optimizations performed
@@ -2948,6 +2998,7 @@ has not been specified.
 			<phase>
 				<name>Tag Aggregator</name>
 				<alias>tag</alias>
+				<short_desc>Tag aggregator: turns tags into attributes</short_desc>
 				<long_desc>
 <p>
 The Tag Aggregator pack aggregates tags attached to individual units
@@ -2962,6 +3013,7 @@ encoded in Java class files.</p>
 				<sub_phase>
 					<name>Line Number Tag Aggregator</name>
 					<alias>tag.ln</alias>
+					<short_desc>Line number aggregator</short_desc>
 					<long_desc>
 <p>
 The Line Number Tag Aggregator aggregates line number
@@ -2978,6 +3030,7 @@ tags.</p>
 				<sub_phase>
 					<name>Array Bounds and Null Pointer Check Tag Aggregator</name>
 					<alias>tag.an</alias>
+					<short_desc>Array bounds and null pointer check aggregator</short_desc>
 					<long_desc>
 <p>
 The Array Bounds and Null Pointer Tag Aggregator aggregates
@@ -2994,6 +3047,7 @@ tags produced by the Array Bound Checker and Null Pointer Checker.</p>
 				<sub_phase>
 					<name>Dependence Tag Aggregator</name>
 					<alias>tag.dep</alias>
+					<short_desc>Dependence aggregator</short_desc>
 					<long_desc>
 <p>
 The Dependence Tag Aggregator aggregates
@@ -3010,6 +3064,7 @@ tags produced by the Side Effect Tagger.</p>
                                 <sub_phase>
 					<name>Field Read/Write Tag Aggregator</name>
 					<alias>tag.fieldrw</alias>
+					<short_desc>Field read/write aggregator</short_desc>
                                         <long_desc>
 The Field Read/Write Tag Aggregator aggregates field read/write
 tags produced by the Field Read/Write Tagger, phase
@@ -3284,7 +3339,7 @@ Enable the generation of side-effect attributes.
 		<boolopt>
 			<name>Time</name>
 			<alias>time</alias>
-			<short_desc>Report time required for tranformations</short_desc>
+			<short_desc>Report time required for transformations</short_desc>
 			<long_desc>
 Report the time required to perform some of Soot's transformations.
 </long_desc>
