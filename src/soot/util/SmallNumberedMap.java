@@ -32,10 +32,16 @@ public final class SmallNumberedMap {
     /** Associates a value with a key. */
     public boolean put( Numberable key, Object value ) {
         int pos = findPosition( key );
-        if( array[pos] == key ) return false;
+        if( array[pos] == key ) {
+            if( values[pos] == value ) return false;
+            values[pos] = value;
+            return true;
+        }
         size++;
-        if( size*3 > array.length*2 ) doubleSize();
-        pos = findPosition( key );
+        if( size*3 > array.length*2 ) {
+            doubleSize();
+            pos = findPosition( key );
+        }
         array[pos] = key;
         values[pos] = value;
         return true;
