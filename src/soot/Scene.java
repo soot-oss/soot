@@ -760,26 +760,25 @@ public class Scene  //extends AbstractHost
         basicclasses[SootClass.BODIES] = new HashSet();
 
 	addBasicClass("java.lang.Object");
-	addBasicClass("java.lang.Class");
+	addBasicClass("java.lang.Class", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.Void");
-	addBasicClass("java.lang.Boolean");
-	addBasicClass("java.lang.Byte");
-	addBasicClass("java.lang.Character");
-	addBasicClass("java.lang.Short");
-	addBasicClass("java.lang.Integer");
-	addBasicClass("java.lang.Long");
-	addBasicClass("java.lang.Float");
-	addBasicClass("java.lang.Double");
+	addBasicClass("java.lang.Void", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Character", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Short", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Long", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Float", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Double", SootClass.SIGNATURES);
 
 	addBasicClass("java.lang.String");
-	addBasicClass("java.lang.StringBuffer");
+	addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
 
 	addBasicClass("java.lang.Error");
-	addBasicClass("java.lang.RuntimeException");
-	addBasicClass("java.lang.AssertionError");
-	addBasicClass("java.lang.Throwable");
-	addBasicClass("java.lang.NoClassDefFoundError");
+	addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
+	addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
+	addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
 	addBasicClass("java.lang.ExceptionInInitializerError");
 	addBasicClass("java.lang.RuntimeException");
 	addBasicClass("java.lang.ClassNotFoundException");
