@@ -4,14 +4,14 @@ import jedd.*;
 import soot.jimple.paddle.*;
 import soot.*;
 
-public class LOCAL extends Domain {
+public class LocalDomain extends Domain {
     public Numberer numberer() { return new soot.util.JeddNumberer(Scene.v().getLocalNumberer()); }
     
     public final int bits = 20;
     
     public static Domain v() { return instance; }
     
-    private static Domain instance = new LOCAL();
+    private static Domain instance = new LocalDomain();
     
-    public LOCAL() { super(); }
+    public LocalDomain() { super(); }
 }
