@@ -31,7 +31,7 @@
     </target>
 
     <target name="clean">
-    <delete>
+    <delete quiet="true">
         <fileset dir="classes" includes="**/*.class" />
         <fileset dir="testclasses" includes="**/*.class" />
     </delete>
