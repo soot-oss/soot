@@ -1,0 +1,774 @@
+%
+% qtree.sty, a LaTeX macro package for drawing trees from descriptions
+% given in bracket notation.
+%
+%       VERSION 2 -- June 1994
+%
+% QobiTree tree macros written by Jeffrey Mark Siskind (Qobi@cis.upenn.edu).
+% Front end by Alexis Dimitriadis (alexis@babel.ling.upenn.edu).
+%
+% Please direct questions/comments to alexis@babel.ling.upenn.edu.
+% 
+\newcounter{treecount}
+\newcounter{branchcount}
+\setcounter{treecount}{0}
+\newsavebox{\parentbox}
+\newsavebox{\treebox}
+\newsavebox{\treeboxone}
+\newsavebox{\treeboxtwo}
+\newsavebox{\treeboxthree}
+\newsavebox{\treeboxfour}
+\newsavebox{\treeboxfive}
+\newsavebox{\treeboxsix}
+\newsavebox{\treeboxseven}
+\newsavebox{\treeboxeight}
+\newsavebox{\treeboxnine}
+\newsavebox{\treeboxten}
+\newsavebox{\treeboxeleven}
+\newsavebox{\treeboxtwelve}
+\newsavebox{\treeboxthirteen}
+\newsavebox{\treeboxfourteen}
+\newsavebox{\treeboxfifteen}
+\newsavebox{\treeboxsixteen}
+\newsavebox{\treeboxseventeen}
+\newsavebox{\treeboxeighteen}
+\newsavebox{\treeboxnineteen}
+\newsavebox{\treeboxtwenty}
+\newlength{\treeoffsetone}
+\newlength{\treeoffsettwo}
+\newlength{\treeoffsetthree}
+\newlength{\treeoffsetfour}
+\newlength{\treeoffsetfive}
+\newlength{\treeoffsetsix}
+\newlength{\treeoffsetseven}
+\newlength{\treeoffseteight}
+\newlength{\treeoffsetnine}
+\newlength{\treeoffsetten}
+\newlength{\treeoffseteleven}
+\newlength{\treeoffsettwelve}
+\newlength{\treeoffsetthirteen}
+\newlength{\treeoffsetfourteen}
+\newlength{\treeoffsetfifteen}
+\newlength{\treeoffsetsixteen}
+\newlength{\treeoffsetseventeen}
+\newlength{\treeoffseteighteen}
+\newlength{\treeoffsetnineteen}
+\newlength{\treeoffsettwenty}
+
+\newlength{\treeshiftone}
+\newlength{\treeshifttwo}
+\newlength{\treeshiftthree}
+\newlength{\treeshiftfour}
+\newlength{\treeshiftfive}
+\newlength{\treeshiftsix}
+\newlength{\treeshiftseven}
+\newlength{\treeshifteight}
+\newlength{\treeshiftnine}
+\newlength{\treeshiftten}
+\newlength{\treeshifteleven}
+\newlength{\treeshifttwelve}
+\newlength{\treeshiftthirteen}
+\newlength{\treeshiftfourteen}
+\newlength{\treeshiftfifteen}
+\newlength{\treeshiftsixteen}
+\newlength{\treeshiftseventeen}
+\newlength{\treeshifteighteen}
+\newlength{\treeshiftnineteen}
+\newlength{\treeshifttwenty}
+\newlength{\treewidthone}
+\newlength{\treewidthtwo}
+\newlength{\treewidththree}
+\newlength{\treewidthfour}
+\newlength{\treewidthfive}
+\newlength{\treewidthsix}
+\newlength{\treewidthseven}
+\newlength{\treewidtheight}
+\newlength{\treewidthnine}
+\newlength{\treewidthten}
+\newlength{\treewidtheleven}
+\newlength{\treewidthtwelve}
+\newlength{\treewidththirteen}
+\newlength{\treewidthfourteen}
+\newlength{\treewidthfifteen}
+\newlength{\treewidthsixteen}
+\newlength{\treewidthseventeen}
+\newlength{\treewidtheighteen}
+\newlength{\treewidthnineteen}
+\newlength{\treewidthtwenty}
+\newlength{\daughteroffsetone}
+\newlength{\daughteroffsettwo}
+\newlength{\daughteroffsetthree}
+\newlength{\daughteroffsetfour}
+\newlength{\branchwidthone}
+\newlength{\branchwidthtwo}
+\newlength{\branchwidththree}
+\newlength{\branchwidthfour}
+\newlength{\parentoffset}
+\newlength{\treeoffset}
+\newlength{\daughteroffset}
+\newlength{\branchwidth}
+\newlength{\parentwidth}
+\newlength{\treewidth}
+%
+\newcommand{\ontop}[1]{\begin{tabular}{c}#1\end{tabular}}
+%
+\newcommand{\poptree}{%
+\ifnum\value{treecount}=0\typeout{QobiTeX warning---Tree stack underflow}\fi
+\addtocounter{treecount}{-1}%
+\setlength{\treeoffsettwo}{\treeoffsetthree}%
+\setlength{\treeoffsetthree}{\treeoffsetfour}%
+\setlength{\treeoffsetfour}{\treeoffsetfive}%
+\setlength{\treeoffsetfive}{\treeoffsetsix}%
+\setlength{\treeoffsetsix}{\treeoffsetseven}%
+\setlength{\treeoffsetseven}{\treeoffseteight}%
+\setlength{\treeoffseteight}{\treeoffsetnine}%
+\setlength{\treeoffsetnine}{\treeoffsetten}%
+\setlength{\treeoffsetten}{\treeoffseteleven}%
+\setlength{\treeoffseteleven}{\treeoffsettwelve}%
+\setlength{\treeoffsettwelve}{\treeoffsetthirteen}%
+\setlength{\treeoffsetthirteen}{\treeoffsetfourteen}%
+\setlength{\treeoffsetfourteen}{\treeoffsetfifteen}%
+\setlength{\treeoffsetfifteen}{\treeoffsetsixteen}%
+\setlength{\treeoffsetsixteen}{\treeoffsetseventeen}%
+\setlength{\treeoffsetseventeen}{\treeoffseteighteen}%
+\setlength{\treeoffseteighteen}{\treeoffsetnineteen}%
+\setlength{\treeoffsetnineteen}{\treeoffsettwenty}%
+\setlength{\treeshifttwo}{\treeshiftthree}%
+\setlength{\treeshiftthree}{\treeshiftfour}%
+\setlength{\treeshiftfour}{\treeshiftfive}%
+\setlength{\treeshiftfive}{\treeshiftsix}%
+\setlength{\treeshiftsix}{\treeshiftseven}%
+\setlength{\treeshiftseven}{\treeshifteight}%
+\setlength{\treeshifteight}{\treeshiftnine}%
+\setlength{\treeshiftnine}{\treeshiftten}%
+\setlength{\treeshiftten}{\treeshifteleven}%
+\setlength{\treeshifteleven}{\treeshifttwelve}%
+\setlength{\treeshifttwelve}{\treeshiftthirteen}%
+\setlength{\treeshiftthirteen}{\treeshiftfourteen}%
+\setlength{\treeshiftfourteen}{\treeshiftfifteen}%
+\setlength{\treeshiftfifteen}{\treeshiftsixteen}%
+\setlength{\treeshiftsixteen}{\treeshiftseventeen}%
+\setlength{\treeshiftseventeen}{\treeshifteighteen}%
+\setlength{\treeshifteighteen}{\treeshiftnineteen}%
+\setlength{\treeshiftnineteen}{\treeshifttwenty}%
+\setlength{\treewidthtwo}{\treewidththree}%
+\setlength{\treewidththree}{\treewidthfour}%
+\setlength{\treewidthfour}{\treewidthfive}%
+\setlength{\treewidthfive}{\treewidthsix}%
+\setlength{\treewidthsix}{\treewidthseven}%
+\setlength{\treewidthseven}{\treewidtheight}%
+\setlength{\treewidtheight}{\treewidthnine}%
+\setlength{\treewidthnine}{\treewidthten}%
+\setlength{\treewidthten}{\treewidtheleven}%
+\setlength{\treewidtheleven}{\treewidthtwelve}%
+\setlength{\treewidthtwelve}{\treewidththirteen}%
+\setlength{\treewidththirteen}{\treewidthfourteen}%
+\setlength{\treewidthfourteen}{\treewidthfifteen}%
+\setlength{\treewidthfifteen}{\treewidthsixteen}%
+\setlength{\treewidthsixteen}{\treewidthseventeen}%
+\setlength{\treewidthseventeen}{\treewidtheighteen}%
+\setlength{\treewidtheighteen}{\treewidthnineteen}%
+\setlength{\treewidthnineteen}{\treewidthtwenty}%
+\setbox\treeboxtwo \box\treeboxthree
+\setbox\treeboxthree \box\treeboxfour
+\setbox\treeboxfour \box\treeboxfive
+\setbox\treeboxfive \box\treeboxsix
+\setbox\treeboxsix \box\treeboxseven
+\setbox\treeboxseven \box\treeboxeight
+\setbox\treeboxeight \box\treeboxnine
+\setbox\treeboxnine \box\treeboxten
+\setbox\treeboxten \box\treeboxeleven
+\setbox\treeboxeleven \box\treeboxtwelve
+\setbox\treeboxtwelve \box\treeboxthirteen
+\setbox\treeboxthirteen \box\treeboxfourteen
+\setbox\treeboxfourteen \box\treeboxfifteen
+\setbox\treeboxfifteen \box\treeboxsixteen
+\setbox\treeboxsixteen \box\treeboxseventeen
+\setbox\treeboxseventeen \box\treeboxeighteen
+\setbox\treeboxeighteen \box\treeboxnineteen
+\setbox\treeboxnineteen \box\treeboxtwenty }
+%
+\newcommand{\leaf}[1]{%
+\ifnum\value{treecount}=20\typeout{QobiTeX warning---Tree stack overflow}\fi%
+\addtocounter{treecount}{1}%
+\setbox\treeboxtwenty \box\treeboxnineteen
+\setbox\treeboxnineteen \box\treeboxeighteen
+\setbox\treeboxeighteen \box\treeboxseventeen
+\setbox\treeboxseventeen \box\treeboxsixteen
+\setbox\treeboxsixteen \box\treeboxfifteen
+\setbox\treeboxfifteen \box\treeboxfourteen
+\setbox\treeboxfourteen \box\treeboxthirteen
+\setbox\treeboxthirteen \box\treeboxtwelve
+\setbox\treeboxtwelve \box\treeboxeleven
+\setbox\treeboxeleven \box\treeboxten
+\setbox\treeboxten \box\treeboxnine
+\setbox\treeboxnine \box\treeboxeight
+\setbox\treeboxeight \box\treeboxseven
+\setbox\treeboxseven \box\treeboxsix
+\setbox\treeboxsix \box\treeboxfive
+\setbox\treeboxfive \box\treeboxfour
+\setbox\treeboxfour \box\treeboxthree
+\setbox\treeboxthree \box\treeboxtwo
+\setbox\treeboxtwo \box\treeboxone
+\sbox{\treeboxone}{\ontop{#1}}%
+\sbox{\treeboxone}{\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}}%
+\setlength{\treeoffsettwenty}{\treeoffsetnineteen}%
+\setlength{\treeoffsetnineteen}{\treeoffseteighteen}%
+\setlength{\treeoffseteighteen}{\treeoffsetseventeen}%
+\setlength{\treeoffsetseventeen}{\treeoffsetsixteen}%
+\setlength{\treeoffsetsixteen}{\treeoffsetfifteen}%
+\setlength{\treeoffsetfifteen}{\treeoffsetfourteen}%
+\setlength{\treeoffsetfourteen}{\treeoffsetthirteen}%
+\setlength{\treeoffsetthirteen}{\treeoffsettwelve}%
+\setlength{\treeoffsettwelve}{\treeoffseteleven}%
+\setlength{\treeoffseteleven}{\treeoffsetten}%
+\setlength{\treeoffsetten}{\treeoffsetnine}%
+\setlength{\treeoffsetnine}{\treeoffseteight}%
+\setlength{\treeoffseteight}{\treeoffsetseven}%
+\setlength{\treeoffsetseven}{\treeoffsetsix}%
+\setlength{\treeoffsetsix}{\treeoffsetfive}%
+\setlength{\treeoffsetfive}{\treeoffsetfour}%
+\setlength{\treeoffsetfour}{\treeoffsetthree}%
+\setlength{\treeoffsetthree}{\treeoffsettwo}%
+\setlength{\treeoffsettwo}{\treeoffsetone}%
+\setlength{\treeoffsetone}{0.5\wd\treeboxone}%
+\setlength{\treeshifttwenty}{\treeshiftnineteen}%
+\setlength{\treeshiftnineteen}{\treeshifteighteen}%
+\setlength{\treeshifteighteen}{\treeshiftseventeen}%
+\setlength{\treeshiftseventeen}{\treeshiftsixteen}%
+\setlength{\treeshiftsixteen}{\treeshiftfifteen}%
+\setlength{\treeshiftfifteen}{\treeshiftfourteen}%
+\setlength{\treeshiftfourteen}{\treeshiftthirteen}%
+\setlength{\treeshiftthirteen}{\treeshifttwelve}%
+\setlength{\treeshifttwelve}{\treeshifteleven}%
+\setlength{\treeshifteleven}{\treeshiftten}%
+\setlength{\treeshiftten}{\treeshiftnine}%
+\setlength{\treeshiftnine}{\treeshifteight}%
+\setlength{\treeshifteight}{\treeshiftseven}%
+\setlength{\treeshiftseven}{\treeshiftsix}%
+\setlength{\treeshiftsix}{\treeshiftfive}%
+\setlength{\treeshiftfive}{\treeshiftfour}%
+\setlength{\treeshiftfour}{\treeshiftthree}%
+\setlength{\treeshiftthree}{\treeshifttwo}%
+\setlength{\treeshifttwo}{\treeshiftone}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthtwenty}{\treewidthnineteen}%
+\setlength{\treewidthnineteen}{\treewidtheighteen}%
+\setlength{\treewidtheighteen}{\treewidthseventeen}%
+\setlength{\treewidthseventeen}{\treewidthsixteen}%
+\setlength{\treewidthsixteen}{\treewidthfifteen}%
+\setlength{\treewidthfifteen}{\treewidthfourteen}%
+\setlength{\treewidthfourteen}{\treewidththirteen}%
+\setlength{\treewidththirteen}{\treewidthtwelve}%
+\setlength{\treewidthtwelve}{\treewidtheleven}%
+\setlength{\treewidtheleven}{\treewidthten}%
+\setlength{\treewidthten}{\treewidthnine}%
+\setlength{\treewidthnine}{\treewidtheight}%
+\setlength{\treewidtheight}{\treewidthseven}%
+\setlength{\treewidthseven}{\treewidthsix}%
+\setlength{\treewidthsix}{\treewidthfive}%
+\setlength{\treewidthfive}{\treewidthfour}%
+\setlength{\treewidthfour}{\treewidththree}%
+\setlength{\treewidththree}{\treewidthtwo}%
+\setlength{\treewidthtwo}{\treewidthone}%
+\setlength{\treewidthone}{\wd\treeboxone}}
+%
+\newcommand{\branch}[2]{%
+\setcounter{branchcount}{#1}%
+\ifnum\value{branchcount}=1\sbox{\parentbox}{\ontop{#2}}%
+\setlength{\parentoffset}{\treeoffsetone}%
+\addtolength{\parentoffset}{-0.5\wd\parentbox}%
+\setlength{\daughteroffset}{0in}%
+\ifdim\parentoffset<0in%
+\setlength{\daughteroffset}{-\parentoffset}%
+\setlength{\parentoffset}{0in}\fi%
+\setlength{\parentwidth}{\parentoffset}%
+\addtolength{\parentwidth}{\wd\parentbox}%
+\setlength{\treeoffset}{\daughteroffset}%
+\addtolength{\treeoffset}{\treeoffsetone}%
+\setlength{\treewidth}{\wd\treeboxone}%
+\addtolength{\treewidth}{\daughteroffset}%
+\ifdim\treewidth<\parentwidth\setlength{\treewidth}{\parentwidth}\fi%
+\sbox{\treebox}{\begin{minipage}{\treewidth}%
+\begin{flushleft}%
+\hspace*{\parentoffset}\usebox{\parentbox}\\
+{\setlength{\unitlength}{2ex}%
+\hspace*{\treeoffset}\begin{picture}(0,1)%
+\put(0,0){\line(0,1){1}}%
+\end{picture}}\\
+\vspace{-\baselineskip}%
+\hspace*{\daughteroffset}%
+\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}%
+\end{flushleft}%
+\end{minipage}}%
+\setlength{\treeoffsetone}{\parentoffset}%
+\addtolength{\treeoffsetone}{0.5\wd\parentbox}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthone}{\treewidth}%
+\sbox{\treeboxone}{\usebox{\treebox}}%
+\else\ifnum\value{branchcount}=2\sbox{\parentbox}{\ontop{#2}}%
+\setlength{\branchwidthone}{\treewidthtwo}%
+\addtolength{\branchwidthone}{\treeoffsetone}%
+\addtolength{\branchwidthone}{-\treeshiftone}%
+\addtolength{\branchwidthone}{-\treeoffsettwo}%
+\setlength{\branchwidth}{\branchwidthone}%
+\setlength{\daughteroffsetone}{\branchwidth}%
+\addtolength{\daughteroffsetone}{-\branchwidthone}%
+\addtolength{\daughteroffsetone}{-\treeshiftone}%
+\setlength{\parentoffset}{-0.5\wd\parentbox}%
+\addtolength{\parentoffset}{\treeoffsettwo}%
+\addtolength{\parentoffset}{0.5\branchwidth}%
+\setlength{\daughteroffset}{0in}%
+\ifdim\parentoffset<0in%
+\setlength{\daughteroffset}{-\parentoffset}%
+\setlength{\parentoffset}{0in}\fi%
+\setlength{\parentwidth}{\parentoffset}%
+\addtolength{\parentwidth}{\wd\parentbox}%
+\setlength{\treeoffset}{\daughteroffset}%
+\addtolength{\treeoffset}{\treeoffsettwo}%
+\setlength{\treewidth}{\wd\treeboxone}%
+\addtolength{\treewidth}{\daughteroffsetone}%
+\addtolength{\treewidth}{\treewidthtwo}%
+\addtolength{\treewidth}{\daughteroffset}%
+\ifdim\treewidth<\parentwidth\setlength{\treewidth}{\parentwidth}\fi%
+\sbox{\treebox}{\begin{minipage}{\treewidth}%
+\begin{flushleft}%
+\hspace*{\parentoffset}\usebox{\parentbox}\\
+{\setlength{\unitlength}{0.5\branchwidth}%
+\hspace*{\treeoffset}\begin{picture}(2,0.5)%
+\put(0,0){\line(2,1){1}}%
+\put(2,0){\line(-2,1){1}}%
+\end{picture}}\\
+\vspace{-\baselineskip}
+\hspace*{\daughteroffset}%
+\makebox[\treewidthtwo][l]%
+{\raisebox{-\ht\treeboxtwo}{\usebox{\treeboxtwo}}}%
+\hspace*{\daughteroffsetone}%
+\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}%
+\end{flushleft}%
+\end{minipage}}%
+\setlength{\treeoffsetone}{\parentoffset}%
+\addtolength{\treeoffsetone}{0.5\wd\parentbox}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthone}{\treewidth}%
+\sbox{\treeboxone}{\usebox{\treebox}}\poptree%
+\else\ifnum\value{branchcount}=3\sbox{\parentbox}{\ontop{#2}}%
+\setlength{\branchwidthone}{\treewidthtwo}%
+\addtolength{\branchwidthone}{\treeoffsetone}%
+\addtolength{\branchwidthone}{-\treeshiftone}%
+\addtolength{\branchwidthone}{-\treeoffsettwo}%
+\setlength{\branchwidthtwo}{\treewidththree}%
+\addtolength{\branchwidthtwo}{\treeoffsettwo}%
+\addtolength{\branchwidthtwo}{-\treeshifttwo}%
+\addtolength{\branchwidthtwo}{-\treeoffsetthree}%
+\setlength{\branchwidth}{\branchwidthone}%
+\ifdim\branchwidthtwo>\branchwidth%
+\setlength{\branchwidth}{\branchwidthtwo}\fi%
+\setlength{\daughteroffsetone}{\branchwidth}%
+\addtolength{\daughteroffsetone}{-\branchwidthone}%
+\addtolength{\daughteroffsetone}{-\treeshiftone}%
+\setlength{\daughteroffsettwo}{\branchwidth}%
+\addtolength{\daughteroffsettwo}{-\branchwidthtwo}%
+\addtolength{\daughteroffsettwo}{-\treeshifttwo}%
+\setlength{\parentoffset}{-0.5\wd\parentbox}%
+\addtolength{\parentoffset}{\treeoffsetthree}%
+\addtolength{\parentoffset}{\branchwidth}%
+\setlength{\daughteroffset}{0in}%
+\ifdim\parentoffset<0in%
+\setlength{\daughteroffset}{-\parentoffset}%
+\setlength{\parentoffset}{0in}\fi%
+\setlength{\parentwidth}{\parentoffset}%
+\addtolength{\parentwidth}{\wd\parentbox}%
+\setlength{\treeoffset}{\daughteroffset}%
+\addtolength{\treeoffset}{\treeoffsetthree}%
+\setlength{\treewidth}{\wd\treeboxone}%
+\addtolength{\treewidth}{\daughteroffsetone}%
+\addtolength{\treewidth}{\treewidthtwo}%
+\addtolength{\treewidth}{\daughteroffsettwo}%
+\addtolength{\treewidth}{\treewidththree}%
+\addtolength{\treewidth}{\daughteroffset}%
+\ifdim\treewidth<\parentwidth\setlength{\treewidth}{\parentwidth}\fi%
+\sbox{\treebox}{\begin{minipage}{\treewidth}%
+\begin{flushleft}%
+\hspace*{\parentoffset}\usebox{\parentbox}\\
+{\setlength{\unitlength}{0.5\branchwidth}%
+\hspace*{\treeoffset}\begin{picture}(4,1)%
+\put(0,0){\line(2,1){2}}%
+\put(2,0){\line(0,1){1}}%
+\put(4,0){\line(-2,1){2}}%
+\end{picture}}\\
+\vspace{-\baselineskip}%
+\hspace*{\daughteroffset}%
+\makebox[\treewidththree][l]%
+{\raisebox{-\ht\treeboxthree}{\usebox{\treeboxthree}}}%
+\hspace*{\daughteroffsettwo}%
+\makebox[\treewidthtwo][l]%
+{\raisebox{-\ht\treeboxtwo}{\usebox{\treeboxtwo}}}%
+\hspace*{\daughteroffsetone}%
+\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}%
+\end{flushleft}%
+\end{minipage}}%
+\setlength{\treeoffsetone}{\parentoffset}%
+\addtolength{\treeoffsetone}{0.5\wd\parentbox}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthone}{\treewidth}%
+\sbox{\treeboxone}{\usebox{\treebox}}\poptree\poptree%
+\else\ifnum\value{branchcount}=4\sbox{\parentbox}{\ontop{#2}}%
+\setlength{\branchwidthone}{\treewidthtwo}%
+\addtolength{\branchwidthone}{\treeoffsetone}%
+\addtolength{\branchwidthone}{-\treeshiftone}%
+\addtolength{\branchwidthone}{-\treeoffsettwo}%
+\setlength{\branchwidthtwo}{\treewidththree}%
+\addtolength{\branchwidthtwo}{\treeoffsettwo}%
+\addtolength{\branchwidthtwo}{-\treeshifttwo}%
+\addtolength{\branchwidthtwo}{-\treeoffsetthree}%
+\setlength{\branchwidththree}{\treewidthfour}%
+\addtolength{\branchwidththree}{\treeoffsetthree}%
+\addtolength{\branchwidththree}{-\treeshiftthree}%
+\addtolength{\branchwidththree}{-\treeoffsetfour}%
+\setlength{\branchwidth}{\branchwidthone}%
+\ifdim\branchwidthtwo>\branchwidth%
+\setlength{\branchwidth}{\branchwidthtwo}\fi%
+\ifdim\branchwidththree>\branchwidth%
+\setlength{\branchwidth}{\branchwidththree}\fi%
+\setlength{\daughteroffsetone}{\branchwidth}%
+\addtolength{\daughteroffsetone}{-\branchwidthone}%
+\addtolength{\daughteroffsetone}{-\treeshiftone}%
+\setlength{\daughteroffsettwo}{\branchwidth}%
+\addtolength{\daughteroffsettwo}{-\branchwidthtwo}%
+\addtolength{\daughteroffsettwo}{-\treeshifttwo}%
+\setlength{\daughteroffsetthree}{\branchwidth}%
+\addtolength{\daughteroffsetthree}{-\branchwidththree}%
+\addtolength{\daughteroffsetthree}{-\treeshiftthree}%
+\setlength{\parentoffset}{-0.5\wd\parentbox}%
+\addtolength{\parentoffset}{\treeoffsetfour}%
+\addtolength{\parentoffset}{1.5\branchwidth}%
+\setlength{\daughteroffset}{0in}%
+\ifdim\parentoffset<0in%
+\setlength{\daughteroffset}{-\parentoffset}%
+\setlength{\parentoffset}{0in}\fi%
+\setlength{\parentwidth}{\parentoffset}%
+\addtolength{\parentwidth}{\wd\parentbox}%
+\setlength{\treeoffset}{\daughteroffset}%
+\addtolength{\treeoffset}{\treeoffsetfour}%
+\setlength{\treewidth}{\wd\treeboxone}%
+\addtolength{\treewidth}{\daughteroffsetone}%
+\addtolength{\treewidth}{\treewidthtwo}%
+\addtolength{\treewidth}{\daughteroffsettwo}%
+\addtolength{\treewidth}{\treewidththree}%
+\addtolength{\treewidth}{\daughteroffsetthree}%
+\addtolength{\treewidth}{\treewidthfour}%
+\addtolength{\treewidth}{\daughteroffset}%
+\ifdim\treewidth<\parentwidth\setlength{\treewidth}{\parentwidth}\fi%
+\sbox{\treebox}{\begin{minipage}{\treewidth}%
+\begin{flushleft}%
+\hspace*{\parentoffset}\usebox{\parentbox}\\
+{\setlength{\unitlength}{0.5\branchwidth}%
+\hspace*{\treeoffset}\begin{picture}(6,1)%
+\put(0,0){\line(3,1){3}}%
+\put(2,0){\line(1,1){1}}%
+\put(4,0){\line(-1,1){1}}%
+\put(6,0){\line(-3,1){3}}%
+\end{picture}}\\
+\vspace{-\baselineskip}%
+\hspace*{\daughteroffset}%
+\makebox[\treewidthfour][l]%
+{\raisebox{-\ht\treeboxfour}{\usebox{\treeboxfour}}}%
+\hspace*{\daughteroffsetthree}%
+\makebox[\treewidththree][l]%
+{\raisebox{-\ht\treeboxthree}{\usebox{\treeboxthree}}}%
+\hspace*{\daughteroffsettwo}%
+\makebox[\treewidthtwo][l]%
+{\raisebox{-\ht\treeboxtwo}{\usebox{\treeboxtwo}}}%
+\hspace*{\daughteroffsetone}%
+\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}%
+\end{flushleft}%
+\end{minipage}}%
+\setlength{\treeoffsetone}{\parentoffset}%
+\addtolength{\treeoffsetone}{0.5\wd\parentbox}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthone}{\treewidth}%
+\sbox{\treeboxone}{\usebox{\treebox}}\poptree\poptree\poptree%
+\else\ifnum\value{branchcount}=5\sbox{\parentbox}{\ontop{#2}}%
+\setlength{\branchwidthone}{\treewidthtwo}%
+\addtolength{\branchwidthone}{\treeoffsetone}%
+\addtolength{\branchwidthone}{-\treeshiftone}%
+\addtolength{\branchwidthone}{-\treeoffsettwo}%
+\setlength{\branchwidthtwo}{\treewidththree}%
+\addtolength{\branchwidthtwo}{\treeoffsettwo}%
+\addtolength{\branchwidthtwo}{-\treeshifttwo}%
+\addtolength{\branchwidthtwo}{-\treeoffsetthree}%
+\setlength{\branchwidththree}{\treewidthfour}%
+\addtolength{\branchwidththree}{\treeoffsetthree}%
+\addtolength{\branchwidththree}{-\treeshiftthree}%
+\addtolength{\branchwidththree}{-\treeoffsetfour}%
+\setlength{\branchwidthfour}{\treewidthfive}%
+\addtolength{\branchwidthfour}{\treeoffsetfour}%
+\addtolength{\branchwidthfour}{-\treeshiftfour}%
+\addtolength{\branchwidthfour}{-\treeoffsetfive}%
+\setlength{\branchwidth}{\branchwidthone}%
+\ifdim\branchwidthtwo>\branchwidth%
+\setlength{\branchwidth}{\branchwidthtwo}\fi%
+\ifdim\branchwidththree>\branchwidth%
+\setlength{\branchwidth}{\branchwidththree}\fi%
+\ifdim\branchwidthfour>\branchwidth%
+\setlength{\branchwidth}{\branchwidthfour}\fi%
+\setlength{\daughteroffsetone}{\branchwidth}%
+\addtolength{\daughteroffsetone}{-\branchwidthone}%
+\addtolength{\daughteroffsetone}{-\treeshiftone}%
+\setlength{\daughteroffsettwo}{\branchwidth}%
+\addtolength{\daughteroffsettwo}{-\branchwidthtwo}%
+\addtolength{\daughteroffsettwo}{-\treeshifttwo}%
+\setlength{\daughteroffsetthree}{\branchwidth}%
+\addtolength{\daughteroffsetthree}{-\branchwidththree}%
+\addtolength{\daughteroffsetthree}{-\treeshiftthree}%
+\setlength{\daughteroffsetfour}{\branchwidth}%
+\addtolength{\daughteroffsetfour}{-\branchwidthfour}%
+\addtolength{\daughteroffsetfour}{-\treeshiftfour}%
+\setlength{\parentoffset}{-0.5\wd\parentbox}%
+\addtolength{\parentoffset}{\treeoffsetfive}%
+\addtolength{\parentoffset}{2\branchwidth}%
+\setlength{\daughteroffset}{0in}%
+\ifdim\parentoffset<0in%
+\setlength{\daughteroffset}{-\parentoffset}%
+\setlength{\parentoffset}{0in}\fi%
+\setlength{\parentwidth}{\parentoffset}%
+\addtolength{\parentwidth}{\wd\parentbox}%
+\setlength{\treeoffset}{\daughteroffset}%
+\addtolength{\treeoffset}{\treeoffsetfive}%
+\setlength{\treewidth}{\wd\treeboxone}%
+\addtolength{\treewidth}{\daughteroffsetone}%
+\addtolength{\treewidth}{\treewidthtwo}%
+\addtolength{\treewidth}{\daughteroffsettwo}%
+\addtolength{\treewidth}{\treewidththree}%
+\addtolength{\treewidth}{\daughteroffsetthree}%
+\addtolength{\treewidth}{\treewidthfour}%
+\addtolength{\treewidth}{\daughteroffsetfour}%
+\addtolength{\treewidth}{\treewidthfive}%
+\addtolength{\treewidth}{\daughteroffset}%
+\ifdim\treewidth<\parentwidth\setlength{\treewidth}{\parentwidth}\fi%
+\sbox{\treebox}{\begin{minipage}{\treewidth}%
+\begin{flushleft}%
+\hspace*{\parentoffset}\usebox{\parentbox}\\
+{\setlength{\unitlength}{0.5\branchwidth}%
+\hspace*{\treeoffset}\begin{picture}(8,1)%
+\put(0,0){\line(4,1){4}}%
+\put(2,0){\line(2,1){2}}%
+\put(4,0){\line(0,1){1}}%
+\put(6,0){\line(-2,1){2}}%
+\put(8,0){\line(-4,1){4}}%
+\end{picture}}\\
+\vspace{-\baselineskip}%
+\hspace*{\daughteroffset}%
+\makebox[\treewidthfive][l]%
+{\raisebox{-\ht\treeboxfour}{\usebox{\treeboxfive}}}%
+\hspace*{\daughteroffsetfour}%
+\makebox[\treewidthfour][l]%
+{\raisebox{-\ht\treeboxfour}{\usebox{\treeboxfour}}}%
+\hspace*{\daughteroffsetthree}%
+\makebox[\treewidththree][l]%
+{\raisebox{-\ht\treeboxthree}{\usebox{\treeboxthree}}}%
+\hspace*{\daughteroffsettwo}%
+\makebox[\treewidthtwo][l]%
+{\raisebox{-\ht\treeboxtwo}{\usebox{\treeboxtwo}}}%
+\hspace*{\daughteroffsetone}%
+\raisebox{-\ht\treeboxone}{\usebox{\treeboxone}}%
+\end{flushleft}%
+\end{minipage}}%
+\setlength{\treeoffsetone}{\parentoffset}%
+\addtolength{\treeoffsetone}{0.5\wd\parentbox}%
+\setlength{\treeshiftone}{0pt}%
+\setlength{\treewidthone}{\treewidth}%
+\sbox{\treeboxone}{\usebox{\treebox}}\poptree\poptree\poptree\poptree%
+\else\typeout{QobiTeX warning--- Can't handle #1 branching}\fi\fi\fi\fi\fi}
+%
+\newcommand{\faketreewidth}[1]{%
+\sbox{\parentbox}{\ontop{#1}}%
+\setlength{\treewidthone}{0.5\wd\parentbox}%
+\addtolength{\treewidthone}{\treeoffsetone}%
+\setlength{\treeshiftone}{\treeoffsetone}%
+\addtolength{\treeshiftone}{-0.5\wd\parentbox}}
+%
+
+\newdimen\qbog
+\newcommand{\qobitree}{%
+\leavevmode
+\qbog=\ht\treeboxone
+\advance\qbog by -.7\baselineskip
+%\fbox{\raise-\qbog \box\treeboxone}
+\raise-\qbog \box\treeboxone
+\setlength{\treeoffsetone}{\treeoffsettwo}%
+\setbox\treeboxone \box\treeboxtwo
+\poptree }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Front end for qobitree.  Reads a tree in bracketed notation and
+% generates commands to build the specified tree.
+% Tokens are space-delimited; brackets {} may be used to alter grouping.
+%
+% Alexis Dimitriadis (alexis@babel.ling.upenn.edu), Dec 6, 1993.
+%
+% Sample input:
+% \Tree [ [ John ].NP [ has [ [ seen ].V [ {the book} ].NP ].T ].IP ].S
+% To insert extra material, precede token with an exclamation mark, e.g.
+%       ... ].V !\faketreewidth{VPP} ...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Very messy stack macros, to make up for lack of nested environments in
+% qobitree. 
+%
+% \Spush\Stack{X} 	Push X on stack \Stack.
+% \Spop\Stack 	  	Pop top element off \Stack, leave in the input stream.
+% \Spopd\Stack\to\v	Define \v to be the top element of \Stack, pop it.
+%
+
+% This will trigger a LaTeX diagnostic if we pop too far.
+\def\qbstack{<Stack Underflow>}
+\def\qnstack{<Stack Underflow>}
+
+
+\newtoks\qta \newtoks\qtb
+% Expand #2 and push on stack #1.  Things already pushed are not
+% reexpanded.
+\long\def\Spush#1#2{\qta=\expandafter{#1}%
+	\edef#1{{#2}\noexpand\@@STP{\the\qta}}}
+
+% Push #2 on stack #1 unexpanded.
+%
+\long\def\SpushU#1#2{\qta=\expandafter{#1}\qtb={#2}%
+	\edef#1{{\the\qtb}\noexpand\@@STP{\the\qta}}}
+
+\def\@@STP{\def\@@StpV}
+
+% Pop the top element of stack #1, leaving in the input stream.
+%
+\def\Spop#1{#1\let#1=\@@StpV}
+
+% Pop the top element of stack #1, expand it, and define #2 to it.
+% 
+\def\SpopD#1#2{\expandafter\qta#1\let#1=\@@StpV\edef#2{\the\qta}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is the front end proper.  Everything else is just sugar.
+% (the stack macros are necessary).
+%
+\newcount\nbranches
+\newif\ifqtreecenter \qtreecentertrue
+
+\def\Tree{\ifqtreecenter\hskip 0pt plus 1fil\fi \bgroup
+\automath \nbranches=0\relax \recurse }
+
+% The empty hbox is a hack to move the trees to the left a little
+\def\endTree{\qobitree \egroup \ifqtreecenter\hbox to 0.5in{}\fi }
+
+\def\doanode#1 {\advance\nbranches by1 \leaf{#1 }\lookfornodes}
+
+\def\recurse[{\@ifnextchar.{\@recurse}{\@recurse. }}
+\def\@recurse.#1 {\SpushU\qnstack{#1}%
+\Spush\qbstack{\number\nbranches}\nbranches=0\relax \lookfornodes } 
+
+\def\closeoff]{\@ifnextchar.{\expandafter\@closeoff}{\expandafter\@closeoff. }}
+% If either label is missing, use the other.
+% Otherwise, disallow mismatched labels
+% Push and pop right argument to make sure the tokens are in same state...
+\def\@closeoff.#1 {%
+\def\rarg{#1}
+\SpopD\qnstack\larg
+\ifx\larg\@empty \let\larg=\rarg 
+\else \ifx\rarg\@empty \let\rarg=\larg \fi\fi
+\ifx\larg\rarg \else 
+	\message{}\errmessage{MISMATCHED LABELS, [.\larg ... ].\rarg}%
+  \fi 
+\@@closeoff\larg }
+
+\def\@@closeoff#1{%
+\branch{\number\nbranches}{#1}%
+\SpopD\qbstack\x\nbranches=\x \relax
+%	\showthe\nbranches 
+\ifnum\nbranches>0\relax  \expandafter\lookfornodes
+\else \expandafter\endTree \fi}
+
+\def\lookfornodes{\@ifnextchar]{\closeoff}{%
+\@ifnextchar[{\advance\nbranches by1\relax \recurse}{%
+\@ifnextchar!{\pushliteral}{\doanode}}}}
+
+
+\def\pushliteral!#1 {#1\relax \lookfornodes}
+
+
+%  Include eepic if found, else warn
+\@input{eepic.sty}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% and another odd convenience:
+%
+% Make _, ^ go into math mode automatically in the scope of \automath
+%
+{ % Temporarily change catcodes
+\catcode`\_=\active
+\catcode`\^=\active
+%\catcode`\'=\active
+%
+\global\def\automath{%
+\catcode`\_=\active
+\catcode`\^=\active
+\def_##1{\ifmmode\sb {##1} \else $\sb{##1} $\fi}%
+\def^##1{\ifmmode\sp {##1} \else $\sp{##1} $\fi}%
+}}
+
+\def\noautomath{%
+\catcode`\_=8 
+\catcode`\^=7 
+}
+
+% Let \0, \1, \2 produce ^0, $'$, $''$
+\def\0{\ifmmode ^0 \else $^0$ \fi}
+\def\1{\ifmmode ' \else $'$ \fi}
+\def\0{\ifmmode '' \else $''$ \fi}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% qroof: Build a triangular ``roof'' with label #2 and contents (under the
+% roof) #1.  The width of the roof is computed automatically.  The contents
+% may contain line breaks (\\).
+%
+
+% The slope of the roof built by qroof (may be changed anywhere).
+\newcount\qroofx
+\newcount\qroofy
+\qroofx=3 \qroofy=1
+\newbox\@scratchbox
+
+\def\qroof#1.#2 {{%
+\tabcolsep=0pt
+\setbox\@scratchbox=\hbox{\ \begin{tabular}{l} #1 \end{tabular}}%
+\begin{tabular}{c} #2 \\
+
+\def\wwd{\count1}%
+\wwd=\wd\@scratchbox
+\count0=\wwd
+\multiply\count0 by \qroofy
+\divide \count0 by 2
+\divide\count0 by \qroofx
+
+\unitlength=1sp
+\begin{picture}(\wwd,\count0)
+
+\put(0, 0){\line(1,0){\wwd}}
+\count0=\wwd
+\divide\wwd by 2
+\put(0, 0){\line(\qroofx, \qroofy){\wwd}}
+\put(\count0, 0){\line(-\qroofx, \qroofy){\wwd}}
+\end{picture}%
+\\[-0.6ex] %Pushes the text closer to the roof
+\box\@scratchbox \end{tabular}}}
+
