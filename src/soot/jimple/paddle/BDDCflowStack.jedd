@@ -138,7 +138,7 @@ public class BDDCflowStack
             oldRet = ret;
             ret |= targetStmts;
         } while( oldRet != ret );
-        return ret;
+        return 1B - ret;
     }
 
     private <shadow:V1> shadows = 0B;
