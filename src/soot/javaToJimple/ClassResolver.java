@@ -365,13 +365,15 @@ public class ClassResolver {
             sootClass.addMethod(method);
        
             AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
-           
+          
+            //System.out.println("anon class: "+Util.getSootType(aNew.anonType()));
+            //System.out.println("info: "+info);
             if (aNew.qualifier() != null) {
                 // add qualifier ref - do this first to get right order
                 addQualifierRefToInit(aNew.qualifier().type());
                 src.hasQualifier(true);
             }
-            if (!info.inStaticMethod()){
+            if (info != null && !info.inStaticMethod()){
                 addOuterClassThisRefToInit(aNew.anonType().outer());
                 addOuterClassThisRefField(aNew.anonType().outer());
                 src.thisOuterType(Util.getSootType(aNew.anonType().outer()));

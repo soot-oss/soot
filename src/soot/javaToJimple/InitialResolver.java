@@ -243,6 +243,7 @@ public class InitialResolver {
     
     private void createLocalClassName(polyglot.ast.LocalClassDecl lcd){
         // maybe this localdecl has already been resolved 
+        //System.out.println("creating local class decl: "+lcd);
         if (localClassMap == null){
             localClassMap = new BiMap();
         }
@@ -257,6 +258,8 @@ public class InitialResolver {
                 outerToMatch = outerToMatch.outer();
             }
 
+            //System.out.println("outer to match: "+outerToMatch);
+            //System.out.println("local decl name: "+lcd.decl().name());
             if (!localTypeMap.isEmpty()){
                 Iterator matchIt = localTypeMap.keySet().iterator();
                 while (matchIt.hasNext()){
@@ -265,6 +268,7 @@ public class InitialResolver {
                     while (outerMatch.isNested()){
                         outerMatch = outerMatch.outer();
                     }
+                    //System.out.println("outerMatch: "+outerMatch);
                     if (outerMatch.equals(outerToMatch)){
                         int numFound = getLocalClassNum((String)localTypeMap.get(new polyglot.util.IdentityKey(pType)), lcd.decl().name());
                         if (numFound >= nextAvailNum){
@@ -287,13 +291,19 @@ public class InitialResolver {
         // a local inner class is named outer$NsimpleName where outer 
         // is the very outer most class
         //System.out.println("real name: "+realName+" simple name: "+simpleName);
+        //System.out.println("getLocalClassNum: "+realName);
+        //System.out.println("getLocalClassNum: "+simpleName);
         int dIndex = realName.indexOf("$");
         int nIndex = realName.indexOf(simpleName, dIndex);
         if (nIndex == -1) return NO_MATCH;
         if (dIndex == -1) {
             throw new RuntimeException("Matching an incorrectly named local inner class: "+realName);
         }
-        return (new Integer(realName.substring(dIndex+1, nIndex))).intValue();
+        String numString = realName.substring(dIndex+1, nIndex);
+        for (int i = 0; i < numString.length(); i++){
+            if (!Character.isDigit(numString.charAt(i))) return NO_MATCH;
+        }
+        return (new Integer(numString)).intValue();
     }
     
     private int getAnonClassNum(String realName){

@@ -43,12 +43,12 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
     public polyglot.ast.Node override(polyglot.ast.Node parent, polyglot.ast.Node n){
         if (n instanceof polyglot.ast.LocalClassDecl){
             inners.add(new polyglot.util.IdentityKey(((polyglot.ast.LocalClassDecl)n).decl().type()));
-            return n;
+            return null;
         }
         else if (n instanceof polyglot.ast.New) {
             if (((polyglot.ast.New)n).anonType() != null) {
                 inners.add(new polyglot.util.IdentityKey(((polyglot.ast.New)n).anonType()));
-                return n;
+                return null;
             }
         }
         return null;

@@ -279,7 +279,7 @@ public class Util {
         soot.Local correctLocal = null;
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (l.getType().equals(type)){
+            if (fh.canStoreType(type, l.getType())){//,l.getType().equals(type)){
                 correctLocal = l;
             }
         }
@@ -289,9 +289,11 @@ public class Util {
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator it = body.getDefBoxes().iterator();
+        //System.out.println("looking for type : "+type);
         while (it.hasNext()){
             soot.ValueBox vb = (soot.ValueBox)it.next();
-            if ((vb.getValue() instanceof soot.Local) && (vb.getValue().getType().equals(type))){
+            //System.out.println("next vb: "+vb.getValue()+" type: "+vb.getValue().getType());
+            if ((vb.getValue() instanceof soot.Local) && (fh.canStoreType(type, vb.getValue().getType()))){//(vb.getValue().getType().equals(type))){
                 return true;
             }
         }

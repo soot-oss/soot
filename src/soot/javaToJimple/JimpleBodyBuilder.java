@@ -259,6 +259,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 }
                 else {
                     sootExpr = base().createExpr(initExpr);
+                    if (sootExpr instanceof soot.jimple.ConditionExpr) {
+                        sootExpr = handleCondBinExpr((soot.jimple.ConditionExpr)sootExpr);
+                    }
                 }
 
                 soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(fieldRef, sootExpr);
@@ -1147,6 +1150,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         ArrayList params = new ArrayList();
         if (assertStmt.errorMessage() != null){
             soot.Value errorExpr = base().createExpr(assertStmt.errorMessage());
+            if (errorExpr instanceof soot.jimple.ConditionExpr) {
+                errorExpr = handleCondBinExpr((soot.jimple.ConditionExpr)errorExpr);
+            }
             soot.Type errorType = errorExpr.getType();
            
             if (assertStmt.errorMessage().type().isChar()){
@@ -4302,6 +4308,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 		polyglot.ast.Expr consequence = condExpr.consequent();
         
         soot.Value conseqVal = base().createExpr(consequence);
+        if (conseqVal instanceof soot.jimple.ConditionExpr) {
+            conseqVal = handleCondBinExpr((soot.jimple.ConditionExpr)conseqVal);
+        }
         soot.jimple.AssignStmt conseqAssignStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, conseqVal);
         body.getUnits().add(conseqAssignStmt);
         Util.addLnPosTags(conseqAssignStmt, condExpr.position());
@@ -4318,6 +4327,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.ast.Expr alternative = condExpr.alternative();
 		if (alternative != null){
 			soot.Value altVal = base().createExpr(alternative);
+            if (altVal instanceof soot.jimple.ConditionExpr) {
+                altVal = handleCondBinExpr((soot.jimple.ConditionExpr)altVal);
+            }
             soot.jimple.AssignStmt altAssignStmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, altVal);
             body.getUnits().add(altAssignStmt);
             Util.addLnPosTags(altAssignStmt, condExpr.position());
