@@ -59,16 +59,12 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_Astore_2 extends Instruction_noargs implements Interface_Astore
-{
-    public Instruction_Astore_2() 
-    { 
-	super((byte)ByteCode.ASTORE_2); 
-	name = "astore_2"; 
-    }
-
-    public int getLocalNumber()
-    {
-	return 2;
-    }
+class Instruction_New extends Instruction_intindex {
+   public Instruction_New() { super((byte)ByteCode.NEW);
+   name = "new"; /*branches = true;*/ calls = true; }
+   public Instruction[] branchpoints(Instruction next) {
+      Instruction i[] = new Instruction[1];
+      i[0] = null;
+      return i;
+   }
 }

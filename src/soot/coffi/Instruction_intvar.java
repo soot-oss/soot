@@ -59,20 +59,26 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_intvar extends Instruction {
-   public int arg_i;
-   public Instruction_intvar(byte c) { super(c); }
-   public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_i;
-   }
-   public int nextOffset(int curr) { return curr+3; }
-   public int parse(byte bc[],int index) {
-      arg_i = getShort(bc,index);
-      return index+2;
-   }
-   public int compile(byte bc[],int index) {
-      bc[index++] = code;
-      shortToBytes((short)arg_i,bc,index);
-      return index+2;
-   }
+class Instruction_intvar extends Instruction implements Interface_OneIntArg 
+{
+    public int arg_i;
+    public Instruction_intvar(byte c) { super(c); }
+    public String toString(cp_info constant_pool[]) {
+	return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_i;
+    }
+    public int nextOffset(int curr) { return curr+3; }
+    public int parse(byte bc[],int index) {
+	arg_i = getShort(bc,index);
+	return index+2;
+    }
+    public int compile(byte bc[],int index) {
+	bc[index++] = code;
+	shortToBytes((short)arg_i,bc,index);
+	return index+2;
+    }
+
+    public int getIntArg()
+    {
+	return arg_i;
+    }
 }

@@ -59,6 +59,16 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_Astore_0 extends Instruction_noargs {
-   public Instruction_Astore_0() { super((byte)ByteCode.ASTORE_0); name = "astore_0"; }
+class Instruction_Astore_0 extends Instruction_noargs implements Interface_Astore
+{
+    public Instruction_Astore_0() 
+    { 
+	super((byte)ByteCode.ASTORE_0); 
+	name = "astore_0"; 
+    }
+
+    public int getLocalNumber()
+    {
+	return 0;
+    }
 }

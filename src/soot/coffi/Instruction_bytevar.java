@@ -59,21 +59,23 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_bytevar extends Instruction {
+class Instruction_bytevar extends Instruction implements Interface_OneIntArg
+{
     /**
-    * arg_b needs to be short in order to contain all the possible values for an unsigned byte
-    */
-   public int arg_b;
-   public boolean isWide;
+     * arg_b needs to be short in order to contain all the possible values for an unsigned byte
+     */
+    public int arg_b;
+    public boolean isWide;
 
-   public Instruction_bytevar(byte c) { super(c); }
-   public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_b;
-   }
-   public int nextOffset(int curr) { return curr + 1 + ((isWide) ? 3 : 1); }
+    public Instruction_bytevar(byte c) { super(c); }
+    public String toString(cp_info constant_pool[]) {
+	return super.toString(constant_pool) + argsep + LOCALPREFIX + arg_b;
+    }
 
-   public int parse(byte bc[],int index)
-   {
+    public int nextOffset(int curr) { return curr + 1 + ((isWide) ? 3 : 1); }
+
+    public int parse(byte bc[],int index)
+    {
         int indexbyte1 = ((int) bc[index]) & 0xff;
 
         if(isWide)
@@ -89,7 +91,12 @@ class Instruction_bytevar extends Instruction {
             arg_b = indexbyte1;
             return index+1;
         }
-   }
+    }
 
-   public int compile(byte bc[],int index) { bc[index++] = code; bc[index++] = (byte) arg_b; return index; }
+    public int compile(byte bc[],int index) { bc[index++] = code; bc[index++] = (byte) arg_b; return index; }
+
+    public int getIntArg()
+    {
+	return arg_b;
+    }
 }

@@ -59,16 +59,34 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_Astore_2 extends Instruction_noargs implements Interface_Astore
-{
-    public Instruction_Astore_2() 
-    { 
-	super((byte)ByteCode.ASTORE_2); 
-	name = "astore_2"; 
-    }
+abstract class Instruction_branch extends Instruction {
+   public int arg_i;
+   public Instruction target;         // pointer to target instruction
+   public Instruction_branch(byte c) { super(c); branches = true; }
 
-    public int getLocalNumber()
+   public String toString(cp_info constant_pool[]) {
+      return super.toString(constant_pool) + argsep 
+	  + "[label_" + Integer.toString(target.label) + "]";
+   }
+
+   public void offsetToPointer(ByteCode bc) {
+      target = bc.locateInst(arg_i+label);
+      if (target==null) {
+         System.out.println("Warning: can't locate target of instruction");
+         System.out.println(" which should be at byte address " + (label+arg_i));
+      } else
+         target.labelled = true;
+   }
+   // returns the array of instructions which might be the target of a
+   // branch with this instruction, assuming the next instruction is next
+   public Instruction[] branchpoints(Instruction next) {
+      Instruction i[] = new Instruction[2];
+      i[0] = target; i[1] = next;
+      return i;
+   }
+
+    public String toString()
     {
-	return 2;
+	return super.toString()+ "     "+target.label;
     }
 }

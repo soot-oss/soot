@@ -55,20 +55,21 @@ import java.io.*;
  * @see Instruction_int
  * @see Instruction_intvar
  * @see Instruction_intindex
+ * @see Instruction_branch
  * @see Instruction_intbranch
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_Astore_2 extends Instruction_noargs implements Interface_Astore
-{
-    public Instruction_Astore_2() 
-    { 
-	super((byte)ByteCode.ASTORE_2); 
-	name = "astore_2"; 
-    }
+class Instruction_branch extends Instruction {
+   public int arg_i;
+   public Instruction target;         // pointer to target instruction
+   public Instruction_branch(byte c) { super(c); branches = true; }
 
-    public int getLocalNumber()
-    {
-	return 2;
-    }
+   // returns the array of instructions which might be the target of a
+   // branch with this instruction, assuming the next instruction is next
+   public Instruction[] branchpoints(Instruction next) {
+      Instruction i[] = new Instruction[2];
+      i[0] = target; i[1] = next;
+      return i;
+   }
 }

@@ -270,8 +270,10 @@ public class SootMethod extends AbstractHost implements ClassMember
 				       + "; maybe you want to call c.setApplicationClass() on this class!");
 
         if(!hasActiveBody())
+	{
+	    System.out.println("Retrieving "+this.declaringClass.getName()+":"+this.getSignature());
             setActiveBody(this.getBodyFromMethodSource("jb"));
-        
+        }
         return getActiveBody();
     }
         

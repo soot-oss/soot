@@ -61,7 +61,6 @@ import java.io.*;
  */
 class Instruction_Jsr extends Instruction_intbranch {
    public Instruction_Jsr() { super((byte)ByteCode.JSR); name = "jsr";
-    // calls = true;
     }
    public Instruction[] branchpoints(Instruction next) {
       Instruction i[] = new Instruction[1];

@@ -121,6 +121,15 @@ class BasicBlock {
       pred = new Vector(2,3);
    }
 
+    public BasicBlock(Instruction headinsn, Instruction tailinsn)
+    {
+	id = ids++;
+	head = headinsn;
+	tail = tailinsn;
+	succ = new Vector(2,10);
+	pred = new Vector(2,3);
+    }
+
    /** Computes a hash code for this block from the label of the
     * first instruction in its contents.
     * @return the hash code.

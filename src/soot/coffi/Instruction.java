@@ -91,6 +91,9 @@ import java.io.*;
    /** Whether this instruction is a return. */
    public boolean returns;
 
+     /** Successor array. It is different from the field 'next'. */
+     public Instruction[] succs;
+
    int originalIndex;
 
    /** Constructs a new Instruction for this bytecode.
@@ -191,8 +194,11 @@ import java.io.*;
     * @return <i>true</i> if <i>i</i> is the same, <i>false</i> otherwise.
     */
    public boolean equals(Instruction i) {
+       return (this == i);
+       /*
       if (label == i.label) return true;
       return false;
+       */
    }
 
    /** Utility routines, used mostly by the parse routines of various

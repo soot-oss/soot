@@ -59,19 +59,17 @@ import java.io.*;
  * @see Instruction_longbranch
  * @see Instruction_Unknown
  */
-class Instruction_intbranch extends Instruction {
-   public int arg_i;
-   public Instruction target;         // pointer to target instruction
-   public Instruction_intbranch(byte c) { super(c); branches = true; }
+class Instruction_intbranch extends Instruction_branch 
+{
+   public Instruction_intbranch(byte c) {super(c);}
 
-   public String toString(cp_info constant_pool[]) {
-      return super.toString(constant_pool) + argsep + "[?]";
-   }
    public int nextOffset(int curr) { return curr+3; }
+
    public int parse(byte bc[],int index) {
       arg_i = getShort(bc,index);
       return index+2;
    }
+
    public int compile(byte bc[],int index) {
       bc[index++] = code;
       if (target!=null)
@@ -79,20 +77,5 @@ class Instruction_intbranch extends Instruction {
       else
          shortToBytes((short)(arg_i),bc,index);
       return index+2;
-   }
-   public void offsetToPointer(ByteCode bc) {
-      target = bc.locateInst(arg_i+label);
-      if (target==null) {
-         System.out.println("Warning: can't locate target of instruction");
-         System.out.println(" which should be at byte address " + (label+arg_i));
-      } else
-         target.labelled = true;
-   }
-   // returns the array of instructions which might be the target of a
-   // branch with this instruction, assuming the next instruction is next
-   public Instruction[] branchpoints(Instruction next) {
-      Instruction i[] = new Instruction[2];
-      i[0] = target; i[1] = next;
-      return i;
    }
 }

@@ -31,1408 +31,1084 @@
 
 package soot.coffi;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Vector;
-import java.util.NoSuchElementException;
+import java.lang.*;
+import java.util.*;
 
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
-import java.util.*;
 
 /** A Control Flow Graph.
  * @author Clark Verbrugge
  */
 public class CFG {
 
-/*
-    protected void finalize() throws Throwable 
-    {
-        if(soot.Main.isVerbose)
-            System.out.println("***CFG has been garbage collected for method: " + jmethod.getSignature() + "***");
-    }
-  */
-    
-   /** Method for which this is a control flow graph.
-    * @see method_info
-    */
-    method_info method;
-   /** Ordered list of BasicBlocks comprising the code of this CFG.
-    */
+    /** Method for which this is a control flow graph.
+     * @see method_info
+     */
+    private method_info method;
+    /** Ordered list of BasicBlocks comprising the code of this CFG.
+     */
     BasicBlock cfg;
-   /** For associating Instruction leaders with basic blocks. */
-   private java.util.Hashtable h;
-   private int bbcount;        // statistics, number of BBs processed
 
-   Chain units;
-   JimpleBody listBody;
+    Chain units;
+    JimpleBody listBody;
 
-   Map instructionToFirstStmt;
-   Map instructionToLastStmt;
-   SootMethod jmethod;
-   Scene cm;
+    Map instructionToFirstStmt;
+    Map instructionToLastStmt;
+    SootMethod jmethod;
+    Scene cm;
 
-   Map instructionToNext;
-   Instruction firstInstruction;
+    Instruction firstInstruction;
 
-   private short wide;                 // convert indices when parsing jimple
+    private short wide;                 // convert indices when parsing jimple
 
-   /** Constructs a new control flow graph for the given method.
-    * @param m the method in question.
-    * @see method_info
+    private Hashtable h2bb, t2bb;
+    private int bbcount;        // statistics, number of BBs processed
+
+    /** Constructs a new control flow graph for the given method.
+     * @param m the method in question.
+     * @see method_info
+     */
+    public CFG(method_info m) 
+    {
+	this.method = m;
+
+	buildBBCFG();
+	
+	eliminateJsrRets();
+
+	//	    printBBCFGPred(cfg);
+	//	    printBBCFGPred(cfg);
+	//	    printInstructions(cfg);
+
+	cfg.beginCode = true;
+
+	m.cfg = this;
+
+	if(cfg != null)
+	    firstInstruction = cfg.head;
+	else
+	    firstInstruction = null;
+    }
+
+    private void printBBCFGSucc(BasicBlock fb)
+    {
+	BasicBlock b = fb;
+	while ( b!= null )
+	{
+	    System.out.print(b.id +" -> ");
+	    for (int i=0; i<b.succ.size(); i++)
+	    {
+		BasicBlock bs = (BasicBlock)b.succ.elementAt(i);
+		System.out.print(bs.id+" ");
+	    }
+	    System.out.println();
+	    b = b.next;
+	}
+    }
+
+    private void printBBCFGPred(BasicBlock fb)
+    {
+	BasicBlock b = fb;
+	while ( b!= null )
+	{
+	    System.out.print(b.id +" <- ");
+	    for (int i=0; i<b.pred.size(); i++)
+	    {
+		BasicBlock bs = (BasicBlock)b.pred.elementAt(i);
+		System.out.print(bs.id+" ");
+	    }
+	    System.out.println();
+	    b = b.next;
+	}
+    }
+
+    private void printOneBasicBlock(BasicBlock b)
+    {
+	System.out.println("Block "+b.id);
+	
+	Instruction insn = b.head;
+	System.out.println(insn);
+	while (insn != b.tail && insn != null)
+	{
+	    insn = insn.next;
+	    System.out.println(insn);
+	}
+
+	System.out.println();	
+    }
+
+    private void printBBHeadTail(BasicBlock fb)
+    {
+	BasicBlock b = fb;
+	while (b != null)
+	{
+	    System.out.println(b.head);
+	    System.out.println(b.tail+"\n");
+	    b = b.next;
+	}	
+    }
+
+    private void printInstructions(BasicBlock fb)
+    {
+	BasicBlock b = fb;
+	while (b != null)
+	{
+	    printOneBasicBlock(b);
+	    b = b.next;
+	}
+    }
+    /*
+    private BasicBlock getEndOfBBList() 
+    {
+	BasicBlock block = cfg;
+	BasicBlock prev = cfg;
+
+	while ( block != null ) {
+	    prev = block;
+	    block = block.next;
+	}
+
+	return prev;
+    }
     */
-    public CFG(method_info m) {
-      Instruction i,head;
-      BasicBlock bb,blast;
-      method = m;
 
-      // Copy all the instructions to a list
-      {
-        Instruction ins = m.instructions;
 
-        m.instructionList = new ArrayList();
- 
-        while(ins != null && ins.next != null)
-        {
-            m.instructionList.add(ins);
-
-             if (ins instanceof Instruction_Jsr)
-               JsrToNext.put (ins, ins.next);
-
-           ins = ins.next;
-        }
-      }
-
-      h = new java.util.Hashtable(100,25);
-      if (m.instructions!=null) {
-         i = buildBasicBlock(m.instructions);
-
-         cfg = new BasicBlock(m.instructions);
-         blast = cfg;
-         h.put(m.instructions,cfg);
-         while (i != null) {
-            head = buildBasicBlock(i);
-
-            bb = new BasicBlock(i);
-            blast.next = bb;
-            blast = bb;
-            h.put(i,bb);
-    
-            i = head;
-         }
-
-         buildCFG();
-
-         endofBBList = getEndOfBBList();
-
-         // Vijay's JSR eliminator
-
-         {
-
-            buildJsrRetPairs();
-        
-            fixupJsrRets();
-    
-            JsrEliminate();
-  
-            fixupTargets();
-  
-            adjustExceptionTable();    
-
-            prepareForGC();
-
-         }
-  
-
-             
-         cfg.beginCode = true;
-      }
-      m.cfg = this;
-
-      if(cfg != null)
-        firstInstruction = cfg.head;
-      else
-        firstInstruction = null;
-
-        // Build the instructionToNext table
-        {
-            instructionToNext = new HashMap();
-
-            BasicBlock b = cfg;
-            Instruction last = null;
-
-            while (b != null)
-            {
-                Instruction ins = b.head;
-
-                while(ins != null)
-                {
-                    
-                    if(ins.next != null)
-                        instructionToNext.put(ins, ins.next);
-                    else if(b.next != null)
-                       {
-
-                        instructionToNext.put(ins, b.next.head);
-
-                       }
-
-                    ins = ins.next;
-                }
-
-                b = b.next;
-            }
-        }
-
-   }
-    
-    private void dumpInstructionToNext()
+    // Constructs the actual control flow graph. Assumes the hash table
+    // currently associates leaders with BasicBlocks, this function
+    // builds the next[] and prev[] pointer arrays.
+    private void buildBBCFG() 
     {
-	System.out.println("InstructionToNext :");
-	Instruction ins = method.instructions;
-	while (ins != null)
+	Object branches[], nextinsn;
+	Code_attribute ca = method.locate_code_attribute();
+
 	{
-	    System.out.println(ins);
-	    ins = (Instruction)instructionToNext.get(ins);
+	    h2bb = new Hashtable(100,25);
+	    t2bb = new Hashtable(100,25);
+
+	    Instruction insn = method.instructions;
+	    BasicBlock blast = null;
+	    if (insn != null)
+	    {
+		Instruction tail = buildBasicBlock(insn);
+		cfg = new BasicBlock(insn, tail);
+		h2bb.put(insn, cfg);
+		t2bb.put(tail, cfg);
+		insn = tail.next;
+		blast = cfg;
+	    }	
+
+	    while (insn != null)
+	    {
+		Instruction tail = buildBasicBlock(insn);
+		BasicBlock block = new BasicBlock(insn, tail);
+		blast.next = block;
+		blast = block;
+		h2bb.put(insn, block);
+		t2bb.put(tail, block);
+		insn = tail.next;
+	    }
+	}
+
+	BasicBlock block = cfg;
+
+	while (block != null) 
+	{
+	    Instruction insn = block.tail;
+
+	    if (insn.branches) 
+	    {
+		if (insn instanceof Instruction_Athrow)
+		{
+		    // see how many targets it can reach.  Note that this is a
+		    // subset of the exception_table.
+		    HashSet ethandlers = new HashSet();
+
+		    // not quite a subset---could also be that control 
+		    // exits this method, so start icount at 1
+		    for (int i=0; i<ca.exception_table_length; i++) 
+		    {
+			exception_table_entry etentry =
+			    ca.exception_table[i];
+
+			if (insn.label >= etentry.start_inst.label 
+			    && (etentry.end_inst==null 
+				|| insn.label < etentry.end_inst.label)) 
+			{
+			    ethandlers.add(etentry.handler_inst);
+			}
+		    }
+
+		    branches = ethandlers.toArray();
+		} 
+		else 
+		    branches = insn.branchpoints(insn.next);              
+
+		if (branches != null)
+		{
+		    block.succ.ensureCapacity(block.succ.size()+branches.length);
+
+		    for (int i=0; i<branches.length; i++) 
+		    {
+			if ( branches[i]!=null ) {
+			    BasicBlock bb = (BasicBlock)h2bb.get(branches[i]);
+                 
+			    if (bb == null)
+			    {                 
+				System.out.println("Warning: "
+					       +"target of a branch is null");
+				System.out.println ( insn );
+			    }
+			    else 
+			    {
+				block.succ.addElement(bb);
+				bb.pred.addElement(block);
+			    }
+			}
+		    }
+		}
+	    } 
+	    else 
+	    if (block.next!=null) 
+	    { // BB ended not with a branch, so just go to next
+		block.succ.addElement(block.next);
+		block.next.pred.addElement(block);
+	    }
+	    block = block.next;
+	}
+
+	// One final step, run through exception handlers and mark which
+	// basic blocks begin their code
+	for (int i=0; i<ca.exception_table_length; i++) 
+	{
+	    BasicBlock bb = (BasicBlock)h2bb.get(
+					 ca.exception_table[i].handler_inst);
+	    if ( bb == null )
+	    {
+		System.out.println("Warning: No basic block found for" +
+				   " start of exception handler code.");
+	    }
+	    else 
+	    {
+		bb.beginException = true;
+		ca.exception_table[i].b = bb;
+	    }
 	}
     }
 
-    private void dumpMethodInstructions()
+    /* given the list of instructions head, this pulls off the front
+     * basic block, terminates it with a null, and returns the next
+     * instruction after.
+     */
+    private static Instruction buildBasicBlock(Instruction head) 
     {
-	System.out.println("MethodInstructions :");
-	Instruction ins = method.instructions;
-	while (ins != null)
+	Instruction insn, next;
+	insn = head;
+	next = insn.next;
+
+	if (next == null)
+	    return insn;
+
+	do 
+	{	    
+	    if (insn.branches || next.labelled)
+		break;
+	    else
+	    {
+		insn = next;
+		next = insn.next;
+	    }
+	} while (next != null);
+
+	return insn;
+    }
+
+
+    /* Replaces JSR/RET instructions by gotos. */
+    private boolean eliminateJsrRets()
+    {
+	boolean unusual = false;
+
+	/* going through basic blocks, find all jsr, astore, ret. */
+	HashSet jsrset = new HashSet(6);
+
+	Hashtable local2rets = new Hashtable(3);
+	Hashtable local2astores = new Hashtable(3);
+	Hashtable astore2jsrs = new Hashtable(3);
+
+	BasicBlock block = cfg;
+	while (block != null)
 	{
-	    System.out.println(ins);
-	    ins = ins.next;
+	    Instruction insn = block.tail;
+
+	    if (insn instanceof Instruction_Ret
+		||insn instanceof Instruction_Ret_w)
+	    {
+		Integer arg = new Integer(((Interface_OneIntArg)insn).getIntArg());
+		addElementToTableSet(local2rets, arg, insn);
+	    }
+	    else
+	    if (insn instanceof Instruction_Jsr
+		|| insn instanceof Instruction_Jsr_w)
+	    {
+		jsrset.add(insn);
+
+		/* also check the target, is it astore?. */
+		Instruction target = ((Instruction_branch)insn).target;
+
+		if (target instanceof Interface_Astore)
+		{
+		    Integer arg = new Integer(((Interface_Astore)target).getLocalNumber());
+		    addElementToTableSet(local2astores, arg, target);
+
+		    addElementToTableSet(astore2jsrs, target, insn);
+		}
+		else
+		    unusual = true;
+	    }
+
+	    block = block.next;
+	}
+	
+	if (unusual)
+	{
+	    System.err.println("Sorry, I cannot handle this method.");
+	    return false;
+	}
+
+	/* check the simple situation. */
+	{
+	    Set keys = local2rets.keySet();
+	    if (keys.size() == 0)
+		return true;
+	    
+	    Hashtable multikeys = new Hashtable(2);
+
+	    Object[] args = keys.toArray();
+	    for (int i=0; i<args.length; i++)
+	    {
+		Object arg = args[i];
+		Set rets = (Set)local2rets.get(arg);
+		if (rets.size() > 1)
+		{
+		    multikeys.put(arg, rets);
+		    local2rets.remove(arg);
+		}
+	    }
+
+	    if (!multikeys.isEmpty())
+		simplifyComplexJsrRets(multikeys, local2astores, astore2jsrs, local2rets);
+
+	    eliminateSimpleJsrRets(local2rets, local2astores, astore2jsrs);
+	}
+
+	/* patch exception table and others.*/
+	{
+	    Instruction newinsn = (Instruction)replacedInsns.get(method.instructions);
+	    if (newinsn != null)
+		method.instructions = newinsn;
+
+	    adjustExceptionTable();
+
+	    /* adjust branch targets. */
+	    adjustBranchTarget();
+	}
+	return true;
+    }
+
+    /* Complex JSR/RET pairs have more than one RETs for a local number. 
+     * It will be split to more than one locals if possible. 
+     * And new local/ret will be put in local2rets table.
+     * Also local2astores should be fixed. It replace the arg of astore/ret 
+     * instruction by a new local number.
+     */
+    private void simplifyComplexJsrRets(Hashtable multikeys,
+					Hashtable local2astores,
+					Hashtable astore2jsrs,
+					Hashtable local2rets)
+    {
+	/* based on the CFG, make a simple reach/definitation analysis. */
+	System.out.println("Meet complex JSR/RETs.");
+	
+	Iterator keyIt = multikeys.keySet().iterator();
+	while (keyIt.hasNext())
+	{
+	    Integer local = (Integer)keyIt.next();
+
+	    Set astores = (Set)local2astores.get(local);
+	    if (astores.size() <= 1)
+	    {
+		local2rets.put(local, multikeys.get(local));
+		continue;
+	    }
+
+	    /* multi astores and rets. */
+	    Set rets = (Set)multikeys.get(local);
+	    Hashtable ret2astores = new Hashtable(rets.size());
+	    Hashtable astore2rets = new Hashtable(astores.size());
+	    Iterator astoreIt = astores.iterator();
+	    while (astoreIt.hasNext())
+	    {
+		Instruction astore = (Instruction)astoreIt.next();
+		
+		Set reachableRets = new HashSet();
+		astore2rets.put(astore, reachableRets);
+
+		findReachableRets(astore,  // which astore? 
+				  astore.next, // start instruction
+				  local.intValue(), // local number
+				  reachableRets, // set of rets that astore can reach
+				  ret2astores, // hashtable of ret to astores
+				  new HashSet()); // visited instruction set.
+	    }
+
+	    /* changing local number of astore/rets, adding them to local2rets table, 
+	     * and also change local2astores table.
+	     */
+	    {
+		local2astores.remove(local);
+		Set newrets = new HashSet();
+		Set newastores = new HashSet();
+		
+		if (retrieveGroupedSet(ret2astores, astore2rets, newrets, newastores))
+		{
+		    local2rets.put(local, newrets);
+		    local2astores.put(local, newastores);
+		    
+		    newrets = new HashSet();
+		    newastores = new HashSet();
+		    while (retrieveGroupedSet(ret2astores, astore2rets, newrets, newastores))
+		    {
+			Code_attribute codeAttribute = method.locate_code_attribute();
+			Integer newlocal = new Integer(codeAttribute.max_locals);
+			codeAttribute.max_locals++;			
+			
+			local2rets.put(newlocal, newrets);
+			local2astores.put(newlocal, newastores);
+		    } 
+		}
+
+	    }
 	}
     }
 
-    private void dumpExceptionTable() 
-    {
-	System.out.println("Exception table.");
 
+    private boolean retrieveGroupedSet(Hashtable ret2astores, 
+				       Hashtable astore2rets, 
+				       Set rets,
+				       Set astores)
+    {
+	Set keySet = ret2astores.keySet();
+	if (keySet.isEmpty())
+	    return false;
+
+	Iterator keyIt = keySet.iterator();
+	Object seed = keyIt.next();
+
+	rets.add(seed);
+	LinkedList retlist = new LinkedList();
+	LinkedList astorelist = new LinkedList();
+
+	retlist.add(seed);
+
+	while (!retlist.isEmpty())
+	{
+	    Object retseed = retlist.removeFirst();
+	    Set tgtastores = (Set)ret2astores.get(retseed);
+
+	    ret2astores.remove(retseed);
+
+	    if (tgtastores != null)
+	    {
+		Iterator objIt = tgtastores.iterator();
+		while (objIt.hasNext())
+	        {
+		    Object obj = objIt.next();
+		    if (!astores.contains(obj))
+		    {
+			astores.add(obj);
+			astorelist.add(obj);
+		    }
+		}
+	    }
+
+	    while (!astorelist.isEmpty())
+	    {
+		Object astoreseed = astorelist.removeFirst();
+		Set tgtrets = (Set)astore2rets.get(astoreseed);
+		
+		astore2rets.remove(astoreseed);
+		if (tgtrets != null)
+		{
+		    Iterator objIt = tgtrets.iterator();
+		    while (objIt.hasNext())
+		    {
+			Object obj = objIt.next();
+			if (!rets.contains(obj))
+			{
+			    rets.add(obj);
+			    retlist.add(obj);
+			}
+		    }
+		}
+	    }
+	}
+
+	return true;
+    }
+
+    private void findReachableRets(Instruction astore,
+				   Instruction first, 
+				   int localnum,
+				   Set rets, 
+				   Hashtable ret2astores,
+				   Set visitedInsns)
+    {
+	Instruction insn = first;
+	while (insn != null)
+	{
+	    if (!visitedInsns.contains(insn))
+		visitedInsns.add(insn);
+	    else
+		return;	    
+		
+	    if (insn.returns)
+		return;
+
+	    if (insn instanceof Interface_Astore)
+	    {
+		int num = ((Interface_Astore)insn).getLocalNumber();
+		if (num == localnum)
+		    return;
+	    }
+
+	    if (insn instanceof Instruction_Ret
+		|| insn instanceof Instruction_Ret_w)
+	    {
+		int num = ((Interface_OneIntArg)insn).getIntArg();
+		if (num == localnum)
+		{
+		    rets.add(insn);
+		    addElementToTableSet(ret2astores, insn, astore);
+		    return;
+		}
+		else
+		{
+		    System.err.println("Cannot solve JSR/RETs.");
+		}
+	    }
+
+	    if (insn.branches)
+	    {
+		/* call each successors. */
+		BasicBlock block = (BasicBlock)t2bb.get(insn);
+		if (block != null)
+		{
+		    Vector bsucc = block.succ;
+		    int size = bsucc.size();
+
+		    for(int i = 0; i<size; i++)
+		    {
+			Instruction next = ((BasicBlock)bsucc.elementAt(i)).head;	
+			findReachableRets(astore,
+					  next, 
+					  localnum, 
+					  rets, 
+					  ret2astores, 
+					  visitedInsns);
+		    }
+		}
+		else
+		    System.out.println("Instruction \"" + insn+"\" is not the tail of a basic block.");
+
+		return;
+	    }
+
+	    insn = insn.next;
+	}
+    }
+
+    /* if a jsr/astore/ret is replaced by some other instruction, it will be put on this table. */
+    private Hashtable replacedInsns = new Hashtable();
+    private void dumpReplacedInsns()
+    {
+	System.out.println("replaced table:");
+	Set keys = replacedInsns.keySet();
+	Iterator keyIt = keys.iterator();
+	while (keyIt.hasNext())
+	{
+	    Object key = keyIt.next();
+	    Object value = replacedInsns.get(key);
+	    System.out.println(key + " ==> "+ value);
+	}
+    }
+
+    /* still we have to make copy of code, but we will do that from inner to outside. 
+     * A simple JSR/RET has a 1-1 map from an astore to a ret.
+     */
+    /*
+    private void eliminateSimpleJsrRets(Hashtable local2rets,
+					Hashtable local2astores,
+					Hashtable astore2jsrs)
+    {
+	Map jsr2astore = new HashMap();
+	Map astore2ret = new HashMap();
+
+	// build astore->ret pair
+	{
+	    Set locals = (Set)local2astores.keySet();
+	    Iterator localsIt = locals.iterator();
+	    while (localsIt.hasNext())
+	    {
+		Object local = localsIt.next();
+
+		Set astores = (Set)local2astores.get(local);
+		Set rets = (Set)local2rets.get(local);
+		if (rets.size() != 1)
+		{
+		    System.err.println("Sorry, I cannot handle this JSR/RETs. ");
+		    return;
+		}
+		Object ret = (rets.toArray())[0];
+	    
+		Iterator astoresIt = astores.iterator();
+		while (astoresIt.hasNext())
+		{
+		    Object astore = astoresIt.next();
+		    astore2ret.put(astore, ret);
+		}
+	    }
+	}
+
+	// build jsr -> astore pair.
+	{
+	    Set astores = astore2jsrs.keySet();
+	    Iterator astoresIt = astores.iterator();
+	    while (astoresIt.hasNext())
+	    {
+		Object astore = astoresIt.next();
+		Set jsrs = (Set)astore2jsrs.get(astore);
+		Iterator jsrsIt = jsrs.iterator();
+		while (jsrsIt.hasNext())
+		{
+		    Object jsr = jsrsIt.next();
+		    jsr2astore.put(jsr, astore);
+		}
+	    }
+	}
+
+	LinkedList jsrorder = new LinkedList();
+	// order the jsrs.
+	{
+	    Set jsrs = jsr2astore.keySet();
+	    Iterator jsrsIt = jsrs.iterator();
+	    while (jsrsIt.hasNext())
+	    {
+		Object jsr = jsrsIt.next();
+		
+
+	    }
+	}
+    }
+    */
+     
+    // The approach can not pass the verifier. 
+    private void eliminateSimpleJsrRets(Hashtable local2rets,
+					Hashtable local2astores,
+					Hashtable astore2jsrs)
+    {
+	System.out.println("Meet simple JSR/RETs.");
+
+	Object[] locals = local2rets.keySet().toArray();
+	for (int i=0; i<locals.length; i++)
+	{
+	    Integer local = (Integer)locals[i];
+	    Object[] astores = ((Set)local2astores.get(local)).toArray();
+	    Object[] rets = ((Set)local2rets.get(local)).toArray();
+	    int localnum = local.intValue();
+	    
+	    // all jsrs related to this local.
+	    Set jsrset = new HashSet();
+	    
+	    // collect all jsrs. 
+	    for (int j=0; j<astores.length; j++)
+	    {
+		Set jsrs = (Set)astore2jsrs.get(astores[j]);
+		jsrset.addAll(jsrs);
+	    }
+	    
+	    Object[] jsrs = jsrset.toArray();
+
+	    // replace astore by istore or nop according to the number of jsrs 
+	    for (int j=0; j<astores.length; j++)
+	    {
+		Instruction astore = (Instruction)astores[j];
+		Instruction newinsn;
+		if (jsrs.length == 1)
+		{
+		    newinsn = newNopInsn(astore.label);
+		}
+		else
+		{
+		    newinsn = newIstoreInsn(localnum, astore.label);
+		}
+
+		replaceInstruction(astore, astore, newinsn, newinsn);		
+	    }
+
+	    // replace jsrs, and construct a target array. 
+	    Instruction[] tgts = new Instruction[jsrs.length];
+	    if (jsrs.length == 1)
+	    {
+		// it is a simple goto instruction. 
+		Instruction oldinsn = (Instruction)jsrs[0];
+		Instruction target = getJsrTarget(oldinsn);
+		Instruction newtgt = (Instruction)replacedInsns.get(target);
+		Instruction newinsn = newGotoInsn(newtgt, oldinsn.label);
+		tgts[0] = oldinsn.next;
+		replaceInstruction(oldinsn, oldinsn, newinsn, newinsn);
+	    }
+	    else
+	    {
+		// push a constant and goto target. 
+		for (int j=0; j<jsrs.length; j++)
+		{
+		    Instruction oldinsn = (Instruction)jsrs[j];
+		    Instruction target = getJsrTarget(oldinsn);
+		    Instruction newtgt = (Instruction)replacedInsns.get(target);
+		    tgts[j] = oldinsn.next;
+		    
+		    Instruction pushinsn = newBipushInsn(j, oldinsn.label);
+		    Instruction gotoinsn = newGotoInsn(newtgt, oldinsn.label);
+		    pushinsn.next = gotoinsn;
+		    gotoinsn.prev = pushinsn;
+
+		    replaceInstruction(oldinsn, oldinsn, pushinsn, gotoinsn);
+		}
+	    }
+
+	    // replace RET by goto/ifgoto/tableswitch. 
+	    for (int j=0; j<rets.length; j++)
+	    {
+		Instruction ret = (Instruction)rets[j];
+		Instruction newhead, newtail;
+		if (tgts.length == 1)
+		{
+		    newhead = newGotoInsn(tgts[0], ret.label);
+		    newtail = newhead;
+		    replaceInstruction(ret, ret, newhead, newtail);
+		}
+		else
+		{
+		    newhead = newIloadInsn(localnum, ret.label);  
+		    
+		    if (tgts.length == 2)
+		    {
+			Instruction ifeq = newIfeqInsn(tgts[0], ret.label);
+			newhead.next = ifeq;
+			ifeq.prev = newhead;
+			replaceInstruction(ret, ret, newhead, ifeq);
+			BasicBlock curblock = (BasicBlock)t2bb.get(ifeq);
+			
+			// add a new basic block, and a new instruction.
+			Instruction togo = newGotoInsn(tgts[1], ret.label);
+			// set the label;
+			togo.labelled = true;
+			// insert instruction after ifea
+			insertInstructionAfter(ifeq, togo, togo);
+
+			BasicBlock newblock = new BasicBlock(togo, togo); 
+			// insert a new basic block for goto
+			h2bb.put(togo, newblock);
+			t2bb.put(togo, newblock);
+						
+			newblock.next = curblock.next;
+			curblock.next = newblock;
+			
+			curblock.succ.add(newblock);
+			curblock.succ.add(h2bb.get(tgts[0]));
+			newblock.pred.add(curblock);
+
+			// adjust targets, reuse the code for patching CFG.
+			newtail = togo;
+			Instruction tmptgt = tgts[1];
+			tgts = new Instruction[1];
+			tgts[0] = tmptgt;
+		    }
+		    else
+		    {
+			newtail = newTableswitchInsn(tgts, ret.label);
+			newhead.next = newtail;
+			newtail.prev = newhead;
+			replaceInstruction(ret, ret, newhead, newtail);
+		    }
+		}
+
+		// patching the BBCFGs
+		{
+		    BasicBlock currentBB = (BasicBlock)t2bb.get(newtail);
+		    currentBB.succ.ensureCapacity(tgts.length);
+
+		    for (int k=0; k<tgts.length; k++)
+		    {
+			BasicBlock nextBB = (BasicBlock)h2bb.get(tgts[k]);
+                 
+			if (nextBB == null)
+			{                 
+			    System.out.println("Warning: "
+					       +"target of a branch is null");
+			    System.out.println (newtail);
+			}
+			else 
+			{
+			    currentBB.succ.add(nextBB);
+			    nextBB.pred.add(currentBB);
+			}
+		    }
+		}
+	    }
+	}
+    }
+
+    /* replace a sequence of instructions by another. */
+    private void replaceInstruction(Instruction oldhead, Instruction oldtail, Instruction head, Instruction tail)
+    {
+	/* adjust instructions. */
+	{
+	    Instruction prev = oldhead.prev;
+	    Instruction next = oldtail.next;
+
+	    head.prev = prev;
+	    if (prev != null)
+		prev.next = head;
+
+	    tail.next = next;
+	    if (next != null)
+		next.prev = tail;
+	}
+
+	/* Adjust the basic block head and tail, also h2bb and t2bb */
+	{
+	    BasicBlock bb = (BasicBlock)h2bb.get(oldhead);
+	    if (bb != null)
+	    {
+		bb.head = head;
+		h2bb.remove(oldhead);
+		h2bb.put(head, bb);
+	    }
+
+	    bb = (BasicBlock)t2bb.get(oldtail);
+	    if (bb != null)
+	    {
+		bb.tail = tail;
+		t2bb.remove(oldtail);
+		t2bb.put(tail, bb);
+	    }
+	}
+
+	/* adjust replacedInsns, which is used to adjust exception table */
+	{
+	    replacedInsns.put(oldhead, head);	    
+	}
+
+	/* adjust label. */
+	head.labelled = oldhead.labelled;
+    }
+
+    private void insertInstructionAfter(Instruction which, 
+					Instruction head,
+					Instruction tail)
+    {
+	tail.next = which.next;
+	if (tail.next != null)
+	    tail.next.prev = tail.next;
+	which.next = head;
+	head.prev = which;
+    }
+
+    private Instruction getJsrTarget(Instruction jsr)
+    {
+	return ((Instruction_branch)jsr).target;
+    }
+
+    private Instruction newNopInsn(int label)
+    {
+	Instruction nop = new Instruction_Nop();
+	nop.label = label;
+	return nop;
+    }
+
+    private Instruction newIfeqInsn(Instruction tgt, int label)
+    {
+	Instruction_Ifeq ifeq = new Instruction_Ifeq();
+	ifeq.target = tgt;
+	ifeq.label = label;
+	return ifeq;
+    }
+
+    private Instruction newBipushInsn(int val, int label)
+    {
+	Instruction bipush = new Instruction_Bipush((byte)val);
+	bipush.label = label;
+	return bipush;
+    }
+
+    private Instruction newGotoInsn(Instruction tgt, int label)
+    {
+	Instruction_Goto gotoinsn = new Instruction_Goto();
+	gotoinsn.target = tgt;
+	gotoinsn.label = label;
+	return gotoinsn;
+    }
+
+    private Instruction newTableswitchInsn(Instruction[] tgts, int label)
+    {
+	Instruction_Tableswitch tsInst =
+	    new Instruction_Tableswitch();
+	tsInst.label = label;
+
+	int length = tgts.length;
+
+	/* filled up targets. */
+	tsInst.low = 0;
+	tsInst.high = length-2;
+	tsInst.default_offset = length-1;
+
+	tsInst.jump_insts = new Instruction[length-1];
+	System.arraycopy(tgts, 0, tsInst.jump_insts, 0, length-1);
+
+	tsInst.default_inst = tgts[length-1];
+	return tsInst;
+    }
+
+    private Instruction newIloadInsn(int arg, int label)
+    {
+	Instruction load;
+	switch (arg) {
+	case 0:
+	    load = new Instruction_Iload_0();
+	    break;
+	case 1:
+	    load = new Instruction_Iload_1();
+	    break;
+	case 2:
+	    load = new Instruction_Iload_2();
+	    break;
+	case 3:
+	    load = new Instruction_Iload_3();
+	    break;
+	default:
+	    Instruction_Iload s1 = new Instruction_Iload();
+	    s1.arg_b = arg;
+	    load = s1;
+	    break;
+	}
+	load.label = label;
+	return load;
+    }
+
+    private Instruction newIstoreInsn(int arg, int label)
+    {
+	Instruction store;
+	switch (arg) {
+	case 0:
+	    store = new Instruction_Istore_0();
+	    break;
+	case 1:
+	    store = new Instruction_Istore_1();
+	    break;
+	case 2:
+	    store = new Instruction_Istore_2();
+	    break;
+	case 3:
+	    store = new Instruction_Istore_3();
+	    break;
+	default:
+	    Instruction_Istore s1 = new Instruction_Istore();
+	    s1.arg_b = arg;
+	    store = s1;
+	    break;
+	}
+	store.label = label;
+	return store;
+    }
+
+
+    private void addElementToTableSet(Hashtable table, Object key, Object element)
+    {
+	Set set = (Set)table.get(key);
+	if (set == null)
+	{
+	    set = new HashSet();
+	    table.put(key, set);
+	}
+	set.add(element);
+    }
+
+    private void dumpTableSet(Hashtable table)
+    {
+	Iterator keyIt = table.keySet().iterator();
+	while (keyIt.hasNext())
+	{
+	    Object key = keyIt.next();
+	    Set set = (Set)table.get(key);
+	    dumpSet(set);
+	}
+    }
+
+    private void dumpSet(Set set)
+    {
+	Iterator eleIt = set.iterator();
+	while (eleIt.hasNext())
+	{
+	    System.out.println(eleIt.next());
+	}
+	System.out.println();
+    }
+
+    private void adjustBranchTarget()
+    {
+	Instruction insn = method.instructions;
+	while (insn != null)
+	{
+	    if (insn instanceof Instruction_branch)
+	    {
+		Instruction_branch binsn = (Instruction_branch)insn;
+		Instruction newtgt = (Instruction)replacedInsns.get(binsn.target);
+		if (newtgt != null)
+		    binsn.target = newtgt;
+	    }
+	    
+	    insn = insn.next;
+	}
+    }
+
+
+    private void adjustExceptionTable() 
+    {
 	Code_attribute codeAttribute = method.locate_code_attribute();
 
 	for(int i = 0; i < codeAttribute.exception_table_length; i++)
 	{
-	    Instruction startIns = codeAttribute.exception_table[i].start_inst;
-	    Instruction endIns = codeAttribute.exception_table[i].end_inst;
-	    Instruction targetIns = codeAttribute.exception_table[i].handler_inst;
-	    System.out.println("From: "+startIns+" To: "+endIns+" Handler: "+targetIns);
+	    exception_table_entry entry = codeAttribute.exception_table[i];
+
+	    Instruction oldinsn = entry.start_inst;
+	    Instruction newinsn = (Instruction)replacedInsns.get(oldinsn);
+	    if (newinsn != null) 
+		entry.start_inst = newinsn;
+
+	    oldinsn = entry.end_inst;
+	    newinsn = (Instruction)replacedInsns.get(oldinsn);	    
+	    if (newinsn != null)
+		entry.end_inst = newinsn;
+
+	    oldinsn = entry.handler_inst;
+	    newinsn = (Instruction)replacedInsns.get(oldinsn);
+	    if (newinsn != null)
+		entry.handler_inst = newinsn;
 	}
-    }
-
-
-   HashMap JsrToNext = new HashMap();
-
-   HashMap RetToJsr = new HashMap();
-
-   HashMap RetToJsrBB = new HashMap();
-
-   HashMap RetToOrigJsr = new HashMap();
-
-   HashMap RetToOrigJsrBB = new HashMap();
-
-   HashMap RetToOrigRetBB = new HashMap(); 
-
-   HashMap RetToRetBB = new HashMap();
-
-   HashMap RetToJsrSucc = new HashMap();
-
-   HashMap RetToOrigJsrSucc = new HashMap();
-
-   BasicBlock endofBBList;
-
-   BasicBlock highestBlock;
-
-
-
-
-
-  private void prepareForGC () {
-
-   RetToJsr = null;
-   RetToJsrBB = null;
-   RetToJsrSucc = null;
-   RetToRetBB = null;
-   RetToOrigJsrSucc = null;
-   RetToOrigJsr = null;
-   RetToOrigJsrBB = null;
-   RetToOrigRetBB = null;
-   JsrToNext = null;
-   replacedinstructionHT = null;
-   clonedHT = null;
-   endofBBList = null;
-   highestBlock = null;
-
-   // reconstructInstructions();
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-  private BasicBlock getEndOfBBList() {
-   
-    BasicBlock b = cfg;
-
-    BasicBlock prev = cfg;
-
-    while ( b != null )
-    {
-
-     prev = b;
-
-     b = b.next;
-
-    }
-
-    return prev;
-
-  }
-
-
-
-
-
-
-
-
- private void adjustExceptionTable() {
-
-   Code_attribute codeAttribute = method.locate_code_attribute();
-
-   for(int i = 0; i < codeAttribute.exception_table_length; i++)
-   {
-    Instruction startIns = codeAttribute.exception_table[i].start_inst;
-
-    if ( ( ( Instruction ) replacedinstructionHT.get ( startIns ) ) != null ) 
-    codeAttribute.exception_table[i].start_inst = ( Instruction ) replacedinstructionHT.get ( startIns );
-
-    Instruction endIns = codeAttribute.exception_table[i].end_inst;
-
-    if ( ( ( Instruction ) replacedinstructionHT.get ( endIns ) ) != null ) 
-    codeAttribute.exception_table[i].end_inst = ( Instruction ) replacedinstructionHT.get ( endIns );
-
-    Instruction targetIns = codeAttribute.exception_table[i].handler_inst;
-
-    if ( ( ( Instruction ) replacedinstructionHT.get ( targetIns ) ) != null ) 
- codeAttribute.exception_table[i].handler_inst = ( Instruction ) replacedinstructionHT.get ( targetIns );
-
-   }
-
- }
-
-
-
-
-
-
-
- private void fixupTargets() {
-
-  BasicBlock b = cfg;
-
-  Instruction i = null;
-
-  while ( b != null )
-  {
-
-   i = b.head;
-
-   while ( i != null ) 
-   {
-
-    if ( i.branches )
-    {
-
-     Instruction tgt = null;
-
-     if ( i instanceof Instruction_intbranch )
-     tgt = (( Instruction_intbranch ) i ).target; 
-     else if ( i instanceof Instruction_longbranch )
-     tgt = (( Instruction_longbranch ) i ).target; 
-
-     if ( tgt != null )
-     {
-
-      if ( ( ( Instruction ) replacedinstructionHT.get ( tgt ) ) != null ) 
-      {
-
-       if ( i instanceof Instruction_intbranch )
-       {
-         ( ( Instruction_intbranch ) i ).target = ( Instruction ) replacedinstructionHT.get ( tgt );
-         // ( ( Instruction_intbranch ) i ) = ( Instruction ) replacedinstructionHT.get ( tgt );
-
-       }
-       else if ( i instanceof Instruction_longbranch )
-       ( ( Instruction_longbranch ) i ).target = ( Instruction ) replacedinstructionHT.get ( tgt );
-
-      }
-
-     }
-
-     if ( i instanceof Instruction_Lookupswitch )
-     {
-      
-      Instruction_Lookupswitch ilookup = ( Instruction_Lookupswitch ) i;
-
-      if ( ( ( Instruction ) replacedinstructionHT.get ( ilookup.default_inst ) ) != null )
-      ilookup.default_inst = ( Instruction ) replacedinstructionHT.get ( ilookup.default_inst );
-
-      for(int cnt=0;cnt<ilookup.npairs;cnt++)
-      {
-
-       if ( ( ( Instruction ) replacedinstructionHT.get ( ilookup.match_insts[cnt]) ) != null )
-       ilookup.match_insts[cnt] = ( Instruction ) replacedinstructionHT.get ( ilookup.match_insts[cnt] );
-
-      }
-
-     }
-
-     if ( i instanceof Instruction_Tableswitch )
-     {
-      
-      Instruction_Tableswitch tlookup = ( Instruction_Tableswitch ) i;
-
-      if ( ( ( Instruction ) replacedinstructionHT.get ( tlookup.default_inst ) ) != null )
-      tlookup.default_inst = ( Instruction ) replacedinstructionHT.get ( tlookup.default_inst );
-
-      for(int cnt=0;cnt<(tlookup.high - tlookup.low + 1);cnt++)
-      {
-
-       if ( ( ( Instruction ) replacedinstructionHT.get ( tlookup.jump_insts[cnt]) ) != null )
-       tlookup.jump_insts[cnt] = ( Instruction ) replacedinstructionHT.get ( tlookup.jump_insts[cnt] );
-
-      }
-
-     }
-
-    }
-
-    i = i.next;
-
-   }
-
-   b = b.next;
-
-  }
-
- }
-
-
-
-
-
-
-
- private void buildJsrRetPairs() {
-     
-  BasicBlock b = cfg;
-
-  Instruction i = null;
-
-  while ( b != null )
-  {
-
-   i = b.tail;
-
-   if ( i instanceof Instruction_Jsr)
-   {                 
-
-    boolean retNotFound = true;
-
-    Set successors = new ArraySet();
-
-    java.util.Vector succ = b.succ;
-
-    for(int k = 0; k < succ.size(); k++)
-    successors.add((BasicBlock) succ.elementAt(k));
-
-    Iterator succIt = successors.iterator();
-
-    while ( retNotFound && succIt.hasNext() )
-    {
-
-     BasicBlock succBB = (BasicBlock) succIt.next();
-
-     Instruction BBtail = succBB.tail;
-
-     if ( BBtail instanceof Instruction_Ret )
-     {
-
-      retNotFound = false;
-
-      if ( ( ( Instruction ) RetToJsr.get ( BBtail ) ) == null )
-      {
-
-  //      System.out.println ( "RET "+BBtail+" JSR "+i );
-
-        RetToJsr.put ( BBtail, i );
-        RetToJsrBB.put ( BBtail, b );
-        RetToJsrSucc.put ( BBtail, b.succ.elementAt(0) );
-        RetToRetBB.put ( BBtail, succBB );
-        RetToOrigJsrSucc.put ( BBtail, b.succ.elementAt(0) );
-        RetToOrigJsr.put ( BBtail, i );
-        RetToOrigJsrBB.put ( BBtail, b );
-        RetToOrigRetBB.put ( BBtail, succBB );
-   
-       }
-       else       
-       {
-
-         try {
-
-//          System.out.println ( "Ret with 2 possible Jsr's" );
-
-          setHighestBlock ( ( BasicBlock ) b.succ.elementAt(0) );
-
-          endofBBList = getEndOfBBList();
-
-          highestBlock.next = endofBBList.next;
-
-          endofBBList.next = highestBlock;    
-
-          BasicBlock clonedjsrtargetBB = cloneJsrTargetBB( succBB, ( BasicBlock ) b.succ.elementAt(0) );
-
-          arrangeclonedBBinorder();
-
-          Code_attribute codeAttribute = method.locate_code_attribute();
-
-          int nextind = codeAttribute.exception_table_length;
-
-          for(int j = 0; j < codeAttribute.exception_table_length; j++)
-          {
-
-           Instruction startIns = codeAttribute.exception_table[j].start_inst;
-
-           Instruction endIns = codeAttribute.exception_table[j].end_inst;
-
-           Instruction targetIns = codeAttribute.exception_table[j].handler_inst;
-
-           if ( ( ( ( Instruction ) clonedstmtsHT.get ( startIns ) ) != null ) 
-              ||( ( ( Instruction ) clonedstmtsHT.get ( endIns ) ) != null )  
-              ||( ( ( Instruction ) clonedstmtsHT.get ( targetIns ) ) != null ) ) 
-
-           {
-
-            exception_table_entry[] newexception_table = new exception_table_entry[nextind+1];
-
-            for(int k = 0; k < nextind; k++)
-            newexception_table[k] = codeAttribute.exception_table[k]; 
-
-            newexception_table[nextind] = new exception_table_entry();
-
-            codeAttribute.exception_table = newexception_table;
-
-            codeAttribute.exception_table_length++;
-
-            codeAttribute.exception_table[nextind].catch_type = codeAttribute.exception_table[j].catch_type;
-
-            if ( ( ( Instruction ) clonedstmtsHT.get ( startIns ) ) != null ) 
-            codeAttribute.exception_table[nextind].start_inst = ( Instruction ) clonedstmtsHT.get ( startIns );
-            else
-            codeAttribute.exception_table[nextind].start_inst = startIns;
-
-            if ( ( ( Instruction ) clonedstmtsHT.get ( endIns ) ) != null ) 
-            codeAttribute.exception_table[nextind].end_inst = ( Instruction ) clonedstmtsHT.get ( endIns );
-            else
-            codeAttribute.exception_table[nextind].end_inst = endIns;
-
-            if ( ( ( Instruction ) clonedstmtsHT.get ( targetIns ) ) != null ) 
-            {
-             codeAttribute.exception_table[nextind].handler_inst = ( Instruction ) clonedstmtsHT.get ( targetIns );
-
-             codeAttribute.exception_table[nextind].b = (BasicBlock) h.get ( ( Instruction ) clonedstmtsHT.get ( targetIns ) );
-            }
-            else
-            {
-             codeAttribute.exception_table[nextind].handler_inst = targetIns;
-
-             codeAttribute.exception_table[nextind].b = (BasicBlock) h.get ( targetIns );
-            }
-
-            nextind++;
-
-           }
-
-          } // FOR
-
-
-          Iterator clonedstmtit = clonedstmtsHT.entrySet().iterator();
-
-          while ( clonedstmtit.hasNext() )
-          {
-
-           Instruction instrn = ( Instruction ) ( ( Map.Entry ) clonedstmtit.next() ).getKey();
-
-           Instruction tgt = null;
-
-           if ( instrn instanceof Instruction_intbranch )
-           tgt = (( Instruction_intbranch ) instrn ).target; 
-           else if ( i instanceof Instruction_longbranch )
-           tgt = (( Instruction_longbranch ) instrn ).target; 
-
-           if ( tgt != null )
-           {
-
-            Instruction clonedinstrn = ( Instruction ) clonedstmtsHT.get ( instrn );
-      
-            if ( clonedstmtsHT.get ( tgt ) != null )
-            {
-
-             Instruction clonedtgt = ( Instruction ) clonedstmtsHT.get ( tgt ); 
-
-             if ( instrn instanceof Instruction_intbranch )
-             (( Instruction_intbranch ) clonedinstrn ).target = clonedtgt; 
-             else if ( i instanceof Instruction_longbranch )
-             (( Instruction_longbranch ) clonedinstrn ).target = clonedtgt; 
-
-            }
-
-           }
-
-           if ( instrn instanceof Instruction_Lookupswitch )
-           {
-      
-            Instruction_Lookupswitch ilookup = ( Instruction_Lookupswitch ) instrn;
-
-            if ( ( ( Instruction ) clonedstmtsHT.get ( ilookup.default_inst ) ) != null )
-            ilookup.default_inst = ( Instruction ) clonedstmtsHT.get ( ilookup.default_inst );
-
-            for(int cnt=0;cnt<ilookup.npairs;cnt++)
-            {
-
-             if ( ( ( Instruction ) clonedstmtsHT.get ( ilookup.match_insts[cnt]) ) != null )
-             ilookup.match_insts[cnt] = ( Instruction ) clonedstmtsHT.get ( ilookup.match_insts[cnt] );
-
-            }
-
-           }
-
-           if ( instrn instanceof Instruction_Tableswitch )
-           {
-      
-            Instruction_Tableswitch tlookup = ( Instruction_Tableswitch ) instrn;
-
-            if ( ( ( Instruction ) clonedstmtsHT.get ( tlookup.default_inst ) ) != null )
-            tlookup.default_inst = ( Instruction ) clonedstmtsHT.get ( tlookup.default_inst );
-
-            for(int cnt=0;cnt<(tlookup.high - tlookup.low + 1);cnt++)
-            {
-
-             if ( ( ( Instruction ) clonedstmtsHT.get ( tlookup.jump_insts[cnt]) ) != null )
-             tlookup.jump_insts[cnt] = ( Instruction ) clonedstmtsHT.get ( tlookup.jump_insts[cnt] );
-
-            }
-
-           }
-
-          } // WHILE
-   
-          RetToOrigJsr.put ( clonedjsrtargetBB.tail, ( Instruction ) RetToJsr.get ( BBtail ) );
-          
-          RetToOrigJsrBB.put ( clonedjsrtargetBB.tail, ( BasicBlock ) RetToJsrBB.get ( BBtail ) );
-
-          RetToOrigRetBB.put ( clonedjsrtargetBB.tail, succBB );
-
-          RetToJsr.put ( clonedjsrtargetBB.tail, i );
-
-//          System.out.println ( "RET "+clonedjsrtargetBB.tail+" JSR "+i );
-
-          RetToJsrBB.put ( clonedjsrtargetBB.tail, b );
-
-          RetToRetBB.put ( clonedjsrtargetBB.tail, clonedjsrtargetBB );
-
-          RetToJsrSucc.put ( clonedjsrtargetBB.tail, highestBlock ); 
-
-          RetToOrigJsrSucc.put ( clonedjsrtargetBB.tail, b.succ.elementAt(0) );
-
-         } catch (  java.lang.CloneNotSupportedException e ) {
-
-              System.out.println ( "CLONE UNSUCCESSFUL" ); }
-       }
-
-     }
-     else  // LAST STMT OF BB WAS NOT A RET 
-     {
-
-       java.util.Vector succsuccBB = succBB.succ; 
-
-       for(int n = 0; n < succsuccBB.size(); n++)
-       {
-
-        BasicBlock BBnext = (BasicBlock) succsuccBB.elementAt(n);
-
-        successors.add( BBnext );
-
-      }
-
-     }
-
-    } // WHILE 
-
-   }
-
-   b = b.next;
-
-  }
-
- }
-
-
-
-  private HashMap clonedstmtsHT = new HashMap(); 
-
-
-
-  private void setHighestBlock ( BasicBlock highestBB ) throws java.lang.CloneNotSupportedException {
-
-   // CLONE THE HIGHEST BB ( IMMEDIATE SUCC OF JSRBB ) TO BE CLONED FIRST 
-
-   clonedHT = new HashMap();
-
-   clonedstmtsHT = new HashMap();
-
-   Instruction prev = highestBB.head;
-
-   Instruction clonedprev = ( Instruction ) prev.clone();
-
-   clonedstmtsHT.put ( prev, clonedprev );
-
-   Instruction clonedhead = clonedprev;
-
-   method.instructionList.add ( clonedhead );
-
-   Instruction clonedcurrent = null;
-
-   while ( prev != highestBB.tail )
-   {
-
-    Instruction current = prev.next;
-   
-    clonedcurrent = ( Instruction ) current.clone();
-
-    clonedstmtsHT.put ( current, clonedcurrent );
-
-    // System.out.println ( "CLONED "+ clonedcurrent );
-
-    method.instructionList.add ( clonedcurrent );
-
-    clonedprev.next = clonedcurrent;
-
-    prev = current;
-
-    clonedprev = clonedcurrent;
-
-   }
-
-   buildBasicBlock( clonedhead );
-   
-   highestBlock = new BasicBlock(clonedhead);
-
-   h.put ( clonedhead, highestBlock );
-
-   clonedHT.put ( highestBB, highestBlock );
-
-   orighighestBlock = highestBB;
-
-  }
-
-
-
-
-
-
-
-
-  Map clonedHT = new HashMap(); 
-
-  BasicBlock orighighestBlock;
-
-
-
-
-
-
-  
-  private BasicBlock cloneJsrTargetBB( BasicBlock lowestBB, BasicBlock highestBB ) throws java.lang.CloneNotSupportedException { 
-
-  BasicBlock clonedBB = null;
-
-  if ( lowestBB == highestBB )
-  return highestBlock;
-  else
-  {
-
-   if ( ( ( BasicBlock ) clonedHT.get ( lowestBB ) == null ) )
-   {
-
-    // NOT YET CLONED EVERYTHING, SO CLONE THIS BB
-
-    Instruction prev = lowestBB.head;
-
-    Instruction clonedprev = ( Instruction ) prev.clone();
-
-    clonedstmtsHT.put ( prev, clonedprev );
-
-    Instruction clonedhead = clonedprev;
-
-    // System.out.println ( "CLONED "+ clonedhead );
-
-    method.instructionList.add ( clonedhead );
-
-    Instruction clonedcurrent = null;
-
-    while ( prev != lowestBB.tail )
-    {
-
-     Instruction current = prev.next;
-   
-     clonedcurrent = ( Instruction ) current.clone();
-
-     clonedstmtsHT.put ( current, clonedcurrent );
-
-     method.instructionList.add ( clonedcurrent );
-
-     clonedprev.next = clonedcurrent;
-
-     prev = current;
-
-     clonedprev = clonedcurrent;
-
-    }
-
-    buildBasicBlock( clonedhead );
-   
-    clonedBB = new BasicBlock(clonedhead);
-
-    h.put ( clonedhead, clonedBB );
-
-/*
-    clonedBB.next = highestBlock.next;
-
-    highestBlock.next = clonedBB;
-*/
-   
-    clonedHT.put ( lowestBB, clonedBB );
-
-    java.util.Vector lowestpreds = lowestBB.pred; 
-
-    for(int n = 0; n < lowestpreds.size(); n++)
-    {
-
-     BasicBlock BBnext = (BasicBlock) lowestpreds.elementAt(n);
-
-     if ( lowestBB != BBnext )
-     {
-
-      // CLONE ALL THE PRED BBs TILL HIGHEST BB IS REACHED 
-      // RECURSION
-
-      BasicBlock clonedJsrTargetBB = cloneJsrTargetBB ( BBnext, highestBB );
-
-      clonedBB.pred.addElement ( clonedJsrTargetBB );
-
-      clonedJsrTargetBB.succ.addElement ( clonedBB );
-
-     }
-
-    }
-
-   }
-   else  // ALREADY BEEN CLONED BEFORE
-   clonedBB = ( BasicBlock ) clonedHT.get ( lowestBB );
-
-  }
-
-  return clonedBB;
-
- }
-
-
-
-
-
-
-
-
-
- private void arrangeclonedBBinorder() {
-
-  ArrayList alreadyarranged = new ArrayList();
-
-  BasicBlock nextBB = orighighestBlock.next; 
- 
-  BasicBlock nextclonedBB = ( BasicBlock ) clonedHT.get ( nextBB ); 
-
-  BasicBlock currentclonedBB = highestBlock;
-
-  alreadyarranged.add ( orighighestBlock );
-
-  while ( nextclonedBB != null )
-  {
-
-   alreadyarranged.add ( nextBB );
-
-   currentclonedBB.next = nextclonedBB;
-
-   currentclonedBB = currentclonedBB.next;
-
-   nextBB = nextBB.next;
-   
-   nextclonedBB = ( BasicBlock ) clonedHT.get ( nextBB ); 
-
-  } 
-
-  Iterator keysit = clonedHT.entrySet().iterator();
-  
-  while ( keysit.hasNext() )
-  {
-
-   BasicBlock bb = ( BasicBlock ) (( Map.Entry ) keysit.next()).getKey(); 
-  
-   if ( ! alreadyarranged.contains ( bb ) )
-   {
-
-    nextclonedBB = ( BasicBlock ) clonedHT.get ( bb );
-  
-    currentclonedBB.next = nextclonedBB;
-
-    currentclonedBB = currentclonedBB.next;
-
-   }
-
-  }
-
- }
-
-
-
-
-
-
- 
-
-
-
-
-
-
-
- 
- private void JsrEliminate() {
-
-  BasicBlock b = cfg;
-
-  Instruction i = null;
-
-  while ( b != null )
-  {
-
-   i = b.tail;
- 
-   if ( i instanceof Instruction_Ret )
-   {
-
-    Instruction originstruction = null;
-
-    BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
-
-    BasicBlock matchingjsrnextBB = null;
-
-    matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
-
-     b.succ.removeAllElements();
-
-     b.succ.addElement ( matchingjsrnextBB );
-
-    for ( int k= matchingjsrnextBB.pred.size() - 1; k > -1;k-- ) 
-    { 
-
-     BasicBlock tempBB = ( BasicBlock ) matchingjsrnextBB.pred.elementAt ( k );
-
-     if ( tempBB.tail instanceof Instruction_Ret )
-     matchingjsrnextBB.pred.removeElement ( tempBB );
-
-    } 
-
-
-    matchingjsrnextBB.pred.addElement ( b );
-
-    BasicBlock matchingjsrsuccBB = ( BasicBlock ) RetToJsrSucc.get( i );
-
-    Instruction temp = b.head;
-
-    if ( b.head == b.tail )  // 1 INSTRUCTION IN BB
-    {
-
-     originstruction = b.tail;
-
-     b.head = new Instruction_Goto();
- 
-     b.head.branchpoints ( matchingjsrnextBB.head );
-
-     ( ( Instruction_Goto ) b.head).target = matchingjsrnextBB.head;
-
-     if ( originstruction.labelled ) 
-     b.head.labelled = true;
-
-     Iterator entriesIt = JsrToNext.entrySet().iterator();
-
-     while ( entriesIt.hasNext() )
-     {
-
-      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-      {
-
-       JsrToNext.put ( entryins, b.head );
-
-      }
-
-     }
-
-     replacedinstructionHT.put ( originstruction, b.head ); 
-
-     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ b.head );
-
-     h.put ( b.head, b );
-
-     b.tail = b.head;
-
-    }
-    else
-    { 
-
-     originstruction = b.tail;
-
-     while ( temp.next != b.tail )
-     {
-
-      temp = temp.next;
-
-     }
-
-     temp.next = new Instruction_Goto();
-
-     temp.next.branchpoints ( matchingjsrnextBB.head );
-
-     ((Instruction_Goto) temp.next).target = matchingjsrnextBB.head;
-
-     if ( originstruction.labelled ) 
-     temp.next.labelled = true;
-
-
-     Iterator entriesIt = JsrToNext.entrySet().iterator();
-
-     while ( entriesIt.hasNext() )
-     {
-
-      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-      {
-
-       JsrToNext.put ( entryins, temp.next );
-
-      }
-
-     }
-
-     replacedinstructionHT.put ( originstruction, temp.next );
-
-     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ temp.next );
-
-     b.tail = temp.next;
-
-    }
-
-    b.tail.next = null;
-
-    method.instructionList.remove ( originstruction );
-
-    temp = matchingjsrBB.head;
-
-    if ( matchingjsrBB.head == matchingjsrBB.tail )
-    {
-
-     originstruction = matchingjsrBB.tail;
-
-     matchingjsrBB.head = new Instruction_Goto();
-
-     matchingjsrBB.head.branchpoints ( matchingjsrsuccBB.head.next );
-
-     ((Instruction_Goto)matchingjsrBB.head).target = matchingjsrsuccBB.head.next;
-
-     if ( originstruction.labelled ) 
-     matchingjsrBB.head.labelled = true;
-
-
-
-     Iterator entriesIt = JsrToNext.entrySet().iterator();
-
-     while ( entriesIt.hasNext() )
-     {
-
-      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-      {
-
-       JsrToNext.put ( entryins, matchingjsrBB.head );
-
-      }
-
-     }
-
-     replacedinstructionHT.put ( originstruction, matchingjsrBB.head );
-
-     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ) , */ matchingjsrBB.head );
-
-     h.put ( matchingjsrBB.head, matchingjsrBB );
-
-     matchingjsrBB.tail = matchingjsrBB.head;
-
-    }
-    else
-    { 
-
-     originstruction = matchingjsrBB.tail;
-
-     while ( temp.next != matchingjsrBB.tail )
-     {
-
-      temp = temp.next;
-
-     }
-
-     temp.next = new Instruction_Goto();
-
-     temp.next.branchpoints ( matchingjsrsuccBB.head.next );
-
-
-     ((Instruction_Goto)temp.next).target = matchingjsrsuccBB.head.next;
-
-     if ( originstruction.labelled ) 
-     temp.next.labelled = true;
-
-
-     Iterator entriesIt = JsrToNext.entrySet().iterator();
-
-     while ( entriesIt.hasNext() )
-     {
-
-      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-      {
-
-       JsrToNext.put ( entryins, temp.next );
-
-      }
-
-     }
-
-
-     replacedinstructionHT.put ( originstruction, temp.next );
-
-     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ temp.next );
-
-     matchingjsrBB.tail = temp.next;
-
-    }
-
-    matchingjsrBB.tail.next = null;
-
-    method.instructionList.remove ( originstruction );
-
-    temp = matchingjsrsuccBB.head;
-
-    Iterator entriesIt = JsrToNext.entrySet().iterator();
-
-    while ( entriesIt.hasNext() )
-    {
-
-     Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
-
-     if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
-     {
-
-      JsrToNext.put ( entryins, temp.next );
-
-     }
-
-    }
-
-    replacedinstructionHT.put ( temp, temp.next );
-
-    matchingjsrsuccBB.head = temp.next; 
-
-    h.put ( temp.next, matchingjsrsuccBB );
-
-    method.instructionList.remove ( temp );
-
-   }
-
-   b = b.next;
-
-  }
-
- }
-
-
-
-
-
-
- private HashMap replacedinstructionHT = new HashMap(6, 0.7f);
- 
-
-
-
-
-
-
-
- private void fixupJsrRets() {
-
-  BasicBlock b = cfg;
-
-  Instruction i = null;
-
-  while ( b != null )
-  {
-
-   i = b.tail;
- 
-   if ( i instanceof Instruction_Ret )
-   {
-
-    Instruction_Jsr matchingjsr = ( Instruction_Jsr) RetToJsr.get ( i );
-    
-    BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
-
-    java.util.Vector succOfmatchingjsr = matchingjsrBB.succ; 
-
-    BasicBlock WrongsuccBB = null;
-
-    BasicBlock OrigsuccBB = (BasicBlock) succOfmatchingjsr.elementAt(0);
-
-    BasicBlock NewsuccBB = ( BasicBlock ) RetToJsrSucc.get ( i );
-
-    if ( OrigsuccBB != NewsuccBB )
-    WrongsuccBB = OrigsuccBB;
-
-    if ( WrongsuccBB != null )
-    {
-
-     BasicBlock OrigretBB = ( BasicBlock ) RetToOrigRetBB.get ( i );
-
-     BasicBlock OrigjsrBB = ( BasicBlock ) RetToOrigJsrBB.get ( i );
-
-     BasicBlock OrigjsrnextBB = null;
-
-     OrigjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( OrigjsrBB.tail) );
-
-     BasicBlock matchingjsrnextBB = null;
-
-     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
-
-     OrigsuccBB.pred.removeElement ( matchingjsrBB );
-    
-     OrigretBB.succ.removeElement ( matchingjsrnextBB );
-
-     matchingjsrBB.succ.addElement ( NewsuccBB );
-
-     matchingjsrBB.succ.removeElement ( OrigsuccBB );
-
-     matchingjsrnextBB.pred.addElement ( b );
-
-     matchingjsrnextBB.pred.removeElement ( OrigretBB );
-
-     for ( int k=NewsuccBB.pred.size() -1; k > -1;k-- ) 
-     { 
-
-      BasicBlock tempBB = ( BasicBlock ) NewsuccBB.pred.elementAt ( k );
-
-      if ( tempBB.tail instanceof Instruction_Jsr )
-      NewsuccBB.pred.removeElement ( tempBB );
-
-     }
-
-     NewsuccBB.pred.addElement ( matchingjsrBB );
-
-     b.succ.removeAllElements();
-
-     b.succ.addElement ( matchingjsrnextBB );
-
-    }
-
-   }
-
-   b = b.next;
-
-  }
-
- }
-
-
-
-
-   // Constructs the actual control flow graph. Assumes the hash table
-   // currently associates leaders with BasicBlocks, this function
-   // builds the next[] and prev[] pointer arrays.
-   private void buildCFG() {
-      BasicBlock b,bb;
-      Instruction i,branches[],nexti;
-      int numb,k;
-      Code_attribute ca = method.locate_code_attribute();
-      b = cfg;
-      // System.out.println("Building CFG...");
-      while (b!=null) {
-         /*for (Enumeration e = h.elem ents();e.hasMoreElements();) {
-           b = (BasicBlock)(e.nextElement());*/
-         i = b.tail;
-         if (i.branches) {
-            // must look out for athrow, which can call an exception handler
-
-            if(i instanceof Instruction_Ret)
-            {
-                // Must make the ret point back to all the instructions
-                // past a Jsr
-
-                ListIterator instructionIt = method.instructionList.listIterator();
-                List branchesList = new ArrayList();
-
-                while(instructionIt.hasNext())
-                {
-                    Instruction ins = (Instruction) instructionIt.next();
-
-                    if(ins instanceof Instruction_Jsr)
-                    {
-                        ListIterator succIt = method.instructionList.listIterator(
-                            instructionIt.nextIndex());
-
-                        if(succIt.hasNext())
-                            branchesList.add(succIt.next());
-                    }
-                }
-
-                branches = new Instruction[branchesList.size()];
-
-                for(k = 0; k < branches.length; k++)
-                    branches[k] = (Instruction) branchesList.get(k);
-            } else if (i instanceof Instruction_Athrow) {
-               // see how many targets it can reach.  Note that this is a
-               // subset of the exception_table.
-               int icount = 1;
-               // not quite a subset---could also be that control exits this
-               // method, so start icount at 1
-               for (k = 0; k<ca.exception_table_length;k++) {
-                  if (i.label >= ca.exception_table[k].start_inst.label &&
-                      (ca.exception_table[k].end_inst==null ||
-                       i.label < ca.exception_table[k].end_inst.label)) {
-                     icount++;
-                  }
-               }
-               branches = new Instruction[icount];
-               branches[0] = null;
-               icount = 1;
-               for (k = 0; k<ca.exception_table_length;k++) {
-                  if (i.label >= ca.exception_table[k].start_inst.label &&
-                      (ca.exception_table[k].end_inst==null ||
-                       i.label < ca.exception_table[k].end_inst.label)) {
-                     branches[icount] = ca.exception_table[k].handler_inst;
-                  }
-               }
-            } else {
-               nexti = (i.next==null) ? ((b.next==null) ? null : b.next.head) : i.next;
-
-               branches = i.branchpoints(nexti);
-              
-            }
-            if (i.calls) numb = 1;
-            else numb = 0;
-            if (branches!=null)
-               numb += branches.length;
-            b.succ.ensureCapacity(b.succ.size()+numb);
-            // System.out.println(i.label + "(" + i + " has " + numb + " branches)");
-            if (i.calls && b.next!=null) {
-               b.succ.addElement(b.next);
-               b.next.pred.addElement(b);
-            }
-            if (branches!=null) {
-               int j;
-               for (j=0;j<branches.length;j++) {
- 
-                  if (branches[j]!=null) {
-                     bb = (BasicBlock)(h.get(branches[j]));
-                 
-                     if (bb==null)
-                     {
-                 
-                        System.out.println("Warning: target of a branch is null");
-                        System.out.println ( i );
-
-                     }
-                     else {
-                        b.succ.addElement(bb);
-                        bb.pred.addElement(b);
-                     }
-                  }
-               }
-            }
-         } else if (b.next!=null) { // BB ended not with a branch, so just go to next
-            b.succ.addElement(b.next);
-            b.next.pred.addElement(b);
-         }
-         b = b.next;
-      }
-      // One final step, run through exception handlers and mark which
-      // basic blocks begin their code
-      for (k=0;k<ca.exception_table_length;k++) {
-         bb = (BasicBlock)(h.get(ca.exception_table[k].handler_inst));
-         if (bb==null)
-            System.out.println("Warning: No basic block found for" +
-                               " start of exception handler code.");
-         else {
-            bb.beginException = true;
-            ca.exception_table[k].b = bb;
-         }
-      }
-   }
-
-   // given the list of instructions head, this pulls off the front
-   // basic block, terminates it with a null, and returns the next
-   // instruction after.
-   private static Instruction buildBasicBlock(Instruction head) {
-      Instruction newhead,i;
-      i = head;
-      while (i!=null) {
-
-         if (i.branches || (i.next!=null && i.next.labelled)) {
-            newhead = i.next;
-            i.next = null;
-            return newhead;
-         }
-
-         i = i.next;
-      }
-      return null;
    }
 
    /** Reconstructs the instruction stream by appending the Instruction
@@ -1442,22 +1118,12 @@ public class CFG {
     * they will no longer end with <i>null</i> after this.
     * @return the head of the list of instructions.
     */
-    public Instruction reconstructInstructions() {
-      BasicBlock b;
-      Instruction last = null;
-
-      b = cfg;
-      while (b!=null) {
-         if (b.tail!=null) {
-            if (last!=null) last.next = b.head;
-            last = b.tail;
-         }
-         b = b.next;
-      }
-      if (cfg != null)
-        return cfg.head;
-      else
-        return null;
+    public Instruction reconstructInstructions() 
+    {
+	if (cfg != null)
+	    return cfg.head;
+	else
+	    return null;
    }
 
    /** Main entry point for converting list of Instructions to Jimple statements;
@@ -1568,21 +1234,68 @@ public class CFG {
         return true;
    }
 
-   /** Main entry point for converting list of Instructions to Jimple statements;
-    * performs flow analysis, constructs Jimple statements, and fixes jumps.
-    * @param constant_pool constant pool of ClassFile.
-    * @param this_class constant pool index of the CONSTANT_Class_info object for
-    * this' class.
-    * @param clearStacks if <i>true</i> semantic stacks will be deleted after
-    * the process is complete.
-    * @return <i>true</i> if all ok, <i>false</i> if there was an error.
-    * @see CFG#jimplify(cp_info[], int)
-    * @see Stmt
-    */
-
-     void jimplify(cp_info constant_pool[],int this_class)
+    private void buildInsnCFGfromBBCFG()
     {
-        Map instructionToSuccessors = new HashMap();
+	BasicBlock block = cfg;
+
+	while(block != null)
+	{
+	    Instruction insn = block.head;
+	    while (insn != block.tail)
+	    {		
+		Instruction[] succs = new Instruction[1];
+		succs[0] = insn.next;
+		insn.succs = succs;
+		insn = insn.next;
+	    }   
+ 
+	    {
+		// The successors are the ones from the basic block.
+		Vector bsucc = block.succ;
+		int size = bsucc.size();
+		Instruction[] succs = new Instruction[size];
+
+		for(int i = 0; i<size; i++)
+		    succs[i] = ((BasicBlock)bsucc.elementAt(i)).head;		    
+		insn.succs = succs;			      
+	    } 
+
+	    block = block.next;
+	}	
+    }
+
+    private void printInsnCFG()
+    {
+	Instruction insn = cfg.head;
+	while (insn != null)
+	{
+	    System.out.println(insn + " --> " + makeString(insn.succs));
+	    insn = insn.next;
+	}
+    }
+
+    private String makeString(Object[] objs)
+    {
+	String buf = "";
+	for (int i=0; i<objs.length; i++)
+	    buf += " , "+objs[i];
+
+	return buf;
+    }
+
+    /** Main entry point for converting list of Instructions to Jimple statements;
+     * performs flow analysis, constructs Jimple statements, and fixes jumps.
+     * @param constant_pool constant pool of ClassFile.
+     * @param this_class constant pool index of the CONSTANT_Class_info object for
+     * this' class.
+     * @param clearStacks if <i>true</i> semantic stacks will be deleted after
+     * the process is complete.
+     * @return <i>true</i> if all ok, <i>false</i> if there was an error.
+     * @see CFG#jimplify(cp_info[], int)
+     * @see Stmt
+     */
+    void jimplify(cp_info constant_pool[],int this_class)
+    {
         Code_attribute codeAttribute = method.locate_code_attribute();
         Set handlerInstructions = new ArraySet();
 
@@ -1590,59 +1303,11 @@ public class CFG {
         Map instructionToTypeStack;
         Map instructionToPostTypeStack;
 
-        // System.out.println("Starting to jimplify: " + jmethod.getName());
-
-        // Build up instructionToSuccessors table
         {
-            // Put in all regular basic block successors
-            {
-                BasicBlock b = cfg;
+            // build graph in 
+	    buildInsnCFGfromBBCFG();
 
-                while(b != null)
-                {
-                    Instruction ins = b.head;
-
-                    while(ins != null)
-                    {
-
-                        //System.out.println("ins:" + ins.toString());
-                        
-                        //if(ins instanceof Instruction_Goto)
-                        //{
-                        //    System.out.println("targets: ");
-                        //}
-                        
-                        if(ins.next != null)
-                        {
-                            Set successors = new ArraySet();
-
-                            successors.add(ins.next);
-
-                            instructionToSuccessors.put(ins, successors);
-                        }
-                        else
-                        {
-                            // The successors are the ones from the basic block.
-
-                            Set successors = new ArraySet();
-                            java.util.Vector succ = b.succ;
-
-                            for(int i = 0; i < succ.size(); i++)
-                            {
-                                 successors.add(((BasicBlock) succ.elementAt(i)).head);
-
-                             }    
-                            instructionToSuccessors.put(ins, successors);
-                        }
-
-                        ins = ins.next;
-                    }
-
-                    b = b.next;
-                }
-            }
-
-            // Put in successors due to exception handlers
+	    // Put in successors due to exception handlers
             {
                 for(int i = 0; i < codeAttribute.exception_table_length; i++)
                 {
@@ -1683,44 +1348,18 @@ public class CFG {
 
                     for(;;)
                     {                  
-                        Set successors = (Set) instructionToSuccessors.get(ins);
-                        successors.add(handlerIns);
+                        Instruction[] succs = ins.succs;
+			Instruction[] newsuccs = new Instruction[succs.length+1];
 
-                        Instruction newIns = (Instruction) instructionToNext.get(ins);
-			if (newIns == null)
-			{
-			    // debug, dump all instructions.
-			    /* there is a bug to handle new created exception
-			       handler, if the handler is in a catch block.
-			       Tempararily, fix the exception table here.
-			    */
-			    /*
-			    newIns = ins.next;
-			    System.out.println("oldIns :"+ ins);
-			    System.out.println("startIns :"+ startIns);
-			    System.out.println("endIns :"+ endIns);
+			System.arraycopy(succs, 0, newsuccs, 0, succs.length);
 
-			    dumpInstructionToNext();
-			    dumpExceptionTable();
-			    */
-			    /* change the table end to current instruction and
-			       break; Feng, feb. 6, 2001
+			newsuccs[succs.length] = handlerIns;
+       			ins.succs = newsuccs;
 
-				   It is not the firnal solution, but currently it is a solution.
-			    */
-			    
-      			    endIns = ins;
-			    codeAttribute.exception_table[i].end_inst = endIns;			    
-			}
-			else
-			    ins = newIns;
-
-                        if ( (ins == endIns ) ) 
-                        {
+                        ins = ins.next;
+                        if (ins == endIns || ins == null)                         
                             break;
-                        }
-          
-                    }
+		    }
                 }
             }
         }
@@ -1734,24 +1373,21 @@ public class CFG {
             reachableInstructions.add(firstInstruction);
             instructionsToVisit.addLast(firstInstruction);
             
-            while(!instructionsToVisit.isEmpty())
+            while( !instructionsToVisit.isEmpty())
             {
-                Instruction ins = (Instruction) instructionsToVisit.removeLast();
-                Set s = (Set)instructionToSuccessors.get(ins);
-                if (s.size() == 0)
-                  continue;
-                
-                Iterator succIt = s.iterator();
-                
-                while(succIt.hasNext())
-                {
-                    Instruction succ = (Instruction) succIt.next();
+                Instruction ins = (Instruction) instructionsToVisit.removeFirst();
+
+		Instruction[] succs = ins.succs;
+	       
+		for (int i=0; i<succs.length; i++)
+		{
+		    Instruction succ = succs[i];
                     
-                    if(!reachableInstructions.contains(succ))
-                    {
-                        reachableInstructions.add(succ);
-                        instructionsToVisit.addLast(succ);
-                    }
+		    if(!reachableInstructions.contains(succ))
+		    {
+			reachableInstructions.add(succ);
+			instructionsToVisit.addLast(succ);
+		    }
                 }
             }
         }
@@ -1800,63 +1436,25 @@ public class CFG {
 
                 visitedInstructions.add(firstInstruction);
                 changedInstructions.add(firstInstruction);
-
-                // System.out.println("firstInstruction:" + firstInstruction);
             }
 
-            // Do the flow-analysis loop
             {
                 while(!changedInstructions.isEmpty())
                 {
                     Instruction ins = (Instruction) changedInstructions.get(0);
 
-                    /*
-                    // Some debugging info
-                    {
-                        System.out.println("Visiting: "  + ins);
-
-                        System.out.println("[BeforeTypeStack]");
-                        TypeStack typeStack = (TypeStack) instructionToTypeStack.get(ins);
-                        typeStack.print(System.out);
-
-                        //System.out.println("[BeforeLocalArray]");
-                        //TypeArray localArray = (TypeArray) instructionToLocalArray.get(ins);
-
-                        //localArray.print(System.out);
-                    }
-                    */
-                    
                     changedInstructions.remove(0);
-
-                    // System.out.println(ins);
 
                     OutFlow ret = processFlow(ins, (TypeStack) instructionToTypeStack.get(ins),
                         constant_pool);
 
                     instructionToPostTypeStack.put(ins, ret.typeStack);
 
-                    /*
-                    // More debugging info
-                    {
-                        System.out.println("[AfterTypeStack]");
-                        ret.typeStack.print(System.out);
-
-                        System.out.println("[AfterLocalArray]");
-                        ret.localArray.print(System.out);
-                    }
-                      */
-
-                    Object[] successors = ((Set) instructionToSuccessors.get(ins)).toArray();
-
-                    /*
-                    if(successors.length != 1)
-                        System.out.println();
-                      */
-
+                    Instruction[] successors = ins.succs;
 
                     for(int i = 0; i < successors.length; i++)
                     {
-                        Instruction s = (Instruction) successors[i];
+                        Instruction s = successors[i];
 
                         if(!visitedInstructions.contains(s))
                         {
@@ -1931,7 +1529,7 @@ public class CFG {
                 System.out.println(ins.toString());
 */
 
-                ins = (Instruction) instructionToNext.get(ins);
+                ins = ins.next;
 /*
 
                 System.out.println();
@@ -1955,11 +1553,9 @@ public class CFG {
 
                 List blockStatements = b.statements;
 
-                while(ins != null)
-                {
+		for (;;)
+		{
                     List statementsForIns = new ArrayList();
-
-//                    System.out.println ( ins ); 
 
                     if(reachableInstructions.contains(ins))
                         generateJimple(ins, (TypeStack) instructionToTypeStack.get(ins),
@@ -1980,8 +1576,11 @@ public class CFG {
                         instructionToLastStmt.put(ins, statementsForIns.get(statementsForIns.size() - 1));
                     }
 
+		    if (ins == b.tail)
+			break;
+
                     ins = ins.next;
-                }
+                } 
 
                 b = b.next;
             }
@@ -2133,7 +1732,6 @@ public class CFG {
         int x;
         x = ((int)(ins.code))&0xff;
 
-        //        System.out.println(ins.toString());
         switch(x)
         {
          case ByteCode.BIPUSH:
@@ -3223,39 +2821,44 @@ public class CFG {
             throw new RuntimeException("confirmRefType failed; actualType: " + actualType);*/
    }
 
-   /** Runs through the given bbq contents performing the target fix-up pass;
-    * Requires all reachable blocks to have their done flags set to true, and
-    * this resets them all back to false;
-    * @param bbq queue of BasicBlocks to process.
-    * @see jimpleTargetFixup
-    */
-   private void processTargetFixup(BBQ bbq)
-   {
-      BasicBlock b,p;
-      Stmt s;
-      while (!bbq.isEmpty()) {
-         try {
-            b = bbq.pull();
-         } catch(NoSuchElementException e) { break; }
+    /** Runs through the given bbq contents performing the target fix-up pass;
+     * Requires all reachable blocks to have their done flags set to true, and
+     * this resets them all back to false;
+     * @param bbq queue of BasicBlocks to process.
+     * @see jimpleTargetFixup
+     */
+    private void processTargetFixup(BBQ bbq)
+    {
+	BasicBlock b,p;
+	Stmt s;
+	while (!bbq.isEmpty()) {
+	    try {
+		b = bbq.pull();
+	    } catch(NoSuchElementException e) 
+	    { break; }
 
-               s = b.getTailJStmt();
+	    s = b.getTailJStmt();
 
             if (s instanceof GotoStmt)
-            {
-               if (b.succ.size() == 1)
-               {
+	    {
+		if (b.succ.size() == 1)
+		{
                    // Regular goto
 
                     ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());
                 }
                 else
                 {
-                    // Goto derived from a jsr bytecode
-
+                    // Goto derived from a jsr bytecode		    
+		    /*
                     if((BasicBlock)(b.succ.firstElement())==b.next)
                         ((GotoStmt)s).setTarget(((BasicBlock) b.succ.elementAt(1)).getHeadJStmt());
                     else
-                        ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());
+                        ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());	
+		    */
+		    System.err.println(b.head +" has "+b.succ.size()+" successors.");
+		    for (int i=0; i<b.statements.size(); i++)
+			System.out.println(b.statements.get(i));
                 }
             }
             else if (s instanceof IfStmt)
@@ -3317,51 +2920,56 @@ public class CFG {
       }
    }
 
-   /** After the initial jimple construction, a second pass is made to fix up
-    * missing Stmt targets for <tt>goto</tt>s, <tt>if</tt>'s etc.
-    * @param c code attribute of this method.
-    * @see CFG#jimplify
+    /** After the initial jimple construction, a second pass is made to fix up
+     * missing Stmt targets for <tt>goto</tt>s, <tt>if</tt>'s etc.
+     * @param c code attribute of this method.
+     * @see CFG#jimplify
     */
-    void jimpleTargetFixup() {
-      BasicBlock b;
-      BBQ bbq = new BBQ();
+    void jimpleTargetFixup() 
+    {
+	BasicBlock b;
+	BBQ bbq = new BBQ();
 
-      Code_attribute c = method.locate_code_attribute();
-      if (c==null) return;
+	Code_attribute c = method.locate_code_attribute();
+	if (c==null) 
+	    return;
 
-      // Reset all the dones to true
-      {
+	// Reset all the dones to true
+	{
             BasicBlock bb = cfg;
 
-        while(bb != null)
-        {
-            bb.done = true;
-            bb = bb.next;
-        }
-      }
+	    while(bb != null)
+	    {
+		bb.done = true;
+		bb = bb.next;
+	    }
+	}
 
 
-      // first process the main code
-      bbq.push(cfg);
-      processTargetFixup(bbq);
+	// first process the main code
+	bbq.push(cfg);
+	processTargetFixup(bbq);
 
-      // then the exceptions
-      if (bbq.isEmpty()) {
-         int i;
-         for (i=0;i<c.exception_table_length;i++) {
-            b = c.exception_table[i].b;
-            // if block hasn't yet been processed...
-            if (b!=null && b.done) {
-               bbq.push(b);
-               processTargetFixup(bbq);
-               if (!bbq.isEmpty()) {
-                  System.out.println("Error 2nd processing exception block.");
-                  break;
-               }
-            }
-         }
-      }
-   }
+	// then the exceptions
+	if (bbq.isEmpty()) 
+	{
+	    int i;
+	    for (i=0;i<c.exception_table_length;i++) 
+	    {
+		b = c.exception_table[i].b;
+		// if block hasn't yet been processed...
+		if (b!=null && b.done) 
+		{
+		    bbq.push(b);
+		    processTargetFixup(bbq);
+		    if (!bbq.isEmpty()) {
+			System.out.println("Error 2nd processing exception block.");
+			break;
+		    }
+		}
+	    }
+	}
+    }
 
    private void generateJimpleForCPEntry(cp_info constant_pool[], int i,
                             TypeStack typeStack, TypeStack postTypeStack,
@@ -5248,16 +4856,16 @@ public class CFG {
         }
    }
 
-   int typeSize(Type type)
-   {
-        if(type.equals(LongType.v()) || type.equals(DoubleType.v()) ||
-            type.equals(Long2ndHalfType.v()) || type.equals(Double2ndHalfType.v()))
-        {
+    int typeSize(Type type)
+    {
+        if (type.equals(LongType.v()) || type.equals(DoubleType.v()) ||
+	    type.equals(Long2ndHalfType.v()) || type.equals(Double2ndHalfType.v()))
+	{
             return 2;
         }
         else
             return 1;
-   }
+    }
 }
 
 class OutFlow

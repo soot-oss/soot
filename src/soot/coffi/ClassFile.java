@@ -1091,8 +1091,13 @@ public class ClassFile {
          j = inst.nextOffset(j);
          // System.out.println("after: " + j);
 
-         if (head==null) head = inst;
-         else tail.next = inst;
+         if ( head==null ) 
+	     head = inst;
+         else
+	 { 	     
+	     tail.next = inst;
+	     inst.prev = tail;
+	 }
          tail = inst;
       }
 

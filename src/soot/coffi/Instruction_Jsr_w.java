@@ -60,7 +60,11 @@ import java.io.*;
  * @see Instruction_Unknown
  */
 class Instruction_Jsr_w extends Instruction_longbranch {
-   public Instruction_Jsr_w() { super((byte)ByteCode.JSR_W); name = "jsr_w"; calls = true; }
+   	public Instruction_Jsr_w() { 
+		super((byte)ByteCode.JSR_W); 
+		name = "jsr_w"; 
+//   	    calls = true; 
+   	}
    public Instruction[] branchpoints(Instruction next) {
       Instruction i[] = new Instruction[1];
       i[0] = target;

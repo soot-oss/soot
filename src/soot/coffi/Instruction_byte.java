@@ -68,4 +68,9 @@ class Instruction_byte extends Instruction {
    public int nextOffset(int curr) { return curr+2; }
    public int parse(byte bc[],int index) { arg_b = bc[index]; return index+1; }
    public int compile(byte bc[],int index) { bc[index++] = code; bc[index++] = arg_b; return index; }
+
+    public String toString()
+    {
+	return super.toString()+"    "+arg_b;
+    }
 }
