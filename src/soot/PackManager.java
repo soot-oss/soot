@@ -224,6 +224,7 @@ public class PackManager {
         }
         preProcessDAVA();
         runBodyPacks( reachableClasses() );
+        postProcessXML( reachableClasses() );
         postProcessDAVA();
     }
 
@@ -473,8 +474,14 @@ public class PackManager {
                 G.v().out.println("Cannot close output file " + fileName);
             }
         }
+    }
 
-        if (Options.v().xml_attributes()) {
+    private void postProcessXML( Iterator classes ) {
+        final int format = Options.v().output_format();
+        if (!Options.v().xml_attributes()) return;
+        while( classes.hasNext() ) {
+            SootClass c = (SootClass) classes.next();
+            String fileName = SourceLocator.v().getFileNameFor(c, format);
             XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName,
                     SourceLocator.v().getOutputDir());
             xap.printAttrs(c);
@@ -482,7 +489,8 @@ public class PackManager {
     }
 
     private void releaseBodies( SootClass cl ) {
-        if( Options.v().output_format() != Options.output_format_dava ) {
+        if( Options.v().output_format() != Options.output_format_dava
+        && !Options.v().xml_attributes() ) {
             Iterator methodIt = cl.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
