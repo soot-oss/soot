@@ -634,7 +634,7 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  }
 	else if(ne.getOp() instanceof IntConstant)
 	  {
-	    int value  = ((IntConstant) r).value;
+	    int value  = ((IntConstant) ne.getOp()).value;
 	    
 	    if(value < -32768)
 	      {
