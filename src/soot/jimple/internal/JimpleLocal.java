@@ -52,12 +52,7 @@ public class JimpleLocal implements Local, ConvertToBaf
     /** Returns true if the given object is structurally equal to this one. */
     public boolean equivTo(Object o)
     {
-        if (o instanceof JimpleLocal)
-        {
-            return name.equals(((JimpleLocal)o).name) &&
-                type.equals(((JimpleLocal)o).type);
-        }
-        return false;
+        return this.equals( o );
     }
 
     /** Returns a hash code for this object, consistent with structural equality. */

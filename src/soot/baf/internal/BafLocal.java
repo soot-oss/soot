@@ -47,12 +47,7 @@ public class BafLocal implements Local
     /* JimpleLocals are *NOT* equivalent to Baf Locals! */
     public boolean equivTo(Object o)
     {
-        if (o instanceof BafLocal)
-        {
-            return name.equals(((BafLocal)o).name) &&
-                type.equals(((BafLocal)o).type);
-        }
-        return false;
+        return this.equals( o );
     }
 
     /** Returns a hash code for this object, consistent with structural equality. */
