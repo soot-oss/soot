@@ -215,7 +215,7 @@ public class GraphComparer {
 	    // hacks to recognize them.
 
 	    ExceptionalUnitGraph exceptionalUnitGraph = null;
-	    boolean alwaysAddEdgesFromExceptingUnits;
+	    boolean omitExceptingUnitEdges;
 
 	    ClassicCompleteUnitGraph classicCompleteUnitGraph = null;
 	    DirectedGraph altCompleteUnitGraph = null;
@@ -239,30 +239,29 @@ public class GraphComparer {
 	    }
 
 	    // The type-specific add() routine provides a means to
-	    // specify the value of alwaysAddEdgesFromExceptingUnit
+	    // specify the value of omitExceptingUnitEdges
 	    // for ExceptionalUnitGraph.  We are counting on the
 	    // callers to keep straight whether the graph was created
 	    // with a non-default value for
-	    // alwaysAddEdgesFromExceptingUnits, since it doesn't seem
+	    // omitExceptingUnitEdges, since it doesn't seem
 	    // worth saving the value of the boolean used with each
 	    // ExceptionalUnitGraph constructed.
-	    void add(ExceptionalUnitGraph g, 
-		     boolean alwaysAddEdgesFromExceptingUnit) {
+	    void add(ExceptionalUnitGraph g, boolean omitExceptingUnitEdges) {
 		this.exceptionalUnitGraph = g;
-		this.alwaysAddEdgesFromExceptingUnits
-		    = alwaysAddEdgesFromExceptingUnits;
+		this.omitExceptingUnitEdges
+		    = omitExceptingUnitEdges;
 	    }
 
 	    void add(DirectedGraph g) {
 		if (g instanceof CompleteUnitGraph) {
-		    this.add((ExceptionalUnitGraph) g, true);
+		    this.add((ExceptionalUnitGraph) g, false);
 		} else if (g instanceof ExceptionalUnitGraph) {
 		    this.add((ExceptionalUnitGraph) g,
-			     Options.v().always_add_edges_from_excepting_units());
-		} else if (g.getClass().getName().endsWith(".CompleteUnitGraph")) {
-		    altCompleteUnitGraph = g;
+			     Options.v().omit_excepting_unit_edges());
 		} else if (g instanceof ClassicCompleteUnitGraph) {
 		    classicCompleteUnitGraph = (ClassicCompleteUnitGraph) g;
+		} else if (g.getClass().getName().endsWith(".CompleteUnitGraph")) {
+		    altCompleteUnitGraph = g;
 		} else if (g instanceof TrapUnitGraph) {
 		    trapUnitGraph = (TrapUnitGraph) g;
 		} else if (g.getClass().getName().endsWith(".TrapUnitGraph")) {
@@ -303,14 +302,14 @@ public class GraphComparer {
 	    return new ExceptionalToClassicCompleteUnitGraphComparer(
 		 subtypes.exceptionalUnitGraph, 
 		 subtypes.classicCompleteUnitGraph,
-		 subtypes.alwaysAddEdgesFromExceptingUnits);
+		 subtypes.omitExceptingUnitEdges);
 	}
 
 	if (subtypes.exceptionalUnitGraph != null && 
 	    subtypes.trapUnitGraph != null) {
 	    return new ExceptionalToTrapUnitGraphComparer(subtypes.exceptionalUnitGraph, 
 							  subtypes.trapUnitGraph,
-							  subtypes.alwaysAddEdgesFromExceptingUnits);
+							  subtypes.omitExceptingUnitEdges);
 	}
 
 	if (subtypes.classicCompleteBlockGraph != null && 
@@ -601,12 +600,12 @@ public class GraphComparer {
 
     /**
      * Class for comparing a {@link TrapUnitGraph} to an {@link
-     * CompleteUnitGraph}. 
+     * ExceptionalUnitGraph}. 
      */
     class ExceptionalToTrapUnitGraphComparer implements TypedGraphComparer {
 	protected ExceptionalUnitGraph exceptional;
 	protected TrapUnitGraph cOrT;	// ClassicCompleteUnitGraph Or TrapUnitGraph.
-	protected boolean alwaysAddEdgesFromExceptingUnits;
+	protected boolean omitExceptingUnitEdges;
 
 	/**
 	 * Indicates whether {@link #predOfTrappedThrower()} should
@@ -619,11 +618,11 @@ public class GraphComparer {
 
 	ExceptionalToTrapUnitGraphComparer(ExceptionalUnitGraph exceptional, 
 					   TrapUnitGraph cOrT,
-					   boolean alwaysAddEdgesFromExceptingUnits) {
+					   boolean omitExceptingUnitEdges) {
 	    this.exceptional = exceptional;
 	    this.cOrT = cOrT;
-	    this.alwaysAddEdgesFromExceptingUnits
-		= alwaysAddEdgesFromExceptingUnits;
+	    this.omitExceptingUnitEdges
+		= omitExceptingUnitEdges;
 	    this.predOfTrappedThrowerScreensFirstTrappedUnit = false;
 	}
 
@@ -787,7 +786,7 @@ public class GraphComparer {
 		if (amongTrappedUnits(head, tailsTrap) 
 		    && ((! destCollectionIncludes(headsDests, tailsTrap)) 
 			|| ((! ExceptionalUnitGraph.mightHaveSideEffects(head))
-			    && (! alwaysAddEdgesFromExceptingUnits)))) {
+			    && omitExceptingUnitEdges))) {
 		    return true;
 		}
 		
@@ -931,8 +930,8 @@ public class GraphComparer {
 
 	ExceptionalToClassicCompleteUnitGraphComparer(ExceptionalUnitGraph exceptional, 
 						      ClassicCompleteUnitGraph trap,
-						      boolean alwaysAddEdgesFromExceptingUnits) {
-	    super(exceptional, trap, alwaysAddEdgesFromExceptingUnits);
+						      boolean omitExceptingUnitEdges) {
+	    super(exceptional, trap, omitExceptingUnitEdges);
 	    this.predOfTrappedThrowerScreensFirstTrappedUnit = true;
 	}
 
