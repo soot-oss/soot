@@ -268,7 +268,7 @@ only when unable to find a <tt>.class</tt> file.
 				<long_desc>
 Try to resolve classes first from <tt>.jimple</tt> files found in
 the Soot classpath.  Fall back to <tt>.class</tt> files only when
-unable to find a <tt>.class</tt> file.
+unable to find a <tt>.jimple</tt> file.
 </long_desc>
 			</value>
 		</multiopt>
