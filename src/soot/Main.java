@@ -26,6 +26,8 @@
 
 package soot;
 
+
+
 import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
@@ -437,7 +439,7 @@ public class Main
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.6.dev.36");
+            System.out.println("Soot version 1.beta.6.dev.37");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -646,7 +648,7 @@ public class Main
 	Iterator it = compilationListeners.iterator();
 	while(it.hasNext()) {
 	    ((ICompilationListener)it.next()).compilationTerminated(status);
-	}
+	}	
     }
 
     private static void exitCompilation(int status, String msg)
@@ -655,9 +657,11 @@ public class Main
 	while(it.hasNext()) {
 	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);
 	}
-    
-	if(status == COMPILATION_ABORTED)
+   
+	if(status == COMPILATION_ABORTED) { 
+	    totalTimer.end();            
 	    System.err.println(msg);
+	}
 	else if(status == COMPILATION_SUCCEDED)
 	    System.out.println(msg);
     }
@@ -722,7 +726,6 @@ public class Main
     public static void main(String[] args)
     {       
         totalTimer.start();
-
 	cmdLineClasses = new HashChain();
         initApp();
         processCmdLine(args);
@@ -884,8 +887,12 @@ public class Main
 
 	// Print out time stats.
 
+       
 	if(isProfilingOptimization)
 	    printProfilingInformation();
+
+
+   
 	exitCompilation(COMPILATION_SUCCEDED);            
     }        
 

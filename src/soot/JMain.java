@@ -91,14 +91,34 @@ public class JMain
 		JButton browse = new JButton("Browse");
 		browse.addActionListener( new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
-			(new JFileChooser()).showOpenDialog(null);
-		    }
+			JFileChooser fc = new JFileChooser();
 
-		});
-		topPanel.add(browse);
+			javax.swing.filechooser.FileFilter ff = new javax.swing.filechooser.FileFilter() {
+			    public boolean accept(File f) {
+				String ext = null;
+				String s = f.getName();
+				int i = s.lastIndexOf('.');
+				
+				if (i > 0 &&  i < s.length() - 1) {
+				    ext = s.substring(i+1).toLowerCase();
+				}		
+				if(ext != null)
+				    return ext.equals("class");
+				else
+				    return false;
+			    }
+			    
+			    public String getDescription() {
+				return "Class Files (*.class)";
+			    }
+			};
+			fc.setFileFilter(ff);
+			fc.showOpenDialog(null);
+			    
+		    }});
+		    topPanel.add(browse);
 
-		topPanel.add(appModeCheckBox);
-
+		    topPanel.add(appModeCheckBox);
 		
 	    }
 
