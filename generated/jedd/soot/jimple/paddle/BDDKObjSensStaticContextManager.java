@@ -23,18 +23,17 @@ public class BDDKObjSensStaticContextManager extends AbsStaticContextManager {
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.T2> newEd" +
                                                "ges = jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().pro" +
                                                "ject(in.get(), new jedd.PhysicalDomain[...]), new jedd.Physi" +
-                                               "calDomain[...], new jedd.PhysicalDomain[...]); at /home/rese" +
-                                               "arch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDKObjSen" +
-                                               "sStaticContextManager.jedd:37,45-53"),
+                                               "calDomain[...], new jedd.PhysicalDomain[...]); at /home/olho" +
+                                               "tak/soot-trunk2/src/soot/jimple/paddle/BDDKObjSensStaticCont" +
+                                               "extManager.jedd:37,45-53"),
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().project(in.get(),
                                                                                                          new PhysicalDomain[] { V2.v() }),
                                                                           new PhysicalDomain[] { V1.v() },
                                                                           new PhysicalDomain[] { V2.v() }));
-        out.add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), tgtc.v(), tgtm.v(), srcc.v(), kind.v() },
-                                                    new PhysicalDomain[] { ST.v(), T1.v(), V2.v(), T2.v(), V1.v(), FD.v() },
-                                                    ("out.add(newEdges) at /home/research/ccl/olhota/soot-trunk/sr" +
-                                                     "c/soot/jimple/paddle/BDDKObjSensStaticContextManager.jedd:39" +
-                                                     ",8-11"),
+        out.add(new jedd.internal.RelationContainer(new Attribute[] { srcc.v(), tgtc.v(), kind.v(), stmt.v(), srcm.v(), tgtm.v() },
+                                                    new PhysicalDomain[] { V1.v(), V2.v(), FD.v(), ST.v(), T1.v(), T2.v() },
+                                                    ("out.add(newEdges) at /home/olhotak/soot-trunk2/src/soot/jimp" +
+                                                     "le/paddle/BDDKObjSensStaticContextManager.jedd:39,8-11"),
                                                     newEdges));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newEdges), jedd.internal.Jedd.v().falseBDD());
     }

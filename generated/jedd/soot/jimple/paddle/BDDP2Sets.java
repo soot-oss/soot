@@ -16,9 +16,8 @@ public class BDDP2Sets extends AbsP2Sets {
     public PointsToSetReadOnly get(Context ctxt, VarNode v) {
         return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), objc.v() },
                                                                       new jedd.PhysicalDomain[] { H1.v(), C2.v() },
-                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/research" +
-                                                                       "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDP2Sets.jedd" +
-                                                                       ":39,15-18"),
+                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/olhotak/" +
+                                                                       "soot-trunk2/src/soot/jimple/paddle/BDDP2Sets.jedd:39,15-18"),
                                                                       jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.pointsTo),
                                                                                                      jedd.internal.Jedd.v().literal(new Object[] { ctxt, v },
                                                                                                                                     new jedd.Attribute[] { varc.v(), var.v() },
@@ -29,9 +28,8 @@ public class BDDP2Sets extends AbsP2Sets {
     public PointsToSetReadOnly get(Context ctxt, AllocDotField adf) {
         return new BDDPointsToSet(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), objc.v() },
                                                                       new jedd.PhysicalDomain[] { H1.v(), C2.v() },
-                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/research" +
-                                                                       "/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDP2Sets.jedd" +
-                                                                       ":43,15-18"),
+                                                                      ("new soot.jimple.paddle.BDDPointsToSet(...) at /home/olhotak/" +
+                                                                       "soot-trunk2/src/soot/jimple/paddle/BDDP2Sets.jedd:43,15-18"),
                                                                       jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(prop.fieldPt),
                                                                                                                                     jedd.internal.Jedd.v().literal(new Object[] { ctxt, adf.base(), adf.field() },
                                                                                                                                                                    new jedd.Attribute[] { basec.v(), base.v(), fld.v() },

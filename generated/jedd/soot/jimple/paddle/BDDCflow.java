@@ -47,9 +47,8 @@ public class BDDCflow {
                                                "edd.v().literal(new java.lang.Object[...], new jedd.Attribut" +
                                                "e[...], new jedd.PhysicalDomain[...]))), jedd.internal.Jedd." +
                                                "v().literal(new java.lang.Object[...], new jedd.Attribute[.." +
-                                               ".], new jedd.PhysicalDomain[...])); at /home/research/ccl/ol" +
-                                               "hota/soot-trunk/src/soot/jimple/paddle/BDDCflow.jedd:46,15-2" +
-                                               "6"),
+                                               ".], new jedd.PhysicalDomain[...])); at /home/olhotak/soot-tr" +
+                                               "unk2/src/soot/jimple/paddle/BDDCflow.jedd:46,15-26"),
                                               jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().literal(new Object[] { Kind.STATIC },
                                                                                                                                                                                                                                                                                                                                                                                                                                    new jedd.Attribute[] { kind.v() },
                                                                                                                                                                                                                                                                                                                                                                                                                                    new jedd.PhysicalDomain[] { FD.v() })),
@@ -72,7 +71,7 @@ public class BDDCflow {
                                                                                                           new jedd.Attribute[] { kind.v() },
                                                                                                           new jedd.PhysicalDomain[] { FD.v() })));
         callGraph.eq(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(PaddleScene.v().cg.edges().get(),
-                                                                                                               new jedd.PhysicalDomain[] { V2.v(), V1.v() })),
+                                                                                                               new jedd.PhysicalDomain[] { V1.v(), V2.v() })),
                                                     wantedKinds,
                                                     new jedd.PhysicalDomain[] { FD.v() }));
     }
@@ -81,14 +80,14 @@ public class BDDCflow {
       new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), method.v() },
                                           new jedd.PhysicalDomain[] { ST.v(), T2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.stmt, soot.jimple.pad" +
-                                           "dle.bdddomains.method> stmtMethod at /home/research/ccl/olho" +
-                                           "ta/soot-trunk/src/soot/jimple/paddle/BDDCflow.jedd:58,12-26"));
+                                           "dle.bdddomains.method> stmtMethod at /home/olhotak/soot-trun" +
+                                           "k2/src/soot/jimple/paddle/BDDCflow.jedd:58,12-26"));
     
     jedd.internal.RelationContainer stmtMethod() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), stmt.v() },
                                                    new jedd.PhysicalDomain[] { T2.v(), ST.v() },
-                                                   ("return stmtMethod; at /home/research/ccl/olhota/soot-trunk/s" +
-                                                    "rc/soot/jimple/paddle/BDDCflow.jedd:59,34-40"),
+                                                   ("return stmtMethod; at /home/olhotak/soot-trunk2/src/soot/jim" +
+                                                    "ple/paddle/BDDCflow.jedd:59,34-40"),
                                                    stmtMethod);
     }
     
@@ -97,14 +96,14 @@ public class BDDCflow {
                                           new jedd.PhysicalDomain[] { T1.v(), ST.v(), T2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.srcm, soot.jimple.pad" +
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.tgtm> cal" +
-                                           "lGraph at /home/research/ccl/olhota/soot-trunk/src/soot/jimp" +
-                                           "le/paddle/BDDCflow.jedd:60,12-30"));
+                                           "lGraph at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/B" +
+                                           "DDCflow.jedd:60,12-30"));
     
     jedd.internal.RelationContainer callGraph() {
         return new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), srcm.v(), tgtm.v() },
                                                    new jedd.PhysicalDomain[] { ST.v(), T1.v(), T2.v() },
-                                                   ("return callGraph; at /home/research/ccl/olhota/soot-trunk/sr" +
-                                                    "c/soot/jimple/paddle/BDDCflow.jedd:61,37-43"),
+                                                   ("return callGraph; at /home/olhotak/soot-trunk2/src/soot/jimp" +
+                                                    "le/paddle/BDDCflow.jedd:61,37-43"),
                                                    callGraph);
     }
 }

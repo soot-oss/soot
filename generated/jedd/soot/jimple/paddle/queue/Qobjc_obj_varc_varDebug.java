@@ -23,11 +23,11 @@ public class Qobjc_obj_varc_varDebug extends Qobjc_obj_varc_var {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), varc.v(), objc.v() },
-                                              new PhysicalDomain[] { V1.v(), H1.v(), C1.v(), C2.v() },
-                                              ("in.iterator(new jedd.Attribute[...]) at /home/research/ccl/o" +
-                                               "lhota/soot-trunk/src/soot/jimple/paddle/queue/Qobjc_obj_varc" +
-                                               "_varDebug.jedd:39,22-24"),
+          new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
+                                              new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
+                                              ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
+                                               "runk2/src/soot/jimple/paddle/queue/Qobjc_obj_varc_varDebug.j" +
+                                               "edd:39,22-24"),
                                               in).iterator(new Attribute[] { objc.v(), obj.v(), varc.v(), var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

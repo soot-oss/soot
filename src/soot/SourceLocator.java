@@ -105,15 +105,6 @@ public class SourceLocator
 	return false;
     }
 
-    public List resolveClassesUnder(String aPath){
-        List resolvedClasses = new ArrayList();
-        Iterator it = getClassesUnder(aPath).iterator();
-        while (it.hasNext()){
-            resolvedClasses.add(SootResolver.v().resolveClassAndSupportClasses((String)it.next()).getName());
-        }
-        return resolvedClasses;    
-    }
-    
     public List getClassesUnder(String aPath) {
         List fileNames = new ArrayList();
 

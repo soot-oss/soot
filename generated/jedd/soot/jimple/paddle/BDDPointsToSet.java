@@ -11,8 +11,8 @@ public class BDDPointsToSet extends PointsToSetReadOnly {
                                           new PhysicalDomain[] { C2.v(), H1.v() },
                                           ("private final <soot.jimple.paddle.bdddomains.objc, soot.jimp" +
                                            "le.paddle.bdddomains.obj:soot.jimple.paddle.bdddomains.H1> b" +
-                                           "dd at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/p" +
-                                           "addle/BDDPointsToSet.jedd:30,18-32"));
+                                           "dd at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDPo" +
+                                           "intsToSet.jedd:30,18-32"));
     
     public BDDPointsToSet(final jedd.internal.RelationContainer bdd) {
         super(null);
@@ -34,9 +34,8 @@ public class BDDPointsToSet extends PointsToSetReadOnly {
         Iterator it =
           new jedd.internal.RelationContainer(new Attribute[] { obj.v(), objc.v() },
                                               new PhysicalDomain[] { H1.v(), C2.v() },
-                                              ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
-                                               "olhota/soot-trunk/src/soot/jimple/paddle/BDDPointsToSet.jedd" +
-                                               ":44,22-25"),
+                                              ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
+                                               "trunk2/src/soot/jimple/paddle/BDDPointsToSet.jedd:44,22-25"),
                                               bdd).iterator(new Attribute[] { objc.v(), obj.v() });
         while (it.hasNext()) {
             Object[] item = (Object[]) it.next();

@@ -97,6 +97,17 @@ public class SootClass extends AbstractHost implements Numberable
 	this( name, 0);
     }
 
+    public final static int DANGLING = 0;
+    public final static int HIERARCHY = 1;
+    public final static int SIGNATURES = 2;
+    public final static int BODIES = 3;
+    private int resolvingLevel = DANGLING;
+
+    public int resolvingLevel() { return resolvingLevel; }
+    void setResolvingLevel( int newLevel ) {
+        resolvingLevel = newLevel;
+    }
+
     public boolean isInScene()
     {
         return isInScene;

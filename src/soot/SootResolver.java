@@ -39,7 +39,17 @@ import soot.javaToJimple.*;
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
-    public SootResolver (Singletons.Global g) {}
+    /** Maps each resolved class to a list of all references in it. */
+    private Map classToReferences = new HashMap();
+    
+    /** SootClasses waiting to be resolved. */
+    private LinkedList/*SootClass*/[] worklist = new LinkedList[4];
+
+    public SootResolver (Singletons.Global g) {
+        worklist[SootClass.HIERARCHY] = new LinkedList();
+        worklist[SootClass.SIGNATURES] = new LinkedList();
+        worklist[SootClass.BODIES] = new LinkedList();
+    }
 
     public static SootResolver v() { return G.v().soot_SootResolver();}
     
@@ -47,15 +57,6 @@ public class SootResolver
     private boolean resolveEverything() {
         return( Options.v().whole_program() || Options.v().full_resolver() );
     }
-
-    /** Maps each resolved class to a list of all references in it. */
-    private Map classToReferences = new HashMap();
-    
-    /** Set of classes that have been resolved. */
-    private Set resolvedClasses = new HashSet();
-
-    /** SootClasses waiting to be resolved. */
-    private LinkedList/*SootClass*/ toResolveWorklist = new LinkedList();
 
     /** Returns a (possibly not yet resolved) SootClass to be used in references
      * to a class. If/when the class is resolved, it will be resolved into this
@@ -79,67 +80,129 @@ public class SootResolver
      * decide to resolve other classes as well. If the class has already
      * been resolved, just returns the class that was already resolved.
      * */
-    public SootClass resolveClass(String className) {
+    public SootClass resolveClass(String className, int desiredLevel) {
         SootClass resolvedClass = makeClassRef(className);
-        addToResolveWorklist(resolvedClass);
-        processResolveWorklist();
-        return resolvedClass;
-    }
-
-    /**
-     * Resolves the given class and any classes referenced by it.
-     * Depending on the resolver settings, may decide to resolve other
-     * classes as well. If the class has already been resolved, just
-     * returns the class that was already resolved.
-     * */
-    public SootClass resolveClassAndSupportClasses(String className) {
-        SootClass resolvedClass = resolveClass(className);
-        addReferencesOfClass(resolvedClass);
+        addToResolveWorklist(resolvedClass, desiredLevel);
         processResolveWorklist();
         return resolvedClass;
     }
 
     /** Resolve all classes on toResolveWorklist. */
     private void processResolveWorklist() {
-        while( !toResolveWorklist.isEmpty() ) {
-            SootClass sc = (SootClass) toResolveWorklist.removeFirst();
-            if( resolvedClasses.contains(sc) ) continue;
-            if(Options.v().debug_resolver()) System.out.println("resolving "+sc);
-            resolvedClasses.add(sc);
-            String className = sc.getName();
-            ClassSource is = SourceLocator.v().getClassSource(className);
-            if( is == null ) {
-                if(!Scene.v().allowsPhantomRefs()) {
-                    throw new RuntimeException("couldn't find class: " +
-                        className + " (is your soot-class-path set properly?)");
+        for( int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i-- ) {
+            while( !worklist[i].isEmpty() ) {
+                SootClass sc = (SootClass) worklist[i].removeFirst();
+                if( resolveEverything() ) {
+                    if( sc.isPhantom() ) bringToSignatures(sc);
+                    else bringToBodies(sc);
                 } else {
-                    G.v().out.println(
-                            "Warning: " + className + " is a phantom class!");
-                    sc.setPhantomClass();
-                    classToReferences.put( sc, new ArrayList() );
+                    switch(i) {
+                        case SootClass.BODIES: bringToBodies(sc); break;
+                        case SootClass.SIGNATURES: bringToSignatures(sc); break;
+                        case SootClass.HIERARCHY: bringToHierarchy(sc); break;
+                    }
                 }
-            } else {
-                Collection references = is.resolve(sc);
-                classToReferences.put( sc, new ArrayList(new HashSet(references)) );
-            }
-
-            if( resolveEverything() ) {
-                addReferencesOfClass(sc);
-            }
-
-            // We always resolve the superclass and the outer class
-            if(sc.hasSuperclass()) addToResolveWorklist(sc.getSuperclass());
-            if(sc.hasOuterClass()) addToResolveWorklist(sc.getOuterClass());
-            for( Iterator ifaceIt = sc.getInterfaces().iterator(); ifaceIt.hasNext(); ) {
-                final SootClass iface = (SootClass) ifaceIt.next();
-                addToResolveWorklist(iface);
             }
         }
     }
 
-    private void addReferencesOfClass(SootClass sc) {
+    private void addToResolveWorklist(Type type, int level) {
+        if( type instanceof RefType )
+            addToResolveWorklist(((RefType) type).getClassName(), level);
+        else if( type instanceof ArrayType )
+            addToResolveWorklist(((ArrayType) type).baseType, level);
+    }
+    private void addToResolveWorklist(String className, int level) {
+        addToResolveWorklist(makeClassRef(className), level);
+    }
+    private void addToResolveWorklist(SootClass sc, int desiredLevel) {
+        if( sc.resolvingLevel() >= desiredLevel ) return;
+        worklist[desiredLevel].add(sc);
+    }
+
+    /** Hierarchy - we know the hierarchy of the class and that's it
+     * requires at least Hierarchy for all supertypes and enclosing types.
+     * */
+    private void bringToHierarchy(SootClass sc) {
+        if(sc.resolvingLevel() >= SootClass.HIERARCHY ) return;
+        if(Options.v().debug_resolver())
+            G.v().out.println("bringing to HIERARCHY: "+sc);
+        sc.setResolvingLevel(SootClass.HIERARCHY);
+
+        String className = sc.getName();
+        ClassSource is = SourceLocator.v().getClassSource(className);
+        if( is == null ) {
+            if(!Scene.v().allowsPhantomRefs()) {
+                throw new RuntimeException("couldn't find class: " +
+                    className + " (is your soot-class-path set properly?)");
+            } else {
+                G.v().out.println(
+                        "Warning: " + className + " is a phantom class!");
+                sc.setPhantomClass();
+                classToReferences.put( sc, new ArrayList() );
+            }
+        } else {
+            Collection references = is.resolve(sc);
+            classToReferences.put( sc, new ArrayList(new HashSet(references)) );
+        }
+
+        // Bring superclasses to hierarchy
+        if(sc.hasSuperclass()) 
+            addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
+        if(sc.hasOuterClass()) 
+            addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
+        for( Iterator ifaceIt = sc.getInterfaces().iterator(); ifaceIt.hasNext(); ) {
+            final SootClass iface = (SootClass) ifaceIt.next();
+            addToResolveWorklist(iface, SootClass.HIERARCHY);
+        }
+
+    }
+
+    /** Signatures - we know the signatures of all methods and fields
+    * requires at least Hierarchy for all referred to types in these signatures.
+    * */
+    private void bringToSignatures(SootClass sc) {
+        if(sc.resolvingLevel() >= SootClass.SIGNATURES ) return;
+        bringToHierarchy(sc);
+        if(Options.v().debug_resolver()) 
+            G.v().out.println("bringing to SIGNATURES: "+sc);
+        sc.setResolvingLevel(SootClass.SIGNATURES);
+
+        for( Iterator fIt = sc.getFields().iterator(); fIt.hasNext(); ) {
+
+            final SootField f = (SootField) fIt.next();
+            addToResolveWorklist( f.getType(), SootClass.HIERARCHY );
+        }
+        for( Iterator mIt = sc.getMethods().iterator(); mIt.hasNext(); ) {
+            final SootMethod m = (SootMethod) mIt.next();
+            addToResolveWorklist( m.getReturnType(), SootClass.HIERARCHY );
+            for( Iterator ptypeIt = m.getParameterTypes().iterator(); ptypeIt.hasNext(); ) {
+                final Type ptype = (Type) ptypeIt.next();
+                addToResolveWorklist( ptype, SootClass.HIERARCHY );
+            }
+            for( Iterator exceptionIt = m.getExceptions().iterator(); exceptionIt.hasNext(); ) {
+                final SootClass exception = (SootClass) exceptionIt.next();
+                addToResolveWorklist( exception, SootClass.HIERARCHY );
+            }
+        }
+    }
+
+    /** Bodies - we can now start loading the bodies of methods
+    * for all referred to methods and fields in the bodies, requires
+    * signatures for the method receiver and field container, and
+    * hierarchy for all other classes referenced in method references.
+    * Current implementation does not distinguish between the receiver
+    * and other references. Therefore, it is conservative and brings all
+    * of them to signatures. But this could/should be improved.
+    * */
+    private void bringToBodies(SootClass sc) {
+        if(sc.resolvingLevel() >= SootClass.BODIES ) return;
+        bringToSignatures(sc);
+        if(Options.v().debug_resolver()) 
+            G.v().out.println("bringing to BODIES: "+sc);
+        sc.setResolvingLevel(SootClass.BODIES);
+
         Collection references = (Collection) classToReferences.get(sc);
-        if(Options.v().debug_resolver()) System.out.println("resolving refs of "+sc);
         if( references == null ) return;
 
         Iterator it = references.iterator();
@@ -147,29 +210,11 @@ public class SootResolver
             final Object o = it.next();
 
             if( o instanceof String ) {
-                addToResolveWorklist((String) o);
+                addToResolveWorklist((String) o, SootClass.SIGNATURES);
             } else if( o instanceof Type ) {
-                addToResolveWorklist((Type) o);
+                addToResolveWorklist((Type) o, SootClass.SIGNATURES);
             } else throw new RuntimeException(o.toString());
         }
-    }
-       
-    private void addToResolveWorklist(Type type) {
-        if( type instanceof RefType )
-            addToResolveWorklist(((RefType) type).getClassName());
-        else if( type instanceof ArrayType )
-            addToResolveWorklist(((ArrayType) type).baseType);
-    }
-    private void addToResolveWorklist(String className) {
-        addToResolveWorklist(makeClassRef(className));
-    }
-    private void addToResolveWorklist(SootClass sc) {
-        if( !resolvedClasses.contains(sc) ) toResolveWorklist.add(sc);
-    }
-
-    /** Returns the list of SootClasses that have been resolved. */
-    public List/*SootClass*/ resolvedClasses() {
-        return Collections.unmodifiableList(new ArrayList(resolvedClasses));
     }
 }
 

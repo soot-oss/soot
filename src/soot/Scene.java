@@ -279,7 +279,7 @@ public class Scene  //extends AbstractHost
      * Returns the original class if it was loaded, or null otherwise.
      */
      
-    public SootClass tryLoadClassAndSupport(String className) 
+    public SootClass tryLoadClass(String className, int desiredLevel) 
     {   
         /*
         if(Options.v().time())
@@ -294,7 +294,7 @@ public class Scene  //extends AbstractHost
             return null;
         }
         SootResolver resolver = SootResolver.v();
-        SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
+        SootClass toReturn = resolver.resolveClass(className, desiredLevel);
         Scene.v().setPhantomRefs(false);
 
         return toReturn;
@@ -309,6 +309,13 @@ public class Scene  //extends AbstractHost
      */
      
     public SootClass loadClassAndSupport(String className) 
+    {
+        SootClass ret = loadClass(className, SootClass.SIGNATURES);
+        if( !ret.isPhantom() ) ret = loadClass(className, SootClass.BODIES);
+        return ret;
+    }
+
+    public SootClass loadClass(String className, int desiredLevel) 
     {   
         /*
         if(Options.v().time())
@@ -318,7 +325,7 @@ public class Scene  //extends AbstractHost
         Scene.v().setPhantomRefs(true);
         //SootResolver resolver = new SootResolver();
         SootResolver resolver = SootResolver.v();
-        SootClass toReturn = resolver.resolveClassAndSupportClasses(className);
+        SootClass toReturn = resolver.resolveClass(className, desiredLevel);
         Scene.v().setPhantomRefs(false);
 
         return toReturn;
@@ -788,7 +795,7 @@ public class Scene  //extends AbstractHost
 	Iterator it = basicclasses.iterator();
 	while(it.hasNext()) {
 	    String name=(String) it.next();
-	    tryLoadClassAndSupport(name);
+	    tryLoadClass(name, SootClass.SIGNATURES);
 	}
     }
 
@@ -941,9 +948,15 @@ public class Scene  //extends AbstractHost
             Type type ) {
         return new AbstractSootFieldRef(declaringClass, name, type);
     }
-    /** Returns the list of SootClasses that have been resolved. */
-    public List/*SootClass*/ resolvedClasses() {
-        return SootResolver.v().resolvedClasses();
+    /** Returns the list of SootClasses that have been resolved at least to 
+     * the level specified. */
+    public List/*SootClass*/ getClasses(int desiredLevel) {
+        List ret = new ArrayList();
+        for( Iterator clIt = getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);
+        }
+        return ret;
     }
 }
 

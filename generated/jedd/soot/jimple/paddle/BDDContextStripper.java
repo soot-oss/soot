@@ -18,8 +18,8 @@ public class BDDContextStripper extends AbsContextStripper {
                                                "get(), new jedd.PhysicalDomain[...])), jedd.internal.Jedd.v(" +
                                                ").literal(new java.lang.Object[...], new jedd.Attribute[...]" +
                                                ", new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[..." +
-                                               "]); at /home/research/ccl/olhota/soot-trunk/src/soot/jimple/" +
-                                               "paddle/BDDContextStripper.jedd:35,23-29"),
+                                               "]); at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/BDDC" +
+                                               "ontextStripper.jedd:35,23-29"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(in.get(),
                                                                                                                                      new jedd.PhysicalDomain[] { V1.v() })),
                                                                           jedd.internal.Jedd.v().literal(new Object[] { null },
@@ -28,8 +28,8 @@ public class BDDContextStripper extends AbsContextStripper {
                                                                           new jedd.PhysicalDomain[] {  }));
         out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { method.v(), ctxt.v() },
                                                     new jedd.PhysicalDomain[] { T1.v(), V1.v() },
-                                                    ("out.add(answer) at /home/research/ccl/olhota/soot-trunk/src/" +
-                                                     "soot/jimple/paddle/BDDContextStripper.jedd:36,8-11"),
+                                                    ("out.add(answer) at /home/olhotak/soot-trunk2/src/soot/jimple" +
+                                                     "/paddle/BDDContextStripper.jedd:36,8-11"),
                                                     answer));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(answer), jedd.internal.Jedd.v().falseBDD());
     }
