@@ -79,11 +79,11 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	Iterator it = keys.iterator();
 	while (it.hasNext()) {
 	 	Object var1 = it.next();
-        System.out.println(var1);
+        //System.out.println(var1);
 		String inVal1 = (String)inMap1.get(var1);
-        System.out.println(inVal1);
+        //System.out.println(inVal1);
 		String inVal2 = (String)inMap2.get(var1);
-        System.out.println(inVal2);
+        //System.out.println(inVal2);
 
         if (inVal2 == null){
             outMap.put(var1, inVal1);
@@ -132,11 +132,11 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     //
 
     private String getParity(HashMap in, Value val) {
-        System.out.println("val: "+val);
+        //System.out.println("val: "+val);
         if ((val instanceof AddExpr) | (val instanceof SubExpr)) {
         	String resVal1 = getParity(in, ((BinopExpr)val).getOp1());
 	        String resVal2 = getParity(in, ((BinopExpr)val).getOp2());
-            System.out.println("add: res1: "+resVal1+" res2: "+resVal2);
+            //System.out.println("add: res1: "+resVal1+" res2: "+resVal2);
 	        if (resVal1.equals(TOP) | resVal2.equals(TOP)) {
 	            return TOP;
 	        }  
@@ -167,18 +167,18 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	        }
         }
         else if (in.containsKey(val)) {
-            System.out.println("in contained : "+in.get(val));
+            //System.out.println("in contained : "+in.get(val));
       	    return (String)in.get(val);
         }
         else if (val instanceof IntConstant) {
 	        int value = ((IntConstant)val).value;
 	        if ((value % 2) == 0) {
-                System.out.println("int const even");
+                //System.out.println("int const even");
           
 	            return EVEN;
 	        }
 	        else {
-                System.out.println("int const odd");
+                //System.out.println("int const odd");
 	            return ODD;
 	        }
         }
@@ -216,7 +216,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	  if (left instanceof Local) {
 	  	Value right = ((DefinitionStmt)s).getRightOp();
 		out.put(left, getParity(out, right));
-        System.out.println("local val: "+left+" parity: "+out.get(left));
+        //System.out.println("local val: "+left+" parity: "+out.get(left));
 	  }
 	  else {
 	    out.put(left, TOP);

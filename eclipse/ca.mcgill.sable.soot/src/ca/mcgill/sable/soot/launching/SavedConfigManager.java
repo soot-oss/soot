@@ -101,11 +101,11 @@ public class SavedConfigManager {
 				String name = (String)it.next();
 				//System.out.println("will save: "+name);
 				if (alreadyInList(name)) {
-					//System.out.println("claims it will update");
+					System.out.println("claims it will update: "+name);
 					update(name, (ArrayList)getEditMap().get(name));
 				}
 				else {
-					//System.out.println("claims it will add");
+					System.out.println("claims it will add: "+name);
 					//System.out.println(getEditMap().get(name).getClass().toString());
 					add(name, (ArrayList)getEditMap().get(name));
 				}

@@ -90,10 +90,32 @@ public class SootSavedConfiguration {
 		Iterator it = getEclipseDefs().keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String)it.next();
+			System.out.println("trying to remove: "+key);
 			//System.out.println("test to remove: "+key);
 			if (getConfig().containsKey(key)) {
-				if (getConfig().get(key).equals(getEclipseDefs().get(key))) {
-					//System.out.println("removing: "+key);
+				String needsToMatch = "";
+				Object val = getEclipseDefs().get(key);
+				if (val instanceof String){
+					needsToMatch = (String)val;
+				}
+				else if (val instanceof ArrayList){
+					Iterator it2 = ((ArrayList)val).iterator();
+					while (it2.hasNext()){
+						if (needsToMatch.equals("")){
+							needsToMatch = (String)it2.next();
+						}
+						else {
+							needsToMatch = needsToMatch + "\r\n" + (String)it2.next();
+						}
+					}
+				}
+				/*if (getConfig().get(key).equals(val)){
+					System.out.println("removing: "+key);
+					getConfig().remove(key);
+				}*/
+				System.out.println("needs to match: "+needsToMatch);
+				if (getConfig().get(key).equals(needsToMatch) || getConfig().get(key).equals(val)) {
+					System.out.println("removing: "+key);
 					getConfig().remove(key);
 				}
 			}
@@ -126,19 +148,36 @@ public class SootSavedConfiguration {
 		StringBuffer tempSaved = new StringBuffer(getSaved());
 		while (it.hasNext()) {
 			String key = (String)it.next();
+			System.out.println("key in add Eclipse Defs: "+key);
 			//System.out.println("going to add : "+key);
 			if (getSaved().indexOf((DASH+key)) != -1) {
 				// already there don't add (implies user changed val)	
 			}
 			else {
-				// add it to end
-				tempSaved.append(SPACE);
-				tempSaved.append(DASH);
-				tempSaved.append(key);
-				tempSaved.append(SPACE);
-				tempSaved.append(getEclipseDefs().get(key).toString());
-				tempSaved.append(SPACE);
-				//System.out.println("added : "+key);
+				Object val = getEclipseDefs().get(key);
+				if (val instanceof String){
+				
+					String res = (String)val;
+					tempSaved.append(SPACE);
+					tempSaved.append(DASH);
+					tempSaved.append(key);
+					tempSaved.append(SPACE);
+					tempSaved.append(val);
+					tempSaved.append(SPACE);
+				}
+				else {
+					Iterator it2 = ((ArrayList)val).iterator();
+					while (it2.hasNext()){
+						String nextVal = (String)it2.next();
+						tempSaved.append(SPACE);
+						tempSaved.append(DASH);
+						tempSaved.append(key);
+						tempSaved.append(SPACE);
+						tempSaved.append(nextVal);
+						tempSaved.append(SPACE);
+					}
+				}
+				
 			}
 		}
 		setSaved(tempSaved.toString());
@@ -160,9 +199,31 @@ public class SootSavedConfiguration {
 				// already there don't add (implies user changed val)	
 			}
 			else {
+				Object val = getEclipseDefs().get(key);
+				System.out.println("val classtype: "+val.getClass());
+				if (val instanceof String){
+
+					String res = (String)val;
+					getSaveArray().add(DASH+key);
+					getSaveArray().add(res);
+					
+				}
+				else if (val instanceof Boolean){
+					getSaveArray().add(DASH+key);
+					getSaveArray().add(val.toString());
+				}
+				/*else {
+					Iterator it2 = ((ArrayList)val).iterator();
+					while (it2.hasNext()){
+						String nextVal = (String)it2.next();
+						getSaveArray().add(DASH+key);
+						getSaveArray().add(nextVal);
+					}
+				}*/
 				// add it to end
-				getSaveArray().add(DASH+key);
+				/*getSaveArray().add(DASH+key);
 				getSaveArray().add(getEclipseDefs().get(key).toString());
+				*/
 				//tempSaved.append(SPACE);
 				//tempSaved.append(DASH);
 				//tempSaved.append(key);
@@ -262,14 +323,50 @@ public class SootSavedConfiguration {
 			setRunArray(new ArrayList());
 		}
 		Iterator it = getSaveArray().iterator();
+		String lastKey = "";
 		while (it.hasNext()){
 			String test = (String)it.next();
+			String spliter = "\r\n";
+			if (test.indexOf("\r\n") != -1){
+				spliter = "\r\n";
+			}
+			else if (test.indexOf('\n') != -1){
+				spliter = "\n";
+			}
+			else if (test.indexOf(' ') != -1){
+				spliter = " ";
+			}
+			//System.out.println("char at 2: "+test.charAt(2));
+			System.out.println("test in toRunArray: "+test);
 			if (test.equals("true")){
 				// don't send 
 			}
+			else if (test.indexOf(spliter) != -1){
+				System.out.println("test has newline");
+				String [] tokens = test.split(spliter);
+				getRunArray().add(tokens[0]);
+				System.out.println("added "+tokens[0]);
+				for (int i = 1; i < tokens.length; i++){
+				//StringTokenizer st = new StringTokenizer(test, "\r\n");
+				//getRunArray().add(st.nextToken());
+				//while (st.hasMoreTokens()){
+					getRunArray().add(lastKey);
+					getRunArray().add(tokens[i]);
+					System.out.println("added "+tokens[i]);
+				}
+			}
+			/*else if (test.indexOf("\n") != -1){
+				String [] tokens = test.split("\n");
+				getRunArray().add(tokens[0]);
+				for (int i = 1; i < tokens.length; i++){
+					getRunArray().add(lastKey);
+					getRunArray().add(tokens[i]);
+				}
+			}*/
 			else {
 				getRunArray().add(test);
 			}
+			lastKey = test;
 		}
 		return getRunArray();	
 	}
@@ -357,6 +454,7 @@ public class SootSavedConfiguration {
 				case 1: {
 					String aliasName = st.nextToken();
 					if (aliasName.equals("sootMainClass")) continue;
+					System.out.println("adding: "+aliasName);
 					getSaveArray().add(DASH+aliasName);
 					//toSave.append(DASH);
 					//String aliasName = st.nextToken();
@@ -366,8 +464,8 @@ public class SootSavedConfiguration {
 						getSaveArray().add(val.toString());	
 					}	
 					else if (val instanceof String) {
-						if (((String)val).indexOf("\n") != -1){
-							StringTokenizer listOptTokenizer = new StringTokenizer((String)val, "\n");
+						/*if (((String)val).indexOf("\r\n") != -1){
+							StringTokenizer listOptTokenizer = new StringTokenizer((String)val, "\r\n");
 							while (listOptTokenizer.hasMoreTokens()){
 								String next = listOptTokenizer.nextToken();
 								getSaveArray().add(next);
@@ -379,9 +477,9 @@ public class SootSavedConfiguration {
 							}
 							System.out.println("LISTOPT: String contains newline");
 						}
-						else {
+						else {*/
 							getSaveArray().add(val);
-						}
+						//}
 					}			
 					//toSave.append(SPACE);
 					break;

@@ -90,7 +90,7 @@ public class InitialResolver {
             if (!className.equals("java.lang.String[]")) {
                     
                 resolver.assertResolvedClass(className);
-                //System.out.println("Soot resolved className: "+className);
+                System.out.println("Soot resolved className: "+className);
             }
             
         }
@@ -98,6 +98,7 @@ public class InitialResolver {
         // resolve Object, StrungBuffer and inner classes
         resolver.assertResolvedClass("java.lang.Object");
         resolver.assertResolvedClass("java.lang.StringBuffer");
+        resolver.assertResolvedClass("java.lang.Throwable");
         
         // find and resolve anonymous classes
         resolveAnonClasses(resolver);

@@ -93,6 +93,9 @@ public class SootAttribute {
 		if (getTextList() == null){
 			setTextList(new ArrayList());
 		}
+		text = text.replaceAll("&lt;", "<");
+		text = text.replaceAll("&gt;", ">");
+		text = text.replaceAll("&amp;", "&");
 		getTextList().add(text);
 	}
 	

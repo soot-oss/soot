@@ -6556,7 +6556,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupGeneral_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupGeneral_Options.setLayout(layout);
@@ -6707,7 +6708,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -6728,7 +6729,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupInput_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupInput_Options.setLayout(layout);
@@ -6803,7 +6805,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -6839,7 +6841,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupOutput_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupOutput_Options.setLayout(layout);
@@ -6995,7 +6998,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupProcessing_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupProcessing_Options.setLayout(layout);
@@ -7088,7 +7092,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjb = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjb.setLayout(layout);
@@ -7149,7 +7154,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_ls = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_ls.setLayout(layout);
@@ -7194,7 +7200,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_a = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_a.setLayout(layout);
@@ -7255,7 +7262,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_ule.setLayout(layout);
@@ -7300,7 +7308,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_tr = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_tr.setLayout(layout);
@@ -7345,7 +7354,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_ulp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_ulp.setLayout(layout);
@@ -7406,7 +7416,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_lns = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_lns.setLayout(layout);
@@ -7467,7 +7478,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_cp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_cp.setLayout(layout);
@@ -7544,7 +7556,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_dae = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_dae.setLayout(layout);
@@ -7605,7 +7618,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_cp_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_cp_ule.setLayout(layout);
@@ -7650,7 +7664,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_lp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_lp.setLayout(layout);
@@ -7711,7 +7726,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_ne = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_ne.setLayout(layout);
@@ -7756,7 +7772,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjbjb_uce = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjbjb_uce.setLayout(layout);
@@ -7801,7 +7818,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcg = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcg.setLayout(layout);
@@ -7962,7 +7980,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgcg_cha = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgcg_cha.setLayout(layout);
@@ -8023,7 +8042,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgcg_spark = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgcg_spark.setLayout(layout);
@@ -8068,7 +8088,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgSpark_General_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgSpark_General_Options.setLayout(layout);
@@ -8161,7 +8182,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgSpark_Pointer_Assignment_Graph_Building_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgSpark_Pointer_Assignment_Graph_Building_Options.setLayout(layout);
@@ -8334,7 +8356,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
@@ -8411,7 +8434,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgSpark_Points_To_Set_Flowing_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgSpark_Points_To_Set_Flowing_Options.setLayout(layout);
@@ -8644,7 +8668,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgSpark_Output_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgSpark_Output_Options.setLayout(layout);
@@ -8817,7 +8842,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgcg_bdd = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgcg_bdd.setLayout(layout);
@@ -8862,7 +8888,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgBDD_Spark_General_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgBDD_Spark_General_Options.setLayout(layout);
@@ -8955,7 +8982,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Building_Options.setLayout(layout);
@@ -9128,7 +9156,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgBDD_Spark_Pointer_Assignment_Graph_Simplification_Options.setLayout(layout);
@@ -9205,7 +9234,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupcgBDD_Spark_Output_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupcgBDD_Spark_Output_Options.setLayout(layout);
@@ -9378,7 +9408,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwstp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwstp.setLayout(layout);
@@ -9423,7 +9454,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwsop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwsop.setLayout(layout);
@@ -9468,7 +9500,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjtp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjtp.setLayout(layout);
@@ -9513,7 +9546,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjop.setLayout(layout);
@@ -9558,7 +9592,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjopwjop_smb = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjopwjop_smb.setLayout(layout);
@@ -9671,7 +9706,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjopwjop_si = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjopwjop_si.setLayout(layout);
@@ -9829,7 +9865,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjap = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjap.setLayout(layout);
@@ -9874,7 +9911,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjapwjap_ra = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjapwjap_ra.setLayout(layout);
@@ -9919,7 +9957,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjapwjap_umt = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjapwjap_umt.setLayout(layout);
@@ -9964,7 +10003,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjapwjap_uft = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjapwjap_uft.setLayout(layout);
@@ -10009,7 +10049,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupwjapwjap_tqt = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupwjapwjap_tqt.setLayout(layout);
@@ -10054,7 +10095,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupshimple = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupshimple.setLayout(layout);
@@ -10173,7 +10215,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupstp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupstp.setLayout(layout);
@@ -10218,7 +10261,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupsop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupsop.setLayout(layout);
@@ -10263,7 +10307,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupsopsop_cpf = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupsopsop_cpf.setLayout(layout);
@@ -10324,7 +10369,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjtp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjtp.setLayout(layout);
@@ -10369,7 +10415,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjop.setLayout(layout);
@@ -10414,7 +10461,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_cse = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cse.setLayout(layout);
@@ -10475,7 +10523,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_bcm = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_bcm.setLayout(layout);
@@ -10536,7 +10585,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_lcm = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_lcm.setLayout(layout);
@@ -10649,7 +10699,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_cp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cp.setLayout(layout);
@@ -10726,7 +10777,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_cpf = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cpf.setLayout(layout);
@@ -10771,7 +10823,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_cbf = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cbf.setLayout(layout);
@@ -10816,7 +10869,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_dae = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_dae.setLayout(layout);
@@ -10877,7 +10931,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_uce1 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_uce1.setLayout(layout);
@@ -10922,7 +10977,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_ubf1 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_ubf1.setLayout(layout);
@@ -10967,7 +11023,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_uce2 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_uce2.setLayout(layout);
@@ -11012,7 +11069,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_ubf2 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_ubf2.setLayout(layout);
@@ -11057,7 +11115,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjopjop_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_ule.setLayout(layout);
@@ -11102,7 +11161,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjap = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjap.setLayout(layout);
@@ -11147,7 +11207,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_npc = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npc.setLayout(layout);
@@ -11224,7 +11285,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_npcolorer = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npcolorer.setLayout(layout);
@@ -11269,7 +11331,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_abc = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_abc.setLayout(layout);
@@ -11442,7 +11505,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_profiling = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_profiling.setLayout(layout);
@@ -11503,7 +11567,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_sea = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_sea.setLayout(layout);
@@ -11564,7 +11629,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_fieldrw = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_fieldrw.setLayout(layout);
@@ -11624,7 +11690,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_cgtagger = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_cgtagger.setLayout(layout);
@@ -11669,7 +11736,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_parity = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_parity.setLayout(layout);
@@ -11714,7 +11782,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_pat = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_pat.setLayout(layout);
@@ -11759,7 +11828,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupjapjap_rdtagger = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_rdtagger.setLayout(layout);
@@ -11804,7 +11874,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgb = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgb.setLayout(layout);
@@ -11849,7 +11920,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgbgb_a1 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_a1.setLayout(layout);
@@ -11910,7 +11982,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgbgb_cf = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_cf.setLayout(layout);
@@ -11955,7 +12028,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgbgb_a2 = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_a2.setLayout(layout);
@@ -12016,7 +12090,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgbgb_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgbgb_ule.setLayout(layout);
@@ -12061,7 +12136,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupgop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupgop.setLayout(layout);
@@ -12106,7 +12182,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbb = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbb.setLayout(layout);
@@ -12151,7 +12228,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbbbb_lso = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbbbb_lso.setLayout(layout);
@@ -12292,7 +12370,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbbbb_pho = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbbbb_pho.setLayout(layout);
@@ -12337,7 +12416,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbbbb_ule = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbbbb_ule.setLayout(layout);
@@ -12382,7 +12462,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbbbb_lp = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbbbb_lp.setLayout(layout);
@@ -12443,7 +12524,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupbop = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupbop.setLayout(layout);
@@ -12488,7 +12570,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGrouptag = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGrouptag.setLayout(layout);
@@ -12533,7 +12616,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGrouptagtag_ln = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGrouptagtag_ln.setLayout(layout);
@@ -12578,7 +12662,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGrouptagtag_an = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGrouptagtag_an.setLayout(layout);
@@ -12623,7 +12708,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGrouptagtag_dep = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGrouptagtag_dep.setLayout(layout);
@@ -12668,7 +12754,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGrouptagtag_fieldrw = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGrouptagtag_fieldrw.setLayout(layout);
@@ -12713,7 +12800,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupApplication_Mode_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupApplication_Mode_Options.setLayout(layout);
@@ -12752,7 +12840,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -12767,7 +12855,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -12782,7 +12870,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -12797,7 +12885,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -12812,7 +12900,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			
@@ -12833,7 +12921,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupInput_Attribute_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupInput_Attribute_Options.setLayout(layout);
@@ -12894,7 +12983,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupAnnotation_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupAnnotation_Options.setLayout(layout);
@@ -12987,7 +13077,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroupMiscellaneous_Options = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroupMiscellaneous_Options.setLayout(layout);

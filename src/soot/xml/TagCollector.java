@@ -84,7 +84,7 @@ public class TagCollector {
                     Attribute va = new Attribute();
 			    	while (tagsIt.hasNext()) {
 						Tag t = (Tag)tagsIt.next();
-                        System.out.println("adding vb tag: "+t);
+                        //System.out.println("adding vb tag: "+t);
 					    va.addTag(t);
                         if (jlnt != null) {
                             va.addTag(jlnt);

@@ -28,10 +28,11 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.*;
 import org.eclipse.ui.*;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ca.mcgill.sable.soot.editors.*;
 
-public class SootAttributesJavaColorer {
+public class SootAttributesJavaColorer implements Runnable{
 
 
 	private ITextViewer viewer;
@@ -41,17 +42,23 @@ public class SootAttributesJavaColorer {
     int count = 0;
     private Display display;
     private ArrayList styleList;
+    private SootAttributesHandler handler;
 	
-	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
+		
+	public void run(){
+		computeColors();
+	}
+	
+	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
 		
 		//System.out.println("Start Coloring: "+System.currentTimeMillis());
 		
-		setViewer(viewer);
-		setEditorPart(editorPart);
+		//setViewer(viewer);
+		//setEditorPart(editorPart);
 		setDisplay(getEditorPart().getSite().getShell().getDisplay());
-		
-		if ((handler == null) || (handler.getAttrList() == null)) return;
-		ArrayList sortedAttrs = sortAttrsByLength(handler.getAttrList());
+		clearPres();
+		if ((getHandler() == null) || (getHandler().getAttrList() == null)) return;
+		ArrayList sortedAttrs = sortAttrsByLength(getHandler().getAttrList());
 		Iterator it = sortedAttrs.iterator();
 		TextPresentation tp = new TextPresentation();
 		
@@ -336,6 +343,19 @@ public class SootAttributesJavaColorer {
 			};
 		});
     }
+    
+    private void clearPres(){
+    	if (getEditorPart() == null) return;
+    	if (getEditorPart().getEditorInput() != null){
+    	
+    		getDisplay().asyncExec(new Runnable(){
+    		
+    			public void run() {
+    				((AbstractTextEditor)getEditorPart()).setInput(getEditorPart().getEditorInput());
+    			};
+    		});
+    	}
+    }
     /*public void clearTextPresentations(){
         if (getTextPresList() == null) return;
         
@@ -417,6 +437,20 @@ public class SootAttributesJavaColorer {
 	 */
 	public void setDisplay(Display display) {
 		this.display = display;
+	}
+
+	/**
+	 * @return
+	 */
+	public SootAttributesHandler getHandler() {
+		return handler;
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void setHandler(SootAttributesHandler handler) {
+		this.handler = handler;
 	}
 
 }

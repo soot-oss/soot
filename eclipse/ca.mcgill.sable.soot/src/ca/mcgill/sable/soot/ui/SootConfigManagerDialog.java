@@ -476,12 +476,17 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (getEditDefs() != null) {
 			Iterator it = getEditDefs().keySet().iterator();
 			while (it.hasNext()) {
-				String key = (String)it.next();
+				Object next = it.next();
+				System.out.println("next: "+next.getClass());
+				String key = (String)next;
+				System.out.println("type: "+getEditDefs().get(key).getClass());
 				String val = (String)getEditDefs().get(key);
 				if ((val.equals("true")) || (val.equals("false"))) { //$NON-NLS-1$ //$NON-NLS-2$
+					System.out.println("about to add boolean");
 					dialog.addToDefList(key, new Boolean(val));
 				}
 				else {
+					System.out.println("about to add non boolean");
 					dialog.addToDefList(key, val);
 				}
 			}
@@ -490,7 +495,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		//System.out.println("added defaults to dialog"); //$NON-NLS-1$
 		
 		dialog.setConfigName(name);
+		System.out.println("name set");
 		dialog.setCanRun(false);
+		System.out.println("can run set to false");
 		//System.out.println("about to open dialog"); //$NON-NLS-1$
 		dialog.open();
 		if (dialog.getReturnCode() == Dialog.OK){
@@ -511,13 +518,13 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		String result = this.getSelected();
 		//System.out.println("result selected: "+result); //$NON-NLS-1$
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		
+		System.out.println("Edit: before getting array");
 		String [] saveArray = settings.getArray(result);
-		
+		System.out.println("Edit: after getting array");
 		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saveArray);
-		
+		System.out.println("Edit: after ssc");
 		setEditDefs(ssc.toHashMapFromArray());
-		
+		System.out.println("Edit: after getting hashmap");
 		displayOptions(result, getMainClass(result));
 		
 				
@@ -650,6 +657,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		System.out.println(getLauncher().getClass());	
 		if (getLauncher() instanceof SootConfigProjectLauncher) {
 			((SootConfigProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
+		}
+		else if (getLauncher() instanceof SootConfigJavaProjectLauncher){
+			((SootConfigJavaProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		else if (getLauncher() instanceof SootConfigFileLauncher) {
 			System.out.println("Is File Launcher");

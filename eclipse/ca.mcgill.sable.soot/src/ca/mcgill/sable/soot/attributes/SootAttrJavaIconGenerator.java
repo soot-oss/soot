@@ -18,12 +18,20 @@ import org.eclipse.ui.texteditor.MarkerUtilities;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class SootAttrJavaIconGenerator {
+public class SootAttrJavaIconGenerator implements Runnable{
 
-	public void addSootAttributeMarkers(SootAttributesHandler handler, IFile rec) {
+	private IFile rec;
+	private SootAttributesHandler handler;
+
+	public void run(){
+		removeOldMarkers();
+		addSootAttributeMarkers();		
+	}
+	
+	public void addSootAttributeMarkers(){//SootAttributesHandler handler, IFile rec) {
 		
-		if (handler.getAttrList() == null) return;
-		Iterator it = handler.getAttrList().iterator();
+		if (getHandler().getAttrList() == null) return;
+		Iterator it = getHandler().getAttrList().iterator();
 		HashMap markerAttr = new HashMap();
 	
 		while (it.hasNext()) {
@@ -33,19 +41,47 @@ public class SootAttrJavaIconGenerator {
 			markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
 	
 			try {
-				MarkerUtilities.createMarker(rec, markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
+				MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
 			}
 			catch(CoreException e) {
 				System.out.println(e.getMessage());
 			}
 		}
 	}
-	public void removeOldMarkers(IFile file){
+	public void removeOldMarkers(){//IFile file){
 		try{
 			System.out.println("removing old markers");
-			file.deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
+			getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 		}
 		catch(CoreException e){
 		}
 	}
+	/**
+	 * @return
+	 */
+	public SootAttributesHandler getHandler() {
+		return handler;
+	}
+
+	/**
+	 * @return
+	 */
+	public IFile getRec() {
+		return rec;
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void setHandler(SootAttributesHandler handler) {
+		this.handler = handler;
+	}
+
+	/**
+	 * @param file
+	 */
+	public void setRec(IFile file) {
+		rec = file;
+	}
+
 }

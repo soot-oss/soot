@@ -19,6 +19,8 @@
 
 package ca.mcgill.sable.soot.launching;
 
+import java.util.ArrayList;
+
 import ca.mcgill.sable.soot.testing.PhaseOptionsDialog;
 
 /**
@@ -41,9 +43,13 @@ public class SootDefaultCommands {
 	}
 	
 	public void setProcessPath(String val) {
-		getDialog().addToEclipseDefList(LaunchCommands.PROCESS_PATH, val);
+		ArrayList list = new ArrayList();
+		list.add(val);
+		getDialog().addToEclipseDefList(LaunchCommands.PROCESS_PATH, list);
 	}
-	
+	public void setProcessPath(ArrayList list){
+		getDialog().addToEclipseDefList(LaunchCommands.PROCESS_PATH, list);
+	}
 	public void setOutputDir(String val) {
 		getDialog().addToEclipseDefList(LaunchCommands.OUTPUT_DIR, val);
 	}

@@ -445,7 +445,8 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 			getConfig().put(get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getAlias(), stringRes);
 		}
 		</xsl:for-each>
-		
+
+        
 		<xsl:for-each select="multiopt"> 
 		stringRes = get<xsl:value-of select="$parent"/><xsl:value-of select="translate($subParent[last()],'-. ','___')"/><xsl:value-of select="translate(alias[last()],'-. ','___')"/>_widget().getSelectedAlias();
 
@@ -478,7 +479,8 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		String defKey;
 		String defaultString;
 		boolean defaultBool = false;
-		
+	    String defaultArray;
+       
 		Group editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/> = new Group(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		editGroup<xsl:value-of select="$parent"/><xsl:value-of select="$callName"/>.setLayout(layout);
@@ -555,7 +557,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);	
+			defaultString = getArrayDef(defKey);	
 		}
 		else {
 			<xsl:if test="default">

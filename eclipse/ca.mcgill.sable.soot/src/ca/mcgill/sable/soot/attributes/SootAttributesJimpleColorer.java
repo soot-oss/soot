@@ -28,21 +28,31 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
+import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import ca.mcgill.sable.soot.editors.*;
 
-public class SootAttributesJimpleColorer {
+public class SootAttributesJimpleColorer implements Runnable{
 
 
 	private ITextViewer viewer;
 	private IEditorPart editorPart;
     private ArrayList textPresList;
+    private SootAttributesHandler handler;
+	private Display display;
 	
-	public void computeColors(SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
-		setViewer(viewer);
-		setEditorPart(editorPart);
-		if (handler.getAttrList() == null) return;
-		Iterator it = handler.getAttrList().iterator();
+	public void run(){
+		computeColors();	
+	}
+	
+	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
+		//setViewer(viewer);
+		//setEditorPart(editorPart);
+		setDisplay(getEditorPart().getSite().getShell().getDisplay());
+		clearPres();
+		
+		if (getHandler().getAttrList() == null) return;
+		Iterator it = getHandler().getAttrList().iterator();
 		//TextPresentation tp = new TextPresentation();
 		//System.out.println("computing colors");
 		while (it.hasNext()) {
@@ -106,7 +116,7 @@ public class SootAttributesJimpleColorer {
 		
 	}
     
-    public void clearTextPresentations(){
+    /*public void clearTextPresentations(){
         if (getTextPresList() == null) return;
         
         Iterator it = getTextPresList().iterator();
@@ -117,7 +127,19 @@ public class SootAttributesJimpleColorer {
         }
         
     }
-	
+    */
+	private void clearPres(){
+		if (getEditorPart() == null) return;
+		if (getEditorPart().getEditorInput() != null){
+    	
+			getDisplay().asyncExec(new Runnable(){
+    	
+				public void run() {
+					((AbstractTextEditor)getEditorPart()).setInput(getEditorPart().getEditorInput());
+				};
+			});
+		}
+	}
 
 	/**
 	 * @return
@@ -160,5 +182,33 @@ public class SootAttributesJimpleColorer {
     public void setTextPresList(ArrayList list) {
         textPresList = list;
     }
+
+	/**
+	 * @return
+	 */
+	public SootAttributesHandler getHandler() {
+		return handler;
+	}
+
+	/**
+	 * @param handler
+	 */
+	public void setHandler(SootAttributesHandler handler) {
+		this.handler = handler;
+	}
+
+	/**
+	 * @return
+	 */
+	public Display getDisplay() {
+		return display;
+	}
+
+	/**
+	 * @param display
+	 */
+	public void setDisplay(Display display) {
+		this.display = display;
+	}
 
 }

@@ -28,6 +28,7 @@ public class SootAttributesHandler {
 	private String fileName;
 	private HashMap projList;
 	private long valuesSetTime;
+	private boolean update = true;
 
 	private static final String NEWLINE = "\n\r";
 	
@@ -159,6 +160,20 @@ public class SootAttributesHandler {
 	 */
 	public void setValuesSetTime(long l) {
 		valuesSetTime = l;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isUpdate() {
+		return update;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setUpdate(boolean b) {
+		update = b;
 	}
 
 }

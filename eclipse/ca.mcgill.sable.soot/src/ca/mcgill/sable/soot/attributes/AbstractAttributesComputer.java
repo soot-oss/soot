@@ -6,6 +6,7 @@
  */
 package ca.mcgill.sable.soot.attributes;
 
+import java.io.File;
 import java.util.*;
 
 import org.eclipse.core.resources.*;
@@ -88,17 +89,23 @@ public abstract class AbstractAttributesComputer {
 		if (handler != null){
 		
 			long valuesSetTime = handler.getValuesSetTime();
-			boolean update = true;
+			System.out.println("value set time: "+valuesSetTime);
+			boolean update = false;
 		
 			Iterator it = files.iterator();
 			while (it.hasNext()){
 				IFile next = (IFile)it.next();
-				if (next.getModificationStamp() > valuesSetTime){
+				//System.out.println(next.getModificationStamp());
+				File realFile = new File(next.getLocation().toOSString());
+				System.out.println(realFile.lastModified());
+				
+				if (realFile.lastModified() > valuesSetTime){
 					update = true;
 				}
 			}
 			// if no return handler
 			if (!update){
+				handler.setUpdate(false);
 				return handler;
 			}
 			else {

@@ -40,9 +40,19 @@ public class SootPartManager {
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
 			
 			if (handler != null){
-				saji.removeOldMarkers((IFile)aac.getRec());
-				sajc.computeColors(handler, viewer, part);
-				saji.addSootAttributeMarkers(handler, (IFile)aac.getRec());
+				if (handler.isUpdate()){
+				
+					sajc.setEditorPart(part);
+					sajc.setViewer(viewer);
+					sajc.setHandler(handler);
+					Thread cThread = new Thread(sajc);
+					cThread.start();
+				
+					saji.setHandler(handler);
+					saji.setRec((IFile)aac.getRec());
+					Thread iThread = new Thread(saji);
+					iThread.start();
+				}
 			}
 		}
 		else {
@@ -58,10 +68,23 @@ public class SootPartManager {
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
 			if (handler != null){
-				saji.removeOldMarkers((IFile)aac.getRec());
-				sajc.computeColors(handler, viewer, part);
-				saji.addSootAttributeMarkers(handler, (IFile)aac.getRec());
-			
+				if (handler.isUpdate()){
+				
+					//saji.removeOldMarkers((IFile)aac.getRec());
+					sajc.setEditorPart(part);
+					sajc.setViewer(viewer);
+					sajc.setHandler(handler);
+					Thread cThread = new Thread(sajc);
+					cThread.start();
+				
+				
+					//sajc.computeColors(handler, viewer, part);
+					saji.setHandler(handler);
+					saji.setRec((IFile)aac.getRec());
+					Thread iThread = new Thread(saji);
+					iThread.start();
+					//saji.addSootAttributeMarkers();//handler, (IFile)aac.getRec());
+				}
 				
 			}
 	

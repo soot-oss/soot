@@ -798,6 +798,7 @@ public class JimpleBodyBuilder {
         else {
             long lowVal = 0;
             long highVal = 0;
+            boolean unknown = true;
 
             it = switchStmt.elements().iterator();
             while (it.hasNext()){
@@ -805,9 +806,11 @@ public class JimpleBodyBuilder {
                 if (next instanceof polyglot.ast.Case) {
                     if (!((polyglot.ast.Case)next).isDefault()){
                         long temp = ((polyglot.ast.Case)next).value();
-                        if ((highVal == 0) && (lowVal == 0)){
+                        System.out.println("temp: "+temp);
+                        if (unknown){
                             highVal = temp;
                             lowVal = temp;
+                            unknown = false;
                         }
                         if (temp > highVal) {
                             highVal = temp;
@@ -1085,7 +1088,7 @@ public class JimpleBodyBuilder {
         body.getUnits().add(catchAllBeforeNoop);
 
         // catch all
-        soot.Local formalLocal = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.Throwable")));
+        soot.Local formalLocal = generateLocal(soot.RefType.v("java.lang.Throwable"));
             
         soot.jimple.CaughtExceptionRef exceptRef = soot.jimple.Jimple.v().newCaughtExceptionRef();
         soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(formalLocal, exceptRef);
@@ -1095,7 +1098,7 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt catchBeforeNoop = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(catchBeforeNoop);
         
-        soot.Local local = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.Throwable")));
+        soot.Local local = generateLocal(soot.RefType.v("java.lang.Throwable"));
         
         soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(local, formalLocal);
 
@@ -1301,7 +1304,7 @@ public class JimpleBodyBuilder {
         }
         
         // catch all ref
-        soot.Local formalLocal = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.Throwable")));
+        soot.Local formalLocal = generateLocal(soot.RefType.v("java.lang.Throwable"));
             
         body.getUnits().add(catchAllBeforeNoop);
         soot.jimple.CaughtExceptionRef exceptRef = soot.jimple.Jimple.v().newCaughtExceptionRef();
@@ -1311,7 +1314,7 @@ public class JimpleBodyBuilder {
         // catch all assign
         soot.jimple.Stmt beforeCatchAllAssignNoop = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(beforeCatchAllAssignNoop);
-        soot.Local catchAllAssignLocal = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.Throwable")));
+        soot.Local catchAllAssignLocal = generateLocal(soot.RefType.v("java.lang.Throwable"));
         soot.jimple.Stmt catchAllAssign = soot.jimple.Jimple.v().newAssignStmt(catchAllAssignLocal, formalLocal);
 
         body.getUnits().add(catchAllAssign);
@@ -2169,8 +2172,8 @@ public class JimpleBodyBuilder {
     
     private soot.Local getStringConcatLocal(soot.Value lVal, soot.Value rVal) {
    
-        soot.Local local = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.StringBuffer")));
-        soot.jimple.NewExpr newExpr = soot.jimple.Jimple.v().newNewExpr(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.StringBuffer")));
+        soot.Local local = generateLocal(soot.RefType.v("java.lang.StringBuffer"));
+        soot.jimple.NewExpr newExpr = soot.jimple.Jimple.v().newNewExpr(soot.RefType.v("java.lang.StringBuffer"));
         soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(local, newExpr);
         
         body.getUnits().add(assign);
@@ -2187,9 +2190,9 @@ public class JimpleBodyBuilder {
         local = generateAppendStmts(rVal, local);
         
         // invoke toString on local (type StringBuffer)
-        soot.Local newString = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.String")));
+        soot.Local newString = generateLocal(soot.RefType.v("java.lang.String"));
         soot.SootClass classToInvoke2 = soot.Scene.v().getSootClass("java.lang.StringBuffer");
-        soot.SootMethod methodToInvoke2 = getMethodFromClass(classToInvoke2, "toString", new ArrayList(), soot.RefType.v(soot.Scene.v().getSootClass("java.lang.String"))); 
+        soot.SootMethod methodToInvoke2 = getMethodFromClass(classToInvoke2, "toString", new ArrayList(), soot.RefType.v("java.lang.String")); 
                  
         soot.jimple.VirtualInvokeExpr toStringInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(local, methodToInvoke2);
                 
@@ -2204,7 +2207,7 @@ public class JimpleBodyBuilder {
 
         soot.Type appendType = null;
         if (toApp instanceof soot.jimple.StringConstant) {
-            appendType = soot.RefType.v(soot.Scene.v().getSootClass("java.lang.String"));
+            appendType = soot.RefType.v("java.lang.String");
         }
         else if (toApp instanceof soot.jimple.Constant) {
             appendType = toApp.getType();
@@ -2215,13 +2218,13 @@ public class JimpleBodyBuilder {
             }
             else if (((soot.Local)toApp).getType() instanceof soot.RefType) {
                 if (((soot.Local)toApp).getType().toString().equals("java.lang.String")){
-                    appendType = soot.RefType.v(soot.Scene.v().getSootClass("java.lang.String"));
+                    appendType = soot.RefType.v("java.lang.String");
                 }
                 else if (((soot.Local)toApp).getType().toString().equals("java.lang.StringBuffer")){
-                    appendType = soot.RefType.v(soot.Scene.v().getSootClass("java.lang.StringBuffer"));
+                    appendType = soot.RefType.v("java.lang.StringBuffer");
                 }
                 else{
-                    appendType = soot.RefType.v(soot.Scene.v().getSootClass("java.lang.Object"));
+                    appendType = soot.RefType.v("java.lang.Object");
                 }
             }
         }
@@ -2246,11 +2249,11 @@ public class JimpleBodyBuilder {
         params.add(toApp);
 
         soot.SootClass classToInvoke = soot.Scene.v().getSootClass("java.lang.StringBuffer");
-        soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "append", paramsTypes, soot.RefType.v(soot.Scene.v().getSootClass("java.lang.StringBuffer")));
+        soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "append", paramsTypes, soot.RefType.v("java.lang.StringBuffer"));
 
         soot.jimple.VirtualInvokeExpr appendInvoke = soot.jimple.Jimple.v().newVirtualInvokeExpr(base, methodToInvoke, params);
 
-        soot.Local nextSB = generateLocal(soot.RefType.v(soot.Scene.v().getSootClass("java.lang.StringBuffer")));
+        soot.Local nextSB = generateLocal(soot.RefType.v("java.lang.StringBuffer"));
 
         soot.jimple.Stmt appendAssign = soot.jimple.Jimple.v().newAssignStmt(nextSB, appendInvoke);
 
@@ -3310,6 +3313,7 @@ public class JimpleBodyBuilder {
 			name = nextLongName();
 		}
         else if (type instanceof soot.RefLikeType) {
+            System.out.println("is ref like type");
             name = nextRefLikeTypeName();
         }
         else {

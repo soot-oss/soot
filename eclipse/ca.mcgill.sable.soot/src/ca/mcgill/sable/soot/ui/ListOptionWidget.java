@@ -81,6 +81,7 @@ public class ListOptionWidget {
 		}
 		else {
 			getText().setText(data.getInitText());
+			//getText().append("Hello");
 		}
 		String listMessage = " Separate values on different lines.";
 		getText().setToolTipText(data.getTooltip().trim()+listMessage);		

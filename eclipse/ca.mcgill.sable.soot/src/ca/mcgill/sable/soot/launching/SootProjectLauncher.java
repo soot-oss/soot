@@ -19,6 +19,9 @@
 
 package ca.mcgill.sable.soot.launching;
 
+import java.util.*;
+
+import org.eclipse.jdt.core.*;
 import org.eclipse.jface.action.*;
 
 /**
@@ -28,6 +31,7 @@ public class SootProjectLauncher extends SootLauncher {
 
 	//private String output_location;
 	private String process_path;
+	private ArrayList javaProcessPath;
 	private String classpathAppend = null;
 	
 	public void run(IAction action) {
@@ -36,6 +40,22 @@ public class SootProjectLauncher extends SootLauncher {
 		//super.resetSootOutputFolder();
 		try {
 			setProcess_path(platform_location+getSootSelection().getJavaProject().getOutputLocation().toOSString());
+			IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
+			
+			for (int i = 0; i < roots.length; i++){
+				if (!roots[i].isArchive() && roots[i].getKind() == IPackageFragmentRoot.K_SOURCE){
+				
+					String next = platform_location+roots[i].getPath();
+					
+					if (getJavaProcessPath() == null){
+						setJavaProcessPath(new ArrayList());
+					}
+					
+					getJavaProcessPath().add(next);
+				}
+			}
+			
+			//setJavaProcessPath(platform_location+getSootSelection().getJavaProject().get)
 			addJars();
 		}
 		catch(Exception e1) {
@@ -95,6 +115,20 @@ public class SootProjectLauncher extends SootLauncher {
 	 */
 	public String getClasspathAppend() {
 		return classpathAppend;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList getJavaProcessPath() {
+		return javaProcessPath;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setJavaProcessPath(ArrayList list) {
+		javaProcessPath = list;
 	}
 
 }
