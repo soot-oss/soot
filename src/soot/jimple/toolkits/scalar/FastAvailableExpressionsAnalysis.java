@@ -92,7 +92,7 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 
                         // Whee, double negative!
                         if (!cantAdd)
-                            genSet.add(new EquivalentValue(gen), genSet);
+                            genSet.add(gen, genSet);
                     }
                 }
 
@@ -147,12 +147,11 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             // iterate over things (avail) in out set.
             while (it.hasNext())
 	    {
-                EquivalentValue equiVal = (EquivalentValue)it.next();
-                Value avail = equiVal.getValue();
+                Value avail = (Value) it.next();
                 if (avail instanceof FieldRef)
                 {
                     if (st.unitCanWriteTo(u, avail))
-                        out.remove(equiVal, out);
+                        out.remove(avail, out);
                 }
                 else
                 {
@@ -164,7 +163,7 @@ class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
                         Value use = ((ValueBox)usesIt.next()).getValue();
                         
                         if (st.unitCanWriteTo(u, use))
-                            out.remove(equiVal, out);
+                            out.remove(avail, out);
                     }
                 }
 	    }
