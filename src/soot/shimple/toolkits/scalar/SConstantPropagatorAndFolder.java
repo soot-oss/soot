@@ -277,6 +277,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         doAnalysis();
     }
     
+    protected boolean treatTrapHandlersAsEntries()
+    {
+        return true;
+    }
+
     /**
      * If a node has empty IN sets we assume that it is not reachable.
      * Hence, we initialise the entry sets to be non-empty to indicate
