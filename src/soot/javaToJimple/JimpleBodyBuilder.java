@@ -11,7 +11,8 @@ public class JimpleBodyBuilder {
     Stack endControlNoop = new Stack();     // for break
     Stack condControlNoop = new Stack();    // continue
     Stack monitorStack;     // for synchronized blocks
-    
+    polyglot.ast.Try currentTryStmt = null;
+
     HashMap labelBreakMap; // for break label --> nop to jump to
     HashMap labelContinueMap; // for continue label --> nop to jump to
     HashMap localsMap = new HashMap();    // localInst --> soot local 
@@ -1254,6 +1255,11 @@ public class JimpleBodyBuilder {
             }
         }
         
+        //handle finally blocks before return if inside try block
+        if (currentTryStmt != null){
+            createBlock(currentTryStmt.finallyBlock());
+        }
+        
         // return
         if (expr == null) {
             soot.jimple.Stmt retStmtVoid = soot.jimple.Jimple.v().newReturnVoidStmt();
@@ -1353,7 +1359,7 @@ public class JimpleBodyBuilder {
      * handles try/catch/finally (try/catch is separate for simplicity)
      */
     private void createTryCatchFinally(polyglot.ast.Try tryStmt){
-        
+       
         HashMap gotoMap = new HashMap();
         
         // try
@@ -1363,7 +1369,9 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(noop1);
         
+        currentTryStmt = tryStmt;
         createBlock(tryBlock);
+        currentTryStmt = null;
         
         // this nop is for the toStmt of try
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
