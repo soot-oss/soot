@@ -225,11 +225,7 @@ public abstract class Body
         return useAndDefBoxList;
     }
 
-    
-    
-
-
-     public void printTo(java.io.PrintWriter out)
+    public void printTo(java.io.PrintWriter out)
     {
         printTo(out, 0);
     }
@@ -315,9 +311,6 @@ public abstract class Body
         Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
         UnitGraph unitGraph = new BriefUnitGraph(this);
         
-        CompleteUnitGraph completeUnitGraph = new CompleteUnitGraph(this);
-        SimpleLocalDefs localDefs = new SimpleLocalDefs(completeUnitGraph);
-
         // Create statement name table
         {
             Iterator boxIt = this.getUnitBoxes().iterator();
@@ -411,7 +404,155 @@ public abstract class Body
         }
     }
 
-    
+    public void printDebugTo(PrintWriter out, int printBodyOptions)
+    {
+        boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);
+ 
+
+        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
+
+        out.println("    " + getMethod().getDeclaration());        
+        out.println("    {");
 
 
+        // Print out local variables
+        {
+            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
+
+            // Collect locals
+            {
+                Iterator localIt = this.getLocals().iterator();
+
+                while(localIt.hasNext())
+                {
+                    Local local = (Local) localIt.next();
+
+                    List localList;
+ 
+                    String typeName = (isPrecise) ? local.getType().toString() : local.getType().toBriefString();
+                    
+                    if(typeToLocals.containsKey(typeName))
+                        localList = (List) typeToLocals.get(typeName);
+                    else
+                    {
+                        localList = new ArrayList();
+                        typeToLocals.put(typeName, localList);
+                    }
+
+                    localList.add(local);
+                }
+            }
+
+            // Print locals
+            {
+                Iterator typeIt = typeToLocals.keySet().iterator();
+
+                while(typeIt.hasNext())
+                {
+                    String type = (String) typeIt.next();
+
+                    List localList = (List) typeToLocals.get(type);
+                    Object[] locals = localList.toArray();
+
+                    out.print("        " + type + " ");
+
+                    for(int k = 0; k < locals.length; k++)
+                    {
+                        if(k != 0)
+                            out.print(", ");
+
+                        out.print(((Local) locals[k]).getName());
+                    }
+
+                    out.println(";");
+                }
+            }
+
+
+            if(!typeToLocals.isEmpty())
+                out.println();
+        }
+
+        // Print out statements
+            printDebugStatementsInBody(out, isPrecise);
+
+        out.println("    }");
+    }
+
+    void printDebugStatementsInBody(java.io.PrintWriter out, boolean isPrecise)
+    {
+        
+        Map stmtToName = new HashMap(unitChain.size() * 2 + 1, 0.7f);
+
+        // Create statement name table
+        {
+            Iterator boxIt = this.getUnitBoxes().iterator();
+
+            Set labelStmts = new HashSet();
+
+            // Build labelStmts
+            {
+                while(boxIt.hasNext())
+                {
+                    UnitBox box = (UnitBox) boxIt.next();
+                    Unit stmt = (Unit) box.getUnit();
+
+                    labelStmts.add(stmt);
+                }
+            }
+
+            // Traverse the stmts and assign a label if necessary
+            {
+                int labelCount = 0;
+
+                Iterator stmtIt = unitChain.iterator();
+
+                while(stmtIt.hasNext())
+                {
+                    Unit s = (Unit) stmtIt.next();
+
+                    if(labelStmts.contains(s))
+                        stmtToName.put(s, "label" + (labelCount++));
+                }
+            }
+        }
+
+        
+        Iterator unitIt = unitChain.iterator();
+        Unit currentStmt = null, previousStmt;
+
+        while(unitIt.hasNext()) {
+            
+            previousStmt = currentStmt;
+            currentStmt = (Unit) unitIt.next();
+            
+            if(stmtToName.containsKey(currentStmt))
+                out.println("     " + stmtToName.get(currentStmt) + ":");
+
+            if(isPrecise)
+                out.print(currentStmt.toString(stmtToName, "        "));
+            else
+                out.print(currentStmt.toBriefString(stmtToName, "        "));
+
+            out.print(";"); 
+            out.println();
+        }
+
+        // Print out exceptions
+        {
+            Iterator trapIt = this.getTraps().iterator();
+
+            if(trapIt.hasNext())
+                out.println();
+
+            while(trapIt.hasNext())
+            {
+                Trap trap = (Trap) trapIt.next();
+
+                out.println("        catch " + trap.getException().getName() + " from " +
+                    stmtToName.get(trap.getBeginUnit()) + " to " + stmtToName.get(trap.getEndUnit()) +
+                    " with " + stmtToName.get(trap.getHandlerUnit()) + ";");
+            }
+        }
+    }
 }

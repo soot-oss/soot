@@ -278,6 +278,14 @@ public class SootMethod extends AbstractHost
     {
         return Modifier.isPrivate(this.getModifiers());
     }
+
+    /**
+     * Returns true if this method is synchronized.
+     */
+    public boolean isSynchronized()
+    {
+        return Modifier.isSynchronized(this.getModifiers());
+    }
     
     /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.

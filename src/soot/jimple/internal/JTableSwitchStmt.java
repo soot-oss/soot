@@ -51,7 +51,7 @@ public class JTableSwitchStmt extends AbstractStmt
   
     public Object clone() 
     {
-        return new JTableSwitchStmt(Jimple.v().newImmediateBox(Jimple.cloneIfNecessary(getKey())), lowIndex, highIndex, targetBoxes, defaultTargetBox);
+        return new JTableSwitchStmt(Jimple.v().newImmediateBox(Jimple.cloneIfNecessary(getKey())), lowIndex, highIndex, getTargetBoxesArray(getTargets()), Jimple.v().newStmtBox(getDefaultTarget()));
     }
 
 

@@ -231,7 +231,7 @@ public class StaticMethodBinder extends SceneTransformer
                         graph.addTarget(sie, clonedTarget);
                     }
 
-                    // Finally, (if enabled), add a null pointer check.
+                    // (If enabled), add a null pointer check.
                     if (enableNullPointerCheckInsertion)
                     {
                         boolean caught = TrapManager.isExceptionCaughtAt
@@ -263,6 +263,15 @@ public class StaticMethodBinder extends SceneTransformer
                         }
                     }
                     
+                    // Add synchronizing stuff.
+                    {
+                        if (target.isSynchronized())
+                        {
+                            clonedTarget.setModifiers(clonedTarget.getModifiers() & ~Modifier.SYNCHRONIZED);
+                            SynchronizerManager.synchronizeStmtOn(s, b, (Local)((InstanceInvokeExpr)ie).getBase());
+                        }
+                    }
+
                     // Resolve name collisions.
                         LocalNameStandardizer.v().transform(b, "smb.lns");
                     

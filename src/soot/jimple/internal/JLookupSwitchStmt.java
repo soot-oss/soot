@@ -65,7 +65,6 @@ public class JLookupSwitchStmt extends AbstractStmt
              Jimple.v().newStmtBox(defaultTarget));
     }
 
-    // xxx
     public Object clone() 
     {
         int lookupValueCount = lookupValues.size();

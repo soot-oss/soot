@@ -32,15 +32,16 @@ import java.util.*;
 
 public class TrapManager
 {
-    /** If exception e is caught at stmt s in body b, return the handler;
-     * otherwise, return null. */
-    public static boolean isExceptionCaughtAt(SootClass e, Stmt stmt, Body b)
+    /** If exception e is caught at unit u in body b, return true;
+     * otherwise, return false. */
+    public static boolean isExceptionCaughtAt(SootClass e, Unit u, Body b)
     {
         /* Look through the traps t of b, checking to see if:
          *  - caught exception is e;
-         *  - and, stmt lies between t.beginUnit and t.endUnit */
+         *  - and, unit lies between t.beginUnit and t.endUnit */
 
-        Hierarchy h = new Hierarchy();
+        Hierarchy h = Scene.v().getActiveHierarchy();
+        Chain units = b.getUnits();
 
         Iterator trapsIt = b.getTraps().iterator();
 
@@ -51,14 +52,88 @@ public class TrapManager
             /* Ah ha, we might win. */
             if (h.isClassSubclassOfIncluding(e, t.getException()))
             {
-                Iterator it = b.getUnits().iterator(t.getBeginUnit(),
-                                                    t.getEndUnit());
+                Iterator it = units.iterator(t.getBeginUnit(),
+                                             units.getPredOf(t.getEndUnit()));
                 while (it.hasNext())
-                    if (stmt.equals(it.next()))
+                    if (u.equals(it.next()))
                         return true;
             }
         }
 
         return false;
+    }
+
+    /** Returns the list of traps caught at Unit u in Body b. */
+    public static List getTrapsAt(Unit unit, Body b)
+    {
+        List trapsList = new ArrayList();
+        Chain units = b.getUnits();
+
+        Iterator trapsIt = b.getTraps().iterator();
+
+        while (trapsIt.hasNext())
+        {
+            Trap t = (Trap)trapsIt.next();
+
+            Iterator it = units.iterator(t.getBeginUnit(),
+                                         units.getPredOf(t.getEndUnit()));
+            while (it.hasNext())
+                if (unit.equals(it.next()))
+                    trapsList.add(unit);
+        }
+
+        return trapsList;
+    }
+
+    /** Splits all traps so that they do not cross the range rangeStart - rangeEnd. 
+     * Note that rangeStart is inclusive, rangeEnd is exclusive. */
+    public static void splitTrapsAgainst(Body b, Unit rangeStart, Unit rangeEnd)
+    {
+        Chain traps = b.getTraps(), units = b.getUnits();
+        Iterator trapsIt = traps.snapshotIterator();
+
+        while (trapsIt.hasNext())
+        {
+            Trap t = (Trap)trapsIt.next();
+
+            Iterator unitIt = units.iterator(t.getBeginUnit(),
+                                             t.getEndUnit());
+
+            boolean insideRange = false;
+
+            while (unitIt.hasNext())
+            {
+                Unit u = (Unit)unitIt.next();
+                if (u.equals(rangeStart))
+                    insideRange = true;
+                if (!unitIt.hasNext()) // i.e. u.equals(t.getEndUnit())
+                {
+                    if (insideRange)
+                    {
+                        Trap newTrap = (Trap)t.clone();
+                        t.setBeginUnit(rangeStart);
+                        newTrap.setEndUnit(rangeStart);
+                        traps.insertAfter(newTrap, t);
+                    }
+                    else
+                        break;
+                }
+                if (u.equals(rangeEnd))
+                {
+                    // insideRange had better be true now.
+                    if (!insideRange)
+                        throw new RuntimeException("inversed range?");
+                    Trap firstTrap = (Trap)t.clone();
+                    Trap secondTrap = (Trap)t.clone();
+                    firstTrap.setEndUnit(rangeStart);
+                    secondTrap.setBeginUnit(rangeStart);
+                    secondTrap.setEndUnit(rangeEnd);
+                    t.setBeginUnit(rangeEnd);
+
+                    traps.insertAfter(firstTrap, t);
+                    traps.insertAfter(secondTrap, t);
+                }
+            }
+        }
     }
 }
