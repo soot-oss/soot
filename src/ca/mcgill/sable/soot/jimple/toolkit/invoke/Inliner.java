@@ -2806,7 +2806,7 @@ class Inliner {
                   InstanceFieldRef ifr = ( InstanceFieldRef ) v;
                   field = ifr.getField();
                   dec = scm.getClass ( field.getDeclaringClass().getName() );
-                  field = dec.getField ( field.getName() );
+                  field = dec.getFieldByName( field.getName() );
                   if ( ( ( Integer ) classesHT.get ( dec.getName() ) ).intValue() > ( getCorrectModifier ( dec.getModifiers() ) ).intValue() )
                   {
                      //       if ( incorrectlyjimplified.contains ( dec.getName() ) )
@@ -2840,7 +2840,7 @@ class Inliner {
                   StaticFieldRef sfr = ( StaticFieldRef ) v;
                   field = sfr.getField();
                   dec = scm.getClass ( field.getDeclaringClass().getName() );
-                  field = dec.getField ( field.getName() );
+                  field = dec.getFieldByName( field.getName() );
                   if ( ( ( Integer ) classesHT.get ( dec.getName() ) ).intValue() > ( getCorrectModifier ( dec.getModifiers() ) ).intValue() )
                   {
                      // if ( incorrectlyjimplified.contains ( dec.getName() ) )

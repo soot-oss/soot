@@ -94,8 +94,7 @@ public class Main
         
         // Retrieve and print members.
         {
-            Scene cm = Scene.v();
-            SootClass sClass = cm.loadClassAndSupport(args[0]);
+            SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
          
             System.out.println(sClass.getName() + "'s members: ");
             System.out.println();

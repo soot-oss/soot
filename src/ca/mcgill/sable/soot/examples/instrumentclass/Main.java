@@ -157,8 +157,7 @@ public class Main
         // Add code at the end of the main method to print out the 
         // gotoCounter (this only works in simple cases, because you may have multiple returns or System.exit()'s )
         {
-            SootMethod m = sClass.getMethod("main", Arrays.asList(new Type[] {
-                ArrayType.v(RefType.v("java.lang.String"), 1)}));
+            SootMethod m = sClass.getMethod("void main(java.lang.String[])");
                 
             JimpleBody body = (JimpleBody) m.getActiveBody();
             StmtList stmtList = body.getStmtList();
@@ -173,7 +172,7 @@ public class Main
             
             // insert "tmpRef = java.lang.System.out;"
                 stmtList.add(returnIndex, Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
-                    cm.getClass("java.lang.System").getField("out"))));
+                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
             
             // insert "tmpLong = gotoCounter;"
                 stmtList.add(returnIndex + 1, Jimple.v().newAssignStmt(tmpLong, Jimple.v().newStaticFieldRef(
@@ -181,11 +180,8 @@ public class Main
             
             // insert "tmpRef.println(tmpLong);"
             {
-                SootMethod toCall = cm.getClass("java.io.PrintStream").getMethod(
-                    "println", Arrays.asList(new Type[] {LongType.v()}));
-                    
-                stmtList.add(returnIndex + 2, Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, 
-                    Arrays.asList(new Value[] {tmpLong}))));
+                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(long)>");                    
+                stmtList.add(returnIndex + 2, Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, tmpLong)));
             }
         }
         

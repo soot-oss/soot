@@ -109,6 +109,14 @@ public class SootField
         return buffer.toString();
 
     }
+    
+    public String getSubSignature()
+    {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(getType() + " " + getName());
+        return buffer.toString();
+    }
+    
     public SootClass getDeclaringClass() throws NotDeclaredException
     {
         if(!isDeclared)

@@ -382,10 +382,12 @@ public class Util
         return types[types.length - 1];
     }
 
+    static private ArrayList conversionTypes = new ArrayList();
+    
     static Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
         String descriptor)
     {
-        java.util.Vector types = new java.util.Vector();
+        conversionTypes.clear();
 
         while(descriptor.length() != 0)
         {
@@ -478,17 +480,10 @@ public class Util
                 else
                     t = baseType;
 
-            types.addElement(t);
+            conversionTypes.add(t);
         }
 
-        // Generate array containing types
-        {
-            Type[] typesArray = new Type[types.size()];
-
-            types.copyInto(typesArray);
-
-            return typesArray;
-        }
+        return (Type[]) conversionTypes.toArray(new Type[0]);
     }
 
     static Type jimpleTypeOfFieldDescriptor(Scene cm,

@@ -442,6 +442,128 @@ public class Jimple implements BodyRepresentation
     }
 
 
+        
+    /**
+        Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk. (no args)
+     */
+
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method)
+    {
+        return new JStaticInvokeExpr(method, new ArrayList());
+    }
+
+
+    /**
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+     */
+
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method)
+    {
+        return new JSpecialInvokeExpr(base, method, new ArrayList());
+    }
+
+
+    /**
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+     */
+
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method)
+    {
+        return new JVirtualInvokeExpr(base, method, new ArrayList());
+    }
+
+
+    /**
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk. (no args)
+     */
+
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method)
+    {
+        return new JInterfaceInvokeExpr(base, method, new ArrayList());
+    }
+
+    
+    /**
+        Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
+     */
+     
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg)
+    {
+        return new JStaticInvokeExpr(method, Arrays.asList(new Value[] {arg}));
+    }
+
+
+    /**
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg)
+    {
+        return new JSpecialInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
+    }
+
+
+    /**
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg)
+    {
+        return new JVirtualInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
+    }
+
+
+    /**
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg)
+    {
+        return new JInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] {arg}));
+    }
+
+    
+    /**
+        Constructs a NewStaticInvokeExpr(ArrayType, List of Immediate) grammar chunk.
+     */
+     
+    public StaticInvokeExpr newStaticInvokeExpr(SootMethod method, Value arg1, Value arg2)
+    {
+        return new JStaticInvokeExpr(method, Arrays.asList(new Value[] {arg1, arg2}));
+    }
+
+
+    /**
+        Constructs a NewSpecialInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public SpecialInvokeExpr newSpecialInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    {
+        return new JSpecialInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
+    }
+
+
+    /**
+        Constructs a NewVirtualInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public VirtualInvokeExpr newVirtualInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    {
+        return new JVirtualInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
+    }
+
+
+    /**
+        Constructs a NewInterfaceInvokeExpr(Local base, SootMethod method, List of Immediate) grammar chunk.
+     */
+
+    public InterfaceInvokeExpr newInterfaceInvokeExpr(Local base, SootMethod method, Value arg1, Value arg2)
+    {
+        return new JInterfaceInvokeExpr(base, method, Arrays.asList(new Value[] {arg1, arg2}));
+    }
+
+
+
     /**
         Constructs a ThrowStmt(Immediate) grammar chunk.
      */

@@ -138,7 +138,8 @@ public class Transformations
 {
     public static void assignTypesToLocals(JimpleBody listBody)
     {
-        throw new RuntimeException("obsolete code!");
+        TypeResolver.assignTypesToLocals(listBody);
+        
     }
 
     public static void removeUnusedLocals(StmtBody listBody)

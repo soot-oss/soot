@@ -233,12 +233,13 @@ public class SootClass
         throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
     }
 
+    
     /**
         Returns the field of this class with the given name.  May throw an AmbiguousFieldException if there
         are more than one.
     */
 
-    public SootField getField(String name) throws ca.mcgill.sable.soot.NoSuchFieldException, ca.mcgill.sable.soot.AmbiguousFieldException
+    public SootField getFieldByName(String name) throws ca.mcgill.sable.soot.NoSuchFieldException, ca.mcgill.sable.soot.AmbiguousFieldException
     {
         boolean found = false;
         SootField foundField = null;
@@ -266,11 +267,61 @@ public class SootClass
             throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
     }
 
+    
+    /*    
+        Returns the field of this class with the given subsignature.
+    */
+
+    public SootField getField(String subsignature) throws ca.mcgill.sable.soot.NoSuchFieldException
+    {
+        SootField toReturn = (SootField) scene.fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
+        
+        if(toReturn == null)
+            throw new ca.mcgill.sable.soot.NoSuchFieldException("No field " + name + " in class " + getName());
+        else
+            return toReturn;
+    }
+
+    
+    /**
+        Does this class declare a field with the given subsignature?
+    */
+
+    public boolean declaresField(String subsignature)
+    {
+        return scene.fieldSignatureToField.containsKey("<" + getName() + ": " + subsignature + ">");
+    }
+
+    
+    /*    
+        Returns the method of this class with the given subsignature.
+    */
+
+    public SootMethod getMethod(String subsignature) throws ca.mcgill.sable.soot.NoSuchMethodException
+    {
+        SootMethod toReturn = (SootMethod) scene.methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
+        
+        if(toReturn == null)
+            throw new ca.mcgill.sable.soot.NoSuchMethodException("No method " + name + " in class " + getName());
+        else
+            return toReturn;
+    }
+
+    /**
+        Does this class declare a method with the given subsignature?
+    */
+
+    public boolean declaresMethod(String subsignature)
+    {
+        return scene.methodSignatureToMethod.containsKey("<" + getName() + ": " + subsignature + ">");
+    }
+    
+    
     /**
         Does this class declare a field with the given name?
     */
 
-    public boolean declaresField(String name)
+    public boolean declaresFieldByName(String name)
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -285,6 +336,7 @@ public class SootClass
         return false;
     }
 
+    
     /**
         Does this class declare a field with the given name and type.
     */
@@ -394,7 +446,7 @@ public class SootClass
         given name.
     */
 
-    public SootMethod getMethod(String name) throws
+    public SootMethod getMethodByName(String name) throws
         ca.mcgill.sable.soot.NoSuchMethodException, ca.mcgill.sable.soot.AmbiguousMethodException
     {
         boolean found = false;
@@ -469,7 +521,7 @@ public class SootClass
         Does this class declare a method with the given name?
     */
 
-    public boolean declaresMethod(String name)
+    public boolean declaresMethodByName(String name)
     {
         Iterator methodIt = getMethods().iterator();
 

@@ -27,8 +27,6 @@ public class Main
         
         if(args.length == 0)
         {
-            System.out.println("InsertCounters is public domain.  Enjoy.");
-            System.out.println("");
             System.out.println("Syntax: java InsertCounters [option]* entryclass otherclass ...  ");
             System.out.println("");
             System.out.println("  -d PATH                    store produced files in PATH");
@@ -84,15 +82,13 @@ public class Main
                 firstNonOption = i + 1;
             }
 
-        Scene cm = Scene.v();
-
         // Generate classes to process
         {
             classesToProcess = new LinkedList();
             
             for(int i = firstNonOption; i < args.length; i++)
             {
-                SootClass c = cm.loadClassAndSupport(args[i]);
+                SootClass c = Scene.v().loadClassAndSupport(args[i]);
                 
                 if(entryClass == null)  
                     entryClass = c;
@@ -103,7 +99,7 @@ public class Main
             if(isRecursing)
             {
                 classesToProcess = new LinkedList();
-                classesToProcess.addAll(cm.getClasses());
+                classesToProcess.addAll(Scene.v().getClasses());
              }   
                          
             // Remove all classes from excludingPackages
@@ -173,15 +169,15 @@ public class Main
             }
         }
         // Initialize some fields
-            counterClass = cm.loadClassAndSupport("CounterClass");
+            counterClass = Scene.v().loadClassAndSupport("CounterClass");
             
-            interfaceInvokeCount = counterClass.getField("interfaceInvokeCount");
-            virtualInvokeCount = counterClass.getField("virtualInvokeCount");
-            specialInvokeCount = counterClass.getField("specialInvokeCount");
-            staticInvokeCount = counterClass.getField("staticInvokeCount");
+            interfaceInvokeCount = counterClass.getField("long interfaceInvokeCount");
+            virtualInvokeCount = counterClass.getField("long virtualInvokeCount");
+            specialInvokeCount = counterClass.getField("long specialInvokeCount");
+            staticInvokeCount = counterClass.getField("long staticInvokeCount");
 
-            systemClass = cm.loadClassAndSupport("java.lang.System");
-            systemExitMethod = systemClass.getMethod("exit");            
+            systemClass = Scene.v().loadClassAndSupport("java.lang.System");
+            systemExitMethod = systemClass.getMethod("void exit(int)");            
             
         // Handle each class
         {
@@ -283,7 +279,7 @@ public class Main
                             {   
                                 // Add a call to CounterClass before the System.exit(x) call
                                     stmtIt.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
-                                        counterClass.getMethod("stopProfiling"), Arrays.asList(new Type[0]))));
+                                        counterClass.getMethod("void stopProfiling()"))));
                                                                         
                                 // Contortions to make sure element is inserted in correct basic block.  hideous!
                                     stmtIt.previous();
@@ -302,8 +298,7 @@ public class Main
         {
             if(isEntryClass)
             {
-                SootMethod m = sClass.getMethod("main", Arrays.asList(new Type[] {
-                    ArrayType.v(RefType.v("java.lang.String"), 1)}));
+                SootMethod m = sClass.getMethod("void main(java.lang.String[])");
                     
                 JimpleBody body = (JimpleBody) m.getActiveBody();
                 
@@ -318,7 +313,7 @@ public class Main
                     if(s instanceof ReturnVoidStmt)
                     {
                         stmtIt.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(
-                            counterClass.getMethod("stopProfiling"), Arrays.asList(new Type[0]))));       
+                            counterClass.getMethod("void stopProfiling()"))));       
                      
                         // More contortions
                             stmtIt.previous();

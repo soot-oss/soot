@@ -99,8 +99,7 @@ public class Main
         
         // Retrieve and print class.
         {
-            Scene cm = Scene.v();
-            SootClass sClass = cm.loadClassAndSupport(args[0]);
+            SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
             PrintWriter out = new PrintWriter(System.out, true);
             
             Iterator methodIt = sClass.getMethods().iterator();

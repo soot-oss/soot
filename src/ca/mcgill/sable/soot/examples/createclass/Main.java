@@ -79,19 +79,16 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Scene cm;
         SootClass sClass;
         SootMethod method;
         
         // Create the class
-           cm = Scene.v();
-           cm.loadClassAndSupport("java.lang.Object");
+           Scene.v().loadClassAndSupport("java.lang.Object");
            
            sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
            
-           sClass.setSuperClass(cm.getClass("java.lang.Object"));
-           
-           cm.addClass(sClass);
+           sClass.setSuperClass(Scene.v().getClass("java.lang.Object"));
+           Scene.v().addClass(sClass);
            
         // Create the method
            method = new SootMethod("main",
@@ -120,15 +117,12 @@ public class Main
             
             // add "tmpRef = java.lang.System.out"
                 stmts.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
-                    cm.getClass("java.lang.System").getField("out"))));
+                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>"))));
             
             // insert "tmpRef.println("Hello world!")"
             {
-                SootMethod toCall = cm.getClass("java.io.PrintStream").getMethod(
-                    "println", Arrays.asList(new Type[] {RefType.v("java.lang.String")}));
-
-                stmts.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, 
-                    Arrays.asList(new Value[] {StringConstant.v("Hello world!")}))));
+                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
+                stmts.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, StringConstant.v("Hello world!"))));
             }                        
             
             // insert "return"

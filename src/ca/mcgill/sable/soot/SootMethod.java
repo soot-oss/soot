@@ -296,6 +296,7 @@ public class SootMethod
         return Modifier.isStatic(this.getModifiers());
     }
 
+    
     /**
         Returns the Soot signature of this method.  Used to refer to methods unambiguously.
      */
@@ -322,6 +323,36 @@ public class SootMethod
         }
 
         buffer.append(")>");
+
+        return buffer.toString();
+    }
+
+    
+    /**
+        Returns the Soot subsignature of this method.  Used to refer to methods unambiguously.
+     */
+
+    public String getSubSignature()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append(getReturnType().toString() + " " + getName());
+        buffer.append("(");
+
+        Iterator typeIt = getParameterTypes().iterator();
+
+        if(typeIt.hasNext())
+        {
+            buffer.append(typeIt.next());
+
+            while(typeIt.hasNext())
+            {
+                buffer.append(",");
+                buffer.append(typeIt.next());
+            }
+        }
+
+        buffer.append(")");
 
         return buffer.toString();
     }

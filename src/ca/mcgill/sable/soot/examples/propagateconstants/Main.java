@@ -83,8 +83,7 @@ public class Main
 {
     public static void main(String[] args)
     {
-        Scene cm = Scene.v();
-        SootClass sClass = cm.loadClassAndSupport(args[0]);
+        SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
         PrintWriter out = new PrintWriter(System.out, true);
         
         out.println("Before copy propagation: ");
