@@ -58,7 +58,6 @@ public class SootResolver
         if(mIsResolving) {
             newClass = new SootClass(className);
             Scene.v().addClass(newClass);
-            newClass.setContextClass();
         
             markedClasses.add(newClass);
             classesToResolve.addLast(newClass);
@@ -155,7 +154,6 @@ public class SootResolver
         {
             SootClass newClass = new SootClass(className);
             Scene.v().addClass(newClass);
-            newClass.setContextClass();
             
             markedClasses.add(newClass);
             classesToResolve.addLast(newClass);

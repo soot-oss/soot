@@ -141,6 +141,11 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
+        if( Main.v().opts.whole_program() ) {
+            c.setLibraryClass();
+        } else {
+            c.setContextClass();
+        }
 
         nameToClass.put(c.getName(), c.getType());
         c.getType().setSootClass(c);

@@ -664,30 +664,30 @@ public class Main {
                  ((SootClass) contextClassesIt.next()).setApplicationClass();
         }
 
-        // Remove/add all classes from packageInclusionMask as per piFlag
-        List applicationPlusContextClasses = new ArrayList();
-
-        applicationPlusContextClasses.addAll(Scene.v().getApplicationClasses());
-        applicationPlusContextClasses.addAll(Scene.v().getContextClasses());
-
-        Iterator classIt = applicationPlusContextClasses.iterator();
-
-        while (classIt.hasNext()) {
-            SootClass s = (SootClass) classIt.next();
-
-            if (opts.classes().contains(s.getName()))
+        // Remove/add all classes from packageInclusionMask as per -i option
+        for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
+            final SootClass s = (SootClass) sIt.next();
+            if( s.isPhantom() ) continue;
+            if (opts.classes().contains(s.getName())) {
+                s.setApplicationClass();
                 continue;
+            }
 
             for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
 
                 final String pkg = (String) pkgIt.next();
                 if (s.isApplicationClass()
-                    && s.getPackageName().startsWith(pkg))
-                    s.setContextClass();
+                && s.getPackageName().startsWith(pkg)) {
+                    if( opts.whole_program() ) {
+                        s.setLibraryClass();
+                    } else {
+                        s.setContextClass();
+                    }
+                }
             }
             for( Iterator pkgIt = opts.include().iterator(); pkgIt.hasNext(); ) {
                 final String pkg = (String) pkgIt.next();
-                if (s.isContextClass() && s.getPackageName().startsWith(pkg))
+                if (s.getPackageName().startsWith(pkg))
                     s.setApplicationClass();
             }
         }
