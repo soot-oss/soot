@@ -34,6 +34,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import soot.baf.*;
 
 public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 {
@@ -100,7 +101,12 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
    
     public void convertToBaf(JimpleToBafContext context, List out)
     {
-        ((ConvertToBaf) getInvokeExpr()).convertToBaf(context, out);
+        InvokeExpr ie = (InvokeExpr) getInvokeExpr();
+        
+        ((ConvertToBaf) ie).convertToBaf(context, out);
+        
+        if(!ie.getMethod().getReturnType().equals(VoidType.v()))
+            out.add(Baf.v().newPopInst(ie.getMethod().getReturnType()));
     }    
 
     public boolean fallsThrough() {return true;}        
