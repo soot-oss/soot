@@ -32,10 +32,14 @@ import soot.*;
 public class SourceFileTag implements Tag
 {
     String sourceFile;
-
+    String absolutePath;
+    
     public SourceFileTag(String sourceFile)
     {
 	this.sourceFile = sourceFile;
+    }
+
+    public SourceFileTag(){
     }
 
     public String getName()
@@ -52,9 +56,20 @@ public class SourceFileTag implements Tag
 	}
     }
 
+    public void setSourceFile(String srcFile){
+        sourceFile = srcFile;
+    }
     public String getSourceFile()
     {
 	return sourceFile;
+    }
+
+    public void setAbsolutePath(String path){
+        absolutePath = path;
+    }
+
+    public String getAbsolutePath(){
+        return absolutePath;
     }
 
     public String toString()

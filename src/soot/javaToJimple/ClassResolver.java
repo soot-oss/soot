@@ -32,7 +32,15 @@ public class ClassResolver {
      *  adds source file tag to each sootclass
      */
     protected void addSourceFileTag(soot.SootClass sc){
-        if (sc.getTag("SourceFileTag") != null) return;
+        soot.tagkit.SourceFileTag tag = null;
+        if (sc.hasTag("SourceFileTag")) {
+            tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
+        }
+        else {
+            tag = new soot.tagkit.SourceFileTag();
+            sc.addTag(tag);
+        }
+        
         String name = Util.getSourceFileOfClass(sc);
 
 
@@ -45,11 +53,12 @@ public class ClassResolver {
         // the pkg is not included in the tag for some unknown reason
         // I think in this case windows uses the same slash - may cause 
         // windows problems though
-        int slashIndex = name.indexOf("/");
+        int slashIndex = name.lastIndexOf("/");
         if (slashIndex != -1){
             name = name.substring(slashIndex+1);
         }
-        sc.addTag(new soot.tagkit.SourceFileTag(name));
+        tag.setSourceFile(name); 
+        //sc.addTag(new soot.tagkit.SourceFileTag(name));
     }
     
     /**
@@ -692,6 +701,25 @@ public class ClassResolver {
      */
     protected void createSource(polyglot.ast.SourceFile source){
     
+        // add absolute path to sourceFileTag
+        if (sootClass.hasTag("SourceFileTag")){
+            soot.tagkit.SourceFileTag t = (soot.tagkit.SourceFileTag)sootClass.getTag("SourceFileTag");
+            /*System.out.println("source: "+source);
+            System.out.println("source.source(): "+source.source());
+            System.out.println("source path: "+source.source().path());
+            System.out.println("source name: "+source.source().name());*/
+            t.setAbsolutePath(source.source().path());
+        }
+        else {
+            soot.tagkit.SourceFileTag t = new soot.tagkit.SourceFileTag();
+            /*System.out.println("source: "+source);
+            System.out.println("source.source(): "+source.source());
+            System.out.println("source path: "+source.source().path());
+            System.out.println("source name: "+source.source().name());
+            t.setAbsolutePath(source.source().path());*/
+            sootClass.addTag(t);
+        }
+        
         String simpleName = sootClass.getName();
         
         Iterator declsIt = source.decls().iterator();
