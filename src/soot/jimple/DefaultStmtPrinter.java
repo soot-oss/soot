@@ -26,6 +26,7 @@
 
 package soot.jimple;
 
+import soot.tagkit.*;
 import soot.*;
 import java.util.*;
 import soot.util.*;

@@ -30,6 +30,7 @@
 
 package soot.jimple.internal;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -101,7 +102,6 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 	while(it.hasNext()) {
 	    u.addTag((Tag) it.next());
 	}
-	u.addTag(new ArrayCheckTag(true, false));       
     }
     
     public boolean fallsThrough(){return false;}        

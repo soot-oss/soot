@@ -31,6 +31,8 @@
 package soot.jimple.internal;
 
 import soot.baf.*;
+
+import soot.tagkit.*;
 import soot.jimple.*;
 import soot.*;
 import soot.jimple.*;

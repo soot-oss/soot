@@ -29,6 +29,7 @@
 
 package soot;
 
+import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
 import soot.baf.*;

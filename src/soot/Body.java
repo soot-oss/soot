@@ -27,6 +27,7 @@
 
 package soot;
 
+import soot.tagkit.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
@@ -48,7 +49,7 @@ import soot.toolkits.scalar.*;
  *  @see soot.jimple.JimpleBody
  *  @see soot.baf.BafBody
  */
-public abstract class Body
+public abstract class Body extends AbstractHost
 {
     /** The method associated with this Body. */
     protected SootMethod method = null;
@@ -301,19 +302,33 @@ public abstract class Body
     public List getUnitBoxes() 
     {
         ArrayList unitBoxList = new ArrayList();
+        {
+	    Iterator it = unitChain.iterator();
+	    while(it.hasNext()) {
+		Unit item = (Unit) it.next();
+		unitBoxList.addAll(item.getUnitBoxes());  
+	    }
+	}
+
         
-        Iterator it = unitChain.iterator();
-        while(it.hasNext()) {
-            Unit item = (Unit) it.next();
-            unitBoxList.addAll(item.getUnitBoxes());  
+	{
+	    Iterator it = trapChain.iterator();
+	    while(it.hasNext()) {
+		Trap item = (Trap) it.next();
+		unitBoxList.addAll(item.getUnitBoxes());  
+	    }
         }
-        
-        it = trapChain.iterator();
-        while(it.hasNext()) {
-            Trap item = (Trap) it.next();
-            unitBoxList.addAll(item.getUnitBoxes());  
-        }
-        
+
+
+	{
+	    Iterator it = getTags().iterator();
+	    while(it.hasNext()) {
+		Tag t = (Tag) it.next();
+		if( t instanceof Attribute) 		    
+		    unitBoxList.addAll(((Attribute) t).getUnitBoxes());
+	    }
+	}
+	
         return unitBoxList;
     }
 

@@ -33,6 +33,9 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+
+import soot.tagkit.*;
+
 public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvokeExpr 
                              implements InterfaceInvokeExpr, ConvertToBaf
 {

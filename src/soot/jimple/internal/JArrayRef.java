@@ -31,6 +31,7 @@
 package soot.jimple.internal;
 
 import soot.*;
+import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.jimple.*;
@@ -166,7 +167,7 @@ public class JArrayRef implements ArrayRef, ConvertToBaf, EquivTo
         out.add(x = Baf.v().newArrayReadInst(getType()));
 
 	Iterator it = currentUnit.getTags().iterator();
-	
+	x.addTag(new ArrayCheckTag(true, true));
 	while(it.hasNext()) {
 	    x.addTag((Tag) it.next());
 	}

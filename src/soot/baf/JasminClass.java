@@ -29,6 +29,7 @@
 
 package soot.baf;
 
+import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
@@ -259,7 +260,8 @@ public class JasminClass
 	Iterator it =  sootClass.getTags().iterator(); 
 	while(it.hasNext()) {
 	    Tag tag = (Tag) it.next();
-	    emit(".class_attribute "  + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+	    if(tag instanceof Attribute)
+		emit(".class_attribute "  + tag.getName() + " " + Base64.encode(((Attribute)tag).getValue()));
 	}
 
 
@@ -281,7 +283,8 @@ public class JasminClass
 		Iterator attributeIt =  field.getTags().iterator(); 
 		while(attributeIt.hasNext()) {
 		    Tag tag = (Tag) attributeIt.next();
-		    emit(".field_attribute " + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+		    if(tag instanceof Attribute)
+			emit(".field_attribute " + tag.getName() + " " + Base64.encode(((Attribute)tag).getValue()));
 		}
 
             }
@@ -398,7 +401,8 @@ public class JasminClass
 	    Iterator it =  method.getTags().iterator();
 	    while(it.hasNext()) {
 		Tag tag = (Tag) it.next();
-		emit(".method_attribute "  + tag.getName() + " " + Base64.encode(tag.getEncoding()));
+		if(tag instanceof Attribute)
+		    emit(".method_attribute "  + tag.getName() + " " + Base64.encode(((Attribute)tag).getValue()));
 	    }	    
     }
     
@@ -445,6 +449,9 @@ public class JasminClass
                 }
             }
         }
+
+
+
 
         // Emit the exceptions
         {
@@ -619,6 +626,16 @@ public class JasminClass
                 code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
         }
 
+	// emit code attributes
+	{
+	    Iterator it =  body.getTags().iterator();
+	    while(it.hasNext()) {
+		Tag t = (Tag) it.next();
+		if(t instanceof JasminAttribute) {
+		    emit(".code_attribute " + t.getName() +" " + ((JasminAttribute) t).getJasminValue(instToLabel));
+		}		
+	    }
+	}       
     }
 
     public void print(PrintWriter out)
@@ -1987,7 +2004,8 @@ public class JasminClass
 	Iterator it = inst.getTags().iterator();
 	while(it.hasNext()) {
 	    Tag t = (Tag) it.next();
-	    emit(".code_attribute " + t.getName() + " " + new String(Base64.encode(t.getEncoding())));
+	    if(t instanceof Attribute) 
+		emit(".code_attribute " + t.getName() + " " + new String(Base64.encode(((Attribute)t).getValue())));
 	}
     }
    

@@ -23,59 +23,39 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
+package soot.tagkit;
+
+import soot.*;
 
 import java.util.*;
-import javax.swing.*;
 
+// implemented by SootClass, SootField, SootMethod, Scene
 
-/** Represents a tag; these get attached to implementations of Host.
+/** A "taggable" object.
+ * Implementing classes can have arbitrary labelled data attached to them.
+ * 
+ * Currently, only classes, fields, methods and the Scene are Hosts.
+ *
+ * One example of a tag would be to store Boolean values, associated with
+ * array accesses, indicating whether bounds checks can be omitted.
  */
-public abstract  class CodeAttribute implements Tag
+public interface Host
 {
-    public byte[] pc = new byte[2];
+    /** Get a list of tags associated with the current object. */
+    public List getTags();
     
-    public byte[] getPc()
-    {
-	return pc;
-    }
-    
-    public void setPc(byte[] aPc)
-    {
-	pc = aPc;
-    }
+    /** Returns the tag with the given name. */
+    public Tag getTag(String aName);
 
-    public int getPcAsInt()
-    {	
-	int lower = pc[1];
-	int upper = pc[0];
+    public void addTag(Tag t);
 
-	if(lower < 0 ) lower += 255;
-	if(upper < 0) upper += 255;
-	int pc = (upper<<8) + lower;
-
-	return pc;
-    }
-
-    public void setPc(int aPc)
-    {
-	pc =  convertPcToByteArray(aPc);
-    }
-
-    public void setPc(byte a, byte b)
-    {
-	pc[0] = a;
-	pc[1] = b;
-    }    
-
-    public static byte[] convertPcToByteArray(int pcValue)
-    {
-	byte[] pc = new byte[2];
-	pc[1] = (byte)( pcValue & 0x000000ff);
-	pc[0] = (byte) (pcValue >> 8);
-	return pc;
-    }
+    /** Remove the tag with the given name. */
+    public void removeTag(String name);
+   
+    /** Returns true if this host has a tag with the given name. */
+    public boolean hasTag(String aName);
 }
+
 
 
 

@@ -1,4 +1,5 @@
-package soot;
+package soot.tagkit;import soot.*;
+
 
 import java.util.*;
 import javax.swing.*;
@@ -13,7 +14,7 @@ public class TagManager
 
     public static Tag getTagFor(String tagName) {
 	try {
-	    Class cc = Class.forName("soot." + tagName);
+	    Class cc = Class.forName("soot.tagkit." + tagName);
 	    return (Tag)  cc.newInstance();
 	} 
 	catch (ClassNotFoundException e) {

@@ -23,7 +23,10 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
+package soot.tagkit;
+
+import soot.*;
+
 
 import java.util.*;
 import javax.swing.*;
@@ -31,13 +34,38 @@ import javax.swing.*;
 
 /** Represents a tag; these get attached to implementations of Host.
  */
-public interface Tag 
+public class GenericAttribute implements Attribute
 {
-    public   String getName();
-    public  byte[] getEncoding();        
-    public  String toString();
+    private String mName;
+    private byte[] mValue;
+    
+    public GenericAttribute(String name, byte[] value)
+    {
+	mName = name;
+	mValue = value;
+    }
+    public String getName()
+    {
+	return mName;
+    }
+    public  byte[] getValue()
+    {
+	return mValue;
+    }        
+    public  String toString()
+    {
+	return mName + " " + Base64.encode(mValue);
+    }
 
-    public  void setValue(byte[] value);
+    public void setValue(byte[] value)
+    {
+	mValue = value;
+    }
+
+    
+    public List getUnitBoxes(){return new ArrayList();}
+
+
 }
 
 

@@ -23,37 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
+package soot.tagkit;
+import soot.*;
 
-import java.util.*;
 
-// implemented by SootClass, SootField, SootMethod, Scene
-
-/** A "taggable" object.
- * Implementing classes can have arbitrary labelled data attached to them.
- * 
- * Currently, only classes, fields, methods and the Scene are Hosts.
- *
- * One example of a tag would be to store Boolean values, associated with
- * array accesses, indicating whether bounds checks can be omitted.
+/** Represents a tag; these get attached to implementations of Host.
  */
-public interface Host
+
+public interface  Tag
 {
-    /** Get a list of tags associated with the current object. */
-    public List getTags();
-    
-    /** Returns the tag with the given name. */
-    public Tag getTag(String aName);
-
-    public void addTag(Tag t);
-
-    /** Remove the tag with the given name. */
-    public void removeTag(String name);
-   
-    /** Returns true if this host has a tag with the given name. */
-    public boolean hasTag(String aName);
+    public String getName();
 }
-
-
-
 

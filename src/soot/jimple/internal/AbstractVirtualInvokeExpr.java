@@ -33,6 +33,8 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
+import soot.tagkit.*;
+
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
   implements VirtualInvokeExpr, ConvertToBaf                                               
 {

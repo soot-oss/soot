@@ -20,7 +20,7 @@
 //                              Kevin Kelley  <kelley@ruralnet.net>  //
 //                                                                   //
 ////////////////////end license & copyright header/////////////////////
-package soot;
+package soot.tagkit;
 
 /**
 *   Provides encoding of raw bytes to base64-encoded characters, and

@@ -30,6 +30,8 @@
 
 package soot.jimple.internal;
 
+
+import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
 import soot.*;

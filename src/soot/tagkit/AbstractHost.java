@@ -23,7 +23,9 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-package soot;
+package soot.tagkit;
+
+import soot.*;
 
 import java.util.*;
 

@@ -147,6 +147,7 @@ public class BafBody extends Body
              (new PeepholeOptimizer()).transform(this,"");
              UnusedLocalEliminator.v().transform(this, "bb.ule");
              LocalPacker.v().transform(this, "bb.lp");
+	     CodeAttributeGenerator.v().transform(this, "");
         }
     }
 }

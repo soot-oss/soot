@@ -27,11 +27,15 @@
 package soot.jimple.internal;
 
 import soot.*;
+import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+
+import soot.tagkit.*;
+
 
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
