@@ -67,7 +67,6 @@ public final class BitPointsToSet extends PointsToSetInternal {
         if( exclude != null && !(exclude instanceof BitPointsToSet) )
             return superAddAll( other, exclude );
         return nativeAddAll( (BitPointsToSet) other, (BitPointsToSet) exclude );
-        //return superAddAll( (BitPointsToSet) other, (BitPointsToSet) exclude );
     }
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {

@@ -721,7 +721,7 @@ public class Options extends OptionsBase {
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "store produced files in PATH" )
-+padOpt(" -f ARG -output-format ARG", "sets the source precedence for Soot" )
++padOpt(" -f ARG -output-format ARG", "sets the output format for Soot" )
 +padVal(" j jimp", "" )
 +padVal(" J jimple", "" )
 +padVal(" B baf", "" )

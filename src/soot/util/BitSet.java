@@ -40,6 +40,8 @@ public final class BitSet
      */
     private long bits[];
 
+    private int hashCode = 0;
+
     /** Returns an iterator over this BitSet. */
     public BitSetIterator iterator() {
         return new BitSetIterator(bits);
@@ -109,7 +111,11 @@ public final class BitSet
 	long l = bits[offset];
         long mask = bitMask(bit);
         bits[ offset ] = l | mask;
-        return (l & mask) == 0;
+        if( (l & mask) == 0 ) {
+            hashCode = 0;
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -121,6 +127,7 @@ public final class BitSet
 	    throw new IndexOutOfBoundsException();
 	ensureSize(bit+1);
 	bits[bitOffset(bit)] &= ~bitMask(bit);
+        hashCode = 0;
     }
 
     /**
@@ -219,6 +226,8 @@ public final class BitSet
 	if (this == bitset)
 	    return;
 
+        hashCode = 0;
+
         // a = a and b
         long a[] = bits;
         long b[] = bitset.bits;
@@ -231,6 +240,53 @@ public final class BitSet
             a[i] = 0;
     }
 
+    public static BitSet and( BitSet set1, BitSet set2 ) {
+        int min = set1.size();
+        {
+            int max = set2.size();
+            if( min > max ) {
+                min = max;
+            }
+            // max is not necessarily correct at this point, so let it go
+            // out of scope
+        }
+
+        BitSet ret = new BitSet( min );
+        long[] retbits = ret.bits;
+        long[] bits1 = set1.bits;
+        long[] bits2 = set2.bits;
+        min <<= 6;
+        for( int i = 0; i < min; i++ ) {
+            retbits[i] = bits1[i] & bits2[i];
+        }
+        return ret;
+    }
+
+    public static BitSet or( BitSet set1, BitSet set2 ) {
+        int min = set1.size();
+        int max = set2.size();
+        if( min > max ) {
+            min = max;
+            max = set1.size();
+        }
+
+        BitSet ret = new BitSet( max );
+        long[] retbits = ret.bits;
+        long[] bits1 = set1.bits;
+        long[] bits2 = set2.bits;
+        min <<= 6;
+        max <<= 6;
+        for( int i = 0; i < min; i++ ) {
+            retbits[i] = bits1[i] | bits2[i];
+        }
+        if( bits1.length == min ) {
+            System.arraycopy( bits2, min, retbits, min, max-min );
+        } else {
+            System.arraycopy( bits1, min, retbits, min, max-min );
+        }
+        return ret;
+    }
+
 
     /**
      * Performs a logical AND of this set and the COMPLEMENT of the argument
@@ -240,6 +296,8 @@ public final class BitSet
      * @since JDK1.2
      */
     public void andNot(BitSet bitset) {
+
+        hashCode = 0;
 
 	if(this == bitset) {
             long a[] = bits;
@@ -269,6 +327,8 @@ public final class BitSet
     public void or(BitSet bitset) {
 	if (this == bitset)
 	    return;
+
+        hashCode = 0;
 
         // a = a or b
         long a[] = bits;
@@ -304,6 +364,7 @@ public final class BitSet
      * @param set a bit set.
      */
     public boolean orAndAndNot(BitSet orset, BitSet andset, BitSet andnotset) {
+        hashCode = 0;
         boolean ret = false;
         long[] a = null, b = null, c = null, d = null, e = null;
         int al, bl, cl, dl, el;
@@ -425,6 +486,7 @@ public final class BitSet
      * @param set a bit set.
      */
     public void xor(BitSet bitset) {
+        hashCode = 0;
 	if(this == bitset) {
             long a[] = bits;
             for (int i = a.length; i-- > 0; )
@@ -454,11 +516,12 @@ public final class BitSet
      * Returns a hash code value for this bit set.
      */
     public int hashCode() {
+        if( hashCode != 0 ) return hashCode;
 	long h = 1234L;
 	for (int i = bits.length; --i >= 0; ) {
 	    h ^= bits[i] * (i + 1);
 	}
-	return (int)((h >> 32) ^ h);
+	return hashCode = (int)((h >> 32) ^ h);
     }
 
 
@@ -476,6 +539,7 @@ public final class BitSet
 	    return null;
 	}
 	bitset.bits = new long[bits.length];
+        bitset.hashCode = hashCode;
 	// if clone could reduce the size: copy up to last set bit
 	// bitset.bits = new long[bitOffset(length() + 0x3F)];
 	System.arraycopy(bits, 0, bitset.bits, 0, bitset.bits.length);

@@ -726,6 +726,10 @@ simplified.
 								<alias>double</alias>
 								<default/>
 							</value>
+							<value>
+								<name>Shared</name>
+								<alias>shared</alias>
+							</value>
 							<long_desc>
 Selects an implementation of a points-to set that Spark should use.
 
@@ -770,6 +774,10 @@ often speeding them up significantly.
 								<name>Array</name>
 								<alias>array</alias>
 							</value>
+							<value>
+								<name>Shared</name>
+								<alias>shared</alias>
+							</value>
 							<long_desc>
 Selects an implementation for the sets of old objects in the double
 points-to set implementation.
@@ -796,6 +804,10 @@ This option has no effect unless setImpl is set to double.
 							<value>
 								<name>Array</name>
 								<alias>array</alias>
+							</value>
+							<value>
+								<name>Shared</name>
+								<alias>shared</alias>
 							</value>
 							<long_desc>
 Selects an implementation for the sets of new objects in the double

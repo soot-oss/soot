@@ -81,6 +81,12 @@ public class Singletons {
     }
     private Global g = new Global();
 
+    private SharedBitSetCache instanceSharedBitSetCache;
+    public SharedBitSetCache SharedBitSetCache() {
+        if( instanceSharedBitSetCache == null ) instanceSharedBitSetCache = new SharedBitSetCache( g );
+        return instanceSharedBitSetCache;
+    }
+
     private Options instanceOptions;
     public Options Options() {
         if( instanceOptions == null ) instanceOptions = new Options( g );
