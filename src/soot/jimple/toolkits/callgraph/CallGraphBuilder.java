@@ -191,7 +191,7 @@ public final class CallGraphBuilder
                     new Edge( vcs.getContainer(), vcs.getStmt(), target ) );
             }
             if( vcs.getInstanceInvokeExpr().getMethod().getNumberedSubSignature() == sigStart ) {
-                VirtualCalls.v().resolve( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
+                VirtualCalls.v().resolveThread( t, vcs.getInstanceInvokeExpr(), vcs.getContainer(),
                         targetsQueue );
                 while(true) {
                     SootMethod target = (SootMethod) targets.next();
