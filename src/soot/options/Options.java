@@ -508,6 +508,11 @@ public class Options extends OptionsBase {
                 exclude.add( value );
             }
   
+            else if( false 
+            || option.equals( "include-all" )
+            )
+                include_all = true;
+  
             else if( false
             || option.equals( "dynamic-class" )
             ) {
@@ -745,6 +750,10 @@ public class Options extends OptionsBase {
     }
     public void set_exclude( List setting ) { exclude = setting; }
     private List exclude = null;
+    public boolean include_all() { return include_all; }
+    private boolean include_all = false;
+    public void set_include_all( boolean setting ) { include_all = setting; }
+  
     public List dynamic_class() { 
         if( dynamic_class == null )
             return java.util.Collections.EMPTY_LIST;
@@ -836,6 +845,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -i PKG -include PKG", "Include classes in PKG as application classes" )
 +padOpt(" -x PKG -exclude PKG", "Exclude classes in PKG from application classes" )
++padOpt(" -include-all", "Set default excluded packages to empty list" )
 +padOpt(" -dynamic-class CLASS", "Note that CLASS may be loaded dynamically" )
 +padOpt(" -dynamic-dir DIR", "Mark all classes in DIR as potentially dynamic" )
 +padOpt(" -dynamic-package PKG", "Marks classes in PKG as potentially dynamic" )

@@ -3581,6 +3581,17 @@ then the classes from all included packages are marked as
 application classes.</p>
 </long_desc>
 		</listopt>
+		<boolopt>
+			<name>Include All Packages</name>
+			<alias>include-all</alias>
+			<short_desc>Set default excluded packages to empty list</short_desc>
+			<long_desc>
+Soot uses a default list of packages (such as java.) which are deemed
+to contain library classes. This switch removes the default packages from the
+list of packages containing library classes.
+Individual packages can then be added using the exclude option.
+</long_desc>
+		</boolopt>
 		<listopt>
 			<name>Dynamic Classes</name>
 			<alias>dynamic-class</alias>

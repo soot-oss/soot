@@ -694,14 +694,16 @@ public class Scene  //extends AbstractHost
         if (Options.v().exclude() != null)
             excludedPackages.addAll(Options.v().exclude());
 
-        excludedPackages.add("java.");
-        excludedPackages.add("sun.");
-        excludedPackages.add("javax.");
-        excludedPackages.add("com.sun.");
-        excludedPackages.add("com.ibm.");
-        excludedPackages.add("org.xml.");
-        excludedPackages.add("org.w3c.");
-        excludedPackages.add("org.apache.");
+        if( !Options.v().include_all() ) {
+            excludedPackages.add("java.");
+            excludedPackages.add("sun.");
+            excludedPackages.add("javax.");
+            excludedPackages.add("com.sun.");
+            excludedPackages.add("com.ibm.");
+            excludedPackages.add("org.xml.");
+            excludedPackages.add("org.w3c.");
+            excludedPackages.add("org.apache.");
+        }
 
         // Remove/add all classes from packageInclusionMask as per -i option
         for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
