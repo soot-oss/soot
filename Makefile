@@ -77,7 +77,7 @@ javadoc: document
 
 document: 
 	find src -name '*.java' | xargs grep ^package | sed 's/.*package //' | sed 's/;//' | sort -u > src/packageList
-	javadoc -d doc -sourcepath src -windowtitle "Soot API" @src/packageList
+	javadoc -J-Xmx200m -d doc -sourcepath src -windowtitle "Soot API" @src/packageList
 
 badfields: all
 	java -Xmx200m soot.tools.BadFields -w -f none -process-path classes soot.Main
