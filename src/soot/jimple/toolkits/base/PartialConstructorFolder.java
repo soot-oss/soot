@@ -38,6 +38,7 @@ import soot.toolkits.graph.*;
 import soot.grimp.*;
 import soot.util.*;
 import java.util.*;
+import soot.tagkit.*;
 
 public class PartialConstructorFolder extends BodyTransformer
 {
@@ -57,7 +58,7 @@ public class PartialConstructorFolder extends BodyTransformer
     /** This method pushes all newExpr down to be the stmt directly before every
      * invoke of the init only if they are in the types list*/
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    public void internalTransform(Body b, String phaseName, Map options)
     {
         JimpleBody body = (JimpleBody)b;
 
@@ -147,6 +148,7 @@ public class PartialConstructorFolder extends BodyTransformer
               // insert new one here
               units.insertBefore(constructStmt, use);
               
+              constructStmt.addTag((SourceLnPosTag)s.getTag("SourceLnPosTag"));
             }
           if (MadeNewInvokeExpr)
             {
