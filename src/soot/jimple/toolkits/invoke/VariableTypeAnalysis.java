@@ -337,19 +337,6 @@ public class VariableTypeAnalysis
             outTypes.put(node, set);
         }
         
-        /* The next piece seems to be totally useless...
-        for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
-            Object node = nodeIt.next();
-            set = (TypeSet)outTypes.get(node);
-            if (recompute) {
-                List preds = graph.getPredsOf(node);
-                for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
-                    set.addAll((TypeSet)outTypes.get(predsIt.next()));
-                outTypes.put(node, set);
-            }
-        }
-        */
-        
         superNodesToReachingTypes = outTypes;
     }
 }
