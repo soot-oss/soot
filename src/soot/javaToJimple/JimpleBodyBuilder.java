@@ -3149,18 +3149,18 @@ public class JimpleBodyBuilder {
         //System.out.println("castExpr.expr type: "+castExpr.expr().type());
         
         // if its already the right type
-        //if (castExpr.expr().type().equals(castExpr.type())) {
-        //    return createExpr(castExpr.expr());
-        //}
+        if (castExpr.expr().type().equals(castExpr.type())) {
+            return createExpr(castExpr.expr());
+        }
 
         //else
         soot.Value val;
-        if (castExpr.expr() instanceof polyglot.ast.Cast) {
+        /*if (castExpr.expr() instanceof polyglot.ast.Cast) {
             val = createExpr(((polyglot.ast.Cast)castExpr.expr()).expr());
         }
-        else {
+        else {*/
             val = createExpr(castExpr.expr());
-        }
+        //}
         soot.Type type = Util.getSootType(castExpr.type());
         //System.out.println("soot type: "+type);
 
