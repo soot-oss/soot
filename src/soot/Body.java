@@ -36,9 +36,18 @@ import java.util.*;
 import java.io.*;
 import soot.toolkits.scalar.*;
 
+
 /**
-    Represents the code of a Java method, in some intermediate representation.  
-*/
+ *   Abstract base class that models the body of a Java method.
+ *   Classes that implement an Intermediate Representation for a method body should subclass it.
+ *   In particular the classes GrimpBody, JimpleBody and BafBody all extend this
+ *   class. This class provides methods that are common to any IR of body, such as methods
+ *   to get the body's statements, traps, locals, ...
+ *   
+ *  @see GrimpBody
+ *  @see JimpleBody
+ *  @see BafBody
+ */
 public abstract class Body
 {
     protected SootMethod method = null;
@@ -61,7 +70,10 @@ public abstract class Body
     {       	
     }
 
-    /** Returns the method associated with this Body. */
+    /** 
+     * Returns the method associated with this Body. 
+     * @return the method that owns this body.
+     */
     public SootMethod getMethod()
     {
 	if(method == null)
@@ -69,15 +81,23 @@ public abstract class Body
         return method;
     }
 
+
+    /** 
+     * Sets the method associated with this Body. 
+     * @param method the method that owns this body.
+     * 
+     */    
     public void setMethod(SootMethod method)
     {
         this.method = method;
     }
     
+    /**  @return the number of locals declared in this body */          
     public int getLocalCount()
     {
         return localChain.size();
     }
+
 
     public void importBodyContentsFrom(Body b)
     {
@@ -202,10 +222,42 @@ public abstract class Body
         }
     }
 
+
+    /** @return a view of the locals declared in this Body */
     public Chain getLocals() {return localChain;} 
+
+    /** @return a view of the traps founds in this Body */
     public Chain getTraps() {return trapChain;}
+
+
+    /**
+     *  Returns the Units  that make up this body. The units are
+     *  returned as a PatchingChain. The client can then manipulate the chain,
+     *  adding are removing units, and the changes will be reflected in the body.  
+     *  Since a PatchingChain is returned the client need NOT worry about removing exception
+     *  boundary units or otherwise corrupting the chain.
+     * 
+     *  @return the units in this Body 
+     *
+     *  @see PatchingChain
+     *  @see Unit
+     */
     public PatchingChain getUnits() {return unitChain;}
                  
+
+
+
+    /**
+     *   Goes through all the body's Units querying them for their UnitBoxes.
+     *   All of the UnitBoxes found are then returned. Only branching Units
+     *   will have UnitBoxes; a UnitBox contains a Unit that is a target of a 
+     *   branch.
+     *   @return a list of all the UnitBoxes held by this body's units.
+     *     
+     *   @see UnitBox
+     *   @see Unit#getUnitBoxes
+     *
+     */
     public List getUnitBoxes() 
     {
         ArrayList unitBoxList = new ArrayList();
@@ -226,6 +278,28 @@ public abstract class Body
     }
 
     
+
+    /**
+     *  
+     */
+
+
+
+
+
+    /**
+     *   Goes through all the body's Units querying them for the ValueBox
+     *   for the Values each Unit uses.
+     *   All of the ValueBoxes found are then returned as List.
+     *
+     *   @return a list of all the ValueBoxes for the Values used this body's units.
+     *     
+     *   @see Value
+     *   @see Unit#getUseBoxes
+     *   @see ValueBox
+     *   @see Value
+     *
+     */   
     public List getUseBoxes()
     {
         ArrayList useBoxList = new ArrayList();
@@ -239,6 +313,18 @@ public abstract class Body
     }
 
 
+    /**
+     *   Goes through all this body's Units querying them for the ValueBoxes
+     *   for the Values each Unit defines.
+     *   All of the ValueBoxes found are then returned as List.
+     *
+     *   @return a list of all the ValueBoxes for Values defined by this body's units.
+     *     
+     *   @see Value
+     *   @see Unit#getDefBoxes
+     *   @see ValueBox
+     *   @see Value
+     */   
     public List getDefBoxes()
     {
         ArrayList defBoxList = new ArrayList();
@@ -251,6 +337,18 @@ public abstract class Body
         return defBoxList;
     }
 
+     /**
+     *   Goes through all this body's Units querying them for the ValueBoxes
+     *   for the Values each Unit defines and Uses.
+     *   All of the ValueBoxes found are then returned as List.
+     *
+     *   @return a list of ValueBoxes for held by the body's Units.
+     *     
+     *   @see Value
+     *   @see Unit#getUseAndDefBoxes
+     *   @see ValueBox
+     *   @see Value
+     */       
     public List getUseAndDefBoxes()
     {        
         ArrayList useAndDefBoxList = new ArrayList();
@@ -263,12 +361,30 @@ public abstract class Body
         return useAndDefBoxList;
     }
 
+
+    /**
+     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   in the textual format corresponding to the IR used to encode this body. Default
+     *   printBodyOptions are used.
+     *
+     *   @param out a PrintWriter instance to print to. 
+     *
+     */
     public void printTo(java.io.PrintWriter out)
     {
         printTo(out, 0);
     }
+    
 
-
+    /**
+     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   in the textual format corresponding to the IR used to encode this body.
+     *
+     *   @param out a PrintWriter instance to print to.
+     *   @param printBodyOptions options for printing.
+     *
+     *   @see PrintJimpleBodyOption
+     */
     public void printTo(PrintWriter out, int printBodyOptions)
     {
       	
@@ -473,6 +589,18 @@ public abstract class Body
 
     }
 
+
+
+    /**
+     *   Prints out the method corresponding to this Body,( both declaration and body),
+     *   in the textual format corresponding to the IR used to encode this body. Includes
+     *   extra debugging information.
+     *
+     *   @param out a PrintWriter instance to print to.
+     *   @param printBodyOptions options for printing.
+     *
+     *   @see PrintJimpleBodyOption
+     */
     public void printDebugTo(PrintWriter out, int printBodyOptions)
     {
         boolean isPrecise = !PrintJimpleBodyOption.useAbbreviations(printBodyOptions);

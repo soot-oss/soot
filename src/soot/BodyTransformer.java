@@ -27,10 +27,23 @@ package soot;
 
 import java.util.*;
 
+/**
+ *  An abstract class which acts on a Body. This class provides a harness and acts as an
+ *  interface for classes that wish to transform a Body. Subclasses 
+ *  provide the actual Body transformation  implementation.
+ */
+
 public abstract class BodyTransformer extends Transformer
 {
-    /** Calls internalTransform with the optionsString properly set up.
-     *  That is, the options in optionsString override those in the Scene. */
+    /** 
+     *  Called by clients of the transformation. Acts as a generic interface
+     *  for BodyTransformers.
+     *  Calls internalTransform with the optionsString properly set up.
+     *  That is, the options in optionsString override those in the Scene. 
+     *  @param b the body on which to apply the transformation
+     *  @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
+     *  @param optionsString
+     */
     public final void transform(Body b, String phaseName, String optionsString)
     {
         Map options = Scene.v().computePhaseOptions(phaseName, 
@@ -44,21 +57,43 @@ public abstract class BodyTransformer extends Transformer
         internalTransform(b, phaseName, options);
     }
 
+    /** 
+     *  Called by clients of the transformation. Acts as a generic interface
+     *  for BodyTransformers.
+     *  
+     *  @param b the body on which to apply the transformation
+     */
     public final void transform(Body b)
     {
         transform(b, "", "");
     }
 
+    /** 
+     *  Called by clients of the transformation. Acts as a generic interface
+     *  for BodyTransformers.
+     *   @param b the body on which to apply the transformation
+     *   @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
+     */    
     public final void transform(Body b, String phaseName)
     {
-        transform(b, phaseName, "");
+	transform(b, phaseName, "");
     }
 
+    
+    /** @return the default options for this transform. */ 
     public String getDefaultOptions() 
     {
         return "";
     }
 
+    /**
+     *  This method is called to perform the transformation itself. It is declared
+     *  abstract; subclasses must implement this method by making it the entry point
+     *  to their actual Body transformation. 
+     *  @param b the body on which to apply the transformation
+     *  @param phaseName the phasename for this transform; not typically used by implementations.
+     *  @param options  the actual computed options; a combination of default options and Scene specified options.
+     */
     protected abstract void internalTransform(Body b, String phaseName, Map options);
 
     /* Returns a String containing the list of phase options understood here. */
