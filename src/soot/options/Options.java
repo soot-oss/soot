@@ -1213,7 +1213,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.lp" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"unsplit-original-locals:false ";
     
         if( phaseName.equals( "jb.ne" ) )
             return ""

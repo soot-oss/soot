@@ -212,7 +212,11 @@
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
                                 <class>JBOptions</class>
-                                <long_desc>This phase is active during JimpleBody creation; Soot will always start by creating JimpleBody's from a method source - either coffi, for reading .class files, or the jimple parser, for reading .jimple files.</long_desc>
+                                <long_desc>
+This phase creates a JimpleBody for each input method, using
+either coffi, to read .class files, or the jimple parser, to read
+.jimple files.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -224,9 +228,10 @@
 					<name>Use Original Names</name>
 					<alias>use-original-names</alias>
 					<short_desc/>
-					<long_desc>  Soot attempts to find and use the original
-names from the method source.  If this is not specified, Soot gives
-standard names to local variables, according to the variable type.
+					<long_desc>
+Use the original names for local variables when the source
+includes those names.  Otherwise, Soot gives variables generic
+names based on their types.
 </long_desc>
 				</boolopt>
 				<sub_phase>
@@ -237,11 +242,21 @@ standard names to local variables, according to the variable type.
 						<alias>enabled</alias>
                                                 <default>true</default>
 					</boolopt>
+					<long_desc>
+This phase identifies use-def webs for local variables and
+introduces new variables so that each disjoint web is associated
+with a single local.
+</long_desc>
 				</sub_phase>
 				<sub_phase>
 					<name>Pre-typing Aggregator</name>
 					<alias>jb.a1</alias>
-                                        <long_desc>This phase handles the aggregation of stack variables for Jimple. For a full description of aggregation, see [VRGH$^+$00]. Briefly, aggregation finds instances where some expression has a single use; it replaces the use with the expression itself.</long_desc>
+                                        <long_desc>
+This phase aggregates Jimple local variables. Essentially, it
+finds definitions which have only a single use and, if it is safe
+to do so, removes the original definition after replacing the use
+with the definition's right-hand side.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -250,13 +265,18 @@ standard names to local variables, according to the variable type.
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+						<long_desc>
+Aggregate only values stored in stack locals.
+</long_desc>
                                                 <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Pre-typing Unused Local Eliminator</name>
 					<alias>jb.ule1</alias>
+                                        <long_desc>
+This phase removes any unused locals.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -264,6 +284,9 @@ standard names to local variables, according to the variable type.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+                                        <long_desc>
+This phase assigns types to local variables.
+</long_desc>
 					<name>Type Assigner</name>
 					<alias>jb.tr</alias>
 					<boolopt>
@@ -275,6 +298,13 @@ standard names to local variables, according to the variable type.
 				<sub_phase>
 					<name>Post-typing Aggregator</name>
 					<alias>jb.a2</alias>
+                                        <long_desc>
+This phase aggregates Jimple local variables after they have been
+typed. Essentially, it finds definitions which have only a single
+use and, if it is safe to do so, removes the original definition
+after replacing the use with the definition's right-hand
+side. MAY BE ELIMINATED?
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -283,13 +313,18 @@ standard names to local variables, according to the variable type.
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+						<long_desc>
+Aggregate only values stored in stack locals.
+</long_desc>
                                                 <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Post-typing Unused Local Eliminator</name>
 					<alias>jb.ule2</alias>
+                                        <long_desc>
+This phase removes any unused locals. MAY BE ELIMINATED?
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -300,9 +335,13 @@ standard names to local variables, according to the variable type.
 					<name>Unsplit-originals Local Packer</name>
 					<alias>jb.ulp</alias>
 					<long_desc>
-This phase only executes when the `use-original-names&apos; option is chosen
-for the `jb&apos; phase.  It unsplits the locals according to the original names
-found for them.</long_desc>
+The Unsplit-originals Local Packer executes only when the
+`<tt>use-original-names</tt>&apos; option is chosen for the
+`<tt>jb</tt>&apos; phase.  The Local Packer attempts to minimize
+the number of local variables required in a method by reusing the
+same variable for disjoint def-use webs. Conceptually, it is the
+inverse of the Local Splitter.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -316,20 +355,19 @@ found for them.</long_desc>
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-Calls the LocalPacker to implement 
-the use-original-names option.
-
-                        </long_desc>
+Use the variable names in the original source as a guide when
+determining how to share local variables across noninterfering
+variable usages. This recombines named locals which were split by
+the Local Splitter.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Local Name Standardizer</name>
 					<alias>jb.lns</alias>
 					<long_desc>
-This phase assigns standard names to local variables.  It only
-executes when `use-original-names&apos; is not chosen.
-
-                        </long_desc>
+This phase assigns generic names to local variables.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -341,34 +379,37 @@ executes when `use-original-names&apos; is not chosen.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<short_desc/>
-						<long_desc>Standardizes only stack local variables&apos; names.</long_desc>
+						<long_desc>
+Standardizes the names of stack local variables only. This
+becomes the default when the `<tt>use-original-names</tt>&apos;
+option is specified for the `<tt>jb</tt>&apos; phase.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Copy Propagator</name>
 					<alias>jb.cp</alias>
 					<long_desc>
-This phase provides a cascaded copy propagator.  It is executed only
-when `<tt>no-cp</tt>&apos; is not chosen in the `<tt>jb</tt>&apos; phase.
+This phase performs cascaded copy propagation.  
     
-If it encounters situations of the form: A: a = ...; B: ... x = a;
-C:... use (x); where a has only one definition, and x has only one
-definition (B), then it can propagate immediately without checking
-between B and C for redefinitions of a (namely A) because they cannot
-occur.  In this case the propagator is global.
+If the propagator encounters situations of the form: 
+<pre>
+  A: a = ...; 
+    ...
+  B:  x = a;
+    ...
+  C: ... = ... x; 
+</pre>
+where <tt>a</tt> and <tt>x</tt> are each defined only once (at
+<tt>A</tt> and <tt>B</tt>, respectively), then it can propagate
+immediately without checking between <tt>B</tt> and <tt>C</tt>
+for redefinitions of <tt>a</tt>.  In
+this case the propagator is global.
         
-Otherwise, if a has multiple definitions then it only checks for
-redefinitions of constants and copies in extended basic blocks.
-        
-From bytecode, we get some number of declared locals; we call these
-``regular locals&apos;&apos;.  In Jimple, we have converted the stack elements
-to locals.  The new locals thus introduced are called ``stack
-locals&apos;&apos;. These locals have names which usually begin with <dollar/>.  
-
-The default behaviour in this phase is to propagate only on the
-`stack&apos; locals.
-
-                        </long_desc>
+Otherwise, if <tt>a</tt> has multiple definitions then the
+propagator checks for redefinitions and propagates copies
+only within extended basic blocks.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -380,23 +421,32 @@ The default behaviour in this phase is to propagate only on the
 						<name>Only Regular Locals</name>
 						<alias>only-regular-locals</alias>
 						<short_desc/>
-						<long_desc>Copy propagation only occurs on the ``regular&apos;&apos; locals.</long_desc>
+						<long_desc>
+Propagate copies only for ``regular&apos;&apos; locals, that is,
+those declared in the source bytecode.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>Copy propagation only occurs on the ``stack&apos;&apos; locals.
-                        </long_desc>
+						<long_desc>
+Propagate copies only for ``stack&apos;&apos; locals, that is,
+the locals introduced in Jimple to represent stack
+locations. (Stack locals can USUALLY be distinguished in Jimple
+by the <dollar/> character with which their names begin.)
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Dead Assignment Eliminator</name>
 					<alias>jb.dae</alias>
 					<long_desc>
-This phase eliminates assignment statements (to locals) with no uses.
-                        </long_desc>
+This phase eliminates assignment statements to locals whose
+values are not subsequently used, except for assignments where
+the evaluation of the right-hand side may cause side-effects.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -409,12 +459,17 @@ This phase eliminates assignment statements (to locals) with no uses.
 						<alias>only-stack-locals</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>Only eliminates dead assignments to stack locals.</long_desc>
+						<long_desc>
+Only eliminates dead assignments to stack locals.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Unused Local Eliminator</name>
+					<name>Post-copy propagation Unused Local Eliminator</name>
 					<alias>jb.cp-ule</alias>
+                                        <long_desc>
+This phase removes any locals that are unused as a result of copy propagation.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -424,6 +479,12 @@ This phase eliminates assignment statements (to locals) with no uses.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>jb.lp</alias>
+					<long_desc>
+The Local Packer attempts to minimize the number of local
+variables required in a method by reusing the same variable for
+disjoint def-use webs. Conceptually, it is the inverse of the
+Local Splitter.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -432,11 +493,22 @@ This phase eliminates assignment statements (to locals) with no uses.
 					<boolopt>
 						<name>Unsplit Original Locals</name>
 						<alias>unsplit-original-locals</alias>
+                                                <default>false</default>
+						<long_desc>
+Use the variable names in the original source as a guide when
+determining how to share local variables across noninterfering
+variable usages. This recombines named locals which were split by
+the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
+ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Nop Eliminator</name>
 					<alias>jb.ne</alias>
+						<long_desc>
+Removes <tt>nop</tt> statements from the method.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -446,6 +518,9 @@ This phase eliminates assignment statements (to locals) with no uses.
 				<sub_phase>
 					<name>Unreachable Code Eliminator</name>
 					<alias>jb.uce</alias>
+						<long_desc>
+Examines the control flow graph of the method and removes unreachable code.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1997,6 +2072,10 @@ produced for it, in order to keep the size of the tags reasonable.
 			<phase>
 				<name>Grimp Body Creation</name>
 				<alias>gb</alias>
+				<long_desc>
+The Grimp Body Creation phase creates a <tt>GrimpBody</tt> for
+each source method. It is run only if the output format is <tt>grimp</tt> or <tt>grimple</tt>, or if class files are being output and the <tt>via-grimp</tt> option has been specified.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -2005,8 +2084,16 @@ produced for it, in order to keep the size of the tags reasonable.
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
-					<name>Aggregator 1</name>
+					<name>Grimp Pre-Constructor Folding Aggregator</name>
 					<alias>gb.a1</alias>
+	  				<long_desc>
+This phase aggregates Grimp local variables, finding definitions
+with only a single use and removing the definition after
+replacing the use with the definition's right-hand side. While
+the mechanism is the same as that used for aggregating Jimple
+locals, there is more scope for aggregation because Grimp allows
+more complicated expressions.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2019,12 +2106,27 @@ produced for it, in order to keep the size of the tags reasonable.
 						<alias>only-stack-locals</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+						<long_desc>
+Aggregate only values stored in stack locals.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Constructor Folder</name>
+					<name>Grimp Constructor Folder</name>
 					<alias>gb.cf</alias>
+					<long_desc>
+The Grimp Constructor Folder combines <tt>new</tt> statements
+with the <tt>specialinvoke</tt> statement that calls the new
+object's constructor. For example, it turns
+<pre>
+r2 = new java.util.ArrayList;
+r2.<lt/>init<gt/>();
+</pre>
+into
+<pre>
+r2 = new java.util.ArrayList();
+</pre>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2032,8 +2134,30 @@ produced for it, in order to keep the size of the tags reasonable.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Aggregator 2</name>
+					<name>Grimp Post-Constructor Folding Aggregator</name>
 					<alias>gb.a2</alias>
+	  				<long_desc>
+This phase aggregates Grimp local variables after constructors
+have been folded. Constructor folding typically introduces new
+opportunities for aggregation, since when a sequence of
+instructions like
+<pre>
+r2 = new java.util.ArrayList;
+r2.<lt/>init<gt/>();
+r3 = r2
+</pre>
+is replaced with
+<pre>
+r2 = new java.util.ArrayList();
+r3 = r2
+</pre>
+the constructor invocation no longer represents a potential side-effect 
+separating the two definitions, which can be turned into
+<pre>
+r3 = new java.util.ArrayList();
+</pre>
+(assuming there are no other uses of <tt>r2</tt>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2046,12 +2170,18 @@ produced for it, in order to keep the size of the tags reasonable.
 						<alias>only-stack-locals</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>Aggregate values stored in stack locals only.</long_desc>
+						<long_desc>
+Aggregate only values stored in stack locals.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Unused Local Eliminator</name>
+					<name>Grimp Unused Local Eliminator</name>
 					<alias>gb.ule</alias>
+                                        <long_desc>
+This phase removes any locals that are unused after constructor
+folding and aggregation.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2060,8 +2190,11 @@ produced for it, in order to keep the size of the tags reasonable.
 				</sub_phase>
 			</phase>
 			<phase>
-				<name>Grimp Optimization Pack</name>
+				<name>Grimp Optimization</name>
 				<alias>gop</alias>
+				<long_desc>
+The Grimp Optimization pack performs optimizations on <tt>GrimpBody</tt>s (currently there are no optimizations performed specifically on <tt>GrimpBody</tt>s, and the pack is empty). It is run only if the output format is <tt>grimp</tt> or <tt>grimple</tt>, or if class files are being output and the <tt>via-grimp</tt> option has been specified.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -2071,6 +2204,13 @@ produced for it, in order to keep the size of the tags reasonable.
 			<phase>
 				<name>Baf Body Creation</name>
 				<alias>bb</alias>
+				<long_desc>
+The Baf Body Creation phase creates a
+<tt>BafBody</tt> from each source method. It is
+run if the output format is <tt>baf</tt> or <tt>b</tt>, or
+if class files are being output and the <tt>via-grimp</tt> option
+has not been specified.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
@@ -2079,6 +2219,18 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Load Store Optimizer</name>
 					<alias>bb.lso</alias>
+				<long_desc>
+The Load Store Optimizer replaces some combinations of loads to and stores from local variables with stack instructions. A simple example would be the replacement of
+<pre>
+store.r $r2;
+load.r $r2;
+</pre>
+with 
+<pre>
+dup1.r
+</pre>
+in cases where the value of <tt><dollar/>r2</tt> is not used subsequently.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2087,33 +2239,78 @@ produced for it, in order to keep the size of the tags reasonable.
 					<boolopt>
 						<name>Debug</name>
 						<alias>debug</alias>
+	    					<long_desc>
+Produces voluminous debugging output describing the progress of
+the load store optimizer.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Inter</name>
 						<alias>inter</alias>
+	    					<long_desc>
+Enables two simple inter-block optimizations which attempt to
+keep some variables on the stack between blocks.  Both are
+intended to catch <tt>if</tt>-like constructions where control
+flow branches temporarily into two paths that converge at a later
+point.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>sl</name>
 						<alias>sl</alias>
+	    					<long_desc>
+Enables an optimization which attempts to eliminate
+<tt>store</tt>/<tt>load</tt> pairs.
+</long_desc>
 						<default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>sl2</name>
 						<alias>sl2</alias>
+	    					<long_desc>
+Enables an a second pass of the optimization which attempts to
+eliminate <tt>store</tt>/<tt>load</tt> pairs.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>sll</name>
 						<alias>sll</alias>
+	    					<long_desc>
+Enables an optimization which attempts to eliminate 
+<tt>store</tt>/<tt>load</tt>/<tt>load</tt>
+trios with some variant of <tt>dup</tt>.
+</long_desc>
 						<default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>sll2</name>
 						<alias>sll2</alias>
+						<long_desc>
+Enables an a second pass of the optimization which attempts to
+eliminate <tt>store</tt>/<tt>load</tt>/<tt>load</tt> trios with
+some variant of <tt>dup</tt>.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Peephole Optimizer</name>
 					<alias>bb.pho</alias>
+					<long_desc>
+Applies peephole optimizations to the Baf intermediate
+representation.  Individual optimizations must be implemented by
+classes implementing the <tt>Peephole</tt> interface. The
+Peephole Optimizer reads the names of the <tt>Peephole</tt>
+classes at runtime from the file <tt>peephole.dat</tt> and loads
+them dynamically. Then it continues to run apply the
+<tt>Peephole</tt>s repeatedly until none of them are able to
+perform any further optimizations.
+<p>
+Soot provides only one <tt>Peephole</tt>, named
+<tt>ExamplePeephole</tt>, which is not included in the delivered .
+<tt>peephole.dat</tt> file.
+<tt>ExamplePeephole</tt> removes all <tt>checkcast</tt>
+instructions.</p>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2123,6 +2320,10 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Unused Local Eliminator</name>
 					<alias>bb.ule</alias>
+                                        <long_desc>
+This phase removes any locals that are unused after load store optimization
+and peephole optimization.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2132,6 +2333,12 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Local Packer</name>
 					<alias>bb.lp</alias>
+					<long_desc>
+The Local Packer attempts to minimize the number of local
+variables required in a method by reusing the same variable for
+disjoint def-use webs. Conceptually, it is the inverse of the
+Local Splitter.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2140,12 +2347,27 @@ produced for it, in order to keep the size of the tags reasonable.
 					<boolopt>
 						<name>Unsplit Original Locals</name>
 						<alias>unsplit-original-locals</alias>
+						<long_desc>
+Use the variable names in the original source as a guide when
+determining how to share local variables across noninterfering
+variable usages. This recombines named locals which were split by
+the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
+ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
+</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
 			<phase>
-				<name>Baf Optimization Pack</name>
+				<name>Baf Optimization</name>
 				<alias>bop</alias>
+				<long_desc>
+The Baf Optimization pack performs optimizations on
+<tt>BafBody</tt>s (currently there are no optimizations performed
+specifically on <tt>BafBody</tt>s, and the pack is empty). It is
+run only if the output format is <tt>baf</tt> or <tt>b</tt>, or
+if class files are being output and the <tt>via-grimp</tt> option
+has not been specified.
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>

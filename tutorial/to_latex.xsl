@@ -13,6 +13,16 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template mode="to_latex" match="dollar">\$</xsl:template>
 
+<xsl:template mode="to_latex" match="lt">\ensuremath{&lt;}</xsl:template>
+
+<xsl:template mode="to_latex" match="gt">\ensuremath{&gt;}</xsl:template>
+
+<xsl:template mode="to_latex" match="pre">
+\begin{quote}\begin{verbatim}
+<xsl:apply-templates/>
+\end{verbatim}\end{quote}
+</xsl:template>
+
 <!-- HTML links like <a href="http://foo">bar</a> -->
 <xsl:template mode="to_latex" match="a">\htmladdnormallink{<xsl:value-of select="."/>}{<xsl:call-template name="string-replace"><xsl:with-param name="text" select="@href"/><xsl:with-param name="from" select="'#'"/><xsl:with-param name="to" select="'\#'"/></xsl:call-template>}</xsl:template>
 

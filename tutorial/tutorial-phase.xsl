@@ -20,16 +20,18 @@ Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@
 \maketitle
 
 Soot supports the powerful, but initially confusing, notion of ``phase
-options''.  This document will permit the reader to
-successfully use the Soot phase options.
+options''.  This document aims to clear up the confusion so you can
+exploit the power of phase options.
 
-Soot's execution is divided into a number of phases.  For example, building the
-JimpleBody is a phase (called {\tt jb}), and it has a number of
-subphases, like aggregation of stack variables ({\tt jb.a1}).
+Soot's execution is divided into a number of phases.  For example,
+{\tt JimpleBody}s are built by a phase called {\tt jb}, which is
+itself comprised of subphases, such as the aggregation of stack
+variables ({\tt jb.asv}).
 
-Soot allows the user to specify options for each phase; these options
-will change the behaviour of the phase.  This is specified by giving Soot
-the command-line option {\tt -p phase.name option:value}.  For instance,
+Phase options provide a way for you to
+change the behaviour of a phase from the Soot command-line.  They take
+the form {\tt -p {\em phase}.{\em name} 
+{\em option}:{\em value}}.  For instance,
 to instruct Soot to use original names in Jimple, we would invoke Soot
 like this:
 \begin{verbatim}
@@ -67,7 +69,7 @@ These transformers become the subphases of a phase, which is represented
 by a {\tt Pack}.  The {\tt Pack} keeps a 
 collection of transformers, and can execute them, in order,
 when called.  To add a transformer to some {\tt Pack} without
-modifying Soot itself, create your own class, which modifies the
+modifying Soot itself, create your own class which modifies the
 {\tt Pack}s as needed and then calls {\tt soot.Main}.
 
 The remainder of this document describes the various transformations

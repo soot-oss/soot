@@ -46,9 +46,9 @@ public class JBOptions
     
      * .
     
-     * Soot attempts to find and use the original names from the 
-     * method source. If this is not specified, Soot gives standard 
-     * names to local variables, according to the variable type. 
+     * Use the original names for local variables when the source 
+     * includes those names. Otherwise, Soot gives variables generic 
+     * names based on their types. 
      */
     public boolean use_original_names() {
         return soot.PhaseOptions.getBoolean( options, "use-original-names" );
