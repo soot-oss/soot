@@ -5,7 +5,7 @@ import java.util.*;
 public class AnonLocalClassInfo{
 
     private boolean inStaticMethod;
-    private ArrayList finalFields;
+    private ArrayList finalLocals;
 
     public boolean inStaticMethod(){
         return inStaticMethod;
@@ -14,10 +14,10 @@ public class AnonLocalClassInfo{
         inStaticMethod = b;
     }
 
-    public ArrayList finalFields(){
-        return finalFields;
+    public ArrayList finalLocals(){
+        return finalLocals;
     }
-    public void finalFields(ArrayList list){
-        finalFields = list;
+    public void finalLocals(ArrayList list){
+        finalLocals = list;
     }
 }

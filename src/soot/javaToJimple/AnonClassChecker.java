@@ -4,9 +4,9 @@ import java.util.*;
 public class AnonClassChecker extends polyglot.visit.NodeVisitor {
 
     private HashMap map;
-    private HashMap bodyNameMap;
+    private BiMap bodyNameMap;
 
-    public HashMap getBodyNameMap(){
+    public BiMap getBodyNameMap(){
         return bodyNameMap;
     }
     
@@ -16,13 +16,13 @@ public class AnonClassChecker extends polyglot.visit.NodeVisitor {
 
     public AnonClassChecker(){
         map = new HashMap();
-        bodyNameMap = new HashMap();
+        bodyNameMap = new BiMap();
     }
 
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
     
         if (n instanceof polyglot.ast.New) {
-            //System.out.println("in anon class checker new: "+((polyglot.ast.New)n).arguments());
+            //System.out.println("in anon class checker new: object type: "+((polyglot.ast.New)n).objectType());
             if (((polyglot.ast.New)n).anonType() != null){
                 polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
                 while (outerType.isNested()) {
@@ -42,7 +42,9 @@ public class AnonClassChecker extends polyglot.visit.NodeVisitor {
 
                 if (((polyglot.ast.New)n).body() != null){
                     //System.out.println("anon class name: "+anonClassName);
-                    bodyNameMap.put(((polyglot.ast.New)n).body(), anonClassName);
+                    
+                    // new or new body??? -- new
+                    bodyNameMap.put(((polyglot.ast.New)n), anonClassName);
                 }
             }
         }

@@ -4,7 +4,17 @@ import java.util.*;
 public class PrivateFieldAccMethodSource implements soot.MethodSource {
 
     private polyglot.types.FieldInstance fieldInst;
+    private soot.Type fieldType;
+    private String fieldName;
     
+    public void fieldName(String n){
+        fieldName = n;
+    }
+    
+    public void fieldType(soot.Type type){
+        fieldType = type;
+    }
+        
     public void setFieldInst(polyglot.types.FieldInstance fi) {
         fieldInst = fi;
     }
@@ -12,14 +22,15 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         
         soot.Body body = soot.jimple.Jimple.v().newBody(sootMethod);
-
+        LocalGenerator lg = new LocalGenerator(body);
+        
         soot.Local fieldBase = null;
         // create parameters
         Iterator paramIt = sootMethod.getParameterTypes().iterator();
         while (paramIt.hasNext()) {
             soot.Type sootType = (soot.Type)paramIt.next();
-            soot.Local paramLocal = soot.jimple.Jimple.v().newLocal("$r0", sootType);
-            body.getLocals().add(paramLocal);
+            soot.Local paramLocal = lg.generateLocal(sootType);
+            
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, 0);
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(paramLocal, paramRef);
             body.getUnits().add(stmt);
@@ -27,7 +38,8 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
         }
         
         // create field type local
-        soot.Type type = Util.getSootType(fieldInst.type());
+        soot.Local fieldLocal = lg.generateLocal(fieldType);
+        /*soot.Type type = Util.getSootType(fieldInst.type());
         String name = "";
         
 		if (type instanceof soot.IntType) {
@@ -68,12 +80,12 @@ public class PrivateFieldAccMethodSource implements soot.MethodSource {
         soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal(name, type);
        
         body.getLocals().add(fieldLocal);
-
+*/
         // assign local to fieldRef
-        soot.SootField field = sootMethod.getDeclaringClass().getField(fieldInst.name(), Util.getSootType(fieldInst.type()));
+        soot.SootField field = sootMethod.getDeclaringClass().getField(fieldName, fieldType);
 
         soot.jimple.FieldRef fieldRef = null;
-        if (fieldInst.flags().isStatic()) {
+        if (field.isStatic()) {
             fieldRef = soot.jimple.Jimple.v().newStaticFieldRef(field);
         }
         else {

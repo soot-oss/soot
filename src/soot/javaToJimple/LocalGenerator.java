@@ -154,6 +154,7 @@ public class LocalGenerator{
             sootType = soot.IntType.v();
         }
         soot.Local sootLocal = soot.jimple.Jimple.v().newLocal(name, sootType);
+        //System.out.println("will try and create local: "+name+" of type: "+sootType);
         body.getLocals().add(sootLocal);
 		return sootLocal;
 	}

@@ -1,13 +1,44 @@
 package soot.javaToJimple;
 
 public class Util {
+   
+    /*public static String getOuterClassName(soot.SootClass sc){
+        return getOuterClass(sc).getName();
+    }
+
+    public static soot.SootClass getOuterClass(soot.SootClass sc){
+        
+    }
+    
+    public static boolean isAnonInnerClass(soot.SootClass sc){
+        if (sc.indexOf("$") != -1
+    }
+
+    public static boolean isLocalInnerClass(soot.SootClass sc){
+    }
+
+    public static boolean isNested(soot.SootClass sc){
+    }
+
+    public static boolean isStaticInner(soot.SootClass sc){
+    }
+
+    public static boolean isDeeplyNested(soot.SootClass sc){
+    }*/
+
+    public static String getSourceFileOfClass(soot.SootClass sootClass){
+        String name = sootClass.getName();
+        int index = name.indexOf("$");
+        
+        // inner classes are found in the very outer class
+        if (index != -1){
+            name = name.substring(0, index);
+        }
+        return name;
+    }
     
     public static void addLnPosTags(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            /*if (pos instanceof soot.javaToJimple.jj.DPosition){
-                soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
-                addLnPosTags(host, dpos.line(), dpos.endLine(), dpos.column(), dpos.endCol()); 
-            }*/
             addLnPosTags(host, pos.line(), pos.endLine(), pos.column(), pos.endColumn()); 
         }
     }
@@ -16,8 +47,6 @@ public class Util {
         if (soot.options.Options.v().keep_line_number()){
             host.addTag(new soot.tagkit.SourceLnPosTag(sline, eline, spos, epos));
         }
-        //host.addTag(new soot.tagkit.SourceLineNumberTag(sline, eline));
-        //host.addTag(new soot.tagkit.SourcePositionTag(spos, epos));
     }
     
     /**
@@ -25,17 +54,7 @@ public class Util {
      */
     public static void addPosTag(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            /*if (pos instanceof soot.javaToJimple.jj.DPosition){
-                soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
-              */  /*if (host instanceof soot.jimple.Stmt) {
-                    System.out.println("host is a stmt and adding SourcePosTag: "+host.toString());
-                }
-                System.out.println("adding pos tag: "+dpos+" to host: "+host.getClass());*/
             addPosTag(host, pos.column(), pos.endColumn());
-            //}
-            /*else {
-                System.out.println("not a dpos");
-            }*/
         }
     }
 
@@ -65,11 +84,6 @@ public class Util {
 
         if (soot.options.Options.v().keep_line_number()){
             if (node.position() != null) {
-                /*if (node.position() instanceof soot.javaToJimple.jj.DPosition){
-                    soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)node.position();
-                    host.addTag(new soot.tagkit.SourceLineNumberTag(dpos.line(), dpos.line()));
-                    
-                }*/
                 host.addTag(new soot.tagkit.SourceLineNumberTag(node.position().line(), node.position().line()));
                 
             }
@@ -135,23 +149,57 @@ public class Util {
 			sootType = soot.VoidType.v();
 		}
 		else if (type.isClass()){
+            //System.out.println("type: "+type);
             polyglot.types.ClassType classType = (polyglot.types.ClassType)type;
             String className;
+            /*if(soot.javaToJimple.InitialResolver.v().getAnonTypeMap().containsKey(new polyglot.util.IdentityKey(classType))){
+                
+                className = (String)soot.javaToJimple.InitialResolver.v().getAnonTypeMap().get(new polyglot.util.IdentityKey(classType));   
+                System.out.println("clas name in anon map: "+className);
+            }*/
             if (classType.isNested()) {
-                if (classType.isAnonymous()) {}
-                
-                className = classType.fullName();
-                StringBuffer sb = new StringBuffer(className);
-                int lastDot = className.lastIndexOf(".");
-                if (lastDot != -1){
-                    sb.replace(lastDot, lastDot+1, "$");
-                    className = sb.toString();
+                //System.out.println("is class type anon: "+classType.isAnonymous());
+                if (classType.isAnonymous()) {
+                    className = (String)soot.javaToJimple.InitialResolver.v().getAnonTypeMap().get(new polyglot.util.IdentityKey(classType));   
+                    //System.out.println("anon type className: "+className);
                 }
-                
+                else if (classType.isLocal()) {
+                    //System.out.println("type is local");
+                    className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
+                }
+                else {
+                    String fullName = classType.fullName();
+                    String pkgName = "";
+                    if (classType.package_() != null){
+                        pkgName = classType.package_().fullName();
+                    }
+                    //System.out.println("pkgName: "+pkgName);
+                    className = classType.name();
+                    
+                    while (classType.outer() != null){
+                        className = classType.outer().name()+"$"+className;
+                        classType = classType.outer();
+                    }
+
+                    //System.out.println("nested class: "+className);
+                    //StringBuffer sb = new StringBuffer(className);
+                    //int lastDot = className.lastIndexOf(".");
+                    //if (lastDot != -1){
+                        //sb.replace(lastDot, lastDot+1, "$");
+                       //className =  className.replace('.', '$');
+                        //className = sb.toString();
+                    //}
+                       //className =  className.replace('.', '$');
+                    //String pkg = fullName.substring(0, fullName.indexOf(classType.name()));
+                    if (!pkgName.equals("")){
+                        className = pkgName+"."+className;
+                    }
+                }
             }
             else {
 			    className = classType.fullName();
             }
+            
             //System.out.println("className for type: "+className);
 			sootType = soot.RefType.v(className);
 		}

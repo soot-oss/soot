@@ -14,7 +14,8 @@ public class JimpleBodyBuilder {
     HashMap labelBreakMap; 
     HashMap labelContinueMap;
     HashMap localsMap = new HashMap();    
-    
+
+    HashMap getThisMap = new HashMap(); // type --> local to ret
     soot.Local specialThisLocal;
     soot.Local outerClassParamLocal;
    
@@ -48,12 +49,16 @@ public class JimpleBodyBuilder {
         
         int formalsCounter = 0;
         
-        //create outer class this param ref for inner classes except for static inner classes
-        int outerIndex = sootMethod.getDeclaringClass().getName().indexOf("$");
+        //create outer class this param ref for inner classes except for static inner classes - this is not needed
+        int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
         int classMod = sootMethod.getDeclaringClass().getModifiers();
         if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && !soot.Modifier.isStatic(classMod)){
-            String outerClassName = sootMethod.getDeclaringClass().getName().substring(0, outerIndex);
-            soot.SootClass outerClass = soot.Scene.v().getSootClass(outerClassName);
+
+            // we know its an inner non static class can get outer class
+            // from field ref of the this$0 field
+            soot.SootClass outerClass = ((soot.RefType)sootMethod.getDeclaringClass().getFieldByName("this$0").getType()).getSootClass();
+            //String outerClassName = sootMethod.getDeclaringClass().getName().substring(0, outerIndex);
+            //soot.SootClass outerClass = soot.Scene.v().getSootClass(outerClassName);
             soot.Local outerLocal = lg.generateLocal(outerClass.getType());
             
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(outerClass.getType(), formalsCounter);
@@ -62,6 +67,7 @@ public class JimpleBodyBuilder {
             
             ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).setOuterClassThisInit(outerLocal);
             outerClassParamLocal = outerLocal;
+            //System.out.println("set outerClassParamLocal: "+outerClassParamLocal.getType());
             formalsCounter++;
         }
 
@@ -167,12 +173,20 @@ public class JimpleBodyBuilder {
         // static inner classes are different
         if (soot.Modifier.isStatic(body.getMethod().getDeclaringClass().getModifiers())) return;
         
-        soot.Local local = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getOuterClassThisInit();
-        if (local != null) {
-            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().getField("this$0", local.getType()));
-            soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(fieldRef, local);
+        //soot.Local local = ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).getOuterClassThisInit();
+        //if (local != null) {
+        //
+        try {
+            //System.out.println("trying to handle outer class this init");
+            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().getFieldByName("this$0"));
+            //soot.Local local = lg.generateLocal(fieldRef.getType());
+            soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(fieldRef, outerClassParamLocal);
             body.getUnits().add(stmt);
         }
+        catch (Exception e){
+            // no this$0 field
+        }
+        //}
     }
     
     /**
@@ -351,6 +365,7 @@ public class JimpleBodyBuilder {
    
     // this should be used for polyglot locals and formals
     private soot.Local createLocal(polyglot.types.LocalInstance localInst) {
+       
         soot.Type sootType = Util.getSootType(localInst.type());
         String name = localInst.name();
         soot.Local sootLocal = createLocal(name, sootType);
@@ -407,6 +422,7 @@ public class JimpleBodyBuilder {
             body.getUnits().add(assign);
             return fieldLocal;
         }
+        //else create access meth in outer for val$fieldname
     }
     
     /**
@@ -1721,7 +1737,9 @@ public class JimpleBodyBuilder {
      */
     private soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
        
-        soot.SootClass receiverClass = soot.Scene.v().getSootClass(getReceiverClassName(field.fieldInstance()));
+        //System.out.println("field type: "+field.fieldInstance().container());
+        soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();//soot.Scene.v().getSootClass(getReceiverClassName(field.fieldInstance()));
+        //System.out.println("receiver class: "+receiverClass);
          
         soot.SootField receiverField = receiverClass.getField(field.name(), Util.getSootType(field.type()));
          
@@ -1752,10 +1770,14 @@ public class JimpleBodyBuilder {
         if (!field.fieldInstance().flags().isStatic()) {
             params.add((soot.Local)getBaseLocal(field.target()));
         }
-        
+     
+        return getPrivateAccessFieldInvoke(toInvoke, params);
+    }
+
+    private soot.Local getPrivateAccessFieldInvoke(soot.SootMethod toInvoke, ArrayList params){
         soot.jimple.InvokeExpr invoke = soot.jimple.Jimple.v().newStaticInvokeExpr(toInvoke, params);
 
-        soot.Local retLocal = generateLocal(field.type());
+        soot.Local retLocal = lg.generateLocal(toInvoke.getReturnType());
 
         soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, invoke);
         body.getUnits().add(stmt);
@@ -1847,7 +1869,7 @@ public class JimpleBodyBuilder {
     /**
      * Gets class name of a reciever
      */
-    private String getReceiverClassName(polyglot.types.MemberInstance mi) {
+    /*private String getReceiverClassName(polyglot.types.MemberInstance mi) {
         if (mi.container() instanceof polyglot.types.ArrayType) {
             return "java.lang.String";
         }
@@ -1859,7 +1881,7 @@ public class JimpleBodyBuilder {
             }
             return mi.container().toString();
         }
-    }
+    }*/
     
     
     /**
@@ -2792,46 +2814,146 @@ public class JimpleBodyBuilder {
     /**
      * Adds extra params
      */
-    private void handleFinalLocalParams(ArrayList sootParams, ArrayList sootParamTypes, soot.SootClass classToInvoke, polyglot.ast.ProcedureCall call){
+    private void handleFinalLocalParams(ArrayList sootParams, ArrayList sootParamTypes, ArrayList finalLocals){//soot.SootClass classToInvoke, polyglot.ast.ProcedureCall call){
         
         // not an inner class but your invoking one
-        HashMap finalsMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getFinalsMap();
+        /*HashMap finalsMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getFinalsMap();
         if (finalsMap != null){
             if (finalsMap.containsKey(call)){
                 AnonLocalClassInfo info = (AnonLocalClassInfo)finalsMap.get(call);
-                ArrayList finals = info.finalFields();
-                if (finals != null){
-                    Iterator it = finals.iterator();
-                    while (it.hasNext()){
-                        
-                        polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
-                        sootParamTypes.add(Util.getSootType(li.type()));
-                        sootParams.add(getLocal(li));
+          */
+        //System.out.println("class to invoke: "+classToInvoke);
+        //ArrayList finals = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getFinalsList();
+        //System.out.println("finals list: "+finals); 
+        if (finalLocals != null){
+        
+            Iterator it = finalLocals.iterator();
+            while (it.hasNext()){
+                      
+                polyglot.types.LocalInstance li = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
+                sootParamTypes.add(Util.getSootType(li.type()));
+                sootParams.add(getLocal(li));
                         //System.out.println("added finals param type: "+li.type());
-                    }
-                }
             }
         }
     }
+   
+    private soot.Local getThis(soot.Type sootType){
+
+        // if this for type already created return it from map
+        if (getThisMap.containsKey(sootType)){
+            return (soot.Local)getThisMap.get(sootType);
+        }
+        //System.out.println("getThis: type: "+sootType);
+        //System.out.println("special this local type: "+specialThisLocal.getType());
+        // if need this just return it
+        if (specialThisLocal.getType().equals(sootType)) {
+            //System.out.println("can just return this");
+            getThisMap.put(sootType, specialThisLocal);
+            return specialThisLocal;
+        }
+        
+        // otherwise get this$0 for one level up
+        soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
+        soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
+        soot.Local t1 = lg.generateLocal(outerThisField.getType());
+        
+        soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField);
+        soot.jimple.AssignStmt fieldAssignStmt = soot.jimple.Jimple.v().newAssignStmt(t1, fieldRef);
+        body.getUnits().add(fieldAssignStmt);
+        
+        if (t1.getType().equals(sootType)){
+            //System.out.println("can just return this$0 field");
+            getThisMap.put(sootType, t1);
+            return t1;            
+        }
+        
+        // otherwise make a new access method
+        soot.Local t2 = t1;
+        while (!t2.getType().equals(sootType)){
+            //System.out.println("t2 type: "+t2.getType());
+            classToInvoke = ((soot.RefType)t2.getType()).getSootClass();
+            // make an access method and add it to that class for accessing 
+            // its private this$0 field
+            soot.SootMethod methToInvoke = makeOuterThisAccessMethod(classToInvoke);
+            
+            // generate a local that corresponds to the invoke of that meth
+            soot.Local t3 = lg.generateLocal(methToInvoke.getReturnType());
+            ArrayList methParams = new ArrayList();
+            methParams.add(t2);
+            soot.Local res = getPrivateAccessFieldInvoke(methToInvoke, methParams);
+            soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(t3, res);
+            body.getUnits().add(assign);
+            //System.out.println("t3 type: "+t3.getType());
+            t2 = t3;
+            //System.out.println("created acces meth and t2's type is: "+t2.getType());
+        }
+            
+        getThisMap.put(sootType, t2);
+
+        return t2;        
+    }
+    
+
+    private soot.SootMethod makeOuterThisAccessMethod(soot.SootClass classToInvoke){
+        String name = "access$"+soot.javaToJimple.InitialResolver.v().getNextPrivateAccessCounter()+"00";
+        ArrayList paramTypes = new ArrayList();
+        paramTypes.add(classToInvoke.getType());
+        
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.getFieldByName("this$0").getType(), soot.Modifier.STATIC);
+
+        classToInvoke.addMethod(meth);
+        PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource();
+        src.fieldName("this$0");
+        src.fieldType(classToInvoke.getFieldByName("this$0").getType());
+        meth.setActiveBody(src.getBody(meth, null));
+        return meth;
+    }
+
+    /*private void createPrivatAccessOuterThisMethBody(soot.SootMethod meth){
+        soot.Body methBody = soot.jimple.Jimple.v().newBody(meth);
+
+        // create identity this
+        soot.Local thisLocal = soot.jimple.Jimple.v().newLocal("r0", meth.getDeclaringClass().getType());
+        methBody.getLocals().add(thisLocal);
+        soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(thisLocal.getType(), 0);
+        soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(thisLocal, paramRef);
+        methBody.getUnits.add(stmt);
+
+        // create field ref assign for this$0
+        soot.SootField field = meth.getDeclaringClass().getFieldByName("this$0");
+        soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(thisLocal, field);
+        soot.Local fieldLocal = soot.jimple.Jimple.v().newLocal("$r1", field.getType());
+        soot.jimple.Assign assign = soot.jimple.Jimple.v().newAssignStmt(fieldLocal, fieldRef);
+        methBody.getUnits().add(assign);
+
+        // create ret
+        soot.jimple.RetStmt retStmt = soot.jimple.Jimple.v().newReturnStmt(fieldLocal);
+        body.getUnits().add(retStmt);
+        
+    }*/
     
     /**
      * adds outer class params
      */
-    private void handleOuterClassParams(ArrayList sootParams, ArrayList sootParamsTypes, soot.SootClass classToInvoke, int index, polyglot.ast.New newExpr){
+    private void handleOuterClassParams(ArrayList sootParams, ArrayList sootParamsTypes, polyglot.types.ClassType typeToInvoke){//soot.SootClass classToInvoke, int index, polyglot.ast.New newExpr){
            
-        soot.SootClass outerClass = soot.Scene.v().getSootClass(classToInvoke.getName().substring(0, index));
+        soot.SootClass outerClass = ((soot.RefType)Util.getSootType(typeToInvoke.outer())).getSootClass();//soot.Scene.v().getSootClass(classToInvoke.getName().substring(0, index));
+        soot.Local classToInvokeOuterParam = getThis(outerClass.getType());//lg.generateLocal(outerClass.getType());
+        /*System.out.println("outerclass: "+outerClass);
         if (body.getMethod().getDeclaringClass().getName().indexOf("$") == -1) {
             // not an inner class but your invoking one
-            if (!body.getMethod().isStatic()){
+            if (!body.getMethod().isStatic()){*/
                 sootParamsTypes.add(outerClass.getType());
-                sootParams.add(specialThisLocal);
+                sootParams.add(classToInvokeOuterParam);
                 //System.out.println("added param of type: "+outerClass.getType());
-            }
+           /* }
         }
         else {
             if (body.getMethod().getDeclaringClass().getName().equals(classToInvoke.getName())) {
                 // are an inner class and your invoking yourself
                 sootParamsTypes.add(outerClass.getType());
+                System.out.println("adding outer class param type: "+outerClass.getType());
                 if (outerClassParamLocal == null) {
                     soot.SootField outerThisField = body.getMethod().getDeclaringClass().getFieldByName("this$0");
                     outerClassParamLocal = lg.generateLocal(outerThisField.getType());
@@ -2854,8 +2976,10 @@ public class JimpleBodyBuilder {
                 }
 
               soot.Local forParam = outerClassParamLocal;
+              forParam = classToInvokeOuterParam;
               HashMap newToOuterMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getNewToOuterMap();
               if (newToOuterMap != null){
+                    System.out.println("new to outer map: "+newToOuterMap);
                     if (newToOuterMap.containsKey(newExpr)){
                         forParam = lg.generateLocal((soot.Scene.v().getSootClass((String)newToOuterMap.get(newExpr))).getType());
                     }
@@ -2863,7 +2987,7 @@ public class JimpleBodyBuilder {
                 sootParamsTypes.add(forParam.getType());
                 sootParams.add(forParam);
             }
-        }
+        }*/
     }
     
     /**
@@ -2876,10 +3000,12 @@ public class JimpleBodyBuilder {
         
         polyglot.types.ConstructorInstance cInst = cCall.constructorInstance();
         String containerName = null;
+        //System.out.println("cCall container type: "+cInst.container());
+        
         if (cInst.container() instanceof polyglot.types.ClassType) { 
             containerName = ((polyglot.types.ClassType)cInst.container()).fullName();
             if (((polyglot.types.ClassType)cInst.container()).isNested()){
-                containerName = fixInnerClassName((polyglot.types.ClassType)cInst.container());
+                //containerName = fixInnerClassName((polyglot.types.ClassType)cInst.container());
             }
         }
         
@@ -2896,8 +3022,12 @@ public class JimpleBodyBuilder {
             throw new RuntimeException("Unknown kind of Constructor Call");
         }
         soot.Local base = specialThisLocal;
+        if (cCall.qualifier() != null){
+            base = (soot.Local)createExpr(cCall.qualifier());
+        }
         
        
+        //if (cInst.container().type()
         int index = classToInvoke.getName().lastIndexOf("$");
         if (index != -1 && !soot.Modifier.isStatic(classToInvoke.getModifiers())) {
             soot.SootClass outerClass = soot.Scene.v().getSootClass(classToInvoke.getName().substring(0, index));
@@ -2917,7 +3047,8 @@ public class JimpleBodyBuilder {
         sootParams.addAll(getSootParams(cCall));
         sootParamsTypes.addAll(getSootParamsTypes(cCall));
         if (index != -1){
-            handleFinalLocalParams(sootParams, sootParamsTypes, classToInvoke, cCall);
+            // fix this to send the final locals list instead of empty array
+            handleFinalLocalParams(sootParams, sootParamsTypes, new ArrayList());//classToInvoke, cCall);
         }
         
         
@@ -2956,19 +3087,25 @@ public class JimpleBodyBuilder {
             realLocalClassNameMap = new HashMap();
         }
 
-        HashMap lcMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getLocalClassMap();
+        BiMap lcMap = InitialResolver.v().getLocalClassMap();
 
-        if (lcMap != null) {
+        /*if (lcMap != null) {
+            String sootClassName = lcMap.getVal(cDecl);
+
+            realLocalClassNameMap.put(cDecl.type(), soot.RefType.v(sootClassName));
+        }*/
         
-            Iterator it = lcMap.keySet().iterator();
-            while (it.hasNext()) {
-                String realName = (String)it.next();
-                polyglot.ast.ClassDecl next = (polyglot.ast.ClassDecl)lcMap.get(realName);
-                if (next.equals(cDecl.decl())){
-                    realLocalClassNameMap.put(cDecl.decl().name(), realName);
-                }
-            }
-        }
+        //if (lcMap != null) {
+        
+            //Iterator it = lcMap.keySet().iterator();
+            //while (it.hasNext()) {
+                //String realName = (String)it.next();
+             //   polyglot.ast.ClassDecl next = (polyglot.ast.ClassDecl)lcMap.getKey(realName);
+               // if (next.equals(cDecl.decl())){
+                 //   realLocalClassNameMap.put(cDecl.decl().name(), realName);
+               // }
+            //}
+        //}
     }
     
     /**
@@ -2981,25 +3118,30 @@ public class JimpleBodyBuilder {
         ArrayList sootParamsTypes = new ArrayList();
 
         polyglot.types.ClassType objType = (polyglot.types.ClassType)newExpr.objectType().type();
+        //System.out.println("objType: "+objType);
 
-        soot.RefType sootType;
-        if (objType.isLocal()){
+        if (newExpr.anonType() != null){
+            objType = newExpr.anonType();
+        }
+        soot.RefType sootType = (soot.RefType)Util.getSootType(objType);
+        //System.out.println("sootType: "+sootType);
+        /*if (objType.isLocal()){
             sootType = soot.RefType.v((String)realLocalClassNameMap.get(objType.toString()));
         }
         else if (newExpr.anonType() != null) {
             sootType = (soot.RefType)Util.getSootType(newExpr.objectType().type());
-            HashMap anonClassMap = ((soot.javaToJimple.PolyglotMethodSource)body.getMethod().getSource()).getAnonClassMap();
+            BiMap anonClassMap = InitialResolver.v().getAnonClassMap();
             if (anonClassMap != null){
             
-                if (anonClassMap.containsKey(newExpr.body())){
-                    sootType = soot.RefType.v((String)anonClassMap.get(newExpr.body()));
+                if (anonClassMap.containsKey(newExpr)){
+                    sootType = soot.RefType.v((String)anonClassMap.getVal(newExpr));
                 }
             }
             
         }
         else {
             sootType = (soot.RefType)Util.getSootType(newExpr.objectType().type());
-        }
+        }*/
         soot.Local retLocal = lg.generateLocal(sootType);
         soot.jimple.NewExpr sootNew = soot.jimple.Jimple.v().newNewExpr(sootType);
 
@@ -3008,31 +3150,56 @@ public class JimpleBodyBuilder {
         Util.addLnPosTags(stmt, newExpr.position());
         
         
-        String className = sootType.toString();
+        /*String className = sootType.toString();
 
-        if (sootType instanceof polyglot.types.ClassType) {
+        if (newExpr.objectType().type() instanceof polyglot.types.ClassType) {
             polyglot.types.ClassType classType = (polyglot.types.ClassType)newExpr.objectType().type();
             if (classType.isNested()) {
                 if (classType.isLocal()){
                     className = (String)realLocalClassNameMap.get(classType.toString());
+                    System.out.println("class name local: "+className);
                 }
                 else {
                     className = fixInnerClassName(classType);
+                    System.out.println("class name other: "+className);
+                }
+            }
+        }*/
+        soot.SootClass classToInvoke = sootType.getSootClass();//soot.Scene.v().getSootClass(className);
+        //System.out.println("Class to invoke: "+classToInvoke); 
+        //int index = classToInvoke.getName().lastIndexOf("$");
+        //if (index != -1  && !soot.Modifier.isStatic(classToInvoke.getModifiers())) {
+        HashMap finalLocalInfo = soot.javaToJimple.InitialResolver.v().finalLocalInfo();
+        //if (finalLocalInfo != null){
+            if (objType.isNested()  && !soot.Modifier.isStatic(body.getMethod().getModifiers())) {
+            //handleOuterClassParams(sootParams, sootParamsTypes, classToInvoke, index, newExpr);
+                handleOuterClassParams(sootParams, sootParamsTypes, objType);
+            }
+        //}
+        sootParams.addAll(getSootParams(newExpr));
+        sootParamsTypes.addAll(getSootParamsTypes(newExpr));
+        //if (index != -1){
+        if (finalLocalInfo != null){
+            if (finalLocalInfo.containsKey(newExpr)){
+                AnonLocalClassInfo alci = (AnonLocalClassInfo)finalLocalInfo.get(newExpr);
+                handleFinalLocalParams(sootParams, sootParamsTypes, alci.finalLocals());//classToInvoke, newExpr);
+            }
+            if (objType.isLocal()){
+                Iterator it = finalLocalInfo.keySet().iterator();
+                while (it.hasNext()){
+                    Object next = it.next();
+                    if (next instanceof polyglot.ast.ClassDecl){
+                        if (((polyglot.ast.ClassDecl)next).type().equals(objType)){
+                            AnonLocalClassInfo alci = (AnonLocalClassInfo)finalLocalInfo.get(next);
+                            handleFinalLocalParams(sootParams, sootParamsTypes, alci.finalLocals());//classToInvoke, newExpr);
+                            
+                        }
+                    }
                 }
             }
         }
-        soot.SootClass classToInvoke = soot.Scene.v().getSootClass(className);
-        
-        int index = classToInvoke.getName().indexOf("$");
-        if (index != -1  && !soot.Modifier.isStatic(classToInvoke.getModifiers())) {
-            handleOuterClassParams(sootParams, sootParamsTypes, classToInvoke, index, newExpr);
-        }
-        sootParams.addAll(getSootParams(newExpr));
-        sootParamsTypes.addAll(getSootParamsTypes(newExpr));
-        if (index != -1){
-            handleFinalLocalParams(sootParams, sootParamsTypes, classToInvoke, newExpr);
-        }
-       
+      
+        //System.out.println("soot param types: "+sootParamsTypes);
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
         
       
@@ -3066,7 +3233,7 @@ public class JimpleBodyBuilder {
         //System.out.println("in getCallLocal: call.target(): "+call.target());
         soot.Local baseLocal = (soot.Local)getBaseLocal(receiver);
        
-        String receiverTypeClassName;
+        /*String receiverTypeClassName;
         if (receiver.type() instanceof polyglot.types.ClassType) {
             polyglot.types.ClassType ct = (polyglot.types.ClassType)receiver.type();
             
@@ -3090,8 +3257,8 @@ public class JimpleBodyBuilder {
         }
         else {
             receiverTypeClassName = receiver.type().toString();
-        }
-        soot.SootClass receiverTypeClass = soot.Scene.v().getSootClass(receiverTypeClassName);
+        }*/
+        soot.SootClass receiverTypeClass = ((soot.RefType)Util.getSootType(receiver.type())).getSootClass();//soot.Scene.v().getSootClass(receiverTypeClassName);
         
 		polyglot.types.MethodInstance methodInstance = call.methodInstance();
         soot.Type sootRetType = Util.getSootType(methodInstance.returnType());
@@ -3172,12 +3339,13 @@ public class JimpleBodyBuilder {
         }
 	}
    
-    private String getClassNameForField(String f) {
+    /*private String getClassNameForField(String f) {
         return f.substring(0, f.lastIndexOf("."));
     }
     
     private String getClassName(polyglot.ast.Receiver receiver) {
-       
+      
+        System.out.println("reciever: "+receiver+" class: "+receiver.getClass());
         if (receiver instanceof polyglot.ast.Field) {
             String result = getClassNameForField(receiver.toString());
             if (result.equals("this")) {
@@ -3225,10 +3393,11 @@ public class JimpleBodyBuilder {
         }
 
         return fullName;
-    }
+    }*/
 
     private soot.Value getBaseLocal(polyglot.ast.Receiver receiver) {
       
+        //System.out.println("base local receiver: "+receiver+" receiver class: "+receiver.getClass());
         if (receiver instanceof polyglot.ast.TypeNode) {
             return generateLocal(((polyglot.ast.TypeNode)receiver).type());
         }
@@ -3240,6 +3409,7 @@ public class JimpleBodyBuilder {
                 body.getUnits().add(stmt);
                 return retLocal;
             }
+            //System.out.println("will return val as base local: "+val);
             return val;
         }
     }
@@ -3437,7 +3607,8 @@ public class JimpleBodyBuilder {
      * Special Expression Creation
      */
     private soot.Local getSpecialLocal(polyglot.ast.Special specialExpr) {
-        
+       
+        //System.out.println("special Expr: "+specialExpr);
         if (specialExpr.kind() == polyglot.ast.Special.SUPER) {
            return specialThisLocal;
         }
@@ -3446,7 +3617,9 @@ public class JimpleBodyBuilder {
                 return specialThisLocal;
             }
             else {
-                if (outerClassParamLocal == null) {
+                //System.out.println("returning getThis from special");
+                return getThis(Util.getSootType(specialExpr.qualifier().type()));
+                /*if (outerClassParamLocal == null) {
                     soot.SootField outerThisField = body.getMethod().getDeclaringClass().getFieldByName("this$0");
                     soot.Local fieldLocal = lg.generateLocal(outerThisField.getType());
                     soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField);
@@ -3456,7 +3629,7 @@ public class JimpleBodyBuilder {
                 }
                 else {
                     return outerClassParamLocal;
-                }
+                }*/
             }
         }
         else {

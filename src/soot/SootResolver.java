@@ -49,7 +49,7 @@ public class SootResolver
 
     public InitialResolver getInitSourceResolver(){
         if (initSourceResolver == null) {
-            initSourceResolver = new InitialResolver();
+            initSourceResolver = InitialResolver.v();
         }
         return initSourceResolver;
     }

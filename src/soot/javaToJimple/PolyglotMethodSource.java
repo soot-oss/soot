@@ -13,10 +13,10 @@ public class PolyglotMethodSource implements MethodSource {
     private ArrayList staticInitializerBlocks;
     private soot.Local outerClassThisInit;
     private HashMap privateAccessMap;
-    private HashMap localClassMap;
-    private HashMap anonClassMap;
+    //private HashMap localClassMap;
+    //private HashMap anonClassMap;
     private boolean hasAssert = false;
-    private HashMap finalsMap;
+    private ArrayList finalsList;
     private HashMap newToOuterMap;
     
     public PolyglotMethodSource(){
@@ -87,7 +87,7 @@ public class PolyglotMethodSource implements MethodSource {
         return privateAccessMap;
     }
 
-    public void setLocalClassMap(HashMap map) {
+    /*public void setLocalClassMap(HashMap map) {
         localClassMap = map;
     }
 
@@ -101,7 +101,7 @@ public class PolyglotMethodSource implements MethodSource {
 
     public HashMap getAnonClassMap(){
         return anonClassMap;
-    }
+    }*/
 
     public boolean hasAssert(){
         return hasAssert;
@@ -224,12 +224,12 @@ public class PolyglotMethodSource implements MethodSource {
         
     }
 
-    public void setFinalsMap(HashMap map){
-        finalsMap = map;
+    public void setFinalsList(ArrayList list){
+        finalsList = list;
     }
 
-    public HashMap getFinalsMap(){
-        return finalsMap;
+    public ArrayList getFinalsList(){
+        return finalsList;
     }
 
     public void setNewToOuterMap(HashMap map){

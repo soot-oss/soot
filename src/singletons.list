@@ -165,3 +165,4 @@ soot.toolkits.exceptions.PedanticThrowAnalysis
 soot.toolkits.exceptions.TrapTightener
 soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher
 soot.SootResolver
+soot.javaToJimple.InitialResolver

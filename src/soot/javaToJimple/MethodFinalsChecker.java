@@ -3,13 +3,16 @@ import java.util.*;
 
 public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
 
-    private ArrayList classNames;
-    private ArrayList locals;
-    private HashMap map;
-    private String currentSootClass;
-    private HashMap newToOuter;
+    //private ArrayList classNames;
+    //private ArrayList locals;
+    //private HashMap map; 
+    //private String currentSootClass;
+    //private HashMap newToOuter;
+
+    private ArrayList inners;
+    private ArrayList finalLocals;
     
-    public void setCurrentSootClass(String name){
+    /*public void setCurrentSootClass(String name){
         currentSootClass = name;
     }
 
@@ -24,12 +27,24 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
     public ArrayList getLocals() {
         return locals;
     }
-
+*/
+    public ArrayList finalLocals(){
+        return finalLocals;
+    }
+    
+    public ArrayList inners(){
+        return inners;
+    }
+    
+    
+    
     public MethodFinalsChecker(){
-        map = new HashMap();
-        newToOuter = new HashMap();
-        classNames = new ArrayList();
-        locals = new ArrayList();
+        //map = new HashMap();
+        //newToOuter = new HashMap();
+        //classNames = new ArrayList();
+        //locals = new ArrayList();
+        finalLocals = new ArrayList();
+        inners = new ArrayList();
     }
 
     public polyglot.visit.NodeVisitor enter(polyglot.ast.Node parent, polyglot.ast.Node n) {
@@ -39,7 +54,20 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
             polyglot.ast.LocalDecl ld = (polyglot.ast.LocalDecl)n;
             if (ld.flags().isFinal()){
                 //System.out.println("adding final local: "+ld.name());
-                locals.add(new polyglot.util.IdentityKey(ld.localInstance()));
+                //locals.add(new polyglot.util.IdentityKey(ld.localInstance()));
+                if (!finalLocals.contains(new polyglot.util.IdentityKey(ld.localInstance()))){
+                    finalLocals.add(new polyglot.util.IdentityKey(ld.localInstance()));
+                }
+            }
+        }
+        if (n instanceof polyglot.ast.Formal){
+            polyglot.ast.Formal ld = (polyglot.ast.Formal)n;
+            if (ld.flags().isFinal()){
+                //System.out.println("adding final local: "+ld.name());
+                //locals.add(new polyglot.util.IdentityKey(ld.localInstance()));
+                if (!finalLocals.contains(new polyglot.util.IdentityKey(ld.localInstance()))){
+                    finalLocals.add(new polyglot.util.IdentityKey(ld.localInstance()));
+                }
             }
         }
         if (n instanceof polyglot.ast.New) {
@@ -47,7 +75,14 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
             //System.out.println("in mfc and n is: "+n);
             //System.out.println("current outer class name is: "+currentSootClass);
             if (((polyglot.ast.New)n).anonType() != null){
-                polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
+                inners.add(n);
+            }
+        }
+
+        if (n instanceof polyglot.ast.LocalClassDecl){
+            inners.add(((polyglot.ast.LocalClassDecl)n).decl());
+        }
+          /*      polyglot.types.ClassType outerType = ((polyglot.ast.New)n).anonType().outer();
                 while (outerType.isNested()) {
                     outerType = outerType.outer();
                 }
@@ -67,7 +102,7 @@ public class MethodFinalsChecker extends polyglot.visit.NodeVisitor{
                 classNames.add(n);
                 newToOuter.put(n, currentSootClass);
             }
-        }
+        }*/
         return enter(n);
     }
 }

@@ -16,6 +16,7 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
     public void setFieldList(ArrayList list){
         fields = list;
     }
+
     
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
         //System.out.println("getting method: "+sootMethod.getName()+" for class: "+sootMethod.getDeclaringClass());            
@@ -33,7 +34,6 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
        
         ArrayList invokeList = new ArrayList();
         ArrayList invokeTypeList = new ArrayList();
-        soot.Local outerLocal = null;
         
         int numParams = sootMethod.getParameterCount();
         int numFinals = 0;
@@ -44,6 +44,7 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         int startFinals = numParams - numFinals;
         ArrayList paramsForFinals = new ArrayList();
 
+        soot.Local outerLocal = null;
         
         // param
         Iterator fIt = sootMethod.getParameterTypes().iterator();
@@ -54,6 +55,8 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
             body.getLocals().add(local);
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(fType, counter);
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(local, paramRef);
+
+            //System.out.println("counter: "+counter+" startFinals: "+startFinals);
             if ((counter != 0) && (counter < startFinals)){
                 invokeTypeList.add(fType);
                 invokeList.add(local);
@@ -85,6 +88,7 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         
         // field assign
         if (!inStaticMethod){
+            //System.out.println("looking for field this$0 in "+sootMethod.getDeclaringClass().getName()+" with type: "+outerClassType);
             soot.SootField field = sootMethod.getDeclaringClass().getField("this$0", outerClassType);
             soot.jimple.InstanceFieldRef ref = soot.jimple.Jimple.v().newInstanceFieldRef(thisLocal, field);
             soot.jimple.AssignStmt assign = soot.jimple.Jimple.v().newAssignStmt(ref, outerLocal);
