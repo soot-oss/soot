@@ -12,6 +12,13 @@ public class ArrayCheckTagAggregator implements TagAggregator
     private List tags = new LinkedList();
     private List units = new LinkedList();
 
+    private boolean active = true;
+
+    public ArrayCheckTagAggregator(boolean status)
+    {
+	this.active = status;
+    }
+
     public void aggregateTag(Tag t, Unit u)
     {
 	if(t instanceof ArrayCheckTag) {	  
@@ -26,5 +33,10 @@ public class ArrayCheckTagAggregator implements TagAggregator
 	    return null;
 	else
 	    return new CodeAttribute("ArrayCheckAttribute", units, tags);
+    }
+
+    public boolean isActive()
+    {
+	return active;
     }
 }

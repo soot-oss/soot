@@ -13,16 +13,13 @@ public class ArrayCheckAttribute
 
     private byte[] value;
 
-
     private final String name = "ArrayCheckAttribute";
-    
 
     public String toString()
     {
 
 	return name;
     }
-
 
     public String getName() { return name;}
 
@@ -87,3 +84,11 @@ public class ArrayCheckAttribute
 	return unitBoxes;
     }
 }
+
+
+
+
+
+
+
+

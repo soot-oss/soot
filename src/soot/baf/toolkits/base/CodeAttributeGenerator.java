@@ -43,17 +43,19 @@ public class  CodeAttributeGenerator extends BodyTransformer
 
     static boolean debug = soot.Main.isInDebugMode;
 
+    private List tagAggregators = new LinkedList();
 
-    public  void internalTransform(Body b, String phaseName, Map options) 
+    public void registerAggregator(TagAggregator agg)
+    {
+	this.tagAggregators.add(agg);
+    }
+
+    public void internalTransform(Body b, String phaseName, Map options) 
     {
         BafBody body = (BafBody) b;
        
         if (soot.Main.isVerbose) 
             System.out.println("[" + body.getMethod().getName() + "] Aggregating Unit Tags...");
-	
-	List tagAggregators = new LinkedList();
-	tagAggregators.add(new ArrayCheckTagAggregator());
-	tagAggregators.add(new NullCheckTagAggregator());
 	
         Iterator unitIt = body.getUnits().iterator();
         while (unitIt.hasNext()) 
@@ -76,9 +78,13 @@ public class  CodeAttributeGenerator extends BodyTransformer
 	Iterator it = tagAggregators.iterator();
 	while(it.hasNext()) {
 	    TagAggregator ta = (TagAggregator) it.next();
-	    Attribute attr = (Attribute) ta.produceAggregateTag();
-	    if(attr != null)
-		b.addTag(attr);
+	    
+	    if (ta.isActive())
+	    {
+		Attribute attr = (Attribute) ta.produceAggregateTag();
+		if(attr != null)
+		    b.addTag(attr);
+	    }
 	}	
     }
 }

@@ -41,4 +41,3 @@ public interface ValueBox
     /** Returns true if the given Value fits in this box. */
     public boolean canContainValue(Value value);
 }
-
