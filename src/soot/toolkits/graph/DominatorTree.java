@@ -34,6 +34,14 @@ import soot.util.*;
  *
  * <p>
  *
+ * More efficient algorithms may build the DominatorTree progressively
+ * instead of first computing dominators (and hence using the
+ * DominatorsFinder interface).  This is currently not directly
+ * supported although it may be conceivable to subclass DominatorTree
+ * to implement such an algorithm.
+ *
+ * <p>
+ *
  * Note: DominatorTree does not currently implement DirectedGraph
  * since it provides 4 methods of navigating the nodes where the
  * meaning of getPredsOf and getSuccsOf diverge from the usual meaning
@@ -41,8 +49,7 @@ import soot.util.*;
  *
  * <p>
  *
- * If you need a DirectedGraph implementation, see
- * DominatorTreeAdapter.
+ * If you need a DirectedGraph implementation, see DominatorTreeAdapter.
  *
  * @author Navindra Umanee
  **/
@@ -272,18 +279,18 @@ public class DominatorTree
             return null;
 
         List dominatorsList = dominators.getDominators(gode);
+        List dominatorsListClone = (List) ((ArrayList) dominatorsList).clone();
+        dominatorsListClone.remove(gode);
+
         Iterator dominatorsIt = dominatorsList.iterator();
         DominatorNode immediateDominator = null;
-        
+
         while((immediateDominator == null) && dominatorsIt.hasNext()){
             Object dominator = dominatorsIt.next();
 
             // we want a tree, we're not interested in self domination
             if(dominator == gode)
                 continue;
-            
-            List dominatorsListClone = (List) ((ArrayList) dominatorsList).clone();
-            dominatorsListClone.remove(gode);
 
             if(dominators.isDominatedByAll(dominator, dominatorsListClone))
                 immediateDominator = fetchDode(dominator);
