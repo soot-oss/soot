@@ -46,6 +46,7 @@ public class CFGActionBarContributor extends ActionBarContributor {
 
 	}
 	
+	//  this is for zoom toolbar buttons
 	/*public void contributeToToolBar(IToolBarManager toolBarManager){
 		super.contributeToToolBar(toolBarManager);
 		

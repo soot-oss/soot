@@ -18,12 +18,8 @@ import java.beans.*;
  */
 public class CFGElement implements IPropertySource {
 
-	//public static final String NODELIST = "node list";
-	//public static final String EDGELIST = "edge list";
 	public static final String WIDTH = "node width";
 	public static final String TEXT = "node text";
-	//public static final String FROM = "from node";
-	//public static final String TO = "to node";
 	public static final String CHILDREN = "children";
 	public static final String INPUTS = "inputs";
 	public static final String OUTPUTS = "outputs";

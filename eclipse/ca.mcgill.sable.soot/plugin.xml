@@ -8,7 +8,7 @@
 
    <runtime>
       <library name="soot-plugin.jar"/>
-      <library name="soot/classes/"/>
+      <library name="sootclasses-2.1.0.jar"/>
       <library name="jasminclasses-sable-1.2.jar"/>
       <library name="polyglot-1.1.0.jar"/>
       <library name="myclasses/"/>
@@ -278,6 +278,15 @@
    			toolbarPath="Normal/Soot"
    			class="ca.mcgill.sable.soot.interaction.InteractionContinuer"
    			id="ca.mcgill.sable.soot.continue">
+   		</action>
+   		<action
+   			label="Step Back"
+   			style="push"
+   			icon="icons/resume_co_back.gif"
+   			enablesFor="*"
+   			toolbarPath="Normal/Soot"
+   			class="ca.mcgill.sable.soot.interaction.InteractionBackStepper"
+   			id="ca.mcgill.sable.soot.stepback">
    		</action>
         <!-- <action
                label="Visualiztion Manipulations"

@@ -49,8 +49,6 @@ public class CFGEditor extends GraphicalEditor {
 	
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
-		//System.out.println("configuring graphical viewer");
-		//getGraphicalViewer().setRootEditPart(new ScalableRootEditPart());
 		ScalableRootEditPart root = new ScalableRootEditPart();
 		getGraphicalViewer().setRootEditPart(root);
 		
@@ -71,9 +69,10 @@ public class CFGEditor extends GraphicalEditor {
 	
 		getGraphicalViewer().setEditPartFactory(new CFGPartFactory());
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
-		//initializeActionRegistry();
+		
 	}
 	
+	// this is for zoom
 	/*protected void createActions(){
 	
 		super.createActions();
@@ -155,22 +154,13 @@ public class CFGEditor extends GraphicalEditor {
 		cfgGraph = graph;
 	}
 
-	/*public void init(IEditorSite site, IEditorInput input) throws PartInitException {
-		//super.init(site, input);
-		//System.out.println("input: "+input);
-		//System.out.println("init called for my editor");
-		setSite(site);
-		setInput(input);
-		getCommandStack().addCommandStackListener(this);
-		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(this);
-		
-		
-	}*/
+	public void setTitle(String name){
+		super.setTitle(name);
+	}
 	
-	/*protected PaletteRoot getPaletteRoot(){
-		if ( root == null){
-			root = new PaletteRoot();
-		}
-		return root;
-	}*/
+	public void setTitleTooltip(String text){
+		super.setTitleToolTip(text);
+	}
+	
+	
 }

@@ -6,6 +6,12 @@ public class FlowInfo {
     private Object unit;
     private boolean before;
 
+    public FlowInfo(Object info, Object unit, boolean b){
+        info(info);
+        unit(unit);
+        setBefore(b);
+    }
+    
     public Object unit(){
         return unit;
     }
@@ -28,5 +34,13 @@ public class FlowInfo {
 
     public void setBefore(boolean b){
         before = b;
+    }
+
+    public String toString(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("unit: "+unit);
+        sb.append(" info: "+info);
+        sb.append(" before: "+before);
+        return sb.toString();
     }
 }

@@ -22,8 +22,6 @@ import org.eclipse.core.resources.*;
 public class CFGGraph extends CFGElement implements IEditorInput {
 
 	private String name;
-	//private ArrayList nodes;
-	//private ArrayList edges;
 	private ArrayList children = new ArrayList();
 	private IResource resource;
 	
@@ -32,24 +30,15 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 	 * 
 	 */
 	public CFGGraph() {
-		//setNodes(new ArrayList());
-		//setEdges(new ArrayList());	
 	}
 
 	
 	public void addChild(CFGNode child){
 		children.add(child);
-		//System.out.println("added child to graph");
 		fireStructureChange(CHILDREN, child);
 	}
 		
-	/**
-	 * @return
-	 */
-	/*public ArrayList getEdges() {
-		return edges;
-	}*/
-
+	
 	/**
 	 * @return
 	 */
@@ -57,24 +46,8 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 		return name;
 	}
 
-	/**
-	 * @return
-	 */
-	/*public ArrayList getNodes() {
-		return nodes;
-	}*/
-
-	/**
-	 * @param list
-	 */
-	/*public void setEdges(ArrayList list) {
-		edges = list;
-		if (getChildren() == null){
-			setChildren(new ArrayList());
-		}
-		getChildren().addAll(edges);
-	}*/
-
+	
+	
 	/**
 	 * @param string
 	 */
@@ -82,16 +55,7 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 		name = string;
 	}
 
-	/**
-	 * @param list
-	 */
-	/*public void setNodes(ArrayList list) {
-		nodes = list;
-		if (getChildren() == null){
-			setChildren(new ArrayList());
-		}
-		getChildren().addAll(nodes);
-	}*/
+	
 
 	public boolean exists(){
 		return false;
@@ -110,13 +74,9 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 	}
 	
 	public Object getAdapter(Class c){
-		//System.out.println("c class: "+c);
-		
 		if (c == IResource.class){
-			//System.out.println("return from adaptable: "+getResource());
 			return getResource();	
 		}
-		//System.out.println("will return null");
 		return null;
 	}
 		

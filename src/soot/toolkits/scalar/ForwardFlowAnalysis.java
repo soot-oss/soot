@@ -95,6 +95,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         {
             Object previousAfterFlow = newInitialFlow();
 
+            int iterationCounter = 0;
             while(!changedUnits.isEmpty())
             {
                 Object beforeFlow;
@@ -132,23 +133,19 @@ next());
                 // Compute afterFlow and store it.
                 {
                     afterFlow = unitToAfterFlow.get(s);
-                    //System.out.println("before flowThrough: beforeFlow: "+beforeFlow+" afterFlow: "+afterFlow);
                     if (Options.v().interactive_mode()){
-                        FlowInfo fi = new FlowInfo();
-                        fi.info(beforeFlow);
-                        fi.unit(s);
-                        fi.setBefore(true);
+                        Object savedInfo = newInitialFlow();
+                        copy(beforeFlow, savedInfo);
+                        FlowInfo fi = new FlowInfo(savedInfo, s, true);
                         InteractionHandler.v().handleBeforeAnalysisEvent(fi);
                     }
                     flowThrough(beforeFlow, s, afterFlow);
                     if (Options.v().interactive_mode()){
-                        FlowInfo fi = new FlowInfo();
-                        fi.info(afterFlow);
-                        fi.unit(s);
-                        fi.setBefore(false);
+                        Object aSavedInfo = newInitialFlow();
+                        copy(afterFlow, aSavedInfo);
+                        FlowInfo fi = new FlowInfo(aSavedInfo, s, false);
                         InteractionHandler.v().handleAfterAnalysisEvent(fi);
                     }
-                    //System.out.println("after flowThrough: beforeFlow: "+beforeFlow+" afterFlow: "+afterFlow);
                     numComputations++;
                 }
 

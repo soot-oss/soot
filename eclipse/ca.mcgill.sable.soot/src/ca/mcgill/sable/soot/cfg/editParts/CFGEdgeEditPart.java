@@ -20,7 +20,7 @@ import java.beans.*;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class CFGEdgeEditPart extends AbstractConnectionEditPart 
-	{//implements PropertyChangeListener {
+	{
 
 	/**
 	 * 
@@ -39,17 +39,14 @@ public class CFGEdgeEditPart extends AbstractConnectionEditPart
 	}
 
 	protected IFigure createFigure(){
-		//System.out.println("creating edge: "+getEdge());
 		PolylineConnection conn = new PolylineConnection();
-		// chopbox anchors?
-
+		
 		conn.setTargetDecoration(new PolygonDecoration());
 		conn.setConnectionRouter(new BendpointConnectionRouter());
 		return conn;
 	}
 	
 	public void contributeToGraph(DirectedGraph graph, HashMap map){
-		//System.out.println("adding edge to graph");
 		Node source = (Node)map.get(getSource());
 		Node target = (Node)map.get(getTarget());
 		if (!source.equals(target)){
@@ -98,24 +95,10 @@ public class CFGEdgeEditPart extends AbstractConnectionEditPart
 		}
 	}
 	
-	//public void applyGraphResults(
 	
 	public CFGEdge getEdge(){
 		return (CFGEdge)getModel();
 	}
 	
-/*public void activate(){
-		super.activate();
-		//getEdge().addPropertyChangeListener(this);
-	}
-	
-	public void deactivate(){
-		super.deactivate();
-		//getEdge().removePropertyChangeListener(this);
-	}
-	
-	public void propertyChange(PropertyChangeEvent event){
-		
-	}
-*/	
+
 }

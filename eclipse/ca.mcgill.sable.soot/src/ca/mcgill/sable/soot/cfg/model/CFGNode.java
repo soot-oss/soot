@@ -241,7 +241,7 @@ public class CFGNode extends CFGElement {
 	 */
 	public void setBefore(String string) {
 		before = string;
-		firePropertyChange(BEFORE_INFO, after);
+		firePropertyChange(BEFORE_INFO, before);
 	}
 
 }

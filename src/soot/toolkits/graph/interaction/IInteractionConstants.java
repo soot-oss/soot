@@ -11,4 +11,6 @@ public interface IInteractionConstants{
     public static final int DONE = 6;
     public static final int FORWARDS = 7;
     public static final int BACKWARDS = 8;
+    public static final int CLEARTO = 8;
+    public static final int REPLACE = 8;
 }

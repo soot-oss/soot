@@ -44,18 +44,13 @@ public class CFGNodeEditPart
 	 */
 	protected IFigure createFigure() {
 		// TODO Auto-generated method stub
-		//System.out.println("creating node figure");
-		
 		return new CFGNodeFigure();
 	}
 
 	public void contributeNodesToGraph(DirectedGraph graph, HashMap map){
-		//System.out.println("adding node to graph: "+getNode());
 		Node node = new Node(this);
 		node.width = getFigure().getSize().width;//getNode().getWidth();
 		node.height = getFigure().getSize().height;
-		//node.data = getNode().getText();
-		//node.setPadding(new Insets(16,16,16,16));
 		graph.nodes.add(node);
 		map.put(this, node);
 	}
@@ -70,18 +65,7 @@ public class CFGNodeEditPart
 	
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
 		Node node = (Node)map.get(this);
-		//System.out.println("apply graph results to node: x: "+node.x+" y: "+node.y+" width: "+node.width+" height: "+node.height);
-		//((CFGNodeFigure)getFigure()).getRect().getBounds().setSize(node.width, node.height+2);
-		//((CFGNodeFigure)getFigure()).getNodeFigure().setSize(node.width, node.height+2);
-		
-		//((CFGNodeFigure)getFigure()).getLabel().setBounds(new Rectangle(node.x, node.y, getNode().getWidth(), node.height));
-		//if (getFigure().getBounds().height == node.height){
 		((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y, node.width, node.height));//getFigure().getBounds().height));//getFigure().getBounds().height));
-		//}
-		//else {
-		//	int y = (node.height - getFigure().getBounds().height); 
-		//	((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y + y, getNode().getWidth(), getFigure().getBounds().height));//getFigure().getBounds().height));
-		//}
 		List outgoing = getSourceConnections();
 		for (int i = 0; i < outgoing.size(); i++){
 			CFGEdgeEditPart edge = (CFGEdgeEditPart)outgoing.get(i);
@@ -158,15 +142,10 @@ public class CFGNodeEditPart
 	
 	public void propertyChange(PropertyChangeEvent event){
 		if (event.getPropertyName().equals(CFGElement.WIDTH)){
-			//System.out.println("setting width: "+event.getNewValue());
-			//((CFGNodeFigure)getFigure()).getRect().setSize(((Integer)event.getNewValue()).intValue(), ((CFGNodeFigure)getFigure()).getRect().getBounds().height);
-			//((CFGNodeFigure)getFigure()).getLabel().setSize(((Integer)event.getNewValue()).intValue(), ((CFGNodeFigure)getFigure()).getRect().getBounds().height);
 			
 			refreshVisuals();
 		}
 		else if (event.getPropertyName().equals(CFGElement.TEXT)){
-			//System.out.println("setting node text: "+event.getNewValue());
-			//((CFGNodeFigure)getFigure()).getLabel().setText((String)event.getNewValue());
 			refreshVisuals();
 		}
 		else if (event.getPropertyName().equals(CFGElement.INPUTS)){
@@ -196,7 +175,6 @@ public class CFGNodeEditPart
 		else if (event.getPropertyName().equals(CFGElement.AFTER_INFO)){
 			((CFGNodeFigure)getFigure()).setAfter(getNode().getAfter());
 			((CFGNodeFigure)getFigure()).addAfterFigure();
-			//getViewer().reveal(this);
 			final EditPartViewer viewer = getViewer();
 			final CFGNodeEditPart thisPart = this;
 			Display.getDefault().syncExec(new Runnable(){
@@ -204,9 +182,8 @@ public class CFGNodeEditPart
 					viewer.reveal(thisPart);
 				};
 			});
-			//refreshVisuals();
+			
 		}
-		//((GraphicalEditPart)(getViewer().getContents())).getFigure().revalidate();
 	}
 	
 	protected void refreshVisuals(){
@@ -214,19 +191,8 @@ public class CFGNodeEditPart
 		((CFGNodeFigure)getFigure()).setWidth(getNode().getWidth());
 		((CFGNodeFigure)getFigure()).setData(getNode().getText());
 		
-		//((CFGNodeFigure)getFigure()).setAfter(getNode().getAfter());
-		//((CFGNodeFigure)getFigure()).setBefore(getNode().getBefore());
 		((CFGNodeFigure)getFigure()).updateFigure();
-		
-		//System.out.println("refreshing visuals for: "+getNode().getText());
-		/*((CFGNodeFigure)getFigure()).setSize(getNode().getWidth(), ((CFGNodeFigure)getFigure()).getRect().getBounds().height);		
-	
-		((CFGNodeFigure)getFigure()).getRect().setSize(getNode().getWidth(), ((CFGNodeFigure)getFigure()).getRect().getBounds().height);
-		
-		((CFGNodeFigure)getFigure()).getLabel().setSize(getNode().getWidth(), ((CFGNodeFigure)getFigure()).getRect().getBounds().height);
-		
-		((CFGNodeFigure)getFigure()).getLabel().setText((String)getNode().getText().get(0));*/
-				
+			
 	}
 
 

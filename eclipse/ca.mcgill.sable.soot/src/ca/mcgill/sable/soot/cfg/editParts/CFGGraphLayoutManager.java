@@ -45,20 +45,16 @@ public class CFGGraphLayoutManager extends AbstractLayout {
 	 */
 	public void layout(IFigure arg0) {
 		// TODO Auto-generated method stub
-		//System.out.println("doing graph layout");
 		DirectedGraph graph = new DirectedGraph();
-		//graph.setDefaultPadding(new Insets(4));
 		HashMap map = new HashMap();
 		// add nodes and edges to graph
 		// retrieve them from CFGGraphEditPart
 		getGraphPart().contributeNodesToGraph(graph, map);
 		getGraphPart().contributeEdgesToGraph(graph, map);
 		if (graph.nodes.size() != 0){
-			//System.out.println("graph has nodes and doing layout");
 			DirectedGraphLayout layout = new DirectedGraphLayout();
 			layout.visit(graph);
-			//System.out.println("graph is layed out");
-		
+			
 			getGraphPart().applyGraphResults(graph, map);
 		}
 		

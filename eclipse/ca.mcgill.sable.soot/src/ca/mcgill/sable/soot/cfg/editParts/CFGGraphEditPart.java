@@ -40,7 +40,6 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 	 */
 	protected IFigure createFigure() {
 		// TODO Auto-generated method stub
-		//System.out.println("creating figure for graph");
 		IFigure f = new Figure() {
 			public void setBound(Rectangle rect){
 				int x = bounds.x; 
@@ -65,8 +64,6 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 				}
 			}
 		};
-		//f.setBounds(new Rectangle(0,0,-1,-1));
-		//f.setBounds(new Rectangle(0,0,-1,-1));
 		f.setLayoutManager(new CFGGraphLayoutManager(this));
 		return f;
 	}
@@ -107,7 +104,6 @@ public class CFGGraphEditPart extends AbstractGraphicalEditPart
 	}
 
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
-		//System.out.println("applying graph results");
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();

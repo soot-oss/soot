@@ -1,5 +1,5 @@
 /*
- * Created on Jan 29, 2004
+ * Created on Feb 19, 2004
  *
  * To change the template for this generated file go to
  * Window>Preferences>Java>Code Generation>Code and Comments
@@ -10,7 +10,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import soot.toolkits.graph.interaction.*;
+
 import ca.mcgill.sable.soot.*;
 
 /**
@@ -19,12 +19,12 @@ import ca.mcgill.sable.soot.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class InteractionContinuer implements IWorkbenchWindowActionDelegate {
+public class InteractionBackStepper implements IWorkbenchWindowActionDelegate {
 
 	/**
 	 * 
 	 */
-	public InteractionContinuer() {
+	public InteractionBackStepper() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -50,12 +50,8 @@ public class InteractionContinuer implements IWorkbenchWindowActionDelegate {
 	 */
 	public synchronized void run(IAction action) {
 		// TODO Auto-generated method stub
-		if (SootPlugin.getDefault().getDataKeeper().inMiddle()){
-			SootPlugin.getDefault().getDataKeeper().stepForward();
-		}
-		else {
-			InteractionHandler.v().setInteractionCon();//true);
-		}
+		SootPlugin.getDefault().getDataKeeper().stepBack();
+
 	}
 
 	/* (non-Javadoc)

@@ -33,6 +33,7 @@ import java.util.*;
 import ca.mcgill.sable.soot.editors.ColorManager;
 import ca.mcgill.sable.soot.launching.*;
 import ca.mcgill.sable.soot.resources.*;
+import ca.mcgill.sable.soot.interaction.*;
 
 /**
  * @author jlhotak
@@ -74,6 +75,8 @@ public class SootPlugin extends AbstractUIPlugin {
 	private SootPartManager partManager;
 	
 	private ColorManager colorManager;
+	
+	private DataKeeper dataKeeper;
 	
 	/**
 	 * Method addSootOutputEventListener.
@@ -269,6 +272,20 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void setColorManager(ColorManager manager) {
 		colorManager = manager;
+	}
+
+	/**
+	 * @return
+	 */
+	public DataKeeper getDataKeeper() {
+		return dataKeeper;
+	}
+
+	/**
+	 * @param keeper
+	 */
+	public void setDataKeeper(DataKeeper keeper) {
+		dataKeeper = keeper;
 	}
 
 }

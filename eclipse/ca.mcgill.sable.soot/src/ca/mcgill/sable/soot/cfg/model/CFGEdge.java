@@ -46,7 +46,6 @@ public class CFGEdge extends CFGElement {
 	 */
 	public void setFrom(CFGNode node) {
 		from = node;
-		//firePropertyChange(FROM, from);
 	}
 
 	/**
@@ -54,7 +53,7 @@ public class CFGEdge extends CFGElement {
 	 */
 	public void setTo(CFGNode node) {
 		to = node;
-		//firePropertyChange(TO, to);
+		
 	}
 	
 	public String toString(){
