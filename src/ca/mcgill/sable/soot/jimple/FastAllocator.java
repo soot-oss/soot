@@ -102,7 +102,13 @@ public class FastAllocator
         if(Main.isProfilingOptimization)
             Main.liveTimer.start();
 
-        LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
+            
+        LiveLocals liveLocals;
+        
+        if(Main.usePackedLive)
+            liveLocals = new SimpleLiveLocals(stmtGraph);
+        else 
+            liveLocals = new SparseLiveLocals(stmtGraph);
 
         if(Main.isProfilingOptimization)
             Main.liveTimer.end();

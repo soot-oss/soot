@@ -92,21 +92,23 @@ public abstract class FlowAnalysis
         this.graph = graph;
     }
 
-    protected abstract Flow getInitialFlow();
+    protected abstract Object newInitialFlow();
 
     protected abstract boolean isForward();
 
-    protected abstract void flowThrough(Flow in, Stmt s, Flow out);
-    protected abstract void merge(Flow in1, Flow in2, Flow out);
+    protected abstract void flowThrough(Object in, Stmt s, Object out);
+    protected abstract void merge(Object in1, Object in2, Object out);
+    protected abstract void copy(Object source, Object dest);
+    
     protected abstract void doAnalysis();
 
-    public Flow getFlowAfterStmt(Stmt s)
+    public Object getFlowAfterStmt(Stmt s)
     {
-        return (Flow) stmtToAfterFlow.get(s);
+        return stmtToAfterFlow.get(s);
     }
 
-    public Flow getFlowBeforeStmt(Stmt s)
+    public Object getFlowBeforeStmt(Stmt s)
     {
-        return (Flow) stmtToBeforeFlow.get(s);
+        return stmtToBeforeFlow.get(s);
     }
 }

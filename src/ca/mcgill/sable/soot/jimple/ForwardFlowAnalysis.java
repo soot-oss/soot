@@ -94,7 +94,6 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         // Set initial values and nodes to visit.
         {
             Iterator it = graph.iterator();
-            Flow initialFlow = getInitialFlow();
 
             while(it.hasNext())
             {
@@ -103,51 +102,51 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                 changedStmts.addLast(s);
                 // changedStmtsSet.add(s);
 
-                stmtToBeforeFlow.put(s, initialFlow.clone());
-                stmtToAfterFlow.put(s, initialFlow.clone());
+                stmtToBeforeFlow.put(s, newInitialFlow());
+                stmtToAfterFlow.put(s, newInitialFlow());
             }
         }
 
         // Perform fixed point flow analysis
         {
-            Flow previousAfterFlow = (Flow) getInitialFlow().clone();
+            Object previousAfterFlow = newInitialFlow();
 
             while(!changedStmts.isEmpty())
             {
-                Flow beforeFlow;
-                Flow afterFlow;
+                Object beforeFlow;
+                Object afterFlow;
 
                 Stmt s = (Stmt) changedStmts.removeFirst();
 
                 // changedStmtsSet.remove(s);
 
-                ((Flow) stmtToAfterFlow.get(s)).copy(previousAfterFlow);
+                copy(stmtToAfterFlow.get(s), previousAfterFlow);
 
                 // Compute and store beforeFlow
                 {
                     List preds = graph.getPredsOf(s);
 
-                    beforeFlow = (Flow) stmtToBeforeFlow.get(s);
+                    beforeFlow = stmtToBeforeFlow.get(s);
 
                     if(preds.size() == 1)
-                        ((Flow) stmtToAfterFlow.get(preds.get(0))).copy(beforeFlow);
+                        copy(stmtToAfterFlow.get(preds.get(0)), beforeFlow);
                     else if(preds.size() != 0)
                     {
                         Iterator predIt = preds.iterator();
 
-                        ((Flow) stmtToAfterFlow.get(predIt.next())).copy(beforeFlow);
+                        copy(stmtToAfterFlow.get(predIt.next()), beforeFlow);
 
                         while(predIt.hasNext())
                         {
-                            Flow otherBranch = (Flow) stmtToAfterFlow.get(predIt.next());
-                            merge(beforeFlow, otherBranch, beforeFlow);
+                            Object otherBranchFlow = stmtToAfterFlow.get(predIt.next());
+                            merge(beforeFlow, otherBranchFlow, beforeFlow);
                         }
                     }
                 }
 
                 // Compute afterFlow and store it.
                 {
-                    afterFlow = (Flow) stmtToAfterFlow.get(s);
+                    afterFlow = stmtToAfterFlow.get(s);
                     flowThrough(beforeFlow, s, afterFlow);
                 }
 

@@ -190,14 +190,44 @@ class Transformations
             if(Main.isProfilingOptimization)
                 Main.graphTimer.end();
 
-            if(Main.isProfilingOptimization)
-                Main.defsTimer.start();
+            
+            
+            LocalDefs localDefs;
 
-            LocalDefs localDefs = new SimpleLocalDefs(graph);
+            if(Main.usePackedDefs) 
+            {
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.start();
 
-            if(Main.isProfilingOptimization)
-                Main.defsTimer.end();
+                localDefs = new SimpleLocalDefs(graph);
+                
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.end();
+            }
+            else {
+                LiveLocals liveLocals;
+            
+                if(Main.isProfilingOptimization)
+                    Main.liveTimer.start();
+    
+                if(Main.usePackedLive) 
+                    liveLocals = new SimpleLiveLocals(graph);
+                else
+                    liveLocals = new SparseLiveLocals(graph);
 
+                if(Main.isProfilingOptimization)
+                    Main.liveTimer.end();
+
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.start();
+        
+                localDefs = new SparseLocalDefs(graph, liveLocals);
+                
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.end();
+            }
+            
+    
             if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
 
@@ -431,14 +461,43 @@ class Transformations
             if(Main.isVerbose)
                 System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalDefs...");
 
+            LocalDefs localDefs;
+            
+            if(Main.usePackedDefs) 
+            {
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.start();
 
-            if(Main.isProfilingOptimization)
-                Main.defsTimer.start();
+                localDefs = new SimpleLocalDefs(graph);
+                
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.end();
+            }
+            else {
+                LiveLocals liveLocals;
+            
+                if(Main.isProfilingOptimization)
+                    Main.liveTimer.start();
+    
+                if(Main.usePackedLive) 
+                    liveLocals = new SimpleLiveLocals(graph);
+                else
+                    liveLocals = new SparseLiveLocals(graph);
 
-            LocalDefs localDefs = new SimpleLocalDefs(graph);
+                if(Main.isProfilingOptimization)
+                    Main.liveTimer.end();
 
-            if(Main.isProfilingOptimization)
-                Main.defsTimer.end();
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.start();
+        
+                localDefs = new SparseLocalDefs(graph, liveLocals);
+                
+                if(Main.isProfilingOptimization)
+                    Main.defsTimer.end();
+            }
+            
+                            
+
 
             if(Main.isVerbose)
                 System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalUses...");
@@ -462,14 +521,6 @@ class Transformations
             
             if(Main.isProfilingOptimization)
                 Main.copiesTimer.end();
-
-            if(Main.isProfilingOptimization)
-                Main.liveTimer.start();
-
-            new SimpleLiveLocals(graph);
-
-            if(Main.isProfilingOptimization)
-                Main.liveTimer.end();
             
             if(Main.isProfilingOptimization)
                 Main.cleanupAlgorithmTimer.start();

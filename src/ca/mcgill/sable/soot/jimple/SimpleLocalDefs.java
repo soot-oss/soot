@@ -117,7 +117,10 @@ public class SimpleLocalDefs implements LocalDefs
     {
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
 
-        // Built localStmtPairToDefs map
+        if(Main.isProfilingOptimization)
+                Main.defsPostTimer.start();
+
+        // Build localStmtPairToDefs map
         {
             Iterator stmtIt = g.iterator();
 
@@ -141,7 +144,7 @@ public class SimpleLocalDefs implements LocalDefs
                         if(!localStmtPairToDefs.containsKey(pair))
                         {
                             IntPair intPair = (IntPair) analysis.localToIntPair.get(l);
-                            FlowSet value = (FlowSet) analysis.getFlowBeforeStmt(s);
+                            BoundedFlowSet value = (BoundedFlowSet) analysis.getFlowBeforeStmt(s);
 
                             List localDefs = value.toList(intPair.op1, intPair.op2);
 
@@ -151,6 +154,9 @@ public class SimpleLocalDefs implements LocalDefs
                 }
             }
         }
+
+        if(Main.isProfilingOptimization)
+                Main.defsPostTimer.end();
 
     }
 
@@ -269,7 +275,7 @@ class IntPair
 
 class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 {
-    PackSet emptySet;
+    FlowSet emptySet;
     Map localToPreserveSet;
     Map localToIntPair;
 
@@ -279,6 +285,9 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
         Object[] defs;
         FlowUniverse defUniverse;
+
+        if(Main.isProfilingOptimization)
+                Main.defsSetupTimer.start();
 
         // Create a list of all the definitions and group defs of the same local together
         {
@@ -352,7 +361,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
             }
         }
 
-        emptySet = PackSet.v(defUniverse);
+        emptySet = new ArrayPackedSet(defUniverse);
 
         // Create the preserve sets for each local.
         {
@@ -394,7 +403,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
                 {
                     Local l = (Local) localIt.next();
 
-                    FlowSet killSet = (FlowSet) localToKillSet.get(l);
+                    BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(l);
 
                     killSet.complement(killSet);
 
@@ -403,15 +412,25 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
             }
         }
 
+        if(Main.isProfilingOptimization)
+                Main.defsSetupTimer.end();
+
+        if(Main.isProfilingOptimization)
+                Main.defsAnalysisTimer.start();
+
         doAnalysis();
+        
+        if(Main.isProfilingOptimization)
+                Main.defsAnalysisTimer.end();
+
     }
 
-    protected Flow getInitialFlow()
+    protected Object newInitialFlow()
     {
-        return emptySet;
+        return emptySet.clone();
     }
 
-    protected void flowThrough(Flow inValue, Stmt stmt, Flow outValue)
+    protected void flowThrough(Object inValue, Stmt stmt, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
@@ -439,7 +458,15 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
             in.copy(out);
     }
 
-    protected void merge(Flow in1, Flow in2, Flow out)
+    protected void copy(Object source, Object dest)
+    {
+        FlowSet sourceSet = (FlowSet) source,
+            destSet = (FlowSet) dest;
+            
+        sourceSet.copy(destSet);
+    }
+
+    protected void merge(Object in1, Object in2, Object out)
     {
         FlowSet inSet1 = (FlowSet) in1,
             inSet2 = (FlowSet) in2;

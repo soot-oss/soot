@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on January 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Branched off from PackedLiveLocals;
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -77,14 +80,14 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class SimpleLiveLocals implements LiveLocals
+public class SparseLiveLocals implements LiveLocals
 {
     Map stmtToLocals;
     //Map stmtToLocalsBefore;
 
-    public SimpleLiveLocals(CompleteStmtGraph graph)
+    public SparseLiveLocals(CompleteStmtGraph graph)
     {
-        LiveLocalsAnalysis analysis = new LiveLocalsAnalysis(graph);
+        SparseLiveLocalsAnalysis analysis = new SparseLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
                 Main.livePostTimer.start();
@@ -100,7 +103,7 @@ public class SimpleLiveLocals implements LiveLocals
             while(stmtIt.hasNext())
             {
                 Stmt s = (Stmt) stmtIt.next();
-
+ 
                 FlowSet set = (FlowSet) analysis.getFlowBeforeStmt(s);
                 //List localList = set.toList();
                 
@@ -111,10 +114,9 @@ public class SimpleLiveLocals implements LiveLocals
             
             // System.out.println((((double) liveCount) / graph.size()) + " live locals per stmt on avg" + (graph.size())); 
         }
-
+        
         if(Main.isProfilingOptimization)
-            Main.livePostTimer.end();
-
+                Main.livePostTimer.end();
     }
 
     /*
@@ -132,31 +134,24 @@ public class SimpleLiveLocals implements LiveLocals
     }
 }
 
-class LiveLocalsAnalysis extends BackwardFlowAnalysis
+class SparseLiveLocalsAnalysis extends BackwardFlowAnalysis
 {
     FlowSet emptySet;
     Map stmtToGenerateSet;
-    Map stmtToPreserveSet;
+    Map stmtToKillSet;
 
-    LiveLocalsAnalysis(StmtGraph g)
+    SparseLiveLocalsAnalysis(StmtGraph g)
     {
         super(g);
 
         if(Main.isProfilingOptimization)
-            Main.liveSetupTimer.start();
+                Main.liveSetupTimer.start();
 
-        // Generate list of locals and empty set
+        emptySet = new ArraySparseSet();
+
+        // Create Kill sets.
         {
-            List locals = g.getBody().getLocals();
-            FlowUniverse localUniverse = new FlowUniverse(locals.toArray());
-
-            emptySet = new ArrayPackedSet(localUniverse);
-            
-        }
-
-        // Create preserve sets.
-        {
-            stmtToPreserveSet = new HashMap(g.size() * 2 + 1, 0.7f);
+            stmtToKillSet = new HashMap(g.size() * 2 + 1, 0.7f);
 
             Iterator stmtIt = g.iterator();
 
@@ -164,7 +159,7 @@ class LiveLocalsAnalysis extends BackwardFlowAnalysis
             {
                 Stmt s = (Stmt) stmtIt.next();
 
-                BoundedFlowSet killSet = (BoundedFlowSet) emptySet.clone();
+                FlowSet killSet = (FlowSet) emptySet.clone();
 
                 Iterator boxIt = s.getDefBoxes().iterator();
 
@@ -176,9 +171,7 @@ class LiveLocalsAnalysis extends BackwardFlowAnalysis
                         killSet.add(box.getValue(), killSet);
                 }
 
-                // Store complement
-                    killSet.complement(killSet);
-                    stmtToPreserveSet.put(s, killSet);
+                stmtToKillSet.put(s, killSet);
             }
         }
 
@@ -231,7 +224,7 @@ class LiveLocalsAnalysis extends BackwardFlowAnalysis
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
         // Perform kill
-            in.intersection((FlowSet) stmtToPreserveSet.get(stmt), out);
+            in.difference((FlowSet) stmtToKillSet.get(stmt), out);
 
         // Perform generation
             out.union((FlowSet) stmtToGenerateSet.get(stmt), out);

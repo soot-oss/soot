@@ -74,19 +74,20 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public interface FlowSet extends Flow
+public interface FlowSet 
 {
     public int size();
 
+    public Object clone();
+    public void copy(FlowSet dest);
     public boolean isEmpty();
+    public void clear();
     public List toList();
-    public List toList(int low, int high);
     public void add(Object obj, FlowSet dest);
     public void remove(Object obj, FlowSet dest);
     public void union(FlowSet other, FlowSet dest);
     public void intersection(FlowSet other, FlowSet dest);
-    public void complement(FlowSet dest);
-
+    public void difference(FlowSet other, FlowSet dest);    
     public boolean contains(Object obj);
 }
 

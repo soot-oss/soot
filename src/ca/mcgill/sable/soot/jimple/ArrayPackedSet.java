@@ -76,82 +76,21 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.util.*;
 
-public class PackSet implements FlowSet
-{
-    public static PackSet v(FlowUniverse universe)
-    {
-        int size = universe.getSize();
-
-        int numWords = size / 32 + (((size % 32) != 0) ? 1 : 0);
-
-        return new ArrayPackSet(universe, new int[numWords]);
-    }
-
-    public PackSet()
-    {
-    }
-
-    public Object clone()
-    {
-        return null;
-    }
-
-    public void copy(Flow dest)
-    {
-    }
-
-    public int size()
-    {
-        return 0;
-    }
-
-    public boolean isEmpty()
-    {
-        return false;
-    }
-
-    public List toList()
-    {
-        return null;
-    }
-
-    public List toList(int low, int high)
-    {
-        return null;
-    }
-
-    public void add(Object obj, FlowSet dest)
-    {
-    }
-
-    public void remove(Object obj, FlowSet dest)
-    {
-    }
-
-    public void union(FlowSet other, FlowSet dest)
-    {
-    }
-    public void intersection(FlowSet other, FlowSet dest)
-    {
-    }
-
-    public void complement(FlowSet dest)
-    {
-    }
-
-    public boolean contains(Object obj)
-    {
-        return false;
-    }
-
-}
-
-class ArrayPackSet extends PackSet
+class ArrayPackedSet implements BoundedFlowSet
 {
     FlowUniverse map;
     int[] bits;
 
-    ArrayPackSet(FlowUniverse map, int[] bits)
+    public ArrayPackedSet(FlowUniverse universe)
+    {
+        //int size = universe.getSize();
+
+        //int numWords = size / 32 + (((size % 32) != 0) ? 1 : 0);
+
+        this(universe, new int[universe.getSize() / 32 + (((universe.getSize() % 32) != 0) ? 1 : 0)]);        
+    }
+    
+    ArrayPackedSet(FlowUniverse map, int[] bits)
     {
         this.map = map;
         this.bits = (int[]) bits.clone();
@@ -159,7 +98,7 @@ class ArrayPackSet extends PackSet
 
     public Object clone()
     {
-        return new ArrayPackSet(map, bits);
+        return new ArrayPackedSet(map, bits);
     }
 
     public int size()
@@ -185,6 +124,12 @@ class ArrayPackSet extends PackSet
                 return false;
 
         return true;
+    }
+
+    public void clear()
+    {
+        for(int i = 0; i < bits.length; i++)
+            bits[i] = 0;
     }
 
 
@@ -268,7 +213,7 @@ class ArrayPackSet extends PackSet
 
     public void add(Object obj, FlowSet destFlow)
     {
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         if(this != dest)
             copy(dest);
@@ -280,7 +225,7 @@ class ArrayPackSet extends PackSet
 
     public void complement(FlowSet destFlow)
     {
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = ~(this.bits[i]);
@@ -297,7 +242,7 @@ class ArrayPackSet extends PackSet
 
     public void remove(Object obj, FlowSet destFlow)
     {
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         if(this != dest)
             copy(dest);
@@ -309,22 +254,34 @@ class ArrayPackSet extends PackSet
 
     public void union(FlowSet otherFlow, FlowSet destFlow)
     {
-        ArrayPackSet other = (ArrayPackSet) otherFlow;
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
-        if(!(other instanceof ArrayPackSet) || bits.length != other.bits.length)
+        if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] | other.bits[i];
     }
 
+    public void difference(FlowSet otherFlow, FlowSet destFlow)
+    {
+        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+
+        if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
+            throw new RuntimeException("Incompatible other set for union");
+            
+        for(int i = 0; i < bits.length; i++)
+            dest.bits[i] = this.bits[i] & ~other.bits[i];
+    }
+    
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
-        ArrayPackSet other = (ArrayPackSet) otherFlow;
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
-        if(!(other instanceof ArrayPackSet) || bits.length != other.bits.length)
+        if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
 
         for(int i = 0; i < bits.length; i++)
@@ -340,7 +297,7 @@ class ArrayPackSet extends PackSet
 
     public boolean equals(Object otherFlow)
     {
-        ArrayPackSet other = (ArrayPackSet) otherFlow;
+        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
 
         for(int i = 0; i < bits.length; i++)
             if(this.bits[i] != other.bits[i])
@@ -370,12 +327,13 @@ class ArrayPackSet extends PackSet
         return buffer.toString();
     }
 
-    public void copy(Flow destFlow)
+    public void copy(FlowSet destFlow)
     {
-        ArrayPackSet dest = (ArrayPackSet) destFlow;
+        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i];
     }
 
 }
+

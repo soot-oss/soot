@@ -61,9 +61,8 @@
 
  B) Changes:
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
+ - Modified on January 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   First release.
 
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
@@ -72,9 +71,10 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
 
-public interface Flow
+public interface BoundedFlowSet extends FlowSet
 {
-    public Object clone();
-    public void copy(Flow dest);
+    public List toList(int low, int high);
+    public void complement(FlowSet dest);
 }

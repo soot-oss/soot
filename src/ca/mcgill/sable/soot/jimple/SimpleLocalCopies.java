@@ -151,7 +151,7 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
 
             FlowUniverse copiesUniverse = new FlowUniverse(copiesList.toArray());
             
-            emptySet = PackSet.v(copiesUniverse);
+            emptySet = new ArrayPackedSet(copiesUniverse);
         }
 
         // Create preserve sets for each local.
@@ -189,7 +189,7 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
 
                 while(localIt.hasNext())
                 {
-                    FlowSet preserveSet = (FlowSet) localToPreserveSet.get(localIt.next());
+                    BoundedFlowSet preserveSet = (BoundedFlowSet) localToPreserveSet.get(localIt.next());
 
                     preserveSet.complement(preserveSet);
                 }
@@ -200,12 +200,12 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
         doAnalysis();
     }
 
-    protected Flow getInitialFlow()
+    protected Object newInitialFlow()
     {
-        return emptySet;
+        return emptySet.clone();
     }
 
-    protected void flowThrough(Flow inValue, Stmt stmt, Flow outValue)
+    protected void flowThrough(Object inValue, Stmt stmt, Object outValue)
     {
         FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
 
@@ -237,7 +237,15 @@ class CopiesFlowAnalysis extends ForwardFlowAnalysis
             in.copy(out);
     }
 
-    protected void merge(Flow in1, Flow in2, Flow out)
+    protected void copy(Object source, Object dest)
+    {
+        FlowSet sourceSet = (FlowSet) source,
+            destSet = (FlowSet) dest;
+            
+        sourceSet.copy(destSet);
+    }
+
+    protected void merge(Object in1, Object in2, Object out)
     {
         FlowSet inSet1 = (FlowSet) in1,
             inSet2 = (FlowSet) in2;

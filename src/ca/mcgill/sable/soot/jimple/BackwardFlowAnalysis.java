@@ -94,7 +94,6 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
         // Set initial Flows and nodes to visit.
         {
             Iterator it = graph.iterator();
-            Flow initialFlow = (Flow) getInitialFlow();
 
             while(it.hasNext())
             {
@@ -103,51 +102,51 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 changedStmts.addLast(s);
                 // changedStmtsSet.add(s);
 
-                stmtToBeforeFlow.put(s, initialFlow.clone());
-                stmtToAfterFlow.put(s, initialFlow.clone());
+                stmtToBeforeFlow.put(s, newInitialFlow());
+                stmtToAfterFlow.put(s, newInitialFlow());
             }
         }
 
         // Perform fixed point flow analysis
         {
-            Flow previousBeforeFlow = (Flow) (getInitialFlow()).clone();
+            Object previousBeforeFlow = newInitialFlow();
 
             while(!changedStmts.isEmpty())
             {
-                Flow beforeFlow;
-                Flow afterFlow;
+                Object beforeFlow;
+                Object afterFlow;
 
                 Stmt s = (Stmt) changedStmts.removeFirst();
 
                 // changedStmtsSet.remove(s);
 
-                ((Flow) stmtToBeforeFlow.get(s)).copy(previousBeforeFlow);
+                copy(stmtToBeforeFlow.get(s), previousBeforeFlow);
 
                 // Compute and store afterFlow
                 {
                     List succs = graph.getSuccsOf(s);
 
-                    afterFlow = (Flow) stmtToAfterFlow.get(s);
+                    afterFlow =  stmtToAfterFlow.get(s);
 
                     if(succs.size() == 1)
-                        ((Flow) stmtToBeforeFlow.get(succs.get(0))).copy(afterFlow);
+                        copy(stmtToBeforeFlow.get(succs.get(0)), afterFlow);
                     else if(succs.size() != 0)
                     {
                         Iterator succIt = succs.iterator();
 
-                        ((Flow) stmtToBeforeFlow.get(succIt.next())).copy(afterFlow);
+                        copy(stmtToBeforeFlow.get(succIt.next()), afterFlow);
 
                         while(succIt.hasNext())
                         {
-                            Flow otherBranch = (Flow) stmtToBeforeFlow.get(succIt.next());
-                            merge(afterFlow, otherBranch, afterFlow);
+                            Object otherBranchFlow = stmtToBeforeFlow.get(succIt.next());
+                            merge(afterFlow, otherBranchFlow, afterFlow);
                         }
                     }
                 }
 
                 // Compute beforeFlow and store it.
                 {
-                    beforeFlow = (Flow) stmtToBeforeFlow.get(s);
+                    beforeFlow = stmtToBeforeFlow.get(s);
                     flowThrough(afterFlow, s, beforeFlow);
                 }
 

@@ -114,6 +114,9 @@ public class Main
     static boolean isProfilingOptimization;
     static boolean oldTyping;
     static boolean isInDebugMode;
+    static boolean usePackedLive;
+    static boolean usePackedDefs = true;
+    
 
     public static String jimpleClassPath;
 
@@ -136,7 +139,14 @@ public class Main
         resolveTimer = new Timer(),
         totalTimer = new Timer(),
         splitPhase1Timer = new Timer(),
-        splitPhase2Timer = new Timer();
+        splitPhase2Timer = new Timer(),
+        defsSetupTimer = new Timer(),
+        defsAnalysisTimer = new Timer(),
+        defsPostTimer = new Timer(),
+        liveSetupTimer = new Timer(),
+        liveAnalysisTimer = new Timer(),
+        livePostTimer = new Timer();
+        
 
     static int conversionLocalCount,
         cleanup1LocalCount,
@@ -166,7 +176,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.1.dev.6");
+            System.out.println("Jimple version 1.beta.1.dev.7");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -230,6 +240,10 @@ public class Main
                     buildBodyOptions |= BuildJimpleBodyOption.NO_SPLITTING;
                 else if(args[i].equals("-oldtyping"))
                     oldTyping = true;
+                else if(args[i].equals("-usepackedlive"))
+                    usePackedLive = true;
+                else if(args[i].equals("-usepackeddefs"))
+                    usePackedDefs = true;    
                 else if(args[i].equals("-jimpleClassPath"))
                 {   if(++i < args.length)
                         jimpleClassPath = args[i];
@@ -372,12 +386,20 @@ public class Main
                 
                 System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
                 System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
+                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
+                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
                 System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
                 System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
                 System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
+                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
+                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
+                
                 System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
+                
                 System.out.println();
 
                 // Print out time stats.
