@@ -110,7 +110,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
         return rightBox.getValue() instanceof InvokeExpr;
     }
 
-    public Value getInvokeExpr()
+    public InvokeExpr getInvokeExpr()
     {
         if (!containsInvokeExpr())
             throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
@@ -132,15 +132,15 @@ public class JAssignStmt extends AbstractDefinitionStmt
 	return ((leftBox.getValue() instanceof ArrayRef) || (rightBox.getValue() instanceof ArrayRef));
     }
 
-    public Value getArrayRef()
+    public ArrayRef getArrayRef()
     {
 	if (!containsArrayRef())
 	    throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
 
 	if (leftBox.getValue() instanceof ArrayRef)
-	    return leftBox.getValue();
+	    return (ArrayRef) leftBox.getValue();
 	else
-	    return rightBox.getValue();
+	    return (ArrayRef) rightBox.getValue();
     }
 
     public ValueBox getArrayRefBox()
@@ -159,15 +159,15 @@ public class JAssignStmt extends AbstractDefinitionStmt
 	return ((leftBox.getValue() instanceof FieldRef) || (rightBox.getValue() instanceof FieldRef));
     }
 
-    public Value getFieldRef()
+    public FieldRef getFieldRef()
     {
 	if (!containsFieldRef())
 	    throw new RuntimeException("getFieldRef() called with no FieldRef present!");
 	
 	if (leftBox.getValue() instanceof FieldRef)
-	    return leftBox.getValue();
+	    return (FieldRef) leftBox.getValue();
 	else
-	    return rightBox.getValue();
+	    return (FieldRef) rightBox.getValue();
     }
 
     public ValueBox getFieldRefBox()

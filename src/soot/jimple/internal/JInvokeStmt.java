@@ -75,9 +75,9 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         invokeExprBox.setValue(invokeExpr);
     }
 
-    public Value getInvokeExpr()
+    public InvokeExpr getInvokeExpr()
     {
-        return invokeExprBox.getValue();
+        return (InvokeExpr) invokeExprBox.getValue();
     }
 
     public ValueBox getInvokeExprBox()

@@ -55,7 +55,7 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
         return false;
     }
 
-    public Value getInvokeExpr()
+    public InvokeExpr getInvokeExpr()
     {
         throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
     }
@@ -70,7 +70,7 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
 	return false;
     }
 
-    public Value getArrayRef()
+    public ArrayRef getArrayRef()
     {
 	throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
     }
@@ -85,7 +85,7 @@ public abstract class AbstractStmt extends AbstractUnit implements Stmt, Convert
 	return false;
     }
 
-    public Value getFieldRef()
+    public FieldRef getFieldRef()
     {
 	throw new RuntimeException("getFieldRef() called with no FieldRef present!");
     }

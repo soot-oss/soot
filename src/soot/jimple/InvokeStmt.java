@@ -36,6 +36,6 @@ import java.util.*;
 public interface InvokeStmt extends Stmt
 {
     public void setInvokeExpr(Value invokeExpr);
-    public Value getInvokeExpr();
+    public InvokeExpr getInvokeExpr();
     public ValueBox getInvokeExprBox();
 }

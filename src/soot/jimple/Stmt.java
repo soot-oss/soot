@@ -45,15 +45,15 @@ public interface Stmt extends Unit
     public String toString(Map stmtToName, String indentation);
 
     public boolean containsInvokeExpr();
-    public Value getInvokeExpr();
+    public InvokeExpr getInvokeExpr();
     public ValueBox getInvokeExprBox();
 
     public boolean containsArrayRef();
-    public Value getArrayRef();
+    public ArrayRef getArrayRef();
     public ValueBox getArrayRefBox();
 
     public boolean containsFieldRef();
-    public Value getFieldRef();
+    public FieldRef getFieldRef();
     public ValueBox getFieldRefBox();
 }
 
