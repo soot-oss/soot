@@ -30,5 +30,15 @@ import java.util.*;
 
 public abstract class RefLikeType extends Type
 {
+    /**
+     * If I have a variable x of declared type t, what is a good        
+     * declared type for the expression ((Object[]) x)[i]? The          
+     * getArrayElementType() method in RefLikeType was introduced even  
+     * later to answer this question for all classes implementing       
+     * RefLikeType. If t is an array, then the answer is the same as    
+     * getElementType(). But t could also be Object, Serializable, or   
+     * Cloneable, which can all hold any array, so then the answer is   
+     * Object.                                                          
+     */
     public abstract Type getArrayElementType();
 }

@@ -35,10 +35,18 @@ import java.util.*;
  *   and an integer representing the array's dimension count..
  *   Two ArrayType are 'equal' if they are parametrized equally.
  *
+ *
+ *
  */
 public class ArrayType extends RefLikeType
 {
-    /** baseType can be any type except for an array type, null and void 
+    /**
+     * baseType can be any type except for an array type, null and void
+     *
+     * What is the base type of the array? That is, for an array of type
+     * A[][][], how do I find out what the A is? The accepted way of
+     * doing this has always been to look at the public field baseType
+     * in ArrayType, ever since the very beginning of Soot.
      */
     public final Type baseType;
     
@@ -129,9 +137,24 @@ public class ArrayType extends RefLikeType
         ((TypeSwitch) sw).caseArrayType(this);
     }
 
+    /**
+     * If I have a variable x of declared type t, what is a good
+     * declared type for the expression ((Object[]) x)[i]? The
+     * getArrayElementType() method in RefLikeType was introduced to
+     * answer this question for all classes implementing RefLikeType. If
+     * t is an array, then the answer is the same as getElementType().
+     * But t could also be Object, Serializable, or Cloneable, which can
+     * all hold any array, so then the answer is Object.
+     */
     public Type getArrayElementType() {
 	return getElementType();
     }
+    /**
+     * If I get an element of the array, what will be its type? That
+     * is, if I have an array a of type A[][][], what is the type of
+     * a[] (it's A[][])? The getElementType() method in ArrayType was
+     * introduced to answer this question.
+     */
     public Type getElementType() {
 	if( numDimensions > 1 ) {
 	    return ArrayType.v( baseType, numDimensions-1 );
