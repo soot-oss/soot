@@ -1076,12 +1076,12 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		if(!lop.hasAncestor_1(ClassHierarchy.v().INT))
 		  {
-		    expr.setOp1(insertCast(expr.getOp1(), lop.type(), rop.type(), stmt));
+		    expr.setOp1(insertCast(expr.getOp1(), getTypeForCast(lop), getTypeForCast(rop), stmt));
 		  }
 		
 		if(!rop.hasAncestor_1(ClassHierarchy.v().INT))
 		  {
-		    expr.setOp2(insertCast(expr.getOp2(), rop.type(), lop.type(), stmt));
+		    expr.setOp2(insertCast(expr.getOp2(), getTypeForCast(rop), getTypeForCast(lop), stmt));
 		  }
 	      }
 	    else
