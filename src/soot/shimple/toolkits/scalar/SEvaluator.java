@@ -27,9 +27,9 @@ import soot.jimple.toolkits.scalar.*;
 import java.util.*;
 
 /**
- * "Extension" of soot.jimple.toolkits.scalar.Evaluator to handle
- * Phi expressions.  Also provides a couple of convenience
- * functions.
+ * "Extension" of soot.jimple.toolkits.scalar.Evaluator to handle Phi
+ * expressions.  Basically a dumping ground for functionality found
+ * useful in SConstantPropagatorAndFolder.
  *
  * @author Navindra Umanee.
  * @see soot.jimple.toolkits.scalar.Evaluator
@@ -124,6 +124,146 @@ public class SEvaluator
         }
         
         return null;
+    }
+
+    /**
+     * Get the constant value of the expression given the assumptions in
+     * the localToConstant map.  Does not change expression.
+     **/
+    public static Constant getConstantValueOf(Expr e, Map localToConstant)
+    {
+        Constant ret = null;
+        
+        EVALUATE:
+        {
+        // weed out expressions we can't handle
+        if(!(e instanceof UnopExpr ||
+             e instanceof BinopExpr ||
+             e instanceof PhiExpr)){
+            ret = BottomConstant.v();
+            break EVALUATE;
+        }
+         
+        /* clone expr and update the clone with our assumptions */
+
+        Expr expr = (Expr) e.clone();
+        Iterator useBoxIt = expr.getUseBoxes().iterator();
+        boolean cannotfold = false;
+
+        while(useBoxIt.hasNext()){
+            ValueBox useBox = (ValueBox) useBoxIt.next();
+            Value use = useBox.getValue();
+            if(use instanceof Local){
+                Constant assumedConstant = (Constant) localToConstant.get(use);
+
+                // we can't do anything with Bottom
+                if(assumedConstant instanceof BottomConstant){
+                    ret = BottomConstant.v();
+                    break EVALUATE;
+                }
+                // expressions containing Top need special treatment
+                else if(assumedConstant instanceof TopConstant)
+                    cannotfold = true;
+                // normal case
+                else
+                    if(useBox.canContainValue(assumedConstant))
+                        useBox.setValue(assumedConstant);
+            }
+        }
+
+        /* evalute the expr */
+
+        // cannotfold means Top is present in the expression.  Hence
+        // the expression resolves to Top, except for PhiExpr which
+        // needs special handling.
+        if(cannotfold){
+            if(expr instanceof PhiExpr){
+                PhiExpr pe = (PhiExpr) expr;
+                if(isPhiFuzzyConstantValued(pe)){
+                    Constant first = getFirstConstantInPhi(pe);
+                    if(first != null)
+                        ret = first;
+                    else
+                        ret = TopConstant.v();
+                    break EVALUATE;
+                }
+                else{
+                    ret = BottomConstant.v();
+                    break EVALUATE;
+                }
+            }
+        }
+        else{
+            Constant constant = (Constant) getConstantValueOf(expr);
+            if(constant != null)
+                ret = constant;
+            else
+                ret = BottomConstant.v();
+            break EVALUATE;
+        }
+        } // end EVALUATE
+
+        if(ret == null)
+            throw new RuntimeException("Assertion failed.");
+        
+        return ret;
+    }
+
+    /**
+     * Top i.e. assumed to be a constant, but of unknown value.
+     **/
+    public static class TopConstant extends BogusConstant
+    {
+        private static final TopConstant constant = new TopConstant();
+        
+        private TopConstant() {}
+        
+        public static Constant v()
+        {
+            return constant;
+        }
+    
+        public Type getType()
+        {
+            return UnknownType.v();
+        }
+
+        public void apply(Switch sw)
+        {
+            throw new RuntimeException("Not implemented.");
+        }
+    }
+    
+    /**
+     * Bottom i.e. known not to be a constant.
+     **/
+    public static class BottomConstant extends BogusConstant
+    {
+        private static final BottomConstant constant = new BottomConstant();
+        
+        private BottomConstant() {}
+
+        public static Constant v()
+        {
+            return constant;
+        }
+        
+        public Type getType()
+        {
+        return UnknownType.v();
+        }
+    
+        public void apply(Switch sw)
+        {
+            throw new RuntimeException("Not implemented.");
+        }
+    }
+
+    /**
+     * Create a new bogus hierarchy of constants -- Top and Bottom.
+     **/
+    public static abstract class BogusConstant extends Constant
+    {
     }
 }
 

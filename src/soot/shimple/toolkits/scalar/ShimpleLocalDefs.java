@@ -40,6 +40,7 @@ import java.util.*;
  * definition Unit given only the Local.
  *
  * @author Navindra Umanee
+ * @see ShimpleLocalUses
  * @see soot.toolkits.scalar.SimpleLocalDefs
  * @see soot.toolkits.scalar.SimpleLocalUses
  **/
@@ -84,11 +85,11 @@ public class ShimpleLocalDefs implements LocalDefs
     }
 
     /**
-     * Unconditionally returns the definition site of a local.
+     * Unconditionally returns the definition site of a local (as a
+     * singleton list).
      *
      * <p> This method is currently not required by the LocalDefs
-     * interface, but we will return a singleton List instead of a
-     * Unit in case LocalDefs requires such a method in the future.
+     * interface.
      **/
     public List getDefsOf(Local l)
     {
@@ -100,6 +101,15 @@ public class ShimpleLocalDefs implements LocalDefs
         return defs;
     }
 
+    /**
+     * Returns the definition site for a Local at a certain point
+     * (Unit) in a method as a singleton list.
+     *
+     * @param l the Local in question.
+     * @param s a unit that specifies the method context (location) to
+     * query for the definitions of the Local.
+     * @return a singleton list containing the definition site.
+     **/
     public List getDefsOfAt(Local l, Unit s)
     {
         // For consistency with SimpleLocalDefs, check that the local

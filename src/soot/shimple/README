@@ -35,9 +35,8 @@ utility functions, the ShimpleBody class describes Shimple method
 bodies and PhiExpr provides the interface to Phi expressions.
 
 Use/Definition and Definition/Use chains for Shimple bodies can be
-obtained either from the accessor methods in ShimpleBody or with
-ShimpleLocalDefs in package soot.shimple.toolkits.scalar and
-SimpleLocalUses in package soot.toolkits.scalar.
+obtained with ShimpleLocalDefs and ShimpleLocalUses in package
+soot.shimple.toolkits.scalar.
 
 Available example analyses for Shimple currently include
 ShimpleLocalDefs, SEvaluator and SConstantPropagatorAndFolder in

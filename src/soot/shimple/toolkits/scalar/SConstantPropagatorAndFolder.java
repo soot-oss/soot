@@ -27,6 +27,9 @@ import soot.shimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
+import soot.shimple.toolkits.scalar.SEvaluator.BogusConstant;
+import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
+import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
 
 public class SConstantPropagatorAndFolder extends BodyTransformer
 {
@@ -59,7 +62,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             Chain units = sb.getUnits();
             Chain locals = sb.getLocals();
             ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
-            LocalUses localUses = new SimpleLocalUses(sb, localDefs);
+            ShimpleLocalUses localUses = new ShimpleLocalUses(sb);
         
             Iterator localsIt = locals.iterator();
             while(localsIt.hasNext()){
@@ -67,7 +70,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                 Constant constant = (Constant) localToConstant.get(local);
 
                 if(!(constant instanceof BogusConstant)){
-                    DefinitionStmt stmt =(DefinitionStmt) localDefs.getDefsOf(local).get(0);
+                    DefinitionStmt stmt =
+                        (DefinitionStmt) localDefs.getDefsOf(local).get(0);
 
                     // update the definition
                     {
@@ -81,7 +85,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                     
                     // update the uses
                     {
-                        Iterator usesIt = localUses.getUsesOf(stmt).iterator();
+                        Iterator usesIt = localUses.getUsesOf(local).iterator();
 
                         while(usesIt.hasNext()){
                             ValueBox clientUseBox =
@@ -216,9 +220,11 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
                     op2 = (Constant) localToConstant.get(op2Value);
             }
 
+            // flow both ways
             if(op1 instanceof BottomConstant || op2 instanceof BottomConstant)
                 break IFSTMT;
-            
+
+            // no flow
             if(op1 instanceof TopConstant || op2 instanceof TopConstant)
                 return;
 
@@ -264,7 +270,7 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
             if(fall == branch)
                 throw new RuntimeException("Assertion failed.");
         }
-        }
+        } // end IFSTMT
 
         // conservative control flow estimates
         if(fall == branch){
@@ -300,100 +306,31 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         DefinitionStmt dStmt = (DefinitionStmt) u;
         
         Local local;
-        
+
         {
             Value value = dStmt.getLeftOp();
-
-            // not concerned
             if(!(value instanceof Local))
                 return null;
-        
             local = (Local) value;
         }
 
-        // keeps track of any changes
-        boolean changed = false;
+        /* update assumptions */
 
         Value rightOp = dStmt.getRightOp();
+        Constant constant = BottomConstant.v();
 
-        // update our assumptions
-        if(dStmt instanceof IdentityStmt)
-            changed = merge(local, BottomConstant.v());
-        else if(rightOp instanceof FieldRef)
-            changed = merge(local, BottomConstant.v());
-        else if(rightOp instanceof Constant)
-            changed = merge(local, (Constant) rightOp);
-        else if(rightOp instanceof Local){
-            Constant rightValue = (Constant) localToConstant.get(rightOp);
-            changed = merge(local, rightValue);
-        }
-        else if(!(rightOp instanceof UnopExpr ||
-                  rightOp instanceof BinopExpr ||
-                  rightOp instanceof PhiExpr)){
-            changed = merge(local, BottomConstant.v());
-        }
-        // now handle PhiExpr, UnopExpr and BinopExpr
-        else{
-            // clonedRightOp is a copy of rightOp updated to use
-            // our assumptions.  We create it so that it can be passed
-            // to Evaluator in order to determine the Constant value of
-            // the expression
-            Value clonedRightOp = (Value) rightOp.clone();
+        if(rightOp instanceof Constant)
+            constant = (Constant) rightOp;
+        else if(rightOp instanceof Local)
+            constant = (Constant) localToConstant.get(rightOp); 
+        else if(rightOp instanceof Expr)
+            constant =
+                SEvaluator.getConstantValueOf((Expr)rightOp, localToConstant);
+        
+        if(!merge(local, constant))
+            return null;
 
-            Iterator useBoxIt = clonedRightOp.getUseBoxes().iterator();
-            boolean cannotfold = false;
-
-            // update clonedRightOp with our assumptions
-            while(useBoxIt.hasNext()){
-                ValueBox useBox = (ValueBox) useBoxIt.next();
-                Value use = useBox.getValue();
-
-                if(use instanceof Local){
-                    Constant assumedConstant = (Constant) localToConstant.get(use);
-                    if(assumedConstant instanceof BottomConstant){
-                        changed = merge(local, BottomConstant.v());
-                        break;
-                    }
-                    else if(assumedConstant instanceof TopConstant){
-                        cannotfold = true;
-                    }
-                    else{
-                        if(useBox.canContainValue(assumedConstant))
-                           useBox.setValue(assumedConstant);
-                    }
-                }
-            }
-
-            // We cannot fold normal expressions because Top is
-            // present in the expression, we simply assume the
-            // expression resolves to Top.  We can (and should)
-            // however fold Phi expressions simply by ignoring Top.
-            if(cannotfold && clonedRightOp instanceof PhiExpr){
-                PhiExpr pe = (PhiExpr) clonedRightOp;
-
-                if(SEvaluator.isPhiFuzzyConstantValued(pe)){
-                    Constant rightValue = SEvaluator.getFirstConstantInPhi(pe);
-
-                    if(rightValue != null)
-                        changed = merge(local, rightValue);
-                    // else TopConstant
-                }
-                else
-                    changed = merge(local, BottomConstant.v());
-            }
-            else{
-                Constant newConstant = (Constant) SEvaluator.getConstantValueOf(clonedRightOp);
-                if(newConstant != null)
-                    changed = merge(local, newConstant);
-                else
-                    changed = merge(local, BottomConstant.v());
-            }
-        } // end of merging phase
-
-         if(!changed)
-             return null;
-
-         return new Pair(u, localToConstant.get(local));
+        return new Pair(u, localToConstant.get(local));
     }
     
     /**
@@ -419,58 +356,4 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         localToConstant.put(local, BottomConstant.v());
         return true;
     }
-}
-
-/**
- * Top.  Denotes that a local is conservatively assumed to be a constant.
- **/
-class TopConstant extends BogusConstant
-{
-    private static final TopConstant constant = new TopConstant();
-    
-    private TopConstant() {}
-
-    public static Constant v()
-    {
-        return constant;
-    }
-    
-    public Type getType()
-    {
-        return UnknownType.v();
-    }
-
-    public void apply(Switch sw)
-    {
-        throw new RuntimeException("Not implemented.");
-    }
-}
-
-/**
- * Denotes that a local is (conservatively) not a constant.
- **/
-class BottomConstant extends BogusConstant
-{
-    private static final BottomConstant constant = new BottomConstant();
-        
-    private BottomConstant() {}
-
-    public static Constant v()
-    {
-        return constant;
-    }
-    
-    public Type getType()
-    {
-        return UnknownType.v();
-    }
-    
-    public void apply(Switch sw)
-    {
-        throw new RuntimeException("Not implemented.");
-    }
-}
-
-abstract class BogusConstant extends Constant
-{
 }
