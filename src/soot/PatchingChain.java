@@ -52,7 +52,7 @@ public class PatchingChain extends AbstractCollection implements Chain
     public PatchingChain(Chain aChain, Body aBody)
     {
         innerChain = aChain;
-        body = body;
+        body = aBody;
     }
 
     /**

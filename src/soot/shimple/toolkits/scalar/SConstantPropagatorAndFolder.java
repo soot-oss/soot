@@ -39,16 +39,15 @@ import java.util.*;
  * SSA.
  *
  * <p> To use this analysis from the command line in Soot, try
- * something like: <code>soot.Main --shimple -p sop on
- * &lt;classname&gt;</code> or <code>soot.Main --jimple --via-shimple
- * -p sop on -p sb naive-phi-elimination
- * &lt;classname&gt;</code>.
+ * something like: <code>soot.Main -f shimple -p sop on
+ * &lt;classname&gt;</code> or <code>soot.Main -f jimple --via-shimple
+ * -p sop on -p sb naive-phi-elimination &lt;classname&gt;</code>.
  *
  * <p> To compare the results with the non-SSA propagator, you can use
  * (this disables all optimizations but constant propagation and
- * folding): <code>soot.Main -p jop on -p jop.cp disabled -p jop.cbf disabled
- * -p jop.dae disabled -p jop.uce1 disabled -p jop.uce2 disabled -p
- * jop.ubf1 disabled -p jop.ubf2 disabled -p jop.ule disabled --jimple
+ * folding): <code>soot.Main -f jimple -p jop on -p jop.cp off -p
+ * jop.cbf off -p jop.dae off -p jop.uce1 off -p jop.uce2 off -p
+ * jop.ubf1 off -p jop.ubf2 off -p jop.ule off
  * &lt;classname&gt;</code>
  * 
  *  <p> The analysis is based on the efficient linear algorithm
