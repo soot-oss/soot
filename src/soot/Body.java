@@ -464,65 +464,7 @@ public abstract class Body extends AbstractHost
         out.println("    " + decl);        
         out.println("    {");
 
-        // Print out local variables
-        {
-            Map typeToLocals = new DeterministicHashMap(this.getLocalCount() * 2 + 1, 0.7f);
-
-            // Collect locals
-            {
-                Iterator localIt = this.getLocals().iterator();
-
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-
-                    List localList;
- 
-                    String typeName;
-                    Type t = local.getType();
-
-                    typeName = (isPrecise) ?  t.toString() :  t.toBriefString();
-
-                    if(typeToLocals.containsKey(typeName))
-                        localList = (List) typeToLocals.get(typeName);
-                    else
-                    {
-                        localList = new ArrayList();
-                        typeToLocals.put(typeName, localList);
-                    }
-
-                    localList.add(local);
-                }
-            }
-
-            // Print locals
-            {
-                Iterator typeIt = typeToLocals.keySet().iterator();
-
-                while(typeIt.hasNext())
-                {
-                    String type = (String) typeIt.next();
-
-                    List localList = (List) typeToLocals.get(type);
-                    Object[] locals = localList.toArray();
-                    out.print("        "  + type + " ");
-                    
-                    for(int k = 0; k < locals.length; k++)
-                    {
-                        if(k != 0)
-                            out.print(", ");
-
-                        out.print(((Local) locals[k]).getName());
-                    }
-
-                    out.println(";");
-                }
-            }
-
-
-            if(!typeToLocals.isEmpty())
-                out.println();
-        }
+	Scene.v().getLocalPrinter().printLocalsInBody( this, out, isPrecise);
 
         // Print out statements
         // Use an external class so that it can be overridden.

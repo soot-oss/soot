@@ -37,7 +37,7 @@ public class IntConstant extends ArithmeticConstant implements Switchable, ToBri
 {
     public final int value;
 
-    private IntConstant(int value)
+    protected IntConstant(int value)
     {
         this.value = value;
     }

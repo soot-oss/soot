@@ -57,6 +57,13 @@ public class UnitGraph implements DirectedGraph
     Body body;
     Chain unitChain;
 
+
+    UnitGraph( Body unitBody, boolean addExceptionEdges)
+    {
+	this( unitBody, addExceptionEdges, false);
+    }
+
+
     
     /**
      *   Constructs  a graph for the units found in the provided
@@ -70,7 +77,7 @@ public class UnitGraph implements DirectedGraph
      *   @see Body
      *   @see Unit
      */
-    UnitGraph(Body unitBody, boolean addExceptionEdges)
+    UnitGraph(Body unitBody, boolean addExceptionEdges, boolean firstStmtWorkaround)
     {
         body = unitBody;
         unitChain = body.getUnits();
@@ -163,6 +170,7 @@ public class UnitGraph implements DirectedGraph
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block
                     // is not even fully executed before an exception is thrown
+		    if (firstStmtWorkaround == false)
                     {
                         Iterator unitIt = body.getUnits().iterator();
                         

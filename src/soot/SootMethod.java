@@ -145,6 +145,11 @@ public class SootMethod extends AbstractHost implements ClassMember
         return name;
     }
 
+    public void setDeclaringClass( SootClass declaringClass)
+    {
+	this.declaringClass = declaringClass;
+    }
+
     /** Returns the class which declares the current <code>SootMethod</code>. */
     public SootClass getDeclaringClass() 
     {
@@ -152,6 +157,11 @@ public class SootMethod extends AbstractHost implements ClassMember
             throw new RuntimeException("not declared: "+getName());
 
         return declaringClass;
+    }
+
+    public void setDeclared( boolean isDeclared)
+    {
+	this.isDeclared = isDeclared;
     }
 
     /** Returns true when some <code>SootClass</code> object declares this <code>SootMethod</code> object. */    
@@ -339,6 +349,13 @@ public class SootMethod extends AbstractHost implements ClassMember
         return exceptions != null && exceptions.contains(e);
     }
 
+    
+    public void setExceptions( List exceptions)
+    {
+	this.exceptions = new ArrayList();
+	this.exceptions.addAll( exceptions);
+    }
+
     /**
      * Returns a backed list of the exceptions thrown by this method.
      */
@@ -455,8 +472,9 @@ public class SootMethod extends AbstractHost implements ClassMember
     {
         StringBuffer buffer = new StringBuffer();
         Type t = returnType;
-        buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name));
-        buffer.append("(");
+	if (t != null) // This is needed for Dava constructors.
+	    buffer.append(t.toString());
+        buffer.append(" " + Scene.v().quotedNameOf(name) + "(");
         
         Iterator typeIt = params.iterator();
 
@@ -464,7 +482,7 @@ public class SootMethod extends AbstractHost implements ClassMember
         {
             t = (Type) typeIt.next();
             
-            buffer.append(t);
+	    buffer.append(t);
             
             while(typeIt.hasNext())
             {
@@ -510,11 +528,12 @@ public class SootMethod extends AbstractHost implements ClassMember
 
         // return type
         Type t = this.getReturnType();
-
-        buffer.append(t);
+	
+	if (t != null) // Again, needed for Dava constructors.
+	    buffer.append(t + " ");
 
         // name
-        buffer.append(" " + Scene.v().quotedNameOf(this.getName()) + "(");            
+        buffer.append(Scene.v().quotedNameOf(this.getName()) + "(");            
 
         // parameters
         Iterator typeIt = this.getParameterTypes().iterator();

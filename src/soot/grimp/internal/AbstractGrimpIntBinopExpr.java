@@ -69,7 +69,7 @@ abstract public class AbstractGrimpIntBinopExpr
         Value op1 = op1Box.getValue(), op2 = op2Box.getValue();
         String leftOp = op1.toString(), rightOp = op2.toString();
 
-        return toString(op1, op2, leftOp, rightOp);
+        return "(" + toString(op1, op2, leftOp, rightOp) + ")";
     }
 
     public String toBriefString()
@@ -78,6 +78,6 @@ abstract public class AbstractGrimpIntBinopExpr
         String leftOp = ((ToBriefString)op1).toBriefString(), 
             rightOp = ((ToBriefString)op2).toBriefString();
 
-        return toString(op1, op2, leftOp, rightOp);
+        return "(" + toString(op1, op2, leftOp, rightOp) + ")";
     }    
 }

@@ -49,6 +49,16 @@ public class DavaBody extends Body
     
     //public PatchingChain getUnits() {return trunkChain;}
     
+    public Map get_ParamMap()
+    {
+        return null;
+    }
+
+    public HashSet get_ThisLocals()
+    {
+        return null;
+    }
+
     public List getTrunks() {
 	return trunkList;
     }
