@@ -1,7 +1,7 @@
                       Soot Credits
                  
                  
-      Soot Maintainers: Raja Vallee-Rai, Patrick Lam, Feng Qian
+      Soot Maintainers: Patrick Lam, Feng Qian, Ondrej Lhotak
     
     
 -------------------- Soot Contributors ------------------------
@@ -13,12 +13,18 @@ Marc Berndl
 Phong Co (phong@hasc.com)
     - Jimple scalar optimizations
 
+David Eng (flynn@sable.mcgill.ca)
+    - XML output
+
 Etienne Gagnon (gagnon@sable.mcgill.ca)
     - Jimple typing algorithm
       
 Laurie Hendren (hendren@sable.mcgill.ca)
     - project advisor
        
+Felix Kwok (wkwok@sable.mcgill.ca)
+    - VTA re-implementation
+    
 Patrick Lam (plam@sable.mcgill.ca)
     - general Soot hacker
     - Grimp
@@ -26,18 +32,27 @@ Patrick Lam (plam@sable.mcgill.ca)
     - Aggregation
     - second implementation of inlining and devirtualization
 
+Ondrej Lhotak (olhota@sable.mcgill.ca)
+    - General bug-fixes, soot hacker
+
+Florian Loitsch (florian@loitsch.net)
+    - PRE re-implementation
+
+Jerome Miecznikowski (jerome@sable.mcgill.ca)
+    - Dava decompiler
+
+Patrice Pominville (patrice@sable.mcgill.ca)
+    - Soot infrastructure
+    - Baf implementation & optimizations
+    - Jimple parser
+    - annotation
+    
 Feng Qian (fqian@sable.mcgill.ca)
     - array bounds check and annotation
     - contributed to documentation writing
     - prepared 1.2.0 release
     - Dot interface, CFGViewer
     - prepared 1.2.2, 1.2.3 release
-    
-Patrice Pominville (patrice@sable.mcgill.ca)
-    - Soot infrastructure
-    - Baf implementation & optimizations
-    - Jimple parser
-    - annotation
     
 Vijay Sundaresan (vijay@sable.mcgill.ca)
     - first implementation of inlining and devirtualization
@@ -49,18 +64,6 @@ Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
 Clark Verbrugge (clump@cs.mcgill.ca)
     - coffi hacker
     - original Jimple hacker   
-
-Felix Kwok (wkwok@sable.mcgill.ca)
-    - VTA re-implementation
-    
-Florian Loitsch (florian@loitsch.net)
-    - PRE re-implementation
-
-Ondrej Lhotak (olhota@sable.mcgill.ca)
-    - General bug-fixes, soot hacker
-
-David Eng (flynn@sable.mcgill.ca)
-    - XML output
 
 -------------------- Funding Acknowledgements ------------------
                     

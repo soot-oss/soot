@@ -35,7 +35,7 @@ Improvements in current version
 12. Kludged together a bug fix for Alex Warshavsky (walex@il.ibm.com) where
     use-original-names sometimes produced Jimple Locals with #'s 
     in their names. (plam)
-13. Fixed bug reported by Sten Andrew Neuendorffer where CopyPropagator
+13. Fixed bug reported by Stephen Andrew Neuendorffer where CopyPropagator
      doesn't quite fail in the expected way when there's a variable used
      without definition (plam)
 14. Added basic XML support in the form of an XMLStmtPrinter. Using
@@ -61,12 +61,12 @@ Improvements in current version
 19. Added one flag in soot.Main.java to indicate the compilation for
     J2ME library which does not have Cloneable and Serializable interfaces.
 	This affects the typing system which handcodes both interfaces.
-	Has not benn tested on J2ME. But when the flag is set to false, 
+	Has not been tested on J2ME. But when the flag is set to false, 
 	original function is not affected.
 	Patch provided by Stephen Cheng.                (fqian)
 20. Fixed some obvious bugs in CFGViewer, added simple options. (fqian)
 21. Added a new implementation of PRE by Florian Loitsch, merging 
-    was done by Ondrej. The old implementation of PRE was obseleted.
+    was done by Ondrej. The old implementation of PRE was obsoleted.
     The new implementation to be tested.                (fqian)
 
 
@@ -76,7 +76,7 @@ Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
     (reported by Thomas VanDrunen)
 2. CFG.java is improved to handle nested JSR/RETs
 3. improved some exception message reported by Olivier Zendra.
-4. The Jasmin package is also updated to 1.06-s10, the bug in grammer
+4. The Jasmin package is also updated to 1.06-s10, the bug in grammar
    for attributes is fixed.
 5. replaced 'getNodes().contains()' by 'containsNode()' in 
    "jimple/toolkits/invoke/MethodCallGraph.java", which speeds up
@@ -124,7 +124,7 @@ Improvements in version 1.0.1 (not released)
 
 Improvements in Release 1 (version 1.0.0)
 
-Some of these changes occured earlier but are only mentioned now.
+Some of these changes occurred earlier but are only mentioned now.
 
 1. Changed the version numbering scheme to follow the Linux
 version numbering scheme.
