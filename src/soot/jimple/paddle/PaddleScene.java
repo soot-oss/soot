@@ -260,6 +260,11 @@ public class PaddleScene
         depMan.addPrec(prop, calloc);
         depMan.addPrec(prop, cload);
         depMan.addPrec(prop, pag);
+
+        depMan.addPrec(vcr, receivers);
+        depMan.addPrec(vcr, specials);
+        depMan.addPrec(vcr, scgb);
+        depMan.addPrec(vcr, rmout);
     }
     private void makeSetFactories() {
         switch( options.set_impl() ) {

@@ -100,7 +100,7 @@ public final class PropIter extends AbsPropagator {
             change = true;
         }
         for( Iterator tIt = newStore.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            final Rsrcc_src_dstc_dst_fld.Tuple t = (Rsrcc_src_dstc_dst_fld.Tuple) tIt.next();
             change = true;
             PointsToSetReadOnly p2set = p2sets.get(t.srcc(), t.src());
             if( p2set instanceof PointsToSetInternal ) {

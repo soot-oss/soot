@@ -166,7 +166,7 @@ public final class PropAlias extends AbsPropagator {
             }
         }
         for( Iterator tIt = newStore.iterator(); tIt.hasNext(); ) {
-            final Rsrcc_src_fld_dstc_dst.Tuple t = (Rsrcc_src_fld_dstc_dst.Tuple) tIt.next();
+            final Rsrcc_src_dstc_dst_fld.Tuple t = (Rsrcc_src_dstc_dst_fld.Tuple) tIt.next();
             ret = true;
             ContextVarNode dstcvn = ContextVarNode.make(t.dstc(), t.dst());
             if( fieldToBase.put( t.fld(), dstcvn ) ) {
