@@ -17,8 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.jimple.spark.internal;
-import soot.jimple.spark.*;
+package soot.toolkits.scalar;
 
 /** Just a pair of arbitrary objects.
  * @author Ondrej Lhotak

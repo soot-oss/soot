@@ -27,6 +27,7 @@ import soot.jimple.spark.builder.*;
 import soot.jimple.spark.internal.*;
 import soot.util.*;
 import soot.util.queue.*;
+import soot.toolkits.scalar.Pair;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 
 

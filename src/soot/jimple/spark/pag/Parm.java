@@ -20,7 +20,7 @@
 package soot.jimple.spark.pag;
 import java.util.*;
 import soot.*;
-import soot.jimple.spark.internal.Pair;
+import soot.toolkits.scalar.Pair;
 import soot.jimple.spark.*;
 
 /** Represents a method parameter.

@@ -22,6 +22,7 @@ import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
+import soot.toolkits.scalar.Pair;
 import soot.*;
 
 public class SparkNativeHelper extends NativeHelper {

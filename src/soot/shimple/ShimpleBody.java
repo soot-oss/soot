@@ -30,7 +30,7 @@ import soot.util.*;
 import java.util.*;
 
 /**
- * Implementation of the Body class for the Shimple (SSA Jimple) IR.
+ * Implementation of the Body class for the SSA Shimple IR.
  * This class provides methods for maintaining SSA form as well as
  * eliminating SSA form.
  *
@@ -52,8 +52,6 @@ public class ShimpleBody extends StmtBody
      * Holds our options map...
      **/
     protected ShimpleOptions options;
-    protected ShimpleLocalDefs localDefs = null;
-    protected LocalUses localUses = null;
 
     /**
      * Construct an empty ShimpleBody associated with m.
@@ -63,7 +61,7 @@ public class ShimpleBody extends StmtBody
         super(m);
         unitChain = new SPatchingChain(this, new HashChain());
         this.options = new ShimpleOptions(options);
-        setIsSSA(true);
+        setSSA(true);
     }
 
     /**
@@ -119,10 +117,8 @@ public class ShimpleBody extends StmtBody
      **/
     public void rebuild(boolean hasPhiNodes)
     {
-        localDefs = null;
-        localUses = null;
         new ShimpleBodyBuilder(this, hasPhiNodes);
-        setIsSSA(true);
+        setSSA(true);
     }
     
     /**
@@ -164,7 +160,7 @@ public class ShimpleBody extends StmtBody
     public void eliminatePhiNodes()
     {
         ShimpleBodyBuilder.eliminatePhiNodes(this);
-        setIsSSA(false);
+        setSSA(false);
     }
 
     /**
@@ -178,28 +174,6 @@ public class ShimpleBody extends StmtBody
     }
 
     /**
-     * Returns a ShimpleLocalDefs interface for this body.
-     **/
-    public ShimpleLocalDefs getLocalDefs()
-    {
-        if(localDefs == null)
-            localDefs = new ShimpleLocalDefs(this);
-
-        return localDefs;
-    }
-
-    /**
-     * Returns a LocalUses interface for this body.
-     **/
-    public LocalUses getLocalUses()
-    {
-        if(localUses == null)
-            localUses = new SimpleLocalUses(this, getLocalDefs());
-
-        return localUses;
-    }
-
-    /**
      * Set isSSA boolean to indicate whether a ShimpleBody is still in SSA
      * form or not.   Could be useful for book-keeping purposes.
      **/
@@ -208,25 +182,19 @@ public class ShimpleBody extends StmtBody
     /**
      * Sets a flag that indicates whether ShimpleBody is still in SSA
      * form after a transformation or not.  It is often up to the user
-     * to indicate if a body is no longer in SSA form.  Could be useful
-     * for book-keeping purposes.
+     * to indicate if a body is no longer in SSA form.
      **/
-    public void setIsSSA(boolean isSSA)
+    public void setSSA(boolean isSSA)
     {
         this.isSSA = isSSA;
-
-        if(!isSSA){
-            localUses = null;
-            localDefs = null;
-        }
     }
 
     /**
      * Returns value of, optional, user-maintained SSA boolean.
      *
-     * @see #setIsSSA(boolean)
+     * @see #setSSA(boolean)
      **/
-    public boolean getIsSSA()
+    public boolean isSSA()
     {
         return isSSA;
     }

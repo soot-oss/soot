@@ -23,10 +23,10 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
 import soot.util.*;
-
-import java.util.*;
+import soot.toolkits.scalar.Pair;
 import soot.jimple.spark.internal.*;
 import soot.jimple.toolkits.callgraph.Edge;
+import java.util.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).

@@ -56,7 +56,7 @@ public class ShimpleLocalDefs implements LocalDefs
     {
         // Instead of rebuilding the ShimpleBody without the
         // programmer's knowledge, throw a RuntimeException
-        if(!sb.getIsSSA())
+        if(!sb.isSSA())
             throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
 
         // build localToDefs map simply by iterating through all the

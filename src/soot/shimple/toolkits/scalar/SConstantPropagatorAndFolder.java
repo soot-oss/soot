@@ -25,113 +25,48 @@ import soot.options.*;
 import soot.jimple.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
+import soot.toolkits.graph.*;
 import java.util.*;
 
-/**
- * An example of constant propagation using Shimple.
- *
- * <p> This analysis is already more powerful than the simplistic
- * soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder and
- * demonstrates some of the benefits of SSA -- particularly the fact
- * that Phi nodes represent natural merge points in the control flow.
- * This implementation also shows how to access U/D and D/U chains in
- * Shimple.
- *
- * <p> To use this analysis from the command line in Soot, try
- * something like: <code>soot.Main -f shimple -p sop on
- * &lt;classname&gt;</code> or <code>soot.Main -f jimple --via-shimple
- * -p sop on -p shimple naive-phi-elimination
- * &lt;classname&gt;</code>.
- *
- * <p> To compare the results with the non-SSA propagator, you can use
- * (this disables all optimizations but constant propagation and
- * folding): <code>soot.Main -f jimple -p jop on -p jop.cpf on -p
- * jop.cse off -p jop.bcm off -p off jop.lcm -p off jop.cp -p jop.cbf
- * off -p jop.dae off -p jop.uce1 off -p jop.ubf1 off -p jop.uce2 off
- * -p jop.ubf2 off -p jop.ubf2 off * &lt;classname&gt;</code>
- * 
- * <p> The analysis is based on the efficient linear algorithm
- * described in section 1.1, P5 of the Cytron paper with the exception
- * that conditional control flow is not considered (conservatively
- * estimated).  This is not necessarily the best implementation (in
- * fact, it's a somewhat brute force approach to programming!) --
- * improvements and suggestions are welcome.
- *
- * @author Navindra Umanee
- * @see soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder
- * @see soot.shimple.toolkits.scalar.ShimpleLocalDefs
- * @see soot.toolkits.scalar.SimpleLocalUses
- * @see <a
- * href="http://citeseer.nj.nec.com/cytron91efficiently.html">Efficiently
- * Computing Static Single Assignment Form and the Control Dependence
- * Graph</a> 
- **/
 public class SConstantPropagatorAndFolder extends BodyTransformer
 {
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
 
+
     public static SConstantPropagatorAndFolder v()
     { return G.v().SConstantPropagatorAndFolder(); }
 
-    /**
-     * Map that keeps track of our assumptions on whether a local is a
-     * constant or not.  Initially we assume all Locals are
-     * TopConstant.
-     **/
-    protected Map localToConstant;
-
-    protected ShimpleLocalDefs localDefs;
-    protected LocalUses localUses;
-    
     protected void internalTransform(Body b, String phaseName, Map options)
     {
         if(!(b instanceof ShimpleBody))
             throw new RuntimeException("SConstantPropagatorAndFolder requires a ShimpleBody.");
-           
-        ShimpleBody sBody = (ShimpleBody) b;
+
+        ShimpleBody sb = (ShimpleBody) b;
+
+        if(!sb.isSSA())
+            throw new RuntimeException("ShimpleBody is not in proper SSA form as required by SConstantPropagatorAndFolder.  You may need to rebuild it or use ConstantPropagatorAndFolder instead.");
 
         if (Options.v().verbose())
-            G.v().out.println("[" + sBody.getMethod().getName() +
-                               "] Propagating and folding constants (SSA)...");
+            G.v().out.println("[" + sb.getMethod().getName() +
+                              "] Propagating and folding constants (SSA)...");
 
-        Chain units = sBody.getUnits();
-        Chain locals = sBody.getLocals();
+        // perform the main analysis
+        SCPFAnalysis scpf = new SCPFAnalysis(new CompleteUnitGraph(sb));
+        Map localToConstant = scpf.getResults();
 
-        // initialise localToConstant map -- assume all scalars are
-        // constant (Top)
+        // propagate the results
         {
-            localToConstant = new HashMap(units.size() * 2 + 1, 0.7f);
-
-            Iterator localsIt = locals.iterator();
-            while(localsIt.hasNext()){
-                Local local = (Local) localsIt.next();
-                Type localType = local.getType();
-
-                // only concerned with scalars
-                if(localType instanceof PrimType)
-                    localToConstant.put(local, TopConstant.v());
-            }
-        }
-
-        localDefs = sBody.getLocalDefs();
-        localUses = sBody.getLocalUses();
-
-        // flow analysis
-        {
-            Iterator unitsIt = units.iterator();
-            while(unitsIt.hasNext()){
-                propagate((Unit) unitsIt.next());
-            }
-        }
-
-        // finally, propagate the results
-        {
+            Chain units = sb.getUnits();
+            Chain locals = sb.getLocals();
+            ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
+            LocalUses localUses = new SimpleLocalUses(sb, localDefs);
+        
             Iterator localsIt = locals.iterator();
             while(localsIt.hasNext()){
                 Local local = (Local) localsIt.next();
                 Constant constant = (Constant) localToConstant.get(local);
 
-                if(constant instanceof NumericConstant){
+                if(!(constant instanceof BogusConstant)){
                     DefinitionStmt stmt =(DefinitionStmt) localDefs.getDefsOf(local).get(0);
 
                     // update the definition
@@ -162,22 +97,207 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             }
         }
     }
+}
+
+class SCPFAnalysis extends ForwardBranchedFlowAnalysis
+{
+    FlowSet emptySet;
+    Map localToConstant;
+
+    public Map getResults()
+    {
+        return localToConstant;
+    }
+    
+    public SCPFAnalysis(UnitGraph graph)
+    {
+        super(graph);
+        emptySet = new ArraySparseSet();
+
+        // initialise localToConstant map -- assume all scalars are
+        // constant (Top)
+        {
+            Chain locals = graph.getBody().getLocals();
+            Iterator localsIt = locals.iterator();
+            localToConstant = new HashMap(graph.size() * 2 + 1, 0.7f);
+
+            while(localsIt.hasNext()){
+                Local local = (Local) localsIt.next();
+                Type localType = local.getType();
+                localToConstant.put(local, TopConstant.v());
+            }
+        }
+
+        doAnalysis();
+    }
+    
+    /**
+     * If a node has empty IN sets we assume that it is not reachable.
+     * Hence, we initialise the entry sets to be non-empty to indicate
+     * that they are reachable.
+     **/
+    protected Object entryInitialFlow()
+    {
+        FlowSet entrySet = (FlowSet) emptySet.emptySet();
+        entrySet.add(TopConstant.v());
+        return entrySet;
+    }
+
+    protected Object newInitialFlow()
+    {
+        return emptySet.emptySet();
+    }
+
+    protected void merge(Object in1, Object in2, Object out)
+    {
+        FlowSet fin1 = (FlowSet) in1;
+        FlowSet fin2 = (FlowSet) in2;
+        FlowSet fout = (FlowSet) out;
+
+        fin1.union(fin2, fout);
+    }
+
+    public void copy(Object source, Object dest)
+    {
+        FlowSet fource = (FlowSet) source;
+        FlowSet fest = (FlowSet) dest;
+
+        fource.copy(fest);
+    }
+
+    public void flowThrough(Object in, Unit s, List fallOut, List branchOuts)
+    {
+        FlowSet fin = (FlowSet) ((FlowSet)in).clone();
+
+        // not reachable
+        if(fin.isEmpty())
+            return;
+        
+        Pair pair = processDefinitionStmt(s);
+
+        if(pair != null)
+            fin.add(pair);
+        
+        // normal, non-branching statement
+        if(!s.branches() && s.fallsThrough()){
+            Iterator fallOutIt = fallOut.iterator();
+            while(fallOutIt.hasNext()){
+                FlowSet fallSet = (FlowSet) fallOutIt.next();
+                fallSet.union(fin);
+            }
+
+            return;
+        }
+
+        boolean fall = false;
+        boolean branch = false;
+        
+        IFSTMT:
+        {
+        if(s instanceof IfStmt){
+            Value condValue = ((IfStmt) s).getCondition();
+            if(!(condValue instanceof ConditionExpr))
+                break IFSTMT;
+            ConditionExpr ce = (ConditionExpr) condValue;
+            
+            Constant op1, op2;
+            
+            {
+                Value op1Value = ce.getOp1();
+                if(op1Value instanceof Constant)
+                    op1 = (Constant) op1Value;
+                else
+                    op1 = (Constant) localToConstant.get(op1Value);
+
+                Value op2Value = ce.getOp2();
+                if(op2Value instanceof Constant)
+                    op2= (Constant) op2Value;
+                else
+                    op2 = (Constant) localToConstant.get(op2Value);
+            }
+
+            if(op1 instanceof BottomConstant || op2 instanceof BottomConstant)
+                break IFSTMT;
+            
+            if(op1 instanceof TopConstant || op2 instanceof TopConstant)
+                return;
+
+            if(ce instanceof EqExpr || ce instanceof GeExpr || ce instanceof LeExpr){
+                if(op1.equals(op2))
+                    branch = true;
+                else
+                    fall = true;
+            }
+
+            if(ce instanceof NeExpr){
+                if(op1.equals(op2))
+                    fall = true;
+                else
+                    branch = true;
+            }
+
+            Constant trueC = IntConstant.v(1);
+            Constant falseC = IntConstant.v(0);
+            
+            if(ce instanceof GeExpr || ce instanceof GtExpr){
+                NumericConstant nop1 = (NumericConstant) op1;
+                NumericConstant nop2 = (NumericConstant) op2;
+                
+                Constant retC = nop1.greaterThan(nop2);
+                if(retC.equals(trueC))
+                    branch = true;
+                else
+                    fall = true;
+            }
+
+            if(ce instanceof LeExpr || ce instanceof LtExpr){
+                NumericConstant nop1 = (NumericConstant) op1;
+                NumericConstant nop2 = (NumericConstant) op2;
+                
+                Constant retC = nop1.lessThan(nop2);
+                if(retC.equals(trueC))
+                    branch = true;
+                else
+                    fall = true;
+            }
+            
+            if(fall == branch)
+                throw new RuntimeException("Assertion failed.");
+        }
+        }
+
+        // conservative control flow estimates
+        if(fall == branch){
+            fall = s.fallsThrough();
+            branch = s.branches();
+        }
+
+        if(fall){
+            Iterator fallOutIt = fallOut.iterator();
+            while(fallOutIt.hasNext()){
+                FlowSet fallSet = (FlowSet) fallOutIt.next();
+                fallSet.union(fin);
+            }
+        }
+        
+        if(branch){
+            Iterator branchOutsIt = branchOuts.iterator();
+            while(branchOutsIt.hasNext()){
+                FlowSet branchSet = (FlowSet) branchOutsIt.next();
+                branchSet.union(fin);
+            }
+        }
+    }
 
     /**
-     * Recursive flow analysis function.  Our assumptions are
-     * maintained in the localToConstant table.  Initially all Locals
-     * are assumed to be the TopConstant and assumptions are corrected
-     * until there are no more changes.
-     *
-     * <p> This function observes a Unit and recursively updates
-     * assumptions if new defining information is found.
+     * Returns null or (Unit, Constant) pair if something has changed.
      **/
-    protected void propagate(Unit unit)
+    public Pair processDefinitionStmt(Unit u)
     {
-        if(!(unit instanceof DefinitionStmt))
-            return;
+        if(!(u instanceof DefinitionStmt))
+            return null;
 
-        DefinitionStmt dStmt = (DefinitionStmt) unit;
+        DefinitionStmt dStmt = (DefinitionStmt) u;
         
         Local local;
         
@@ -186,11 +306,8 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
 
             // not concerned
             if(!(value instanceof Local))
-                return;
+                return null;
         
-            // non-scalar
-            if(localToConstant.get(value) == null) return;
-
             local = (Local) value;
         }
 
@@ -233,8 +350,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
 
                 if(use instanceof Local){
                     Constant assumedConstant = (Constant) localToConstant.get(use);
-                    if((assumedConstant == null) ||
-                       (assumedConstant instanceof BottomConstant)){
+                    if(assumedConstant instanceof BottomConstant){
                         changed = merge(local, BottomConstant.v());
                         break;
                     }
@@ -274,14 +390,10 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
             }
         } // end of merging phase
 
-        // see if anything changed and if so, recursively propagate
-        if(changed){
-            Iterator usesIt = localUses.getUsesOf(unit).iterator();
-            while(usesIt.hasNext()){
-                Unit client = ((UnitValueBoxPair) usesIt.next()).getUnit();
-                propagate(client);
-            }
-        }
+         if(!changed)
+             return null;
+
+         return new Pair(u, localToConstant.get(local));
     }
     
     /**
@@ -292,7 +404,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
     {
         Constant current = (Constant) localToConstant.get(local);
 
-        if(current == null || current instanceof BottomConstant) 
+        if(current instanceof BottomConstant) 
             return false;
 
         if(current instanceof TopConstant){
@@ -312,7 +424,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
 /**
  * Top.  Denotes that a local is conservatively assumed to be a constant.
  **/
-class TopConstant extends Constant
+class TopConstant extends BogusConstant
 {
     private static final TopConstant constant = new TopConstant();
     
@@ -337,7 +449,7 @@ class TopConstant extends Constant
 /**
  * Denotes that a local is (conservatively) not a constant.
  **/
-class BottomConstant extends Constant
+class BottomConstant extends BogusConstant
 {
     private static final BottomConstant constant = new BottomConstant();
         
@@ -357,4 +469,8 @@ class BottomConstant extends Constant
     {
         throw new RuntimeException("Not implemented.");
     }
+}
+
+abstract class BogusConstant extends Constant
+{
 }

@@ -28,8 +28,8 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Contains the constructors for the components of the Shimple (SSA
- * Jimple) grammar.  Methods are available to construct Shimple from
+ * Contains the constructors for the components of the SSA Shimple
+ * grammar.  Methods are available to construct Shimple from
  * Jimple/Shimple, create Phi nodes, and converting back from
  * Shimple to Jimple.
  *

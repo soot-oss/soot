@@ -47,9 +47,9 @@ public class ShimpleOptions
      * Uses naming scheme of the Local Name Standardizer..
     
      * If enabled, the Local Name Standardizer is applied 
-     * after Shimple creates new locals. Normally, Shimple 
-     * will retain the original local names as far as 
-     * possible and use an underscore notation to denote 
+     * whenever Shimple creates new locals. Normally, 
+     * Shimple will retain the original local names as far 
+     * as possible and use an underscore notation to denote 
      * SSA subscripts. This transformation does not 
      * otherwise affect Shimple behaviour. 
      */
