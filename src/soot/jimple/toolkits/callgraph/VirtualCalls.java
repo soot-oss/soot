@@ -56,10 +56,6 @@ public final class VirtualCalls
     }
 
     private SootMethod resolveNonSpecial( RefType t, InstanceInvokeExpr iie, SootMethod container, NumberedString subSig ) {
-        if( !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, iie.getBase().getType() ) ) {
-            return null;
-        }
         SmallNumberedMap vtbl = (SmallNumberedMap) typeToVtbl.get( t );
         if( vtbl == null ) {
             typeToVtbl.put( t, vtbl =
@@ -84,6 +80,10 @@ public final class VirtualCalls
     }
 
     private void resolve( Type t, InstanceInvokeExpr iie, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
+        if( !Scene.v().getOrMakeFastHierarchy()
+                .canStoreType( t, iie.getBase().getType() ) ) {
+            return;
+        }
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
         if( t instanceof RefType ) {
             SootMethod target = resolveRefType( (RefType) t, iie, subSig, container );
