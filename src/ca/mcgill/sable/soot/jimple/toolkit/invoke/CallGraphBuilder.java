@@ -47,9 +47,15 @@ public class CallGraphBuilder{
   Map invokeToContainerMethod = new HashMap();
 
 
-  public MethodNode getContainerMethod ( InvokeExpr ie ) {
 
-   return ((MethodNode) invokeToContainerMethod.get ( ie ));
+  public MethodNode getContainerMethod ( InvokeExpr ie ) {
+   
+   MethodNode mn = (MethodNode) invokeToContainerMethod.get ( ie );
+   
+   if ( mn == null )
+   throw new UnknownDeclaringMethodException("The declaring method of the invoke expression "+ie+" was not specified while building the invoke graph");
+
+   return mn;
 
   }
 
@@ -723,12 +729,26 @@ public class CallGraphBuilder{
     if ( (methodNode = (MethodNode)MethodNodeHT.get( methodName )) != null )
     return methodNode;
 
-    throw new NoSuchMethodNodeException( "Can't Find methodNode : " + methodName );
+    throw new NoSuchMethodNodeException( "Cannot find method : " + methodName );
   
    }
 
 
 
+
+
+
+
+  void removeNode( SootMethod method ) {
+   
+   MethodNode methodNode ;
+
+   String methodName = Helper.getFullMethodName( method );
+
+   if ( (methodNode = (MethodNode)MethodNodeHT.get( methodName )) != null )
+   MethodNodeHT.remove(methodName);
+
+  }
 
 
 
@@ -815,7 +835,7 @@ public class CallGraphBuilder{
 
 
   
-  final List invokeExprs = new ArrayList();
+  /* final */ List invokeExprs = new ArrayList();
 
 
 
@@ -830,7 +850,9 @@ public class CallGraphBuilder{
 
    List getInvokeExprs( SootMethod method ){
 
-    invokeExprs.clear();
+     // invokeExprs.clear();
+
+     invokeExprs = new ArrayList();
 
     try {
 
@@ -1008,7 +1030,9 @@ public class CallGraphBuilder{
 
 	List invokeExprs = getInvokeExprs( methodNode.getMethod() );
 
-        //System.out.println ("INVOKEEXPRS NUM = "+invokeExprs.size());
+    methodNode.setInvokeExprs(invokeExprs);
+
+    // System.out.println ("INVOKEEXPRS NUM = "+invokeExprs.size());
 
 	//CR
 	// used in the Id of an invokeExpr
@@ -1373,7 +1397,7 @@ possibleMethod.getName(), possibleMethod.getParameterTypes() );
     if ( (methodNode = (MethodNode)MethodNodeHT.get( methodName )) != null )
     return methodNode;
     
-    throw new NoSuchMethodNodeException( "Can't Find methodNode : " + methodName );
+    throw new NoSuchMethodNodeException( "The method " + methodName+" not found in the invoke graph" );
 
   }
 

@@ -29,7 +29,7 @@ public class InvokeGraph {
 
 
 
-  public InvokeGraph ( SootClassManager cm ) { manager = cm; }
+  // public InvokeGraph ( SootClassManager cm ) { manager = cm; }
 
 
 
@@ -73,15 +73,15 @@ public class InvokeGraph {
 
     bclasses.add ( MainClass ); 
 
-	AllClassFinder allclassfinder = new AllClassFinder();
+	AllClassFinder allclassfinder = new AllClassFinder(false);
 
     allclassfinder.includeAllClasses(MainClass.getManager(), bclasses);
 
 	Map allclassesHT = allclassfinder.getAllClassesHT();
 
-    cha = new CHA();
+    cha = new CHA(allclassfinder);
 
-    cha.buildConservativeCallGraph ( MainClass.getName(), allclassfinder );
+    // cha.buildConservativeCallGraph ( MainClass.getName(), allclassfinder );
 
     entrymethods = cha.getEntryMethods();
 
@@ -93,7 +93,7 @@ public class InvokeGraph {
 
 
   
-  public InvokeGraph ( SootClass MainClass, boolean isLazy ) {
+  InvokeGraph ( SootClass MainClass, boolean isCHA ) {
 
     manager = MainClass.getManager();
 
@@ -111,9 +111,9 @@ public class InvokeGraph {
 
 	Map allclassesHT = allclassfinder.getAllClassesHT();
 
-    cha = new CHA(allclassfinder);
+    cha = new CHA();
 
-    if ( ! isLazy )
+    if ( isCHA )
     cha.buildConservativeCallGraph ( MainClass.getName(), allclassfinder );
 
     entrymethods = cha.getEntryMethods();
@@ -149,6 +149,43 @@ public class InvokeGraph {
 
 
 
+  public void setEntryMethods(List entrymethods) { this.entrymethods = entrymethods;}
+
+
+
+
+
+  public void addEntryMethod(SootMethod method) { 
+
+   if ( ! entrymethods.contains(method) ) entrymethods.add(method); 
+
+  }
+
+
+
+
+
+
+  public void removeEntryMethod(SootMethod method) {  
+
+   if ( entrymethods.contains(method) ) 
+   entrymethods.remove(method);
+
+  }
+
+
+
+
+
+  public boolean isEntryMethod(SootMethod method) {
+
+   return ( entrymethods.contains(method) ); 
+
+  }
+
+
+
+
 
 
 
@@ -172,8 +209,12 @@ public class InvokeGraph {
      reachablemethods.add ( method );
      else
      {
+
       if ( ( ( ( method.getName().equals("<clinit>") || method.getName().equals("finalize") ) || ( getEntryMethods().contains(method) ) ) || method.getName().equals("initializeSystemClass") ) || method.getName().equals("main") )
-      reachablemethods.add ( method );
+      {
+       reachablemethods.add ( method );
+      }
+
      }
 
     }
@@ -181,6 +222,8 @@ public class InvokeGraph {
     return reachablemethods;
 
    }
+
+
 
 
 
@@ -232,7 +275,7 @@ public class InvokeGraph {
 
 
 
-  public SootMethod getEnclosingMethod(InvokeExpr ie) {
+  public SootMethod getDeclaringMethod(InvokeExpr ie) {
 
    CallGraphBuilder cagb = cha.getCallGraphBuilder();
    return ( cagb.getContainerMethod(ie).getMethod() );
@@ -248,19 +291,21 @@ public class InvokeGraph {
 
 
   public List getInvokeExprsIn(SootMethod m) {
-
           
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
 
-   List invokeexprs = new ArrayList();
+   // List invokeexprs = new ArrayList();
 
-   Iterator callsitesit = mn.getCallSites().iterator();
+   // Iterator callsitesit = mn.getCallSitesAsList().iterator();
     
-   while ( callsitesit.hasNext() )
-   invokeexprs.add ( (( CallSite ) callsitesit.next()).getInvokeExpr() ); 
+   // while ( callsitesit.hasNext() )
+   // invokeexprs.add ( (( CallSite ) callsitesit.next()).getInvokeExpr() ); 
 
-   return invokeexprs; 
+   if ( mn.getInvokeExprs() == null )
+   return new ArrayList();
+
+   return mn.getInvokeExprs(); 
 
   }
 
@@ -301,9 +346,9 @@ public class InvokeGraph {
 
 
   
-  public List getMethodsReachableFrom(SootMethod m) {
+  public List getReachableMethodsFrom(SootMethod m) {
 
-   return ( getMethodsReachableFrom(m, new ArrayList()) );
+   return ( getReachableMethodsFrom(m, new ArrayList()) );
 
   }
 
@@ -316,7 +361,7 @@ public class InvokeGraph {
 
   
 
-  List getMethodsReachableFrom(SootMethod m, List listSoFar) {
+  List getReachableMethodsFrom(SootMethod m, List listSoFar) {
 
    CallGraphBuilder cagb = cha.getCallGraphBuilder();   
    MethodNode mn = cagb.getNode(m);
@@ -330,7 +375,7 @@ public class InvokeGraph {
      if ( ! ( listSoFar.contains (nextmn.getMethod()) ) )  
      {
       listSoFar.add ( nextmn.getMethod() );
-      getMethodsReachableFrom (nextmn.getMethod(), listSoFar);
+      getReachableMethodsFrom (nextmn.getMethod(), listSoFar);
      }
 
    }
@@ -377,7 +422,7 @@ public class InvokeGraph {
   public boolean isMethodReachableFrom ( SootMethod from, SootMethod to )
   {
 
-   return ( getMethodsReachableFrom(from).contains(to) );
+   return ( getReachableMethodsFrom(from).contains(to) );
 
   }
 
@@ -392,7 +437,7 @@ public class InvokeGraph {
   public boolean isClassReachableFrom ( SootMethod from, SootClass to )
   {
 
-   return ( getClassesReachableFrom(from).contains(to) );
+   return ( getReachableClassesFrom(from).contains(to) );
 
   }
 
@@ -404,7 +449,7 @@ public class InvokeGraph {
 
   
 
-  public List getClassesReachableFrom(SootMethod m) {
+  public List getReachableClassesFrom(SootMethod m) {
 
    HashMap reachableclassesHT = new HashMap();
   
@@ -412,7 +457,7 @@ public class InvokeGraph {
 
    {
 
-      Iterator methodsit = getMethodsReachableFrom(m).iterator();
+      Iterator methodsit = getReachableMethodsFrom(m).iterator();
       while ( methodsit.hasNext() )
       {
 
@@ -459,7 +504,7 @@ public class InvokeGraph {
    {
 
     InvokeExpr ie =  (InvokeExpr) invokinginvokesit.next();
-    SootMethod meth = getEnclosingMethod(ie);
+    SootMethod meth = getDeclaringMethod(ie);
  
     if ( ! invokermethods.contains(meth) )
     invokermethods.add(meth); 
@@ -516,7 +561,7 @@ public class InvokeGraph {
 
   public boolean removeTarget(InvokeExpr ie, SootMethod m) {
 
-   SootMethod enclosingmethod = getEnclosingMethod(ie);
+   SootMethod enclosingmethod = getDeclaringMethod(ie);
    CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
    MethodNode enclosingmn = cagb.getNode(enclosingmethod);
    CallSite cs = enclosingmn.getCallSite(ie);
@@ -541,7 +586,7 @@ public class InvokeGraph {
   
   public boolean addTarget(InvokeExpr ie, SootMethod m) {
 
-   SootMethod enclosingmethod = getEnclosingMethod(ie);
+   SootMethod enclosingmethod = getDeclaringMethod(ie);
    CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
    MethodNode enclosingmn = cagb.getNode(enclosingmethod);
    CallSite cs = enclosingmn.getCallSite(ie);
@@ -562,8 +607,182 @@ public class InvokeGraph {
 
 
 
-  
 
+
+
+
+
+
+
+
+  public void addInvokeExpr(InvokeExpr ie, SootMethod m) {
+
+    MethodNode enclosingmn = null;
+
+    CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
+     
+    try {
+
+     enclosingmn = cagb.getNode(m);
+
+    } catch ( java.lang.RuntimeException e ) {
+
+     cagb.CreateNodeAndAddToHT(m);
+     enclosingmn = cagb.getNode(m);
+
+    }   
+    
+   
+    Iterator callsitesit = enclosingmn.getCallSites().iterator();
+
+    while ( callsitesit.hasNext() )
+    {
+
+     CallSite cs = (CallSite) callsitesit.next();
+
+     if ( cs.getInvokeExpr().equals(ie) )
+     return;
+
+    }
+
+   cagb.invokeToContainerMethod.put ( ie, enclosingmn );
+
+   String invokeExprId = Helper.getInvokeExprId( enclosingmn.getCallSites().size() + 1, ie.getMethod() );
+
+   CallSite callSite = new CallSite( invokeExprId , ie );
+   callSite.setCallerID ( enclosingmn.getMethod().getSignature()+"$"+( enclosingmn.getCallSites().size() + 1 ) );
+
+   enclosingmn.addCallSite( callSite, new Integer ( enclosingmn.getCallSites().size() + 1 ) );
+
+   if ( ! enclosingmn.getInvokeExprs().contains(ie) )
+   enclosingmn.addInvokeExpr( ie );
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+  public void removeInvokeExpr(InvokeExpr ie, SootMethod m) {
+
+    MethodNode enclosingmn = null;
+
+    CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
+     
+    try {
+
+     enclosingmn = cagb.getNode(m);
+
+    } catch ( java.lang.RuntimeException e ) {
+
+     cagb.CreateNodeAndAddToHT(m);
+     enclosingmn = cagb.getNode(m);
+
+    }   
+    
+   
+    Iterator callsitesit = enclosingmn.getCallSites().iterator();
+
+    while ( callsitesit.hasNext() )
+    {
+
+     CallSite cs = (CallSite) callsitesit.next();
+
+     if ( cs.getInvokeExpr().equals(ie) )
+     {
+
+      Iterator methit = cs.getMethods().iterator(); 
+      while ( methit.hasNext() )
+      {
+
+       MethodNode targetmn = (MethodNode) methit.next();
+       targetmn.incomingedges--;
+       targetmn.removeInvokingSite(cs);
+      }
+
+      cs.setMethods(null);
+
+      enclosingmn.removeCallSite(cs);
+      enclosingmn.removeInvokeExpr( ie );
+      return;
+     } 
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public void addMethod(SootMethod method) {
+ 
+   CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
+  
+   MethodNode mn = cagb.CreateNodeAndAddToHT(method);
+
+  }
+
+
+
+
+
+
+
+
+
+  public void removeMethod(SootMethod method) {
+ 
+   CallGraphBuilder cagb = cha.getCallGraphBuilder(); 
+   MethodNode mn = cagb.getNode(method);
+
+   List invokers = new ArrayList();
+
+   Iterator csiter = mn.getInvokingSites().iterator();
+
+   while ( csiter.hasNext() )
+   {
+     CallSite caller = ( CallSite ) csiter.next();
+     caller.removeMethod ( mn );
+   }
+
+   cagb.removeNode(method);
+
+  }
+
+
+
+
+
+
+
+
+
+  
+  /*
 
   public void addInvokeExpr(InvokeExpr ie, SootMethod m) {
 
@@ -639,6 +858,9 @@ public class InvokeGraph {
 
   
 
+  */
+
+
 
   
 
@@ -647,6 +869,10 @@ public class InvokeGraph {
 
   List invokeExprs;
 
+
+
+
+  /*
 
   public void addMethod(SootMethod method) {
  
@@ -709,7 +935,7 @@ public class InvokeGraph {
 
   }
 
-
+  */
 
 
 

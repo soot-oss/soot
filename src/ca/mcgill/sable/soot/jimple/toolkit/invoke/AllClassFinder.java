@@ -23,6 +23,12 @@ public class AllClassFinder {
 
 	static long classgbMem;
 
+    private boolean isVerbose;
+
+
+    AllClassFinder() { isVerbose = true;}    
+
+    AllClassFinder(boolean isVerbose) { isVerbose = isVerbose; }
 
 
 	public ClassGraphBuilder getClassGraphBuilder() {
@@ -38,6 +44,7 @@ public class AllClassFinder {
 
 	public /* ArrayList */ void includeAllClasses (ArrayList bclasses) {
 
+    if (isVerbose) 
     System.out.print ( "Building the inheritance hierarchy....." );
 
 	Iterator iter = bclasses.iterator();
@@ -63,14 +70,18 @@ public class AllClassFinder {
 
        // System.out.println("SPACE FOR BUILDING THE CLASS GRAPH : "+classgbMem);
 
-       System.out.println ( "Done" );
+       if (isVerbose)
+       {
+         System.out.println ( "Done" );
 
-       System.out.println();
+         System.out.println();
+       }
 
        classgraphbuilder.getStartAndRunMethods();
 
        classgraphbuilder.buildVirtualTables();
 
+       if (isVerbose)
        classgraphbuilder.setClassGraphNumbers();
 
        allclassesHT = classgraphbuilder.getClassGraph();
@@ -98,6 +109,7 @@ public class AllClassFinder {
 
 	public /* ArrayList */ void includeAllClasses (SootClassManager manager, ArrayList bclasses) {
 
+    if ( isVerbose )
     System.out.print ( "Building the inheritance hierarchy....." );
 
 	Iterator iter = bclasses.iterator();
@@ -123,14 +135,20 @@ public class AllClassFinder {
 
        // System.out.println("SPACE FOR BUILDING THE CLASS GRAPH : "+classgbMem);
 
-       System.out.println ( "Done" );
+       if ( isVerbose )
+       {
 
-       System.out.println();
+        System.out.println ( "Done" );
+
+        System.out.println();
+
+       }
 
        classgraphbuilder.getStartAndRunMethods();
 
        classgraphbuilder.buildVirtualTables();
 
+       if (isVerbose)
        classgraphbuilder.setClassGraphNumbers();
 
        allclassesHT = classgraphbuilder.getClassGraph();

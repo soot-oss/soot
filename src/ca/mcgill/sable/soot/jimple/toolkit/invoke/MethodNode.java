@@ -15,6 +15,8 @@ public class MethodNode extends DfsNode{
 
   public HashSet ImportantInvokeExprs = new HashSet();
 
+  public List invokeExprs = new ArrayList();
+
   public int code;
 
   public int incomingedges = 0;
@@ -134,6 +136,36 @@ public class MethodNode extends DfsNode{
     method = null;
   }
 
+
+  public void setInvokeExprs(List invokeExprs) {
+
+   this.invokeExprs = invokeExprs;
+
+  }
+
+
+  public void addInvokeExpr( InvokeExpr ie ) {
+ 
+   invokeExprs.add(ie);
+
+  }
+
+  public void removeInvokeExpr( InvokeExpr ie ) {
+
+   invokeExprs.remove(ie);
+
+  }   
+
+
+  public List getInvokeExprs() {
+
+   return invokeExprs;
+
+  }
+
+
+
+
   
   public void addCallSite( CallSite cs, Integer integer ){
     // VIJAY ON MARCH 1 CallSites.put( cs.getInvokeExprId() , cs );
@@ -141,15 +173,32 @@ public class MethodNode extends DfsNode{
 
     CallSitesHT.put ( integer, cs );
 
+    cs.setInteger(integer);
+
   }
+
+
+
+
+  public void removeCallSite( CallSite cs ) {
+   
+   CallSites.remove ( cs.getInvokeExpr() );
+
+   CallSitesHT.remove ( cs.getInteger() );
+
+  }
+
+
+
+
 
   
   public CallSite getCallSite( String invokeExprId ){
     CallSite callSite = (CallSite)CallSites.get( invokeExprId );
     
     if( callSite == null )
-      throw new NoSuchCallSiteException( invokeExprId  + "  IN  " +
-					 this.getName() );
+      throw new NoSuchCallSiteException( "The invoke expression "+invokeExprId  + " was not found in the method " +
+					 this.getName()+" in the invoke graph" );
     return callSite;
   }
 
@@ -159,8 +208,9 @@ public class MethodNode extends DfsNode{
     CallSite callSite = (CallSite) CallSites.get( invokeexpr );
 
    if( callSite == null )
-      throw new NoSuchCallSiteException( invokeexpr  + "  IN  " +
-                                         this.getName() );
+   throw new NoSuchCallSiteException( "The invoke expression "+invokeexpr  + " was not found in the method " +
+					 this.getName()+" in the invoke graph" );
+
     return callSite;
   }
 
@@ -170,8 +220,9 @@ public class MethodNode extends DfsNode{
     CallSite callSite = (CallSite) CallSitesHT.get( integer );
 
      if( callSite == null )
-      throw new NoSuchCallSiteException( integer  + "  IN  " +
-                                         this.getName() );
+     throw new NoSuchCallSiteException( "The "+integer+"th invoke expression was not found in the method " +
+					 this.getName()+" in the invoke graph" );
+
     return callSite;
   }
 
@@ -267,16 +318,56 @@ public class MethodNode extends DfsNode{
     //for ( int i = 0 ; i < keys.length ; i++ ){
     // CallSite callSite = (CallSite)CallSites.get( keys[i] );
     
-    Iterator iter = CallSites.values().iterator();
+    // Iterator iter = CallSites.values().iterator();
+
+    Iterator iter = getInvokeExprs().iterator();
+
+
     while( iter.hasNext() ){
-      CallSite callSite = (CallSite)iter.next();
-      Object[] callSMethods = callSite.getMethods().toArray();
+      CallSite callSite = getCallSite ( (InvokeExpr)iter.next());
+      Object[] callSMethods = callSite.getMethodsAsList().toArray();
       for ( int c = 0 ; c < callSMethods.length ; c++ )
 	allMethods.add( callSMethods[c] );
     }
 
     return allMethods;
   }
+
+
+
+  public List getAllPossibleMethodsAsList() {
+
+   List sortedmethods = new /* Array */ LinkedList();
+
+   Object[] methodsarray = getAllPossibleMethods().toArray();
+
+   Arrays.sort ( methodsarray, new StringComparator() );
+
+   for (int i=0;i<methodsarray.length;i++)
+   sortedmethods.add ( (MethodNode) methodsarray[i] );
+
+   return sortedmethods;
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     /**

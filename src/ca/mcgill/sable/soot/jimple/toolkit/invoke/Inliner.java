@@ -615,6 +615,9 @@ public class Inliner {
 
   numpotentiallyinlined++;
 
+  // System.out.println();
+  // System.out.println("TRYING OUT "+inlinableinvoke);
+
   localsHT.clear(); 
 
   int stmtsAtSite = 0; 
@@ -636,9 +639,13 @@ public class Inliner {
 
    MethodNode mn = ( MethodNode ) invokeExprsToMethods.get ( ie );
 
+   // System.out.println("CONSIDERING"+getCorrectCallSite ( currInvokeExpr , mn ).getCallerID());   
+
    inliningInsideMethod = mn;
 
-   if ( ! ( mn == null ) )
+   //   if ( ! ( ( mn == null ) /* ||  ( mn.getMethod().getName().equals("expansion_unit")) || */  /* ( mn.getMethod().getName().equals("regular_expression") ) ||  ( mn.getMethod().getName().equals("scan_token")  )  */ ) )
+
+   if ( ! ( ( mn == null )  /* || mn.getMethod().getSignature().equals("<'spec.benchmarks._228_jack.Jack_the_Parser_Generator':'scan_token':(int):void>")  */ ) )
    {
 
     SootMethod meth = mn.getMethod();
@@ -681,7 +688,7 @@ public class Inliner {
 
        // if ( stmtsAtSite < 60  )
 
-       if ( ( stmtsAtSite < 20  ) && ( listBody.getStmtList().size() < ( 4*origSize ) ) )
+       if ( ( stmtsAtSite < 20  ) && ( listBody.getStmtList().size() < ( 8*origSize ) ) )
 
        // if ( stmtsAtSite < 10  )
        {
@@ -930,9 +937,11 @@ public class Inliner {
 
            actuallyinlined++;
 
+           // System.out.println("INLINING AT "+cs.getCallerID());
+
            InlineMethod ( melistBody.getStmtList() , listBody.getStmtList(), stmtIter );
 
-           gotoEliminate ( listBody );
+           // gotoEliminate ( listBody ); 
 
            // System.out.println ("INLINED SUCCESS");
              
@@ -1110,7 +1119,7 @@ public class Inliner {
 
   MethodNode nextmn = ( MethodNode ) finalit.next();
 
-  //  System.out.println ( "FINAL "+nextmn.getMethod().getSignature()+" NUM "+nextmn.ImportantInvokeExprs.size() );
+  // System.out.println ( "FINAL "+nextmn.getMethod().getSignature());
 
   int origSize = Jimplifier.getJimpleBody( nextmn.getMethod() ).getStmtList().size();
 
@@ -1121,12 +1130,25 @@ public class Inliner {
   if ( cagb.recursiveMethods.contains ( nextmn.getMethod().getSignature() ) )
   recursiveflag = true;
 
-  Iterator callsitesiter = nextmn.getCallSites().iterator();
+  Iterator invokeExprsiter = cagb.getInvokeExprs( nextmn.getMethod() ).iterator();
+
+  // System.out.println("SIZE "+nextmn.getInvokeExprs().size() );
+
+
+  // Iterator callsitesiter = nextmn.getCallSites().iterator();
  
-  while ( callsitesiter.hasNext() )
+  // while ( callsitesiter.hasNext() )
+
+  while ( invokeExprsiter.hasNext() )
   {
 
-   CallSite nextcs = ( CallSite ) callsitesiter.next();
+   InvokeExpr nextie = (InvokeExpr) invokeExprsiter.next();
+
+   // CallSite nextcs = ( CallSite ) callsitesiter.next();
+
+   CallSite nextcs = nextmn.getCallSite(nextie);
+
+   // System.out.println("NEXT "+nextcs.getInvokeExpr());
 
    invokeExprsToMethods.put ( nextcs.getInvokeExpr(), nextmn );
 
@@ -1135,7 +1157,7 @@ public class Inliner {
    if ( recursiveflag )
    {
 
-     //    System.out.println ( "IMPORTANT CALLSITE "+nextcs.getCallerID() );
+     // System.out.println ( "IMPORTANT CALLSITE "+nextcs.getCallerID() );
 
     ImportantQ.add ( nextcs.getInvokeExpr() );
     ImportantCS.add ( nextcs );
@@ -1170,11 +1192,16 @@ public class Inliner {
 
   CallSite nextimportant = ( CallSite ) importit.next();
 
-  Set attachedmethods = nextimportant.getMethods();
+  List attachedmethods = nextimportant.getMethodsAsList();
+
+  Iterator attachedit = attachedmethods.iterator();
 
   ArrayList attachedQ = new ArrayList();
 
-  attachedQ.addAll ( attachedmethods );
+  // attachedQ.addAll ( attachedmethods );
+
+  while ( attachedit.hasNext() )
+  attachedQ.add( attachedit.next() );
 
   while ( ! attachedQ.isEmpty() )
   {
@@ -1186,7 +1213,7 @@ public class Inliner {
 
     ImportantMethods.add ( 0, nextimpmethod );
 
-    Iterator allpossmethodsit = nextimpmethod.getAllPossibleMethods().iterator();
+    Iterator allpossmethodsit = nextimpmethod.getAllPossibleMethodsAsList().iterator();
 
     while ( allpossmethodsit.hasNext() )
     attachedQ.add ( ( MethodNode ) allpossmethodsit.next() );
@@ -1207,17 +1234,25 @@ public class Inliner {
 
   MethodNode nextimpmn = ( MethodNode ) importantmthdsit.next();
 
-  //  System.out.println ( "IMPORTANT METHOD "+nextimpmn.getMethod().getSignature() );
+  // System.out.println ( "IMPORTANT METHOD "+nextimpmn.getMethod().getSignature() );
 
-  Iterator callsitesit = nextimpmn.getCallSites().iterator();
+  // Iterator callsitesit = nextimpmn.getCallSites().iterator();
 
-  while ( callsitesit.hasNext() )
+  Iterator invokeExprsit = cagb.getInvokeExprs(nextimpmn.getMethod()).iterator();
+
+  // while ( callsitesit.hasNext() )
+
+  while ( invokeExprsit.hasNext() )
   {
 
-   CallSite nextcs = ( CallSite ) callsitesit.next();
+    // CallSite nextcs = ( CallSite ) callsitesit.next();
+
+   CallSite nextcs = ( CallSite ) nextimpmn.getCallSite ( (InvokeExpr) invokeExprsit.next() );
 
    if ( ! ImportantCS.contains ( nextcs ) )
    {
+
+     // System.out.println ( "IMPORTANT CALLSITE "+nextcs.getCallerID() );
 
     ImportantCS.add ( nextcs );
     ImportantQ.add ( 0, nextcs.getInvokeExpr() );
@@ -1281,12 +1316,14 @@ public class Inliner {
  System.out.println ( "NUMBER OF SITES REJECTED BY CRITERIA 6 = "+criteria6); 
  System.out.println ( "NUMBER OF SITES REJECTED BY CRITERIA 7 = "+criteria7);
  System.out.println ( "NUMBER OF SITES REJECTED BY CRITERIA 8 = "+criteria8);
- System.out.println ( "NUMBER OF SITES ACTUALLY INLINED = "+actuallyinlined);
-
  */
 
+ // System.out.println ( "NUMBER OF SITES ACTUALLY INLINED = "+actuallyinlined);
+
  
-/*
+
+ 
+ /*
 
  Iterator improvedit = ImprovedCallSites.iterator();
 
@@ -1336,7 +1373,7 @@ public class Inliner {
  }
 */
 
- /*
+ /* 
  
   PrintWriter out = new PrintWriter(System.out, true);
 
@@ -1392,11 +1429,10 @@ public class Inliner {
 
       // System.out.println ("CLEANING UP CODE" );
 
+     
       gotoEliminate ( changedjb );
 
-
       Transformations.cleanupCode ( changedjb ); 
-
 
 
 //    Transformations.removeUnusedLocals ( changedjb ); 
@@ -1417,6 +1453,9 @@ public class Inliner {
      // BuildAndStoreBody changedbasb = new BuildAndStoreBody ( Jimple.v(), new StoredBody ( ClassFile.v() ) );
 
      JimpleBody changedjb = new JimpleBody( new ClassFileBody( changedmethod ), BuildJimpleBodyOption.USE_PACKING );
+
+     // changedmethod.setActiveBody (changedjb);
+      
 
      changedmethod.setActiveBody ( new GrimpBody ( changedjb, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING ) );
 
@@ -2157,6 +2196,13 @@ public class Inliner {
            
          SootClass sc2 = scm.getClass ( m.getDeclaringClass().getName() );
 
+         // System.out.println("SCANTOKEN 0");
+
+         // if ( currmethod.getName().equals("scan_token") ) 
+         // sc2 = scm.getClass ( "spec.benchmarks._228_jack.Jack_the_Parser_GeneratorTokenManager" );
+
+         // System.out.println("SCANTOKEN 1");
+
          if ( ! isStrictSuperClass ( sc1, sc2 ) )
          {
            castflag = true;
@@ -2170,6 +2216,7 @@ public class Inliner {
       }
 
     }
+
 
     if ( syncflag && staticInvoked )
     {
@@ -2229,7 +2276,7 @@ public class Inliner {
    }
 
    // System.out.println ( " CLEARED 4 " ); 
-
+   /*
    if ( ! satisfiesExceptionsAccess ( m ) )
    {
  
@@ -2237,7 +2284,7 @@ public class Inliner {
     return false;
 
    }
-
+   */
    // System.out.println ( " CLEARED 5 " );
 
 
@@ -2248,6 +2295,16 @@ public class Inliner {
     return false;
 
     }
+
+
+   if ( ! satisfiesExceptionsAccess ( m ) )
+   {
+ 
+    criteria7++;
+    return false;
+
+   }
+
 
    // System.out.println ( " CLEARED 6 " );
 
@@ -3089,7 +3146,7 @@ args );
 
      invokeExprsHT.put ( correctinvokeexpr, ( CallSite ) invokeExprsHT.get ( invokeexpr ) );
 
-      workQ.add ( correctinvokeexpr );
+     workQ.add ( correctinvokeexpr );
 
     }
 
@@ -3959,7 +4016,7 @@ invokeexpr ) );
    while ( excit.hasNext() )
    {
 
-    SootClass nextException = ( SootClass ) excit.next();
+    SootClass nextException = scm.getClass ((( SootClass ) excit.next()).getName());
 
     if ( ! ( currmethod.throwsException ( nextException ) ) )
     currmethod.addException ( nextException );
@@ -3968,6 +4025,8 @@ invokeexpr ) );
    
    Iterator trapiterator = melistBody.getTraps().iterator();
    
+   int trapindex = 0;
+
    while ( trapiterator.hasNext() )
    {
 
@@ -4000,13 +4059,15 @@ invokeexpr ) );
   if ( syncflag )
   indexOftarget = indexOftarget + 2;
 
-
-
    Stmt inlinedhandlerstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
    Trap newtrap = jimple.newTrap ( exclass, inlinedbeginstmt, inlinedendstmt, inlinedhandlerstmt );
+
+   List traps = listBody.getTraps();
    
-   listBody.addTrap ( newtrap );
+   traps.add(trapindex++,newtrap); 
+
+   // listBody.addTrap ( newtrap );
      
    }  
 
@@ -5620,6 +5681,8 @@ Iterator target, int fixupNumStmts ) {
 
   public void adjustSubMethods ( SootMethod m, int newmodifiers ) {
 
+   System.out.println("REACHED ADJUSTSUBMETHODS");
+
    adjustingSubMethods = true;
 
    ClassNode cn = clgb.getNode ( m.getDeclaringClass().getName() );
@@ -5709,6 +5772,8 @@ Iterator target, int fixupNumStmts ) {
 
   public int getChangedClassModifiers ( String s, int modifiers ) {
 
+    // System.out.println("CHANGE CLASS MODIFIERS "+s);
+
    int changedmodifiers = modifiers;
 
    changedmodifiers = changedmodifiers & 0xFFFB;
@@ -5736,6 +5801,8 @@ Iterator target, int fixupNumStmts ) {
 
  
  public int getChangedMethodModifiers ( String s, int modifiers ) {
+   
+   // System.out.println("CHANGE METHOD MODIFIERS "+s);
 
    int changedmodifiers = modifiers;
 
@@ -5788,6 +5855,8 @@ Iterator target, int fixupNumStmts ) {
 
 
   public int getChangedFieldModifiers ( String s, int modifiers ) {
+
+    // System.out.println("CHANGE FIELD MODIFIERS "+s);
 
    int changedmodifiers = modifiers;
 

@@ -24,7 +24,7 @@ public class ClassHierarchyAnalysis {
  public static InvokeGraph newInvokeGraph(SootClass initialClass)
  {
 
-  return ( new InvokeGraph(initialClass) );
+  return ( new InvokeGraph(initialClass, true) );
 
  }
 

@@ -198,6 +198,7 @@ public class ClassGraphBuilder{
 
 	} catch ( java.lang.RuntimeException e ) {}
       }
+    
 
     System.out.println ("Inheritance hierarchy characterestics : ");
     System.out.println ("--------------------------------------- ");
@@ -221,6 +222,8 @@ public class ClassGraphBuilder{
     System.out.println();
     System.out.println();
   }    
+
+
 
 
 

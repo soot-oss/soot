@@ -51,6 +51,33 @@ public class CallSite{
   public CallSite(){
   }
 
+
+  Integer integer;
+
+  public void setInteger(Integer i) { this.integer = i; }
+
+  public Integer getInteger() { return integer; }
+
+  
+  public List getMethodsAsList() {
+
+   List sortedmethods = new /* Array */ LinkedList();
+
+   Object[] methodsarray = possibleMethods.toArray();
+
+   Arrays.sort ( methodsarray, new StringComparator() );
+
+   for (int i=0;i<methodsarray.length;i++)
+   sortedmethods.add ( (MethodNode) methodsarray[i] );
+
+   return sortedmethods;
+
+  }
+
+
+
+
+
   public Set getMethods(){
     return possibleMethods;
   }
