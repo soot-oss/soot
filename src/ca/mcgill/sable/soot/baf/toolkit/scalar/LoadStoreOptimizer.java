@@ -6,6 +6,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.toolkit.scalar.*;
+import ca.mcgill.sable.soot.baf.internal.*;
 
 
 
@@ -20,7 +21,7 @@ public class LoadStoreOptimizer
     final static protected int HAS_CHANGED = 5;
     final static protected int  SPECIAL_SUCCESS_2 = 6;
 
-    final static  boolean debug = false;
+    final static  boolean debug = true;
     final static boolean printStats = false;
 
     private static LoadStoreOptimizer mSingleton = new LoadStoreOptimizer();
@@ -99,10 +100,9 @@ public class LoadStoreOptimizer
 	// if the method contains no code or has 4 or less instructions, then return 
         if(mUnits.isEmpty()) {
             return;
-        } else if (mUnits.size() <= 4)
-	    return;
+        } 
 
-        
+
         //delme[
         if(debug) { System.out.println("Optimizing: " + body.getMethod().toString());}
         //delme] 
@@ -203,6 +203,20 @@ public class LoadStoreOptimizer
 
             h -= ((Inst)currentUnit).getOutCount();                
             if(h < 0){
+		/*if(currentUnit instanceof Dup1Inst) {
+                       Unit pred = (Unit) block.getPredOf(currentUnit);
+                       if(pred instanceof FieldArgInst) {
+ 
+                           Unit predPred = (Unit) block.getPredOf(pred);
+                           if(predPred instanceof LoadInst) {                     
+                               replaceUnit(currentUnit,  Baf.v().newDup1_x1Inst(((Dup1Inst) currentUnit).getOp1Type(),((LoadInst)aInst).getOpType()));
+                               candidate = predPred;                       
+			       }
+			       }
+			       
+			       }*/
+		
+
                 break;
             }            
             h += ((Inst)currentUnit).getInCount();
@@ -878,7 +892,17 @@ public class LoadStoreOptimizer
             return null;
     }
 
-    
+    protected boolean isExceptionHandlerBlock(Block aBlock)
+    {
+	Unit blockHead = aBlock.getHead();
+	Iterator  it = mBody.getTraps().iterator();
+	while(it.hasNext()) {
+	    Trap trap = (Trap) it.next();
+	    if(trap.getHandlerUnit() == blockHead)
+		return true;
+	}
+	return false;
+    }
 
     protected Unit getStackItemAt2(Unit aUnit, Block aBlock, int aDeltaHeight) 
     {
@@ -890,7 +914,14 @@ public class LoadStoreOptimizer
             currentUnit  = (Unit) aBlock.getPredOf(currentUnit);
             if(currentUnit == null) {
                 if(debug) { System.out.println(aBlock);}
-                throw new RuntimeException("impossible");
+		System.out.println("xxxxxxxxxxxx " + h);
+		if(isExceptionHandlerBlock(aBlock) ) {
+		    return new BLoadInst( RefType.v("dummy") , ((StoreInst) aUnit).getLocal());		     // we have a ref type. 
+		}
+
+		aBlock = (Block) aBlock.getPreds().get(0);
+		currentUnit = (Unit) aBlock.getTail();
+
             }
             
             
@@ -981,14 +1012,15 @@ public class LoadStoreOptimizer
                                 }
                             }
                         }
-                    }
+                    } 
                     else if(defs.size() == 2) {
                         
                             Unit def0 = (Unit) defs.get(0);
                             Unit def1 = (Unit) defs.get(1);
+			    System.out.println("first>>>>" + mUnitToBlockMap.get(def0) + "second>>>>>> " + mUnitToBlockMap.get(def1) );
                             Block defBlock0 = (Block)  mUnitToBlockMap.get(def0);
                             Block defBlock1 = (Block)  mUnitToBlockMap.get(def1);
-                            if(defBlock0 != loadBlock && defBlock1 != loadBlock) {                                
+                            if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1) {                                
                                 if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
                                     List def0Succs = defBlock0.getSuccessors();
                                     List def1Succs  = defBlock1.getSuccessors();
@@ -1031,7 +1063,7 @@ public class LoadStoreOptimizer
                 return false;
         }
         
-        if(size == preds.size())
+	if(size == preds.size())
             return true;
         else
             return false;        
@@ -1296,6 +1328,40 @@ public class LoadStoreOptimizer
 	}
     }
     
+    void peephole() {
+       boolean hasChanged = true;
+       
+       while(hasChanged) {
+           hasChanged = false;
+           List tempList = new ArrayList();
+             tempList.addAll(mUnits);
+           
+           Iterator it = tempList.iterator();
+           while(it.hasNext() ) {
+               Unit currentUnit = (Unit) it.next();
+               if(currentUnit instanceof PopInst) {
+                   Block popBlock = (Block) mUnitToBlockMap.get(currentUnit);
+                   Unit prev = (Unit) popBlock.getPredOf(currentUnit);
+                   Unit succ = (Unit) popBlock.getSuccOf(currentUnit);
+                   
+                   if(prev instanceof LoadInst || prev instanceof PushInst) 
+                       if(((AbstractInst)prev).getOutMachineCount() == ((AbstractInst)currentUnit).getInMachineCount()) {
+                           popBlock.remove(prev);
+                           popBlock.remove(currentUnit);
+                       }
+                       else if(succ instanceof ReturnInst) {
+                           popBlock.remove(currentUnit);
+                           popBlock.remove(succ);
+                       }                                   
+               }
+           }       
+       }
+     }
+
+
+
+
+
 
     class statistics {
 	
