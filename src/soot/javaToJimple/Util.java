@@ -241,7 +241,7 @@ public class Util {
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (fh.canStoreType(l.getType(), type)){
+            if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
                 return l;
             }
         }
@@ -253,7 +253,8 @@ public class Util {
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
             soot.Local l = (soot.Local)it.next();
-            if (fh.canStoreType(l.getType(), type)){
+            System.out.println("l type: "+l.getType()+" type: "+type);
+            if (!(l.getType() instanceof soot.PrimType) && fh.canStoreType(l.getType(), type)){
                 return true;
             }
         }
