@@ -51,6 +51,17 @@ public class Scene  //extends AbstractHost
 
         if (scp != null)
             setSootClassPath(scp);
+
+        kindNumberer.add( Kind.INVALID );
+        kindNumberer.add( Kind.STATIC );
+        kindNumberer.add( Kind.VIRTUAL );
+        kindNumberer.add( Kind.INTERFACE );
+        kindNumberer.add( Kind.SPECIAL );
+        kindNumberer.add( Kind.CLINIT );
+        kindNumberer.add( Kind.THREAD );
+        kindNumberer.add( Kind.FINALIZE );
+        kindNumberer.add( Kind.PRIVILEGED );
+        kindNumberer.add( Kind.NEWINSTANCE );
     }
     public static Scene  v() { return G.v().soot_Scene (); }
 
@@ -61,12 +72,15 @@ public class Scene  //extends AbstractHost
     
     private Map nameToClass = new HashMap();
 
-    Numberer typeNumberer = new Numberer();
-    Numberer methodNumberer = new Numberer();
-    Numberer fieldNumberer = new Numberer();
-    Numberer classNumberer = new Numberer();
+    ArrayNumberer kindNumberer = new ArrayNumberer();
+    ArrayNumberer typeNumberer = new ArrayNumberer();
+    ArrayNumberer methodNumberer = new ArrayNumberer();
+    Numberer unitNumberer = new MapNumberer();
+    Numberer contextNumberer = new MapNumberer();
+    ArrayNumberer fieldNumberer = new ArrayNumberer();
+    ArrayNumberer classNumberer = new ArrayNumberer();
     StringNumberer subSigNumberer = new StringNumberer();
-    Numberer localNumberer = new Numberer();
+    ArrayNumberer localNumberer = new ArrayNumberer();
 
     private Hierarchy activeHierarchy;
     private FastHierarchy activeFastHierarchy;
@@ -581,12 +595,17 @@ public class Scene  //extends AbstractHost
     {
         return getPhantomRefs();
     }
-    public Numberer getTypeNumberer() { return typeNumberer; }
-    public Numberer getMethodNumberer() { return methodNumberer; }
-    public Numberer getFieldNumberer() { return fieldNumberer; }
-    public Numberer getClassNumberer() { return classNumberer; }
+    public Numberer kindNumberer() { return kindNumberer; }
+    public ArrayNumberer getTypeNumberer() { return typeNumberer; }
+    public ArrayNumberer getMethodNumberer() { return methodNumberer; }
+    public Numberer getContextNumberer() { return contextNumberer; }
+    public Numberer getUnitNumberer() { return unitNumberer; }
+    public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
+    public ArrayNumberer getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
-    public Numberer getLocalNumberer() { return localNumberer; }
+    public ArrayNumberer getLocalNumberer() { return localNumberer; }
+
+    public void setContextNumberer( Numberer n ) { contextNumberer = n; }
 
     /**
      * Returns the {@link ThrowAnalysis} to be used by default when

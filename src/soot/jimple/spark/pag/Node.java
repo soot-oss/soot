@@ -98,12 +98,12 @@ public class Node implements ReferenceVariable, Numberable {
         return rep.makeP2Set();
     }
     /** Returns the pointer assignment graph that this node is a part of. */
-    public AbstractPAG getPag() { return pag; }
+    public PAG getPag() { return pag; }
 
     /* End of public methods. */
 
     /** Creates a new node of pointer assignment graph pag, with type type. */
-    Node( AbstractPAG pag, Type type ) {
+    Node( PAG pag, Type type ) {
 	this.type = type;
 	this.pag = pag;
         replacement = this;
@@ -118,6 +118,6 @@ public class Node implements ReferenceVariable, Numberable {
 
     protected Type type;
     protected Node replacement;
-    protected AbstractPAG pag;
+    protected PAG pag;
     protected PointsToSetInternal p2set;
 }

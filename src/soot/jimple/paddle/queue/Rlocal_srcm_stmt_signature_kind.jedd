@@ -1,0 +1,73 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle.queue;
+import soot.util.*;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.*;
+import soot.util.queue.*;
+import jedd.*;
+import java.util.*;
+
+public abstract class Rlocal_srcm_stmt_signature_kind {
+    public abstract Iterator iterator();
+    public abstract <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get();
+    public abstract boolean hasNext();
+    public static class Tuple {
+        private Local _local;
+        public Local local() { return _local; }
+        private SootMethod _srcm;
+        public SootMethod srcm() { return _srcm; }
+        private Unit _stmt;
+        public Unit stmt() { return _stmt; }
+        private NumberedString _signature;
+        public NumberedString signature() { return _signature; }
+        private Kind _kind;
+        public Kind kind() { return _kind; }
+        public Tuple( Local _local, SootMethod _srcm, Unit _stmt, NumberedString _signature, Kind _kind ) {
+            this._local = _local;
+            this._srcm = _srcm;
+            this._stmt = _stmt;
+            this._signature = _signature;
+            this._kind = _kind;
+        }
+        public int hashCode() { return 0; }
+        public boolean equals(Object other) {
+            if(!(other instanceof Tuple)) return false;
+            Tuple o = (Tuple) other;
+            if(o._local != _local) return false;
+            if(o._srcm != _srcm) return false;
+            if(o._stmt != _stmt) return false;
+            if(o._signature != _signature) return false;
+            if(o._kind != _kind) return false;
+            return true;
+        }
+        public String toString() {
+            StringBuffer ret = new StringBuffer();
+            ret.append( local() ); ret.append( ", " );
+            ret.append( srcm() ); ret.append( ", " );
+            ret.append( stmt() ); ret.append( ", " );
+            ret.append( signature() ); ret.append( ", " );
+            ret.append( kind() ); ret.append( ", " );
+            return ret.toString();
+        }
+    }
+}

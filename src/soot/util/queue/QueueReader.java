@@ -18,6 +18,7 @@
  */
 
 package soot.util.queue;
+import java.util.*;
 
 /** A queue of Object's. One can add objects to the queue, and they are
  * later read by a QueueReader. One can create arbitrary numbers of
@@ -38,13 +39,16 @@ public class QueueReader implements java.util.Iterator
     /** Returns (and removes) the next object in the queue, or null if
      * there are none. */
     public final Object next() {
-        if( q[index] == null ) return null;
+        if( q[index] == null ) throw new NoSuchElementException();
         if( index == q.length - 1 ) {
             q = (Object[]) q[index];
             index = 0;
-            if( q[index] == null ) return null;
+            if( q[index] == null ) throw new NoSuchElementException();
         }
-        return q[index++];
+        Object ret = q[index];
+        if( ret == ChunkedQueue.NULL_CONST ) ret = null;
+        index++;
+        return ret;
     }
 
     /** Returns true iff there is currently another object in the queue. */

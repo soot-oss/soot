@@ -33,7 +33,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class MethodNodeFactory extends AbstractJimpleValueSwitch {
-    public MethodNodeFactory( AbstractPAG pag, AbstractMethodPAG mpag ) {
+    public MethodNodeFactory( PAG pag, MethodPAG mpag ) {
 	this.pag = pag;
 	this.mpag = mpag;
         setCurrentMethod( mpag.getMethod() );
@@ -238,8 +238,8 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     final public void defaultCase( Object v ) {
 	throw new RuntimeException( "failed to handle "+v );
     }
-    protected AbstractPAG pag;
-    protected AbstractMethodPAG mpag;
+    protected PAG pag;
+    protected MethodPAG mpag;
     protected SootMethod method;
 }
 

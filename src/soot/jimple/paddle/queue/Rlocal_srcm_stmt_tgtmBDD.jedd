@@ -1,0 +1,60 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle.queue;
+import soot.util.*;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.*;
+import soot.util.queue.*;
+import jedd.*;
+import java.util.*;
+
+public final class Rlocal_srcm_stmt_tgtmBDD extends Rlocal_srcm_stmt_tgtm {
+    private <local:V1, srcm:T1, stmt:ST, tgtm:T2> bdd;
+    void add( <local:V1, srcm:T1, stmt:ST, tgtm:T2> tuple ) { bdd |= tuple; }
+    public Rlocal_srcm_stmt_tgtmBDD( <local:V1, srcm:T1, stmt:ST, tgtm:T2> bdd ) { this(); add(bdd); }
+    Rlocal_srcm_stmt_tgtmBDD() { bdd = 0B; }
+    public Iterator iterator() {;
+        return new Iterator() {
+            private Iterator it;
+            public boolean hasNext() {
+                if( it != null && it.hasNext() ) return true;
+                if( bdd != 0B ) return true;
+                return false;
+            }
+            public Object next() {
+                if( it == null || !it.hasNext() ) {
+                    it = bdd.iterator( new Attribute[] { local.v(), srcm.v(), stmt.v(), tgtm.v() } );
+                    bdd = 0B;
+                }
+                Object[] components = (Object[]) it.next();
+                return new Tuple( (Local) components[0], (SootMethod) components[1], (Unit) components[2], (SootMethod) components[3] );
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+    public <local:V1, srcm:T1, stmt:ST, tgtm:T2> get() {
+        <local:V1, srcm:T1, stmt:ST, tgtm:T2> ret = bdd;
+        bdd = 0B;
+        return ret;
+    }
+    public boolean hasNext() { return bdd != 0B; }
+}

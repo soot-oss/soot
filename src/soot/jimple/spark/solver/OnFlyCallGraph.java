@@ -64,20 +64,18 @@ public class OnFlyCallGraph {
     }
     private void processReachables() {
         reachableMethods.update();
-        while(true) {
+        while(reachablesReader.hasNext()) {
             MethodOrMethodContext m = (MethodOrMethodContext) reachablesReader.next();
-            if( m == null ) return;
-            AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m.method() );
+            MethodPAG mpag = MethodPAG.v( pag, m.method() );
             mpag.build();
             mpag.addToPAG(m.context());
         }
     }
     private void processCallEdges() {
         Stmt s = null;
-        while(true) {
+        while(callEdges.hasNext()) {
             Edge e = (Edge) callEdges.next();
-            if( e == null ) break;
-            AbstractMethodPAG amp = AbstractMethodPAG.v( pag, e.tgt() );
+            MethodPAG amp = MethodPAG.v( pag, e.tgt() );
             amp.build();
             amp.addToPAG( e.tgtCtxt() );
             pag.addCallTarget( e );
@@ -90,13 +88,13 @@ public class OnFlyCallGraph {
         Object r = vn.getVariable();
         if( !(r instanceof Local) ) return;
         final Local receiver = (Local) r;
-        final Object context = vn.context();
+        final Context context = vn.context();
 
         PointsToSetInternal p2set = vn.getP2Set().getNewSet();
         if( ofcgb.wantTypes( receiver ) ) {
             p2set.forall( new P2SetVisitor() {
             public final void visit( Node n ) { 
-                ofcgb.addType( receiver, context, n.getType(), n );
+                ofcgb.addType( receiver, context, n.getType(), (AllocNode) n );
             }} );
         }
         if( ofcgb.wantStringConstants( receiver ) ) {

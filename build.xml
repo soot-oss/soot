@@ -9,11 +9,10 @@
         />
     </target>
 
-    <!--<target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options,jflex-lexer,ppg-parser">-->
-    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options">
+    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options,jedd">
         <javac
             destdir="classes"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${jedd.runtime.jar}"
             debug="true"
         >
             <src path="src"/>
@@ -114,7 +113,7 @@
             classname="soot.tools.BadFields"
             maxmemory="200m"
             fork="true"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${jedd.runtime.jar}"
         >
             <arg value="-w"/>
             <arg value="-f"/>
@@ -130,7 +129,7 @@
         <javac
             srcdir="tests"
             destdir="testclasses"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${jedd.runtime.jar}"
             debug="true"
             />
     </target>
@@ -142,6 +141,7 @@
                 <pathelement location="classes"/>
                 <pathelement location="${polyglot.jar}"/>
                 <pathelement location="${jasmin.jar}"/>
+                <pathelement location="${jedd.runtime.jar}"/>
             </classpath>
 
             <formatter type="plain"/>
@@ -382,4 +382,32 @@
     </condition>	      
   </target>
   
+    <target name="jedd" depends="settings,jedd-uptodate,options,sablecc,singletons" unless="jedd-uptodate">
+        <apply executable="java" failonerror="true" parallel="true">
+            <arg value="-Xincgc"/>
+            <arg value="-cp"/>
+            <arg path="${jedd.translator.jar}:${polyglot.jar}"/>
+            <arg value="-Xmx800m"/>
+            <arg value="jedd.Main"/>
+            <arg value="-sourcepath"/>
+            <arg path="src:generated/options:generated/sablecc:generated/singletons:generated/jj"/>
+            <arg value="-classpath"/>
+            <arg path="${jasmin.jar}:${polyglot.jar}:${jedd.runtime.jar}"/>
+            <arg value="-c"/>
+            <arg value="-d"/>
+            <arg file="generated/jedd"/>
+            <arg value="-s"/>
+            <arg value="${sat.solver.cmd}"/>
+            <arg value="-sc"/>
+            <arg value="${sat.core.cmd}"/>
+            <fileset dir="src" includes="**/*.jedd"/>
+        </apply>
+    </target>
+    <target name="jedd-uptodate" depends="settings">
+        <uptodate property="jedd-uptodate">
+            <srcfiles dir="." includes="src/**/*.jedd"/>
+            <mapper type="regexp" from="^src/(.*)\.jedd$$" to="generated/jedd/\1.java"/>
+        </uptodate>
+    </target>
+
 </project>

@@ -1,0 +1,11 @@
+/home/olhotak/makeq Context ctxt V1 SootMethod method T1
+/home/olhotak/makeq Context srcc V1 SootMethod srcm T1 Unit stmt ST Kind kind FD Context tgtc V2 SootMethod tgtm T2
+/home/olhotak/makeq Local local V1 SootMethod srcm T1 Unit stmt ST NumberedString signature H2 Kind kind FD
+/home/olhotak/makeq Local local V1 SootMethod srcm T1 Unit stmt ST SootMethod tgtm T2
+/home/olhotak/makeq VarNode src V1 VarNode dst V2
+/home/olhotak/makeq VarNode src V1 PaddleField fld FD VarNode dst V2
+/home/olhotak/makeq AllocNode obj H1 VarNode var V1
+/home/olhotak/makeq VarNode var V1 AllocNode obj H1
+/home/olhotak/makeq AllocNode obj H1
+/home/olhotak/makeq VarNode var V1
+/home/olhotak/makeq Context ctxt V2 Local local V1 AllocNode obj H1 SootMethod srcm T1 Unit stmt ST Kind kind FD SootMethod tgtm T2

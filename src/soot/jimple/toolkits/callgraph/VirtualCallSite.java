@@ -34,19 +34,21 @@ public class VirtualCallSite
     private Stmt stmt;
     private SootMethod container;
     private NumberedString subSig;
+    Kind kind;
 
-    public VirtualCallSite( Stmt stmt, SootMethod container ) {
+    public VirtualCallSite( Stmt stmt, SootMethod container,
+            InstanceInvokeExpr iie, NumberedString subSig, Kind kind ) {
         this.stmt = stmt;
         this.container = container;
-        InvokeExpr ie = stmt.getInvokeExpr();
-        if( ie instanceof InstanceInvokeExpr ) {
-            this.iie = (InstanceInvokeExpr) ie;
-            this.subSig = iie.getMethod().getNumberedSubSignature();
-        }
+        this.iie = iie;
+        this.subSig = subSig;
+        this.kind = kind;
     }
-    public Stmt getStmt() { return stmt; }
-    public SootMethod getContainer() { return container; }
-    public InstanceInvokeExpr getInstanceInvokeExpr() { return iie; }
+    public Stmt stmt() { return stmt; }
+    public SootMethod container() { return container; }
+    public InstanceInvokeExpr iie() { return iie; }
+    public NumberedString subSig() { return subSig; }
+    public Kind kind() { return kind; }
 }
 
 

@@ -28,7 +28,7 @@ import java.util.*;
  */
 
 public final class LargeNumberedMap {
-    public LargeNumberedMap( Numberer universe ) {
+    public LargeNumberedMap( ArrayNumberer universe ) {
         this.universe = universe;
         int newsize = universe.size();
         if( newsize < 8 ) newsize = 8;
@@ -57,5 +57,5 @@ public final class LargeNumberedMap {
     private Object[] values;
     private long[] bits;
     private int size = 0;
-    private Numberer universe;
+    private ArrayNumberer universe;
 }

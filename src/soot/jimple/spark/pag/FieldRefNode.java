@@ -47,7 +47,7 @@ public class FieldRefNode extends ValNode {
 
     /* End of public methods. */
 
-    FieldRefNode( AbstractPAG pag, VarNode base, SparkField field ) {
+    FieldRefNode( PAG pag, VarNode base, SparkField field ) {
 	super( pag, null );
 	if( field == null ) throw new RuntimeException( "null field" );
 	this.base = base;

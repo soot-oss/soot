@@ -30,15 +30,14 @@ import soot.options.SparkOptions;
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak
  */
-public final class TypeManager extends AbstractTypeManager {
-    public TypeManager( AbstractPAG pag ) {
-        super(pag);
+public final class TypeManager {
+    public TypeManager( PAG pag ) {
+        this.pag = pag;
     }
     final public BitVector get( Type type ) {
         if( type == null ) return null;
-        while(true) {
+        while(allocNodeListener.hasNext()) {
             AllocNode n = (AllocNode) allocNodeListener.next();
-            if( n == null ) break;
             for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
                 final Type t = (Type) tIt.next();
                 if( !(t instanceof RefLikeType) ) continue;
@@ -75,7 +74,7 @@ public final class TypeManager extends AbstractTypeManager {
         if( pag.getOpts().verbose() )
             G.v().out.println( "Total types: "+numTypes );
 
-        Numberer allocNodes = pag.getAllocNodeNumberer();
+        ArrayNumberer allocNodes = pag.getAllocNodeNumberer();
         for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
             final Type t = (Type) tIt.next();
             if( !(t instanceof RefLikeType) ) continue;
@@ -94,5 +93,23 @@ public final class TypeManager extends AbstractTypeManager {
     }
 
     private LargeNumberedMap typeMask = null;
+    final public boolean castNeverFails( Type src, Type dst ) {
+        if( fh == null ) return true;
+        if( dst == null ) return true;
+        if( dst == src ) return true;
+        if( src == null ) return false;
+        if( dst.equals( src ) ) return true;
+        if( src instanceof NullType ) return true;
+        if( src instanceof AnySubType ) return true;
+        if( dst instanceof NullType ) return false;
+        if( dst instanceof AnySubType ) throw new RuntimeException( "oops src="+src+" dst="+dst );
+        return fh.canStoreType( src, dst );
+    }
+    public void setFastHierarchy( FastHierarchy fh ) { this.fh = fh; }
+    public FastHierarchy getFastHierarchy() { return fh; }
+
+    protected FastHierarchy fh = null;
+    protected PAG pag;
+    protected QueueReader allocNodeListener = null;
 }
 

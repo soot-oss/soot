@@ -19,7 +19,6 @@
 
 package soot.jimple;
 import java.util.*;
-import soot.jimple.spark.*;
 import soot.*;
 import java.io.*;
 

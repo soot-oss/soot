@@ -22,7 +22,6 @@ package soot.jimple.toolkits.pointer;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
-import soot.jimple.spark.*;
 
 //  ArrayRef, 
 //  CaughtExceptionRef, 

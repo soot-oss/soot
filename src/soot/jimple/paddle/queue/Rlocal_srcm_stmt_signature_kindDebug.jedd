@@ -1,0 +1,61 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle.queue;
+import soot.util.*;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.*;
+import soot.util.queue.*;
+import jedd.*;
+import java.util.*;
+
+public class Rlocal_srcm_stmt_signature_kindDebug extends Rlocal_srcm_stmt_signature_kind{
+    protected Rlocal_srcm_stmt_signature_kindBDD bdd;
+    protected Rlocal_srcm_stmt_signature_kindSet trad;
+    public Rlocal_srcm_stmt_signature_kindDebug( Rlocal_srcm_stmt_signature_kindBDD bdd, Rlocal_srcm_stmt_signature_kindSet trad ) { this.bdd = bdd; this.trad = trad;}
+    public Iterator iterator() {
+        return new Iterator() {
+            Iterator tradIt = trad.iterator();
+            Iterator bddIt = bdd.iterator();
+            Set tradSet = new HashSet();
+            Set bddSet = new HashSet();
+            public boolean hasNext() {
+                if( tradIt.hasNext() != bddIt.hasNext() ) throw new RuntimeException( "they don't match: tradIt="+tradIt.hasNext()+" bddIt="+bddIt.hasNext() );
+                if(!tradIt.hasNext() && !tradSet.equals(bddSet)) throw new RuntimeException( "tradSet="+tradSet+"\nbddSet="+bddSet );
+                if(!tradIt.hasNext()) System.out.println("DONE");
+                return tradIt.hasNext();
+            }
+            public Object next() {
+                Rlocal_srcm_stmt_signature_kind.Tuple bddt = (Rlocal_srcm_stmt_signature_kind.Tuple) bddIt.next();
+                Rlocal_srcm_stmt_signature_kind.Tuple tradt = (Rlocal_srcm_stmt_signature_kind.Tuple) tradIt.next();
+                tradSet.add(tradt);
+                bddSet.add(bddt);
+                System.out.println( "bdd:"+bddt+"\ntrad:"+tradt );
+                return bddt;
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+    public <local:V1, srcm:T1, stmt:ST, signature:H2, kind:FD> get() {
+        throw new RuntimeException( "NYI" );
+    }
+    public boolean hasNext() { return trad.hasNext(); }
+}

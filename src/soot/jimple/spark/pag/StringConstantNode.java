@@ -36,7 +36,7 @@ public class StringConstantNode extends AllocNode {
 
     /* End of public methods. */
 
-    StringConstantNode( AbstractPAG pag, String sc ) {
+    StringConstantNode( PAG pag, String sc ) {
         super( pag, sc, RefType.v( "java.lang.String" ), null );
     }
 }

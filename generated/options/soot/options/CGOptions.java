@@ -136,7 +136,7 @@ public class CGOptions
     
      * Select context-sensitivity level.
     
-     * This option tells Spark which level of context-sensitivity to 
+     * This option tells Paddle which level of context-sensitivity to 
      * use in constructing the call graph. 
      */
     public int context() {

@@ -36,7 +36,7 @@ public class AllocDotField extends Node {
 
     /* End of public methods. */
 
-    AllocDotField( AbstractPAG pag, AllocNode base, SparkField field ) {
+    AllocDotField( PAG pag, AllocNode base, SparkField field ) {
 	super( pag, null );
 	if( field == null ) throw new RuntimeException( "null field" );
 	this.base = base;

@@ -26,7 +26,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public abstract class VarNode extends ValNode implements Comparable {
-    public Object context() { return null; }
+    public Context context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
     public Collection getAllFieldRefs() { 
 	if( fields == null ) return Collections.EMPTY_LIST;
@@ -82,7 +82,7 @@ public abstract class VarNode extends ValNode implements Comparable {
 
     /* End of public methods. */
 
-    VarNode( AbstractPAG pag, Object variable, Type t ) {
+    VarNode( PAG pag, Object variable, Type t ) {
 	super( pag, t );
 	if( !(t instanceof RefLikeType) || t instanceof AnySubType ) {
 	    throw new RuntimeException( "Attempt to create VarNode of type "+t );

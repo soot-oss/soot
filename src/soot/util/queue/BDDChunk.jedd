@@ -1,0 +1,37 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.util.queue;
+
+/** Similar to ChunkedQueue, but implemented using BDDs. A BDDQueue represents
+ * a sequence of BDDs. Each reader points to some BDD in the sequence, and
+ * can read the current BDD and ones that come after it in sequence. If at
+ * any point, a BDD in the sequence no longer has a reader pointing to it,
+ * it is unioned into the preceding BDD (if any) and removed from the sequence.
+ * Only BDDs that have not been read by all the readers
+ * are kept. A reader can only read the BDDs added to the queue
+ * <b>after</b> the reader was created.
+ * @author Ondrej Lhotak
+ */
+
+class BDDChunk {
+    <> bdd = 0B;
+    BDDChunk next;
+}
+

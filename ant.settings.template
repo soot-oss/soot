@@ -17,6 +17,18 @@ release.loc=/tmp
 ## Location of JFlex classes jar file
 jflex.jar=${user.home}/JFlex.jar
 
+## Location of Jedd runtime classes jar file
+jedd.runtime.jar=${user.home}/jedd-runtime.jar
+
+## Location of Jedd translator classes jar file
+jedd.translator.jar=${user.home}/jedd-translator.jar
+
+## Command to invoke SAT solver
+sat.solver.cmd=${user.home}/zchaff.2003.10.9.linux
+
+## Command to invoke SAT core extractor
+sat.core.cmd=${user.home}/zcore
+
 ## URL for Java API documentation, for resolving things like
 ## {@link Iterator} when generating documentation from 
 ## javadoc comments.

@@ -33,7 +33,7 @@ public final class Edge
     public SootMethod src() {
         if( src == null ) return null; else return src.method();
     }
-    public Object srcCtxt() {
+    public Context srcCtxt() {
         if( src == null ) return null; else return src.context();
     }
     public MethodOrMethodContext getSrc() { return src; }
@@ -48,47 +48,20 @@ public final class Edge
     /** The target method of the call edge. */
     private MethodOrMethodContext tgt;
     public SootMethod tgt() { return tgt.method(); }
-    public Object tgtCtxt() { return tgt.context(); }
+    public Context tgtCtxt() { return tgt.context(); }
     public MethodOrMethodContext getTgt() { return tgt; }
 
-    public static final int INVALID = 0;
-    /** Due to explicit invokestatic instruction. */
-    public static final int STATIC = 1;
-    /** Due to explicit invokevirtual instruction. */
-    public static final int VIRTUAL = 2;
-    /** Due to explicit invokeinterface instruction. */
-    public static final int INTERFACE = 3;
-    /** Due to explicit invokespecial instruction. */
-    public static final int SPECIAL = 4;
-    /** Implicit call to static initializer. */
-    public static final int CLINIT = 5;
-    /** Implicit call to Thread.run() due to Thread.start() call. */
-    public static final int THREAD = 6;
-    /** Implicit call to Thread.exit(). */
-    public static final int EXIT = 7;
-    /** Implicit call to non-trivial finalizer from constructor. */
-    public static final int FINALIZE = 8;
-    /** Implicit call to run() through AccessController.doPrivileged(). */
-    public static final int PRIVILEGED = 9;
-    /** Implicit call to constructor from java.lang.Class.newInstance(). */
-    public static final int NEWINSTANCE = 10;
-
-    public static final String[] kinds = { "INVALID",
-        "STATIC", "VIRTUAL", "INTERFACE", "SPECIAL",
-        "CLINIT", "THREAD", "EXIT", "FINALIZE", "PRIVILEGED", "NEWINSTANCE" };
-
-    /** The kind of edge. Valid kinds are given by the static final
-     * fields above. Note: kind should not be tested by other classes;
+    /** The kind of edge. Note: kind should not be tested by other classes;
      *  instead, accessors such as isExplicit() should be added.
      **/
-    private int kind;
-    public int kind() { return kind; }
+    private Kind kind;
+    public Kind kind() { return kind; }
 
-    public Edge( MethodOrMethodContext src, Unit srcUnit, MethodOrMethodContext tgt, int type ) {
+    public Edge( MethodOrMethodContext src, Unit srcUnit, MethodOrMethodContext tgt, Kind kind ) {
         this.src = src;
         this.srcUnit = srcUnit;
         this.tgt = tgt;
-        this.kind = type;
+        this.kind = kind;
     }
 
     public Edge( MethodOrMethodContext src, Stmt srcUnit, MethodOrMethodContext tgt ) {
@@ -98,43 +71,42 @@ public final class Edge
         this.tgt = tgt;
     }
 
-    public static int ieToKind( InvokeExpr ie ) {
-        if( ie instanceof VirtualInvokeExpr ) return VIRTUAL;
-        else if( ie instanceof SpecialInvokeExpr ) return SPECIAL;
-        else if( ie instanceof InterfaceInvokeExpr ) return INTERFACE;
-        else if( ie instanceof StaticInvokeExpr ) return STATIC;
+    public static Kind ieToKind( InvokeExpr ie ) {
+        if( ie instanceof VirtualInvokeExpr ) return Kind.VIRTUAL;
+        else if( ie instanceof SpecialInvokeExpr ) return Kind.SPECIAL;
+        else if( ie instanceof InterfaceInvokeExpr ) return Kind.INTERFACE;
+        else if( ie instanceof StaticInvokeExpr ) return Kind.STATIC;
         else throw new RuntimeException();
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */
     public boolean isExplicit() {
-        return isInstance() || isStatic();
+        return kind.isExplicit();
     }
 
 	
     /** Returns true if the call is due to an explicit instance invoke
      * statement. */
     public boolean isInstance() {
-        return kind == VIRTUAL || kind == INTERFACE || kind == SPECIAL;
+        return kind.isInstance();
     }
 
     /** Returns true if the call is to static initializer. */
     public boolean isClinit() {
-        return kind == CLINIT;
+        return kind.isClinit();
     }
     /** Returns true if the call is due to an explicit static invoke
      * statement. */
     public boolean isStatic() {
-        return kind == STATIC;
+        return kind.isStatic();
     }
 
     public boolean passesParameters() {
-        return isExplicit() || kind == THREAD || kind == EXIT ||
-            kind == FINALIZE || kind == PRIVILEGED || kind == NEWINSTANCE;
+        return kind.passesParameters();
     }
 
     public int hashCode() {
-        int ret = tgt.hashCode() + kind;
+        int ret = tgt.hashCode() + kind.getNumber();
         if( src != null ) ret += src.hashCode();
         if( srcUnit != null ) ret += srcUnit.hashCode();
         return ret;
@@ -148,11 +120,8 @@ public final class Edge
         return true;
     }
     
-    public static String kindToString(int kind) {
-        return kinds[kind];
-    }
     public String toString() {
-        return kindToString(kind)+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
+        return kind.toString()+" edge: "+srcUnit+" in "+src+" ==> "+tgt;
     }
 
     private Edge nextBySrc = this;

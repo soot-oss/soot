@@ -64,14 +64,12 @@ public class ReachableMethods
     /** Causes the QueueReader objects to be filled up with any methods
      * that have become reachable since the last call. */
     public void update() {
-        while(true) {
+        while(edgeSource.hasNext()) {
             Edge e = (Edge) edgeSource.next();
-            if( e == null ) break;
             if( set.contains( e.getSrc() ) ) addMethod( e.getTgt() );
         }
-        while(true) {
+        while(unprocessedMethods.hasNext()) {
             MethodOrMethodContext m = (MethodOrMethodContext) unprocessedMethods.next();
-            if( m == null ) break;
             Iterator targets = cg.edgesOutOf( m );
             if( filter != null ) targets = filter.wrap( targets );
             addMethods( new Targets( targets ) );

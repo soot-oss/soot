@@ -1,0 +1,134 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2004 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle;
+import soot.*;
+import soot.util.*;
+import soot.jimple.paddle.queue.*;
+import soot.jimple.paddle.bdddomains.*;
+import java.util.*;
+
+/** Keeps track of subtype relationships between PAG nodes.
+ * @author Ondrej Lhotak
+ */
+public class TradTypeManager extends AbsTypeManager
+{ 
+    TradTypeManager( Rvar vars, Robj allocs, FastHierarchy fh ) {
+        super( vars, allocs );
+        this.fh = fh;
+    }
+    public void update() {
+        for( Iterator tIt = vars.iterator(); tIt.hasNext(); ) {
+            final Rvar.Tuple t = (Rvar.Tuple) tIt.next();
+            VarNode vn = t.var();
+            Type type = vn.getType();
+            if( typeMask.get(type) != null ) continue;
+            BitVector bv = new BitVector( allocNodes.size() );
+            typeMask.put( type, bv );
+            for( Iterator anIt = allocNodes.iterator(); anIt.hasNext(); ) {
+                final AllocNode an = (AllocNode) anIt.next();
+                if( castNeverFails( an.getType(), type ) ) {
+                    bv.set( an.getNumber() );
+                    change = true;
+                }
+            }
+        }
+        for( Iterator tIt = allocs.iterator(); tIt.hasNext(); ) {
+            final Robj.Tuple t = (Robj.Tuple) tIt.next();
+            AllocNode an = t.obj();
+            allocNodes.add( an );
+            for( Iterator typeIt = Scene.v().getTypeNumberer().iterator(); typeIt.hasNext(); ) {
+                final Type type = (Type) typeIt.next();
+                if( !( type instanceof RefLikeType ) ) continue;
+                if( type instanceof AnySubType ) continue;
+                BitVector bv = (BitVector) typeMask.get( type );
+                if( bv == null ) continue;
+                if( castNeverFails( an.getType(), type ) ) {
+                    bv.set( an.getNumber() );
+                    change = true;
+                }
+            }
+        }
+    }
+    public BitVector get( Type type ) {
+        if( type == null ) return null;
+        update();
+        BitVector ret = (BitVector) typeMask.get( type );
+        if( ret == null && fh != null ) throw new RuntimeException( "oops"+type );
+        return ret;
+    }
+    private BDDGetter bddGetter;
+    public <var, obj> get() {
+        if( fh == null ) return 1B;
+        if( bddGetter == null ) bddGetter = new BDDGetter();
+        return bddGetter.get();
+    }
+    class BDDGetter {
+        private <type:T1, obj> cachedTypeMasks = 0B;
+        private <var, type> cachedVarNodes = 0B;
+        private <var, obj> cachedVarObj = 0B;
+        public <var:V1, obj:H1> get() {
+            update();
+            if( change ) {
+                for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
+                    final Type t = (Type) tIt.next();
+                    BitVector mask = (BitVector) typeMask.get(t);
+                    if( mask == null ) continue;
+                    BitSetIterator bsi = mask.iterator();
+                    Numberer objNumberer = PaddleNumberers.v().allocNodeNumberer();
+                    while( bsi.hasNext() ) {
+                        int objNum = bsi.next();
+                        cachedTypeMasks |= new { t=>type, objNumberer.get(objNum)=>obj };
+                    }
+                }
+                cachedVarObj = cachedTypeMasks{type} <> cachedVarNodes{type}; 
+                change = false;
+            }
+
+            <var, type> varNodes = 0B;
+            while( newVarNodes.hasNext() ) {
+                VarNode vn = (VarNode) newVarNodes.next();
+                varNodes |= new { vn=>var, vn.getType()=>type };
+            }
+            cachedVarObj |= cachedTypeMasks{type} <> varNodes{type};
+            cachedVarNodes |= varNodes;
+            return cachedVarObj;
+        }
+    }
+    public boolean castNeverFails( Type from, Type to ) {
+        if( fh == null ) return true;
+        if( to == null ) return true;
+        if( to == from ) return true;
+        if( from == null ) return false;
+        if( to.equals( from ) ) return true;
+        if( from instanceof NullType ) return true;
+        if( from instanceof AnySubType ) return true;
+        if( to instanceof NullType ) return false;
+        if( to instanceof AnySubType ) throw new RuntimeException( "oops from="+from+" to="+to );
+        return fh.canStoreType( from, to );
+    }
+
+    private LargeNumberedMap typeMask = new LargeNumberedMap( Scene.v().getTypeNumberer() );
+    private NumberedSet allocNodes = new NumberedSet( PaddleNumberers.v().allocNodeNumberer() );
+    private Iterator newVarNodes = PaddleNumberers.v().varNodeNumberer().iterator();
+    private FastHierarchy fh;
+    private boolean change = false;
+}
+
+

@@ -19,34 +19,6 @@
 
 package soot;
 import java.util.*;
-import java.io.*;
-import soot.util.*;
-import soot.util.queue.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.baf.*;
-import soot.jimple.toolkits.invoke.*;
-import soot.jimple.toolkits.base.*;
-import soot.grimp.toolkits.base.*;
-import soot.baf.toolkits.base.*;
-import soot.jimple.toolkits.typing.*;
-import soot.jimple.toolkits.scalar.*;
-import soot.jimple.toolkits.scalar.pre.*;
-import soot.jimple.toolkits.annotation.arraycheck.*;
-import soot.jimple.toolkits.annotation.profiling.*;
-import soot.jimple.toolkits.annotation.callgraph.*;
-import soot.jimple.toolkits.annotation.nullcheck.*;
-import soot.jimple.toolkits.annotation.tags.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.tagkit.*;
-import soot.options.Options;
-import soot.toolkits.scalar.*;
-import soot.jimple.spark.SparkTransformer;
-import soot.jimple.toolkits.callgraph.CHATransformer;
-import soot.jimple.spark.fieldrw.*;
-import soot.dava.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.xml.*;
 
 /** Manages the phase options of the various soot phases. */
 public class PhaseOptions {

@@ -93,8 +93,8 @@ public final class CallGraphBuilder
         while(true) {
             ofcgb.processReachables();
             reachables.update();
+            if( !worklist.hasNext() ) break;
             MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
-            if( momc == null ) break;
             List receivers = (List) ofcgb.methodToReceivers().get(momc.method());
             if( receivers != null) for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     
                 final Local receiver = (Local) receiverIt.next();

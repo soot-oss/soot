@@ -35,27 +35,26 @@ public final class VirtualCalls
     private LargeNumberedMap typeToVtbl =
         new LargeNumberedMap( Scene.v().getTypeNumberer() );
 
-    private SootMethod resolveRefType( RefType t, InstanceInvokeExpr iie, NumberedString subSig, SootMethod container ) {
-        if( iie instanceof SpecialInvokeExpr ) {
-            SootMethod target = iie.getMethod();
-            /* cf. JVM spec, invokespecial instruction */
-            if( Scene.v().getOrMakeFastHierarchy()
-                    .canStoreType( container.getDeclaringClass().getType(),
-                        target.getDeclaringClass().getType() )
-                && container.getDeclaringClass().getType() !=
-                    target.getDeclaringClass().getType() 
-                && !target.getName().equals( "<init>" ) 
-                && subSig != sigClinit ) {
+    public SootMethod resolveSpecial( SpecialInvokeExpr iie, NumberedString subSig, SootMethod container ) {
+        SootMethod target = iie.getMethod();
+        /* cf. JVM spec, invokespecial instruction */
+        if( Scene.v().getOrMakeFastHierarchy()
+                .canStoreType( container.getDeclaringClass().getType(),
+                    target.getDeclaringClass().getType() )
+            && container.getDeclaringClass().getType() !=
+                target.getDeclaringClass().getType() 
+            && !target.getName().equals( "<init>" ) 
+            && subSig != sigClinit ) {
 
-                t = container.getDeclaringClass().getSuperclass().getType();
-            } else {
-                return target;
-            }
+            return resolveNonSpecial(
+                    container.getDeclaringClass().getSuperclass().getType(),
+                    subSig );
+        } else {
+            return target;
         }
-        return resolveNonSpecial( t, iie, container, subSig );
     }
 
-    private SootMethod resolveNonSpecial( RefType t, InstanceInvokeExpr iie, SootMethod container, NumberedString subSig ) {
+    private SootMethod resolveNonSpecial( RefType t, NumberedString subSig ) {
         SmallNumberedMap vtbl = (SmallNumberedMap) typeToVtbl.get( t );
         if( vtbl == null ) {
             typeToVtbl.put( t, vtbl =
@@ -71,30 +70,40 @@ public final class VirtualCalls
             }
         } else {
             if( cls.hasSuperclass() ) {
-                ret = resolveNonSpecial( cls.getSuperclass().getType(),
-                        iie, container, subSig );
+                ret = resolveNonSpecial( cls.getSuperclass().getType(), subSig );
             }
         }
         vtbl.put( subSig, ret );
         return ret;
     }
 
-    public void resolve( Type t, InstanceInvokeExpr iie, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
-        if( iie != null && !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, iie.getBase().getType() ) ) {
+    private Map baseToSubTypes = new HashMap();
+
+    public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue targets ) {
+        if( declaredType != null && !Scene.v().getOrMakeFastHierarchy()
+                .canStoreType( t, declaredType ) ) {
             return;
         }
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
         if( t instanceof RefType ) {
-            SootMethod target = resolveRefType( (RefType) t, iie, subSig, container );
+            SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
-            if( iie instanceof SpecialInvokeExpr ) {
-                targets.add( resolveRefType( null, iie, subSig, container ) );
+            RefType base = ((AnySubType)t).getBase();
+
+            List subTypes = (List) baseToSubTypes.get(base);
+            if( subTypes != null ) {
+                for( Iterator stIt = subTypes.iterator(); stIt.hasNext(); ) {
+                    final Type st = (Type) stIt.next();
+                    resolve( st, declaredType, subSig, container, targets );
+                }
                 return;
             }
-            RefType base = ((AnySubType)t).getBase();
-            resolve( base, iie, subSig, container, targets );
+
+            baseToSubTypes.put(base, subTypes = new ArrayList() );
+
+            resolve( base, declaredType, subSig, container, targets );
+            subTypes.add(base);
 
             LinkedList worklist = new LinkedList();
             HashSet workset = new HashSet();
@@ -110,7 +119,8 @@ public final class VirtualCalls
                         if( workset.add( c ) ) worklist.add( c );
                     }
                 } else {
-                    resolve( cl.getType(), iie, subSig, container, targets );
+                    resolve( cl.getType(), declaredType, subSig, container, targets );
+                    subTypes.add(cl.getType());
                     for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
                         final SootClass c = (SootClass) cIt.next();
                         if( workset.add( c ) ) worklist.add( c );
@@ -121,17 +131,6 @@ public final class VirtualCalls
         } else {
             throw new RuntimeException( "oops "+t );
         }
-    }
-
-    public void resolve( Type t, InstanceInvokeExpr iie, SootMethod container, ChunkedQueue targets ) {
-        resolve( t, iie, iie.getMethod().getNumberedSubSignature(), container, targets );
-    }
-
-    public void resolveThread( Type t, InstanceInvokeExpr iie, SootMethod container, ChunkedQueue targets ) {
-        if( iie.getMethod().getNumberedSubSignature() != sigStart ) return;
-        if( !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, RefType.v( "java.lang.Runnable" ) ) ) return;
-        resolve( t, iie, sigRun, container, targets );
     }
     
     public final NumberedString sigClinit =

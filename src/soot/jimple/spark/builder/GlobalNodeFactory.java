@@ -32,7 +32,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class GlobalNodeFactory {
-    public GlobalNodeFactory( AbstractPAG pag ) {
+    public GlobalNodeFactory( PAG pag ) {
 	this.pag = pag;
     }
     
@@ -113,6 +113,6 @@ public class GlobalNodeFactory {
         ret.setInterProcSource();
         return ret;
     }
-    protected AbstractPAG pag;
+    protected PAG pag;
 }
 

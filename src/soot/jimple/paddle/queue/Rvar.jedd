@@ -1,0 +1,53 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle.queue;
+import soot.util.*;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.*;
+import soot.util.queue.*;
+import jedd.*;
+import java.util.*;
+
+public abstract class Rvar {
+    public abstract Iterator iterator();
+    public abstract <var:V1> get();
+    public abstract boolean hasNext();
+    public static class Tuple {
+        private VarNode _var;
+        public VarNode var() { return _var; }
+        public Tuple( VarNode _var ) {
+            this._var = _var;
+        }
+        public int hashCode() { return 0; }
+        public boolean equals(Object other) {
+            if(!(other instanceof Tuple)) return false;
+            Tuple o = (Tuple) other;
+            if(o._var != _var) return false;
+            return true;
+        }
+        public String toString() {
+            StringBuffer ret = new StringBuffer();
+            ret.append( var() ); ret.append( ", " );
+            return ret.toString();
+        }
+    }
+}

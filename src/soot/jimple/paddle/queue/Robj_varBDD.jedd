@@ -1,0 +1,60 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle.queue;
+import soot.util.*;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.*;
+import soot.util.queue.*;
+import jedd.*;
+import java.util.*;
+
+public final class Robj_varBDD extends Robj_var {
+    private <obj:H1, var:V1> bdd;
+    void add( <obj:H1, var:V1> tuple ) { bdd |= tuple; }
+    public Robj_varBDD( <obj:H1, var:V1> bdd ) { this(); add(bdd); }
+    Robj_varBDD() { bdd = 0B; }
+    public Iterator iterator() {;
+        return new Iterator() {
+            private Iterator it;
+            public boolean hasNext() {
+                if( it != null && it.hasNext() ) return true;
+                if( bdd != 0B ) return true;
+                return false;
+            }
+            public Object next() {
+                if( it == null || !it.hasNext() ) {
+                    it = bdd.iterator( new Attribute[] { obj.v(), var.v() } );
+                    bdd = 0B;
+                }
+                Object[] components = (Object[]) it.next();
+                return new Tuple( (AllocNode) components[0], (VarNode) components[1] );
+            }
+            public void remove() { throw new UnsupportedOperationException(); }
+        };
+    }
+    public <obj:H1, var:V1> get() {
+        <obj:H1, var:V1> ret = bdd;
+        bdd = 0B;
+        return ret;
+    }
+    public boolean hasNext() { return bdd != 0B; }
+}

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2004 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,65 +18,18 @@
  */
 
 package soot.util;
-import java.util.*;
 
-/** A class that numbers objects, so they can be placed in bitsets.
- *
- * @author Ondrej Lhotak
+/** A numberer converts objects to unique non-negative integers, and vice-versa.
  */
-
-public class Numberer {
-    Numberable[] numberToObj = new Numberable[1024];
-    int lastNumber = 0;
-
-    public void add( Numberable o ) {
-        if( o.getNumber() != 0 ) return;
-        ++lastNumber;
-        if( lastNumber >= numberToObj.length ) {
-            Numberable[] newnto = new Numberable[numberToObj.length*2];
-            System.arraycopy(numberToObj, 0, newnto, 0, numberToObj.length);
-            numberToObj = newnto;
-        }
-        numberToObj[lastNumber] = o;
-        o.setNumber( lastNumber );
-    }
-
-    public Numberable get( int number ) {
-        return numberToObj[number];
-    }
-
-    public int size() { return lastNumber; }
-
-    public NumbererIterator iterator() {
-        return new NumbererIterator( this );
-    }
-
-    final class NumbererIterator implements Iterator {
-        int cur = 0;
-        Numberer numb;
-        NumbererIterator( Numberer numb ) {
-            this.numb = numb;
-            seekNext();
-        }
-        private final void seekNext() {
-            while(true) {
-                if( cur >= numb.numberToObj.length ) {
-                    cur = -1;
-                    break;
-                }
-                if( numb.numberToObj[cur] != null ) break;
-                cur++;
-            }
-        }
-        public final boolean hasNext() { return cur != -1; }
-        public final Object next() { 
-            Numberable ret = numb.numberToObj[cur];
-            cur++;
-            seekNext();
-            return ret;
-        }
-        public final void remove() {
-            throw new RuntimeException( "Not implemented" );
-        }
-    }
+public interface Numberer {
+    /** Tells the numberer that a new object needs to be assigned a number. */
+    public void add( Object o );
+    /** Should return the number that was assigned to object o that was
+     * previously passed as an argument to add().
+     */
+    public int get( Object o );
+    /** Should return the object that was assigned the number number. */
+    public Object get( int number );
+    /** Should return the number of objects that have been assigned numbers. */
+    public int size();
 }

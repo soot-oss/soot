@@ -331,7 +331,7 @@ public class BitVector
         }
         return ret;
     }
-        public BitSetIterator iterator() {
+    public BitSetIterator iterator() {
         return new BitSetIterator(bits);
     }
 }

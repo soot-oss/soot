@@ -1,0 +1,228 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle;
+import soot.*;
+import soot.util.*;
+import soot.jimple.paddle.queue.*;
+import soot.jimple.paddle.bdddomains.*;
+import java.util.*;
+
+/** Resolves virtual calls based on the actual type of the receiver.
+ * @author Ondrej Lhotak
+ */
+public class BDDVirtualCalls extends AbsVirtualCalls
+{ 
+    BDDVirtualCalls( Rvar_obj pt,
+            Rlocal_srcm_stmt_signature_kind receivers,
+            Rlocal_srcm_stmt_tgtm specials,
+            Qctxt_local_obj_srcm_stmt_kind_tgtm out,
+            Qsrcc_srcm_stmt_kind_tgtc_tgtm statics
+        ) {
+        super( pt, receivers, specials, out, statics );
+        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
+                if( m.isAbstract() ) continue;
+                declaresMethod |= new {
+                        m.getDeclaringClass().getType() => type,
+                        m.getNumberedSubSignature() => signature,
+                        m => method };
+            }
+        }
+    }
+
+    private int lastVarNode = 1;
+    private int lastAllocNode = 1;
+    private <ctxt:V3, local:V2, var:V1, type> varNodes;
+    private <obj, type> allocNodes;
+    private <kind> virtual = new {Kind.VIRTUAL=>kind} | new {Kind.INTERFACE=>kind};
+    private <type> threads = 0B;
+    private void updateNodes() {
+        // update varnodes
+        for( ; lastVarNode <= PaddleNumberers.v().varNodeNumberer().size();
+            lastVarNode++ ) {
+            VarNode vn = (VarNode) PaddleNumberers.v().varNodeNumberer().get(lastVarNode);
+            if( vn.getVariable() instanceof Local ) {
+                varNodes |= 
+                    new { vn.context()=>ctxt,
+                          vn.getVariable()=>local,
+                          vn=>var,
+                          vn.getType()=>type };
+            }
+        }
+
+        for( ; lastAllocNode <= PaddleNumberers.v().allocNodeNumberer().size();
+            lastAllocNode++ ) {
+            AllocNode an = (AllocNode) PaddleNumberers.v().allocNodeNumberer().get(lastAllocNode);
+            allocNodes |= new { an=>obj, an.getType()=>type };
+
+            if( an instanceof StringConstantNode ) {
+                StringConstantNode scn = (StringConstantNode) an;
+                String constant = scn.getString();
+                if( constant.charAt(0) == '[' ) {
+                    if( constant.length() > 1 && constant.charAt(1) == 'L' 
+                        && constant.charAt(constant.length()-1) == ';' ) {
+                            constant = constant.substring(2,constant.length()-1);
+                    } else constant = null;
+                }
+                if( constant != null && Scene.v().containsClass(constant)) {
+                    SootClass cls = Scene.v().getSootClass(constant);
+                    for( Iterator methodIt = EntryPoints.v().clinitsOf(cls).iterator(); methodIt.hasNext(); ) {
+                        final SootMethod method = (SootMethod) methodIt.next();
+                        stringConstants |= new { an=>obj, method=>tgtm };
+                    }
+                }
+            } else {
+                nonStringConstants |= new {an=>obj};
+            }
+        }
+        threads = (subt=>type)
+            hier.subtypeRelation(){supt} <> new {clRunnable=>type}{type};
+    }
+    protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+        
+    private <obj, tgtm> stringConstants = 0B;
+    private <obj:H1> nonStringConstants = 0B;
+    private final NumberedString sigClinit = Scene.v().getSubSigNumberer().
+        findOrAdd( "void <clinit>()" );
+    
+    private <type, signature, method> targets = 0B;
+    private <type, signature, method:T3> declaresMethod = 0B;
+    private BDDHierarchy hier = new BDDHierarchy();
+
+    private <var, obj> newPt = 0B;
+    private <var, obj> allPt = 0B;
+    private <local, srcm, stmt, signature, kind> newRcv = 0B;
+    private <local, srcm, stmt, signature, kind> allRcv = 0B;
+    private <local, srcm, stmt, tgtm> newSpc = 0B;
+    private <local, srcm, stmt, tgtm> allSpc = 0B;
+
+    public void update() {
+        updateNodes();
+
+        newPt = pt.get();
+        allPt |= newPt;
+
+        newRcv = receivers.get();
+        allRcv |= newRcv;
+
+        newSpc = specials.get();
+        allSpc |= newSpc;
+
+        // update receivers
+        updateClinits();
+        updateVirtuals();
+
+        updateSpecials();
+    }
+
+    private void updateClinits() {
+        <local, srcm, stmt, kind> clinits = (signature=>)
+            allRcv{kind} >< new {Kind.CLINIT=>kind}{kind};
+
+        <srcc, local, obj> ctxtLocalPt = newPt{var} <> (ctxt=>srcc, type=>) varNodes{var};
+
+        <srcc, local, tgtm> tgtMethods = ctxtLocalPt{obj} <> stringConstants{obj};
+
+        statics.add( tgtMethods{local} <> clinits{local}
+            {} >< new {null=>tgtc}{} );
+    }
+    private <ctxt, local, obj, srcm, stmt, tgtm> resolvedSpecials = 0B;
+    private void updateSpecials() {
+
+        <ctxt, local, obj> ctxtLocalPt = newPt{var} <> (type=>)varNodes{var};
+        <ctxt, local, obj, srcm, stmt, tgtm> newSpecials =
+            ctxtLocalPt{local} >< allSpc{local};
+
+        newSpecials -= resolvedSpecials;
+        resolvedSpecials |= newSpecials;
+
+        out.add( newSpecials{} >< new {Kind.SPECIAL=>kind}{} );
+    }
+
+    private void updateVirtuals() {
+        <local, srcm, stmt, signature, kind> rcv =
+            allRcv{kind} >< virtual{kind};
+        
+        <local, srcm, stmt, signature, kind> threadRcv =
+            allRcv{kind} >< new{Kind.THREAD=>kind}{kind};
+
+        // resolve new points-to sets
+        <local, type> ptTypes = (allocNodes{obj} <> newPt{obj}) {var}
+                                    <> (ctxt=>, type=>)varNodes {var};
+
+        <type, signature> newTypes = ptTypes{local} 
+                <> (stmt=>,srcm=>,kind=>)rcv{local};
+
+        newTypes |= (ptTypes{type} >< threads{type}) {local}
+                  <> (stmt=>,srcm=>,kind=>)threadRcv {local};
+
+        // close under AnySubType; that is, if the receiver is AnySubType(t),
+        // replace it with all subtypes of t
+        hier.update();
+        newTypes |= newTypes{type} <> hier.anySub(){anyst};
+
+        // if we've resolved them already, don't resolve them again
+        newTypes -= (method=>) targets;
+
+        // for each tuple [t, s], make it [t, s, t].
+        <subt, signature, supt> toResolve = (type=>subt, type=>supt) newTypes;
+
+        do {
+            // figure out which receivers are already resolved (if the
+            // corresponding class already declares the method)
+            <subt, signature, supt, method> resolved =
+                toResolve {supt, signature} >< declaresMethod {type, signature};
+
+            // remove resolved ones
+            toResolve -= (method=>) resolved;
+
+            // add resolved ones to targets
+            targets |= (subt=>type, supt=>) resolved;
+
+            // move one step up the hierarchy for the other receiver types
+            toResolve = toResolve {supt} <> (supt=>T3) hier.extend() {subt};
+        } while( toResolve != 0B );
+
+        <var, obj, type> typedPt = allocNodes{obj}><newPt{obj};
+
+
+        // close typedPt under AnySubType
+        typedPt |= typedPt{type} <> (hier.anySub()){anyst};
+
+        <ctxt, local, supt, obj, type> localCtxtPt =
+            typedPt{var} <> (type=>supt) varNodes{var};
+
+        // Weed out types coming from AnySubType that are not compatible
+        // with the declared type of the variable.
+        localCtxtPt =     localCtxtPt{type, supt} 
+            >< hier.subtypeRelation(){subt, supt};
+
+        <local, srcm, stmt, type, kind, tgtm> callSiteTargets =
+            (rcv|threadRcv){signature} <> (method=>tgtm) targets{signature};
+
+        out.add( (type=>) (
+                   (supt=>) localCtxtPt{type, local}
+                    >< callSiteTargets {type, local} ) );
+    }
+}
+     
+

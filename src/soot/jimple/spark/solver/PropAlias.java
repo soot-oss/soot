@@ -164,9 +164,8 @@ public final class PropAlias extends Propagator {
             ofcg.updatedNode( src );
             ofcg.build();
 
-            while(true) {
+            while(addedEdges.hasNext()) {
                 Node addedSrc = (Node) addedEdges.next();
-                if( addedSrc == null ) break;
                 Node addedTgt = (Node) addedEdges.next();
                 ret = true;
                 if( addedSrc instanceof VarNode ) {

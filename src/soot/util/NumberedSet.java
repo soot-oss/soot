@@ -26,7 +26,7 @@ import java.util.*;
  */
 
 public final class NumberedSet {
-    public NumberedSet( Numberer universe ) {
+    public NumberedSet( ArrayNumberer universe ) {
         this.universe = universe;
     }
     public boolean add( Numberable o ) {
@@ -154,6 +154,6 @@ public final class NumberedSet {
     private Numberable[] array = new Numberable[8];
     private BitVector bits;
     private int size = 0;
-    private Numberer universe;
+    private ArrayNumberer universe;
 
 }

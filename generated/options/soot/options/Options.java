@@ -1077,7 +1077,7 @@ public class Options extends OptionsBase {
         +padOpt("cg", "Call graph constructor")
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
         +padVal("cg.spark", "Spark points-to analysis framework")
-        +padVal("cg.bdd", "BDD Spark points-to analysis framework")
+        +padVal("cg.paddle", "Paddle points-to analysis framework")
         +padOpt("wstp", "Whole-shimple transformation pack")
         +padOpt("wsop", "Whole-shimple optimization pack")
         +padOpt("wjtp", "Whole-jimple transformation pack")
@@ -1427,15 +1427,31 @@ public class Options extends OptionsBase {
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" );
     
-        if( phaseName.equals( "cg.bdd" ) )
+        if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSpark is a flexible points-to analysis framework. Aside from \nbuilding a call graph, it also generates information about the \ntargets of pointers. For details about Spark, please see Ondrej \nLhotak's M.Sc. thesis. This phase is the new BDD-based version \nof Spark."
+                "\nSpark is a flexible points-to analysis framework. Aside from \nbuilding a call graph, it also generates information about the \ntargets of pointers. For details about Spark, please see Ondrej \nLhotak's M.Sc. thesis."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "verbose (false)", "Print detailed information about the execution of Spark" )
-                +padOpt( "ignore-types (false)", "Make Spark completely ignore declared types of variables" )
+                +padOpt( "verbose (false)", "Print detailed information about the execution of Paddle" )
+                +padOpt( "bdd (false)", "Use BDD version of Paddle" )
+                +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
+                +padOpt( "bddq (false)", "Force BDD versions of queues" )
+                +padOpt( "debugq (false)", "Force debug versions of queues" )
+                +padOpt( "trace (false)", "Trace Paddle queues for debugging." )
+                +padOpt( "backend", "Select BDD backend" )
+                +padVal( "buddy (default)", "BuDDy backend" )
+                
+                +padVal( "cudd", "CUDD backend" )
+                
+                +padVal( "sable", "SableJBDD backend" )
+                
+                +padVal( "javabdd", "JavaBDD backend" )
+                
+                +padVal( "none", "No BDDs" )
+                
+                +padOpt( "ignore-types (false)", "Make Paddle completely ignore declared types of variables" )
                 +padOpt( "force-gc (false)", "Force garbage collection for measuring memory usage" )
-                +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Spark" )
+                +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Paddle" )
                 +padOpt( "vta (false)", "Emulate Variable Type Analysis" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
@@ -1448,6 +1464,56 @@ public class Options extends OptionsBase {
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
                 +padOpt( "simplify-sccs (false)", "Collapse strongly-connected components of the PAG" )
                 +padOpt( "ignore-types-for-sccs (false)", "Ignore declared types when determining node equivalence for SCCs" )
+                +padOpt( "propagator", "Select propagation algorithm" )
+                +padVal( "iter", "Simple iterative algorithm" )
+                
+                +padVal( "worklist (default)", "Fast, worklist-based algorithm" )
+                
+                +padVal( "cycle", "Unfinished on-the-fly cycle detection algorithm" )
+                
+                +padVal( "merge", "Unfinished field reference merging algorithms" )
+                
+                +padVal( "alias", "Alias-edge based algorithm" )
+                
+                +padVal( "bdd", "BDD-based propagator" )
+                
+                +padVal( "none", "Disable propagation" )
+                
+                +padOpt( "set-impl", "Select points-to set implementation" )
+                +padVal( "hash", "Use Java HashSet" )
+                
+                +padVal( "bit", "Bit vector" )
+                
+                +padVal( "hybrid", "Hybrid representation using bit vector for large sets" )
+                
+                +padVal( "array", "Sorted array representation" )
+                
+                +padVal( "double (default)", "Double set representation for incremental propagation" )
+                
+                +padVal( "shared", "Shared bit-vector representation" )
+                
+                +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
+                +padVal( "hash", "Use Java HashSet" )
+                
+                +padVal( "bit", "Bit vector" )
+                
+                +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
+                
+                +padVal( "array", "Sorted array representation" )
+                
+                +padVal( "shared", "Shared bit-vector representation" )
+                
+                +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
+                +padVal( "hash", "Use Java HashSet" )
+                
+                +padVal( "bit", "Bit vector" )
+                
+                +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
+                
+                +padVal( "array", "Sorted array representation" )
+                
+                +padVal( "shared", "Shared bit-vector representation" )
+                
                 +padOpt( "dump-html (false)", "Dump pointer assignment graph to HTML for debugging" )
                 +padOpt( "dump-pag (false)", "Dump pointer assignment graph for other solvers" )
                 +padOpt( "dump-solution (false)", "Dump final solution for comparison with other solvers" )
@@ -2098,10 +2164,16 @@ public class Options extends OptionsBase {
                 +"add-tags "
                 +"set-mass ";
     
-        if( phaseName.equals( "cg.bdd" ) )
+        if( phaseName.equals( "cg.paddle" ) )
             return ""
                 +"enabled "
                 +"verbose "
+                +"bdd "
+                +"profile "
+                +"bddq "
+                +"debugq "
+                +"trace "
+                +"backend "
                 +"ignore-types "
                 +"force-gc "
                 +"pre-jimplify "
@@ -2117,6 +2189,10 @@ public class Options extends OptionsBase {
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
+                +"propagator "
+                +"set-impl "
+                +"double-set-old "
+                +"double-set-new "
                 +"dump-html "
                 +"dump-pag "
                 +"dump-solution "
@@ -2603,10 +2679,16 @@ public class Options extends OptionsBase {
               +"add-tags:false "
               +"set-mass:false ";
     
-        if( phaseName.equals( "cg.bdd" ) )
+        if( phaseName.equals( "cg.paddle" ) )
             return ""
               +"enabled:false "
               +"verbose:false "
+              +"bdd:false "
+              +"profile:false "
+              +"bddq:false "
+              +"debugq:false "
+              +"trace:false "
+              +"backend:buddy "
               +"ignore-types:false "
               +"force-gc:false "
               +"pre-jimplify:false "
@@ -2622,6 +2704,10 @@ public class Options extends OptionsBase {
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "
+              +"propagator:worklist "
+              +"set-impl:double "
+              +"double-set-old:hybrid "
+              +"double-set-new:hybrid "
               +"dump-html:false "
               +"dump-pag:false "
               +"dump-solution:false "
@@ -2964,7 +3050,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
-        if( phaseName.equals( "cg.bdd" ) ) return;
+        if( phaseName.equals( "cg.paddle" ) ) return;
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
@@ -3092,8 +3178,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase cg.cha" );
         if( !PackManager.v().hasPhase( "cg.spark" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg.spark" );
-        if( !PackManager.v().hasPhase( "cg.bdd" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase cg.bdd" );
+        if( !PackManager.v().hasPhase( "cg.paddle" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase cg.paddle" );
         if( !PackManager.v().hasPhase( "wstp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wstp" );
         if( !PackManager.v().hasPhase( "wsop" ) )

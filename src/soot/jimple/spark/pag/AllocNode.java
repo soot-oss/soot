@@ -25,7 +25,7 @@ import java.util.*;
 /** Represents an allocation site node (Blue) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
-public class AllocNode extends Node {
+public class AllocNode extends Node implements Context {
     /** Returns the new expression of this allocation site. */
     public Object getNewExpr() { return newExpr; }
     /** Returns all field ref nodes having this node as their base. */
@@ -43,7 +43,7 @@ public class AllocNode extends Node {
 
     /* End of public methods. */
 
-    AllocNode( AbstractPAG pag, Object newExpr, Type t, SootMethod m ) {
+    AllocNode( PAG pag, Object newExpr, Type t, SootMethod m ) {
 	super( pag, t );
         this.method = m;
         if( t instanceof RefType ) {

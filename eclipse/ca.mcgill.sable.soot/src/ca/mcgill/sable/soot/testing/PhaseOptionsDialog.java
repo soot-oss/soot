@@ -643,6 +643,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgcontext_widget(), "context");
 		
 		
+		addToEnableGroup("cg", getcgbdd_widget(), "bdd");
+		
+		
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
@@ -654,6 +657,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getcgall_reachable_widget().getButton().addSelectionListener(this);
 		
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
+		
+		getcgbdd_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -780,6 +785,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		addToEnableGroup("cg", "cg.bdd", getcgcg_bddpre_jimplify_widget(), "pre-jimplify");
+
+		
+		addToEnableGroup("cg", "cg.bdd", getcgcg_bddprofile_widget(), "profile");
 
 		
 		addToEnableGroup("cg", "cg.bdd", getcgcg_bddvta_widget(), "vta");
@@ -2331,6 +2339,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		boolRes = getcgbdd_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgbdd_widget().getAlias(), new Boolean(boolRes));
+		}
 		 
 		stringRes = getcgcontext_widget().getSelectedAlias();
 
@@ -2710,6 +2728,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_bddpre_jimplify_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_bddprofile_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_bddprofile_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_bddvta_widget().getButton().getSelection();
@@ -5930,6 +5958,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgtrim_clinit_widget;
 	}	
 	
+	private BooleanOptionWidget cgbdd_widget;
+	
+	private void setcgbdd_widget(BooleanOptionWidget widget) {
+		cgbdd_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgbdd_widget() {
+		return cgbdd_widget;
+	}	
+	
 	
 	private MultiOptionWidget cgcontext_widget;
 	
@@ -6318,6 +6356,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_bddpre_jimplify_widget() {
 		return cgcg_bddpre_jimplify_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_bddprofile_widget;
+	
+	private void setcgcg_bddprofile_widget(BooleanOptionWidget widget) {
+		cgcg_bddprofile_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_bddprofile_widget() {
+		return cgcg_bddprofile_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_bddvta_widget;
@@ -10105,6 +10153,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = "p"+" "+"cg"+" "+"bdd";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgbdd_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Use BDDs", "p", "cg","bdd", "\nWhen set to true, the call graph is built not in Java data \nstructures, but in BDDs, for interfacing to other BDD algorithms \n(such as BDD Spark). Note that each part of Soot is compatible \nwith either the BDD version of the call graph or the Java \nversion; if you select this option, you must also set the other \nparts of Soot to use BDDs. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Context-insensitive",
@@ -11140,6 +11204,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_bddpre_jimplify_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.bdd","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.bdd"+" "+"profile";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_bddprofile_widget(new BooleanOptionWidget(editGroupcgBDD_Spark_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.bdd","profile", "\nTurns on JeddProfiler for profiling BDD operations. ", defaultBool)));
 		
 		
 

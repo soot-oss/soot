@@ -57,12 +57,8 @@ public class ContextInsensitiveBuilder {
         }
     }
     /** Creates an empty pointer assignment graph. */
-    public AbstractPAG setup( AbstractSparkOptions opts ) {
-        if( opts instanceof SparkOptions ) {
-            pag = new PAG( (SparkOptions) opts );
-        } else if( opts instanceof BDDSparkOptions ) {
-            pag = new BDDPAG( (BDDSparkOptions) opts );
-        } else throw new RuntimeException();
+    public PAG setup( SparkOptions opts ) {
+        pag = new PAG( opts );
         if( opts.simulate_natives() ) {
             NativeHelper.register( new SparkNativeHelper( pag ) );
         }
@@ -92,10 +88,9 @@ public class ContextInsensitiveBuilder {
 	    handleClass( c );
 	}
         Stmt s = null;
-        while(true) {
+        while(callEdges.hasNext()) {
             Edge e = (Edge) callEdges.next();
-            if( e == null ) break;
-            AbstractMethodPAG.v( pag, e.tgt() ).addToPAG(null);
+            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
             pag.addCallTarget( e );
         }
 
@@ -117,7 +112,7 @@ public class ContextInsensitiveBuilder {
 	    if( !m.isConcrete() && !m.isNative() ) continue;
             totalMethods++;
             if( reachables.contains( m ) ) {
-                AbstractMethodPAG mpag = AbstractMethodPAG.v( pag, m );
+                MethodPAG mpag = MethodPAG.v( pag, m );
                 mpag.build();
                 mpag.addToPAG(null);
                 analyzedMethods++;
@@ -130,7 +125,7 @@ public class ContextInsensitiveBuilder {
     }
 
 
-    private AbstractPAG pag;
+    private PAG pag;
     private CallGraphBuilder cgb;
     private OnFlyCallGraph ofcg;
     private ReachableMethods reachables;

@@ -28,12 +28,6 @@ public class Singletons {
     }
     private Global g = new Global();
 
-    private soot.relations.JBuddyProfiler instance_soot_relations_JBuddyProfiler;
-    public soot.relations.JBuddyProfiler soot_relations_JBuddyProfiler() {
-        if( instance_soot_relations_JBuddyProfiler == null ) instance_soot_relations_JBuddyProfiler = new soot.relations.JBuddyProfiler( g );
-        return instance_soot_relations_JBuddyProfiler;
-    }
-
     private soot.PhaseOptions instance_soot_PhaseOptions;
     public soot.PhaseOptions soot_PhaseOptions() {
         if( instance_soot_PhaseOptions == null ) instance_soot_PhaseOptions = new soot.PhaseOptions( g );
@@ -158,6 +152,12 @@ public class Singletons {
     public soot.jimple.spark.pag.ArrayElement soot_jimple_spark_pag_ArrayElement() {
         if( instance_soot_jimple_spark_pag_ArrayElement == null ) instance_soot_jimple_spark_pag_ArrayElement = new soot.jimple.spark.pag.ArrayElement( g );
         return instance_soot_jimple_spark_pag_ArrayElement;
+    }
+
+    private soot.jimple.paddle.ArrayElement instance_soot_jimple_paddle_ArrayElement;
+    public soot.jimple.paddle.ArrayElement soot_jimple_paddle_ArrayElement() {
+        if( instance_soot_jimple_paddle_ArrayElement == null ) instance_soot_jimple_paddle_ArrayElement = new soot.jimple.paddle.ArrayElement( g );
+        return instance_soot_jimple_paddle_ArrayElement;
     }
 
     private soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator;
@@ -320,6 +320,12 @@ public class Singletons {
     public soot.jimple.spark.sets.EmptyPointsToSet soot_jimple_spark_sets_EmptyPointsToSet() {
         if( instance_soot_jimple_spark_sets_EmptyPointsToSet == null ) instance_soot_jimple_spark_sets_EmptyPointsToSet = new soot.jimple.spark.sets.EmptyPointsToSet( g );
         return instance_soot_jimple_spark_sets_EmptyPointsToSet;
+    }
+
+    private soot.jimple.paddle.EmptyPointsToSet instance_soot_jimple_paddle_EmptyPointsToSet;
+    public soot.jimple.paddle.EmptyPointsToSet soot_jimple_paddle_EmptyPointsToSet() {
+        if( instance_soot_jimple_paddle_EmptyPointsToSet == null ) instance_soot_jimple_paddle_EmptyPointsToSet = new soot.jimple.paddle.EmptyPointsToSet( g );
+        return instance_soot_jimple_paddle_EmptyPointsToSet;
     }
 
     private soot.ErroneousType instance_soot_ErroneousType;
@@ -766,10 +772,10 @@ public class Singletons {
         return instance_soot_jimple_spark_SparkTransformer;
     }
 
-    private soot.jimple.spark.BDDSparkTransformer instance_soot_jimple_spark_BDDSparkTransformer;
-    public soot.jimple.spark.BDDSparkTransformer soot_jimple_spark_BDDSparkTransformer() {
-        if( instance_soot_jimple_spark_BDDSparkTransformer == null ) instance_soot_jimple_spark_BDDSparkTransformer = new soot.jimple.spark.BDDSparkTransformer( g );
-        return instance_soot_jimple_spark_BDDSparkTransformer;
+    private soot.jimple.paddle.PaddleTransformer instance_soot_jimple_paddle_PaddleTransformer;
+    public soot.jimple.paddle.PaddleTransformer soot_jimple_paddle_PaddleTransformer() {
+        if( instance_soot_jimple_paddle_PaddleTransformer == null ) instance_soot_jimple_paddle_PaddleTransformer = new soot.jimple.paddle.PaddleTransformer( g );
+        return instance_soot_jimple_paddle_PaddleTransformer;
     }
 
     private soot.jimple.toolkits.invoke.StaticInliner instance_soot_jimple_toolkits_invoke_StaticInliner;
@@ -910,10 +916,10 @@ public class Singletons {
         return instance_soot_jimple_spark_fieldrw_FieldTagAggregator;
     }
 
-    private soot.jimple.toolkits.callgraph.EntryPoints instance_soot_jimple_toolkits_callgraph_EntryPoints;
-    public soot.jimple.toolkits.callgraph.EntryPoints soot_jimple_toolkits_callgraph_EntryPoints() {
-        if( instance_soot_jimple_toolkits_callgraph_EntryPoints == null ) instance_soot_jimple_toolkits_callgraph_EntryPoints = new soot.jimple.toolkits.callgraph.EntryPoints( g );
-        return instance_soot_jimple_toolkits_callgraph_EntryPoints;
+    private soot.EntryPoints instance_soot_EntryPoints;
+    public soot.EntryPoints soot_EntryPoints() {
+        if( instance_soot_EntryPoints == null ) instance_soot_EntryPoints = new soot.EntryPoints( g );
+        return instance_soot_EntryPoints;
     }
 
     private soot.jimple.toolkits.annotation.callgraph.CallGraphTagger instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger;
@@ -1028,6 +1034,18 @@ public class Singletons {
     public soot.SootResolver soot_SootResolver() {
         if( instance_soot_SootResolver == null ) instance_soot_SootResolver = new soot.SootResolver( g );
         return instance_soot_SootResolver;
+    }
+
+    private soot.jimple.paddle.PaddleNumberers instance_soot_jimple_paddle_PaddleNumberers;
+    public soot.jimple.paddle.PaddleNumberers soot_jimple_paddle_PaddleNumberers() {
+        if( instance_soot_jimple_paddle_PaddleNumberers == null ) instance_soot_jimple_paddle_PaddleNumberers = new soot.jimple.paddle.PaddleNumberers( g );
+        return instance_soot_jimple_paddle_PaddleNumberers;
+    }
+
+    private soot.jimple.paddle.PaddleScene instance_soot_jimple_paddle_PaddleScene;
+    public soot.jimple.paddle.PaddleScene soot_jimple_paddle_PaddleScene() {
+        if( instance_soot_jimple_paddle_PaddleScene == null ) instance_soot_jimple_paddle_PaddleScene = new soot.jimple.paddle.PaddleScene( g );
+        return instance_soot_jimple_paddle_PaddleScene;
     }
 
     private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;

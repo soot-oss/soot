@@ -1,0 +1,209 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle;
+import soot.*;
+import soot.util.queue.*;
+import java.util.*;
+import soot.options.PaddleOptions;
+import soot.jimple.paddle.bdddomains.*;
+import soot.jimple.paddle.queue.*;
+import jedd.*;
+
+/** Propagates points-to sets along pointer assignment graph using BDDs.
+ * @author Ondrej Lhotak
+ */
+
+public final class PropBDD extends AbsPropagator {
+    public PropBDD(  Rsrc_dst simple, Rsrc_fld_dst load, Rsrc_fld_dst store,
+            Robj_var alloc, Qvar_obj propout, AbsPAG pag ) {
+        super( simple, load, store, alloc, propout, pag );
+    }
+
+    <var:V1, obj:H1> pointsTo = 0B;
+    <base:H1, fld:FD, obj:H2> fieldPt = 0B;
+
+    /** Actually does the propagation. */
+    /*
+    public final void update() {
+        <var:V1, obj:H1> oldPointsTo = 0B;
+        <var:V1, obj:H1> newPointsTo = 0B;
+        <var:V1, obj:H1> tmpPointsTo = 0B;
+
+        <obj:H2, var:V1, fld:FD> objectsBeingStored;
+        <obj:H2, var:V1, fld:FD> oldStorePt = 0B;
+        <obj:H2, var:V1, fld:FD> newStorePt = 0B;
+
+        <base:H1, fld:FD, obj:H2> newFieldPt = 0B;
+        <base:H1, fld:FD, obj:H2> tmpFieldPt = 0B;
+
+        // The objects pointed to by base.fld are being loaded into dst
+        <base:H1, fld:FD, dst:V2> loadsFromHeap = 0B;
+        <base:H1, fld:FD, dst:V2> loadAss = 0B;
+
+        <var, obj> newPtFromNewEdges = 0B;
+
+        final AbsTypeManager typeManager = PaddleScene.v().tm;
+
+        pointsTo = pag.allAlloc().get();
+        newPointsTo = pointsTo;
+
+        // start solving 
+        do {
+
+            // repeat rule (1) in the inner loop
+            do {
+                newPointsTo = (dst => var) pag.allSimple().get() {src} <> newPointsTo {var};
+                newPointsTo -= pointsTo;
+                newPointsTo &= typeManager.get();
+                pointsTo |= newPointsTo;
+
+                if( PaddleScene.v().options().verbose() ) {
+                    G.v().out.println( "Minor iteration: "+
+                        ((obj=>)newPointsTo).size()+" changed p2sets" );
+                }
+
+            } while( newPointsTo != 0B );
+
+            newPointsTo = pointsTo - oldPointsTo;
+
+            if( PaddleScene.v().options().verbose() ) {
+                G.v().out.println( "newPointsTo contains "+
+                    ((obj=>)newPointsTo).size()+" nodes" );
+            }
+            
+            ptout.add( newPointsTo );
+            PaddleScene.v().updateCallGraph();
+
+            // apply rule (2)
+            objectsBeingStored = (dst => var) pag.allStore().get() {src} <> newPointsTo {var};
+                                          
+            newStorePt = objectsBeingStored - oldStorePt;
+            oldStorePt |= newStorePt;
+
+            newFieldPt = oldStorePt {var} <> (obj => base) newPointsTo {var};
+
+            tmpFieldPt = newStorePt {var} <> (obj => base) oldPointsTo {var};
+            newFieldPt |= tmpFieldPt;
+                                  
+            newFieldPt -= fieldPt;
+            fieldPt |= newFieldPt;
+
+
+            // apply rule (3)
+            loadsFromHeap = pag.allLoad().get() {src} <> (obj => base) newPointsTo {var};
+
+            loadsFromHeap -= loadAss;
+                                     
+            newPointsTo = (dst => var) loadAss {base,fld} <> newFieldPt {base,fld};
+            tmpPointsTo = (dst => var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
+            newPointsTo |= tmpPointsTo;
+
+            // cache loadAss
+            loadAss |= loadsFromHeap;
+            
+            // update oldPointsTo
+            oldPointsTo = pointsTo;
+
+            // convert new points-to relation to normal type
+            newPointsTo -= pointsTo;
+    
+            // apply typeFilter
+            newPointsTo &= typeManager.get();
+            
+            ptout.add( newPointsTo );
+            PaddleScene.v().updateCallGraph();
+
+            pointsTo |= newPointsTo;
+
+            newPointsTo |= newPtFromNewEdges;
+            newPtFromNewEdges = 0B;
+
+            if( PaddleScene.v().options().verbose() ) {
+                    G.v().out.println( "Major iteration: "+
+                        ((obj=>)newPointsTo).size()+" changed p2sets" );
+            }
+        } while(newPointsTo != 0B);
+    }
+    */
+
+    public final void update() {
+        <var:V1, obj:H1> oldPointsTo = 0B;
+        <var:V1, obj:H1> veryOldPointsTo = 0B;
+        <var:V1, obj:H1> outputtedPointsTo = 0B;
+
+        <obj:H2, var:V1, fld:FD> objectsBeingStored;
+        <obj:H2, var:V1, fld:FD> oldStorePt = 0B;
+
+        // The objects pointed to by base.fld are being loaded into dst
+        <base:H1, fld:FD, dst:V2> loadsFromHeap = 0B;
+
+        final AbsTypeManager typeManager = PaddleScene.v().tm;
+
+        // start solving 
+        do {
+
+            veryOldPointsTo = pointsTo;
+
+            pointsTo |= newAlloc.get() & typeManager.get();
+
+            // repeat rule (1) in the inner loop
+            do {
+                oldPointsTo = pointsTo;
+                pointsTo |= typeManager.get() & (
+                (dst => var) pag.allSimple().get() {src} <> pointsTo {var} );
+
+
+            } while( pointsTo != oldPointsTo );
+
+
+            ptout.add( pointsTo - outputtedPointsTo );
+            outputtedPointsTo = pointsTo;
+            PaddleScene.v().updateCallGraph();
+
+            // apply rule (2)
+            objectsBeingStored = (dst => var) pag.allStore().get() {src} <> pointsTo {var};
+                                          
+            fieldPt |= objectsBeingStored {var} <> (obj=>base) pointsTo {var};
+
+            // apply rule (3)
+            loadsFromHeap = pag.allLoad().get() {src} <> (obj => base) pointsTo {var};
+
+            pointsTo |= (dst => var) loadsFromHeap {base,fld} <> fieldPt {base,fld};
+
+            // apply typeFilter
+            pointsTo &= typeManager.get();
+            
+            ptout.add( pointsTo - outputtedPointsTo );
+            outputtedPointsTo = pointsTo;
+            PaddleScene.v().updateCallGraph();
+
+            if( PaddleScene.v().options().verbose() ) {
+                    G.v().out.println( "Major iteration: " );
+            }
+        } while(pointsTo != veryOldPointsTo);
+    }
+
+    /* End of public methods. */
+    /* End of package methods. */
+
+}
+
+
+

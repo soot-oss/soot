@@ -1342,7 +1342,7 @@ Builds an object-sensitive call graph.
                                         </value>
                                         <short_desc>Select context-sensitivity level</short_desc>
                                         <long_desc>
-This option tells Spark which level of context-sensitivity to use in constructing the call graph.
+This option tells Paddle which level of context-sensitivity to use in constructing the call graph.
 </long_desc>
                                 </multiopt>
 				<sub_phase>
@@ -1367,7 +1367,6 @@ This option tells Spark which level of context-sensitivity to use in constructin
 				<sub_phase>
 					<name>Spark</name>
 					<class>SparkOptions</class>
-                                        <extends>AbstractSparkOptions</extends>
 					<alias>cg.spark</alias>
                                         <short_desc>Spark points-to analysis framework</short_desc>
                                         <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
@@ -1932,12 +1931,11 @@ cryptic statistics about the size of the points-to sets computed.
 					</section>
 				</sub_phase>
 				<sub_phase>
-					<name>Spark</name>
-					<class>BDDSparkOptions</class>
-                                        <extends>AbstractSparkOptions</extends>
-					<alias>cg.bdd</alias>
-                                        <short_desc>BDD Spark points-to analysis framework</short_desc>
-                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>. This phase is the new BDD-based version of Spark.</long_desc>
+					<name>Paddle</name>
+					<class>PaddleOptions</class>
+					<alias>cg.paddle</alias>
+                                        <short_desc>Paddle points-to analysis framework</short_desc>
+                                        <long_desc>Spark is a flexible points-to analysis framework. Aside from building a call graph, it also generates information about the targets of pointers. For details about Spark, please see <a href="http://www.sable.mcgill.ca/publications/thesis/#olhotakMastersThesis">Ondrej Lhotak's M.Sc. thesis</a>.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1946,23 +1944,116 @@ cryptic statistics about the size of the points-to sets computed.
 						<long_desc/>
 					</boolopt>
 					<section>
-						<name>BDD Spark General Options</name>
+						<name>Paddle General Options</name>
 						<boolopt>
 							<name>Verbose</name>
 							<alias>verbose</alias>
 							<default>false</default>
-                                                        <short_desc>Print detailed information about the execution of Spark</short_desc>
+                                                        <short_desc>Print detailed information about the execution of Paddle</short_desc>
 							<long_desc>
-When this option is set to true, Spark prints detailed information about its execution.
+When this option is set to true, Paddle prints detailed information about its execution.
         </long_desc>
 						</boolopt>
+						<boolopt>
+							<name>Use BDDs</name>
+							<alias>bdd</alias>
+							<default>false</default>
+                                                        <short_desc>Use BDD version of Paddle</short_desc>
+							<long_desc>
+                                                        Causes Paddle to use BDD versions of its components
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Profile</name>
+							<alias>profile</alias>
+							<default>false</default>
+                                                        <short_desc>Profile BDDs using JeddProfiler</short_desc>
+							<long_desc>
+Turns on JeddProfiler for profiling BDD operations.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>BDD Queues</name>
+							<alias>bddq</alias>
+							<default>false</default>
+                                                        <short_desc>Force BDD versions of queues</short_desc>
+							<long_desc>
+                                                        Force Paddle to use BDD versions of the queues for communicating between its components
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Debug Queues</name>
+							<alias>debugq</alias>
+							<default>false</default>
+                                                        <short_desc>Force debug versions of queues</short_desc>
+							<long_desc>
+                                                        Force Paddle to use debugging versions of the queues for communicating between its components
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Trace</name>
+							<alias>trace</alias>
+							<default>false</default>
+                                                        <short_desc>Trace Paddle queues for debugging.</short_desc>
+							<long_desc>
+                                                        Print the contents of all internal Paddle queues for debugging.
+        </long_desc>
+						</boolopt>
+						<multiopt>
+							<name>Backend</name>
+							<alias>backend</alias>
+							<value>
+								<name>BuDDy</name>
+								<alias>buddy</alias>
+								<default/>
+<short_desc>BuDDy backend</short_desc>
+<long_desc>
+Use BuDDy implementation of BDDs.
+</long_desc>
+							</value>
+							<value>
+								<name>CUDD</name>
+								<alias>cudd</alias>
+<short_desc>CUDD backend</short_desc>
+<long_desc>
+Use CUDD implementation of BDDs.
+</long_desc>
+
+							</value>
+							<value>
+								<name>SableJBDD</name>
+								<alias>sable</alias>
+                                                                <short_desc>SableJBDD backend</short_desc>
+                                                                <long_desc>Use SableJBDD implementation of BDDs.</long_desc>
+							</value>
+							<value>
+								<name>JavaBDD</name>
+								<alias>javabdd</alias>
+<short_desc>JavaBDD backend</short_desc>
+<long_desc>
+Use JavaBDD implementation of BDDs.
+</long_desc>
+							</value>
+							<value>
+								<name>None</name>
+								<alias>none</alias>
+                                                                <short_desc>No BDDs</short_desc>
+<long_desc>
+Don't use any BDD backend. Any attempted use of BDDs will cause Paddle to crash.
+</long_desc>
+							</value>
+                                                        <short_desc>Select BDD backend</short_desc>
+							<long_desc>
+This option tells Paddle which implementation of BDDs to use.
+        </long_desc>
+						</multiopt>
 						<boolopt>
 							<name>Ignore Types Entirely</name>
 							<alias>ignore-types</alias>
 							<default>false</default>
-                                                        <short_desc>Make Spark completely ignore declared types of variables</short_desc>
+                                                        <short_desc>Make Paddle completely ignore declared types of variables</short_desc>
 							<long_desc>
-When this option is set to true, all parts of Spark completely ignore
+When this option is set to true, all parts of Paddle completely ignore
 declared types of variables and casts.
         </long_desc>
 						</boolopt>
@@ -1980,9 +2071,9 @@ various points to allow memory usage to be measured.
 							<name>Pre Jimplify</name>
 							<alias>pre-jimplify</alias>
 							<default>false</default>
-                                                        <short_desc>Jimplify all methods before starting Spark</short_desc>
+                                                        <short_desc>Jimplify all methods before starting Paddle</short_desc>
 							<long_desc>
-When this option is set to true, Spark converts all available methods to Jimple
+When this option is set to true, Paddle converts all available methods to Jimple
 before starting the points-to analysis. This allows the Jimplification
 time to be separated from the points-to time. However, it increases the
 total time and memory requirement, because all methods are Jimplified,
@@ -1991,7 +2082,7 @@ rather than only those deemed reachable by the points-to analysis.
 						</boolopt>
 					</section>
 					<section>
-						<name>BDD Spark Pointer Assignment Graph Building Options</name>
+						<name>Paddle Pointer Assignment Graph Building Options</name>
 						<boolopt>
 							<name>VTA</name>
 							<alias>vta</alias>
@@ -2012,7 +2103,7 @@ elements more precisely.
 							<default>false</default>
                                                         <short_desc>Emulate Rapid Type Analysis</short_desc>
 							<long_desc>
-Setting RTA to true sets types-for-sites to true, and causes Spark to use
+Setting RTA to true sets types-for-sites to true, and causes Paddle to use
 a single points-to set for all variables, giving <a href="http://doi.acm.org/10.1145/236337.236371">Rapid Type
 Analysis</a>.
         </long_desc>
@@ -2057,7 +2148,7 @@ allocation site.
 							<default>false</default>
                                                         <short_desc>Propagate all string constants, not just class names</short_desc>
 							<long_desc>
-When this option is set to false, Spark only distinguishes string constants that
+When this option is set to false, Paddle only distinguishes string constants that
 may be the name of a class loaded dynamically using reflection, and all other
 string constants are lumped together into a single string constant node.
 Setting this option to true causes all string constants to be propagated
@@ -2096,7 +2187,7 @@ CHA approximation to the call graph is used.
 						</boolopt>
 					</section>
 					<section>
-						<name>BDD Spark Pointer Assignment Graph Simplification Options</name>
+						<name>Paddle Pointer Assignment Graph Simplification Options</name>
 						<boolopt>
 							<name>Simplify Offline</name>
 							<alias>simplify-offline</alias>
@@ -2138,7 +2229,263 @@ This option has no effect unless <tt>simplify-sccs</tt> is true.
 						</boolopt>
 					</section>
 					<section>
-						<name>BDD Spark Output Options</name>
+						<name>Paddle Points-To Set Flowing Options</name>
+						<multiopt>
+							<name>Propagator</name>
+							<alias>propagator</alias>
+							<value>
+								<name>Iter</name>
+								<alias>iter</alias>
+<short_desc>Simple iterative algorithm</short_desc>
+<long_desc>
+Iter is a simple, iterative algorithm, which propagates everything until the
+graph does not change.
+</long_desc>
+							</value>
+							<value>
+								<name>Worklist</name>
+								<alias>worklist</alias>
+								<default/>
+<short_desc>Fast, worklist-based algorithm</short_desc>
+<long_desc>
+Worklist is a worklist-based algorithm that tries
+to do as little work as possible. This is currently the fastest algorithm.
+</long_desc>
+
+							</value>
+							<value>
+								<name>Cycle</name>
+								<alias>cycle</alias>
+                                                                <short_desc>Unfinished on-the-fly cycle detection algorithm</short_desc>
+                                                                <long_desc>This algorithm finds cycles in the PAG on-the-fly. It is not yet finished.</long_desc>
+							</value>
+							<value>
+								<name>Merge</name>
+								<alias>merge</alias>
+<short_desc>Unfinished field reference merging algorithms</short_desc>
+<long_desc>
+Merge is an algorithm that merges all concrete field (yellow) nodes with their corresponding
+field reference (red) nodes. This algorithm is not yet finished.
+</long_desc>
+							</value>
+							<value>
+								<name>Alias</name>
+								<alias>alias</alias>
+<short_desc>Alias-edge based algorithm</short_desc>
+<long_desc>
+Alias is an alias-edge based algorithm. This algorithm tends to take
+the least memory for very large problems, because it does not represent
+explicitly points-to sets of fields of heap objects.
+</long_desc>
+
+							</value>
+							<value>
+								<name>BDD</name>
+								<alias>bdd</alias>
+                                                                <short_desc>BDD-based propagator</short_desc>
+<long_desc>
+BDD is a propagator that stores points-to sets in binary decision diagrams.
+</long_desc>
+							</value>
+							<value>
+								<name>None</name>
+								<alias>none</alias>
+                                                                <short_desc>Disable propagation</short_desc>
+<long_desc>
+None means that propagation is not done; the graph is only built and
+simplified. This is useful if an external solver is being used to perform the
+propagation.
+</long_desc>
+							</value>
+                                                        <short_desc>Select propagation algorithm</short_desc>
+							<long_desc>
+This option tells Paddle which propagation algorithm to use.
+        </long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Set Implementation</name>
+							<alias>set-impl</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Double</name>
+								<alias>double</alias>
+								<default/>
+<short_desc>Double set representation for incremental propagation</short_desc>
+<long_desc>
+Double is an implementation that itself uses a pair of sets for
+each points-to set. The first set in the pair stores new pointed-to
+objects that have not yet been propagated, while the second set stores
+old pointed-to objects that have been propagated and need not be
+reconsidered. This allows the propagation algorithms to be incremental,
+often speeding them up significantly.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select points-to set implementation</short_desc>
+							<long_desc>
+Select an implementation of points-to sets for Paddle to use.
+</long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set Old</name>
+							<alias>double-set-old</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+                                                                <default/>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select implementation of points-to set for old part of double set</short_desc>
+							<long_desc>
+Select an implementation for sets of old objects in the double
+points-to set implementation.
+
+This option has no effect unless Set Implementation is set to double.
+        </long_desc>
+						</multiopt>
+						<multiopt>
+							<name>Double Set New</name>
+							<alias>double-set-new</alias>
+							<value>
+								<name>Hash set</name>
+								<alias>hash</alias>
+                                                                <short_desc>Use Java HashSet</short_desc>
+
+<long_desc>
+Hash is an implementation based on Java&apos;s built-in hash-set.
+</long_desc>
+							</value>
+							<value>
+								<name>Bit-vector</name>
+								<alias>bit</alias>
+<short_desc>Bit vector</short_desc>
+<long_desc>
+Bit is an implementation using a bit vector.
+</long_desc>
+							</value>
+							<value>
+								<name>Hybrid</name>
+								<alias>hybrid</alias>
+                                                                <default/>
+<short_desc>Hybrid representation using bit vector for large sets</short_desc>
+<long_desc>
+Hybrid is an implementation that keeps an explicit list of up to
+16 elements, and switches to a bit-vector when the set gets
+larger than this.
+</long_desc>
+							</value>
+							<value>
+								<name>Sorted array</name>
+								<alias>array</alias>
+                                                                <short_desc>Sorted array representation</short_desc>
+                                                                <long_desc>
+Array is an implementation that keeps the elements of the
+points-to set in a sorted array. Set membership is tested using
+binary search, and set union and intersection are computed using
+an algorithm based on the merge step from merge sort.
+</long_desc>
+							</value>
+							<value>
+								<name>Shared bit-vector</name>
+								<alias>shared</alias>
+                                                                <short_desc>Shared bit-vector representation</short_desc>
+                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
+
+							</value>
+                                                        <short_desc>Select implementation of points-to set for new part of double set</short_desc>
+							<long_desc>
+Select an implementation for sets of new objects in the double
+points-to set implementation.
+
+This option has no effect unless Set Implementation is set to double.
+        </long_desc>
+						</multiopt>
+					</section>
+					<section>
+						<name>Paddle Output Options</name>
 						<boolopt>
 							<name>Dump HTML</name>
 							<alias>dump-html</alias>
@@ -2244,7 +2591,7 @@ tags and printed with the resulting Jimple code.
 							<default>false</default>
                                                         <short_desc>Calculate statistics about points-to set sizes</short_desc>
 							<long_desc>
-When this option is set to true, Spark computes and prints various
+When this option is set to true, Paddle computes and prints various
 cryptic statistics about the size of the points-to sets computed.
         </long_desc>
 						</boolopt>

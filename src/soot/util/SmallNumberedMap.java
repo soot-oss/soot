@@ -26,7 +26,7 @@ import java.util.*;
  */
 
 public final class SmallNumberedMap {
-    public SmallNumberedMap( Numberer universe ) {
+    public SmallNumberedMap( ArrayNumberer universe ) {
         this.universe = universe;
     }
     /** Associates a value with a key. */
@@ -147,5 +147,5 @@ public final class SmallNumberedMap {
     private Object[] values = new Object[8];
     private long[] bits;
     private int size = 0;
-    private Numberer universe;
+    private ArrayNumberer universe;
 }

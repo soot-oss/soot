@@ -38,7 +38,7 @@ public class LocalVarNode extends VarNode {
     }
     /* End of public methods. */
 
-    LocalVarNode( AbstractPAG pag, Object variable, Type t, SootMethod m ) {
+    LocalVarNode( PAG pag, Object variable, Type t, SootMethod m ) {
 	super( pag, variable, t );
         this.method = m;
         //if( m == null ) throw new RuntimeException( "method shouldn't be null" );

@@ -27,7 +27,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class GlobalVarNode extends VarNode {
-    GlobalVarNode( AbstractPAG pag, Object variable, Type t ) {
+    GlobalVarNode( PAG pag, Object variable, Type t ) {
 	super( pag, variable, t );
     }
     public String toString() {

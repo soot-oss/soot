@@ -1,0 +1,9 @@
+package soot.jimple.paddle.bdddomains;
+import jedd.*;
+import soot.*;
+
+public class FIELD(20) extends Domain {
+    public Numberer numberer() {
+        return new soot.util.JeddNumberer( Scene.v().getFieldNumberer() );
+    }
+}

@@ -26,15 +26,15 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class ContextVarNode extends LocalVarNode {
-    private Object context;
-    public Object context() { return context; }
+    private Context context;
+    public Context context() { return context; }
     public String toString() {
 	return "ContextVarNode "+getNumber()+" "+variable+" "+method+" "+context;
     }
 
     /* End of public methods. */
 
-    ContextVarNode( AbstractPAG pag, LocalVarNode base, Object context ) {
+    ContextVarNode( PAG pag, LocalVarNode base, Context context ) {
 	super( pag, base.getVariable(), base.getType(), base.getMethod() );
         this.context = context;
         base.addContext( this, context );

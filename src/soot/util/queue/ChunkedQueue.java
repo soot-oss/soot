@@ -29,6 +29,7 @@ package soot.util.queue;
  */
 public final class ChunkedQueue
 { 
+    static Object NULL_CONST = new Object();
     private static final int LENGTH = 60;
     private Object[] q;
     private int index;
@@ -38,7 +39,7 @@ public final class ChunkedQueue
     }
     /** Add an object to the queue. */
     public void add( Object o ) {
-        if( o == null ) throw new RuntimeException( "null can't be added to a ChunkedQueue" );
+        if( o == null ) o = NULL_CONST;
         if( index == LENGTH - 1 ) {
             Object[] temp = new Object[LENGTH];
             q[index] = temp;

@@ -24,7 +24,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Spark. */
-public class SparkOptions extends AbstractSparkOptions
+public class SparkOptions
 {
     private Map options;
 

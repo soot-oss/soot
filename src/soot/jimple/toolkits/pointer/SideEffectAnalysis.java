@@ -23,7 +23,6 @@ import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 import java.util.*;
 import soot.util.*;
-import soot.jimple.spark.*;
 
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {

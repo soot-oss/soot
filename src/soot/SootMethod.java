@@ -36,7 +36,7 @@ import soot.dava.*;
 */
 public class SootMethod 
     extends AbstractHost
-    implements ClassMember, Numberable, soot.jimple.toolkits.callgraph.MethodOrMethodContext {
+    implements ClassMember, Numberable, MethodOrMethodContext {
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
 
@@ -667,5 +667,5 @@ public class SootMethod
     }
     private int number = 0;
     public SootMethod method() { return this; }
-    public Object context() { return null; }
+    public Context context() { return null; }
 }

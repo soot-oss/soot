@@ -1,0 +1,138 @@
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 Ondrej Lhotak
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
+
+package soot.jimple.paddle;
+import soot.*;
+import soot.jimple.paddle.queue.*;
+import soot.jimple.paddle.bdddomains.*;
+import java.util.*;
+import jedd.*;
+
+/** Stores the pointer assignment graph.
+ * @author Ondrej Lhotak
+ */
+public class BDDPAG extends AbsPAG
+{ 
+    BDDPAG( Rsrc_dst simple,
+            Rsrc_fld_dst load,
+            Rsrc_fld_dst store,
+            Robj_var alloc,
+            Qsrc_dst simpleout,
+            Qsrc_fld_dst loadout,
+            Qsrc_fld_dst storeout,
+            Qobj_var allocout
+        ) {
+        super( simple, load, store, alloc, simpleout, loadout, storeout, allocout );
+    }
+    public void update() {
+        <src, dst> newSimple = simple.get() - simpleBDD;
+        simpleout.add( newSimple );
+        simpleBDD |= newSimple;
+
+        <obj, var> newAlloc = alloc.get() - allocBDD;
+        allocout.add( newAlloc );
+        allocBDD |= newAlloc;
+
+        <src, fld, dst> newLoad = load.get() - loadBDD;
+        loadout.add( newLoad );
+        loadBDD |= newLoad;
+
+        <src, fld, dst> newStore = store.get() - storeBDD;
+        storeout.add( newStore );
+        storeBDD |= newStore;
+    }
+
+    public Iterator simpleSources() {
+        return ((dst=>) simpleBDD).iterator();
+    }
+    public Iterator loadSources() {
+        return new FieldRefIterator((dst=>, src=>var) loadBDD);
+    }
+    public Iterator storeSources() {
+        return ((dst=>, fld=>) storeBDD ).iterator();
+    }
+    public Iterator allocSources() {
+        return ((var=>) allocBDD).iterator();
+    }
+    public Iterator simpleInvSources() {
+        return ((src=>) simpleBDD).iterator();
+    }
+    public Iterator loadInvSources() {
+        return ((src=>, fld=>) loadBDD).iterator();
+    }
+    public Iterator storeInvSources() {
+        return new FieldRefIterator((src=>, dst=>var) storeBDD);
+    }
+    public Iterator allocInvSources() {
+        return ((obj=>) allocBDD).iterator();
+    }
+    
+    public Iterator simpleLookup( VarNode key ) {
+        return (simpleBDD{src} <> new {key=>src}{src}).iterator();
+    }
+    public Iterator loadLookup( FieldRefNode key ) {
+        return (loadBDD{src, fld} <>
+            new {key.getBase()=>src, key.getField()=>fld}{src, fld}).iterator();
+    }
+    public Iterator storeLookup( VarNode key ) {
+        return new FieldRefIterator((dst=>var)
+            (storeBDD{src} <> new {key=>src}{src}));
+    }
+    public Iterator allocLookup( AllocNode key ) {
+        return (allocBDD{obj} <> new {key=>obj}{obj}).iterator();
+    }
+    public Iterator simpleInvLookup( VarNode key ) {
+        return (simpleBDD{dst} <> new {key=>dst}{dst}).iterator();
+    }
+    public Iterator loadInvLookup( VarNode key ) {
+        return new FieldRefIterator((src=>var)
+            (loadBDD{dst} <> new {key=>dst}{dst}));
+    }
+    public Iterator storeInvLookup( FieldRefNode key ) {
+        return (storeBDD{dst, fld} <> 
+            new {key.getBase()=>dst, key.getField()=>fld}{dst, fld}).iterator();
+    }
+    public Iterator allocInvLookup( VarNode key ) {
+        return (allocBDD{var} <> new {key=>var}{var}).iterator();
+    }
+
+    public Rsrc_dst allSimple() { return new Rsrc_dstBDD(simpleBDD); }
+    public Rsrc_fld_dst allLoad() { return new Rsrc_fld_dstBDD(loadBDD); }
+    public Rsrc_fld_dst allStore() { return new Rsrc_fld_dstBDD(storeBDD); }
+    public Robj_var allAlloc() { return new Robj_varBDD(allocBDD); }
+
+    private static class FieldRefIterator implements Iterator {
+        FieldRefIterator( <var, fld> bdd ) {
+            this.it = bdd.iterator( new Attribute[] { var.v(), fld.v() } );
+        }
+        private Iterator it;
+        public boolean hasNext() { return it.hasNext(); }
+        public Object next() {
+            Object[] ret = (Object[]) it.next();
+            return ((VarNode)ret[0]).dot((PaddleField)ret[1]);
+        }
+        public void remove() { throw new UnsupportedOperationException(); }
+    }
+
+    private <src, dst> simpleBDD = 0B;
+    private <src, fld, dst> loadBDD = 0B;
+    private <src, fld, dst> storeBDD = 0B;
+    private <obj, var> allocBDD = 0B;
+}
+

@@ -3,7 +3,6 @@ package soot.xml;
 import soot.*;
 import soot.jimple.toolkits.annotation.tags.*;
 import soot.jimple.toolkits.pointer.*;
-import soot.jimple.spark.fieldrw.*;
 import soot.util.*;
 import soot.tagkit.*;
 import java.util.*;
@@ -49,23 +48,6 @@ public class JavaAttribute {
             vbAttrs = new ArrayList();
         }
         vbAttrs.add(vbAttr);
-    }
-
-    public boolean hasInfoTag(){
-        if (tags != null){
-            Iterator it = tags.iterator();
-            while (it.hasNext()){
-                Tag t = (Tag)it.next();
-                if (t instanceof StringTag) return true;
-                if (t instanceof LinkTag) return true;
-                if (t instanceof ArrayCheckTag) return true;
-                if (t instanceof ArrayNullCheckTag) return true;
-                if (t instanceof NullCheckTag) return true;
-                if (t instanceof CastCheckTag) return true;
-                if (t instanceof FieldRWTag) return true;
-            }
-        }
-        return false;
     }
 
     public boolean hasColorTag(){

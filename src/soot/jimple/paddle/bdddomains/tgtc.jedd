@@ -1,0 +1,6 @@
+package soot.jimple.paddle.bdddomains;
+import jedd.*;
+import soot.*;
+
+public class tgtc(CONTEXT) extends Attribute {
+}

@@ -35,7 +35,7 @@ public class CallGraph
     private Map srcMethodToEdge = new HashMap();
     private Map srcUnitToEdge = new HashMap();
     private Map tgtToEdge = new HashMap();
-    private Edge dummy = new Edge( null, null, null, 0 );
+    private Edge dummy = new Edge( null, null, null, Kind.INVALID );
 
     /** Used to add an edge to the call graph. Returns true iff the edge was
      * not already present. */
@@ -126,7 +126,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.srcUnit() != u ) return false;
-            if( position.kind() == Edge.INVALID ) return false;
+            if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
         public Object next() {
@@ -153,7 +153,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.getSrc() != m ) return false;
-            if( position.kind() == Edge.INVALID ) return false;
+            if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
         public Object next() {
@@ -180,7 +180,7 @@ public class CallGraph
         }
         public boolean hasNext() {
             if( position.getTgt() != m ) return false;
-            if( position.kind() == Edge.INVALID ) return false;
+            if( position.kind() == Kind.INVALID ) return false;
             return true;
         }
         public Object next() {
@@ -207,9 +207,8 @@ public class CallGraph
     public String toString() {
         QueueReader reader = listener();
         StringBuffer out = new StringBuffer();
-        while(true) {
+        while(reader.hasNext()) {
             Edge e = (Edge) reader.next();
-            if( e == null ) break;
             out.append( e.toString() + "\n" );
         }
         return out.toString();
