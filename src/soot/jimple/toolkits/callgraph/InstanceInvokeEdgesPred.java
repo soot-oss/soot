@@ -19,43 +19,17 @@
 
 package soot.jimple.toolkits.callgraph;
 import soot.*;
-import soot.util.queue.*;
-import java.util.*;
 
-/** Represents a subset of the edges in a call graph satisfying an EdgePredicate
- * predicate.
+/** A predicate that accepts edges that are the result of an explicit instance 
+ * invoke.
  * @author Ondrej Lhotak
  */
-public class Filter implements Iterator
+public class InstanceInvokeEdgesPred implements EdgePredicate
 { 
-    private Iterator source;
-    private EdgePredicate pred;
-    private Edge next = null;
-    public Filter( EdgePredicate pred ) {
-        this.pred = pred;
-    }
-    public Iterator wrap( Iterator source ) {
-        this.source = source;
-        advance();
-        return this;
-    }
-    private void advance() {
-        while( source.hasNext() ) {
-            next = (Edge) source.next();
-            if( pred.want( next ) ) {
-                return;
-            }
-        }
-        next = null;
-    }
-    public boolean hasNext() {
-        return next != null;
-    }
-    public Object next() {
-        return next;
-    }
-    public void remove() {
-        throw new UnsupportedOperationException(); 
+    /** Returns true iff the edge e is wanted. */
+    public boolean want( Edge e ) {
+        return e.isInstance();
     }
 }
+
 

@@ -42,6 +42,7 @@ public class StaticInliner extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
     {
+        Filter explicitInvokesFilter = new Filter( new ExplicitEdgesPred() );
         if(Options.v().verbose())
             G.v().out.println("[] Inlining methods...");
 
@@ -75,7 +76,7 @@ public class StaticInliner extends SceneTransformer
                 if (!container.isConcrete())
                     continue;
     
-                if (!cg.targetsOf(container).hasNext())
+                if (!explicitInvokesFilter.wrap( cg.targetsOf(container) ).hasNext())
                     continue;
     
                 JimpleBody b = (JimpleBody)container.retrieveActiveBody();
@@ -89,7 +90,8 @@ public class StaticInliner extends SceneTransformer
                     if (!s.containsInvokeExpr())
                         continue;
                     
-                    Iterator targets = new Targets( cg.targetsOf(s) );
+                    Iterator targets = new Targets(
+                            explicitInvokesFilter.wrap( cg.targetsOf(s) ) );
                     if( !targets.hasNext() ) continue;
                     SootMethod target = (SootMethod)targets.next();
                     if( targets.hasNext() ) continue;

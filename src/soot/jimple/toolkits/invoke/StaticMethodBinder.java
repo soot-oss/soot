@@ -43,6 +43,7 @@ public class StaticMethodBinder extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map opts)
     {
+        Filter instanceInvokesFilter = new Filter( new InstanceInvokeEdgesPred() );
         SMBOptions options = new SMBOptions( opts );
         String modifierOptions = PhaseOptions.getString( opts, "allowed-modifier-changes");
         HashMap instanceToStaticMap = new HashMap();
@@ -67,7 +68,7 @@ public class StaticMethodBinder extends SceneTransformer
                 if (!container.isConcrete())
                     continue;
 
-                if (!cg.targetsOf(container).hasNext())
+                if (!instanceInvokesFilter.wrap( cg.targetsOf(container) ).hasNext())
                     continue;
 
                 JimpleBody b = (JimpleBody)container.getActiveBody();
@@ -88,7 +89,8 @@ public class StaticMethodBinder extends SceneTransformer
                         ie instanceof SpecialInvokeExpr)
                         continue;
 
-                    Iterator targets = new Targets( cg.targetsOf(s) );
+                    Iterator targets = new Targets( 
+                            instanceInvokesFilter.wrap( cg.targetsOf(s) ) );
                     if( !targets.hasNext() ) continue;
                     SootMethod target = (SootMethod)targets.next();
                     if( targets.hasNext() ) continue;
