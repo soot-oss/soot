@@ -167,22 +167,26 @@ class ConstraintCollector extends AbstractStmtSwitch
     if(l instanceof ArrayRef)
       {
 	ArrayRef ref = (ArrayRef) l;
-	ArrayType base = (ArrayType) ((Local) ref.getBase()).getType();
-	Value index = ref.getIndex();
+	Type baset = ((Local) ref.getBase()).getType();
+	if(!(baset instanceof NullType))
+	{
+	  ArrayType base = (ArrayType) baset;
+	  Value index = ref.getIndex();
 	
-	if(uses)
-	  {
-	    if((base.numDimensions == 1) &&
-	       (base.baseType instanceof IntegerType))
-	      {
-		left = resolver.typeVariable(base.baseType);
-	      }
+	  if(uses)
+	    {
+	      if((base.numDimensions == 1) &&
+	         (base.baseType instanceof IntegerType))
+	        {
+	  	  left = resolver.typeVariable(base.baseType);
+	        }
 	    
-	    if(index instanceof Local)
-	      {
-		resolver.typeVariable((Local) index).addParent(resolver.INT);
-	      }
-	  }
+	      if(index instanceof Local)
+	        {
+		  resolver.typeVariable((Local) index).addParent(resolver.INT);
+	        }
+	    }
+	}
       }
     else if(l instanceof Local)
       {
@@ -229,22 +233,26 @@ class ConstraintCollector extends AbstractStmtSwitch
     if(r instanceof ArrayRef)
       {
 	ArrayRef ref = (ArrayRef) r;
-	ArrayType base = (ArrayType) ((Local) ref.getBase()).getType();
-	Value index = ref.getIndex();
+	Type baset = ((Local) ref.getBase()).getType();
+	if(!(baset instanceof NullType))
+	{
+	  ArrayType base = (ArrayType) baset;
+	  Value index = ref.getIndex();
 	
-	if((base.numDimensions == 1) &&
-	   (base.baseType instanceof IntegerType))
-	  {
-	    right = resolver.typeVariable(base.baseType);
-	  }
+	  if((base.numDimensions == 1) &&
+	     (base.baseType instanceof IntegerType))
+	    {
+	      right = resolver.typeVariable(base.baseType);
+	    }
 	
-	if(uses)
-	  {
-	    if(index instanceof Local)
-	      {
-		resolver.typeVariable((Local) index).addParent(resolver.INT);
-	      }
-	  }
+	  if(uses)
+	    {
+	      if(index instanceof Local)
+	        {
+		  resolver.typeVariable((Local) index).addParent(resolver.INT);
+	        }
+	    }
+	}
       }
     else if(r instanceof DoubleConstant)
       {

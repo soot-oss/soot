@@ -32,6 +32,7 @@ import soot.util.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
+import java.io.*;
 
 /**
  * This class resolves the type of local variables.
@@ -155,7 +156,11 @@ public class TypeResolver
 	  }
 	catch(TypeException e2)
 	  {
-	    throw new RuntimeException(e2.getMessage());
+              StringWriter st = new StringWriter();
+	      PrintWriter pw = new PrintWriter(st);
+	      e2.printStackTrace(pw);
+	      pw.close();
+              throw new RuntimeException(st.toString());
 	  }
       }
   }

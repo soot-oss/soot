@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
+import java.io.*;
 
 class ConstraintChecker extends AbstractStmtSwitch
 {
@@ -56,7 +57,11 @@ class ConstraintChecker extends AbstractStmtSwitch
       }
     catch(RuntimeTypeException e)
       {
-	throw new TypeException(e.getMessage());
+        StringWriter st = new StringWriter();
+        PrintWriter pw = new PrintWriter(st);
+	e.printStackTrace(pw);
+	pw.close();
+	throw new TypeException(st.toString());
       }
   }
 
@@ -339,7 +344,12 @@ class ConstraintChecker extends AbstractStmtSwitch
 
 	if(!base.hasElement())
 	  {
-	    error("Type Error(19)");
+	    if(base == hierarchy.NULL)
+	    {
+	      return;
+	    }
+
+	    error("Type Error(19): " + base + " is not an array type");
 	  }
 
 	if(!left.hasDescendantOrSelf(base.element()))
@@ -553,22 +563,25 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	CastExpr ce = (CastExpr) r;
 	TypeNode cast = hierarchy.typeNode(ce.getCastType());
-	TypeNode op = hierarchy.typeNode(((Local) ce.getOp()).getType());
+	if(ce.getOp() instanceof Local)
+	{
+	  TypeNode op = hierarchy.typeNode(((Local) ce.getOp()).getType());
 
-	try
-	  {
-	    // we must be careful not to reject primitive type casts (e.g. int to long)
-	    if(cast.isClassOrInterface() || op.isClassOrInterface())
-	      {
-		cast.lca(op);
-	      }
-	  }
-	catch(TypeException e)
-	  {
-	    System.out.println(r + "[" + op + "<->" + cast + "]");
-	    error(e.getMessage());
-	  }
-	
+	  try
+	    {
+	      // we must be careful not to reject primitive type casts (e.g. int to long)
+	      if(cast.isClassOrInterface() || op.isClassOrInterface())
+	        {
+		  cast.lca(op);
+	        }
+	    }
+	  catch(TypeException e)
+	    {
+	      System.out.println(r + "[" + op + "<->" + cast + "]");
+	      error(e.getMessage());
+	    }
+	}
+
 	if(!left.hasDescendantOrSelf(cast))
 	  {
 	    error("Type Error(30)");
