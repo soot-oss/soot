@@ -60,16 +60,21 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         // Set initial values and nodes to visit.
         {
             Iterator it = graph.iterator();
-
             while(it.hasNext())
+            {
+                Object s = it.next();
+
+                unitToBeforeFlow.put(s, newInitialFlow());
+                unitToAfterFlow.put(s, newInitialFlow());
+            }
+
+            it = graph.getHeads().iterator();
+            while (it.hasNext())
             {
                 Object s = it.next();
 
                 changedUnits.addLast(s);
                 changedUnitsSet.add(s);
-
-                unitToBeforeFlow.put(s, newInitialFlow());
-                unitToAfterFlow.put(s, newInitialFlow());
             }
         }
 
