@@ -113,13 +113,13 @@ public class LazyCodeMotion extends BodyTransformer {
     NotIsolatedAnalysis notIsolated;
     LatestComputation latest;
 
-    if (options.safe() == LCMOptions.safe_safe)
+    if (options.safety() == LCMOptions.safety_safe)
       upSafe = new UpSafetyAnalysis(graph, unitToNoExceptionEquivRhs,
                                     sideEffect, set);
     else
       upSafe = new UpSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
 
-    if (options.safe() == LCMOptions.safe_unsafe)
+    if (options.safety() == LCMOptions.safety_unsafe)
       downSafe = new DownSafetyAnalysis(graph, unitToEquivRhs, sideEffect, set);
     else {
       downSafe = new DownSafetyAnalysis(graph, unitToNoExceptionEquivRhs,
