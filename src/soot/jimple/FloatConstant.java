@@ -160,9 +160,16 @@ public class FloatConstant extends RealConstant implements Switchable, ToBriefSt
         return FloatConstant.v(-(this.value));
     }
 
-   public String toString()
+    public String toString()
     {
-        return new Float(value).toString() + "F";
+        String floatString = new Float(value).toString();
+        
+        if(floatString.equals("NaN") || 
+            floatString.equals("Infinity") ||
+            floatString.equals("-Infinity"))
+            return "#" + floatString + "F";
+        else
+            return floatString + "F";
     }
 
     public String toBriefString()

@@ -365,6 +365,21 @@ public class Hierarchy
         return getSuperclassesOf(child).contains(possibleParent);
     }
 
+    public boolean isClassSubclassOfIncluding(SootClass child, SootClass possibleParent)
+    {
+        return getSuperclassesOfIncluding(child).contains(possibleParent);
+    }
+
+    public boolean isClassSuperclassOf(SootClass parent, SootClass possibleChild)
+    {
+        return getSubclassesOf(parent).contains(possibleChild);
+    }
+
+    public boolean isClassSuperclassOfIncluding(SootClass parent, SootClass possibleChild)
+    {
+        return getSubclassesOfIncluding(parent).contains(possibleChild);
+    }
+
     public boolean isInterfaceSubinterfaceOf(SootClass c, SootClass c2)
     {
         throw new RuntimeException("Not implemented yet!");

@@ -254,6 +254,7 @@ public class HashChain extends AbstractCollection
         return new LinkIterator(item);
     }
 
+    /** Returns an iterator ranging from head to tail, inclusive. */
     public Iterator iterator(Object head, Object tail)
     {
         return new LinkIterator(head, tail);

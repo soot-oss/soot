@@ -724,13 +724,13 @@ public class JasminClass
                     else {
                         String s = v.toString();
                         
-                        if(s.equals("Infinity"))
+                        if(s.equals("#Infinity"))
                             s="+DoubleInfinity";
                         
-                        if(s.equals("-Infinity"))
+                        if(s.equals("#-Infinity"))
                             s="-DoubleInfinity";
                         
-                        if(s.equals("NaN"))
+                        if(s.equals("#NaN"))
                             s="+DoubleNaN";
                         
                         emit("ldc2_w " + s);
@@ -748,12 +748,12 @@ public class JasminClass
                     else {
                         String s = v.toString();
                         
-                        if(s.equals("InfinityF"))
+                        if(s.equals("#InfinityF"))
                             s="+FloatInfinity";
-                        if(s.equals("-InfinityF"))
+                        if(s.equals("#-InfinityF"))
                             s="-FloatInfinity";
                         
-                        if(s.equals("NaNF"))
+                        if(s.equals("#NaNF"))
                             s="+FloatNaN";
                         
                         emit("ldc " + s);

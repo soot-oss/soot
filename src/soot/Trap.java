@@ -34,17 +34,42 @@ import java.util.*;
 
 public interface Trap
 {
+    /** Returns the first trapped unit. */
     public Unit getBeginUnit();
+
+    /** Returns the last trapped unit. */
     public Unit getEndUnit();
+
+    /** Returns the unit handling the exception being trapped. */
     public Unit getHandlerUnit();
-    public UnitBox getHandlerUnitBox();
+
+    /** Returns the box holding this trap's first trapped unit. */
     public UnitBox getBeginUnitBox();
+
+    /** Returns the box holding this trap's last trapped unit. */
     public UnitBox getEndUnitBox();
+
+    /** Returns the box holding the exception handler's unit. */
+    public UnitBox getHandlerUnitBox();
+
+    /** Returns the boxes for first, last and handler units. */
     public List getUnitBoxes();
+
+    /** Returns the exception being caught. */
     public SootClass getException();
+
+    /** Sets the first unit being trapped to <code>beginUnit</code>. */
     public void setBeginUnit(Unit beginUnit);
+
+    /** Sets the last unit being trapped to <code>endUnit</code>. */
     public void setEndUnit(Unit endUnit);
+
+    /** Sets the unit handling the exception to <code>handlerUnit</code>. */
     public void setHandlerUnit(Unit handlerUnit);
+
+    /** Sets the exception being caught to <code>exception</code>. */
     public void setException(SootClass exception);
+
+    /** Performs a shallow clone of this trap. */
     public Object clone();
 }

@@ -161,7 +161,14 @@ public class DoubleConstant extends RealConstant implements Switchable, ToBriefS
 
     public String toString()
     {
-        return new Double(value).toString();
+        String doubleString = new Double(value).toString();
+        
+        if(doubleString.equals("NaN") || 
+            doubleString.equals("Infinity") ||
+            doubleString.equals("-Infinity"))
+            return "#" + doubleString;
+        else
+            return doubleString;
     }
 
     public String toBriefString()

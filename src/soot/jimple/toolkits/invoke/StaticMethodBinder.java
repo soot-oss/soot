@@ -42,6 +42,7 @@ public class StaticMethodBinder extends SceneTransformer
     protected void internalTransform(Map options)
     {
         boolean enableNullPointerCheckInsertion = !Options.getBoolean(options, "no-insert-null-checks");
+        boolean enableRedundantCastInsertion = !Options.getBoolean(options, "no-insert-redundant-casts");
 
         HashMap instanceToStaticMap = new HashMap();
 
@@ -83,9 +84,11 @@ public class StaticMethodBinder extends SceneTransformer
 
                     // Ok, we have an Interface or VirtualInvoke going to 1.
 
-                    SootMethod target = ie.getMethod();
+                    SootMethod target = (SootMethod)targets.get(0);
                     if (!target.getDeclaringClass().isApplicationClass())
                         continue;
+                    System.out.println("DEBUG: trying to statically bind "+target);
+                    System.out.println("invoke expr was "+ie);
 
                     boolean targetUsesThis = methodUsesThis(target);
 
@@ -176,12 +179,36 @@ public class StaticMethodBinder extends SceneTransformer
                     }
 
                     SootMethod clonedTarget = (SootMethod)instanceToStaticMap.get(target);
+                    Value thisToAdd = ((InstanceInvokeExpr)ie).getBase();
+
+                    // Insert casts to please the verifier.
+                    if (enableRedundantCastInsertion && targetUsesThis)
+                    {
+                        // The verifier will complain if targetUsesThis, and:
+                        //    the argument passed to the method is not the same type.
+                        // For instance, Bottle.price_static takes a cost.
+                        // Cost is an interface implemented by Bottle.
+                        SootClass localType, parameterType;
+                        localType = ((RefType)((InstanceInvokeExpr)ie).getBase().getType()).getSootClass();
+                        parameterType = target.getDeclaringClass();
+
+                        if (localType.isInterface() ||
+                             Scene.v().getActiveHierarchy().isClassSuperclassOf(localType, parameterType))
+                        {
+                            Local castee = Jimple.v().newLocal("__castee", parameterType.getType());
+                            b.getLocals().add(castee);
+                            b.getUnits().insertBefore(Jimple.v().newAssignStmt(castee,
+                                                         Jimple.v().newCastExpr(((InstanceInvokeExpr)ie).getBase(),
+                                                                                parameterType.getType())), s);
+                            thisToAdd = castee;
+                        }
+                    }
 
                     // Now rebind the method call & fix the invoke graph.
                     {
                         List newArgs = new ArrayList();
                         if (targetUsesThis)
-                            newArgs.add(((InstanceInvokeExpr)ie).getBase());
+                            newArgs.add(thisToAdd);
                         newArgs.addAll(ie.getArgs());
 
                         StaticInvokeExpr sie = Jimple.v().newStaticInvokeExpr
@@ -198,10 +225,33 @@ public class StaticMethodBinder extends SceneTransformer
                     // Finally, (if enabled), add a null pointer check.
                     if (enableNullPointerCheckInsertion)
                     {
-                        Stmt throwPoint = ThrowManager.getNullPointerExceptionThrower(b);
-                        b.getUnits().insertBefore(Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr)ie).getBase(), 
-                                                                                            NullConstant.v()), throwPoint),
-                                                  s);
+                        boolean caught = TrapManager.isExceptionCaughtAt
+                            (Scene.v().getSootClass("java.lang.NullPointerException"), s, b);
+
+                        /* Ah ha.  Caught again! */
+                        if (caught)
+                        {
+                            /* In this case, we don't use throwPoint;
+                             * instead, put the code right there. */
+                            Stmt insertee = Jimple.v().newIfStmt(Jimple.v().newNeExpr(((InstanceInvokeExpr)ie).getBase(), 
+                                NullConstant.v()), s);
+
+                            b.getUnits().insertBefore(insertee, s);
+
+                            // This sucks (but less than before).
+                            ((IfStmt)insertee).setTarget(s);
+
+                            ThrowManager.addThrowAfter(b, insertee);
+                        }
+                        else
+                        {
+                            Stmt throwPoint = 
+                                ThrowManager.getNullPointerExceptionThrower(b);
+                            b.getUnits().insertBefore
+                                (Jimple.v().newIfStmt(Jimple.v().newEqExpr(((InstanceInvokeExpr)ie).getBase(), 
+                                NullConstant.v()), throwPoint),
+                                 s);
+                        }
                     }
                 }
             }

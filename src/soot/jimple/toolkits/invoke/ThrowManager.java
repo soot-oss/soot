@@ -28,6 +28,7 @@ package soot.jimple.toolkits.invoke;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
+import java.util.*;
 
 public class ThrowManager
 {
@@ -36,7 +37,7 @@ public class ThrowManager
      *
      *                r928 = new java.lang.NullPointerException;
      *                specialinvoke r928."<init>"();
-     *                throw r28;
+     *                throw r928;
      *
      * Creates if necessary.
      */
@@ -93,7 +94,33 @@ public class ThrowManager
         // Create.
         Stmt last = (Stmt)units.getLast();
 
-        Local l = Jimple.v().newLocal("__throwee", RefType.v("java.lang.NullPointerException"));
+        return addThrowAfter(b, last);
+    }
+
+    static Stmt addThrowAfter(JimpleBody b, Stmt target)
+    {
+        Chain units = b.getUnits();
+        Chain locals = b.getLocals();
+        int i = 0;
+        
+        // Bah!
+        boolean canAddI = false;
+        do
+        {
+            canAddI = true;
+            Iterator localIt = locals.iterator();
+            while (localIt.hasNext())
+            {
+                Local l = (Local)localIt.next();
+                if (l.getName().equals("__throwee"+i))
+                    canAddI = false;
+            }
+            if (!canAddI)
+                i++;
+        }
+        while (!canAddI);
+
+        Local l = Jimple.v().newLocal("__throwee"+i, RefType.v("java.lang.NullPointerException"));
         b.getLocals().add(l);
 
         Stmt newStmt = Jimple.v().newAssignStmt
@@ -104,9 +131,39 @@ public class ThrowManager
         
         Stmt throwStmt = Jimple.v().newThrowStmt(l);
 
-        units.insertAfter(newStmt, last);
+        units.insertAfter(newStmt, target);
         units.insertAfter(invStmt, newStmt);
         units.insertAfter(throwStmt, invStmt);
         return newStmt;
+    }
+
+    /** If exception e is caught at stmt s in body b, return the handler;
+     * otherwise, return null. */
+    static boolean isExceptionCaughtAt(SootClass e, Stmt stmt, Body b)
+    {
+        /* Look through the traps t of b, checking to see if:
+         *  - caught exception is e;
+         *  - and, stmt lies between t.beginUnit and t.endUnit */
+
+        Hierarchy h = new Hierarchy();
+
+        Iterator trapsIt = b.getTraps().iterator();
+
+        while (trapsIt.hasNext())
+        {
+            Trap t = (Trap)trapsIt.next();
+
+            /* Ah ha, we might win. */
+            if (h.isClassSubclassOfIncluding(e, t.getException()))
+            {
+                Iterator it = b.getUnits().iterator(t.getBeginUnit(),
+                                                    t.getEndUnit());
+                while (it.hasNext())
+                    if (stmt.equals(it.next()))
+                        return true;
+            }
+        }
+
+        return false;
     }
 }

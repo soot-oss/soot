@@ -76,7 +76,7 @@ public class ClassHierarchyAnalysis
                             
                             if(receiverType instanceof RefType)
                             {   
-                                // Type might be Null
+                                // since Type might be Null
                                 Iterator targetsIt = h.resolveAbstractDispatch(((RefType)receiverType).getSootClass(), 
                                     ie.getMethod()).iterator();
                             
