@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added getLiveLocalsAfter();
    
@@ -87,6 +90,13 @@ public class SimpleLiveLocals implements LiveLocals
 
     public SimpleLiveLocals(CompleteStmtGraph graph)
     {
+        if(Main.isProfilingOptimization)
+            Main.liveTimer.start();
+        
+        if(Main.isVerbose)
+            System.out.println("[" + graph.getBody().getMethod().getName() +
+                "]     Constructing SimpleLiveLocals...");
+        
         SimpleLiveLocalsAnalysis analysis = new SimpleLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
@@ -112,7 +122,10 @@ public class SimpleLiveLocals implements LiveLocals
         }
         
         if(Main.isProfilingOptimization)
-                Main.livePostTimer.end();
+            Main.livePostTimer.end();
+        
+        if(Main.isProfilingOptimization)
+            Main.liveTimer.end();
     }
 
     public List getLiveLocalsAfter(Stmt s)

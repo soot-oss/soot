@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -83,6 +86,13 @@ public class SimpleLocalCopies implements LocalCopies
 
     public SimpleLocalCopies(CompleteStmtGraph g)
     {
+        if(Main.isProfilingOptimization)
+            Main.copiesTimer.start();
+        
+        if(Main.isVerbose)
+            System.out.println("[" + g.getBody().getMethod().getName() +
+                "]     Constructing SimpleLocalCopies...");
+    
         CopiesFlowAnalysis analysis = new CopiesFlowAnalysis(g);
 
         // Build up stmtToCopies map
@@ -100,6 +110,9 @@ public class SimpleLocalCopies implements LocalCopies
                 stmtToCopies.put(s, Collections.unmodifiableList(copies.toList()));
             }
         }
+        
+        if(Main.isProfilingOptimization)
+            Main.copiesTimer.end();
     }
 
     public boolean isLocalCopyOfBefore(Local x, Local y, Stmt s)

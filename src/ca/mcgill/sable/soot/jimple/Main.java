@@ -159,9 +159,10 @@ public class Main
         liveAnalysisTimer = new Timer(),
         livePostTimer = new Timer(),
         jimpleAggregationTimer = new Timer(),
-        grimpAggregationTimer = new Timer();
+        grimpAggregationTimer = new Timer(),
+        deadCodeTimer = new Timer(),
+        propagatorTimer = new Timer();
         
-
     static int conversionLocalCount,
         cleanup1LocalCount,
         splitLocalCount,
@@ -190,7 +191,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version 1.beta.3.dev.21");
+            System.out.println("Jimple version 1.beta.3.dev.22");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -409,17 +410,17 @@ public class Main
                 
                 System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
                 System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
-                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
-                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
-                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
+//                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
+//                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
+//                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
                 System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
                 System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
                 System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
                 System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
-                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
+//                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
                 System.out.println("          aggregation: " + toTimeString(jimpleAggregationTimer, totalTime));
-                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
-                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
+//                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
+//                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
                 
                 System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
@@ -433,17 +434,21 @@ public class Main
                     System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime) + 
                         "\t" + conversionLocalCount + " locals  " + conversionStmtCount + " stmts");
                         
-                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
-                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
-                        
+//                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
+//                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
+                    
+                    System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+                    System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+                       
                     System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime) + 
                         "\t" + splitLocalCount + " locals  " + splitStmtCount + " stmts");
                         
-                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
-                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
+//                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
+//                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
                     
                     System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime) +
                         "\t" + assignLocalCount + " locals  " + assignStmtCount + " stmts");
+                        
                     System.out.println("             Packing locals: " + toTimeString(packTimer, totalTime) + 
                         "\t" + packLocalCount + " locals  " + packStmtCount + " stmts");
                 

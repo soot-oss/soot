@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Made the packer work on StmtBody's.
    
@@ -91,35 +94,17 @@ public class FastAllocator
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.start();
-
         // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
 
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() + "](Packing locals)    Building stmt graph...");
-
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
-
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.start();
 
             
         LiveLocals liveLocals;
 
-        if(Main.isVerbose)
-            System.out.println("[" + body.getMethod().getName() + "](Packing locals)    Building live locals..");
-        
         if(Main.usePackedLive)
             liveLocals = new SimpleLiveLocals(stmtGraph);
         else 
             liveLocals = new SparseLiveLocals(stmtGraph);
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.end();
 
         Set types;
 

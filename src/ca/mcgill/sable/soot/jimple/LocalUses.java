@@ -81,3 +81,16 @@ public interface LocalUses
 {
     public List getUsesOf(DefinitionStmt s);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -60,6 +60,9 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -85,6 +88,13 @@ public class SimpleLocalDefs implements LocalDefs
 
     public SimpleLocalDefs(CompleteStmtGraph g)
     {
+        if(Main.isProfilingOptimization)
+            Main.defsTimer.start();
+        
+        if(Main.isVerbose)
+            System.out.println("[" + g.getBody().getMethod().getName() +
+                "]     Constructing SimpleLocalDefs...");
+    
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
         
         if(Main.isProfilingOptimization)
@@ -126,7 +136,10 @@ public class SimpleLocalDefs implements LocalDefs
         }
 
         if(Main.isProfilingOptimization)
-                Main.defsPostTimer.end();
+            Main.defsPostTimer.end();
+                
+        if(Main.isProfilingOptimization)
+            Main.defsTimer.end();
     }
 
     public List getDefsOfAt(Local l, Stmt s)

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added the ability to retrieve live variables after a stmt.
 
@@ -90,6 +93,13 @@ public class SparseLiveLocals implements LiveLocals
 
     public SparseLiveLocals(CompleteStmtGraph graph)
     {
+        if(Main.isProfilingOptimization)
+            Main.liveTimer.start();
+        
+        if(Main.isVerbose)
+            System.out.println("[" + graph.getBody().getMethod().getName() +
+                "]     Constructing SparseLiveLocals...");
+        
         SparseLiveLocalsAnalysis analysis = new SparseLiveLocalsAnalysis(graph);
 
         if(Main.isProfilingOptimization)
@@ -116,7 +126,10 @@ public class SparseLiveLocals implements LiveLocals
         }
         
         if(Main.isProfilingOptimization)
-                Main.livePostTimer.end();
+            Main.livePostTimer.end();
+        
+        if(Main.isProfilingOptimization)
+            Main.liveTimer.end();
     }
 
     public List getLiveLocalsAfter(Stmt s)

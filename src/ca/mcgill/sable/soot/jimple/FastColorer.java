@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Initial release.
 */
@@ -75,8 +78,6 @@ public class FastColorer
     public static void assignColorsToLocals(StmtBody stmtBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-        //JimpleBody.printStmtList_debug((JimpleBody) stmtBody, new java.io.PrintWriter(System.out, true));
-
         new FastColorer(stmtBody, localToGroup, localToColor, groupToColorCount);
     }
     
@@ -85,28 +86,14 @@ public class FastColorer
     {
         StmtList stmtList = stmtBody.getStmtList();
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.start();
-
-        // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
-
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.start();
-            
         LiveLocals liveLocals;
 
         if(Main.usePackedLive)
             liveLocals = new SimpleLiveLocals(stmtGraph);
         else 
             liveLocals = new SparseLiveLocals(stmtGraph);
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.end();
 
         InterferenceGraph intGraph = new InterferenceGraph(stmtBody, localToGroup, liveLocals);
 

@@ -60,6 +60,9 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
@@ -83,6 +86,14 @@ public class SimpleLocalUses implements LocalUses
 
     public SimpleLocalUses(CompleteStmtGraph graph, LocalDefs localDefs)
     {
+        if(Main.isProfilingOptimization)
+           Main.usesTimer.start();
+        
+        if(Main.isVerbose)
+            System.out.println("[" + graph.getBody().getMethod().getName() +
+                "]     Constructing SimpleLocalUses...");
+    
+    
         Map stmtToUseList = new HashMap(graph.size() * 2 + 1, 0.7f);
 
         // Initialize this map to empty sets
@@ -144,6 +155,9 @@ public class SimpleLocalUses implements LocalUses
                 stmtToUses.put(s, Collections.unmodifiableList(((List) stmtToUseList.get(s))));
             }
         }
+        
+        if(Main.isProfilingOptimization)
+            Main.usesTimer.end();
     }
 
     public List getUsesOf(DefinitionStmt s)

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca). (*)
    Improved the interference graph builder.
    
@@ -88,23 +91,9 @@ public class ChaitinAllocator
         if(Main.isVerbose)
             System.out.println("[" + body.getMethod().getName() + "] Packing locals...");
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.start();
-
-        // Jimple.printStmtListBody_debug(body, new java.io.PrintWriter(System.out));
-
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.start();
-
         LiveLocals liveLocals = new SimpleLiveLocals(stmtGraph);
-
-        if(Main.isProfilingOptimization)
-            Main.liveTimer.end();
 
         Set types;
 

@@ -67,6 +67,10 @@
  *                                                                   *
 
  B) Changes:
+ 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Eliminated the multi-pass dead code elimination.  Calls a
+   cascaded dead code eliminator.
 
  - Modified on March 5, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Changed aggregate to be iterative.  No longer returns a value.
@@ -204,55 +208,26 @@ public class Transformations
         {
             List code = stmtList;
 
-            if(Main.isProfilingOptimization)
-                Main.graphTimer.start();
-
             CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
 
-            if(Main.isProfilingOptimization)
-                Main.graphTimer.end();
-
             LocalDefs localDefs;
+            
             if(Main.usePackedDefs) 
             {
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.start();
-
                 localDefs = new SimpleLocalDefs(graph);
-                
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.end();
             }
             else {
                 LiveLocals liveLocals;
             
-                if(Main.isProfilingOptimization)
-                    Main.liveTimer.start();
-    
                 if(Main.usePackedLive) 
                     liveLocals = new SimpleLiveLocals(graph);
                 else
                     liveLocals = new SparseLiveLocals(graph);
 
-                if(Main.isProfilingOptimization)
-                    Main.liveTimer.end();
-
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.start();
-        
-                localDefs = new SparseLocalDefs(graph, liveLocals);
-                
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.end();
+                localDefs = new SparseLocalDefs(graph, liveLocals);                
             }            
 
-            if(Main.isProfilingOptimization)
-                Main.usesTimer.start();
-
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-
-            if(Main.isProfilingOptimization)
-                Main.usesTimer.end();
 
             Iterator codeIt = stmtList.iterator();
 
@@ -460,214 +435,19 @@ public class Transformations
      
     public static void cleanupCode(JimpleBody stmtBody)
     {
-        StmtList stmtList = stmtBody.getStmtList();
-        int numPropagations = 0;
-        int numIterations = 0;
-        int numEliminations = 0;
+        CompleteStmtGraph graph = new CompleteStmtGraph(stmtBody.getStmtList());
         
-        for(;;)
-        {
-            boolean hadPropagation = false;
-            boolean hadElimination = false;
-            
-            //JimpleBody.printStmtList_debug((StmtBody) stmtBody, new java.io.PrintWriter(System.out, true));
-            
-            numIterations++;
-
-            if(Main.isVerbose)
-                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Cleanup Iteration " + numIterations);
-
-            //System.out.println("Before optimization:");
-            //Jimple.printStmtListBody_debug(stmtList.getBody(), new java.io.PrintWriter(System.out, true));
-
-            if(Main.isVerbose)
-             System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing StmtGraph...");
-
-            if(Main.isProfilingOptimization)
-                Main.graphTimer.start();
-
-            CompleteStmtGraph graph = new CompleteStmtGraph(stmtList);
-
-            if(Main.isProfilingOptimization)
-                Main.graphTimer.end();
-
-            if(Main.isVerbose)
-                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalDefs...");
-
-            LocalDefs localDefs;
-            
-            if(Main.usePackedDefs) 
-            {
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.start();
-
-                localDefs = new SimpleLocalDefs(graph);
-                
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.end();
-            }
-            else {
-                LiveLocals liveLocals;
-            
-                if(Main.isProfilingOptimization)
-                    Main.liveTimer.start();
-                if(Main.usePackedLive) 
-                    liveLocals = new SimpleLiveLocals(graph);
-                else
-                    liveLocals = new SparseLiveLocals(graph);    
-
-                if(Main.isProfilingOptimization)
-                    Main.liveTimer.end();
-
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.start();
+        Iterator it = graph.pseudoTopologicalOrderIterator();
         
-                localDefs = new SparseLocalDefs(graph, liveLocals);
-                
-                if(Main.isProfilingOptimization)
-                    Main.defsTimer.end();
-            }           
-
-            if(Main.isVerbose)
-                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalUses...");
-
-            if(Main.isProfilingOptimization)
-                Main.usesTimer.start();
-
-            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-
-            if(Main.isProfilingOptimization)
-                Main.usesTimer.end();
-
-            if(Main.isVerbose)
-                System.out.println("[" + stmtList.getBody().getMethod().getName() + "] Constructing LocalCopies...");
-
-            if(Main.isProfilingOptimization)
-                Main.copiesTimer.start();
-
-            LocalCopies localCopies = new SimpleLocalCopies(graph);
-
-            if(Main.isProfilingOptimization)
-                Main.copiesTimer.end();
-
-            if(Main.isProfilingOptimization)
-                Main.cleanupAlgorithmTimer.start();
-
-            // Perform a dead code elimination pass.
-            {
-                Iterator stmtIt = stmtList.iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Stmt stmt = (Stmt) stmtIt.next();
-
-                    if(stmt instanceof NopStmt)
-                    {
-                        stmtIt.remove();
-                        continue;
-                    }
-
-                    if(!(stmt instanceof DefinitionStmt))
-                        continue;
-
-                    DefinitionStmt def = (DefinitionStmt) stmt;
-
-                    if(def.getLeftOp() instanceof Local && localUses.getUsesOf(def).size() == 0 &&
-                        !(def instanceof IdentityStmt))
-                    {
-                        // This definition is not used.
-                        
-                        Value rightOp = def.getRightOp();
-                        
-                        if(!(rightOp instanceof InvokeExpr) && 
-                           !(rightOp instanceof InstanceFieldRef) &&
-                           !(rightOp instanceof ArrayRef))
-                        { 
-                            // Does not have a side effect.
-
-                            stmtIt.remove();
-                            numEliminations++;
-                            hadElimination = true;
-                        }
-                    }
-                    else if(def.getLeftOp() instanceof Local && def.getRightOp() instanceof Local &&
-                        def.getLeftOp() == def.getRightOp())
-                    {
-                        // This is an assignment of the form a = a, which is useless.
-
-                        stmtIt.remove();
-                        numEliminations++;
-                        hadElimination = true;
-                    }
-                }
-            }
-
-            // Perform a constant/local propagation pass.
-            {
-                Iterator stmtIt = stmtList.iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Stmt stmt = (Stmt) stmtIt.next();
-                    Iterator useBoxIt = stmt.getUseBoxes().iterator();
-
-                    while(useBoxIt.hasNext())
-                    {
-                        ValueBox useBox = (ValueBox) useBoxIt.next();
-
-                        if(useBox.getValue() instanceof Local)
-                        {
-                            Local l = (Local) useBox.getValue();
-
-                            List defsOfUse = localDefs.getDefsOfAt(l, stmt);
-
-                            if(defsOfUse.size() == 1)
-                            {
-                                DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
-
-                                if(def.getRightOp() instanceof Constant)
-                                {
-                                    if(useBox.canContainValue(def.getRightOp()))
-                                    {
-                                        // Check to see if this box can actually contain
-                                        // a constant.  (bases can't)
-
-                                        useBox.setValue(def.getRightOp());
-                                        numPropagations++;
-                                        hadPropagation = true;
-                                    }
-                                }
-                                else if(def.getRightOp() instanceof Local)
-                                {
-                                    Local m = (Local) def.getRightOp();
-
-                                    if(localCopies.isLocalCopyOfBefore((Local) l, (Local) m,
-                                        stmt))
-                                    {
-                                        useBox.setValue(m);
-                                        numPropagations++;
-                                        hadPropagation = true;
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            //JimpleBody.printStmtList_debug((StmtBody) stmtBody, new java.io.PrintWriter(System.out, true));
-
-            if(!hadPropagation && !hadElimination)
-                break;
-
-            if(Main.isProfilingOptimization)
-                Main.cleanupAlgorithmTimer.end();
-        }
-
-        //System.out.println("That's all folks:");
-        //Jimple.printStmtListBody_debug(stmtList.getBody(), new java.io.PrintWriter(System.out, true));
-
+        while(it.hasNext())
+            System.out.println(it.next());
+            
+        splitLocals(stmtBody);
+        renameLocals(stmtBody);
+        ConstantAndCopyPropagator.propagateConstantsAndCopies(stmtBody);
+        DeadCodeEliminator.eliminateDeadCode(stmtBody);
+        
+        stmtBody.printDebugTo(new java.io.PrintWriter(System.out, true));
     }
 
     public static void renameLocals(JimpleBody body)
@@ -808,43 +588,13 @@ public class Transformations
       StmtList stmtList = body.getStmtList();
       
       if(Main.isVerbose)
-        System.out.println("[" + body.getMethod().getName() + "] Aggregating");
+        System.out.println("[" + body.getMethod().getName() + "] Aggregating...");
 
-      if(Main.isVerbose)
-        System.out.println("[" + body.getMethod().getName() + "] Constructing StmtGraph...");
-      
-      if(Main.isProfilingOptimization)
-        Main.graphTimer.start();
-          
       graph = new CompleteStmtGraph(stmtList);
-      
-      if(Main.isProfilingOptimization)
-        Main.graphTimer.end();
-          
-      if(Main.isVerbose)
-        System.out.println("[" + body.getMethod().getName() + "] Constructing LocalDefs...");
-          
-      if(Main.isProfilingOptimization)
-        Main.defsTimer.start();
-          
       localDefs = new SimpleLocalDefs(graph);
-
-      if(Main.isProfilingOptimization)
-        Main.defsTimer.end();
-          
-      if(Main.isVerbose)
-        System.out.println("[" + body.getMethod().getName() + "] Constructing LocalUses...");
-          
-      if(Main.isProfilingOptimization)
-        Main.usesTimer.start();
-          
       localUses = new SimpleLocalUses(graph, localDefs);
           
-      if(Main.isProfilingOptimization)
-        Main.usesTimer.end();
-
       stmtIt = stmtList.iterator();
-      
       
       while (stmtIt.hasNext())
         {

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on January 24, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Branched off from SimpleLocalDefs.
    
@@ -89,6 +92,13 @@ public class SparseLocalDefs implements LocalDefs
     
     public SparseLocalDefs(CompleteStmtGraph g, LiveLocals liveLocals)
     {
+        if(Main.isProfilingOptimization)
+            Main.defsTimer.start();
+    
+        if(Main.isVerbose)
+            System.out.println("[" + g.getBody().getMethod().getName() +
+                "]     Constructing SparseLocalDefs...");
+        
         SparseLocalDefsFlowAnalysis analysis = new SparseLocalDefsFlowAnalysis(g, liveLocals);
 
         if(Main.isProfilingOptimization)
@@ -145,6 +155,8 @@ public class SparseLocalDefs implements LocalDefs
         if(Main.isProfilingOptimization)
                 Main.defsPostTimer.end();
 
+        if(Main.isProfilingOptimization)
+            Main.defsTimer.end();
     }
 
     public List getDefsOfAt(Local l, Stmt s)

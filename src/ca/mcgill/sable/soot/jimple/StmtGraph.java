@@ -64,6 +64,12 @@
 
  B) Changes:
 
+ - Modified on March 15, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added a pseudo topological order iterator (and its reverse).
+
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -108,12 +114,20 @@ public class StmtGraph
     {
         this.stmtList = stmtList;
         this.method = getBody().getMethod();
-
+        
+        if(Main.isVerbose)
+            System.out.println("[" + method.getName() + 
+            "]     Constructing StmtGraph...");
+      
+        if(Main.isProfilingOptimization)
+            Main.graphTimer.start();
+      
         // Build stmts (for iterator)
         {
             stmts = new LinkedList();
 
             stmts.addAll(stmtList);
+            stmts = Collections.unmodifiableList(stmts);
             size = stmtList.size();
         }
 
@@ -354,6 +368,8 @@ public class StmtGraph
             heads = Collections.unmodifiableList(headList);
         }
 
+        if(Main.isProfilingOptimization)
+            Main.graphTimer.end();
     }
 
     public List getHeads()
@@ -384,7 +400,7 @@ public class StmtGraph
 
     public Iterator iterator()
     {
-        return new GraphIterator();
+        return stmts.iterator();
     }
 
     public int size()
@@ -392,32 +408,117 @@ public class StmtGraph
         return size;
     }
 
-    private class GraphIterator implements Iterator
+    private boolean isPseudoTopologicalOrderReady;
+    private List topOrder;
+              
+    public Iterator pseudoTopologicalOrderIterator()
     {
-        Iterator iterator;
-
-        public GraphIterator()
+        if(!isPseudoTopologicalOrderReady)
         {
-            iterator = stmts.iterator();
+            topOrder = Collections.unmodifiableList(computeOrder(false));
+            isPseudoTopologicalOrderReady = true;
         }
-
-        public boolean hasNext()
+        
+        return topOrder.iterator();
+    }   
+    
+    private boolean isReversePseudoTopologicalOrderReady;
+    private List reverseTopOrder;
+              
+    public Iterator reversePseudoTopologicalOrderIterator()
+    {
+        if(!isReversePseudoTopologicalOrderReady)
         {
-            return iterator.hasNext();
+            reverseTopOrder = Collections.unmodifiableList(computeOrder(false));
+            isReversePseudoTopologicalOrderReady = true;
         }
+                
+        return reverseTopOrder.iterator();
+    }   
+    
+    private Map stmtToColor;
+    private final int WHITE = 0,
+              GRAY = 1,
+              BLACK = 2;
 
-        public Object next()
+    private LinkedList order;
+    private boolean isReversed;
+    
+    private LinkedList computeOrder(boolean isReversed)
+    {
+        stmtToColor = new HashMap();
+    
+        this.isReversed = isReversed;
+        order = new LinkedList();
+        
+        // Color all statements white
         {
-            return iterator.next();
+            Iterator stmtIt = iterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+                
+                stmtToColor.put(s, new Integer(WHITE));
+            }
         }
-
-        public void remove() throws UnsupportedOperationException
+        
+        // Visit each statement 
         {
-            throw new UnsupportedOperationException();
+            Iterator stmtIt = iterator();
+            
+            while(stmtIt.hasNext())
+            {
+                Stmt s = (Stmt) stmtIt.next();
+               
+                if(((Integer) stmtToColor.get(s)).intValue() == WHITE)
+                    visitStmt(s); 
+            }
         }
+        
+        return order;
     }
-
+    
+    private void visitStmt(Stmt s)
+    {
+        stmtToColor.put(s, new Integer(GRAY));
+         
+        Iterator succIt = getSuccsOf(s).iterator();
+        
+        while(succIt.hasNext())
+        {
+            Stmt succ = (Stmt) succIt.next();
+            
+            if(((Integer) stmtToColor.get(succ)).intValue() == WHITE)
+                visitStmt(succ);
+        }
+        
+        stmtToColor.put(s, new Integer(BLACK));
+         
+        if(isReversed)
+            order.addLast(s);
+        else
+            order.addFirst(s); 
+    }
+     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

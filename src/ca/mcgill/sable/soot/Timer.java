@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added an assertion to check that end() is always preceeded by a start()
+ 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -75,7 +78,8 @@ public class Timer
 {
     private long duration;
     private long startTime;
-
+    private boolean hasStarted;
+    
     public Timer()
     {
         duration = 0;
@@ -84,10 +88,20 @@ public class Timer
     public void start()
     {
         startTime = System.currentTimeMillis();
+        
+        if(hasStarted)
+            throw new RuntimeException("timer has already been started!");
+        else
+            hasStarted = true;
     }
 
     public void end()
     {
+        if(!hasStarted)
+            throw new RuntimeException("timer has not been started!");
+        else
+            hasStarted = false;
+        
         duration += System.currentTimeMillis() - startTime;
     }
 

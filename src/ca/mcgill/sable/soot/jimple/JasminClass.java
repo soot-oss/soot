@@ -69,10 +69,12 @@
 
  B) Changes:
 
+ - Modified on March 13, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Re-organized the timers.
+
  - Modified on March 4, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added peephole optimizations for the code generation of ++ like structures.
-   
-   
+      
  - Modified on February 19, 1999 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Uses bipush & sipush instead of ldc
    More efficient branch generation.
@@ -455,30 +457,12 @@ public class JasminClass
         StmtList stmtList = body.getStmtList();
 
         // let's create a u-d web for the ++ peephole optimization.
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.start();
 
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
 
-        if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
+        LocalDefs ld = new SimpleLocalDefs(stmtGraph);
+	    LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
 
-        if(Main.isProfilingOptimization)
-            Main.defsTimer.start();
-
-	LocalDefs ld = new SimpleLocalDefs(stmtGraph);
-
-        if(Main.isProfilingOptimization)
-	    Main.defsTimer.end();
-
-        if(Main.isProfilingOptimization)
-	    Main.usesTimer.start();
-
-	LocalUses lu = new SimpleLocalUses(stmtGraph, ld);
-
-	if (Main.isProfilingOptimization)
-	    Main.usesTimer.end();
-	
         int stackLimitIndex;
         
         // Emit prologue
@@ -611,6 +595,7 @@ public class JasminClass
                             
                         int slot;
                         
+                        /*
                         if(groupColorPairToSlot.containsKey(pair))
                         {
                             // This local should share the same slot as the previous local with
@@ -618,12 +603,12 @@ public class JasminClass
                             
                             slot = ((Integer) groupColorPairToSlot.get(pair)).intValue();
                         }
-                        else { 
+                        else { */
                             slot = localCount;           
                             localCount += sizeOfType(local.getType());
                     
                             groupColorPairToSlot.put(pair, new Integer(slot));
-                        }
+                        /* }*/
                             
                         localToSlot.put(local, new Integer(slot));
                         assignedLocals.add(local);
@@ -1722,6 +1707,8 @@ public class JasminClass
     Value plusPlusValue;
     Local plusPlusHolder;
     int plusPlusState;
+    int plusPlusPlace;
+    int plusPlusHeight;
     Stmt plusPlusIncrementer;
 
     void emitLocal(Local v)
@@ -1771,22 +1758,26 @@ public class JasminClass
 			// ++ target, whatever it was.
 			
 			// now we need to emit a statement incrementing
-			// the correct value.  instead of loading the 
-			// value itself, load a dummy local (which we don't
-			// emit) -- handle it with state 1.
+			// the correct value.  
+                        // actually, just remember the local to be incremented.
 
 			plusPlusState = 1;
 			
 			emitStmt(plusPlusIncrementer);
+                        int diff = plusPlusHeight - currentStackHeight + 1;
+                        if (diff > 0)
+                          code.set(plusPlusPlace, "    dup_x"+diff);
 			plusPlusHolder = null;
 
 			// afterwards we have the value on the stack.
 			return;
 		    case 1:
-			int ht = currentStackHeight;
-			emitValue(plusPlusValue);
+			plusPlusHeight = currentStackHeight;
 
-			emit("dup_x"+(currentStackHeight-ht), 1);
+                        emitValue(plusPlusValue);
+
+                        plusPlusPlace = code.size();
+			emit("dup", 1);
 
 			return;
 		    }
