@@ -891,7 +891,8 @@ public class Options extends OptionsBase {
                 +"class-method-var "
                 +"dump-answer "
                 +"trim-invoke-graph "
-                +"add-tags ";
+                +"add-tags "
+                +"set-mass ";
     
         if( phaseName.equals( "wstp" ) )
             return ""
@@ -1224,7 +1225,8 @@ public class Options extends OptionsBase {
               +"class-method-var:true "
               +"dump-answer:false "
               +"trim-invoke-graph:true "
-              +"add-tags:false ";
+              +"add-tags:false "
+              +"set-mass:false ";
     
         if( phaseName.equals( "wstp" ) )
             return "";

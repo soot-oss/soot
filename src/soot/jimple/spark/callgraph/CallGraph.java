@@ -82,6 +82,7 @@ public final class CallGraph
                 if( cl.declaresMethod( ImplicitMethodInvocation.v().sigClinit ) ) {
                     SootMethod m = cl.getMethod( ImplicitMethodInvocation.v().sigClinit );
                     setReachable( m, m );
+                    G.v().out.println( "making reachable: "+m );
                 }
             }
         }

@@ -172,6 +172,11 @@ public class SparkOptions
         return soot.PackManager.getBoolean( options, "add-tags" );
     }
     
+    /** Calculate Set Mass --  */
+    public boolean set_mass() {
+        return soot.PackManager.getBoolean( options, "set-mass" );
+    }
+    
     public static final int propagator_iter = 1;
     public static final int propagator_worklist = 2;
     public static final int propagator_cycle = 3;

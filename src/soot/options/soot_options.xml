@@ -943,6 +943,15 @@ tags, and printed with the resulting Jimple code.
 
         </long_desc>
 						</boolopt>
+						<boolopt>
+							<name>Calculate Set Mass</name>
+							<alias>set-mass</alias>
+							<default>false</default>
+							<long_desc>
+When this option is set to true, Spark computes and prints various
+cryptic statistics about the size of the points-to sets computed.
+        </long_desc>
+						</boolopt>
 					</section>
 				</sub_phase>
 			</phase>

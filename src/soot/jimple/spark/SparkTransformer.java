@@ -140,7 +140,7 @@ public class SparkTransformer extends SceneTransformer
                     +b.getCallGraph().numReachableMethods() );
         }
 
-        findSetMass( pag, b );
+        if( opts.set_mass() ) findSetMass( pag, b );
 
         /*
         if( propagator[0] instanceof PropMerge ) {
