@@ -175,7 +175,9 @@ public class SourceLocator
     static private InputStream getFileInputStream(List locations, List reps, String className)
     {    
         Iterator it = locations.iterator();
-        className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
+        //className = className.replace('/','.');  // so that you can give for example either spec.bench.main or spec/bench/main
+        if( className.indexOf("/") >= 0 )
+            throw new RuntimeException( "Class names may not contain slashes! "+className );
         String classNameSlashed = className.replace('.', '/'); // now it's back in canonical / form.
 
         while(it.hasNext()) 

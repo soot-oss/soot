@@ -90,6 +90,7 @@ public class StaticInliner extends SceneTransformer
 
         ArrayList sitesToInline = new ArrayList();
 
+        computeAverageMethodSizeAndSaveOriginalSizes();
         // Visit each potential site in reverse pseudo topological order.
         {
             Iterator it = (new PseudoTopologicalOrderer(PseudoTopologicalOrderer.REVERSE)).newList(mg).iterator();
@@ -140,7 +141,6 @@ public class StaticInliner extends SceneTransformer
         // Proceed to inline the sites, one at a time, keeping track of
         // expansion rates.
         {
-            computeAverageMethodSizeAndSaveOriginalSizes();
 
             Iterator sitesIt = sitesToInline.iterator();
             while (sitesIt.hasNext())
