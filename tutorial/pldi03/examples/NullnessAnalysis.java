@@ -43,18 +43,18 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
         // Create working set.
         dest = (FlowSet)src.clone();
 
-        // Perform gen.
-        dest.union((FlowSet)unitToGenerateSet.get(unit), dest);
-
         // Take out kill set.
         Iterator boxIt = s.getDefBoxes().iterator();
         while (boxIt.hasNext()) {
             ValueBox box = (ValueBox) boxIt.next();
             Value value = box.getValue();
             if (value instanceof Local && 
-                    value.getType() instanceof RefType)
+                    isRefOrArrayType(value.getType()))
                 dest.remove(value);
         }
+
+        // Perform gen.
+        dest.union((FlowSet)unitToGenerateSet.get(unit), dest);
 
         // Handle copy statements: 
         //    x = y && 'y' in src => add 'x' to dest
@@ -160,7 +160,7 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 
     private void addGen(Unit u, Value v)
     {
-        List l = (List)unitToGenerateSet.get(u);
+        ArraySparseSet l = (ArraySparseSet)unitToGenerateSet.get(u);
         l.add(v);
     }
 
@@ -187,32 +187,32 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 
         List refLocals = new LinkedList();
 
+        // set up universe, empty, full sets.
+
+        emptySet = new ArraySparseSet();
+        fullSet = new ArraySparseSet();
+
         // Find all locals in body.
         Iterator localIt = b.getLocals().iterator();
         while (localIt.hasNext())
         {
             Local l = (Local)localIt.next();
-            if (l.getType() instanceof RefType)
-                refLocals.add(l);
+            if (isRefOrArrayType(l.getType()))
+                fullSet.add(l);
         }
-
-        // set up universe, empty, full sets.
-        allRefLocals = new ArrayFlowUniverse(refLocals.toArray());
-        emptySet = new ArrayPackedSet(allRefLocals);
-        fullSet = (ArrayPackedSet)emptySet.clone();
-        ((ArrayPackedSet)fullSet).complement();
 
         // Create gen sets.
         Iterator unitIt = b.getUnits().iterator();
         while (unitIt.hasNext())
         {
             Unit u = (Unit)unitIt.next();
-            unitToGenerateSet.put(u, new LinkedList());
+            unitToGenerateSet.put(u, new ArraySparseSet());
 
             if (u instanceof DefinitionStmt)
             {
                 Value lo = ((DefinitionStmt)u).getLeftOp();
-                if (lo instanceof Local && lo.getType() instanceof RefType)
+                if (lo instanceof Local && 
+                       isRefOrArrayType(lo.getType()))
                     addGensFor((DefinitionStmt)u);
             }
 
@@ -238,13 +238,18 @@ class NullnessAnalysis extends ForwardBranchedFlowAnalysis
 
                 if (base != null && 
                       base instanceof Local && 
-                      base.getType() instanceof RefType) 
+                      isRefOrArrayType(base.getType()))
                     addGen(u, base);
             }
         }
 
         // Call superclass method to do work.
         doAnalysis();
+    }
+
+    private boolean isRefOrArrayType(Type t)
+    {
+        return t instanceof RefType || t instanceof ArrayType;
     }
 }
 
