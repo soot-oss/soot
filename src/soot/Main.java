@@ -383,6 +383,9 @@ public class Main {
     }
 
     private void exitCompilation(int status, String msg) {
+        if(status == Main.COMPILATION_ABORTED) {
+                System.out.println("compilation failed: "+msg);
+        }
         G.v().reset();
     }
 
@@ -418,6 +421,7 @@ public class Main {
      *   Entry point for Eclipse line invocation of soot.
      */
     public static int main(String[] args, PrintStream out) {
+        G.v().reset();
         G.v().out = out;
         return Main.v().go(args);
     }
