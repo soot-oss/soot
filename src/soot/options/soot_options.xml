@@ -7,21 +7,21 @@
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
-			<short_desc>display help and exit</short_desc>
-			<long_desc>This option displays the textual help message and exits immediately without doing any further processing</long_desc>
+			<short_desc>Display Help and Exit</short_desc>
+			<long_desc>This option displays the textual help message and exits immediately without doing any further processing.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Version</name>
 			<alias>version</alias>
-			<short_desc>output version information and exit</short_desc>
-			<long_desc>This option outputs the Soot version information and exits immediately without doing any further processing</long_desc>
+			<short_desc>Display Version Information and Exit</short_desc>
+			<long_desc>This option displays the Soot version information and exits immediately without doing any further processing.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Verbose</name>
 			<alias>v</alias>
 			<alias>verbose</alias>
-			<short_desc>verbose mode</short_desc>
-			<long_desc>Verbose mode.</long_desc>
+			<short_desc>Verbose Mode</short_desc>
+			<long_desc>This option turns on and displays all debugging information.</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Application Mode</name>

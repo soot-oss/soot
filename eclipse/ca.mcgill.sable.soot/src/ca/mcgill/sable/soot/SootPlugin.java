@@ -89,6 +89,7 @@ public class SootPlugin extends AbstractUIPlugin {
 	
 		try {
 			resourceBundle= ResourceBundle.getBundle(ISootConstants.SOOT_PLUGIN_RESOURCES_ID);
+			System.out.println("resource bundle not missing");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}

@@ -37,12 +37,12 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Safe forName --  */
+    /** Safe forName -- Handle Class.forName() calls conservatively */
     public boolean safe_forname() {
         return soot.PhaseOptions.getBoolean( options, "safe-forname" );
     }
     
-    /** Verbose --  */
+    /** Verbose -- Print warnings about where the call graph may be incomplete */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
     }

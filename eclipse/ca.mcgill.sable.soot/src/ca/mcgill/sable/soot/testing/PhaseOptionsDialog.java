@@ -244,12 +244,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 			
-		if (isEnableButton("all-clinit")) {
-			buttonList.add(getcgcg_chaall_clinit_widget());	
-			getcgcg_chaall_clinit_widget().getButton().addSelectionListener(this);
-		}
-
-			
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_sparkenabled_widget());	
 			getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
@@ -433,7 +427,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgenabled_widget(), "enabled");
 		
 		
+		addToEnableGroup("cg", getcgsafe_forname_widget(), "safe-forname");
+		
+		
 		getcgenabled_widget().getButton().addSelectionListener(this);
+		
+		getcgsafe_forname_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -443,13 +442,9 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaverbose_widget(), "verbose");
 		
-		addToEnableGroup("cg", "cg.cha", getcgcg_chaall_clinit_widget(), "all-clinit");
-		
 		getcgcg_chaenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgcg_chaverbose_widget().getButton().addSelectionListener(this);
-		
-		getcgcg_chaall_clinit_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.spark");
@@ -1528,6 +1523,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getcgenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getcgsafe_forname_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgsafe_forname_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
 		
@@ -1546,16 +1551,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_chaverbose_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_chaall_clinit_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_chaall_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkenabled_widget().getButton().getSelection();
@@ -3989,6 +3984,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgenabled_widget;
 	}	
 	
+	private BooleanOptionWidget cgsafe_forname_widget;
+	
+	private void setcgsafe_forname_widget(BooleanOptionWidget widget) {
+		cgsafe_forname_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgsafe_forname_widget() {
+		return cgsafe_forname_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
 	
 	private void setcgcg_chaenabled_widget(BooleanOptionWidget widget) {
@@ -4007,16 +4012,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgcg_chaverbose_widget() {
 		return cgcg_chaverbose_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_chaall_clinit_widget;
-	
-	private void setcgcg_chaall_clinit_widget(BooleanOptionWidget widget) {
-		cgcg_chaall_clinit_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_chaall_clinit_widget() {
-		return cgcg_chaall_clinit_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparkenabled_widget;
@@ -6663,6 +6658,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p", "cg","enabled", "", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"cg"+" "+"safe-forname";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "", defaultBool)));
+		
+		
 
 		
 		return editGroupcg;
@@ -6721,22 +6732,6 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.cha"+" "+"all-clinit";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_chaall_clinit_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("All Static Initializers Reachable", "p", "cg.cha","all-clinit", "\nWhen this option is set to true, all static initializer methods in\navailable classes are considered to be reachable. Otherwise, static\ninitializers are only considered reachable if a statement using the\nclass (such as a static read, an object creation, or use of Class.forName())\nis reachable.\n", defaultBool)));
 		
 		
 

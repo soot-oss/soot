@@ -20,30 +20,54 @@ package ca.mcgill.sable.soot.attributes;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IMarkerResolution;
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+// not used
 public class FindMethodResolver implements IMarkerResolution {
 
+
+	private String label;
+	private IMarker marker;
+		
+	public FindMethodResolver(IMarker marker){
+		setMarker(marker);
+		generateLabel();
+	}
+	
+	private void generateLabel(){
+		setLabel("myMarker1");
+	}
+	
+	public void setLabel(String l){
+		label = l;
+	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IMarkerResolution#getLabel()
 	 */
 	public String getLabel() {
 		// TODO Auto-generated method stub
 		System.out.println("in get resolution label");
-		return "Find method marker resolver";
+		return getLabel();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
 	 */
 	public void run(IMarker marker) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub // TODO Smile
 
+	}
+
+	/**
+	 * @return
+	 */
+	public IMarker getMarker() {
+		return marker;
+	}
+
+	/**
+	 * @param marker
+	 */
+	public void setMarker(IMarker marker) {
+		this.marker = marker;
 	}
 
 }

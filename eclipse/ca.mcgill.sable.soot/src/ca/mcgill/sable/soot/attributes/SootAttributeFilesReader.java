@@ -36,25 +36,22 @@ public class SootAttributeFilesReader {
 		AttributeFileReader afr = new AttributeFileReader(full_filename);
 		String file = afr.readFile();
 		if ((file == null) || (file.length() == 0)) return null;
-		//System.out.println();
-		//System.out.println(file);
+		
 		file = file.replaceAll("\"", "\\\"");
-		//System.out.println(file);
+		
 		StringToDom domMaker = new StringToDom();
 		domMaker.getDocFromString(file);
 		Document domDoc = domMaker.getDomDoc();
-		//System.out.println(domDoc.getNodeType());
-		//System.out.println(domDoc.getNodeName());
+		
 		AttributeDomProcessor adp = new AttributeDomProcessor(domDoc);
 		adp.processAttributesDom();
-		//SootPlugin.getDefault().getSootAttributesHandler().setAttrListForFilename(adp.getAttributes(), fileToNoExt(full_filename));
 		return adp;
 					
 	}
 	
 	
 	public String fileToNoExt(String filename) {
-		//System.out.println(filename.substring(0, filename.lastIndexOf('.')));
+		
 		return filename.substring(0, filename.lastIndexOf('.'));
 	}
 }

@@ -32,8 +32,13 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
     public AttributesUnitPrinter getPositionTagger() {
         return pt;
     }
-    public void startUnit( Unit u ) { handleIndent(); }
-    public void endUnit( Unit u ) {}
+    public void startUnit( Unit u ) {
+		handleIndent();
+		if( pt != null ) pt.startUnit( u );
+	}
+    public void endUnit( Unit u ) {
+		if( pt != null ) pt.endUnit( u );
+	}
     public void startUnitBox( UnitBox ub ) { handleIndent(); }
     public void endUnitBox( UnitBox ub ) {}
     public void startValueBox( ValueBox vb ) {

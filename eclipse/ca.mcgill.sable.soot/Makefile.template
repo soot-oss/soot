@@ -1,11 +1,26 @@
-ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipseR3/eclipse/plugins/
-SOOT_DIR=/home/research/ccl/jlhotak/soot/classes
+ECLIPSE_HOME=/home/research/ccl/jlhotak/eclipse2.1/eclipse/plugins/
+SOOT_DIR=/home/research/ccl/jlhotak/mirrored/soot/classes
 
 all:
 	javac -d classes -classpath $(ECLIPSE_HOME)org.eclipse.jface.text_2.1.0/jfacetext.jar:$(ECLIPSE_HOME)org.eclipse.jface_2.1.0/jface.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench_2.1.0/workbench.jar:$(ECLIPSE_HOME)org.eclipse.ui_2.1.0/ui.jar:$(ECLIPSE_HOME)org.eclipse.ui.views_2.1.0/views.jar:$(ECLIPSE_HOME)org.eclipse.ui.editors_2.1.0/editors.jar:$(ECLIPSE_HOME)org.eclipse.ui.workbench.texteditor_2.1.0/texteditor.jar:$(ECLIPSE_HOME)org.eclipse.text_2.1.0/text.jar:$(ECLIPSE_HOME)org.eclipse.core.boot_2.1.0/boot.jar:$(ECLIPSE_HOME)org.eclipse.jdt.ui_2.1.0/jdt.jar:$(ECLIPSE_HOME)org.eclipse.jdt.core_2.1.0/jdtcore.jar:$(ECLIPSE_HOME)org.eclipse.core.resources_2.1.0/resources.jar:$(ECLIPSE_HOME)org.eclipse.core.runtime_2.1.0/runtime.jar:$(ECLIPSE_HOME)org.eclipse.swt.motif_2.1.0/ws/motif/swt.jar:$(SOOT_DIR):. src/ca/mcgill/sable/soot/*.java src/ca/mcgill/sable/soot/*/*.java src/ca/mcgill/sable/soot/*/*/*.java
 
-	jar -cf soot-plugin.jar icons/*.jpg icons/*.gif build.properties .project .classpath plugin.properties plugin.xml
+	jar -cf soot-plugin.jar icons/*.jpg icons/*.gif icons/*.png build.properties .project .classpath plugin.properties plugin.xml
 
+	cp src/ca/mcgill/sable/soot/*.properties classes/ca/mcgill/sable/soot/
+	cp src/ca/mcgill/sable/soot/attributes/*.properties classes/ca/mcgill/sable/soot/attributes/
+#	cp src/ca/mcgill/sable/soot/editors/*.properties classes/ca/mcgill/sable/soot/editors/
+#	cp src/ca/mcgill/sable/soot/editors/parser/*.properties classes/ca/mcgill/sable/soot/editors/parser/
+	cp src/ca/mcgill/sable/soot/launching/*.properties classes/ca/mcgill/sable/soot/launching/
+	cp src/ca/mcgill/sable/soot/resources/*.properties classes/ca/mcgill/sable/soot/resources/
+#	cp src/ca/mcgill/sable/soot/testing/*.properties classes/ca/mcgill/sable/soot/testing/
+	cp src/ca/mcgill/sable/soot/ui/*.properties classes/ca/mcgill/sable/soot/ui/
+#	cp src/ca/mcgill/sable/soot/util/*.properties classes/ca/mcgill/sable/soot/util/
+#	cd src
+	
+#	jar -uf soot-plugin.jar ca/mcgill/sable/soot/*.properties ca/mcgill/sable/soot/*/*.properties ca/mcgill/sable/soot/*/*/*.properties 
+
+#	cd ..
+	
 	jar -uf soot-plugin.jar -C classes ca
 
 updateDialog:

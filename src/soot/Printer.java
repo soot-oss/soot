@@ -302,7 +302,7 @@ public class Printer {
         else up = new BriefUnitPrinter(b);
 
         if (addJimpleLn()) {
-            up.setPositionTagger( new AttributesUnitPrinter() );
+            up.setPositionTagger( new AttributesUnitPrinter(getJimpleLnNum()) );
         }
 	
         printLocalsInBody(b, up);
@@ -357,18 +357,11 @@ public class Printer {
             }
 
             up.startUnit(currentStmt);
-			if (addJimpleLn()){
-				up.getPositionTagger().setEndLn(getJimpleLnNum());
-			}
             currentStmt.toString(up);
             up.endUnit(currentStmt);
 
             up.literal(";");
             up.newline();
-
-            if (addJimpleLn()) {
-                setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), currentStmt, up.getPositionTagger().getEndLn()));
-            }
 
             // only print them if not generating attributes files 
             // because they mess up line number
@@ -384,6 +377,10 @@ public class Printer {
         }
 
         out.print(up.toString());
+		if (addJimpleLn()){
+			setJimpleLnNum(up.getPositionTagger().getEndLn());
+		}
+
 
         // Print out exceptions
         {

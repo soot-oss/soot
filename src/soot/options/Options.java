@@ -700,9 +700,9 @@ public class Options extends OptionsBase {
 
 +"\nGeneral Options:\n"
       
-+padOpt(" -h -help", "display help and exit" )
-+padOpt(" -version", "output version information and exit" )
-+padOpt(" -v -verbose", "verbose mode" )
++padOpt(" -h -help", "Display Help and Exit" )
++padOpt(" -version", "Display Version Information and Exit" )
++padOpt(" -v -verbose", "Verbose Mode" )
 +padOpt(" -app", "runs in application mode" )
 +padOpt(" -w -whole-program", "runs in whole-program mode" )
 +padOpt(" -debug", "prints various Soot debugging info" )
@@ -862,7 +862,6 @@ public class Options extends OptionsBase {
                 +"on-fly-cg "
                 +"parms-as-fields "
                 +"returns-as-fields "
-                +"all-clinit "
                 +"simplify-offline "
                 +"simplify-sccs "
                 +"ignore-types-for-sccs "
@@ -1209,7 +1208,6 @@ public class Options extends OptionsBase {
               +"on-fly-cg:true "
               +"parms-as-fields:false "
               +"returns-as-fields:false "
-              +"all-clinit:false "
               +"simplify-offline:false "
               +"simplify-sccs:false "
               +"ignore-types-for-sccs:false "

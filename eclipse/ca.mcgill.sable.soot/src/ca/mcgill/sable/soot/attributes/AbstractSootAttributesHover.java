@@ -2,20 +2,11 @@ package ca.mcgill.sable.soot.attributes;
 
 
 import org.eclipse.jface.text.*;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.*;
-//import org.eclipse.ui.texteditor.AbstractTextEditor;
-
-
-
 import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
-
 import ca.mcgill.sable.soot.SootPlugin;
-//import org.eclipse.core.runtime.IAdaptable;
-//import org.eclipse.jdt.ui.text.java.hover.*;
-//import org.eclipse.jdt.core.*;
-//import ca.mcgill.sable.soot.*;
+
 
 /**
  * @author jlhotak
@@ -88,9 +79,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 		getHoverRegion(textViewer, hoverRegion.getOffset());
 		String attr = null;
 		if (getAttrsHandler() != null) {
-			//if (SootPlugin.getDefault().getSootAttributesHandler().attrExistsForFile(getPackFileName())) {
 			attr = getAttributes();
-			//}
 		}
 		return attr;
 		

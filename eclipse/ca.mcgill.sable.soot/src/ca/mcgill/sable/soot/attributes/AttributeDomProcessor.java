@@ -29,7 +29,7 @@ public class AttributeDomProcessor {
 	Document domDoc;
 	Vector attributes;
 	private SootAttribute current;
-	private ValueBoxAttribute vbAttr;
+	
 	
 	/**
 	 * Method AttributeDomProcessor.
@@ -44,18 +44,7 @@ public class AttributeDomProcessor {
 	 */
 	public void processAttributesDom() {
 		processNode(getDomDoc());
-		Iterator it = getAttributes().iterator();
-		while (it.hasNext()) {
-			SootAttribute sa = (SootAttribute)it.next();
-			System.out.println("New Attribute"); //$NON-NLS-1$
-			System.out.println("Java Line: "+sa.getJava_ln()); //$NON-NLS-1$
-			System.out.println("Jimple Line: "+sa.getJimple_ln()); //$NON-NLS-1$
-			System.out.println("Jimple Offset Start: "+sa.getJimple_offset_start()); //$NON-NLS-1$
-			System.out.println("Jimple Offset End: "+sa.getJimple_offset_end()); //$NON-NLS-1$
-			System.out.println("Jimple Color Key: "+sa.getColorKey()); //$NON-NLS-1$
-			System.out.println("Text: "+sa.getText()); //$NON-NLS-1$
-			System.out.println();
-		}
+				
 	}
 	
 	/*
@@ -64,13 +53,37 @@ public class AttributeDomProcessor {
 	 * <attribute>
 	 * <java_ln>INT</java_ln>
 	 * <jimple_ln>INT</jimple_ln>
+	 * 
 	 * <text>STRING</text>
+	 * 	... (multiple <text> possible)
+	 * 
+	 * <link_attribute>
+	 * 	<link_label>STRING</link_label>
+	 * 	<link>STRING</link>
+	 * </link_attribute>
+	 * 	... (multipl <link_attribute> possible)
+	 * 
+	 * <value_box_attribute>
+	 * 	<startOffset>INT</startOffset>
+	 * 	<endOffset>INT</endOffset>
+	 * 	<red>INT</red>
+	 * 	<green>INT</green>
+	 * 	<blue>INT</blue>
+	 * </value_box_attribute>
+	 * 	... (multiple <value_box_attribute> possible)
+	 * 
+	 * <jimpleOffsetStart>INT</jimpleOffsetStart>
+	 * <jimpleOffsetEnd>INT</jimpleOffsetEnd>
+	 * <red>INT</red>
+	 * <green>INT</green>
+	 * <blue>INT</blue>
 	 * </attribute>
-	 * ...
+	 * 	... (multiple <attribute> possible)
+	 * 
 	 * </attributes>
 	 */
 	private void processNode(Node node) {
-		//System.out.println(node.getNodeName()+node.getNodeType());
+
 		if (node.getNodeType() == Node.DOCUMENT_NODE) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
@@ -80,74 +93,139 @@ public class AttributeDomProcessor {
 				}			
 			}
 			else {
-				System.out.println("children are null"); //$NON-NLS-1$
+				System.out.println("children are null"); 
 			}
 		}
 		else if (node.getNodeType() == Node.ELEMENT_NODE) {
-			if ( node.getNodeName().compareTo(Messages.getString("AttributeDomProcessor.attribute")) == 0) { //$NON-NLS-1$
-				if (current != null) {
-					//getAttributes().add(current);
-				}
+			if ( node.getNodeName().equals("attribute")) { 
+				
 				current = new SootAttribute();
 				NodeList children = node.getChildNodes();
 				for (int i = 0; i < children.getLength(); i++) {
-					processNode(children.item(i));
+					processAttributeNode(current, children.item(i));
 				}
 				getAttributes().add(current);
 			}
-			else if (node.getNodeName().equals("value_box_attribute")){
+			else {
 				NodeList children = node.getChildNodes();
-				vbAttr = new ValueBoxAttribute();
 				for (int i = 0; i < children.getLength(); i++) {
 					processNode(children.item(i));
+				}
+			}
+			
+		}
+		else if (node.getNodeType() == Node.TEXT_NODE) {	
+			
+		}	
+		else {
+		
+		}
+	}
+	
+	private void processAttributeNode(SootAttribute current, Node node) {
+
+		if (node.getNodeType() == Node.ELEMENT_NODE) {
+			if (node.getNodeName().equals("value_box_attribute")){
+				NodeList children = node.getChildNodes();
+				PosColAttribute vbAttr = new PosColAttribute();
+				for (int i = 0; i < children.getLength(); i++) {
+					processVBNode(vbAttr, children.item(i));
 				}
 				current.addValueAttr(vbAttr);
 			}
-			else {//if (node.getNodeName().compareTo("attributes") == 0) {
+			else if (node.getNodeName().equals("link_attribute")){
+				NodeList children = node.getChildNodes();
+				LinkAttribute la = new LinkAttribute();
+				for (int i = 0; i < children.getLength(); i++){
+					processLinkNode(la, children.item(i));	
+				}
+				current.addLinkAttr(la);
+			}
+			else {
 				NodeList children = node.getChildNodes();
 				for (int i = 0; i < children.getLength(); i++) {
-					processNode(children.item(i));
+					processAttributeNode(current, children.item(i));
 				}
 			}
 		}
-		else if (node.getNodeType() == Node.TEXT_NODE) {
-			System.out.println(node.getParentNode().getNodeName()+" "+node.getNodeValue()); //$NON-NLS-1$
-			if (node.getParentNode().getNodeName().equals("java_ln")){			//System.out.println(node.getNodeValue());
+		else if (node.getNodeType() == Node.TEXT_NODE){
+			String type = node.getParentNode().getNodeName();
+			
+			if (type.equals("java_ln")){			
 				current.setJava_ln((new Integer(node.getNodeValue())).intValue());
 			}
-			else if (node.getParentNode().getNodeName().equals("jimple_ln")) {
-				//System.out.println(node.getNodeValue());
+			else if (type.equals("jimple_ln")) {
 				current.setJimple_ln((new Integer(node.getNodeValue())).intValue());
 			}
-			else if (node.getParentNode().getNodeName().equals("startOffset")){
-				System.out.println(node.getParentNode().getNodeName()+" "+node.getNodeValue()); //$NON-NLS-1$
-				//current.setJimple_offset_start((new Integer(node.getNodeValue()).intValue()));
+			else if (type.equals("startOffset")){
+				current.setJimpleOffsetStart((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (type.equals("endOffset")){ 
+				current.setJimpleOffsetEnd((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (type.equals("red")) {
+				current.setRed((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (type.equals("green")) {
+				current.setGreen((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (type.equals("blue")){
+				current.setBlue((new Integer(node.getNodeValue()).intValue()));
+			}
+			else if (type.equals("text")) {
+				current.addTextAttr(node.getNodeValue());
+			}
+		}
+	}
+	
+	private void processVBNode(PosColAttribute vbAttr, Node node){
+		if (node.getNodeType() == Node.ELEMENT_NODE){
+			NodeList children = node.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+				processVBNode(vbAttr, children.item(i));
+			}
+		}
+		else if (node.getNodeType() == Node.TEXT_NODE){
+			String type = node.getParentNode().getNodeName();
+				
+			if (type.equals("startOffset")){
 				vbAttr.setStartOffset((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals("endOffset")){ //$NON-NLS-1$
-				System.out.println(node.getNodeValue());
-				//current.setJimple_offset_end((new Integer(node.getNodeValue()).intValue()));
+			else if (type.equals("endOffset")){ 
 				vbAttr.setEndOffset((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals("red")){
+			else if (type.equals("red")) {
 				vbAttr.setRed((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals("green")){
+			else if (type.equals("green")) {
 				vbAttr.setGreen((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals("blue")){
+			else if (type.equals("blue")){
 				vbAttr.setBlue((new Integer(node.getNodeValue()).intValue()));
 			}
-			else if (node.getParentNode().getNodeName().equals("text")) {
-			//System.out.println(node.getNodeValue());
-				current.addTextAttr(node.getNodeValue());
-				//System.out.println("just before add "+current.java_ln+" "+current.jimple_ln+" "+current.text);
-				//getAttributes().add(current);
-				//System.out.println("in attrList "+getAttributes().capacity()+"size: "+getAttributes().size()); //$NON-NLS-1$ //$NON-NLS-2$
+		
+		}
+	}
+	
+	private void processLinkNode(LinkAttribute la, Node node){
+		
+		if (node.getNodeType() == Node.ELEMENT_NODE){
+			NodeList children = node.getChildNodes();
+			for (int i = 0; i < children.getLength(); i++) {
+				processLinkNode(la, children.item(i));
 			}
-		}	
-		else {
-			//System.out.println(node.getNodeName()+node.getNodeType());
+		}
+		else if (node.getNodeType() == Node.TEXT_NODE){
+			String type = node.getParentNode().getNodeName();
+			if (type.equals("link")){
+				la.setLink((new Integer(node.getNodeValue())).intValue());	
+			}
+			else if (type.equals("link_label")){
+				la.setLabel(node.getNodeValue());
+			}
+			else if (type.equals("className")){
+				la.setClassName(node.getNodeValue());
+			}
 		}
 	}
 	

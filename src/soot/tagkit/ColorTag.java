@@ -26,6 +26,8 @@
 
 package soot.tagkit;
 
+import soot.*;
+
 public class ColorTag implements Tag
 {
     /* it is a value representing red. */
@@ -35,12 +37,67 @@ public class ColorTag implements Tag
     /* it is a value representing blue. */
     private int blue;
     
-    public ColorTag(int r, int g, int b)
+    public static final int RED = 0;
+	public static final int GREEN = 1;
+	public static final int YELLOW = 2;
+	public static final int BLUE = 3;
+	public static final int ORANGE = 4;
+	public static final int PURPLE = 5;
+	
+	public ColorTag(int r, int g, int b)
     {
 		red = r;
 		green = g;
 		blue = b;
     }
+
+	public ColorTag(int color){
+		G.v().out.println("color: "+color);
+		switch (color) {
+			case RED: {
+				red = 255;
+				green = 0;
+				blue = 0;
+				break;
+			}
+			case GREEN: {
+				red = 45;
+				green = 255;
+				blue = 84;
+				break;
+			}
+			case YELLOW: {
+				red = 255;
+				green = 248;
+				blue = 35;
+				break;
+			}
+			case BLUE: {
+				red = 174;
+				green = 210;
+				blue = 255;
+				break;
+			}
+			case ORANGE: {
+				red = 255;
+				green = 163;
+				blue = 0;
+				break;
+			}
+			case PURPLE: {
+				red = 255;
+				green = 210;
+				blue = 255;
+				break;
+			}
+			default: {
+				red = 220;
+				green = 220;
+				blue = 220;
+				break;
+			}
+		}
+	}
 
 	public int getRed(){
 		return red;

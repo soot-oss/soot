@@ -22,6 +22,7 @@ import java.util.*;
 
 import org.eclipse.jface.text.*;
 import org.eclipse.swt.custom.StyleRange;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.*;
@@ -40,19 +41,26 @@ public class SootAttributesJimpleColorer {
 		Iterator it = handler.getAttrList().iterator();
 		while (it.hasNext()) {
 			SootAttribute sa = (SootAttribute)it.next();
+			if ((sa.getRed() == 0) && (sa.getGreen() == 0) && (sa.getBlue() == 0)){
+				// no color set
+			}
+			else {
+				setAttributeTextColor(sa.getJimple_ln(), sa.getJimpleOffsetStart()+1, sa.getJimpleOffsetEnd()+1, sa.getRGBColor());
+			}
 			if (sa.getValueAttrs() != null){
 				Iterator valIt = sa.getValueAttrs().iterator();
 				while (valIt.hasNext()){
-					ValueBoxAttribute vba = (ValueBoxAttribute)valIt.next();
+					PosColAttribute vba = (PosColAttribute)valIt.next();
 					if ((vba.getRed() == 0) && (vba.getGreen() == 0) && (vba.getBlue() == 0)){
 						// no color set	
 					}
 					else {
-						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset(), vba.getEndOffset(), vba.getRGBColor());
+						setAttributeTextColor(sa.getJimple_ln(), vba.getStartOffset()+1, vba.getEndOffset()+1, vba.getRGBColor());
 					}
 				}
 			
 			}
+			
 			
 		}
 					
@@ -76,6 +84,8 @@ public class SootAttributesJimpleColorer {
 		System.out.println("length: "+(end-start));
 		StyleRange sr = new StyleRange((lineOffset + start - 1	), (end - start), colorManager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT), colorManager.getColor(colorKey));
 		tp.addStyleRange(sr);
+		Color c = tp.getFirstStyleRange().background;
+		System.out.println("default background color is: "+c.getRed()+" "+c.getGreen()+" "+c.getBlue());
 		final TextPresentation newPresentation = tp;
 		if (getViewer() == null){
 			System.out.println("viewer is null");
@@ -91,6 +101,14 @@ public class SootAttributesJimpleColorer {
 					getViewer().changeTextPresentation(newPresentation, false);
 				};
 			});
+			//display.asyncExec( new Runnable() {
+			//	public void run() {
+					//((JimpleEditor)getEditor()).getViewer().setTextColor(colorManager.getColor(IJimpleColorConstants.JIMPLE_ATTRIBUTE_GOOD), 0, 10, false);
+					//((JimpleEditor)getEditor()).getViewer().changeTextPresentation(tp, false);
+			//		System.out.println("about to run change text presentation");
+					tp.clear();
+			//	};
+			//});
 		}
 	}
 	

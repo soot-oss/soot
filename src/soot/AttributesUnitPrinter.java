@@ -29,10 +29,24 @@ public class AttributesUnitPrinter {
 
     private int startOffset;
     private int endOffset;
-    private int endLn;
+	private int startStmtOffset;
+    private int startLn;
+	private int currentLn;
     private int lastNewline;
     private UnitPrinter printer;
     
+	public AttributesUnitPrinter( int currentLnNum ) {
+		this.currentLn = currentLnNum;
+	}
+	public void startUnit( Unit u ) {
+		startLn = currentLn;
+		startStmtOffset = output().length() - lastNewline;
+	}
+	public void endUnit( Unit u ) {
+		int endStmtOffset = output().length() - lastNewline;
+		u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
+		u.addTag( new PositionTag(startStmtOffset, endStmtOffset) );
+	}
     public void startValueBox( ValueBox u ) {
         startOffset = output().length() - lastNewline;
     }
@@ -42,13 +56,13 @@ public class AttributesUnitPrinter {
     }
 
     public void setEndLn(int ln){
-        endLn = ln;
+        currentLn = ln;
     }
     public int getEndLn() {
-        return endLn;
+        return currentLn;
     }
     public void newline() { 
-        endLn++;
+        currentLn++;
         lastNewline = output().length();
     }
     private StringBuffer output() {

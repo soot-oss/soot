@@ -37,7 +37,7 @@ public class CHAOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Verbose --  */
+    /** Verbose -- Print statistics about the resulting call graph */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
     }

@@ -3,9 +3,6 @@ package ca.mcgill.sable.soot.attributes;
 
 import java.util.HashMap;
 import java.util.Iterator;
-
-//import org.eclipse.jface.text.*;
-//import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.MarkerUtilities;
@@ -80,17 +77,6 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			}
 		
 		
-			/*SootAttributeFilesReader safr = new SootAttributeFilesReader();
-			AttributeDomProcessor adp = safr.readFile(createAttrFileName());
-			if (adp != null) {
-				//System.out.println(adp.getAttributes().size());
-				setAttrsHandler(new SootAttributesHandler());
-				getAttrsHandler().setAttrList(adp.getAttributes());
-				//System.out.println(adp.getAttributes().size());
-				//getAttrsHandler().printAttrs();
-				//addSootAttributeMarkers();
-				
-			}*/
 			computeAttributes();
 			addSootAttributeMarkers();
 		}
@@ -107,6 +93,7 @@ public class SootAttributesJavaHover extends AbstractSootAttributesHover impleme
 			//System.out.println(adp.getAttributes().size());
 			//getAttrsHandler().printAttrs();
 			//addSootAttributeMarkers();
+			SootPlugin.getDefault().getManager().addToFileWithAttributes((IFile)getRec(), getAttrsHandler());
 		}
 	}
 	private String createAttrFileName() {

@@ -13,6 +13,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.ITextListener;
 import org.eclipse.jface.text.TextEvent;
 
+import ca.mcgill.sable.soot.attributes.SootAttributesHandler;
+
 
 
 
@@ -45,7 +47,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	private static final int CHANGED_BIT = 0;
 	
 	
-	//private HashMap projects;
+	private HashMap filesWithAttributes;
 	private HashMap changedResources;
 	
 	public SootResourceManager() {
@@ -176,5 +178,32 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 		changedResources = map;
 	}
 	
+	public void addToFileWithAttributes(IFile file, SootAttributesHandler handler){
+		if (getFilesWithAttributes() == null){
+			setFilesWithAttributes(new HashMap());
+		}
+		getFilesWithAttributes().put(file, handler);
+	}
 	
+	public SootAttributesHandler getAttributesHandlerForFile(IFile file){
+		if (getFilesWithAttributes() == null) {
+			return null;
+		} 
+		else return (SootAttributesHandler)getFilesWithAttributes().get(file);
+	}
+	
+	/**
+	 * @return
+	 */
+	public HashMap getFilesWithAttributes() {
+		return filesWithAttributes;
+	}
+
+	/**
+	 * @param map
+	 */
+	public void setFilesWithAttributes(HashMap map) {
+		filesWithAttributes = map;
+	}
+
 }

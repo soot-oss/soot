@@ -1,6 +1,7 @@
 package soot;
 
 import soot.tagkit.*;
+import soot.util.*;
 import java.util.*;
 import java.io.*;
 
@@ -60,23 +61,7 @@ public class XMLAttributesPrinter {
 			startPrintAttribute();
 			while (mTags.hasNext()){
 				Tag t = (Tag)mTags.next();
-				if (t instanceof LineNumberTag) {
-					printJavaLnAttr((new Integer(((LineNumberTag)t).toString())).intValue());
-				}
-				else if (t instanceof JimpleLineNumberTag) {
-					  printJimpleLnAttr((new Integer(((JimpleLineNumberTag)t).toString())).intValue());
-				}
-				else if (t instanceof StringTag) {
-					  
-					  printTextAttr(formatForXML(((StringTag)t).toString()));
-				}
-				else {
-					if (!t.toString().equals("[Unknown]")){
-				    	printTextAttr(t.toString());
-				  	}
-					
-				}
-				
+				printAttributeTag(t);
 			}
 			endPrintAttribute();
 
@@ -89,21 +74,7 @@ public class XMLAttributesPrinter {
 				startPrintAttribute();
 				while (itTags.hasNext()) {
 			        	Tag t = (Tag)itTags.next();
-					if (t instanceof LineNumberTag) {
-					  printJavaLnAttr((new Integer(((LineNumberTag)t).toString())).intValue());
-					}
-					else if (t instanceof JimpleLineNumberTag) {
-					  printJimpleLnAttr((new Integer(((JimpleLineNumberTag)t).toString())).intValue());
-					}
-					else if (t instanceof StringTag) {
-					  
-					  printTextAttr(formatForXML(((StringTag)t).toString()));
-					}
-					else {
-					  //if (!t.toString().equals("[Unknown]")){
-						printTextAttr(t.toString());
-					  //}
-					}
+					printAttributeTag(t);
 				}
 				Iterator valBoxIt = u.getUseAndDefBoxes().iterator();
 				while (valBoxIt.hasNext()){
@@ -112,13 +83,7 @@ public class XMLAttributesPrinter {
 					Iterator tagsIt = vb.getTags().iterator(); 
 					while (tagsIt.hasNext()) {
 						Tag t = (Tag)tagsIt.next();
-						if (t instanceof PositionTag){
-							printPositionAttr(((PositionTag)t).getStartOffset(), ((PositionTag)t).getEndOffset());
-						}
-						if (t instanceof ColorTag){
-							ColorTag ct = (ColorTag)t;
-							printColorAttr(ct.getRed(), ct.getGreen(), ct.getBlue());
-						}
+						printAttributeTag(t);
 					}
 					endPrintValBoxAttr();
 				}
@@ -131,6 +96,46 @@ public class XMLAttributesPrinter {
 	
 	FileOutputStream streamOut = null;
 	PrintWriter writerOut = null;
+	
+	private void printAttributeTag(Tag t) {
+		if (t instanceof LineNumberTag) {
+			printJavaLnAttr((new Integer(((LineNumberTag)t).toString())).intValue());
+		}
+		else if (t instanceof JimpleLineNumberTag) {
+			printJimpleLnAttr((new Integer(((JimpleLineNumberTag)t).toString())).intValue());
+		}
+		else if (t instanceof LinkTag) {
+			LinkTag lt = (LinkTag)t;
+			Host h = lt.getLink();
+			printLinkAttr(formatForXML(lt.toString()), getJimpleLnOfHost(h), lt.getClassName());
+		}
+		else if (t instanceof StringTag) {
+			printTextAttr(formatForXML(((StringTag)t).toString()));
+		}
+		else if (t instanceof PositionTag){
+			PositionTag pt = (PositionTag)t;
+			printPositionAttr(pt.getStartOffset(), pt.getEndOffset());
+		}
+		else if (t instanceof ColorTag){
+			ColorTag ct = (ColorTag)t;
+			printColorAttr(ct.getRed(), ct.getGreen(), ct.getBlue());
+		}
+		else {
+			printTextAttr(t.toString());
+		}
+								
+	}
+	
+	private int getJimpleLnOfHost(Host h){
+		Iterator it = h.getTags().iterator();
+		while (it.hasNext()){
+			Tag t = (Tag)it.next();
+			if (t instanceof JimpleLineNumberTag) {
+				return ((JimpleLineNumberTag)t).getStartLineNumber();
+			}
+		}
+		return 0;
+	}
 	
 	private void startPrintAttribute(){
 		writerOut.println("<attribute>");
@@ -146,6 +151,14 @@ public class XMLAttributesPrinter {
 
 	private void printTextAttr(String text){
 		writerOut.println("<text>"+text+"</text>");
+	}
+	
+	private void printLinkAttr(String label, int link, String className){
+		writerOut.println("<link_attribute>");
+		writerOut.println("<link_label>"+label+"</link_label>");
+		writerOut.println("<link>"+link+"</link>");
+		writerOut.println("<className>"+className+"</className>");
+		writerOut.println("</link_attribute>");
 	}
 
 	private void startPrintValBoxAttr(){
@@ -196,8 +209,8 @@ public class XMLAttributesPrinter {
 	}
 
 	private String  formatForXML(String in) {
-		in = in.replaceAll("<", "&lt;");
-		in = in.replaceAll(">", "&gt;");
+		in = StringTools.replaceAll(in, "<", "&lt;");
+		in = StringTools.replaceAll(in, ">", "&gt;");
 		return in;
 	}
 

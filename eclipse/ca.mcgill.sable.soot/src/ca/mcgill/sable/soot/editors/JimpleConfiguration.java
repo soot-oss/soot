@@ -5,6 +5,7 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.TextAttribute;
 
+import org.eclipse.jface.text.contentassist.*;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -89,6 +90,11 @@ public class JimpleConfiguration extends SourceViewerConfiguration {
 		return new SootAttributesJimpleHover(getEditor());
 	}
 
+	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer){
+		IContentAssistant ca = new ContentAssistant();
+		ca.install(sourceViewer);
+		return ca;
+	}
 	/**
 	 * Returns the editor.
 	 * @return JimpleEditor

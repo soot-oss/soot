@@ -14,7 +14,6 @@ public class CallGraphTagger extends BodyTransformer {
 	protected void internalTransform(
 			Body b, String phaseName, Map options)
 	{
-		//G.v().out.println("Running: "+b.getMethod());
 		
 		if (Scene.v().hasCallGraph()) {
 			CallGraph cg = Scene.v().getCallGraph();
@@ -30,10 +29,10 @@ public class CallGraphTagger extends BodyTransformer {
 				while (edges.hasNext()){
 					Edge e = (Edge)edges.next();
 					SootMethod m = e.tgt();
-					//G.v().out.println("Target Method: "+m.toString());
-					s.addTag(new StringTag("CallGraph: Type: "+e.typeToString(e.type())+" Target Method: "+m.toString()));
+					s.addTag(new LinkTag("CallGraph: Type: "+e.typeToString(e.type())+" Target Method: "+m.toString(), m, m.getDeclaringClass().getName()));
+					
 				}
-			
+					//s.addTag(new ColorTag(ColorTag.ORANGE));			
 			}
 
 			SootMethod m = b.getMethod();
@@ -41,8 +40,7 @@ public class CallGraphTagger extends BodyTransformer {
 			while (callerEdges.hasNext()){
 				Edge callEdge = (Edge)callerEdges.next();
 				SootMethod methodCaller = callEdge.src();			
-				//G.v().out.println("Source Method: "+methodCaller.toString());
-				m.addTag(new StringTag("CallGraph: Source Type: "+callEdge.typeToString(callEdge.type())+" Source Method: "+methodCaller.toString()));
+				m.addTag(new LinkTag("CallGraph: Source Type: "+callEdge.typeToString(callEdge.type())+" Source Method: "+methodCaller.toString(), methodCaller, methodCaller.getDeclaringClass().getName()));
 			}
 		}
 		else {

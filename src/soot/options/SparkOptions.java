@@ -37,137 +37,132 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Verbose --  */
+    /** Verbose -- Print detailed information about the execution of Spark */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
     }
     
-    /** Ignore Types Entirely --  */
+    /** Ignore Types Entirely -- Make Spark completely ignore declared types of variables */
     public boolean ignore_types() {
         return soot.PhaseOptions.getBoolean( options, "ignore-types" );
     }
     
-    /** Force Garbages Collections --  */
+    /** Force Garbages Collections -- Force garbage collection for measuring memory usage */
     public boolean force_gc() {
         return soot.PhaseOptions.getBoolean( options, "force-gc" );
     }
     
-    /** Pre Jimplify --  */
+    /** Pre Jimplify -- Jimplify all methods before starting Spark */
     public boolean pre_jimplify() {
         return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
     }
     
-    /** VTA --  */
+    /** VTA -- Emulate Variable Type Analysis */
     public boolean vta() {
         return soot.PhaseOptions.getBoolean( options, "vta" );
     }
     
-    /** RTA --  */
+    /** RTA -- Emulate Rapid Type Analysis */
     public boolean rta() {
         return soot.PhaseOptions.getBoolean( options, "rta" );
     }
     
-    /** Field Based --  */
+    /** Field Based -- Use a field-based rather than field-sensitive representation */
     public boolean field_based() {
         return soot.PhaseOptions.getBoolean( options, "field-based" );
     }
     
-    /** Types For Sites --  */
+    /** Types For Sites -- Represent objects by their actual type rather than allocation site */
     public boolean types_for_sites() {
         return soot.PhaseOptions.getBoolean( options, "types-for-sites" );
     }
     
-    /** Merge String Buffer --  */
+    /** Merge String Buffer -- Represent all StringBuffers as one object */
     public boolean merge_stringbuffer() {
         return soot.PhaseOptions.getBoolean( options, "merge-stringbuffer" );
     }
     
-    /** Simulate Natives --  */
+    /** Simulate Natives -- Simulate effects of native methods in standard class library */
     public boolean simulate_natives() {
         return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
     }
     
-    /** Simple Edges Bidirectional --  */
+    /** Simple Edges Bidirectional -- Equality-based analysis between variable nodes */
     public boolean simple_edges_bidirectional() {
         return soot.PhaseOptions.getBoolean( options, "simple-edges-bidirectional" );
     }
     
-    /** On Fly Call Graph --  */
+    /** On Fly Call Graph -- Build call graph as receiver types become known */
     public boolean on_fly_cg() {
         return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
     }
     
-    /** Parms As Fields --  */
+    /** Parms As Fields -- Represent method parameters as fields of this */
     public boolean parms_as_fields() {
         return soot.PhaseOptions.getBoolean( options, "parms-as-fields" );
     }
     
-    /** Returns As Fields --  */
+    /** Returns As Fields -- Represent method return values as fields of this */
     public boolean returns_as_fields() {
         return soot.PhaseOptions.getBoolean( options, "returns-as-fields" );
     }
     
-    /** All Static Initializers Reachable --  */
-    public boolean all_clinit() {
-        return soot.PhaseOptions.getBoolean( options, "all-clinit" );
-    }
-    
-    /** Simplify Offline --  */
+    /** Simplify Offline -- Collapse single-entry subgraphs of the PAG */
     public boolean simplify_offline() {
         return soot.PhaseOptions.getBoolean( options, "simplify-offline" );
     }
     
-    /** Simplify SCCs --  */
+    /** Simplify SCCs -- Collapse strongly-connected components of the PAG */
     public boolean simplify_sccs() {
         return soot.PhaseOptions.getBoolean( options, "simplify-sccs" );
     }
     
-    /** Ignore Types For SCCs --  */
+    /** Ignore Types For SCCs -- Ignore declared types when determining node equivalence for SCCs */
     public boolean ignore_types_for_sccs() {
         return soot.PhaseOptions.getBoolean( options, "ignore-types-for-sccs" );
     }
     
-    /** Dump HTML --  */
+    /** Dump HTML -- Dump pointer assignment graph to HTML for debugging */
     public boolean dump_html() {
         return soot.PhaseOptions.getBoolean( options, "dump-html" );
     }
     
-    /** Dump PAG --  */
+    /** Dump PAG -- Dump pointer assignment graph for other solvers */
     public boolean dump_pag() {
         return soot.PhaseOptions.getBoolean( options, "dump-pag" );
     }
     
-    /** Dump Solution --  */
+    /** Dump Solution -- Dump final solution for comparison with other solvers */
     public boolean dump_solution() {
         return soot.PhaseOptions.getBoolean( options, "dump-solution" );
     }
     
-    /** Topological Sort --  */
+    /** Topological Sort -- Sort variable nodes in dump */
     public boolean topo_sort() {
         return soot.PhaseOptions.getBoolean( options, "topo-sort" );
     }
     
-    /** Dump Types --  */
+    /** Dump Types -- Include declared types in dump */
     public boolean dump_types() {
         return soot.PhaseOptions.getBoolean( options, "dump-types" );
     }
     
-    /** Class Method Var --  */
+    /** Class Method Var -- In dump, label variables by class and method */
     public boolean class_method_var() {
         return soot.PhaseOptions.getBoolean( options, "class-method-var" );
     }
     
-    /** Dump Answer --  */
+    /** Dump Answer -- Dump computed reaching types for comparison with other solvers */
     public boolean dump_answer() {
         return soot.PhaseOptions.getBoolean( options, "dump-answer" );
     }
     
-    /** Add Tags --  */
+    /** Add Tags -- Output points-to results in tags for viewing with the Jimple */
     public boolean add_tags() {
         return soot.PhaseOptions.getBoolean( options, "add-tags" );
     }
     
-    /** Calculate Set Mass --  */
+    /** Calculate Set Mass -- Calculate statistics about points-to set sizes */
     public boolean set_mass() {
         return soot.PhaseOptions.getBoolean( options, "set-mass" );
     }
@@ -178,7 +173,7 @@ public class SparkOptions
     public static final int propagator_merge = 4;
     public static final int propagator_alias = 5;
     public static final int propagator_none = 6;
-    /** Propagator --  */
+    /** Propagator -- Select algorihm to use for propagation */
     public int propagator() {
         String s = soot.PhaseOptions.getString( options, "propagator" );
         
@@ -209,7 +204,7 @@ public class SparkOptions
     public static final int set_impl_array = 4;
     public static final int set_impl_double = 5;
     public static final int set_impl_shared = 6;
-    /** Set Implementation --  */
+    /** Set Implementation -- Select points-to set implementation */
     public int set_impl() {
         String s = soot.PhaseOptions.getString( options, "set-impl" );
         
@@ -239,7 +234,7 @@ public class SparkOptions
     public static final int double_set_old_hybrid = 3;
     public static final int double_set_old_array = 4;
     public static final int double_set_old_shared = 5;
-    /** Double Set Old --  */
+    /** Double Set Old -- Select implementation of points-to set for old part of double set */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString( options, "double-set-old" );
         
@@ -266,7 +261,7 @@ public class SparkOptions
     public static final int double_set_new_hybrid = 3;
     public static final int double_set_new_array = 4;
     public static final int double_set_new_shared = 5;
-    /** Double Set New --  */
+    /** Double Set New -- Select implementation of points-to set for new part of double set */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString( options, "double-set-new" );
         

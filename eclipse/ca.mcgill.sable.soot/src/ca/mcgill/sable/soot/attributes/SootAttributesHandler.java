@@ -28,7 +28,7 @@ public class SootAttributesHandler {
 	private String fileName;
 	private HashMap projList;
 
-	private static final String NEWLINE = "\n";
+	private static final String NEWLINE = "\n\r";
 	
 	public SootAttributesHandler() {
 				
@@ -37,32 +37,9 @@ public class SootAttributesHandler {
 	public void setAttrList(Vector attrList) {
 		this.attrList = attrList;
 	}
-	
-	/*public void setAttrListForFilename(Vector attrList, String filename, String project) {
-		
-		System.out.println("Project: "+project+" filename: "+filename);
-		if (attrList == null ) {
-			System.out.println("attrList is null");
-		}
-		System.out.println(attrList.capacity());
-		Iterator it = attrList.iterator();
-		System.out.println("it is: "+it);
-		
-		while (it.hasNext()) {
-			System.out.println(it.next().toString());
-			//String temp = (String)it.next();
-			System.out.println("in while loop");
-			//System.out.println(temp);
-		}
-		
-		HashMap temp = new HashMap();
-		temp.put(filename, attrList);
-		
-		getProjList().put(project, temp);
-		
-	}*/
 
-	public void printAttrs() {
+
+	/*public void printAttrs() {
 		System.out.println(getAttrList());
 		if (getAttrList() == null) return;
 		
@@ -109,7 +86,7 @@ public class SootAttributesHandler {
 				}
 			}
 		}
-	}
+	}*/
 	
 	public String getJimpleAttributes(int lnNum) {
 		Iterator it = getAttrList().iterator();
@@ -128,29 +105,17 @@ public class SootAttributesHandler {
 		return result;
 	}
 	
-	/*public String getJimpleAttributes(String proj, String filename, int lineNum) {
-		
-		System.out.println("Project: "+proj+" Filename: "+filename);
-		if (getProjList().get(proj) == null) {
-			return null;
+	public ArrayList getJimpleLinks(int lnNum){
+		Iterator it = getAttrList().iterator();
+		ArrayList list = new ArrayList();
+		while (it.hasNext()){
+			SootAttribute sa = (SootAttribute)it.next();
+			if (sa.attrForJimpleLn(lnNum)){
+				list = sa.getAllLinkAttrs();
+			}
 		}
-		if (((HashMap)getProjList().get(proj)).get(filename) == null) {
-			return null;
-		}
-		else {
-			Vector attrs = (Vector)((HashMap)getProjList().get(proj)).get(filename);
-			Iterator it = attrs.iterator();
-			StringBuffer sb = new StringBuffer();
-			while (it.hasNext()) {
-				SootAttribute sa = (SootAttribute)it.next();
-				if (sa.attrForJimpleLn(lineNum)) {
-					sb.append(sa.getText());
-					sb.append(NEWLINE);
-				}
-			}	
-			return sb.toString();
-		}
-	}*/
+		return list;
+	}
 	
 	public String getJavaAttribute(int lnNum) {
 		Iterator it = getAttrList().iterator();
@@ -166,31 +131,6 @@ public class SootAttributesHandler {
 		return sb.toString();
 	}
 
-	
-	/*public String getJavaAttribute(String proj, String filename, int lineNum) {
-		System.out.println("Project: "+proj+" Filename: "+filename);
-		if (getProjList().get(proj) == null) {
-			return null;
-		}
-		if (((HashMap)getProjList().get(proj)).get(filename) == null) {
-			return null;
-		}
-		else {
-			Vector attrs = (Vector)((HashMap)getProjList().get(proj)).get(filename);
-			Iterator it = attrs.iterator();
-			StringBuffer sb = new StringBuffer();
-			while (it.hasNext()) {
-				SootAttribute sa = (SootAttribute)it.next();
-				if (sa.attrForJavaLn(lineNum)) {
-					sb.append(sa.getText());
-					sb.append(NEWLINE);
-				}
-			}	
-			return sb.toString();
-		}
-	}*/
-
-	
 
 	/**
 	 * Returns the projList.

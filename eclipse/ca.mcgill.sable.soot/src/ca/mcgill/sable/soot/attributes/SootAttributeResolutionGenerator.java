@@ -22,10 +22,10 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator2;
 
-
+// not used
 public class SootAttributeResolutionGenerator
 	implements IMarkerResolutionGenerator2 {
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)
 	 */
@@ -41,7 +41,9 @@ public class SootAttributeResolutionGenerator
 	public IMarkerResolution[] getResolutions(IMarker marker) {
 		// TODO Auto-generated method stub
 		//System.out.println("in getResolution");
-		return new IMarkerResolution[] {new FindMethodResolver()};
+		
+		return new IMarkerResolution[] {new FindMethodResolver(marker)};
+		//return null;
 	}
 
 }
