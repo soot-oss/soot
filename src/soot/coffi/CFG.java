@@ -207,9 +207,11 @@ public class CFG {
 	for (int i=0; i<ca.exception_table.length; i++)
 	{
 	    exception_table_entry ete = ca.exception_table[i];
-	    G.v().out.println(ete.start_inst.label + " \t " 
-			       + ete.end_inst.label + " \t "
-			       + ete.handler_inst.label);
+	    G.v().out.println((ete.start_inst == null ? "null" :
+			       Integer.toString(ete.start_inst.label)) + " \t " + 
+			      (ete.end_inst == null ? "null" :
+			       Integer.toString(ete.end_inst.label)) + " \t " +
+			      ete.handler_inst.label);
 	}
     }
     // Constructs the actual control flow graph. Assumes the hash table
@@ -733,26 +735,51 @@ public class CFG {
 
 	    LinkedList newentries = new LinkedList();
 
+	    int orig_start_of_subr = headbefore.next.originalIndex; // inclusive
+	    int orig_end_of_subr = ret.originalIndex; // again, inclusive
+
 	    for (int i=0; i<ca.exception_table_length; i++) 
 	    {
 		exception_table_entry etentry =
 		    ca.exception_table[i];
 
-		if ( insnmap.containsKey(etentry.start_inst))
-		{
-		    exception_table_entry newone 
-			= new exception_table_entry();
-		    newone.start_inst = (Instruction)insnmap.get(etentry.start_inst);
-       		    if (etentry.end_inst == null)
-			newone.end_inst = null;
-		    else
+		int orig_start_of_trap = etentry.start_pc; // inclusive
+		int orig_end_of_trap = etentry.end_pc; // exclusive
+		if ( orig_start_of_trap < orig_end_of_subr &&
+		     orig_end_of_trap > orig_start_of_subr) {
+		    // At least a portion of the cloned subroutine is trapped.
+		    exception_table_entry newone = 
+			new exception_table_entry();
+		    if (orig_start_of_trap <= orig_start_of_subr) {
+			newone.start_inst = headbefore.next;
+		    } else {
+			newone.start_inst = (Instruction)insnmap.get(etentry.start_inst);
+		    }
+		    if (orig_end_of_trap > orig_end_of_subr) {
+			newone.end_inst = null; // Representing the insn after
+						// the last instruction in the
+						// subr; we need to fix it if
+						// we inline another subr.
+		    } else {
 			newone.end_inst = (Instruction)insnmap.get(etentry.end_inst);
+		    }
 
 		    newone.handler_inst = (Instruction)insnmap.get(etentry.handler_inst);
 		    if (newone.handler_inst == null)
 			newone.handler_inst = etentry.handler_inst;
 
+		    // We can leave newone.start_pc == 0 and newone.end_pc == 0.
+		    // since that cannot overlap the range of any other
+		    // subroutines that get inlined later.
+
 		    newentries.add(newone);
+		}
+		// Finally, fix up the old entry if its protected area
+		// ran to the end of the method we have just lengthened:
+		// patch its end marker to be the first
+		// instruction in the subroutine we've just inlined.
+		if (etentry.end_inst == null) {
+		    etentry.end_inst = headbefore.next;
 		}
 	    }
 
@@ -1461,6 +1488,8 @@ public class CFG {
             }
         }
 
+        jimpleTargetFixup();  // fix up jump targets
+
         /*
         // Print out basic blocks
         {
@@ -1485,8 +1514,6 @@ public class CFG {
         }
         */
 
-        jimpleTargetFixup();  // fix up jump targets
-
         // Insert beginCatch/endCatch statements for exception handling
         {
             Map targetToHandler = new HashMap();
@@ -1501,18 +1528,11 @@ public class CFG {
 		    codeAttribute.exception_table[i].handler_inst;
 
 		if(!instructionToFirstStmt.containsKey(startIns) ||
-		   !instructionToLastStmt.containsKey(endIns))
+		   (endIns != null && (!instructionToLastStmt.containsKey(endIns))))
                 {
 		    throw new RuntimeException("Exception range does not coincide with jimple instructions");
 		}
 
-		Stmt firstStmt = (Stmt) instructionToFirstStmt.get(startIns);
-		Stmt lastStmt;
-
-		// Determine the last stmt		
-		lastStmt = 
-		    (Stmt)units.getPredOf(instructionToLastStmt.get(endIns));
-		
 		if(!instructionToFirstStmt.containsKey(targetIns))
                 {
 		    throw new RuntimeException
@@ -1564,7 +1584,22 @@ public class CFG {
 
 		// Insert trap
 		{
-		    Stmt afterEndStmt = (Stmt)units.getSuccOf(lastStmt);
+		    Stmt firstStmt = (Stmt)instructionToFirstStmt.get(startIns);
+		    Stmt afterEndStmt;
+		    if (endIns == null) {
+			// A kludge which isn't really correct, but
+			// gets us closer to correctness (until we
+			// clean up the rest of Soot to properly
+			// represent Traps which extend to the end 
+			// of a method): if the protected code extends
+			// to the end of the method, use the last Stmt
+			// as the endUnit of the Trap, even though
+			// that will leave the last unit outside
+			// the protected area.
+			afterEndStmt = (Stmt) units.getLast();
+		    } else {
+			afterEndStmt = (Stmt) instructionToLastStmt.get(endIns);
+		    }
 
 		    Trap trap = Jimple.v().newTrap(exception, 
 						   firstStmt, 
@@ -1572,23 +1607,6 @@ public class CFG {
 						   newTarget);
 		    listBody.getTraps().add(trap);
 		}
-
-                    /*
-                    // Insert begincatch
-                    {
-                        Stmt beginCatchStmt = new BeginCatchStmt(exception, newTarget);
-                        int startIndex = stmtList.indexOf(firstStmt);
-
-                        stmtList.add(startIndex, beginCatchStmt);
-                    }
-
-                    // Insert endcatch
-                    {
-                        Stmt endCatchStmt = new EndCatchStmt(exception);
-                        int endIndex = stmtList.indexOf(lastStmt);
-
-                        stmtList.add(endIndex + 1, endCatchStmt);
-                    } */
 	    }
         }
 
