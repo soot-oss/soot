@@ -1,4 +1,5 @@
 package soot.dava.internal.SET;
+import soot.*;
 
 import java.io.*;
 import java.util.*;
@@ -328,7 +329,7 @@ public abstract class SETNode
     
     public void dump()
     {
-	dump( System.out);
+	dump( G.v().out);
     }
 
     public void dump( PrintStream out)
@@ -379,7 +380,7 @@ public abstract class SETNode
 	    Iterator bit = body.iterator();
 	    while (bit.hasNext())
 		if ((bit.next() instanceof AugmentedStmt) == false)
-		    System.out.println( "Error in body: " + getClass());
+		    G.v().out.println( "Error in body: " + getClass());
 
 	    Iterator cit = ((IterableSet) body2childChain.get( body)).iterator();
 	    while (cit.hasNext())

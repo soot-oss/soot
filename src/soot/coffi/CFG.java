@@ -112,7 +112,7 @@ public class CFG {
 		if (m.code_attr.attributes[i] 
 		    instanceof LineNumberTable_attribute)
 		{
-		    System.out.print(m.code_attr.attributes[i]);
+		    G.v().out.print(m.code_attr.attributes[i]);
 		}
 	    }
 	}
@@ -124,13 +124,13 @@ public class CFG {
 	BasicBlock b = this.cfg;
 	while ( b!= null )
 	{
-	    System.out.print(b.id +" -> ");
+	    G.v().out.print(b.id +" -> ");
 	    for (int i=0; i<b.succ.size(); i++)
 	    {
 		BasicBlock bs = (BasicBlock)b.succ.elementAt(i);
-		System.out.print(bs.id+" ");
+		G.v().out.print(bs.id+" ");
 	    }
-	    System.out.println();
+	    G.v().out.println();
 	    b = b.next;
 	}
     }
@@ -140,30 +140,30 @@ public class CFG {
 	BasicBlock b = this.cfg;
 	while ( b!= null )
 	{
-	    System.out.print(b.id +" <- ");
+	    G.v().out.print(b.id +" <- ");
 	    for (int i=0; i<b.pred.size(); i++)
 	    {
 		BasicBlock bs = (BasicBlock)b.pred.elementAt(i);
-		System.out.print(bs.id+" ");
+		G.v().out.print(bs.id+" ");
 	    }
-	    System.out.println();
+	    G.v().out.println();
 	    b = b.next;
 	}
     }
 
     private void printOneBasicBlock(BasicBlock b)
     {
-	System.out.println("Block "+b.id);
+	G.v().out.println("Block "+b.id);
 	
 	Instruction insn = b.head;
-	System.out.println(insn);
+	G.v().out.println(insn);
 	while (insn != b.tail && insn != null)
 	{
 	    insn = insn.next;
-	    System.out.println(insn);
+	    G.v().out.println(insn);
 	}
 
-	System.out.println();	
+	G.v().out.println();	
     }
 
     private void printBBHeadTail(BasicBlock fb)
@@ -171,8 +171,8 @@ public class CFG {
 	BasicBlock b = fb;
 	while (b != null)
 	{
-	    System.out.println(b.head);
-	    System.out.println(b.tail+"\n");
+	    G.v().out.println(b.head);
+	    G.v().out.println(b.tail+"\n");
 	    b = b.next;
 	}	
     }
@@ -192,7 +192,7 @@ public class CFG {
 	Instruction insn = method.instructions;
 	while (insn != null)
 	{
-	    System.out.println(insn);
+	    G.v().out.println(insn);
 	    insn = insn.next;
 	}
     }
@@ -201,12 +201,12 @@ public class CFG {
     {
 	Code_attribute ca = this.method.locate_code_attribute();
 	
-	System.out.println("\nException table :");
-	System.out.println("start\tend\thandler");
+	G.v().out.println("\nException table :");
+	G.v().out.println("start\tend\thandler");
 	for (int i=0; i<ca.exception_table.length; i++)
 	{
 	    exception_table_entry ete = ca.exception_table[i];
-	    System.out.println(ete.start_inst.label + " \t " 
+	    G.v().out.println(ete.start_inst.label + " \t " 
 			       + ete.end_inst.label + " \t "
 			       + ete.handler_inst.label);
 	}
@@ -294,9 +294,9 @@ public class CFG {
                  
 			    if (bb == null)
 			    {                 
-				System.out.println("Warning: "
+				G.v().out.println("Warning: "
 					       +"target of a branch is null");
-				System.out.println ( insn );
+				G.v().out.println ( insn );
 			    }
 			    else 
 			    {
@@ -324,7 +324,7 @@ public class CFG {
 					 ca.exception_table[i].handler_inst);
 	    if ( bb == null )
 	    {
-		System.out.println("Warning: No basic block found for" +
+		G.v().out.println("Warning: No basic block found for" +
 				   " start of exception handler code.");
 	    }
 	    else 
@@ -517,7 +517,7 @@ public class CFG {
 
 	if (unusual)
 	{
-	    System.out.println("Sorry, I cannot handle this method.");
+	    G.v().out.println("Sorry, I cannot handle this method.");
 	    return false;
 	}
 	
@@ -563,7 +563,7 @@ public class CFG {
 	    Instruction jsr    = (Instruction)jsrorder.get(i);
 	    Instruction astore = (Instruction)jsr2astore.get(jsr);
 	    Instruction ret    = (Instruction)astore2ret.get(astore);
-	    System.out.println("jsr"+jsr.label+"\t"
+	    G.v().out.println("jsr"+jsr.label+"\t"
 			       +"as"+astore.label+"\t"
 			       +"ret"+ret.label);
 	}
@@ -638,7 +638,7 @@ public class CFG {
 		insnmap.put(insn, newone);
 	    } catch (CloneNotSupportedException e)
 	    {
-		System.out.println("Error !");
+		G.v().out.println("Error !");
 	    }
 	    insn = insn.next;   
 	}
@@ -799,7 +799,7 @@ public class CFG {
 
 	Iterator it = invalidInsns.iterator();
 	while (it.hasNext()) {
-	    System.out.println(it.next());
+	    G.v().out.println(it.next());
 	}
 
 	// pruning exception table
@@ -831,14 +831,14 @@ public class CFG {
     private Hashtable replacedInsns = new Hashtable();
     private void dumpReplacedInsns()
     {
-	System.out.println("replaced table:");
+	G.v().out.println("replaced table:");
 	Set keys = replacedInsns.keySet();
 	Iterator keyIt = keys.iterator();
 	while (keyIt.hasNext())
 	{
 	    Object key = keyIt.next();
 	    Object value = replacedInsns.get(key);
-	    System.out.println(key + " ==> "+ value);
+	    G.v().out.println(key + " ==> "+ value);
 	}
     }
 
@@ -1135,7 +1135,7 @@ public class CFG {
 	Instruction insn = cfg.head;
 	while (insn != null)
 	{
-	    System.out.println(insn + " --> " + makeString(insn.succs));
+	    G.v().out.println(insn + " --> " + makeString(insn.succs));
 	    insn = insn.next;
 	}
     }
@@ -1340,10 +1340,10 @@ public class CFG {
                             visitedInstructions.add(s);
                             changedInstructions.add(s);
 
-                            // System.out.println("adding successor: " + s);
+                            // G.v().out.println("adding successor: " + s);
                         }
                         else {
-                            // System.out.println("considering successor: " + s);
+                            // G.v().out.println("considering successor: " + s);
                         
 							TypeStack newTypeStack,
                                 oldTypeStack = (TypeStack) instructionToTypeStack.get(s);
@@ -1364,14 +1364,14 @@ public class CFG {
                                 	newTypeStack = ret.typeStack.merge(oldTypeStack);
 								} catch (RuntimeException re)
 								{
-									System.out.println("Considering "+s);
+									G.v().out.println("Considering "+s);
 									throw re;
 								}
 							}
                             if(!newTypeStack.equals(oldTypeStack))
                             {
                                 changedInstructions.add(s);
-                                // System.out.println("requires a revisit: " + s);
+                                // G.v().out.println("requires a revisit: " + s);
                             }
 
                             instructionToTypeStack.put(s, newTypeStack);
@@ -1385,36 +1385,36 @@ public class CFG {
         {
             Instruction ins = firstInstruction;
 
-     //       System.out.println();
+     //       G.v().out.println();
 
             while(ins != null)
             {
                 TypeStack typeStack = (TypeStack) instructionToTypeStack.get(ins);
                 // TypeArray typeArray = (TypeArray) instructionToLocalArray.get(ins);
 /*
-                System.out.println("[TypeArray]");
-                typeArray.print(System.out);
-                System.out.println();
+                G.v().out.println("[TypeArray]");
+                typeArray.print(G.v().out);
+                G.v().out.println();
 
-                System.out.println("[TypeStack]");
-                typeStack.print(System.out);
-                System.out.println();
+                G.v().out.println("[TypeStack]");
+                typeStack.print(G.v().out);
+                G.v().out.println();
 
-                System.out.println(ins.toString());
+                G.v().out.println(ins.toString());
 */
 
                 ins = ins.next;
 /*
 
-                System.out.println();
-                System.out.println();
+                G.v().out.println();
+                G.v().out.println();
 */
 
             }
         }
 
 
-        // System.out.println("Producing Jimple code...");
+        // G.v().out.println("Producing Jimple code...");
 
         // Jimplify each statement
         {
@@ -1465,17 +1465,17 @@ public class CFG {
         {
             BasicBlock b = cfg;
 
-            System.out.println("Basic blocks for: " + jmethod.getName());
+            G.v().out.println("Basic blocks for: " + jmethod.getName());
 
             while(b != null)
             {
                 Instruction ins = b.head;
 
-                System.out.println();
+                G.v().out.println();
 
                 while(ins != null)
                 {
-                    System.out.println(ins.toString());
+                    G.v().out.println(ins.toString());
                     ins = ins.next;
                 }
 
@@ -2782,9 +2782,9 @@ public class CFG {
                     else
                         ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());	
 		    */
-		    System.out.println("Error :");
+		    G.v().out.println("Error :");
 		    for (int i=0; i<b.statements.size(); i++)
-			System.out.println(b.statements.get(i));
+			G.v().out.println(b.statements.get(i));
 		    
 		    throw new RuntimeException(b +" has "+b.succ.size()+" successors.");		    
                 }
@@ -2792,7 +2792,7 @@ public class CFG {
             else if (s instanceof IfStmt)
             {
                if (b.succ.size()!=2)
-                  System.out.println("How can an if not have 2 successors?");
+                  G.v().out.println("How can an if not have 2 successors?");
 
                if((BasicBlock)(b.succ.firstElement())==b.next)
                {
@@ -2891,7 +2891,7 @@ public class CFG {
 		    bbq.push(b);
 		    processTargetFixup(bbq);
 		    if (!bbq.isEmpty()) {
-			System.out.println("Error 2nd processing exception block.");
+			G.v().out.println("Error 2nd processing exception block.");
 			break;
 		    }
 		}
@@ -4574,11 +4574,11 @@ public class CFG {
                    params = new Value[args];
                 for (int j=args-1;j>=0;j--)
                 {
-                    /* System.out.println("BeforeTypeStack");
-                    typeStack.print(System.out);
+                    /* G.v().out.println("BeforeTypeStack");
+                    typeStack.print(G.v().out);
 
-                    System.out.println("AfterTypeStack");
-                    postTypeStack.print(System.out);
+                    G.v().out.println("AfterTypeStack");
+                    postTypeStack.print(G.v().out);
                     */
 
                    params[j] = Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex());

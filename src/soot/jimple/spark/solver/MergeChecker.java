@@ -64,7 +64,7 @@ public class MergeChecker {
                                 dst.getP2Set() ) ) continue;
                     FieldRefNode fr2 = dst.dot( fr.getField() );
                     if( fr2.getReplacement() != fr.getReplacement() ) {
-                        System.out.println( "Check failure: "
+                        G.v().out.println( "Check failure: "
                                 +fr+" should be merged with "+fr2 );
                     }
                 }
@@ -94,7 +94,7 @@ public class MergeChecker {
         if( !container.getP2Set().contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {
-            System.out.println( "Check failure: "+container+" does not have "+n
+            G.v().out.println( "Check failure: "+container+" does not have "+n
                     +"; upstream is "+upstream );
         }
     }

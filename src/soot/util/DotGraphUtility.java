@@ -27,6 +27,7 @@
 /* @author Feng Qian */
 
 package soot.util;
+import soot.*;
 
 import java.util.*;
 import java.io.*;
@@ -52,8 +53,8 @@ public class DotGraphUtility {
     }
 
     /*
-    System.out.println("before "+original);
-    System.out.println("after  "+(new String(newsrc)));
+    G.v().out.println("before "+original);
+    G.v().out.println("after  "+(new String(newsrc)));
     */
 
     return new String(newsrc);
@@ -80,8 +81,8 @@ public class DotGraphUtility {
     }
 
     /*
-    System.out.println("before "+original);
-    System.out.println("after  "+(new String(newsrc)));
+    G.v().out.println("before "+original);
+    G.v().out.println("after  "+(new String(newsrc)));
     */
 
     return new String(newsrc);    

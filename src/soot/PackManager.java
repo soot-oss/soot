@@ -296,7 +296,7 @@ public class PackManager {
     public boolean setPhaseOption( String phaseName, String option ) {
         Map optionMap = mapForPhase( phaseName );
         if( optionMap == null ) {
-            System.out.println( "Option "+option+" given for nonexistent"
+            G.v().out.println( "Option "+option+" given for nonexistent"
                     +" phase "+phaseName );
             return false;
         }

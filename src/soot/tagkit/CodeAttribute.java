@@ -129,7 +129,7 @@ public class CodeAttribute extends JasminAttribute
     public byte[] decode(String attr, Hashtable labelToPc)
     {
 	if (soot.Main.opts.verbose())
-	    System.out.println("[] JasminAttribute decode...");
+	    G.v().out.println("[] JasminAttribute decode...");
 
 	List attributeHunks = new LinkedList();
 	int attributeSize = 0;
@@ -193,7 +193,7 @@ public class CodeAttribute extends JasminAttribute
 	    throw new RuntimeException("Index does not euqal to attrubute size :"+index+" -- "+attributeSize);
 
 	if (soot.Main.opts.verbose())
-	    System.out.println("[] Jasmin.decode finished...");
+	    G.v().out.println("[] Jasmin.decode finished...");
 
 	return attributeValue;
     }

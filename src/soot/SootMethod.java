@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.tagkit.*;
 import soot.util.*;
@@ -299,7 +300,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable
                     + "; maybe you want to call c.setApplicationClass() on this class!");
 
         if (!hasActiveBody()) {
-            //	    System.out.println("Retrieving "+this.getSignature());
+            //	    G.v().out.println("Retrieving "+this.getSignature());
 
             setActiveBody(this.getBodyFromMethodSource("jb"));
             ms = null;

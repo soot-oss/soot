@@ -429,7 +429,7 @@ public class Block
         
 
         }  else 
-            System.out.println("No basic blocks found; must be interface class.");
+            G.v().out.println("No basic blocks found; must be interface class.");
 
         return strBuf.toString();
     }

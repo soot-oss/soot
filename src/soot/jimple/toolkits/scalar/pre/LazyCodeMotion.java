@@ -73,7 +73,7 @@ public class LazyCodeMotion extends BodyTransformer {
     String safe = PackManager.getString(options, "safe");
     boolean unroll = PackManager.getBoolean(options, "unroll");
 
-    if(Main.opts.verbose()) System.out.println("[" + b.getMethod().getName() +
+    if(Main.opts.verbose()) G.v().out.println("[" + b.getMethod().getName() +
                                           "] Performing Lazy Code Motion...");
 
     if (unroll) new LoopConditionUnroller().transform(b, phaseName + ".lcu");
@@ -152,7 +152,7 @@ public class LazyCodeMotion extends BodyTransformer {
     /* debug */
     /*
     {
-      System.out.println("========" + b.getMethod().getName());
+      G.v().out.println("========" + b.getMethod().getName());
       Iterator unitIt = unitChain.iterator();
       while (unitIt.hasNext()) {
 	Unit currentUnit = (Unit) unitIt.next();
@@ -164,14 +164,14 @@ public class LazyCodeMotion extends BodyTransformer {
         FlowSet earlySet = ((FlowSet)earliest.getFlowBefore(currentUnit));
 	FlowSet upSet = (FlowSet)upSafe.getFlowBefore(currentUnit);
 	FlowSet downSet = (FlowSet)downSafe.getFlowBefore(currentUnit);
-	System.out.println(currentUnit);
-        System.out.println(" rh: " + equiVal);
-        System.out.println(" up: " + upSet);
-	System.out.println(" do: " + downSet);
-        System.out.println(" is: " + notIsolatedSet);
-	System.out.println(" ea: " + earlySet);
-        System.out.println(" db: " + delaySet);
-        System.out.println(" la: " + latestSet);
+	G.v().out.println(currentUnit);
+        G.v().out.println(" rh: " + equiVal);
+        G.v().out.println(" up: " + upSet);
+	G.v().out.println(" do: " + downSet);
+        G.v().out.println(" is: " + notIsolatedSet);
+	G.v().out.println(" ea: " + earlySet);
+        G.v().out.println(" db: " + delaySet);
+        G.v().out.println(" la: " + latestSet);
       }
     }
     */
@@ -199,7 +199,7 @@ public class LazyCodeMotion extends BodyTransformer {
           Value insertValue = Jimple.cloneIfNecessary(equiVal.getValue());
           Unit firstComp = Jimple.v().newAssignStmt(helper, insertValue);
           unitChain.insertBefore(firstComp, currentUnit);          
-	  //	  System.out.print("x");
+	  //	  G.v().out.print("x");
         }
       }
     }
@@ -219,23 +219,23 @@ public class LazyCodeMotion extends BodyTransformer {
 	    try {
 	      ((AssignStmt)currentUnit).setRightOp(helper);
 	    } catch (RuntimeException e){
-	      System.out.println("Error on "+b.getMethod().getName());
-	      System.out.println(currentUnit.toString());
+	      G.v().out.println("Error on "+b.getMethod().getName());
+	      G.v().out.println(currentUnit.toString());
 
-	      System.out.println(latestSet);
+	      G.v().out.println(latestSet);
 	      
-	      System.out.println(notIsolatedSet);
+	      G.v().out.println(notIsolatedSet);
 
 	      throw e;
 	    }
            
-	    // System.out.print(".");
+	    // G.v().out.print(".");
           }
         }
       }
     }
     if(Main.opts.verbose())
-      System.out.println("[" + b.getMethod().getName() +
+      G.v().out.println("[" + b.getMethod().getName() +
                          "]     Lazy Code Motion done.");
   }
 }

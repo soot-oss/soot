@@ -80,7 +80,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
         sideEffect.newMethod( b.getMethod() );
 
         if(Main.opts.verbose())
-            System.out.println("[" + b.getMethod().getName() +
+            G.v().out.println("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions (naively)...");
 
         AvailableExpressions ae = // new SlowAvailableExpressions(b);
@@ -141,7 +141,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             }
         }
         if(Main.opts.verbose())
-            System.out.println("[" + b.getMethod().getName() +
+            G.v().out.println("[" + b.getMethod().getName() +
                      "]     Eliminating common subexpressions done!");
     }
 }

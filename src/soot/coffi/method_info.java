@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 import java.util.*;
 import java.io.*;
@@ -130,7 +131,7 @@ public class method_info {
     * @see ByteCode#showCode
     */
     void print(cp_info constant_pool[]) {
-      System.out.println(prototype(constant_pool));
+      G.v().out.println(prototype(constant_pool));
       ByteCode.showCode(instructions,constant_pool);
    }
 }

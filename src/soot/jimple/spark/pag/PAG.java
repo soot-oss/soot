@@ -313,7 +313,7 @@ public class PAG implements PointsToAnalysis {
     public OnFlyCallGraph getOnFlyCallGraph() { return ofcg; }
     public void cleanUpMerges() {
         if( opts.verbose() ) {
-            System.out.println( "Cleaning up graph for merged nodes" );
+            G.v().out.println( "Cleaning up graph for merged nodes" );
         }
         Map[] maps = { simple, alloc, store, load,
             simpleInv, allocInv, storeInv, loadInv };
@@ -325,7 +325,7 @@ public class PAG implements PointsToAnalysis {
         }
         somethingMerged = false;
         if( opts.verbose() ) {
-            System.out.println( "Done cleaning up graph for merged nodes" );
+            G.v().out.println( "Done cleaning up graph for merged nodes" );
         }
     }
 
@@ -352,9 +352,9 @@ public class PAG implements PointsToAnalysis {
             for( Iterator it = m.keySet().iterator(); it.hasNext(); ) {
                 size += lookup( m, it.next() ).length;
             }
-            System.out.println( ""+names[i]+" "+size );
+            G.v().out.println( ""+names[i]+" "+size );
         }
-        System.out.println( "valToVarNodeSize: "+valToVarNode.size() );
+        G.v().out.println( "valToVarNodeSize: "+valToVarNode.size() );
     }
     */
     /* End of public methods. */
@@ -489,7 +489,7 @@ public class PAG implements PointsToAnalysis {
 		    (Node[]) ( (Set) valueList ).toArray( EMPTY_NODE_ARRAY ) );
             } catch( Exception e ) {
                 for( Iterator it = ((Set)valueList).iterator(); it.hasNext(); ) {
-                    System.out.println( ""+it.next() );
+                    G.v().out.println( ""+it.next() );
                 }
                 throw new RuntimeException( ""+valueList+e );
             }

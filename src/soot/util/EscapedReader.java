@@ -25,6 +25,7 @@
 
 
 package soot.util;
+import soot.*;
 
 import java.io.*;
 
@@ -75,7 +76,7 @@ public class EscapedReader extends FilterReader
             mini.append((char)ch);
         }
 
-        //        System.out.println(mini.toString());
+        //        G.v().out.println(mini.toString());
         ch = Integer.parseInt(mini.substring(2).toString(), 16);
 
         return ch;

@@ -44,7 +44,7 @@ public final class PropIter extends Propagator {
 	    change = false;
             TreeSet simpleSources = new TreeSet( pag.simpleSources() );
             if( pag.getOpts().verbose() ) {
-                System.out.println( "Iteration "+(iteration++) );
+                G.v().out.println( "Iteration "+(iteration++) );
             }
             for( Iterator it = simpleSources.iterator(); it.hasNext(); ) {
                 change = handleSimples( (VarNode) it.next() ) | change;

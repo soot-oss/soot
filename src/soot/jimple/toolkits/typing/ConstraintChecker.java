@@ -301,7 +301,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	  }
 	catch(InternalTypingException e)
 	  {
-	    System.out.println("untyped local: " + l);
+	    G.v().out.println("untyped local: " + l);
 	    throw e;
 	  }
       }
@@ -577,7 +577,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	    }
 	  catch(TypeException e)
 	    {
-	      System.out.println(r + "[" + op + "<->" + cast + "]");
+	      G.v().out.println(r + "[" + op + "<->" + cast + "]");
 	      error(e.getMessage());
 	    }
 	}
@@ -599,7 +599,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	  }
 	catch(TypeException e)
 	  {
-	    System.out.println(r + "[" + op + "<->" + type + "]");
+	    G.v().out.println(r + "[" + op + "<->" + type + "]");
 	    error(e.getMessage());
 	  }
 	

@@ -428,7 +428,7 @@ public class BlockGraph implements DirectedGraph
 	    it = basicBlockList.iterator();
 	    while(it.hasNext()) {
 		Block currentBlock = (Block) it.next();
-		System.out.println(currentBlock);
+		G.v().out.println(currentBlock);
 		List blockSuccsList = currentBlock.getSuccs();
 		if(blockSuccsList.size() == 1) {
                     Block succBlock = (Block)  blockSuccsList.get(0);
@@ -440,37 +440,37 @@ public class BlockGraph implements DirectedGraph
 				if(mUnits.getSuccOf(currentBlock.getTail()) == succBlock2.getHead() ) {
                                     
 				    
-				    System.out.println("Code structure error dump:");
-				    System.out.println("Current block: " + currentBlock.toString());
-				    System.out.println("Succ block: " + succBlock.toString());
-				    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
+				    G.v().out.println("Code structure error dump:");
+				    G.v().out.println("Current block: " + currentBlock.toString());
+				    G.v().out.println("Succ block: " + succBlock.toString());
+				    G.v().out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
                                 
 				    mBlocks = basicBlockList;
-				    System.out.println("Printing basic blocks ...");
+				    G.v().out.println("Printing basic blocks ...");
 				    it = basicBlockList.iterator();
 				    while(it.hasNext()) {
-					System.out.println(((Block)it.next()).toBriefString());
+					G.v().out.println(((Block)it.next()).toBriefString());
 				    }
 				    throw new RuntimeException("Code structure error");
 				}
 			    }
-			    System.out.println("Code structure error detected .");
+			    G.v().out.println("Code structure error detected .");
                             
 			}
 
                                 
 			else { 
 
-			    System.out.println("Code structure error dump:");
-			    System.out.println("Current block: " + currentBlock.toString());
-			    System.out.println("Succ block: " + succBlock.toString());
-			    System.out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
+			    G.v().out.println("Code structure error dump:");
+			    G.v().out.println("Current block: " + currentBlock.toString());
+			    G.v().out.println("Succ block: " + succBlock.toString());
+			    G.v().out.println("pred: " + succBlock.getPreds().toString() + "succ  :" + succBlock.getSuccs().toString());
                             
 			    mBlocks = basicBlockList;
-			    System.out.println("Printing basic blocks ...");
+			    G.v().out.println("Printing basic blocks ...");
 			    it = basicBlockList.iterator();
 			    while(it.hasNext()) {
-				System.out.println(((Block)it.next()).toBriefString());
+				G.v().out.println(((Block)it.next()).toBriefString());
 			    }
 			    throw new RuntimeException("Code structure error (interesting case)");      
 			}
@@ -492,7 +492,7 @@ public class BlockGraph implements DirectedGraph
                     handlerList.add(trap.getHandlerUnit());    
                 }
                 
-                //                System.out.println("unit first " + mUnits.getFirst());
+                //                G.v().out.println("unit first " + mUnits.getFirst());
                 Iterator blockIt =  mBlocks.iterator();
                 while(blockIt.hasNext()) {
                     Block b = (Block) blockIt.next();
@@ -502,12 +502,12 @@ public class BlockGraph implements DirectedGraph
                 }
                 /*
                 Iterator ittt = mHeads.iterator();
-                System.out.println("Heads are:");
+                G.v().out.println("Heads are:");
                 while(ittt.hasNext()) {
-                    System.out.println("next head: ");
-                    System.out.println(ittt.next());
+                    G.v().out.println("next head: ");
+                    G.v().out.println(ittt.next());
                 }
-                System.out.println("done heads");
+                G.v().out.println("done heads");
                 */
             }
         }

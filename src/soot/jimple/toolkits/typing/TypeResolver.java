@@ -99,7 +99,7 @@ public class TypeResolver
 	
 	if(DEBUG)
 	  {
-	    System.out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+	    G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
 	  }
       }
     
@@ -171,7 +171,7 @@ public class TypeResolver
   {
     if(DEBUG)
       {
-	System.out.println(stmtBody.getMethod());
+	G.v().out.println(stmtBody.getMethod());
       }
 
     try
@@ -184,7 +184,7 @@ public class TypeResolver
 	if(DEBUG)
 	  {
 	    e1.printStackTrace();
-	    System.out.println("Step 1 Exception-->" + e1.getMessage());
+	    G.v().out.println("Step 1 Exception-->" + e1.getMessage());
 	  }
 	
 	try
@@ -197,7 +197,7 @@ public class TypeResolver
 	    if(DEBUG)
 	      {
 		e2.printStackTrace();
-		System.out.println("Step 2 Exception-->" + e2.getMessage());
+		G.v().out.println("Step 2 Exception-->" + e2.getMessage());
 	      }
 	
 	    try
@@ -224,13 +224,13 @@ public class TypeResolver
     if(DEBUG)
       {
 	int count = 0;
-	System.out.println("**** START:" + message);
+	G.v().out.println("**** START:" + message);
 	for(Iterator i = typeVariableList.iterator(); i.hasNext(); )
 	  {
 	    TypeVariable var = (TypeVariable) i.next();
-	    System.out.println(count++ + " " + var);
+	    G.v().out.println(count++ + " " + var);
 	  }
-	System.out.println("**** END:" + message);
+	G.v().out.println("**** END:" + message);
       }
   }
 
@@ -238,13 +238,13 @@ public class TypeResolver
   {
     if(DEBUG)
       {
-	System.out.println("-- Body Start --");
+	G.v().out.println("-- Body Start --");
 	for(Iterator i = stmtBody.getUnits().iterator(); i.hasNext();)
 	  {
 	    Stmt stmt = (Stmt) i.next();
-	    System.out.println(stmt);
+	    G.v().out.println(stmt);
 	  }
-	System.out.println("-- Body End --");
+	G.v().out.println("-- Body End --");
       }
   }
 
@@ -325,12 +325,12 @@ public class TypeResolver
 	Stmt stmt = (Stmt) i.next();
 	if(DEBUG)
 	  {
-	    System.out.print("stmt: ");
+	    G.v().out.print("stmt: ");
 	  }
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    System.out.println(stmt);
+	    G.v().out.println(stmt);
 	  }
       }
   }
@@ -344,12 +344,12 @@ public class TypeResolver
 	Stmt stmt = (Stmt) i.next();
 	if(DEBUG)
 	  {
-	    System.out.print("stmt: ");
+	    G.v().out.print("stmt: ");
 	  }
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    System.out.println(stmt);
+	    G.v().out.println(stmt);
 	  }
       }
   }
@@ -448,7 +448,7 @@ public class TypeResolver
 		      {
 			if(DEBUG)
 			  {
-			    System.out.print(".");
+			    G.v().out.print(".");
 			  }
 	
 			TypeVariable parent = (TypeVariable) j.next();
@@ -465,7 +465,7 @@ public class TypeResolver
 		      {
 			if(DEBUG)
 			  {
-			    System.out.print(".");
+			    G.v().out.print(".");
 			  }
 	
 			TypeVariable child = (TypeVariable) j.next();
@@ -637,7 +637,7 @@ public class TypeResolver
 			  {
 			    if(DEBUG)
 			      {
-				System.out.println
+				G.v().out.println
 				  ("==++==" +
 				   stmtBody.getMethod().getDeclaringClass().getName() + "." + 
 				   stmtBody.getMethod().getName());
@@ -766,7 +766,7 @@ public class TypeResolver
 	       (local.getType() != null) &&
 	       !local.getType().equals(var.approx().type()))
 	      {
-		System.out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
+		G.v().out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
 	      }
 	  }
       }
@@ -817,7 +817,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		System.out.println(s);
+		G.v().out.println(s);
 	      }
 	    throw e;
 	  }
@@ -853,7 +853,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		System.out.println(s);
+		G.v().out.println(s);
 	      }
 	    throw e;
 	  }
@@ -1144,7 +1144,7 @@ public class TypeResolver
 			    else if(assign.getRightOp() instanceof NewExpr)
 			      {			
 				// We split the local.
-				//System.out.println("split: [" + assign + "] and [" + stmt + "]");
+				//G.v().out.println("split: [" + assign + "] and [" + stmt + "]");
 				Local newlocal = Jimple.v().newLocal("tmp", null);
 				stmtBody.getLocals().add(newlocal);
 				

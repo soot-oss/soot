@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
@@ -145,8 +146,8 @@ class Instruction_Tableswitch extends Instruction {
       int i;
       default_inst = bc.locateInst(default_offset+label);
       if (default_inst==null) {
-         System.out.println("Warning: can't locate target of instruction");
-         System.out.println(" which should be at byte address " + (label+default_offset));
+         G.v().out.println("Warning: can't locate target of instruction");
+         G.v().out.println(" which should be at byte address " + (label+default_offset));
       } else
          default_inst.labelled = true;
       if (high-low+1>0) {
@@ -154,8 +155,8 @@ class Instruction_Tableswitch extends Instruction {
          for (i=0;i<high-low+1;i++) {
             jump_insts[i] = bc.locateInst(jump_offsets[i]+label);
             if (jump_insts[i]==null) {
-               System.out.println("Warning: can't locate target of instruction");
-               System.out.println(" which should be at byte address " +
+               G.v().out.println("Warning: can't locate target of instruction");
+               G.v().out.println(" which should be at byte address " +
                                   (label+jump_offsets[i]));
             } else
                jump_insts[i].labelled = true;

@@ -73,7 +73,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	{
 	    Date start = new Date();
 	    if (soot.Main.opts.verbose())
-		System.out.println("[ra] Building InvokeGraph, start on "+start);
+		G.v().out.println("[ra] Building InvokeGraph, start on "+start);
 
 	    InvokeGraphBuilder.v().transform(phaseName+".ra");
 
@@ -82,13 +82,13 @@ public class RectangularArrayFinder extends SceneTransformer
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
 	    if (soot.Main.opts.verbose())
-		System.out.println("[ra] Finished InvokeGraph building."
+		G.v().out.println("[ra] Finished InvokeGraph building."
 				   +" It took "+mins+" mins and "+secs+" secs.");
 	}
 
 	Date start = new Date();
 	if (soot.Main.opts.verbose())
-	    System.out.println("[ra] Finding rectangular arrays, start on "+start);
+	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);
 
 	ig = sc.getActiveInvokeGraph();
 
@@ -229,25 +229,25 @@ public class RectangularArrayFinder extends SceneTransformer
 	
 	if (debug)
 	{
-	    System.out.println("Rectangular Array :");
+	    G.v().out.println("Rectangular Array :");
 	    {
 		Iterator nodeIt = trueSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 
-		    System.out.println(node);
+		    G.v().out.println(node);
 		}
 	    }
 
-	    System.out.println("\nNon-rectangular Array :");
+	    G.v().out.println("\nNon-rectangular Array :");
 	    {
 		Iterator nodeIt = falseSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 		    
-		    System.out.println(node);
+		    G.v().out.println(node);
 		}
 	    }
 	}
@@ -260,7 +260,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	    long runtime = finish.getTime() - start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
-	    System.out.println("[ra] Rectangular array finder finishes."
+	    G.v().out.println("[ra] Rectangular array finder finishes."
 			       +" It took "+mins+" mins and "+secs+" secs.");
 	}
     }
@@ -268,7 +268,7 @@ public class RectangularArrayFinder extends SceneTransformer
     private void addInfoFromMethod(SootMethod method)
     {
 	if (soot.Main.opts.verbose()) 
-	    System.out.println("[ra] Operating "+method.getSignature());
+	    G.v().out.println("[ra] Operating "+method.getSignature());
 
 	boolean needTransfer = true;
 

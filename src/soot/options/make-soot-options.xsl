@@ -30,6 +30,7 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+import soot.*;
 import java.util.*;
 import soot.PackManager;
 
@@ -62,7 +63,7 @@ public class Options extends OptionsBase {
             if( false );
 <xsl:apply-templates mode="parse" select="/options/section"/>
             else {
-                System.out.println( "Invalid option -"+option );
+                G.v().out.println( "Invalid option -"+option );
                 return false;
             }
         }
@@ -107,7 +108,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -121,14 +122,14 @@ public class Options extends OptionsBase {
                 ) {
                     if( <xsl:copy-of select="$name"/> != 0
                     &#38;&#38; <xsl:copy-of select="$name"/> != <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     <xsl:copy-of select="$name"/> = <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>;
                 }
     </xsl:for-each>
                 else {
-                    System.out.println( "Invalid value "+value+" given for option -"+option );
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
                     return false;
                 }
            }
@@ -142,7 +143,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -162,12 +163,12 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No phase name given for option -"+option );
+                    G.v().out.println( "No phase name given for option -"+option );
                     return false;
                 }
                 String phaseName = nextOption();
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No phase option given for option -"+option+" "+phaseName );
+                    G.v().out.println( "No phase option given for option -"+option+" "+phaseName );
                     return false;
                 }
                 String phaseOption = nextOption();
@@ -185,7 +186,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -193,7 +194,7 @@ public class Options extends OptionsBase {
                 if( <xsl:copy-of select="$name"/>.length() == 0 )
                     <xsl:copy-of select="$name"/> = value;
                 else {
-                    System.out.println( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );
+                    G.v().out.println( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -454,13 +455,13 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="phase|phase/sub_phase"><!---->
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) ) return;<!---->
     </xsl:for-each>
-        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
+        G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {
     <xsl:for-each select="phase|phase/sub_phase"><!---->
         if( !PackManager.v().hasPhase( "<xsl:value-of select="alias|alias"/>" ) )
-            System.out.println( "Warning: Options exist for non-existent phase <xsl:value-of select="alias|alias"/>" );<!---->
+            G.v().out.println( "Warning: Options exist for non-existent phase <xsl:value-of select="alias|alias"/>" );<!---->
     </xsl:for-each>
     }
   </xsl:template>

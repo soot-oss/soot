@@ -16,6 +16,7 @@
  */
 
 package soot.util;
+import soot.*;
 
 import java.lang.String;
 import java.lang.System;
@@ -273,7 +274,7 @@ public final class BitSet
         long a[] = bits;
         long b[] = bitset.bits;
         
-        //System.out.println(a.length+" - "+b.length);
+        //G.v().out.println(a.length+" - "+b.length);
         
         int nr = Math.min(a.length, b.length);
         for (int i = nr; i-- > 0; ) {
@@ -283,13 +284,13 @@ public final class BitSet
         if (a.length < b.length) {
             // grow only for set bits
             int blength = bitset.length();
-            //System.out.println(blength);
+            //G.v().out.println(blength);
             ensureSize(blength);
-            //System.out.println(blength >> 6);
+            //G.v().out.println(blength >> 6);
             a = bits;
-            //System.out.println(a.length);
+            //G.v().out.println(a.length);
             for (int i = ((blength-1) >> 6); i >= nr; i--) {
-                //System.out.println(i);
+                //G.v().out.println(i);
                 a[i] = b[i];
             }
         }

@@ -93,13 +93,13 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 /*
     static {
 	if (true) {
-	    System.out.println();
-	    System.out.println();
-	    System.out.println("BranchedRefVarsAnalysis:");
-	    System.out.println("     isNotConservative = "+isNotConservative);
-	    System.out.println("            isBranched = "+isBranched);
-	    System.out.println("        careForAliases = "+careForAliases);
-	    System.out.println("    careForMethodCalls = "+careForMethodCalls);
+	    G.v().out.println();
+	    G.v().out.println();
+	    G.v().out.println("BranchedRefVarsAnalysis:");
+	    G.v().out.println("     isNotConservative = "+isNotConservative);
+	    G.v().out.println("            isBranched = "+isBranched);
+	    G.v().out.println("        careForAliases = "+careForAliases);
+	    G.v().out.println("    careForMethodCalls = "+careForMethodCalls);
 	}
     } // end static
 */
@@ -441,7 +441,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 	refTypeValues.addAll(refTypeInstFields);
 	refTypeValues.addAll(refTypeStaticFields);
 
-	// System.out.println("Analyzed references: " + refTypeValues);
+	// G.v().out.println("Analyzed references: " + refTypeValues);
     } // end initRefTypeLists 
 
     private void initRefTypeLists( ValueBox box ) {

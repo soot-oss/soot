@@ -53,17 +53,17 @@ public class VTATestingFramework extends SceneTransformer
     {
         Date start = new Date();
         if(Main.opts.verbose()) {
-            System.out.println("[] Starting VTA...");
-            System.out.println("[vta] Invoke graph builder started on "+start);
+            G.v().out.println("[] Starting VTA...");
+            G.v().out.println("[vta] Invoke graph builder started on "+start);
         }
 
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
 
         Date finish = new Date();
         if (Main.opts.verbose()) {
-            System.out.println("[vta] Done building invoke graph.");
+            G.v().out.println("[vta] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
-            System.out.println("[stb] This took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
+            G.v().out.println("[stb] This took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
         }
 
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
@@ -73,18 +73,18 @@ public class VTATestingFramework extends SceneTransformer
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
-        System.out.println(graph.computeStats());
+        G.v().out.println(graph.computeStats());
         VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
         vta.trimActiveInvokeGraph();
         graph.refreshReachableMethods();
-        System.out.println(graph.computeStats());
+        G.v().out.println(graph.computeStats());
 
         /* Enable if you want to run VTA + VTA */
 
           vta = new VariableTypeAnalysis(graph);
           vta.trimActiveInvokeGraph();
           graph.refreshReachableMethods();
-          System.out.println(graph.computeStats());
+          G.v().out.println(graph.computeStats());
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
@@ -163,7 +163,7 @@ public class VTATestingFramework extends SceneTransformer
                 if (excludeSet.contains(container)) {
                     if (Main.opts.verbose())
                         excludeCount++;
-                        System.out.println(container+" is excluded from profiling.");
+                        G.v().out.println(container+" is excluded from profiling.");
                     continue;
                 }
 
@@ -251,7 +251,7 @@ public class VTATestingFramework extends SceneTransformer
         }
   
         if (Main.opts.verbose()) {
-            System.out.println(excludeCount+" methods have been excluded from profiling.");
+            G.v().out.println(excludeCount+" methods have been excluded from profiling.");
         }
         Scene.v().releaseActiveInvokeGraph();
         graph = null;

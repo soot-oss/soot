@@ -56,9 +56,9 @@ public class StaticMethodBinder extends SceneTransformer
 
         Date finish = new Date();
         if (Main.opts.verbose()) {
-            System.out.println("[stb] Done building invoke graph.");
+            G.v().out.println("[stb] Done building invoke graph.");
             long runtime = finish.getTime() - start.getTime();
-            System.out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
+            G.v().out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
         }
 
         boolean enableNullPointerCheckInsertion = PackManager.getBoolean(options, "insert-null-checks");
@@ -77,14 +77,14 @@ public class StaticMethodBinder extends SceneTransformer
         for (int i = 0; i < VTApasses; i++)
         {
             if (Main.opts.verbose())
-                System.out.println(graph.computeStats());
+                G.v().out.println(graph.computeStats());
             vta = new VariableTypeAnalysis(graph);
             vta.trimActiveInvokeGraph();
             graph.refreshReachableMethods();
         }
                 
         if (Main.opts.verbose())
-            System.out.println(graph.computeStats());
+            G.v().out.println(graph.computeStats());
 
         Iterator classesIt = Scene.v().getApplicationClasses().iterator();
         while (classesIt.hasNext())

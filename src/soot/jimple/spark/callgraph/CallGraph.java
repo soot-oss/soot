@@ -100,7 +100,7 @@ public final class CallGraph
         InstanceInvokeExpr ie = (InstanceInvokeExpr) s.getInvokeExpr();
         if( !Scene.v().containsClass( name ) ) {
             if( verbose ) {
-                System.out.println( "WARNING: Class "+name+" is"+
+                G.v().out.println( "WARNING: Class "+name+" is"+
                     " a dynamic class, and you did not specify"+
                     " it as such; graph will be incomplete!" );
             }
@@ -124,7 +124,7 @@ public final class CallGraph
         Set classes = pa.reachingObjects( m, s, (Local) nameVal ).possibleClassConstants();
         if( classes == null ) {
             if( verbose ) {
-                System.out.println( "WARNING: Method "+m+
+                G.v().out.println( "WARNING: Method "+m+
                     " is reachable, and calls newInstance on an unknown"+
                     " java.lang.Class; graph will be incomplete!" );
             }
@@ -147,7 +147,7 @@ public final class CallGraph
             Set names = pa.reachingObjects( m, s, (Local) nameVal ).possibleStringConstants();
             if( names == null ) {
                 if( verbose ) {
-                    System.out.println( "WARNING: Method "+m+
+                    G.v().out.println( "WARNING: Method "+m+
                         " is reachable, and calls Class.forName on a"+
                         " non-constant String; graph will be incomplete!" );
                 }
@@ -276,7 +276,7 @@ public final class CallGraph
             final AssignStmt s = (AssignStmt) sIt.next();
             SootMethod m = (SootMethod) stmtToMethod.get(s);
             if( name == null ) {
-                System.out.println( "WARNING: Method "+m+
+                G.v().out.println( "WARNING: Method "+m+
                     " is reachable, and calls Class.forName on a"+
                     " non-constant String; graph will be incomplete!" );
                 wantedStringConstants.remove( l );
@@ -291,7 +291,7 @@ public final class CallGraph
             final AssignStmt s = (AssignStmt) sIt.next();
             SootMethod m = (SootMethod) stmtToMethod.get(s);
             if( name == null ) {
-                System.out.println( "WARNING: Method "+stmtToMethod.get(s)+
+                G.v().out.println( "WARNING: Method "+stmtToMethod.get(s)+
                     " is reachable, and calls newInstance on an unknown"+
                     " java.lang.Class; graph will be incomplete!" );
                 wantedClassConstants.remove( l );

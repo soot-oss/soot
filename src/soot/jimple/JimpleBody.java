@@ -82,7 +82,7 @@ public class JimpleBody extends StmtBody implements Serializable
                                 
                 if(!(s instanceof IdentityStmt) 
 		   || !(((IdentityStmt) s).getRightOp() instanceof CaughtExceptionRef)){
-                    System.out.println(s);
+                    G.v().out.println(s);
                     throw new RuntimeException("Trap handler is not of the form x := caughtexceptionref");
                 }
             }

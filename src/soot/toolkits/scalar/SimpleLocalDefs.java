@@ -61,7 +61,7 @@ public class SimpleLocalDefs implements LocalDefs
             Timers.v().defsTimer.start();
         
         if(Main.opts.verbose())
-            System.out.println("[" + g.getBody().getMethod().getName() +
+            G.v().out.println("[" + g.getBody().getMethod().getName() +
                                "]     Constructing SimpleLocalDefs...");
     
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
@@ -112,7 +112,7 @@ public class SimpleLocalDefs implements LocalDefs
             Timers.v().defsTimer.end();
 
 	if(Main.opts.verbose())
-	    System.out.println("[" + g.getBody().getMethod().getName() +
+	    G.v().out.println("[" + g.getBody().getMethod().getName() +
                                "]     SimpleLocalDefs finished.");
     }
 
@@ -322,7 +322,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
                             localToIntPair.put(l, new IntPair(startPos, endPos));
 
-                            // System.out.println(startPos + ":" + endPos);
+                            // G.v().out.println(startPos + ":" + endPos);
 
                             startPos = endPos + 1;
                         }

@@ -24,6 +24,8 @@
  */
 
 package soot;
+import soot.*;
+import java.io.PrintStream;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -31,6 +33,8 @@ public class G extends Singletons
     private static G instance = new G();
     public static G v() { return instance; }
     public static void reset() { instance = new G(); }
+
+    public PrintStream out = System.out;
 
     public class Global {
     }

@@ -34,6 +34,7 @@
  */
 
 package soot.util;
+import soot.*;
 
 import java.io.*;
 import java.util.*;
@@ -78,7 +79,7 @@ public class DotGraph implements Renderable{
       render(out, 0);
       out.close();
 
-      System.out.println("Generate dot file in "+this.graphname+".dot");
+      G.v().out.println("Generate dot file in "+this.graphname+".dot");
 
     } catch (IOException ioe) {
     }

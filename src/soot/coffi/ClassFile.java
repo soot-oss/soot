@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -245,13 +246,13 @@ public class ClassFile {
         d.close(); 
         f.close();
       } catch(IOException e) {
-         System.out.println("IOException with " + fn + ": " + e.getMessage());
+         G.v().out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
       }
       
       if (!b) return false;
       //parse();        // parse all methods & builds CFGs
-      //System.out.println("-- Read " + cf + " --");
+      //G.v().out.println("-- Read " + cf + " --");
       return true;
    }
 
@@ -285,21 +286,21 @@ public class ClassFile {
          f = new FileOutputStream(fn);
       } catch(FileNotFoundException e) {
          if (fn.indexOf(".class")>=0) {
-            System.out.println("Can't find " + fn);
+            G.v().out.println("Can't find " + fn);
             return false;
          }
          fn = fn + ".class";
          try {
             f = new FileOutputStream(fn);
          } catch(FileNotFoundException ee) {
-            System.out.println("Can't find " + fn);
+            G.v().out.println("Can't find " + fn);
             return false;
          } catch(IOException ee) {
-            System.out.println("IOException with " + fn + ": " + ee.getMessage());
+            G.v().out.println("IOException with " + fn + ": " + ee.getMessage());
             return false;
          }
       } catch(IOException e) {
-         System.out.println("IOException with " + fn + ": " + e.getMessage());
+         G.v().out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
       }
       d = new DataOutputStream(f);
@@ -314,7 +315,7 @@ public class ClassFile {
          d.close();
          f.close();
       } catch(IOException e) {
-         System.out.println("IOException with " + fn + ": " + e.getMessage());
+         G.v().out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
       }
       return b;
@@ -403,22 +404,22 @@ public class ClassFile {
          // first read in magic number
          magic = d.readInt() & 0xFFFFFFFFL;
          if (magic != MAGIC) {
-            System.out.println("Wrong magic number in " + fn + ": " + magic);
+            G.v().out.println("Wrong magic number in " + fn + ": " + magic);
             return false;
          }
-         //System.out.println("Magic number ok");
+         //G.v().out.println("Magic number ok");
          minor_version = d.readUnsignedShort();
          major_version = d.readUnsignedShort();
-        // System.out.println("Version: " + major_version + "." + minor_version);
+        // G.v().out.println("Version: " + major_version + "." + minor_version);
          constant_pool_count = d.readUnsignedShort();
-         //System.out.println("Constant pool count: " + constant_pool_count);
+         //G.v().out.println("Constant pool count: " + constant_pool_count);
 
          if (!readConstantPool(d))
             return false;
 
          access_flags = d.readUnsignedShort();
          //if (access_flags!=0)
-         //    System.out.println("Access flags: " + access_flags + " = " +
+         //    G.v().out.println("Access flags: " + access_flags + " = " +
          //                   access_string(access_flags,", "));
 
          this_class = d.readUnsignedShort();
@@ -430,25 +431,25 @@ public class ClassFile {
             for (j=0; j<interfaces_count; j++)
                interfaces[j] = d.readUnsignedShort();
          }
-         //System.out.println("Implements " + interfaces_count + " interface(s)");
+         //G.v().out.println("Implements " + interfaces_count + " interface(s)");
 
          fieldTimer.start();
          
          fields_count = d.readUnsignedShort();
-         //System.out.println("Has " + fields_count + " field(s)");
+         //G.v().out.println("Has " + fields_count + " field(s)");
          readFields(d);
          fieldTimer.end();
         
          methodTimer.start();
          methods_count = d.readUnsignedShort();
-         //System.out.println("Has " + methods_count + " method(s)");
+         //G.v().out.println("Has " + methods_count + " method(s)");
          readMethods(d);
          methodTimer.end();
         
          attributeTimer.start();
          
          attributes_count = d.readUnsignedShort();
-         //System.out.println("Has " + attributes_count + " attribute(s)");
+         //G.v().out.println("Has " + attributes_count + " attribute(s)");
          if (attributes_count>0) {
             attributes =  new attribute_info[attributes_count];
             readAttributes(d,attributes_count,attributes);
@@ -491,21 +492,21 @@ public class ClassFile {
          case cp_info.CONSTANT_Class:
             cp = new CONSTANT_Class_info();
             ((CONSTANT_Class_info)cp).name_index = d.readUnsignedShort();
-            if (debug) System.out.println("Constant pool[" + i + "]: Class");
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Class");
             break;
          case cp_info.CONSTANT_Fieldref:
             cp = new CONSTANT_Fieldref_info();
             ((CONSTANT_Fieldref_info)cp).class_index = d.readUnsignedShort();
             ((CONSTANT_Fieldref_info)cp).name_and_type_index =
                 d.readUnsignedShort();
-            if (debug) System.out.println("Constant pool[" + i + "]: Fieldref");
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Fieldref");
             break;
          case cp_info.CONSTANT_Methodref:
             cp = new CONSTANT_Methodref_info();
             ((CONSTANT_Methodref_info)cp).class_index = d.readUnsignedShort();
             ((CONSTANT_Methodref_info)cp).name_and_type_index =
                d.readUnsignedShort();
-            if (debug) System.out.println("Constant pool[" + i + "]: Methodref");
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Methodref");
             break;
          case cp_info.CONSTANT_InterfaceMethodref:
             cp = new CONSTANT_InterfaceMethodref_info();
@@ -514,24 +515,24 @@ public class ClassFile {
             ((CONSTANT_InterfaceMethodref_info)cp).name_and_type_index =
                d.readUnsignedShort();
             if (debug)
-               System.out.println("Constant pool[" + i + "]: InterfaceMethodref");
+               G.v().out.println("Constant pool[" + i + "]: InterfaceMethodref");
             break;
          case cp_info.CONSTANT_String:
             cp = new CONSTANT_String_info();
             ((CONSTANT_String_info)cp).string_index =
                 d.readUnsignedShort();
-            if (debug) System.out.println("Constant pool[" + i + "]: String");
+            if (debug) G.v().out.println("Constant pool[" + i + "]: String");
             break;
          case cp_info.CONSTANT_Integer:
             cp = new CONSTANT_Integer_info();
             ((CONSTANT_Integer_info)cp).bytes = d.readInt();
-            if (debug) System.out.println("Constant pool[" + i + "]: Integer = " +
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Integer = " +
                                           ((CONSTANT_Integer_info)cp).bytes);
             break;
          case cp_info.CONSTANT_Float:
             cp = new CONSTANT_Float_info();
             ((CONSTANT_Float_info)cp).bytes = d.readInt();
-            if (debug) System.out.println("Constant pool[" + i + "]: Float = " +
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Float = " +
                                           ((CONSTANT_Float_info)cp).convert());
             break;
          case cp_info.CONSTANT_Long:
@@ -541,8 +542,8 @@ public class ClassFile {
             
             if (debug) {
                String temp = cp.toString(constant_pool);
-               System.out.println("Constant pool[" + i + "]: Long = " + temp);
-               /*System.out.println("Constant pool[" + i + "]: that's " +
+               G.v().out.println("Constant pool[" + i + "]: Long = " + temp);
+               /*G.v().out.println("Constant pool[" + i + "]: that's " +
                  cp.printBits(((CONSTANT_Long_info)cp).high) + " <<32 + " +
                  cp.printBits(((CONSTANT_Long_info)cp).low) + " = " +
                  cp.printBits(((CONSTANT_Long_info)cp).convert()));*/
@@ -553,7 +554,7 @@ public class ClassFile {
             cp = new CONSTANT_Double_info();
             ((CONSTANT_Double_info)cp).high = d.readInt() & 0xFFFFFFFFL;
             ((CONSTANT_Double_info)cp).low = d.readInt() & 0xFFFFFFFFL;
-            if (debug) System.out.println("Constant pool[" + i + "]: Double = " +
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Double = " +
                                           ((CONSTANT_Double_info)cp).convert());
             skipone = true;  // next entry needs to be skipped
             break;
@@ -563,7 +564,7 @@ public class ClassFile {
                d.readUnsignedShort();
             ((CONSTANT_NameAndType_info)cp).descriptor_index =
                d.readUnsignedShort();
-            if (debug) System.out.println("Constant pool[" + i + "]: Name and Type");
+            if (debug) G.v().out.println("Constant pool[" + i + "]: Name and Type");
             break;
          case cp_info.CONSTANT_Utf8:
             CONSTANT_Utf8_info cputf8 = new CONSTANT_Utf8_info(d);
@@ -571,11 +572,11 @@ public class ClassFile {
             // the pre-existing one and allow cputf8 to be GC'd.
             cp = (cp_info) CONSTANT_Utf8_collector.add(cputf8);
             if (debug)
-               System.out.println("Constant pool[" + i + "]: Utf8 = \"" +
+               G.v().out.println("Constant pool[" + i + "]: Utf8 = \"" +
                                   cputf8.convert() + "\"");
             break;
          default:
-            System.out.println("Unknown tag in constant pool: " +
+            G.v().out.println("Unknown tag in constant pool: " +
                                tag + " at entry " + i);
             return false;
          }
@@ -688,7 +689,7 @@ public class ClassFile {
             a = (attribute_info)la;
          } else {
             // unknown attribute
-            // System.out.println("Generic/Unknown Attribute: " + s);
+            // G.v().out.println("Generic/Unknown Attribute: " + s);
             Generic_attribute ga = new Generic_attribute();
             if (len>0) {
                ga.info = new byte[(int) len];
@@ -727,7 +728,7 @@ public class ClassFile {
          }
          /*CONSTANT_Utf8_info ci;
            ci = (CONSTANT_Utf8_info)(constant_pool[fi.name_index]);
-           System.out.println("Field: " + ci.convert());*/
+           G.v().out.println("Field: " + ci.convert());*/
          fields[i] = fi;
       }
 
@@ -758,7 +759,7 @@ public class ClassFile {
 
          CONSTANT_Utf8_info ci;
            ci = (CONSTANT_Utf8_info)(constant_pool[mi.name_index]);
-          //System.out.println("Has " + mi.attributes_count + " attribute(s)");
+          //G.v().out.println("Has " + mi.attributes_count + " attribute(s)");
          
          if (mi.attributes_count>0) {
             mi.attributes = new attribute_info[mi.attributes_count];
@@ -788,14 +789,14 @@ public class ClassFile {
       public void showByteCode(Code_attribute ca) {
       int i=0,j;
 
-      System.out.println("Code bytes follow...");
+      G.v().out.println("Code bytes follow...");
       while(i<ca.code_length) {
       j = (int)(ca.code[i]);
       j &= 0xff;
-      System.out.print(Integer.toString(j) + " ");
+      G.v().out.print(Integer.toString(j) + " ");
       i++;
       }
-      System.out.println("");
+      G.v().out.println("");
       }*/
 
    /** Writes the current constant pool to the given stream.
@@ -859,7 +860,7 @@ public class ClassFile {
             ((CONSTANT_Utf8_info)cp).writeBytes(dd);
             break;
          default:
-            System.out.println("Unknown tag in constant pool: " + cp.tag);
+            G.v().out.println("Unknown tag in constant pool: " + cp.tag);
             return false;
          }
       }
@@ -942,7 +943,7 @@ public class ClassFile {
             }
          } else {
             // unknown attribute
-            System.out.println("Generic/Unknown Attribute in output");
+            G.v().out.println("Generic/Unknown Attribute in output");
             Generic_attribute ga = (Generic_attribute)a;
             if (ga.attribute_length>0) {
                dd.write(ga.info,0,(int) ga.attribute_length);
@@ -1034,7 +1035,7 @@ public class ClassFile {
             writeAttributes(dd,attributes_count,attributes);
          }
       } catch(IOException e) {
-         System.out.println("IOException with " + fn + ": " + e.getMessage());
+         G.v().out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
       }
       return true;
@@ -1067,17 +1068,17 @@ public class ClassFile {
       while(j<ca.code_length) {
          inst = bc.disassemble_bytecode(ca.code,j);
          inst.originalIndex = j;
-         // System.out.println(inst + ": " + (((int)(inst.code))&0xff));
-         // System.out.println(j + " : " + inst);
+         // G.v().out.println(inst + ": " + (((int)(inst.code))&0xff));
+         // G.v().out.println(j + " : " + inst);
 
          if (inst instanceof Instruction_Unknown) {
-            System.out.println("Unknown instruction in \"" + m.toName(constant_pool) +
+            G.v().out.println("Unknown instruction in \"" + m.toName(constant_pool) +
                                "\" at offset " + j);
-            System.out.println(" bytecode = " + (((int)(inst.code))&0xff));
+            G.v().out.println(" bytecode = " + (((int)(inst.code))&0xff));
          }
-         // System.out.println("before: " + j);
+         // G.v().out.println("before: " + j);
          j = inst.nextOffset(j);
-         // System.out.println("after: " + j);
+         // G.v().out.println("after: " + j);
 
          if ( head==null ) 
 	     head = inst;
@@ -1183,7 +1184,7 @@ public class ClassFile {
       // construct a new array for the byte-code
       bc = new byte[codesize];
       if (bc==null) {
-         System.out.println("Warning: can't allocate memory for recompile");
+         G.v().out.println("Warning: can't allocate memory for recompile");
          return null;
       }
 
@@ -1195,7 +1196,7 @@ public class ClassFile {
          i = i.next;
       }
       if (codesize != bc.length)
-         System.out.println("Warning: code size doesn't match array length!");
+         G.v().out.println("Warning: code size doesn't match array length!");
 
       return bc;
    }
@@ -1219,7 +1220,7 @@ public class ClassFile {
          if (ca==null) continue;
          bc = unparseMethod(mi);
          if (bc==null) {
-            System.out.println("Recompile of " + mi.toName(constant_pool) + " failed!");
+            G.v().out.println("Recompile of " + mi.toName(constant_pool) + " failed!");
          } else {
             ca.code_length = bc.length;
             ca.code = bc;
@@ -1311,7 +1312,7 @@ public class ClassFile {
             int j;
             j = desc.indexOf(';',i+1);
             if (j<0) {
-               System.out.println("Warning: Parse error -- can't find a ; in " +
+               G.v().out.println("Warning: Parse error -- can't find a ; in " +
                                   desc.substring(i+1));
                param = "<error>";
             } else {
@@ -1364,7 +1365,7 @@ public class ClassFile {
       int i;
 
       for (i=0;i<methods_count;i++) {
-         System.out.println(methods[i].prototype(constant_pool));
+         G.v().out.println(methods[i].prototype(constant_pool));
       }
    }
 
@@ -1380,7 +1381,7 @@ public class ClassFile {
       // note that we start at 1 in the constant pool
       for (i=1;i<constant_pool_count;i++) {
          c = constant_pool[i];
-         System.out.println("[" + i + "] " + c.typeName() +
+         G.v().out.println("[" + i + "] " + c.typeName() +
                             "=" + c.toString(constant_pool));
          if ((constant_pool[i]).tag==cp_info.CONSTANT_Long ||
              (constant_pool[i]).tag==cp_info.CONSTANT_Double) {
@@ -1405,20 +1406,20 @@ public class ClassFile {
 
       for (i=0;i<fields_count;i++) {
          fi = fields[i];
-         System.out.print(fi.prototype(constant_pool));
+         G.v().out.print(fi.prototype(constant_pool));
          // see if has a constant value attribute
          for (j=0;j<fi.attributes_count;j++) {
             cm = (CONSTANT_Utf8_info)(constant_pool[fi.attributes[j].attribute_name]);
             if (cm.convert().compareTo(attribute_info.ConstantValue)==0) {
                cva = (ConstantValue_attribute)(fi.attributes[j]);
                //dm = (CONSTANT_Utf8_info)(constant_pool[cva.constantvalue_index]);
-               System.out.print(" = " +
+               G.v().out.print(" = " +
                                 constant_pool[cva.constantvalue_index].
                                 toString(constant_pool));
                break;
             }
          }
-         System.out.println(";");
+         G.v().out.println(";");
       }
    }
 
@@ -1430,7 +1431,7 @@ public class ClassFile {
     void moveMethod(String m,int pos) {
       int i,j;
       method_info mthd;
-      System.out.println("Moving " + m + " to position " + pos +
+      G.v().out.println("Moving " + m + " to position " + pos +
                          " of " + methods_count);
 
       for (i=0;i<methods_count;i++) {
@@ -1653,7 +1654,7 @@ public class ClassFile {
       for (int i=1;i<constant_pool_count;i++) {
          for (smallest = 1;smallest<constant_pool_count;smallest++)
             if (redirect[smallest]==(short)0) break;
-         //System.out.println(" smallest = " + smallest);
+         //G.v().out.println(" smallest = " + smallest);
          j = (constant_pool[smallest].tag==cp_info.CONSTANT_Double ||
               constant_pool[smallest].tag==cp_info.CONSTANT_Long) ? smallest+2 : smallest+1;
          for (;j<constant_pool_count;j++) {
@@ -1666,7 +1667,7 @@ public class ClassFile {
          }
          redirect[smallest] = (short)i;
          newcp[i] = constant_pool[smallest];
-         //System.out.println(" Smallest cp entry is [" + smallest + "] = " + constant_pool[smallest]
+         //G.v().out.println(" Smallest cp entry is [" + smallest + "] = " + constant_pool[smallest]
          //                 + " -> " + i);
 
          if (constant_pool[smallest].tag==cp_info.CONSTANT_Double ||
@@ -1677,7 +1678,7 @@ public class ClassFile {
       }
       // constant pool is now sorted into newcp
       changeConstantPool(redirect,newcp,constant_pool_count);
-      System.out.println("Finished sorting constant pool");
+      G.v().out.println("Finished sorting constant pool");
    }
 
    // just a wrapper for the debigulation, so we can elegantly allocate
@@ -1687,7 +1688,7 @@ public class ClassFile {
       debigulator.debigulate(attribs,privates);
       debigulator.setCF(null);
 
-      inf.verboseReport(System.out);
+      inf.verboseReport(G.v().out);
    }*/
 
 

@@ -159,7 +159,7 @@ class TypeStack
                     throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
                 }
 
-                // System.out.println("Merging: " + types[i] + " with " + other.types[i]);
+                // G.v().out.println("Merging: " + types[i] + " with " + other.types[i]);
 
                 newStack.types[i] = RefType.v("java.lang.Object");
             }

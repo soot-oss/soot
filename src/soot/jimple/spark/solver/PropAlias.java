@@ -62,7 +62,7 @@ public final class PropAlias extends Propagator {
         boolean verbose = pag.getOpts().verbose();
 	do {
             if( verbose ) {
-                System.out.println( "Worklist has "+varNodeWorkList.size()+
+                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
             aliasWorkList = new HashSet();
@@ -73,7 +73,7 @@ public final class PropAlias extends Propagator {
                 handleVarNode( src );
             }
             if( verbose ) {
-                System.out.println( "Now handling field references" );
+                G.v().out.println( "Now handling field references" );
             }
 
             for( Iterator srcIt = aliasWorkList.iterator(); srcIt.hasNext(); ) {

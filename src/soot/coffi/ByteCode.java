@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 /** Procedural code for parsing and otherwise handling bytecode.
  * @author Clark Verbrugge
@@ -994,7 +995,7 @@ class ByteCode {
       default:
          //int j;
          //j = ((int)b)&0xff;
-         //System.out.println("Unknown instruction op=" + j +
+         //G.v().out.println("Unknown instruction op=" + j +
          //                   " at offset " + index);
          i = (Instruction)new Instruction_Unknown(b);
          break;
@@ -1080,8 +1081,8 @@ class ByteCode {
          else if (i>99) pref = " ";
          else if (i>9) pref = "  ";
          else pref = "   ";
-         System.out.print(pref + i + ": ");
-         System.out.println(j.toString(constant_pool));
+         G.v().out.print(pref + i + ": ");
+         G.v().out.println(j.toString(constant_pool));
          i = j.nextOffset(i);
          j = j.next;
       }

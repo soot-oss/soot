@@ -114,8 +114,8 @@ public class ClassHierarchyAnalysis
     }
 
     if (Main.opts.verbose()) {
-      System.out.println("  processed "+appAndLibClasses.size()+" classes");
-      System.out.println("  processed "+visitedMethods.size()+" methods");
+      G.v().out.println("  processed "+appAndLibClasses.size()+" classes");
+      G.v().out.println("  processed "+visitedMethods.size()+" methods");
     }
 
     return g;
@@ -159,7 +159,7 @@ public class ClassHierarchyAnalysis
 
       if (!m.isConcrete()) continue;
 
-      //      System.out.println("  processing "+m.getSignature()+" ...");
+      //      G.v().out.println("  processing "+m.getSignature()+" ...");
       
       Body b = m.retrieveActiveBody();
 
@@ -236,8 +236,8 @@ public class ClassHierarchyAnalysis
 
 //    if (Main.opts.verbose()) 
     {
-      System.out.println("  processed "+visitedClasses.size()+" classes");
-      System.out.println("  processed "+visitedMethods.size()+" methods");
+      G.v().out.println("  processed "+visitedClasses.size()+" classes");
+      G.v().out.println("  processed "+visitedMethods.size()+" methods");
     }
     return g;	
   }

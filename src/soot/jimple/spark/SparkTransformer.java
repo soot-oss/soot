@@ -46,7 +46,7 @@ public class SparkTransformer extends SceneTransformer
 
     private static void reportTime( String desc, Date start, Date end ) {
         long time = end.getTime()-start.getTime();
-        System.out.println( "[Spark] "+desc+" in "+time/1000+"."+(time/100)%10+" seconds." );
+        G.v().out.println( "[Spark] "+desc+" in "+time/1000+"."+(time/100)%10+" seconds." );
     }
     private static void doGC() {
         // Do 5 times because the garbage collector doesn't seem to always collect
@@ -83,9 +83,9 @@ public class SparkTransformer extends SceneTransformer
         if( opts.forceGCs() ) doGC();
 
         if( opts.verbose() ) {
-            System.out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
-            System.out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
-            System.out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
+            G.v().out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
+            G.v().out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
+            G.v().out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
         }
 
         // Simplify pag
@@ -135,7 +135,7 @@ public class SparkTransformer extends SceneTransformer
 
 
         if( opts.verbose() ) {
-            System.out.println( "[Spark] Number of reachable methods: "
+            G.v().out.println( "[Spark] Number of reachable methods: "
                     +b.getCallGraph().numReachableMethods() );
         }
 
@@ -211,7 +211,7 @@ public class SparkTransformer extends SceneTransformer
                 final SootMethod src = (SootMethod) srcIt.next();
                 for( Iterator dstIt = graph.get(src).iterator(); dstIt.hasNext(); ) {
                     final SootMethod dst = (SootMethod) dstIt.next();
-                    System.out.println( src.getBytecodeSignature()+" -> "+
+                    G.v().out.println( src.getBytecodeSignature()+" -> "+
                             dst.getBytecodeSignature() );
                 }
             }
@@ -232,7 +232,7 @@ public class SparkTransformer extends SceneTransformer
         if( false ) {
             for( Iterator it = b.getCallGraph().reachableMethods(); it.hasNext(); ) {
                 SootMethod m = (SootMethod) it.next();
-                System.out.println( m.getBytecodeSignature() );
+                G.v().out.println( m.getBytecodeSignature() );
             }
         }
 
@@ -246,8 +246,8 @@ public class SparkTransformer extends SceneTransformer
             if( set != null ) mass += set.size();
             if( set != null ) varMass += set.size();
             if( set != null && set.size() > 0 ) {
-                //System.out.println( "V "+v.getVariable()+" "+set.size() );
-            //    System.out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
+                //G.v().out.println( "V "+v.getVariable()+" "+set.size() );
+            //    G.v().out.println( ""+v.getVariable()+" "+v.getMethod()+" "+set.size() );
             }
         }
         for( Iterator anIt = pag.allocSources().iterator(); anIt.hasNext(); ) {
@@ -258,14 +258,14 @@ public class SparkTransformer extends SceneTransformer
                 if( set != null ) mass += set.size();
                 if( set != null && set.size() > 0 ) {
                     adfs++;
-            //        System.out.println( ""+adf.getBase().getNewExpr()+"."+adf.getField()+" "+set.size() );
+            //        G.v().out.println( ""+adf.getBase().getNewExpr()+"."+adf.getField()+" "+set.size() );
                 }
             }
         }
-        System.out.println( "Set mass: " + mass );
-        System.out.println( "Variable mass: " + varMass );
-        System.out.println( "Scalars: "+scalars );
-        System.out.println( "adfs: "+adfs );
+        G.v().out.println( "Set mass: " + mass );
+        G.v().out.println( "Variable mass: " + varMass );
+        G.v().out.println( "Scalars: "+scalars );
+        G.v().out.println( "adfs: "+adfs );
         // Compute points-to set sizes of dereference sites BEFORE
         // trimming sets by declared type
         int[] deRefCounts = new int[30001];
@@ -278,10 +278,10 @@ public class SparkTransformer extends SceneTransformer
         }
         int total = 0;
         for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        System.out.println( "Dereference counts BEFORE trimming (total = "+total+"):" );
+        G.v().out.println( "Dereference counts BEFORE trimming (total = "+total+"):" );
         for( int i=0; i < deRefCounts.length; i++ ) {
             if( deRefCounts[i] > 0 ) {
-                System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
             }
         }
         // Compute points-to set sizes of dereference sites AFTER
@@ -307,10 +307,10 @@ public class SparkTransformer extends SceneTransformer
             }
             total = 0;
             for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-            System.out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
+            G.v().out.println( "Dereference counts AFTER trimming (total = "+total+"):" );
             for( int i=0; i < deRefCounts.length; i++ ) {
                 if( deRefCounts[i] > 0 ) {
-                    System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+                    G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
                 }
             }
         }
@@ -337,10 +337,10 @@ public class SparkTransformer extends SceneTransformer
         }
         total = 0;
         for( int i=0; i < deRefCounts.length; i++ ) total+= deRefCounts[i];
-        System.out.println( "Virtual invoke target counts (total = "+total+"):" );
+        G.v().out.println( "Virtual invoke target counts (total = "+total+"):" );
         for( int i=0; i < deRefCounts.length; i++ ) {
             if( deRefCounts[i] > 0 ) {
-                System.out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
+                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
             }
         }
         */

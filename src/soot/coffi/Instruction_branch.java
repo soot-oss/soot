@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 import java.io.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
@@ -72,8 +73,8 @@ abstract class Instruction_branch extends Instruction {
    public void offsetToPointer(ByteCode bc) {
       target = bc.locateInst(arg_i+label);
       if (target==null) {
-         System.out.println("Warning: can't locate target of instruction");
-         System.out.println(" which should be at byte address " + (label+arg_i));
+         G.v().out.println("Warning: can't locate target of instruction");
+         G.v().out.println(" which should be at byte address " + (label+arg_i));
       } else
          target.labelled = true;
    }

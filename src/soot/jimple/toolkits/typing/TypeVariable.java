@@ -245,7 +245,7 @@ class TypeVariable implements Comparable
 		  {
 		    if(DEBUG)
 		      {
-			System.out.println(parent.type + " is not a parent of " + type);
+			G.v().out.println(parent.type + " is not a parent of " + type);
 		      }
 
 		    error("Type Error(2): Parent type is not a valid ancestor.");
@@ -263,7 +263,7 @@ class TypeVariable implements Comparable
 		  {
 		    if(DEBUG)
 		      {
-			System.out.println(child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
+			G.v().out.println(child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
 		      }
 
 		    error("Type Error(3): Child type is not a valid descendant.");
@@ -569,7 +569,7 @@ class TypeVariable implements Comparable
 	  {
 	    if(!approx.hasElement())
 	      {
-		System.out.println("*** " + this + " ***");
+		G.v().out.println("*** " + this + " ***");
 		
 		error("Type Error(4)");
 	      }

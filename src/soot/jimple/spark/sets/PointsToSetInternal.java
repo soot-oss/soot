@@ -41,13 +41,13 @@ public abstract class PointsToSetInternal implements PointsToSet {
             return addAll( other, null );
         }
         if( !warnedAlready ) {
-            System.out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
-            System.out.println( "this is of type "+getClass().getName() );
-            System.out.println( "other is of type "+other.getClass().getName() );
+            G.v().out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
+            G.v().out.println( "this is of type "+getClass().getName() );
+            G.v().out.println( "other is of type "+other.getClass().getName() );
             if( exclude == null ) {
-                System.out.println( "exclude is null" );
+                G.v().out.println( "exclude is null" );
             } else {
-                System.out.println( "exclude is of type "+
+                G.v().out.println( "exclude is of type "+
                         exclude.getClass().getName() );
             }
             warnedAlready = true;

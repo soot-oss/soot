@@ -274,21 +274,21 @@ public class ExceptionNode
 
     public void dump()
     {
-	System.out.println("try {");
+	G.v().out.println("try {");
 	Iterator tit = get_TryBody().iterator();
 	while (tit.hasNext())
-	    System.out.println( "\t" + tit.next());
-	System.out.println( "}");
+	    G.v().out.println( "\t" + tit.next());
+	G.v().out.println( "}");
 	
 	Iterator cit = get_CatchList().iterator();
 	while (cit.hasNext()) {
 	    IterableSet catchBody = (IterableSet) cit.next();
 	    
-	    System.out.println( "catch " + get_ExceptionMap().get( catchBody) + " {");
+	    G.v().out.println( "catch " + get_ExceptionMap().get( catchBody) + " {");
 	    Iterator cbit = catchBody.iterator();
 	    while (cbit.hasNext()) 
-		System.out.println( "\t" + cbit.next());
-	    System.out.println("}");
+		G.v().out.println( "\t" + cbit.next());
+	    G.v().out.println("}");
 	    
 	}
     }

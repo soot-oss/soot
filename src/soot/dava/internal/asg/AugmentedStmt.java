@@ -1,4 +1,5 @@
 package soot.dava.internal.asg;
+import soot.*;
 
 import java.util.*;
 import soot.util.*;
@@ -148,7 +149,7 @@ public class AugmentedStmt
 
     public void dump()
     {
-	System.out.println( toString());
+	G.v().out.println( toString());
     }
 
     public String toString()

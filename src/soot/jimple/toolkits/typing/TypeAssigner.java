@@ -51,7 +51,7 @@ public class TypeAssigner extends BodyTransformer
     Date start = new Date();
     
     if (soot.Main.opts.verbose())
-      System.out.println("[TypeAssigner] typing system started on "+start);
+      G.v().out.println("[TypeAssigner] typing system started on "+start);
 
     TypeResolver.resolve((JimpleBody)b, Scene.v());
 
@@ -61,7 +61,7 @@ public class TypeAssigner extends BodyTransformer
 	long runtime = finish.getTime()-start.getTime();
 	long mins = runtime/60000;
 	long secs = (runtime%60000)/1000;
-	System.out.println("[TypeAssigner] typing system ended. It took "+mins+" mins and "+secs+" secs.");
+	G.v().out.println("[TypeAssigner] typing system ended. It took "+mins+" mins and "+secs+" secs.");
       }
   }
 }

@@ -366,11 +366,11 @@ public abstract class PointerPropagationGraph extends PointerStmtSwitch
 
 	}
 	
-	System.out.println( "Casts same type as dest: "+castsSameAsDest );
-	System.out.println( "Casts different type from dest: "+castsDifferentFromDest );
-        System.out.println( "Reachable methods: " + countMethods );
-        System.out.println( "Reachable classes: " + countClasses );
-        System.out.println( "Reachable stmts: " + countStmts );
+	G.v().out.println( "Casts same type as dest: "+castsSameAsDest );
+	G.v().out.println( "Casts different type from dest: "+castsDifferentFromDest );
+        G.v().out.println( "Reachable methods: " + countMethods );
+        G.v().out.println( "Reachable classes: " + countClasses );
+        G.v().out.println( "Reachable stmts: " + countStmts );
     }
 
     static final RefType string = RefType.v("java.lang.String");

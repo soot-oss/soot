@@ -1,4 +1,5 @@
 package soot.jimple.toolkits.pointer;
+import soot.*;
 import java.util.*;
 import soot.jimple.spark.PointsToSet;
 
@@ -58,7 +59,7 @@ public class MemoryEfficientRasUnion extends Union {
     static int count = 0;
     public MemoryEfficientRasUnion() {
 	count++;
-	if( ( count % 1000 ) == 0 ) System.out.println( "Made "+count+"th MemoryEffcientRasunion" );
+	if( ( count % 1000 ) == 0 ) G.v().out.println( "Made "+count+"th MemoryEffcientRasunion" );
     }
 
 

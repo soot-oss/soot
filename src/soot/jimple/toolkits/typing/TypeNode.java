@@ -62,7 +62,7 @@ class TypeNode
     if(!((type instanceof PrimType) || (type instanceof RefType) || 
 	 (type instanceof ArrayType) || (type instanceof NullType)))
       {
-	System.out.println("Unhandled type: " + type);
+	G.v().out.println("Unhandled type: " + type);
 	throw new InternalTypingException();
       }
 
@@ -72,7 +72,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	System.out.println("creating node " + this);
+	G.v().out.println("creating node " + this);
       }
   }
   
@@ -373,10 +373,10 @@ class TypeNode
 	  {
 	    if(DEBUG)
 	      {
-		System.out.println("lca " + initial + " (" + type + ") & " + this + " =");
+		G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
 		for(Iterator i = type.parents.iterator(); i.hasNext(); )
 		  {
-		    System.out.println("  " + i.next());
+		    G.v().out.println("  " + i.next());
 		  }
 	      }
 	    return null;

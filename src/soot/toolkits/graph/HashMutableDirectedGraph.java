@@ -211,16 +211,16 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph {
 
 	for (Iterator it = iterator(); it.hasNext(); ) {
 	    Object node = it.next();
-	    System.out.println("Node = "+node);
-	    System.out.println("Preds:");
+	    G.v().out.println("Node = "+node);
+	    G.v().out.println("Preds:");
 	    for (Iterator predsIt = getPredsOf(node).iterator(); predsIt.hasNext(); ) {
-		System.out.print("     ");
-		System.out.println(predsIt.next());
+		G.v().out.print("     ");
+		G.v().out.println(predsIt.next());
 	    }
-	    System.out.println("Succs:");
+	    G.v().out.println("Succs:");
 	    for (Iterator succsIt = getSuccsOf(node).iterator(); succsIt.hasNext(); ) {
-		System.out.print("     ");
-		System.out.println(succsIt.next());
+		G.v().out.print("     ");
+		G.v().out.println(succsIt.next());
 	    }
 	}
     }

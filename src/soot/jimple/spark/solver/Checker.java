@@ -68,7 +68,7 @@ public class Checker {
         if( !container.getP2Set().contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {
-            System.out.println( "Check failure: "+container+" does not have "+n
+            G.v().out.println( "Check failure: "+container+" does not have "+n
                     +"; upstream is "+upstream );
         }
     }

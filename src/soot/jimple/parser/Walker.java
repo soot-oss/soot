@@ -65,7 +65,7 @@ public class Walker extends DepthFirstAdapter
                     public Object removeLast(){
                         Object o = super.removeLast();
                         if(debug) 
-                            System.out.println("popped: " + o );   
+                            G.v().out.println("popped: " + o );   
                         return o;
                     }
                 };
@@ -102,7 +102,7 @@ public class Walker extends DepthFirstAdapter
     public void inAFile(AFile node)
     {
         if(debug)
-            System.out.println("reading class " + node.getClassName());
+            G.v().out.println("reading class " + node.getClassName());
     } 
 
 
@@ -1066,7 +1066,7 @@ public class Walker extends DepthFirstAdapter
         
           mProductions.push(StringConstant.v(t));
           } catch(RuntimeException e) {
-          System.out.println(s);
+          G.v().out.println(s);
           throw e;
           }
         */
@@ -1586,7 +1586,7 @@ public class Walker extends DepthFirstAdapter
 
            ) {
             if(debug) 
-                System.out.println("Default case -pushing token:" + ((Token) node).getText());
+                G.v().out.println("Default case -pushing token:" + ((Token) node).getText());
             String tokenString = ((Token) node).getText();
             if(node instanceof TStringConstant || node instanceof TQuotedName) {
                 tokenString = tokenString.substring(1, tokenString.length() -1 );                
@@ -1597,7 +1597,7 @@ public class Walker extends DepthFirstAdapter
                 tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
               } catch(RuntimeException e) {
-                System.out.println(tokenString);
+                G.v().out.println(tokenString);
                 throw e;
               }
             }

@@ -67,7 +67,7 @@ public class CopyPropagator extends BodyTransformer
         int slowCopyPropagationCount = 0;
         
         if(Main.opts.verbose())
-            System.out.println("[" + stmtBody.getMethod().getName() +
+            G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "] Propagating copies...");
 
         if(Main.opts.time())
@@ -99,7 +99,7 @@ public class CopyPropagator extends BodyTransformer
             }
         }
         
-//            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(System.out, true));
+//            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(G.v().out, true));
             
         CompleteUnitGraph graph = new CompleteUnitGraph(stmtBody);
 
@@ -216,7 +216,7 @@ public class CopyPropagator extends BodyTransformer
 
 
         if(Main.opts.verbose())
-            System.out.println("[" + stmtBody.getMethod().getName() +
+            G.v().out.println("[" + stmtBody.getMethod().getName() +
                 "]     Propagated: " +
                 fastCopyPropagationCount + " fast copies  " +
                 slowCopyPropagationCount + " slow copies");

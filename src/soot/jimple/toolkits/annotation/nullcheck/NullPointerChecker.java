@@ -75,7 +75,7 @@ public class NullPointerChecker extends BodyTransformer
 	    Date start = new Date();
 
 	    if (soot.Main.opts.verbose())
-		System.out.println("[npc] Null pointer check for "+body.getMethod().getName()
+		G.v().out.println("[npc] Null pointer check for "+body.getMethod().getName()
 				   +" started on "+start);
 		
 	    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(
@@ -215,7 +215,7 @@ public class NullPointerChecker extends BodyTransformer
 		long runtime = finish.getTime()-start.getTime();
 		long mins = runtime/60000;
 		long secs = (runtime%60000)/1000;
-		System.out.println("[npc] Null pointer checker finished. It took "
+		G.v().out.println("[npc] Null pointer checker finished. It took "
 				   +mins+" mins and "+secs+" secs.");
 	    }
 	}    

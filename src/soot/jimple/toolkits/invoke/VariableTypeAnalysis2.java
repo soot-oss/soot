@@ -167,8 +167,8 @@ public class VariableTypeAnalysis2
     VTAStart = start;
     //    if (Main.opts.verbose()) 
     {
-      System.out.println("[vta2] VTA started on "+start);
-      System.out.println("[vta2] Constructing Variable Type Analysis graph.");
+      G.v().out.println("[vta2] VTA started on "+start);
+      G.v().out.println("[vta2] Constructing Variable Type Analysis graph.");
     }
 
     this.ig = ig;
@@ -177,12 +177,12 @@ public class VariableTypeAnalysis2
     finish = new Date();
     //    if (Main.opts.verbose()) 
     {
-      System.out.println("[vta2] VTA graph has "+vtg.size()+" nodes and "+vtg.numEdges()+" edges.");
+      G.v().out.println("[vta2] VTA graph has "+vtg.size()+" nodes and "+vtg.numEdges()+" edges.");
       long runtime = finish.getTime()-start.getTime();
-      System.out.println("[vta2] Graph construction took "+
+      G.v().out.println("[vta2] Graph construction took "+
 			 (runtime/60000)+" min. "+
 			 ((runtime%60000)/1000)+" sec.");
-      System.out.println("[vta2] Computing strongly connected components.");
+      G.v().out.println("[vta2] Computing strongly connected components.");
     }
     start = finish;
 
@@ -193,10 +193,10 @@ public class VariableTypeAnalysis2
     //    if (Main.opts.verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
-      System.out.println("[vta2] SCC took "+
+      G.v().out.println("[vta2] SCC took "+
 			 (runtime/60000)+" min. "+
 			 ((runtime%60000)/1000)+" sec.");
-      System.out.println("[vta2] Propagating types.");
+      G.v().out.println("[vta2] Propagating types.");
     }
     start = finish;
 
@@ -210,19 +210,19 @@ public class VariableTypeAnalysis2
     //    if (Main.opts.verbose()) 
     {
       long runtime = finish.getTime()-start.getTime();
-      System.out.println("[vta2] Type propagation took "+
+      G.v().out.println("[vta2] Type propagation took "+
 			 (runtime/60000)+" min. "+
 			 ((runtime%60000)/1000)+" sec.");
-      System.out.println("[vta2] Done constructing Variable Type Analysis graph.");
+      G.v().out.println("[vta2] Done constructing Variable Type Analysis graph.");
     }
     if (Main.opts.verbose())
-      System.out.println("[vta2] Done constructing Variable Type Analysis graph.");
+      G.v().out.println("[vta2] Done constructing Variable Type Analysis graph.");
   }
 
   /** Uses the results of this analysis to trim the active invoke graph. */
   public void trimActiveInvokeGraph() {
     if (Main.opts.verbose())
-      System.out.println("[vta2] Trimming active invoke graph.");
+      G.v().out.println("[vta2] Trimming active invoke graph.");
 
     Date trimStart = new Date();
     
@@ -273,10 +273,10 @@ public class VariableTypeAnalysis2
 	      ig.removeAllTargets(s);
 	      
 	      if (Main.opts.verbose()) {
-		System.out.println("stmt "+s);
-		System.out.println("local: "
+		G.v().out.println("stmt "+s);
+		G.v().out.println("local: "
 				   +VTATypeGraph2.getVTALabel(m, base));
-		System.out.println("reaching types: "
+		G.v().out.println("reaching types: "
 				   +getReachingTypesOf(TypeGraphNode2.v(
 	      			VTATypeGraph2.getVTALabel(m, base))));
 	      }
@@ -316,17 +316,17 @@ public class VariableTypeAnalysis2
 
     long trimtime = trimEnd.getTime() - trimStart.getTime();
 
-    System.out.println("[vta2] Trimming invoke graph takes "
+    G.v().out.println("[vta2] Trimming invoke graph takes "
 		       +(trimtime/60000)+" min "
 		       +((trimtime%60000)/1000)+" sec.");
 
     VTAFinish = new Date();
 
     long runtime = VTAFinish.getTime() - VTAStart.getTime();
-    System.out.println("[vta2] VTA has run for "
+    G.v().out.println("[vta2] VTA has run for "
 		       +(runtime/60000)+" min "+
 		       ((runtime%60000)/1000)+" sec.");
-    System.out.println();
+    G.v().out.println();
   }
 
     // You can also ask about the reaching types for any variable.

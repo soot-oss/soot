@@ -41,8 +41,8 @@ public class VarNode extends ValNode implements Comparable {
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
         if( other.finishingNumber == finishingNumber && other != this ) {
-            System.out.println( "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
-            System.out.println( "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
+            G.v().out.println( "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
+            G.v().out.println( "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
             throw new RuntimeException("Comparison error" );
         }
 	return other.finishingNumber - finishingNumber;

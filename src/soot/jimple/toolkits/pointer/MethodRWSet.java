@@ -28,7 +28,7 @@ public class MethodRWSet extends RWSet {
         /*
 	count++;
 	if( 0 == (count % 1000) ) {
-	    System.out.println( "Created "+count+"th MethodRWSet" );
+	    G.v().out.println( "Created "+count+"th MethodRWSet" );
 	}
         */
     }
@@ -183,10 +183,10 @@ public class MethodRWSet extends RWSet {
     static int fieldCount = 0;
     static void addedField( int size ) {
 	fieldCount++;
-	//if( 0 == ( fieldCount % 1000 ) ) System.out.println( "Added "+fieldCount+"th field" );
+	//if( 0 == ( fieldCount % 1000 ) ) G.v().out.println( "Added "+fieldCount+"th field" );
 
 	if( size > 1000 && (( size & (size-1) )== 0 ) ) {
-	    System.out.println( "This method has reached "+size+" fields" );
+	    G.v().out.println( "This method has reached "+size+" fields" );
 	}
     }
     public boolean isEquivTo( RWSet other ) {

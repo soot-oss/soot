@@ -68,12 +68,12 @@ public class Dava
 		    iOut = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( LOG_TO_FILE), "US-ASCII"));
 		}
 		catch (FileNotFoundException fnfe) {
-		    System.out.println( "Unable to open " + LOG_TO_FILE);
+		    G.v().out.println( "Unable to open " + LOG_TO_FILE);
 		    fnfe.printStackTrace();
 		    System.exit(0);
 		}
 		catch (UnsupportedEncodingException uee) {
-		    System.out.println( "This system doesn't support US-ASCII encoding!!");
+		    G.v().out.println( "This system doesn't support US-ASCII encoding!!");
 		    uee.printStackTrace();
 		    System.exit(0);
 		}
@@ -84,7 +84,7 @@ public class Dava
 		iOut.flush();
 	    }
 	    catch (IOException ioe) {
-		System.out.println( "Unable to write to " + LOG_TO_FILE);
+		G.v().out.println( "Unable to write to " + LOG_TO_FILE);
 		ioe.printStackTrace();
 		System.exit(0);
 	    }

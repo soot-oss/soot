@@ -91,9 +91,9 @@ public class ContextInsensitiveBuilder implements Builder {
         }
 
         if( pag.getOpts().verbose() ) {
-            System.out.println( "Total methods: "+totalMethods );
-            System.out.println( "Initially reachable methods: "+analyzedMethods );
-            System.out.println( "Classes with at least one reachable method: "+classes );
+            G.v().out.println( "Total methods: "+totalMethods );
+            G.v().out.println( "Initially reachable methods: "+analyzedMethods );
+            G.v().out.println( "Classes with at least one reachable method: "+classes );
         }
     }
 

@@ -147,7 +147,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 	catch( RuntimeException re ) 
 	{
 	    // this will fail if the --analyze-context flag is not specified
-	    // System.out.println( "JIL VTA FAILED: " + re );
+	    // G.v().out.println( "JIL VTA FAILED: " + re );
 	    igVTA = null;
 	}
     
@@ -290,7 +290,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 		    }
 		    catch( RuntimeException re )
 		    {
-			//System.out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+			//G.v().out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
 		    }
 		}
 
@@ -312,7 +312,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 			}
 			catch( RuntimeException re ) 
 			{
-			    //System.out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+			    //G.v().out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
 			}
 		    }
 		}

@@ -29,6 +29,7 @@
 
 
 package soot.util;
+import soot.*;
 
 import java.io.*;
 import java.util.zip.*;
@@ -208,7 +209,7 @@ public class SourceLocator
                     try {       
                         return inputRep.createInputStream(new FileInputStream(f));                    
                     } catch(IOException e) { 
-                        System.out.println(e); throw new RuntimeException("!"); 
+                        G.v().out.println(e); throw new RuntimeException("!"); 
                     }
                 }
             }
@@ -235,7 +236,7 @@ public class SourceLocator
 				
                         return inputRep.createInputStream(bugFreeInputStream);
                     } catch(IOException e) {
-                        System.out.println("error reading file:" + zip.getName() + e.toString());
+                        G.v().out.println("error reading file:" + zip.getName() + e.toString());
                         System.exit(1);
                     }
                 }
@@ -252,7 +253,7 @@ public class SourceLocator
 	    if(path.endsWith("zip") || path.endsWith("jar")) {
 		return true;
 	    } else {
-		System.out.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
+		G.v().out.println("Warning: the following soot-classpath entry is not a supported archive file (must be .zip or .jar): " + path);
 	    }
 	}  
 	return false;
@@ -263,7 +264,7 @@ public class SourceLocator
 	    ZipFile zipFile = new ZipFile(fileName);
 	    zipFileList.add(zipFile);	
 	} catch (IOException e) {
-	    System.out.println("error loading file:" + fileName + e.toString());
+	    G.v().out.println("error loading file:" + fileName + e.toString());
 	}
     }    
     

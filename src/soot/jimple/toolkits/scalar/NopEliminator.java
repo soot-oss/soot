@@ -47,7 +47,7 @@ public class NopEliminator extends BodyTransformer
         JimpleBody body = (JimpleBody)b;
         
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() +
+            G.v().out.println("[" + body.getMethod().getName() +
                 "] Removing nops...");
                 
         Chain units = body.getUnits();

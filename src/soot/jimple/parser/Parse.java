@@ -93,7 +93,7 @@ public class Parse
         
         // check arguments
         if (args.length < 1) {
-            System.out.println(USAGE);
+            G.v().out.println(USAGE);
             System.exit(0);
         }
 
@@ -114,20 +114,20 @@ public class Parse
                
                 try {
                     if (verbose)
-                        System.out.println(" ... looking for " + arg);
+                        G.v().out.println(" ... looking for " + arg);
                     inFile = new FileInputStream(arg);
                 } catch (FileNotFoundException e) {
                     if (arg.endsWith(EXT)) {
-                        System.out.println(" *** can't find " + arg);
+                        G.v().out.println(" *** can't find " + arg);
                         continue;
                     }
                     arg = arg + EXT;
                     try {
                         if (verbose)
-                            System.out.println(" ... looking for " + arg);
+                            G.v().out.println(" ... looking for " + arg);
                         inFile = new BufferedInputStream(new FileInputStream(arg));
                     } catch (FileNotFoundException ee) {
-                        System.out.println(" *** can't find " + arg);
+                        G.v().out.println(" *** can't find " + arg);
                         continue;
                     }
                 }

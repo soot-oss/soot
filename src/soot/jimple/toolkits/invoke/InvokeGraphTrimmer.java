@@ -19,7 +19,7 @@ public class InvokeGraphTrimmer
 
     public void trimInvokeGraph()
     {
-	System.out.println( "Trimming invoke graph" );
+	G.v().out.println( "Trimming invoke graph" );
 
 	FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
 
@@ -55,7 +55,7 @@ public class InvokeGraphTrimmer
             }
         }
 	ig.mcg.refresh();
-	System.out.println( "Done trimming invoke graph" );
+	G.v().out.println( "Done trimming invoke graph" );
     }
 }
 

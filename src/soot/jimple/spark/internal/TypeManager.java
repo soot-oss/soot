@@ -82,7 +82,7 @@ public final class TypeManager {
 
         int numTypes = Scene.v().getTypeNumberer().size();
         if( pag.getOpts().verbose() )
-            System.out.println( "Total types: "+numTypes );
+            G.v().out.println( "Total types: "+numTypes );
 
         Numberer allocNodes = pag.getAllocNodeNumberer();
         for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {

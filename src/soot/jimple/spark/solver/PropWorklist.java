@@ -45,7 +45,7 @@ public final class PropWorklist extends Propagator {
         boolean verbose = pag.getOpts().verbose();
 	do {
             if( verbose ) {
-                System.out.println( "Worklist has "+varNodeWorkList.size()+
+                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
             while( !varNodeWorkList.isEmpty() ) {
@@ -54,7 +54,7 @@ public final class PropWorklist extends Propagator {
                 handleVarNode( src );
             }
             if( verbose ) {
-                System.out.println( "Now handling field references" );
+                G.v().out.println( "Now handling field references" );
             }
             for( Iterator srcIt = pag.storeSources().iterator(); srcIt.hasNext(); ) {
                 final VarNode src = (VarNode) srcIt.next();

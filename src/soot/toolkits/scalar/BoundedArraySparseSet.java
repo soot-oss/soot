@@ -25,6 +25,7 @@
 
 
 package soot.toolkits.scalar;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -161,9 +162,9 @@ public class BoundedArraySparseSet extends AbstractBoundedFlowSet {
     int last = elements[0];
     for (int i = 1; i < numElements; i++) {
       if (last > elements[i]) {
-        System.out.println("ERROR: flowSet is not sorted");
-        System.out.print("elements: ");
-        for (int j = 0; j < numElements; j++) System.out.print(elements[j]);
+        G.v().out.println("ERROR: flowSet is not sorted");
+        G.v().out.print("elements: ");
+        for (int j = 0; j < numElements; j++) G.v().out.print(elements[j]);
         System.exit(-1);
       }
       last = elements[i];

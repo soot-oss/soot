@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.gui.*;
 
@@ -344,9 +345,9 @@ public class JMain
                         public void compilationTerminated(int status)
                             {
                                 if(status == Main.COMPILATION_ABORTED)
-                                    System.out.println("Compilation aborted.");
+                                    G.v().out.println("Compilation aborted.");
                                 else if(status == Main.COMPILATION_SUCCEDED)
-                                    System.out.println("Compilation succeded.");           
+                                    G.v().out.println("Compilation succeded.");           
                             }                        
                     });
 
@@ -356,7 +357,7 @@ public class JMain
                         }
                         }).start();
                     
-                    System.out.println("started thread");
+                    G.v().out.println("started thread");
                 }   
             });
             
@@ -398,8 +399,8 @@ public class JMain
                            "--final-rep " + finalRep + (verbose ? " --verbose ": "") +
                            (debug ? " --debug ": "") + (sootClasspathString.length() > 0 ? " --soot-class-path " +
                                                         sootClasspathString: "");
-        System.out.println(cmd);
-        System.out.println();
+        G.v().out.println(cmd);
+        G.v().out.println();
         
         StringTokenizer st = new StringTokenizer(cmd);
         int count = st.countTokens();
@@ -407,7 +408,7 @@ public class JMain
         count = 0;
         while(st.hasMoreTokens()) {
             cmdLine[count++] = st.nextToken();
-            System.out.print(cmdLine[count-1] + " ");
+            G.v().out.print(cmdLine[count-1] + " ");
         }
         
         return cmdLine;                    

@@ -156,7 +156,7 @@ next());
             }
         }
         
-        // System.out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
+        // G.v().out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
         
         Timers.v().totalFlowNodes += numNodes;

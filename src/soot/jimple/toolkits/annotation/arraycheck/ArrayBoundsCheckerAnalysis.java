@@ -93,7 +93,7 @@ class ArrayBoundsCheckerAnalysis
 	SootMethod thismethod = body.getMethod();
 
 	if (debug) 
-	    System.out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
+	    G.v().out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
 	
 	ailanalysis = new ArrayIndexLivenessAnalysis(new CompleteUnitGraph(body), fieldin, arrayin, csin, rectarray);
 
@@ -151,7 +151,7 @@ class ArrayBoundsCheckerAnalysis
 	convertToUnitEntry();
 
 	if (debug) 
-	    System.out.println("ArrayBoundsCheckerAnalysis finished.");
+	    G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
 
     }
 
@@ -254,12 +254,12 @@ class ArrayBoundsCheckerAnalysis
 	/*	
 	for (int i=0; i<ins.length; i++)
 	{
-	    System.out.println("in " + i);
-	    System.out.println(ins[i]);
+	    G.v().out.println("in " + i);
+	    G.v().out.println(ins[i]);
 	}
 
-	System.out.println("out ");
-	System.out.println(out);	
+	G.v().out.println("out ");
+	G.v().out.println(out);	
 	*/
 	}
     }
@@ -270,7 +270,7 @@ class ArrayBoundsCheckerAnalysis
     {
 	Date start = new Date();
 	if (debug)
-	    System.out.println("Building PseudoTopological order list on "+start);
+	    G.v().out.println("Building PseudoTopological order list on "+start);
 
         LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph);
 			
@@ -285,13 +285,13 @@ class ArrayBoundsCheckerAnalysis
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
-	    System.out.println("Building PseudoTopological order finished. "
+	    G.v().out.println("Building PseudoTopological order finished. "
 			       +"It took "+mins+" mins and "+secs+" secs.");
 	}
 
 	start = new Date();
 	if (debug)
-	    System.out.println("Doing analysis started on "+start);
+	    G.v().out.println("Doing analysis started on "+start);
 
 	{
 	    for (int i=0; i<allUnits.size(); i++)
@@ -305,8 +305,8 @@ class ArrayBoundsCheckerAnalysis
 		    /*	
 		    if (debug)
 		    {
-			System.out.println(tail);
-			System.out.println(livelocals);
+			G.v().out.println(tail);
+			G.v().out.println(livelocals);
 		    }
 		    */
 		}
@@ -454,7 +454,7 @@ class ArrayBoundsCheckerAnalysis
 
 			if (allUnvisited)
 			{
-			    System.out.println("Warning : see all unvisited node");
+			    G.v().out.println("Warning : see all unvisited node");
 			}
 			else
 			{
@@ -505,7 +505,7 @@ class ArrayBoundsCheckerAnalysis
 	    long runtime = finish.getTime()-start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime/60000)/1000;
-	    System.out.println("Doing analysis finished."
+	    G.v().out.println("Doing analysis finished."
 			       + " It took "+mins+" mins and "+secs+ "secs.");
 	}
     }

@@ -1,4 +1,5 @@
 package soot;
+import soot.*;
 
 import soot.tagkit.*;
 import java.util.*;
@@ -24,7 +25,7 @@ public class XMLAttributesPrinter {
 		  writerOut.println("<attributes>");
 		}
 		catch(IOException e1) {
-		  System.out.println(e1.getMessage());
+		  G.v().out.println(e1.getMessage());
 		}
 									
 	}

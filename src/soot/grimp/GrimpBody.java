@@ -65,7 +65,7 @@ public class GrimpBody extends StmtBody
         super(body.getMethod());
 
         if(soot.Main.opts.verbose())
-            System.out.println("[" + getMethod().getName() + "] Constructing GrimpBody...");
+            G.v().out.println("[" + getMethod().getName() + "] Constructing GrimpBody...");
         
         JimpleBody jBody = null;
 

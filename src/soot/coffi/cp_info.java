@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 import java.io.*;
 import java.util.StringTokenizer;
@@ -155,7 +156,7 @@ abstract class cp_info {
          return getClassname(constant_pool,
                              ((CONSTANT_InterfaceMethodref_info)c).class_index);
       }
-      System.out.println("Request for classname for non-class object!");
+      G.v().out.println("Request for classname for non-class object!");
       return "Can't find classname. Sorry.";
    }
 
@@ -181,7 +182,7 @@ abstract class cp_info {
          return getName(constant_pool,
                         ((CONSTANT_InterfaceMethodref_info)c).name_and_type_index);
       }
-      System.out.println("Request for name for non-named object!");
+      G.v().out.println("Request for name for non-named object!");
       return "Can't find name of that object. Sorry.";
    }
 
@@ -224,7 +225,7 @@ abstract class cp_info {
       if (c instanceof CONSTANT_Fieldref_info)
          return getTypeDescr(constant_pool,
                              ((CONSTANT_Fieldref_info)c).name_and_type_index);
-      System.out.println("Invalid request for type descr!");
+      G.v().out.println("Invalid request for type descr!");
       return "Invalid type descriptor request.";
    }
 

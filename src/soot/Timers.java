@@ -138,55 +138,55 @@ public class Timers
     {                                                   
         long totalTime = totalTimer.getTime();
                 
-        System.out.println("Time measurements");
-        System.out.println();
+        G.v().out.println("Time measurements");
+        G.v().out.println();
                 
-        System.out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
-        System.out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
-	//                System.out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
-	//                System.out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
-	//                System.out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
-        System.out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
-	//                System.out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
-	//                System.out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
-	//                System.out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
+        G.v().out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
+        G.v().out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+	//                G.v().out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
+	//                G.v().out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
+	//                G.v().out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
+        G.v().out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+	//                G.v().out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
+	//                G.v().out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
+	//                G.v().out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
 
-        System.out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
-        System.out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
-        System.out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
-	//                System.out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
-	//                System.out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
-	//                System.out.println("                 post: " + toTimeString(livePostTimer, totalTime));
+        G.v().out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
+        G.v().out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
+        G.v().out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+	//                G.v().out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
+	//                G.v().out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
+	//                G.v().out.println("                 post: " + toTimeString(livePostTimer, totalTime));
                 
-        System.out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
+        G.v().out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
                 
-        System.out.println();
+        G.v().out.println();
 
         // Print out time stats.
         {
             float timeInSecs;
 
-            System.out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
-            System.out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
-            System.out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
-            System.out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
-            System.out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
-            System.out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-            System.out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
-            System.out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
-            System.out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-            System.out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
+            G.v().out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
+            G.v().out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
+            G.v().out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
+            G.v().out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
+            G.v().out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+            G.v().out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+            G.v().out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+            G.v().out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
+            G.v().out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
+            G.v().out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
             
                                             
-	    //                    System.out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
+	    //                    G.v().out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
 	    //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
                     
-	    //                    System.out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
-	    //                    System.out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
+	    //                    G.v().out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
+	    //                    G.v().out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
                 
 	    /*
-	      System.out.println("cleanup2Timer:   " + cleanup2Time +
+	      G.v().out.println("cleanup2Timer:   " + cleanup2Time +
 	      "(" + (cleanup2Time * 100 / totalTime) + "%) " +
 	      cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
 	    */
@@ -194,18 +194,18 @@ public class Timers
             timeInSecs = (float) totalTime / 1000.0f;
             float memoryUsed = (float) (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
             
-            System.out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+            G.v().out.println("totalTime:" + toTimeString(totalTimer, totalTime));
             
             if(Main.opts.subtract_gc())
 		{
-		    System.out.println("Garbage collection was subtracted from these numbers.");
-		    System.out.println("           forcedGC:" + 
+		    G.v().out.println("Garbage collection was subtracted from these numbers.");
+		    G.v().out.println("           forcedGC:" + 
 				       toTimeString(Timer.forcedGarbageCollectionTimer, totalTime));
 		}
 
-            System.out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
+            G.v().out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
                     
-            System.out.println("totalFlowNodes: " + totalFlowNodes + 
+            G.v().out.println("totalFlowNodes: " + totalFlowNodes + 
                                " totalFlowComputations: " + totalFlowComputations + " avg: " + 
                                truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
         }

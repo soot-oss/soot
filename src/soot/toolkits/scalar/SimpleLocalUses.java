@@ -74,7 +74,7 @@ public class SimpleLocalUses implements LocalUses
            Timers.v().usePhase1Timer.start();
         
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() +
+            G.v().out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
     
 	Chain units = body.getUnits();

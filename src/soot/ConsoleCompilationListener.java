@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.gui.ICompilationListener;
 
@@ -34,7 +35,7 @@ public class ConsoleCompilationListener implements ICompilationListener
     public  void compilationTerminated(int status, String msg) 
     {
         if(status == Main.COMPILATION_ABORTED) { 	 
-            System.out.println("compilation failed: "+msg);
+            G.v().out.println("compilation failed: "+msg);
 	    return;
         }
         else if(status == Main.COMPILATION_SUCCEDED) {

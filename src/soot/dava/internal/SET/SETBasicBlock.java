@@ -1,4 +1,5 @@
 package soot.dava.internal.SET;
+import soot.*;
 
 import java.util.*;
 import soot.util.*;
@@ -115,13 +116,13 @@ public class SETBasicBlock implements Comparable
     public void dump()
     {
 	printSig();
-	System.out.println( "=== preds ===");
+	G.v().out.println( "=== preds ===");
 
 	Iterator it = predecessors.iterator();
 	while (it.hasNext())
 	    ((SETBasicBlock) it.next()).printSig();
 
-	System.out.println( "=== succs ===");
+	G.v().out.println( "=== succs ===");
 
 	it = successors.iterator();
 	while (it.hasNext())

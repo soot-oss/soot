@@ -60,7 +60,7 @@ public class ClassFieldAnalysis
 	/* Summerize class information here. */
 	Date start = new Date();
  	if (soot.Main.opts.verbose()) 
-	    System.out.println("[] ClassFieldAnalysis started on : "
+	    G.v().out.println("[] ClassFieldAnalysis started on : "
 			       +start+" for "
 			       +c.getPackageName()+c.getName());
 	
@@ -97,7 +97,7 @@ public class ClassFieldAnalysis
 	if (arrayTypeFieldNum == 0)
 	{
 	    if (Main.opts.verbose()) 
-		System.out.println("[] ClassFieldAnalysis finished with nothing");
+		G.v().out.println("[] ClassFieldAnalysis finished with nothing");
 	    return;
 	}
 
@@ -126,7 +126,7 @@ public class ClassFieldAnalysis
 	    long runtime=finish.getTime()-start.getTime();
 	    long mins=runtime/60000;
 	    long secs=(runtime%60000)/1000;
-	    System.out.println("[] ClassFieldAnalysis finished normally. "
+	    G.v().out.println("[] ClassFieldAnalysis finished normally. "
 			       +"It took "+mins+" mins and "+secs+" secs.");
 	}
     }
@@ -226,7 +226,7 @@ public class ClassFieldAnalysis
 
 	if (soot.Main.opts.verbose())
 	{
-	    System.out.println("[] ScanMethod for field started.");
+	    G.v().out.println("[] ScanMethod for field started.");
 	}
 
 	/* build D/U web, find the value of each candidate */
@@ -261,7 +261,7 @@ public class ClassFieldAnalysis
 			    usestmt = (DefinitionStmt)defs.get(0);
 
 			    if (debug)
-				System.out.println("        "+usestmt);
+				G.v().out.println("        "+usestmt);
 
 			    Value tmp_rhs = usestmt.getRightOp();
 			    if ( (tmp_rhs instanceof NewArrayExpr)
@@ -346,7 +346,7 @@ public class ClassFieldAnalysis
 	
 	if (soot.Main.opts.verbose())
 	{
-	    System.out.println("[] ScanMethod finished.");
+	    G.v().out.println("[] ScanMethod finished.");
 	}
     }
 }

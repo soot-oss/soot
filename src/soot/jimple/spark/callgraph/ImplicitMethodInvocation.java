@@ -105,7 +105,7 @@ public class ImplicitMethodInvocation
                 if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
                         if( verbose ) {
-                            System.out.println( "Warning: call to "+
+                            G.v().out.println( "Warning: call to "+
                                 "java.lang.reflect.Method: invoke() from "+source+
                                 "; graph will be incomplete!" );
                             warnedAlready = true;
@@ -119,7 +119,7 @@ public class ImplicitMethodInvocation
                         if( cls.charAt(0) != '[' ) {
                             if( !Scene.v().containsClass( cls ) ) {
                                 if( verbose ) {
-                                    System.out.println( "Warning: Class "+cls+" is"+
+                                    G.v().out.println( "Warning: Class "+cls+" is"+
                                         " a dynamic class, and you did not specify"+
                                         " it as such; graph will be incomplete!" );
                                 }
@@ -133,7 +133,7 @@ public class ImplicitMethodInvocation
                         }
                     } else {
                         if( verbose ) {
-                            System.out.println( "Warning: Method "+source+
+                            G.v().out.println( "Warning: Method "+source+
                                     " is reachable, and calls Class.forName on a"+
                                     " non-constant String; graph will be incomplete!" );
                         }

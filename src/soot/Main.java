@@ -24,6 +24,7 @@
  */
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import soot.gui.*;
@@ -146,7 +147,7 @@ public class Main implements Runnable
 		    dir.mkdirs();
 		}
 		catch( SecurityException se) {
-		    System.out.println( "Unable to create " + classPath);
+		    G.v().out.println( "Unable to create " + classPath);
 		    System.exit(0);
 		}
 	}
@@ -169,7 +170,7 @@ public class Main implements Runnable
 		    dir.mkdirs();
 		}
 		catch( SecurityException se) {
-		    System.out.println( "Unable to create " + path);
+		    G.v().out.println( "Unable to create " + path);
 		    System.exit(0);
 		}
 	}
@@ -328,28 +329,28 @@ public class Main implements Runnable
 
     private static void printVersion()
     {
-	System.out.println("Soot version "+versionString);
+	G.v().out.println("Soot version "+versionString);
 
-	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
-	System.out.println("All rights reserved.");
-	System.out.println("");
-	System.out.println("Contributions are copyright (C) 1997-2003 by their respective contributors.");
-	System.out.println("See individual source files for details.");
-	System.out.println("");
-	System.out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
-	System.out.println("and you are welcome to redistribute it under certain conditions.");
-	System.out.println("See the accompanying file 'license.html' for details.");
-	System.out.println();
-	System.out.println("Visit the Soot website:");
-	System.out.println("  http://www.sable.mcgill.ca/soot/");
-	System.out.println();
-	System.out.println("For a list of command line options, enter:");
-	System.out.println("  java soot.Main --help");
+	G.v().out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
+	G.v().out.println("All rights reserved.");
+	G.v().out.println("");
+	G.v().out.println("Contributions are copyright (C) 1997-2003 by their respective contributors.");
+	G.v().out.println("See individual source files for details.");
+	G.v().out.println("");
+	G.v().out.println("Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
+	G.v().out.println("and you are welcome to redistribute it under certain conditions.");
+	G.v().out.println("See the accompanying file 'license.html' for details.");
+	G.v().out.println();
+	G.v().out.println("Visit the Soot website:");
+	G.v().out.println("  http://www.sable.mcgill.ca/soot/");
+	G.v().out.println();
+	G.v().out.println("For a list of command line options, enter:");
+	G.v().out.println("  java soot.Main --help");
     }
 
     private static void printHelp()
     {
-        System.out.println( opts.getUsage() );
+        G.v().out.println( opts.getUsage() );
     }
 
 
@@ -432,6 +433,14 @@ public class Main implements Runnable
         addCompilationListener(ccl);
         m.run();
     }
+    /**
+     *   Entry point for Eclipse line invocation of soot.
+     */
+    public static void main(String[] args, PrintStream out)
+    {
+        G.v().out = out;
+        main( args );
+    }
 
   /** 
    *  Entry point to the soot's compilation process. Be sure to call
@@ -447,7 +456,7 @@ public class Main implements Runnable
 
       processCmdLine(cmdLineArgs);
 
-      System.out.println("Soot started on "+start);
+      G.v().out.println("Soot started on "+start);
 
       if( opts.soot_classpath().length() > 0 ) {
           Scene.v().setSootClassPath( opts.soot_classpath() );
@@ -487,9 +496,9 @@ public class Main implements Runnable
 				
     finish = new Date();
     
-    System.out.println("Soot finished on "+finish);
+    G.v().out.println("Soot finished on "+finish);
     long runtime = finish.getTime() - start.getTime();
-    System.out.println("Soot has run for "
+    G.v().out.println("Soot has run for "
 		       +(runtime/60000)+" min. "
 		       +((runtime%60000)/1000)+" sec.");
      
@@ -502,7 +511,7 @@ public class Main implements Runnable
       ThrowFinder.v().find();
       PackageNamer.v().fixNames();
 
-      System.out.println();
+      G.v().out.println();
     }
   }
 
@@ -515,15 +524,15 @@ public class Main implements Runnable
       SootClass s = (SootClass) classIt.next();
 				
       if (opts.output_format() == Options.output_format_dava) {
-	System.out.print( "Decompiling ");
+	G.v().out.print( "Decompiling ");
       } else {
-	System.out.print( "Transforming ");
+	G.v().out.print( "Transforming ");
       }
-      System.out.print( s.getName() + "... " );
-      System.out.flush();
+      G.v().out.print( s.getName() + "... " );
+      G.v().out.flush();
 							
       handleClass(s);
-      System.out.println();
+      G.v().out.println();
     }
   }
 
@@ -534,7 +543,7 @@ public class Main implements Runnable
       // ThrowFinder.v().find();
       // PackageNamer.v().fixNames();
 
-      System.out.println();
+      G.v().out.println();
 
       setJavaStyle( true);
 
@@ -550,23 +559,23 @@ public class Main implements Runnable
 	  streamOut = new FileOutputStream(fileName);
 	  writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
 	} catch (IOException e) {
-	  System.out.println("Cannot output file " + fileName);
+	  G.v().out.println("Cannot output file " + fileName);
 	}
 
-	System.out.print( "Generating " + fileName + "... ");
-	System.out.flush();
+	G.v().out.print( "Generating " + fileName + "... ");
+	G.v().out.flush();
 
         s.printTo(writerOut, PrintGrimpBodyOption.USE_ABBREVIATIONS);
 
-	System.out.println();
-	System.out.flush();
+	G.v().out.println();
+	G.v().out.flush();
 
 	{
 	  try {
 	    writerOut.flush();
 	    streamOut.close();
 	  } catch(IOException e) {
-	    System.out.println("Cannot close output file " + fileName);
+	    G.v().out.println("Cannot close output file " + fileName);
 	  }
 	}
 
@@ -581,7 +590,7 @@ public class Main implements Runnable
 	  }
 	}
       }
-      System.out.println();
+      G.v().out.println();
 
       setJavaStyle( false);
     }
@@ -787,7 +796,7 @@ public class Main implements Runnable
 	streamOut = new FileOutputStream(fileName);
 	writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
       } catch (IOException e) {
-	System.out.println("Cannot output file " + fileName);
+	G.v().out.println("Cannot output file " + fileName);
       }
     }
 
@@ -905,7 +914,7 @@ public class Main implements Runnable
 	writerOut.flush();
 	streamOut.close();
       }	catch(IOException e) {
-	System.out.println("Cannot close output file " + fileName);
+	G.v().out.println("Cannot close output file " + fileName);
       }
     }
 

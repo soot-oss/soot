@@ -97,7 +97,7 @@ public class UnitGraph implements DirectedGraph
         method = getBody().getMethod();
         
         if(Main.opts.verbose())
-            System.out.println("[" + method.getName() + 
+            G.v().out.println("[" + method.getName() + 
                                "]     Constructing UnitGraph...");
       
         if(Main.opts.time())
@@ -253,7 +253,7 @@ public class UnitGraph implements DirectedGraph
                         try {
                             predList.add(s);
                         } catch(NullPointerException e) {
-                            System.out.println(s + "successor: " + successor);
+                            G.v().out.println(s + "successor: " + successor);
                             throw e;
                         }
                     }

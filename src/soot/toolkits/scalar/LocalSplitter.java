@@ -65,7 +65,7 @@ public class LocalSplitter extends BodyTransformer
         List webs = new ArrayList();
 
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+            G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
 
         Map boxToSet = new HashMap(units.size() * 2 + 1, 0.7f);
 

@@ -74,8 +74,8 @@ public class LoadStoreOptimizer extends BodyTransformer
     {
         BlockGraph blockGraph = new ZonedBlockGraph(mBody); 
         if(debug) {
-            System.out.println("Method " +  mBody.getMethod().getName()+ " Block Graph: ");
-            System.out.println(blockGraph);
+            G.v().out.println("Method " +  mBody.getMethod().getName()+ " Block Graph: ");
+            G.v().out.println(blockGraph);
         }
        
         List blocks = blockGraph.getBlocks();
@@ -145,10 +145,10 @@ public class LoadStoreOptimizer extends BodyTransformer
         }
         
         if(soot.Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
+            G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
-        if(debug) { System.out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
-        if(debug) { mBody.printTo(new java.io.PrintWriter(System.out, true), 0);}
+        if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
+        if(debug) { mBody.printTo(new java.io.PrintWriter(G.v().out, true), 0);}
         
         if(!mUnits.isEmpty()) {                    
             buildUnitToBlockMap();
@@ -156,23 +156,23 @@ public class LoadStoreOptimizer extends BodyTransformer
            
             
            
-            if(debug){System.out.println("Calling optimizeLoadStore(1)\n");}
+            if(debug){G.v().out.println("Calling optimizeLoadStore(1)\n");}
             optimizeLoadStores(); 
         
             if(PackManager.getBoolean(gOptions, "inter") ) {
-                if(debug){System.out.println("Calling doInterBlockOptimizations");}
+                if(debug){G.v().out.println("Calling doInterBlockOptimizations");}
                 doInterBlockOptimizations(); 
                              
                 //computeLocalDefsAndLocalUsesInfo();          
-                //propagateLoadsBackwards();         if(debug)     System.out.println("pass 3");         
-                //optimizeLoadStores();      if(debug)   System.out.println("pass 4"); 
-                //propagateLoadsForward();   if(debug)   System.out.println("pass 5"); 
-                //propagateBackwardsIndependentHunk(); if(debug)  System.out.println("pass 6");                        
+                //propagateLoadsBackwards();         if(debug)     G.v().out.println("pass 3");         
+                //optimizeLoadStores();      if(debug)   G.v().out.println("pass 4"); 
+                //propagateLoadsForward();   if(debug)   G.v().out.println("pass 5"); 
+                //propagateBackwardsIndependentHunk(); if(debug)  G.v().out.println("pass 6");                        
             }
 
             if(PackManager.getBoolean(gOptions, "sl2") || PackManager.getBoolean(gOptions, "sll2")  ) {        
                 gPass2 = true;
-                if(debug){System.out.println("Calling optimizeLoadStore(2)");}
+                if(debug){G.v().out.println("Calling optimizeLoadStore(2)");}
                 optimizeLoadStores();   
             }
         }        
@@ -280,7 +280,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                             hasChanged = true;        hasChangedFlag = false;
                                     
                                             //delme[
-                                            if(debug) { System.out.println("Store/Load elimination occurred case1.");}
+                                            if(debug) { G.v().out.println("Store/Load elimination occurred case1.");}
                                             //delme]
                                         } /*else if (test == SPECIAL_SUCCESS2) {
                                             if(!hasChangedFlag) {
@@ -341,7 +341,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                                   throw new RuntimeException("this has to be corrected (loadstoroptimiser.java)" + stackUnit);
                                                   }
                                         
-                                                  if(debug) { System.out.println("stack unit is: " + stackUnit + " stack type is " + underType);}
+                                                  if(debug) { G.v().out.println("stack unit is: " + stackUnit + " stack type is " + underType);}
                                                   replaceUnit(unit, Baf.v().newDup1_x1Inst(((LoadInst) secondLoad).getOpType(),underType));
                                                   unitIt.remove();                
                                         
@@ -427,7 +427,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                         
                         h-= ((Inst)currentUnit).getOutCount();
                         if(h<0){ // xxx could be more flexible here?
-                            if(debug) { System.out.println("xxx: negative");}
+                            if(debug) { G.v().out.println("xxx: negative");}
                             return FAILURE;
                         }
                         h+= ((Inst)currentUnit).getInCount();
@@ -438,7 +438,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                     }
                 }
                 if(currentUnit == null) {
-                    if(debug) { System.out.println("xxx: null");}
+                    if(debug) { G.v().out.println("xxx: null");}
                     return FAILURE;        
                 }
                 
@@ -450,14 +450,14 @@ public class LoadStoreOptimizer extends BodyTransformer
                     Iterator it2 = unitsToMove.iterator();
                     while(it2.hasNext()) {
                         Unit nu = (Unit) it2.next();
-                        if(debug) { System.out.println("xxxspecial;success pushing forward stuff.");}
+                        if(debug) { G.v().out.println("xxxspecial;success pushing forward stuff.");}
                         
                         
                         if(!canMoveUnitOver(nu, uu)){
-                            if(debug) { System.out.println("xxx: cant move over faillure" + nu);}
+                            if(debug) { G.v().out.println("xxx: cant move over faillure" + nu);}
                             return FAILURE;
                         }
-                        if(debug) { System.out.println("can move" + nu + " over " + uu);}
+                        if(debug) { G.v().out.println("can move" + nu + " over " + uu);}
                     }
                 }        
                 
@@ -465,7 +465,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                 Unit unitToMove = currentUnit; 
                 while(unitToMove != from) {        
                     Unit succ = (Unit) block.getSuccOf(unitToMove);
-                    if(debug) { System.out.println("moving " + unitToMove);}
+                    if(debug) { G.v().out.println("moving " + unitToMove);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, to);                            
                     unitToMove = succ;
@@ -473,7 +473,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                 block.remove(from);
                 block.insertBefore(from, to);
                                
-                if(debug) { System.out.println("xxx1success pushing forward stuff.");}
+                if(debug) { G.v().out.println("xxx1success pushing forward stuff.");}
                 return SPECIAL_SUCCESS;
             }
         }
@@ -498,8 +498,8 @@ public class LoadStoreOptimizer extends BodyTransformer
     private  int stackIndependent(Unit from, Unit to, Block block, int aContext) 
     {                
         if(debug) { 
-            System.out.println("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
-            System.out.println("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
+            G.v().out.println("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
+            G.v().out.println("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
                                              "STORE_LOAD_ELIMINATION" :
                                              "STORE_LOAD_LOAD_ELIMINATION"));
         }
@@ -533,8 +533,8 @@ public class LoadStoreOptimizer extends BodyTransformer
         
         
         if(debug) { 
-            System.out.println("nshv = " + stackHeight);
-            System.out.println("mshv = " + minStackHeightAttained);
+            G.v().out.println("nshv = " + stackHeight);
+            G.v().out.println("mshv = " + minStackHeightAttained);
         }
         
         
@@ -549,19 +549,19 @@ public class LoadStoreOptimizer extends BodyTransformer
                                 
                 if(stackHeight == 0 && minStackHeightAttained == 0){
                     if(debug) { 
-                        System.out.println("xxx: succ: -1, makedup ");
+                        G.v().out.println("xxx: succ: -1, makedup ");
                     }
                     return MAKE_DUP;
                 }
                 else if(stackHeight == -1 && minStackHeightAttained == -1){
-                    if(debug) { System.out.println("xxx: succ: -1, makedup , -1");}        
+                    if(debug) { G.v().out.println("xxx: succ: -1, makedup , -1");}        
                     return MAKE_DUP;
                  }
-                else if(stackHeight == -2 && minStackHeightAttained == -2){if(debug) { System.out.println("xxx: succ -1 , make dupx1 ");}
+                else if(stackHeight == -2 && minStackHeightAttained == -2){if(debug) { G.v().out.println("xxx: succ -1 , make dupx1 ");}
                 return MAKE_DUP1_X1; }
                 
                 else  if (minStackHeightAttained < -2) {
-                    if(debug) { System.out.println("xxx: failled due: minStackHeightAttained < -2 ");}
+                    if(debug) { G.v().out.println("xxx: failled due: minStackHeightAttained < -2 ");}
                     return FAILURE;
                 }                
             }
@@ -570,7 +570,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             // check for possible sl elimination
             if(aContext == STORE_LOAD_ELIMINATION) {                
                 if(stackHeight == 0 && minStackHeightAttained == 0){
-                    if(debug) { System.out.println("xxx: success due: 0, SUCCESS ");}
+                    if(debug) { G.v().out.println("xxx: success due: 0, SUCCESS ");}
                     return SUCCESS;
                 }
                 /* xxx broken data depensie problem.
@@ -582,7 +582,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                             block.insertBefore(u, to);
                             block.remove(from);
                             block.insertBefore(from, to);
-                            if(debug) { System.out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
+                            if(debug) { G.v().out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
                             return SPECIAL_SUCCESS2;
                         }                    
 			}*/
@@ -616,7 +616,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                         
                     }
                     else{
-                        if(debug) { System.out.println("1003:(LoadStoreOptimizer@stackIndependent): found unknown unit w/ getNetCount == 1" + u);}
+                        if(debug) { G.v().out.println("1003:(LoadStoreOptimizer@stackIndependent): found unknown unit w/ getNetCount == 1" + u);}
                     }
                 }
                 
@@ -649,7 +649,7 @@ public class LoadStoreOptimizer extends BodyTransformer
 
         if(isCommutativeBinOp((Unit) block.getSuccOf(to))) {
             if(aContext == STORE_LOAD_ELIMINATION && stackHeight == 1 && minStackHeightAttained == 0) {
-                if(debug) { System.out.println("xxx: commutative ");}
+                if(debug) { G.v().out.println("xxx: commutative ");}
                 return SPECIAL_SUCCESS;
             }
             else if( ((Inst) to).getOutCount()  == 1 &&
@@ -785,7 +785,7 @@ public class LoadStoreOptimizer extends BodyTransformer
         boolean reachedStore = false;
         boolean reorderingOccurred =false;
               
-        if(debug) {System.out.println("[tryToMoveUnit]: trying to move:" + unitToMove);}
+        if(debug) {G.v().out.println("[tryToMoveUnit]: trying to move:" + unitToMove);}
         if(unitToMove == null) 
             return false;                
                 
@@ -801,7 +801,7 @@ public class LoadStoreOptimizer extends BodyTransformer
         
             h -= ((Inst)current).getOutCount();                
             if(h < 0 ){
-                if(debug) { System.out.println("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
+                if(debug) { G.v().out.println("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
 
 
 
@@ -820,7 +820,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             
             if(h == 0 && reachedStore == true) {
                 if(!isRequiredByFollowingUnits(unitToMove, (LoadInst) to)) {
-                    if(debug) { System.out.println("10077:(LoadStoreOptimizer@stackIndependent): reordering bytecode move: " + unitToMove + "before: " + current);}
+                    if(debug) { G.v().out.println("10077:(LoadStoreOptimizer@stackIndependent): reordering bytecode move: " + unitToMove + "before: " + current);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, current);
                     
@@ -831,10 +831,10 @@ public class LoadStoreOptimizer extends BodyTransformer
         }
             
         if(reorderingOccurred) {
-            if(debug) { System.out.println("reordering occured");}
+            if(debug) { G.v().out.println("reordering occured");}
             return true;
         } else {
-            if(debug) { System.out.println("1008:(LoadStoreOptimizer@stackIndependent):failled to find a new slot for unit to move");}
+            if(debug) { G.v().out.println("1008:(LoadStoreOptimizer@stackIndependent):failled to find a new slot for unit to move");}
             return false;
         }
     }
@@ -932,8 +932,8 @@ public class LoadStoreOptimizer extends BodyTransformer
         while(currentUnit != null) {
             currentUnit  = (Unit) aBlock.getPredOf(currentUnit);
             if(currentUnit == null) {
-                if(debug) { System.out.println(aBlock);}
-                System.out.println("xxxxxxxxxxxx " + h);
+                if(debug) { G.v().out.println(aBlock);}
+                G.v().out.println("xxxxxxxxxxxx " + h);
                 if(isExceptionHandlerBlock(aBlock) ) {
                     return new BLoadInst( RefType.v("dummy") , ((StoreInst) aUnit).getLocal());                     // we have a ref type. 
                 }
@@ -992,7 +992,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                 Unit u = (Unit) it.next();
                 
                 if(u instanceof LoadInst) {
-                    if(debug) { System.out.println("inter trying: " + u);}
+                    if(debug) { G.v().out.println("inter trying: " + u);}
                     Block loadBlock = (Block) mUnitToBlockMap.get(u);
                     List defs = mLocalDefs.getDefsOfAt(((LoadInst)u).getLocal(), u);
 
@@ -1019,15 +1019,15 @@ public class LoadStoreOptimizer extends BodyTransformer
                                                     break;
                                                 }
                                             }                        
-                                            if(debug) { System.out.println(defBlock.toString() + loadBlock.toString());}
+                                            if(debug) { G.v().out.println(defBlock.toString() + loadBlock.toString());}
                                             
                                             if(res) {
                                                 defBlock.remove(storeUnit);                            
                                                 mUnitToBlockMap.put(storeUnit, loadBlock);
                                                 loadBlock.insertBefore(storeUnit, loadBlock.getHead());
                                                 hasChanged = true;
-                                                if(debug) { System.out.println("inter-block opti occurred " + storeUnit + " " + u);}
-                                                if(debug) { System.out.println(defBlock.toString() + loadBlock.toString());}
+                                                if(debug) { G.v().out.println("inter-block opti occurred " + storeUnit + " " + u);}
+                                                if(debug) { G.v().out.println(defBlock.toString() + loadBlock.toString());}
                                             }
                                         }
                                     }
@@ -1060,13 +1060,13 @@ public class LoadStoreOptimizer extends BodyTransformer
                                                 loadBlock.insertBefore(def0, loadBlock.getHead());
                                                 mUnitToBlockMap.put(def0, loadBlock);
                                                 hasChanged = true;
-                                                if(debug) { System.out.println("inter-block opti2 occurred " + def0);}
-                                            } else { if(debug) { System.out.println("failed: inter1");}}
-                                        } else { if(debug) { System.out.println("failed: inter2");}}
-                                    } else { if(debug) { System.out.println("failed: inter3");}}                                        
-                                } else { if(debug) { System.out.println("failed: inter4");}}
-                            }        else { if(debug) { System.out.println("failed: inter5");}}                        
-                        } else { if(debug) { System.out.println("failed: inter6");}}
+                                                if(debug) { G.v().out.println("inter-block opti2 occurred " + def0);}
+                                            } else { if(debug) { G.v().out.println("failed: inter1");}}
+                                        } else { if(debug) { G.v().out.println("failed: inter2");}}
+                                    } else { if(debug) { G.v().out.println("failed: inter3");}}                                        
+                                } else { if(debug) { G.v().out.println("failed: inter4");}}
+                            }        else { if(debug) { G.v().out.println("failed: inter5");}}                        
+                        } else { if(debug) { G.v().out.println("failed: inter6");}}
                     }                         
                 }        
             }
@@ -1136,14 +1136,14 @@ public class LoadStoreOptimizer extends BodyTransformer
        
         while( currentUnit != block.getTail()) {
             
-            if(!canMoveUnitOver(aInst,  currentUnit)){ if(debug) { System.out.println("can't go over: " + currentUnit);}
+            if(!canMoveUnitOver(aInst,  currentUnit)){ if(debug) { G.v().out.println("can't go over: " + currentUnit);}
             break;}
             
 
             h -= ((Inst)currentUnit).getInCount();                
             if(h < 0){
                 if(!(aInst instanceof Dup1Inst && currentUnit instanceof Dup1Inst)) {
-                    if(debug) { System.out.println("breaking at: " + currentUnit);}                
+                    if(debug) { G.v().out.println("breaking at: " + currentUnit);}                
                     break;
                 }
             }            
@@ -1157,7 +1157,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             currentUnit = (Unit) block.getSuccOf(currentUnit);            
         }        
         if(candidate != null) {
-            if(debug) { System.out.println("successfull propagation "  + candidate + block.getTail());}
+            if(debug) { G.v().out.println("successfull propagation "  + candidate + block.getTail());}
             block.remove(aInst);
             if(block.getTail() == mUnitToBlockMap.get(candidate)){
                 
@@ -1190,7 +1190,7 @@ public class LoadStoreOptimizer extends BodyTransformer
             while(it.hasNext()) {
                 Unit u = (Unit) it.next();
                 if( u instanceof LoadInst || u instanceof Dup1Inst) {
-                    if(debug) { System.out.println("trying to push:"  + u);}
+                    if(debug) { G.v().out.println("trying to push:"  + u);}
                     boolean res =propagateLoadForward(u);
                     if(!hasChanged)
                         hasChanged = res;

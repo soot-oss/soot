@@ -44,7 +44,7 @@ public final class PropMerge extends Propagator {
         boolean verbose = pag.getOpts().verbose();
 	do {
             if( verbose ) {
-                System.out.println( "Worklist has "+varNodeWorkList.size()+
+                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
             int iter = 0;
@@ -56,13 +56,13 @@ public final class PropMerge extends Propagator {
                     iter++;
                     if( iter >= 1000 ) {
                         iter = 0;
-                        System.out.println( "Worklist has "+varNodeWorkList.size()+
+                        G.v().out.println( "Worklist has "+varNodeWorkList.size()+
                                 " nodes." );
                     }
                 }
             }
             if( verbose ) {
-                System.out.println( "Now handling field references" );
+                G.v().out.println( "Now handling field references" );
             }
             for( Iterator srcIt = pag.storeSources().iterator(); srcIt.hasNext(); ) {
                 final VarNode src = (VarNode) srcIt.next();

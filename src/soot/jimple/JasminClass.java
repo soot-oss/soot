@@ -199,7 +199,7 @@ public class JasminClass
         else
             code.add(s);
 
-//          System.out.println(s);
+//          G.v().out.println(s);
     }
 
     void emit(String s, int stackChange)
@@ -227,7 +227,7 @@ public class JasminClass
             Timers.v().buildJasminTimer.start();
 
         if(soot.Main.opts.verbose())
-            System.out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
+            G.v().out.println("[" + SootClass.getName() + "] Constructing jimple.JasminClass...");
         
         code = new LinkedList();
 
@@ -301,7 +301,7 @@ public class JasminClass
     void assignColorsToLocals(StmtBody body)
     {
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() +
+            G.v().out.println("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
         if(Main.opts.time())
@@ -419,7 +419,7 @@ public class JasminClass
         // let's create a u-d web for the ++ peephole optimization.
 
         if(Main.opts.verbose())
-            System.out.println("[" + body.getMethod().getName() +
+            G.v().out.println("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
         boolean disablePeephole = PackManager.getBoolean(options, "no-peephole");
@@ -753,9 +753,9 @@ public class JasminClass
 
                     /* emit dup slot */
 
-//                      System.out.println("found ++ instance:");
-//                      System.out.println(s); System.out.println(nextStmt);
-//                      System.out.println(nextNextStmt);
+//                      G.v().out.println("found ++ instance:");
+//                      G.v().out.println(s); G.v().out.println(nextStmt);
+//                      G.v().out.println(nextNextStmt);
 
                     /* this should be redundant, but we do it */
                     /* just in case. */
@@ -1893,9 +1893,9 @@ public class JasminClass
                         // this time we have ppi of the form ppv = ppv + 1
                         plusPlusState = 11;
 
-//                          System.out.println("ppV "+plusPlusValue);
-//                          System.out.println("ppH "+plusPlusHolder);
-//                          System.out.println("ppI "+plusPlusIncrementer);
+//                          G.v().out.println("ppV "+plusPlusValue);
+//                          G.v().out.println("ppH "+plusPlusHolder);
+//                          G.v().out.println("ppI "+plusPlusIncrementer);
 
                         plusPlusHolder = (Local)plusPlusValue;
                         emitStmt(plusPlusIncrementer);

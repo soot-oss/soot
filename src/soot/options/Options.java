@@ -21,6 +21,7 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+import soot.*;
 import java.util.*;
 import soot.PackManager;
 
@@ -93,7 +94,7 @@ public class Options extends OptionsBase {
             || option.equals( "soot-classpath" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -101,7 +102,7 @@ public class Options extends OptionsBase {
                 if( soot_classpath.length() == 0 )
                     soot_classpath = value;
                 else {
-                    System.out.println( "Duplicate values "+soot_classpath+" and "+value+" for option -"+option );
+                    G.v().out.println( "Duplicate values "+soot_classpath+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -110,7 +111,7 @@ public class Options extends OptionsBase {
             || option.equals( "src-prec" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -123,7 +124,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( src_prec != 0
                     && src_prec != src_prec_class ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     src_prec = src_prec_class;
@@ -135,14 +136,14 @@ public class Options extends OptionsBase {
                 ) {
                     if( src_prec != 0
                     && src_prec != src_prec_jimple ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     src_prec = src_prec_jimple;
                 }
     
                 else {
-                    System.out.println( "Invalid value "+value+" given for option -"+option );
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
                     return false;
                 }
            }
@@ -157,7 +158,7 @@ public class Options extends OptionsBase {
             || option.equals( "output-dir" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -165,7 +166,7 @@ public class Options extends OptionsBase {
                 if( output_dir.length() == 0 )
                     output_dir = value;
                 else {
-                    System.out.println( "Duplicate values "+output_dir+" and "+value+" for option -"+option );
+                    G.v().out.println( "Duplicate values "+output_dir+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -175,7 +176,7 @@ public class Options extends OptionsBase {
             || option.equals( "output-format" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -188,7 +189,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_jimp ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_jimp;
@@ -199,7 +200,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_njimple ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_njimple;
@@ -211,7 +212,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_jimple ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_jimple;
@@ -223,7 +224,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_baf ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_baf;
@@ -234,7 +235,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_b ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_b;
@@ -246,7 +247,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_grimp ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_grimp;
@@ -258,7 +259,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_grimple ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_grimple;
@@ -270,7 +271,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_xml ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_xml;
@@ -282,7 +283,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_none ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_none;
@@ -294,7 +295,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_jasmin ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_jasmin;
@@ -306,7 +307,7 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_class ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_class;
@@ -318,14 +319,14 @@ public class Options extends OptionsBase {
                 ) {
                     if( output_format != 0
                     && output_format != output_format_dava ) {
-                        System.out.println( "Multiple values given for option "+option );
+                        G.v().out.println( "Multiple values given for option "+option );
                         return false;
                     }
                     output_format = output_format_dava;
                 }
     
                 else {
-                    System.out.println( "Invalid value "+value+" given for option -"+option );
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
                     return false;
                 }
            }
@@ -345,12 +346,12 @@ public class Options extends OptionsBase {
             || option.equals( "phase-option" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No phase name given for option -"+option );
+                    G.v().out.println( "No phase name given for option -"+option );
                     return false;
                 }
                 String phaseName = nextOption();
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No phase option given for option -"+option+" "+phaseName );
+                    G.v().out.println( "No phase option given for option -"+option+" "+phaseName );
                     return false;
                 }
                 String phaseOption = nextOption();
@@ -377,7 +378,7 @@ public class Options extends OptionsBase {
             || option.equals( "process-path" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -393,7 +394,7 @@ public class Options extends OptionsBase {
             || option.equals( "include" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -409,7 +410,7 @@ public class Options extends OptionsBase {
             || option.equals( "exclude" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -430,7 +431,7 @@ public class Options extends OptionsBase {
             || option.equals( "dynamic-classes" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -445,7 +446,7 @@ public class Options extends OptionsBase {
             || option.equals( "dynamic-path" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -460,7 +461,7 @@ public class Options extends OptionsBase {
             || option.equals( "dynamic-package" )
             ) {
                 if( !hasMoreOptions() ) {
-                    System.out.println( "No value given for option -"+option );
+                    G.v().out.println( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -505,7 +506,7 @@ public class Options extends OptionsBase {
                 subtract_gc = true;
   
             else {
-                System.out.println( "Invalid option -"+option );
+                G.v().out.println( "Invalid option -"+option );
                 return false;
             }
         }
@@ -1318,133 +1319,133 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "tag.ln" ) ) return;
         if( phaseName.equals( "tag.an" ) ) return;
         if( phaseName.equals( "tag.dep" ) ) return;
-        System.out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
+        G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {
     
         if( !PackManager.v().hasPhase( "jb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb" );
         if( !PackManager.v().hasPhase( "jb.asv" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.asv" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.asv" );
         if( !PackManager.v().hasPhase( "jb.ulp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.ulp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ulp" );
         if( !PackManager.v().hasPhase( "jb.lns" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.lns" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.lns" );
         if( !PackManager.v().hasPhase( "jb.cp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.cp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.cp" );
         if( !PackManager.v().hasPhase( "jb.dae" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.dae" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.dae" );
         if( !PackManager.v().hasPhase( "jb.ls" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.ls" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ls" );
         if( !PackManager.v().hasPhase( "jb.a" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.a" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.a" );
         if( !PackManager.v().hasPhase( "jb.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.ule" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ule" );
         if( !PackManager.v().hasPhase( "jb.tr" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.tr" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.tr" );
         if( !PackManager.v().hasPhase( "jb.cp-ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.cp-ule" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.cp-ule" );
         if( !PackManager.v().hasPhase( "jb.lp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.lp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.lp" );
         if( !PackManager.v().hasPhase( "jb.ne" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.ne" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ne" );
         if( !PackManager.v().hasPhase( "jb.uce" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jb.uce" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.uce" );
         if( !PackManager.v().hasPhase( "cg" ) )
-            System.out.println( "Warning: Options exist for non-existent phase cg" );
+            G.v().out.println( "Warning: Options exist for non-existent phase cg" );
         if( !PackManager.v().hasPhase( "wstp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wstp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wstp" );
         if( !PackManager.v().hasPhase( "wsop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wsop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
         if( !PackManager.v().hasPhase( "wjtp.Spark" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.Spark" );
         if( !PackManager.v().hasPhase( "wjop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjop" );
         if( !PackManager.v().hasPhase( "wjop.smb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop.smb" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjop.smb" );
         if( !PackManager.v().hasPhase( "wjop.si" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjop.si" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjop.si" );
         if( !PackManager.v().hasPhase( "wjtp2" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp2" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp2" );
         if( !PackManager.v().hasPhase( "wjtp2.ra" ) )
-            System.out.println( "Warning: Options exist for non-existent phase wjtp2.ra" );
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp2.ra" );
         if( !PackManager.v().hasPhase( "stp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase stp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase stp" );
         if( !PackManager.v().hasPhase( "sop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase sop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase sop" );
         if( !PackManager.v().hasPhase( "jtp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jtp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jtp" );
         if( !PackManager.v().hasPhase( "jop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop" );
         if( !PackManager.v().hasPhase( "jop.cse" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.cse" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.cse" );
         if( !PackManager.v().hasPhase( "jop.bcm" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.bcm" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.bcm" );
         if( !PackManager.v().hasPhase( "jop.lcm" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.lcm" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.lcm" );
         if( !PackManager.v().hasPhase( "jop.cp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.cp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.cp" );
         if( !PackManager.v().hasPhase( "jop.cpf" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.cpf" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.cpf" );
         if( !PackManager.v().hasPhase( "jop.cbf" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.cbf" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.cbf" );
         if( !PackManager.v().hasPhase( "jop.dae" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.dae" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.dae" );
         if( !PackManager.v().hasPhase( "jop.uce1" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.uce1" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.uce1" );
         if( !PackManager.v().hasPhase( "jop.uce2" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.uce2" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.uce2" );
         if( !PackManager.v().hasPhase( "jop.ubf1" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.ubf1" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.ubf1" );
         if( !PackManager.v().hasPhase( "jop.ubf2" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.ubf2" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.ubf2" );
         if( !PackManager.v().hasPhase( "jop.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jop.ule" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jop.ule" );
         if( !PackManager.v().hasPhase( "jap" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jap" );
         if( !PackManager.v().hasPhase( "jap.npc" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.npc" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.npc" );
         if( !PackManager.v().hasPhase( "jap.abc" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.abc" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.abc" );
         if( !PackManager.v().hasPhase( "jap.profiling" ) )
-            System.out.println( "Warning: Options exist for non-existent phase jap.profiling" );
+            G.v().out.println( "Warning: Options exist for non-existent phase jap.profiling" );
         if( !PackManager.v().hasPhase( "gb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb" );
         if( !PackManager.v().hasPhase( "gb.a" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.a" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.a" );
         if( !PackManager.v().hasPhase( "gb.asv1" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.asv1" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.asv1" );
         if( !PackManager.v().hasPhase( "gb.asv2" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.asv2" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.asv2" );
         if( !PackManager.v().hasPhase( "gb.cf" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.cf" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.cf" );
         if( !PackManager.v().hasPhase( "gb.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gb.ule" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gb.ule" );
         if( !PackManager.v().hasPhase( "gop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase gop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase gop" );
         if( !PackManager.v().hasPhase( "bb" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bb" );
         if( !PackManager.v().hasPhase( "bb.lso" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.lso" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.lso" );
         if( !PackManager.v().hasPhase( "bb.pho" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.pho" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.pho" );
         if( !PackManager.v().hasPhase( "bb.ule" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.ule" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.ule" );
         if( !PackManager.v().hasPhase( "bb.lp" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bb.lp" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.lp" );
         if( !PackManager.v().hasPhase( "bop" ) )
-            System.out.println( "Warning: Options exist for non-existent phase bop" );
+            G.v().out.println( "Warning: Options exist for non-existent phase bop" );
         if( !PackManager.v().hasPhase( "tag" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag" );
+            G.v().out.println( "Warning: Options exist for non-existent phase tag" );
         if( !PackManager.v().hasPhase( "tag.ln" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.ln" );
+            G.v().out.println( "Warning: Options exist for non-existent phase tag.ln" );
         if( !PackManager.v().hasPhase( "tag.an" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.an" );
+            G.v().out.println( "Warning: Options exist for non-existent phase tag.an" );
         if( !PackManager.v().hasPhase( "tag.dep" ) )
-            System.out.println( "Warning: Options exist for non-existent phase tag.dep" );
+            G.v().out.println( "Warning: Options exist for non-existent phase tag.dep" );
     }
   
 }

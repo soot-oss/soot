@@ -25,6 +25,7 @@
 
 
 package soot.tagkit;
+import soot.*;
 
 public class LineNumberTag implements Tag
 {
@@ -60,7 +61,7 @@ public class LineNumberTag implements Tag
 	    throw new RuntimeException();
 	} catch (RuntimeException re)
 	{
-	    System.out.println("I, at line "+line_number+", dead here.");
+	    G.v().out.println("I, at line "+line_number+", dead here.");
 	    re.printStackTrace();
 	}
     }

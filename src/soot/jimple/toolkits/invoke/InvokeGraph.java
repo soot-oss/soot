@@ -94,9 +94,9 @@ public class InvokeGraph
                         stats.benchPolyCS++;
                         stats.benchPolyEdges += numOfEdges;
                         if (Main.opts.verbose()) {
-                            System.out.println("Polymorphic site: "+s);
-                            System.out.println("in method: "+m);
-                            System.out.println("Targets: "+siteToTargetMethods.get(s));
+                            G.v().out.println("Polymorphic site: "+s);
+                            G.v().out.println("in method: "+m);
+                            G.v().out.println("Targets: "+siteToTargetMethods.get(s));
                         }
                     }
                 }

@@ -99,15 +99,15 @@ public class NodePPG extends PointerPropagationGraph
     }
     public void build() {
 	super.build();
-	System.out.println( "News:   "+countNews );
-	System.out.println( "Simple: "+countSimples );
-	System.out.println( "Loads:  "+countLoads );
-	System.out.println( "Stores: "+countStores );
+	G.v().out.println( "News:   "+countNews );
+	G.v().out.println( "Simple: "+countSimples );
+	G.v().out.println( "Loads:  "+countLoads );
+	G.v().out.println( "Stores: "+countStores );
 	MultiMap[] m = { news, simple, loads, stores };
 	if( false ) for( int i = 0; i < m.length; i++ ) {
 	    for( Iterator it = m[i].keySet().iterator(); it.hasNext(); ) {
 		Node key = (Node) it.next();
-		System.out.println( key.toString() + m[i].get( key ).toString() );
+		G.v().out.println( key.toString() + m[i].get( key ).toString() );
 	    }
 	}
     }
@@ -206,8 +206,8 @@ public class NodePPG extends PointerPropagationGraph
 	    stores.putAll( forwardedNode, s );
 	    stores.remove( from );
 	}
-	System.out.println( "Total locals: "+VarNode.nodeMap.size() );
-	System.out.println( "Total EBBs: "+( VarNode.nodeMap.size() - ebbMap.keySet().size() ) );
+	G.v().out.println( "Total locals: "+VarNode.nodeMap.size() );
+	G.v().out.println( "Total EBBs: "+( VarNode.nodeMap.size() - ebbMap.keySet().size() ) );
         {
             Set s = new HashSet();
             s.addAll( loads.keySet() );
@@ -218,7 +218,7 @@ public class NodePPG extends PointerPropagationGraph
             for( Iterator it = s.iterator(); it.hasNext(); ) {
                 FieldRefNode frn = (FieldRefNode) it.next();
                 if( ebbMap.get( frn.getBase() ) != null ) {
-                    System.out.println( "found incorrectly collapsed frn: "+frn+
+                    G.v().out.println( "found incorrectly collapsed frn: "+frn+
                             " with base representative "+ebbMap.get( frn.getBase() ) );
                     blowup = true;
                 }
@@ -226,7 +226,7 @@ public class NodePPG extends PointerPropagationGraph
             for( Iterator it = ebbMap.keySet().iterator(); it.hasNext(); ) {
                 VarNode vn = (VarNode) it.next();
                 if( ebbMap.containsKey( ebbMap.get( vn ) ) ) {
-                    System.out.println( "found collapsed node whose representative is also collapsed\n" +
+                    G.v().out.println( "found collapsed node whose representative is also collapsed\n" +
                             vn+"\n"+ebbMap.get( vn )+"\n"+ebbMap.get( ebbMap.get( vn ) ) );
                     blowup = true;
 

@@ -109,7 +109,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
 
   /**
    * NOTE: the same explanation as setIn0:
-   *       System.out = parameter
+   *       G.v().out = parameter
    *
    * private static native void setOut0(java.io.PrintStream);
    */

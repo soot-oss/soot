@@ -84,8 +84,8 @@ public class ArrayBoundsChecker extends BodyTransformer
 
 	    if (soot.Main.opts.verbose())
 	    {
-		System.out.println("[abc] Analyzing array bounds information for "+m.getName());
-		System.out.println("[abc] Started on "+start);
+		G.v().out.println("[abc] Analyzing array bounds information for "+m.getName());
+		G.v().out.println("[abc] Started on "+start);
 	    }
 
 	    ArrayBoundsCheckerAnalysis analysis = null;
@@ -136,8 +136,8 @@ public class ArrayBoundsChecker extends BodyTransformer
 			    {
 				if (!vgraph.makeShortestPathGraph())
 				{
-				    System.out.println(stmt+" :");
-				    System.out.println(vgraph);
+				    G.v().out.println(stmt+" :");
+				    G.v().out.println(vgraph);
 				}
 			    }
 
@@ -226,7 +226,7 @@ public class ArrayBoundsChecker extends BodyTransformer
 	    if (soot.Main.opts.verbose()) 
 	    {
 		long runtime = finish.getTime() - start.getTime();
-		System.out.println("[abc] ended on "+finish
+		G.v().out.println("[abc] ended on "+finish
 				   +". It took "+(runtime/60000)+" min. "
 				   +((runtime%60000)/1000)+" sec.");
 	    }

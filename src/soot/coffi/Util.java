@@ -134,7 +134,7 @@ public class Util
             
             
         if(soot.Main.opts.verbose())
-            System.out.println("Resolving " + className + "...");
+            G.v().out.println("Resolving " + className + "...");
     
         ClassFile coffiClass = new ClassFile(className);
     
@@ -154,7 +154,7 @@ public class Util
                     else {
 
                 
-                        System.out.println("Warning: " + className + " is a phantom class!");
+                        G.v().out.println("Warning: " + className + " is a phantom class!");
                         bclass.setPhantom(true);                                                                
                         //                continue;
                         return newClass;
@@ -310,8 +310,8 @@ public class Util
         
         
 
-        //System.out.println("loading" + timer.getTime());
-        //System.out.println("building" + buildTimer.getTime());
+        //G.v().out.println("loading" + timer.getTime());
+        //G.v().out.println("building" + buildTimer.getTime());
 
 
         
@@ -336,7 +336,7 @@ public class Util
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {                        
-                        System.out.println("Warning: " + className + " is a phantom class!");
+                        G.v().out.println("Warning: " + className + " is a phantom class!");
                         bclass.setPhantom(true);                                                                
                         return;
                     } 
@@ -416,7 +416,7 @@ public class Util
 		
 		
 		if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
-		    System.out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+		    G.v().out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
 		    throw new RuntimeException("method has no name");
 		}
 
@@ -534,7 +534,7 @@ public class Util
             timer.start();
             
             if(soot.Main.opts.verbose())
-                System.out.println("Resolving " + className + "...");
+                G.v().out.println("Resolving " + className + "...");
     
             ClassFile coffiClass = new ClassFile(className);
     
@@ -552,7 +552,7 @@ public class Util
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {
-                        System.out.println("Warning: " + className + " is a phantom class!");
+                        G.v().out.println("Warning: " + className + " is a phantom class!");
                         bclass.setPhantom(true);                                                                
                         continue;
                     } 
@@ -720,8 +720,8 @@ public class Util
             buildTimer.end();
         }
 
-        //System.out.println("loading" + timer.getTime());
-        //System.out.println("building" + buildTimer.getTime());
+        //G.v().out.println("loading" + timer.getTime());
+        //G.v().out.println("building" + buildTimer.getTime());
 
         Timers.v().resolverTimer.end();
 

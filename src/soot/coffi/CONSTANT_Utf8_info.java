@@ -25,6 +25,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -163,7 +164,7 @@ public class CONSTANT_Utf8_info extends cp_info {
          d.writeUTF(s);
          return bs.toByteArray();
       } catch(IOException e) {
-         System.out.println("Some sort of IO exception in toUtf8 with " + s);
+         G.v().out.println("Some sort of IO exception in toUtf8 with " + s);
       }
       return null;
    }

@@ -16,7 +16,7 @@ public class ThrowFinder
 
     public void find()
     {
-	System.out.print( "Verifying exception handling.. ");
+	G.v().out.print( "Verifying exception handling.. ");
 
 	registeredMethods = new HashSet();
 	protectionSet = new HashMap();
@@ -32,8 +32,8 @@ public class ThrowFinder
 
 	IterableSet worklist = new IterableSet();
 
-	System.out.print( "\b. ");
-	System.out.flush();
+	G.v().out.print( "\b. ");
+	G.v().out.flush();
 
 
 	// Get all the methods, and find protection for every statement.
@@ -230,8 +230,8 @@ public class ThrowFinder
 	    }
 	}
 
-	System.out.println();
-	System.out.flush();
+	G.v().out.println();
+	G.v().out.flush();
     }
 
 

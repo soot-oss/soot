@@ -25,6 +25,7 @@
 
 
 package soot.util;
+import soot.*;
 
 import java.io.*;
 
@@ -51,8 +52,8 @@ public class Debug
     {
         if (!condition)
             {
-                System.out.println("Assert [" + message + "] fired at:");
-                System.out.println(getStackTrace());
+                G.v().out.println("Assert [" + message + "] fired at:");
+                G.v().out.println(getStackTrace());
                 System.exit(1);
         
             }

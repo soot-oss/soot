@@ -30,6 +30,7 @@
 
 
 package soot.coffi;
+import soot.*;
 
 import java.io.*;
 
@@ -66,7 +67,7 @@ class LocalVariableTable_attribute extends attribute_info {
       CONSTANT_Utf8_info cu;
       int i;
 
-      // System.out.println("searching for name of local: " + idx + "at: " + code);
+      // G.v().out.println("searching for name of local: " + idx + "at: " + code);
       // now to find that variable
       for (i=0;i<local_variable_table_length;i++) {
          e = local_variable_table[i];
@@ -76,7 +77,7 @@ class LocalVariableTable_attribute extends attribute_info {
 	      //  (code>=e.start_pc && code<e.start_pc+e.length))) {
             // found the variable, now find its name.
             
-            //System.out.println("found entry: " + i);
+            //G.v().out.println("found entry: " + i);
 
             if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info)
 	    {
@@ -87,7 +88,7 @@ class LocalVariableTable_attribute extends attribute_info {
 		   return null;
 	    }
             else {
-               System.out.println("What? A local variable table name_index isn't" +
+               G.v().out.println("What? A local variable table name_index isn't" +
                                   " a UTF8 entry?");
                System.exit(1);
             }

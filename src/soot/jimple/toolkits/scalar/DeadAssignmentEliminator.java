@@ -56,7 +56,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         boolean eliminateOnlyStackLocals = PackManager.getBoolean(options, "only-stack-locals");
 
         if(Main.opts.verbose())
-            System.out.println("[" + b.getMethod().getName() +
+            G.v().out.println("[" + b.getMethod().getName() +
                 "] Eliminating dead code...");
         
         if(Main.opts.time())
