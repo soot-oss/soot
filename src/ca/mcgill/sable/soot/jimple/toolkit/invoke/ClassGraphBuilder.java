@@ -9,7 +9,7 @@ import ca.mcgill.sable.soot.baf.*;
 import java.util.StringTokenizer;
 import java.io.File;
 class ClassGraphBuilder{
-   SootClassManager cm = new SootClassManager();
+   Scene cm = Scene.v();
    /**
    * a mapping from a class name to its ClassGraphNode Representative
    */
@@ -341,7 +341,7 @@ class ClassGraphBuilder{
    /**
    *
    */
-   SootClassManager getManager(){
+   Scene getManager(){
       return cm;
    }
 
@@ -680,7 +680,7 @@ class ClassGraphBuilder{
    }
 
 
-   void buildClassAndInterfaceGraph( String className, SootClassManager manager ){
+   void buildClassAndInterfaceGraph( String className, Scene manager ){
       this.cm = manager;
       buildClassGraph( className );
       buildInterfaceGraph();

@@ -113,11 +113,11 @@ import ca.mcgill.sable.soot.*;
 
 class TypeArray implements ca.mcgill.sable.util.ValueObject
 {
-    private static SootClassManager cm;
+    private static Scene cm;
 
     private Type[] types;
 
-    public static void setClassManager(SootClassManager cm)
+    public static void setClassManager(Scene cm)
     {
         TypeArray.cm = cm;
     }

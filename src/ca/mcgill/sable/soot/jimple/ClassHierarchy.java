@@ -89,11 +89,11 @@ import java.util.*;
  **/
 class ClassHierarchy
 {
-    /** Hashtable: SootClassManager -> ClassHierarchy **/
+    /** Hashtable: Scene -> ClassHierarchy **/
     private static Hashtable classHierarchyHashtable = new Hashtable();
 
     /** The class manager **/
-    SootClassManager classManager;
+    Scene scene;
 
     /** All type node instances **/
     private Vector typeNodeInstances = new Vector();
@@ -107,26 +107,26 @@ class ClassHierarchy
     /** Used to create TypeNode instances **/
     private ConstructorChooser make = new ConstructorChooser();
 
-    private ClassHierarchy(SootClassManager classManager)
+    private ClassHierarchy(Scene scene)
     {
-        if(classManager == null)
+        if(scene == null)
         {
             throw new NullPointerException();
         }
 
-        this.classManager = classManager;
-        classHierarchyHashtable.put(classManager, this);
+        this.scene = scene;
+        classHierarchyHashtable.put(scene, this);
     }
 
     /** Get the class hierarchy for the given class manager. **/
-    public static ClassHierarchy getClassHierarchy(SootClassManager classManager)
+    public static ClassHierarchy getClassHierarchy(Scene scene)
     {
         ClassHierarchy classHierarchy =
-            (ClassHierarchy) classHierarchyHashtable.get(classManager);
+            (ClassHierarchy) classHierarchyHashtable.get(scene);
 
         if(classHierarchy == null)
         {
-            classHierarchy = new ClassHierarchy(classManager);
+            classHierarchy = new ClassHierarchy(scene);
         }
 
         return classHierarchy;
@@ -274,7 +274,7 @@ class ClassHierarchy
         {
             this((Type) type);
 
-            SootClass sClass = classManager.getClass(type.className);
+            SootClass sClass = scene.getClass(type.className);
             if(sClass.hasSuperClass())
             {
                 parents.set(getTypeNode(RefType.v(sClass.getSuperClass().getName())).id);
@@ -317,7 +317,7 @@ class ClassHierarchy
             {
                 RefType baseType = (RefType) type.baseType;
 
-                SootClass sClass = classManager.getClass(baseType.className);
+                SootClass sClass = scene.getClass(baseType.className);
                 if(sClass.hasSuperClass())
                 {
                     parents.set(getTypeNode(ArrayType.v(RefType.v(

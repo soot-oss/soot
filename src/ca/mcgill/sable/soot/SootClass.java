@@ -103,7 +103,7 @@ import java.io.*;
  * will need to be updated.  I will do this later. - kor  16-Sep-97
  */
 /**
-    Instances of this class represent Java classes.  They are usually created by a SootClassManager,
+    Instances of this class represent Java classes.  They are usually created by a Scene,
     but can also be constructed manually through the given constructors.
 
 */
@@ -118,8 +118,8 @@ public class SootClass
     List methods = new ArrayList();
     List interfaces = new ArrayList();
 
-    SootClassManager manager;
-    boolean isManaged;
+    Scene scene;
+    boolean isInScene;
 
     SootClass superClass;
 
@@ -145,21 +145,12 @@ public class SootClass
     }
 
     /**
-        Is this class being managed by a SootClassManager? A class may be unmanaged  while it is being constructed.
+        Is this class being managed by a Scene? A class may be unmanaged  while it is being constructed.
     */
 
-    public boolean isManaged()
+    public boolean isInScene()
     {
-        return isManaged;
-    }
-
-    /**
-        Returns the SootClassManager of this class.
-    */
-
-    public SootClassManager getManager() throws NotManagedException
-    {
-        return manager;
+        return isInScene;
     }
 
     /**
@@ -202,9 +193,12 @@ public class SootClass
  */
  
         fields.add(f);
-
+        
         f.isDeclared = true;
         f.declaringClass = this;
+        
+        scene.fieldSignatureToField.put(f.getSignature(), f);
+        
     }
 
     /**
@@ -512,8 +506,12 @@ public class SootClass
         */
         
         methods.add(m);
+        
         m.isDeclared = true;
         m.declaringClass = this;
+        
+        scene.methodSignatureToMethod.put(m.getSignature(), m);
+        
     }
 
     /**

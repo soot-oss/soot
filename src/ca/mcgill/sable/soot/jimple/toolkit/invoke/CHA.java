@@ -10,7 +10,7 @@ import ca.mcgill.sable.soot.*;
 // import ca.mcgill.sable.soot.sideEffect.*;
 import java.util.BitSet;
 class CHA {
-   private SootClassManager cm;
+   private Scene cm;
    private ClassGraphBuilder clgb;
    private CallGraphBuilder cagb;
    private AllClassFinder allclassfinder;

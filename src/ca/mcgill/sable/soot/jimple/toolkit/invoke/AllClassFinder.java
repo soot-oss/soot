@@ -77,7 +77,7 @@ class AllClassFinder {
    }
 
 
-   /* ArrayList */ void includeAllClasses (SootClassManager manager, ArrayList bclasses) {
+   /* ArrayList */ void includeAllClasses (Scene manager, ArrayList bclasses) {
       if ( isVerbose )
       System.out.print ( "Building the inheritance hierarchy....." );
       Iterator iter = bclasses.iterator();

@@ -56,7 +56,7 @@ class Inliner {
    private HashMap resolverclassesHT;
    private HashMap resolvermethodsHT;
    private HashMap resolverfieldsHT;
-   private SootClassManager scm;
+   private Scene scm;
    private ClassGraphBuilder clgb;
    private CallGraphBuilder cagb;
    private Resolver resolver;

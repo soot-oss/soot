@@ -11,7 +11,7 @@ import ca.mcgill.sable.soot.baf.*;
 // import ca.mcgill.sable.soot.sideEffect.*;
 
 class Resolver {
-   private SootClassManager scm; /* = new SootClassManager(); */
+   private Scene scm; /* = Scene.v(); */
    private HashMap classesHT = new HashMap();
    private HashMap methodsHT = new HashMap();
    private HashMap fieldsHT = new HashMap();
@@ -31,7 +31,7 @@ class Resolver {
       {
          SootClass sootclass = ( ( ClassNode ) classnodesit.next() ).getSootClass();
          try {
-            if ( ! ( scm.managesClass ( sootclass.getName() ) ) )
+            if ( ! ( scm.containsClass ( sootclass.getName() ) ) )
             {
                // System.out.println ( " ADDED " + sootclass.getName() );
 
@@ -71,7 +71,7 @@ class Resolver {
    }
 
 
-   SootClassManager getManager () {
+   Scene getManager () {
       return scm;
    }
 

@@ -527,7 +527,7 @@ try {
  }
 
  
- SootClassManager cm = new SootClassManager();
+ Scene cm = Scene.v();
 
 
 

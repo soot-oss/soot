@@ -35,6 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
+ The reference version is: $JimpleVersion: 0.5 $
 
  Change History
  --------------
@@ -62,107 +63,95 @@
  B) Changes:
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+   First release.
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.examples.propagateconstants;
 
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
+import java.io.*;
 import java.util.*;
 
-public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable, ToBriefString
+/**
+    PropagateConstants example.
+ 
+ */
+ 
+public class Main
 {
-    public abstract String toString();
-    
-    public String toBriefString()
+    public static void main(String[] args)
     {
-        return toString();
-    }
-    
-    public static Type toMachineType(Type t)
-    {
-        if(t.equals(ShortType.v()) || t.equals(ByteType.v()) ||
-            t.equals(BooleanType.v()) || t.equals(CharType.v()))
+        Scene cm = Scene.v();
+        SootClass sClass = cm.loadClassAndSupport(args[0]);
+        PrintWriter out = new PrintWriter(System.out, true);
+        
+        out.println("Before copy propagation: ");
+        
+        // Convert all methods to Jimple
         {
-            return IntType.v();
-        }
-        else
-            return t;
-    }
-
-    public Type merge(Type other, Scene cm)
-    {
-        if(this.equals(UnknownType.v()))
-            return other;
-        else if(other.equals(UnknownType.v()))
-            return this;
-        else if(this.equals(other))
-            return this;
-        else if(this instanceof RefType && other instanceof RefType)
-        {
-            // Return least common superclass
-
-            SootClass thisClass = cm.getClass(((RefType) this).className);
-            SootClass otherClass = cm.getClass(((RefType) other).className);
-            SootClass javalangObject = cm.getClass("java.lang.Object");
-
-            LinkedList thisHierarchy = new LinkedList();
-            LinkedList otherHierarchy = new LinkedList();
-
-            // Build thisHierarchy
+            Iterator methodIt = sClass.getMethods().iterator();
+            
+            while(methodIt.hasNext())
             {
-                SootClass SootClass = thisClass;
-
-                for(;;)
-                {
-                    thisHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Build otherHierarchy
-            {
-                SootClass SootClass = otherClass;
-
-                for(;;)
-                {
-                    otherHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Find least common superclass
-            {
-                SootClass commonClass = null;
-
-                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
-                    otherHierarchy.getFirst() == thisHierarchy.getFirst())
-                {
-                    commonClass = (SootClass) otherHierarchy.removeFirst();
-                    thisHierarchy.removeFirst();
-                }
-
-                return RefType.v(commonClass.getName());
+                SootMethod m = (SootMethod) methodIt.next();
+                
+                m.setActiveBody(new JimpleBody(new ClassFileBody(m)));
             }
         }
-        else
-            throw new IllegalTypeMergeException(this + " and " + other);
-    }
+           
+        sClass.printTo(out, PrintJimpleBodyOption.USE_ABBREVIATIONS);
+                               
+        // Perform cp on each method
+        {
+            Iterator methodIt = sClass.getMethods().iterator();
+            
+            while(methodIt.hasNext())
+            {
+                SootMethod m = (SootMethod) methodIt.next();
+                
+                JimpleBody body = (JimpleBody) m.getActiveBody();
+                StmtList stmtList = body.getStmtList();
+                CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
+                
+                LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
+                Iterator stmtIt = stmtList.iterator();
+                
+                while(stmtIt.hasNext())
+                {
+                    Stmt stmt = (Stmt) stmtIt.next();
+                    Iterator useBoxIt = stmt.getUseBoxes().iterator();
+                    
+                    while(useBoxIt.hasNext())
+                    {
+                        ValueBox useBox = (ValueBox) useBoxIt.next();
+                        
+                        if(useBox.getValue() instanceof Local)
+                        {
+                            Local l = (Local) useBox.getValue();
+                            List defsOfUse = localDefs.getDefsOfAt(l, stmt);
+                            
+                            if(defsOfUse.size() == 1)
+                            {
+                                DefinitionStmt def = (DefinitionStmt) 
+                                    defsOfUse.get(0);
+                                
+                                if(def.getRightOp() instanceof Constant)
+                                {
+                                    if(useBox.canContainValue(def.getRightOp()))
+                                        useBox.setValue(def.getRightOp());
+                                }
+                            }
+                        }
+                    }
+                }   
+            }
+        }
+                     
+        // Write out the new class
+            System.out.println("After copy propagation: ");
 
-    public void apply(Switch sw)
-    {
+            sClass.printTo(out, PrintJimpleBodyOption.USE_ABBREVIATIONS);
     }
-
 }

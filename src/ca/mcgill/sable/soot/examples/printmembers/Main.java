@@ -35,6 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
+ The reference version is: $JimpleVersion: 0.5 $
 
  Change History
  --------------
@@ -61,111 +62,70 @@
 
  B) Changes:
 
- - Modified on March 27, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Changed the way classes are retrieved and loaded in.  
- 
- - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Changed the default resolution state of new classes.
-   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+   First release.
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.examples.printmembers;
 
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
+import java.io.*;
+
 import java.util.*;
 
 /**
- * The SootClassManager is an object which keeps track of classes which have been
- * transformed to their Baf form.  Classes are sometimes automatically loaded
- * because they are referred to by another class which has been loaded.
- * Please note that referring to a class as a type will not cause the
- * class to be loaded.
+    PrintMembersOf example.
+    
+    Prints the members of the given class.
  */
-
-public class SootClassManager
+ 
+public class Main
 {
-    List classes = new ArrayList();
-    Map nameToClass = new HashMap();
-    
-    public SootClassManager()
+    public static void main(String[] args)
     {
-    }
-
-    public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
-    {
-        if(c.isManaged())
-            throw new AlreadyManagedException(c.getName());
-
-        if(managesClass(c.getName()))
-            throw new DuplicateNameException(c.getName());
-
-        classes.add(c);
-        nameToClass.put(c.getName(), c);
-        c.isManaged = true;
-        c.manager = this;
-    }
-
-    public void removeClass(SootClass c) throws IncorrectManagerException
-    {
-        if(!c.isManaged() || c.getManager() != this)
-            throw new IncorrectManagerException(c.getName());
-
-        classes.remove(c);
-        nameToClass.remove(c.getName());
-        c.isManaged = false;
-    }
-
-    public boolean managesClass(String className)
-    {
-        return nameToClass.containsKey(className);
-    }
-
-    /** 
-     * Loads the given class and all of the required support classes.  Returns the first class.
-     */
-     
-    public SootClass loadClassAndSupport(String className) throws ClassFileNotFoundException,
-                                             CorruptClassFileException,
-                                             DuplicateNameException
-    {   
-        /*
-        if(Main.isProfilingOptimization)
-            Main.resolveTimer.start();
-        */
+        // Parse arguments
+            if(args.length == 0)
+            {
+                System.out.println("Usage: java PrintMembersOf <classname>");
+                System.exit(0);
+            }
         
-        return ca.mcgill.sable.soot.coffi.Util.resolveClassAndSupportClasses(className, this);
-
-        /*
-        if(Main.isProfilingOptimization)
-            Main.resolveTimer.end(); */
-    }
-    
-    /**
-     * Returns the SootClass with the given className.  
-     */
-
-    public SootClass getClass(String className) throws ClassFileNotFoundException
-    {   
-        SootClass toReturn = (SootClass) nameToClass.get(className);
-        
-        if(toReturn == null)
-            throw new ClassFileNotFoundException();
-        else
-            return toReturn;
-    }
-
-    /**
-     * Returns a backed list of the classes in this manager.
-     */
-     
-    public List getClasses()
-    {
-        return classes;
+        // Retrieve and print members.
+        {
+            Scene cm = Scene.v();
+            SootClass sClass = cm.loadClassAndSupport(args[0]);
+         
+            System.out.println(sClass.getName() + "'s members: ");
+            System.out.println();
+            
+            
+            // Print fields
+            {
+                Iterator fieldIt = sClass.getFields().iterator();
+                
+                while(fieldIt.hasNext())
+                {
+                    SootField field = (SootField) fieldIt.next();
+                    System.out.println(field.getDeclaration() + ";");
+                }
+            }
+               
+            System.out.println();
+            
+            // Print methods
+            {
+                Iterator methodIt = sClass.getMethods().iterator();
+                
+                while(methodIt.hasNext())
+                {
+                    SootMethod method = (SootMethod) methodIt.next();
+                    System.out.println(method.getDeclaration() + ";");
+                }
+            }
+            
+            
+        }
     }
 }

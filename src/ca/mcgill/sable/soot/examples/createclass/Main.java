@@ -35,6 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
+ The reference version is: $JimpleVersion: 0.5 $
 
  Change History
  --------------
@@ -61,108 +62,81 @@
 
  B) Changes:
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   First release.
 */
 
-package ca.mcgill.sable.soot;
+package ca.mcgill.sable.soot.examples.createclass;
 
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
+import java.io.*;
 import java.util.*;
 
-public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable, ToBriefString
+
+public class Main
 {
-    public abstract String toString();
-    
-    public String toBriefString()
+    public static void main(String[] args)
     {
-        return toString();
-    }
-    
-    public static Type toMachineType(Type t)
-    {
-        if(t.equals(ShortType.v()) || t.equals(ByteType.v()) ||
-            t.equals(BooleanType.v()) || t.equals(CharType.v()))
-        {
-            return IntType.v();
+        Scene cm;
+        SootClass sClass;
+        SootMethod method;
+        
+        // Create the class
+           cm = Scene.v();
+           cm.loadClassAndSupport("java.lang.Object");
+           
+           sClass = new SootClass("HelloWorld", Modifier.PUBLIC);
+           
+           sClass.setSuperClass(cm.getClass("java.lang.Object"));
+           
+           cm.addClass(sClass);
+           
+        // Create the method
+           method = new SootMethod("main",
+                Arrays.asList(new Type[] {ArrayType.v(RefType.v("java.lang.String"), 1)}),
+                VoidType.v(), Modifier.PUBLIC | Modifier.STATIC);
+        
+           sClass.addMethod(method);
+           
+        // Create the method body
+        {    
+            JimpleBody body = new JimpleBody(method);
+            
+            method.setActiveBody(body);
+            StmtList stmts = body.getStmtList();
+            Local arg, tmpRef;
+            
+            // Add some locals
+                arg = Jimple.v().newLocal("l0", ArrayType.v(RefType.v("java.lang.String"), 1));
+                body.addLocal(arg);
+            
+                tmpRef = Jimple.v().newLocal("tmpRef", RefType.v("java.io.PrintStream"));
+                body.addLocal(tmpRef);
+                
+            // add "l0 = @parameter0"
+                stmts.add(Jimple.v().newIdentityStmt(arg, Jimple.v().newParameterRef(method, 0)));
+            
+            // add "tmpRef = java.lang.System.out"
+                stmts.add(Jimple.v().newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef(
+                    cm.getClass("java.lang.System").getField("out"))));
+            
+            // insert "tmpRef.println("Hello world!")"
+            {
+                SootMethod toCall = cm.getClass("java.io.PrintStream").getMethod(
+                    "println", Arrays.asList(new Type[] {RefType.v("java.lang.String")}));
+
+                stmts.add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall, 
+                    Arrays.asList(new Value[] {StringConstant.v("Hello world!")}))));
+            }                        
+            
+            // insert "return"
+                stmts.add(Jimple.v().newReturnVoidStmt());
+                
         }
-        else
-            return t;
+
+        sClass.write();
     }
-
-    public Type merge(Type other, Scene cm)
-    {
-        if(this.equals(UnknownType.v()))
-            return other;
-        else if(other.equals(UnknownType.v()))
-            return this;
-        else if(this.equals(other))
-            return this;
-        else if(this instanceof RefType && other instanceof RefType)
-        {
-            // Return least common superclass
-
-            SootClass thisClass = cm.getClass(((RefType) this).className);
-            SootClass otherClass = cm.getClass(((RefType) other).className);
-            SootClass javalangObject = cm.getClass("java.lang.Object");
-
-            LinkedList thisHierarchy = new LinkedList();
-            LinkedList otherHierarchy = new LinkedList();
-
-            // Build thisHierarchy
-            {
-                SootClass SootClass = thisClass;
-
-                for(;;)
-                {
-                    thisHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Build otherHierarchy
-            {
-                SootClass SootClass = otherClass;
-
-                for(;;)
-                {
-                    otherHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Find least common superclass
-            {
-                SootClass commonClass = null;
-
-                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
-                    otherHierarchy.getFirst() == thisHierarchy.getFirst())
-                {
-                    commonClass = (SootClass) otherHierarchy.removeFirst();
-                    thisHierarchy.removeFirst();
-                }
-
-                return RefType.v(commonClass.getName());
-            }
-        }
-        else
-            throw new IllegalTypeMergeException(this + " and " + other);
-    }
-
-    public void apply(Switch sw)
-    {
-    }
-
+        
 }

@@ -215,7 +215,7 @@ class LoopTest {
    */
    static void main ( String[] args ) {
       LoopTest l = new LoopTest();
-      SootClassManager cm = new SootClassManager();
+      Scene cm = Scene.v();
       for ( int i=0; i<args.length; i++ )
       {
          SootClass sClass = cm.getClass(args[i]);

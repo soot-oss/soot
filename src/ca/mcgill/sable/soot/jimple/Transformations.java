@@ -138,76 +138,7 @@ public class Transformations
 {
     public static void assignTypesToLocals(JimpleBody listBody)
     {
-        if(Main.isVerbose)
-            System.out.println("[" + listBody.getMethod().getName() + "] Assigning types to locals...");
-
-        //Jimple.printStmtListBody(listBody, System.out, false);
-
-        if(!Main.oldTyping)
-        {
-            TypeResolver.assignTypesToLocals(listBody);
-            return;
-        }
-
-        StmtList stmtList = listBody.getStmtList();
-
-        // Set all local types to unknown.
-        {
-            Iterator localIt = listBody.getLocals().iterator();
-
-            while(localIt.hasNext())
-                ((Local) localIt.next()).setType(UnknownType.v());
-        }
-
-        // Perform iterations on code, changing the types of the locals.
-        {
-            boolean hasChanged = true;
-            SootClassManager cm = listBody.getMethod().getDeclaringClass().getManager();
-
-            while(hasChanged)
-            {
-                hasChanged = false;
-
-                Iterator stmtIt = stmtList.iterator();
-
-                while(stmtIt.hasNext())
-                {
-                    Stmt s = (Stmt) stmtIt.next();
-
-                    if(s instanceof DefinitionStmt)
-                    {
-                        DefinitionStmt def = (DefinitionStmt) s;
-
-                        if(def.getLeftOp() instanceof Local)
-                        {
-                            Local local = (Local) def.getLeftOp();
-                            Type previousType = local.getType();
-
-                            Type newType = (Type.toMachineType(def.getRightOp().getType()))
-                                .merge(previousType, cm);
-
-                            if(!previousType.equals(newType))
-                                 hasChanged = true;
-
-                            local.setType(newType);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Set all unknown locals to java.lang.Object
-        {
-            Iterator localIt = listBody.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local local = (Local) localIt.next();
-
-                if(local.getType().equals(UnknownType.v()))
-                    local.setType(RefType.v("java.lang.Object"));
-            }
-        }
+        throw new RuntimeException("obsolete code!");
     }
 
     public static void removeUnusedLocals(StmtBody listBody)

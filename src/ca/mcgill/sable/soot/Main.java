@@ -222,7 +222,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.60");
+            System.out.println("Soot version 1.beta.4.dev.61");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -385,7 +385,7 @@ public class Main
                 firstNonOption = i + 1;
             }
 
-        SootClassManager cm = new SootClassManager();
+        Scene cm = Scene.v();
         SootClass mainClass = null;
         
         // Generate classes to process

@@ -11,7 +11,7 @@ import ca.mcgill.sable.soot.*;
 // import ca.mcgill.sable.soot.sideEffect.*;
 import java.util.BitSet;
 class DTA {
-   SootClassManager cm;
+   Scene cm;
    private ArrayList bclasses;
    List SCCs;
    private Map declaredtypesHT = new HashMap();

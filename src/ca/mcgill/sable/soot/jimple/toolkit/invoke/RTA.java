@@ -13,7 +13,7 @@ import java.util.BitSet;
 
 public class RTA {
 	
-	SootClassManager cm; /*  = new SootClassManager(); */
+	Scene cm; /*  = Scene.v(); */
 
 	private ArrayList newExprs = new ArrayList();
 

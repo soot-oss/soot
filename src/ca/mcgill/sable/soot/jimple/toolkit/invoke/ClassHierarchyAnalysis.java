@@ -13,7 +13,7 @@ import ca.mcgill.sable.soot.coffi.*;
 
 public class ClassHierarchyAnalysis {
   /*
- public static InvokeGraph newInvokeGraph(SootClassManager manager, String initialClass)
+ public static InvokeGraph newInvokeGraph(Scene manager, String initialClass)
  {
 
   return ( new InvokeGraph(manager, initialClass) );

@@ -15,7 +15,7 @@ import ca.mcgill.sable.soot.coffi.*;
 
 public class InvokeGraph {
 	
-  private SootClassManager manager; 
+  private Scene manager; 
 
   private List entrymethods;
 
@@ -29,12 +29,12 @@ public class InvokeGraph {
 
 
 
-  // public InvokeGraph ( SootClassManager cm ) { manager = cm; }
+  // public InvokeGraph ( Scene cm ) { manager = cm; }
 
 
 
   /*
-  public InvokeGraph ( SootClassManager cm, String MainClass ) {
+  public InvokeGraph ( Scene cm, String MainClass ) {
 
     manager = cm;
 
@@ -63,7 +63,8 @@ public class InvokeGraph {
 
   public InvokeGraph ( SootClass MainClass ) {
 
-    manager = MainClass.getManager();
+    manager = Scene.v();
+    
 
 	// SootClassFinder bclassfinder = new SootClassFinder();
 	
@@ -75,7 +76,7 @@ public class InvokeGraph {
 
 	AllClassFinder allclassfinder = new AllClassFinder(false);
 
-    allclassfinder.includeAllClasses(MainClass.getManager(), bclasses);
+    allclassfinder.includeAllClasses(Scene.v(), bclasses);
 
 	Map allclassesHT = allclassfinder.getAllClassesHT();
 
@@ -95,7 +96,7 @@ public class InvokeGraph {
   
   InvokeGraph ( SootClass MainClass, boolean isCHA ) {
 
-    manager = MainClass.getManager();
+    manager = Scene.v();
 
 	// SootClassFinder bclassfinder = new SootClassFinder();
 	
@@ -107,7 +108,7 @@ public class InvokeGraph {
 
 	AllClassFinder allclassfinder = new AllClassFinder();
 
-    allclassfinder.includeAllClasses(MainClass.getManager(), bclasses);
+    allclassfinder.includeAllClasses(Scene.v(), bclasses);
 
 	Map allclassesHT = allclassfinder.getAllClassesHT();
 
@@ -120,30 +121,6 @@ public class InvokeGraph {
 
   }
 
-
-
-
-
-
-
-
-
-
-
-  
-
-  public SootClassManager getManager() { return manager; }
-
-
-
-
-
-
-
-
-
-
-  
   public List getEntryMethods() { return entrymethods; }
 
 

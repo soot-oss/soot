@@ -90,11 +90,11 @@ class MethodNode extends DfsNode{
       //    if( method != null )
 
       return method;
-      //    return new SootClassManager().getClass( className ).
+      //    return Scene.v().getClass( className ).
       //      getMethod( methodName, params );
 
       /*if( method == null ){
-         method = new SootClassManager().getClass( className ).
+         method = Scene.v().getClass( className ).
          getMethod( methodName, params );
       }
 

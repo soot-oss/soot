@@ -61,6 +61,12 @@
 
  B) Changes:
 
+ - Modified on March 27, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Changed the way classes are retrieved and loaded in.  
+ 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed the default resolution state of new classes.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -74,95 +80,114 @@ package ca.mcgill.sable.soot;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-public abstract class Type implements ca.mcgill.sable.util.ValueObject, Switchable, ToBriefString
+public class Scene
 {
-    public abstract String toString();
+    private static Scene constant = new Scene();
     
-    public String toBriefString()
+    List classes = new ArrayList();
+    
+    Map nameToClass = new HashMap();
+    Map methodSignatureToMethod = new HashMap();
+    Map fieldSignatureToField = new HashMap();
+    
+    public static Scene v()
     {
-        return toString();
+        return constant;
     }
     
-    public static Type toMachineType(Type t)
+    private Scene()
     {
-        if(t.equals(ShortType.v()) || t.equals(ByteType.v()) ||
-            t.equals(BooleanType.v()) || t.equals(CharType.v()))
-        {
-            return IntType.v();
-        }
+    }
+
+    public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
+    {
+        if(c.isInScene())
+            throw new AlreadyManagedException(c.getName());
+
+        if(containsClass(c.getName()))
+            throw new DuplicateNameException(c.getName());
+
+        classes.add(c);
+        nameToClass.put(c.getName(), c);
+        c.isInScene = true;
+        c.scene = this;
+    }
+
+    public void removeClass(SootClass c)
+    {
+        if(!c.isInScene())
+            throw new RuntimeException();
+
+        classes.remove(c);
+        nameToClass.remove(c.getName());
+        c.isInScene = false;
+    }
+
+    public boolean containsClass(String className)
+    {
+        return nameToClass.containsKey(className);
+    }
+
+    public boolean containsField(String fieldSignature)
+    {
+        return fieldSignatureToField.containsKey(fieldSignature);
+    }
+    
+    public boolean containsMethod(String methodSignature)
+    {
+        return methodSignatureToMethod.containsKey(methodSignature);
+    }
+
+    public SootField getField(String fieldSignature)
+    {
+        return (SootField) fieldSignatureToField.get(fieldSignature);
+    }
+
+    public SootMethod getMethod(String methodSignature)
+    {
+        return (SootMethod) methodSignatureToMethod.get(methodSignature);
+    }
+
+    /** 
+     * Loads the given class and all of the required support classes.  Returns the first class.
+     */
+     
+    public SootClass loadClassAndSupport(String className) throws ClassFileNotFoundException,
+                                             CorruptClassFileException,
+                                             DuplicateNameException
+    {   
+        /*
+        if(Main.isProfilingOptimization)
+            Main.resolveTimer.start();
+        */
+        
+        return ca.mcgill.sable.soot.coffi.Util.resolveClassAndSupportClasses(className, this);
+
+        /*
+        if(Main.isProfilingOptimization)
+            Main.resolveTimer.end(); */
+    }
+    
+    /**
+     * Returns the SootClass with the given className.  
+     */
+
+    public SootClass getClass(String className) throws ClassFileNotFoundException
+    {   
+        SootClass toReturn = (SootClass) nameToClass.get(className);
+        
+        if(toReturn == null)
+            throw new ClassFileNotFoundException();
         else
-            return t;
+            return toReturn;
     }
 
-    public Type merge(Type other, Scene cm)
+    /**
+     * Returns a backed list of the classes in this manager.
+     */
+     
+    public List getClasses()
     {
-        if(this.equals(UnknownType.v()))
-            return other;
-        else if(other.equals(UnknownType.v()))
-            return this;
-        else if(this.equals(other))
-            return this;
-        else if(this instanceof RefType && other instanceof RefType)
-        {
-            // Return least common superclass
-
-            SootClass thisClass = cm.getClass(((RefType) this).className);
-            SootClass otherClass = cm.getClass(((RefType) other).className);
-            SootClass javalangObject = cm.getClass("java.lang.Object");
-
-            LinkedList thisHierarchy = new LinkedList();
-            LinkedList otherHierarchy = new LinkedList();
-
-            // Build thisHierarchy
-            {
-                SootClass SootClass = thisClass;
-
-                for(;;)
-                {
-                    thisHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Build otherHierarchy
-            {
-                SootClass SootClass = otherClass;
-
-                for(;;)
-                {
-                    otherHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperClass();
-                }
-            }
-
-            // Find least common superclass
-            {
-                SootClass commonClass = null;
-
-                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
-                    otherHierarchy.getFirst() == thisHierarchy.getFirst())
-                {
-                    commonClass = (SootClass) otherHierarchy.removeFirst();
-                    thisHierarchy.removeFirst();
-                }
-
-                return RefType.v(commonClass.getName());
-            }
-        }
-        else
-            throw new IllegalTypeMergeException(this + " and " + other);
+        return classes;
     }
-
-    public void apply(Switch sw)
-    {
-    }
-
 }

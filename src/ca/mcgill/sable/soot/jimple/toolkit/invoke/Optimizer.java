@@ -56,7 +56,7 @@ class Optimizer {
    HashMap resolverclassesHT;
    HashMap resolvermethodsHT;
    HashMap resolverfieldsHT;
-   SootClassManager scm;
+   Scene scm;
    ClassGraphBuilder clgb;
    CallGraphBuilder cagb;
    Resolver resolver;

@@ -220,9 +220,8 @@ class TypeResolver
 
             currentMethod = stmtBody.getMethod();
 
-            classHierarchy = ClassHierarchy.getClassHierarchy(
-                currentMethod.getDeclaringClass().getManager());
-
+            classHierarchy = ClassHierarchy.getClassHierarchy(Scene.v());
+            
             // Collect constraints
             for(Iterator i = stmtBody.getStmtList().iterator(); i.hasNext();)
             {
@@ -852,7 +851,7 @@ class TypeResolver
             return false;
         }
         
-        SootClass sClass = classHierarchy.classManager.getClass(
+        SootClass sClass = classHierarchy.scene.getClass(
             ((RefType) type).className);
             
         if(Modifier.isInterface(sClass.getModifiers()))
@@ -868,7 +867,7 @@ class TypeResolver
         // Get the assigned type node
         ClassHierarchy.TypeNode node = var.getEcrTypeNode();
         Type type = node.getType();
-        SootClass sClass = classHierarchy.classManager.getClass(
+        SootClass sClass = classHierarchy.scene.getClass(
             ((RefType) type).className);
         if(sClass.hasSuperClass())
         {

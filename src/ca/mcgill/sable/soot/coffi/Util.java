@@ -59,7 +59,7 @@
  *                                                                   *
  * Java is a trademark of Sun Microsystems, Inc.                     *
  *                                                                   *
- * To submit a bug report, send a comment, or get the latest news on *
+ * To submit a bug report, send a comment, or get, the latest news on *
  * this project and other Sable Research Group projects, please      *
  * visit the web site: http://www.sable.mcgill.ca/                   *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -120,7 +120,7 @@ import ca.mcgill.sable.soot.*;
 public class Util
 {
     static Map classNameToAbbreviation;
-    static SootClassManager classManager;
+    static Scene scene;
     static Set markedClasses;
     static LinkedList classesToResolve;
 
@@ -130,17 +130,17 @@ public class Util
     static boolean useFaithfulNaming = false;
     static boolean isLocalStore = false;
     
-    static void setActiveClassManager(SootClassManager manager)
+    static void setActiveClassManager(Scene manager)
     {
-        classManager = manager;
+        scene = manager;
     }
 
     public static void assertResolvedClass(String className)
     {
-        if(!classManager.managesClass(className))
+        if(!scene.containsClass(className))
         {
             SootClass newClass = new SootClass(className);
-            classManager.addClass(newClass);
+            scene.addClass(newClass);
             
             markedClasses.add(newClass);
             classesToResolve.addLast(newClass);
@@ -157,11 +157,11 @@ public class Util
     
     public static SootClass getResolvedClass(String className)
     {
-        if(classManager.managesClass(className))
-            return classManager.getClass(className);
+        if(scene.containsClass(className))
+            return scene.getClass(className);
             
         SootClass newClass = new SootClass(className);
-        classManager.addClass(newClass);
+        scene.addClass(newClass);
         
         markedClasses.add(newClass);
         classesToResolve.addLast(newClass);
@@ -169,7 +169,7 @@ public class Util
         return newClass;
     }
     
-    public static SootClass resolveClassAndSupportClasses(String className, SootClassManager cm)
+    public static SootClass resolveClassAndSupportClasses(String className, Scene cm)
     {
         Timer timer = new Timer("timer");
         Timer buildTimer = new Timer("build");
@@ -374,7 +374,7 @@ public class Util
         return newClass;
     }
 
-    static Type jimpleReturnTypeOfMethodDescriptor(SootClassManager cm,
+    static Type jimpleReturnTypeOfMethodDescriptor(Scene cm,
         String descriptor)
     {
         Type[] types = jimpleTypesOfFieldOrMethodDescriptor(cm, descriptor);
@@ -382,7 +382,7 @@ public class Util
         return types[types.length - 1];
     }
 
-    static Type[] jimpleTypesOfFieldOrMethodDescriptor(SootClassManager cm,
+    static Type[] jimpleTypesOfFieldOrMethodDescriptor(Scene cm,
         String descriptor)
     {
         java.util.Vector types = new java.util.Vector();
@@ -491,7 +491,7 @@ public class Util
         }
     }
 
-    static Type jimpleTypeOfFieldDescriptor(SootClassManager cm,
+    static Type jimpleTypeOfFieldDescriptor(Scene cm,
         String descriptor)
     {
         boolean isArray = false;

@@ -740,7 +740,7 @@ class CallGraphBuilder{
 
    void buildCallGraph( String className , String methodName , List paramList ){
       try{
-         //  SootClassManager cm = classGBuilder.getManager();
+         //  Scene cm = classGBuilder.getManager();
 
          //  SootClass bClass = cm.getClass( className );
 

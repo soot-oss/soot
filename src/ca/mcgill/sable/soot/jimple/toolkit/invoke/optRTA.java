@@ -20,7 +20,7 @@ class optRTA {
    private static Map pendinglistsHT = new HashMap();
    private static Map pendingtargetsHT = new HashMap();
    private static ClassGraphBuilder classgraphbuilder;
-   private static SootClassManager manager;
+   private static Scene manager;
    private static InvokeGraph callgraph;
    private static InvokeGraph rtacallgraph;
    private static boolean arraycreated = true;
@@ -43,7 +43,7 @@ class optRTA {
       ca.mcgill.sable.soot.Main.sootClassPath = "/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/illness/classes:/home/acaps/u2/vijay/PIZZA/pizza/classes:/home/profs/hendren/JavaBench/AdaSuite/kalman/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/lexgen/classes:/home/profs/hendren/JavaBench/AdaSuite/rudstone/classes:/home/profs/hendren/JavaBench/MLSuite/benchmarks/nucleic/classes:home/profs/hendren/JavaBench/SchemeSuite:/tmp/sablecc-2.9:/home/profs/hendren/JavaBench/FromML/boyer/Classes:/home/acaps/u2/vijay/local/ADABENCH/Dhrystone:/home/acaps/u2/vijay/local/ADALIB:/home/profs/hendren/JavaBench/EiffelSuite/benchmarks/compile_to_c/classes:/home/acaps/u2/vijay/JDKCLASSES:/home/acaps/u2/vijay/local/PUZZLE/puzzle/classes:/home/acaps/u2/vijay/BENCH/BENCH/jvm98:/home/acaps/u2/vijay:/home/acaps/u2/vijay/LATESTUTIL/sableUtil-1.11/classes:/home/acaps/u2/vijay/SOOT2/src:/home/acaps/u2/vijay:/tmp";
       // ca.mcgill.sable.soot.Main.isVerbose = true;
 
-      manager = new SootClassManager();
+      manager = Scene.v();
       SootClass sc = manager.loadClassAndSupport( args[0] );
       // InvokeGraph callgraph = new InvokeGraph ( sc, true ); 
 

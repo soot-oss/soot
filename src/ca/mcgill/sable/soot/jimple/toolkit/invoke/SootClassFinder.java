@@ -12,7 +12,7 @@ import ca.mcgill.sable.soot.coffi.*;
 // import ca.mcgill.sable.sideEffect.*;
 
 class SootClassFinder {
-   SootClassManager cm = new SootClassManager();
+   Scene cm = Scene.v();
    private ArrayList bclasses = new ArrayList();
    ArrayList getSootClasses (String MainClass) {
       SootClass sootclass = null;

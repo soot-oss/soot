@@ -192,7 +192,7 @@ public class CFG {
    Map instructionToFirstStmt;
    Map instructionToLastStmt;
    SootMethod jmethod;
-   SootClassManager cm;
+   Scene cm;
 
    Map instructionToNext;
    Instruction firstInstruction;
@@ -1569,8 +1569,8 @@ public class CFG {
         instructionToLastStmt = new HashMap();
 
         jmethod = listBody.getMethod();
-        cm = jmethod.getDeclaringClass().getManager();
-
+        cm = Scene.v();
+        
         Util.setActiveClassManager(cm);
         TypeArray.setClassManager(cm);
         TypeStack.setClassManager(cm);
@@ -3140,7 +3140,7 @@ public class CFG {
          return new OutFlow(typeStack);
     }
 
-    private Type jimpleTypeOfFieldInFieldRef(SootClassManager cm,
+    private Type jimpleTypeOfFieldInFieldRef(Scene cm,
         cp_info[] constant_pool, int index)
     {
         CONSTANT_Fieldref_info fr = (CONSTANT_Fieldref_info)
@@ -3155,7 +3155,7 @@ public class CFG {
         return Util.jimpleTypeOfFieldDescriptor(cm, fieldDescriptor);
     }
 
-    private Type jimpleReturnTypeOfMethodRef(SootClassManager cm,
+    private Type jimpleReturnTypeOfMethodRef(Scene cm,
         cp_info[] constant_pool, int index)
     {
         CONSTANT_Methodref_info mr = (CONSTANT_Methodref_info)
@@ -3170,7 +3170,7 @@ public class CFG {
         return Util.jimpleReturnTypeOfMethodDescriptor(cm, methodDescriptor);
     }
 
-    private Type jimpleReturnTypeOfInterfaceMethodRef(SootClassManager cm,
+    private Type jimpleReturnTypeOfInterfaceMethodRef(Scene cm,
         cp_info[] constant_pool, int index)
     {
         CONSTANT_InterfaceMethodref_info mr = (CONSTANT_InterfaceMethodref_info)
