@@ -66,7 +66,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             public int compare(Object o1, Object o2) {
                 Integer i1 = (Integer) numbers.get(o1);
                 Integer i2 = (Integer) numbers.get(o2);
-                return i1.intValue() - i2.intValue();
+                return (i1.intValue() - i2.intValue());
             }
         } );
 

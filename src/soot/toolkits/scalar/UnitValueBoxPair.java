@@ -70,10 +70,18 @@ public class UnitValueBoxPair
             UnitValueBoxPair otherPair = (UnitValueBoxPair) other;
 
             if(unit.equals(otherPair.unit) && valueBox.equals(otherPair.valueBox))
-                return false;
+                return true;
         }
 
         return false;
+    }
+
+    public int hashCode() {
+        return unit.hashCode() + valueBox.hashCode();
+    }
+
+    public String toString() {
+        return valueBox+" in "+unit;
     }
     
     public Unit getUnit() 

@@ -84,9 +84,13 @@ outer:
                 final ValueBox vb = (ValueBox) vbIt.next();
                 Value v = vb.getValue();
                 if( !(v instanceof Local) ) continue;
-                HashSet ret = new HashSet(defsOf((Local)v));
-                ret.retainAll((HashSet)analysis.getFlowBefore(u));
-                answer.put(new Cons(u, v), new ArrayList(ret));
+                HashSet analysisResult = (HashSet) analysis.getFlowBefore(u);
+                ArrayList al = new ArrayList();
+                for( Iterator unitIt = defsOf((Local)v).iterator(); unitIt.hasNext(); ) {
+                    final Unit unit = (Unit) unitIt.next();
+                    if(analysisResult.contains(unit)) al.add(unit);
+                }
+                answer.put(new Cons(u, v), al);
             }
         }
         if(Options.v().time())

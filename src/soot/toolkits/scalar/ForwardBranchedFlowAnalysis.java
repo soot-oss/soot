@@ -92,8 +92,25 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
 
     protected void doAnalysis()
     {
-        LinkedList changedUnits = new LinkedList();
-        HashSet changedUnitsSet = new HashSet();
+        final Map numbers = new HashMap();
+        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        {
+            int i = 1;
+            for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
+                final Unit u = (Unit) uIt.next();
+                numbers.put(u, new Integer(i));
+                i++;
+            }
+        }
+
+        TreeSet changedUnits = new TreeSet( new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) numbers.get(o1);
+                Integer i2 = (Integer) numbers.get(o2);
+                return (i1.intValue() - i2.intValue());
+            }
+        } );
+
         Map unitToIncomingFlowSets = new HashMap(graph.size() * 2 + 1, 0.7f);
 
         int numNodes = graph.size();
@@ -122,8 +139,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             {
                 Unit s = (Unit) it.next();
 
-                changedUnits.addLast(s);
-                changedUnitsSet.add(s);
+                changedUnits.add(s);
 
                 unitToBeforeFlow.put(s, newInitialFlow());
 
@@ -210,9 +226,9 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
             {
                 Object beforeFlow;
 
-                Unit s = (Unit) changedUnits.removeFirst();
+                Unit s = (Unit) changedUnits.first();
 
-                changedUnitsSet.remove(s);                
+                changedUnits.remove(s);                
 
                 accumulateAfterFlowSets(s, previousFlowRepositories, previousAfterFlows);
 
@@ -287,11 +303,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
                     {
                         Unit succ = (Unit) succIt.next();
                             
-                        if(!changedUnitsSet.contains(succ))
-                        {
-                            changedUnits.addLast(succ);
-                            changedUnitsSet.add(succ);
-                        }
+                        changedUnits.add(succ);
                     }
                 }
             }

@@ -106,7 +106,7 @@ public class XMLPrinter {
             new soot.toolkits.graph.ExceptionalUnitGraph(body);
 
         // include any analysis which will be used in the xml output
-        SimpleLiveLocals sll = new SimpleLiveLocals(exceptionalUnitGraph);
+        LiveLocals sll = new SimpleLiveLocals(exceptionalUnitGraph);
 
         // iterate through each statement
         String cleanMethodName = cleanMethod(body.getMethod().getName());

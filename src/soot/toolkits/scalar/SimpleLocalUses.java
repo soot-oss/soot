@@ -155,6 +155,10 @@ public class SimpleLocalUses implements LocalUses
     
         if(Options.v().time())
             Timers.v().usesTimer.end();
+
+        if(Options.v().verbose())
+            G.v().out.println("[" + body.getMethod().getName() +
+                "]     finished SimpleLocalUses...");
     }
 
     /**

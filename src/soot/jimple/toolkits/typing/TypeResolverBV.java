@@ -1093,8 +1093,7 @@ public class TypeResolverBV
   private void split_new()
   {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-    SimpleLocalDefs defs = new SimpleLocalDefs(graph);
-    // SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
+    LocalDefs defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
     PatchingChain units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 

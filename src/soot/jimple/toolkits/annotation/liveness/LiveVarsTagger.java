@@ -34,7 +34,7 @@ public class LiveVarsTagger extends BodyTransformer {
 
     protected void internalTransform(Body b, String phaseName, Map options){
     
-        SimpleLiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));
+        LiveLocals sll = new SimpleLiveLocals(new ExceptionalUnitGraph(b));
 
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){

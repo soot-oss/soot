@@ -46,9 +46,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     private final static String EVEN = "even";
     private final static String ODD = "odd";
 
-    private SimpleLiveLocals filter;
+    private LiveLocals filter;
     
-    public ParityAnalysis(UnitGraph g, SimpleLiveLocals filter)
+    public ParityAnalysis(UnitGraph g, LiveLocals filter)
     {
         super(g);
         this.g = g;

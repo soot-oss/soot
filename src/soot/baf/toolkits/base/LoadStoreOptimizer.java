@@ -56,6 +56,30 @@ public class LoadStoreOptimizer extends BodyTransformer
     final static private int STORE_LOAD_LOAD_ELIMINATION = -1;
 
         
+    private Map gOptions;
+
+    /** The method that drives the optimizations. */
+    /* This is the public interface to LoadStoreOptimizer */
+  
+    protected void internalTransform(Body body, String phaseName, Map options) 
+    {   
+
+        gOptions = options;
+
+        Instance instance = new Instance();
+        instance.mBody = body;        
+        instance.mUnits =  body.getUnits();
+        
+        debug = PhaseOptions.getBoolean(gOptions, "debug");
+        
+        if(Options.v().verbose())
+            G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
+
+        if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
+        
+        instance.go();
+    }
+class Instance {
     // Instance vars.
     private Chain mUnits;
     private Body mBody;
@@ -63,10 +87,37 @@ public class LoadStoreOptimizer extends BodyTransformer
     private LocalDefs mLocalDefs;
     private LocalUses mLocalUses;
     private Map mUnitToBlockMap;     // maps a unit it's containing block
+    private boolean mPass2 = false;
 
-    private Map gOptions;
-    private boolean gPass2 = false;
 
+    void go() {
+        if(!mUnits.isEmpty()) {                    
+            buildUnitToBlockMap();
+            computeLocalDefsAndLocalUsesInfo();  
+           
+            
+           
+            if(debug){G.v().out.println("Calling optimizeLoadStore(1)\n");}
+            optimizeLoadStores(); 
+        
+            if(PhaseOptions.getBoolean(gOptions, "inter") ) {
+                if(debug){G.v().out.println("Calling doInterBlockOptimizations");}
+                doInterBlockOptimizations(); 
+                             
+                //computeLocalDefsAndLocalUsesInfo();          
+                //propagateLoadsBackwards();         if(debug)     G.v().out.println("pass 3");         
+                //optimizeLoadStores();      if(debug)   G.v().out.println("pass 4"); 
+                //propagateLoadsForward();   if(debug)   G.v().out.println("pass 5"); 
+                //propagateBackwardsIndependentHunk(); if(debug)  G.v().out.println("pass 6");                        
+            }
+
+            if(PhaseOptions.getBoolean(gOptions, "sl2") || PhaseOptions.getBoolean(gOptions, "sll2")  ) {        
+                mPass2 = true;
+                if(debug){G.v().out.println("Calling optimizeLoadStore(2)");}
+                optimizeLoadStores();   
+            }
+        }        
+    }
     /*
      *  Computes a map binding each unit in a method to the unique basic block    
      *  that contains it.
@@ -115,56 +166,11 @@ public class LoadStoreOptimizer extends BodyTransformer
     private void computeLocalDefsAndLocalUsesInfo() 
     {        
         mExceptionalUnitGraph =  new ExceptionalUnitGraph(mBody);
-        mLocalDefs = new SmartLocalDefs(mExceptionalUnitGraph,
-                new SimpleLiveLocals(mExceptionalUnitGraph));
-        mLocalUses = new SimpleLocalUses(mExceptionalUnitGraph, mLocalDefs);            
+        mLocalDefs = new SmartLocalDefs(mExceptionalUnitGraph, new SimpleLiveLocals(mExceptionalUnitGraph));
+        mLocalUses = new SimpleLocalUses(mExceptionalUnitGraph, mLocalDefs);
     }
    
 
-    /** The method that drives the optimizations. */
-    /* This is the public interface to LoadStoreOptimizer */
-  
-    protected void internalTransform(Body body, String phaseName, Map options) 
-    {   
-        mBody = body;        
-        mUnits =  mBody.getUnits();
-
-        gOptions = options;
-        
-        debug = PhaseOptions.getBoolean(gOptions, "debug");
-        
-        if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
-
-        if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
-        
-        if(!mUnits.isEmpty()) {                    
-            buildUnitToBlockMap();
-            computeLocalDefsAndLocalUsesInfo();  
-           
-            
-           
-            if(debug){G.v().out.println("Calling optimizeLoadStore(1)\n");}
-            optimizeLoadStores(); 
-        
-            if(PhaseOptions.getBoolean(gOptions, "inter") ) {
-                if(debug){G.v().out.println("Calling doInterBlockOptimizations");}
-                doInterBlockOptimizations(); 
-                             
-                //computeLocalDefsAndLocalUsesInfo();          
-                //propagateLoadsBackwards();         if(debug)     G.v().out.println("pass 3");         
-                //optimizeLoadStores();      if(debug)   G.v().out.println("pass 4"); 
-                //propagateLoadsForward();   if(debug)   G.v().out.println("pass 5"); 
-                //propagateBackwardsIndependentHunk(); if(debug)  G.v().out.println("pass 6");                        
-            }
-
-            if(PhaseOptions.getBoolean(gOptions, "sl2") || PhaseOptions.getBoolean(gOptions, "sll2")  ) {        
-                gPass2 = true;
-                if(debug){G.v().out.println("Calling optimizeLoadStore(2)");}
-                optimizeLoadStores();   
-            }
-        }        
-    }
     
 
 
@@ -252,7 +258,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                     
                             case 1:
                                 if(PhaseOptions.getBoolean(gOptions, "sl")) {
-                                    if(!gPass2 || PhaseOptions.getBoolean(gOptions, "sl2")) {
+                                    if(!mPass2 || PhaseOptions.getBoolean(gOptions, "sl2")) {
                                 // try to eliminate store/load pair
                                         Unit loadUnit = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                         block =  (Block) mUnitToBlockMap.get(unit);
@@ -282,7 +288,7 @@ public class LoadStoreOptimizer extends BodyTransformer
                                 
                             case 2:
                                 if(PhaseOptions.getBoolean(gOptions, "sll")) {
-                                    if(!gPass2 || PhaseOptions.getBoolean(gOptions, "sll2")) {
+                                    if(!mPass2 || PhaseOptions.getBoolean(gOptions, "sll2")) {
                                 // try to replace store/load/load trio by a flavor of the dup unit
                                         Unit firstLoad = ((UnitValueBoxPair)uses.get(0)).getUnit();
                                         Unit secondLoad = ((UnitValueBoxPair)uses.get(1)).getUnit();
@@ -1499,4 +1505,5 @@ public class LoadStoreOptimizer extends BodyTransformer
 }   
 
 
+}
 

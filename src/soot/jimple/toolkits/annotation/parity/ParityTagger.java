@@ -43,7 +43,7 @@ public class ParityTagger extends BodyTransformer
         ParityAnalysis a;
         
         if (isInteractive){
-            SimpleLiveLocals sll = new SimpleLiveLocals(new BriefUnitGraph(b));
+            LiveLocals sll = new SimpleLiveLocals(new BriefUnitGraph(b));
             Options.v().set_interactive_mode(isInteractive);
         
             a = new ParityAnalysis(
