@@ -13,6 +13,7 @@ public class XMLAttributesPrinter {
 	
 	public XMLAttributesPrinter(String filename) {
 		setInFilename(filename);
+		initAttributesDir();
 		createUseFilename();
 		initFile();
 	}
@@ -82,9 +83,30 @@ public class XMLAttributesPrinter {
 		}
 	}
 
+	private void initAttributesDir() {
+		String attrDir = "attributes";
+		File dir = new File(attrDir);
+
+		if (!dir.exists()) {
+			try {
+				dir.mkdirs();
+			} 
+			catch (SecurityException se) {
+			        G.v().out.println("Unable to create " + attrDir);
+		                //System.exit(0);
+		        }
+		}
+				
+	}
+
 	private void createUseFilename() {
 		String tmp = getInFilename();
 		tmp = tmp.substring(0, tmp.lastIndexOf('.'));
+		int slash = tmp.lastIndexOf(System.getProperty("file.separator"));
+		if (slash != -1) {
+			tmp = tmp.substring((slash+1), tmp.length()); 
+		}
+		
 		tmp = "attributes"+"/"+tmp+".xml";
 		setUseFilename(tmp);
 	}
