@@ -69,4 +69,13 @@ public class UnknownType extends Type
     {
         ((TypeSwitch) sw).caseUnknownType(this);
     }
+
+    /** Returns the least common superclass of this type and other. */
+    public Type merge(Type other, Scene cm)
+    {
+        if (other instanceof RefType)
+            return other;
+        throw new RuntimeException("illegal type merge: "
+                                   + this + " and " + other);
+    }
 }

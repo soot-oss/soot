@@ -53,72 +53,13 @@ public abstract class Type implements Switchable, ToBriefString
             return t;
     }
 
+
     /** Returns the least common superclass of this type and other. */
     public Type merge(Type other, Scene cm)
     {
-        if(this.equals(UnknownType.v()))
-            return other;
-        else if(other.equals(UnknownType.v()))
-            return this;
-        else if(this.equals(other))
-            return this;
-        else if(this instanceof RefType && other instanceof RefType)
-        {
-            // Return least common superclass
-
-            SootClass thisClass = cm.getSootClass(((RefType) this).className);
-            SootClass otherClass = cm.getSootClass(((RefType) other).className);
-            SootClass javalangObject = cm.getSootClass("java.lang.Object");
-
-            LinkedList thisHierarchy = new LinkedList();
-            LinkedList otherHierarchy = new LinkedList();
-
-            // Build thisHierarchy
-            {
-                SootClass SootClass = thisClass;
-
-                for(;;)
-                {
-                    thisHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperclass();
-                }
-            }
-
-            // Build otherHierarchy
-            {
-                SootClass SootClass = otherClass;
-
-                for(;;)
-                {
-                    otherHierarchy.addFirst(SootClass);
-
-                    if(SootClass == javalangObject)
-                        break;
-
-                    SootClass = SootClass.getSuperclass();
-                }
-            }
-
-            // Find least common superclass
-            {
-                SootClass commonClass = null;
-
-                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
-                    otherHierarchy.getFirst() == thisHierarchy.getFirst())
-                {
-                    commonClass = (SootClass) otherHierarchy.removeFirst();
-                    thisHierarchy.removeFirst();
-                }
-
-                return RefType.v(commonClass.getName());
-            }
-        }
-        else
-            throw new RuntimeException("illegal type merge: "+this + " and " + other);
+        // method overriden in subclasses UnknownType and RefType 
+        throw new RuntimeException("illegal type merge: "
+                                   + this + " and " + other);
     }
 
     /** Method required for use of Switchable. */

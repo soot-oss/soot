@@ -124,4 +124,74 @@ public class RefType extends BaseType implements ToBriefString, Comparable
     {
         ((TypeSwitch) sw).caseRefType(this);
     }
+
+
+    /** Returns the least common superclass of this type and other. */
+    public Type merge(Type other, Scene cm)
+    {
+        if(other.equals(UnknownType.v()) || this.equals(other))
+            return this;
+        
+        if(! (other instanceof RefType))
+            throw new RuntimeException("illegal type merge: "
+                                       + this + " and " + other);
+
+
+        {
+            // Return least common superclass
+            
+            SootClass thisClass = cm.getSootClass(((RefType) this).className);
+            SootClass otherClass = cm.getSootClass(((RefType) other).className);
+            SootClass javalangObject = cm.getSootClass("java.lang.Object");
+
+            LinkedList thisHierarchy = new LinkedList();
+            LinkedList otherHierarchy = new LinkedList();
+
+            // Build thisHierarchy
+            {
+                SootClass SootClass = thisClass;
+
+                for(;;)
+                {
+                    thisHierarchy.addFirst(SootClass);
+
+                    if(SootClass == javalangObject)
+                        break;
+
+                    SootClass = SootClass.getSuperclass();
+                }
+            }
+
+            // Build otherHierarchy
+            {
+                SootClass SootClass = otherClass;
+
+                for(;;)
+                {
+                    otherHierarchy.addFirst(SootClass);
+
+                    if(SootClass == javalangObject)
+                        break;
+
+                    SootClass = SootClass.getSuperclass();
+                }
+            }
+
+            // Find least common superclass
+            {
+                SootClass commonClass = null;
+
+                while(!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty() &&
+                    otherHierarchy.getFirst() == thisHierarchy.getFirst())
+                {
+                    commonClass = (SootClass) otherHierarchy.removeFirst();
+                    thisHierarchy.removeFirst();
+                }
+
+                return RefType.v(commonClass.getName());
+            }
+        }
+        
+    }
+
 }

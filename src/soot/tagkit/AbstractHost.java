@@ -38,16 +38,19 @@ import java.util.*;
  */
 public  class AbstractHost implements Host 
 {
-		// avoid creating an empty list for each element, when it is not used
-		// use lazy instantation (in addTag) instead
-		private static List emptyList = new ArrayList(0);
+    // avoid creating an empty list for each element, when it is not used
+    // use lazy instantation (in addTag) instead
+    private static List emptyList = Collections
+        .unmodifiableList(new ArrayList(0));
     private List mTagList = emptyList;
     
+    /** get the list of tags. This list should not be modified! */
     public List getTags()
     {
-        return Collections.unmodifiableList(mTagList);
+        return mTagList;
     }
 
+    /** remove the tag named <code>aName</code> */
     public void removeTag(String aName)
     {
         int tagIndex;
@@ -56,6 +59,7 @@ public  class AbstractHost implements Host
         }
     }
 
+    /** search for tag named <code>aName</code> */
     private int searchForTag(String aName) 
     {
         int i = 0;
@@ -69,7 +73,8 @@ public  class AbstractHost implements Host
         return -1;
     }
 
-    public Tag getTag(String aName)
+    /** get the Tag object named <code>aName</code> */
+   public Tag getTag(String aName)
     {      
         int tagIndex;
         if((tagIndex = searchForTag(aName)) != -1) {
@@ -79,16 +84,18 @@ public  class AbstractHost implements Host
 				return null;
     }
 
+    /** look if this host has a tag named <code>aName</code> */ 
     public boolean hasTag(String aName)
     {
         return (searchForTag(aName) != -1);
     }
     
+    /** add tag <code>t</code> to this host */
     public void addTag(Tag t)
     {
-				if (mTagList == emptyList) 
-						mTagList = new ArrayList(1);
-				mTagList.add(t);
+        if (mTagList == emptyList) 
+            mTagList = new ArrayList(1);
+        mTagList.add(t);
     }
 }
 
