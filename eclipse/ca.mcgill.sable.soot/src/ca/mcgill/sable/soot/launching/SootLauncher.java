@@ -186,7 +186,12 @@ public class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	
 	public void runFinish() {
 		getFileHandler().refreshFolder();
-		getFileHandler().handleFilesChanged();
+		//getFileHandler().handleFilesChanged();
+		SootAttributesHandler temp = new SootAttributesHandler();
+		SootPlugin.getDefault().setSootAttributesHandler(temp); 	
+		SootAttributeFilesReader safr = new SootAttributeFilesReader();
+		safr.readFiles(getSootSelection().getProject().getName());
+      
 	}
 	
 

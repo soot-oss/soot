@@ -18,7 +18,7 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	public void run(IAction action) {
 	  	super.run(action);
 	  	
-		setCmd();
+		//setCmd();
 /*		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", getSootCommandList());
       		ssc.toSaveString();
       		
@@ -28,6 +28,7 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
       		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
       		setCmd(ssc.toRunString());*/
 		setCmd();
+		//getSootCommandList().addDashes();
 		runSootDirectly();
 		runFinish();
 	
@@ -39,7 +40,7 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	 */
 	private void setCmd() {
 		
-		getSootCommandList().addDoubleOpt(LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
 			
 		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
 		classpath.append(getSootClasspath().getSootClasspath());
@@ -52,12 +53,12 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 		StringBuffer cmd = new StringBuffer();
 		cmd.append(classpath+" ");
 		cmd.append(output_path+" ");*/
-		getSootCommandList().addDoubleOpt(LaunchCommands.OUTPUT_DIR, getOutputLocation());
-		getSootCommandList().addDoubleOpt(LaunchCommands.KEEP_LINE_NUMBER, Boolean.toString(true));
-		getSootCommandList().addDoubleOpt(LaunchCommands.XML_ATTRIBUTES, Boolean.toString(true));
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		
-		getSootCommandList().addDoubleOpt(LaunchCommands.PROCESS_PATH, getProcessPath());
-		getSootCommandList().addSingleOpt(LaunchCommands.DAVA);
+		getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcessPath());
+		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
 	  	//return cmd.toString();
 	}

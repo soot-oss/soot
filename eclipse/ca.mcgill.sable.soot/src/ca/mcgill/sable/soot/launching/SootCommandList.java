@@ -76,6 +76,20 @@ public class SootCommandList {
 			}
 		}
 	}*/
+	
+	public void addDashes(){
+	
+		ArrayList withDashes = new ArrayList();
+			
+		Iterator it = getList().iterator();
+		while (it.hasNext()) {
+			String temp = (String)it.next();
+			temp = "-- "+temp;
+			withDashes.add(temp);	
+		}
+		
+		setList(withDashes);
+	}
 
 	/**
 	 * Returns the list.

@@ -32,6 +32,9 @@ Patrick Lam (plam@sable.mcgill.ca)
     - Aggregation
     - second implementation of inlining and devirtualization
 
+Jennifer Lhotak (jlhotak@sable.mcgill.ca)
+    - Eclipse Plugin
+  
 Ondrej Lhotak (olhota@sable.mcgill.ca)
     - General bug-fixes, soot hacker
     - Spark

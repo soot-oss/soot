@@ -9,9 +9,19 @@ public class XMLAttributesPrinter {
 	private String inFilename;
 	private String useFilename;
 	private SootClass sootClass;
+	private String outputDir;
+
+	private void setOutputDir(String dir) {
+		outputDir = dir;
+	}
+
+	private String getOutputDir() {
+		return outputDir;
+	}
 	
-	public XMLAttributesPrinter(String filename) {
+	public XMLAttributesPrinter(String filename, String outputDir) {
 		setInFilename(filename);
+		setOutputDir(outputDir);
 		initAttributesDir();
 		createUseFilename();
 		initFile();
@@ -59,6 +69,11 @@ public class XMLAttributesPrinter {
 					else if (t instanceof StringTag) {
 					  attrs.add(((StringTag)t).toString());
 					}
+					else {
+					  if (!t.toString().equals("[Unknown]")){
+					    attrs.add(t.toString());
+					  }
+					}
 				}
 				printAttribute(java_ln, jimple_ln, attrs);
 				
@@ -83,8 +98,15 @@ public class XMLAttributesPrinter {
 	}
 
 	private void initAttributesDir() {
+	
+		StringBuffer sb = new StringBuffer();
 		String attrDir = "attributes";
-		File dir = new File(attrDir);
+		
+		sb.append(getOutputDir());
+		sb.append(System.getProperty("file.separator"));
+		sb.append(attrDir);
+		
+		File dir = new File(sb.toString());
 
 		if (!dir.exists()) {
 			try {
@@ -100,14 +122,23 @@ public class XMLAttributesPrinter {
 
 	private void createUseFilename() {
 		String tmp = getInFilename();
+		//G.v().out.println("attribute file name: "+tmp);
 		tmp = tmp.substring(0, tmp.lastIndexOf('.'));
 		int slash = tmp.lastIndexOf(System.getProperty("file.separator"));
 		if (slash != -1) {
 			tmp = tmp.substring((slash+1), tmp.length()); 
 		}
-		
-		tmp = "attributes"+"/"+tmp+".xml";
-		setUseFilename(tmp);
+	
+		StringBuffer sb = new StringBuffer();
+		String attrDir = "attributes";
+		sb.append(getOutputDir());
+		sb.append(System.getProperty("file.separator"));
+		sb.append(attrDir);
+		sb.append(System.getProperty("file.separator"));  
+		sb.append(tmp);
+		sb.append(".xml");
+		//tmp = sb.toString()+tmp+".xml";
+		setUseFilename(sb.toString());
 	}
 
 	private void setInFilename(String file) {

@@ -110,6 +110,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		gd = new GridData(GridData.FILL_BOTH);
 		topComp.setLayoutData(gd);
 		GridLayout topLayout = new GridLayout();
+		topLayout.numColumns = 1;
 		topComp.setLayout(topLayout);
 		
 		// Set the things that TitleAreaDialog takes care of
@@ -129,8 +130,8 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		//getSashForm().setLayoutData(gd);
 		
 		Composite selection = createSelectionArea(topComp);
-		gd = new GridData(GridData.FILL_VERTICAL);
-		gd.horizontalSpan = 1;
+		gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan = 7;
 		selection.setLayoutData(gd);
 		
 		// here need buttons
@@ -193,10 +194,10 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		GridData gd = new GridData();
 		
 		TreeViewer tree = new TreeViewer(comp);
-		//gd = new GridData(GridData.FILL.FILL_BOTH);
-		//gd.horizontalSpan = 3;
-		//gd.widthHint = 0;
-		//tree.getControl().setLayoutData(gd);
+		gd = new GridData(GridData.FILL_BOTH);
+		gd.horizontalSpan = 7;
+		gd.widthHint = 0;
+		tree.getControl().setLayoutData(gd);
 		
 		tree.setContentProvider(new SootConfigContentProvider());
 		tree.setLabelProvider(new SootConfigLabelProvider());

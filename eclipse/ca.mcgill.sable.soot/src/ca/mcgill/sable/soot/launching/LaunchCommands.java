@@ -30,20 +30,20 @@ public class LaunchCommands {
 	public static final String SOOT_CLASSPATH = "cp";
 	public static final String XML_ATTRIBUTES = "xml-attributes";
 	public static final String KEEP_LINE_NUMBER = "keep-line-number";
-	public static final String OUTPUT = "--o ";
+	public static final String OUTPUT = "f ";
 	public static final String JIMPLE_OUT = "J";
 	public static final String PROCESS_PATH = "process-path";
-	public static final String DAVA = "--o dava";
-	public static final String APP = "--app ";
+	public static final String DAVA = "f dava";
+	public static final String APP = "app ";
 	public static final String OUTPUT_DIR = "d";
-	public static final String INTRA_PROC = "--O --p jop.cse disabled:false --o J ";
-	public static final String EVERYTHING = "--W --O --p wjop.si insert-null-checks:false --p jop.cse disabled:false --app --o dava ";
+	public static final String INTRA_PROC = "O --p jop.cse disabled:false --f J ";
+	public static final String EVERYTHING = "W --O --p wjop.si insert-null-checks:false --p jop.cse disabled:false --app --f dava ";
 	public static final String SRC_PREC = "src-prec";
 	public static final String JIMPLE_IN = "J";
 	public static final String CLASS_IN = "class ";
-	public static final String GRIMP_OUT = "--o grimp ";
-	public static final String INLINING = "--W --app --o grimp ";
-	public static final String STATIC = "--W --app --p wjop.smb diasabled:false --p wjop.si disabled:true --o grimp ";
+	public static final String GRIMP_OUT = "f grimp ";
+	public static final String INLINING = "--W --app --f grimp ";
+	public static final String STATIC = "--W --app --p wjop.smb diasabled:false --p wjop.si disabled:true --f grimp ";
 
 
 	private LaunchCommands() {

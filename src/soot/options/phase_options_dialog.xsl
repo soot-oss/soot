@@ -45,6 +45,7 @@ import org.eclipse.swt.*;
 import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.util.*;
+import ca.mcgill.sable.soot.ui.*;
 import java.util.HashMap;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog {

@@ -54,8 +54,9 @@ public class MultiOptionWidget {//extends Composite {
 		setAlias(data.getRealAlias());
 		
 		Group multi = new Group(parent, SWT.NONE);
+		//FillLayout fl = new FillLayout();
 		GridLayout gl = new GridLayout();
-		gl.numColumns = 2;
+		gl.numColumns = 4;
 		
 		multi.setLayout(gl);
 		

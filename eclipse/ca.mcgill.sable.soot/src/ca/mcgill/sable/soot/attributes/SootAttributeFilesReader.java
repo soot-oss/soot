@@ -49,7 +49,7 @@ public class SootAttributeFilesReader {
 		// for now read files in test project
 		//IProject project =
 		//	SootPlugin.getDefault().getWorkspace().getRoot().getProject("test");
-		IFolder folder = projects[j].getFolder("attributes");
+		IFolder folder = projects[j].getFolder("sootOutput").getFolder("attributes");
 		try {
 			IResource[] attr_files = folder.members();
 			for (int i = 0; i < attr_files.length; i++) {

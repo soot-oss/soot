@@ -112,9 +112,10 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 				replace0(getOldStreamWriteEnd(), 0, text);
 				setOldStreamWriteEnd(getNewStreamWriteEnd());
 				//setAppendInProgress(false);
+				getViewer().getTextViewer().setTopIndex(getNumberOfLines());
 			}
 		});
-		getViewer().getTextViewer().setTopIndex(this.getNumberOfLines());
+		
 		
 	}
 	

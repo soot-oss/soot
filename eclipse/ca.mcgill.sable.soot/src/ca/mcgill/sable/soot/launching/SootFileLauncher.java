@@ -30,7 +30,8 @@ public class SootFileLauncher extends SootLauncher {
 		
 		if (getSootSelection().getType() == getSootSelection().CLASSFILE_SELECTED_TYPE) {
 			IClassFile cf = getSootSelection().getClassFile();
-			IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(cf.PACKAGE_FRAGMENT_ROOT);
+			handleClassFile(cf);
+			/*IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(cf.PACKAGE_FRAGMENT_ROOT);
 			IPackageFragment pf = (IPackageFragment) cf.getAncestor(cf.PACKAGE_FRAGMENT);
 			setClasspathAppend(platform_location+pfr.getPath().toOSString());
 			if (pf.isDefaultPackage()) {
@@ -38,7 +39,7 @@ public class SootFileLauncher extends SootLauncher {
 			}
 			else {
 				setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
-			}
+			}*/
 		}
 		else if (getSootSelection().getType() == getSootSelection().FILE_SELECTED_TYPE) {
 			IFile file = getSootSelection().getFile();
@@ -48,10 +49,47 @@ public class SootFileLauncher extends SootLauncher {
 				setSrcPrec(LaunchCommands.JIMPLE_IN);
 				setToProcess(removeFileExt(file.getName()));
 			}
-			else if (file.getFileExtension().compareTo(LaunchCommands.CLASS_IN) == 0) {
-			
+			else if (file.getFileExtension().compareTo("class") == 0) {
+				try {
+					// broken
+					IJavaElement elem = JavaCore.create(file);
+					if (elem instanceof IClassFile) {
+						handleClassFile((IClassFile)elem);
+					}
+					
+				}
+				catch(Exception e){
+					System.out.println("not a class file");
+				}
 			}
 			
+		}
+	}
+	
+	private void handleClassFile(IClassFile cf) {
+		IPackageFragmentRoot pfr = (IPackageFragmentRoot) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		System.out.println("pfr path: "+pfr.getPath().toOSString());
+		IPackageFragment pf = (IPackageFragment) cf.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
+		System.out.println("pf path: "+pf.getPath().toOSString());
+		// incorrect pfr - pf workaround - temporary
+		if (pfr.getPath().toOSString().equals(pf.getPath().toOSString())) {
+			setClasspathAppend(platform_location+pfr.getPath().removeLastSegments(1).toOSString());
+		}
+		else {
+			//System.out.println("pfr path: "+pfr.getPath().toOSString());
+		
+			setClasspathAppend(platform_location+pfr.getPath().toOSString());
+		}
+		
+		// first condition incorrect pfr - pf workaround - temporary
+		if (pfr.getPath().toOSString().equals(pf.getPath().toOSString())) {
+			setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
+		}
+		else if (pf.isDefaultPackage()) {
+			setToProcess(removeFileExt(cf.getElementName()));
+		}
+		else {
+			setToProcess(pf.getElementName()+"."+removeFileExt(cf.getElementName()));
 		}
 	}
 	

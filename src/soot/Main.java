@@ -803,7 +803,7 @@ public class Main {
         }
 
         if (Options.v().xml_attributes()) {
-            XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName);
+            XMLAttributesPrinter xap = new XMLAttributesPrinter(fileName, getOutputDir());
             xap.printAttrs(c);
         }
 
