@@ -289,7 +289,9 @@ class ArrayPackSet extends PackSet
             if(bits.length >= 1)
             {
                 int lastValidBitCount = map.getSize() % 32;
-                dest.bits[bits.length - 1] &= ~(0xFFFFFFFF << lastValidBitCount);  
+                
+                if(lastValidBitCount != 0)
+                    dest.bits[bits.length - 1] &= ~(0xFFFFFFFF << lastValidBitCount);  
             }
     }
 

@@ -80,7 +80,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class LongConstant extends Constant implements Switchable
+public class LongConstant extends Constant implements Switchable, ToBriefStringOwner
 {
     public final long value;
 
@@ -104,6 +104,11 @@ public class LongConstant extends Constant implements Switchable
         return new Long(value).toString() + "L";
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public Type getType()
     {
         return LongType.v();

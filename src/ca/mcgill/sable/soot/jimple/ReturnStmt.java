@@ -83,11 +83,14 @@ public class ReturnStmt extends Stmt
         this.returnValueBox = Jimple.v().newImmediateBox(returnValue);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "return " + returnValueBox.getValue().toString();
+        if(isBrief)
+            return indentation + "return " + ((ToBriefStringOwner) returnValueBox.getValue()).toBriefString();
+        else
+            return indentation + "return " + returnValueBox.getValue().toString();
     }
-
+    
     public ValueBox getReturnValueBox()
     {
         return returnValueBox;

@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CmpExpr extends BinopExpr
+public class CmpExpr extends BinopExpr implements ToBriefStringOwner
 {
     CmpExpr(Value op1, Value op2)
     {
@@ -84,9 +84,17 @@ public class CmpExpr extends BinopExpr
 
     public String toString()
     {
-        return op1Box.getValue().toString() + " cmp " + op2Box.getValue().toString();
+        return op1Box.getValue().toString() + " cmp " + 
+            op2Box.getValue().toString();
     }
 
+    public String toBriefString()
+    {
+        return ((ToBriefStringOwner) op1Box.getValue()).toBriefString() + " cmp " + 
+               ((ToBriefStringOwner) op2Box.getValue()).toBriefString();
+    }
+
+    
     public Type getType()
     {
         return IntType.v();

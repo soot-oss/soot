@@ -131,9 +131,9 @@ class FutureStmt extends ca.mcgill.sable.soot.jimple.Stmt
     {
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "<futureStmt>";
+        return "<futurestmt>";
     }
 
     public List getDefBoxes()

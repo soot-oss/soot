@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class LengthExpr extends UnopExpr
+public class LengthExpr extends UnopExpr implements ToBriefStringOwner
 {
     public LengthExpr(Value op)
     {
@@ -84,6 +84,11 @@ public class LengthExpr extends UnopExpr
     public String toString()
     {
         return "lengthof " + opBox.getValue().toString();
+    }
+
+    public String toBriefString()
+    {
+        return "lengthof" + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
     }
 
     public Type getType()

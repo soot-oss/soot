@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StaticFieldRef implements ConcreteRef
+public class StaticFieldRef implements ConcreteRef, ToBriefStringOwner
 {
     SootField field;
 
@@ -86,6 +86,11 @@ public class StaticFieldRef implements ConcreteRef
     public String toString()
     {
         return "[" + field.getSignature() + "]";
+    }
+
+    public String toBriefString()
+    {
+        return field.getDeclaringClass().getName() + "." + field.getName();
     }
 
     public SootField getField()

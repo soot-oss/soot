@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NegExpr extends UnopExpr
+public class NegExpr extends UnopExpr implements ToBriefStringOwner
 {
     NegExpr(Value op)
     {
@@ -86,6 +86,12 @@ public class NegExpr extends UnopExpr
         return "-" + opBox.getValue().toString();
     }
 
+    public String toBriefString()
+    {
+        return "-" + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+    }
+
+    
     public Type getType()
     {
         Value op = opBox.getValue();

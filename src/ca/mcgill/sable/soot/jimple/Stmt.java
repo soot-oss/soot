@@ -76,6 +76,8 @@ import ca.mcgill.sable.util.*;
 
 public abstract class Stmt implements Unit
 {
+    Map allMapToUnnamed = new AllMapTo("<unnamed>");
+    
     /**
      * The list of boxes is not dynamically updated as the structure changes.
      */
@@ -123,4 +125,66 @@ public abstract class Stmt implements Unit
     {
     }
 
+    public String toBriefString()
+    {
+        return toString(true, allMapToUnnamed, "");
+    }
+    
+    public String toBriefString(Map stmtToName)
+    {
+        return toString(true, stmtToName, "");
+    }
+    
+    public String toBriefString(String indentation)
+    {
+        return toString(true, allMapToUnnamed, indentation);
+    }
+    
+    public String toBriefString(Map stmtToName, String indentation)
+    {
+        return toString(true, stmtToName, indentation);
+    }
+    
+    public String toString()
+    {
+        return toString(false, allMapToUnnamed, "");
+    }
+    
+    public String toString(Map stmtToName)
+    {
+        return toString(false, stmtToName, "");
+    }
+    
+    public String toString(String indentation)
+    {
+        return toString(false, allMapToUnnamed, indentation);
+    }
+    
+    public String toString(Map stmtToName, String indentation)
+    {
+        return toString(false, stmtToName, indentation);
+    }
+    
+    abstract protected String toString(boolean isBrief, Map stmtToName, String indentation);
+
+    class AllMapTo extends AbstractMap
+    {
+        Object dest;
+        
+        public AllMapTo(Object dest)
+        {
+            this.dest = dest;
+        }
+        
+        public Object get(Object key)
+        {
+            return dest;
+        }
+        
+        public Collection entries()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
+    
 }

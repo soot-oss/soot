@@ -80,12 +80,11 @@ public class NopStmt extends Stmt
     {
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "nop";
+        return indentation + "nop";
     }
-
-
+    
     public List getDefBoxes()
     {
         return emptyList;

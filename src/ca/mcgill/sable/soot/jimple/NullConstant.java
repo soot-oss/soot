@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NullConstant extends Constant implements Switchable
+public class NullConstant extends Constant implements Switchable, ToBriefStringOwner
 {
     private static final NullConstant constant = new NullConstant();
 
@@ -97,6 +97,11 @@ public class NullConstant extends Constant implements Switchable
         return "null";
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public Type getType()
     {
         return NullType.v();

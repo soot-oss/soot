@@ -103,6 +103,21 @@ public class NewMultiArrayExpr implements Expr
         return buffer.toString();
     }
 
+    public String toBriefString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("newmulti " + baseType.baseType.toString());
+
+        for(int i = 0; i < sizeBoxes.length; i++)
+            buffer.append("[" + ((ToBriefStringOwner) sizeBoxes[i].getValue()).toBriefString() + "]");
+
+        for(int i = 0; i < baseType.numDimensions - sizeBoxes.length; i++)
+            buffer.append("[]");
+
+        return buffer.toString();
+    }
+
     public ArrayType getBaseType()
     {
         return baseType;

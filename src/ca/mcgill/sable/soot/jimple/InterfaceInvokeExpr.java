@@ -77,7 +77,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class InterfaceInvokeExpr extends NonStaticInvokeExpr
+public class InterfaceInvokeExpr extends NonStaticInvokeExpr implements ToBriefStringOwner
 {
     InterfaceInvokeExpr(Value base, SootMethod method, List args)
     {
@@ -94,7 +94,7 @@ public class InterfaceInvokeExpr extends NonStaticInvokeExpr
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("interfaceinvoke " + baseBox.getValue().toString() +
+        buffer.append(baseBox.getValue().toString() +
             ".[" + method.getSignature() + "](");
 
         for(int i = 0; i < argBoxes.length; i++)
@@ -103,6 +103,27 @@ public class InterfaceInvokeExpr extends NonStaticInvokeExpr
                 buffer.append(", ");
 
             buffer.append(argBoxes[i].getValue().toString());
+        }
+
+        buffer.append(")");
+
+        return buffer.toString();
+    }
+
+    
+    public String toBriefString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("interfaceinvoke " + ((ToBriefStringOwner) baseBox.getValue()).toBriefString() +
+            "." + method.getName() + "(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                buffer.append(", ");
+
+            buffer.append(((ToBriefStringOwner) argBoxes[i].getValue()).toBriefString());
         }
 
         buffer.append(")");

@@ -86,9 +86,15 @@ public class IdentityStmt extends DefinitionStmt
         defBoxes = Collections.unmodifiableList(defBoxes);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
+        if(isBrief)
+        {
+            return indentation + ((ToBriefStringOwner) leftBox.getValue()).toBriefString() + " := " + 
+                ((ToBriefStringOwner) rightBox.getValue()).toBriefString();
+        }
+        else
+            return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
     }
 
     public void setLeftOp(Value local)

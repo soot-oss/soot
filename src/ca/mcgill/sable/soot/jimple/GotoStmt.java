@@ -89,11 +89,11 @@ public class GotoStmt extends Stmt
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "goto ?";
+        return indentation + "goto " + (String) stmtToName.get(getTarget());
     }
-
+    
     public Unit getTarget()
     {
         return targetBox.getUnit();

@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class UshrExpr extends BinopExpr
+public class UshrExpr extends BinopExpr implements ToBriefStringOwner
 {
     UshrExpr(Value op1, Value op2)
     {
@@ -85,6 +85,12 @@ public class UshrExpr extends BinopExpr
     public String toString()
     {
         return op1Box.getValue().toString() + " ushr " + op2Box.getValue().toString();
+    }
+    
+    public String toBriefString()
+    {
+        return ((ToBriefStringOwner) op1Box.getValue()).toBriefString() + " ushr " + 
+               ((ToBriefStringOwner) op2Box.getValue()).toBriefString();
     }
 
     public Type getType()

@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added a debug option.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -81,7 +84,8 @@ import java.io.*;
 
 public class PrintJimpleBodyOption
 {
-    public static final int USE_ABBREVIATIONS = 0x0001;
+    public static final int USE_ABBREVIATIONS = 0x0001,
+                            DEBUG_MODE        = 0x0002;
 
     private PrintJimpleBodyOption()
     {
@@ -91,5 +95,21 @@ public class PrintJimpleBodyOption
     {
         return (m & USE_ABBREVIATIONS) != 0;
     }
+    
+    public static boolean debugMode(int m)
+    {
+        return (m & DEBUG_MODE) != 0;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
 

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed the default resolution state of new classes.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -146,11 +149,12 @@ public class SootClassManager
 
         // Not there, create an unresolved class.
         {
-            SootClass SootClass = new SootClass(className);
+            SootClass sootClass = new SootClass(className);
 
-            addClass(SootClass);
+            sootClass.setResolved(false);
+            addClass(sootClass);
 
-            return SootClass;
+            return sootClass;
         }
     }
 

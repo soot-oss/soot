@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Changed the default resolution state of new classes.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -112,7 +115,8 @@ public class SootClass
     {
         this.name = name;
         this.modifiers = modifiers;
-        isResolved = false;
+        isResolved = true;
+
     }
 
     /**
@@ -123,7 +127,7 @@ public class SootClass
     {
         this.name = name;
         this.modifiers = 0;
-        isResolved = false;
+        isResolved = true;
     }
 
     /*

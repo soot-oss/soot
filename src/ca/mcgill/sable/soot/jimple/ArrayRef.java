@@ -77,7 +77,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ArrayRef implements ConcreteRef, Switchable
+public class ArrayRef implements ConcreteRef, Switchable, ToBriefStringOwner
 {
     ValueBox baseBox;
     ValueBox indexBox;
@@ -98,6 +98,13 @@ public class ArrayRef implements ConcreteRef, Switchable
     public String toString()
     {
         return baseBox.getValue().toString() + "[" + indexBox.getValue().toString() + "]";
+    }
+
+    public String toBriefString()
+    {
+        return ((ToBriefStringOwner) baseBox.getValue()).toBriefString() + 
+            "[" + ((ToBriefStringOwner) indexBox.getValue()).toBriefString() 
+            + "]";
     }
 
     public Value getBase()

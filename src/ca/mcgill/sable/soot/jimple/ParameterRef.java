@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ParameterRef implements IdentityRef, Switchable
+public class ParameterRef implements IdentityRef, Switchable, ToBriefStringOwner
 {
     int n;
     SootMethod method;
@@ -90,6 +90,11 @@ public class ParameterRef implements IdentityRef, Switchable
         return "@parameter" + n;
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public int getIndex()
     {
         return n;

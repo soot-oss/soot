@@ -89,9 +89,12 @@ public class RetStmt extends Stmt
         useBoxes = Collections.unmodifiableList(useBoxes);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "ret " + stmtAddressBox.getValue().toString();
+        if(isBrief)
+            return indentation + "ret " + ((ToBriefStringOwner) stmtAddressBox.getValue()).toBriefString();
+        else
+            return indentation + "ret " + stmtAddressBox.getValue().toString();
     }
 
     public Value getStmtAddress()

@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NextNextStmtRef implements ConcreteRef
+public class NextNextStmtRef implements ConcreteRef, ToBriefStringOwner
 {
     NextNextStmtRef()
     {
@@ -85,6 +85,11 @@ public class NextNextStmtRef implements ConcreteRef
         return "&nextnextstmt";
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public List getUseBoxes()
     {
         return Stmt.emptyList;

@@ -91,6 +91,15 @@ public class IfStmt extends Stmt
         targetBoxes = Collections.unmodifiableList(targetBoxes);
     }
 
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    {
+        if(isBrief)
+            return indentation + "if " + 
+                ((ToBriefStringOwner) getCondition()).toBriefString() + " goto " + (String) stmtToName.get(getTarget());
+        else
+            return indentation + "if " + getCondition().toString() + " goto " + (String) stmtToName.get(getTarget());
+    }
+    
     public String toString()
     {
         return "if " + conditionBox.getValue().toString() + " goto ?";

@@ -83,9 +83,12 @@ class ExitMonitorStmt extends Stmt
         this.opBox = Jimple.v().newImmediateBox(op);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "exitmonitor " + opBox.getValue().toString();
+        if(isBrief)
+            return indentation + "exitmonitor " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+        else
+            return indentation + "exitmonitor " + opBox.getValue().toString();
     }
 
     public Value getOp()

@@ -61,62 +61,17 @@
 
  B) Changes:
 
- - Modified on November 18, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Changed the "f" to an "F".
+ - Modified on November 20, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   first initial release.
 
- - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
-   Repackaged all source files and performed extensive modifications.
-   First initial release of Soot.
-
- - Modified on 31-Aug-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Added a "f" to the float toString().
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   First internal release (Version 0.1).
 */
 
 package ca.mcgill.sable.soot.jimple;
 
-import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
+import ca.mcgill.sable.soot.*;
 
-public class FloatConstant extends Constant implements Switchable, ToBriefStringOwner
+public interface ToBriefStringOwner
 {
-    public final float value;
-
-    private FloatConstant(float value)
-    {
-        this.value = value;
-    }
-
-    public static FloatConstant v(float value)
-    {
-        return new FloatConstant(value);
-    }
-
-
-    public boolean equals(Constant c)
-    {
-        return c instanceof FloatConstant && ((FloatConstant) c).value == value;
-    }
-
-    public String toString()
-    {
-        return new Float(value).toString() + "F";
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public Type getType()
-    {
-        return FloatType.v();
-    }
-
-    public void apply(Switch sw)
-    {
-        ((ConstantSwitch) sw).caseFloatConstant(this);
-    }
+    public abstract String toBriefString();
 }

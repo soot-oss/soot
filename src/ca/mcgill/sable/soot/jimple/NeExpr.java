@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NeExpr extends BinopExpr implements ConditionExpr
+public class NeExpr extends BinopExpr implements ConditionExpr, ToBriefStringOwner
 {
     NeExpr(Value op1, Value op2)
     {
@@ -87,6 +87,12 @@ public class NeExpr extends BinopExpr implements ConditionExpr
         return op1Box.getValue().toString() + " != " + op2Box.getValue().toString();
     }
 
+     public String toBriefString()
+    {
+        return ((ToBriefStringOwner) op1Box.getValue()).toBriefString() + " / " + 
+               ((ToBriefStringOwner) op2Box.getValue()).toBriefString();
+    }
+    
     public Type getType()
     {
         return IntType.v();

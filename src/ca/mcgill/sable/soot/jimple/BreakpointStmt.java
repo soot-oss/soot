@@ -80,11 +80,11 @@ public class BreakpointStmt extends Stmt
     {
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "breakpoint";
+        return indentation + "breakpoint";
     }
-
+    
     public List getDefBoxes()
     {
         return emptyList;

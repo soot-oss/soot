@@ -83,11 +83,14 @@ public class InvokeStmt extends Stmt
         invokeExprBox = Jimple.v().newInvokeExprBox(c);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return invokeExprBox.getValue().toString();
+        if(isBrief)
+            return indentation + ((ToBriefStringOwner) invokeExprBox.getValue()).toBriefString();
+        else
+            return indentation + invokeExprBox.getValue().toString();
     }
-
+    
     public void setInvokeExpr(Value invokeExpr)
     {
         invokeExprBox.setValue(invokeExpr);

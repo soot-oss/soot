@@ -85,11 +85,14 @@ public class EnterMonitorStmt extends Stmt
         this.opBox = Jimple.v().newImmediateBox(op);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "entermonitor " + opBox.getValue().toString();
+        if(isBrief)
+            return indentation + "entermonitor " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+        else
+            return indentation + "entermonitor " + opBox.getValue().toString();
     }
-
+    
     public Value getOp()
     {
         return opBox.getValue();

@@ -108,20 +108,23 @@ public class TableSwitchStmt extends Stmt
         }
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         StringBuffer buffer = new StringBuffer();
-
-        buffer.append("tableswitch(" + keyBox.getValue().toString() + ")\n");
-        buffer.append("{\n");
-
+        String endOfLine = (indentation.equals("")) ? " " : "\n";
+        
+        buffer.append(indentation + "tableswitch(" + ((isBrief) ? ((ToBriefStringOwner) keyBox.getValue()).toBriefString() :
+            keyBox.getValue().toString()) + ")" + endOfLine);
+            
+        buffer.append(indentation + "{" + endOfLine);
+        
         for(int i = lowIndex; i <= highIndex; i++)
         {
-            buffer.append("case " + i + ": goto ?;\n");
+            buffer.append(indentation + "    case " + i + ": goto " + (String) stmtToName.get(getTarget(i - lowIndex)) + ";" + endOfLine);
         }
 
-        buffer.append("default: goto ?;\n");
-        buffer.append("}");
+        buffer.append(indentation + "    default: goto " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+        buffer.append(indentation + "}");
 
         return buffer.toString();
     }

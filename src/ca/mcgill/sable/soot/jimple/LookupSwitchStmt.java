@@ -108,20 +108,24 @@ public class LookupSwitchStmt extends Stmt
         }
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
         StringBuffer buffer = new StringBuffer();
-
-        buffer.append("lookupswitch(" + keyBox.getValue().toString() + ")\n");
-        buffer.append("{\n");
-
+        String endOfLine = (indentation.equals("")) ? " " : "\n";
+        
+        buffer.append(indentation + "lookupswitch(" + ((isBrief) ? ((ToBriefStringOwner) keyBox.getValue()).toBriefString() :
+            keyBox.getValue().toString()) + ")" + endOfLine);
+            
+        buffer.append(indentation + "{" + endOfLine);
+        
         for(int i = 0; i < lookupValues.size(); i++)
         {
-            buffer.append("case " + lookupValues.get(i) + ": goto ?;\n");
+            buffer.append(indentation + "    case " + lookupValues.get(i) + ": goto " + 
+                (String) stmtToName.get(getTarget(i)) + ";" + endOfLine);
         }
 
-        buffer.append("default: goto ?;\n");
-        buffer.append("}");
+        buffer.append(indentation + "    default: goto " + (String) stmtToName.get(getDefaultTarget()) + ";" + endOfLine);
+        buffer.append(indentation + "}");
 
         return buffer.toString();
     }

@@ -80,11 +80,11 @@ public class ReturnVoidStmt extends Stmt
     {
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "return";
+        return indentation + "return";
     }
-
+    
     public List getDefBoxes()
     {
         return emptyList;

@@ -61,6 +61,9 @@
 
  B) Changes:
 
+ - Modified on November 21, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Added the isBodyStored method.
+   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -215,6 +218,15 @@ public class SootMethod
         return parameterTypes;
     }
 
+    /**
+        Determines if a representation of the given type is stored for the body.
+     */
+
+    public boolean isBodyStored(BodyRepresentation bodyRep)
+    {
+        return repToBody.containsKey(bodyRep);
+    }
+    
     /**
         Retrieves a stored representation for the body of the method.
      */

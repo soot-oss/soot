@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class ThisRef implements IdentityRef
+public class ThisRef implements IdentityRef, ToBriefStringOwner
 {
     SootClass SootClass;
 
@@ -88,6 +88,11 @@ public class ThisRef implements IdentityRef
         return "@this";
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public List getUseBoxes()
     {
         return Stmt.emptyList;

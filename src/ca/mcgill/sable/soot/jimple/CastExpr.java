@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class CastExpr implements Expr
+public class CastExpr implements Expr, ToBriefStringOwner
 {
     ValueBox opBox;
     Type type;
@@ -90,6 +90,12 @@ public class CastExpr implements Expr
         return "(" + type.toString() + ") " + opBox.getValue().toString();
     }
 
+    public String toBriefString()
+    {
+        return "(" + type.toString() + ") " + 
+            ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+    }
+    
     public Value getOp()
     {
         return opBox.getValue();

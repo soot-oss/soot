@@ -98,9 +98,12 @@ public class ThrowStmt extends Stmt
         opBox.setValue(op);
     }
 
-    public String toString()
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
     {
-        return "throw " + opBox.getValue().toString();
+        if(isBrief)
+            return indentation + "throw " + ((ToBriefStringOwner) opBox.getValue()).toBriefString();
+        else
+            return indentation + "throw " + opBox.getValue().toString();
     }
 
     public List getDefBoxes()

@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class IntConstant extends Constant implements Switchable
+public class IntConstant extends Constant implements Switchable, ToBriefStringOwner
 {
     public final int value;
 
@@ -98,6 +98,11 @@ public class IntConstant extends Constant implements Switchable
         return new Integer(value).toString();
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public Type getType()
     {
         return IntType.v();

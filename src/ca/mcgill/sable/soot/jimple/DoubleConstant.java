@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class DoubleConstant extends Constant implements Switchable
+public class DoubleConstant extends Constant implements Switchable, ToBriefStringOwner
 {
     public final double value;
 
@@ -98,6 +98,11 @@ public class DoubleConstant extends Constant implements Switchable
         return new Double(value).toString();
     }
 
+    public String toBriefString()
+    {
+        return toString();
+    }
+    
     public Type getType()
     {
         return DoubleType.v();
