@@ -32,7 +32,7 @@ import soot.*;
 
 
 /**
- *   Adds the ability to modify a DirectedGraph. Provides
+ *   Defines a DirectedGraph which is modifiable. Provides
  *   an interface to add/delete nodes and edges.
  */
 

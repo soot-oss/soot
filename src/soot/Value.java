@@ -24,18 +24,26 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 import soot.*;
 
+/** Data used as, for instance, arguments to instructions; typical implementations are
+ * constants or expressions. 
+ *
+ * Values are typed, clonable and must declare which other 
+ * Values they use (contain). */
 public interface Value extends Switchable, EquivTo
 {
+    /** Returns a List of boxes corresponding to Values 
+     * which are used by (i.e. contained within) this Value. */
     public List getUseBoxes();
+
+    /** Returns the Soot type of this Value. */
     public Type getType();
+
+    /** Returns a clone of this Value. */
     public Object clone();
 }

@@ -25,7 +25,7 @@
 
 package soot;
 
-/** Objects implementing this interface can be put into a DirectedGraph. */
+/** An object which can be put into a DirectedGraph. */
 public interface Directed
 {
 }

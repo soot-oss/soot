@@ -37,7 +37,7 @@ package soot;
  *   A class that provides static methods and constants to represent and
  *   work with with Java modifiers (ie public, final,...)
  *   Represents Java modifiers as int constants that can be packed and
- *   combined by bitwise operations; and method to query these.
+ *   combined by bitwise operations and methods to query these.
  *   
  */
 public class Modifier

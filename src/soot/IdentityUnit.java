@@ -30,7 +30,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-/** Describes a unit that assigns to a variable from {parameters, this, caughtexception}. */
+/** A unit that assigns to a variable from one of {parameters, this, caughtexception}. */
 public interface IdentityUnit extends Unit
 { 
     public Value getLeftOp();

@@ -37,7 +37,7 @@ import soot.baf.*;
  *   Resulting class will likely not verify.
  */
 
-class ExamplePeephole implements Peephole
+public class ExamplePeephole implements Peephole
 {
     public boolean apply(Body b) 
     {

@@ -28,10 +28,10 @@ package soot;
 import java.util.*;
 import java.io.*;
 
+/** Provides methods to deal with Tags. */
 public class TagManager 
 {
-
-   
+    /** Writes to <code>aOut</code> a summary of the tag information contained within this Scene. */
     public static void printReportFor(PrintWriter aOut) 
     {
 	//	Set set = new HashSet();
@@ -40,27 +40,21 @@ public class TagManager
        	printContentsOfHost("<<scene>>", "", Scene.v(), aOut);
 	
 	Iterator it = Scene.v().getApplicationClasses().iterator();
-	while(it.hasNext()) {
+	while(it.hasNext()) 
+        {
 	    SootClass cl = (SootClass) it.next();
-	    
-	    
 
 	    printContentsOfHost("<" + cl.getName() +">", "    ", cl, aOut);
 	    Iterator methodIt = cl.getMethods().iterator();
-	    while(methodIt.hasNext()) {
-		SootMethod mtd = (SootMethod) methodIt.next();				
+	    while(methodIt.hasNext()) 
+            {
+		SootMethod mtd = (SootMethod) methodIt.next();
 		//printContentsOfHost(mtd.toString(), "        ", mtd, aOut);
 	    }
-	    
-	    
-
 	}
-	
     }
 
-
-
-
+    /** Writes a summary of the information contained in the given host to aOut. */
     public static void printContentsOfHost(String aSignature, String aIndent, Host aHost, PrintWriter aOut)
     {
 	aOut.println(aIndent + aSignature);
@@ -73,7 +67,8 @@ public class TagManager
 	aOut.println("");
     }
 
-
+    /** Adds all of the method tags named <code>aTagName</code> and stores the result
+     * in an identically-named tag on the class. */
     public static void sumTagsUpMethods(String aTagName, SootClass aClass)
     {
 	long sum = 0;
@@ -88,12 +83,13 @@ public class TagManager
 	aClass.newTag(aTagName, new Long(sum));	
     }
 
+    /** Adds all of the class tags named <code>aTagName</code> and stores the result
+     * in an identically-named tag on the Scene. */
     public static void sumTagsUp(String aTagName, Scene aScene)
     {
 	long sum = 0;
 	aScene.destroyTag(aTagName);
 
-	
 	Iterator it = aScene.getApplicationClasses().iterator();
 	while(it.hasNext()) {
 	    SootClass c =  (SootClass) it.next();
@@ -103,10 +99,6 @@ public class TagManager
 	
 	aScene.newTag(aTagName, new Long(sum));	
     }
-
-
-
-
 }
 
 

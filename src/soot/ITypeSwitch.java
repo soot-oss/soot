@@ -27,6 +27,7 @@
 
 package soot;
 
+/** Describes a switch on internal types. */
 interface ITypeSwitch extends soot.util.Switch
 {
     void caseArrayType(ArrayType t);

@@ -313,10 +313,10 @@ public class UnitGraph implements DirectedGraph
 
     
     /**
-     *   @return The underlying body instance this UnitGraph was build
+     *   @return The underlying body instance this UnitGraph was built
      *           from.
      *
-     *  @see #UnitGraph
+     *  @see UnitGraph
      *  @see Body
      */
     public Body getBody()

@@ -65,7 +65,7 @@ public class BlockGraph implements DirectedGraph
      *   @param type   Specifies the type of graph to build. 
      *                 This can be  BRIEF, ZONED or COMPLETE.
      *   @see CompleteBlockGraph
-     *   @see BriedBlockGraph
+     *   @see BriefBlockGraph
      *   @see ZonedBlockGraph 
      */
     BlockGraph(Body aBody, int type) 
@@ -493,7 +493,7 @@ public class BlockGraph implements DirectedGraph
     /**
      *  Returns the underlying Body instance this BlockGraph is derived from.
      *  @return The underlying Body instance this BlockGraph is derived from.
-     *  @see #BlockGraph
+     *  @see BlockGraph
      *  @see Body
      */
     public Body getBody()

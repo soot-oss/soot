@@ -235,13 +235,13 @@ public class Scene extends AbstractHost
         return options;
     }
 
-    public void addClass(SootClass c) throws AlreadyManagedException, DuplicateNameException
+    public void addClass(SootClass c) 
     {
         if(c.isInScene())
-            throw new AlreadyManagedException(c.getName());
+            throw new RuntimeException("already managed: "+c.getName());
 
         if(containsClass(c.getName()))
-            throw new DuplicateNameException(c.getName());
+            throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
 
@@ -297,9 +297,7 @@ public class Scene extends AbstractHost
      * Loads the given class and all of the required support classes.  Returns the first class.
      */
      
-    public SootClass loadClassAndSupport(String className) throws ClassFileNotFoundException,
-                                             CorruptClassFileException,
-                                             DuplicateNameException
+    public SootClass loadClassAndSupport(String className) 
     {   
         /*
         if(Main.isProfilingOptimization)
@@ -322,14 +320,12 @@ public class Scene extends AbstractHost
      * Returns the SootClass with the given className.  
      */
 
-    public SootClass getSootClass(String className) throws ClassFileNotFoundException
+    public SootClass getSootClass(String className) 
     {   
         SootClass toReturn = (SootClass) nameToClass.get(className);
         
         if(toReturn == null)
         {	 
-
-
             if(Scene.v().allowsPhantomRefs())
             {
                 SootClass c = new SootClass(className);
@@ -338,8 +334,10 @@ public class Scene extends AbstractHost
 		classesToResolve.add(c.getName());
                 return c;
             }
-            else { System.out.println("can find classfile" + className );
-	    throw new ClassFileNotFoundException();
+            else 
+            { 
+                System.out.println("can't find classfile" + className );
+                throw new RuntimeException();
 	    }
         }
         else

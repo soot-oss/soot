@@ -44,9 +44,9 @@ import soot.toolkits.scalar.*;
  *   class. This class provides methods that are common to any IR of body, such as methods
  *   to get the body's statements, traps, locals, ...
  *   
- *  @see GrimpBody
- *  @see JimpleBody
- *  @see BafBody
+ *  @see soot.grimp.GrimpBody
+ *  @see soot.jimple.JimpleBody
+ *  @see soot.baf.BafBody
  */
 public abstract class Body
 {

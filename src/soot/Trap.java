@@ -29,7 +29,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
-/** The Trap interface describes a trap (exception catcher), used within Body
+/** A trap (exception catcher), used within Body
  * classes.  Intermediate representations must use an implementation
  * of Trap to describe caught exceptions.
  *  */

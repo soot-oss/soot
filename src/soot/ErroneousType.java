@@ -32,6 +32,10 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
+/**
+ *   Soot representation used for untypable objects. Implemented as
+ *   a singleton.
+ */
 public class ErroneousType extends Type
 {
     private static ErroneousType constant = new ErroneousType();

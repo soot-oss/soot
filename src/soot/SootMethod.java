@@ -35,7 +35,7 @@ import soot.baf.*;
 import soot.jimple.*;
 
 /**
-    Represents a Java method in Soot.  Can be declared to belong to a SootClass. 
+    Soot representation of a Java method.  Can be declared to belong to a SootClass. 
     Does not contain the actual code, which belongs to a Body.
     The getActiveBody() method points to the currently-active body.
 */
@@ -156,10 +156,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Directed
     }
 
     /** Returns the class which declares the current <code>SootMethod</code>. */
-    public SootClass getDeclaringClass() throws NotDeclaredException
+    public SootClass getDeclaringClass() 
     {
         if(!isDeclared)
-            throw new NotDeclaredException(getName());
+            throw new RuntimeException("not declared: "+getName());
 
         return declaringClass;
     }

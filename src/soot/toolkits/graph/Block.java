@@ -35,13 +35,13 @@ import soot.baf.*;
 
 
 /**
- *    This class is used to represent BasicBlocks that partition
- *    a method body. It is implemented as view on an
- *    underlying Body instance; as a consequence changes made on a Block 
- *    will be  automatically reflected  in it's enclosing method body. Blocks
- *    also exists in the context of a BlockGraph, a CFG for a method  where 
- *    Block instances are the nodes of the graph. Hence a Block can be queried
- *    for it's successors and predessors Blocks as they are found in this graph.
+ *    Represents BasicBlocks that partition
+ *    a method body.  It is implemented as view on an
+ *    underlying Body instance; as a consequence, changes made on a Block 
+ *    will be automatically reflected in its enclosing method body. Blocks
+ *    also exist in the context of a BlockGraph, a CFG for a method where 
+ *    Block instances are the nodes of the graph. Hence, a Block can be queried
+ *    for its successors and predecessors Blocks, as found in this graph.
  */
 public class Block implements Directed
 {
@@ -324,22 +324,25 @@ public class Block implements Directed
     
     public String toShortString() {return "Block #" + mIndexInMethod; }
 
+    /** Returns a brief description of this object. */
     public String toBriefString()
     {
         return toString(true, buildMapForBlock(), "        ");
     }
     
+    /** Returns a brief description of this object using the given Map. */
     public String toBriefString(Map stmtToName)
     {
         return toString(true, stmtToName, "");
     }
-    
+
+    /** Returns a brief description of this object, using the given indentation. */
     public String toBriefString(String indentation)
     {
         return toString(true, buildMapForBlock(), indentation);
     }
 
-    
+    /** Returns a brief description of this object, using the given Map and indentation.. */
     public String toBriefString(Map stmtToName, String indentation)
     {
         return toString(true, stmtToName, indentation);

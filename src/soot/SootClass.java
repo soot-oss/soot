@@ -54,7 +54,7 @@ import soot.*;
  */
 
 /**
-    Represents a Java class in Soot.  They are usually created by a Scene,
+    Soot representation of a Java class.  They are usually created by a Scene,
     but can also be constructed manually through the given constructors.
 */
 public class SootClass extends AbstractHost
@@ -138,14 +138,14 @@ public class SootClass extends AbstractHost
         Adds the given field to this class.
     */
 
-    public void addField(SootField f) throws AlreadyDeclaredException 
+    public void addField(SootField f) 
     {
         if(f.isDeclared())
-            throw new AlreadyDeclaredException(f.getName());
+            throw new RuntimeException("already declared: "+f.getName());
 
             /* Removed for efficiency reasons.
         if(declaresField(f.getName()))
-            throw new DuplicateNameException(f.getName());
+            throw new RuntimeException(f.getName());
  */
  
         fields.add(f);
@@ -160,10 +160,10 @@ public class SootClass extends AbstractHost
         Removes the given field from this class.
     */
 
-    public void removeField(SootField f) throws IncorrectDeclarerException
+    public void removeField(SootField f) 
     {
         if(!f.isDeclared() || f.getDeclaringClass() != this)
-            throw new IncorrectDeclarerException(f.getName());
+            throw new RuntimeException("did not declare: "+f.getName());
 
         fields.remove(f);
         f.isDeclared = false;
@@ -173,7 +173,7 @@ public class SootClass extends AbstractHost
         Returns the field of this class with the given name and type. 
     */
 
-    public SootField getField(String name, Type type) throws soot.NoSuchFieldException
+    public SootField getField(String name, Type type) 
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -193,16 +193,16 @@ public class SootClass extends AbstractHost
             return f;
         }
         else
-            throw new soot.NoSuchFieldException("No field " + name + " in class " + getName());
+            throw new RuntimeException("No field " + name + " in class " + getName());
     }
 
     
     /**
-        Returns the field of this class with the given name.  May throw an AmbiguousFieldException if there
+        Returns the field of this class with the given name.  Throws a RuntimeException if there
         are more than one.
     */
 
-    public SootField getFieldByName(String name) throws soot.NoSuchFieldException, soot.AmbiguousFieldException
+    public SootField getFieldByName(String name)
     {
         boolean found = false;
         SootField foundField = null;
@@ -216,7 +216,7 @@ public class SootClass extends AbstractHost
             if(field.name.equals(name))
             {
                 if(found)
-                    throw new AmbiguousFieldException();
+                    throw new RuntimeException("ambiguous field: "+name);
                 else {
                     found = true;
                     foundField = field;
@@ -227,7 +227,7 @@ public class SootClass extends AbstractHost
         if(found)
             return foundField;
         else
-            throw new soot.NoSuchFieldException("No field " + name + " in class " + getName());
+            throw new RuntimeException("No field " + name + " in class " + getName());
     }
 
     
@@ -235,12 +235,12 @@ public class SootClass extends AbstractHost
         Returns the field of this class with the given subsignature.
     */
 
-    public SootField getField(String subsignature) throws soot.NoSuchFieldException
+    public SootField getField(String subsignature)
     {
         SootField toReturn = (SootField) Scene.v().fieldSignatureToField.get("<" + getName() + ": " + subsignature + ">");
         
         if(toReturn == null)
-            throw new soot.NoSuchFieldException("No field " + name + " in class " + getName());
+            throw new RuntimeException("No field " + name + " in class " + getName());
         else
             return toReturn;
     }
@@ -260,11 +260,11 @@ public class SootClass extends AbstractHost
         Returns the method of this class with the given subsignature.
     */
 
-    public SootMethod getMethod(String subsignature) throws soot.NoSuchMethodException
+    public SootMethod getMethod(String subsignature)
     {
         SootMethod toReturn = (SootMethod) Scene.v().methodSignatureToMethod.get("<" + getName() + ": " + subsignature + ">");
         if(toReturn == null)
-            throw new soot.NoSuchMethodException("No method " + subsignature + " in class " + getName());
+            throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
             return toReturn;
     }
@@ -343,8 +343,7 @@ public class SootClass extends AbstractHost
         
     */
 
-    public SootMethod getMethod(String name, List parameterTypes, Type returnType) throws
-        soot.NoSuchMethodException
+    public SootMethod getMethod(String name, List parameterTypes, Type returnType) 
     {
 
         Iterator methodIt = getMethods().iterator();
@@ -369,19 +368,18 @@ public class SootClass extends AbstractHost
             return m;
         }
         else
-            throw new soot.NoSuchMethodException(getName() + "." + name + "(" + 
+            throw new RuntimeException("couldn't find method: "+getName() + "." + name + "(" + 
 		     parameterTypes + ")" + " : " + returnType);
 	
     }
 
     /**
         Attempts to retrieve the method with the given name and parameters.  This method
-        may throw an AmbiguousMethodException if there are more than one method with the
+        may throw an AmbiguousMethodException if there is more than one method with the
         given name and parameter.
     */
 
-    public SootMethod getMethod(String name, List parameterTypes) throws
-        soot.NoSuchMethodException, soot.AmbiguousMethodException
+    public SootMethod getMethod(String name, List parameterTypes) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -396,7 +394,7 @@ public class SootClass extends AbstractHost
                 parameterTypes.equals(method.getParameterTypes()))
             {
                 if(found)
-                    throw new soot.AmbiguousMethodException();
+                    throw new RuntimeException("ambiguous method");
                 else {                    
                     found = true;
                     foundMethod = method;
@@ -407,7 +405,7 @@ public class SootClass extends AbstractHost
         if(found)
             return foundMethod;
         else
-            throw new soot.NoSuchMethodException();
+            throw new RuntimeException("couldn't find method");
     }
 
     
@@ -417,8 +415,7 @@ public class SootClass extends AbstractHost
         given name.
     */
 
-    public SootMethod getMethodByName(String name) throws
-        soot.NoSuchMethodException, soot.AmbiguousMethodException
+    public SootMethod getMethodByName(String name) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -432,7 +429,7 @@ public class SootClass extends AbstractHost
             if(method.getName().equals(name))
             {
                 if(found)
-                    throw new soot.AmbiguousMethodException();
+                    throw new RuntimeException("ambiguous method");
                 else {                    
                     found = true;
                     foundMethod = method;
@@ -443,7 +440,7 @@ public class SootClass extends AbstractHost
         if(found)
             return foundMethod;
         else
-            throw new soot.NoSuchMethodException();
+            throw new RuntimeException("couldn't find method");
     }
 
     /**
@@ -518,14 +515,14 @@ public class SootClass extends AbstractHost
         Adds the given method to this class.
     */
 
-    public void addMethod(SootMethod m) throws AlreadyDeclaredException
+    public void addMethod(SootMethod m) 
     {
         if(m.isDeclared())
-            throw new AlreadyDeclaredException(m.getName());
+            throw new RuntimeException("already declared: "+m.getName());
 
         /*
         if(declaresMethod(m.getName(), m.getParameterTypes()))
-            throw new DuplicateNameException("duplicate signature for: " + m.getName());
+            throw new RuntimeException("duplicate signature for: " + m.getName());
         */
         
         methods.add(m);
@@ -539,10 +536,10 @@ public class SootClass extends AbstractHost
         Removes the given method from this class.
     */
 
-    public void removeMethod(SootMethod m) throws IncorrectDeclarerException
+    public void removeMethod(SootMethod m) 
     {
         if(!m.isDeclared() || m.getDeclaringClass() != this)
-            throw new IncorrectDeclarerException(m.getName());
+            throw new RuntimeException("incorrect declarer for remove: "+m.getName());
 
         methods.remove(m);
         m.isDeclared = false;
@@ -610,10 +607,10 @@ public class SootClass extends AbstractHost
         Add the given class to the list of interfaces which are directly implemented by this class.
     */
 
-    public void addInterface(SootClass interfaceClass) throws DuplicateNameException
+    public void addInterface(SootClass interfaceClass)
     {
         if(implementsInterface(interfaceClass.getName()))
-            throw new DuplicateNameException(interfaceClass.getName());
+            throw new RuntimeException("duplicate interface: "+interfaceClass.getName());
 
         interfaces.add(interfaceClass);
     }
@@ -622,25 +619,18 @@ public class SootClass extends AbstractHost
         Removes the given class from the list of interfaces which are direclty implemented by this class.
     */
 
-    public void removeInterface(SootClass interfaceClass) throws NoSuchInterfaceException
+    public void removeInterface(SootClass interfaceClass) 
     {
         if(!implementsInterface(interfaceClass.getName()))
-            throw new NoSuchInterfaceException(interfaceClass.getName());
+            throw new RuntimeException("no such interface: "+interfaceClass.getName());
 
         interfaces.remove(interfaceClass);
     }
 
-    /*
-    public void setInterfaces(SootClass[] interfaces)
-    {
-        this.interfaces = new ArraySet(interfaces);
-    }
-    */
-
     /**
-        Does this class have a superclass? False implies that this is the java.lang.Object class.  Note that interfaces are subclasses
-        of the java.lang.Object class.
-    */
+        Does this class have a superclass? False implies that this is
+        the java.lang.Object class.  Note that interfaces are
+        subclasses of the java.lang.Object class.  */
 
     
     public boolean hasSuperclass()
@@ -652,10 +642,10 @@ public class SootClass extends AbstractHost
         Returns the superclass of this class. (see hasSuperclass())
     */
 
-    public SootClass getSuperclass() throws NoSuperclassException
+    public SootClass getSuperclass() 
     {
         if(superClass == null) 
-            throw new NoSuperclassException();
+            throw new RuntimeException("no superclass");
         else
             return superClass;
     }
@@ -696,7 +686,7 @@ public class SootClass extends AbstractHost
         Sets the name of this class.
     */
 
-    public void setName(String name) throws DuplicateNameException
+    public void setName(String name)
     {
         this.name = name;
     }
@@ -1073,7 +1063,7 @@ public class SootClass extends AbstractHost
 
     /** Convenience method returning true if this class is an application class. 
      *
-     * @see Scene.getApplicationClasses() */
+     * @see Scene#getApplicationClasses() */
     public boolean isApplicationClass()
     {
         return Scene.v().getApplicationClasses().contains(this);
@@ -1090,7 +1080,7 @@ public class SootClass extends AbstractHost
 
     /** Convenience method returning true if this class is a library class.
      *
-     * @see Scene.getLibraryClasses() */
+     * @see Scene#getLibraryClasses() */
     public boolean isLibraryClass()
     {
         return Scene.v().getLibraryClasses().contains(this);
@@ -1107,7 +1097,7 @@ public class SootClass extends AbstractHost
 
     /** Convenience method returning true if this class is a context class.
      *
-     * @see Scene.getContextClasses() */
+     * @see Scene#getContextClasses() */
     public boolean isContextClass()
     {
         return Scene.v().getContextClasses().contains(this);
@@ -1124,7 +1114,7 @@ public class SootClass extends AbstractHost
 
     /** Convenience method returning true if this class is a phantom class.
      *
-     * @see Scene.getPhantomClasses() */
+     * @see Scene#getPhantomClasses() */
     public boolean isPhantomClass()
     {
         return Scene.v().getPhantomClasses().contains(this);

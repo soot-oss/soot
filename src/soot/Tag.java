@@ -27,12 +27,16 @@ package soot;
 
 import java.util.*;
 
-
+/** Represents a tag; these get attached to implementations of Host.
+ *
+ * The type of the tag can be deduced from its suffix; .l denotes long,
+ * .d denotes double, and .s denotes string. */
 public class Tag 
 {
     String mName;
     Object mValue;
-    
+ 
+    /** Constructs a tag with the given name and initial value. */
     Tag(String aName, Object aValue)
     {
 	mName = aName;
@@ -40,24 +44,32 @@ public class Tag
 	validateType();
     }
     
+    /** Returns the name of the current tag. */
     public String getName()
     {
 	return mName;
     }
+
+    /** Returns a textual representation of the current tag. */
     public String toString()
     {
 	return mName + ": " + mValue;
     }
+
+    /** Returns the value of the current tag. */
     public Object getValue()
     {
 	return mValue;
     }
+
+    /** Sets the value of the current tag. */
     public void setValue(Object o)
     {	
 	mValue = o;
 	validateType();
     }
     
+    /** Checks that the suffix of the tag matches its type. */
     private void validateType()
     {
 	if(mName.endsWith(".l") && !(mValue instanceof Long) ||

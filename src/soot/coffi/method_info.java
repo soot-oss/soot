@@ -60,13 +60,10 @@ public class method_info {
     */
     public attribute_info attributes[];
    /** List of Instructions constructed when the method is parsed.
-    * @see ClassFile@parse
-    * @see ClassFile@parseMethod
     * @see Instruction
     */
     public Instruction instructions;
    /** Control Flow Graph constructed when the method is parsed.
-    * @see ClassFile@parse
     * @see CFG
     */
     public CFG cfg;

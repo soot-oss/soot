@@ -32,40 +32,39 @@ import soot.*;
 
 
 /**
- *   Interface to be implemented by classes that support the
- *   notion of a directed graph.
+ *   Defines the notion of a directed graph.
  */
 public interface DirectedGraph
 {
     /** 
-     *  @return   A list of the entry points for this graph.
+     *  Returns a list of entry points for this graph.
      */
     public List getHeads();
 
-    /** @return  A list of the exit points for this graph. */
+    /** Returns a list of exit points for this graph. */
     public List getTails();
 
     /** 
-     *  @return  A list of predecessors for a node in the graph.
+     *  Returns a list of predecessors for the given node in the graph.
      *  @see Directed
      */
     public List getPredsOf(Directed s);
 
     /**
-     *  @return  A list of successors for a node in the graph.
+     *  Returns a list of successors for the given node in the graph.
      *  @see Directed
      */
     public List getSuccsOf(Directed s);
 
     /**
-     *  @return  The node count for this graph.
+     *  Returns the node count for this graph.
      *  @see Directed
      */
     public int size();
 
     /**
-     *  @return An iterator for the nodes in this graph. The ordering
-     *          of the nodes returned by the iterator is not determined.
+     *  Returns an iterator for the nodes in this graph. No specific ordering
+     *  of the nodes is guaranteed.
      */
     public Iterator iterator();
 }

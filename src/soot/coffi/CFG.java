@@ -44,8 +44,6 @@ import java.util.*;
 
 /** A Control Flow Graph.
  * @author Clark Verbrugge
- * @see BasicBlock
- * @see ClassFile#parse
  */
 public class CFG {
 
@@ -62,7 +60,6 @@ public class CFG {
     */
     method_info method;
    /** Ordered list of BasicBlocks comprising the code of this CFG.
-    * @see BasicBlock
     */
     BasicBlock cfg;
    /** For associating Instruction leaders with basic blocks. */
@@ -85,7 +82,6 @@ public class CFG {
    /** Constructs a new control flow graph for the given method.
     * @param m the method in question.
     * @see method_info
-    * @see ClassFile@parse
     */
     public CFG(method_info m) {
       Instruction i,head;
@@ -1409,8 +1405,6 @@ public class CFG {
     * Note that this joins up the basic block Instruction lists, and so
     * they will no longer end with <i>null</i> after this.
     * @return the head of the list of instructions.
-    * @see BasicBlock#head
-    * @see BasicBlock#tail
     */
     public Instruction reconstructInstructions() {
       BasicBlock b;
@@ -1436,9 +1430,7 @@ public class CFG {
     * @param this_class constant pool index of the CONSTANT_Class_info object for
     * this' class.
     * @return <i>true</i> if all ok, <i>false</i> if there was an error.
-    * @see CFG#jimplify(cp_info[], int, boolean)
     * @see Stmt
-    * @see BasicBlock#jhead
     */
     public boolean jimplify(cp_info constant_pool[],int this_class, JimpleBody listBody)
    {
@@ -1550,8 +1542,6 @@ public class CFG {
     * @return <i>true</i> if all ok, <i>false</i> if there was an error.
     * @see CFG#jimplify(cp_info[], int)
     * @see Stmt
-    * @see BasicBlock#jhead
-    * @see BasicBlock#sout
     */
 
      void jimplify(cp_info constant_pool[],int this_class)

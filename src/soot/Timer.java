@@ -24,14 +24,13 @@
  */
 
 
-
-
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
+/** Utility class providing a timer.  Used for profiling various
+ * phases of Sootification. */
 public class Timer
 {
     private long duration;
@@ -42,31 +41,36 @@ public class Timer
 
     private static List outstandingTimers = new ArrayList();
     private static boolean isGarbageCollecting;
-    
+
+    /** Timer for garbage collection. */
     public static Timer forcedGarbageCollectionTimer = new Timer("gc");
     private static boolean isSubtractingGC;
     
     private static int count;
     
+    /** Creates a new timer with the given name. */
     public Timer(String name)
     {
         this.name = name;
         duration = 0;
     }
     
+    /** Creates a new timer. */
     public Timer()
     {
         this("unnamed");
     }
     
+    /** Enables or disables the GC timer. */
     public static void setSubtractingGC(boolean value)
     {
         isSubtractingGC = value;
     }
     
+    /** Starts the given timer. */
     public void start()
     {
-        // Substract garbage collection time
+        // Subtract garbage collection time
             if(!isGarbageCollecting && isSubtractingGC && ((count++ % 4) == 0))
             {
                 // garbage collects only every 4 calls to avoid round off errors
@@ -122,11 +126,13 @@ public class Timer
             
     }
 
+    /** Returns the name of the current timer. */
     public String toString()
     {
         return name;
     }
     
+    /** Stops the current timer. */
     public void end()
     {   
         if(!hasStarted)
@@ -143,6 +149,7 @@ public class Timer
         }
     }
 
+    /** Returns the sum of the intervals start()-end() of the current timer. */
     public long getTime()
     {
         return duration;

@@ -29,8 +29,8 @@ import java.util.*;
 
 // implemented by SootClass, SootField, SootMethod, Scene
 
-/** This interface defines the notion of a "taggable" object.
- * Implementations can have arbitrary labelled data attached to them.
+/** A "taggable" object.
+ * Implementing classes can have arbitrary labelled data attached to them.
  * 
  * Currently, only classes, fields, methods and the Scene are Hosts.
  *

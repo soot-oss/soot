@@ -29,7 +29,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
-/** The Unit interface describes a code fragment (Stmt or Inst), used within Body
+/** A code fragment (eg Stmt or Inst), used within Body
  * classes.  Intermediate representations must use an implementation
  * of Unit for their code.  In general, a unit denotes
  * some sort of unit for execution.

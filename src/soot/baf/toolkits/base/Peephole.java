@@ -38,7 +38,7 @@ import soot.*;
  *   @see ExamplePeephole
  */
 
-interface Peephole
+public interface Peephole
 {
     /**
      *   Entry point for a peephole. This method is 

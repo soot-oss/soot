@@ -29,7 +29,7 @@ package soot;
 import soot.util.*;
 import java.util.*;
 
-/** Represents types within Soot, e.g. int, java.lang.String. */
+/** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
 public abstract class Type implements Switchable, ToBriefString
 {
     /** Returns a textual representation of this type. */
@@ -118,7 +118,7 @@ public abstract class Type implements Switchable, ToBriefString
             }
         }
         else
-            throw new IllegalTypeMergeException(this + " and " + other);
+            throw new RuntimeException("illegal type merge: "+this + " and " + other);
     }
 
     /** Method required for use of Switchable. */

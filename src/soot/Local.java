@@ -30,7 +30,7 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 
-/** The Local interface describes a local variable, used within Body
+/** A local variable, used within Body
  * classes.  Intermediate representations must use an implementation
  * of Local for their local variables.
  *  */
