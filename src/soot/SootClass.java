@@ -1080,6 +1080,8 @@ public class SootClass extends AbstractHost
         if (c != null)
             c.remove(this);
         Scene.v().getApplicationClasses().add(this);
+
+        isPhantom = false;
     }
 
     /** Convenience method returning true if this class is a library class.
@@ -1097,6 +1099,8 @@ public class SootClass extends AbstractHost
         if (c != null)
             c.remove(this);
         Scene.v().getLibraryClasses().add(this);
+
+        isPhantom = false;
     }
 
     /** Convenience method returning true if this class is a context class.
@@ -1114,6 +1118,8 @@ public class SootClass extends AbstractHost
         if (c != null)
             c.remove(this);
         Scene.v().getContextClasses().add(this);
+
+        isPhantom = false;
     }
 
     /** Convenience method returning true if this class is a phantom class.
@@ -1131,6 +1137,7 @@ public class SootClass extends AbstractHost
         if (c != null)
             c.remove(this);
         Scene.v().getPhantomClasses().add(this);
+        isPhantom = true;
     }
     
     /** Convenience method returning true if this class is phantom. */
@@ -1142,7 +1149,13 @@ public class SootClass extends AbstractHost
     /** Marks this class as phantom, without notifying the Scene. */
     public void setPhantom(boolean value)
     {
-        isPhantom = value;
+        if (value == false)
+            if (isPhantom)
+                throw new RuntimeException("don't know how to de-phantomize this class");
+            else
+                return;
+        
+        setPhantomClass();
     }
 }
 

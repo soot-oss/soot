@@ -92,7 +92,7 @@ public class SootResolver
                 else 
                 {
                     System.out.println("Warning: " + className + " is a phantom class!");
-                    sc.setPhantom(true);
+                    sc.setPhantomClass();
                     continue;
                 }
             }
