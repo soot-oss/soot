@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 16, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Introduced a patch to get around current typing limitations.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -214,22 +217,17 @@ public class JimpleBody implements StmtBody
                 // Jimple.printStmtListBody_debug(this, System.out);
                 Transformations.assignTypesToLocals(this);
 
-                // Check to see if any locals are untyped
+                if(typingFailed())
                 {
-                    Iterator localIt = this.getLocals().iterator();
-
-                    while(localIt.hasNext())
-                    {
-                        Local l = (Local) localIt.next();
-
-                        if(l.getType().equals(UnknownType.v()) ||
-                            l.getType().equals(ErroneousType.v()))
-                        {
-			                throw new RuntimeException("type inference failed!");
-                        }
-                    }
+                    patchForTyping();
+                    
+                    Transformations.assignTypesToLocals(this);
+                    
+                    if(typingFailed())
+                        throw new RuntimeException("type inference failed!");
+                        
                 }
-
+                
                 if(Main.isProfilingOptimization)
                 {
                     Main.assignLocalCount += getLocalCount();
@@ -301,6 +299,103 @@ public class JimpleBody implements StmtBody
 
     }
 
+    /** Temporary patch to get the typing algorithm working.
+      */
+      
+    private void patchForTyping()
+    {
+        int localCount = 0;
+        ListIterator stmtIt = stmtList.listIterator();
+        Local newObjectLocal = null;
+        
+        Transformations.cleanupCode(this);
+        Transformations.removeUnusedLocals(this);
+        Transformations.renameLocals(this);
+        
+        while(stmtIt.hasNext())
+        {
+            Stmt s = (Stmt) stmtIt.next();
+                    
+            if(s instanceof AssignStmt)
+            {
+                AssignStmt as = (AssignStmt) s;
+                
+                if(as.getRightOp() instanceof NewExpr &&
+                   as.getLeftOp() instanceof Local)
+                {
+                    // Add new local
+                        Local tmpLocal = Jimple.v().newLocal("tmp" + localCount, 
+                            UnknownType.v());
+                        addLocal(tmpLocal);
+                            
+                        localCount++;
+                    
+                    // Change left hand side of new
+                        newObjectLocal = (Local) as.getLeftOp();
+                        as.setLeftOp(tmpLocal);
+                    
+                    // Find matching special invoke
+                    {
+                        ListIterator matchIt = stmtList.listIterator(stmtIt.nextIndex());
+                        boolean foundMatch = false;
+                               
+                        while(matchIt.hasNext())
+                        {   
+                            Stmt r = (Stmt) matchIt.next();
+                            
+                            if(r instanceof InvokeStmt)
+                            {
+                               InvokeExpr expr = (InvokeExpr) ((InvokeStmt) r).getInvokeExpr();
+                                
+                                if(expr instanceof SpecialInvokeExpr &&
+                                    ((SpecialInvokeExpr) expr).getBase() == newObjectLocal)
+                                {
+                                    // Set base of special invoke
+                                        ((SpecialInvokeExpr) expr).setBase(tmpLocal);
+                                    
+                                    // Add copy newObjectLocal = tmpLocal
+                                    matchIt.add(Jimple.v().newAssignStmt(newObjectLocal,
+                                        tmpLocal));
+                                 
+                                    foundMatch = true;
+                                    break;       
+                                }
+                            }
+                        }
+                        
+                        if(!foundMatch)
+                            throw new RuntimeException("unable to patch code"); 
+                    }
+                }
+            }
+        }
+        
+        printTo(new PrintWriter(System.out, true));
+        System.out.println("found " + localCount + " replacements");
+    }
+    
+    private boolean typingFailed()
+    {
+        // Check to see if any locals are untyped
+        {
+            Iterator localIt = this.getLocals().iterator();
+
+            while(localIt.hasNext())
+            {
+                Local l = (Local) localIt.next();
+
+                  if(l.getType().equals(UnknownType.v()) ||
+                    l.getType().equals(ErroneousType.v()))
+                {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    
     public StmtList getStmtList()
     {
         return stmtList;
