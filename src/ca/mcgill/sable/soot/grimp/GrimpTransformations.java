@@ -3,6 +3,9 @@
  * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Raja Vallee-Rai (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Raja Vallee-Rai.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -61,6 +64,10 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed method to foldConstructors.  
+   Renamed ConstructExpr to NewInvokeExpr.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
    First release of Grimp.
 */
@@ -75,7 +82,7 @@ public class GrimpTransformations
 {
 
   /* Change all new Obj/<init>(args) pairs to new Obj(args) construction. */
-  public static void constructorFold(GrimpBody body)
+  public static void foldConstructors(GrimpBody body)
     {
       StmtList stmtList = body.getStmtList();
       
@@ -135,7 +142,7 @@ public class GrimpTransformations
 	    continue;
 
 	  /* TO BE IMPLEMENTED LATER: move any copy of the object reference
-	     for lhs down beyond the ConstructExpr, with the rationale
+	     for lhs down beyond the NewInvokeExpr, with the rationale
 	     being that you can't modify the object before the constructor
 	     call in any case.
 
@@ -144,7 +151,7 @@ public class GrimpTransformations
 	    
 	  List lu = localUses.getUsesOf((DefinitionStmt)s);
 	  Iterator luIter = lu.iterator();
-	  boolean MadeConstructExpr = false;
+	  boolean MadeNewInvokeExpr = false;
 	  
 	  while (luIter.hasNext())
 	    {
@@ -165,16 +172,16 @@ public class GrimpTransformations
 	      AssignStmt constructStmt = Grimp.v().newAssignStmt
 		((AssignStmt)s);
 	      constructStmt.setRightOp
-		(Grimp.v().newConstructExpr
-		 (((NewExpr)rhs).getBaseType(), invokeArgs));
-	      MadeConstructExpr = true;
+		(Grimp.v().newNewInvokeExpr
+		 (((NewExpr)rhs).getBaseType(), oldInvoke.getMethod(), invokeArgs));
+	      MadeNewInvokeExpr = true;
 	      
 	      body.redirectJumps(use, constructStmt);
 	      body.eliminateBackPointersTo(use);
 	      stmtList.add(stmtList.indexOf(use), constructStmt);
 	      stmtList.remove(use);
 	    }
-	  if (MadeConstructExpr)
+	  if (MadeNewInvokeExpr)
 	    {
 	      body.eliminateBackPointersTo(s);
 	      stmtIt.remove();

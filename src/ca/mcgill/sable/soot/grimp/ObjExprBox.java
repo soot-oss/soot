@@ -65,6 +65,9 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed ConstructExpr to NewInvokeExpr.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
    First release of Grimp.
 */
@@ -88,7 +91,7 @@ public class ObjExprBox extends ExprBox
 	    value instanceof StaticFieldRef || 
 	    value instanceof InstanceFieldRef ||
 	    value instanceof InvokeExpr || 
-	    value instanceof ConstructExpr ||
+	    value instanceof NewInvokeExpr ||
             value instanceof NewArrayExpr ||
             value instanceof NewMultiArrayExpr ||
 	    value instanceof Local ||

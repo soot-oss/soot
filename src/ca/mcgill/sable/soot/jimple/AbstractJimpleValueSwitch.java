@@ -65,6 +65,10 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added ConstructExpr. 
+   Renamed ConstructExpr to NewInvokeExpr.
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -237,6 +241,11 @@ public abstract class AbstractJimpleValueSwitch implements JimpleValueSwitch
     }
 
     public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
+    {
+        defaultCase(v);
+    }
+
+    public void caseNewInvokeExpr(NewInvokeExpr v)
     {
         defaultCase(v);
     }

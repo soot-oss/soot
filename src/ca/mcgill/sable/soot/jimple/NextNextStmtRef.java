@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Set class to non-public temporarily until jsr's are fixed.
+ 
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -81,7 +84,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class NextNextStmtRef implements ConcreteRef, ToBriefString
+class NextNextStmtRef implements ConcreteRef, ToBriefString
 {
     NextNextStmtRef()
     {

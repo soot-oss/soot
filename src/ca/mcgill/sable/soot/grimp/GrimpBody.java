@@ -297,8 +297,9 @@ public class GrimpBody implements StmtBody
 	
 	if (!BuildGrimpBodyOption.noAggregating(buildOptions))
     {
-	  Transformations.aggregate(this);
-      Transformations.removeUnusedLocals(this);
+        GrimpTransformations.foldConstructors(this);
+	    Transformations.aggregate(this);
+        Transformations.removeUnusedLocals(this);
 	}
     
 	if (Main.isProfilingOptimization)

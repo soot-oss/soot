@@ -3,10 +3,13 @@
  * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
  * All rights reserved.                                              *
  *                                                                   *
- * Portions by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).  *
- * All rights reserved.                                              *
+ * Modifications by Raja Vallee-Rai (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Raja Vallee-Rai.  All rights reserved.             *
  *                                                                   *
+ * This work was done as a project of the Sable Research Group,      *
+ * School of Computer Science, McGill University, Canada             *
+ * (http://www.sable.mcgill.ca/).  It is understood that any         *
+ * modification not identified as such is not covered by the         *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -65,6 +68,11 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Added methods to manipulate the base type.
+   Changed class to inherit from AbstractStaticInvokeExpr.
+   
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
    First release of Grimp.
 */
@@ -75,6 +83,104 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 
-public interface ConstructExpr extends NonStaticInvokeExpr
+class GNewInvokeExpr extends AbstractStaticInvokeExpr
+    implements NewInvokeExpr, Precedence
 {
+    RefType type;
+
+    GNewInvokeExpr(RefType type, SootMethod method, List args)
+    {
+	    super(method, new ExprBox[args.size()]);
+
+        this.type = type;
+        
+        for(int i = 0; i < args.size(); i++)
+            this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
+    }
+
+    /*
+    protected GNewInvokeExpr(RefType type, ExprBox[] argBoxes)
+    {
+	this.type = type;
+	this.argBoxes = argBoxes;
+    }
+    */
+    
+    public RefType getBaseType()
+    {
+        return type;
+    }
+    
+    public void setBaseType(RefType type)
+    {
+        this.type = type;
+    }
+
+    public Type getType()
+    {
+        return type;
+    }    
+    
+    public int getPrecedence() { return 850; }
+
+    public String toString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("new " + type.toString() + "(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                buffer.append(", ");
+
+            buffer.append(argBoxes[i].getValue().toString());
+        }
+
+        buffer.append(")");
+
+        return buffer.toString();
+    }
+
+
+    public String toBriefString()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("new " + 
+		      ((ToBriefString) type).toBriefString() + "(");
+
+        for(int i = 0; i < argBoxes.length; i++)
+        {
+            if(i != 0)
+                buffer.append(", ");
+
+            buffer.append(((ToBriefString) argBoxes[i].getValue()).toBriefString());
+        }
+
+        buffer.append(")");
+
+        return buffer.toString();
+    }
+
+    public List getUseBoxes()
+    {
+        List list = new ArrayList();
+
+        for(int i = 0; i < argBoxes.length; i++)
+            list.add(argBoxes[i]);
+
+        // Add the boxes within the boxes
+        {
+            for(int i = 0; i < argBoxes.length; i++)
+                list.addAll(argBoxes[i].getValue().getUseBoxes());
+        }
+
+        return list;
+    }
+
+    public void apply(Switch sw)
+    {
+	((ExprSwitch) sw).caseNewInvokeExpr(this);
+    }
 }

@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Temporarily took out the NextNextRef until the jsrs are fixed.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -432,7 +435,7 @@ public interface JimpleRepresentation extends BodyRepresentation
         Constructs a NextNextStmtRef() grammar chunk.
      */
 
-    public NextNextStmtRef newNextNextStmtRef();
+    //public NextNextStmtRef newNextNextStmtRef();
 
     /**
         Constructs a InstanceFieldRef(Value, SootField) grammar chunk.

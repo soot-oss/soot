@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on March 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+   Split off FieldRef from InstanceFieldRef & StaticFieldRef.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -81,7 +84,7 @@ package ca.mcgill.sable.soot.jimple;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 
-public class StaticFieldRef implements ConcreteRef, ToBriefString
+public class StaticFieldRef implements FieldRef, ToBriefString
 {
     SootField field;
 

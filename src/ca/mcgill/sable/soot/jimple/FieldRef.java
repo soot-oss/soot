@@ -3,9 +3,8 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Etienne Gagnon (gagnon@sable.mcgill.ca) are      *
- * Copyright (C) 1998 Etienne Gagnon (gagnon@sable.mcgill.ca).  All  *
- * rights reserved.                                                  *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -65,194 +64,31 @@
 
  B) Changes:
 
- - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Added NewInvokeExpr.
+ - Modified on March 2, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca)
+   Split off FieldRef from InstanceFieldRef & StaticFieldRef.
+   
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
 
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on October 31, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Changed the base from Immediate to Local.
+
+ - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
 package ca.mcgill.sable.soot.jimple;
 
-public abstract class AbstractExprSwitch implements ExprSwitch
+import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+
+public interface FieldRef extends ConcreteRef, ToBriefString
 {
-    Object result;
-
-    public void caseAddExpr(AddExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseAndExpr(AndExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNewInvokeExpr(NewInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseCmpExpr(CmpExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseCmpgExpr(CmpgExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseCmplExpr(CmplExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseDivExpr(DivExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseEqExpr(EqExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNeExpr(NeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseGeExpr(GeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseGtExpr(GtExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseLeExpr(LeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseLtExpr(LtExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseMulExpr(MulExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseOrExpr(OrExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseRemExpr(RemExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseShlExpr(ShlExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseShrExpr(ShrExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseUshrExpr(UshrExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseSubExpr(SubExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseXorExpr(XorExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseSpecialInvokeExpr(SpecialInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseStaticInvokeExpr(StaticInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseVirtualInvokeExpr(VirtualInvokeExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseCastExpr(CastExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseInstanceOfExpr(InstanceOfExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNewArrayExpr(NewArrayExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNewExpr(NewExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseLengthExpr(LengthExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void caseNegExpr(NegExpr v)
-    {
-        defaultCase(v);
-    }
-
-    public void defaultCase(Object obj)
-    {
-    }
-
-    public void setResult(Object result)
-    {
-        this.result = result;
-    }
-
-    public Object getResult()
-    {
-        return result;
-    }
+    public SootField getField();
+    public void setField(SootField field);
 }

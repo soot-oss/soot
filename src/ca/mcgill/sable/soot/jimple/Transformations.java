@@ -68,6 +68,9 @@
 
  B) Changes:
 
+ - Modified on March 3, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Improved the aggregator to move field accesses past some types of writes.
+   
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -823,8 +826,10 @@ public class Transformations
 	     calls and (as usual) writes to a, b, c. */
 	  
 	  boolean cantAggr = false;
-	  boolean foundSideEffect = false;
-	  
+      boolean propagatingInvokeExpr = false;
+      boolean propagatingFieldRef = false;
+	  FieldRef fieldRef = null;
+      
 	  Value rhs = ((AssignStmt)s).getRightOp();
 	  LinkedList localsUsed = new LinkedList();
 	  for (Iterator useIt = (s.getUseBoxes()).iterator();
@@ -833,10 +838,13 @@ public class Transformations
 	      Value v = ((ValueBox)(useIt.next())).getValue();
 	      if (v instanceof Local)
 		localsUsed.add(v);
-	      if (v instanceof InvokeExpr
-                  || v instanceof InstanceFieldRef
-                  || v instanceof StaticFieldRef)
-		foundSideEffect = true;
+	        if (v instanceof InvokeExpr)
+                propagatingInvokeExpr = true;
+            else if(v instanceof FieldRef)
+            {
+                propagatingFieldRef = true;
+                fieldRef = (FieldRef) v;
+            }
 	    }
 	  
 	  // look for a path from s to use in graph.
@@ -861,15 +869,31 @@ public class Transformations
 		  Value v = ((ValueBox)(it.next())).getValue();
 		  if (localsUsed.contains(v))
 		    { cantAggr = true; break; }
-		  if (foundSideEffect)
+		  if (propagatingInvokeExpr || propagatingFieldRef)
 		    {
-		      if (v instanceof StaticFieldRef ||
-			  v instanceof InstanceFieldRef)
-			{ cantAggr = true; break; }
+		        if (v instanceof FieldRef)
+			    {
+                    if(propagatingInvokeExpr)
+                    {
+                        cantAggr = true; 
+                        break;
+                    }
+                    else {
+                        // Can't aggregate a field access if passing a definition of a field 
+                        // with the same name, because they might be aliased
+                        
+                        if(((FieldRef) v).getField() == fieldRef.getField())
+                        {
+                            cantAggr = true;
+                            break;
+                        }
+                    }
+                     
+                }
 		    }
 		}
 	      
-	      if (foundSideEffect)
+	      if(propagatingInvokeExpr || propagatingFieldRef)
 		{
 		  for (Iterator useIt = (s.getUseBoxes()).iterator();
 		       useIt.hasNext(); )

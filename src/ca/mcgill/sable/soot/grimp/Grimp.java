@@ -3,6 +3,9 @@
  * Copyright (C) 1998 Patrick Lam (plam@sable.mcgill.ca)             *
  * All rights reserved.                                              *
  *                                                                   *
+ * Modifications by Raja Vallee-Rai (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Raja Vallee-Rai.  All rights reserved.             *
+ *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -60,6 +63,9 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed ConstructExpr to NewInvokeExpr.
 
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
    First release of Grimp.
@@ -377,12 +383,12 @@ public class Grimp implements JimpleRepresentation
     }
 
     /**
-        Constructs a ConstructExpr(Local base, List of Expr) grammar chunk.
+        Constructs a NewInvokeExpr(Local base, List of Expr) grammar chunk.
      */
 
-    public ConstructExpr newConstructExpr(RefType base, List args)
+    public NewInvokeExpr newNewInvokeExpr(RefType base, SootMethod method, List args)
     {
-        return new GConstructExpr(base, args);
+        return new GNewInvokeExpr(base, method, args);
     }
 
     /**
@@ -696,10 +702,12 @@ public class Grimp implements JimpleRepresentation
         Constructs a NextNextStmtRef() grammar chunk.
      */
 
+/*
     public NextNextStmtRef newNextNextStmtRef()
     {
         return Jimple.v().newNextNextStmtRef();
     }
+*/
 
 
     /**

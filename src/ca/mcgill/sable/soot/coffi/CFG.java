@@ -101,6 +101,9 @@
 
  B) Changes:
 
+ - Modified on March 2, by Patrick Lam (plam@sable.mcgill.ca). (*)
+   Commented out JSR bytecode code for now.
+   
  - Modified on February 22, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Fixed a bug with the DUP2_x1 bytecode.
    
@@ -4210,6 +4213,7 @@ public class CFG {
             stmt = Jimple.v().newGotoStmt(new FutureStmt());
             break;
 
+            /*
          case ByteCode.JSR:
          case ByteCode.JSR_W:
          {
@@ -4224,7 +4228,8 @@ public class CFG {
              stmt = null;
              break;
          }
-
+        */
+        
          case ByteCode.RET:
          {
             Local local =

@@ -69,6 +69,9 @@
 
  B) Changes:
 
+ - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Renamed ConstructExpr to NewInvokeExpr.
+
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca). (*)
    First release of Grimp.
 */
@@ -103,7 +106,7 @@ public interface GrimpExprSwitch extends ExprSwitch
     public abstract void caseSpecialInvokeExpr(SpecialInvokeExpr v);
     public abstract void caseStaticInvokeExpr(StaticInvokeExpr v);
     public abstract void caseVirtualInvokeExpr(VirtualInvokeExpr v);
-    public abstract void caseConstructExpr(ConstructExpr v);
+    public abstract void caseNewInvokeExpr(NewInvokeExpr v);
     public abstract void caseCastExpr(CastExpr v);
     public abstract void caseInstanceOfExpr(InstanceOfExpr v);
     public abstract void caseNewArrayExpr(NewArrayExpr v);

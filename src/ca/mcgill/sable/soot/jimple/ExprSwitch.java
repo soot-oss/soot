@@ -78,6 +78,7 @@ public interface ExprSwitch extends ca.mcgill.sable.util.Switch
     public abstract void caseCmpExpr(CmpExpr v);
     public abstract void caseCmpgExpr(CmpgExpr v);
     public abstract void caseCmplExpr(CmplExpr v);
+    public abstract void caseNewInvokeExpr(NewInvokeExpr v);
     public abstract void caseDivExpr(DivExpr v);
     public abstract void caseEqExpr(EqExpr v);
     public abstract void caseNeExpr(NeExpr v);

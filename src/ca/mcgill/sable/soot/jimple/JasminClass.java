@@ -2474,6 +2474,23 @@ public class JasminClass
                 emit("new " + slashify(v.getBaseType().toString()), 1);
             }
 
+            public void caseNewInvokeExpr(NewInvokeExpr v)
+            {
+                emit("new " + slashify(v.getBaseType().toString()), 1);
+                emit("dup", 1);
+                
+                SootMethod m = v.getMethod();
+
+                // emitValue(v.getBase());
+                // already on the stack
+                
+                for(int i = 0; i < m.getParameterCount(); i++)
+                    emitValue(v.getArg(i));
+
+                emit("invokespecial " + slashify(m.getDeclaringClass().getName()) + "/" +
+                    m.getName() + jasminDescriptorOf(m),
+                    -(argCountOf(m) + 1) + sizeOfType(m.getReturnType()));
+            }
 
             public void caseNullConstant(NullConstant v)
             {
