@@ -678,7 +678,7 @@ public class Inliner {
 
        // if ( stmtsAtSite < 60  )
 
-       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 8*origSize ) ) && ( listBody.getStmtList().size() < 10000 ) ) )
+       if ( ( stmtsAtSite < 20  ) && ( ( listBody.getStmtList().size() < ( 8*origSize ) ) && ( listBody.getStmtList().size() < 5000 ) ) )
 
        // if ( stmtsAtSite < 10  )
        {
@@ -799,7 +799,7 @@ public class Inliner {
          if ( ! ( /* incorrectlyjimplified.contains ( me.getDeclaringClass().getName() ) || */ me.getName().equals("<init>") ) ) 
          {
 
-          if ( satisfiesCriteria ( me, currInvokeExpr ) )
+          if ( satisfiesCriteria ( me, currInvokeExpr ) ) 
           {
 
            changedclasses.add ( scm.getClass ( meth.getDeclaringClass().getName() ) );
@@ -1341,7 +1341,7 @@ public class Inliner {
  }
 */
 
- /* 
+ 
  
   PrintWriter out = new PrintWriter(System.out, true);
 
@@ -1413,7 +1413,7 @@ public class Inliner {
 
  }
 
- */
+ 
 
  return changedclasses;
 
