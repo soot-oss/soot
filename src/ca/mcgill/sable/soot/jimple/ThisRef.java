@@ -84,11 +84,11 @@ import java.util.*;
 
 public class ThisRef implements IdentityRef, ToBriefString
 {
-    SootClass SootClass;
+    SootClass sootClass;
 
-    ThisRef(SootClass SootClass)
+    public ThisRef(SootClass sootClass)
     {
-        this.SootClass = SootClass;
+        this.sootClass = sootClass;
     }
 
     public String toString()
@@ -106,9 +106,14 @@ public class ThisRef implements IdentityRef, ToBriefString
         return AbstractUnit.emptyList;
     }
 
+    public SootClass getSootClass()
+    {
+        return sootClass;
+    }
+    
     public Type getType()
     {
-        return RefType.v(SootClass.getName());
+        return RefType.v(sootClass.getName());
     }
 
     public void apply(Switch sw)

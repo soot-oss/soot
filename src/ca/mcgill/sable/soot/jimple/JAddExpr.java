@@ -78,13 +78,23 @@
 
 package ca.mcgill.sable.soot.jimple;
 
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr
+class JAddExpr extends AbstractJimpleFloatBinopExpr implements AddExpr, ConvertToBaf
 {
     JAddExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " + "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseAddExpr(this); }
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        ((ConvertToBaf) this.getOp1()).convertToBaf(context, out);
+        ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
+        
+        out.add(Baf.v().newAddInst(this.getOp1().getType()));
+    }
 }
+

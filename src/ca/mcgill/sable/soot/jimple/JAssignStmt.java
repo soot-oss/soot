@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -127,11 +128,14 @@ public class JAssignStmt extends AbstractDefinitionStmt
         ((StmtSwitch) sw).caseAssignStmt(this);
     }
 
-    public void convertToBaf(JimpleToBafContext context, List out)
+    public void convertToBaf(final JimpleToBafContext context, final List out)
     {
+        out.add(Baf.v().newNopInst());
+        
         final Value lvalue = this.getLeftOp();
         final Value rvalue = this.getRightOp();
 
+        /*
         // Handle simple subcase where you can use the efficient iinc bytecode
             if(lvalue instanceof Local && (rvalue instanceof AddExpr || rvalue instanceof SubExpr))
             {
@@ -161,14 +165,15 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-                        throw new RuntimeException("missing conversion");
+                        throw new RuntimeException("missing shortcut for iinc");
                         
-                        //emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
-                        //    ((expr instanceof AddExpr) ? x : -x), 0);
+                        emit("iinc " + ((Integer) localToSlot.get(l)).intValue() + " " +  
+                            ((expr instanceof AddExpr) ? x : -x), 0);
                         return;
                     }        
                 }
             }
+*/
 
             lvalue.apply(new AbstractJimpleValueSwitch()
             {
@@ -189,112 +194,20 @@ public class JAssignStmt extends AbstractDefinitionStmt
                 
                 public void caseLocal(final Local v)
                 {
-                    final int slot = ((Integer) localToSlot.get(v)).intValue();
-                        
-                    v.getType().apply(new TypeSwitch()
-                    {
-                        public void caseArrayType(ArrayType t)
-                        {
-                            emitValue(rvalue);
-
-                            if(slot >= 0 && slot <= 3)
-                                emit("astore_" + slot, -1);
-                            else
-                                emit("astore " + slot, -1);
-                        }
-
-                        public void caseDoubleType(DoubleType t)
-                        {
-                            emitValue(rvalue);
-
-                            if(slot >= 0 && slot <= 3)
-                                emit("dstore_" + slot, -2);
-                            else
-                                emit("dstore " + slot, -2);
-                        }
-                        
-                        public void caseFloatType(FloatType t)
-                        {
-                            emitValue(rvalue);
-                            
-                            if(slot >= 0 && slot <= 3)
-                                emit("fstore_" + slot, -1);
-                            else
-                                emit("fstore " + slot, -1);
-                        }
-
-                        public void caseIntType(IntType t)
-                            {
-                                emitValue(rvalue);
-                                
-                                if(slot >= 0 && slot <= 3)
-                                    emit("istore_" + slot, -1);
-                                else
-                                    emit("istore " + slot, -1);
-                            }
-
-                        public void caseLongType(LongType t)
-                            {
-                                emitValue(rvalue);
-                                
-                                if(slot >= 0 && slot <= 3)
-                                    emit("lstore_" + slot, -2);
-                                else
-                                    emit("lstore " + slot, -2);
-                            }
-                        
-                        public void caseRefType(RefType t)
-                            {
-                                emitValue(rvalue);
-                                
-                                if(slot >= 0 && slot <= 3)
-                                    emit("astore_" + slot, -1);
-                                else
-                                    emit("astore " + slot, -1);
-                            }
-
-                        public void caseStmtAddressType(StmtAddressType t)
-                            {
-                                isNextGotoAJsr = true;
-                                returnAddressSlot = slot;
-                                
-                                /*
-                                  if ( slot >= 0 && slot <= 3)
-                                  emit("astore_" + slot,  );
-                                  else
-                                  emit("astore " + slot,  );
-                                  
-                                */
-                                
-                            }
-                        
-                        public void caseNullType(NullType t)
-                            {
-                                emitValue(rvalue);
-                                
-                                if(slot >= 0 && slot <= 3)
-                                    emit("astore_" + slot, -1);
-                                else
-                                    emit("astore " + slot, -1);
-                            }
-                        
-                        public void defaultCase(Type t)
-                            {
-                                throw new RuntimeException("Invalid local type: " + t);
-                            }
-                    });
+                    ((ConvertToBaf) rvalue).convertToBaf(context, out);
+                    
+                    out.add(Baf.v().newStoreInst(v.getType(), 
+                        context.getBafLocalOfJimpleLocal(v)));
                 }
                 
                 public void caseStaticFieldRef(StaticFieldRef v)
-                    {
-                        SootField field = v.getField();
-                        
-                        emitValue(rvalue);
-                        emit("putstatic " + slashify(field.getDeclaringClass().getName()) + "/" +
-                             field.getName() + " " + jasminDescriptorOf(field.getType()),
-                             -sizeOfType(v.getField().getType()));
-                    }
-            });
+                {
+                    throw new RuntimeException("missing conversion ");
+                }
+            }); 
     }    
 }
+
+
+
 

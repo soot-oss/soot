@@ -79,6 +79,7 @@
 package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -125,4 +126,26 @@ public class JIdentityStmt extends AbstractDefinitionStmt
     {
         ((StmtSwitch) sw).caseIdentityStmt(this);
     }    
+    
+    public void convertToBaf(JimpleToBafContext context, List out)
+    {
+        Value currentRhs = getRightOp();
+        Value newRhs;
+        
+        if(currentRhs instanceof ThisRef)
+            newRhs = Baf.v().newThisRef(((ThisRef) currentRhs).getSootClass());
+        else if(currentRhs instanceof ParameterRef)
+            newRhs = Baf.v().newParameterRef(((ParameterRef) currentRhs).getMethod(), ((ParameterRef) currentRhs).getIndex());
+        else if(currentRhs instanceof CaughtExceptionRef)
+            newRhs = Baf.v().newCaughtExceptionRef(context.getBafBody());
+        else
+            throw new RuntimeException("Don't know how to convert unknown rhs");
+
+        out.add(Baf.v().newIdentityInst(context.getBafLocalOfJimpleLocal((Local) getLeftOp()), newRhs));
+    }
 }
+
+
+
+
+

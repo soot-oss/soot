@@ -89,4 +89,8 @@ public interface InstSwitch
     public void caseNopInst(NopInst i);
     public void caseGotoInst(GotoInst i);
     public void casePushInst(PushInst i);
+    public void caseIdentityInst(IdentityInst i);
+    public void caseStoreInst(StoreInst i);
+    public void caseLoadInst(LoadInst i);
+    
 }

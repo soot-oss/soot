@@ -65,26 +65,31 @@
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
-   Added method canContainValue().
-
- - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on October 29, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
-
-class LocalBox extends AbstractValueBox
+public abstract class AbstractValueBox implements ValueBox
 {
-    LocalBox(Value value)
+    Value value;
+
+    public void setValue(Value value)
     {
-        setValue(value);
+        if(canContainValue(value))
+            this.value = value;
+        else
+            throw new RuntimeException("Box cannot contain given value.");
     }
 
-    public boolean canContainValue(Value value)
+    public Value getValue()
     {
-        return value instanceof Local;
+        return value;
     }
 }
+
+
+
+
+

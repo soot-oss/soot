@@ -88,7 +88,6 @@ public interface StmtBody extends Body
     public int getLocalCount();
     public List getLocals();
     public List getUnitBoxes();
-    
 }
 
 

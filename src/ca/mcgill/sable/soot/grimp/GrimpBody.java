@@ -82,13 +82,9 @@ import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.io.*;
 
-public class GrimpBody implements StmtBody
+public class GrimpBody extends AbstractBody implements StmtBody
 {
-    List locals = new ArrayList();
-    SootMethod method;
-
     StmtList stmtList;
-    List traps = new ArrayList();
 
     /**
         Construct an empty GrimpBody 
@@ -96,7 +92,7 @@ public class GrimpBody implements StmtBody
      
     public GrimpBody(SootMethod m)
     {
-        this.method = m;
+        super(m);
         stmtList = new StmtList(this);   
     }
 
@@ -111,7 +107,7 @@ public class GrimpBody implements StmtBody
 
     public GrimpBody(Body body, int buildOptions)
     {
-        SootMethod m = body.getMethod();
+        super(body.getMethod());
         
         JimpleBody jBody = null;
 
@@ -128,12 +124,10 @@ public class GrimpBody implements StmtBody
         else
             throw new RuntimeException("Can only construct GrimpBody's from ClassFileBody's or JimpleBody's (for now)");
 
-        this.method = jBody.getMethod();
-        this.locals = new LinkedList();
         Iterator it = jBody.getLocals().iterator();
         while (it.hasNext())
-            this.locals.add(((Local)(it.next())));
-            //            this.locals.add(((Local)(it.next())).clone());
+            addLocal(((Local)(it.next())));
+            //            getLocals().add(((Local)(it.next())).clone());
 
         stmtList = new StmtList(this);
         it = jBody.getStmtList().iterator();
@@ -288,12 +282,11 @@ public class GrimpBody implements StmtBody
             });
         }
 
-        this.traps = new ArrayList();
         it = jBody.getTraps().iterator();
         while (it.hasNext())
         {
             Trap oldTrap = (Trap)(it.next());
-            this.traps.add(Grimp.v().newTrap
+            addTrap(Grimp.v().newTrap
                            (oldTrap.getException(),
                             (Unit)(oldToNew.get(oldTrap.getBeginUnit())),
                             (Unit)(oldToNew.get(oldTrap.getEndUnit())),
@@ -355,66 +348,6 @@ public class GrimpBody implements StmtBody
         }
     }
 
-    public int getLocalCount()
-    {
-        return locals.size();
-    }
-
-    /**
-     * Returns a backed list of locals.
-     */
-
-    public List getLocals()
-    {
-        return locals;
-    }
-
-    public void addLocal(Local l) throws AlreadyDeclaredException
-    {
-        locals.add(l);
-    }
-
-    public void removeLocal(Local l) throws IncorrectDeclarerException
-    {
-        locals.remove(l);
-    }
-
-    public Local getLocal(String name) throws ca.mcgill.sable.soot.jimple.NoSuchLocalException
-    {
-        Iterator localIt = getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(name))
-                return local;
-        }
-
-        throw new ca.mcgill.sable.soot.jimple.NoSuchLocalException();
-    }
-
-
-    public boolean declaresLocal(String localName)
-    {
-        Iterator localIt = getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(localName))
-                return true;
-        }
-
-        return false;
-    }
-
-    public SootMethod getMethod()
-    {
-        return method;
-    }
-
     public List getUnitBoxes()
     {
         List stmtBoxes = new ArrayList();
@@ -434,7 +367,7 @@ public class GrimpBody implements StmtBody
 
         // Put in all statement boxes from the trap table
         {
-            Iterator trapIt = traps.iterator();
+            Iterator trapIt = getTraps().iterator();
 
             while(trapIt.hasNext())
             {
@@ -444,21 +377,6 @@ public class GrimpBody implements StmtBody
         }
 
         return stmtBoxes;
-    }
-
-    public List getTraps()
-    {
-        return traps;
-    }
-
-    public void addTrap(Trap t)
-    {
-        traps.add(t);
-    }
-
-    public void removeTrap(Trap t)
-    {
-        traps.remove(t);
     }
 
     public void printTo(java.io.PrintWriter out)
@@ -486,15 +404,15 @@ public class GrimpBody implements StmtBody
         {
             StringBuffer buffer = new StringBuffer();
 
-            buffer.append(Modifier.toString(method.getModifiers()));
+            buffer.append(Modifier.toString(getMethod().getModifiers()));
 
             if(buffer.length() != 0)
                 buffer.append(" ");
 
-            buffer.append(method.getReturnType().toString() + " " + method.getName());
+            buffer.append(getMethod().getReturnType().toString() + " " + getMethod().getName());
             buffer.append("(");
 
-            Iterator typeIt = method.getParameterTypes().iterator();
+            Iterator typeIt = getMethod().getParameterTypes().iterator();
 
             if(typeIt.hasNext())
             {

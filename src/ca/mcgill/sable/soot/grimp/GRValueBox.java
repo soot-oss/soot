@@ -74,7 +74,7 @@ package ca.mcgill.sable.soot.grimp;
 import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.soot.jimple.*;
 
-public class GRValueBox extends ca.mcgill.sable.soot.jimple.AbstractValueBox
+public class GRValueBox extends ca.mcgill.sable.soot.AbstractValueBox
 {
     protected GRValueBox (Value value)
     {

@@ -1,11 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
  * All rights reserved.                                              *
- *                                                                   *
- * Modifications by Madeleine Mony are                               *
- * Copyright (C) 1998 Madeleine Mony.  All                           *
- * rights reserved.                                                  *
  *                                                                   *
  * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
  * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
@@ -72,9 +68,6 @@
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
 
- - Modified on November 13, 1998 by Madeleine Mony
-   Implemented fixed hash code idea.
-   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
@@ -83,97 +76,97 @@
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.baf.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
-class JimpleLocal implements Local, ConvertToBaf
+public class BIdentityInst extends AbstractInst 
+    implements IdentityInst
 {
-    String name;
-    Type type;
+    ValueBox leftBox;
+    ValueBox rightBox;
 
-    int fixedHashCode;
-    boolean isHashCodeChosen;
-        
-    JimpleLocal(String name, Type t)
+    List defBoxes;
+
+    public Value getLeftOp()
     {
-        this.name = name;
-        this.type = t;
+        return leftBox.getValue();
     }
 
-    public Object clone()
+    public Value getRightOp()
     {
-        return new JimpleLocal(name, type);
+        return rightBox.getValue();
     }
 
-    public String getName()
+    public ValueBox getLeftOpBox()
     {
-        return name;
+        return leftBox;
     }
 
-    public void setName(String name)
+    public ValueBox getRightOpBox()
     {
-        this.name = name;
+        return rightBox;
     }
 
-    public int hashCode()
+    public List getDefBoxes()
     {
-        if(!isHashCodeChosen)
-        {
-            // Set the hash code for this object
-            
-            if(name != null & type != null)
-                fixedHashCode = name.hashCode() + 19 * type.hashCode();
-            else if(name != null)
-                fixedHashCode = name.hashCode();
-            else if(type != null)
-                fixedHashCode = type.hashCode();
-            else
-                fixedHashCode = 1;
-                
-            isHashCodeChosen = true;
-        }
-        
-        return fixedHashCode;
-    }
-    
-    public Type getType()
-    {
-        return type;
+        return defBoxes;
     }
 
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
-
-    public String toString()
-    {
-        return getName();
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
     public List getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        List list = new ArrayList();
+
+        list.addAll(rightBox.getValue().getUseBoxes());
+        list.add(rightBox);
+        list.addAll(leftBox.getValue().getUseBoxes());
+
+        return list;
+    }
+
+    BIdentityInst(Value local, Value identityValue)
+    {
+        this(Baf.v().newLocalBox(local),
+             Baf.v().newIdentityRefBox(identityValue));
+    }
+
+    protected BIdentityInst(ValueBox localBox, ValueBox identityValueBox)
+    {
+        this.leftBox = localBox; this.rightBox = identityValueBox;
+
+        defBoxes = new ArrayList();
+        defBoxes.add(leftBox);
+        defBoxes = Collections.unmodifiableList(defBoxes);
+    }
+
+    protected String toString(boolean isBrief, Map stmtToName, String indentation)
+    {
+        if(isBrief)
+        {
+            return indentation + ((ToBriefString) leftBox.getValue()).toBriefString() + " := " + 
+                ((ToBriefString) rightBox.getValue()).toBriefString();
+        }
+        else
+            return indentation + leftBox.getValue().toString() + " := " + rightBox.getValue().toString();
+    }
+
+    public void setLeftOp(Value local)
+    {
+        leftBox.setValue(local);
+    }
+
+    public void setRightOp(Value identityRef)
+    {
+        rightBox.setValue(identityRef);
     }
 
     public void apply(Switch sw)
     {
-        ((JimpleValueSwitch) sw).caseLocal(this);
-    }
-
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-        out.add(Baf.v().newLoadInst(getType(), 
-            context.getBafLocalOfJimpleLocal(this)));
-    }
+        ((InstSwitch) sw).caseIdentityInst(this);
+    }    
 }
+
+
 

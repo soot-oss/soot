@@ -87,7 +87,7 @@ public class ParameterRef implements IdentityRef, Switchable, ToBriefString
     int n;
     SootMethod method;
 
-    ParameterRef(SootMethod m, int number)
+    public ParameterRef(SootMethod m, int number)
     {
         this.n = number;
         this.method = m;

@@ -679,7 +679,7 @@ public class Jimple implements BodyRepresentation
 
     public ValueBox newLocalBox(Value value)
     {
-        return new LocalBox(value);
+        return new JimpleLocalBox(value);
     }
 
     public ValueBox newRValueBox(Value value)

@@ -80,6 +80,10 @@ public interface Body
     public SootMethod getMethod();
     public void printTo(PrintWriter out);
     public void printTo(PrintWriter out, int printBodyOptions);
+    public List getTraps();
+    public int getLocalCount();
+    public List getLocals();
+    public List getUnitBoxes();
 }
 
 

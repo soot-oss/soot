@@ -1,7 +1,10 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Jimple, a 3-address code Java(TM) bytecode representation.        *
- * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
+ * Baf, a Java(TM) bytecode analyzer framework.                      *
+ * Copyright (C) 1997-1999 Raja Vallee-Rai (kor@sable.mcgill.ca)     *
  * All rights reserved.                                              *
+ *                                                                   *
+ * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
+ * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
  *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
@@ -61,37 +64,32 @@
 
  B) Changes:
 
+ - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
+   Added changes in support of the Grimp intermediate
+   representation (with aggregated-expressions).
+
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
 
- - Modified on October 29, by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+ - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot.baf;
 
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.util.*;
+import java.util.*;
 
-public abstract class AbstractValueBox implements ValueBox
-{
-    Value value;
+public interface IdentityInst extends Inst
+{ 
+    public Value getLeftOp();
+    public Value getRightOp();
+    public void setLeftOp(Value variable);
+    public void setRightOp(Value rvalue);
 
-    public void setValue(Value value)
-    {
-        if(canContainValue(value))
-            this.value = value;
-        else
-            throw new RuntimeException("Box cannot contain given value.");
-    }
-
-    public Value getValue()
-    {
-        return value;
-    }
+    public ValueBox getLeftOpBox();
+    public ValueBox getRightOpBox();
 }
-
-
-
-
 

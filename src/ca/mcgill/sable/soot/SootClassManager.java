@@ -160,8 +160,12 @@ public class SootClassManager
             return toReturn;
     }
 
+    /**
+     * Returns a backed list of the classes in this manager.
+     */
+     
     public List getClasses()
     {
-        return Collections.unmodifiableList(classes);
+        return classes;
     }
 }

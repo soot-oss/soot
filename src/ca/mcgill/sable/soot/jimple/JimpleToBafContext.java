@@ -76,7 +76,8 @@ import java.io.*;
 public class JimpleToBafContext
 {
     private Map jimpleLocalToBafLocal = new HashMap();
- 
+    private BafBody bafBody;
+    
     /**
        An approximation of the local count is required in order to allocate a reasonably sized hash map. 
      */
@@ -95,5 +96,18 @@ public class JimpleToBafContext
     {
         jimpleLocalToBafLocal.put(jimpleLocal, bafLocal);
     }       
+    
+    public BafBody getBafBody()
+    {
+        return bafBody;
+    }
+    
+    public void setBafBody(BafBody bafBody)
+    {
+        this.bafBody = bafBody;
+    }
+    
 }
+
+
 

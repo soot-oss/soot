@@ -71,8 +71,8 @@
 
 package ca.mcgill.sable.soot.baf;
 
-import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.soot.*;
+import ca.mcgill.sable.soot.jimple.*;
 import ca.mcgill.sable.util.*;
 import java.util.*;
 
@@ -83,7 +83,6 @@ public class Baf implements BodyRepresentation
     private Baf()
     {
     }
-
     
     public static Baf v()
     {
@@ -128,7 +127,66 @@ public class Baf implements BodyRepresentation
     {
         return new BPushInst(c);
     }
+    
+    public IdentityInst newIdentityInst(Value local, Value identityRef)
+    {
+        return new BIdentityInst(local, identityRef);
+    }
 
+    public ValueBox newLocalBox(Value value)
+    {
+        return new BafLocalBox(value);
+    }
+    
+    public ValueBox newIdentityRefBox(Value value)
+    {
+        return new IdentityRefBox(value);
+    }
+
+    
+    /**
+        Constructs a ThisRef(SootClass) grammar chunk.
+     */
+
+    public ThisRef newThisRef(SootClass c)
+    {
+        return new ThisRef(c);
+    }
+    
+    /**
+        Constructs a ParameterRef(SootMethod, int) grammar chunk.
+     */
+
+    public ParameterRef newParameterRef(SootMethod m, int number)
+    {
+        return new ParameterRef(m, number);
+    }
+
+    
+    /**
+        Constructs a CaughtExceptionRef() grammar chunk.
+     */
+
+    public CaughtExceptionRef newCaughtExceptionRef(BafBody b)
+    {
+        return new JCaughtExceptionRef(b);
+    }
+    
+    public StoreInst newStoreInst(Type opType, Local l)
+    {
+        return new BStoreInst(opType, l);
+    }
+    
+    public LoadInst newLoadInst(Type opType, Local l)
+    {
+        return new BLoadInst(opType, l);
+    }
+    
+    public AddInst newAddInst(Type opType)
+    {
+        return new BAddInst(opType);
+    }
+    
 }
 
 

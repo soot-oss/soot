@@ -98,7 +98,7 @@ public class RefType extends BaseType implements ToBriefString
 
     public String toString()
     {
-        return "'" + className + "'";
+        return className;
     }
 
     public String toBriefString()

@@ -76,9 +76,9 @@ package ca.mcgill.sable.soot.jimple;
 
 import ca.mcgill.sable.soot.*;
 
-class IdentityRefBox extends AbstractValueBox
+public class IdentityRefBox extends AbstractValueBox
 {
-    IdentityRefBox(Value value)
+    public IdentityRefBox(Value value)
     {
         setValue(value);
     }

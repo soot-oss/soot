@@ -72,24 +72,18 @@
 package ca.mcgill.sable.soot;
 
 import java.io.*;
+import java.util.*;
 
-public class ClassFileBody implements Body
+public class ClassFileBody extends AbstractBody implements Body
 {
-    SootMethod method;
-
     public ca.mcgill.sable.soot.coffi.ClassFile coffiClass;
     public ca.mcgill.sable.soot.coffi.method_info coffiMethod;
 
     public ClassFileBody(SootMethod method)
     {
-        this.method = method;
+        super(method);
         this.coffiClass = method.coffiClass;
         this.coffiMethod = method.coffiMethod;
-    }
-
-    public SootMethod getMethod()
-    {
-        return method;
     }
 
     public void printTo(PrintWriter out)
@@ -98,6 +92,21 @@ public class ClassFileBody implements Body
 
     public void printTo(PrintWriter out, int printBodyOptions)
     {
+    }
+    
+    public void addLocal(Local l)
+    {
+        throw new RuntimeException("can not add a local to a ClassFileBody");
+    }
+    
+    public void addTrap(Trap t)
+    {
+        throw new RuntimeException("can not add a trap to a ClassFileBody");
+    }
+    
+    public List getUnitBoxes()
+    {
+        return new ArrayList();
     }
 }
 

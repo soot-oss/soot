@@ -84,9 +84,9 @@ import java.util.*;
 
 public class JCaughtExceptionRef implements CaughtExceptionRef
 {
-    JimpleBody body;
+    Body body;
     
-    JCaughtExceptionRef(JimpleBody b)
+    public JCaughtExceptionRef(Body b)
     {
         this.body = b;
     }

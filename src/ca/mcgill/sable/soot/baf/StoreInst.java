@@ -6,6 +6,6 @@ public interface StoreInst extends Inst
 {
     public Type getOpType();
     public void setOpType(Type opType);
-    public int getIndex();
-    public void setIndex(int index);
+    public Local getLocal();
+    public void setLocal(Local l);
 }

@@ -132,8 +132,11 @@ public class BafBody implements Body
             {
                 Stmt s = (Stmt) stmtIt.next();
                 List conversionList = new ArrayList();
-                
+
+                System.out.println("converting: " + s);                
                 ((ConvertToBaf) s).convertToBaf(context, conversionList);
+                
+                System.out.println("become: " + conversionList.get(0));
                 
                 stmtToFirstInstruction.put(s, conversionList.get(0));
                 instList.addAll(conversionList);

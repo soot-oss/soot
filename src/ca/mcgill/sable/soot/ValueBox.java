@@ -3,13 +3,6 @@
  * Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca)    *
  * All rights reserved.                                              *
  *                                                                   *
- * Modifications by Madeleine Mony are                               *
- * Copyright (C) 1998 Madeleine Mony.  All                           *
- * rights reserved.                                                  *
- *                                                                   *
- * Modifications by Patrick Lam (plam@sable.mcgill.ca) are           *
- * Copyright (C) 1999 Patrick Lam.  All rights reserved.             *
- *                                                                   *
  * This work was done as a project of the Sable Research Group,      *
  * School of Computer Science, McGill University, Canada             *
  * (http://www.sable.mcgill.ca/).  It is understood that any         *
@@ -68,112 +61,23 @@
 
  B) Changes:
 
- - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
-   Added changes in support of the Grimp intermediate
-   representation (with aggregated-expressions).
-
- - Modified on November 13, 1998 by Madeleine Mony
-   Implemented fixed hash code idea.
-   
  - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Repackaged all source files and performed extensive modifications.
    First initial release of Soot.
+
+ - Modified on September 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+   Added method canContainValue().
 
  - Modified on 15-Jun-1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
 
-package ca.mcgill.sable.soot.jimple;
+package ca.mcgill.sable.soot;
 
-import ca.mcgill.sable.soot.*;
-import ca.mcgill.sable.soot.baf.*;
-import ca.mcgill.sable.util.*;
-import java.util.*;
-
-class JimpleLocal implements Local, ConvertToBaf
+public interface ValueBox
 {
-    String name;
-    Type type;
-
-    int fixedHashCode;
-    boolean isHashCodeChosen;
-        
-    JimpleLocal(String name, Type t)
-    {
-        this.name = name;
-        this.type = t;
-    }
-
-    public Object clone()
-    {
-        return new JimpleLocal(name, type);
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public int hashCode()
-    {
-        if(!isHashCodeChosen)
-        {
-            // Set the hash code for this object
-            
-            if(name != null & type != null)
-                fixedHashCode = name.hashCode() + 19 * type.hashCode();
-            else if(name != null)
-                fixedHashCode = name.hashCode();
-            else if(type != null)
-                fixedHashCode = type.hashCode();
-            else
-                fixedHashCode = 1;
-                
-            isHashCodeChosen = true;
-        }
-        
-        return fixedHashCode;
-    }
-    
-    public Type getType()
-    {
-        return type;
-    }
-
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
-
-    public String toString()
-    {
-        return getName();
-    }
-
-    public String toBriefString()
-    {
-        return toString();
-    }
-    
-    public List getUseBoxes()
-    {
-        return AbstractUnit.emptyList;
-    }
-
-    public void apply(Switch sw)
-    {
-        ((JimpleValueSwitch) sw).caseLocal(this);
-    }
-
-    public void convertToBaf(JimpleToBafContext context, List out)
-    {
-        out.add(Baf.v().newLoadInst(getType(), 
-            context.getBafLocalOfJimpleLocal(this)));
-    }
+    public abstract void setValue(Value value);
+    public abstract Value getValue();
+    public abstract boolean canContainValue(Value value);
 }
 

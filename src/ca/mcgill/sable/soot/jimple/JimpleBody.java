@@ -113,22 +113,17 @@ import java.util.*;
 import ca.mcgill.sable.soot.baf.*;
 import java.io.*;
 
-public class JimpleBody implements StmtBody
+public class JimpleBody extends AbstractBody implements StmtBody
 {
-    List locals = new ArrayList();
-    SootMethod method;
-
     StmtList stmtList;
-    List traps = new ArrayList();
-
-
+    
     /**
         Construct an empty JimpleBody 
      **/
      
     JimpleBody(SootMethod m)
     {
-        this.method = m;
+        super(m);
         stmtList = new StmtList(this);   
     }
     
@@ -138,7 +133,7 @@ public class JimpleBody implements StmtBody
 
     public JimpleBody(Body body, int buildOptions)
     {
-        SootMethod m = body.getMethod();
+        super(body.getMethod());
         ClassFileBody fileBody;
 
         if(body instanceof ClassFileBody)
@@ -146,7 +141,6 @@ public class JimpleBody implements StmtBody
         else
             throw new RuntimeException("Can only construct JimpleBody's directly from ClassFileBody's (for now)");
 
-        this.method = fileBody.getMethod();
         this.stmtList = new StmtList(this);
 
         ca.mcgill.sable.soot.coffi.ClassFile coffiClass = fileBody.coffiClass;
@@ -159,9 +153,9 @@ public class JimpleBody implements StmtBody
 
         */
         if(Main.isVerbose)
-            System.out.println("[" + method.getName() + "] Jimplifying...");
+            System.out.println("[" + getMethod().getName() + "] Jimplifying...");
 
-        if(Modifier.isAbstract(method.getModifiers()) || Modifier.isNative(method.getModifiers()))
+        if(Modifier.isAbstract(getMethod().getModifiers()) || Modifier.isNative(getMethod().getModifiers()))
             return;
             
         if(Main.isProfilingOptimization)
@@ -170,7 +164,7 @@ public class JimpleBody implements StmtBody
         if(coffiMethod.instructions == null)
         {
             if(Main.isVerbose)
-                System.out.println("[" + method.getName() +
+                System.out.println("[" + getMethod().getName() +
                     "]     Parsing Coffi instructions...");
 
              coffiClass.parseMethod(coffiMethod);
@@ -179,7 +173,7 @@ public class JimpleBody implements StmtBody
         if(coffiMethod.cfg == null)
         {
             if(Main.isVerbose)
-                System.out.println("[" + method.getName() +
+                System.out.println("[" + getMethod().getName() +
                     "]     Building Coffi CFG...");
 
              new ca.mcgill.sable.soot.coffi.CFG(coffiMethod);
@@ -187,7 +181,7 @@ public class JimpleBody implements StmtBody
          }
 
          if(Main.isVerbose)
-             System.out.println("[" + method.getName() +
+             System.out.println("[" + getMethod().getName() +
                     "]     Producing naive Jimple...");
                     
          coffiMethod.cfg.jimplify(coffiClass.constant_pool,
@@ -436,66 +430,6 @@ public class JimpleBody implements StmtBody
         }
     }
 
-    public int getLocalCount()
-    {
-        return locals.size();
-    }
-
-    /**
-     * Returns a backed list of locals.
-     */
-
-    public List getLocals()
-    {
-        return locals;
-    }
-
-    public void addLocal(Local l) throws AlreadyDeclaredException
-    {
-        locals.add(l);
-    }
-
-    public void removeLocal(Local l) throws IncorrectDeclarerException
-    {
-        locals.remove(l);
-    }
-
-    public Local getLocal(String name) throws ca.mcgill.sable.soot.jimple.NoSuchLocalException
-    {
-        Iterator localIt = getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(name))
-                return local;
-        }
-
-        throw new ca.mcgill.sable.soot.jimple.NoSuchLocalException();
-    }
-
-
-    public boolean declaresLocal(String localName)
-    {
-        Iterator localIt = getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(localName))
-                return true;
-        }
-
-        return false;
-    }
-
-    public SootMethod getMethod()
-    {
-        return method;
-    }
-
     public List getUnitBoxes()
     {
         List stmtBoxes = new ArrayList();
@@ -515,7 +449,7 @@ public class JimpleBody implements StmtBody
 
         // Put in all statement boxes from the trap table
         {
-            Iterator trapIt = traps.iterator();
+            Iterator trapIt = getTraps().iterator();
 
             while(trapIt.hasNext())
             {
@@ -525,21 +459,6 @@ public class JimpleBody implements StmtBody
         }
 
         return stmtBoxes;
-    }
-
-    public List getTraps()
-    {
-        return traps;
-    }
-
-    public void addTrap(Trap t)
-    {
-        traps.add(t);
-    }
-
-    public void removeTrap(Trap t)
-    {
-        traps.remove(t);
     }
 
     public void printTo(java.io.PrintWriter out)
@@ -565,7 +484,7 @@ public class JimpleBody implements StmtBody
 
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
 
-        out.println("    " + method.getDeclaration());        
+        out.println("    " + getMethod().getDeclaration());        
         out.println("    {");
 
 
