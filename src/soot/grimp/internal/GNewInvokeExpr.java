@@ -40,15 +40,17 @@ import soot.jimple.internal.*;
 import soot.util.*;
 import java.util.*;
 
-public class GNewInvokeExpr extends AbstractStaticInvokeExpr
+public class GNewInvokeExpr extends AbstractInvokeExpr
     implements NewInvokeExpr, Precedence
 {
     RefType type;
 
     public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args)
     {
-            super(methodRef, new ExprBox[args.size()]);
+        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
 
+        this.methodRef = methodRef;
+        this.argBoxes = new ExprBox[args.size()]; 
         this.type = type;
         
         for(int i = 0; i < args.size(); i++)
@@ -147,5 +149,26 @@ public class GNewInvokeExpr extends AbstractStaticInvokeExpr
         
         return new  GNewInvokeExpr(getBaseType(), methodRef, clonedArgs);
     }
-
+    public boolean equivTo(Object o)
+    {
+        if (o instanceof GNewInvokeExpr)
+        {
+            GNewInvokeExpr ie = (GNewInvokeExpr)o;
+            if (!(getMethod().equals(ie.getMethod()) && 
+                  argBoxes.length == ie.argBoxes.length))
+                return false;
+            for (int i = 0; i < argBoxes.length; i++)
+                if (!(argBoxes[i].getValue().equivTo(ie.argBoxes[i].getValue())))
+                    return false;
+            if( !type.equals(ie.type) ) return false;
+            return true;
+        }
+        return false;
+    }
+ 
+    /** Returns a hash code for this object, consistent with structural equality. */
+    public int equivHashCode()
+    {
+        return getMethod().equivHashCode();
+    }
 }
