@@ -311,11 +311,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	
 	TypeNode base = hierarchy.typeNode(((Local) ref.getBase()).getType());
 	
-	if(!base.hasAncestorOrSelf(hierarchy.typeNode(ref.XgetField().getDeclaringClass().getType())))
+	if(!base.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType())))
 	  {
 	    if(fix)
 	      {
-		ref.setBase(insertCast((Local) ref.getBase(), ref.XgetField().getDeclaringClass().getType(), stmt));
+		ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
 	      }
 	    else
 	      {
@@ -323,12 +323,12 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      }
 	  }
 
-	left = hierarchy.typeNode(ref.XgetField().getType());
+	left = hierarchy.typeNode(ref.getField().getType());
       }
     else if(l instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) l;
-	left = hierarchy.typeNode(ref.XgetField().getType());
+	left = hierarchy.typeNode(ref.getField().getType());
       }
     else
       {
@@ -756,11 +756,11 @@ class ConstraintChecker extends AbstractStmtSwitch
 	InstanceFieldRef ref = (InstanceFieldRef) r;
 
 	TypeNode baseType = hierarchy.typeNode(((Local) ref.getBase()).getType());
-	if(!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.XgetField().getDeclaringClass().getType())))
+	if(!baseType.hasAncestorOrSelf(hierarchy.typeNode(ref.getField().getDeclaringClass().getType())))
 	  {
 	    if(fix)
 	      {
-		ref.setBase(insertCast((Local) ref.getBase(), ref.XgetField().getDeclaringClass().getType(), stmt));
+		ref.setBase(insertCast((Local) ref.getBase(), ref.getField().getDeclaringClass().getType(), stmt));
 	      }
 	    else
 	      {
@@ -768,7 +768,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      }	    
 	  }
 	
-	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.XgetField().getType())))
+	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.getField().getType())))
 	  {
 	    error("Type Error(43)");
 	  }
@@ -777,7 +777,7 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	StaticFieldRef ref = (StaticFieldRef) r;
 
-	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.XgetField().getType())))
+	if(!left.hasDescendantOrSelf(hierarchy.typeNode(ref.getField().getType())))
 	  {
 	    error("Type Error(44)");
 	  }

@@ -131,8 +131,8 @@ public class NaiveSideEffectTester implements SideEffectTester
             if (v instanceof InstanceFieldRef && 
                 def instanceof InstanceFieldRef)
             {
-                if (((InstanceFieldRef)v).XgetField() ==
-                    ((InstanceFieldRef)def).XgetField())
+                if (((InstanceFieldRef)v).getField() ==
+                    ((InstanceFieldRef)def).getField())
                     return true;
             }
         }

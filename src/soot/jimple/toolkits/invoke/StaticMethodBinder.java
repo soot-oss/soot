@@ -122,7 +122,7 @@ public class StaticMethodBinder extends SceneTransformer
 
                         // Check for signature conflicts.
                         String newName = target.getName() + "_static";
-                        while (target.getDeclaringClass().XdeclaresMethod(newName, 
+                        while (target.getDeclaringClass().declaresMethod(newName, 
                                                 newParameterTypes,
                                                 target.getReturnType()))
                             newName = newName + "_static";

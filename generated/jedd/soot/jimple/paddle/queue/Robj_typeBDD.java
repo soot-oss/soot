@@ -22,8 +22,8 @@ public final class Robj_typeBDD extends Robj_type {
     
     public Robj_typeBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
-                                                     new PhysicalDomain[] { T2.v(), H1.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
+                                                     new PhysicalDomain[] { H1.v(), T2.v() },
                                                      ("this.add(bdd) at /home/olhotak/soot-trunk2/src/soot/jimple/p" +
                                                       "addle/queue/Robj_typeBDD.jedd:33,76-79"),
                                                      bdd));
@@ -49,8 +49,8 @@ public final class Robj_typeBDD extends Robj_type {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
-                                                          new PhysicalDomain[] { T2.v(), H1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
+                                                          new PhysicalDomain[] { H1.v(), T2.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                            "trunk2/src/soot/jimple/paddle/queue/Robj_typeBDD.jedd:45,25-" +
                                                            "28"),
@@ -75,8 +75,8 @@ public final class Robj_typeBDD extends Robj_type {
                                                "c/soot/jimple/paddle/queue/Robj_typeBDD.jedd:55,26-29"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
-                                                   new PhysicalDomain[] { T2.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
+                                                   new PhysicalDomain[] { H1.v(), T2.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Robj_typeBDD.jedd:57,8-14"),
                                                    ret);

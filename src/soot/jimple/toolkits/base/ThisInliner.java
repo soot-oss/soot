@@ -36,16 +36,16 @@ public class ThisInliner extends BodyTransformer{
         InvokeStmt invokeStmt = getFirstSpecialInvoke(b);
         if (invokeStmt == null) return; 
         SpecialInvokeExpr specInvokeExpr = (SpecialInvokeExpr)invokeStmt.getInvokeExpr();
-        if (specInvokeExpr.XgetMethod().getDeclaringClass().equals(b.getMethod().getDeclaringClass())){
+        if (specInvokeExpr.getMethod().getDeclaringClass().equals(b.getMethod().getDeclaringClass())){
             
             // put locals from inlinee into container
-            if (!specInvokeExpr.XgetMethod().hasActiveBody()){
-                specInvokeExpr.XgetMethod().retrieveActiveBody();
+            if (!specInvokeExpr.getMethod().hasActiveBody()){
+                specInvokeExpr.getMethod().retrieveActiveBody();
             }
 
             HashMap oldLocalsToNew = new HashMap();
             
-            Iterator localsIt = specInvokeExpr.XgetMethod().getActiveBody().getLocals().iterator();
+            Iterator localsIt = specInvokeExpr.getMethod().getActiveBody().getLocals().iterator();
             while (localsIt.hasNext()){
                 Local l = (Local)localsIt.next();
                 Local newLocal = (Local)l.clone();
@@ -60,7 +60,7 @@ public class ThisInliner extends BodyTransformer{
             
             //System.out.println("locals: "+b.getLocals());
             Chain containerUnits = b.getUnits();
-            Iterator inlineeIt = specInvokeExpr.XgetMethod().getActiveBody().getUnits().iterator();
+            Iterator inlineeIt = specInvokeExpr.getMethod().getActiveBody().getUnits().iterator();
             while (inlineeIt.hasNext()){
                 Stmt inlineeStmt = (Stmt)inlineeIt.next();
                
@@ -122,7 +122,7 @@ public class ThisInliner extends BodyTransformer{
             }
                 
             // handleTraps
-            Iterator trapsIt = specInvokeExpr.XgetMethod().getActiveBody().getTraps().iterator();
+            Iterator trapsIt = specInvokeExpr.getMethod().getActiveBody().getTraps().iterator();
             while (trapsIt.hasNext()){
                 Trap t = (Trap)trapsIt.next();
                 System.out.println("begin: "+t.getBeginUnit());
@@ -139,7 +139,7 @@ public class ThisInliner extends BodyTransformer{
             }
 
             // patch gotos
-            inlineeIt = specInvokeExpr.XgetMethod().getActiveBody().getUnits().iterator();
+            inlineeIt = specInvokeExpr.getMethod().getActiveBody().getUnits().iterator();
             while (inlineeIt.hasNext()){
                 Stmt inlineeStmt = (Stmt)inlineeIt.next();
                 if (inlineeStmt instanceof GotoStmt){

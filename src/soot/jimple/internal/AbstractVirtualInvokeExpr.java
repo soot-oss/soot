@@ -51,7 +51,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
         {
             AbstractVirtualInvokeExpr ie = (AbstractVirtualInvokeExpr)o;
             if (!(baseBox.getValue().equivTo(ie.baseBox.getValue()) &&
-                    XgetMethod().equals(ie.XgetMethod()) && 
+                    getMethod().equals(ie.getMethod()) && 
                     argBoxes.length == ie.argBoxes.length))
                 return false;
             for (int i = 0; i < argBoxes.length; i++)
@@ -65,7 +65,7 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return baseBox.getValue().equivHashCode() * 101 + XgetMethod().equivHashCode() * 17;
+        return baseBox.getValue().equivHashCode() * 101 + getMethod().equivHashCode() * 17;
     }
 
     public abstract Object clone();

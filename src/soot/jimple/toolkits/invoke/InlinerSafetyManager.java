@@ -73,7 +73,7 @@ public class InlinerSafetyManager
                             
                         }
                      
-                        SootMethod specialTarget = ie1.XgetMethod();
+                        SootMethod specialTarget = ie1.getMethod();
                         
                         if(specialTarget.isPrivate())
                         {
@@ -88,7 +88,7 @@ public class InlinerSafetyManager
                         }
                     }
                     
-                    if (!AccessManager.ensureAccess(container, ie1.XgetMethod(), modifierOptions))
+                    if (!AccessManager.ensureAccess(container, ie1.getMethod(), modifierOptions))
                         return false;
                   }
 
@@ -98,13 +98,13 @@ public class InlinerSafetyManager
                     Value rhs = ((AssignStmt)st).getRightOp();
 
                     if (lhs instanceof FieldRef && 
-                        !AccessManager.ensureAccess(container, ((FieldRef)lhs).XgetField(), 
+                        !AccessManager.ensureAccess(container, ((FieldRef)lhs).getField(), 
                                                     modifierOptions))
                         return false;
                         
                                                                                
                     if (rhs instanceof FieldRef &&
-                        !AccessManager.ensureAccess(container, ((FieldRef)rhs).XgetField(), 
+                        !AccessManager.ensureAccess(container, ((FieldRef)rhs).getField(), 
                                                     modifierOptions))
                         return false;
                         
@@ -232,7 +232,7 @@ public class InlinerSafetyManager
         (InvokeExpr ie, SootClass containerClass)
     {
         // If all of the conditions are true, a lookup is performed.
-        SootMethod m = ie.XgetMethod();
+        SootMethod m = ie.getMethod();
 
 
         if (m.getName().equals("<init>"))

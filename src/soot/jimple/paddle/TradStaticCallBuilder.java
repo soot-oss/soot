@@ -88,7 +88,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
 
                 // Deal with PRIVILEGED calls
                 } else {
-                    SootMethod tgt = ((StaticInvokeExpr) ie).XgetMethod();
+                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
                     addEdge(source, s, tgt);
                     if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
@@ -103,7 +103,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                 
 
                 // Deal with calls to Method.invoke()
-                if( ie.XgetMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
                         if( options.verbose() ) {
                             G.v().out.println( "Warning: call to "+
@@ -115,7 +115,7 @@ public class TradStaticCallBuilder extends AbsStaticCallBuilder
                 }
                 
                 // Deal with Class.newInstance() calls
-                if( ie.XgetMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                     if( options.safe_newinstance() ) {
                         for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
                             final SootMethod tgt = (SootMethod) tgtIt.next();

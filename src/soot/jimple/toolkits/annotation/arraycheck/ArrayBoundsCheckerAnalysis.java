@@ -797,7 +797,7 @@ class ArrayBoundsCheckerAnalysis
             else
             if (leftOp instanceof InstanceFieldRef)
             {
-                SootField field = ((InstanceFieldRef)leftOp).XgetField();
+                SootField field = ((InstanceFieldRef)leftOp).getField();
                 
                 HashSet fieldrefs = (HashSet)fieldToFieldRef.get(field);
                 
@@ -990,7 +990,7 @@ class ArrayBoundsCheckerAnalysis
 
             if (classfieldin)
             {            
-                SootField field = ((FieldRef)rightOp).XgetField();
+                SootField field = ((FieldRef)rightOp).getField();
                 IntValueContainer flength = (IntValueContainer)cfield.getFieldInfo(field);
 
                 if (flength != null)

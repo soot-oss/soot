@@ -64,7 +64,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
     {
         return fieldRef;
     }
-    public SootField XgetField()
+    public SootField getField()
     {
         return fieldRef.resolve();
     }
@@ -87,14 +87,14 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
     public boolean equivTo(Object o)
     {
         if (o instanceof StaticFieldRef)
-            return ((StaticFieldRef)o).XgetField().equals(XgetField());
+            return ((StaticFieldRef)o).getField().equals(getField());
         
         return false;
     }
 
     public int equivHashCode()
     {
-        return XgetField().equivHashCode();
+        return getField().equivHashCode();
     }
 
     public void convertToBaf(JimpleToBafContext context, List out)

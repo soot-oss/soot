@@ -201,11 +201,11 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  {
 	    InstanceFieldRef ref = (InstanceFieldRef) l;
 	    
-	    Type fieldType = ref.XgetField().getType();
+	    Type fieldType = ref.getField().getType();
 	    
 	    if(fieldType instanceof IntegerType)
 	      {
-		left = resolver.typeVariable(ref.XgetField().getType());
+		left = resolver.typeVariable(ref.getField().getType());
 	      }
 	  }
       }
@@ -215,11 +215,11 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  {
 	    StaticFieldRef ref = (StaticFieldRef) l;
 	    
-	    Type fieldType = ref.XgetField().getType();
+	    Type fieldType = ref.getField().getType();
 	    
 	    if(fieldType instanceof IntegerType)
 	      {
-		left = resolver.typeVariable(ref.XgetField().getType());
+		left = resolver.typeVariable(ref.getField().getType());
 	      }
 	  }
       }
@@ -698,18 +698,18 @@ class ConstraintCollector extends AbstractStmtSwitch
       {
 	InstanceFieldRef ref = (InstanceFieldRef) r;
 
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    right = resolver.typeVariable(ref.XgetField().getType());
+	    right = resolver.typeVariable(ref.getField().getType());
 	  }
       }
     else if(r instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) r;
 
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    right = resolver.typeVariable(ref.XgetField().getType());
+	    right = resolver.typeVariable(ref.getField().getType());
 	  }
       }
     else

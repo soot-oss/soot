@@ -46,8 +46,8 @@ public class Robj_method_typeIter extends Robj_method_type {
                                                        new Attribute[] { obj.v(), method.v(), type.v() },
                                                        new PhysicalDomain[] { H1.v(), T1.v(), T2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), obj.v() },
-                                                   new PhysicalDomain[] { T1.v(), T2.v(), H1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v(), method.v() },
+                                                   new PhysicalDomain[] { H1.v(), T2.v(), T1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Robj_method_typeIter.jedd:50,8-14"),
                                                    ret);

@@ -201,7 +201,7 @@ public final class OnFlyCallGraphBuilder
                                 Kind.THREAD );
                     }
                 } else {
-                    SootMethod tgt = ((StaticInvokeExpr) ie).XgetMethod();
+                    SootMethod tgt = ((StaticInvokeExpr) ie).getMethod();
                     addEdge(m, s, tgt);
                     if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
                     ||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
@@ -232,7 +232,7 @@ public final class OnFlyCallGraphBuilder
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = (InvokeExpr) s.getInvokeExpr();
-                if( ie.XgetMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                if( ie.getMethod().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                     if( !warnedAlready ) {
                         if( options.verbose() ) {
                             G.v().out.println( "Warning: call to "+
@@ -242,7 +242,7 @@ public final class OnFlyCallGraphBuilder
                         warnedAlready = true;
                     }
                 }
-                if( ie.XgetMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                if( ie.getMethod().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                     if( options.safe_newinstance() ) {
                         for( Iterator tgtIt = EntryPoints.v().inits().iterator(); tgtIt.hasNext(); ) {
                             final SootMethod tgt = (SootMethod) tgtIt.next();

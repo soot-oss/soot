@@ -466,7 +466,7 @@ public class RectangularArrayFinder extends SceneTransformer
 			Type ftype = ((FieldRef)leftOp).getType();
 			Type ltype = ((Local)rightOp).getType();
 
-			to = ((FieldRef)leftOp).XgetField();
+			to = ((FieldRef)leftOp).getField();
 			from = new MethodLocal(method, (Local)rightOp);
 			
 			ehmdg.addMutualEdge(from, to);
@@ -488,7 +488,7 @@ public class RectangularArrayFinder extends SceneTransformer
 			Type ltype = ((Local)leftOp).getType();
 
 			to = new MethodLocal(method, (Local)leftOp);
-			from = ((FieldRef)rightOp).XgetField();
+			from = ((FieldRef)rightOp).getField();
 			
 			ehmdg.addMutualEdge(from, to);
 			

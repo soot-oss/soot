@@ -68,7 +68,7 @@ public class SparkNativeHelper extends NativeHelper {
     }
     protected ReferenceVariable staticFieldImpl(String className, String fieldName ) {
 	SootClass c = RefType.v( className ).getSootClass();
-	SootField f = c.XgetFieldByName( fieldName );
+	SootField f = c.getFieldByName( fieldName );
 	return pag.makeGlobalVarNode( f, f.getType() );
     }
     protected ReferenceVariable tempFieldImpl(String fieldsig) {

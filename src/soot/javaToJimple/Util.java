@@ -248,7 +248,7 @@ public class Util {
         
         // otherwise get this$0 for one level up
         soot.SootClass classToInvoke = ((soot.RefType)specialThisLocal.getType()).getSootClass();
-        soot.SootField outerThisField = classToInvoke.XgetFieldByName("this$0");
+        soot.SootField outerThisField = classToInvoke.getFieldByName("this$0");
         soot.Local t1 = lg.generateLocal(outerThisField.getType());
         
         soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, outerThisField.makeRef());
@@ -327,13 +327,13 @@ public class Util {
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(classToInvoke.getType());
         
-        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.XgetFieldByName("this$0").getType(), soot.Modifier.STATIC);
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, classToInvoke.getFieldByName("this$0").getType(), soot.Modifier.STATIC);
 
         classToInvoke.addMethod(meth);
         PrivateFieldAccMethodSource src = new PrivateFieldAccMethodSource(
-            classToInvoke.XgetFieldByName("this$0").getType(),
+            classToInvoke.getFieldByName("this$0").getType(),
             "this$0",
-            classToInvoke.XgetFieldByName("this$0").isStatic(),
+            classToInvoke.getFieldByName("this$0").isStatic(),
             classToInvoke
             );
         meth.setActiveBody(src.getBody(meth, null));

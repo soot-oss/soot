@@ -24,8 +24,8 @@ public final class Rvar_method_typeBDD extends Rvar_method_type {
     
     public Rvar_method_typeBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        this.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), var.v() },
-                                                     new PhysicalDomain[] { T1.v(), T2.v(), V1.v() },
+        this.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
+                                                     new PhysicalDomain[] { V1.v(), T2.v(), T1.v() },
                                                      ("this.add(bdd) at /home/olhotak/soot-trunk2/src/soot/jimple/p" +
                                                       "addle/queue/Rvar_method_typeBDD.jedd:33,94-97"),
                                                      bdd));
@@ -51,8 +51,8 @@ public final class Rvar_method_typeBDD extends Rvar_method_type {
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), var.v() },
-                                                          new PhysicalDomain[] { T1.v(), T2.v(), V1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
+                                                          new PhysicalDomain[] { V1.v(), T2.v(), T1.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
                                                            "trunk2/src/soot/jimple/paddle/queue/Rvar_method_typeBDD.jedd" +
                                                            ":45,25-28"),
@@ -79,8 +79,8 @@ public final class Rvar_method_typeBDD extends Rvar_method_type {
                                                "dd:55,37-40"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), type.v(), var.v() },
-                                                   new PhysicalDomain[] { T1.v(), T2.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v(), method.v() },
+                                                   new PhysicalDomain[] { V1.v(), T2.v(), T1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Rvar_method_typeBDD.jedd:57,8-14"),
                                                    ret);

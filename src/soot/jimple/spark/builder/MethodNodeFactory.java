@@ -160,13 +160,13 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     final public void caseInstanceFieldRef( InstanceFieldRef ifr ) {
 	if( pag.getOpts().field_based() || pag.getOpts().vta() ) {
 	    setResult( pag.makeGlobalVarNode( 
-			ifr.XgetField(), 
-			ifr.XgetField().getType() ) );
+			ifr.getField(), 
+			ifr.getField().getType() ) );
 	} else {
 	    setResult( pag.makeLocalFieldRefNode( 
 			ifr.getBase(), 
 			ifr.getBase().getType(),
-			ifr.XgetField(),
+			ifr.getField(),
                         method ) );
 	}
     }
@@ -209,8 +209,8 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     final public void caseStaticFieldRef( StaticFieldRef sfr ) {
 	setResult( pag.makeGlobalVarNode( 
-		    sfr.XgetField(), 
-		    sfr.XgetField().getType() ) );
+		    sfr.getField(), 
+		    sfr.getField().getType() ) );
     }
     final public void caseStringConstant( StringConstant sc ) {
         AllocNode stringConstant;

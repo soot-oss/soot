@@ -37,5 +37,5 @@ import java.util.*;
 public interface FieldRef extends ConcreteRef
 {
     public SootFieldRef getFieldRef();
-    public SootField XgetField();
+    public SootField getField();
 }

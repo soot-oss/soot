@@ -77,11 +77,11 @@ public class JimpleBodyBuilder {
         int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
         int classMod = sootMethod.getDeclaringClass().getModifiers();
             
-        if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && sootMethod.getDeclaringClass().XdeclaresFieldByName("this$0")){
+        if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && sootMethod.getDeclaringClass().declaresFieldByName("this$0")){
 
             // we know its an inner non static class can get outer class
             // from field ref of the this$0 field
-            soot.SootClass outerClass = ((soot.RefType)sootMethod.getDeclaringClass().XgetFieldByName("this$0").getType()).getSootClass();
+            soot.SootClass outerClass = ((soot.RefType)sootMethod.getDeclaringClass().getFieldByName("this$0").getType()).getSootClass();
             soot.Local outerLocal = lg.generateLocal(outerClass.getType());
             
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(outerClass.getType(), formalsCounter);
@@ -224,8 +224,8 @@ public class JimpleBodyBuilder {
      */
     private void handleOuterClassThisInit(soot.SootMethod sootMethod) {
         // static inner classes are different
-        if (body.getMethod().getDeclaringClass().XdeclaresFieldByName("this$0")){
-            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().XgetFieldByName("this$0").makeRef());
+        if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){
+            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().getFieldByName("this$0").makeRef());
             soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(fieldRef, outerClassParamLocal);
             body.getUnits().add(stmt);
         }
@@ -451,7 +451,7 @@ public class JimpleBodyBuilder {
             soot.Local sootLocal = (soot.Local)localsMap.get(new polyglot.util.IdentityKey(li));
             return sootLocal;
         }
-        else if (body.getMethod().getDeclaringClass().XdeclaresField("val$"+li.name(), Util.getSootType(li.type()))){
+        else if (body.getMethod().getDeclaringClass().declaresField("val$"+li.name(), Util.getSootType(li.type()))){
             soot.Local fieldLocal = generateLocal(li.type());
             soot.SootFieldRef field = soot.Scene.v().makeFieldRef(body.getMethod().getDeclaringClass(), "val$"+li.name(), Util.getSootType(li.type()));
             soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, field);
@@ -470,13 +470,13 @@ public class JimpleBodyBuilder {
             boolean fieldFound = false;
             
             while (!fieldFound){
-                if (!currentClass.XdeclaresFieldByName("this$0")){
+                if (!currentClass.declaresFieldByName("this$0")){
                     throw new RuntimeException("Trying to get field val$"+li.name()+" from some outer class but can't access the outer class of: "+currentClass.getName()+"!");
                 }
-                soot.SootClass outerClass = ((soot.RefType)currentClass.XgetFieldByName("this$0").getType()).getSootClass();
+                soot.SootClass outerClass = ((soot.RefType)currentClass.getFieldByName("this$0").getType()).getSootClass();
                 // look for field of type li.type and name val$li.name in outer 
                 // class 
-                if (outerClass.XdeclaresField("val$"+li.name(), Util.getSootType(li.type()))){
+                if (outerClass.declaresField("val$"+li.name(), Util.getSootType(li.type()))){
                     fieldFound = true;
                 }
                 currentClass = outerClass;

@@ -32,8 +32,8 @@ public class BDDEdgeContextStripper extends AbsEdgeContextStripper {
                                                                              new jedd.PhysicalDomain[] { V1.v(), V2.v() }));
         newEdges.eqMinus(seen);
         seen.eqUnion(newEdges);
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), tgtm.v(), srcm.v(), stmt.v(), srcc.v(), tgtc.v() },
-                                                    new jedd.PhysicalDomain[] { FD.v(), T2.v(), T1.v(), ST.v(), V1.v(), V2.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { srcm.v(), tgtm.v(), stmt.v(), kind.v(), srcc.v(), tgtc.v() },
+                                                    new jedd.PhysicalDomain[] { T1.v(), T2.v(), ST.v(), FD.v(), V1.v(), V2.v() },
                                                     ("out.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
                                                      "ead(newEdges), jedd.internal.Jedd.v().literal(new java.lang." +
                                                      "Object[...], new jedd.Attribute[...], new jedd.PhysicalDomai" +

@@ -23,8 +23,8 @@ public class Qvar_srcm_stmt_tgtmTrad extends Qvar_srcm_stmt_tgtm {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { tgtm.v(), srcm.v(), var.v(), stmt.v() },
-                                              new PhysicalDomain[] { T2.v(), T1.v(), V1.v(), ST.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), tgtm.v(), var.v(), stmt.v() },
+                                              new PhysicalDomain[] { T1.v(), T2.v(), V1.v(), ST.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
                                                "runk2/src/soot/jimple/paddle/queue/Qvar_srcm_stmt_tgtmTrad.j" +
                                                "edd:40,22-24"),

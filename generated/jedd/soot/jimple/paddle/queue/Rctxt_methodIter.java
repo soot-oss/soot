@@ -45,8 +45,8 @@ public class Rctxt_methodIter extends Rctxt_method {
                                                        new Attribute[] { ctxt.v(), method.v() },
                                                        new PhysicalDomain[] { V1.v(), T1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
-                                                   new PhysicalDomain[] { T1.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
+                                                   new PhysicalDomain[] { V1.v(), T1.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Rctxt_methodIter.jedd:50,8-14"),
                                                    ret);

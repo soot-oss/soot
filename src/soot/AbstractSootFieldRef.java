@@ -75,8 +75,8 @@ class AbstractSootFieldRef implements SootFieldRef {
         while(true) {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
-            if( cl.XdeclaresField(name, type) ) {
-                return cl.XgetField(name, type);
+            if( cl.declaresField(name, type) ) {
+                return cl.getField(name, type);
             }
 
             if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
@@ -92,8 +92,8 @@ class AbstractSootFieldRef implements SootFieldRef {
                     SootClass iface = (SootClass) queue.removeFirst();
                     if(trace != null) trace.append(
                             "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
-                    if( iface.XdeclaresField(name, type) ) {
-                        return iface.XgetField( name, type );
+                    if( iface.declaresField(name, type) ) {
+                        return iface.getField( name, type );
                     }
                     queue.addAll( iface.getInterfaces() );
                 }

@@ -121,7 +121,7 @@ public class ExceptionChecker extends BodyTransformer{
     }
 
     private void checkInvokeExpr(Body b, InvokeExpr ie, Stmt s){
-        SootMethod meth = ie.XgetMethod();
+        SootMethod meth = ie.getMethod();
         Iterator it = meth.getExceptions().iterator();
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();

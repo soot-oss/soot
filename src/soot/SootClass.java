@@ -179,7 +179,7 @@ public class SootClass extends AbstractHost implements Numberable
         Returns the field of this class with the given name and type. 
     */
 
-    public SootField XgetField( String name, Type type ) {
+    public SootField getField( String name, Type type ) {
         for( Iterator fieldIt = this.getFields().iterator(); fieldIt.hasNext(); ) {
             final SootField field = (SootField) fieldIt.next();
             if(field.name.equals(name) && field.type.equals(type))
@@ -193,7 +193,7 @@ public class SootClass extends AbstractHost implements Numberable
         are more than one.
     */
 
-    public SootField XgetFieldByName(String name)
+    public SootField getFieldByName(String name)
     {
         boolean found = false;
         SootField foundField = null;
@@ -298,7 +298,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a field with the given name?
     */
 
-    public boolean XdeclaresFieldByName(String name)
+    public boolean declaresFieldByName(String name)
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -318,7 +318,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a field with the given name and type.
     */
 
-    public boolean XdeclaresField(String name, Type type)
+    public boolean declaresField(String name, Type type)
     {
         Iterator fieldIt = getFields().iterator();
 
@@ -359,7 +359,7 @@ public class SootClass extends AbstractHost implements Numberable
         return ret;
     }
 
-    public SootMethod XgetMethod( String name, List parameterTypes,
+    public SootMethod getMethod( String name, List parameterTypes,
             Type returnType )
     {
         for( Iterator methodIt = methodIterator(); methodIt.hasNext(); ) {
@@ -385,7 +385,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name and parameter.
     */
 
-    public SootMethod XgetMethod(String name, List parameterTypes) 
+    public SootMethod getMethod(String name, List parameterTypes) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -421,7 +421,7 @@ public class SootClass extends AbstractHost implements Numberable
         given name.
     */
 
-    public SootMethod XgetMethodByName(String name) 
+    public SootMethod getMethodByName(String name) 
     {
         boolean found = false;
         SootMethod foundMethod = null;
@@ -452,7 +452,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name and parameter types?
     */
 
-    public boolean XdeclaresMethod(String name, List parameterTypes)
+    public boolean declaresMethod(String name, List parameterTypes)
     {
         Iterator methodIt = methodIterator();
 
@@ -472,7 +472,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name, parameter types, and return type?
     */
 
-    public boolean XdeclaresMethod(String name, List parameterTypes, Type returnType)
+    public boolean declaresMethod(String name, List parameterTypes, Type returnType)
     {
         Iterator methodIt = methodIterator();
 
@@ -494,7 +494,7 @@ public class SootClass extends AbstractHost implements Numberable
         Does this class declare a method with the given name?
     */
 
-    public boolean XdeclaresMethodByName(String name)
+    public boolean declaresMethodByName(String name)
     {
         Iterator methodIt = methodIterator();
 

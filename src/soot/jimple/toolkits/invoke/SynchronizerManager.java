@@ -63,7 +63,7 @@ public class SynchronizerManager
         {
             // Add a unique field named [__]class$name
             String n = "class$"+sc.getName().replace('.', '$');
-            while (sc.XdeclaresFieldByName(n))
+            while (sc.declaresFieldByName(n))
                 n = "_" + n;
 
             classCacher = new SootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
@@ -124,10 +124,10 @@ public class SynchronizerManager
         String methodName = "class$";
         for ( ; true; methodName = "_" + methodName)
         {
-            if (!c.XdeclaresMethodByName(methodName))
+            if (!c.declaresMethodByName(methodName))
                 return createClassFetcherFor(c, methodName);
 
-            SootMethod m = c.XgetMethodByName(methodName);
+            SootMethod m = c.getMethodByName(methodName);
 
             // Check signature.
             if (!m.getSignature().equals

@@ -265,18 +265,18 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	InstanceFieldRef ref = (InstanceFieldRef) l;
 	
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    left = ClassHierarchy.v().typeNode( ref.XgetField().getType());
+	    left = ClassHierarchy.v().typeNode( ref.getField().getType());
 	  }
       }
     else if(l instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) l;
 
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    left = ClassHierarchy.v().typeNode(ref.XgetField().getType());
+	    left = ClassHierarchy.v().typeNode(ref.getField().getType());
 	  }
       }
     else
@@ -824,18 +824,18 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
 	InstanceFieldRef ref = (InstanceFieldRef) r;
 
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    right = ClassHierarchy.v().typeNode(ref.XgetField().getType());
+	    right = ClassHierarchy.v().typeNode(ref.getField().getType());
 	  }
       }
     else if(r instanceof StaticFieldRef)
       {
 	StaticFieldRef ref = (StaticFieldRef) r;
 
-	if(ref.XgetField().getType() instanceof IntegerType)
+	if(ref.getField().getType() instanceof IntegerType)
 	  {
-	    right = ClassHierarchy.v().typeNode(ref.XgetField().getType());
+	    right = ClassHierarchy.v().typeNode(ref.getField().getType());
 	  }
       }
     else

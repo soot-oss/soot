@@ -137,11 +137,11 @@ public class SideEffectAnalysis {
 	    InstanceFieldRef ifr = (InstanceFieldRef) v;
 	    PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
 	    ret = new StmtRWSet();
-	    ret.addFieldRef( base, ifr.XgetField() );
+	    ret.addFieldRef( base, ifr.getField() );
 	} else if( v instanceof StaticFieldRef ) {
 	    StaticFieldRef sfr = (StaticFieldRef) v;
 	    ret = new StmtRWSet();
-	    ret.addGlobal( sfr.XgetField() );
+	    ret.addGlobal( sfr.getField() );
 	} else if( v instanceof ArrayRef ) {
 	    ArrayRef ar = (ArrayRef) v;
 	    PointsToSet base = pa.reachingObjects( (Local) ar.getBase() );

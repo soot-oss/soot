@@ -107,14 +107,14 @@ public class ClassResolver {
         
         if ((staticFieldInits != null) || (staticInitializerBlocks != null)) {
             soot.SootMethod clinitMethod;
-            if (!sootClass.XdeclaresMethod("<clinit>", new ArrayList(), soot.VoidType.v())) {
+            if (!sootClass.declaresMethod("<clinit>", new ArrayList(), soot.VoidType.v())) {
                 clinitMethod = new soot.SootMethod("<clinit>", new ArrayList(), soot.VoidType.v(), soot.Modifier.STATIC, new ArrayList());
                 
                 sootClass.addMethod(clinitMethod);
                 clinitMethod.setSource(new soot.javaToJimple.PolyglotMethodSource());
             }
             else {
-                clinitMethod = sootClass.XgetMethod("<clinit>", new ArrayList(), soot.VoidType.v());
+                clinitMethod = sootClass.getMethod("<clinit>", new ArrayList(), soot.VoidType.v());
             
             }
             ((PolyglotMethodSource)clinitMethod.getSource()).setStaticFieldInits(staticFieldInits);
@@ -279,7 +279,7 @@ public class ClassResolver {
                 Iterator it = lInfo.finalLocals().iterator();
                 while (it.hasNext()){
                     polyglot.types.LocalInstance li2 = (polyglot.types.LocalInstance)((polyglot.util.IdentityKey)it.next()).object();
-                    if (!sootClass.XdeclaresField("val$"+li2.name(), Util.getSootType(li2.type()))){
+                    if (!sootClass.declaresField("val$"+li2.name(), Util.getSootType(li2.type()))){
                         addFinals(li2, finalFields);
                         localsUsed.add(new polyglot.util.IdentityKey(li2));
                     }
@@ -405,14 +405,14 @@ public class ClassResolver {
         cBody.visit(asc);
         if (!asc.isHasAssert()) return;
         // two extra fields
-        if (!sootClass.XdeclaresField("$assertionsDisabled", soot.BooleanType.v())){
+        if (!sootClass.declaresField("$assertionsDisabled", soot.BooleanType.v())){
             sootClass.addField(new soot.SootField("$assertionsDisabled", soot.BooleanType.v(), soot.Modifier.STATIC | soot.Modifier.FINAL));
         }
         soot.SootClass addClassToClass = sootClass;
         while ((InitialResolver.v().getInnerClassInfoMap() != null) && (InitialResolver.v().getInnerClassInfoMap().containsKey(addClassToClass))){
             addClassToClass = ((InnerClassInfo)InitialResolver.v().getInnerClassInfoMap().get(addClassToClass)).getOuterClass();
         }
-        if (!addClassToClass.XdeclaresField("class$"+addClassToClass.getName(), soot.RefType.v("java.lang.Class"))){
+        if (!addClassToClass.declaresField("class$"+addClassToClass.getName(), soot.RefType.v("java.lang.Class"))){
             addClassToClass.addField(new soot.SootField("class$"+addClassToClass.getName(), soot.RefType.v("java.lang.Class"), soot.Modifier.STATIC));
         }
         // two extra methods
@@ -420,7 +420,7 @@ public class ClassResolver {
         soot.Type methodRetType = soot.RefType.v("java.lang.Class");
         ArrayList paramTypes = new ArrayList();
         paramTypes.add(soot.RefType.v("java.lang.String"));
-        if (!addClassToClass.XdeclaresMethod(methodName, paramTypes, methodRetType)){
+        if (!addClassToClass.declaresMethod(methodName, paramTypes, methodRetType)){
             soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
             AssertClassMethodSource mSrc = new AssertClassMethodSource();
             sootMethod.setSource(mSrc);
@@ -429,7 +429,7 @@ public class ClassResolver {
         methodName = "<clinit>";
         methodRetType = soot.VoidType.v();
         paramTypes = new ArrayList();
-        if (!sootClass.XdeclaresMethod(methodName, paramTypes, methodRetType)){
+        if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
             soot.SootMethod sootMethod = new soot.SootMethod(methodName, paramTypes, methodRetType, soot.Modifier.STATIC);
             PolyglotMethodSource mSrc = new PolyglotMethodSource();
             mSrc.hasAssert(true);
@@ -437,7 +437,7 @@ public class ClassResolver {
             sootClass.addMethod(sootMethod);
         }
         else {
-            ((soot.javaToJimple.PolyglotMethodSource)sootClass.XgetMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert(true);
+            ((soot.javaToJimple.PolyglotMethodSource)sootClass.getMethod(methodName, paramTypes, methodRetType).getSource()).hasAssert(true);
         }
     }
     /**
@@ -538,13 +538,13 @@ public class ClassResolver {
                 }
                 InitialResolver.v().specialAnonMap().put(sootClass, specialClass);
                 
-                if (!specialClass.XdeclaresMethod(methodName, paramTypes, methodRetType)){
+                if (!specialClass.declaresMethod(methodName, paramTypes, methodRetType)){
                     specialClass.addMethod(sootMethod);
                 }
             
             }
             else {
-                if (!sootClass.XdeclaresMethod(methodName, paramTypes, methodRetType)){
+                if (!sootClass.declaresMethod(methodName, paramTypes, methodRetType)){
                     sootClass.addMethod(sootMethod);
                 }
             }
@@ -559,12 +559,12 @@ public class ClassResolver {
             soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
             if (sootClass.isInterface()){
                 soot.SootClass specialClass = soot.Scene.v().getSootClass(specialClassName);
-                if (!specialClass.XdeclaresField(fieldName, fieldType)){
+                if (!specialClass.declaresField(fieldName, fieldType)){
                     specialClass.addField(sootField);
                 }
             }
             else {
-                if (!sootClass.XdeclaresField(fieldName, fieldType)){
+                if (!sootClass.declaresField(fieldName, fieldType)){
                     sootClass.addField(sootField);
                 }
             }

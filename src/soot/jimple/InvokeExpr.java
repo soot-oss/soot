@@ -36,7 +36,7 @@ import java.util.*;
 public interface InvokeExpr extends Expr
 {
     public SootMethodRef getMethodRef();
-    public SootMethod XgetMethod();
+    public SootMethod getMethod();
     public List getArgs();
     public Value getArg(int index);
     public int getArgCount();

@@ -208,7 +208,7 @@ public class ClassFieldAnalysis
 		    if (leftOp instanceof FieldRef)
 		    {
 			FieldRef fref = (FieldRef)leftOp;
-			SootField field = fref.XgetField();
+			SootField field = fref.getField();
 
 			if (candidates.contains(field))
 			    stmtfield.put(stmt, field);

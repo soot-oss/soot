@@ -67,7 +67,7 @@ public class UnreachableFieldsTagger extends SceneTransformer
                     Value v = vBox.getValue();
                     if (v instanceof FieldRef) {
                         FieldRef fieldRef = (FieldRef)v;
-                        SootField f = fieldRef.XgetField();
+                        SootField f = fieldRef.getField();
 
                         if (fieldList.contains(f)) {
                             int index = fieldList.indexOf(f);

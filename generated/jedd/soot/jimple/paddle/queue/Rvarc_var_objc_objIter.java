@@ -49,8 +49,8 @@ public class Rvarc_var_objc_objIter extends Rvarc_var_objc_obj {
                                                        new Attribute[] { varc.v(), var.v(), objc.v(), obj.v() },
                                                        new PhysicalDomain[] { C1.v(), V1.v(), C2.v(), H1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
-                                                   new PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { varc.v(), var.v(), obj.v(), objc.v() },
+                                                   new PhysicalDomain[] { C1.v(), V1.v(), H1.v(), C2.v() },
                                                    ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
                                                     "dle/queue/Rvarc_var_objc_objIter.jedd:50,8-14"),
                                                    ret);

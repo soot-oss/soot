@@ -82,7 +82,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         return fieldRef;
     }
 
-    public SootField XgetField()
+    public SootField getField()
     {
         return fieldRef.resolve();
     }
@@ -112,7 +112,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         if (o instanceof AbstractInstanceFieldRef)
         {
             AbstractInstanceFieldRef fr = (AbstractInstanceFieldRef)o;
-            return fr.XgetField().equals(XgetField()) &&
+            return fr.getField().equals(getField()) &&
                 fr.baseBox.getValue().equivTo(baseBox.getValue());
         }
         return false;
@@ -121,7 +121,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     /** Returns a hash code for this object, consistent with structural equality. */
     public int equivHashCode() 
     {
-        return XgetField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
+        return getField().equivHashCode() * 101 + baseBox.getValue().equivHashCode() + 17;
     }
 
     public void convertToBaf(JimpleToBafContext context, List out)
