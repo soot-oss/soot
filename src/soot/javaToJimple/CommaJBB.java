@@ -22,8 +22,8 @@ package soot.javaToJimple;
 public class CommaJBB extends AbstractJimpleBodyBuilder{
 
     public CommaJBB(){
-        ext(null);
-        base(this);
+        //ext(null);
+        //base(this);
     }
 
     protected soot.Value createExpr(polyglot.ast.Expr expr){

@@ -29,12 +29,13 @@ public abstract class AbstractJimpleBodyBuilder {
     
     public void ext(AbstractJimpleBodyBuilder ext){
         this.ext = ext;
-        if (ext.ext() == null){
+        if (ext.ext() != null){
             throw new RuntimeException("Extensions created in wrong order, try doing right.");
         }
         ext.base = this.base;
     }
     public AbstractJimpleBodyBuilder ext(){
+        if (ext == null) return this;
         return ext;
     }
     private AbstractJimpleBodyBuilder ext;
