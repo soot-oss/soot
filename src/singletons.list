@@ -6,8 +6,6 @@ Options
 CHATransformer
 SlowPseudoTopologicalOrderer
 SynchronizerManager
-NodeCast
-NoCast
 ClassHierarchy
 Main
 TagManager

@@ -133,18 +133,6 @@ public class Singletons {
         return instanceSynchronizerManager;
     }
 
-    private NodeCast instanceNodeCast;
-    public NodeCast NodeCast() {
-        if( instanceNodeCast == null ) instanceNodeCast = new NodeCast( g );
-        return instanceNodeCast;
-    }
-
-    private NoCast instanceNoCast;
-    public NoCast NoCast() {
-        if( instanceNoCast == null ) instanceNoCast = new NoCast( g );
-        return instanceNoCast;
-    }
-
     private ClassHierarchy instanceClassHierarchy;
     public ClassHierarchy ClassHierarchy() {
         if( instanceClassHierarchy == null ) instanceClassHierarchy = new ClassHierarchy( g );
