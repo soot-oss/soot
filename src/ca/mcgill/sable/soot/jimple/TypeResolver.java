@@ -39,7 +39,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,6 +65,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
  
  - Modified on October 14, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
    Implemented fast typing algorithm for arrays.
@@ -787,7 +791,7 @@ class TypeResolver
                 TypeVariable[] parents = var.getEcrParents();
                 TypeVariable[] children = var.getEcrChildren();
 
-                if(children.length == 1)
+                if(children.length == 1 && children[0] != getTypeVariable(NullType.v()))
                 {
                     modified = true;
                     var.ecrUnion(children[0]);
@@ -808,6 +812,11 @@ class TypeResolver
                     TypeVariable var2 = getTypeVariable(NullType.v());
                     modified = true;
                     var.ecrUnion(var2);
+                }
+                else if(children.length == 1)
+                {
+                    modified = true;
+                    var.ecrUnion(children[0]);
                 }
             }
         }

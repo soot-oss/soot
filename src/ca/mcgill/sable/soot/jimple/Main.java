@@ -39,7 +39,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,6 +65,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
 
  - Modified on October 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
    Added flag and option to print debugging information.
@@ -161,7 +165,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Jimple version $ProjectVersion$\");"$
-            System.out.println("Jimple version dev0pt0.10");
+            System.out.println("Jimple version dev0pt0.11");
             System.out.println("Copyright (C) 1997, 1998 Raja Vallee-Rai (kor@sable.mcgill.ca).");  
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -415,7 +419,7 @@ public class Main
     private static void handleClass(SootClass c, String postFix, PrintWriter writerOut, int buildBodyOptions)
     {
         if(postFix.equals(".jasmin"))
-            new JasminClass(c).print(writerOut);
+            new JasminClass(c, new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()))).print(writerOut);
         else if(postFix.equals(".jimp"))
         {
             c.printTo(new BuildBody(Jimple.v(), new StoredBody(ClassFile.v()), buildBodyOptions), 

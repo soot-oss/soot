@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $BafVersion: 0.4 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -62,6 +62,10 @@
 
  B) Changes:
 
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
+
  - Modified on November 1, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    First internal release (Version 0.1).
 */
@@ -72,15 +76,29 @@ public class BuildAndStoreBody implements BodyExpr
 {
     public final BodyRepresentation bodyRep;
     public final BodyExpr sourceExpr;
+    public final int buildBodyOptions;
     
     public BuildAndStoreBody(BodyRepresentation bodyRep, BodyExpr sourceExpr)
     {
         this.bodyRep = bodyRep;
         this.sourceExpr = sourceExpr;    
+        this.buildBodyOptions = 0;
     }
     
+        
+    public BuildAndStoreBody(BodyRepresentation bodyRep, BodyExpr sourceExpr, int buildBodyOptions)
+    {
+        this.bodyRep = bodyRep;
+        this.sourceExpr = sourceExpr;    
+        this.buildBodyOptions = buildBodyOptions;
+    }
+
     public Body resolveFor(SootMethod method)
     {        
-        return bodyRep.buildBodyOfFrom(method, sourceExpr.resolveFor(method));
+        Body body = bodyRep.buildBodyOfFrom(method, sourceExpr.resolveFor(method), buildBodyOptions);
+        
+        method.storeBody(bodyRep, body);
+        
+        return body;
     }
 }

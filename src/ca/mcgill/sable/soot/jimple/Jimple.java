@@ -39,7 +39,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,6 +65,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
 
  - Modified on September 12, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
    Changed PrintStream to PrintWriter.
@@ -117,24 +121,6 @@ public class Jimple implements BodyRepresentation
         return new JimpleBody(m, b, buildBodyOptions);
     }
 
-    /**
-     * Not guaranteed to stay in the API.  Use at your own risk!
-     */
-             
-    public static void setVerbose(boolean flag)
-    {
-        Main.isVerbose = flag;
-    }
-    
-    /**
-     * Not guaranteed to stay in the API.  Use at your own risk!
-     */
-    
-    public static void setLocalPacking(boolean flag)
-    {
-        Main.noLocalPacking = !flag;
-    }
-    
 
     /**
         Constructs a XorExpr(Immediate, Immediate) grammar chunk.

@@ -35,7 +35,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $BafVersion: 0.4 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -61,6 +61,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
  
  - Modified on October 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Modified the toString() value.

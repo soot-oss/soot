@@ -39,7 +39,7 @@
  Reference Version
  -----------------
  This is the latest official version on which this file is based.
- The reference version is: $JimpleVersion: 0.5 $
+ The reference version is: $SootVersion$
 
  Change History
  --------------
@@ -65,6 +65,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
 
  - Modified on October 4, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca (*)
    Method names in the .jasmin format now are output as strings.
@@ -110,7 +114,7 @@ import ca.mcgill.sable.soot.*;
 import ca.mcgill.sable.util.*;
 import java.io.*;
 
-class JasminClass
+public class JasminClass
 {
     Map stmtToLabel;
     Map localToSlot;
@@ -264,7 +268,7 @@ class JasminClass
             System.out.println(s);
     }
 
-    public JasminClass(SootClass SootClass)
+    public JasminClass(SootClass SootClass, BodyExpr bodyExpr)
     {
         code = new LinkedList();
         
@@ -326,16 +330,15 @@ class JasminClass
             
             while(methodIt.hasNext())
             {
-                emitMethod((SootMethod) methodIt.next());
+                emitMethod((SootMethod) methodIt.next(), bodyExpr);
                 emit("");
             }
         }
     }
         
-    void emitMethod(SootMethod method)
+    void emitMethod(SootMethod method, BodyExpr bodyExpr)
     {
-        JimpleBody body = (JimpleBody) new BuildBody(Jimple.v(), new StoredBody(ClassFile.v())).
-            resolveFor(method);
+        JimpleBody body = (JimpleBody) bodyExpr.resolveFor(method);
         
         StmtList stmtList = body.getStmtList();
         

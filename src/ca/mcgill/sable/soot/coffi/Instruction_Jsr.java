@@ -69,7 +69,7 @@
  -----------------
  This is the latest official version on which this file is based.
  The reference version is: $CoffiVersion: 1.1 $
-                           $JimpleVersion: 0.5 $
+                           $SootVersion$
 
  Change History
  --------------
@@ -95,6 +95,10 @@
  *                                                                   *
 
  B) Changes:
+
+ - Modified on November 2, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca) (*)
+   Repackaged all source files and performed extensive modifications.
+   First initial release of Soot.
 
  - Modified on September 3, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
    Set the calls variable to false in order to change the construction
