@@ -1,0 +1,48 @@
+Jimple 0.3 to Jimple 0.4 changes:
+
+- Modified on September 3, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca)
+
+    1. Corrected several jimplification bugs.
+    
+    2. Improved memory usage considerably by releasing Coffi resources.
+    
+    
+Jimple 0.2 to Jimple 0.3 changes:
+
+- Modified on July 29, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+
+    1. Fixed a bug concerning local variable naming.
+    
+- Modified on July 29,1998 by Etienne Gagnon (gagnon@sable.mcgill.ca). (*)
+
+    1. Changed assignTypesToLocals. It now uses Etienne's type inference
+    algorithm.
+    
+    2. Changed renameLocals. Gives a different name to address and error
+    variables.
+
+    3. Added -nosplitting and -oldtyping parameters.
+
+    
+Jimple 0.1 to Jimple 0.2 changes:
+
+- Modified on July 22, 1998 by Raja Vallee-Rai (kor@sable.mcgill.ca). (*)
+  
+    1. Added a constructor to StmtListBody() which takes a Method as
+    an argument, in order to simplify the process of producing a jimplified
+    method.
+    
+    2. Added Jimple.setLocalPacking(), Jimple.setVerbose().  These are
+    temporary fixes (do not depend on them too much, they might change
+    in the near future.)
+    
+    3. Fixed a bug concerning the choosing of successors for RetStmt.
+    (was choosing the NextStmt instead of the NextNextStmt)
+
+    4. Deprecated Jimple.printBClass. (use Jimple.printClass instead) 
+      
+- Modified on July 5, 1998 by Etienne Gagnon (gagnon@sable.mcgill.ca) (*)
+  
+    1. Added a classpath parameter.
+    
+    2. Changed caseDefault to defaultCase.
