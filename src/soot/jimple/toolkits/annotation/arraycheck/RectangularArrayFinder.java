@@ -40,6 +40,9 @@ import java.util.*;
 
 public class RectangularArrayFinder extends SceneTransformer
 {
+    public RectangularArrayFinder( Singletons.Global g ) {}
+    public static RectangularArrayFinder v() { return G.v().RectangularArrayFinder(); }
+
     private static ExtendedHashMutableDirectedGraph agraph =
 	new ExtendedHashMutableDirectedGraph();
 
@@ -48,19 +51,9 @@ public class RectangularArrayFinder extends SceneTransformer
 
     private InvokeGraph ig;
 
-    private static RectangularArrayFinder instance = new RectangularArrayFinder();
-
     private static boolean enable = false;
 
     static boolean debug = soot.Main.isInDebugMode;
-
-    private RectangularArrayFinder()
-    {}
-
-    public static RectangularArrayFinder v()
-    {
-	return instance;
-    }
 
     public String getDeclaredOptions()
     {

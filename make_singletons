@@ -1,5 +1,7 @@
+#!/bin/sh
+cat <<EOF
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2003 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,42 +25,28 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.*;
+EOF
 
-import soot.util.*;
-import java.util.*;
+sed 's/^/import /g' package.list | sed 's/$/.*;/g'
 
-/**
- *   Soot representation used for untypable objects. Implemented as
- *   a singleton.
- */
-public class ErroneousType extends Type
-{
-    public ErroneousType( Singletons.Global g ) {}
-    public static ErroneousType v() { return G.v().ErroneousType(); }
+echo
+echo '/** A class to group together all the global variables in Soot. */'
+echo 'public class Singletons {'
+echo '    public final class Global {'
+echo '        private Global() {}'
+echo '    }'
+echo '    private Global g = new Global();'
+echo
 
-    public int hashCode()
-    {
-        return 0x92473FFF;
-    }
-    
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+for class in `cat singletons.list`; do
+    echo "    private $class instance$class;"
+    echo "    public $class $class() {"
+    echo "        if( instance$class == null ) instance$class = new $class( g );"
+    echo "        return instance$class;"
+    echo "    }"
+    echo
+done
 
-    public String toString()
-    {
-        return "<error>";
-    }
+echo }
 
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseErroneousType(this);
-    }
-}

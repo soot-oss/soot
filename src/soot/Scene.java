@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.*;
 
 
 import soot.util.*;
@@ -36,7 +37,17 @@ import soot.jimple.toolkits.pointer.*;
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
 {
-    private static Scene constant = new Scene();
+    public Scene ( Singletons.Global g )
+    {
+    	setReservedNames();
+    	
+        // load soot.class.path system property, if defined
+        String scp = System.getProperty("soot.class.path");
+
+        if (scp != null)
+            setSootClassPath(scp);
+    }
+    public static Scene  v() { return G.v().Scene (); }
 
     Chain classes = new HashChain();
     Chain applicationClasses = new HashChain();
@@ -67,19 +78,6 @@ public class Scene  //extends AbstractHost
     StmtPrinter jimpleStmtPrinter = soot.jimple.DefaultStmtPrinter.v();
     LocalPrinter localPrinter = soot.jimple.DefaultLocalPrinter.v();
 
-    /**
-        Resets this scene to zero.
-    */    
-    public void reset()
-    {
-        Scene.constant = new Scene();
-    }
-    
-    public static Scene v()
-    {
-        return constant;
-    }
-    
     public void setMainClass(SootClass m)
     {
         mainClass = m;
@@ -127,16 +125,6 @@ public class Scene  //extends AbstractHost
         return sootClassPath;
     }
 
-    private Scene()
-    {
-    	setReservedNames();
-    	
-        // load soot.class.path system property, if defined
-        String scp = System.getProperty("soot.class.path");
-
-        if (scp != null)
-            setSootClassPath(scp);
-    }
 
     private int stateCount;
     public int getState() { return this.stateCount; }

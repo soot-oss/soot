@@ -16,13 +16,8 @@ import soot.dava.toolkits.base.misc.*;
 
 public class CycleFinder implements FactFinder
 {
-    private CycleFinder() {}
-    private static CycleFinder instance = new CycleFinder();
-
-    public static CycleFinder v()
-    {
-	return instance;
-    }
+    public CycleFinder( Singletons.Global g ) {}
+    public static CycleFinder v() { return G.v().CycleFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

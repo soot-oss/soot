@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipInflaterNative extends NativeMethodClass {
-
-  private static JavaUtilZipInflaterNative instance =
-    new JavaUtilZipInflaterNative();
-
-  private JavaUtilZipInflaterNative(){}
-
-  public static JavaUtilZipInflaterNative v() { return instance; }
+    public JavaUtilZipInflaterNative( Singletons.Global g ) {}
+    public static JavaUtilZipInflaterNative v() { return G.v().JavaUtilZipInflaterNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

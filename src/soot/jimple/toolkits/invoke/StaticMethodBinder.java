@@ -36,10 +36,8 @@ import soot.util.*;
 /** Uses the Scene's currently-active InvokeGraph to statically bind monomorphic call sites. */
 public class StaticMethodBinder extends SceneTransformer
 {
-    private static StaticMethodBinder instance = new StaticMethodBinder();
-    private StaticMethodBinder() {}
-
-    public static StaticMethodBinder v() { return instance; }
+    public StaticMethodBinder( Singletons.Global g ) {}
+    public static StaticMethodBinder v() { return G.v().StaticMethodBinder(); }
 
     public String getDefaultOptions() 
     {

@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -39,17 +40,8 @@ import java.util.*;
  */
 public class ByteType extends PrimType implements IntegerType
 {
-    private static final ByteType constant = new ByteType();
-
-    private ByteType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static ByteType v()
-    {
-        return constant;
-    }
+    public ByteType( Singletons.Global g ) {}
+    public static ByteType v() { return G.v().ByteType(); }
 
     public int hashCode()
     {

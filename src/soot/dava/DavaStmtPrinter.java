@@ -6,10 +6,8 @@ import soot.dava.internal.AST.*;
 
 public class DavaStmtPrinter implements StmtPrinter
 {
-    private static DavaStmtPrinter instance = new DavaStmtPrinter();
-    private DavaStmtPrinter() {}
-
-    public static DavaStmtPrinter v() { return instance; }
+    public DavaStmtPrinter( Singletons.Global g ) {}
+    public static DavaStmtPrinter v() { return G.v().DavaStmtPrinter(); }
 
     public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)
     {

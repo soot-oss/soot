@@ -52,12 +52,10 @@ import soot.jimple.toolkits.pointer.PASideEffectTester;
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class LazyCodeMotion extends BodyTransformer {
+    public LazyCodeMotion( Singletons.Global g ) {}
+    public static LazyCodeMotion v() { return G.v().LazyCodeMotion(); }
+
   private static final String PREFIX = "$lcm";
-
-  private static LazyCodeMotion instance = new LazyCodeMotion();
-  private LazyCodeMotion() {}
-
-  public static LazyCodeMotion v() { return instance; }
 
   public String getDeclaredOptions() {
     return super.getDeclaredOptions() + " safe unroll naive-side-effect ";

@@ -31,5 +31,8 @@ public class G extends Singletons
     private static G instance = new G();
     public static G v() { return instance; }
     public static void reset() { instance = new G(); }
+
+    public class Global {
+    }
 }
 

@@ -33,18 +33,10 @@ package soot.coffi;
 
 import soot.*;
 
-class Long2ndHalfType extends Type
+public class Long2ndHalfType extends Type
 {
-    private static Long2ndHalfType constant = new Long2ndHalfType();
-
-    private Long2ndHalfType()
-    {
-    }
-
-    public static Long2ndHalfType v()
-    {
-        return constant;
-    }
+    public Long2ndHalfType( Singletons.Global g ) {}
+    public static Long2ndHalfType v() { return G.v().Long2ndHalfType(); }
 
     public boolean equals(Type otherType)
     {

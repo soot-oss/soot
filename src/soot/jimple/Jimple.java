@@ -47,8 +47,8 @@ import java.io.*;
 
 public class Jimple
 {
-    private static Jimple jimpleRepresentation = new Jimple();
-
+    public Jimple( Singletons.Global g ) {}
+    public static Jimple v() { return G.v().Jimple(); }
     
     public final static String NEWARRAY = "newarray";
     public final static String NEWMULTIARRAY = "newmultiarray";
@@ -127,16 +127,6 @@ public class Jimple
         else
             return (Value) val.clone();
     } 
-
-    protected Jimple()
-    {
-    }
-
-    public static Jimple v()
-    {
-        return jimpleRepresentation;
-    }
-
 
     /**
         Constructs a XorExpr(Immediate, Immediate) grammar chunk.

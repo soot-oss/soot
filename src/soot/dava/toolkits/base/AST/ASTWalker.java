@@ -5,13 +5,8 @@ import soot.jimple.*;
 
 public class ASTWalker
 {
-    private ASTWalker() {}
-    private static ASTWalker instance = new ASTWalker();
-    
-    public static ASTWalker v()
-    {
-	return instance;
-    }
+    public ASTWalker( Singletons.Global g ) {}
+    public static ASTWalker v() { return G.v().ASTWalker(); }
     
     public void walk_stmt( ASTAnalysis a, Stmt s)
     {

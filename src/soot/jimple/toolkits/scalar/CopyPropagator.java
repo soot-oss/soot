@@ -39,10 +39,8 @@ import java.util.*;
 
 public class CopyPropagator extends BodyTransformer
 {
-    private static CopyPropagator instance = new CopyPropagator();
-    private CopyPropagator() {}
-
-    public static CopyPropagator v() { return instance; }
+    public CopyPropagator( Singletons.Global g ) {}
+    public static CopyPropagator v() { return G.v().CopyPropagator(); }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-regular-locals only-stack-locals"; }
     

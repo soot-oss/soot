@@ -35,10 +35,8 @@ import soot.util.*;
 /** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer
 {
-    private static StaticInliner instance = new StaticInliner();
-    private StaticInliner() {}
-
-    public static StaticInliner v() { return instance; }
+    public StaticInliner( Singletons.Global g ) {}
+    public static StaticInliner v() { return G.v().StaticInliner(); }
 
     public String getDefaultOptions() 
     {

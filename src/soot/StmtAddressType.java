@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -35,16 +36,8 @@ import java.util.*;
  */
 public class StmtAddressType extends Type
 {
-    private static final StmtAddressType constant = new StmtAddressType();
-
-    private StmtAddressType()
-    {
-    }
-
-    public static StmtAddressType v()
-    {
-        return constant;
-    }
+    public StmtAddressType( Singletons.Global g ) {}
+    public static StmtAddressType v() { return G.v().StmtAddressType(); }
 
     public boolean equals(Object t)
     {

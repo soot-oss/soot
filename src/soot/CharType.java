@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,17 +39,8 @@ import java.util.*;
  */
 public class CharType extends PrimType implements IntegerType
 {
-    private static CharType constant = new CharType();
-
-    private CharType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static CharType v()
-    {
-        return constant;
-    }
+    public CharType( Singletons.Global g ) {}
+    public static CharType v() { return G.v().CharType(); }
 
     public boolean equals(Object t)
     {

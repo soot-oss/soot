@@ -9,20 +9,15 @@ import soot.jimple.*;
 
 public class Dava
 {
+    public Dava( Singletons.Global g ) {}
+    public static Dava v() { return G.v().Dava(); }
     private static final String LOG_TO_FILE = null;
     private static final PrintStream LOG_TO_SCREEN = null;
 
-    private static final Dava instance = new Dava();
-    private Writer iOut;
-    private IterableSet currentPackageContext;
+    private Writer iOut = null;
+    private IterableSet currentPackageContext = null;
     private String currentPackage;
     
-    private Dava() 
-    {
-	iOut = null;
-	currentPackageContext = null;
-    }
-
     public void set_CurrentPackage( String cp)
     {
 	currentPackage = cp;
@@ -41,11 +36,6 @@ public class Dava
     public IterableSet get_CurrentPackageContext()
     {
 	return currentPackageContext;
-    }
-
-    public static Dava v() 
-    {
-        return instance;
     }
 
     public DavaBody newBody(SootMethod m)

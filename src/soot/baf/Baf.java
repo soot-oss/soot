@@ -38,8 +38,8 @@ import java.util.*;
 
 public class Baf
 {
-    private static Baf bafRepresentation = new Baf();
-
+    public Baf( Singletons.Global g ) {}
+    public static Baf v() { return G.v().Baf(); }
 
     public static Type getDescriptorTypeOf(Type opType) 
     {        
@@ -47,15 +47,6 @@ public class Baf
             opType = RefType.v();
         
         return opType;
-    }
-
-    private Baf()
-    {
-    }
-    
-    public static Baf v()
-    {
-        return bafRepresentation;
     }
 
     /**

@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileOutputStreamNative extends NativeMethodClass {
-
-  private static JavaIoFileOutputStreamNative instance =
-    new JavaIoFileOutputStreamNative();
-
-  private JavaIoFileOutputStreamNative(){}
-
-  public static JavaIoFileOutputStreamNative v() { return instance; }
+    public JavaIoFileOutputStreamNative( Singletons.Global g ) {}
+    public static JavaIoFileOutputStreamNative v() { return G.v().JavaIoFileOutputStreamNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaSecurityAccessControllerNative extends NativeMethodClass {
-
-  private static JavaSecurityAccessControllerNative instance =
-    new JavaSecurityAccessControllerNative();
-
-  private JavaSecurityAccessControllerNative(){}
-
-  public static JavaSecurityAccessControllerNative v() { return instance; }
+    public JavaSecurityAccessControllerNative( Singletons.Global g ) {}
+    public static JavaSecurityAccessControllerNative v() { return G.v().JavaSecurityAccessControllerNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

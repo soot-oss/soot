@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -39,17 +40,8 @@ import java.util.*;
  */
 public class BooleanType extends PrimType implements IntegerType
 {
-    private static final BooleanType constant = new BooleanType();
-
-    private BooleanType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static BooleanType v()
-    {
-        return constant;
-    }
+    public BooleanType( Singletons.Global g ) {}
+    public static BooleanType v() { return G.v().BooleanType(); }
 
     public boolean equals(Object t)
     {

@@ -25,6 +25,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -32,16 +33,8 @@ import java.util.*;
 /** Represents the Java void type. */
 public class VoidType extends Type
 {
-    private static final VoidType constant = new VoidType();
-
-    private VoidType()
-    {
-    }
-
-    public static VoidType v()
-    {
-        return constant;
-    }
+    public VoidType( Singletons.Global g ) {}
+    public static VoidType v() { return G.v().VoidType(); }
 
     public int hashCode()
     {

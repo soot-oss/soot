@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoObjectInputStreamNative extends NativeMethodClass {
-
-  private static JavaIoObjectInputStreamNative instance =
-    new JavaIoObjectInputStreamNative();
-
-  private JavaIoObjectInputStreamNative(){}
-
-  public static JavaIoObjectInputStreamNative v() { return instance; }
+    public JavaIoObjectInputStreamNative( Singletons.Global g ) {}
+    public static JavaIoObjectInputStreamNative v() { return G.v().JavaIoObjectInputStreamNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

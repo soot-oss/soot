@@ -8,13 +8,8 @@ import soot.jimple.toolkits.invoke.*;
 
 public class ThrowFinder
 {
-    private ThrowFinder() {}
-    private static ThrowFinder instance = new ThrowFinder();
-
-    public static ThrowFinder v()
-    {
-	return instance;
-    }
+    public ThrowFinder( Singletons.Global g ) {}
+    public static ThrowFinder v() { return G.v().ThrowFinder(); }
 
     private HashSet registeredMethods;
     private HashMap protectionSet;

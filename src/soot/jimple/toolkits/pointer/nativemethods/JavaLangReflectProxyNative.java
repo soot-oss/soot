@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangReflectProxyNative extends NativeMethodClass {
-
-  private static JavaLangReflectProxyNative instance =
-    new JavaLangReflectProxyNative();
-
-  private JavaLangReflectProxyNative(){}
-
-  public static JavaLangReflectProxyNative v() { return instance; }
+    public JavaLangReflectProxyNative( Singletons.Global g ) {}
+    public static JavaLangReflectProxyNative v() { return G.v().JavaLangReflectProxyNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

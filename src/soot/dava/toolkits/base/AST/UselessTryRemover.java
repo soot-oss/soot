@@ -1,17 +1,13 @@
 package soot.dava.toolkits.base.AST;
+import soot.*;
 
 import java.util.*;
 import soot.dava.internal.AST.*;
 
 public class UselessTryRemover extends ASTAnalysis
 {
-    private UselessTryRemover() {}
-    private static UselessTryRemover instance = new UselessTryRemover();
-
-    public static UselessTryRemover v() 
-    {
-	return instance;
-    }
+    public UselessTryRemover( Singletons.Global g ) {}
+    public static UselessTryRemover v() { return G.v().UselessTryRemover(); }
 
     public int getAnalysisDepth()
     {

@@ -35,14 +35,14 @@ import java.io.*;
 import java.util.*;
 
 
-class ClassFieldAnalysis 
+public class ClassFieldAnalysis 
 {
+    public ClassFieldAnalysis( Singletons.Global g ) {}
+    public static ClassFieldAnalysis v() { return G.v().ClassFieldAnalysis(); }
+
     private static boolean final_in = true;
     private static boolean private_in = true;
 
-    private static ClassFieldAnalysis instance = 
-    			new ClassFieldAnalysis();
- 
     /* A map hold class object to other information
      * 
      * SootClass --> FieldInfoTable
@@ -50,14 +50,7 @@ class ClassFieldAnalysis
  
     private static Map classToFieldInfoMap = new HashMap();	
   
-    private ClassFieldAnalysis() {}
-
     static boolean debug = soot.Main.isInDebugMode;
-
-    public static ClassFieldAnalysis v()
-    {
-    	return instance;
-    }
 
     public void internalTransform(SootClass c)
     {

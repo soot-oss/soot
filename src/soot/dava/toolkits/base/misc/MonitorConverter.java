@@ -10,16 +10,7 @@ import soot.dava.internal.asg.*;
 
 public class MonitorConverter
 {
-    private static MonitorConverter instance = new MonitorConverter();
-
-    public static MonitorConverter v()
-    {
-	return instance;
-    }
-
-    private SootMethod v, enter, exit; 
-
-    private MonitorConverter()
+    public MonitorConverter( Singletons.Global g )
     {
 	SootClass davaMonitor = Scene.v().loadClassAndSupport( "soot.dava.toolkits.base.DavaMonitor.DavaMonitor");
 
@@ -27,6 +18,10 @@ public class MonitorConverter
 	enter = davaMonitor.getMethodByName( "enter");
 	exit = davaMonitor.getMethodByName( "exit");
     }
+
+    public static MonitorConverter v() { return G.v().MonitorConverter(); }
+
+    private SootMethod v, enter, exit; 
 
     public void convert( DavaBody body)
     {

@@ -36,6 +36,9 @@ import soot.baf.internal.*;
 
 public class LoadStoreOptimizer extends BodyTransformer
 {
+    public LoadStoreOptimizer( Singletons.Global g ) {}
+    public static LoadStoreOptimizer v() { return G.v().LoadStoreOptimizer(); }
+
     // Constants
     static  boolean debug = false;
     
@@ -52,9 +55,6 @@ public class LoadStoreOptimizer extends BodyTransformer
     final static private int STORE_LOAD_LOAD_ELIMINATION = -1;
 
         
-    // Statics
-    private static LoadStoreOptimizer mSingleton = new LoadStoreOptimizer();
-        
     // Instance vars.
     private Chain mUnits;
     private Body mBody;
@@ -65,17 +65,6 @@ public class LoadStoreOptimizer extends BodyTransformer
 
     private Map gOptions;
     private boolean gPass2 = false;
-
-    private LoadStoreOptimizer()
-    {
-    }
-    
-    public static LoadStoreOptimizer v()
-    {
-        return mSingleton;
-    }
-
-    
 
     /*
      *  Computes a map binding each unit in a method to the unique basic block    

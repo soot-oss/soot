@@ -394,7 +394,7 @@ public class Main implements Runnable
 
     private static void exitCompilation(int status, String msg)
     {
-	Scene.v().reset();
+	G.v().reset();
         Iterator it = compilationListeners.iterator();
 	while(it.hasNext()) 
 	    ((ICompilationListener)it.next()).compilationTerminated(status, msg);

@@ -34,11 +34,9 @@ import soot.toolkits.graph.*;
 
 public class DefaultLocalPrinter implements LocalPrinter
 {
-    private static DefaultLocalPrinter instance = new DefaultLocalPrinter();
-    private DefaultLocalPrinter() {}
-    
-    public static DefaultLocalPrinter v() { return instance; }
-    
+    public DefaultLocalPrinter( Singletons.Global g ) {}
+    public static DefaultLocalPrinter v() { return G.v().DefaultLocalPrinter(); }
+
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     public void printLocalsInBody(Body body, java.io.PrintWriter out, boolean isPrecise)
     {

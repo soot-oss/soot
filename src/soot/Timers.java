@@ -24,6 +24,7 @@
  */
 
 package soot;
+import soot.*;
 
 import java.text.DecimalFormat;
 
@@ -31,9 +32,8 @@ import soot.options.Options;
 
 public class Timers
 {
-    private static Timers instance = new Timers();
-    private Timers() {}
-    public static Timers v() { return instance; }
+    public Timers( Singletons.Global g ) {}
+    public static Timers v() { return G.v().Timers(); }
 
      public int totalFlowNodes;
 

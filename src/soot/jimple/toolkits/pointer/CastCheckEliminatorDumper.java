@@ -6,11 +6,8 @@ import soot.toolkits.graph.*;
 /** A body transformer that simply calls the CastCheckEliminator analysis. */
 public class CastCheckEliminatorDumper extends BodyTransformer
 { 
-    private static CastCheckEliminatorDumper instance = 
-	new CastCheckEliminatorDumper();
-    private CastCheckEliminatorDumper() {}
-
-    public static CastCheckEliminatorDumper v() { return instance; }
+    public CastCheckEliminatorDumper( Singletons.Global g ) {}
+    public static CastCheckEliminatorDumper v() { return G.v().CastCheckEliminatorDumper(); }
 
     public String getDefaultOptions() { return ""; }
 

@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,18 +39,8 @@ import java.util.*;
  */
 public class LongType extends PrimType
 {
-    private static final LongType constant = new LongType();
-
-    private LongType()
-    {
-        // no constructor allowed
-    }
-
-    /** @return this class's singleton object */
-    public static LongType v()
-    {
-        return constant;
-    }
+    public LongType( Singletons.Global g ) {}
+    public static LongType v() { return G.v().LongType(); }
 
     public boolean equals(Object t)
     {

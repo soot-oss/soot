@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
+import soot.*;
 import soot.Type;
 import java.util.*;
 
@@ -25,8 +26,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class ArrayElement implements SparkField {
-    private static ArrayElement ae = new ArrayElement();
-    public static ArrayElement v() {
-        return ae;
-    }
+    public ArrayElement( Singletons.Global g ) {}
+    public static ArrayElement v() { return G.v().ArrayElement(); }
+
 }

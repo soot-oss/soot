@@ -9,24 +9,9 @@ import java.util.jar.*;
 
 public class PackageNamer
 {
-    private PackageNamer() 
-    {
-	appRoots = new ArrayList();
-	otherRoots = new ArrayList();
+    public PackageNamer( Singletons.Global g ) {}
+    public static PackageNamer v() { return G.v().PackageNamer(); }
 
-	keywords = new HashSet();
-	class2package = new HashMap();
-
-	fixed = false;
-    }
-
-    private static PackageNamer instance = new PackageNamer();
-
-    public static PackageNamer v()
-    {
-	return instance;
-    }
-    
     public boolean has_FixedNames()
     {
 	return fixed;
@@ -356,10 +341,11 @@ public class PackageNamer
 	}
     }
 
-    private boolean fixed;
-    private ArrayList appRoots, otherRoots;
-    private HashSet keywords;
-    private HashMap class2package;
+    private boolean fixed = false;
+    private ArrayList appRoots = new ArrayList();
+    private ArrayList otherRoots = new ArrayList();
+    private HashSet keywords = new HashSet();
+    private HashMap class2package = new HashMap();
     private char fileSep;
     private String classPath, pathSep;
     

@@ -35,17 +35,8 @@ import java.util.*;
 
 public class WordType extends Type
 {
-    private static final WordType constant = new WordType();
-
-    private WordType()
-    {
-        // no constructor allowed
-    }
-
-    public static WordType v()
-    {
-        return constant;
-    }
+    public WordType( Singletons.Global g ) {}
+    public static WordType v() { return G.v().WordType(); }
 
     public boolean equals(Object t)
     {

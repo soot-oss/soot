@@ -43,15 +43,8 @@ import java.util.*;
  */
 public class UnusedLocalEliminator extends BodyTransformer
 { 
-    private static UnusedLocalEliminator instance = new UnusedLocalEliminator();
-    private UnusedLocalEliminator() {}
-
-
-    /** 
-     *   Returns this class' singleton instance.
-     *   @return the singleton for this class.
-     */
-    public static UnusedLocalEliminator v() { return instance; }
+    public UnusedLocalEliminator( Singletons.Global g ) {}
+    public static UnusedLocalEliminator v() { return G.v().UnusedLocalEliminator(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

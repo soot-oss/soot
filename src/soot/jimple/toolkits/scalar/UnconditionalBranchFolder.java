@@ -36,10 +36,8 @@ import java.util.*;
 
 public class UnconditionalBranchFolder extends BodyTransformer
 {
-    private static UnconditionalBranchFolder instance = new UnconditionalBranchFolder();
-    private UnconditionalBranchFolder() {}
-
-    public static UnconditionalBranchFolder v() { return instance; }
+    public UnconditionalBranchFolder( Singletons.Global g ) {}
+    public static UnconditionalBranchFolder v() { return G.v().UnconditionalBranchFolder(); }
 
     static boolean debug = soot.Main.isInDebugMode;
 

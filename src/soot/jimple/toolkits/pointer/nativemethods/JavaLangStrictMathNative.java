@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangStrictMathNative extends NativeMethodClass {
-
-  private static JavaLangStrictMathNative instance =
-    new JavaLangStrictMathNative();
-
-  private JavaLangStrictMathNative(){}
-
-  public static JavaLangStrictMathNative v() { return instance; }
+    public JavaLangStrictMathNative( Singletons.Global g ) {}
+    public static JavaLangStrictMathNative v() { return G.v().JavaLangStrictMathNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

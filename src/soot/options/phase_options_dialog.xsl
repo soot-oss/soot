@@ -186,8 +186,8 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 
 <xsl:template mode="pageCon" match="section|phase|sub_phase">
 <xsl:param name="parent"/>
-<xsl:variable name="translate(alias[last()],'-. ','___')" select="translate(name[last()],'-. ','___')|translate(alias[last()],'-. ','___')|translate(alias[last()],'-. ','___')"/>
-Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[last()],'-. ','___')"/>Child = <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[last()],'-. ','___')"/>Create(getPageContainer());
+<xsl:variable name="java_name" select="translate((alias|name)[last()],'-. ','___')"/>
+Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Child = <xsl:copy-of select="$parent"/><xsl:copy-of select="$java_name"/>Create(getPageContainer());
 </xsl:template>
 		
 	
@@ -195,7 +195,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[l
 
 <xsl:template mode="okPressed" match="section|phase|sub_phase">
 <xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate(name[last()],'-. ','___')|translate(alias[last()],'-. ','___')|translate(alias[last()],'-. ','___')"/>
+<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
 
 
 		<xsl:for-each select="boolopt|macroopt">
@@ -222,10 +222,10 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[l
 <xsl:template mode="compInit" match="section|phase|sub_phase">
 
 <xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate(name[last()],'-. ','___')|translate(alias[last()],'-. ','___')|translate(alias[last()],'-. ','___')"/>
-<xsl:variable name="name" select="name|name|name"/>
+<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
+<xsl:variable name="name" select="name"/>
 <xsl:param name="parentAlias"/>
-<xsl:variable name="subParentAlias" select="alias|alias"/>
+<xsl:variable name="subParentAlias" select="alias"/>
 
 	private Composite <xsl:value-of select="$parent"/><xsl:value-of select="$subParent"/>Create(Composite parent) {
 		Group editGroup = new Group(parent, SWT.NONE);
@@ -233,7 +233,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[l
 		editGroup.setLayout(layout);
 	
 	 	editGroup.setText("<xsl:value-of select="$name"/>");
-		
+	 	OptionData [] data;	
 		
 <!--Boolean and Macro Widget-->		
 		<xsl:for-each select="boolopt|macroopt">
@@ -243,7 +243,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[l
 <!--Multi Widget-->
 		<xsl:for-each select="multiopt">
 		
-		OptionData [] data = new OptionData [] {
+		data = new OptionData [] {
 		<xsl:for-each select="value">
 		new OptionData("<xsl:value-of select="value"/>",
 		"<xsl:value-of select="alias"/>",
@@ -282,7 +282,7 @@ Composite <xsl:copy-of select="$parent"/><xsl:copy-of select="$translate(alias[l
 <xsl:template mode="objCreation" match="section|phase|sub_phase">
 
 <xsl:param name="parent"/>
-<xsl:variable name="subParent" select="translate(name[last()],'-. ','___')|translate(alias[last()],'-. ','___')|translate(alias[last()],'-. ','___')"/>
+<xsl:variable name="subParent" select="translate((alias|name)[last()],'-. ','___')"/>
 
 <!--Boolean and Macro Object Creation-->
 

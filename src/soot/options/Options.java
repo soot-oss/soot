@@ -98,7 +98,7 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( soot_classpath == null )
+                if( soot_classpath.length() == 0 )
                     soot_classpath = value;
                 else {
                     System.out.println( "Duplicate values "+soot_classpath+" and "+value+" for option -"+option );
@@ -162,7 +162,7 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( output_dir == null )
+                if( output_dir.length() == 0 )
                     output_dir = value;
                 else {
                     System.out.println( "Duplicate values "+output_dir+" and "+value+" for option -"+option );

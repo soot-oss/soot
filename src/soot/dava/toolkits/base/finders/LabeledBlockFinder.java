@@ -1,4 +1,5 @@
 package soot.dava.toolkits.base.finders;
+import soot.*;
 
 import soot.dava.*;
 import java.util.*;
@@ -9,15 +10,10 @@ import soot.dava.internal.AST.*;
 
 public class LabeledBlockFinder implements FactFinder
 {
-    private LabeledBlockFinder() { orderNumber = new HashMap(); }
-    private static LabeledBlockFinder instance = new LabeledBlockFinder();
+    public LabeledBlockFinder( Singletons.Global g ) {}
+    public static LabeledBlockFinder v() { return G.v().LabeledBlockFinder(); }
 
-    private HashMap orderNumber;
-
-    public static LabeledBlockFinder v()
-    {
-	return instance;
-    }
+    private HashMap orderNumber = new HashMap();
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

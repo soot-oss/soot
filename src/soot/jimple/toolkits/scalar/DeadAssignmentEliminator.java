@@ -39,10 +39,8 @@ import java.util.*;
 
 public class DeadAssignmentEliminator extends BodyTransformer
 {
-    private static DeadAssignmentEliminator instance = new DeadAssignmentEliminator();
-    private DeadAssignmentEliminator() {}
-
-    public static DeadAssignmentEliminator v() { return instance; }
+    public DeadAssignmentEliminator( Singletons.Global g ) {}
+    public static DeadAssignmentEliminator v() { return G.v().DeadAssignmentEliminator(); }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
 

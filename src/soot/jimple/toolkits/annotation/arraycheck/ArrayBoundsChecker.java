@@ -37,15 +37,8 @@ import java.util.*;
 
 public class ArrayBoundsChecker extends BodyTransformer
 {
-    private static ArrayBoundsChecker instance =
-	new ArrayBoundsChecker();
-
-    private ArrayBoundsChecker() {};
-
-    public static ArrayBoundsChecker v()
-    {
-	return instance;
-    }
+    public ArrayBoundsChecker( Singletons.Global g ) {}
+    public static ArrayBoundsChecker v() { return G.v().ArrayBoundsChecker(); }
 
     protected boolean takeClassField = false;
     protected boolean takeFieldRef = false;

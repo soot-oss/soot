@@ -33,18 +33,10 @@ package soot.coffi;
 
 import soot.*;
 
-class UnusuableType extends Type
+public class UnusuableType extends Type
 {
-    private static UnusuableType constant = new UnusuableType();
-
-    private UnusuableType()
-    {
-    }
-
-    public static UnusuableType v()
-    {
-        return constant;
-    }
+    public UnusuableType( Singletons.Global g ) {}
+    public static UnusuableType v() { return G.v().UnusuableType(); }
 
     public boolean equals(Type otherType)
     {

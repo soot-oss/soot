@@ -36,15 +36,8 @@ import java.util.*;
 
 public class ProfilingGenerator extends BodyTransformer
 {
-    private static ProfilingGenerator instance =
-	new ProfilingGenerator();
-
-    private ProfilingGenerator() {};
-
-    public static ProfilingGenerator v()
-    {
-	return instance;
-    }
+    public ProfilingGenerator( Singletons.Global g ) {}
+    public static ProfilingGenerator v() { return G.v().ProfilingGenerator(); }
 
     public static String mainSignature = "void main(java.lang.String[])";
 

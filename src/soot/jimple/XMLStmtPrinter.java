@@ -40,11 +40,9 @@ import soot.jimple.toolkits.invoke.*;
 /** This class implements the <code>printStatementsInBody</code> method,
   * which writes out a JimpleBody to a PrintWriter. */
 public class XMLStmtPrinter implements StmtPrinter{    
-    
-    private static XMLStmtPrinter instance = new XMLStmtPrinter();
-    private XMLStmtPrinter() {}
+    public XMLStmtPrinter( Singletons.Global g ) {}
+    public static XMLStmtPrinter v() { return G.v().XMLStmtPrinter(); }
 
-    public static XMLStmtPrinter v() { return instance; }	    
     private XMLNode xmlNode = null;
     public XMLNode setXMLNode( XMLNode node ) { return( this.xmlNode = node ); }
 

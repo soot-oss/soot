@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,19 +39,9 @@ import java.util.*;
  */
 public class ShortType extends PrimType implements IntegerType
 {
-    private static final ShortType constant = new ShortType();
+    public ShortType( Singletons.Global g ) {}
+    public static ShortType v() { return G.v().ShortType(); }
 
-    private ShortType()
-    {
-    }
-
-    /** @return this class's singleton object */
-    public static ShortType v()
-    {
-        return constant;
-    }
-
-    
     public int hashCode()
     {
         return 0x8B817DD3;

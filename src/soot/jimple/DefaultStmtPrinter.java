@@ -41,10 +41,8 @@ import soot.toolkits.graph.*;
   * be done by setting the JimpleStmtPrinter in the Scene. */
 public class DefaultStmtPrinter implements StmtPrinter
 {
-    private static DefaultStmtPrinter instance = new DefaultStmtPrinter();
-    private DefaultStmtPrinter() {}
-
-    public static DefaultStmtPrinter v() { return instance; }
+    public DefaultStmtPrinter( Singletons.Global g ) {}
+    public static DefaultStmtPrinter v() { return G.v().DefaultStmtPrinter(); }
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     public void printStatementsInBody(Body body, java.io.PrintWriter out, boolean isPrecise, boolean isNumbered)

@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.sets;
+import soot.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import java.util.*;
@@ -26,9 +27,8 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class EmptyPointsToSet extends PointsToSetInternal {
-    private static EmptyPointsToSet value = new EmptyPointsToSet();
-    private EmptyPointsToSet() { super( null ); }
-    public static EmptyPointsToSet v() { return value; }
+    public EmptyPointsToSet( Singletons.Global g ) { super(null); }
+    public static EmptyPointsToSet v() { return G.v().EmptyPointsToSet(); }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() { return true; }

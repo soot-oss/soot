@@ -25,13 +25,14 @@
 
 package soot.util;
 
+import soot.*;
 import java.io.*;
 
-class JimpleInputRep  implements SootInputRepresentation
+public class JimpleInputRep  implements SootInputRepresentation
 {
-        static JimpleInputRep singleton = new JimpleInputRep();
-        private JimpleInputRep(){}
-        public static JimpleInputRep v() { return singleton;}
-        public InputStream createInputStream(InputStream is){return new JimpleInputStream(is);}
-        public String getFileExtension(){return ".jimple";}
+    public JimpleInputRep ( Singletons.Global g ) {}
+    public static JimpleInputRep  v() { return G.v().JimpleInputRep (); }
+
+    public InputStream createInputStream(InputStream is){return new JimpleInputStream(is);}
+    public String getFileExtension(){return ".jimple";}
 }

@@ -34,11 +34,10 @@ import java.util.*;
 /** The aggregator for LineNumberTable attribute. */
 public class LineNumberTagAggregator extends TagAggregator
 {    
-    private Tag lastTag = null;
+    public LineNumberTagAggregator( Singletons.Global g ) {}
+    public static LineNumberTagAggregator v() { return G.v().LineNumberTagAggregator(); }
 
-    private LineNumberTagAggregator() {}
-    private static LineNumberTagAggregator instance = new LineNumberTagAggregator();
-    public static LineNumberTagAggregator v() { return instance; }
+    private Tag lastTag = null;
 
     public void internalTransform( Body b, String phaseName, Map options ) {
         lastTag = null;

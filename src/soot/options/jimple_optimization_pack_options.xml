@@ -185,7 +185,7 @@
 
 	</sub_phase>
 	<sub_phase>
-		<name>Unreachable Code Eliminator</name>
+		<name>Unreachable Code Eliminator 1</name>
 		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
 		<alias>jop.uce1</alias>
 		<boolopt>
@@ -198,7 +198,7 @@
 
 	</sub_phase>
 	<sub_phase>
-		<name>Unreachable Code Eliminator</name>
+		<name>Unreachable Code Eliminator 2</name>
 		<sub_phase_java_name>unreachCodeElimin</sub_phase_java_name>
 		<alias>jop.uce2</alias>
 		<boolopt>
@@ -211,7 +211,7 @@
 
 	</sub_phase>
 	<sub_phase>
-		<name>Unconditional Branch Folder</name>
+		<name>Unconditional Branch Folder 1</name>
 		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
 		<alias>jop.ubf1</alias>
 		<boolopt>
@@ -224,7 +224,7 @@
 
 	</sub_phase>
 	<sub_phase>
-		<name>Unconditional Branch Folder</name>
+		<name>Unconditional Branch Folder 2</name>
 		<sub_phase_java_name>uncondBranchFolder</sub_phase_java_name>
 		<alias>jop.ubf2</alias>
 		<boolopt>

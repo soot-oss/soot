@@ -35,10 +35,8 @@ import java.util.*;
 
 public class NopEliminator extends BodyTransformer
 {
-    private static NopEliminator instance = new NopEliminator();
-    private NopEliminator() {}
-
-    public static NopEliminator v() { return instance; }
+    public NopEliminator( Singletons.Global g ) {}
+    public static NopEliminator v() { return G.v().NopEliminator(); }
 
     /** Eliminates dead code in a linear fashion.  Complexity is linear 
         with respect to the statements.

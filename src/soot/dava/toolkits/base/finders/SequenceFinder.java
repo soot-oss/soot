@@ -1,5 +1,6 @@
 package soot.dava.toolkits.base.finders;
 
+import soot.*;
 import soot.dava.*;
 import java.util.*;
 import soot.util.*;
@@ -9,13 +10,8 @@ import soot.dava.internal.AST.*;
 
 public class SequenceFinder implements FactFinder
 {
-    private SequenceFinder() {}
-    private static SequenceFinder instance = new SequenceFinder();
-
-    public static SequenceFinder v()
-    {
-	return instance;
-    }
+    public SequenceFinder( Singletons.Global g ) {}
+    public static SequenceFinder v() { return G.v().SequenceFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,18 +39,8 @@ import java.util.*;
  */
 public class IntType extends PrimType implements IntegerType
 {
-    private static final IntType constant = new IntType();
-
-    private IntType()
-    {
-        // no constructor allowed
-    }
-    
-    /** Returns this class's singleton object */
-    public static IntType v()
-    {
-        return constant;
-    }
+    public IntType( Singletons.Global g ) {}
+    public static IntType v() { return G.v().IntType(); }
 
     /** Returns true if the given object is equal to this one.
      * Since IntType is a singleton, object equality is fine. */

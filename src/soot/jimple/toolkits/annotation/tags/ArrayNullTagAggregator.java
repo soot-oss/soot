@@ -10,12 +10,11 @@ import soot.tagkit.*;
 
 public class ArrayNullTagAggregator extends TagAggregator
 {    
+    public ArrayNullTagAggregator( Singletons.Global g ) {}
+    public static ArrayNullTagAggregator v() { return G.v().ArrayNullTagAggregator(); }
+
     private Unit lastUnit = null;
     private ArrayNullCheckTag lastTag = null;
-
-    private ArrayNullTagAggregator() {}
-    private static ArrayNullTagAggregator instance = new ArrayNullTagAggregator();
-    public static ArrayNullTagAggregator v() { return instance; }
 
     public void internalTransform( Body b, String phaseName, Map options )
     {

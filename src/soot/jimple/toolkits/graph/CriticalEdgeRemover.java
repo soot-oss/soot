@@ -46,11 +46,8 @@ import soot.jimple.internal.*;
  * Exceptions will be ignored.
  */
 public class CriticalEdgeRemover extends BodyTransformer {
-
-  private static CriticalEdgeRemover instance = new CriticalEdgeRemover();
-  private CriticalEdgeRemover() {}
-
-  public static CriticalEdgeRemover v() { return instance; }
+    public CriticalEdgeRemover( Singletons.Global g ) {}
+    public static CriticalEdgeRemover v() { return G.v().CriticalEdgeRemover(); }
 
   public String getDeclaredOptions() {
     return super.getDeclaredOptions();

@@ -37,10 +37,8 @@ import java.util.*;
 
 public class LocalNameStandardizer extends BodyTransformer
 {
-    private static LocalNameStandardizer instance = new LocalNameStandardizer();
-    private LocalNameStandardizer() {}
-
-    public static LocalNameStandardizer v() { return instance; }
+    public LocalNameStandardizer( Singletons.Global g ) {}
+    public static LocalNameStandardizer v() { return G.v().LocalNameStandardizer(); }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() + " only-stack-locals"; }
 

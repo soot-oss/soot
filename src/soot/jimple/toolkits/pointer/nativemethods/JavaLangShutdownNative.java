@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangShutdownNative extends NativeMethodClass {
-
-  private static JavaLangShutdownNative instance =
-    new JavaLangShutdownNative();
-
-  private JavaLangShutdownNative(){}
-
-  public static JavaLangShutdownNative v() { return instance; }
+    public JavaLangShutdownNative( Singletons.Global g ) {}
+    public static JavaLangShutdownNative v() { return G.v().JavaLangShutdownNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

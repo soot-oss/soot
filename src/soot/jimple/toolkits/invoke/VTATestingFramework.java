@@ -36,10 +36,8 @@ import soot.util.*;
 /** Tests whether VTA detects all runtime types. */
 public class VTATestingFramework extends SceneTransformer
 {
-    private static VTATestingFramework instance = new VTATestingFramework();
-    private VTATestingFramework() {}
-
-    public static VTATestingFramework v() { return instance; }
+    public VTATestingFramework( Singletons.Global g ) {}
+    public static VTATestingFramework v() { return G.v().VTATestingFramework(); }
 
     public String getDefaultOptions() 
     {

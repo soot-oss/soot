@@ -25,13 +25,14 @@
 
 package soot.util;
 
+import soot.*;
 import java.io.*;
 
-class BafInputRep  implements SootInputRepresentation        
+public class BafInputRep  implements SootInputRepresentation        
 {
-        static BafInputRep singleton = new BafInputRep();
-        private BafInputRep(){}
-        public static BafInputRep v() { return singleton;}
-        public InputStream createInputStream(InputStream is){return null;}
+    public BafInputRep ( Singletons.Global g ) {}
+    public static BafInputRep  v() { return G.v().BafInputRep (); }
+
+    public InputStream createInputStream(InputStream is){return null;}
     public String getFileExtension(){return ".baf";}
 }

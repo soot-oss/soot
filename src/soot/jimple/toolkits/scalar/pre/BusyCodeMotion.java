@@ -52,12 +52,10 @@ import soot.jimple.toolkits.pointer.PASideEffectTester;
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class BusyCodeMotion extends BodyTransformer {
+    public BusyCodeMotion( Singletons.Global g ) {}
+    public static BusyCodeMotion v() { return G.v().BusyCodeMotion(); }
+
   private static final String PREFIX = "$bcm";
-
-  private static BusyCodeMotion instance = new BusyCodeMotion();
-  private BusyCodeMotion() {}
-
-  public static BusyCodeMotion v() { return instance; }
 
   public String getDeclaredOptions() { return super.getDeclaredOptions()+
       " naive-side-effect "; }

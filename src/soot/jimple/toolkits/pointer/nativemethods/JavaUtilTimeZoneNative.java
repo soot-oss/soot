@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilTimeZoneNative extends NativeMethodClass {
-
-  private static JavaUtilTimeZoneNative instance =
-    new JavaUtilTimeZoneNative();
-
-  private JavaUtilTimeZoneNative(){}
-
-  public static JavaUtilTimeZoneNative v() { return instance; }
+    public JavaUtilTimeZoneNative( Singletons.Global g ) {}
+    public static JavaUtilTimeZoneNative v() { return G.v().JavaUtilTimeZoneNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

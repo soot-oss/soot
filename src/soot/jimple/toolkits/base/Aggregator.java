@@ -35,11 +35,9 @@ import java.util.*;
 
 public class Aggregator extends BodyTransformer
 {
-    private static Aggregator instance = new Aggregator();
-    private Aggregator() {}
+    public Aggregator( Singletons.Global g ) {}
+    public static Aggregator v() { return G.v().Aggregator(); }
 
-    public static Aggregator v() { return instance; }
-    
     public static int nodeCount = 0;
     public static int aggrCount = 0;
 

@@ -49,16 +49,8 @@ import java.io.*;
 
 public class Grimp
 {
-    private static Grimp grimpRepresentation = new Grimp();
-
-    protected Grimp()
-    {
-    }
-
-    public static Grimp v()
-    {
-        return grimpRepresentation;
-    }
+    public Grimp( Singletons.Global g ) {}
+    public static Grimp v() { return G.v().Grimp(); }
 
     /**
         Constructs a XorExpr(Expr, Expr) grammar chunk.

@@ -9,18 +9,17 @@ import java.io.*;
 
 public class FieldRWTagger extends BodyTransformer
 { 
+    public FieldRWTagger( Singletons.Global g ) {}
+    public static FieldRWTagger v() { return G.v().FieldRWTagger(); }
+
     public static int numRWs = 0;
     public static int numWRs = 0;
     public static int numRRs = 0;
     public static int numWWs = 0;
     public static int numNatives = 0;
     public static Date startTime = null;
-    private static FieldRWTagger instance = new FieldRWTagger();
-    private FieldRWTagger() {}
     boolean optionDontTag = false;
     boolean optionNaive = false;
-
-    public static FieldRWTagger v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() +
 	" dont-tag max-size "; }

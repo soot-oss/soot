@@ -4,9 +4,8 @@ import java.util.*;
 import soot.*;
 
 public class FullObjectSet extends Union implements PointsToSet {
-    private static FullObjectSet instance = new FullObjectSet();
-    public static FullObjectSet v() { return instance; }
-    private FullObjectSet() {}
+    public FullObjectSet( Singletons.Global g ) {}
+    public static FullObjectSet v() { return G.v().FullObjectSet(); }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() {

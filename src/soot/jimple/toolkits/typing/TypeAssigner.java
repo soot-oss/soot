@@ -37,11 +37,9 @@ import java.util.*;
  **/
 public class TypeAssigner extends BodyTransformer
 {
-  private static final TypeAssigner instance = new TypeAssigner();
-  private TypeAssigner() {}
-    
-  public static TypeAssigner v() { return instance; }
-    
+    public TypeAssigner( Singletons.Global g ) {}
+    public static TypeAssigner v() { return G.v().TypeAssigner(); }
+
   /** Assign types to local variables. **/
   protected void internalTransform(Body b, String phaseName, Map options)
   {

@@ -48,13 +48,13 @@ import soot.baf.internal.*;
 
 public class PeepholeOptimizer extends BodyTransformer
 {
+    public PeepholeOptimizer( Singletons.Global g ) {}
+    public static PeepholeOptimizer v() { return G.v().PeepholeOptimizer(); }
+
     private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";
 
     private Map peepholeMap = new HashMap();
-    private static PeepholeOptimizer instance = new PeepholeOptimizer();
-    public static PeepholeOptimizer v() { return instance; }
-    private PeepholeOptimizer(){}
 
     public String getDefaultOptions() 
     {

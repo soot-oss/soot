@@ -18,6 +18,7 @@
  */
 
 package soot;
+import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.base.*;
@@ -38,23 +39,8 @@ import soot.jimple.spark.SparkTransformer;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
-    private static PackManager constant = new PackManager();
-
-    private Map phaseToOptionMap = new HashMap();
-
-    private Map packNameToPack = new HashMap();
-
-    public static PackManager v() {
-        return constant;
-    }
-
-    private void addPack( Pack p ) {
-        if( packNameToPack.containsKey( p.getPhaseName() ) )
-            throw new RuntimeException( "Duplicate pack "+p.getPhaseName() );
-        packNameToPack.put( p.getPhaseName(), p );
-    }
-
-    private PackManager() {
+    public PackManager( Singletons.Global g ) 
+    {
         Pack p;
 
         // Jimple body creation
@@ -172,6 +158,17 @@ public class PackManager {
             p.add(new Transform("tag.an", ArrayNullTagAggregator.v()));
             p.add(new Transform("tag.dep", DependenceTagAggregator.v()));
         }
+    }
+    public static PackManager v() { return G.v().PackManager(); }
+
+    private Map phaseToOptionMap = new HashMap();
+
+    private Map packNameToPack = new HashMap();
+
+    private void addPack( Pack p ) {
+        if( packNameToPack.containsKey( p.getPhaseName() ) )
+            throw new RuntimeException( "Duplicate pack "+p.getPhaseName() );
+        packNameToPack.put( p.getPhaseName(), p );
     }
 
     public boolean hasPack(String phaseName) {

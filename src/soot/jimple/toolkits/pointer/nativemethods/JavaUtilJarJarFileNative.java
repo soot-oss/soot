@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilJarJarFileNative extends NativeMethodClass {
-
-  private static JavaUtilJarJarFileNative instance =
-    new JavaUtilJarJarFileNative();
-
-  private JavaUtilJarJarFileNative(){}
-
-  public static JavaUtilJarJarFileNative v() { return instance; }
+    public JavaUtilJarJarFileNative( Singletons.Global g ) {}
+    public static JavaUtilJarJarFileNative v() { return G.v().JavaUtilJarJarFileNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

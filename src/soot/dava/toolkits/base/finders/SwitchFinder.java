@@ -12,20 +12,13 @@ import soot.dava.internal.AST.*;
 
 public class SwitchFinder implements FactFinder
 {
-    private SwitchFinder() {}
-    private static SwitchFinder instance = new SwitchFinder();
-
+    public SwitchFinder( Singletons.Global g ) {}
+    public static SwitchFinder v() { return G.v().SwitchFinder(); }
 
     private IterableSet junkBody;
     private HashSet targetSet;
     private LinkedList 	targetList, snTargetList, tSuccList;
     private HashMap index2target, tSucc2indexSet, tSucc2target, tSucc2Body;
-
-
-    public static SwitchFinder v()
-    {
-	return instance;
-    }
 
     public void find( DavaBody davaBody, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

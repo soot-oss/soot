@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -39,19 +40,9 @@ import java.util.*;
  */
 public class NullType extends RefLikeType
 {
-    private static NullType constant = new NullType();
+    public NullType( Singletons.Global g ) {}
+    public static NullType v() { return G.v().NullType(); }
 
-    private NullType()
-    {
-    }
-    
-    /** @return this class's singleton object */
-    public static NullType v()
-    {
-        return constant;
-    }
-
-    
     public int hashCode()
     {
         return 0x9891DFE1;

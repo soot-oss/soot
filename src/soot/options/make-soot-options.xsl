@@ -190,7 +190,7 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
-                if( <xsl:copy-of select="$name"/> == null )
+                if( <xsl:copy-of select="$name"/>.length() == 0 )
                     <xsl:copy-of select="$name"/> = value;
                 else {
                     System.out.println( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );

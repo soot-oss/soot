@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangSecurityManagerNative extends NativeMethodClass {
-
-  private static JavaLangSecurityManagerNative instance =
-    new JavaLangSecurityManagerNative();
-
-  private JavaLangSecurityManagerNative(){}
-
-  public static JavaLangSecurityManagerNative v() { return instance; }
+    public JavaLangSecurityManagerNative( Singletons.Global g ) {}
+    public static JavaLangSecurityManagerNative v() { return G.v().JavaLangSecurityManagerNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

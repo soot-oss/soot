@@ -30,9 +30,8 @@ import java.util.*;
  */
 public class ImplicitMethodInvocation
 { 
-    private static final ImplicitMethodInvocation instance = new ImplicitMethodInvocation();
-    public static final ImplicitMethodInvocation v() { return instance; }
-    private ImplicitMethodInvocation() {}
+    public ImplicitMethodInvocation( Singletons.Global g ) {}
+    public static ImplicitMethodInvocation v() { return G.v().ImplicitMethodInvocation(); }
 
     private static final NumberedString sigMain = Scene.v().getSubSigNumberer().
         findOrAdd( "void main(java.lang.String[])" );

@@ -54,20 +54,13 @@ import soot.toolkits.scalar.*;
 
 public class NullPointerChecker extends BodyTransformer 
 {
-    private static NullPointerChecker instance = 
-    			new NullPointerChecker();
+    public NullPointerChecker( Singletons.Global g ) {}
+    public static NullPointerChecker v() { return G.v().NullPointerChecker(); }
 
     private boolean isProfiling = false;
  
     private static boolean enableOther = true;
     
-    private NullPointerChecker() {}
-
-    public static NullPointerChecker v()
-    {
-    	return instance;
-    }
-
     public String getDeclaredOptions()
     {
 	return super.getDeclaredOptions()+" profiling onlyarrayref";

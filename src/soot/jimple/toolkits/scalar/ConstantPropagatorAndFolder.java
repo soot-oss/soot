@@ -40,10 +40,8 @@ import soot.toolkits.graph.*;
  * expressions (i.e. 2 * 3). */
 public class ConstantPropagatorAndFolder extends BodyTransformer
 {
-    private static ConstantPropagatorAndFolder instance = new ConstantPropagatorAndFolder();
-    private ConstantPropagatorAndFolder() {}
-
-    public static ConstantPropagatorAndFolder v() { return instance; }
+    public ConstantPropagatorAndFolder( Singletons.Global g ) {}
+    public static ConstantPropagatorAndFolder v() { return G.v().ConstantPropagatorAndFolder(); }
 
     static boolean debug = soot.Main.isInDebugMode;
 

@@ -47,13 +47,10 @@ import soot.jimple.toolkits.pointer.PASideEffectTester;
 
 public class CommonSubexpressionEliminator extends BodyTransformer
 { 
+    public CommonSubexpressionEliminator( Singletons.Global g ) {}
+    public static CommonSubexpressionEliminator v() { return G.v().CommonSubexpressionEliminator(); }
+
     public static int cseCounter = 0;
-
-    private static CommonSubexpressionEliminator instance = 
-        new CommonSubexpressionEliminator();
-    private CommonSubexpressionEliminator() {}
-
-    public static CommonSubexpressionEliminator v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions()+
         " naive-side-effect "; }

@@ -36,10 +36,8 @@ import soot.toolkits.graph.*;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
-    private static UnreachableCodeEliminator instance = new UnreachableCodeEliminator();
-    private UnreachableCodeEliminator() {}
-
-    public static UnreachableCodeEliminator v() { return instance; }
+    public UnreachableCodeEliminator( Singletons.Global g ) {}
+    public static UnreachableCodeEliminator v() { return G.v().UnreachableCodeEliminator(); }
 
     static boolean debug = soot.Main.isInDebugMode;
 

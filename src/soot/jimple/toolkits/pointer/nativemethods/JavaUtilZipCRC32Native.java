@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipCRC32Native extends NativeMethodClass {
-
-  private static JavaUtilZipCRC32Native instance =
-    new JavaUtilZipCRC32Native();
-
-  private JavaUtilZipCRC32Native(){}
-
-  public static JavaUtilZipCRC32Native v() { return instance; }
+    public JavaUtilZipCRC32Native( Singletons.Global g ) {}
+    public static JavaUtilZipCRC32Native v() { return G.v().JavaUtilZipCRC32Native(); }
 
   /**
    * Implements the abstract method simulateMethod.

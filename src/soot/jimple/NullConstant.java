@@ -35,20 +35,12 @@ import java.util.*;
 
 public class NullConstant extends Constant implements Switchable, ToBriefString
 {
-    private static final NullConstant constant = new NullConstant();
-
-    private NullConstant()
-    {
-    }
-
-    public static NullConstant v()
-    {
-        return constant;
-    }
+    public NullConstant( Singletons.Global g ) {}
+    public static NullConstant v() { return G.v().NullConstant(); }
 
     public boolean equals(Object c)
     {
-        return c == constant;
+        return c == G.v().NullConstant();
     }
 
     public int hashCode() 

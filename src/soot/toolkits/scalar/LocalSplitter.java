@@ -56,10 +56,8 @@ import java.util.*;
  */
 public class LocalSplitter extends BodyTransformer
 {
-    private static LocalSplitter instance = new LocalSplitter();
-    private LocalSplitter() {}
-
-    public static LocalSplitter v() { return instance; }
+    public LocalSplitter( Singletons.Global g ) {}
+    public static LocalSplitter v() { return G.v().LocalSplitter(); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

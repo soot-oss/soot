@@ -36,11 +36,8 @@ import soot.util.*;
  */
 public class SparkTransformer extends SceneTransformer
 { 
-    private static SparkTransformer instance = 
-	new SparkTransformer();
-    private SparkTransformer() {}
-
-    public static SparkTransformer v() { return instance; }
+    public SparkTransformer( Singletons.Global g ) {}
+    public static SparkTransformer v() { return G.v().SparkTransformer(); }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() +
 	SparkOptions.getDeclaredOptions(); }

@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -40,17 +41,8 @@ import java.util.*;
  */
 public class FloatType extends PrimType
 {
-    private static final FloatType constant = new FloatType();
-
-    private FloatType()
-    {
-    }
-    
-    /** @return this class's singleton object */
-    public static FloatType v()
-    {
-        return constant;
-    }
+    public FloatType( Singletons.Global g ) {}
+    public static FloatType v() { return G.v().FloatType(); }
 
     public boolean equals(Object t)
     {

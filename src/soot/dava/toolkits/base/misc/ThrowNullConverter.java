@@ -11,19 +11,10 @@ import soot.dava.internal.javaRep.*;
 
 public class ThrowNullConverter
 {
-    private ThrowNullConverter() 
-    {
-	npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
-    }
-    
-    private static ThrowNullConverter instance = new ThrowNullConverter();
+    public ThrowNullConverter( Singletons.Global g ) {}
+    public static ThrowNullConverter v() { return G.v().ThrowNullConverter(); }
 
-    public static ThrowNullConverter v()
-    {
-	return instance;
-    }
-
-    private RefType npeRef;
+    private RefType npeRef = RefType.v( Scene.v().loadClassAndSupport( "java.lang.NullPointerException"));
 
     public void convert( DavaBody body)
     {

@@ -12,33 +12,19 @@ import soot.dava.internal.AST.*;
 
 public class SynchronizedBlockFinder implements FactFinder
 {
-    private SynchronizedBlockFinder() 
-    {
-	UNKNOWN = -100000; // Note there are at most 65536 monitor exits in a method.
-
-	WHITE = new Integer( 0);
-	GRAY  = new Integer( 1);
-	BLACK = new Integer( 2);
-
-	VARIABLE_INCR = new Integer( UNKNOWN);
-
-	THROWABLE = "java.lang.Throwable";
-    }
-    
-    private static SynchronizedBlockFinder instance = new SynchronizedBlockFinder();
+    public SynchronizedBlockFinder( Singletons.Global g ) {}
+    public static SynchronizedBlockFinder v() { return G.v().SynchronizedBlockFinder(); }
 
     private HashMap as2ml;
     private IterableSet monitorLocalSet, monitorEnterSet;
 
-    private Integer WHITE, GRAY, BLACK, VARIABLE_INCR;
-    private int UNKNOWN;
-    private String THROWABLE;
+    private Integer WHITE = new Integer(0);
+    private Integer GRAY = new Integer(1);
+    private Integer BLACK = new Integer(2);
+    private int UNKNOWN = -100000; // Note there are at most 65536 monitor exits in a method.
+    private Integer VARIABLE_INCR = new Integer(UNKNOWN);
+    private String THROWABLE = "java.lang.Throwable";
 
-
-    public static SynchronizedBlockFinder v()
-    {
-	return instance;
-    }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

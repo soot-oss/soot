@@ -40,10 +40,8 @@ import java.util.*;
 
 public class ConstructorFolder extends BodyTransformer
 {
-    private static ConstructorFolder instance = new ConstructorFolder();
-    private ConstructorFolder() {}
-
-    public static ConstructorFolder v() { return instance; }
+    public ConstructorFolder( Singletons.Global g ) {}
+    public static ConstructorFolder v() { return G.v().ConstructorFolder(); }
 
     /** This method change all new Obj/<init>(args) pairs to new Obj(args) idioms. */
     protected void internalTransform(Body b, String phaseName, Map options)

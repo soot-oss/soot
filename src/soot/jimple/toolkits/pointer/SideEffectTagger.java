@@ -9,18 +9,17 @@ import java.io.*;
 
 public class SideEffectTagger extends BodyTransformer
 { 
+    public SideEffectTagger( Singletons.Global g ) {}
+    public static SideEffectTagger v() { return G.v().SideEffectTagger(); }
+
     public static int numRWs = 0;
     public static int numWRs = 0;
     public static int numRRs = 0;
     public static int numWWs = 0;
     public static int numNatives = 0;
     public static Date startTime = null;
-    private static SideEffectTagger instance = new SideEffectTagger();
-    private SideEffectTagger() {}
     boolean optionDontTag = false;
     boolean optionNaive = false;
-
-    public static SideEffectTagger v() { return instance; }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() +
 	" dont-tag max-size naive "; }

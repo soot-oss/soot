@@ -9,11 +9,9 @@ import soot.toolkits.graph.*;
 
 public class DavaLocalPrinter implements LocalPrinter
 {
-    private static DavaLocalPrinter instance = new DavaLocalPrinter();
-    private DavaLocalPrinter() {}
-    
-    public static DavaLocalPrinter v() { return instance; }
-    
+    public DavaLocalPrinter( Singletons.Global g ) {}
+    public static DavaLocalPrinter v() { return G.v().DavaLocalPrinter(); }
+
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     public void printLocalsInBody(Body body, java.io.PrintWriter out, boolean isPrecise)
     {

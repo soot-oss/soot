@@ -25,12 +25,13 @@
 
 package soot.util;
 
+import soot.*;
 import java.io.*;
-class ClassInputRep implements SootInputRepresentation
+public class ClassInputRep implements SootInputRepresentation
 {
-    static ClassInputRep singleton = new ClassInputRep();
-    private ClassInputRep() {}
-    public static ClassInputRep v() { return singleton; }
+    public ClassInputRep( Singletons.Global g ) {}
+    public static ClassInputRep v() { return G.v().ClassInputRep(); }
+
     public InputStream createInputStream(InputStream is)
         { return new ClassInputStream(is); }
     public String getFileExtension()

@@ -1,4 +1,5 @@
 package soot.dava.toolkits.base.finders;
+import soot.*;
 
 import soot.dava.*;
 import soot.util.*;
@@ -11,13 +12,8 @@ import soot.dava.toolkits.base.misc.*;
 
 public class IfFinder implements FactFinder
 {
-    private IfFinder() {}
-    private static IfFinder instance = new IfFinder();
-
-    public static IfFinder v()
-    {
-	return instance;
-    }
+    public IfFinder( Singletons.Global g ) {}
+    public static IfFinder v() { return G.v().IfFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

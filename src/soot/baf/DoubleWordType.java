@@ -35,17 +35,8 @@ import soot.*;
 
 public class DoubleWordType extends Type
 {
-    private static final DoubleWordType constant = new DoubleWordType();
-
-    private DoubleWordType()
-    {
-        // no constructor allowed
-    }
-
-    public static DoubleWordType v()
-    {
-        return constant;
-    }
+    public DoubleWordType( Singletons.Global g ) {}
+    public static DoubleWordType v() { return G.v().DoubleWordType(); }
 
     public boolean equals(Object t)
     {

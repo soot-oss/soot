@@ -11,13 +11,8 @@ import soot.dava.internal.AST.*;
 
 public class ExceptionFinder implements FactFinder
 {
-    private ExceptionFinder() {}
-    private static ExceptionFinder instance = new ExceptionFinder();
-
-    public static ExceptionFinder v()
-    {
-	return instance;
-    }
+    public ExceptionFinder( Singletons.Global g ) {}
+    public static ExceptionFinder v() { return G.v().ExceptionFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

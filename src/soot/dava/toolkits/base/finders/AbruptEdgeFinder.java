@@ -1,5 +1,6 @@
 package soot.dava.toolkits.base.finders;
 
+import soot.*;
 import java.util.*;
 import soot.util.*;
 import soot.dava.*;
@@ -10,13 +11,8 @@ import soot.dava.internal.javaRep.*;
 
 public class AbruptEdgeFinder implements FactFinder
 {
-    private AbruptEdgeFinder() {}
-    private static AbruptEdgeFinder instance = new AbruptEdgeFinder();
-
-    public static AbruptEdgeFinder v()
-    {
-	return instance;
-    }
+    public AbruptEdgeFinder( Singletons.Global g ) {}
+    public static AbruptEdgeFinder v() { return G.v().AbruptEdgeFinder(); }
 
     public void find( DavaBody body, AugmentedStmtGraph asg, SETNode SET) throws RetriggerAnalysisException
     {

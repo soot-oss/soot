@@ -60,14 +60,8 @@ import soot.jimple.*;
  */
 public class LocalPacker extends BodyTransformer
 {
-    private static LocalPacker instance = new LocalPacker();
-    private LocalPacker() {}
-
-    /** 
-     *   Returns this class' singleton instance.
-     *   @return the singleton for this class.
-     */
-    public static LocalPacker v() { return instance; }
+    public LocalPacker( Singletons.Global g ) {}
+    public static LocalPacker v() { return G.v().LocalPacker(); }
 
     public String getDeclaredOptions() { return super.getDeclaredOptions() + " unsplit-original-locals"; }
 

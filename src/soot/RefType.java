@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -39,13 +40,14 @@ import java.util.*;
 
 public class RefType extends RefLikeType implements ToBriefString, Comparable
 {
+    public RefType( Singletons.Global g ) { className = ""; }
+    public static RefType v() { return G.v().RefType(); }
+
     /** the class name that parametrizes this RefType */
     private final String className;
     public String getClassName() { return className; }
     private SootClass sootClass;
     private AnySubType anySubType;
-
-    private static RefType singleton = new RefType("");
 
     private RefType(String className)
     {
@@ -81,16 +83,6 @@ public class RefType extends RefLikeType implements ToBriefString, Comparable
     public static RefType v(SootClass c)
     {
         return v(c.getName());
-    }
-    
-    /** 
-     *  Get the default RefType. It is parametrized by an empty class name string.Implemented as
-     *  a singleton.
-     *  @return a default RefType
-     */
-    public static RefType v()
-    {
-        return singleton;
     }
     
      /** 

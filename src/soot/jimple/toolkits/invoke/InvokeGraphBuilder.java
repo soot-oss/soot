@@ -33,10 +33,8 @@ import java.util.*;
 /** A transformer which calls upon CHA to build the default invoke graph for the Scene. */
 public class InvokeGraphBuilder extends SceneTransformer
 {
-    private static InvokeGraphBuilder instance = new InvokeGraphBuilder();
-    private InvokeGraphBuilder() {}
-
-    public static InvokeGraphBuilder v() { return instance; }
+    public InvokeGraphBuilder( Singletons.Global g ) {}
+    public static InvokeGraphBuilder v() { return G.v().InvokeGraphBuilder(); }
 
   protected void internalTransform(String phaseName, Map options) {
     if (!Scene.v().hasActiveInvokeGraph()) {

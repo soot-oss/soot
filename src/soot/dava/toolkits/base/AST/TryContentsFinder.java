@@ -8,20 +8,11 @@ import soot.dava.internal.AST.*;
 
 public class TryContentsFinder extends ASTAnalysis
 {
-    private TryContentsFinder() 
-    {
-	set_CurExceptionSet( new IterableSet());
-	node2ExceptionSet = new HashMap();
-    }
-    private static TryContentsFinder instance = new TryContentsFinder();
+    public TryContentsFinder( Singletons.Global g ) {}
+    public static TryContentsFinder v() { return G.v().TryContentsFinder(); }
 
-    public static TryContentsFinder v() 
-    {
-	return instance;
-    }
-    
-    private IterableSet curExceptionSet;
-    private HashMap node2ExceptionSet;
+    private IterableSet curExceptionSet = new IterableSet();
+    private HashMap node2ExceptionSet = new HashMap();
     
     public int getAnalysisDepth()
     {

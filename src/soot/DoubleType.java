@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,17 +39,8 @@ import java.util.*;
  */
 public class DoubleType extends PrimType
 {
-    private static final DoubleType constant = new DoubleType();
-
-    private DoubleType()
-    {
-    }
-    
-    /** @return this class's singleton object */
-    public static DoubleType v()
-    {
-        return constant;
-    }
+    public DoubleType( Singletons.Global g ) {}
+    public static DoubleType v() { return G.v().DoubleType(); }
 
     public boolean equals(Object t)
     {

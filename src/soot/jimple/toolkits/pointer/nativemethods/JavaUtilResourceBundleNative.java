@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilResourceBundleNative extends NativeMethodClass {
-
-  private static JavaUtilResourceBundleNative instance =
-    new JavaUtilResourceBundleNative();
-
-  private JavaUtilResourceBundleNative(){}
-
-  public static JavaUtilResourceBundleNative v() { return instance; }
+    public JavaUtilResourceBundleNative( Singletons.Global g ) {}
+    public static JavaUtilResourceBundleNative v() { return G.v().JavaUtilResourceBundleNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

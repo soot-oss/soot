@@ -12,13 +12,8 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangReflectFieldNative extends NativeMethodClass {
-
-  private static JavaLangReflectFieldNative instance =
-    new JavaLangReflectFieldNative();
-
-  private JavaLangReflectFieldNative(){}
-
-  public static JavaLangReflectFieldNative v() { return instance; }
+    public JavaLangReflectFieldNative( Singletons.Global g ) {}
+    public static JavaLangReflectFieldNative v() { return G.v().JavaLangReflectFieldNative(); }
 
   /**
    * Implements the abstract method simulateMethod.

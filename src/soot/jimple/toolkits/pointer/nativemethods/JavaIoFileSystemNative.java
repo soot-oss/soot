@@ -12,13 +12,9 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileSystemNative extends NativeMethodClass {
+    public JavaIoFileSystemNative( Singletons.Global g ) {}
+    public static JavaIoFileSystemNative v() { return G.v().JavaIoFileSystemNative(); }
 
-  private static JavaIoFileSystemNative instance =
-    new JavaIoFileSystemNative();
-
-  private JavaIoFileSystemNative(){}
-
-  public static JavaIoFileSystemNative v() { return instance; }
 
   /**
    * Implements the abstract method simulateMethod.

@@ -36,10 +36,8 @@ import java.util.*;
 
 public class ConditionalBranchFolder  extends BodyTransformer
 {
-    private static ConditionalBranchFolder instance = new ConditionalBranchFolder();
-    private ConditionalBranchFolder() {}
-
-    public static ConditionalBranchFolder v() { return instance; }
+    public ConditionalBranchFolder ( Singletons.Global g ) {}
+    public static ConditionalBranchFolder  v() { return G.v().ConditionalBranchFolder (); }
 
     protected void internalTransform(Body body, String phaseName, Map options)
     {

@@ -28,6 +28,7 @@
 
 
 package soot;
+import soot.*;
 
 import soot.util.*;
 import java.util.*;
@@ -38,18 +39,9 @@ import java.util.*;
  */
 public class UnknownType extends Type
 {
-    private static final UnknownType constant = new UnknownType();
+    public UnknownType( Singletons.Global g ) {}
+    public static UnknownType v() { return G.v().UnknownType(); }
 
-    private UnknownType()
-    {
-    }
-
-    public static UnknownType v()
-    {
-        return constant;
-    }
-
-    
     public int hashCode()
     {
         return 0x5CAE5357;
