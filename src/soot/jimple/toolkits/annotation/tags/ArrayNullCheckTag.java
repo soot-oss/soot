@@ -1,10 +1,8 @@
-package soot.tagkit;
-
-import soot.*;
+package soot.jimple.toolkits.annotation.tags;
 
 public class ArrayNullCheckTag implements OneByteCodeTag
 {
-    private final static String NAME = "NullArrayCheckTag";
+    private final static String NAME = "ArrayNullCheckTag";
     
     private byte value = 0;
 

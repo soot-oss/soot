@@ -1,4 +1,4 @@
-package soot.tagkit;
+package soot.jimple.toolkits.annotation.tags;
 
 import soot.*;
 

@@ -1,14 +1,13 @@
-package soot.tagkit;
+package soot.jimple.toolkits.annotation.tags;
 
 
 import soot.*;
 import java.util.*;
 
+import soot.tagkit.*;
 
-
-public class OneByteTagAggregator implements TagAggregator
+public class ArrayNullTagAggregator implements TagAggregator
 {    
-
     private boolean status = false;
     private List tags = new LinkedList();
     private List units = new LinkedList();
@@ -16,7 +15,7 @@ public class OneByteTagAggregator implements TagAggregator
     private Unit lastUnit = null;
     private ArrayNullCheckTag lastTag = null;
     
-    public OneByteTagAggregator(boolean active)
+    public ArrayNullTagAggregator(boolean active)
     {
 	this.status = active;
     }
@@ -24,6 +23,14 @@ public class OneByteTagAggregator implements TagAggregator
     public boolean isActive()
     {
 	return this.status;
+    }
+
+    public void refresh()
+    {
+        tags = new LinkedList();
+	units = new LinkedList();
+	lastUnit = null;
+	lastTag = null;
     }
 
     public void aggregateTag(Tag t, Unit u)

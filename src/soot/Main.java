@@ -40,7 +40,7 @@ import soot.dava.*;
 import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
-import soot.tagkit.*;
+import soot.jimple.toolkits.annotation.tags.*;
 
 import java.io.*;
 
@@ -538,13 +538,15 @@ public class Main implements Runnable
 	if (doNullPointerCheck || doArrayBoundsCheck)
 	{
 	    Scene.v().getPack("jtp").add(new Transform("jtp.profiling", ProfilingGenerator.v()));
+	    // turn on the tag aggregator
+	    CodeAttributeGenerator.v().registerAggregator(new ArrayNullTagAggregator(true));
 	}
     }
 
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.43)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.44)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");

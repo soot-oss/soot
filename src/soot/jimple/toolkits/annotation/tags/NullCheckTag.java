@@ -1,6 +1,4 @@
-package soot.tagkit;
-
-import soot.*;
+package soot.jimple.toolkits.annotation.tags;
 
 public class NullCheckTag implements OneByteCodeTag
 {

@@ -4,7 +4,7 @@ import java.util.*;
 import soot.baf.*;
 import soot.*;
 
-/** The CodeAttribute holds the PC -> OneByteTag pairs.
+/** The CodeAttribute holds the PC -> Tag pairs.
  */
 
 public class CodeAttribute extends JasminAttribute
@@ -74,7 +74,7 @@ public class CodeAttribute extends JasminAttribute
 	    Object tag = tagIt.next();
 
 	    buf.append("%"+instToLabel.get(unit) + "%"+ 
-		       new String(Base64.encode(((OneByteCodeTag)tag).getValue())));
+		       new String(Base64.encode(((Tag)tag).getValue())));
 	}
     
 	return buf.toString();

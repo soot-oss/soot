@@ -35,6 +35,7 @@ import soot.util.*;
 import java.io.*;
 import java.util.*;
 import soot.tagkit.*;
+import soot.jimple.toolkits.annotation.tags.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
