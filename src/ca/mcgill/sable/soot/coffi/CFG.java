@@ -193,7 +193,12 @@ public class CFG {
         while(ins.next != null)
         {
             m.instructionList.add(ins);
-            ins = ins.next;
+
+            if ( ins instanceof Instruction_Jsr )
+            JsrToNext.put ( ins, ins.next );
+ 
+           ins = ins.next;
+
         }
       }
 
@@ -218,16 +223,18 @@ public class CFG {
 
          // Vijay's JSR eliminator
 
-
          {
 
             buildJsrRetPairs();
         
-             fixupJsrRets();
+            fixupJsrRets();
     
-             JsrEliminate();
+            JsrEliminate();
     
-             adjustExceptionTable();    
+            adjustExceptionTable();    
+
+            prepareForGC();
+
          }
   
 
@@ -275,6 +282,8 @@ public class CFG {
 
 
 
+   HashMap JsrToNext = new HashMap();
+
    HashMap RetToJsr = new HashMap();
 
    HashMap RetToJsrBB = new HashMap();
@@ -294,6 +303,33 @@ public class CFG {
    BasicBlock endofBBList;
 
    BasicBlock highestBlock;
+
+
+
+
+
+  private void prepareForGC () {
+
+   RetToJsr = null;
+   RetToJsrBB = null;
+   RetToJsrSucc = null;
+   RetToRetBB = null;
+   RetToOrigJsrSucc = null;
+   RetToOrigJsr = null;
+   RetToOrigJsrBB = null;
+   RetToOrigRetBB = null;
+   JsrToNext = null;
+   clonedHT = null;
+   endofBBList = null;
+   highestBlock = null;
+
+  }
+
+
+
+
+
+
 
 
 
@@ -392,6 +428,8 @@ public class CFG {
       if ( ( ( Instruction ) RetToJsr.get ( BBtail ) ) == null )
       {
 
+  //      System.out.println ( "RET "+BBtail+" JSR "+i );
+
         RetToJsr.put ( BBtail, i );
         RetToJsrBB.put ( BBtail, b );
         RetToJsrSucc.put ( BBtail, b.succ.elementAt(0) );
@@ -424,6 +462,8 @@ public class CFG {
           RetToOrigRetBB.put ( clonedjsrtargetBB.tail, succBB );
 
           RetToJsr.put ( clonedjsrtargetBB.tail, i );
+
+//          System.out.println ( "RET "+clonedjsrtargetBB.tail+" JSR "+i );
 
           RetToJsrBB.put ( clonedjsrtargetBB.tail, b );
 
@@ -628,6 +668,10 @@ public class CFG {
 
 
 
+
+
+
+
  
  private void JsrEliminate() {
 
@@ -647,50 +691,13 @@ public class CFG {
 
     BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
 
-
-
-    ListIterator instructionIt = method.instructionList.listIterator();
-
-    while ( instructionIt.hasNext() )
-    {
-
-     if ( instructionIt.next() == matchingjsrBB.tail )
-     break;
-
-    }
-
-    ListIterator succIt = method.instructionList.listIterator( instructionIt.nextIndex());
-
     BasicBlock matchingjsrnextBB = null;
 
-    if(succIt.hasNext())
-    {
+    matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
 
-     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
-
-    }
-
-    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
-    
-    // for ( int k=0; k < b.succ.size(); k++ ) 
-    // { 
-
-   //  BasicBlock tempBB = ( BasicBlock ) b.succ.elementAt ( k );
-
-   //  if ( tempBB.tail instanceof Instruction_Jsr )
      b.succ.removeAllElements();
 
-    // } 
-    
-    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
-    
-    //System.out.println ( "ADDING "+matchingjsrnextBB.head );
-
-    b.succ.addElement ( matchingjsrnextBB );
-
-    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
-
-    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
+     b.succ.addElement ( matchingjsrnextBB );
 
     for ( int k= matchingjsrnextBB.pred.size() - 1; k > -1;k-- ) 
     { 
@@ -703,14 +710,8 @@ public class CFG {
     } 
 
 
-    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
-    
-    //System.out.println ( "ADDING "+b.head );
-
     matchingjsrnextBB.pred.addElement ( b );
 
-    //System.out.println ( "PRED SIZE = "+matchingjsrnextBB.pred.size() );
-    
     BasicBlock matchingjsrsuccBB = ( BasicBlock ) RetToJsrSucc.get( i );
 
     Instruction temp = b.head;
@@ -719,12 +720,28 @@ public class CFG {
     {
 
      originstruction = b.tail;
- 
+
      b.head = new Instruction_Goto();
+ 
+     Iterator entriesIt = JsrToNext.entries().iterator();
+
+     while ( entriesIt.hasNext() )
+     {
+
+      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
+      {
+
+       JsrToNext.put ( entryins, b.head );
+
+      }
+
+     }
 
      replacedinstructionHT.put ( originstruction, b.head ); 
 
-     method.instructionList.add ( b.head );
+     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ b.head );
 
      h.put ( b.head, b );
 
@@ -745,9 +762,25 @@ public class CFG {
 
      temp.next = new Instruction_Goto();
 
+     Iterator entriesIt = JsrToNext.entries().iterator();
+
+     while ( entriesIt.hasNext() )
+     {
+
+      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
+      {
+
+       JsrToNext.put ( entryins, temp.next );
+
+      }
+
+     }
+
      replacedinstructionHT.put ( originstruction, temp.next );
 
-     method.instructionList.add ( temp.next );
+     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ temp.next );
 
      b.tail = temp.next;
 
@@ -766,9 +799,25 @@ public class CFG {
 
      matchingjsrBB.head = new Instruction_Goto();
 
+     Iterator entriesIt = JsrToNext.entries().iterator();
+
+     while ( entriesIt.hasNext() )
+     {
+
+      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
+      {
+
+       JsrToNext.put ( entryins, matchingjsrBB.head );
+
+      }
+
+     }
+
      replacedinstructionHT.put ( originstruction, matchingjsrBB.head );
 
-     method.instructionList.add ( matchingjsrBB.head );
+     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ) , */ matchingjsrBB.head );
 
      h.put ( matchingjsrBB.head, matchingjsrBB );
 
@@ -789,9 +838,26 @@ public class CFG {
 
      temp.next = new Instruction_Goto();
 
+     Iterator entriesIt = JsrToNext.entries().iterator();
+
+     while ( entriesIt.hasNext() )
+     {
+
+      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
+      {
+
+       JsrToNext.put ( entryins, temp.next );
+
+      }
+
+     }
+
+
      replacedinstructionHT.put ( originstruction, temp.next );
 
-     method.instructionList.add ( temp.next );
+     method.instructionList.add ( /* method.instructionList.indexOf ( originstruction ), */ temp.next );
 
      matchingjsrBB.tail = temp.next;
 
@@ -802,6 +868,23 @@ public class CFG {
     method.instructionList.remove ( originstruction );
 
     temp = matchingjsrsuccBB.head;
+
+     Iterator entriesIt = JsrToNext.entries().iterator();
+
+     while ( entriesIt.hasNext() )
+     {
+
+      Instruction entryins = ( Instruction ) ( ( Map.Entry ) entriesIt.next() ).getKey();
+
+      if ( ( ( Instruction ) JsrToNext.get ( entryins ) ) ==  originstruction )
+      {
+
+       JsrToNext.put ( entryins, temp.next );
+
+      }
+
+     }
+
 
     replacedinstructionHT.put ( temp, temp.next );
 
@@ -834,8 +917,6 @@ public class CFG {
 
  private void fixupJsrRets() {
 
- //System.out.println ( " REACHED FIXUPJSRETS" );
- 
   BasicBlock b = cfg;
 
   Instruction i = null;
@@ -843,15 +924,11 @@ public class CFG {
   while ( b != null )
   {
 
-   //System.out.println ( "ENTERING LOOP" );
-  
    i = b.tail;
  
    if ( i instanceof Instruction_Ret )
    {
 
-    //System.out.println ( "ENTERING RET IF" );
-   
     Instruction_Jsr matchingjsr = ( Instruction_Jsr) RetToJsr.get ( i );
     
     BasicBlock matchingjsrBB = ( BasicBlock ) RetToJsrBB.get ( i );
@@ -874,50 +951,13 @@ public class CFG {
 
      BasicBlock OrigjsrBB = ( BasicBlock ) RetToOrigJsrBB.get ( i );
 
-     ListIterator instructionIt = method.instructionList.listIterator();
+     BasicBlock OrigjsrnextBB = null;
 
-     while ( instructionIt.hasNext() )
-     {
-
-//      if ( instructionIt.next() == OrigjsrBB.head )
-
-      if ( instructionIt.next() == OrigjsrBB.tail )
-      break;
-
-     }
-
-    ListIterator succIt = method.instructionList.listIterator( instructionIt.nextIndex());
-
-    BasicBlock OrigjsrnextBB = null;
-
-    if(succIt.hasNext())
-    {
-
-     OrigjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
-
-    }
-
-
-    instructionIt = method.instructionList.listIterator();
-
-    while ( instructionIt.hasNext() )
-    {
-
-     if ( instructionIt.next() == matchingjsr )
-     break;
-
-    }
-
-    succIt = method.instructionList.listIterator( instructionIt.nextIndex());
+     OrigjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( OrigjsrBB.tail) );
 
     BasicBlock matchingjsrnextBB = null;
 
-    if(succIt.hasNext())
-    {
-
-     matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) succIt.next() );
-
-    }
+    matchingjsrnextBB = ( BasicBlock) h.get ( (Instruction ) JsrToNext.get ( matchingjsrBB.tail ) );
 
     OrigsuccBB.pred.removeElement ( matchingjsrBB );
     
@@ -945,26 +985,8 @@ public class CFG {
 
     b.succ.removeAllElements();
 
-/*
-    for ( int k=0; k < b.succ.size(); k++ ) 
-    { 
-
-     BasicBlock tempBB = ( BasicBlock ) b.succ.elementAt ( k );
-
-   //  if ( tempBB.tail instanceof Instruction_Jsr )
-     b.succ.removeElement ( tempBB );
-
-    } 
-*/
-    
-    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
-    
-    //System.out.println ( "ADDING "+matchingjsrnextBB.head );
-
     b.succ.addElement ( matchingjsrnextBB );
 
-    //System.out.println ( "SUCC SIZE = "+b.succ.size() );
-    
    }
 
   }
@@ -1121,6 +1143,7 @@ public class CFG {
     public Instruction reconstructInstructions() {
       BasicBlock b;
       Instruction last = null;
+
       b = cfg;
       while (b!=null) {
          if (b.tail!=null) {
