@@ -236,6 +236,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
                             // Transform it into a simple invoke.
                  
                             Stmt newInvoke = Jimple.v().newInvokeStmt(e);
+                            newInvoke.addAllTagsOf(s);
                             
                             units.swapWith(s, newInvoke);
                         }
