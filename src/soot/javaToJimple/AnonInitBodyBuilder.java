@@ -78,25 +78,29 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
             soot.Local local = soot.jimple.Jimple.v().newLocal("r"+counter, fType);
             body.getLocals().add(local);
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(fType, counter);
+            
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(local, paramRef);
 
+            
             int realArgs = 0;
             if ((hasOuterRef) && (counter == 0)){
                 // in a non static method the first param is the outer ref
                 outerLocal = local;
                 realArgs = 1;
+                stmt.addTag(new soot.tagkit.EnclosingTag());
             }
             if ((hasOuterRef) && (hasQualifier) && (counter == 1)){
                 // here second param is qualifier if there is one
                 qualifierLocal = local;
                 realArgs = 2;
                 invokeList.add(qualifierLocal);
-                
+                stmt.addTag(new soot.tagkit.QualifyingTag());
             }
             else if ((!hasOuterRef) && (hasQualifier) && (counter == 0)){
                 qualifierLocal = local;
                 realArgs = 1;
                 invokeList.add(qualifierLocal);
+                stmt.addTag(new soot.tagkit.QualifyingTag());
             }
             
             if ((counter >= realArgs) && (counter < startFinals)){

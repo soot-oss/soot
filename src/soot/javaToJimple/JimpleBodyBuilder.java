@@ -93,6 +93,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(outerClass.getType(), formalsCounter);
             paramRefCount++;
             soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(outerLocal, paramRef);
+            stmt.addTag(new soot.tagkit.EnclosingTag());
             body.getUnits().add(stmt);
             
             ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).setOuterClassThisInit(outerLocal);
@@ -370,6 +371,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(sootType, counter);
         paramRefCount++;
         soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(formalLocal, paramRef);
+        
         body.getUnits().add(stmt);
         
         Util.addLnPosTags(((soot.jimple.IdentityStmt) stmt).getRightOpBox(), formal.position());

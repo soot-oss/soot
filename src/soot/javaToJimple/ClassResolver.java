@@ -241,6 +241,7 @@ public class ClassResolver {
                 newParams.add(outerSootType);
                 newParams.addAll(meth.getParameterTypes());
                 meth.setParameterTypes(newParams);
+                meth.addTag(new soot.tagkit.EnclosingTag());
                 if (InitialResolver.v().getHasOuterRefInInit() == null){
                     InitialResolver.v().setHasOuterRefInInit(new ArrayList());
                 }
@@ -817,6 +818,7 @@ public class ClassResolver {
                 newParams.add(sootType);
                 newParams.addAll(meth.getParameterTypes());
                 meth.setParameterTypes(newParams);
+                meth.addTag(new soot.tagkit.QualifyingTag());
             }
         }
     }

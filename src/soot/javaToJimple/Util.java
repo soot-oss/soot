@@ -228,9 +228,9 @@ public class Util {
        
         //System.out.println("getting this for type: "+sootType);
         // if this for type already created return it from map
-        if (getThisMap.containsKey(sootType)){
-            return (soot.Local)getThisMap.get(sootType);
-        }
+        //if (getThisMap.containsKey(sootType)){
+        //    return (soot.Local)getThisMap.get(sootType);
+        //}
         soot.Local specialThisLocal = body.getThisLocal();
         // if need this just return it
         if (specialThisLocal.getType().equals(sootType)) {
@@ -283,7 +283,7 @@ public class Util {
         soot.Local correctLocal = null;
         while (stmtsIt.hasNext()){
             soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
-            if (s instanceof soot.jimple.IdentityStmt){
+            if (s instanceof soot.jimple.IdentityStmt && (s.hasTag("EnclosingTag") || s.hasTag("QualifyingTag"))){
                 Iterator it = s.getDefBoxes().iterator();
                 while (it.hasNext()){
                     soot.ValueBox vb = (soot.ValueBox)it.next();
@@ -302,7 +302,7 @@ public class Util {
         soot.Local correctLocal = null;
         while (stmtsIt.hasNext()){
             soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
-            if (s instanceof soot.jimple.IdentityStmt){
+            if (s instanceof soot.jimple.IdentityStmt && (s.hasTag("EnclosingTag") || s.hasTag("QualifyingTag"))){
                 Iterator it = s.getDefBoxes().iterator();
                 while (it.hasNext()){
                     soot.ValueBox vb = (soot.ValueBox)it.next();
