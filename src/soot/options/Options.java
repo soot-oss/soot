@@ -934,7 +934,7 @@ public class Options extends OptionsBase {
                 "\nJimple Body Creation creates a JimpleBody for each input \nmethod, using either coffi, to read .class files, or the jimple \nparser, to read .jimple files. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "use-original-names", "" );
+                +padOpt( "use-original-names (false)", "" );
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
@@ -973,14 +973,14 @@ public class Options extends OptionsBase {
                 "\nThe Local Name Standardizer assigns generic names to local \nvariables. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-stack-locals", "" );
+                +padOpt( "only-stack-locals (false)", "" );
     
         if( phaseName.equals( "jb.cp" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThis phase performs cascaded copy propagation. If the \npropagator encounters situations of the form: A: a = ...; \n... B: x = a; ... C: ... = ... x; where a and x are \neach defined only once (at A and B, respectively), then it can \npropagate immediately without checking between B and C for \nredefinitions of a. In this case the propagator is global. \nOtherwise, if a has multiple definitions then the propagator \nchecks for redefinitions and propagates copies only within \nextended basic blocks. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-regular-locals", "" )
+                +padOpt( "only-regular-locals (false)", "" )
                 +padOpt( "only-stack-locals (true)", "" );
     
         if( phaseName.equals( "jb.dae" ) )
@@ -1221,14 +1221,14 @@ public class Options extends OptionsBase {
                 "\nThe Common Subexpression Eliminator runs an available \nexpressions analysis on the method body, then eliminates common \nsubexpressions. This implementation is especially slow, as it \nruns on individual statements rather than on basic blocks. A \nbetter implementation (which would find most common \nsubexpressions, but not all) would use basic blocks instead. \nThis implementation is also slow because the flow universe is \nexplicitly created; it need not be. A better implementation \nwould implicitly compute the kill sets at every node. Because \nof its current slowness, this transformation is not enabled by \ndefault. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "naive-side-effect", "Use naive side effect analysis even if interprocedural information is available" );
+                +padOpt( "naive-side-effect (false)", "Use naive side effect analysis even if interprocedural information is available" );
     
         if( phaseName.equals( "jop.bcm" ) )
             return "Phase "+phaseName+":\n"+
                 "\nBusy Code Motion is a straightforward implementation of Partial \nRedundancy Elimination. This implementation is not very \naggressive. Lazy Code Motion is an improved version which \nshould be used instead of Busy Code Motion. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "naive-side-effect", "Use a naive side effect analysis even if interprocedural information is available" );
+                +padOpt( "naive-side-effect (false)", "Use a naive side effect analysis even if interprocedural information is available" );
     
         if( phaseName.equals( "jop.lcm" ) )
             return "Phase "+phaseName+":\n"+
@@ -1243,15 +1243,15 @@ public class Options extends OptionsBase {
                 +padVal( "unsafe", "" )
                 
                 +padOpt( "unroll (true)", "" )
-                +padOpt( "naive-side-effect", "Use a naive side effect analysis even if interprocedural information is available" );
+                +padOpt( "naive-side-effect (false)", "Use a naive side effect analysis even if interprocedural information is available" );
     
         if( phaseName.equals( "jop.cp" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThis phase performs cascaded copy propagation."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-regular-locals", "" )
-                +padOpt( "only-stack-locals", "" );
+                +padOpt( "only-regular-locals (false)", "" )
+                +padOpt( "only-stack-locals (false)", "" );
     
         if( phaseName.equals( "jop.cpf" ) )
             return "Phase "+phaseName+":\n"+
@@ -1270,7 +1270,7 @@ public class Options extends OptionsBase {
                 "\nThe Dead Assignment Eliminator eliminates assignment statements \nto locals whose values are not subsequently used, unless \nevaluating the right-hand side of the assignment may cause \nside-effects. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-stack-locals", "" );
+                +padOpt( "only-stack-locals (false)", "" );
     
         if( phaseName.equals( "jop.uce1" ) )
             return "Phase "+phaseName+":\n"+
@@ -1313,27 +1313,27 @@ public class Options extends OptionsBase {
                 "\nThe Null Pointer Checker finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "only-array-ref", "Annotate only array references" )
-                +padOpt( "profiling", "Insert instructions to count safe pointer accesses" );
+                +padOpt( "only-array-ref (false)", "Annotate only array references" )
+                +padOpt( "profiling (false)", "Insert instructions to count safe pointer accesses" );
     
         if( phaseName.equals( "jap.npcolorer" ) )
             return "Phase "+phaseName+":\n"+
                 "\nProduce colour tags that the Soot plug-in for Eclipse can use \nto highlight null and non-null references. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled", "" );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "jap.abc" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "with-all", "" )
-                +padOpt( "with-cse", "" )
-                +padOpt( "with-arrayref", "" )
-                +padOpt( "with-fieldref", "" )
-                +padOpt( "with-classfield", "" )
-                +padOpt( "with-rectarray", "" )
-                +padOpt( "profiling", "Profile the results of array bounds check analysis." );
+                +padOpt( "with-all (false)", "" )
+                +padOpt( "with-cse (false)", "" )
+                +padOpt( "with-arrayref (false)", "" )
+                +padOpt( "with-fieldref (false)", "" )
+                +padOpt( "with-classfield (false)", "" )
+                +padOpt( "with-rectarray (false)", "" )
+                +padOpt( "profiling (false)", "Profile the results of array bounds check analysis." );
     
         if( phaseName.equals( "jap.profiling" ) )
             return "Phase "+phaseName+":\n"+
@@ -1417,12 +1417,12 @@ public class Options extends OptionsBase {
                 "\nThe Load Store Optimizer replaces some combinations of loads to \nand stores from local variables with stack instructions. A \nsimple example would be the replacement of store.r $r2; load.r \n$r2; with dup1.r in cases where the value of r2 is not used \nsubsequently. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "debug", "" )
-                +padOpt( "inter", "" )
+                +padOpt( "debug (false)", "" )
+                +padOpt( "inter (false)", "" )
                 +padOpt( "sl (true)", "" )
-                +padOpt( "sl2", "" )
+                +padOpt( "sl2 (false)", "" )
                 +padOpt( "sll (true)", "" )
-                +padOpt( "sll2", "" );
+                +padOpt( "sll2 (false)", "" );
     
         if( phaseName.equals( "bb.pho" ) )
             return "Phase "+phaseName+":\n"+
@@ -1441,7 +1441,7 @@ public class Options extends OptionsBase {
                 "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint DU-UD webs. Conceptually, it is the inverse of the \nLocal Splitter. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "unsplit-original-locals", "" );
+                +padOpt( "unsplit-original-locals (false)", "" );
     
         if( phaseName.equals( "bop" ) )
             return "Phase "+phaseName+":\n"+
@@ -1841,7 +1841,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"use-original-names:false ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -1867,11 +1868,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.lns" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"only-stack-locals:false ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
               +"enabled:true "
+              +"only-regular-locals:false "
               +"only-stack-locals:true ";
     
         if( phaseName.equals( "jb.dae" ) )
@@ -2005,21 +2008,26 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.cse" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"naive-side-effect:false ";
     
         if( phaseName.equals( "jop.bcm" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"naive-side-effect:false ";
     
         if( phaseName.equals( "jop.lcm" ) )
             return ""
               +"enabled:false "
               +"safety:safe "
-              +"unroll:true ";
+              +"unroll:true "
+              +"naive-side-effect:false ";
     
         if( phaseName.equals( "jop.cp" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"only-regular-locals:false "
+              +"only-stack-locals:false ";
     
         if( phaseName.equals( "jop.cpf" ) )
             return ""
@@ -2031,7 +2039,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.dae" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"only-stack-locals:false ";
     
         if( phaseName.equals( "jop.uce1" ) )
             return ""
@@ -2059,14 +2068,24 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.npc" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"only-array-ref:false "
+              +"profiling:false ";
     
         if( phaseName.equals( "jap.npcolorer" ) )
-            return "";
+            return ""
+              +"enabled:false ";
     
         if( phaseName.equals( "jap.abc" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"with-all:false "
+              +"with-cse:false "
+              +"with-arrayref:false "
+              +"with-fieldref:false "
+              +"with-classfield:false "
+              +"with-rectarray:false "
+              +"profiling:false ";
     
         if( phaseName.equals( "jap.profiling" ) )
             return ""
@@ -2124,8 +2143,12 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "bb.lso" ) )
             return ""
               +"enabled:true "
+              +"debug:false "
+              +"inter:false "
               +"sl:true "
-              +"sll:true ";
+              +"sl2:false "
+              +"sll:true "
+              +"sll2:false ";
     
         if( phaseName.equals( "bb.pho" ) )
             return ""
@@ -2137,7 +2160,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb.lp" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"unsplit-original-locals:false ";
     
         if( phaseName.equals( "bop" ) )
             return ""

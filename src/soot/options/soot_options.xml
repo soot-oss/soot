@@ -493,6 +493,7 @@ jimple parser, to read <tt>.jimple</tt> files.
 				<boolopt>
 					<name>Use Original Names</name>
 					<alias>use-original-names</alias>
+                                        <default>false</default>
 					<short_desc/>
 					<long_desc>
 Retain the original names for local variables when the source
@@ -626,6 +627,7 @@ The Local Name Standardizer assigns generic names to local variables.
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 Only standardizes the names of variables that represent stack
@@ -670,6 +672,7 @@ only within extended basic blocks.
 					<boolopt>
 						<name>Only Regular Locals</name>
 						<alias>only-regular-locals</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 Only propagate copies through ``regular&apos;&apos; locals, that is,
@@ -1987,6 +1990,7 @@ enabled by default.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
+                                                <default>false</default>
 						<short_desc>Use naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
@@ -2037,6 +2041,7 @@ should be used instead of Busy Code Motion.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
+                                                <default>false</default>
 						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
@@ -2135,6 +2140,7 @@ transformation.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
+                                                <default>false</default>
 						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
@@ -2181,6 +2187,7 @@ This phase performs cascaded copy propagation.</p>
 					<boolopt>
 						<name>Only Regular Locals</name>
 						<alias>only-regular-locals</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 Only propagate copies through ``regular&apos;&apos; locals, that is,
@@ -2190,6 +2197,7 @@ those declared in the source bytecode.
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 Only propagate copies through locals that represent stack locations in
@@ -2252,6 +2260,7 @@ side-effects.
 					<boolopt>
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 Only eliminate dead assignments to locals that represent stack
@@ -2387,6 +2396,7 @@ determined statically not to be null.
 					<boolopt>
 						<name>Only Array Ref</name>
 						<alias>only-array-ref</alias>
+                                                <default>false</default>
 						<short_desc>Annotate only array references</short_desc>
 						<long_desc>
 Annotate only array-referencing instructions, instead of all
@@ -2396,6 +2406,7 @@ instructions that need null pointer checks.
 					<boolopt>
 						<name>Profiling</name>
 						<alias>profiling</alias>
+                                                <default>false</default>
 						<short_desc>Insert instructions to count safe pointer accesses</short_desc>
 						<long_desc>
 <p>
@@ -2419,6 +2430,7 @@ highlight null and non-null references.
 				<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
+                                                <default>false</default>
 						<long_desc></long_desc>	
 					</boolopt>
 				</sub_phase>
@@ -2446,6 +2458,7 @@ use the results provided by the Rectangular Array Finder.</p>
 					<boolopt>
 						<name>With All</name>
 						<alias>with-all</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 <p>
@@ -2457,6 +2470,7 @@ With Class Field, and  With Rectangular Array to true.</p>
 					<boolopt>
 						<name>With Common Sub-expressions</name>
 						<alias>with-cse</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 <p>
@@ -2472,6 +2486,7 @@ improve the result slightly.</p>
 					<boolopt>
 						<name>With Array References</name>
 						<alias>with-arrayref</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 <p>
@@ -2487,6 +2502,7 @@ between two array references.</p>
 					<boolopt>
 						<name>With Field References</name>
 						<alias>with-fieldref</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 <p>
@@ -2502,6 +2518,7 @@ not be changed by other threads between two field references.</p>
 					<boolopt>
 						<name>With Class Field</name>
 						<alias>with-classfield</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 <p>
@@ -2516,6 +2533,7 @@ dramatically.</p>
 					<boolopt>
 						<name>With Rectangular Array</name>
 						<alias>with-rectarray</alias>
+                                                <default>false</default>
 						<short_desc/>
 						<long_desc>
 This option is used together with <tt>wjap.ra</tt> to make Soot run the whole-program
@@ -2528,6 +2546,7 @@ result.
 					<boolopt>
 						<name>Profiling</name>
 						<alias>profiling</alias>
+                                                <default>false</default>
 						<short_desc>Profile the results of array bounds check analysis.</short_desc>
 						<long_desc>
 <p>
@@ -2857,6 +2876,7 @@ in cases where the value of <tt><dollar/>r2</tt> is not used subsequently.
 					<boolopt>
 						<name>Debug</name>
 						<alias>debug</alias>
+                                                <default>false</default>
 	    					<long_desc>
 Produces voluminous debugging output describing the progress of
 the load store optimizer.
@@ -2865,6 +2885,7 @@ the load store optimizer.
 					<boolopt>
 						<name>Inter</name>
 						<alias>inter</alias>
+                                                <default>false</default>
 	    					<long_desc>
 Enables two simple inter-block optimizations which attempt to
 keep some variables on the stack between blocks.  Both are
@@ -2876,15 +2897,16 @@ point.
 					<boolopt>
 						<name>sl</name>
 						<alias>sl</alias>
+						<default>true</default>
 	    					<long_desc>
 Enables an optimization which attempts to eliminate
 <tt>store</tt>/<tt>load</tt> pairs.
 </long_desc>
-						<default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>sl2</name>
 						<alias>sl2</alias>
+                                                <default>false</default>
 	    					<long_desc>
 Enables an a second pass of the optimization which attempts to
 eliminate <tt>store</tt>/<tt>load</tt> pairs.
@@ -2893,16 +2915,17 @@ eliminate <tt>store</tt>/<tt>load</tt> pairs.
 					<boolopt>
 						<name>sll</name>
 						<alias>sll</alias>
+						<default>true</default>
 	    					<long_desc>
 Enables an optimization which attempts to eliminate 
 <tt>store</tt>/<tt>load</tt>/<tt>load</tt>
 trios with some variant of <tt>dup</tt>.
 </long_desc>
-						<default>true</default>
 					</boolopt>
 					<boolopt>
 						<name>sll2</name>
 						<alias>sll2</alias>
+                                                <default>false</default>
 						<long_desc>
 Enables an a second pass of the optimization which attempts to
 eliminate <tt>store</tt>/<tt>load</tt>/<tt>load</tt> trios with
@@ -2968,6 +2991,7 @@ Local Splitter.
 					<boolopt>
 						<name>Unsplit Original Locals</name>
 						<alias>unsplit-original-locals</alias>
+                                                <default>false</default>
 						<long_desc>
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
