@@ -363,31 +363,31 @@ public class <xsl:copy-of select="$filename"/>
     public <xsl:copy-of select="$filename"/>( Map options ) {
         this.options = options;
     }
-    <xsl:for-each select="boolopt"><!---->
+    <xsl:for-each select="boolopt|section/boolopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PackManager.getBoolean( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
-    <xsl:for-each select="intopt"><!---->
+    <xsl:for-each select="intopt|section/intopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PackManager.getInt( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
-    <xsl:for-each select="flopt"><!---->
+    <xsl:for-each select="flopt|section/flopt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public float <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PackManager.getFloat( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
-    <xsl:for-each select="stropt"><!---->
+    <xsl:for-each select="stropt|section/stropt"><!---->
     /** <xsl:value-of select="name"/> -- <xsl:value-of select="short_desc"/> */
     public String <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         return soot.PackManager.getString( options, "<xsl:value-of select="alias"/>" );
     }
     </xsl:for-each>
-    <xsl:for-each select="multiopt"><!---->
+    <xsl:for-each select="multiopt|section/multiopt"><!---->
       <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
         <xsl:for-each select="value"><!---->
     public static final int <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:number/>;<!---->
@@ -417,7 +417,7 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="phase|phase/sub_phase">
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) )
             return ""<!---->
-      <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt"><!---->
+      <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><!---->
                 +"<xsl:value-of select="alias"/> "<!---->
       </xsl:for-each>;
     </xsl:for-each>
@@ -429,7 +429,7 @@ public class <xsl:copy-of select="$filename"/>
     <xsl:for-each select="phase|phase/sub_phase">
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) )
             return ""<!---->
-      <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt"><!---->
+      <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><!---->
             <xsl:if test="default">
               +"<xsl:value-of select="alias"/>:<xsl:value-of select="default"/> "<!---->
             </xsl:if>

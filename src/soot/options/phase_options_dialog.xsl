@@ -69,6 +69,13 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:apply-templates mode="pageCon" select="sub_phase">
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		</xsl:apply-templates>
+		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="pageCon" select="section">
+		<xsl:with-param name="parent" select="$sectionParent"/>
+		</xsl:apply-templates>
+		
+		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
@@ -90,6 +97,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:apply-templates mode="okPressed" select="sub_phase">
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		</xsl:apply-templates>
+		
+		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="okPressed" select="section">
+		<xsl:with-param name="parent" select="$sectionParent"/>
+		</xsl:apply-templates>
+		
+		</xsl:for-each>
+
 		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
@@ -109,6 +125,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		SootOption root = new SootOption("");
 		SootOption parent;
 		SootOption subParent;
+		SootOption subSectParent;
 		
 <!--create branches for section pages-->
 		<xsl:for-each select="section">
@@ -129,6 +146,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 			SootOption <xsl:value-of select="$parent"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_branch = new SootOption("<xsl:value-of select="name"/>");
 			subParent.addChild(<xsl:value-of select="$parent"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_branch);
 <!--create branches for sub-phase sub-section pages-->
+			
+			subSectParent = <xsl:value-of select="$parent"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>_branch;
+			
+			<xsl:for-each select="section">
+			SootOption <xsl:value-of select="$parent"/>_<xsl:value-of select="translate((alias|name)[last()],'-. ','___')"/>_branch = new SootOption("<xsl:value-of select="name"/>");
+
+			subSectParent.addChild(<xsl:value-of select="$parent"/>_<xsl:value-of select="translate((alias|name)[last()],'-. ','___')"/>_branch);
+			</xsl:for-each>
+			
 			</xsl:for-each>
 			</xsl:for-each>
 		</xsl:for-each>
@@ -150,6 +176,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:apply-templates mode="objCreation" select="sub_phase">
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		</xsl:apply-templates>
+		
+		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="objCreation" select="section">
+		<xsl:with-param name="parent" select="$sectionParent"/>
+		</xsl:apply-templates>
+		
+		</xsl:for-each>
+
 		</xsl:for-each>
 		</xsl:for-each>
 		</xsl:for-each>
@@ -172,6 +207,15 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog {
 		<xsl:with-param name="parent" select="translate(alias[last()],'-. ','___')"/>
 		<xsl:with-param name="parentAlias" select="$phaseAlias"/>
 		</xsl:apply-templates>
+		
+		<xsl:variable name="sectionParent" select="translate(alias[last()],'-. ','___')"/>
+		<xsl:for-each select="sub_phase">
+		<xsl:apply-templates mode="compInit" select="section">
+		<xsl:with-param name="parent" select="$sectionParent"/>
+		</xsl:apply-templates>
+		
+		</xsl:for-each>
+		
 		
 		</xsl:for-each>
 		</xsl:for-each>

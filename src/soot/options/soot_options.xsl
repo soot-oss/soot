@@ -66,14 +66,14 @@ Soot Command Line Options
 <li/><xsl:value-of select="alias|alias"/>
 <ul>
 <ul>
-<xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt"/>
+<xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"/>
 </ul>
 </ul>
 <ul>
 <xsl:for-each select="sub_phase">
 <li/><xsl:value-of select="alias|alias"/>
 <ul>
-<xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt"/>
+<xsl:apply-templates mode="opt" select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"/>
 </ul>
 </xsl:for-each>
 </ul>
@@ -82,7 +82,7 @@ Soot Command Line Options
 
 </xsl:template>
 
-<xsl:template mode="opt" match="boolopt|multiopt|intopt|flopt|stropt">
+<xsl:template mode="opt" match="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt">
 <li/>
 <tt><xsl:value-of select="alias"/>
 <xsl:choose>
