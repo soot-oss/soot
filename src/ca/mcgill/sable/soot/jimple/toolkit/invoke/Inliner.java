@@ -615,9 +615,6 @@ public class Inliner {
 
   numpotentiallyinlined++;
 
-  // System.out.println();
-  // System.out.println("TRYING OUT "+inlinableinvoke);
-
   localsHT.clear(); 
 
   int stmtsAtSite = 0; 
@@ -639,18 +636,13 @@ public class Inliner {
 
    MethodNode mn = ( MethodNode ) invokeExprsToMethods.get ( ie );
 
-   // System.out.println("CONSIDERING"+getCorrectCallSite ( currInvokeExpr , mn ).getCallerID());   
-
    inliningInsideMethod = mn;
-
-   //   if ( ! ( ( mn == null ) /* ||  ( mn.getMethod().getName().equals("expansion_unit")) || */  /* ( mn.getMethod().getName().equals("regular_expression") ) ||  ( mn.getMethod().getName().equals("scan_token")  )  */ ) )
 
    if ( ! ( ( mn == null )  /* || mn.getMethod().getSignature().equals("<'spec.benchmarks._228_jack.Jack_the_Parser_Generator':'scan_token':(int):void>")  */ ) )
    {
 
     SootMethod meth = mn.getMethod();
 
-    // System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature());
     if ( ( ! meth.getName().equals ( "<clinit>" ) ) && ( ! Modifier.isNative( meth.getModifiers() ) ) )
     {
 
@@ -658,8 +650,6 @@ public class Inliner {
      {
 
       allowedtochange++;
-
-      // System.out.println ( "TRYING TO INLINE INSIDE TARGET "+meth.getSignature());
 
       try {
 
@@ -906,11 +896,8 @@ public class Inliner {
           }
 
 
-          // System.out.println ( "REACHED 3");
-
            if ( syncflag )
            {
-
 /*
            syncaddress = jimple.newLocal ( new String ( "dummyaddress"+addressj ), StmtAddressType.v() );
 
@@ -1038,8 +1025,6 @@ public class Inliner {
 
   incorrectlyjimplified = clgb.getIncorrectlyJimplifiedClasses();
 
-  //   System.out.println ( "INCORRECTLY JIMPLIFIED" );
-
   Iterator incorrectlyjimplifiedit = incorrectlyjimplified.iterator();
 
   while ( incorrectlyjimplifiedit.hasNext() )
@@ -1088,12 +1073,6 @@ public class Inliner {
 
   // List sortedbydepths = sortByMethodDepths ( reachedcallgraph );
 
-  // Iterator iter = callgraph.iterator();
-
-  // Iterator iter = sortedcallgraph.iterator();
-
-  //  System.out.println ( "LOOPS SIZE = "+sortedbydepths.size() );
-
   LoopDetector loopd = new LoopDetector();
 
   Iterator numloopsit = sortedbydepths.iterator();
@@ -1119,8 +1098,6 @@ public class Inliner {
 
   MethodNode nextmn = ( MethodNode ) finalit.next();
 
-  // System.out.println ( "FINAL "+nextmn.getMethod().getSignature());
-
   int origSize = Jimplifier.getJimpleBody( nextmn.getMethod() ).getStmtList().size();
 
   origSizeHT.put ( nextmn.getMethod().getSignature(), new Integer ( origSize ) );
@@ -1132,13 +1109,6 @@ public class Inliner {
 
   Iterator invokeExprsiter = cagb.getInvokeExprs( nextmn.getMethod() ).iterator();
 
-  // System.out.println("SIZE "+nextmn.getInvokeExprs().size() );
-
-
-  // Iterator callsitesiter = nextmn.getCallSites().iterator();
- 
-  // while ( callsitesiter.hasNext() )
-
   while ( invokeExprsiter.hasNext() )
   {
 
@@ -1147,8 +1117,6 @@ public class Inliner {
    // CallSite nextcs = ( CallSite ) callsitesiter.next();
 
    CallSite nextcs = nextmn.getCallSite(nextie);
-
-   // System.out.println("NEXT "+nextcs.getInvokeExpr());
 
    invokeExprsToMethods.put ( nextcs.getInvokeExpr(), nextmn );
 
@@ -1395,12 +1363,8 @@ public class Inliner {
 
     // System.out.println ( "Generating optimized class : "+ changedclass.getName() );
  
-    // System.out.println ( "CHANGGED CLASS "+changedclass );
-
     Iterator methit = changedclass.getMethods().iterator();
 
-    // System.out.println ( "NO OF MTHDS = "+changedclass.getMethods().size() );
- 
     while ( methit.hasNext() ) 
     {
 
@@ -1410,39 +1374,18 @@ public class Inliner {
 
       MethodNode changednode  = ( MethodNode ) cagb.getNode ( changedmethod );
 
-      //      JimpleBody changedjb = ( JimpleBody ) ( new StoredBody( Jimple.v() ) ).resolveFor ( changedmethod );
-
       JimpleBody changedjb = null;
 
       if ( changedmethod.hasActiveBody() )
-      {
-
-        // System.out.println ( changedmethod.getSignature()+"ACTIVE ? "+changedmethod.hasActiveBody() ); 
-
-       changedjb = ( JimpleBody ) changedmethod.getActiveBody();  
-
-      }
+      changedjb = ( JimpleBody ) changedmethod.getActiveBody();  
       else
       throw new java.lang.RuntimeException();
 
-      // Transformations.packLocals ( changedjb );
-
-      // System.out.println ("CLEANING UP CODE" );
-
-     
       gotoEliminate ( changedjb );
 
       Transformations.cleanupCode ( changedjb ); 
 
-
-//    Transformations.removeUnusedLocals ( changedjb ); 
-
-//    ChaitinAllocator.packLocals ( changedjb );  
-//    Transformations.removeUnusedLocals ( changedjb ); 
-
       changedmethod.setActiveBody ( new GrimpBody ( (JimpleBody) changedmethod.getActiveBody(), BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING ) );
-
-
 
       usefulmethods.add ( changedmethod );
      
@@ -1450,35 +1393,23 @@ public class Inliner {
 
        // System.out.println ("BUILDING NEW BODY NOW FOR "+changedmethod.getSignature() );
 
-     // BuildAndStoreBody changedbasb = new BuildAndStoreBody ( Jimple.v(), new StoredBody ( ClassFile.v() ) );
-
      JimpleBody changedjb = new JimpleBody( new ClassFileBody( changedmethod ), BuildJimpleBodyOption.USE_PACKING );
 
      // changedmethod.setActiveBody (changedjb);
-      
 
      changedmethod.setActiveBody ( new GrimpBody ( changedjb, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING ) );
-
-
-     //     JimpleBody changedjb = ( JimpleBody ) changedbasb.resolveFor ( changedmethod );
 
     } 
 
    }
 
-    // System.out.println ( " TRYING TO GENERATE "+ changedclass.getName() +" SIZE = "+changedclass.getMethods().size() );
-
-   // changedclass.printTo( new StoredBody( Jimple.v() ), out );
-   
    changedclass.printTo(out); 
-
-   //  changedclass.write( new BuildAndStoreBody ( Grimp.v(), new StoredBody ( Jimple.v() ) ) ); // new StoredBody(Jimple.v())));
 
    changedclass.write();
 
      System.out.println ( "Generating optimized class : "+ changedclass.getName() );
 
-  } catch ( java.lang.RuntimeException e ) { System.out.println ("FAILURE"); e.printStackTrace ( System.out ); }
+  } catch ( java.lang.RuntimeException e ) { System.out.println ("Failure"); e.printStackTrace ( System.out ); }
 
  }
 
@@ -1533,6 +1464,7 @@ public class Inliner {
 
 
   /*
+
  public List getCallSitesFromProfile() {
 
   ArrayList allCallSites = new ArrayList(); 
@@ -1711,6 +1643,7 @@ public class Inliner {
 
 
   
+
 
 
  public void examineMethod ( MethodNode mn ) {
@@ -2196,13 +2129,6 @@ public class Inliner {
            
          SootClass sc2 = scm.getClass ( m.getDeclaringClass().getName() );
 
-         // System.out.println("SCANTOKEN 0");
-
-         // if ( currmethod.getName().equals("scan_token") ) 
-         // sc2 = scm.getClass ( "spec.benchmarks._228_jack.Jack_the_Parser_GeneratorTokenManager" );
-
-         // System.out.println("SCANTOKEN 1");
-
          if ( ! isStrictSuperClass ( sc1, sc2 ) )
          {
            castflag = true;
@@ -2614,30 +2540,14 @@ field.getType() ), field.getModifiers() );
   public InstanceFieldRef getCorrectInstanceFieldRef ( InstanceFieldRef
 instancefieldref ) {
 
-    //   System.out.println("REACHED 1");
 
    Value base = instancefieldref.getBase();
-
-   // InstanceFieldRef correctinstancefieldref = instancefieldref.clone();
-
 
    InstanceFieldRef correctinstancefieldref = jimple.newInstanceFieldRef ( base, instancefieldref.getField() );
 
    Value b = getCorrectValue ( base );
     
-   // System.out.println("REACHED 2 "+b.toString());
-
    correctinstancefieldref.setBase ( b );
-
-   // System.out.println("REACHED 2 "+b.toString());
-
-   //   SootField f = getCorrectField ( instancefieldref.getField() );
-
-   // System.out.println("REACHED 3 ");
-
-   // correctinstancefieldref.setField ( f );
-
-   // System.out.println("REACHED 3 "+f.toString() );
 
    return correctinstancefieldref;   
 
@@ -2654,9 +2564,7 @@ instancefieldref ) {
 
    SootField field = staticfieldref.getField();
 
-   //   StaticFieldRef correctstaticfieldref = jimple.newStaticFieldRef (getCorrectField ( field ) );
-
-     StaticFieldRef correctstaticfieldref = jimple.newStaticFieldRef ( field );
+   StaticFieldRef correctstaticfieldref = jimple.newStaticFieldRef ( field );
 
 
    return correctstaticfieldref;
@@ -2665,97 +2573,6 @@ instancefieldref ) {
 
   
   
-
-
-
-
-
-
-
-
-  /*
-
-  public Immediate getCorrectImmediate ( Immediate im ) {
-
-   Immediate correctimmediate = null;
-
-   if ( im instanceof Local )
-   {
-
-    Local l = ( Local ) im;
-
-    correctimmediate = getCorrectLocal ( l );
-
-   }
-   else    
-   {
-
-    Constant c = ( Constant ) im;
-
-    correctimmediate = getCorrectConstant ( c );
-
-   }
-
-   return correctimmediate;
-
-  }    
-
-  */
-
-
-  
-
-
-
-  /*
-
-  public Variable getCorrectVariable ( Variable variable ) {
-
-   Variable correctvariable = null;
-
-   if ( variable instanceof Local )
-   {
-
-    Local l = ( Local ) variable;
-
-    correctvariable = getCorrectLocal ( l );
-
-   }
-   else if ( variable instanceof ArrayRef )
-   { 
- 
-    ArrayRef arrayref = ( ArrayRef ) variable;
-
-    correctvariable = getCorrectArrayRef ( arrayref );
-
-   }
-   else if ( variable instanceof InstanceFieldRef )
-   {
- 
-    InstanceFieldRef instancefieldref = ( InstanceFieldRef ) variable;
-   
-    // System.out.println(" INSTANCE FIELD ========== "+instancefieldref);
-
-    correctvariable = getCorrectInstanceFieldRef ( instancefieldref );
-
-   }
-   else if ( variable instanceof StaticFieldRef )
-   {
-
-    StaticFieldRef staticfieldref = ( StaticFieldRef ) variable;
-
-    correctvariable = getCorrectStaticFieldRef ( staticfieldref );
-
-   }
-
-   return correctvariable;
-
-  }  
-
-  */
-
-
-
 
 
 
@@ -2786,8 +2603,6 @@ instancefieldref ) {
  
     InstanceFieldRef instancefieldref = ( InstanceFieldRef ) rvalue;
 
-    // System.out.println(" INSTANCE FIELD ========== "+instancefieldref);
-     
     correctrvalue = getCorrectInstanceFieldRef ( instancefieldref );
 
    }
@@ -3054,8 +2869,6 @@ instancefieldref ) {
 
    // correctinvokeexpr = invokeexpr.clone();
 
-   // System.out.println ( " REACHED CORRECTINVOKE"+invokeexpr );
-
    int numargs = invokeexpr.getArgCount();
 
    args = new ArrayList();
@@ -3068,8 +2881,6 @@ instancefieldref ) {
     args.add ( arg );
 
    }
-   
-   // System.out.println ( " RCI 1 "+invokeexpr );
    
 
    invokeexpr.apply( new AbstractJimpleValueSwitch() {
@@ -3090,16 +2901,10 @@ args );
 
      Value base = v.getBase();
 
-     // System.out.println ( " REACHED SPECINVOKE "+v );
-
      correctinvokeexpr = jimple.newSpecialInvokeExpr ( ( Local ) v.getBase(), v.getMethod(), args ); 
-
-     // System.out.println ( " REACHED CLONEDSPEINV "+correctinvokeexpr );
 
      ( ( SpecialInvokeExpr ) correctinvokeexpr ).setBase ( getCorrectValue ( base ) );
   
-     // System.out.println ( " REACHED CLONEDSPEINV "+correctinvokeexpr );
-
     }
 
 
@@ -3134,8 +2939,6 @@ args );
    }
 
      
-//   invokeExprsHT.put ( correctinvokeexpr, ( CallSite ) invokeExprsHT.get ( invokeexpr ) );
-
    invokeExprsToMethods.put ( correctinvokeexpr, inliningInsideMethod );
 
    if ( inliningImportant )
@@ -3374,8 +3177,6 @@ newmultiarrayexpr ) {
      if ( s.getRightOp() instanceof ThisRef )
      {
 
-  //    System.out.println ( "REACHED HERE" );
-
       if ( interfaceInvoked ) 
       rightop = currInterfaceInvokeExpr.getBase();     
       else if ( specialInvoked )
@@ -3392,14 +3193,8 @@ newmultiarrayexpr ) {
 
        int index = pref.getIndex(); 
 
-//       System.out.println ( "REACHED PARAMETER" );
-
-//       System.out.println ( currInvokeExpr );
-
        rightop = currInvokeExpr.getArg( index );
      
-//       System.out.println ( " ACTUAL PARAMETER "+ rightop );
-
      }
 
      if ( ! ( s.getRightOp() instanceof CaughtExceptionRef ) )
@@ -3427,18 +3222,8 @@ newmultiarrayexpr ) {
 
       }
 
-
-//      System.out.println ( "REACHED PARAMETER 2 ");
-
-      // System.out.println ( ( ( Local ) rightop ).getName() );
-
-      //      Value correctrightop = getCorrectValue ( rightop );
-
       Value correctrightop = rightop;
 
-      // System.out.println ( ( ( Local ) correctrightop ).getName() );
-
-      
       if ( s.getRightOp() instanceof ThisRef )
       {
         if ( castflag )
@@ -3470,19 +3255,9 @@ newmultiarrayexpr ) {
 
      Value correctvar = getCorrectValue ( var );
 
-     // System.out.println (" DEBUG 1 ");
-
-     // System.out.println (" DEBUG 1 "+correctvar.toString() );
-
      Value correctrval = getCorrectValue ( rval ); 
 
-     // System.out.println (" DEBUG 2 ");
-
-     // System.out.println (" DEBUG 2 "+correctrval.toString() );
-   
      correctstmt = jimple.newAssignStmt ( correctvar , correctrval );
-
-     // System.out.println(" DEBUG "+correctstmt.toString() );
 
     }
 
@@ -3571,20 +3346,6 @@ invokeexpr ) );
 
      Value correctreturnvalue = getCorrectValue ( returnvalue );
 
-/*
-     RValue r = null;
-
-     if ( correctreturnvalue instanceof Local )
-     r = ( Local ) correctreturnvalue;
-     else if ( correctreturnvalue instanceof Constant )
-     r = ( Constant ) correctreturnvalue;
-
-     if ( assignflag )
-     correctstmt = new AssignStmt ( returnvariable, r );
-     else
-     correctstmt = new NopStmt();
-*/
-
      correctstmt = jimple.newReturnStmt ( correctreturnvalue );
 
     }
@@ -3651,8 +3412,6 @@ invokeexpr ) );
 
   public void InlineMethod ( StmtList inlinablemethod, StmtList targetmethod, Iterator target ) {
 
-  // int start = startstmtnum; 
-
    syncexits = new ArrayList();
 
    syncexittargets = new ArrayList();
@@ -3673,10 +3432,6 @@ invokeexpr ) );
     fixupnumstmts++;
 
    }
-
-   // System.out.println ( " IN INLINE METHOD, FIXUPNUMSTMTS = "+fixupnumstmts );
-
-   // System.out.println ( " IN INLINE METHOD, NUMSTMTS = "+numstmts );
 
    targetnumstmts = fixupnumstmts + 1;
 
@@ -3709,16 +3464,12 @@ invokeexpr ) );
 
       numstmts++;
 
-      //      target.next();
-
       EnterMonitorStmt syncenter = jimple.newEnterMonitorStmt ( thisvariable );
 
       targetmethod.add ( numstmts, syncenter );
 
       numstmts++;
        
-      //    target.next();
-
       firstinsertion = false;
     
       syncid = jimple.newIdentityStmt ( syncthrow, jimple.newCaughtExceptionRef ( listBody ) );
@@ -3729,88 +3480,17 @@ invokeexpr ) );
 
     }
 
-/*
-    if ( syncflag )
-    {
-
-     if ( ( nextstmt instanceof ReturnStmt ) || ( nextstmt instanceof ReturnVoidStmt ) )
-     {
-
-
-      AssignStmt syncassgn = jimple.newAssignStmt ( syncaddress, jimple.newNextNextStmtRef() );
-
-      targetmethod.add ( numstmts, syncassgn );
-
-      numstmts++;
-       
-      target.next();
-
-
-
-      GotoStmt syncgoto = jimple.newGotoStmt ( syncexit );
-
-      targetmethod.add ( numstmts, syncgoto );
-
-      numstmts++;
-       
-      target.next();
-
-      syncexits.add ( syncexit );
-
-      syncexittargets.add ( nextstmt );
-
-      syncexit = jimple.newExitMonitorStmt( thisvariable );
-
-     }
-
-    }
-
-
-*/
-
-    //    System.out.println ( "ORIG STMT "+nextstmt.toString() ); 
-
     try {
 
      Stmt newstmt = getCorrectStmt ( nextstmt );
 
-     
-    
-     // System.out.println ( "REPLACED BY : "+newstmt.toString()+" FROM "+inmethname+" INTO "+tamethname );
- 
-/*
-     if ( nextstmt instanceof IdentityStmt )
-     System.out.println ( "REACHED GETCORRECTSTMT");
-
-     if ( nextstmt instanceof IdentityStmt )
-     System.out.println ( "NUMSTMTS "+numstmts );
-*/
-
      targetmethod.add ( numstmts, newstmt ); 
-
-/*
-     if ( nextstmt instanceof IdentityStmt )
-     System.out.println ( "REACHED GETCORRECTSTMT 1 ");
-*/
-
 
      numstmts++;
 
-     // targetmethod.add ( start, newstmt );
-
-     // start++;
-
-     // target.next();
-
-/*
-     if ( nextstmt instanceof IdentityStmt )
-     System.out.println ( "REACHED GETCORRECTSTMT 2");
-*/
-
-
     } catch ( java.lang.RuntimeException e ) { 
 
-      // System.out.println(" PROBLEM STMT IGNORED IN INLINER : "+nextstmt.toString() ); 
+      System.out.println(" PROBLEM STMT IGNORED IN INLINER : "+nextstmt.toString() ); 
         
        e.printStackTrace ( System.out );
      }
@@ -3832,54 +3512,17 @@ invokeexpr ) );
 
     numstmts++;
 
-    // target.next();
-
     ExitMonitorStmt syncex = jimple.newExitMonitorStmt ( cloneForsync );
     
     targetmethod.add ( numstmts, syncex );
 
     numstmts++;
 
-    // target.next();
-
     ThrowStmt syncthrw = jimple.newThrowStmt ( syncthrow );
     
     targetmethod.add ( numstmts, syncthrw );
 
     numstmts++;
-
-    // target.next();
-
-/*
-
-    Iterator syncexitit = syncexits.iterator();
-
-    Iterator syncexittargetit = syncexittargets.iterator();
-
-    while ( syncexitit.hasNext() )
-    {
-
-     ExitMonitorStmt monitorexit = ( ExitMonitorStmt ) syncexitit.next();
-
-     targetmethod.add ( numstmts, monitorexit );
-
-     numstmts++;
-
-     // target.next();
-
-     // RetStmt syncret = jimple.newRetStmt ( syncaddress );
-
-     GotoStmt syncret = jimple.newGotoStmt ( ( Stmt ) syncexittargetit.next() );
-
-     targetmethod.add ( numstmts, syncret );
-
-     numstmts++;
-
-     // target.next();
-
-    }
-
-*/
 
    }
 
@@ -3892,12 +3535,6 @@ invokeexpr ) );
    targetmethod.add ( numstmts, returnstmt );
 
    numstmts++;
-
-   // target.next();
-
-   // System.out.println("JUST BEFORE ENTERING FIXUP NUMSTMTS = "+numstmts);
-
-   // System.out.println(" AND FIXUPNUMSTMTS = "+fixupnumstmts );
 
    if ( syncflag )
    {
@@ -3928,41 +3565,19 @@ invokeexpr ) );
    
      numstmts++;
     
-     // target.next();
-   
-     // RetStmt syncret = jimple.newRetStmt ( syncaddress );
-   
      GotoStmt syncret = jimple.newGotoStmt ( ( Stmt ) syncexittargetit.next() );
    
      targetmethod.add ( numstmts - 1, syncret );
    
      numstmts++;
   
-     // target.next();
-    
    }
-
-/*
-   System.out.println ( "REACHED FIXUP 1" );
-
-   Iterator tgtit = targetmethod.iterator();
-
-   while ( tgtit.hasNext() )
-   {
-
-    Stmt nextst = ( Stmt ) tgtit.next();
-
-    System.out.println ("DEBUG "+nextst );
-
-    if ( nextst instanceof GotoStmt )
-    System.out.println ("DEBUG TGT "+( ( GotoStmt ) nextst).getTarget() );
-
-   }
-
-*/
-   // System.out.println("SUCCESSFULLY INLINED");
 
   }
+
+
+
+
 
 
 
@@ -4047,30 +3662,29 @@ invokeexpr ) );
 
     Stmt inlinedbeginstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
-   indexOftarget = indexOf ( endstmt , inlinablemeth );
+    indexOftarget = indexOf ( endstmt , inlinablemeth );
 
-   if ( syncflag )
-   indexOftarget = indexOftarget + 2;
+    if ( syncflag )
+    indexOftarget = indexOftarget + 2;
 
-   Stmt inlinedendstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
+    Stmt inlinedendstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
-   indexOftarget = indexOf ( handlerstmt , inlinablemeth );
+    indexOftarget = indexOf ( handlerstmt , inlinablemeth );
 
-  if ( syncflag )
-  indexOftarget = indexOftarget + 2;
+    if ( syncflag )
+    indexOftarget = indexOftarget + 2;
 
-   Stmt inlinedhandlerstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
+    Stmt inlinedhandlerstmt = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
-   Trap newtrap = jimple.newTrap ( exclass, inlinedbeginstmt, inlinedendstmt, inlinedhandlerstmt );
+    Trap newtrap = jimple.newTrap ( exclass, inlinedbeginstmt, inlinedendstmt, inlinedhandlerstmt );
 
-   List traps = listBody.getTraps();
+    List traps = listBody.getTraps();
    
-   traps.add(trapindex++,newtrap); 
+    traps.add(trapindex++,newtrap); 
 
-   // listBody.addTrap ( newtrap );
+    // listBody.addTrap ( newtrap );
      
    }  
-
 
   }
 
@@ -4093,26 +3707,7 @@ invokeexpr ) );
 
   public void FixupTargets () {
 
-   // System.out.println ( "REACHED FIXUP TARGETS" );
-
    Iterator inlineiterator = inlinablemeth.iterator();
-
-/*
-
-   Iterator targetiterator = targetmeth.iterator();
- 
-   targetnumstmts = 0;
-
-   while ( targetnumstmts < numstmts )
-   {
-
-    targetiterator.next();
-
-    targetnumstmts++;
-
-   }
-
-*/
 
    inlinenumstmts = 0;
 
@@ -4121,29 +3716,23 @@ invokeexpr ) );
 
     Stmt s = ( Stmt ) inlineiterator.next();
 
-    //    System.out.println("CHECK IN ORIGINAL MTHD : "+s.toString() );
-
     s.apply ( new AbstractStmtSwitch () {    
 
      public void caseGotoStmt ( GotoStmt s ) {
 
       Stmt target = ( Stmt ) s.getTarget();
 
-      // correctstmt = new GotoStmt ( target.clone() );
-
       int indexOftarget = indexOf ( target, inlinablemeth );
 
-       if ( syncflag )
-   indexOftarget = indexOftarget + 2;
+      if ( syncflag )
+      indexOftarget = indexOftarget + 2;
 
       GotoStmt inlinedStmt = null;
 
       if ( syncflag )    
-inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
+      inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
       else
       inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts );
-
-      // System.out.println("CHECK IN TARGET METHOD : "+inlinedStmt.toString() );
 
       Stmt inlinedtarget = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
@@ -4158,13 +3747,8 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
 
       int indexOftarget = indexOf ( target, inlinablemeth );
 
- if ( syncflag )
-   indexOftarget = indexOftarget + 2;
-
-
-      //System.out.println( "REACHED HERE" );
-
-      //System.out.println( "CHECK IN TARGET METHOD 1 : "+ targetmeth.get (targetnumstmts+inlinenumstmts ) );
+      if ( syncflag )
+      indexOftarget = indexOftarget + 2;
 
       IfStmt inlinedStmt = null;
 
@@ -4172,8 +3756,6 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
       inlinedStmt = ( IfStmt ) targetmeth.get( targetnumstmts+inlinenumstmts+2 );
       else
       inlinedStmt = ( IfStmt ) targetmeth.get( targetnumstmts+inlinenumstmts );
-
-      //System.out.println("CHECK IN TARGET METHOD : "+inlinedStmt.toString() );
 
       Stmt inlinedtarget = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );      
 
@@ -4193,8 +3775,6 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
       inlinedStmt = ( LookupSwitchStmt ) targetmeth.get ( targetnumstmts+inlinenumstmts+2 );
       else
       inlinedStmt = ( LookupSwitchStmt ) targetmeth.get ( targetnumstmts+inlinenumstmts );
-
-      //System.out.println("CHECK IN TARGET METHOD : "+inlinedStmt.toString() );
 
       Iterator targetsit = targets.iterator();
 
@@ -4222,8 +3802,8 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
 
       int indexOftarget = indexOf ( defaulttarget, inlinablemeth );
 
-       if ( syncflag )
-       indexOftarget = indexOftarget + 2;
+      if ( syncflag )
+      indexOftarget = indexOftarget + 2;
 
       Stmt inlineddtarget = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );
 
@@ -4243,8 +3823,6 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
      else
      inlinedStmt = ( TableSwitchStmt ) targetmeth.get ( targetnumstmts+inlinenumstmts );
 	  
-     //System.out.println("CHECK IN TARGET METHOD : "+inlinedStmt.toString() );
-
      Iterator targetsit = targets.iterator();
 
      int targetsnum = 0;
@@ -4271,8 +3849,8 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
 
      int indexOftarget = indexOf ( defaulttarget, inlinablemeth );
 
-       if ( syncflag )
-       indexOftarget = indexOftarget + 2;
+     if ( syncflag )
+     indexOftarget = indexOftarget + 2;
 
      Stmt inlineddtarget = ( Stmt ) targetmeth.get ( targetnumstmts+indexOftarget );
 
@@ -4281,7 +3859,6 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
     }
 
    });
-
 
    inlinenumstmts++;   
 
@@ -4313,118 +3890,50 @@ inlinedStmt = ( GotoStmt ) targetmeth.get( targetnumstmts+inlinenumstmts + 2);
   public void FixupMethod ( StmtList targetMethod, Iterator fixupIterator,
 Iterator target, int fixupNumStmts ) {
 
-    // System.out.println ( "REACHED FIXUP ");
-
    targetMethod.remove ( fixupNumStmts );      
 
    targetMethod.add ( fixupNumStmts, jimple.newNopStmt() );
 
    int numiter = 0; 
 
-
-   // ADDED DEC 18
-   // COMMENTED OUT targetMethod.remove ( fixupNumStmts + 1 );
-
    fixupNumStmts++;
 
-   // try {
-
-//        fixupIterator.next();
-
-        // } catch ( java.lang.RuntimeException e ) { e.printStackTrace ( System.out ); }
-
-   // numstmts--;
-
-
-//   Stmt s = ( Stmt ) fixupIterator.next();
-     Stmt s = ( Stmt ) targetMethod.get ( fixupNumStmts );
+   Stmt s = ( Stmt ) targetMethod.get ( fixupNumStmts );
    
-
-// while ( !( s.equals ( returnstmt ) ) )
-
-   // System.out.println ( "INFIXUP NUMSTMTS = "+numstmts );
-
-   // System.out.println ( "INFIXUP FIXUPNUMSTMTS = "+fixupNumStmts );
-
    while ( fixupNumStmts < numstmts )
    {
-
-     // System.out.println ( s );
-
-     // System.out.println("NUMSTMTS = "+numstmts);
-
-     // System.out.println("FIXUPNUMSTMTS = "+fixupNumStmts);
 
     if ( s instanceof ReturnVoidStmt )
     {
 
-
-
-    if ( syncflag )
-    {
-/*
-
-      AssignStmt syncassgn = jimple.newAssignStmt ( syncaddress, jimple.newNextNextStmtRef() );
-
-      targetMethod.add ( fixupNumStmts + 1, syncassgn );
-
-      fixupIterator.next();
-
-      numstmts++;
-       
-      target.next();
-
-      fixupNumStmts++;
-
-*/
+     if ( syncflag )
+     {
 
       GotoStmt syncgoto = jimple.newGotoStmt ( syncexit );
 
       targetMethod.add ( fixupNumStmts + 1, syncgoto );
 
-//      fixupIterator.next();
-
       numstmts++;
-       
-      //      target.next();
        
       fixupNumStmts++;
 
       syncexits.add ( syncexit );
    
-      // syncexittargets.add ( s );
-      
       syncexit = jimple.newExitMonitorStmt( thisvariable );
 
-    }
-
+     }
 
      GotoStmt gs = jimple.newGotoStmt ( returnstmt );
 
      if ( syncflag ) 
      syncexittargets.add ( gs );
 
-
      targetMethod.add ( fixupNumStmts+1 , gs );
 
-   //  System.out.println ( "ADDED "+targetMethod.size() );
-
-     //System.out.println(" STMT : "+s.toString());
-
-     
-    
      if ( syncflag )
      targetMethod.remove ( fixupNumStmts - 1);
      else
      targetMethod.remove ( fixupNumStmts );
-
-
-
-  //   System.out.println (" REMOVED "+targetMethod.size() );
-
-     //System.out.println(" REMOVED STMT : "+rs.toString());
-
-//     targetMethod.add ( fixupNumStmts, jimple.newGotoStmt ( returnstmt ) );
 
     }
     else if ( s instanceof ReturnStmt )
@@ -4432,8 +3941,6 @@ Iterator target, int fixupNumStmts ) {
 
      Value im = ( ( ReturnStmt ) s ).getReturnValue();
 
-     // targetMethod.remove ( fixupNumStmts );
-     
      Value r = null;
 
      if ( im instanceof Local )
@@ -4441,97 +3948,51 @@ Iterator target, int fixupNumStmts ) {
      else if ( im instanceof Constant )
      r = ( Constant ) im;
 
-
-
-
-
-    if ( syncflag )
-    {
-
-/*
-      AssignStmt syncassgn = jimple.newAssignStmt ( syncaddress, jimple.newNextNextStmtRef() );
-
-      targetMethod.add ( fixupNumStmts + 1, syncassgn );
-
-      fixupIterator.next();
-
-      numstmts++;
-       
-      target.next();
-
-      fixupNumStmts++;
-
-*/
+     if ( syncflag )
+     {
 
       GotoStmt syncgoto = jimple.newGotoStmt ( syncexit );
 
       targetMethod.add ( fixupNumStmts + 1, syncgoto );
 
-
-//      fixupIterator.next();
-
       numstmts++;
        
-      // target.next();
-
       fixupNumStmts++;
 
       syncexits.add ( syncexit );
-     
-      // syncexittargets.add ( s );
      
       syncexit = jimple.newExitMonitorStmt( thisvariable );
 
     }
 
+     AssignStmt dummyreturnassign = jimple.newAssignStmt ( dummyreturn , r );
 
-    // System.out.println ( "FIXUP "+targetMethod.get(fixupNumStmts) );
-
-    // System.out.println ( "FIXUP - 1 "+targetMethod.get(fixupNumStmts - 1) );
-
-     targetMethod.add ( fixupNumStmts+1 , jimple.newAssignStmt ( dummyreturn , r ) );
+     targetMethod.add ( fixupNumStmts+1 , dummyreturnassign );
 
      fixupNumStmts++;
-
 
      GotoStmt gs = jimple.newGotoStmt ( returnstmt );
 
      if ( syncflag )
-     syncexittargets.add ( gs );
+     syncexittargets.add ( dummyreturnassign );
 
      targetMethod.add ( fixupNumStmts+1 , gs );
 
      if ( syncflag )
      targetMethod.remove ( fixupNumStmts - 2 );
      else
-     {
-      targetMethod.remove ( fixupNumStmts - 1 );
-     } 
-
-
-     // System.out.println ( "REACHED FIXUP METHOD 2" );
-
-     // ADDED DEC 24 
-//     fixupIterator.next();
+     targetMethod.remove ( fixupNumStmts - 1 );
 
      numiter++;
      numstmts++;
      
-     // target.next();
-
     }     
-
-    // s = ( Stmt ) fixupIterator.next();
 
     s = (Stmt) targetMethod.get ( fixupNumStmts+ /* numiter */ +1); 
 
     fixupNumStmts++;
 
    }
-
-   //     System.out.println ( "LAST "+s); 
-   //   System.out.println ( " FIXED UP METHOD " );
-
 
   }
 
@@ -4590,17 +4051,7 @@ Iterator target, int fixupNumStmts ) {
 
 
 
- public void removeMethods() {
-
- }
-
-
-
-
-
-
-
-
+ public void removeMethods() {}
 
 
 
@@ -4695,6 +4146,8 @@ Iterator target, int fixupNumStmts ) {
   PrintWriter out = new PrintWriter(System.out, true);
 
   Iterator changedit = changedclasses.iterator();
+
+  
 
   // System.out.println ( "+++++++++ NO. OF CHANGED CLASSES "+changedclasses.size() );
 
@@ -5086,8 +4539,6 @@ Iterator target, int fixupNumStmts ) {
 
       Value v = vb.getValue();
 
-      // System.out.println ( " NEXTVALUE "+v );
-
       SootClass dec = null;
 
       SootField field = null;
@@ -5096,8 +4547,6 @@ Iterator target, int fixupNumStmts ) {
       
       if ( v instanceof InstanceFieldRef )
       {
-
-   //    System.out.println ( "INSTANCE FIELD 1 "+v );
 
        InstanceFieldRef ifr = ( InstanceFieldRef ) v;
 
@@ -5113,7 +4562,7 @@ Iterator target, int fixupNumStmts ) {
 
 //       if ( incorrectlyjimplified.contains ( dec.getName() ) )
 
-       System.out.println ( " TRYING TO CHANGE CLASS MOD FOR "+dec.getName() );
+        //       System.out.println ( " TRYING TO CHANGE CLASS MOD FOR "+dec.getName() );
 
        if ( ! allowedToChange ( dec.getName() ) )
        return false;
@@ -5138,17 +4587,9 @@ Iterator target, int fixupNumStmts ) {
         if ( ! allowedToChange ( dec.getName() ) )
         return false;
 
- //     System.out.println ( "EARLIER "+Modifier.toString ( field.getModifiers() ) );
+        field.setModifiers ( getChangedFieldModifiers ( field.getSignature(), field.getModifiers() ) );
 
- //     System.out.println ( ( ( Integer ) fieldsHT.get ( field.getSignature() ) ).intValue() );
-
-      field.setModifiers ( getChangedFieldModifiers ( field.getSignature(), field.getModifiers() ) );
-
-       changedclasses.add ( dec );
-
-//       System.out.println( " NOTE : CHANGED MODIFIER FOR "+field.getSignature() );  
-
-//       System.out.println ( "LATER "+Modifier.toString ( field.getModifiers() ) );
+        changedclasses.add ( dec );
 
        }
 
@@ -5156,8 +4597,6 @@ Iterator target, int fixupNumStmts ) {
       }
       else if ( v instanceof StaticFieldRef ) 
       {
-
-  //     System.out.println ( " STATIC FIELD 1 "+v );
 
        StaticFieldRef sfr = ( StaticFieldRef ) v;
 
@@ -5546,15 +4985,6 @@ Iterator target, int fixupNumStmts ) {
         return false;
 
        int newmodifiers = getChangedMethodModifiers ( meth.getSignature(), meth.getModifiers() );
-       /*
-       if ( meth.getName().equals ( "toString" ) && meth.getDeclaringClass().getName().equals ( "ca.mcgill.sable.soot.jimple.JAssignStmt" ) ) 
-       {
-
-         System.out.println ( "OLD MODIFIERS "+Modifier.toString ( meth.getModifiers() ) );
-         System.out.println ( "NEW MODIFIERS "+Modifier.toString ( newmodifiers ) );
-       }
-       */
-       // meth.setModifiers ( newmodifiers );
 
        try {
 
@@ -5580,7 +5010,7 @@ Iterator target, int fixupNumStmts ) {
 
   }
 
-   } catch ( java.lang.RuntimeException e ) { /* System.out.println ( " IN INLINER Jimple cannot handle : "+method.getSignature() ); */ } 
+   } catch ( java.lang.RuntimeException e ) {} 
  
  return true;
 
@@ -5602,51 +5032,19 @@ Iterator target, int fixupNumStmts ) {
 
   try {
 
-/*
-  Iterator incorrectit = incorrectlyjimplified.iterator();
+   result = result && ( ! incorrectlyjimplified.contains ( cname ) );
 
-  while ( incorrectit.hasNext() )
-  {
+   if ( ! includeLibraries )
+   result = result && ( ! isLibraryNode ( cname ) );
 
-    String nextname = ( String ) incorrectit.next();
+   if ( ! ( classesToProcess == null ) )
+   result = result && ( classesToProcess.contains ( cname ) ); 
 
-    if ( nextname.equals ( cname ) )
-    result = false;
-
-  }
-
-*/
-  result = result && ( ! incorrectlyjimplified.contains ( cname ) );
-
-  // System.out.println ( "ALLOWED 1 "+ cname+ " "+result );
-
-  // SootClass cn = scm.getClass ( cname );
-
-  // result = result && ( ! Modifier.isAbstract( cn.getModifiers() ) );
-
-  // System.out.println ( "ALLOWED 2 "+ cname+ " "+result );
-
-
- 
-  if ( ! includeLibraries )
-  result = result && ( ! isLibraryNode ( cname ) );
-
-  if ( ! ( classesToProcess == null ) )
-  result = result && ( classesToProcess.contains ( cname ) ); 
-
-  // System.out.println ( "ALLOWED 3 "+ cname+ " "+result  );
-
-
-  // result = result && ( cname.equals ( "GreyImage" ) );
-
-  // result = result && ( isSamePackage ( getPackageName ( cname ), "ca.mcgill.sable.soot.jimple" ) );
-  
   } catch ( java.lang.RuntimeException e ) { 
 
     return false;
 
   }
-
 
   return result;
 
@@ -5680,8 +5078,6 @@ Iterator target, int fixupNumStmts ) {
 
 
   public void adjustSubMethods ( SootMethod m, int newmodifiers ) {
-
-    // System.out.println("REACHED ADJUSTSUBMETHODS");
 
    adjustingSubMethods = true;
 
@@ -5772,8 +5168,6 @@ Iterator target, int fixupNumStmts ) {
 
   public int getChangedClassModifiers ( String s, int modifiers ) {
 
-    // System.out.println("CHANGE CLASS MODIFIERS "+s);
-
    int changedmodifiers = modifiers;
 
    changedmodifiers = changedmodifiers & 0xFFFB;
@@ -5802,8 +5196,6 @@ Iterator target, int fixupNumStmts ) {
  
  public int getChangedMethodModifiers ( String s, int modifiers ) {
    
-   // System.out.println("CHANGE METHOD MODIFIERS "+s);
-
    int changedmodifiers = modifiers;
 
    changedmodifiers = changedmodifiers & 0xFFFB;
@@ -5856,8 +5248,6 @@ Iterator target, int fixupNumStmts ) {
 
   public int getChangedFieldModifiers ( String s, int modifiers ) {
 
-    // System.out.println("CHANGE FIELD MODIFIERS "+s);
-
    int changedmodifiers = modifiers;
 
    changedmodifiers = changedmodifiers & 0xFFFB;
@@ -5889,8 +5279,6 @@ Iterator target, int fixupNumStmts ) {
 
  public boolean satisfiesResolverCriteria ( SootMethod method ) {
 
-   // System.out.println ( "RESOLVING METHOD "+method.getSignature() );
-
    boolean ref = false;
 
    boolean samepackage = false;
@@ -5910,27 +5298,11 @@ Iterator target, int fixupNumStmts ) {
    try {
 
 
-//   Iterator iter = scm.getClasses().iterator();
-
-//   while ( iter.hasNext() )
-//   scm.removeClass( ((SootClass) iter.next()) );
-
    SootClass currclass = currmethod.getDeclaringClass(); 
 
    String currname = currclass.getName();
 
    String currpackagename = getPackageName ( currname );
-
-   /*      
-
-   BuildAndStoreBody buildAndStoreBody = new BuildAndStoreBody(Jimple.v() , new StoredBody(ClassFile.v()));
-
-   JimpleBody stmtListBody = (JimpleBody) buildAndStoreBody.resolveFor(method);
-
-   */
-
-
- //  JimpleBody stmtListBody = ( JimpleBody) new StoredBody(Jimple.v()).resolveFor(method);
 
    JimpleBody stmtListBody = Jimplifier.getJimpleBody ( method );   
 
@@ -5943,8 +5315,6 @@ Iterator target, int fixupNumStmts ) {
    while ( localsit.hasNext() )
    {
      
-    // System.out.println ( "EXAMINING LOCAL NO : "+localnum++ );
-
     ref = false;
 
     samepackage = false;
@@ -6007,23 +5377,14 @@ Iterator target, int fixupNumStmts ) {
 
    StmtList l = stmtListBody.getStmtList();
 
-   
-
-
-  Iterator it = l.iterator();
+   Iterator it = l.iterator();
 
    int boxnum = 0;
-
-   // System.out.println ( "SIZED = "+l.size() );
 
    while ( it.hasNext() ) 
    {
 
-    // System.out.println ( "EXAMINING STMT : "+s );
-
     Stmt s = ( Stmt ) it.next();
-
-    // System.out.println ( "EXAMINING STMT : "+s );
 
     List boxes = s.getUseAndDefBoxes();
 
@@ -6042,8 +5403,6 @@ Iterator target, int fixupNumStmts ) {
 
       Value v = vb.getValue();
 
-      // System.out.println ( "SUITABLE "+v );
-
       SootClass dec = null;
 
       SootField field = null;
@@ -6052,8 +5411,6 @@ Iterator target, int fixupNumStmts ) {
       
       if ( v instanceof InstanceFieldRef )
       {
-
-       // System.out.println ( "INSTANCE FIELD" );
 
        InstanceFieldRef ifr = ( InstanceFieldRef ) v;
 
@@ -6128,8 +5485,6 @@ Iterator target, int fixupNumStmts ) {
       else if ( v instanceof StaticFieldRef ) 
       {
 
-       // System.out.println ( "STATIC FIELD" );
-
        StaticFieldRef sfr = ( StaticFieldRef ) v;
 
        field = sfr.getField();
@@ -6195,8 +5550,6 @@ Iterator target, int fixupNumStmts ) {
       else if ( v instanceof CastExpr )
       {
 
-       // System.out.println ( " CAST " );
-
        ref = false;
 
        CastExpr ce = ( CastExpr ) v; 
@@ -6222,8 +5575,6 @@ Iterator target, int fixupNumStmts ) {
 
         if ( ty instanceof RefType )
         {
-
- 
      
          ref = true;
 
@@ -6258,8 +5609,6 @@ Iterator target, int fixupNumStmts ) {
       }
       else if ( v instanceof InstanceOfExpr )
       {
-
-       // System.out.println ( " INSTANCEOF " );
 
        ref = false;
 
@@ -6323,8 +5672,6 @@ Iterator target, int fixupNumStmts ) {
       else if ( v instanceof NewExpr )
       {
 
-       // System.out.println ( "NEW" );
-
        NewExpr newexpr = ( NewExpr ) v; 
        
        RefType t = newexpr.getBaseType();   
@@ -6351,8 +5698,6 @@ Iterator target, int fixupNumStmts ) {
       }
       else if ( v instanceof NewArrayExpr )
       {
-
-//       System.out.println ( " NEWARRAY " );
 
        ref = false;
 
@@ -6414,8 +5759,6 @@ Iterator target, int fixupNumStmts ) {
       else if ( v instanceof NewMultiArrayExpr )
       {
 
-  //      System.out.println ( "NEWMULTI" );
-
        ref = false;
 
        NewMultiArrayExpr newmultiarrayexpr = ( NewMultiArrayExpr ) v; 
@@ -6476,19 +5819,14 @@ Iterator target, int fixupNumStmts ) {
       else if ( v instanceof StaticInvokeExpr )
       {
 
-     //  System.out.println ( "STATICINVOKE" );
-
        StaticInvokeExpr stinvexpr = ( StaticInvokeExpr ) v;
    
        int argcount = stinvexpr.getArgCount();
     
        int counter = 0;
 
-       // System.out.println (" REACHED COUNTER "+argcount );
-
        while ( counter < argcount )
        {
-
  
         samepackage = false;
 
@@ -6547,8 +5885,6 @@ Iterator target, int fixupNumStmts ) {
        counter++;
 
       }
-
-       // System.out.println ( "EXITED COUNTER" );
 
        samepackage = false;
 
@@ -6615,8 +5951,6 @@ Iterator target, int fixupNumStmts ) {
       }
       else if ( v instanceof InvokeExpr )
       {
-
-       // System.out.println ( " NORMAL INVOKE " );
 
        InvokeExpr invexpr = ( InvokeExpr ) v;
 
@@ -6768,13 +6102,9 @@ Iterator target, int fixupNumStmts ) {
 
    } catch ( java.lang.RuntimeException e ) { /* System.out.println ( " IN INLINER "+method.getSignature() ); */ }
 
- //  System.out.println ( " CHANGE MODIFIERS ? " );
-
    return changeModifiersOfAccessesFrom ( method ); 
 
-   // return true;
-
- }
+  }
 
 
 
