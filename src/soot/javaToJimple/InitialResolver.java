@@ -45,7 +45,6 @@ public class InitialResolver {
     private HashMap privateMethodGetAccessMap;
     private ArrayList interfacesList;
     private ArrayList cCallList;
-    private HashSet anonArgsToCCall = new HashSet();
         
     private FastHierarchy hierarchy;
 
@@ -351,18 +350,6 @@ public class InitialResolver {
         }
     }
     
-    private void addAnonArgs(List cCalls) {
-        for( Iterator cCallIt = cCalls.iterator(); cCallIt.hasNext(); ) {
-            final polyglot.ast.ConstructorCall cCall = (polyglot.ast.ConstructorCall) cCallIt.next();
-            for( Iterator argIt = cCall.arguments().iterator(); argIt.hasNext(); ) {
-                final Object arg = (Object) argIt.next();
-                if(!(arg instanceof polyglot.ast.New)) continue;
-                polyglot.ast.New newArg = (polyglot.ast.New) arg;
-                if(newArg.anonType() == null) continue;
-                anonArgsToCCall.add(newArg.anonType());
-            }
-        }
-    }
     private void handleFinalLocals(polyglot.ast.ClassMember member){
         MethodFinalsChecker mfc = new MethodFinalsChecker();
         member.visit(mfc);
@@ -430,8 +417,6 @@ public class InitialResolver {
     }
     
     public boolean isAnonInCCall(polyglot.types.ClassType anonType){
-        return anonArgsToCCall.contains(anonType);
-        /*
         //System.out.println("checking type: "+anonType);
         Iterator it = cCallList.iterator();
         while (it.hasNext()){
@@ -447,7 +432,6 @@ public class InitialResolver {
             }
         }
         return false;
-        */
     }
     
     public BiMap getAnonClassMap(){
