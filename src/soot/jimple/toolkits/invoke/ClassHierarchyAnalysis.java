@@ -32,6 +32,7 @@ import soot.jimple.*;
 /** Implementation of Class Hierarchy Analysis. */
 public class ClassHierarchyAnalysis
 {
+
     /** Creates a new InvokeGraph based on CHA from the current Scene. */
     public static InvokeGraph newInvokeGraph()
     {
@@ -59,7 +60,7 @@ public class ClassHierarchyAnalysis
             while (methodsIt.hasNext())
             {
                 SootMethod m = (SootMethod)methodsIt.next();
-                
+
                 if(!m.isConcrete())
                     continue;
 
@@ -109,7 +110,10 @@ public class ClassHierarchyAnalysis
                 }
             }
         }
-
+        
+        g.mcg = (MethodCallGraph)g.newMethodGraph();
         return g;
     }
+
+
 }

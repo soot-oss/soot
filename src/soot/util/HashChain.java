@@ -33,7 +33,6 @@ import soot.*;
 public class HashChain extends AbstractCollection
     implements Chain 
 {
-    
     private HashMap map = new HashMap(); 
     private Object firstItem;
     private Object lastItem;
@@ -162,8 +161,18 @@ public class HashChain extends AbstractCollection
         }
     }
 
+    public static HashChain listToHashChain(List list) {
+        HashChain c = new HashChain();
+        Iterator it = list.iterator();
+        while (it.hasNext()) 
+            c.addLast(it.next());
+        return c;
+    }
+
     public void insertBefore(Object toInsert, Object point)
     {
+	if (toInsert == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
 
         if(map.containsKey(toInsert))
             throw new RuntimeException("Chain already contains object.");
@@ -189,6 +198,9 @@ public class HashChain extends AbstractCollection
 
     public void addFirst(Object item)
     {
+	if (item == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
+
         stateCount++;
         Link newLink, temp;
 
@@ -207,6 +219,9 @@ public class HashChain extends AbstractCollection
 
     public void addLast(Object item)
     {
+	if (item == null)
+	  throw new RuntimeException("Bad idea!  You tried to insert null into a Chain!  Do not pass GO.");
+
         stateCount++;
         Link newLink, temp;
         if(map.containsKey(item))
@@ -214,36 +229,49 @@ public class HashChain extends AbstractCollection
         
         if(lastItem != null) {
             temp = (Link) map.get(lastItem);
+	    if (temp == null)
+	      {
+	      System.out.println(stateCount);
+	      System.out.println(this);
+	      System.out.println(map.keySet());
+	      System.out.println(lastItem);
+	      System.out.println(firstItem);
+	      System.out.println("type: "+lastItem.getClass());
+	      System.out.println(map.size());
+	      }
             newLink = temp.insertAfter(item);   
         } else {
             newLink = new Link(item);
             firstItem = lastItem = item;
         }            
-              map.put(item, newLink);
+        map.put(item, newLink);
     }
     
     public void removeFirst()
     {
         stateCount++;
+	Object item = firstItem;
         ((Link) map.get(firstItem)).unlinkSelf();
+	map.remove(item);
     }
 
     public void removeLast()
     {
         stateCount++;
-        //        Object temp = getPredOf(
+	Object item = lastItem;
         ((Link) map.get(lastItem)).unlinkSelf();
-        //lastItem = temp;
+	map.remove(item);
     }
 
-    public Object getFirst(){ 
-        
+    public Object getFirst()
+    {         
         if(firstItem == null) 
             throw new NoSuchElementException();
         return firstItem; 
     }
     
-    public Object getLast(){ 
+    public Object getLast()
+    { 
         if(lastItem == null) 
             throw new NoSuchElementException();
         return lastItem; 
@@ -302,7 +330,6 @@ public class HashChain extends AbstractCollection
     {
         return new LinkIterator(head, tail);
     }
-
 
     public int size(){ return map.size(); }               
 
@@ -462,8 +489,8 @@ public class HashChain extends AbstractCollection
 
         public void remove()
             throws IllegalStateException
-     {
-         if(stateCount != iteratorStateCount)
+        {
+            if(stateCount != iteratorStateCount)
              throw new ConcurrentModificationException();
             
             stateCount++; iteratorStateCount++;
@@ -476,8 +503,7 @@ public class HashChain extends AbstractCollection
             }
 
         }
-        
-            
+   
         public String toString() 
         {
             if(currentLink == null) 

@@ -122,6 +122,12 @@ public class PatchingChain extends AbstractCollection implements Chain
         return res;        
     }
 
+    /** Returns true if this patching chain contains the specified element. */
+    public boolean contains(Object u)
+    {
+        return innerChain.contains(u);
+    }
+
     /** Adds the given object at the beginning of the Chain. */
     public void addFirst(Object u)
     {

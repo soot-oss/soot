@@ -68,7 +68,7 @@ public class JLookupSwitchStmt extends AbstractStmt
         return targetBoxes;
     }
 
-
+    /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */ 
     public JLookupSwitchStmt(Value key, List lookupValues, List targets, Unit defaultTarget)
     {
         this(Jimple.v().newImmediateBox(key),
@@ -76,7 +76,7 @@ public class JLookupSwitchStmt extends AbstractStmt
              Jimple.v().newStmtBox(defaultTarget));
     }
 
-    
+    /** Constructs a new JLookupSwitchStmt. lookupValues should be a list of IntConst s. */     
     public JLookupSwitchStmt(Value key, List lookupValues, List targets, UnitBox defaultTarget)
     {
         this(Jimple.v().newImmediateBox(key),
@@ -91,7 +91,7 @@ public class JLookupSwitchStmt extends AbstractStmt
         List clonedLookupValues = new ArrayList(lookupValueCount);
 
         for( int i = 0; i < lookupValueCount ;i++) {
-            clonedLookupValues.add(i, new Integer(getLookupValue(i)));
+            clonedLookupValues.add(i, IntConstant.v(getLookupValue(i)));
         }
         
         return new JLookupSwitchStmt(getKey(), clonedLookupValues, getTargets(), getDefaultTarget());
@@ -185,9 +185,10 @@ public class JLookupSwitchStmt extends AbstractStmt
         this.lookupValues.set(index, new Integer(value));
     }
 
+
     public int getLookupValue(int index)
     {
-        return ((Integer) lookupValues.get(index)).intValue();
+        return ((IntConstant)lookupValues.get(index)).value;
     }
 
     public  List getLookupValues()

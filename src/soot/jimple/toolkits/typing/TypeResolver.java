@@ -36,7 +36,7 @@ import soot.toolkits.scalar.*;
 /**
  * This class resolves the type of local variables.
  **/
-class TypeResolver
+public class TypeResolver
 {
   /** Reference to the class hierarchy **/
   private ClassHierarchy hierarchy;

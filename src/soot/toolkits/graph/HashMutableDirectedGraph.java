@@ -70,6 +70,27 @@ public class HashMutableDirectedGraph implements MutableDirectedGraph
     {
     }
 
+    /** Removes all nodes and edges. */
+    public void clearAll() {
+        nodeToPreds = new HashMap();
+        nodeToSuccs = new HashMap();
+        edgePairs = new HashSet();
+        nodes = new HashChain();
+        heads = new HashChain();
+        tails = new HashChain();
+    }
+
+    public Object clone() {
+        HashMutableDirectedGraph g = new HashMutableDirectedGraph();
+        g.nodeToPreds = (HashMap)nodeToPreds.clone();
+        g.nodeToSuccs = (HashMap)nodeToSuccs.clone();
+        g.edgePairs = new HashSet(edgePairs);
+        g.nodes = HashChain.listToHashChain(HashChain.toList(nodes));
+        g.heads = HashChain.listToHashChain(HashChain.toList(heads));
+        g.tails = HashChain.listToHashChain(HashChain.toList(tails));
+        return g;
+    }
+
     /* Returns an unbacked list of heads for this graph. */
     public List getHeads()
     {

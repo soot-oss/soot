@@ -405,7 +405,7 @@ public class Hierarchy
         return getSubclassesOf(parent).contains(possibleChild);
     }
 
-    /** Returns true if child is, or is a superclass of, possibleParent. */
+    /** Returns true if parent is, or is a superclass of, possibleChild. */
     public boolean isClassSuperclassOfIncluding(SootClass parent, SootClass possibleChild)
     {
         return getSubclassesOfIncluding(parent).contains(possibleChild);
@@ -414,14 +414,14 @@ public class Hierarchy
     /** Returns true if child is a subinterface of possibleParent. */
     public boolean isInterfaceSubinterfaceOf(SootClass child, SootClass possibleParent)
     {
-        throw new RuntimeException("Not implemented yet!");
+        return getSubinterfacesOf(possibleParent).contains(child);
     }
 
     /** Returns true if child is a direct subinterface of possibleParent. */
-    public boolean isInterfaceDirectSubinterfaceOf(SootClass c,
-                                                   SootClass c2)
+    public boolean isInterfaceDirectSubinterfaceOf(SootClass child,
+                                                   SootClass possibleParent)
     {
-        throw new RuntimeException("Not implemented yet!");
+        return getDirectSubinterfacesOf(possibleParent).contains(child);
     }
 
     /** Returns the most specific type which is an ancestor of both c1 and c2. */
@@ -431,7 +431,7 @@ public class Hierarchy
         throw new RuntimeException("Not implemented yet!");
     }
 
-    // Questions about method invokation.
+    // Questions about method invocation.
 
     /** Given an object of actual type C (o = new C()), returns the method which will be called
         on an o.f() invocation. */
@@ -451,7 +451,7 @@ public class Hierarchy
             if (c.declaresMethod(methodSig))
                 return c.getMethod(methodSig);
         }
-        throw new RuntimeException("could not resolve concrete dispatch!");
+        throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
     }
 
     /** Given a set of definite receiver types, returns a list of possible targets. */
@@ -462,8 +462,15 @@ public class Hierarchy
         ArraySet s = new ArraySet();
         Iterator classesIt = classes.iterator();
 
-        while (classesIt.hasNext())
-            s.add(resolveConcreteDispatch((SootClass)classesIt.next(), m));
+        while (classesIt.hasNext()) {
+            Object cls = classesIt.next();
+            if (cls instanceof RefType)
+                s.add(resolveConcreteDispatch(((RefType)cls).getSootClass(), m));
+            else if (cls instanceof ArrayType) {
+                s.add(resolveConcreteDispatch((RefType.v("java.lang.Object")).getSootClass(), m));
+            }
+            else throw new RuntimeException("Unable to resolve concrete dispatch of type "+ cls);
+        }
 
         List l = new ArrayList(); l.addAll(s);
         return Collections.unmodifiableList(l);
@@ -478,8 +485,14 @@ public class Hierarchy
 
         Iterator classesIt = null;
 
-        if (c.isInterface())
+        if (c.isInterface()) {
             classesIt = getImplementersOf(c).iterator();
+            HashSet classes = new HashSet();
+            while (classesIt.hasNext())
+                classes.addAll(getSubclassesOfIncluding((SootClass)classesIt.next()));
+            classesIt = classes.iterator();
+        }    
+            
         else
             classesIt = getSubclassesOfIncluding(c).iterator();
 

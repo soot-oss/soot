@@ -57,12 +57,14 @@ public class UnreachableCodeEliminator extends BodyTransformer
         numPruned = 0;
         stmtGraph = new CompleteUnitGraph(body);
         visited = new HashSet();
-            
-        // mark first statement and all its successors, recursively
-        if (!body.getUnits().isEmpty())
-            visitStmt((Stmt)body.getUnits().getFirst());
 
-        
+        // Used to be: "mark first statement and all its successors, recursively"
+        // Bad idea! Some methods are extremely long. It broke because the recursion reached the
+        // 3799th level.
+
+        if (!body.getUnits().isEmpty())
+            visitStmts((Stmt)body.getUnits().getFirst());
+
         Iterator stmtIt = body.getUnits().snapshotIterator();
         while (stmtIt.hasNext()) 
         {
@@ -93,24 +95,25 @@ public class UnreachableCodeEliminator extends BodyTransformer
         
   } // pruneUnreachables
 
-    private static void visitStmt(Stmt stmt) {
-        //ignore if already seen
-        if (visited.contains(stmt)) {
-            return;
+    private static void visitStmts(Stmt head) {
+
+        // Do DFS of the unit graph, starting at the head node.
+
+        LinkedList st = new LinkedList();
+        st.addLast(head);
+
+        while (!st.isEmpty()) {
+            Object stmt = st.removeLast();
+            if (!visited.contains(stmt)) {
+                visited.add(stmt);
+                Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
+                while (succIt.hasNext()) {
+                    Object o = succIt.next();
+                    if (!visited.contains(o))
+                        st.addLast(o);
+                }
+            }
         }
+    } // visitStmts
 
-        // add to list of visited nodes
-        visited.add(stmt);
-
-        // visit all successors recursively
-        Iterator succIt = stmtGraph.getSuccsOf(stmt).iterator();
-
-        while (succIt.hasNext())
-            visitStmt((Stmt)succIt.next());
-    } // visitStmt
 } // UnreachablePruner
-    
-
-
-
-

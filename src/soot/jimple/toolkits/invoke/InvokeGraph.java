@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam, Raja Vallee-Rai
+ * Copyright (C) 1999 Patrick Lam, Raja Vallee-Rai, Felix Kwok
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -39,7 +39,70 @@ public class InvokeGraph
     HashMap siteToTargetMethods = new HashMap();
     HashMap methodToContainedSites = new HashMap();
     HashMap targetToCallingSites = new HashMap();
-  
+
+    MethodCallGraph mcg;
+
+    /** Rebuilds the call graph to include only reachable methods. */
+    public void refreshReachableMethods() {
+        mcg.refresh();
+    }
+
+    /** Computes call graph characteristics, and stores them in the data structure <code>CallGraphStats</code>. */
+    public CallGraphStats computeStats() {
+
+        CallGraphStats stats = new CallGraphStats();
+
+        Iterator methodsIt = mcg.getReachableMethods().iterator();
+        while (methodsIt.hasNext()) {
+            SootMethod m = (SootMethod)methodsIt.next();
+            boolean isBench = false;
+            String t = m.getDeclaringClass().getName();
+
+            if (! (t.startsWith("java.")  || t.startsWith("sun.") || t.startsWith("sunw.") ||
+                   t.startsWith("javax.") || t.startsWith("com.") || t.startsWith("org.")))
+                isBench = true;
+
+            stats.nodes++;
+            if (isBench)
+                stats.benchNodes++;
+            
+            List lst = (List)methodToContainedSites.get(m);
+            if (lst==null)
+                continue;
+
+            Iterator sitesIt = lst.iterator();
+
+            while (sitesIt.hasNext()) {
+                Stmt s = (Stmt)sitesIt.next();
+                int numOfEdges = ((List)siteToTargetMethods.get(s)).size();
+                if (numOfEdges <= 1) {
+                    stats.monoCS++;
+                    stats.monoEdges += numOfEdges;
+                    if (isBench) {
+                        stats.benchMonoCS++;
+                        stats.benchMonoEdges += numOfEdges;
+                    }
+                    
+                }
+                else {
+                    stats.polyCS++;
+                    stats.polyEdges += numOfEdges;
+                    if (isBench) {
+                        stats.benchPolyCS++;
+                        stats.benchPolyEdges += numOfEdges;
+                        if (Main.isVerbose) {
+                            System.out.println("Polymorphic site: "+s);
+                            System.out.println("in method: "+m);
+                            System.out.println("Targets: "+siteToTargetMethods.get(s));
+                        }
+                    }
+                }
+            }
+        }
+        return stats;
+    }  
+
+    /** Returns the method that contains <code>site</code>. */
     public SootMethod getDeclaringMethod(Stmt site) 
     {
         return (SootMethod)siteToDeclaringMethod.get(site);
@@ -56,6 +119,11 @@ public class InvokeGraph
             return l;
         else
             return new ArrayList();
+    }
+
+    /** Checks whether a site is included in the invoke graph. */
+    public boolean containsSite(Stmt site) {
+        return siteToTargetMethods.containsKey(site);
     }
 
     /** Returns the callsites which potentially invoke target. */
@@ -77,18 +145,21 @@ public class InvokeGraph
             return new ArrayList();
         }
 
-        Iterator unitsIt = m.getActiveBody().getUnits().iterator();
+        List lst = (List)methodToContainedSites.get(m);
+        if (lst == null)
+            return new ArrayList();
+
+        Iterator sitesIt = lst.iterator();
 
         // Use a set as temporary structure to ensure unique targets
         Set targets = new HashSet();
 
         // The targets of a method is the union of the targets
         // for all invoke expressions in the method
-        while (unitsIt.hasNext())
+        while (sitesIt.hasNext())
         {
-            Stmt s = (Stmt)unitsIt.next();
-            if (s.containsInvokeExpr())
-                targets.addAll(getTargetsOf(s));
+            Stmt s = (Stmt)sitesIt.next();
+            targets.addAll(getTargetsOf(s));
         }
 
         // Transfer the results to a list to match return type 
@@ -97,6 +168,7 @@ public class InvokeGraph
         return retList;
     }
 
+    /** Returns a list of <code>SootMethod</code>s reachable from <code>m</code>. */
     public List getTransitiveTargetsOf(SootMethod m) 
     {
         Set workList  = new HashSet();
@@ -193,6 +265,7 @@ public class InvokeGraph
         if (l == null) 
             l = new ArrayList();
         l.add(site);
+        methodToContainedSites.put(container, l);
     }
 
     public void removeSite(Stmt site) 
@@ -216,55 +289,60 @@ public class InvokeGraph
 
     public MutableDirectedGraph newMethodGraph()
     {
-        HashMutableDirectedGraph g = new HashMutableDirectedGraph();
-
-        List appAndLibClasses = new ArrayList();
-        appAndLibClasses.addAll(Scene.v().getApplicationClasses());
-        appAndLibClasses.addAll(Scene.v().getLibraryClasses());
-
-        // Add all of the methods as nodes of g.
-        // Note that if we had a list of entryPoints, we'd
-        // have a mini tree shaker.
-        {
-            Iterator classesIt = appAndLibClasses.iterator();
-
-            while (classesIt.hasNext())
-            {
-                SootClass c = (SootClass)classesIt.next();
-                Iterator methodsIt = c.getMethods().iterator();
-                while (methodsIt.hasNext())
-                {
-                    SootMethod m = (SootMethod)methodsIt.next();
-                    g.addNode(m);
-                }
-            }
-        }
-
-        // Add edges to g
-        {
-            Iterator methodsIt = g.getNodes().iterator();
-            while (methodsIt.hasNext())
-            {
-                SootMethod m = (SootMethod)methodsIt.next();
-                
-                if(!m.isConcrete())
-                    continue;
-
-                Iterator sitesIt = getSitesOf(m).iterator();
-                while (sitesIt.hasNext())
-                {
-                    Stmt site = (Stmt)sitesIt.next();
-                    Iterator targetsIt = getTargetsOf(site).iterator();
-                    while (targetsIt.hasNext())
-                    {
-                        Object target = targetsIt.next();
-                        if (g.containsNode(target))
-                            g.addEdge(m, target);
-                    }
-                }
-            }
-        }
-        return g;
+        return new MethodCallGraph(this);
     }
+
+    public MutableDirectedGraph newMethodGraph(Collection methodSet)
+    {
+        return new MethodCallGraph(this, methodSet);
+    }
+
 }
 
+class CallGraphStats 
+{  
+    int nodes;
+    int benchNodes;
+    int monoCS;
+    int polyCS;
+    int monoEdges;
+    int polyEdges;
+    int benchMonoCS;
+    int benchPolyCS;
+    int benchMonoEdges;
+    int benchPolyEdges;
+
+    public CallGraphStats() 
+    {
+        nodes = 0;
+        benchNodes = 0;
+        monoCS = 0;
+        polyCS = 0;
+        monoEdges = 0;
+        polyEdges = 0;
+        benchMonoCS = 0;
+        benchPolyCS = 0;
+        benchMonoEdges = 0;
+        benchPolyEdges = 0;
+    }
+
+    public String toString() 
+    {
+        String s = "\n";
+        s = s + "          Call Graph Statistics\n";
+        s = s + "============================================\n";
+        s = s + "Number of nodes = "+nodes+"\n";
+        s = s + "Number of sites = "+(monoCS+polyCS)+"\n";
+        s = s + "Number of resolved sites = "+monoCS+"\n";
+        s = s + "Number of unresolved sites = "+polyCS+"\n";
+        s = s + "Number of resolved edges = "+monoEdges+"\n";
+        s = s + "Number of unresolved edges = "+polyEdges+"\n";
+        s = s + "Number of benchmark nodes = "+benchNodes+"\n";
+        s = s + "Number of benchmark sites = "+(benchMonoCS+benchPolyCS)+"\n";
+        s = s + "Number of resolved benchmark sites = "+benchMonoCS+"\n";
+        s = s + "Number of unresolved benchmark sites = "+benchPolyCS+"\n";
+        s = s + "Number of resolved benchmark edges = "+benchMonoEdges+"\n";
+        s = s + "Number of unresolved benchmark edges = "+benchPolyEdges+"\n";
+        return s;
+    }
+}

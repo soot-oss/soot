@@ -4638,7 +4638,7 @@ public class CFG {
             int npairs = ((Instruction_Lookupswitch)ins).npairs;
 
             for (int j = 0; j < npairs; j++)
-                matches.add(new Integer( ((Instruction_Lookupswitch)ins).match_offsets[j*2]));
+                matches.add(IntConstant.v( ((Instruction_Lookupswitch)ins).match_offsets[j*2]));
 
             stmt = Jimple.v().newLookupSwitchStmt(
                 Util.getLocalForStackOp(listBody, typeStack, typeStack.topIndex()),

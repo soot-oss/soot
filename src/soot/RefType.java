@@ -38,7 +38,7 @@ import java.util.*;
  *   Two RefType are equal iff they are parametrized by the same class name as a String.
  */
 
-public class RefType extends BaseType implements ToBriefString
+public class RefType extends BaseType implements ToBriefString, Comparable
 {
     /** the class name that parametrizes this RefType */
     public final String className;
@@ -59,7 +59,13 @@ public class RefType extends BaseType implements ToBriefString
     {
         return new RefType(className);
     }
-    
+
+    public int compareTo(Object o) throws ClassCastException
+    {
+        RefType t = (RefType)o;
+        return this.toString().compareTo(t.toString());
+    }
+        
     /** 
      *  Create a RefType for a class. 
      *  @param c A SootClass for which to create a RefType.

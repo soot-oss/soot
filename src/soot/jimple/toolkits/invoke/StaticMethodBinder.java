@@ -43,30 +43,34 @@ public class StaticMethodBinder extends SceneTransformer
 
     public String getDefaultOptions() 
     {
-        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe";
+        return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe VTA-passes:1";
     }
 
     public String getDeclaredOptions() 
     { 
-        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes";
+        return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes VTA-passes";
     }
     
     protected void internalTransform(String phaseName, Map options)
     {
-        if(Main.isVerbose)
-            System.out.println("[] Binding static methods...");
-
+        Date start = new Date();
         InvokeGraphBuilder.v().transform(phaseName + ".igb");
+
+        Date finish = new Date();
+        if (Main.isVerbose) {
+            System.out.println("[stb] Done building invoke graph.");
+            long runtime = finish.getTime() - start.getTime();
+            System.out.println("[stb] Invoke graph building took "+ (runtime/60000)+" min. "+ ((runtime%60000)/1000)+" sec.");
+        }
 
         boolean enableNullPointerCheckInsertion = Options.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = Options.getBoolean(options, "insert-redundant-casts");
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
+        int VTApasses = Options.getInt(options, "VTA-passes");
 
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
-        VariableTypeAnalysis vta = new VariableTypeAnalysis(graph);
-        vta.trimActiveInvokeGraph();
 
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
                 
@@ -114,11 +118,15 @@ public class StaticMethodBinder extends SceneTransformer
                     // Ok, we have an Interface or VirtualInvoke going to 1.
 
                     SootMethod target = (SootMethod)targets.get(0);
-
+                    
                     if (!AccessManager.ensureAccess(container, target, modifierOptions))
                         continue;
                     
                     if (!target.getDeclaringClass().isApplicationClass() || !target.isConcrete())
+                        continue;
+
+                    // Don't modify java.lang.Object
+                    if (target.getDeclaringClass()==Scene.v().getSootClass("java.lang.Object"))
                         continue;
 
                     boolean targetUsesThis = true; //methodUsesThis(target);

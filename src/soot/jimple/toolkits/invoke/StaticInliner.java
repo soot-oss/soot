@@ -43,13 +43,13 @@ public class StaticInliner extends SceneTransformer
     public String getDefaultOptions() 
     {
         return "insert-null-checks insert-redundant-casts allowed-modifier-changes:unsafe "+
-            "expansion-factor:3 max-container-size:5000 max-inlinee-size:20";
+            "expansion-factor:3 max-container-size:5000 max-inlinee-size:20 VTA-passes:0";
     }
 
     public String getDeclaredOptions() 
     {
         return super.getDeclaredOptions() + " insert-null-checks insert-redundant-casts allowed-modifier-changes"+
-            " expansion-factor max-container-size max-inlinee-size"; 
+            " expansion-factor max-container-size max-inlinee-size VTA-passes"; 
     }
     
     protected void internalTransform(String phaseName, Map options)
@@ -64,14 +64,26 @@ public class StaticInliner extends SceneTransformer
         String modifierOptions = Options.getString(options, "allowed-modifier-changes");
         float expansionFactor = Options.getFloat(options, "expansion-factor");
         int maxContainerSize = Options.getInt(options, "max-container-size");
-        int maxInlineeSize = Options.getInt(options, "max-inlinee-size");        
+        int maxInlineeSize = Options.getInt(options, "max-inlinee-size");
+        int VTApasses = Options.getInt(options, "VTA-passes");
 
         HashMap instanceToStaticMap = new HashMap();
 
         InvokeGraph graph = Scene.v().getActiveInvokeGraph();
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
 
-        DirectedGraph mg = graph.newMethodGraph();
+        DirectedGraph mg;
+        VariableTypeAnalysis vta = null;
+
+        for (int i = 0; i < VTApasses; i++)
+        {
+            vta = new VariableTypeAnalysis(graph);
+            vta.trimActiveInvokeGraph();
+            graph.refreshReachableMethods();
+        }
+
+        mg = graph.mcg;
+
         ArrayList sitesToInline = new ArrayList();
 
         // Visit each potential site in reverse pseudo topological order.

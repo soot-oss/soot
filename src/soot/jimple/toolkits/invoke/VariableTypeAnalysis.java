@@ -31,61 +31,163 @@ import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 
-/** Incomplete implementation of Variable Type Analysis (as defined in Vijay Sundaresan's thesis).
- * It remains to implement some notion of a VTA-graph editor (for native methods); also, something
- * needs to be done to properly account for start nodes. */
+/** An implementation of Variable Type Analysis (as defined in Vijay Sundaresan's thesis). */
+
 public class VariableTypeAnalysis
 {
     VTATypeGraph vtg;
-    HashMap superNodesToReachingTypes = new HashMap();
+    HashMap superNodesToReachingTypes;
     InvokeGraph ig;
 
     StronglyConnectedComponents scc;
     DirectedGraph superGraph;
+    MethodCallGraph mcg;
 
-    List computeReachingTypes(List superNode)
+    Date VTAStart, VTAFinish;
+
+    TypeSet computeReachingTypes(List superNode)
     {
-        HashSet retVal = new HashSet();
+        TypeSet retVal = new TypeSet();
         Iterator snIt = superNode.iterator();
 
         while (snIt.hasNext())
         {
             Object o = snIt.next();
-            
-            retVal.addAll((List)vtg.nodeToReachingTypes.get(o));
+            retVal.addAll((TypeSet)vtg.nodeToReachingTypes.get(o));
         }
 
-        List retList = new LinkedList();
-        retList.addAll(retVal);
-        return retList;
+        return retVal;
     }
+
+    TypeSet computeConservativeReachingTypes(Hierarchy h, List superNode) {
+
+        TypeSet retVal = new TypeSet();
+        Iterator snIt = superNode.iterator();
+        
+        LinkedList st = new LinkedList();
+        snIt = superNode.iterator(); 
+        while (snIt.hasNext()) {
+            Object o = snIt.next();
+            Type t = (Type)vtg.labelToDeclaredType.get(o);
+
+            if(t instanceof ArrayType) {
+                retVal.add(RefType.v("java.lang.Object"));
+                if(((ArrayType)t).baseType instanceof RefType)
+                    st.addLast(((RefType)((ArrayType)t).baseType).getSootClass());
+            }
+            else st.addLast(((RefType)t).getSootClass());
+            while(!st.isEmpty()) {
+                SootClass c = (SootClass)st.removeLast();
+                if(c.isInterface())
+                    st.addAll(h.getImplementersOf(c));
+                else
+                    for (Iterator classIt = h.getSubclassesOfIncluding(c).iterator(); classIt.hasNext(); )
+                        retVal.add(RefType.v((SootClass)classIt.next()));
+            }
+        }
+        
+        return retVal;
+    }
+
+    public List getReachingTypesOf(Object o) {
+
+        TypeSet reachingTypes = (TypeSet)superNodesToReachingTypes.get(scc.getComponentOf(o));
+        if (reachingTypes==null) return null;
+        Hierarchy h = Scene.v().getActiveHierarchy();
+
+        List validReachingTypes = new LinkedList();
+        Type t = (Type)vtg.labelToDeclaredType.get(o);
+        Type declaredType = t;
+
+        if (t instanceof ArrayType) 
+            t = ((ArrayType)t).baseType;
+        if (t instanceof RefType) {
+
+            SootClass cls = ((RefType)t).getSootClass();
+
+            if (t.equals(RefType.v("java.lang.Object")))
+                validReachingTypes.addAll(reachingTypes);
+            else
+                for (Iterator rtIt = reachingTypes.iterator(); rtIt.hasNext(); ) {
+                    Type rt = (Type)rtIt.next();
+                    SootClass subCls = ((RefType)rt).getSootClass();
+                    if (cls.isInterface()) {
+                        boolean found = false;
+                        List classList = h.getSuperclassesOfIncluding(subCls);
+                        List interfaceList = h.getSubinterfacesOfIncluding(cls);
+                        for (Iterator classesIt = classList.iterator(); classesIt.hasNext() && !found; ) {
+                            SootClass superclass = (SootClass)classesIt.next();
+                            for (Iterator interfacesIt = interfaceList.iterator(); interfacesIt.hasNext() && !found; ) {
+                                if (superclass.getInterfaces().contains(interfacesIt.next())) {
+                                    validReachingTypes.add(rt);
+                                    found = true;
+                                }
+                            }
+                        }
+                    }
+                    else if (h.isClassSubclassOfIncluding(subCls, cls))
+                        validReachingTypes.add(rt);
+                }
+        }
+        if (declaredType instanceof ArrayType && !t.equals(RefType.v("java.lang.Object")))
+            validReachingTypes.add(RefType.v("java.lang.Object"));
+        return validReachingTypes;
+    }   
 
     /** Constructs a VariableTypeAnalysis object for the given InvokeGraph.
      * Calling trimInvokeGraph will modify the associated invokeGraph according
      * to this VTA's results. */
     public VariableTypeAnalysis(InvokeGraph ig)
     {
-        if (Main.isVerbose)
+        Date start, finish;
+
+        start = new Date();
+        VTAStart = start;
+        if (Main.isVerbose) {
+            System.out.println("[vta] VTA started on "+start);
             System.out.println("[vta] Constructing Variable Type Analysis graph.");
+        }
 
         this.ig = ig;
         vtg = new VTATypeGraph(ig);
 
+        finish = new Date();
+        if (Main.isVerbose) {
+            System.out.println("[vta] VTA graph has "+vtg.size()+" nodes and "+vtg.numEdges()+" edges.");
+            long runtime = finish.getTime()-start.getTime();
+            System.out.println("[vta] Graph construction took "+
+                               (runtime/60000)+" min. "+
+                               ((runtime%60000)/1000)+" sec.");
+            System.out.println("[vta] Computing strongly connected components.");
+        }
+        start = finish;
+
         // ha!
         scc = new StronglyConnectedComponents(vtg);
+
+        finish = new Date();
+        if (Main.isVerbose) {
+            long runtime = finish.getTime()-start.getTime();
+            System.out.println("[vta] SCC took "+
+                               (runtime/60000)+" min. "+
+                               ((runtime%60000)/1000)+" sec.");
+            System.out.println("[vta] Propagating types.");
+        }
+        start = finish;
 
         // Now we need a new graph.
         superGraph = scc.getSuperGraph();
 
-        Iterator sgHeadsIt = superGraph.getHeads().iterator();
+        Hierarchy h = Scene.v().getActiveHierarchy();
+        visitNodes(h, superGraph);
 
-        while (sgHeadsIt.hasNext())
-        {
-            List sgNode = (List)sgHeadsIt.next();
-            List sgTypes = computeReachingTypes(sgNode);
-
-            superNodesToReachingTypes.put(sgNode, sgTypes);
-            visitNode(superGraph, sgNode, sgTypes);
+        finish = new Date();
+        if (Main.isVerbose) {
+            long runtime = finish.getTime()-start.getTime();
+            System.out.println("[vta] Type propagation took "+
+                               (runtime/60000)+" min. "+
+                               ((runtime%60000)/1000)+" sec.");
+            System.out.println("[vta] Done constructing Variable Type Analysis graph.");
         }
         if (Main.isVerbose)
             System.out.println("[vta] Done constructing Variable Type Analysis graph.");
@@ -117,11 +219,22 @@ public class VariableTypeAnalysis
         while (classesIt.hasNext())
         {
             SootClass c = (SootClass)classesIt.next();
+
+            if (Main.isVerbose) {
+                Iterator fieldsIt = c.getFields().iterator();
+                while (fieldsIt.hasNext()) {
+                    SootField f = (SootField)fieldsIt.next();
+                    if (!VTATypeGraph.isRefLikeType(f.getType()))
+                        continue;
+                    System.out.println(f+" :: "+getReachingTypesOf(VTATypeGraph.getVTALabel(f)));
+                }
+            }
+
             Iterator methodsIt = c.getMethods().iterator();
             while (methodsIt.hasNext())
             {
                 SootMethod m = (SootMethod)methodsIt.next();
-                
+
                 if(!m.isConcrete())
                     continue;
 
@@ -139,9 +252,17 @@ public class VariableTypeAnalysis
                     if (!s.containsInvokeExpr())
                         continue;
 
+                    if (!ig.mcg.isReachable(m.toString())) {
+                        if (ig.containsSite(s)) {
+                            ig.removeAllTargets(s);
+                            ig.removeSite(s);
+                        }
+                        continue;
+                    }
+
                     InvokeExpr ie = (InvokeExpr)s.getInvokeExpr();
                     
-                     List ieSites = ig.getTargetsOf(s);
+                    List ieSites = ig.getTargetsOf(s);
 
                     if (ie instanceof VirtualInvokeExpr ||
                         ie instanceof InterfaceInvokeExpr)
@@ -156,31 +277,38 @@ public class VariableTypeAnalysis
                             // the ones that VTA doesn't rule out.)
                             ig.removeAllTargets(s);
 
-                            System.out.println("stmt "+s);
-                            System.out.println("resolving concrete dispatch; list = "+scc.getComponentOf(VTATypeGraph.getVTALabel(m, base)));
-                            System.out.println("reaching types = "+ ((List)superNodesToReachingTypes.get(
-                                           scc.getComponentOf(VTATypeGraph.getVTALabel(m, base)))));
+                            if (Main.isVerbose) {
+                                System.out.println("stmt "+s);
+                                System.out.println("local: "+VTATypeGraph.getVTALabel(m, base));
+                                System.out.println("reaching types: "+getReachingTypesOf(VTATypeGraph.getVTALabel(m, base)));
+                            }
 
-                            Iterator targetsIt = h.resolveConcreteDispatch
-                                ((List)superNodesToReachingTypes.get(
-                                                 scc.getComponentOf(VTATypeGraph.getVTALabel(m, base))), 
-                                 ie.getMethod()).iterator();
+                            List validReachingTypes = getReachingTypesOf(VTATypeGraph.getVTALabel(m, base));
+                            Type t = (Type)vtg.labelToDeclaredType.get(VTATypeGraph.getVTALabel(m, base));
+                            if (t instanceof ArrayType) 
+                                t = RefType.v("java.lang.Object");
+                            SootClass cls = ((RefType)t).getSootClass();
+
+                            TypeSet reachingTypes = (TypeSet)superNodesToReachingTypes.get(scc.getComponentOf
+                                                                            (VTATypeGraph.getVTALabel(m, base)));
+
+                            List targets = h.resolveConcreteDispatch(validReachingTypes, ie.getMethod());
+                            Iterator targetsIt = targets.iterator();
                             
                             while (targetsIt.hasNext())
                                 ig.addTarget(s, (SootMethod)targetsIt.next());
                         }
                     }
-                    else if (ie instanceof SpecialInvokeExpr)
-                    {
-                        ig.addSite(s, m);
-                        ig.addTarget(s, h.resolveSpecialDispatch((SpecialInvokeExpr)ie, m));
-                    }
                 }
             }
         }
 
-        if (Main.isVerbose)
-            System.out.println("[vta] Done trimming active invoke graph based on VTA results.");
+        VTAFinish = new Date();
+
+        long runtime = VTAFinish.getTime() - VTAStart.getTime();
+        System.out.println("[vta] VTA has run for "+(runtime/60000)+" min. "+
+                           ((runtime%60000)/1000)+" sec.");
+        System.out.println();
     }
 
     // You can also ask about the reaching types for any variable.
@@ -191,67 +319,36 @@ public class VariableTypeAnalysis
             GRAY = 1,
             BLACK = 2;
 
-    private void visitNode(DirectedGraph graph, Object startNode, List startTypes)
+    private void visitNodes(Hierarchy h, DirectedGraph graph)
     {
-        HashMap nodeToColor = new HashMap();
+        PseudoTopologicalOrderer topOrderer = new PseudoTopologicalOrderer();
+        List nodelist = topOrderer.newList(graph);
+        HashMap outTypes = new HashMap(0);
+        TypeSet set;
+        boolean recompute = false;
 
-        HashMap nodeToOutTypes = new HashMap();
-
-        LinkedList nodeStack = new LinkedList();
-        LinkedList indexStack = new LinkedList();
-        LinkedList typesStack = new LinkedList();
+        for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
+            Object node = nodeIt.next();
+            List preds = graph.getPredsOf(node);
+            set = new TypeSet();
+            set.addAll(computeReachingTypes((List)node));
+            for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
+                set.addAll((TypeSet)outTypes.get(predsIt.next()));
+            outTypes.put(node, set);
+        }
         
-        nodeToColor.put(startNode, new Integer(GRAY));
-        
-        nodeStack.addLast(startNode);
-        indexStack.addLast(new Integer(-1));
-        typesStack.addLast(startTypes);
-        nodeToOutTypes.put(startNode, startTypes);
-        
-        while(!nodeStack.isEmpty())
-        {
-            int toVisitIndex = ((Integer) indexStack.removeLast()).intValue();
-            Object toVisitNode = nodeStack.getLast();
-            List toVisitTypes = (List)typesStack.getLast();
-
-            List outTypes = (List)nodeToOutTypes.get(toVisitNode);
-            if (outTypes == null)
-            {
-                outTypes = new LinkedList(); outTypes.addAll(toVisitTypes); 
-                outTypes.addAll(computeReachingTypes((List)toVisitNode));
-                nodeToOutTypes.put(toVisitNode, outTypes);
-            }
-            
-            toVisitIndex++;
-            
-            indexStack.addLast(new Integer(toVisitIndex));
-            
-            if(toVisitIndex >= graph.getSuccsOf(toVisitNode).size())
-            {
-                // Visit this node now that we ran out of children 
-                    superNodesToReachingTypes.put(toVisitNode, toVisitTypes);
-                    nodeToColor.put(toVisitNode, new Integer(BLACK));                
-                
-                // Pop this node off
-                    nodeStack.removeLast();
-                    indexStack.removeLast();
-                    typesStack.removeLast();
-            }
-            else
-            {
-                Object childNode = graph.getSuccsOf(toVisitNode).get(toVisitIndex);
-                
-                // Visit this child next if not already visited (or on stack)
-                // (not-in-map is tantamount to being WHITE)
-                    if(nodeToColor.get(childNode) == null)
-                    {
-                        nodeToColor.put(childNode, new Integer(GRAY));
-                        
-                        nodeStack.addLast(childNode);
-                        indexStack.addLast(new Integer(-1));
-                        typesStack.addLast(outTypes);
-                    }
+        for (Iterator nodeIt = nodelist.iterator(); nodeIt.hasNext(); ) {
+            Object node = nodeIt.next();
+            set = (TypeSet)outTypes.get(node);
+            if (recompute) {
+                List preds = graph.getPredsOf(node);
+                for (Iterator predsIt = preds.iterator(); predsIt.hasNext(); )
+                    set.addAll((TypeSet)outTypes.get(predsIt.next()));
+                outTypes.put(node, set);
             }
         }
+        
+        superNodesToReachingTypes = outTypes;
     }
 }
+

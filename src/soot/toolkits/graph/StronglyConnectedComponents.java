@@ -99,8 +99,8 @@ public class StronglyConnectedComponents
                     {
                         currentComponent = new StationaryArrayList();
                         nodeToComponent.put(s, currentComponent);
-                        componentList.add(currentComponent);
                         sccGraph.addNode(currentComponent);
+                        componentList.add(currentComponent);
                     }
                     else
                     {
@@ -113,6 +113,10 @@ public class StronglyConnectedComponents
             }
         }
         componentList = Collections.unmodifiableList(componentList);
+
+        System.out.println("Done computing scc components");
+        System.out.println("number of nodes in underlying graph: "+g.size());
+        System.out.println("number of components: "+sccGraph.size());
     }
 
     private void visitNode(DirectedGraph graph, Object startNode)
@@ -185,9 +189,8 @@ public class StronglyConnectedComponents
                 // No more nodes.  Add toVisitNode to current component.
                     currentComponent.add(toVisitNode);
                     nodeToComponent.put(toVisitNode, currentComponent);
-               
                     nodeToColor.put(toVisitNode, new Integer(BLACK));
-               
+
                 // Pop this node off
                     nodeStack.removeLast();
                     indexStack.removeLast();

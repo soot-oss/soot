@@ -46,6 +46,9 @@ import java.text.*;
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable, ICompilationListener
 {        
+    public Date start;
+    public Date finish;
+
      //------> this used to be in Main
      // DEBUG
     static boolean isAnalyzingLibraries = false;
@@ -59,7 +62,7 @@ public class Main implements Runnable, ICompilationListener
     public static final int COMPILATION_ABORTED = 0;
     public static final int COMPILATION_SUCCEDED = 1;
     
-
+    static List dynamicPackages = new ArrayList();
 
     // The following lists are paired.  false is exclude in the first list.
     static List packageInclusionFlags = new ArrayList();
@@ -360,6 +363,48 @@ public class Main implements Runnable, ICompilationListener
             dynamicClasses.addAll(getClassesUnder(tokenizer.nextToken()));
     }
 
+    public static void addDynamicPackage(String str)
+         throws CompilationDeathException
+    {
+        if (!isApplication) {
+            throw new CompilationDeathException(COMPILATION_ABORTED, "Dynamic-package flag only valid in application mode!");
+        }
+        
+        StringTokenizer tokenizer = new StringTokenizer(str, ",");
+        while(tokenizer.hasMoreTokens())
+            dynamicPackages.add(tokenizer.nextToken());
+    }
+
+    /* This is called after sootClassPath has been defined. */
+    public static void markPackageAsDynamic(String str)
+    {
+        StringTokenizer strtok = new StringTokenizer(Scene.v().getSootClassPath(), ":");
+        while(strtok.hasMoreTokens()) {
+            HashSet set = new HashSet(0);
+            String path = strtok.nextToken();
+
+            // For jimple files
+            List l = getClassesUnder(path);
+            for (Iterator it = l.iterator(); it.hasNext(); ) {
+                String filename = (String)it.next();
+                if (filename.startsWith(str))
+                    set.add(filename);
+            }
+
+            // For class files;
+            path = path + "/";
+            StringTokenizer tokenizer = new StringTokenizer(str, ".");
+            while(tokenizer.hasMoreTokens()) {
+                path = path + tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens())
+                    path = path + "/";
+            }
+            l = getClassesUnder(path);
+            for (Iterator it = l.iterator(); it.hasNext(); )
+                set.add(str+"."+((String)it.next()));
+            dynamicClasses.addAll(set);
+        }
+    }
 
     public static void addProcessPath(String path)
         throws CompilationDeathException
@@ -454,7 +499,7 @@ public class Main implements Runnable, ICompilationListener
     private static void printHelp()
     {
          // $Format: "            System.out.println(\"Soot version 1.0.0 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.30)");
+            System.out.println("Soot version 1.0.0 (build 1.0.0.dev.31)");
             System.out.println("Copyright (C) 1997-2000 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -469,47 +514,49 @@ public class Main implements Runnable, ICompilationListener
             System.out.println("        (application mode) soot --app [option]* mainClassName");
             System.out.println("");
             System.out.println("Output options:");
-            System.out.println("  -b, --b                    produce .b (abbreviated .baf) files");
-            System.out.println("  -B, --baf                  produce .baf code");
-            System.out.println("  -j, --jimp                 produce .jimp (abbreviated .jimple) files");
-            System.out.println("  -J, --jimple               produce .jimple code");
-            System.out.println("  -g, --grimp                produce .grimp (abbreviated .grimple) files");
-            System.out.println("  -G, --grimple              produce .grimple files");
-            System.out.println("  -s, --jasmin               produce .jasmin files");
-            System.out.println("  -c, --class                produce .class files");
-            System.out.println("  -d PATH                    store produced files in PATH");
+            System.out.println("  -b, --b                      produce .b (abbreviated .baf) files");
+            System.out.println("  -B, --baf                    produce .baf code");
+            System.out.println("  -j, --jimp                   produce .jimp (abbreviated .jimple) files");
+            System.out.println("  -J, --jimple                 produce .jimple code");
+            System.out.println("  -g, --grimp                  produce .grimp (abbreviated .grimple) files");
+            System.out.println("  -G, --grimple                produce .grimple files");
+            System.out.println("  -s, --jasmin                 produce .jasmin files");
+            System.out.println("  -c, --class                  produce .class files");
+            System.out.println("  -d PATH                      store produced files in PATH");
             System.out.println("");
             System.out.println("Application mode options:");
-            System.out.println("  -x, --exclude PACKAGE      marks classfiles in PACKAGE (e.g. java.)"); 
-            System.out.println("                             as context classes");
-            System.out.println("  -i, --include PACKAGE      marks classfiles in PACKAGE (e.g. java.util.)");
-            System.out.println("                             as application classes");
-            System.out.println("  -a, --analyze-context      label context classes as library");
-            System.out.println("  --dynamic-path PATH        mark all class files in PATH as ");
-            System.out.println("                             potentially dynamic classes");
+            System.out.println("  -x, --exclude PACKAGE        marks classfiles in PACKAGE (e.g. java.)"); 
+            System.out.println("                               as context classes");
+            System.out.println("  -i, --include PACKAGE        marks classfiles in PACKAGE (e.g. java.util.)");
+            System.out.println("                               as application classes");
+            System.out.println("  -a, --analyze-context        label context classes as library");
+            System.out.println("  --dynamic-path PATH          marks all class files in PATH as ");
+            System.out.println("                               potentially dynamic classes");
+            System.out.println("  --dynamic-packages PACKAGES  marks classfiles in PACKAGES (separated by");
+            System.out.println("                               commas) as potentially dynamic classes");
             System.out.println("");
             System.out.println("Single-file mode options:");
-            System.out.println("  --process-path PATH        process all classes on the PATH");
+            System.out.println("  --process-path PATH          process all classes on the PATH");
             System.out.println("");
             System.out.println("Construction options:");
-            System.out.println("  --final-rep REP            produce classfile/jasmin from REP ");
-            System.out.println("                                  (jimple, grimp, or baf)");
+            System.out.println("  --final-rep REP              produce classfile/jasmin from REP ");
+            System.out.println("                               (jimple, grimp, or baf)");
             System.out.println("");
             System.out.println("Optimization options:");
-            System.out.println("  -O  --optimize             perform scalar optimizations on the classfiles");
-            System.out.println("  -W  --whole-optimize       perform whole program optimizations on the ");
-            System.out.println("                             classfiles");
+            System.out.println("  -O  --optimize               perform scalar optimizations on the classfiles");
+            System.out.println("  -W  --whole-optimize         perform whole program optimizations on the ");
+            System.out.println("                               classfiles");
             System.out.println("");
             System.out.println("Miscellaneous options:");
-            System.out.println("  --soot-classpath PATH      uses PATH as the classpath for finding classes");
-            System.out.println("  --src-prec [jimple|class]  sets the source precedence for Soot");
-            System.out.println("  -t, --time                 print out time statistics about tranformations");
-            System.out.println("  --subtract-gc              attempt to subtract the gc from the time stats");
-            System.out.println("  -v, --verbose              verbose mode");
-            System.out.println("  --debug                    avoid catching exceptions");
+            System.out.println("  --soot-classpath PATH        uses PATH as the classpath for finding classes");
+            System.out.println("  --src-prec [jimple|class]    sets the source precedence for Soot");
+            System.out.println("  -t, --time                   print out time statistics about tranformations");
+            System.out.println("  --subtract-gc                attempt to subtract the gc from the time stats");
+            System.out.println("  -v, --verbose                verbose mode");
+            System.out.println("  --debug                      avoid catching exceptions");
             System.out.println("  -p, --phase-option PHASE-NAME KEY[:VALUE]");
-            System.out.println("                             set run-time option KEY to VALUE for PHASE-NAME");
-            System.out.println("                             (default for VALUE is true)");
+            System.out.println("                               set run-time option KEY to VALUE for PHASE-NAME");
+            System.out.println("                               (default for VALUE is true)");
             System.out.println("");
             System.out.println("Examples:");
             System.out.println("");
@@ -616,6 +663,11 @@ public class Main implements Runnable, ICompilationListener
             {
                 if(++i < args.length) 
                     addDynamicPath(args[i]);
+            }
+            else if (arg.equals("--dynamic-packages"))
+            {
+                if(++i < args.length)
+                    addDynamicPackage(args[i]);
             }
             else if (arg.equals("--process-path")) 
             {
@@ -831,6 +883,10 @@ public class Main implements Runnable, ICompilationListener
      */
     public void run()
     {   
+
+        start = new Date();
+        System.out.println("Soot started on "+start);
+
         try {
         totalTimer.start();
         cmdLineClasses = new HashChain();
@@ -856,7 +912,11 @@ public class Main implements Runnable, ICompilationListener
                 c.setApplicationClass();
             }
         
-               
+            // Dynamic packages
+            it = dynamicPackages.iterator();
+            while(it.hasNext())
+                markPackageAsDynamic((String)it.next());
+   
             // Dynamic & process classes
             it = dynamicClasses.iterator();
                 
@@ -877,8 +937,7 @@ public class Main implements Runnable, ICompilationListener
         { 
             if(isApplication)
             {
-                List cc = new ArrayList(); cc.addAll(Scene.v().getContextClasses());
-                Iterator contextClassesIt = cc.iterator();
+                Iterator contextClassesIt = Scene.v().getContextClasses().snapshotIterator();
                 while (contextClassesIt.hasNext())
                     ((SootClass)contextClassesIt.next()).setApplicationClass();
             }   
@@ -970,7 +1029,7 @@ public class Main implements Runnable, ICompilationListener
         Scene.v().getPack("wjtp").apply();
         if(isOptimizingWhole)
             Scene.v().getPack("wjop").apply();
-
+        System.gc();
 
     // Handle each class individually
     {
@@ -1014,7 +1073,13 @@ public class Main implements Runnable, ICompilationListener
             totalTimer.end();            
             exitCompilation(e.getStatus(), e.getMessage());
             return;
-        }        
+        }   
+
+        finish = new Date();
+        System.out.println("Soot finished on "+finish);
+        long runtime = finish.getTime() - start.getTime();
+        System.out.println("Soot has run for "+(runtime/60000)+" min. "+((runtime%60000)/1000)+" sec.");
+     
         exitCompilation(COMPILATION_SUCCEDED);            
     }        
 

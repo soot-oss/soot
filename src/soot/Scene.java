@@ -153,8 +153,8 @@ public class Scene  //extends AbstractHost
         // Whole-Jimple Optimization pack (--app -W)
         packNameToPack.put("wjop", p = new Pack());
         {
-            p.add(new Transform("wjop.smb", StaticMethodBinder.v(), "disabled"));
-            p.add(new Transform("wjop.si", StaticInliner.v()));
+            p.add(new Transform("wjop.smb", StaticMethodBinder.v()));
+            p.add(new Transform("wjop.si", StaticInliner.v(), "disabled"));
         }
 
         // Baf optimization pack

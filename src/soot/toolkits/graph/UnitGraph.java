@@ -70,9 +70,14 @@ public class UnitGraph implements DirectedGraph
      */
     UnitGraph(Body unitBody, boolean addExceptionEdges)
     {
+        boolean rightMethod = false;
+
         body = unitBody;
         unitChain = body.getUnits();
         method = getBody().getMethod();
+        
+        if (method == Scene.v().getMethod("<sun.io.CharacterEncoding: void <clinit>()>"))
+            rightMethod = true;
         
         if(Main.isVerbose)
             System.out.println("[" + method.getName() + 
@@ -88,7 +93,6 @@ public class UnitGraph implements DirectedGraph
             
             unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
             unitToPreds = new HashMap(size * 2 + 1, 0.7f);
-
 
             // Add regular successors
             {
@@ -134,7 +138,7 @@ public class UnitGraph implements DirectedGraph
                     Iterator trapIt = body.getTraps().iterator();
                     
                     while(trapIt.hasNext())
-                    {
+                    {                        
                         Trap trap = (Trap) trapIt.next();
 
                         Unit beginUnit = (Unit) trap.getBeginUnit();
@@ -158,8 +162,7 @@ public class UnitGraph implements DirectedGraph
                         
                         
                     }
-
-                    
+           
                     // Add edges from the predecessors of begin statements directly to the handlers
                     // This is necessary because sometimes the first statement of try block
                     // is not even fully executed before an exception is thrown
@@ -208,7 +211,6 @@ public class UnitGraph implements DirectedGraph
                 }
             }
         }
-
 
         // Build predecessors
         {
@@ -306,7 +308,7 @@ public class UnitGraph implements DirectedGraph
         }
 
         if(Main.isProfilingOptimization)
-            Main.graphTimer.end();
+            Main.graphTimer.end();        
     }
 
 
