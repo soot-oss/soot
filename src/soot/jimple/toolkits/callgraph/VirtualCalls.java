@@ -92,23 +92,25 @@ public final class VirtualCalls
             RefType base = ((AnySubType)t).getBase();
             resolve( base, iie, subSig, container, targets );
             if( iie instanceof SpecialInvokeExpr ) return;
+
             LinkedList worklist = new LinkedList();
+            HashSet workset = new HashSet();
+            FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
             SootClass cl = base.getSootClass();
-            worklist.add( cl );
+
+            if( workset.add( cl ) ) worklist.add( cl );
             while( !worklist.isEmpty() ) {
                 cl = (SootClass) worklist.removeFirst();
                 if( cl.isInterface() ) {
-                    for( Iterator cIt = Scene.v().getOrMakeFastHierarchy()
-                            .getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
+                    for( Iterator cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
                         final SootClass c = (SootClass) cIt.next();
-                        worklist.add( c );
+                        if( workset.add( c ) ) worklist.add( c );
                     }
                 } else {
-                    if( cl.declaresMethod( subSig ) ) {
-                        SootMethod m = cl.getMethod( subSig );
-                        if( m.isConcrete() || m.isNative() ) {
-                            targets.add( m );
-                        }
+                    resolve( cl.getType(), iie, subSig, container, targets );
+                    for( Iterator cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
+                        final SootClass c = (SootClass) cIt.next();
+                        if( workset.add( c ) ) worklist.add( c );
                     }
                 }
             }
