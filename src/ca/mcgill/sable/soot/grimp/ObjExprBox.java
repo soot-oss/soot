@@ -65,6 +65,10 @@
 
  B) Changes:
 
+ - Modified on March 4, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Cleaned up the canContainValue() implementation, and added NullConstant to list of valid values.
+   
+   
  - Modified on March 1, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Renamed ConstructExpr to NewInvokeExpr.
 
@@ -87,16 +91,13 @@ public class ObjExprBox extends ExprBox
 
     public boolean canContainValue(Value value)
     {
-        return super.canContainValue(value) && 
-	    value instanceof StaticFieldRef || 
-	    value instanceof InstanceFieldRef ||
+        return value instanceof ConcreteRef ||
 	    value instanceof InvokeExpr || 
-	    value instanceof NewInvokeExpr ||
-            value instanceof NewArrayExpr ||
-            value instanceof NewMultiArrayExpr ||
+        value instanceof NewArrayExpr ||
+        value instanceof NewMultiArrayExpr ||
 	    value instanceof Local ||
+        value instanceof NullConstant ||
 	    (value instanceof CastExpr && 
-	        canContainValue(((CastExpr)value).getOp())) ||
-	    value instanceof ArrayRef;
+	        canContainValue(((CastExpr)value).getOp()));
     }
 }

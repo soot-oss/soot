@@ -1659,8 +1659,6 @@ public class JasminClass
 
             public void caseArrayRef(ArrayRef v)
             {
-                Type baseType = ((ArrayType) v.getBase().getType()).baseType;
-
                 emitValue(v.getBase());
                 emitValue(v.getIndex());
 
@@ -1712,6 +1710,11 @@ public class JasminClass
                     }
 
                     public void caseRefType(RefType ty)
+                    {
+                        emit("aaload", -1);
+                    }
+
+                    public void caseNullType(NullType ty)
                     {
                         emit("aaload", -1);
                     }

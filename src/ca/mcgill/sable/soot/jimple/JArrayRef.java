@@ -64,6 +64,9 @@
 
  B) Changes:
 
+ - Modified on March 5, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Decided that array references with a null base such as null[0] has type NullType().
+ 
  - Modified on February 28, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Fixed bug with use boxes.
 
@@ -167,6 +170,8 @@ public class JArrayRef implements ArrayRef
 
         if(type.equals(UnknownType.v()))
             return UnknownType.v();
+        else if(type.equals(NullType.v()))
+            return NullType.v();
         else {
             ArrayType arrayType = (ArrayType) type;
 

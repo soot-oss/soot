@@ -694,11 +694,11 @@ public class JimpleBody implements StmtBody
         Map stmtToName = new HashMap(stmtList.size() * 2 + 1, 0.7f);
         CompleteStmtGraph stmtGraph = new CompleteStmtGraph(stmtList);
         
+        System.out.println("Constructing LocalDefs of " + stmtBody.getMethod().getName() + "...");
+
+        LocalDefs localDefs = new SimpleLocalDefs(stmtGraph);
+
         /*
-        System.out.println("Constructing LocalDefs of " + this.getMethod().getName() + "...");
-
-        LocalDefs localDefs = new LocalDefs(graphBody);
-
         System.out.println("Constructing LocalUses of " + getName() + "...");
 
         LocalUses localUses = new LocalUses(stmtGraph, localDefs);
@@ -731,7 +731,7 @@ public class JimpleBody implements StmtBody
 
             out.print(s.toString(stmtToName, "        "));
             out.print(";");
-
+            
             // Print info about live locals
             {
                 out.print(liveLocals.getLiveLocalsAfter(s));
@@ -758,7 +758,6 @@ public class JimpleBody implements StmtBody
                 }
             */
 
-/*
             // Print info about defs
             {
                 Iterator boxIt = s.getUseBoxes().iterator();
@@ -784,7 +783,8 @@ public class JimpleBody implements StmtBody
                         out.print("}");
                     }
                 }
-            } */
+            } 
+            
             /*
             // Print info about successors
             {

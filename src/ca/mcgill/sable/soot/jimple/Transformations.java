@@ -69,8 +69,14 @@
  B) Changes:
 
  - Modified on March 3, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Improved the aggregator to move field accesses past some types of writes.
+   Fixed a bug with dead-code elimination concerning field/array references.  
+   (they can throw null-pointer exceptions so they should not be eliminated) 
+   Dead-code elimination is now done iteratively until nothing changes. (not sure why
+   it wasn't done before) 
    
+ - Modified on March 3, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
+   Improved the aggregator to move field accesses past some types of writes.
+      
  - Modified on February 3, 1999 by Patrick Lam (plam@sable.mcgill.ca) (*)
    Added changes in support of the Grimp intermediate
    representation (with aggregated-expressions).
@@ -237,7 +243,7 @@ public class Transformations
                     Main.defsTimer.end();
             }            
 
-	    if(Main.isProfilingOptimization)
+            if(Main.isProfilingOptimization)
                 Main.usesTimer.start();
 
             LocalUses localUses = new SimpleLocalUses(graph, localDefs);
@@ -438,17 +444,31 @@ public class Transformations
         }
     }
 
+    /**
+        Cleans up the code of the method by performing copy/constant propagation and dead code elimination.
+        
+        Right now it must only be called on JimpleBody's (as opposed to GrimpBody's) because 
+        it checks for the different forms on the rhs such as fieldref, etc to determine if a statement
+        has a side effect.  (FieldRef can throw a null pointer exception)
+        
+        A better way to handle this would be to have a method which returns whether the statement
+        has a side effect.
+     */
+     
     public static void cleanupCode(JimpleBody stmtBody)
     {
         StmtList stmtList = stmtBody.getStmtList();
         int numPropagations = 0;
         int numIterations = 0;
         int numEliminations = 0;
-
+        
         for(;;)
         {
             boolean hadPropagation = false;
-
+            boolean hadElimination = false;
+            
+            //JimpleBody.printStmtList_debug((StmtBody) stmtBody, new java.io.PrintWriter(System.out, true));
+            
             numIterations++;
 
             if(Main.isVerbose)
@@ -550,12 +570,22 @@ public class Transformations
                     DefinitionStmt def = (DefinitionStmt) stmt;
 
                     if(def.getLeftOp() instanceof Local && localUses.getUsesOf(def).size() == 0 &&
-                        !(def instanceof IdentityStmt) && !(def.getRightOp() instanceof InvokeExpr))
+                        !(def instanceof IdentityStmt))
                     {
-                        // Not ever used and does not have a side effect.
+                        // This definition is not used.
+                        
+                        Value rightOp = def.getRightOp();
+                        
+                        if(!(rightOp instanceof InvokeExpr) && 
+                           !(rightOp instanceof InstanceFieldRef) &&
+                           !(rightOp instanceof ArrayRef))
+                        { 
+                            // Does not have a side effect.
 
-                        stmtIt.remove();
-                        numEliminations++;
+                            stmtIt.remove();
+                            numEliminations++;
+                            hadElimination = true;
+                        }
                     }
                     else if(def.getLeftOp() instanceof Local && def.getRightOp() instanceof Local &&
                         def.getLeftOp() == def.getRightOp())
@@ -564,6 +594,7 @@ public class Transformations
 
                         stmtIt.remove();
                         numEliminations++;
+                        hadElimination = true;
                     }
                 }
             }
@@ -622,7 +653,9 @@ public class Transformations
                 }
             }
 
-            if(!hadPropagation)
+            //JimpleBody.printStmtList_debug((StmtBody) stmtBody, new java.io.PrintWriter(System.out, true));
+
+            if(!hadPropagation && !hadElimination)
                 break;
 
             if(Main.isProfilingOptimization)
@@ -689,7 +722,7 @@ public class Transformations
     {
       // if this holds, we're doomed to failure!!!
       if (g.getPredsOf(use).size() > 1)
-	return null;
+        return null;
 
       // pathStack := list of succs lists
       // pathStackIndex := last visited index in pathStack
@@ -702,7 +735,7 @@ public class Transformations
       int psiMax = (g.getSuccsOf((Stmt)pathStack.get(0))).size();
       int level = 0;
       while (((Integer)pathStackIndex.get(0)).intValue() != psiMax)
-	{
+        {
           int p = ((Integer)(pathStackIndex.get(level))).intValue();
 
           List succs = g.getSuccsOf((Stmt)(pathStack.get(level)));
@@ -719,7 +752,7 @@ public class Transformations
               continue;
             }
 
-	  Stmt betweenStmt = (Stmt)(succs.get(p));
+          Stmt betweenStmt = (Stmt)(succs.get(p));
 
           // we win!
           if (betweenStmt == use)
@@ -739,7 +772,7 @@ public class Transformations
           level++;
           pathStackIndex.add(new Integer(0));
           pathStack.add(betweenStmt);
-	}
+        }
       return null;
     }  
 
@@ -758,77 +791,79 @@ public class Transformations
       StmtList stmtList = body.getStmtList();
       
       if(Main.isVerbose)
-	System.out.println("[" + body.getMethod().getName() + "] Aggregating");
+        System.out.println("[" + body.getMethod().getName() + "] Aggregating");
 
       if(Main.isVerbose)
-	System.out.println("[" + body.getMethod().getName() + "] Constructing StmtGraph...");
+        System.out.println("[" + body.getMethod().getName() + "] Constructing StmtGraph...");
       
       if(Main.isProfilingOptimization)
-	Main.graphTimer.start();
-	  
+        Main.graphTimer.start();
+          
       graph = new CompleteStmtGraph(stmtList);
       
       if(Main.isProfilingOptimization)
-	Main.graphTimer.end();
-	  
+        Main.graphTimer.end();
+          
       if(Main.isVerbose)
-	System.out.println("[" + body.getMethod().getName() + "] Constructing LocalDefs...");
-	  
+        System.out.println("[" + body.getMethod().getName() + "] Constructing LocalDefs...");
+          
       if(Main.isProfilingOptimization)
-	Main.defsTimer.start();
-	  
+        Main.defsTimer.start();
+          
       localDefs = new SimpleLocalDefs(graph);
 
       if(Main.isProfilingOptimization)
-	Main.defsTimer.end();
-	  
+        Main.defsTimer.end();
+          
       if(Main.isVerbose)
-	System.out.println("[" + body.getMethod().getName() + "] Constructing LocalUses...");
-	  
+        System.out.println("[" + body.getMethod().getName() + "] Constructing LocalUses...");
+          
       if(Main.isProfilingOptimization)
-	Main.usesTimer.start();
-	  
+        Main.usesTimer.start();
+          
       localUses = new SimpleLocalUses(graph, localDefs);
-	  
+          
       if(Main.isProfilingOptimization)
-	Main.usesTimer.end();
+        Main.usesTimer.end();
 
       stmtIt = stmtList.iterator();
       
+      
       while (stmtIt.hasNext())
-	{
-	  Stmt s = (Stmt)(stmtIt.next());
-	  
-	  /* could this be definitionStmt instead? */
-	  if (!(s instanceof AssignStmt))
-	    continue;
-	  Value lhs = ((AssignStmt)s).getLeftOp();
-	  if (!(lhs instanceof Local))
-	    continue;
-	  
-	  List lu = localUses.getUsesOf((AssignStmt)s);
-	  if (lu.size() != 1)
-	    continue;
-	  
-	  StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
-	  Stmt use = usepair.stmt;
-	      
-	  List ld = localDefs.getDefsOfAt((Local)lhs, use);
-	  if (ld.size() != 1)
-	    continue;
-	      
-	  /* we need to check the path between def and use */
-	  /* to see if there are any intervening re-defs of RHS */
-	  /* in fact, we should check that this path is unique. */
-	  /* if the RHS uses only locals, then we know what
-	     to do; if RHS has a method invocation f(a, b,
+        {
+          Stmt s = (Stmt)(stmtIt.next());
+              
+          /* could this be definitionStmt instead? */
+          if (!(s instanceof AssignStmt))
+            continue;
+          
+          Value lhs = ((AssignStmt)s).getLeftOp();
+          if (!(lhs instanceof Local))
+            continue;
+          
+          List lu = localUses.getUsesOf((AssignStmt)s);
+          if (lu.size() != 1)
+            continue;
+            
+          StmtValueBoxPair usepair = (StmtValueBoxPair)lu.get(0);
+          Stmt use = usepair.stmt;
+              
+          List ld = localDefs.getDefsOfAt((Local)lhs, use);
+          if (ld.size() != 1)
+            continue;
+   
+          /* we need to check the path between def and use */
+          /* to see if there are any intervening re-defs of RHS */
+          /* in fact, we should check that this path is unique. */
+          /* if the RHS uses only locals, then we know what
+             to do; if RHS has a method invocation f(a, b,
              c) or field access, we must ban field writes, other method
-	     calls and (as usual) writes to a, b, c. */
-	  
-	  boolean cantAggr = false;
+             calls and (as usual) writes to a, b, c. */
+          
+          boolean cantAggr = false;
       boolean propagatingInvokeExpr = false;
       boolean propagatingFieldRef = false;
-	  FieldRef fieldRef = null;
+          FieldRef fieldRef = null;
       
 	  Value rhs = ((AssignStmt)s).getRightOp();
 	  LinkedList localsUsed = new LinkedList();
@@ -907,12 +942,14 @@ public class Transformations
 
 	  // we give up: can't aggregate.
 	  if (cantAggr)
+          {
 	    continue;
-	  
+	  }
 	  /* assuming that the d-u chains are correct, */
 	  /* we need not check the actual contents of ld */
 	  
 	  Value aggregatee = ((AssignStmt)s).getRightOp();
+          
 	  if (usepair.valueBox.canContainValue(aggregatee))
 	    {
 	      usepair.valueBox.setValue(aggregatee);
