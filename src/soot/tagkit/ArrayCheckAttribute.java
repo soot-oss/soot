@@ -6,7 +6,7 @@ import soot.baf.*;
 import soot.*;
 
 public class ArrayCheckAttribute
-    implements Attribute, JasminAttribute
+    extends JasminAttribute
 {    
     private List mTags;
     private List mUnits;
@@ -86,58 +86,4 @@ public class ArrayCheckAttribute
 	}
 	return unitBoxes;
     }
-
-
-    public static byte[] decode(String attr, Hashtable labelToPc)
-    {
-	List attributeHunks = new LinkedList();
-	int attributeSize = 0;
-
-	StringTokenizer st = new StringTokenizer(attr, "%");
-	boolean isLabel = false;
-	if(attr.startsWith("%"))
-	    isLabel = true;
-
-	byte[] pcArray;
-	while(st.hasMoreTokens()) {	    
-	    String token = st.nextToken();
-	    if(isLabel) {		
-		Integer pc = (Integer) labelToPc.get(token);
-		if(pc == null)
-		    throw new RuntimeException();
-		int pcvalue = pc.intValue();
-		if(pcvalue > 65535) 
-		    throw new RuntimeException();
-
-		pcArray = new byte[2];
-		pcArray[0] = 0;
-		pcArray[1] = 1;
-		attributeHunks.add(pcArray);
-		attributeSize += 2;
-	    } else {
-		byte[] hunk = Base64.decode(token.toCharArray());		
-		attributeSize += hunk.length;
-		attributeHunks.add(hunk);
-	    }
-	    isLabel = !isLabel;	  
-	}
-	
-	int index = 0;
-	byte[] attributeValue = new byte[attributeSize];
-
-
-	Iterator it = attributeHunks.iterator();
-	while(it.hasNext()) {
-	    byte[] hunk = (byte[]) it.next();
-	    for(int i = 0; i < hunk.length; i++) {
-		attributeValue[index++] = hunk[i];
-	    }
-	}
-
-	if(index != (attributeSize))
-	    throw new RuntimeException();
-
-	return attributeValue;
-    }
-
 }
