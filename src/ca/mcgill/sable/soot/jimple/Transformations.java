@@ -69,8 +69,10 @@
  B) Changes:
 
  - Modified on March 25, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
-   Changed the aggregator to proceed in pseudo topological order.  Failure
+   1. Changed the aggregator to proceed in pseudo topological order.  Failure
    to do this introduces possible bugs.
+   2. Added some checks to the aggregator when aggregating array refs.  Was previously
+   doing some unsafe things.
    
  - Modified on March 23, 1999 by Raja Vallee-Rai (rvalleerai@sable.mcgill.ca) (*)
    Modified removeUnusedLocals to not use an iterator for HashSet (which is non-deterministic).
@@ -402,6 +404,7 @@ public class Transformations
           boolean cantAggr = false;
           boolean propagatingInvokeExpr = false;
           boolean propagatingFieldRef = false;
+          boolean propagatingArrayRef = false;
           FieldRef fieldRef = null;
       
           Value rhs = ((AssignStmt)s).getRightOp();
@@ -410,15 +413,17 @@ public class Transformations
                useIt.hasNext(); )
             {
               Value v = ((ValueBox)(useIt.next())).getValue();
-              if (v instanceof Local)
-                localsUsed.add(v);
-                if (v instanceof InvokeExpr)
-                propagatingInvokeExpr = true;
-            else if(v instanceof FieldRef)
-            {
-                propagatingFieldRef = true;
-                fieldRef = (FieldRef) v;
-            }
+                if (v instanceof Local)
+                    localsUsed.add(v);
+                else if (v instanceof InvokeExpr)
+                    propagatingInvokeExpr = true;
+                else if(v instanceof ArrayRef)
+                    propagatingArrayRef = true;
+                else if(v instanceof FieldRef)
+                {
+                    propagatingFieldRef = true;
+                    fieldRef = (FieldRef) v;
+                }
             }
           
           // look for a path from s to use in graph.
@@ -453,7 +458,7 @@ public class Transformations
                             break; 
                       }
                       
-                      if (propagatingInvokeExpr || propagatingFieldRef)
+                      if (propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
                       {
                           if (v instanceof FieldRef)
                           {
@@ -462,7 +467,8 @@ public class Transformations
                                   cantAggr = true; 
                                   break;
                               }
-                              else {
+                              else if(propagatingFieldRef)
+                              {
                                   // Can't aggregate a field access if passing a definition of a field 
                                   // with the same name, because they might be aliased
                             
@@ -473,12 +479,30 @@ public class Transformations
                                   } 
                               } 
                            }
+                           else if(v instanceof ArrayRef)
+                           {
+                                if(propagatingInvokeExpr)
+                                {   
+                                    // Cannot aggregate an invoke expr past an array write
+                                    cantAggr = true;
+                                    break;
+                                }
+                                else if(propagatingArrayRef)
+                                {
+                                    // cannot aggregate an array read past a write
+                                    // this is somewhat conservative
+                                    // (if types differ they may not be aliased)
+                                    
+                                    cantAggr = true;
+                                    break;
+                                }
+                           }
                       }
                   }
               }  
               
-              // Check for intervening side effects
-                if(propagatingInvokeExpr || propagatingFieldRef)
+              // Check for intervening side effects due to method calls
+                if(propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
                     {
                       for (Iterator useIt = (between.getUseBoxes()).iterator();
                            useIt.hasNext(); )
