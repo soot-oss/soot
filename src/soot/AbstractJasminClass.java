@@ -333,14 +333,64 @@ public abstract class AbstractJasminClass
             {
                 SootField field = (SootField) fieldIt.next();
 
+                String fieldString = ".field " + Modifier.toString(field.getModifiers()) + " " +  "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType());
+    
+                if (field.hasTag("StringConstantValueTag")){
+                    fieldString += " = ";
+                    fieldString += soot.util.StringTools.getQuotedStringOf(((StringConstantValueTag)field.getTag("StringConstantValueTag")).getStringValue());
+                }
+                else if (field.hasTag("IntegerConstantValueTag")){
+                    fieldString += " = ";
+                    fieldString += ((IntegerConstantValueTag)field.getTag("IntegerConstantValueTag")).getIntValue();
+                }
+                else if (field.hasTag("LongConstantValueTag")){
+                    fieldString += " = ";
+                    fieldString += ((LongConstantValueTag)field.getTag("LongConstantValueTag")).getLongValue();
+                }
+                else if (field.hasTag("FloatConstantValueTag")){
+                    fieldString += " = ";
+                    fieldString += ((FloatConstantValueTag)field.getTag("FloatConstantValueTag")).getFloatValue();
+                }
+                else if (field.hasTag("DoubleConstantValueTag")){
+                    fieldString += " = ";
+                    fieldString += ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
+                }
+                /*if (field.hasTag("ConstantValueTag")){
+                    fieldString += " = ";
+                    Tag t = field.getTag("ConstantValueTag");
+                    fieldString += ((ConstantValueTag)t).toString();
+                    /*if (t instanceof StringConstantValueTag){
+                        fieldString += ((StringConstantValueTag)t).getStringValue();
+                    }
+                    if (t instanceof IntegerConstantValueTag){
+                        fieldString += ((IntegerConstantValueTag)t).getStringValue();
+                    }
+                    else if (t instanceof LongConstantValueTag){
+                        fieldString += ((StringConstantValueTag)t).getStringValue();
+                    }
+                    else if (t instanceof FloatConstantValueTag){
+                        fieldString += ((StringConstantValueTag)t).getStringValue();
+                    }
+                    else if (t instanceof DoubleConstantValueTag){
+                        fieldString += ((StringConstantValueTag)t).getStringValue();
+                    }
+                    else if (t instanceof StringConstantValueTag){
+                        fieldString += ((StringConstantValueTag)t).getStringValue();
+                    }
+                    
+                }*/
                 if (field.hasTag("SyntheticTag")){
-                    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
+                    fieldString +=" .synthetic";
+                }
+
+                emit(fieldString);
+                /*    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType())+" .synthetic");
                 }
                 else {
                     emit(".field " + Modifier.toString(field.getModifiers()) + " " +
                      "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
-                }
+                }*/
 
 		Iterator attributeIt =  field.getTags().iterator(); 
 		while(attributeIt.hasNext()) {

@@ -795,7 +795,7 @@ public class ClassResolver {
     }
     
     private void addConstValTag(polyglot.ast.FieldDecl field, soot.SootField sootField){
-        G.v().out.println("adding constantval tag to field: "+field);
+        //G.v().out.println("adding constantval tag to field: "+field);
         if (field.fieldInstance().constantValue() instanceof Integer){
             sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Integer)field.fieldInstance().constantValue()).intValue()));
         }
