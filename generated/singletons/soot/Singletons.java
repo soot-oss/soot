@@ -988,12 +988,6 @@ public class Singletons {
         return instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger;
     }
 
-    private soot.toolkits.graph.CFGPrinter instance_soot_toolkits_graph_CFGPrinter;
-    public soot.toolkits.graph.CFGPrinter soot_toolkits_graph_CFGPrinter() {
-        if( instance_soot_toolkits_graph_CFGPrinter == null ) instance_soot_toolkits_graph_CFGPrinter = new soot.toolkits.graph.CFGPrinter( g );
-        return instance_soot_toolkits_graph_CFGPrinter;
-    }
-
     private soot.toolkits.graph.interaction.InteractionHandler instance_soot_toolkits_graph_interaction_InteractionHandler;
     public soot.toolkits.graph.interaction.InteractionHandler soot_toolkits_graph_interaction_InteractionHandler() {
         if( instance_soot_toolkits_graph_interaction_InteractionHandler == null ) instance_soot_toolkits_graph_interaction_InteractionHandler = new soot.toolkits.graph.interaction.InteractionHandler( g );
