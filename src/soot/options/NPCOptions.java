@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Null Pointer Check Options. */
+/** Option parser for Null Pointer Check. */
 public class NPCOptions
 {
     private Map options;
@@ -44,14 +44,10 @@ public class NPCOptions
     
     /** Only Array Ref --
     
-     * .
+     * Annotate only array references.
     
-     * By default, all bytecodes that need null pointer checks 
-     * are annotated with the analysis result. When this option is 
-     * set to true, Soot will annotate only array-referencing 
-     * bytecodes with null pointer check information; other bytecodes, 
-     * such as getfield and putfield, will not be annotated. 
-     * 
+     * Annotate only array-referencing instructions, instead of all 
+     * instructions that need null pointer checks. 
      */
     public boolean only_array_ref() {
         return soot.PhaseOptions.getBoolean( options, "only-array-ref" );
@@ -59,12 +55,11 @@ public class NPCOptions
     
     /** Profiling --
     
-     * Insert profiling instructions counting the number of safe null 
-     * pointer accesses..
+     * Insert instructions to count safe pointer accesses.
     
-     * If this option is true, the analysis inserts profiling 
-     * instructions counting the number of eliminated safe null pointer 
-     * checks at runtime. This is only for profiling purpose. 						
+     * Insert profiling instructions counting the number of eliminated 
+     * safe null pointer checks at runtime. This is only for profiling 
+     * purpose. 						
      */
     public boolean profiling() {
         return soot.PhaseOptions.getBoolean( options, "profiling" );

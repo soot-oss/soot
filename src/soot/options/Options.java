@@ -449,6 +449,7 @@ public class Options extends OptionsBase {
             || option.equals( "whole-optimize" )
             ) {
                 
+                pushOptions( "-O" );
                 pushOptions( "-w" );
                 pushOptions( "enabled:true" );
                 pushOptions( "wjop" );
@@ -461,7 +462,7 @@ public class Options extends OptionsBase {
                 via_shimple = true;
   
             else if( false
-            || option.equals( "process-path" )
+            || option.equals( "process-dir" )
             ) {
                 if( !hasMoreOptions() ) {
                     G.v().out.println( "No value given for option -"+option );
@@ -469,10 +470,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( process_path == null )
-                    process_path = new LinkedList();
+                if( process_dir == null )
+                    process_dir = new LinkedList();
 
-                process_path.add( value );
+                process_dir.add( value );
             }
   
             else if( false
@@ -508,7 +509,7 @@ public class Options extends OptionsBase {
             }
   
             else if( false
-            || option.equals( "dynamic-classes" )
+            || option.equals( "dynamic-class" )
             ) {
                 if( !hasMoreOptions() ) {
                     G.v().out.println( "No value given for option -"+option );
@@ -516,14 +517,14 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( dynamic_classes == null )
-                    dynamic_classes = new LinkedList();
+                if( dynamic_class == null )
+                    dynamic_class = new LinkedList();
 
-                dynamic_classes.add( value );
+                dynamic_class.add( value );
             }
   
             else if( false
-            || option.equals( "dynamic-path" )
+            || option.equals( "dynamic-dir" )
             ) {
                 if( !hasMoreOptions() ) {
                     G.v().out.println( "No value given for option -"+option );
@@ -531,10 +532,10 @@ public class Options extends OptionsBase {
                 }
                 String value = nextOption();
     
-                if( dynamic_path == null )
-                    dynamic_path = new LinkedList();
+                if( dynamic_dir == null )
+                    dynamic_dir = new LinkedList();
 
-                dynamic_path.add( value );
+                dynamic_dir.add( value );
             }
   
             else if( false
@@ -720,14 +721,14 @@ public class Options extends OptionsBase {
     private boolean via_shimple = false;
     public void set_via_shimple( boolean setting ) { via_shimple = setting; }
   
-    public List process_path() { 
-        if( process_path == null )
+    public List process_dir() { 
+        if( process_dir == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return process_path;
+            return process_dir;
     }
-    public void set_process_path( List setting ) { process_path = setting; }
-    private List process_path = null;
+    public void set_process_dir( List setting ) { process_dir = setting; }
+    private List process_dir = null;
     public List include() { 
         if( include == null )
             return java.util.Collections.EMPTY_LIST;
@@ -744,22 +745,22 @@ public class Options extends OptionsBase {
     }
     public void set_exclude( List setting ) { exclude = setting; }
     private List exclude = null;
-    public List dynamic_classes() { 
-        if( dynamic_classes == null )
+    public List dynamic_class() { 
+        if( dynamic_class == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return dynamic_classes;
+            return dynamic_class;
     }
-    public void set_dynamic_classes( List setting ) { dynamic_classes = setting; }
-    private List dynamic_classes = null;
-    public List dynamic_path() { 
-        if( dynamic_path == null )
+    public void set_dynamic_class( List setting ) { dynamic_class = setting; }
+    private List dynamic_class = null;
+    public List dynamic_dir() { 
+        if( dynamic_dir == null )
             return java.util.Collections.EMPTY_LIST;
         else
-            return dynamic_path;
+            return dynamic_dir;
     }
-    public void set_dynamic_path( List setting ) { dynamic_path = setting; }
-    private List dynamic_path = null;
+    public void set_dynamic_dir( List setting ) { dynamic_dir = setting; }
+    private List dynamic_dir = null;
     public List dynamic_package() { 
         if( dynamic_package == null )
             return java.util.Collections.EMPTY_LIST;
@@ -790,25 +791,25 @@ public class Options extends OptionsBase {
 
 +"\nGeneral Options:\n"
       
-+padOpt(" -h -help", "Display Help and Exit" )
++padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
-+padOpt(" -ph ARG -phase-help ARG", "Print help for specified phase" )
-+padOpt(" -version", "Display Version Information and Exit" )
-+padOpt(" -v -verbose", "Verbose Mode" )
-+padOpt(" -app", "Run in Application Mode" )
-+padOpt(" -w -whole-program", "Run in Whole-program Mode" )
-+padOpt(" -debug", "Prints Various Soot Debugging Info" )
++padOpt(" -ph ARG -phase-help ARG", "Print help for specified " )
++padOpt(" -version", "Display version information and exit" )
++padOpt(" -v -verbose", "Verbose mode" )
++padOpt(" -app", "Run in application mode" )
++padOpt(" -w -whole-program", "Run in whole-program mode" )
++padOpt(" -debug", "Print various Soot debugging info" )
 +"\nInput Options:\n"
       
-+padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Uses given PATH as the classpath for finding classes for Soot processing." )
-+padOpt(" -src-prec ARG", "Sets Source Precedence for Soot" )
++padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Use  as the classpath for finding classes." )
++padOpt(" -src-prec ARG", "Sets source precedence for soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes: may cause errors" )
 +"\nOutput Options:\n"
       
-+padOpt(" -d ARG -output-dir ARG", "Store Produced Files in PATH" )
-+padOpt(" -f ARG -output-format ARG", "Sets Output Format for Soot" )
++padOpt(" -d ARG -output-dir ARG", "Store output files in " )
++padOpt(" -f ARG -output-format ARG", "Set output format for Soot" )
 +padVal(" J jimple", "" )
 +padVal(" j jimp", "" )
 +padVal(" S shimple", "" )
@@ -822,38 +823,38 @@ public class Options extends OptionsBase {
 +padVal(" jasmin", "" )
 +padVal(" c class", "" )
 +padVal(" d dava", "" )
-+padOpt(" -via-grimp", "Convert Jimple to Bytecode via Grimp Instead of via Baf" )
++padOpt(" -via-grimp", "Convert to bytecode via Grimple instead of via Baf" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"
       
-+padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "set run-time option KEY to VALUE for PHASE-NAME" )
-+padOpt(" -O -optimize", "perform scalar optimizations on the classfiles" )
-+padOpt(" -W -whole-optimize", "perform whole program optimizations on the classfiles" )
-+padOpt(" -via-shimple", "enables phases operating on Shimple SSA representation" )
++padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "Set phase's opt option to value" )
++padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
++padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
++padOpt(" -via-shimple", "Enable Shimple SSA representation" )
 +"\nSingle File Mode Options:\n"
       
-+padOpt(" -process-path ARG", "Process all Classes on the PATH" )
++padOpt(" -process-dir ARG", "Process all classes found in " )
 +"\nApplication Mode Options:\n"
       
-+padOpt(" -i ARG -include ARG", "Marks Classfiles in PACKAGE (e.g. java.util.) as Application Classes" )
-+padOpt(" -x ARG -exclude ARG", "Marks Classfiles in PACKAGE (e.g. java.) as Context Classes" )
-+padOpt(" -dynamic-classes ARG", "Marks CLASSES (separated by colons) as Potentially Dynamic Classes" )
-+padOpt(" -dynamic-path ARG", "Marks all Class Files in PATH as Potentially Dynamic Classes" )
++padOpt(" -i ARG -include ARG", "Include classes in  as application classes" )
++padOpt(" -x ARG -exclude ARG", "Exclude classes in  from application classes" )
++padOpt(" -dynamic-class ARG", "Note that  may be loaded dynamically" )
++padOpt(" -dynamic-dir ARG", "Mark all classes in  as potentially dynamic" )
 +padOpt(" -dynamic-package ARG", "Marks Class Files in PACKAGES (separated by commas) as Potentially Dynamic Classes" )
 +"\nInput Attribute Options:\n"
       
-+padOpt(" -keep-line-number", "Keep Line Number Tables" )
-+padOpt(" -keep-bytecode-offset -keep-offset", "Attach Bytecode Offset to Jimple Statement" )
++padOpt(" -keep-line-number", "Keep line number tables" )
++padOpt(" -keep-bytecode-offset -keep-offset", "Attach bytecode offset to IR" )
 +"\nAnnotation Options:\n"
       
-+padOpt(" -annot-nullpointer", "Turn on the Annotation for Null Pointer" )
-+padOpt(" -annot-arraybounds", "Turn on the Annotation for Array Bounds Check" )
-+padOpt(" -annot-side-effect", "Turn on Side-effect Attributes" )
-+padOpt(" -annot-fieldrw", "Turn on Field Read/Write Attributes" )
++padOpt(" -annot-nullpointer", "Emit null pointer attributes" )
++padOpt(" -annot-arraybounds", "Emit array bounds check attributes" )
++padOpt(" -annot-side-effect", "Enable side-effect attributes" )
++padOpt(" -annot-fieldrw", "Enable field read/write attributes" )
 +"\nMiscellaneous Options:\n"
       
-+padOpt(" -time", "Print out Time Statistics about Tranformations" )
-+padOpt(" -subtract-gc", "Attempt to Subtract the gc from the Time Stats" );
++padOpt(" -time", "Report time required for tranformations" )
++padOpt(" -subtract-gc", "Subtract gc from time" );
     }
 
 
@@ -902,7 +903,7 @@ public class Options extends OptionsBase {
         +padVal("jop.ule", "Removes unused locals")
         +padOpt("jap", "")
         +padVal("jap.npc", "")
-        +padVal("jap.npcolorer", "")
+        +padVal("jap.npcolorer", "Produce color tags for null and non-null references")
         +padVal("jap.abc", "")
         +padVal("jap.profiling", "")
         +padVal("jap.sea", "")
@@ -1120,7 +1121,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nTo run optimizing transformations on the whole program, use the \n-W command-line option. This tells Soot to apply Whole-Jimple \nOptimization Pack. The default behaviour of this Pack has \nstatic method binding disabled and static inlining enabled. To \nreverse this, give the options -p wjop.smb enabled:true -p \nwjop.si disabled. "
+                "\nTo run optimizing transformations on the whole program, use the \n-w command-line option. This tells Soot to apply Whole-Jimple \nOptimization Pack. The default behaviour of this Pack has \nstatic method binding disabled and static inlining enabled. To \nreverse this, give the options -p wjop.smb enabled:true -p \nwjop.si disabled. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
@@ -1308,21 +1309,21 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.npc" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe null pointer check analysis has the phase name jtp.npc. It \nhas one phase option (aside from the default disabled option). \n"
+                "\nThe Null Pointer Check finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "only-array-ref", "" )
-                +padOpt( "profiling", "Insert profiling instructions counting the number of safe null pointer accesses." );
+                +padOpt( "only-array-ref", "Annotate only array references" )
+                +padOpt( "profiling", "Insert instructions to count safe pointer accesses" );
     
         if( phaseName.equals( "jap.npcolorer" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nProduce color tags that the Soot plug-in for Eclipse can use to \nhighlight null and non-null references. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled", "Produce color tags highlighting null, and non-null variables." );
+                +padOpt( "enabled", "" );
     
         if( phaseName.equals( "jap.abc" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe array bounds check analysis has the phase name jtp.abc. If \nwhole-program analysis is required, an extra phase wjap.ra for \nfinding rectangular arrays occurs. "
+                "\nIf whole-program analysis is required, an extra phase wjap.ra \nfor finding rectangular arrays occurs. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "with-all", "" )

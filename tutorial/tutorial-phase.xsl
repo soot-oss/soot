@@ -8,6 +8,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 \documentclass{article}
 \usepackage{fullpage}
 \usepackage{html}
+\usepackage{longtable}
 
 \title{Soot phase options}
 \author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca})\\
@@ -51,7 +52,7 @@ There are five types of phase options:
 Multi-valued options take a value from a set of allowed values
 specific to that option.
 \item Integer options
-take a value that is an integer. 
+take an integer value. 
 \item Floating point options take a 
 floating point number as their value. 
 \item String options take an arbitrary
@@ -62,7 +63,7 @@ Each option has a default value which is used if the option is not
 specified on the command line.
 
 All phases and subphases accept the option ``{\tt enabled}'', which
-must be ``{\tt true}'' for the phase/subphase to execute. To save
+must be ``{\tt true}'' for the phase or subphase to execute. To save
 you some typing, the pseudo-options ``{\tt on}'' and ``{\tt off}''
 are equivalent to ``{\tt enabled:true}'' and ``{\tt enabled:false}'',
 respectively. In addition, specifying any options for a phase
@@ -77,7 +78,7 @@ is a collection of transformers, each corresponding to a subphase of
 the phase implemented by the {\tt Pack}. When the {\tt Pack} is
 called, it executes each of its transformers in order.
 
-Soot transformers are usually instances of classes that extend either
+Soot transformers are usually instances of classes that extend 
 {\tt BodyTransformer} or {\tt SceneTransformer}.  In either case, the
 transformer class must override the {\tt internalTransform} method,
 providing an implementation which carries out some transformation on
@@ -90,7 +91,7 @@ meet your requirements and then calls {\tt soot.Main}.
 \vspace{3ex}
 
 The remainder of this document describes the transformations belonging
-to the various {\tt Pack}s of Soot and their corresponding phase
+to Soot's various {\tt Pack} and their corresponding phase
 options.
 
 \tableofcontents
@@ -116,7 +117,8 @@ options.
 </xsl:template>
 
 <xsl:template name="phase_section">
-<xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>
+
+<xsl:apply-templates mode="to_latex" select="long_desc"/>
 
 \paragraph{Accepted phase options:} 
 
@@ -132,7 +134,7 @@ options.
 <xsl:when test="value/default"><xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each></xsl:when>
 <xsl:otherwise>false</xsl:otherwise>
 </xsl:choose>})
-<xsl:apply-templates mode="to_latex" select="short_desc"/>
+
 <xsl:text>
 
 </xsl:text>
@@ -142,8 +144,8 @@ options.
 </xsl:text>
 <xsl:if test="value">
 
-Allowed values:\\
-\begin{tabular}{p{1in}p{1.5in}p{3in}}
+Possible values:\\
+\begin{longtable}{p{1in}p{1.5in}p{3in}}
 <xsl:for-each select="value">
 {\tt <xsl:for-each select="alias"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>}
 &amp;
@@ -151,7 +153,7 @@ Allowed values:\\
 &amp;
 <xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>
-\end{tabular}
+\end{longtable}
 
 </xsl:if>
 </xsl:template>

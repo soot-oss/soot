@@ -136,7 +136,7 @@ public class Main {
     private void postCmdLineCheck() {
         if (Options.v().classes().isEmpty()
         && (Options.v().whole_program() 
-            || Options.v().process_path().isEmpty())) {
+            || Options.v().process_dir().isEmpty())) {
             throw new CompilationDeathException(
                 CompilationDeathException.COMPILATION_ABORTED,
                 "No main class specified!");

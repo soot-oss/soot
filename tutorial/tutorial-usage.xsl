@@ -8,12 +8,15 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 \documentclass{article}
 \usepackage{fullpage}
 \usepackage{html}
+\usepackage{longtable}
 
 \title{Soot command-line options}
 \author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca})\\
 Feng Qian (\htmladdnormallink{fqian@sable.mcgill.ca}{mailto:fqian@sable.mcgill.ca})\\
 Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@sable.mcgill.ca})\\
 }
+
+\renewcommand{\arraystretch}{1.3}
 
 \begin{document}
 
@@ -23,22 +26,26 @@ Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@
 
 \section{SYNOPSIS}
 
-Soot can be invoked in the following way:
+Soot is invoked as follows:
+\begin{quote}
+{\tt java} {\it javaOptions} {\tt soot.Main} [ {\it sootOption}* ] {\it classname}+
+\end{quote}
 
-\begin{verbatim}
-soot [option]* [classname]+
-\end{verbatim}
+\section{DESCRIPTION} 
+This manual documents the command line options of the Soot
+bytecode compiler/optimizer tool. In essence, it tells you what you can
+use to replace the {\it sootOption} placeholder which appears in the {\sc
+SYNOPSIS}.
 
-
-\section{DESCRIPTION}
-This manual page documents the command line options of the {\tt soot}
-bytecode compiler/optimizer tool.
+<xsl:for-each select="options/intro">
+  <xsl:apply-templates mode="to_latex" select="."/>
+</xsl:for-each>
 
 \section{OPTIONS}
 
 <xsl:for-each select="options/section">
 \subsection{<xsl:value-of select="name"/>}
-<xsl:apply-templates mode="to_latex" select="long_desc|short_desc"/>
+<xsl:apply-templates mode="to_latex" select="long_desc"/>
 
 \begin{description}
 <xsl:for-each select="boolopt|multiopt|listopt|phaseopt|stropt|macroopt">
@@ -53,37 +60,48 @@ bytecode compiler/optimizer tool.
 </xsl:template>
 
 <xsl:template name="opt">
-\item[{\tt <xsl:for-each select="alias">-<xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>}]
+  <xsl:variable name="argLabel">
+    <xsl:choose>
+      <xsl:when test="name()='boolopt' or name()='macroopt'"></xsl:when>
+      <xsl:when test="count(./set_arg_label)>0">{ \it <xsl:value-of select="./set_arg_label"/>}</xsl:when>
+      <xsl:otherwise>{ \it arg}</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  \item[<xsl:for-each select="alias">
+  {\tt -<xsl:if test="string-length(string(.))>1">-</xsl:if><xsl:value-of select="."/>}<xsl:value-of select="$argLabel"/><xsl:if test="count(./following-sibling::alias) > 0"><xsl:text>, </xsl:text></xsl:if>
+  </xsl:for-each>]
 <xsl:if test="value/default">
 (default value: {\tt 
 <xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each>})
 </xsl:if>
 
-<xsl:apply-templates mode="to_latex" select="short_desc"/>
-
-<xsl:text>
-
-</xsl:text>
-<xsl:apply-templates mode="to_latex" select="long_desc"/>\\
+<xsl:apply-templates mode="to_latex" select="long_desc"/>
 <xsl:text>
 
 </xsl:text>
 
 <xsl:if test="value">
 
-Allowed values:\\
-\begin{tabular}{p{1in}p{1.5in}p{3in}}
+Possible values:\\
+\begin{longtable}{p{1in}p{1.5in}p{3in}}
 <xsl:for-each select="value">
-{\tt <xsl:for-each select="alias"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>}
+  <xsl:for-each select="alias">{\tt <xsl:value-of select="."/>}<xsl:if test="count(./following-sibling::alias) > 0">,</xsl:if><xsl:text> </xsl:text></xsl:for-each>
 &amp;
 <xsl:value-of select="name"/>
 &amp;
 <xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>
-\end{tabular}
+\end{longtable}
 
 </xsl:if>
 
+</xsl:template>
+
+<xsl:template match="use_arg_label" mode="to_latex">
+  <xsl:choose>
+    <xsl:when test="count(ancestor::*/set_arg_label)!=0">{\it <xsl:value-of select="ancestor::*/set_arg_label"/>}</xsl:when>
+    <xsl:otherwise>{\it arg}</xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 </xsl:stylesheet>

@@ -651,9 +651,9 @@ public class Scene  //extends AbstractHost
         }
 
         HashSet dynClasses = new HashSet();
-        dynClasses.addAll(Options.v().dynamic_classes());
+        dynClasses.addAll(Options.v().dynamic_class());
 
-        for( Iterator pathIt = Options.v().dynamic_path().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
@@ -671,7 +671,7 @@ public class Scene  //extends AbstractHost
             Scene.v().loadClassAndSupport(className);
         }
 
-        for( Iterator pathIt = Options.v().process_path().iterator(); pathIt.hasNext(); ) {
+        for( Iterator pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
 
             final String path = (String) pathIt.next();
             for( Iterator clIt = SourceLocator.v().getClassesUnder(path).iterator(); clIt.hasNext(); ) {

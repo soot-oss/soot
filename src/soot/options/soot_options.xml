@@ -1,61 +1,190 @@
 <?xml version = '1.0' encoding = 'ISO-8859-1' ?>
 <?xml-stylesheet type="text/xsl" href="soot_options.xsl"  ?>
 <options>
+	<intro>
+<p>
+The descriptions of Soot options talk about three categories of
+classes: argument classes, application classes, and library classes.</p>
+<p>
+<arg>Argument classes</arg> are those you specify explicitly to
+Soot. When you use Soot's command line interface, argument
+classes are those classes which are either listed explicitly on
+the command line or found in a directory specified with the
+<tt>-process-dir</tt> option. When you use the Soot's Eclipse
+plug-in, argument classes are those which you selected before
+starting Soot from the Navigator popup menu, or those found in
+directories you specified with the <tt>Process
+Directories</tt> option before starting Soot from the Project
+menu.</p>
+<p>
+<arg>Application classes</arg> are classes that Soot analyzes,
+transforms, and turns into output files.</p>
+<p>
+<arg>Library classes</arg> are classes which are referred to,
+directly or indirectly, by the application classes, but which are
+not themselves application classes. Soot resolves these classes
+and reads <tt>.class</tt> or <tt>.jimple</tt> source files for
+them, but it does not perform transformations on library classes
+or write output files for them.</p>
+<p>
+All argument classes are necessarily application classes.  When
+Soot <emph>is not</emph> in ``application mode'', argument
+classes are the only application classes; other classes
+referenced from the argument classes become library classes.</p>
+<p>
+When Soot <emph>is</emph> in application mode, every class
+referenced from the argument classes, directly or indirectly, is
+also an application class, unless its package name indicates that
+it is part of the standard Java runtime system.</p>
+<p>
+Users may fine-tune the designation of application and library
+classes using the Application Mode Options.
+</p>
+<p>
+Here is a simple example to clarify things. Suppose your program
+consists of three class files generated from the following
+source:
+<pre>
+// UI.java
+interface UI {
+  public void display(String msg);
+}
+
+// HelloWorld.java
+class HelloWorld {
+  public static void main(String[] arg) {
+    UI ui = new TextUI();
+    ui.display("Hello World");
+  }
+}
+
+// TextUI.java
+import java.io.*;
+class TextUI implements UI {
+  public void display(String msg) {
+      System.out.println(msg);
+  }
+}
+</pre></p>
+<p>
+If you run 
+<pre>
+java soot.Main HelloWorld
+</pre>
+<tt>HelloWorld</tt> is the only argument class and the only
+application class.  <tt>UI</tt> and <tt>TextUI</tt> are library
+classes, along with <tt>java.lang.System</tt>,
+<tt>java.lang.String</tt>, <tt>java.io.PrintStream</tt>, and a
+host of other classes from the Java runtime system that get
+dragged in indirectly by the references to <tt>String</tt>,
+<tt>System</tt>, and <tt>println()</tt>.</p>
+<p>
+If you run 
+<pre>
+java soot.Main --app HelloWorld
+</pre>
+<tt>HelloWorld</tt> remains the
+only argument class, but the application classes include <tt>UI</tt>
+and <tt>TextUI</tt> as well as <tt>HelloWorld</tt>.
+<tt>java.lang.System</tt> et. al. remain library classes.
+</p>
+<p>
+If you run 
+<pre>
+java soot.Main -i java. --app HelloWorld
+</pre>
+<tt>HelloWorld</tt> is still the only argument class, but the set
+of application classes includes the referenced Java runtime
+classes in packages whose names start with <tt>java.</tt> as well
+as <tt>HelloWorld</tt>, <tt>UI</tt>, and <tt>textUI</tt>. The set
+of library classes includes the referenced classes from other
+packages in the Java runtime.</p>
+</intro>
 	<section>
 		<name>General Options</name>
 		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
-			<short_desc>Display Help and Exit</short_desc>
-			<long_desc>This option displays the textual help message and exits immediately without doing any further processing.</long_desc>
+			<short_desc>Display help and exit</short_desc>
+			<long_desc>
+Display the textual help message and exit immediately without
+further processing.
+</long_desc>
 		</boolopt>
                 <boolopt>
                         <name>Phase List</name>
                         <alias>pl</alias>
                         <alias>phase-list</alias>
                         <short_desc>Print list of available phases</short_desc>
-                        <long_desc>This option causes Soot to print a list of the available phases and sub-phases, and exit.</long_desc>
+                        <long_desc>
+Print a list of the available phases and sub-phases, then exit.
+</long_desc>
                 </boolopt>
                 <listopt>
                         <name>Phase Help</name>
                         <alias>ph</alias>
                         <alias>phase-help</alias>
-                        <short_desc>Print help for specified phase</short_desc>
-                        <long_desc>This option causes Soot to print a help message about the phase or sub-phase specified by its argument, and exit.
-                        </long_desc>
+			<set_arg_label>phase</set_arg_label>
+                        <short_desc>Print help for specified <use_arg_label/></short_desc>
+                        <long_desc>
+Print a help message about the phase or sub-phase named
+<use_arg_label/>, then exit.  To see the help message of
+more than one phase, specify multiple phase-help options.
+</long_desc>
                 </listopt>
 		<boolopt>
 			<name>Version</name>
 			<alias>version</alias>
-			<short_desc>Display Version Information and Exit</short_desc>
-			<long_desc>This option displays the Soot version information and exits immediately without doing any further processing.</long_desc>
+			<short_desc>Display version information and exit</short_desc>
+			<long_desc>
+Display information about the version of Soot being run, then
+exit without further processing.
+</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Verbose</name>
 			<alias>v</alias>
 			<alias>verbose</alias>
-			<short_desc>Verbose Mode</short_desc>
-			<long_desc>This option causes Soot to display detailed information about what it is doing.</long_desc>
+			<short_desc>Verbose mode</short_desc>
+			<long_desc>
+Provide detailed information about what Soot is doing as it runs.
+</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Application Mode</name>
 			<alias>app</alias>
-			<short_desc>Run in Application Mode</short_desc>
-			<long_desc>This option causes Soot to process any application classes referenced by the classes specified on the command line, in addition to the specified classes.</long_desc>
+			<short_desc>Run in application mode</short_desc>
+			<long_desc>
+<p>
+Run in application mode, processing all classes referenced by
+argument classes.</p>
+</long_desc>
 		</boolopt>
                 <boolopt>
 			<name>Whole-Program Mode</name>
 			<alias>w</alias>
 			<alias>whole-program</alias>
-			<short_desc>Run in Whole-program Mode</short_desc>
-			<long_desc>This option causes Soot to run in whole program mode, taking into consideration the whole program when performing optimizations.</long_desc>
+			<short_desc>Run in whole-program mode</short_desc> 
+			<long_desc>
+<p>
+Run in whole program mode, taking into consideration the whole
+program when performing analyses and transformations. Soot
+uses the Call Graph Constructor to build a call graph for the
+program, then applies enabled transformations in the Whole-Jimple
+Transformation, Whole-Jimple Optimization, and Whole-Jimple
+Annotation packs before applying enabled intraprocedural
+transformations.</p>
+</long_desc>
                 </boolopt>
                 <boolopt>
 			<name>Debug</name>
 			<alias>debug</alias>
-			<short_desc>Prints Various Soot Debugging Info</short_desc>
-			<long_desc>This option causes Soot to print various debugging information, particularly from the Baf Body Phase and the Jimple Annotation Pack Phase.</long_desc>
+			<short_desc>Print various Soot debugging info</short_desc>
+			<long_desc>
+Print various debugging information as Soot runs, particularly
+from the Baf Body Phase and the Jimple Annotation Pack Phase.
+</long_desc>
                 </boolopt>
 	</section>
 	<section>
@@ -65,33 +194,69 @@
 			<alias>cp</alias>
 			<alias>soot-class-path</alias>
 			<alias>soot-classpath</alias>
-			<short_desc>Uses given PATH as the classpath for finding classes for Soot processing.</short_desc>
-			<long_desc>Uses given PATH as the classpath for finding classes for Soot processing.</long_desc>
+			<set_arg_label>path</set_arg_label>
+			<short_desc>Use <use_arg_label/> as the classpath for finding classes.</short_desc>
+			<long_desc>
+<p>
+Use <use_arg_label/> as the list of directories in which Soot
+should search for classes. <use_arg_label/> should be a series of
+directories, separated by the path separator character for your
+system.</p>
+<p>
+If no classpath is set on the command line, but the system
+property <tt>soot.class.path</tt> has been set, Soot uses its
+value as the classpath.</p>
+<p>
+If neither the command line nor the system properties specify a
+Soot classpath, Soot falls back on a default classpath consisting
+of the value of the system property <tt>java.class.path</tt>
+followed <arg>java.home</arg><tt>/lib/rt.jar</tt>, where
+<arg>java.home</arg> stands for the contents of the system property
+<tt>java.home</tt> and <tt>/</tt> stands for the system file
+separator.</p>
+</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Input Source Precedence</name>
 			<alias>src-prec</alias>
+			<short_desc>Sets source precedence for soot</short_desc>
+			<long_desc>
+Set Soot's preference for what type of source files to read when
+it looks for a class.
+</long_desc>
 			<value>
 				<name>Class File</name>
 				<alias>c</alias>
 				<alias>class</alias>
-				<short_desc>Use class for source of Soot.</short_desc>
+				<short_desc>Favour class files as Soot source</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.class</tt> files found in
+the Soot classpath.  Fall back to <tt>.jimple</tt> files
+only when unable to find a <tt>.class</tt> file.
+</long_desc>
 				<default/>
 			</value>
 			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
-				<short_desc>Use Jimple for source of Soot.</short_desc>
+				<short_desc>Favour Jimple files as Soot source</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.jimple</tt> files found in
+the Soot classpath.  Fall back to <tt>.class</tt> files only when
+unable to find a <tt>.class</tt> file.
+</long_desc>
 			</value>
-			<short_desc>Sets Source Precedence for Soot</short_desc>
-			<long_desc>By default, Soot will resolve classes from .class files. If a class cannot be resolved from a .class file, Soot will attempt to resolve it from a .jimple file. Setting this option to jimple specifies the opposite policy: classes are resolved from .jimple files, and only if this fails will an attempt be made to resolve them from .class files.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Allow Phantom References</name>
 			<alias>allow-phantom-refs</alias>
-			<short_desc>Allow unresolved classes: may cause errors</short_desc>
-			<long_desc>This option causes Soot to process a class even if it cannot find classes referenced by that class. This may cause Soot to produce incorrect results.</long_desc>
+			<short_desc>Allow unresolved classes; may cause errors</short_desc>
+			<long_desc>
+Allow Soot to process a class even if it cannot find all classes
+referenced by that class. This may cause Soot to produce
+incorrect results.
+</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -100,134 +265,180 @@
 			<name>Output Directory</name>
 			<alias>d</alias>
 			<alias>output-dir</alias>
-			<short_desc>Store Produced Files in PATH</short_desc>
-			<long_desc>Specifies that the outputted files are to be stored in PATH. The path may be relative to the working directory. This PATH must already exist before running Soot.</long_desc>
+			<set_arg_label>dir</set_arg_label>
+      			<short_desc>Store output files in <use_arg_label/></short_desc>
+			<long_desc>
+Store output files in <use_arg_label/>. <use_arg_label/> may be
+relative to the working directory.
+</long_desc>
 		</stropt>
 		<multiopt>
 			<name>Output Format</name>
 			<alias>f</alias>
 			<alias>output-format</alias>
+			<set_arg_label>format</set_arg_label>
+			<short_desc>Set output format for Soot</short_desc>
+			<long_desc>
+<p>
+Specify which format of output files Soot should produce, if
+any.</p>
+<p>
+Note that while the abbreviated formats (<tt>jimp</tt>,
+<tt>shimp</tt>, <tt>b</tt>, and <tt>grimp</tt>) are easier to
+read than their unabbreviated counterparts (<tt>jimple</tt>,
+<tt>shimple</tt>, <tt>baf</tt>, and <tt>grimple</tt>), they may
+contain ambiguities. Method signatures in the abbreviated
+formats, for instance, are not uniquely determined.</p>
+</long_desc>
 			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>
-				<short_desc>Produces .jimple Files</short_desc>
-                <long_desc>Produces .jimple files that contain a textual representation for types in Soot's Jimple internal representation.</long_desc>
+				<short_desc>Produce <tt>.jimple</tt> Files</short_desc>
+                <long_desc>
+Produce <tt>.jimple</tt> files, which contain a textual
+form of Soot's Jimple internal representation.
+</long_desc>
 			</value>
 			<value>
 				<name>Jimp File</name>
 				<alias>j</alias>
 				<alias>jimp</alias>
-				<short_desc>Produces .jimp (abbreviated Jimple) Files</short_desc>
-        <long_desc>Produces .jimp files which contain an abbreviated
-        textual form for Soot's Jimple internal representation.  The
-        abbreviated form is easier to read than the non-abbreviated
-        counterpart, but may also contain ambiguities; for instance,
-        method signatures are not uniquely determined.</long_desc>
+				<short_desc>Produce <tt>.jimp</tt> (abbreviated Jimple) files</short_desc>
+        <long_desc>
+Produce <tt>.jimp</tt> files, which contain an abbreviated form
+of Jimple.
+</long_desc>
 			</value>
 			<value>
 				<name>Shimple File</name>
 				<alias>S</alias>
 				<alias>shimple</alias>
-				<short_desc>Produces .shimple Files</short_desc>
-        <long_desc>Produces .shimple files containing the textual
-          representation of Soot's SSA Shimple internal
-          representation.  Shimple is very similar to Jimple except
-          that it supports Phi nodes.</long_desc>
+				<short_desc>Produce <tt>.shimple</tt> files</short_desc>
+				<long_desc>
+Produce <tt>.shimple files</tt>, containing a textual form of
+Soot's SSA Shimple internal representation.  Shimple adds
+Phi nodes to Jimple.
+</long_desc>
 			</value>
 			<value>
 				<name>Shimp File</name>
 				<alias>s</alias>
 				<alias>shimp</alias>
-				<short_desc>Produce .shimp (abbreviated Shimple) Files</short_desc>
-        <long_desc>Produces .shimp files which contain an abbreviated
-        textual form for Soot's SSA Shimple internal representation.
-        The abbreviated form is easier to read than the
-        non-abbreviated counterpart, but may also contain ambiguities;
-        for instance, method signatures are not uniquely
-        determined.</long_desc>
+				<short_desc>Produce <tt>.shimp</tt> (abbreviated Shimple) files</short_desc>
+				<long_desc>
+Produce .shimp files, which contain an abbreviated form of
+Shimple.
+</long_desc>
 			</value>
 			<value>
 				<name>Baf File</name>
 				<alias>B</alias>
 				<alias>baf</alias>
-				<short_desc>Produces .baf Files</short_desc>
-                <long_desc>Produces .baf files that contain a textual representation for types in Soot's Baf internal representation.</long_desc>
+				<short_desc>Produce <tt>.baf</tt> files</short_desc>
+				<long_desc>
+Produce <tt>.baf</tt> files, which contain a textual form of
+Soot's Baf internal representation.
+</long_desc>
 			</value>
 			<value>
 				<name>Abbreviated Baf File</name>
 				<alias>b</alias>
-				<short_desc>Produce .b (abbreviated Baf) Files</short_desc>
-                <long_desc>Produces .b files. These contain an abbreviated textual form for Soot's Baf internal representation. It is easier to read than its non-abbreviated counterpart, but can also contain ambiguities; for instance, method signatures are not uniquely determined.</long_desc>
+				<short_desc>Produce <tt>.b</tt> (abbreviated Baf) files</short_desc>
+				<long_desc>
+Produce <tt>.b</tt> files, which contain an abbreviated form of Baf. 
+</long_desc>
 			</value>
 			<value>
 				<name>Grimple File</name>
 				<alias>G</alias>
 				<alias>grimple</alias>
-				<short_desc>Produce .grimple Files</short_desc>
-                <long_desc>Produces .grimple files that contain a textual representation for types in Soot's Grimp internal representation.</long_desc>
+				<short_desc>Produce <tt>.grimple</tt> files</short_desc>
+				<long_desc>
+Produce <tt>.grimple</tt> files, which contain a textual
+form of Soot's Grimp internal representation.
+</long_desc>
 			</value>
 			<value>
 				<name>Grimp File</name>
 				<alias>g</alias>
 				<alias>grimp</alias>
-				<short_desc>Produces .grimp (abbreviated Grimple) Files</short_desc>
-        <long_desc>Produces .grimp files which contain an abbreviated
-        textual form for Soot's Grimple internal representation.
-        The abbreviated form is easier to read than the
-        non-abbreviated counterpart, but may also contain ambiguities;
-        for instance, method signatures are not uniquely
-        determined.</long_desc>
+				<short_desc>Produce <tt>.grimp</tt> (abbreviated Grimple) files</short_desc>
+				<long_desc>
+Produce <tt>.grimp</tt> files, which contain an abbreviated form
+of Grimple.
+</long_desc>
 			</value>
 			<value>
 				<name>Xml File</name>
 				<alias>X</alias>
 				<alias>xml</alias>
-				<short_desc>Produce .xml Files</short_desc>
-               <long_desc>Produces .xml files of classes based on the Jimple statements.</long_desc>
+				<short_desc>Produce <tt>.xml</tt> Files</short_desc>
+				<long_desc>
+Produce <tt>.xml</tt> files containing an annotated
+version of the Soot's Jimple internal representation.
+</long_desc>
 			</value>
 			<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>
-				<short_desc>Produces No Output</short_desc>
-               <long_desc>This option causes Soot to produces no output files.</long_desc>
+				<short_desc>Produce no output</short_desc>
+				<long_desc>
+Produce no output files.
+</long_desc>
 			</value>
 			<value>
 				<name>Jasmin File</name>
 				<alias>jasmin</alias>
-				<short_desc>Produce .jasmin Files</short_desc>
-                <long_desc>Produces .jasmin files as output. These can be understood by the jasmin bytecode assembler tool.</long_desc>
+				<short_desc>Produce <tt>.jasmin</tt> files</short_desc>
+				<long_desc>
+Produce <tt>.jasmin</tt> files, suitable as input to the jasmin
+bytecode assembler.
+</long_desc>
 			</value>
 			<value>
 				<name>Class File</name>
 				<alias>c</alias>
 				<alias>class</alias>
 				<default/>
-				<short_desc>Produce .class Files</short_desc>
-                <long_desc>Produces Java .class files executable under any Java Virtual Machine.</long_desc>
+				<short_desc>Produce <tt>.class</tt> Files</short_desc>
+				<long_desc>
+Produce Java <tt>.class</tt> files, executable by any Java
+Virtual Machine.
+</long_desc>
 			</value>
 			<value>
 				<name>Dava Decompiled File</name>
 				<alias>d</alias>
 				<alias>dava</alias>
-				<short_desc>Produce dava decompiled .java files</short_desc>
-				<long_desc>Produces dava decompiled .java files.</long_desc>
+				<short_desc>Produce dava-decompiled <tt>.java</tt> files</short_desc>
+				<long_desc>
+Produce <tt>.java</tt> files generated by the Dava decompiler.
+</long_desc>
 			</value>
-			<short_desc>Sets Output Format for Soot</short_desc>
-			<long_desc>This option sets the output format of files Soot will produce or no output.</long_desc>
 		</multiopt>
 		<boolopt>
 			<name>Via Grimp</name>
 			<alias>via-grimp</alias>
-			<short_desc>Convert Jimple to Bytecode via Grimp Instead of via Baf</short_desc>
-			<long_desc>This option converts Jimple to bytecode via Grimp instead of via Baf.</long_desc>
+			<short_desc>Convert to bytecode via Grimple instead of via Baf</short_desc>
+			<long_desc>
+Convert Jimple to bytecode via the Grimple intermediate
+representation instead of via the Baf intermediate
+representation.
+</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Save Tags to XML</name>
 			<alias>xml-attributes</alias>
 			<short_desc>Save tags to XML attributes for Eclipse</short_desc>
-			<long_desc>This option saves a variety of tags which are attached to hosts to an XML file that is later read by Eclipse to show program understanding annotations within Eclipse.</long_desc>
+			<long_desc>
+Save in XML format a variety of tags which Soot has attached to
+its internal representations of the application classes. The XML
+file can then be read by the Soot plug-in for the Eclipse IDE,
+which can display the annotations together with the program
+source, to aid program understanding.
+</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -236,8 +447,17 @@
 			<name>Phase Options</name>
 			<alias>p</alias>
 			<alias>phase-option</alias>
-			<short_desc>set run-time option KEY to VALUE for PHASE-NAME</short_desc>
-			<long_desc>Sets run-time option KEY to VALUE for PHASE-NAME (default for VALUE is true).</long_desc>
+			<set_arg_label>phase opt:val</set_arg_label>
+			<short_desc>Set <arg>phase</arg>&apos;s <arg>opt</arg> option to <arg>value</arg></short_desc>
+			<long_desc>
+<p>
+Set <arg>phase</arg>'s run-time option named <arg>opt</arg> to
+<arg>value</arg>.</p>
+<p>
+This is a mechanism for specifying phase-specific options to
+different parts of Soot. See <arg>Soot phase options</arg> for
+details about the available phases and options.</p>
+</long_desc>
 			<phase>
 				<name>Jimple Body Creation</name>
 				<alias>jb</alias>
@@ -287,7 +507,7 @@ with a single local.
                                         <long_desc>
 <p>
 The Jimple Local Aggregator removes some unnecessary copies by
-combining some local variables. Essentially, it finds definitions
+combining local variables. Essentially, it finds definitions
 which have only a single use and, if it is safe to do so, removes
 the original definition after replacing the use with the
 definition's right-hand side.</p>
@@ -318,8 +538,8 @@ by the <dollar/> character with which their names begin.)
 					<alias>jb.ule</alias>
 					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
-The Unused Local Eliminator phase removes any unused locals from
-the method.
+The Unused Local Eliminator removes any unused locals from the
+method.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -331,7 +551,8 @@ the method.
 					<short_desc>Assigns types to locals</short_desc>
                                         <long_desc>
 The Type Assigner gives local variables types which will
-accommodate the values stored in the variable by the method.
+accommodate the values stored in them over the course of the
+method.
 </long_desc>
 					<name>Type Assigner</name>
 					<alias>jb.tr</alias>
@@ -483,7 +704,7 @@ locations in the original bytecode.
 					<alias>jb.cp-ule</alias>
 					<short_desc>Removes unused locals</short_desc>
                                         <long_desc>
-This phase removes any locals that are unused as a result of copy propagation.
+This phase removes any locals that are unused after copy propagation.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -514,8 +735,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
-ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
+the Local Splitter. 
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -523,7 +743,7 @@ ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
 					<name>Nop Eliminator</name>
 					<alias>jb.ne</alias>
 						<long_desc>
-Removes <tt>nop</tt> statements from the method.
+The Nop Eliminator removes <tt>nop</tt> statements from the method.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -546,14 +766,16 @@ traps whose catch blocks are empty.
 				</sub_phase>
 			</phase>
 			<radio_phase>
-				<name>Call Graph</name>
+				<name>Call Graph Constructor</name>
 				<alias>cg</alias>
                                 <class>CGOptions</class>
                                 <short_desc>Build a call graph</short_desc>
-                                <long_desc>The purpose of this pack is to compute
-a call graph. When this pack finishes, a call graph is available in the Scene.
-The different phases in this pack are different ways to construct the call
-graph. Exactly one phase in this pack may be enabled; Soot will raise an error otherwise.
+                                <long_desc>
+The Call Graph Constructor computes a call graph for whole
+program analysis. When this pack finishes, a call graph is
+available in the Scene.  The different phases in this pack are
+different ways to construct the call graph. Exactly one phase in
+this pack may be enabled; Soot will raise an error otherwise.
 </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -572,7 +794,7 @@ class will be loaded, and which static initializer executed. When this
 option is set to true, Soot will conservatively assume that any static
 initializer could be executed. This may make the call graph very large.
 When this option is set to false, any calls to Class.forName() for which
-the class cannot be determined statically are not assumed to call any
+the class cannot be determined statically are assumed to call no
 static initializers.
 </long_desc>
                                 </boolopt>
@@ -604,7 +826,7 @@ are assumed not to call the constructor of the created object.
 					<alias>cg.cha</alias>
                                         <class>CHAOptions</class>
                                         <short_desc>Build a call graph using Class Hierarchy Analysis</short_desc>
-                                        <long_desc>This phase generates uses Class Hierarchy Analysis to generate a call graph.</long_desc>
+                                        <long_desc>This phase uses Class Hierarchy Analysis to generate a call graph.</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -770,10 +992,10 @@ CHA approximation to the call graph is used.
 							<name>Parms As Fields</name>
 							<alias>parms-as-fields</alias>
 							<default>false</default>
-                                                        <short_desc>Represent method parameters as fields of this</short_desc>
+                                                        <short_desc>Represent method parameters as fields of <tt>this</tt></short_desc>
 							<long_desc>
 When this option is set to true, parameters to methods are represented
-as fields (Red nodes) of the this object; otherwise, parameters are
+as fields (Red nodes) of the <tt>this</tt> object; otherwise, parameters are
 represented as variable (Green) nodes.
         </long_desc>
 						</boolopt>
@@ -781,10 +1003,10 @@ represented as variable (Green) nodes.
 							<name>Returns As Fields</name>
 							<alias>returns-as-fields</alias>
 							<default>false</default>
-                                                        <short_desc>Represent method return values as fields of this</short_desc>
+                                                        <short_desc>Represent method return values as fields of <tt>this</tt></short_desc>
 							<long_desc>
 When this option is set to true, return values from methods are
-represented as fields (Red nodes) of the this object; otherwise,
+represented as fields (Red nodes) of the <tt>this</tt> object; otherwise,
 return values are represented as variable (Green) nodes.
         </long_desc>
 						</boolopt>
@@ -797,9 +1019,9 @@ return values are represented as variable (Green) nodes.
 							<default>false</default>
                                                         <short_desc>Collapse single-entry subgraphs of the PAG</short_desc>
 							<long_desc>
-When this option is set to true, variable (Green) nodes which forming
+When this option is set to true, variable (Green) nodes which form
 single-entry subgraphs (so they must have the same points-to set) are
-merged together before propagation begins.
+merged before propagation begins.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -810,7 +1032,7 @@ merged together before propagation begins.
 							<long_desc>
 When this option is set to true, variable (Green) nodes which form
 strongly-connected components (so they must have the same points-to set)
-are merged together before propagation begins.
+are merged before propagation begins.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -961,7 +1183,7 @@ often speeding them up significantly.
 							</value>
                                                         <short_desc>Select points-to set implementation</short_desc>
 							<long_desc>
-Selects an implementation of a points-to set that Spark should use.
+Select an implementation of points-to sets for Spark to use.
 </long_desc>
 						</multiopt>
 						<multiopt>
@@ -1015,10 +1237,10 @@ an algorithm based on the merge step from merge sort.
 							</value>
                                                         <short_desc>Select implementation of points-to set for old part of double set</short_desc>
 							<long_desc>
-Selects an implementation for the sets of old objects in the double
+Select an implementation for sets of old objects in the double
 points-to set implementation.
 
-This option has no effect unless <tt>set-impl</tt> is set to double.
+This option has no effect unless Set Implementation is set to double.
         </long_desc>
 						</multiopt>
 						<multiopt>
@@ -1072,10 +1294,10 @@ an algorithm based on the merge step from merge sort.
 							</value>
                                                         <short_desc>Select implementation of points-to set for new part of double set</short_desc>
 							<long_desc>
-Selects an implementation for the sets of new objects in the double
+Select an implementation for sets of new objects in the double
 points-to set implementation.
 
-This option has no effect unless setImpl is set to double.
+This option has no effect unless Set Implementation is set to double.
         </long_desc>
 						</multiopt>
 					</section>
@@ -1110,7 +1332,7 @@ output before the analysis begins.
                                                         <short_desc>Dump final solution for comparison with other solvers</short_desc>
 							<long_desc>
 When this option is set to true, a representation of the resulting points-to
-sets is dumped. The format is similar to that of the <tt>dump-pag</tt>
+sets is dumped. The format is similar to that of the Dump PAG
 option, and is therefore suitable for comparison with the results of other
 solvers.
         </long_desc>
@@ -1121,10 +1343,11 @@ solvers.
 							<default>false</default>
                                                         <short_desc>Sort variable nodes in dump</short_desc>
 							<long_desc>
-When this option is set to true, the representation dumped by the dump-pag option
+When this option is set to true, the representation dumped by the
+Dump PAG option
 is dumped with the variable (green) nodes in (pseudo-)topological order.
 
-This option has no effect unless dump-pag is true.
+This option has no effect unless Dump PAG is true.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -1133,10 +1356,11 @@ This option has no effect unless dump-pag is true.
 							<default>true</default>
                                                         <short_desc>Include declared types in dump</short_desc>
 							<long_desc>
-When this option is set to true, the representation dumped by the dump-pag option
+When this option is set to true, the representation dumped by the
+Dump PAG option
 includes type information for all nodes.
 
-This option has no effect unless dump-pag is true.
+This option has no effect unless Dump PAG is true.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -1145,13 +1369,15 @@ This option has no effect unless dump-pag is true.
 							<default>true</default>
                                                         <short_desc>In dump, label variables by class and method</short_desc>
 							<long_desc>
-When this option is set to true, the representation dumped by the dump-pag option
+When this option is set to true, the representation dumped by the
+Dump PAG option
 represents nodes by numbering each class, method, and variable within
 the method separately, rather than assigning a single integer to each
 node.
 
-This option has no effect unless dump-pag is true.
-Setting class-method-var to true has the effect of setting topo-sort to false.
+This option has no effect unless Dump PAG is true.  Setting Class
+Method Var to true has the effect of setting Topological Sort to
+false.
         </long_desc>
 						</boolopt>
 						<boolopt>
@@ -1171,8 +1397,8 @@ other analyses (such as the old VTA).
 							<default>false</default>
                                                         <short_desc>Output points-to results in tags for viewing with the Jimple</short_desc>
 							<long_desc>
-        When this option is set to true, the results of the analysis are encoded inside
-tags, and printed with the resulting Jimple code.
+        When this option is set to true, the results of the analysis are encoded within
+tags and printed with the resulting Jimple code.
 
         </long_desc>
 						</boolopt>
@@ -1215,22 +1441,14 @@ cryptic statistics about the size of the points-to sets computed.
 				<name>Whole-Jimple Transformation Pack</name>
 				<alias>wjtp</alias>
 				<long_desc>
-Soot can do whole-program analyses.  For the current version of Soot,
-this means that Jimple bodies are created for each method in the
-application, and analyses run on this set of Jimple bodies.  The
-application consists of one class, specified on the command-line, plus
-all classes referenced (directly or indirectly) by it.  It excludes
-classes in <tt>java.*</tt>, <tt>javax.*</tt>, and <tt>sun.*</tt>.  This mode is
-triggered by the <tt>-</tt><tt>-app</tt> option.
-
-In whole-program mode, Soot applies the contents of the
-Whole-Jimple Transformation Pack to each method under analysis.
-This occurs after all Jimple bodies have been created.  In an
-unmodified version of Soot, the only transformation in
-<tt>wjtp</tt> is the Spark pointer analysis kit. Spark has many
-options, which are listed at <a
-href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps</a>.
-
+<p>
+Soot can perform whole-program analyses.  In whole-program mode,
+Soot applies the contents of the Whole-Jimple Transformation Pack
+to the scene as a whole after construcing a call graph for the
+program.</p>
+<p>
+In an unmodified copy of Soot the Whole-Jimple Transformation
+Pack is empty.</p>
                         </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -1244,14 +1462,12 @@ href="http://www.sable.mcgill.ca/soot/tutorial/phase-options/spark.ps">spark.ps<
 				<name>Whole-Jimple Optimization Pack</name>
 				<alias>wjop</alias>
 				<long_desc>
-To run optimizing transformations on the whole program, use the <tt>-W</tt>
-command-line option.  This tells Soot to apply Whole-Jimple
-Optimization Pack.
-
-The default behaviour of this Pack has static method binding disabled
-and static inlining enabled.  To reverse this, give the options
-<tt>-p wjop.smb enabled:true -p wjop.si disabled</tt>.
-
+<p>
+If Soot is running in whole program mode and the Whole-Jimple
+Optimization Pack is enabled, the pack's transformations are
+applied to the scene as a whole after construction of the call
+graph and application of any enabled Whole-Jimple
+Transformations.</p>
                         </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -1261,18 +1477,17 @@ and static inlining enabled.  To reverse this, give the options
 					<long_desc/>
 				</boolopt>
 				<sub_phase>
-					<name>Static Method Binding</name>
+					<name>Static Method Binder</name>
 					<class>SMBOptions</class>
 					<alias>wjop.smb</alias>
 					<long_desc>
-Static method binding uses CHA or VTA to statically bind 
-monomorphic call sites. That is, smb takes the call graph returned
-by CHA or VTA; if the analysis result shows that any virtual invoke
-statement in the Jimple bodies actually only calls one method, then a
-static copy of the method is made, and the virtual invoke is changed
-to a static invoke.
-
-                        </long_desc>
+The Static Method Binder statically binds monomorphic call
+sites. That is, it searches the call graph for virtual method
+invocations that can be determined statically to call only a single
+implementation of the called method.  Then it replaces such virtual
+invocations with invocations of a static copy of the single called
+implementation.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1286,10 +1501,11 @@ to a static invoke.
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-The receiver object is checked for nullness before the
-target method is invoked.  If the target is null, then a NullPointer
-exception is thrown.
-                        </long_desc>
+Insert a check that, before invoking the static copy of the
+target method, throws a <tt>NullPointerException</tt> if the
+receiver object is null.  This ensures that static method binding does
+not eliminate exceptions which would have occurred in its absence.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Insert Redundant Casts</name>
@@ -1297,55 +1513,72 @@ exception is thrown.
 						<default>true</default>
 						<short_desc/>
 						<long_desc>
-Inserts extra casts for the verifier.  The verifier will
-complain if the target uses `this&apos; (so we have to pass an extra
-parameter), and the argument passed to the method is not the same
-type.  For instance, <tt>Bottle.price<uscore/>static</tt> is a method which takes a
-Cost object, and Cost is an interface implemented by Bottle.  We must
-then cast the Cost to a Bottle before passing it to <tt>price<uscore/>static</tt>.
-                        </long_desc>
+<p>
+Insert extra casts for the Java bytecode verifier.  If the target
+method uses its <tt>this</tt> parameter, a reference to the
+receiver object must be passed to the static copy of the target
+method. The verifier may complain if the declared type of the
+receiver parameter does not match the type implementing the
+target method.</p>
+<p>
+Say, for example, that <tt>Singer</tt> is an interface declaring
+the <tt>sing()</tt> method and that the call graph shows all
+receiver objects at a particular call site,
+<tt>singer.sing()</tt> (with <tt>singer</tt> declared as a
+<tt>Singer</tt>) are in fact <tt>Bird</tt> objects (<tt>Bird</tt>
+being a class that implements <tt>Singer</tt>). The virtual call
+<tt>singer.sing()</tt> is effectively replaced with the static
+call <tt>Bird.staticsing(singer)</tt>. <tt>Bird.staticsing()</tt>
+may perform operations on its parameter which are only allowed on
+<tt>Bird</tt>s, rather than <tt>Singer</tt>s.  The Insert
+Redundant Casts option inserts a cast of <tt>singer</tt> to the
+<tt>Bird</tt> type, to prevent complaints from the verifier.</p>
+</long_desc>
 					</boolopt>
 					<multiopt>
-						<name>Allow Modifier Changes</name>
+						<name>Allowed Modifier Changes</name>
 						<alias>allowed-modifier-changes</alias>
 						<value>
 							<name>Unsafe</name>
 							<alias>unsafe</alias>
 							<short_desc/>
+							<long_desc>
+Modify the visibility on code so that all inlining is permitted.
+</long_desc>
 							<default/>
 						</value>
 						<value>
 							<name>Safe</name>
 							<alias>safe</alias>
 							<short_desc/>
+							<long_desc>
+Preserve the exact meaning of the analyzed program.
+</long_desc>
 						</value>
 						<value>
 							<name>None</name>
 							<alias>none</alias>
 							<short_desc/>
+							<long_desc>
+Change no modifiers whatsoever.
+</long_desc>
 						</value>
 						<short_desc/>
 						<long_desc>
-Determines what changes in visibility modifiers
-are allowed.  ``unsafe&apos;&apos; modifies the visibility on code so that
-all inlining is permitted; some IllegalAccessErrors may be missed.
-``safe&apos;&apos; preserves the exact meaning of the analysed program, 
-and ``none&apos;&apos; changes no modifiers whatsoever.
-                        </long_desc>
+Specify which changes in visibility modifiers
+are allowed.  
+</long_desc>
 					</multiopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Static Inlining</name>
+					<name>Static Inliner</name>
 					<class>SIOptions</class>
 					<alias>wjop.si</alias>
 					<long_desc>
-The StaticInliner takes an call graph returned by CHA or VTA and visits
-all call sites in the application in a bottom-up fashion, inlining 
-invoke statements which is determined to be monomorphic by analysis result.
-Note that the modifier ``static&apos;&apos; is supposed to be compared to a
-(not-currently-implemented) profile-guided inliner.
- 
-                        </long_desc>
+The Static Inliner visits all call sites in the call graph in a
+bottom-up fashion, replacing monomorphic calls with inlined
+copies of the invoked methods.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -1358,36 +1591,73 @@ Note that the modifier ``static&apos;&apos; is supposed to be compared to a
 						<alias>insert-null-checks</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
+						<long_desc>
+Insert, before the inlined body of the target method, a check
+that throws a <tt>NullPointerException</tt> if the receiver
+object is null.  This ensures that inlining will not eliminate
+exceptions which would have occurred in its absence.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Insert Redundant Casts</name>
 						<alias>insert-redundant-casts</alias>
 						<default>true</default>
 						<short_desc/>
-						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
+	    					<long_desc>
+<p>
+Insert extra casts for the Java bytecode verifier.  The verifier
+may complain if the inlined method uses <tt>this</tt> and the
+declared type of the receiver of the call being inlined is
+different from the type implementing the target method being
+inlined.</p>
+<p>
+Say, for example, that <tt>Singer</tt> is an interface declaring
+the <tt>sing()</tt> method and that the call graph shows that all
+receiver objects at a particular call site,
+<tt>singer.sing()</tt> (with <tt>singer</tt> declared as a
+<tt>Singer</tt>) are in fact <tt>Bird</tt> objects (<tt>Bird</tt>
+being a class that implements <tt>Singer</tt>). The
+implementation of <tt>Bird.sing()</tt> may perform operations on
+<tt>this</tt> which are only allowed on <tt>Bird</tt>s, rather
+than <tt>Singer</tt>s.  The Insert Redundant Casts option ensures that
+this cannot lead to verification errors, by inserting a cast of
+<tt>bird</tt> to the <tt>Bird</tt> type before inlining the body
+of <tt>Bird.sing()</tt>.</p>
+</long_desc>
 					</boolopt>
 					<multiopt>
-						<name>Allow Modifier Changes</name>
+						<name>Allowed Modifier Changes</name>
 						<alias>allowed-modifier-changes</alias>
 						<value>
 							<name>Unsafe</name>
 							<alias>unsafe</alias>
 							<short_desc/>
+							<long_desc>
+Modify the visibility on code so that all inlining is permitted.
+</long_desc>
 							<default/>
 						</value>
 						<value>
 							<name>Safe</name>
 							<alias>safe</alias>
 							<short_desc/>
+							<long_desc>
+Preserve the exact meaning of the analyzed program.
+</long_desc>
 						</value>
 						<value>
 							<name>None</name>
 							<alias>none</alias>
 							<short_desc/>
+							<long_desc>
+Change no modifiers whatsoever.
+</long_desc>
 						</value>
 						<short_desc/>
-						<long_desc>As in <tt>StaticMethodBinder</tt>.</long_desc>
+						<long_desc>
+Specify which changes in visibility modifiers
+are allowed.  
+</long_desc>
 					</multiopt>
 					<flopt>
 						<name>Expansion Factor</name>
@@ -1397,8 +1667,8 @@ Note that the modifier ``static&apos;&apos; is supposed to be compared to a
 						<long_desc>
 Determines the maximum allowed expansion of a method.  Inlining
 will cause the method to grow by a factor of no more than
-expansion-factor.
-                        </long_desc>
+the Expansion Factor.
+</long_desc>
 					</flopt>
 					<intopt>
 						<name>Max Container Size</name>
@@ -1427,45 +1697,52 @@ then it will not be inlined into other methods.
 			<phase>
 				<name>Whole-Jimple Annotation Pack</name>
 				<alias>wjap</alias>
+				<long_desc>
+<p>
+Some analyses do not transform Jimple body directly, but annotate
+statements or values with tags. Whole-Jimple annotation pack provides
+a place for annotation-oriented analyses in whole program mode.</p>
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
                     <default>true</default>
-					<long_desc>
-Some analyses do not transform Jimple body directly, but annotate
-statements or values with tags. Whole-Jimple annotation pack provides
-a place for annotation-oriented analysis in a whole program mode.
-					</long_desc>
 				</boolopt>
 				<sub_phase>
 					<name>Rectangular Array Finder</name>
 					<alias>wjap.ra</alias>
+					<short_desc> Find array variables always pointing to rectangular two-dimensional array objects. </short_desc>
+					<long_desc> 
+<p>
+The Rectangular Array Finder traverses Jimple statements
+based on the static call graph, and finds array variables which always
+hold rectangular two-dimensional array objects.</p>
+<p>
+In Java, a multi-dimensional array is an array of arrays, which
+means the shape of the array can be ragged. Nevertheless, many
+applications use rectangular arrays. Knowing that an array is
+rectangular can be very helpful in proving safe array bounds
+checks.</p>
+<p>
+The Rectangular Array Finder does not change the
+program being analyzed. Its results are used by the Array Bound
+Checker.</p>
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
-						<short_desc> Find array variables always pointing to rectangular two-dimensional array objects. </short_desc>
-						<long_desc> 
-In Java, a multi-dimensional array is an array of arrays, which means
-the shape of the array can be ragged. However, many applications use
-rectangular arrays. Such information is very helpful in proving 
-safe array bounds checks. Rectangular array finder traverses Jimple
-statements based on static call graph, and finds array variables 
-always holding rectangular two-dimensional array objects. 
-The analysis results are used by array bounds check elimination (jap.abc).
-This phase does not change the program.
-						</long_desc>
 					</boolopt>
 				</sub_phase>
 			</phase>
       <phase>
-        <name>Shimple Phase Options</name>
+        <name>Shimple Body Creation</name>
         <alias>shimple</alias>
         <class>ShimpleOptions</class>
-        <short_desc>General Shimple options.</short_desc>
-        <long_desc>These options affect the Shimple body behaviour.
-          Currently, the only available options affect Shimple during Phi 
-	  node elimination.</long_desc>
+        <short_desc/>
+        <long_desc>Shimple Body Creation creates a
+	    <tt>ShimpleBody</tt> for each input method. Shimple
+	    is Soot's SSA representation.</long_desc>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
@@ -1481,24 +1758,26 @@ This phase does not change the program.
           <value>
             <name>Naive Phi Node Elimination</name>
             <alias>none</alias>
-            <short_desc>If enabled, no optimizations are applied
-            before or after eliminating Phi nodes.</short_desc>
-            <long_desc>If enabled, neither pre-optimization nor
-            post-optimization will be applied to the Phi elimination
-            process.  This is useful for monitoring and understanding
-            the behaviour of Shimple optimizations or
-            transformations.</long_desc>
+            <short_desc>Do not optimize during Phi elimination</short_desc>
+            <long_desc>
+<p>
+Do not optimize as part of Phi node elimination, either before
+or after eliminating Phi nodes.  This is useful for monitoring
+and understanding the behaviour of Shimple optimizations and
+transformations.</p>
+</long_desc>
           </value>
           <value>
-            <name>Pre-optimize Phi Elimination</name>
+            <name>Pre-optimize Phi elimination</name>
             <alias>pre</alias>
-            <short_desc>If enabled, some optimizations are applied
-              before Phi nodes are eliminated.</short_desc>
-            <long_desc>If enabled, some recommended optimizations
-              such as dead code elimination and local packing are applied
-              before Phi node elimination.  This does not appear to be as
-              effective as post-optimization, but the option is provided
-              for future testing and investigation.</long_desc>
+            <short_desc>Perform some optimizations before eliminating Phi nodes</short_desc>
+            <long_desc>
+<p>
+Perform some optimizations, such as dead code elimination and
+local packing, before eliminating Phi nodes.  This appears to be
+less effective than post-optimization, but the option is provided
+for future testing and investigation.</p>
+</long_desc>
           </value>
           <value>
             <name>Post-optimize Phi Elimination</name>
@@ -1506,10 +1785,12 @@ This phase does not change the program.
             <default/>
             <short_desc>If enabled, some optimizations are applied after
               Phi nodes are eliminated.</short_desc>
-            <long_desc>If enabled, applies recommended optimizations
-            such as dead code elimination and local packing after Phi
-            node elimination.  This appears to be more effective than
-            pre-optimization.</long_desc>
+            <long_desc>
+<p>
+Perform some optimizations, such as dead code elimination and
+local packing, after eliminating Phi nodes.  This appears to be
+more effective than post-optimization.</p>
+</long_desc>
           </value>
           <value>
             <name>Pre- and Post- Optimize Phi Elimination</name>
@@ -1526,75 +1807,76 @@ This phase does not change the program.
 			<phase>
 				<name>Shimple Transformation Pack</name>
 				<alias>stp</alias>
+				<short_desc>Apply Shimple-based transformations</short_desc>
+          <long_desc>
+<p>
+When the Shimple representation is produced, Soot applies the
+contents of the Shimple Transformation Pack to each method
+under analysis.  This pack contains no transformations in an
+unmodified version of Soot.</p>
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-          <short_desc>When enabled, Shimple-based transformations are applied.</short_desc>
-          <long_desc>If the Shimple phase is enabled, Soot applies the
-          contents of the Shimple Transformation Pack to each method
-          under analysis.  This pack contains no transformations in an
-          unmodified version of Soot.</long_desc>
-          <default>true</default>
+          				<default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Shimple Optimization Pack</name>
 				<alias>sop</alias>
+				<short_desc>Apply Shimple-based optimizations</short_desc>
+				<long_desc>
+<p>
+The Shimple Optimization Pack contains transformations that
+perform optimizations on Shimple, Soot's SSA representation.</p>
+</long_desc>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-          <default>false</default>
-          <short_desc>When enabled, Shimple-based optimizations are
-          applied.</short_desc>
-          <long_desc>When enabled, Soot applies the Shimple
-          Optimization Pack to every <tt>ShimpleBody</tt> in
-          application classes.  This section lists the default
-          transformations in the Shimple Optimization
-          Pack.</long_desc>
+					<default>false</default>
 				</boolopt>
 				<sub_phase>
-					<name>Constant Propagator and Folder</name>
+					<name>Shimple Constant Propagator and Folder</name>
+					<short_desc>Performs constant propagation and folding on Shimple.</short_desc>
+					<long_desc>
+<p>
+An example implementation of constant propagation using
+Shimple. Informal tests show that this analysis is already more
+powerful than the Jimple Constant Propagator and Folder,
+particularly when control flow is involved.  This optimization
+demonstrates some of the benefits of SSA --- particularly the fact
+that Phi nodes represent natural merge points in the control
+flow.  This implementation also demonstrates how to access U/D
+and D/U chains in Shimple.</p>
+</long_desc>
 					<alias>sop.cpf</alias>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
-            <default>true</default>
-						<short_desc>An example optimization written for
-						Shimple.</short_desc>
-						<long_desc>An example implementation of constant
-						propagation using Shimple. Informal tests show that this
-						analysis is already more powerful than the simplistic
-						ConstantPropagatorAndFolder optimization provided by
-						Jimple, particularly when control flow is involved.  This
-						optimization demonstrates some of the benefits of SSA --
-						particularly the fact that Phi nodes represent natural
-						merge points in the control flow.  This implementation
-						also demonstrates how to access U/D and D/U chains in
-						Shimple.</long_desc>
+						<default>true</default>
 					</boolopt>
 				</sub_phase>
 			</phase>
 			<phase>
 				<name>Jimple Transformation Pack</name>
 				<alias>jtp</alias>
-				<boolopt>
-					<name>Enabled</name>
-					<alias>enabled</alias>
-                                        <default>true</default>
-					<short_desc/>
-					<long_desc>
+				<short_desc/>
+				<long_desc>
 Soot applies the contents of the Jimple Transformation Pack to
 each method under analysis.  This pack contains no
 transformations in an unmodified version of Soot.
 </long_desc>
+				<boolopt>
+					<name>Enabled</name>
+					<alias>enabled</alias>
+                                        <default>true</default>
 				</boolopt>
 			</phase>
 			<phase>
 				<name>Jimple Optimization Pack</name>
 				<alias>jop</alias>
 				<long_desc>
-When Soot is given the <tt>-O</tt> or <tt>-optimize</tt>
-command-line option, it applies the
+When Soot's Optimize option is on, Soot applies the
 Jimple Optimization Pack to every <tt>JimpleBody</tt> in
 application classes.  This section lists the default
 transformations in the Jimple Optimization Pack.
@@ -1627,7 +1909,7 @@ explicitly created; it need not be.  A better implementation
 would implicitly compute the kill sets at every node.
 </p>
 <p>
-Because of the current slowness, this transformation is not
+Because of its current slowness, this transformation is not
 enabled by default.
 </p>
 </long_desc>
@@ -1641,10 +1923,10 @@ enabled by default.
 					<boolopt>
 						<name>Naive Side Effect Tester</name>
 						<alias>naive-side-effect</alias>
-						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
+						<short_desc>Use naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>true</tt> the Common
+If Naive Side Effect Tester is <tt>true</tt>, the Common
 Subexpression Eliminator uses the conservative side effect
 information provided by the <tt>NaiveSideEffectTester</tt> class,
 even if interprocedural information about side effects is
@@ -1655,18 +1937,17 @@ available locally about a statement. It assumes, for example,
 that any method call has the potential to write and read all
 instance and static fields in the program.</p>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
-program analysis has been specified by the <tt>-W</tt> or
-<tt>-whole-program</tt> options, then the Common Subexpression
+If Naive Side Effect Tester is set to <tt>false</tt> and Soot is
+in whole program mode, then the Common Subexpression
 Eliminator uses the side effect information provided by the
 <tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
-uses the information provided by a points-to analysis to
+uses a points-to analysis to
 determine which fields and statics may be written or read by a
 given statement.</p>
 <p>
 If whole program analysis is not performed, naive side effect
 information is used regardless of the setting of
-<tt>naive-side-effect</tt>.
+Naive Side Effect Tester.
 </p>
 </long_desc>
 					</boolopt>
@@ -1694,7 +1975,7 @@ should be used instead of Busy Code Motion.
 						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>true</tt> Busy Code
+If Naive Side Effect Tester is set to <tt>true</tt>, Busy Code
 Motion uses the conservative side effect information provided by
 the <tt>NaiveSideEffectTester</tt> class, even if interprocedural
 information about side effects is available.</p>
@@ -1704,18 +1985,16 @@ available locally about a statement. It assumes, for example,
 that any method call has the potential to write and read all
 instance and static fields in the program.</p>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
-program analysis has been specified by the <tt>-W</tt> or
-<tt>-whole-program</tt> options, then Busy Code Motion uses the
-side effect information provided by the
-<tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
-uses the information provided by a points-to analysis to
+If Naive Side Effect Tester is set to <tt>false</tt> and Soot is
+in whole program mode, then Busy Code Motion uses the side effect
+information provided by the <tt>PASideEffectTester</tt>
+class. <tt>PASideEffectTester</tt> uses a points-to analysis to
 determine which fields and statics may be written or read by a
 given statement.</p>
 <p>
 If whole program analysis is not performed, naive side effect
 information is used regardless of the setting of
-<tt>naive-side-effect</tt>.
+Naive Side Effect Tester.
 </p>
 </long_desc>
 					</boolopt>
@@ -1793,7 +2072,7 @@ transformation.
 						<short_desc>Use a naive side effect analysis even if interprocedural information is available</short_desc>
 						<long_desc>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>true</tt> Lazy Code
+If Naive Side Effect Tester is set to <tt>true</tt>, Lazy Code
 Motion uses the conservative side effect information provided by
 the <tt>NaiveSideEffectTester</tt> class, even if interprocedural
 information about side effects is available.</p>
@@ -1803,18 +2082,16 @@ available locally about a statement. It assumes, for example,
 that any method call has the potential to write and read all
 instance and static fields in the program.</p>
 <p>
-If <tt>naive-side-effect</tt> is set to <tt>false</tt> and whole
-program analysis has been specified by the <tt>-W</tt> or
-<tt>-whole-program</tt> options, then Lazy Code Motion uses the
-side effect information provided by the
-<tt>PASideEffectTester</tt> class. <tt>PASideEffectTester</tt>
-uses the information provided by a points-to analysis to
+If Naive Side Effect Tester is set to <tt>false</tt> and Soot is
+in whole program mode, then Lazy Code Motion uses the side effect
+information provided by the <tt>PASideEffectTester</tt>
+class. <tt>PASideEffectTester</tt> uses a points-to analysis to
 determine which fields and statics may be written or read by a
 given statement.</p>
 <p>
 If whole program analysis is not performed, naive side effect
 information is used regardless of the setting of
-<tt>naive-side-effect</tt>.
+Naive Side Effect Tester.
 </p>
 </long_desc>
 					</boolopt>
@@ -1855,11 +2132,11 @@ the original bytecode.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Constant Propagator and Folder</name>
+					<name>Jimple Constant Propagator and Folder</name>
 					<alias>jop.cpf</alias>
 					<short_desc/>
 					<long_desc>
-The Constant Propagator and Folder evaluates any expressions
+The Jimple Constant Propagator and Folder evaluates any expressions
 consisting entirely of compile-time constants, for example <tt>2
 * 3</tt>, and replaces the expression with the constant result,
 in this case <tt>6</tt>.
@@ -1875,10 +2152,10 @@ in this case <tt>6</tt>.
 					<alias>jop.cbf</alias>
 					<long_desc>
 The Conditional Branch Folder statically evaluates the
-conditional expression of Jimple <tt>IfStmt</tt>s.  If the
-condition is identically `<tt>true</tt>&apos; or
-`<tt>false</tt>&apos;, the Folder replaces the conditional branch
-statement with an unconditional `<tt>goto</tt>&apos; statement.
+conditional expression of Jimple <tt>if</tt> statements.  If the
+condition is identically <tt>true</tt> or
+<tt>false</tt>, the Folder replaces the conditional branch
+statement with an unconditional <tt>goto</tt> statement.
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -1908,7 +2185,10 @@ side-effects.
 						<name>Only Stack Locals</name>
 						<alias>only-stack-locals</alias>
 						<short_desc/>
-						<long_desc/>
+						<long_desc>
+Only eliminate dead assignments to locals that represent stack
+locations in the original bytecode.
+</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1934,17 +2214,17 @@ traps whose catch blocks are empty.
 The Unconditional Branch Folder removes unnecessary `<tt>goto</tt>&apos;
 statements from a <tt>JimpleBody</tt>.</p>
 <p>
-If a <tt>GotoStmt</tt>&apos;s target is the next instruction,
-then it is removed.  If a <tt>GotoStmt</tt>&apos;s target is
-another <tt>GotoStmt</tt>, with target <tt>y</tt>, then the first
-statement&apos;s target is changed to <tt>y</tt>&apos;.</p>
+If a <tt>goto</tt> statement's target is the next instruction,
+then the statement is removed.  If a <tt>goto</tt>'s target is
+another <tt>goto</tt>, with target <tt>y</tt>, then the first
+statement's target is changed to <tt>y</tt>.</p>
 <p>
-If some <tt>IfStmt</tt>&apos;s target is a <tt>GotoStmt</tt>,
-then the <tt>IfStmt</tt>&apos;s target can be updated to the
-<tt>GotoStmt</tt>&apos;s target.</p>
+If some <tt>if</tt> statement's target is a <tt>goto</tt>
+statement, then the <tt>if</tt>'s target can be replaced with the
+<tt>goto</tt>'s target.</p>
 <p>
-(These situations can result from other optimizations, and folding
-branches may itself generate more unreachable code.)</p>
+(These situations can result from other optimizations, and branch
+folding may itself generate more unreachable code.)</p>
 </long_desc>
 					<boolopt>
 						<name>Enabled</name>
@@ -2013,13 +2293,15 @@ separate phases and phase options.
                                         <default>true</default>
 				</boolopt>
 				<sub_phase>
-					<name>Null Pointer Check Options</name>
+					<name>Null Pointer Check</name>
 					<class>NPCOptions</class>
 					<alias>jap.npc</alias>
 					<long_desc>
-The null pointer check analysis has the phase name <tt>jtp.npc</tt>. 
-It has one phase option (aside from the default <tt>disabled</tt> option). 
-                        </long_desc>
+The Null Pointer Check finds instruction which have the potential
+to throw <tt>NullPointerException</tt>s and adds annotations
+indicating whether or not the pointer being dereferenced can be
+determined statically not to be null.
+</long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -2030,43 +2312,43 @@ It has one phase option (aside from the default <tt>disabled</tt> option).
 					<boolopt>
 						<name>Only Array Ref</name>
 						<alias>only-array-ref</alias>
-						<short_desc/>
+						<short_desc>Annotate only array references</short_desc>
 						<long_desc>
-  By default, all bytecodes that need null pointer checks 
-  are annotated with the analysis result. When this option 
-  is set to true, Soot will annotate only array-referencing 
-  bytecodes with null pointer check information; other bytecodes, 
-  such as <tt>getfield</tt> and <tt>putfield</tt>, will not be annotated. 
-                        </long_desc>
+Annotate only array-referencing instructions, instead of all
+instructions that need null pointer checks.
+</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Profiling</name>
 						<alias>profiling</alias>
-						<short_desc>Insert profiling instructions counting the number of safe null pointer accesses.</short_desc>
+						<short_desc>Insert instructions to count safe pointer accesses</short_desc>
 						<long_desc>
-If this option is true, the analysis inserts profiling instructions
-counting the number of eliminated safe null pointer checks at runtime.
-This is only for profiling purpose.
+Insert profiling instructions counting the number of eliminated
+safe null pointer checks at runtime.  This is only for profiling
+purpose.
 						</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Null Pointer Coloring Options</name>
+					<name>Null Pointer Coloring</name>
 					<alias>jap.npcolorer</alias>
 					<default>true</default>
+					<short_desc>Produce color tags for null and non-null references</short_desc>
+					<long_desc>
+Produce color tags that the Soot plug-in for Eclipse can use to
+highlight null and non-null references.
+</long_desc>
 				<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
-						<short_desc>Produce color tags highlighting null, and non-null variables.</short_desc>
 						<long_desc></long_desc>	
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
-					<name>Array Bound Check Options</name>
+					<name>Array Bound Checker</name>
 					<class>ABCOptions</class>
 					<alias>jap.abc</alias>
 					<long_desc>
-The array bounds check analysis has the phase name <tt>jtp.abc</tt>. 
 If whole-program analysis is required, an extra
 phase <tt>wjap.ra</tt> for finding rectangular arrays occurs.
                         </long_desc>
@@ -2535,8 +2817,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO
-ENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE?
+the Local Splitter. 
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -2636,34 +2917,61 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<expansion>-p</expansion>
                         <expansion>sop</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>perform scalar optimizations on the classfiles</short_desc>
-			<long_desc>Perform scalar optimizations on the classfiles.</long_desc>
+			<short_desc>Perform intraprocedural optimizations</short_desc>
+			<long_desc>
+Perform intraprocedural optimizations on the application classes.
+</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Whole Program Optimize</name>
 			<alias>W</alias>
 			<alias>whole-optimize</alias>
 			<expansion>-p</expansion>
-                        <expansion>wjop</expansion>
-                        <expansion>enabled:true</expansion>
-                        <expansion>-w</expansion>
-			<short_desc>perform whole program optimizations on the classfiles</short_desc>
-			<long_desc>Perform whole program optimizations on the classfiles; this also enables -O.</long_desc>
+			<expansion>wjop</expansion>
+			<expansion>enabled:true</expansion>
+			<expansion>-w</expansion>
+			<expansion>-O</expansion>
+			<short_desc>Perform whole program optimizations</short_desc>
+			<long_desc>
+Perform whole program optimizations on the application
+classes. This enables the Whole-Jimple Optimization pack as well
+as whole program mode and intraprocedural optimizations.
+</long_desc>
 		</macroopt>
 		<boolopt>
 			<name>Via Shimple</name>
 			<alias>via-shimple</alias>
-			<short_desc>enables phases operating on Shimple SSA representation</short_desc>
-			<long_desc>This option ... </long_desc>
+			<short_desc>Enable Shimple SSA representation</short_desc>
+			<long_desc>
+Enable Shimple, Soot's SSA representation. This generates Shimple
+bodies for the application classes, optionally transforms them
+with analyses that run on SSA form, then turns them back into
+Jimple for processing by the rest of Soot. For more information,
+see the documentation for the <tt>shimp</tt>, <tt>stp</tt>, and
+<tt>sop</tt> phases.
+</long_desc>
 		</boolopt>
 	</section>
 	<section>
 		<name>Single File Mode Options</name>
 		<listopt>
-			<name>Process Path</name>
-			<alias>process-path</alias>
-			<short_desc>Process all Classes on the PATH</short_desc>
-			<long_desc>Process all classes in PATH. All the classes found in PATH will be loaded and transformed in single-file mode.
+			<name>Process Directories</name>
+			<alias>process-dir</alias>
+			<set_arg_label>dir</set_arg_label>
+			<short_desc>Process all classes found in <use_arg_label/></short_desc>
+			<long_desc>
+<p>
+Add all classes found in <use_arg_label/> to the set of argument classes
+which is analyzed and transformed by Soot.  You can specify the
+option more than once, to add argument classes from multiple directories.
+</p>
+<p>
+If subdirectories of <use_arg_label/> contain <tt>.class</tt> or
+<tt>.jimple</tt> files, Soot assumes that the subdirectory names
+correspond to components of the classes' package names. If
+<use_arg_label/> contains <tt>subA/subB/MyClass.class</tt>, for
+instance, then Soot assumes <tt>MyClass</tt> is in package
+<tt>subA.subB</tt>.</p>
 </long_desc>
 		</listopt>
 	</section>
@@ -2673,33 +2981,96 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 			<name>Include Package</name>
 			<alias>i</alias>
 			<alias>include</alias>
-			<short_desc>Marks Classfiles in PACKAGE (e.g. java.util.) as Application Classes</short_desc>
-			<long_desc>Marks the classfiles in PACKAGE (e.g. java.util.) as application classes. This option can be used to transform library types which by default are not transformed by Soot.</long_desc>
+			<set_arg_label>pkg</set_arg_label>
+			<short_desc>Include classes in <use_arg_label/> as application classes</short_desc>
+			<long_desc>
+<p>
+Designate classes in packages whose names begin with
+<use_arg_label/> (e.g. <tt>java.util.</tt>) as application
+classes which should be analyzed and output. This option allows
+you to selectively analyze classes in some packages that Soot
+normally treats as library classes.</p>
+<p>
+You can use the include option multiple times, to designate
+the classes of multiple packages as application classes.</p>
+<p>
+If you specify both include and exclude options, first the
+classes from all excluded packages are marked as library classes,
+then the classes from all included packages are marked as
+application classes.</p>
+</long_desc>
 		</listopt>
 		<listopt>
 			<name>Exclude Package</name>
 			<alias>x</alias>
 			<alias>exclude</alias>
-			<short_desc>Marks Classfiles in PACKAGE (e.g. java.) as Context Classes</short_desc>
-			<long_desc>Marks classfiles in PACKAGE (e.g. java.) as context classes. Jimple is not produced for context classes, but the SootClass, SootField and SootMethod signature objects are created.</long_desc>
+			<set_arg_label>pkg</set_arg_label>
+			<short_desc>Exclude classes in <use_arg_label/> from application classes</short_desc>
+			<long_desc>
+<p>
+Excludes any classes in packages whose names begin with
+<use_arg_label/> from the set of application classes which are
+analyzed and output, treating them as library classes instead.
+This option allows you to selectively exclude classes
+which would normally be treated as application classes
+</p>
+<p>
+You can use the exclude option multiple times, to designate
+the classes of multiple packages as library classes.</p>
+<p>
+If you specify both include and exclude options, first the
+classes from all excluded packages are marked as library classes,
+then the classes from all included packages are marked as
+application classes.</p>
+</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Classes</name>
-			<alias>dynamic-classes</alias>
-			<short_desc>Marks CLASSES (separated by colons) as Potentially Dynamic Classes</short_desc>
-			<long_desc>This option marks CLASSES (separated by colons) as potentially dynamic classes. </long_desc>
+			<alias>dynamic-class</alias>
+      			<set_arg_label>class</set_arg_label>
+			<short_desc>Note that <use_arg_label/> may be loaded dynamically</short_desc>
+			<long_desc>
+<p>
+Mark <use_arg_label/> as a class which the application may load
+dynamically. Soot will read it as a library class even if it is
+not referenced from the argument classes.  This permits whole
+program optimizations on programs which load classes dynamically
+if the set of classes that can be loaded is known at compile
+time.</p>
+<p>
+You can use the dynamic class option multiple
+times to specify more than one dynamic class.</p>
+</long_desc>
 		</listopt>
 		<listopt>
-			<name>Dynamic Path</name>
-			<alias>dynamic-path</alias>
-			<short_desc>Marks all Class Files in PATH as Potentially Dynamic Classes</short_desc>
-			<long_desc>Marks all class files in PATH as potentially dynamic classes. This allows aggressive optimization of applications for which the set of dynamic classes that can be loaded is known at compile time.</long_desc>
+			<name>Dynamic Directories</name>
+			<alias>dynamic-dir</alias>
+      			<set_arg_label>dir</set_arg_label>
+			<short_desc>Mark all classes in <use_arg_label/> as potentially dynamic</short_desc>
+			<long_desc>
+<p>Mark all class files in <use_arg_label/> as classes that may
+be loaded dynamically. Soot will read them as library classes
+even if they are not referenced from the argument classes.</p> 
+<p>
+You can specify more than one directory of potentially dynamic
+classes by specifying multiple dynamic directory options.</p>
+</long_desc>
 		</listopt>
 		<listopt>
 			<name>Dynamic Package</name>
 			<alias>dynamic-package</alias>
-			<short_desc>Marks Class Files in PACKAGES (separated by commas) as Potentially Dynamic Classes</short_desc>
-			<long_desc>Marks all class files belonging to a package listed in PACKAGES (or one of its subpackages) as potentially dynamic classes.</long_desc>
+      			<set_arg_label>pkg</set_arg_label>
+			<short_desc>Marks classes in <use_arg_label/> as potentially dynamic</short_desc>
+			<long_desc>
+<p>
+Marks all class files belonging to the package <use_arg_label/>
+or any of its subpackages as classes which the application may
+load dynamically. Soot will read all classes in <use_arg_label/> as
+library classes, even if they are not referenced by any of the
+argument classes.</p> 
+<p>To specify more than one dynamic package, use the dynamic
+package option multiple times.</p>
+</long_desc>
 		</listopt>
 	</section>
 	<section>
@@ -2707,15 +3078,18 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
-			<short_desc>Keep Line Number Tables</short_desc>
-			<long_desc>Preserves the line number tables of class files throughout the  transformations.</long_desc>
+			<short_desc>Keep line number tables</short_desc>
+			<long_desc>
+Preserve line number tables for class files throughout the
+transformations.
+</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Keep Bytecode Offset</name>
 			<alias>keep-bytecode-offset</alias>
 			<alias>keep-offset</alias>
-			<short_desc>Attach Bytecode Offset to Jimple Statement</short_desc>
-			<long_desc>Preserves the bytecode offset tables of class files throughout the transformations.</long_desc>
+			<short_desc>Attach bytecode offset to IR</short_desc>
+			<long_desc>Maintain bytecode offset tables for class files throughout the transformations.</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -2729,8 +3103,14 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>Turn on the Annotation for Null Pointer</short_desc>
-			<long_desc>This option turns on annotations for Null Pointer. This creates annotations that can be added to class files and later used by the JVM.</long_desc>
+			<short_desc>Emit null pointer attributes</short_desc>
+			<long_desc>
+Perform a static analysis of which dereferenced pointers may have
+null values, and annotate class files with attributes
+encoding the results of the analysis.  For details, see the 
+documentation for Null Pointer Annotation and for the 
+Array Bounds and Null Pointer Check Tag Aggregator.
+</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Array Bounds Annotation</name>
@@ -2744,8 +3124,14 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.an</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>Turn on the Annotation for Array Bounds Check</short_desc>
-			<long_desc>This option turns on annotations for Array Bound Check. This creates annotations that can be added to class files and later used by the JVM.</long_desc>
+			<short_desc>Emit array bounds check attributes</short_desc>
+			<long_desc>
+Perform a static analysis of which array bounds checks may safely
+be eliminated and annotate output class files with attributes
+encoding the results of the analysis. For details, see the
+documentation for Array Bounds Annotation and for the Array
+Bounds and Null Pointer Check Tag Aggregator.
+</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Side effect annotation</name>
@@ -2757,8 +3143,10 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.dep</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>Turn on Side-effect Attributes</short_desc>
-			<long_desc>This option turns on the generation of side-effect attributes.</long_desc>
+			<short_desc>Emit side-effect attributes</short_desc>
+			<long_desc>
+Enable the generation of side-effect attributes.
+</long_desc>
 		</macroopt>
 		<macroopt>
 			<name>Field read/write annotation</name>
@@ -2770,8 +3158,8 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
                         <expansion>-p</expansion>
                         <expansion>tag.fieldrw</expansion>
                         <expansion>enabled:true</expansion>
-			<short_desc>Turn on Field Read/Write Attributes</short_desc>
-			<long_desc>This option turns on the generation of field read/write attributes.</long_desc>
+			<short_desc>Emit field read/write attributes</short_desc>
+			<long_desc>Enable the generation of field read/write attributes.</long_desc>
 		</macroopt>
 	</section>
 	<section>
@@ -2779,14 +3167,19 @@ tags produced by the Field Read/Write Tagger, phase <tt>jap.fieldrw</tt>.</long_
 		<boolopt>
 			<name>Time</name>
 			<alias>time</alias>
-			<short_desc>Print out Time Statistics about Tranformations</short_desc>
-			<long_desc>Print out time statistics about transformations.</long_desc>
+			<short_desc>Report time required for tranformations</short_desc>
+			<long_desc>
+Report the time required to perform some of Soot's transformations.
+</long_desc>
 		</boolopt>
 		<boolopt>
 			<name>Subtract Garbage Collection Time</name>
 			<alias>subtract-gc</alias>
-			<short_desc>Attempt to Subtract the gc from the Time Stats</short_desc>
-			<long_desc>Attempt to subtract garbage-collection time from the time stats.</long_desc>
+			<short_desc>Subtract gc from time</short_desc>
+			<long_desc>
+Attempt to subtract time spent in garbage collection from
+the reports of times required for transformations.
+</long_desc>
 		</boolopt>
 	</section>
 </options>

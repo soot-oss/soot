@@ -55,7 +55,7 @@ public class BCMOptions
      * statement. It assumes, for example, that any method call has the 
      * potential to write and read all instance and static fields in 
      * the program. If naive-side-effect is set to false and whole 
-     * program analysis has been specified by the -W or -whole-program 
+     * program analysis has been specified by the -w or -whole-program 
      * options, then Busy Code Motion uses the side effect information 
      * provided by the PASideEffectTester class. PASideEffectTester 
      * uses the information provided by a points-to analysis to 
