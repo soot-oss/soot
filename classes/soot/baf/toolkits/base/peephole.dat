@@ -1,0 +1,7 @@
+# List of all peepholes to apply.
+# The soot runtime reads from this file all the
+# peepholes it is to apply. The class names of peepholes to apply
+# must appear in this file, one per line.
+
+
+#ExamplePeephole

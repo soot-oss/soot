@@ -31,12 +31,12 @@ import soot.jimple.*;
 import soot.dava.*;
 import java.util.*;
 
-public class IfThenElseMatcher extends BodyTransformer
+public class WhileMatcher extends BodyTransformer
 {
-    private static IfThenElseMatcher instance = new IfThenElseMatcher();
-    private IfThenElseMatcher() {}
+    private static WhileMatcher instance = new WhileMatcher();
+    private WhileMatcher() {}
 
-    public static IfThenElseMatcher v() { return instance; }
+    public static WhileMatcher v() { return instance; }
 
     private List tempList;
 
@@ -46,7 +46,7 @@ public class IfThenElseMatcher extends BodyTransformer
       boolean done;
       
       if(Main.isVerbose)
-	System.out.println("[" + body.getMethod().getName() + "] Matching if-then-else's...");
+	System.out.println("[" + body.getMethod().getName() + "] Matching while's...");
       
       done = false;
       Iterator it;
@@ -76,52 +76,37 @@ public class IfThenElseMatcher extends BodyTransformer
       return false;
 
     boolean found = false;
+    
+    if ((succ0List = t.getSuccessors()).size() == 2) {
+	Trunk t0, t1;
+	
+	t0 = t1 = t;
 
-   if ((succ0List = t.getSuccessors()).size() == 2)
-      {
-	Trunk t0 = (Trunk) succ0List.get(0);
-	Trunk t1 = (Trunk) succ0List.get(1);
-
-	if (t0.removed() || t1.removed())
-	    return false;
-
-	if (((t0.getPredecessors().size() == 1) && (t1.getPredecessors().size() == 1)) &&
-	    ((t0.getSuccessors().size()   == 1) && (t1.getSuccessors().size()   == 1)) &&
-
-	    (t0.getPredecessors().get(0) == t1.getPredecessors().get(0)) &&
-	    (t0.getSuccessors().get(0)   == t1.getSuccessors().get(0))   &&
-
-	    (((Trunk) t0.getSuccessors().get(0)).getPredecessors().size() >= 2)) {
+	for (int i=0; (i<2) && (!found); i++) {
+	    t0 = (Trunk) succ0List.get(i);
+	    t1 = (i == 0) ? (Trunk) succ0List.get(1) : (Trunk) succ0List.get(0);
 	    
-	    found = true;
-	    IfElseTrunk item;
-
-	    // create a new if-else trunk ... get which clause is which correct.
-
-	    if (t.getTarget() == t0.getFirstStmt())
-		item = Dava.v().newIfElseTrunk( t.getCondition(), t0, t1);
-	    else if (t.getTarget() == t1.getFirstStmt())
-		item = Dava.v().newIfElseTrunk( t.getCondition(), t1, t0);
-	    else {
-		System.err.print( "\nIf else clause has lost target info");
-		item = Dava.v().newIfElseTrunk( t.getCondition(), t1, t0);
-	    }
-
+	    if ((t0.getPredecessors().size() == 1) && (t0.getSuccessors().size() == 1) && (t0.getSuccessors().get(0) == t))
+		found = true;
+	}
+	
+	if (found) {
+	    
+	    // create a new while trunk
+	    WhileTrunk item = Dava.v().newWhileTrunk( t.getCondition(), t0);
+	    
 	    item.firstStmt = t.getFirstStmt();
-
 	    if (t0.getLastStmt() instanceof GotoStmt) 
 		t0.maskGotoStmt();
-	    if (t1.getLastStmt() instanceof GotoStmt)
-		t1.maskGotoStmt();
 
-	    // set the new if-else trunk to link to the trunk graph
-	    item.addSuccessor( (Trunk) t0.getSuccessors().get(0));
+	    // set the new while trunk to link to the trunk graph
+	    item.addSuccessor( t1);
 	    item.setPredecessorList( t.getPredecessors());
+	    item.getPredecessors().remove( t0);
 
 	    // "remove" our old trunks from the outside graph
 	    t.setRemoved();
 	    t0.setRemoved();
-	    t1.setRemoved();
 
 	    // fix the successor links from the outside graph to the new trunk
 	    Iterator pit = item.getPredecessors().iterator();
@@ -132,10 +117,8 @@ public class IfThenElseMatcher extends BodyTransformer
 	    }
 	    
 	    // fix the predecessor link from the outside graph to the new trunk
-	    Trunk st = (Trunk) item.getSuccessors().get(0);
-	    st.getPredecessors().remove( t0);
-	    st.getPredecessors().remove( t1);
-	    st.addPredecessor( item);
+	    t1.getPredecessors().remove( t);
+	    t1.addPredecessor( item);
 	    
 	    // finally, add the new trunk the the body! (not just the graph :-)
 	    tempList.add( item);

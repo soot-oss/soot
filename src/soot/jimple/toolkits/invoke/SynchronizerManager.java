@@ -297,7 +297,7 @@ public class SynchronizerManager
                 units.add(Jimple.v().newInvokeStmt(
                      Jimple.v().newSpecialInvokeExpr(l_r4,
                           Scene.v().getMethod(
-                               "<java.lang.NoClassDefFoundError: .void"+
+                               "<java.lang.NoClassDefFoundError: void"+
                                " <init>(java.lang.String)>"), 
                           Arrays.asList(new Value[] {l_r5}))));
 
