@@ -31,7 +31,7 @@ public class JimpleClassSource extends ClassSource
         super( className );
         this.classFile = classFile;
     }
-    public void resolve( SootClass sc ) {
+    public List resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .jimple]: " + className );
         
@@ -46,15 +46,12 @@ public class JimpleClassSource extends ClassSource
             sm.setSource(mtdSrc);
         }
         
-        Iterator it = jimpAST.getCstPool().iterator();                
-        while(it.hasNext()) {
-            String nclass = (String) it.next();
-            SootResolver.v().assertResolvedClass(nclass);
-        }
+        List ret = new ArrayList(jimpAST.getCstPool());
 
         try {
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
+        return ret;
     }
     protected InputStream classFile;
 }

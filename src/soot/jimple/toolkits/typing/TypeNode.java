@@ -80,6 +80,7 @@ class TypeNode
 	
     {    
       SootClass sClass = type.getSootClass();
+      if( sClass == null ) throw new RuntimeException( "Oops, forgot to load "+type );
       List plist = new LinkedList();
       
       if(sClass.hasSuperclass() && 

@@ -19,8 +19,8 @@ public final class QobjBDD extends Qobj {
                                                      new PhysicalDomain[] { H1.v() },
                                                      ("this.add(jedd.internal.Jedd.v().literal(new java.lang.Object" +
                                                       "[...], new jedd.Attribute[...], new jedd.PhysicalDomain[...]" +
-                                                      ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/" +
-                                                      "QobjBDD.jedd:34,8-11"),
+                                                      ")) at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/queue" +
+                                                      "/QobjBDD.jedd:34,8-11"),
                                                      jedd.internal.Jedd.v().literal(new Object[] { _obj },
                                                                                     new Attribute[] { obj.v() },
                                                                                     new PhysicalDomain[] { H1.v() })));
@@ -31,8 +31,8 @@ public final class QobjBDD extends Qobj {
             RobjBDD reader = (RobjBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { obj.v() },
                                                            new PhysicalDomain[] { H1.v() },
-                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
-                                                            "addle/queue/QobjBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/olhotak/soot-trunk2/src/soot/jimple/" +
+                                                            "paddle/queue/QobjBDD.jedd:39,12-18"),
                                                            in));
         }
     }

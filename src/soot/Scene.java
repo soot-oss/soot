@@ -62,6 +62,8 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.FINALIZE );
         kindNumberer.add( Kind.PRIVILEGED );
         kindNumberer.add( Kind.NEWINSTANCE );
+
+	addSootBasicClasses();
     }
     public static Scene  v() { return G.v().soot_Scene (); }
 
@@ -203,8 +205,8 @@ public class Scene  //extends AbstractHost
     {
         RefType type = (RefType) nameToClass.get(className);
         if( type == null ) return false;
+        if( !type.hasSootClass() ) return false;
         SootClass c = type.getSootClass();
-        if( c == null ) return false;
         return c.isInScene();
     }
 
@@ -711,7 +713,61 @@ public class Scene  //extends AbstractHost
 	rn.add("to");
     }
 
+    private Set/*<String>*/ basicclasses=new HashSet();
+    private void addSootBasicClasses() {
+	basicclasses.add("java.lang.Object");
+	basicclasses.add("java.lang.Class");
+
+	basicclasses.add("java.lang.Void");
+	basicclasses.add("java.lang.Boolean");
+	basicclasses.add("java.lang.Byte");
+	basicclasses.add("java.lang.Character");
+	basicclasses.add("java.lang.Short");
+	basicclasses.add("java.lang.Integer");
+	basicclasses.add("java.lang.Long");
+	basicclasses.add("java.lang.Float");
+	basicclasses.add("java.lang.Double");
+
+	basicclasses.add("java.lang.String");
+	basicclasses.add("java.lang.StringBuffer");
+
+	basicclasses.add("java.lang.Error");
+	basicclasses.add("java.lang.RuntimeException");
+	basicclasses.add("java.lang.AssertionError");
+	basicclasses.add("java.lang.Throwable");
+	basicclasses.add("java.lang.NoClassDefFoundError");
+	basicclasses.add("java.lang.ExceptionInInitializerError");
+
+	basicclasses.add("java.lang.Thread");
+	basicclasses.add("java.lang.Runnable");
+	basicclasses.add("java.lang.Cloneable");
+
+	basicclasses.add("java.io.Serializable");	
+    }
+    
+    public void addBasicClass(String name) {
+	basicclasses.add(name);
+    }
+
+    /** Load just the set of basic classes soot needs, ignoring those
+     *  specified on the command-line. You don't need to use both this and 
+     *  loadNecessaryClasses, though it will only waste time.
+     */
+    public void loadBasicClasses() {
+	Iterator it = basicclasses.iterator();
+	while(it.hasNext()) {
+	    String name=(String) it.next();
+	    loadClassAndSupport(name);
+	}
+    }
+
+    /** Load the set of classes that soot needs, including those specified on the
+     *  command-line. This is the standard way of initialising the list of
+     *  classes soot should use.
+     */
     public void loadNecessaryClasses() {
+	loadBasicClasses();
+
         Iterator it = Options.v().classes().iterator();
 
         while (it.hasNext()) {
@@ -761,7 +817,7 @@ public class Scene  //extends AbstractHost
     }
 
     /* Generate classes to process, adding or removing package marked by
-     * command line options.
+     * command line options. 
      */
     private void prepareClasses() {
 
@@ -781,27 +837,38 @@ public class Scene  //extends AbstractHost
         }
 
         // Remove/add all classes from packageInclusionMask as per -i option
-        for( Iterator sIt = Scene.v().getClasses().iterator(); sIt.hasNext(); ) {
-            final SootClass s = (SootClass) sIt.next();
-            if( s.isPhantom() ) continue;
-            if(Options.v().app()) {
-                s.setApplicationClass();
-            }
-            if (Options.v().classes().contains(s.getName())) {
-                s.setApplicationClass();
-                continue;
-            }
-            for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
-                final String pkg = (String) pkgIt.next();
-                if (s.isApplicationClass()
-                && s.getPackageName().startsWith(pkg)) {
-                        s.setLibraryClass();
-                }
-            }
-            for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
-                final String pkg = (String) pkgIt.next();
-                if (s.getPackageName().startsWith(pkg))
+        Set processedClasses = new HashSet();
+        while(true) {
+            Set unprocessedClasses = new HashSet(Scene.v().getClasses());
+            unprocessedClasses.removeAll(processedClasses);
+            if( unprocessedClasses.isEmpty() ) break;
+            processedClasses.addAll(unprocessedClasses);
+            for( Iterator sIt = unprocessedClasses.iterator(); sIt.hasNext(); ) {
+                final SootClass s = (SootClass) sIt.next();
+                if( s.isPhantom() ) continue;
+                if(Options.v().app()) {
                     s.setApplicationClass();
+                }
+                if (Options.v().classes().contains(s.getName())) {
+                    s.setApplicationClass();
+                    continue;
+                }
+                for( Iterator pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
+                    final String pkg = (String) pkgIt.next();
+                    if (s.isApplicationClass()
+                    && s.getPackageName().startsWith(pkg)) {
+                            s.setLibraryClass();
+                    }
+                }
+                for( Iterator pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
+                    final String pkg = (String) pkgIt.next();
+                    if (s.getPackageName().startsWith(pkg))
+                        s.setApplicationClass();
+                }
+                if(s.isApplicationClass()) {
+                    // make sure we have the support
+                    Scene.v().loadClassAndSupport(s.getName());
+                }
             }
         }
     }
@@ -815,6 +882,7 @@ public class Scene  //extends AbstractHost
     public ArrayList getPkgList(){
         return pkgList;
     }
+
 
     /** Create an unresolved reference to a method. */
     public SootMethodRef makeMethodRef( 
@@ -841,6 +909,10 @@ public class Scene  //extends AbstractHost
             String name,
             Type type ) {
         return new AbstractSootFieldRef(declaringClass, name, type);
+    }
+    /** Returns the list of SootClasses that have been resolved. */
+    public List/*SootClass*/ resolvedClasses() {
+        return SootResolver.v().resolvedClasses();
     }
 }
 

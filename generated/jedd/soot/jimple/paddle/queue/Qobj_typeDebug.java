@@ -23,11 +23,11 @@ public class Qobj_typeDebug extends Qobj_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { obj.v(), type.v() },
-                                              new PhysicalDomain[] { H1.v(), T2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { type.v(), obj.v() },
+                                              new PhysicalDomain[] { T2.v(), H1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qobj_typeDebug.jedd:39,22-" +
-                                               "24"),
+                                               "runk2/src/soot/jimple/paddle/queue/Qobj_typeDebug.jedd:39,22" +
+                                               "-24"),
                                               in).iterator(new Attribute[] { obj.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

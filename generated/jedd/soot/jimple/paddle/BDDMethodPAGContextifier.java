@@ -50,8 +50,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> simpleOut = jedd.internal" +
-                                               ".Jedd.v().falseBDD(); at /home/olhotak/soot-trunk/src/soot/j" +
-                                               "imple/paddle/BDDMethodPAGContextifier.jedd:61,31-40"),
+                                               ".Jedd.v().falseBDD(); at /home/olhotak/soot-trunk2/src/soot/" +
+                                               "jimple/paddle/BDDMethodPAGContextifier.jedd:61,31-40"),
                                               jedd.internal.Jedd.v().falseBDD());
         final jedd.internal.RelationContainer loadOut =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() },
@@ -62,8 +62,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "ple.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.dstc" +
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> loadOut = jedd.in" +
-                                               "ternal.Jedd.v().falseBDD(); at /home/olhotak/soot-trunk/src/" +
-                                               "soot/jimple/paddle/BDDMethodPAGContextifier.jedd:62,36-43"),
+                                               "ternal.Jedd.v().falseBDD(); at /home/olhotak/soot-trunk2/src" +
+                                               "/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:62,36-43"),
                                               jedd.internal.Jedd.v().falseBDD());
         final jedd.internal.RelationContainer storeOut =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() },
@@ -74,8 +74,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "ple.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.dstc" +
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> storeOut = jedd.i" +
-                                               "nternal.Jedd.v().falseBDD(); at /home/olhotak/soot-trunk/src" +
-                                               "/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:63,36-44"),
+                                               "nternal.Jedd.v().falseBDD(); at /home/olhotak/soot-trunk2/sr" +
+                                               "c/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:63,36-44"),
                                               jedd.internal.Jedd.v().falseBDD());
         final jedd.internal.RelationContainer allocOut =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { objc.v(), obj.v(), varc.v(), var.v() },
@@ -85,14 +85,17 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.H1, soot.jimple.paddle.bdddomains.varc:soot.ji" +
                                                "mple.paddle.bdddomains.C1, soot.jimple.paddle.bdddomains.var" +
                                                ":soot.jimple.paddle.bdddomains.V1> allocOut = jedd.internal." +
-                                               "Jedd.v().falseBDD(); at /home/olhotak/soot-trunk/src/soot/ji" +
-                                               "mple/paddle/BDDMethodPAGContextifier.jedd:64,31-39"),
+                                               "Jedd.v().falseBDD(); at /home/olhotak/soot-trunk2/src/soot/j" +
+                                               "imple/paddle/BDDMethodPAGContextifier.jedd:64,31-39"),
                                               jedd.internal.Jedd.v().falseBDD());
         localMap.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(locals.get(),
                                                                                        new jedd.PhysicalDomain[] { T2.v() }),
                                                         new jedd.PhysicalDomain[] { V1.v() },
                                                         new jedd.PhysicalDomain[] { V2.v() }));
-        globalSet.eqUnion(jedd.internal.Jedd.v().project(globals.get(), new jedd.PhysicalDomain[] { T2.v() }));
+        globalSet.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(globals.get(),
+                                                                                        new jedd.PhysicalDomain[] { T2.v() }),
+                                                         new jedd.PhysicalDomain[] { V1.v() },
+                                                         new jedd.PhysicalDomain[] { V2.v() }));
         localallocMap.eqUnion(jedd.internal.Jedd.v().project(localallocs.get(), new jedd.PhysicalDomain[] { T2.v() }));
         globalallocSet.eqUnion(jedd.internal.Jedd.v().project(globalallocs.get(),
                                                               new jedd.PhysicalDomain[] { T2.v() }));
@@ -102,28 +105,28 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                               ("<soot.jimple.paddle.bdddomains.src:soot.jimple.paddle.bdddom" +
                                                "ains.V1, soot.jimple.paddle.bdddomains.dst:soot.jimple.paddl" +
                                                "e.bdddomains.V2> newSimple = simple.get(); at /home/olhotak/" +
-                                               "soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier.j" +
-                                               "edd:71,19-28"),
+                                               "soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier." +
+                                               "jedd:71,19-28"),
                                               simple.get());
-        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { dst.v(), src.v(), dstc.v(), srcc.v() },
-                                                        new jedd.PhysicalDomain[] { V2.v(), V1.v(), C2.v(), C1.v() },
+        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dst.v(), dstc.v(), srcc.v() },
+                                                        new jedd.PhysicalDomain[] { V1.v(), V2.v(), C2.v(), C1.v() },
                                                         ("csimple.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v" +
                                                          "().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().r" +
                                                          "ead(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(" +
-                                                         "newSimple), globalSet, new jedd.PhysicalDomain[...])), jedd." +
-                                                         "internal.Jedd.v().replace(globalSet, new jedd.PhysicalDomain" +
-                                                         "[...], new jedd.PhysicalDomain[...]), new jedd.PhysicalDomai" +
+                                                         "newSimple), jedd.internal.Jedd.v().replace(globalSet, new je" +
+                                                         "dd.PhysicalDomain[...], new jedd.PhysicalDomain[...]), new j" +
+                                                         "edd.PhysicalDomain[...])), globalSet, new jedd.PhysicalDomai" +
                                                          "n[...])), jedd.internal.Jedd.v().literal(new java.lang.Objec" +
                                                          "t[...], new jedd.Attribute[...], new jedd.PhysicalDomain[..." +
                                                          "]), new jedd.PhysicalDomain[...])) at /home/olhotak/soot-tru" +
-                                                         "nk/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:72,8" +
-                                                         "-15"),
+                                                         "nk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:72," +
+                                                         "8-15"),
                                                         jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newSimple),
-                                                                                                                                                                                                    globalSet,
+                                                                                                                                                                                                    jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                                                                                                                                                   new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                                                                                                                                                   new jedd.PhysicalDomain[] { V1.v() }),
                                                                                                                                                                                                     new jedd.PhysicalDomain[] { V1.v() })),
-                                                                                                                                            jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                                                                                           new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                                                                           new jedd.PhysicalDomain[] { V2.v() }),
+                                                                                                                                            globalSet,
                                                                                                                                             new jedd.PhysicalDomain[] { V2.v() })),
                                                                                     jedd.internal.Jedd.v().literal(new Object[] { null, null },
                                                                                                                    new jedd.Attribute[] { srcc.v(), dstc.v() },
@@ -144,28 +147,28 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "ains.V1, soot.jimple.paddle.bdddomains.fld:soot.jimple.paddl" +
                                                "e.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:soot.jimp" +
                                                "le.paddle.bdddomains.V2> newStore = store.get(); at /home/ol" +
-                                               "hotak/soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContexti" +
-                                               "fier.jedd:79,24-32"),
+                                               "hotak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContext" +
+                                               "ifier.jedd:79,24-32"),
                                               store.get());
-        cstore.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { fld.v(), dst.v(), src.v(), dstc.v(), srcc.v() },
-                                                       new jedd.PhysicalDomain[] { FD.v(), V2.v(), V1.v(), C2.v(), C1.v() },
+        cstore.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dst.v(), fld.v(), dstc.v(), srcc.v() },
+                                                       new jedd.PhysicalDomain[] { V1.v(), V2.v(), FD.v(), C2.v(), C1.v() },
                                                        ("cstore.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v(" +
                                                         ").read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().re" +
                                                         "ad(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(n" +
-                                                        "ewStore), globalSet, new jedd.PhysicalDomain[...])), jedd.in" +
-                                                        "ternal.Jedd.v().replace(globalSet, new jedd.PhysicalDomain[." +
-                                                        "..], new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[" +
+                                                        "ewStore), jedd.internal.Jedd.v().replace(globalSet, new jedd" +
+                                                        ".PhysicalDomain[...], new jedd.PhysicalDomain[...]), new jed" +
+                                                        "d.PhysicalDomain[...])), globalSet, new jedd.PhysicalDomain[" +
                                                         "...])), jedd.internal.Jedd.v().literal(new java.lang.Object[" +
                                                         "...], new jedd.Attribute[...], new jedd.PhysicalDomain[...])" +
                                                         ", new jedd.PhysicalDomain[...])) at /home/olhotak/soot-trunk" +
-                                                        "/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:80,8-1" +
-                                                        "4"),
+                                                        "2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:80,8-" +
+                                                        "14"),
                                                        jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newStore),
-                                                                                                                                                                                                   globalSet,
+                                                                                                                                                                                                   jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                                                                                                                                                  new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                                                                                                                                                  new jedd.PhysicalDomain[] { V1.v() }),
                                                                                                                                                                                                    new jedd.PhysicalDomain[] { V1.v() })),
-                                                                                                                                           jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                                                                                          new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                                                                          new jedd.PhysicalDomain[] { V2.v() }),
+                                                                                                                                           globalSet,
                                                                                                                                            new jedd.PhysicalDomain[] { V2.v() })),
                                                                                    jedd.internal.Jedd.v().literal(new Object[] { null, null },
                                                                                                                   new jedd.Attribute[] { srcc.v(), dstc.v() },
@@ -181,52 +184,43 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                       new jedd.PhysicalDomain[] { V2.v() }));
         final jedd.internal.RelationContainer newLoad =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), fld.v(), dst.v() },
-                                              new jedd.PhysicalDomain[] { V2.v(), FD.v(), V1.v() },
+                                              new jedd.PhysicalDomain[] { V1.v(), FD.v(), V2.v() },
                                               ("<soot.jimple.paddle.bdddomains.src:soot.jimple.paddle.bdddom" +
-                                               "ains.V2, soot.jimple.paddle.bdddomains.fld:soot.jimple.paddl" +
+                                               "ains.V1, soot.jimple.paddle.bdddomains.fld:soot.jimple.paddl" +
                                                "e.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:soot.jimp" +
-                                               "le.paddle.bdddomains.V1> newLoad = jedd.internal.Jedd.v().re" +
-                                               "place(load.get(), new jedd.PhysicalDomain[...], new jedd.Phy" +
-                                               "sicalDomain[...]); at /home/olhotak/soot-trunk/src/soot/jimp" +
-                                               "le/paddle/BDDMethodPAGContextifier.jedd:87,24-31"),
-                                              jedd.internal.Jedd.v().replace(load.get(),
-                                                                             new jedd.PhysicalDomain[] { V1.v(), V2.v() },
-                                                                             new jedd.PhysicalDomain[] { V2.v(), V1.v() }));
-        cload.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { fld.v(), dst.v(), src.v(), dstc.v(), srcc.v() },
-                                                      new jedd.PhysicalDomain[] { FD.v(), V2.v(), V1.v(), C2.v(), C1.v() },
+                                               "le.paddle.bdddomains.V2> newLoad = load.get(); at /home/olho" +
+                                               "tak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextif" +
+                                               "ier.jedd:87,24-31"),
+                                              load.get());
+        cload.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dst.v(), fld.v(), dstc.v(), srcc.v() },
+                                                      new jedd.PhysicalDomain[] { V1.v(), V2.v(), FD.v(), C2.v(), C1.v() },
                                                       ("cload.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v()" +
-                                                       ".read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()." +
-                                                       "join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join" +
-                                                       "(jedd.internal.Jedd.v().read(newLoad), jedd.internal.Jedd.v(" +
-                                                       ").replace(globalSet, new jedd.PhysicalDomain[...], new jedd." +
-                                                       "PhysicalDomain[...]), new jedd.PhysicalDomain[...])), global" +
-                                                       "Set, new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[" +
-                                                       "...], new jedd.PhysicalDomain[...])), jedd.internal.Jedd.v()" +
-                                                       ".literal(new java.lang.Object[...], new jedd.Attribute[...]," +
-                                                       " new jedd.PhysicalDomain[...]), new jedd.PhysicalDomain[...]" +
-                                                       ")) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BDDMet" +
-                                                       "hodPAGContextifier.jedd:88,8-13"),
-                                                      jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newLoad),
-                                                                                                                                                                                                                                 jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                                                                                                                                                                                new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                                                                                                                                                                new jedd.PhysicalDomain[] { V2.v() }),
-                                                                                                                                                                                                                                 new jedd.PhysicalDomain[] { V2.v() })),
-                                                                                                                                                                         globalSet,
-                                                                                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
-                                                                                                                                             new jedd.PhysicalDomain[] { V1.v(), V2.v() },
-                                                                                                                                             new jedd.PhysicalDomain[] { V2.v(), V1.v() })),
+                                                       ".read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().rea" +
+                                                       "d(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(ne" +
+                                                       "wLoad), jedd.internal.Jedd.v().replace(globalSet, new jedd.P" +
+                                                       "hysicalDomain[...], new jedd.PhysicalDomain[...]), new jedd." +
+                                                       "PhysicalDomain[...])), globalSet, new jedd.PhysicalDomain[.." +
+                                                       ".])), jedd.internal.Jedd.v().literal(new java.lang.Object[.." +
+                                                       ".], new jedd.Attribute[...], new jedd.PhysicalDomain[...]), " +
+                                                       "new jedd.PhysicalDomain[...])) at /home/olhotak/soot-trunk2/" +
+                                                       "src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:88,8-13"),
+                                                      jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newLoad),
+                                                                                                                                                                                                  jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                                                                                                                                                 new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                                                                                                                                                 new jedd.PhysicalDomain[] { V1.v() }),
+                                                                                                                                                                                                  new jedd.PhysicalDomain[] { V1.v() })),
+                                                                                                                                          globalSet,
+                                                                                                                                          new jedd.PhysicalDomain[] { V2.v() })),
                                                                                   jedd.internal.Jedd.v().literal(new Object[] { null, null },
                                                                                                                  new jedd.Attribute[] { srcc.v(), dstc.v() },
                                                                                                                  new jedd.PhysicalDomain[] { C1.v(), C2.v() }),
                                                                                   new jedd.PhysicalDomain[] {  })));
-        mpagLoad.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newLoad),
-                                                                                    localMap,
-                                                                                    new jedd.PhysicalDomain[] { V2.v() }),
-                                                        new jedd.PhysicalDomain[] { V1.v(), V2.v() },
-                                                        new jedd.PhysicalDomain[] { V2.v(), V1.v() }));
-        mpagLoad.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newLoad,
-                                                                                                                new jedd.PhysicalDomain[] { V1.v(), V2.v() },
-                                                                                                                new jedd.PhysicalDomain[] { V2.v(), V1.v() })),
+        mpagLoad.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newLoad),
+                                                     jedd.internal.Jedd.v().replace(localMap,
+                                                                                    new jedd.PhysicalDomain[] { V2.v() },
+                                                                                    new jedd.PhysicalDomain[] { V1.v() }),
+                                                     new jedd.PhysicalDomain[] { V1.v() }));
+        mpagLoad.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newLoad),
                                                      localMap,
                                                      new jedd.PhysicalDomain[] { V2.v() }));
         final jedd.internal.RelationContainer newAlloc =
@@ -236,29 +230,26 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "ains.V2, soot.jimple.paddle.bdddomains.obj:soot.jimple.paddl" +
                                                "e.bdddomains.H1> newAlloc = jedd.internal.Jedd.v().replace(a" +
                                                "lloc.get(), new jedd.PhysicalDomain[...], new jedd.PhysicalD" +
-                                               "omain[...]); at /home/olhotak/soot-trunk/src/soot/jimple/pad" +
-                                               "dle/BDDMethodPAGContextifier.jedd:95,19-27"),
+                                               "omain[...]); at /home/olhotak/soot-trunk2/src/soot/jimple/pa" +
+                                               "ddle/BDDMethodPAGContextifier.jedd:95,19-27"),
                                               jedd.internal.Jedd.v().replace(alloc.get(),
                                                                              new jedd.PhysicalDomain[] { V1.v() },
                                                                              new jedd.PhysicalDomain[] { V2.v() }));
-        calloc.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), obj.v(), objc.v(), varc.v() },
-                                                       new jedd.PhysicalDomain[] { V1.v(), H1.v(), C2.v(), C1.v() },
+        calloc.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), var.v(), objc.v(), varc.v() },
+                                                       new jedd.PhysicalDomain[] { H1.v(), V1.v(), C2.v(), C1.v() },
                                                        ("calloc.add(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v(" +
                                                         ").read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v()" +
                                                         ".join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().joi" +
-                                                        "n(jedd.internal.Jedd.v().read(newAlloc), jedd.internal.Jedd." +
-                                                        "v().replace(globalSet, new jedd.PhysicalDomain[...], new jed" +
-                                                        "d.PhysicalDomain[...]), new jedd.PhysicalDomain[...])), glob" +
-                                                        "alallocSet, new jedd.PhysicalDomain[...]), new jedd.Physical" +
-                                                        "Domain[...], new jedd.PhysicalDomain[...])), jedd.internal.J" +
-                                                        "edd.v().literal(new java.lang.Object[...], new jedd.Attribut" +
-                                                        "e[...], new jedd.PhysicalDomain[...]), new jedd.PhysicalDoma" +
-                                                        "in[...])) at /home/olhotak/soot-trunk/src/soot/jimple/paddle" +
-                                                        "/BDDMethodPAGContextifier.jedd:96,8-14"),
+                                                        "n(jedd.internal.Jedd.v().read(newAlloc), globalSet, new jedd" +
+                                                        ".PhysicalDomain[...])), globalallocSet, new jedd.PhysicalDom" +
+                                                        "ain[...]), new jedd.PhysicalDomain[...], new jedd.PhysicalDo" +
+                                                        "main[...])), jedd.internal.Jedd.v().literal(new java.lang.Ob" +
+                                                        "ject[...], new jedd.Attribute[...], new jedd.PhysicalDomain[" +
+                                                        "...]), new jedd.PhysicalDomain[...])) at /home/olhotak/soot-" +
+                                                        "trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:" +
+                                                        "96,8-14"),
                                                        jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(newAlloc),
-                                                                                                                                                                                                                                  jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                                                                                                                                                                                 new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                                                                                                                                                                                 new jedd.PhysicalDomain[] { V2.v() }),
+                                                                                                                                                                                                                                  globalSet,
                                                                                                                                                                                                                                   new jedd.PhysicalDomain[] { V2.v() })),
                                                                                                                                                                           globalallocSet,
                                                                                                                                                                           new jedd.PhysicalDomain[] { H1.v() }),
@@ -279,58 +270,58 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                               new jedd.PhysicalDomain[] { V2.v() },
                                               ("<soot.jimple.paddle.bdddomains.var:soot.jimple.paddle.bdddom" +
                                                "ains.V2> localSet = jedd.internal.Jedd.v().project(localMap," +
-                                               " new jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk/" +
-                                               "src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:103,14-" +
-                                               "22"),
+                                               " new jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk2" +
+                                               "/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:103,14" +
+                                               "-22"),
                                               jedd.internal.Jedd.v().project(localMap,
                                                                              new jedd.PhysicalDomain[] { T1.v() }));
         final jedd.internal.RelationContainer contexts =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), T1.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), T1.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
                                                "addle.bdddomains.T1> contexts = jedd.internal.Jedd.v().repla" +
                                                "ce(rcout.get(), new jedd.PhysicalDomain[...], new jedd.Physi" +
-                                               "calDomain[...]); at /home/olhotak/soot-trunk/src/soot/jimple" +
-                                               "/paddle/BDDMethodPAGContextifier.jedd:105,23-31"),
+                                               "calDomain[...]); at /home/olhotak/soot-trunk2/src/soot/jimpl" +
+                                               "e/paddle/BDDMethodPAGContextifier.jedd:105,23-31"),
                                               jedd.internal.Jedd.v().replace(rcout.get(),
                                                                              new jedd.PhysicalDomain[] { V1.v() },
-                                                                             new jedd.PhysicalDomain[] { C1.v() }));
+                                                                             new jedd.PhysicalDomain[] { C2.v() }));
         final jedd.internal.RelationContainer ctxtSimple =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), src.v(), dst.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), V2.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), V2.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.src:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.src:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dst:soot.jim" +
                                                "ple.paddle.bdddomains.V2> ctxtSimple = jedd.internal.Jedd.v(" +
                                                ").compose(jedd.internal.Jedd.v().read(contexts), mpagSimple," +
-                                               " new jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk/" +
-                                               "src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:107,25-" +
-                                               "35"),
+                                               " new jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk2" +
+                                               "/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:107,25" +
+                                               "-35"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(contexts),
                                                                              mpagSimple,
                                                                              new jedd.PhysicalDomain[] { T1.v() }));
         simpleOut.eqUnion(jedd.internal.Jedd.v().copy(ctxtSimple,
-                                                      new jedd.PhysicalDomain[] { C1.v() },
-                                                      new jedd.PhysicalDomain[] { C2.v() }));
+                                                      new jedd.PhysicalDomain[] { C2.v() },
+                                                      new jedd.PhysicalDomain[] { C1.v() }));
         final jedd.internal.RelationContainer ctxtStore =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), src.v(), fld.v(), dst.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V1.v(), FD.v(), V2.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V1.v(), FD.v(), V2.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.src:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.src:soot.jimple.padd" +
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.fld:soot.jim" +
                                                "ple.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:" +
                                                "soot.jimple.paddle.bdddomains.V2> ctxtStore = jedd.internal." +
                                                "Jedd.v().compose(jedd.internal.Jedd.v().read(contexts), mpag" +
                                                "Store, new jedd.PhysicalDomain[...]); at /home/olhotak/soot-" +
-                                               "trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:1" +
-                                               "10,30-39"),
+                                               "trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:" +
+                                               "110,30-39"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(contexts),
                                                                              mpagStore,
                                                                              new jedd.PhysicalDomain[] { T1.v() }));
         storeOut.eqUnion(jedd.internal.Jedd.v().copy(ctxtStore,
-                                                     new jedd.PhysicalDomain[] { C1.v() },
-                                                     new jedd.PhysicalDomain[] { C2.v() }));
+                                                     new jedd.PhysicalDomain[] { C2.v() },
+                                                     new jedd.PhysicalDomain[] { C1.v() }));
         final jedd.internal.RelationContainer ctxtLoad =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), src.v(), fld.v(), dst.v() },
                                               new jedd.PhysicalDomain[] { C2.v(), V1.v(), FD.v(), V2.v() },
@@ -339,14 +330,11 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.fld:soot.jim" +
                                                "ple.paddle.bdddomains.FD, soot.jimple.paddle.bdddomains.dst:" +
                                                "soot.jimple.paddle.bdddomains.V2> ctxtLoad = jedd.internal.J" +
-                                               "edd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Je" +
-                                               "dd.v().replace(contexts, new jedd.PhysicalDomain[...], new j" +
-                                               "edd.PhysicalDomain[...])), mpagLoad, new jedd.PhysicalDomain" +
-                                               "[...]); at /home/olhotak/soot-trunk/src/soot/jimple/paddle/B" +
-                                               "DDMethodPAGContextifier.jedd:113,30-38"),
-                                              jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(contexts,
-                                                                                                                                        new jedd.PhysicalDomain[] { C1.v() },
-                                                                                                                                        new jedd.PhysicalDomain[] { C2.v() })),
+                                               "edd.v().compose(jedd.internal.Jedd.v().read(contexts), mpagL" +
+                                               "oad, new jedd.PhysicalDomain[...]); at /home/olhotak/soot-tr" +
+                                               "unk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:11" +
+                                               "3,30-38"),
+                                              jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(contexts),
                                                                              mpagLoad,
                                                                              new jedd.PhysicalDomain[] { T1.v() }));
         loadOut.eqUnion(jedd.internal.Jedd.v().copy(ctxtLoad,
@@ -354,20 +342,19 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                     new jedd.PhysicalDomain[] { C1.v() }));
         final jedd.internal.RelationContainer ctxtAlloc =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), var.v(), obj.v() },
-                                              new jedd.PhysicalDomain[] { C1.v(), V2.v(), H1.v() },
+                                              new jedd.PhysicalDomain[] { C2.v(), V2.v(), H1.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
+                                               "mains.C2, soot.jimple.paddle.bdddomains.var:soot.jimple.padd" +
                                                "le.bdddomains.V2, soot.jimple.paddle.bdddomains.obj:soot.jim" +
                                                "ple.paddle.bdddomains.H1> ctxtAlloc = jedd.internal.Jedd.v()" +
                                                ".compose(jedd.internal.Jedd.v().read(contexts), mpagAlloc, n" +
-                                               "ew jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk/sr" +
-                                               "c/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:116,25-34"),
+                                               "ew jedd.PhysicalDomain[...]); at /home/olhotak/soot-trunk2/s" +
+                                               "rc/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:116,25-3" +
+                                               "4"),
                                               jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(contexts),
                                                                              mpagAlloc,
                                                                              new jedd.PhysicalDomain[] { T1.v() }));
-        allocOut.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().replace(ctxtAlloc,
-                                                                                                                   new jedd.PhysicalDomain[] { C1.v() },
-                                                                                                                   new jedd.PhysicalDomain[] { C2.v() }),
+        allocOut.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().copy(ctxtAlloc,
                                                                                     new jedd.PhysicalDomain[] { C2.v() },
                                                                                     new jedd.PhysicalDomain[] { C1.v() }),
                                                         new jedd.PhysicalDomain[] { V2.v() },
@@ -384,8 +371,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "nd:soot.jimple.paddle.bdddomains.FD, soot.jimple.paddle.bddd" +
                                                "omains.tgtc:soot.jimple.paddle.bdddomains.V2, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtm:soot.jimple.paddle.bdddomains.T2> newCa" +
-                                               "lls = calls.get(); at /home/olhotak/soot-trunk/src/soot/jimp" +
-                                               "le/paddle/BDDMethodPAGContextifier.jedd:122,45-53"),
+                                               "lls = calls.get(); at /home/olhotak/soot-trunk2/src/soot/jim" +
+                                               "ple/paddle/BDDMethodPAGContextifier.jedd:122,45-53"),
                                               calls.get());
         simpleOut.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(newCalls,
                                                                                                                     new jedd.PhysicalDomain[] { V1.v(), V2.v() },
@@ -405,15 +392,12 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalDsts = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
-                                               ".internal.Jedd.v().replace(globalSet, new jedd.PhysicalDomai" +
-                                               "n[...], new jedd.PhysicalDomain[...]), new jedd.PhysicalDoma" +
-                                               "in[...]); at /home/olhotak/soot-trunk/src/soot/jimple/paddle" +
-                                               "/BDDMethodPAGContextifier.jedd:130,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), glob" +
+                                               "alSet, new jedd.PhysicalDomain[...]); at /home/olhotak/soot-" +
+                                               "trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:" +
+                                               "130,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                         new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
+                                                                          globalSet,
                                                                           new jedd.PhysicalDomain[] { V2.v() }));
         simpleOut.eqMinus(globalDsts);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalDsts,
@@ -430,12 +414,15 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.V1, soot.jimple.paddle.bdddomains.dstc:soot.ji" +
                                                "mple.paddle.bdddomains.C2, soot.jimple.paddle.bdddomains.dst" +
                                                ":soot.jimple.paddle.bdddomains.V2> globalSrcs = jedd.interna" +
-                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), glob" +
-                                               "alSet, new jedd.PhysicalDomain[...]); at /home/olhotak/soot-" +
-                                               "trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:1" +
-                                               "33,31-41"),
+                                               "l.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut), jedd" +
+                                               ".internal.Jedd.v().replace(globalSet, new jedd.PhysicalDomai" +
+                                               "n[...], new jedd.PhysicalDomain[...]), new jedd.PhysicalDoma" +
+                                               "in[...]); at /home/olhotak/soot-trunk2/src/soot/jimple/paddl" +
+                                               "e/BDDMethodPAGContextifier.jedd:133,31-41"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(simpleOut),
-                                                                          globalSet,
+                                                                          jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         simpleOut.eqMinus(globalSrcs);
         simpleOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalSrcs,
@@ -444,10 +431,10 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                                                      new jedd.Attribute[] { srcc.v() },
                                                                                      new jedd.PhysicalDomain[] { C1.v() }),
                                                       new jedd.PhysicalDomain[] {  }));
-        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { dstc.v(), srcc.v(), dst.v(), src.v() },
-                                                        new jedd.PhysicalDomain[] { C2.v(), C1.v(), V2.v(), V1.v() },
-                                                        ("csimple.add(simpleOut) at /home/olhotak/soot-trunk/src/soot/" +
-                                                         "jimple/paddle/BDDMethodPAGContextifier.jedd:136,8-15"),
+        csimple.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dstc.v(), dst.v(), srcc.v() },
+                                                        new jedd.PhysicalDomain[] { V1.v(), C2.v(), V2.v(), C1.v() },
+                                                        ("csimple.add(simpleOut) at /home/olhotak/soot-trunk2/src/soot" +
+                                                         "/jimple/paddle/BDDMethodPAGContextifier.jedd:136,8-15"),
                                                         simpleOut));
         final jedd.internal.RelationContainer globalStoreDsts =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() },
@@ -459,14 +446,11 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> globalStoreDsts =" +
                                                " jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(sto" +
-                                               "reOut), jedd.internal.Jedd.v().replace(globalSet, new jedd.P" +
-                                               "hysicalDomain[...], new jedd.PhysicalDomain[...]), new jedd." +
-                                               "PhysicalDomain[...]); at /home/olhotak/soot-trunk/src/soot/j" +
-                                               "imple/paddle/BDDMethodPAGContextifier.jedd:138,36-51"),
+                                               "reOut), globalSet, new jedd.PhysicalDomain[...]); at /home/o" +
+                                               "lhotak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContex" +
+                                               "tifier.jedd:138,36-51"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(storeOut),
-                                                                          jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                         new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
+                                                                          globalSet,
                                                                           new jedd.PhysicalDomain[] { V2.v() }));
         storeOut.eqMinus(globalStoreDsts);
         storeOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalStoreDsts,
@@ -485,11 +469,14 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> globalStoreSrcs =" +
                                                " jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(sto" +
-                                               "reOut), globalSet, new jedd.PhysicalDomain[...]); at /home/o" +
-                                               "lhotak/soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContext" +
-                                               "ifier.jedd:141,36-51"),
+                                               "reOut), jedd.internal.Jedd.v().replace(globalSet, new jedd.P" +
+                                               "hysicalDomain[...], new jedd.PhysicalDomain[...]), new jedd." +
+                                               "PhysicalDomain[...]); at /home/olhotak/soot-trunk2/src/soot/" +
+                                               "jimple/paddle/BDDMethodPAGContextifier.jedd:141,36-51"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(storeOut),
-                                                                          globalSet,
+                                                                          jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         storeOut.eqMinus(globalStoreSrcs);
         storeOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalStoreSrcs,
@@ -498,10 +485,10 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                                                     new jedd.Attribute[] { srcc.v() },
                                                                                     new jedd.PhysicalDomain[] { C1.v() }),
                                                      new jedd.PhysicalDomain[] {  }));
-        cstore.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { fld.v(), dstc.v(), srcc.v(), dst.v(), src.v() },
-                                                       new jedd.PhysicalDomain[] { FD.v(), C2.v(), C1.v(), V2.v(), V1.v() },
-                                                       ("cstore.add(storeOut) at /home/olhotak/soot-trunk/src/soot/ji" +
-                                                        "mple/paddle/BDDMethodPAGContextifier.jedd:144,8-14"),
+        cstore.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dstc.v(), dst.v(), srcc.v(), fld.v() },
+                                                       new jedd.PhysicalDomain[] { V1.v(), C2.v(), V2.v(), C1.v(), FD.v() },
+                                                       ("cstore.add(storeOut) at /home/olhotak/soot-trunk2/src/soot/j" +
+                                                        "imple/paddle/BDDMethodPAGContextifier.jedd:144,8-14"),
                                                        storeOut));
         final jedd.internal.RelationContainer globalLoadDsts =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { srcc.v(), src.v(), fld.v(), dstc.v(), dst.v() },
@@ -513,14 +500,11 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> globalLoadDsts = " +
                                                "jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(load" +
-                                               "Out), jedd.internal.Jedd.v().replace(globalSet, new jedd.Phy" +
-                                               "sicalDomain[...], new jedd.PhysicalDomain[...]), new jedd.Ph" +
-                                               "ysicalDomain[...]); at /home/olhotak/soot-trunk/src/soot/jim" +
-                                               "ple/paddle/BDDMethodPAGContextifier.jedd:146,36-50"),
+                                               "Out), globalSet, new jedd.PhysicalDomain[...]); at /home/olh" +
+                                               "otak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContexti" +
+                                               "fier.jedd:146,36-50"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(loadOut),
-                                                                          jedd.internal.Jedd.v().replace(globalSet,
-                                                                                                         new jedd.PhysicalDomain[] { V1.v() },
-                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
+                                                                          globalSet,
                                                                           new jedd.PhysicalDomain[] { V2.v() }));
         loadOut.eqMinus(globalLoadDsts);
         loadOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalLoadDsts,
@@ -539,11 +523,14 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                ":soot.jimple.paddle.bdddomains.C2, soot.jimple.paddle.bdddom" +
                                                "ains.dst:soot.jimple.paddle.bdddomains.V2> globalLoadSrcs = " +
                                                "jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(load" +
-                                               "Out), globalSet, new jedd.PhysicalDomain[...]); at /home/olh" +
-                                               "otak/soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextif" +
-                                               "ier.jedd:149,36-50"),
+                                               "Out), jedd.internal.Jedd.v().replace(globalSet, new jedd.Phy" +
+                                               "sicalDomain[...], new jedd.PhysicalDomain[...]), new jedd.Ph" +
+                                               "ysicalDomain[...]); at /home/olhotak/soot-trunk2/src/soot/ji" +
+                                               "mple/paddle/BDDMethodPAGContextifier.jedd:149,36-50"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(loadOut),
-                                                                          globalSet,
+                                                                          jedd.internal.Jedd.v().replace(globalSet,
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() },
+                                                                                                         new jedd.PhysicalDomain[] { V1.v() }),
                                                                           new jedd.PhysicalDomain[] { V1.v() }));
         loadOut.eqMinus(globalLoadSrcs);
         loadOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalLoadSrcs,
@@ -552,10 +539,10 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                                                    new jedd.Attribute[] { srcc.v() },
                                                                                    new jedd.PhysicalDomain[] { C1.v() }),
                                                     new jedd.PhysicalDomain[] {  }));
-        cload.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { fld.v(), dstc.v(), srcc.v(), dst.v(), src.v() },
-                                                      new jedd.PhysicalDomain[] { FD.v(), C2.v(), C1.v(), V2.v(), V1.v() },
-                                                      ("cload.add(loadOut) at /home/olhotak/soot-trunk/src/soot/jimp" +
-                                                       "le/paddle/BDDMethodPAGContextifier.jedd:152,8-13"),
+        cload.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { src.v(), dstc.v(), dst.v(), srcc.v(), fld.v() },
+                                                      new jedd.PhysicalDomain[] { V1.v(), C2.v(), V2.v(), C1.v(), FD.v() },
+                                                      ("cload.add(loadOut) at /home/olhotak/soot-trunk2/src/soot/jim" +
+                                                       "ple/paddle/BDDMethodPAGContextifier.jedd:152,8-13"),
                                                       loadOut));
         final jedd.internal.RelationContainer globalAllocDsts =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { objc.v(), obj.v(), varc.v(), var.v() },
@@ -565,13 +552,20 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                "le.bdddomains.H1, soot.jimple.paddle.bdddomains.varc:soot.ji" +
                                                "mple.paddle.bdddomains.C1, soot.jimple.paddle.bdddomains.var" +
                                                ":soot.jimple.paddle.bdddomains.V1> globalAllocDsts = jedd.in" +
-                                               "ternal.Jedd.v().join(jedd.internal.Jedd.v().read(allocOut), " +
-                                               "globalSet, new jedd.PhysicalDomain[...]); at /home/olhotak/s" +
-                                               "oot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier.je" +
-                                               "dd:154,31-46"),
-                                              jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(allocOut),
-                                                                          globalSet,
-                                                                          new jedd.PhysicalDomain[] { V1.v() }));
+                                               "ternal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.int" +
+                                               "ernal.Jedd.v().read(jedd.internal.Jedd.v().replace(allocOut," +
+                                               " new jedd.PhysicalDomain[...], new jedd.PhysicalDomain[...])" +
+                                               "), globalSet, new jedd.PhysicalDomain[...]), new jedd.Physic" +
+                                               "alDomain[...], new jedd.PhysicalDomain[...]); at /home/olhot" +
+                                               "ak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifi" +
+                                               "er.jedd:154,31-46"),
+                                              jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(allocOut,
+                                                                                                                                                                    new jedd.PhysicalDomain[] { V1.v() },
+                                                                                                                                                                    new jedd.PhysicalDomain[] { V2.v() })),
+                                                                                                         globalSet,
+                                                                                                         new jedd.PhysicalDomain[] { V2.v() }),
+                                                                             new jedd.PhysicalDomain[] { V2.v() },
+                                                                             new jedd.PhysicalDomain[] { V1.v() }));
         allocOut.eqMinus(globalAllocDsts);
         allocOut.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(globalAllocDsts,
                                                                                                                 new jedd.PhysicalDomain[] { C1.v() })),
@@ -589,8 +583,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                ":soot.jimple.paddle.bdddomains.V1> globalAllocSrcs = jedd.in" +
                                                "ternal.Jedd.v().join(jedd.internal.Jedd.v().read(allocOut), " +
                                                "globalallocSet, new jedd.PhysicalDomain[...]); at /home/olho" +
-                                               "tak/soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextifi" +
-                                               "er.jedd:157,31-46"),
+                                               "tak/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextif" +
+                                               "ier.jedd:157,31-46"),
                                               jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(allocOut),
                                                                           globalallocSet,
                                                                           new jedd.PhysicalDomain[] { H1.v() }));
@@ -601,10 +595,10 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                                                                     new jedd.Attribute[] { objc.v() },
                                                                                     new jedd.PhysicalDomain[] { C2.v() }),
                                                      new jedd.PhysicalDomain[] {  }));
-        calloc.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v(), varc.v(), obj.v(), objc.v() },
-                                                       new jedd.PhysicalDomain[] { V1.v(), C1.v(), H1.v(), C2.v() },
-                                                       ("calloc.add(allocOut) at /home/olhotak/soot-trunk/src/soot/ji" +
-                                                        "mple/paddle/BDDMethodPAGContextifier.jedd:160,8-14"),
+        calloc.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { obj.v(), objc.v(), var.v(), varc.v() },
+                                                       new jedd.PhysicalDomain[] { H1.v(), C2.v(), V1.v(), C1.v() },
+                                                       ("calloc.add(allocOut) at /home/olhotak/soot-trunk2/src/soot/j" +
+                                                        "imple/paddle/BDDMethodPAGContextifier.jedd:160,8-14"),
                                                        allocOut));
     }
     
@@ -613,16 +607,17 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           new jedd.PhysicalDomain[] { V2.v(), T1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var, soot.jimple.padd" +
                                            "le.bdddomains.method> localMap = jedd.internal.Jedd.v().fals" +
-                                           "eBDD() at /home/olhotak/soot-trunk/src/soot/jimple/paddle/BD" +
-                                           "DMethodPAGContextifier.jedd:163,12-25"),
+                                           "eBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/B" +
+                                           "DDMethodPAGContextifier.jedd:163,12-25"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer globalSet =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { var.v() },
-                                          new jedd.PhysicalDomain[] { V1.v() },
+                                          new jedd.PhysicalDomain[] { V2.v() },
                                           ("private <soot.jimple.paddle.bdddomains.var> globalSet = jedd" +
-                                           ".internal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk/sr" +
-                                           "c/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:164,12-17"),
+                                           ".internal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk2/s" +
+                                           "rc/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:164,12-1" +
+                                           "7"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer localallocMap =
@@ -630,8 +625,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           new jedd.PhysicalDomain[] { H1.v(), T1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj, soot.jimple.padd" +
                                            "le.bdddomains.method> localallocMap = jedd.internal.Jedd.v()" +
-                                           ".falseBDD() at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                           "le/BDDMethodPAGContextifier.jedd:165,12-25"),
+                                           ".falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
+                                           "dle/BDDMethodPAGContextifier.jedd:165,12-25"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer globalallocSet =
@@ -639,8 +634,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           new jedd.PhysicalDomain[] { H1.v() },
                                           ("private <soot.jimple.paddle.bdddomains.obj> globalallocSet =" +
                                            " jedd.internal.Jedd.v().falseBDD() at /home/olhotak/soot-tru" +
-                                           "nk/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:166," +
-                                           "12-17"),
+                                           "nk2/src/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:166" +
+                                           ",12-17"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer mpagSimple =
@@ -649,8 +644,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           ("private <soot.jimple.paddle.bdddomains.method, soot.jimple.p" +
                                            "addle.bdddomains.src, soot.jimple.paddle.bdddomains.dst> mpa" +
                                            "gSimple = jedd.internal.Jedd.v().falseBDD() at /home/olhotak" +
-                                           "/soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier." +
-                                           "jedd:168,12-30"),
+                                           "/soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier" +
+                                           ".jedd:168,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer mpagStore =
@@ -659,8 +654,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           ("private <soot.jimple.paddle.bdddomains.method, soot.jimple.p" +
                                            "addle.bdddomains.src, soot.jimple.paddle.bdddomains.fld, soo" +
                                            "t.jimple.paddle.bdddomains.dst> mpagStore = jedd.internal.Je" +
-                                           "dd.v().falseBDD() at /home/olhotak/soot-trunk/src/soot/jimpl" +
-                                           "e/paddle/BDDMethodPAGContextifier.jedd:169,12-35"),
+                                           "dd.v().falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimp" +
+                                           "le/paddle/BDDMethodPAGContextifier.jedd:169,12-35"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer mpagLoad =
@@ -669,8 +664,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           ("private <soot.jimple.paddle.bdddomains.method, soot.jimple.p" +
                                            "addle.bdddomains.src, soot.jimple.paddle.bdddomains.fld, soo" +
                                            "t.jimple.paddle.bdddomains.dst> mpagLoad = jedd.internal.Jed" +
-                                           "d.v().falseBDD() at /home/olhotak/soot-trunk/src/soot/jimple" +
-                                           "/paddle/BDDMethodPAGContextifier.jedd:170,12-35"),
+                                           "d.v().falseBDD() at /home/olhotak/soot-trunk2/src/soot/jimpl" +
+                                           "e/paddle/BDDMethodPAGContextifier.jedd:170,12-35"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer mpagAlloc =
@@ -679,8 +674,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                           ("private <soot.jimple.paddle.bdddomains.method, soot.jimple.p" +
                                            "addle.bdddomains.var, soot.jimple.paddle.bdddomains.obj> mpa" +
                                            "gAlloc = jedd.internal.Jedd.v().falseBDD() at /home/olhotak/" +
-                                           "soot-trunk/src/soot/jimple/paddle/BDDMethodPAGContextifier.j" +
-                                           "edd:171,12-30"),
+                                           "soot-trunk2/src/soot/jimple/paddle/BDDMethodPAGContextifier." +
+                                           "jedd:171,12-30"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer allParms =
@@ -690,8 +685,8 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.kind, soo" +
                                            "t.jimple.paddle.bdddomains.tgtm, soot.jimple.paddle.bdddomai" +
                                            "ns.src, soot.jimple.paddle.bdddomains.dst> allParms = jedd.i" +
-                                           "nternal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk/src/" +
-                                           "soot/jimple/paddle/BDDMethodPAGContextifier.jedd:173,12-46"),
+                                           "nternal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk2/src" +
+                                           "/soot/jimple/paddle/BDDMethodPAGContextifier.jedd:173,12-46"),
                                           jedd.internal.Jedd.v().falseBDD());
     
     private final jedd.internal.RelationContainer allRets =
@@ -701,7 +696,7 @@ public class BDDMethodPAGContextifier extends AbsMethodPAGContextifier {
                                            "dle.bdddomains.stmt, soot.jimple.paddle.bdddomains.kind, soo" +
                                            "t.jimple.paddle.bdddomains.tgtm, soot.jimple.paddle.bdddomai" +
                                            "ns.src, soot.jimple.paddle.bdddomains.dst> allRets = jedd.in" +
-                                           "ternal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk/src/s" +
-                                           "oot/jimple/paddle/BDDMethodPAGContextifier.jedd:174,12-46"),
+                                           "ternal.Jedd.v().falseBDD() at /home/olhotak/soot-trunk2/src/" +
+                                           "soot/jimple/paddle/BDDMethodPAGContextifier.jedd:174,12-46"),
                                           jedd.internal.Jedd.v().falseBDD());
 }

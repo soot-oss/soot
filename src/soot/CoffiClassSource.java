@@ -19,8 +19,8 @@
 
 package soot;
 import soot.options.*;
-
 import java.io.*;
+import java.util.*;
 
 /** A class source for resolving from .class files through coffi.
  */
@@ -30,14 +30,16 @@ public class CoffiClassSource extends ClassSource
         super( className );
         this.classFile = classFile;
     }
-    public void resolve( SootClass sc ) {
+    public List resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .class]: " + className );
-        soot.coffi.Util.v().resolveFromClassFile(sc, classFile);
+        List references = new ArrayList();
+        soot.coffi.Util.v().resolveFromClassFile(sc, classFile, references);
 
         try {
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
+        return references;
     }
     protected InputStream classFile;
 }

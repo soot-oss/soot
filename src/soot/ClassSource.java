@@ -18,6 +18,7 @@
  */
 
 package soot;
+import java.util.*;
 
 /** A class source is responsible for resolving a single class from a
  * particular source format (.class, .jimple, .java, etc.)
@@ -27,8 +28,9 @@ public abstract class ClassSource
     public ClassSource( String className ) {
         this.className = className;
     }
-    /** Resolve the class into the SootClass sc. */
-    public abstract void resolve( SootClass sc );
+    /** Resolve the class into the SootClass sc. Returns a list of Strings
+     * or Types referenced by the class. */
+    public abstract List resolve( SootClass sc );
     protected String className;
 }
 

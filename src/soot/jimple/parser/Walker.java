@@ -182,13 +182,13 @@ public class Walker extends DepthFirstAdapter
         mSootClass.setModifiers(modifierFlags);
                 
         if(superClass != null) {
-            mSootClass.setSuperclass(mResolver.getResolvedClass(superClass));
+            mSootClass.setSuperclass(mResolver.makeClassRef(superClass));
         }
         
         if(implementsList != null) {
             Iterator implIt = implementsList.iterator();
             while(implIt.hasNext()) {
-                SootClass interfaceClass = mResolver.getResolvedClass((String) implIt.next());
+                SootClass interfaceClass = mResolver.makeClassRef((String) implIt.next());
                 mSootClass.addInterface(interfaceClass);
             }
         }
@@ -657,7 +657,7 @@ public class Walker extends DepthFirstAdapter
 
 	exceptionName = (String) mProductions.removeLast();
                                 
-        Trap trap = Jimple.v().newTrap(mResolver.getResolvedClass(exceptionName), fromUnit, toUnit, withUnit);          
+        Trap trap = Jimple.v().newTrap(mResolver.makeClassRef(exceptionName), fromUnit, toUnit, withUnit);          
 	mProductions.addLast(trap);
     }
 
@@ -1299,7 +1299,7 @@ public class Walker extends DepthFirstAdapter
         while(it.hasNext()) {                   
             String className = (String) it.next();
           
-            exceptionClasses.add(mResolver.getResolvedClass(className));
+            exceptionClasses.add(mResolver.makeClassRef(className));
         }
 
 	mProductions.addLast(exceptionClasses);
@@ -1387,7 +1387,7 @@ public class Walker extends DepthFirstAdapter
 	t = (Type) mProductions.removeLast();
 	className  = (String) mProductions.removeLast();      
 
-        SootClass cl = mResolver.getResolvedClass(className);
+        SootClass cl = mResolver.makeClassRef(className);
         SootField field = cl.getField(fieldName, t);
         
 	mProductions.addLast(field);
@@ -1526,7 +1526,7 @@ public class Walker extends DepthFirstAdapter
 	Type type = (Type) mProductions.removeLast();
 	className = (String) mProductions.removeLast();
 
-        SootClass sootClass =  mResolver.getResolvedClass(className);
+        SootClass sootClass =  mResolver.makeClassRef(className);
         SootMethod sootMethod = sootClass.getMethod(methodName, parameterList, type);
 
 	mProductions.addLast(sootMethod);

@@ -38,6 +38,7 @@ import soot.jimple.toolkits.base.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.jimple.*;
+import soot.options.*;
 
 /*
  * Incomplete and inefficient implementation.
@@ -84,6 +85,7 @@ public class SootClass extends AbstractHost implements Numberable
         this.modifiers = modifiers;
         refType = RefType.v(name);
         refType.setSootClass(this);
+        if(Options.v().debug_resolver()) System.out.println("created "+name);
     }
 
     /**
@@ -463,7 +465,8 @@ public class SootClass extends AbstractHost implements Numberable
         if(found)
             return foundMethod;
         else
-            throw new RuntimeException("couldn't find method");
+            throw new RuntimeException("couldn't find method "+name+"("+parameterTypes+") in "+this);
+
     }
 
     
@@ -494,11 +497,10 @@ public class SootClass extends AbstractHost implements Numberable
                 }
             }
         }
-
         if(found)
             return foundMethod;
         else
-            throw new RuntimeException("couldn't find method");
+            throw new RuntimeException("couldn't find method "+name+"(*) in "+this);
     }
 
     /**
@@ -703,7 +705,7 @@ public class SootClass extends AbstractHost implements Numberable
     public SootClass getSuperclass() 
     {
         if(superClass == null) 
-            throw new RuntimeException("no superclass");
+            throw new RuntimeException("no superclass for "+getName());
         else
             return superClass;
     }

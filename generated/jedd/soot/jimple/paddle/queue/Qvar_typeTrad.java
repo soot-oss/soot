@@ -21,11 +21,11 @@ public class Qvar_typeTrad extends Qvar_type {
     
     public void add(final jedd.internal.RelationContainer in) {
         Iterator it =
-          new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
-                                              new PhysicalDomain[] { V1.v(), T2.v() },
+          new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v() },
+                                              new PhysicalDomain[] { T2.v(), V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/Qvar_typeTrad.jedd:38,22-2" +
-                                               "4"),
+                                               "runk2/src/soot/jimple/paddle/queue/Qvar_typeTrad.jedd:38,22-" +
+                                               "24"),
                                               in).iterator(new Attribute[] { var.v(), type.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();

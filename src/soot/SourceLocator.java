@@ -109,7 +109,7 @@ public class SourceLocator
         List resolvedClasses = new ArrayList();
         Iterator it = getClassesUnder(aPath).iterator();
         while (it.hasNext()){
-            resolvedClasses.add(SootResolver.v().getResolvedClass((String)it.next()).getName());
+            resolvedClasses.add(SootResolver.v().resolveClassAndSupportClasses((String)it.next()).getName());
         }
         return resolvedClasses;    
     }

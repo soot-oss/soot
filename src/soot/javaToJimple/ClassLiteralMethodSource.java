@@ -59,7 +59,7 @@ public class ClassLiteralMethodSource implements soot.MethodSource {
         // no class def found init
         paramTypes = new ArrayList();
         paramTypes.add(soot.RefType.v("java.lang.String"));
-        soot.SootMethod initMethToInvoke = soot.Scene.v().getSootClass("java.lang.NoClassDefFoundError").getMethod("<init>", paramTypes, soot.VoidType.v());
+        soot.SootMethod initMethToInvoke = soot.Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError").getMethod("<init>", paramTypes, soot.VoidType.v());
         params = new ArrayList();
         params.add(messageLocal);
         soot.jimple.Expr initInvoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(throwLocal, initMethToInvoke, params);

@@ -39,12 +39,12 @@ public final class Rsrcc_src_fld_dstc_dstMerge extends Rsrcc_src_fld_dstc_dst {
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { fld.v(), dstc.v(), srcc.v(), dst.v(), src.v() },
-                                                   new PhysicalDomain[] { FD.v(), C2.v(), C1.v(), V2.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { src.v(), dstc.v(), dst.v(), srcc.v(), fld.v() },
+                                                   new PhysicalDomain[] { V1.v(), C2.v(), V2.v(), C1.v(), FD.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
-                                                    "soot/jimple/paddle/queue/Rsrcc_src_fld_dstc_dstMerge.jedd:52" +
-                                                    ",8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk2/src" +
+                                                    "/soot/jimple/paddle/queue/Rsrcc_src_fld_dstc_dstMerge.jedd:5" +
+                                                    "2,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

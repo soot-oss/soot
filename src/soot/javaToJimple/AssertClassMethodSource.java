@@ -47,7 +47,7 @@ public class AssertClassMethodSource implements soot.MethodSource {
         
         // no class def found invoke
         paramTypes = new ArrayList();
-        soot.SootMethod initMethToInvoke = soot.Scene.v().getSootClass("java.lang.NoClassDefFoundError").getMethod("<init>", paramTypes, soot.VoidType.v());
+        soot.SootMethod initMethToInvoke = soot.Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError").getMethod("<init>", paramTypes, soot.VoidType.v());
         params = new ArrayList();
         soot.jimple.Expr initInvoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(noClassDefLocal, initMethToInvoke, params);
         soot.jimple.Stmt initStmt = soot.jimple.Jimple.v().newInvokeStmt(initInvoke);

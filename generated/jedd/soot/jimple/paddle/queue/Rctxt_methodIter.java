@@ -37,8 +37,8 @@ public class Rctxt_methodIter extends Rctxt_method {
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
                                                "mains.V1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
                                                "addle.bdddomains.T1> ret = jedd.internal.Jedd.v().falseBDD()" +
-                                               "; at /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/R" +
-                                               "ctxt_methodIter.jedd:46,29-32"),
+                                               "; at /home/olhotak/soot-trunk2/src/soot/jimple/paddle/queue/" +
+                                               "Rctxt_methodIter.jedd:46,29-32"),
                                               jedd.internal.Jedd.v().falseBDD());
         while (r.hasNext()) {
             ret.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { r.next(), r.next() },
@@ -47,8 +47,8 @@ public class Rctxt_methodIter extends Rctxt_method {
         }
         return new jedd.internal.RelationContainer(new Attribute[] { method.v(), ctxt.v() },
                                                    new PhysicalDomain[] { T1.v(), V1.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                                    "le/queue/Rctxt_methodIter.jedd:50,8-14"),
+                                                   ("return ret; at /home/olhotak/soot-trunk2/src/soot/jimple/pad" +
+                                                    "dle/queue/Rctxt_methodIter.jedd:50,8-14"),
                                                    ret);
     }
     

@@ -129,13 +129,13 @@ public class SkeletonExtractorWalker extends Walker
         mSootClass.setModifiers(modifierFlags);
                 
         if(superClass != null) {
-            mSootClass.setSuperclass(mResolver.getResolvedClass(superClass));
+            mSootClass.setSuperclass(mResolver.makeClassRef(superClass));
         }
         
         if(implementsList != null) {
             Iterator implIt = implementsList.iterator();
             while(implIt.hasNext()) {
-                SootClass interfaceClass = mResolver.getResolvedClass((String) implIt.next());
+                SootClass interfaceClass = mResolver.makeClassRef((String) implIt.next());
                 mSootClass.addInterface(interfaceClass);
             }
         }
@@ -247,7 +247,7 @@ public class SkeletonExtractorWalker extends Walker
         while(it.hasNext()) {                   
             String className = (String) it.next();
           
-            exceptionClasses.add(mResolver.getResolvedClass(className));
+            exceptionClasses.add(mResolver.makeClassRef(className));
         }
 
 	mProductions.addLast(exceptionClasses);

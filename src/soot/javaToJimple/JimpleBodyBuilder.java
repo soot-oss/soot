@@ -1984,7 +1984,7 @@ public class JimpleBodyBuilder {
     private soot.jimple.FieldRef getFieldRef(polyglot.ast.Field field) {
        
         soot.SootClass receiverClass = ((soot.RefType)Util.getSootType(field.fieldInstance().container())).getSootClass();
-         
+	if(receiverClass==null) System.out.println("receiver of "+field+" is null");
         soot.SootField receiverField = receiverClass.getField(field.name(), Util.getSootType(field.type()));
          
         soot.jimple.FieldRef fieldRef;
@@ -3366,7 +3366,6 @@ public class JimpleBodyBuilder {
         handleFinalLocalParams(sootParams, sootParamsTypes, (polyglot.types.ClassType)objType);
      
         soot.SootMethod methodToInvoke = getMethodFromClass(classToInvoke, "<init>", sootParamsTypes, soot.VoidType.v());
-      
         if (!methodToInvoke.getDeclaringClass().getType().equals(classToInvoke.getType())){
             throw new RuntimeException("created new for type: "+classToInvoke.getType()+" but didn't find needed initializer there instead found initializer in "+methodToInvoke.getDeclaringClass().getType());
         }

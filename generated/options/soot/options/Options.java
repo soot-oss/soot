@@ -149,6 +149,11 @@ public class Options extends OptionsBase {
             )
                 debug = true;
   
+            else if( false 
+            || option.equals( "debug-resolver" )
+            )
+                debug_resolver = true;
+  
             else if( false
             || option.equals( "cp" )
             || option.equals( "soot-class-path" )
@@ -234,6 +239,11 @@ public class Options extends OptionsBase {
                     return false;
                 }
            }
+  
+            else if( false 
+            || option.equals( "full-resolver" )
+            )
+                full_resolver = true;
   
             else if( false 
             || option.equals( "allow-phantom-refs" )
@@ -835,6 +845,10 @@ public class Options extends OptionsBase {
     private boolean debug = false;
     public void set_debug( boolean setting ) { debug = setting; }
   
+    public boolean debug_resolver() { return debug_resolver; }
+    private boolean debug_resolver = false;
+    public void set_debug_resolver( boolean setting ) { debug_resolver = setting; }
+  
     public String soot_classpath() { return soot_classpath; }
     public void set_soot_classpath( String setting ) { soot_classpath = setting; }
     private String soot_classpath = "";
@@ -852,6 +866,10 @@ public class Options extends OptionsBase {
     }
     public void set_src_prec( int setting ) { src_prec = setting; }
     private int src_prec = 0;
+    public boolean full_resolver() { return full_resolver; }
+    private boolean full_resolver = false;
+    public void set_full_resolver( boolean setting ) { full_resolver = setting; }
+  
     public boolean allow_phantom_refs() { return allow_phantom_refs; }
     private boolean allow_phantom_refs = false;
     public void set_allow_phantom_refs( boolean setting ) { allow_phantom_refs = setting; }
@@ -995,6 +1013,7 @@ public class Options extends OptionsBase {
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
 +padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )
 +padOpt(" -debug", "Print various Soot debugging info" )
++padOpt(" -debug-resolver", "Print debugging info from SootResolver" )
 +"\nInput Options:\n"
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
@@ -1003,6 +1022,7 @@ public class Options extends OptionsBase {
 +padVal(" c class (default)", "Favour class files as Soot source" )
 +padVal(" J jimple", "Favour Jimple files as Soot source" )
 +padVal(" java", "Favour Java files as Soot source" )
++padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       

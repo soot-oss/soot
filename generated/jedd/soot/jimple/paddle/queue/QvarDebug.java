@@ -26,7 +26,7 @@ public class QvarDebug extends Qvar {
           new jedd.internal.RelationContainer(new Attribute[] { var.v() },
                                               new PhysicalDomain[] { V1.v() },
                                               ("in.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-t" +
-                                               "runk/src/soot/jimple/paddle/queue/QvarDebug.jedd:39,22-24"),
+                                               "runk2/src/soot/jimple/paddle/queue/QvarDebug.jedd:39,22-24"),
                                               in).iterator(new Attribute[] { var.v() });
         while (it.hasNext()) {
             Object[] tuple = (Object[]) it.next();
