@@ -11,19 +11,10 @@ import ca.mcgill.sable.soot.baf.*;
 import java.util.StringTokenizer;
 import java.io.File;
 
-/**
- * 
- */
 public class ClassGraphBuilder{
   
 
-  /**
-   * 
-   */
   SootClassManager cm = new SootClassManager();
-
-
-  
 
 
   /**
@@ -49,10 +40,6 @@ public class ClassGraphBuilder{
 
 
 
-
-
-
-
   /**
    * 
    */
@@ -65,9 +52,6 @@ public class ClassGraphBuilder{
 
     return classNode;
   }
-
-
-
 
 
 
@@ -86,18 +70,18 @@ public class ClassGraphBuilder{
 
 
 
-  public static int numInterfaces = 0; 
-  public static int numClasses = 0;
-  public static int numBenchInterfaces = 0;
-  public static int numLibInterfaces = 0;
-  public static int numBenchClasses = 0;
-  public static int numLibClasses = 0;
-  public static int hierarchyDepth = 1; 
-  public static int benchhierarchyDepth = 1;
-  public static int libraryClasses = 0;
-  public static int benchmarkClasses = 0;
-  public static double totaldepth = 0.0;
-  public static double benchtotaldepth = 0.0;
+  static int numInterfaces = 0; 
+  static int numClasses = 0;
+  static int numBenchInterfaces = 0;
+  static int numLibInterfaces = 0;
+  static int numBenchClasses = 0;
+  static int numLibClasses = 0;
+  static int hierarchyDepth = 1; 
+  static int benchhierarchyDepth = 1;
+  static int libraryClasses = 0;
+  static int benchmarkClasses = 0;
+  static double totaldepth = 0.0;
+  static double benchtotaldepth = 0.0;
   
 
 
@@ -113,12 +97,6 @@ public class ClassGraphBuilder{
    return incorrectlyjimplified;
 
   }
-
-
-
-
-
-
 
 
 
@@ -283,9 +261,9 @@ public class ClassGraphBuilder{
 
 
 
-  public static List startmethods = new ArrayList();
+  static List startmethods = new ArrayList();
 
-  public static List runmethods = new ArrayList();
+  static List runmethods = new ArrayList();
 
 
 
@@ -315,7 +293,7 @@ public class ClassGraphBuilder{
 
 
 
- public HashSet sources = new HashSet();
+ HashSet sources = new HashSet();
 
 
 
@@ -373,7 +351,7 @@ public class ClassGraphBuilder{
 
 
 
-  public static Map virtualHT = new HashMap();
+  static Map virtualHT = new HashMap();
 
 
 
@@ -617,7 +595,6 @@ public class ClassGraphBuilder{
     
     } catch ( java.lang.RuntimeException e ){
 
-      System.err.println("AT 1 : Jimple can't locate " + Name +" :  " + e.getMessage() );
 
     }
 
@@ -675,11 +652,11 @@ public class ClassGraphBuilder{
 
  	     } catch ( ca.mcgill.sable.soot.NoSuchClassException e ){
 
-            System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
+           // System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
 
 	     } catch ( ca.mcgill.sable.soot.ClassFileNotFoundException e ){
 
-            System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
+           // System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
 
 	     }
 
@@ -703,11 +680,11 @@ public class ClassGraphBuilder{
 
  	      } catch ( ca.mcgill.sable.soot.NoSuchClassException e ){
 
-            System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
+            // System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
 
 	      } catch ( ca.mcgill.sable.soot.ClassFileNotFoundException e ){
 
-            System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
+            // System.out.println(e.toString()+" IN CLGB.GETALLCLASSESUSED 1");
 
 	      }
           /*

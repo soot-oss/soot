@@ -191,9 +191,6 @@ public class ClassNode{
     }
 
 
-  protected void finalize() throws java.io.IOException{
-    System.out.println(" GC ClassNode:   " + getName() );
-  }
 }
 
 

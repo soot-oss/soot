@@ -338,6 +338,7 @@ public class Inliner {
 
 
 
+
  public List sortByMethodDepths ( List methodslist ) {
 
   // List sortedmethods = new ArrayList();
@@ -487,6 +488,32 @@ public class Inliner {
 
    List sortedmethods = new /* Array */ LinkedList();
 
+   Object[] methodsarray = methods.toArray();
+
+   Arrays.sort ( methodsarray, new StringComparator() );
+
+   for (int i=0;i<methodsarray.length;i++)
+   sortedmethods.add ( (MethodNode) methodsarray[i] );
+
+   return sortedmethods;
+
+  }
+
+   
+ 
+
+
+
+
+
+
+
+
+
+  public List sortMethodNodes ( Collection methods ) {
+
+   List sortedmethods = new /* Array */ LinkedList();
+
    if ( methods.size() > 0 )   
    {
 
@@ -544,6 +571,8 @@ public class Inliner {
 
    return sortedmethods;
 
+ 
+
   }
 
 
@@ -576,6 +605,9 @@ public class Inliner {
      0, inlinemono = 0, actuallyinlined = 0;
 
  
+
+ public static boolean NOLIB = true;
+
 
 
 
@@ -900,6 +932,8 @@ public class Inliner {
 
            InlineMethod ( melistBody.getStmtList() , listBody.getStmtList(), stmtIter );
 
+           gotoEliminate ( listBody );
+
            // System.out.println ("INLINED SUCCESS");
              
            // PrintWriter out = new PrintWriter(System.out, true);
@@ -951,6 +985,7 @@ public class Inliner {
  
  }
 
+        
 
 
 
@@ -1014,7 +1049,31 @@ public class Inliner {
 
   resolverfieldsHT = resolver.getFieldsHT();
 
-  List sortedbydepths = sortMethods ( callgraph );
+  List sortedbydepths = null;
+
+  if ( NOLIB )
+  {
+
+   List newcallgraph = new ArrayList();
+
+   Iterator callit = callgraph.iterator();
+
+   while ( callit.hasNext() )
+   {
+
+    MethodNode tempMN = (MethodNode) callit.next(); 
+
+    if ( ! ( tempMN.getMethod().getDeclaringClass().getName().startsWith ( "java." ) || tempMN.getMethod().getDeclaringClass().getName().startsWith ("sun.") ) )
+    newcallgraph.add(tempMN); 
+   }
+
+   sortedbydepths = sortMethods ( newcallgraph );
+
+  }
+  else
+  sortedbydepths = sortMethods ( callgraph );
+
+  // System.out.println ( "Sorting done");
 
   // List reachedcallgraph = setMethodDepths ( sortedcallgraph );
 
@@ -1170,9 +1229,11 @@ public class Inliner {
  }
 
 
- System.out.println("Done");
+ // System.out.println("Done");
 
  // ImportantQ = ( ArrayList ) getCallSitesFromProfile();
+
+ System.out.println("Done");
 
  System.out.println(); 
 
@@ -1276,7 +1337,7 @@ public class Inliner {
 */
 
  /*
-
+ 
   PrintWriter out = new PrintWriter(System.out, true);
 
   Iterator changedit = changedclasses.iterator();
@@ -1343,7 +1404,7 @@ public class Inliner {
 //    ChaitinAllocator.packLocals ( changedjb );  
 //    Transformations.removeUnusedLocals ( changedjb ); 
 
-      changedmethod.setActiveBody ( new GrimpBody ( (JimpleBody) changedmethod.getActiveBody() ) );
+      changedmethod.setActiveBody ( new GrimpBody ( (JimpleBody) changedmethod.getActiveBody(), BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING ) );
 
 
 
@@ -1357,7 +1418,7 @@ public class Inliner {
 
      JimpleBody changedjb = new JimpleBody( new ClassFileBody( changedmethod ), BuildJimpleBodyOption.USE_PACKING );
 
-     changedmethod.setActiveBody ( new GrimpBody ( changedjb ) );
+     changedmethod.setActiveBody ( new GrimpBody ( changedjb, BuildJimpleBodyOption.AGGRESSIVE_AGGREGATING ) );
 
 
      //     JimpleBody changedjb = ( JimpleBody ) changedbasb.resolveFor ( changedmethod );
@@ -1431,6 +1492,8 @@ public class Inliner {
 
 
 
+
+  /*
  public List getCallSitesFromProfile() {
 
   ArrayList allCallSites = new ArrayList(); 
@@ -1487,7 +1550,111 @@ public class Inliner {
  }
 
 
+ */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ public List getCallSitesFromProfile() {
+
+  ArrayList allCallSites = new ArrayList(); 
+
+  ArrayList halfCallSites = new ArrayList();
+   
+  try { 
+
+     BufferedReader b = getBufReader ( "frequency.out" );
+
+     for ( ;; )
+     {
+
+       String currentline = b.readLine();
+     
+       if ( currentline == null )
+       break;
+
+       allCallSites.add ( 0, currentline );
+
+     }
+
+  } catch ( java.io.IOException e ) {}
+
+  int allCallSitesSize = allCallSites.size();
+
+  int halfCallSitesSize = allCallSitesSize / 2;
+
+  for ( int i = 0; i < halfCallSitesSize; i++ )
+  {
+
+   String currentline = ( String ) allCallSites.get ( i );
+
+   int separatorindex = currentline.indexOf ( ' ' );
+      
+   int callsitenumindex = currentline.lastIndexOf ( '$' );
+ 
+   String callsitenumAsString = currentline.substring ( callsitenumindex + 1, separatorindex );
+      
+   Integer callsitenum = Integer.valueOf ( callsitenumAsString );
+  
+   String methodsig = currentline.substring ( 0, callsitenumindex );
+
+   methodsig = ConvertToNewSig(methodsig);
+
+   MethodNode mnode = cagb.getNode ( methodsig );
+
+   CallSite cs = mnode.getCallSite ( callsitenum );
+
+   halfCallSites.add ( cs.getInvokeExpr() );
+
+  }
+
+  return halfCallSites;
+
+ }
+
+
+
+ 
+
+
+
+
+
+
+  public String ConvertToNewSig( String s ) {
+
+   int i = s.indexOf('(');
+
+   String changedpart = s.substring(0,i);
+
+   String samepart = s.substring(i, s.length() );
+
+   int j = changedpart.lastIndexOf('.');
+
+   String classname = changedpart.substring(0, j);
+
+   String methodname = changedpart.substring(j+1, changedpart.length());
+
+   String newsig = "<'"+classname+"':'"+methodname+"':"+samepart+">";
+
+   return newsig;
+
+  }
 
 
 
@@ -1951,15 +2118,58 @@ public class Inliner {
 
 
 
+ boolean castflag = false;
 
-
-
+ Type casttype = null;
 
 
 
   public boolean satisfiesCriteria ( SootMethod m, InvokeExpr ie ) {
 
    try {
+
+    if ( NOLIB )
+    {
+
+     if ( m.getDeclaringClass().getName().startsWith ( "java." ) || m.getDeclaringClass().getName().startsWith ("sun.") )
+     return false;
+
+    }  
+
+
+    castflag = false;
+
+    if ( ! ( ie instanceof StaticInvokeExpr ) )
+    {
+
+      NonStaticInvokeExpr nstie = (NonStaticInvokeExpr) ie;
+
+      if ( ! ie.getMethod().getSignature().equals(m.getSignature()) )
+      {
+
+       if ( ! nstie.getBase().getType().toString().equals ( m.getDeclaringClass().getName() ) )
+       {
+
+        if ( ( ! ( nstie.getBase().getType() instanceof ArrayType ) ) && ( nstie.getBase().getType() instanceof RefType ) )
+        { 
+
+         SootClass sc1 = scm.getClass ( nstie.getBase().getType().toString() );
+           
+         SootClass sc2 = scm.getClass ( m.getDeclaringClass().getName() );
+
+         if ( ! isStrictSuperClass ( sc1, sc2 ) )
+         {
+           castflag = true;
+           casttype = RefType.v(sc2.getName()); 
+         } 
+
+        }
+
+       }
+
+      }
+
+    }
 
     if ( syncflag && staticInvoked )
     {
@@ -1978,7 +2188,7 @@ public class Inliner {
     }
 
 
-   if ( Modifier.isNative ( m.getModifiers() ) )
+   if ( ( Modifier.isNative ( m.getModifiers() ) ) || ( Modifier.isAbstract ( m.getModifiers() ) ) )
    {
 
     criteria3++;
@@ -3170,6 +3380,14 @@ newmultiarrayexpr ) {
       Value correctrightop = rightop;
 
       // System.out.println ( ( ( Local ) correctrightop ).getName() );
+
+      
+      if ( s.getRightOp() instanceof ThisRef )
+      {
+        if ( castflag )
+        correctrightop = jimple.newCastExpr ( correctrightop, casttype );
+
+      }
 
       correctstmt = jimple.newAssignStmt ( correctleftop, correctrightop );
    
@@ -4634,6 +4852,9 @@ Iterator target, int fixupNumStmts ) {
         if ( ( isStrictSuperClass ( inlinableclass, dec ) ) || ( isStrictSuperClass ( targetclass, dec ) ) )
         return false;
 
+        if ( ( Modifier.isPrivate ( meth.getModifiers() ) ) && ( ! targetclass.getName().equals( inlinableclass.getName() ) ) )
+        return false;
+
        }
 
       }
@@ -5264,19 +5485,29 @@ Iterator target, int fixupNumStmts ) {
         return false;
 
        int newmodifiers = getChangedMethodModifiers ( meth.getSignature(), meth.getModifiers() );
+       /*
+       if ( meth.getName().equals ( "toString" ) && meth.getDeclaringClass().getName().equals ( "ca.mcgill.sable.soot.jimple.JAssignStmt" ) ) 
+       {
 
-       meth.setModifiers ( newmodifiers );
-
+         System.out.println ( "OLD MODIFIERS "+Modifier.toString ( meth.getModifiers() ) );
+         System.out.println ( "NEW MODIFIERS "+Modifier.toString ( newmodifiers ) );
+       }
+       */
+       // meth.setModifiers ( newmodifiers );
 
        try {
 
-       adjustSubMethods ( meth, newmodifiers );
+        adjustSubMethods ( meth, newmodifiers );
 
        } catch ( java.lang.RuntimeException e ) {
+
+        adjustingSubMethods = false;
 
         return false;
 
        }
+
+       meth.setModifiers ( newmodifiers );
 
        changedclasses.add ( dec );
 
@@ -5389,12 +5620,15 @@ Iterator target, int fixupNumStmts ) {
 
   public void adjustSubMethods ( SootMethod m, int newmodifiers ) {
 
+   adjustingSubMethods = true;
+
    ClassNode cn = clgb.getNode ( m.getDeclaringClass().getName() );
 
    Set subclassnodes = clgb.getAllSubClassesOf ( cn );
 
    Iterator subclassnodesit = subclassnodes.iterator();
      
+
    while ( subclassnodesit.hasNext() )
    {
    
@@ -5413,7 +5647,37 @@ Iterator target, int fixupNumStmts ) {
       if ( ! allowedToChange ( subclass.getName() ) )
       throw new ca.mcgill.sable.soot.jimple.toolkit.invoke.NotAllowedToChangeException();
 
-      submeth.setModifiers ( newmodifiers );
+      // submeth.setModifiers ( newmodifiers );
+
+      // changedclasses.add ( subclass );
+
+     }
+
+    }
+
+   }
+   
+  subclassnodesit = subclassnodes.iterator();
+
+   while ( subclassnodesit.hasNext() )
+   {
+   
+    ClassNode subcn = ( ClassNode ) subclassnodesit.next();
+
+    SootClass subclass = scm.getClass ( subcn.getSootClass().getName() );
+
+    if ( subclass.declaresMethod ( m.getName(), m.getParameterTypes() ) )
+    {
+
+     SootMethod submeth = subclass.getMethod ( m.getName(), m.getParameterTypes() );     
+
+     if ( getCorrectModifier ( submeth.getModifiers() ).intValue() < getCorrectModifier ( newmodifiers ).intValue()  )
+     {
+
+      if ( ! allowedToChange ( subclass.getName() ) )
+      throw new ca.mcgill.sable.soot.jimple.toolkit.invoke.NotAllowedToChangeException();
+
+      submeth.setModifiers ( getChangedMethodModifiers ( submeth.getSignature(), submeth.getModifiers() ) );
 
       changedclasses.add ( subclass );
 
@@ -5422,6 +5686,8 @@ Iterator target, int fixupNumStmts ) {
     }
 
    }
+
+   adjustingSubMethods = false;
 
   }
 
@@ -5462,7 +5728,9 @@ Iterator target, int fixupNumStmts ) {
 
 
 
+ int change;
 
+ boolean adjustingSubMethods = false;
 
 
 
@@ -5477,13 +5745,36 @@ Iterator target, int fixupNumStmts ) {
    
    changedmodifiers = changedmodifiers & 0xFFFE;
    
-   if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 3 )
-   changedmodifiers = changedmodifiers | 0x0001;
-   else if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 2 )
-   changedmodifiers = changedmodifiers | 0x0004;
-   else if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 0 )
-   changedmodifiers = changedmodifiers | 0x0002;
+   if ( adjustingSubMethods )
+   {
+     if ( change == 3 )
+     changedmodifiers = changedmodifiers | 0x0001;
+     else if ( change == 2 )
+     changedmodifiers = changedmodifiers | 0x0004;
+     else if ( change == 0 )
+     changedmodifiers = changedmodifiers | 0x0002; 
+   }
+   else
+   {
 
+    if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 3 )
+    {
+     changedmodifiers = changedmodifiers | 0x0001;
+     change = 3; 
+    }
+    else if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 2 )
+    {
+     changedmodifiers = changedmodifiers | 0x0004;
+     change = 2;
+    }
+    else if ( ( ( Integer ) methodsHT.get ( s ) ).intValue() == 0 )
+    {
+     changedmodifiers = changedmodifiers | 0x0002;
+     change = 0;
+    } 
+     
+   }
+  
    return changedmodifiers;
 
  }
@@ -6580,11 +6871,29 @@ Iterator target, int fixupNumStmts ) {
 
 
 
+  boolean isFinalMethod ( SootMethod m ) {
 
+   ClassNode cn = clgb.getNode ( m.getDeclaringClass().getName() );
 
+   Set subclassnodes = clgb.getAllSubClassesOf ( cn );
 
+   Iterator subclassnodesit = subclassnodes.iterator();
+     
+   while ( subclassnodesit.hasNext() )
+   {
+   
+    ClassNode subcn = ( ClassNode ) subclassnodesit.next();
 
+    SootClass subclass = scm.getClass ( subcn.getSootClass().getName() );
 
+    if ( subclass.declaresMethod ( m.getName(), m.getParameterTypes() ) )
+    return false;
+
+   }
+
+   return true;
+
+  } 
 
 
 

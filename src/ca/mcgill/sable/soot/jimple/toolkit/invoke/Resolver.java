@@ -197,7 +197,7 @@ public class Resolver {
 
 
 
-
+ public static boolean NOLIB = true;
 
 
  public void resolveMethods ( Collection callgraph ) {
@@ -212,14 +212,21 @@ public class Resolver {
   while ( iter.hasNext() )
   {
 
+
      mnum++;
 
     if ( ( mnum % 10 ) == 0 )
     System.out.print(".");
 
-   MethodNode tempMN = (MethodNode) iter.next();
+    if ( NOLIB )
+    {
 
-   resolveAccessedClassesFromMethod( tempMN.getMethod() );
+     MethodNode tempMN = (MethodNode) iter.next();
+
+     if ( ! ( tempMN.getMethod().getDeclaringClass().getName().startsWith ( "java." ) || tempMN.getMethod().getDeclaringClass().getName().startsWith ("sun.") ) )
+     resolveAccessedClassesFromMethod( tempMN.getMethod() );
+
+    }
 
 //   setUnInlinableInvokeExprs ( tempMN.getMethod() );
   

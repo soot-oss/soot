@@ -29,6 +29,33 @@ public class CHA {
 
 
 
+  public CHA(){}
+
+
+
+
+
+  public CHA( AllClassFinder allclassfinder ) {
+
+   this.allclassfinder = allclassfinder;
+
+   List paramList = new ArrayList();
+
+   clgb = allclassfinder.getClassGraphBuilder();
+  
+   cm = clgb.getManager();
+
+   cagb = new CallGraphBuilder( clgb );
+
+  }
+ 
+
+
+
+
+
+
+
   ClassGraphBuilder getClassGraphBuilder() {
 
    return clgb;
@@ -58,6 +85,7 @@ public class CHA {
    return allclassfinder;
 
   } 
+
 
 
 
@@ -128,6 +156,20 @@ public class CHA {
   
     } catch ( java.lang.RuntimeException e1 ) {}
  
+   }
+
+   Collection methods = cagb.getCallGraph();
+
+   Iterator methodsit = methods.iterator();
+
+   while ( methodsit.hasNext() )
+   {
+
+    MethodNode mn = (MethodNode) methodsit.next();
+
+    if ( ( mn.getMethod().getName().equals("finalize") || mn.getMethod().getName().equals("<clinit>") ) || mn.getMethod().getName().equals("initializeSystemClass") )
+    entrypoints.add ( mn.getMethod() );
+
    }
 
    System.out.println("Done");

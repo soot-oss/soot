@@ -18,6 +18,9 @@ public class Jimplifier{
   static public int benchjimplifiedNum = 0;
   static int removedNum = 0;
   static boolean CLGB = false;
+
+  public static boolean NOLIB = true;
+
   /**
   * MethodName to JimpleBody
   */
@@ -51,6 +54,15 @@ public class Jimplifier{
 
     buildAndStoreBody = null;  
     JimpleBody jimpleBody = null;
+
+    if ( NOLIB )
+    { 
+
+     if ( method.getDeclaringClass().getName().startsWith ( "java." ) || method.getDeclaringClass().getName().startsWith ("sun.") )
+     return null;
+  
+    } 
+
     // will add sootclasses that are referenced by the method into cm.
     // Avoid java.lang.Character.<clinit>
     //if ((method.getSignature().equals("java.lang.Character.<clinit>():void")))
@@ -338,6 +350,41 @@ public class Jimplifier{
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
