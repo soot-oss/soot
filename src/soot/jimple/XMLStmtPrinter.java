@@ -32,8 +32,10 @@ package soot.jimple;
 import soot.tagkit.*;
 import soot.*;
 import java.util.*;
-import soot.util.*;import soot.toolkits.graph.*;
+import soot.util.*;
+import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
+import soot.jimple.toolkits.invoke.*;
 
 /** This class implements the <code>printStatementsInBody</code> method,
   * which writes out a JimpleBody to a PrintWriter. */
@@ -121,7 +123,36 @@ public class XMLStmtPrinter implements StmtPrinter{
 	Vector paramData = new Vector();		        
 	Vector xmlLabelsList = new Vector();        
 	long maxStmtCount = 0;		
-	
+
+	// for invokes, add a list of potential targets
+	if( !Scene.v().hasActiveInvokeGraph() )
+	{
+	    InvokeGraphBuilder.v().transform( "jil.igb" );
+	}
+
+	// build an invoke graph based on class hiearchy analysis
+	InvokeGraph igCHA = Scene.v().getActiveInvokeGraph();
+	    
+	// build an invoke graph based on variable type analysis
+	InvokeGraph igVTA = Scene.v().getActiveInvokeGraph();
+	try
+	{
+	    VariableTypeAnalysis vta = null;
+	    int VTApasses = 1; //Options.getInt( Scene.v().getPhaseOptions( "jil.igb" ), "VTA-passes" );
+	    for( int i = 0; i < VTApasses; i++ )
+	    {                     
+		vta = new VariableTypeAnalysis( igVTA );
+		vta.trimActiveInvokeGraph();
+		igVTA.refreshReachableMethods();
+	    }
+	}
+	catch( RuntimeException re ) 
+	{
+	    // this will fail if the --analyze-context flag is not specified
+	    // System.out.println( "JIL VTA FAILED: " + re );
+	    igVTA = null;
+	}
+    
         // add method node
         XMLNode methodNode = xmlNode.addChild( "method", new String[] { "name", "returntype", "class" }, new String[] { cleanMethodName, body.getMethod().getReturnType().toString(), body.getMethod().getDeclaringClass().getName().toString() } );
 	String declarationStr = body.getMethod().getDeclaration().toString().trim();
@@ -142,6 +173,7 @@ public class XMLStmtPrinter implements StmtPrinter{
 	{   
             previousStmt = currentStmt;
             currentStmt = ( Unit )unitIt.next();
+	    Stmt stmtCurrentStmt = ( Stmt )currentStmt;
             
             // new label								
             if( stmtToName.containsKey( currentStmt ) )
@@ -241,26 +273,53 @@ public class XMLStmtPrinter implements StmtPrinter{
                     }
                 }
             }
-			
-            /*			
-            // TODO: figure out what these are 'pointing' to
-            List boxesIn = currentStmt.getBoxesPointingToThis();
-            Object[] boxes = boxesIn.toArray();
-            for( j = 0; j < boxes.length; j++ )
-            {
-                UnitBox box = ( UnitBox )boxes[ j ];
-                Unit tempStmt = ( Unit )box.getUnit();
-                xmlStatements += "        <in id=\"" + j + "\"><![CDATA[" + tempStmt.toString( stmtToName, indent ).trim() + ";]]></in>\n";
-                //List tags = tempStmt.getTags();
-                for( int k = 0; k < tags.size(); k++ )
-                {
-                    Tag currentTag = ( Tag )tags.get( k );
-                    xmlStatements += "        <tag name=\"" + currentTag.getName() + "\">" + currentTag.getValue() + "</tag>\n";
-                }				
-            }
-            */
+ 	
+	    // for invokes, add a list of potential targets
+ 	    if( stmtCurrentStmt.containsInvokeExpr() )
+	    {
+		// default analysis is CHA
+		if( igCHA != null )
+		{
+		    try
+		    {
+			List targets = igCHA.getTargetsOf( stmtCurrentStmt );
+			XMLNode CHAinvoketargetsNode = sootstmtNode.addChild( "invoketargets", new String[] { "analysis", "count" }, new String[] { "CHA", targets.size()+"" } );
+			for( int i = 0; i < targets.size(); i++ )
+			{
+			    SootMethod meth = ( SootMethod )targets.get( i );              
+			    CHAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i+"", meth.getDeclaringClass().getFullName(), cleanMethod( meth.getName() ) } );
+			}
+		    }
+		    catch( RuntimeException re )
+		    {
+			//System.out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+		    }
+		}
 
-			
+		// now try VTA, which will only work if the -a or --analyze-context switch is specified
+		if( igVTA != null )
+		{
+		    InvokeExpr ie = ( InvokeExpr )stmtCurrentStmt.getInvokeExpr();
+		    if( !( ie instanceof StaticInvokeExpr ) && !( ie instanceof SpecialInvokeExpr ) )
+		    {
+			try
+			{
+			    List targets = igVTA.getTargetsOf( stmtCurrentStmt );
+			    XMLNode VTAinvoketargetsNode = sootstmtNode.addChild( "invoketargets", new String[] { "analysis", "count" }, new String[] { "VTA", targets.size()+"" } );
+			    for( int i = 0; i < targets.size(); i++ )
+			    {
+				SootMethod meth = ( SootMethod )targets.get( i );              
+				VTAinvoketargetsNode.addChild( "target", new String[] { "id", "class", "method" }, new String[] { i+"", meth.getDeclaringClass().getFullName(), cleanMethod( meth.getName() ) } );
+			    }              
+			}
+			catch( RuntimeException re ) 
+			{
+			    //System.out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+			}
+		    }
+		}
+	    }
+
             // simple live locals            
             List liveLocalsIn = sll.getLiveLocalsBefore( currentStmt );
             List liveLocalsOut = sll.getLiveLocalsAfter( currentStmt );
@@ -483,6 +542,8 @@ public class XMLStmtPrinter implements StmtPrinter{
         }
         		
         exceptionsNode.addAttribute( "count", exceptionsNode.getNumberOfChildren()+"" );
+
+	Scene.v().releaseActiveInvokeGraph();
 
 	return;
     }

@@ -306,9 +306,12 @@ public class VariableTypeAnalysis
         VTAFinish = new Date();
 
         long runtime = VTAFinish.getTime() - VTAStart.getTime();
-        System.out.println("[vta] VTA has run for "+(runtime/60000)+" min. "+
-                           ((runtime%60000)/1000)+" sec.");
-        System.out.println();
+        
+	if (Main.isVerbose) {
+	    System.out.println("[vta] VTA has run for "+(runtime/60000)+" min. "+
+			       ((runtime%60000)/1000)+" sec.");
+	    System.out.println();
+	}
     }
 
     // You can also ask about the reaching types for any variable.

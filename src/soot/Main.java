@@ -57,7 +57,11 @@ import gnu.getopt.*;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main implements Runnable
-{        
+{   
+    // TODO: the following string should be updated by the source control
+    //   $Format: "            public static final String versionString = "1.2.3 (build $ProjectVersion$)\");"$
+            public static final String versionString = 
+
     public Date start;
     public Date finish;
 
@@ -691,7 +695,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.3 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.3 (build 1.2.3.dev.4)");
+            System.out.println("Soot version 1.2.3 (build 1.2.3.dev.5)");
 	System.out.println("Copyright (C) 1997-2003 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1493,6 +1497,10 @@ public class Main implements Runnable
 
 
     private static String[] cmdLineArgs;
+    public static String[] getCmdLineArgs()
+    {
+	return cmdLineArgs;
+    }
     public static void setCmdLineArgs(String[] args)
     {
         cmdLineArgs = args;
