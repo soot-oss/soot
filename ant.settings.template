@@ -6,7 +6,7 @@ jasmin.jar=${user.home}/jasminclasses-sable-1.2.jar
 
 ## Location of Eclipse installation.
 ## This should have a directory called plugins in it.
-eclipse.loc=${user.home}/eclipse
+eclipse.loc=/usr/share/eclipse
 
 ## Version of Soot for tagging tarballs.
 soot.version=2.1.0-custom

@@ -62,6 +62,7 @@
     <delete quiet="true">
         <fileset dir="classes" includes="**/*.class" />
         <fileset dir="testclasses" includes="**/*.class" />
+        <fileset dir="eclipse/ca.mcgill.sable.soot/classes" includes="**/*.class" />
     </delete>
     </target>
 
