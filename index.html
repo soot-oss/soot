@@ -18,7 +18,8 @@
 <a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
 <a href="#svn"><font face="helvetica,arial" size="+0">Repository Access</font></a><br>
 <a href="#eclipse"><font face="helvetica,arial" size="+0">Eclipse Plugin</font></a><br>
-<a href="/sootbugs"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
+<a href="http://svn.sable.mcgill.ca/bugzilla"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
+<a href="http://svn.sable.mcgill.ca/wiki/index.php/SootProject"><font face="helvetica,arial" size="+0">Soot Wiki</font></a><br>
 <a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
 <a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
 <a href="#documentation"><font face="helvetica,arial" size="+0">Documentation</font></a><br>
@@ -87,10 +88,8 @@ License</a>.
 <p>The Soot Framework is an evolving research project. Our goal is to produce a
 robust, easy-to-use research framework for optimizing Java bytecode.  
 
-<!-- Release 2.1 --> <p>
-The latest release is version 2.1. The major new feature since 2.0.1 is the
-Java-to-Jimple compiler. Also, this version contains significant improvements
-to the Eclipse plugin, Shimple, and Spark, as well as general Soot bug fixes.
+<!-- Release 2.2 --> <p>
+The latest release is version 2.2. The new features since 2.1 are described in  detail here: <a href="new_features.html">new features</a>.
 
 <!-- Release 2.0.1  <p>
 The latest release is version 2.0.1, 
@@ -98,9 +97,9 @@ which contains only bug fixes and minor tweaks since version 2.0.
 -->
 
 <!-- Release 2.0 --> <p>
-The 2.0 version number indicates that some things may have changed, and
+<!--The 2.0 version number indicates that some things may have changed, and
 code written to work with earlier versions of Soot may need some
-tweaking, but such changes should be minor.
+tweaking, but such changes should be minor.-->
 
 <!-- Release 1.2.5  <p>
 The latest release is version 1.2.5. This release contains mainly bug fixes
@@ -206,9 +205,13 @@ version provides a "clean" copy of only the Soot files themselves.</p>
 
 <p>In order to compile Soot from source, you will also need a copy of
 the Jasmin and Polyglot classes, available from the
-<a href="http://www.sable.mcgill.ca/software/">download page</a>.</p>
+<a href="soot_download.html">download page</a>.</p>
 
-<br><p>
+<p>From time to time we update Jasmin. If something Jasmin related seems broken you may need to get the latest Jasmin from the subversion repository:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt></p>
+
+<!--<br><p>
 If you use the development version of Soot checked out from Subversion,
 you will need the <a href="http://www.sable.mcgill.ca/jedd">Jedd</a>
 runtime library to compile it. For your convenience, a precompiled
@@ -216,7 +219,7 @@ jar file of the Jedd 0.2 runtime library is
 available for download:<br>
 <b><a href="http://www.sable.mcgill.ca/software/jedd-runtime-0.2.jar">jedd-runtime-0.2.jar</a></b>
 </p>
-<br>
+<br>-->
 
 
 <p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
@@ -235,6 +238,8 @@ Since version 2.0, Soot includes a <a href="eclipse/index.html">plugin</a> that 
 possible to use Soot from <a href="http://www.eclipse.org">Eclipse</a>.
 We have a separate <a href="eclipse/index.html">web page with instructions for
 installing and using the plugin.</a>
+<br>
+<p> You may also want to develop Soot within the Eclipse environment. Instructions for setting up Soot within Eclipse can be found here: <a href="soot_in_eclipse_howto.html">Setting Up Soot in Eclipse</a>.</p>
 </blockquote>
 
 <br>
@@ -253,8 +258,8 @@ href="http://www.sable.mcgill.ca/software">http://www.sable.mcgill.ca/software</
 
 <p>
 To install it you must unjar(untar) it, and add the classes directory
-<tt>soot-2.1/soot/classes</tt> to your CLASSPATH. The Jasmin and Polyglot
-classes jar files must also be added to your CLASSPATH.
+<tt>soot-2.2.0/soot/classes</tt> to your CLASSPATH. The Jasmin and Polyglot
+classes jar files, or classes directories, must also be added to your CLASSPATH.
 
 To test your installation of Soot, try:
 
@@ -266,8 +271,9 @@ java soot.Main --help
 <p>for some options on processing classfiles.  They are documented in more detail in the
 <a href="tutorial/usage">usage document</a>.<p>
 
-Note that Soot requires at least JDK 1.2 (Java 2), as it uses Java Collections.
+Note that Soot requires at least JDK 1.3.
 The Eclipse plugin requires at least JDK 1.4.
+Soot does not yet support JDK 1.5. 
 <!-- old story
 We have experienced some problems with the sunwjit JIT compiler; we do
 not recommend the use of this JIT.  In particular, common subexpression 
@@ -285,11 +291,12 @@ elimination has triggered JIT problems with sunwjit.
 </table>
 <blockquote>
 
-Soot is already compiled in the distribution. To recompile Soot, we
-use <tt>gmake</tt>(GNU make) using the <tt>Makefile</tt> in the main
+Soot, Jasmin and Polyglot are already compiled in the distribution. Ant build files are included in the main directories of each of the three. To recompile Soot, Jasmin or Polyglot use the <tt>ant</tt> command.
+
+<!--using the <tt>build.xml</tt>file in the main
 <tt>soot</tt> directory. Jasmin must be in your <tt>classpath</tt>
-to compile Soot. Jasmin can be recompiled by using the script <tt>./bin/compile_all.sh</tt> 
-in the main Jasmin directory (you may need to type <tt>sh ./bin/compile_all.sh</tt>). 
+to compile Soot. Jasmin can be recompiled by using <tt>ant</tt> with the <tt>build.xml</tt>  provided
+in the main Jasmin directory (you may need to type <tt>sh ./bin/compile_all.sh</tt>). -->
 
 <!-- 1.2.2
 Soot is already compiled in the distribution.  To recompile Soot, 
@@ -306,14 +313,14 @@ It may be tricky to compile both Soot and jasmin at the same time
 because of dependences. An easy way is to use the compiled jasmin
 when compiling Soot. 
 -->
-<p>
+<!--<p>
 NOTE: The Jimple parser is generated by <a href="http://www.sable.mcgill.ca/sablecc">SableCC</a>.
 It requires <tt>lexer.dat</tt> and <tt>parser.dat</tt> files to be in the classes directory;
 they are provided in the src directory. Also, Soot uses peephole optimization to improve the
 generated bytecode. This requires that the <tt>peephole.dat</tt> file be copied to 
 the classes directory.  The provided <tt>Makefile</tt>
 automatically copies these files as needed.
-
+-->
 <p>
 <!--If you have jams correctly set up, the `foo' target will copy these <tt>.dat</tt>
 files from the src/ directory to the classes/ directory. Use the command 
@@ -392,11 +399,12 @@ in the body.
 
 <blockquote>
  
-The official Soot maintainers are 
+<!--The official Soot maintainers are 
 <!-- Raja Vallee-Rai, -->
 Patrick Lam,
 Feng Qian, and
-Ond&#345;ej Lhot&aacute;k.  For Soot support, write to the Soot mailing list at
+Ond&#345;ej Lhot&aacute;k.-->  
+For Soot support, write to the Soot mailing list at
 <A href="mailto:soot-list@sable.mcgill.ca">soot-list@sable.mcgill.ca</A>.
 
 <br>

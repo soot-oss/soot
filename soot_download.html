@@ -1,0 +1,334 @@
+<html><head><title>Sable Research Group</title></head>
+<body link="#0000cc" bgcolor="#f3f3f3" text="#000000" background="_files/background6.gif">
+
+<table cellspacing="3" cellpadding="0" border="0">
+
+<tbody><tr>
+
+<!--LeftHandTable-->
+
+<td width="160" rowspace="1" valign="top" align="left">
+
+<p>
+<p><font face="helvetica,arial" size="+1"><b>Soot Downloads</b></font>
+
+<p>
+<a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
+<a href="#svn"><font face="helvetica,arial" size="+0">Repository Access</font></a><br>
+<a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
+
+<p><a href="http://www.sable.mcgill.ca">Sable Home</a>
+<p><a href="http://www.sable.mcgill.ca/soot">Soot Home</a>
+
+
+<!--ActualContents-->
+
+</p></td><td valign="top" align="left">
+
+<b><a name="top"><font size="+2" face="helvetica,arial"><center>Soot Software</center></font></a></b><br><br>
+
+<!--Soot-->
+
+<a name="introduction"> </a><table width="100%"> <tbody><tr>
+<td align="left" width="97%"><b><font size="+1" face="helvetica,arial">Soot, a Java Bytecode Analysis and Transformation Framework</font></b></td>
+<td align="left" width="3%"><font size="-2"><a href="#notes">back</a></font></td>
+</tr></tbody></table>
+<blockquote>
+<p><b>Summary:</b> <br>
+Soot is a Java bytecode analysis and transformation framework.  
+It provides a Java API for building intermediate representations (IRs), 
+analyses and transformations; also it supports class file annotation.</p><p>
+</blockquote>
+
+<!--Repository access-->
+<a name="svn"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Repository Access</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+<p>We are using <a href="http://subversion.tigris.org/">Subversion</a> for
+revision control.</p>
+
+<p>With a Subversion client, you can obtain a copy of the
+development version of Soot, as well as any old versions. To obtain the
+latest development version of Soot, use one of the following commands:<br>
+<tt>svn checkout https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt><br>
+<tt>svn export https://svn.sable.mcgill.ca/soot/soot/trunk soot-dev</tt></p>
+
+<p>The <tt>checkout</tt> version records additional information required
+to update your checked out version of Soot with the repository at a
+later time (with the <tt>svn update</tt> command). The <tt>export</tt>
+version provides a "clean" copy of only the Soot files themselves.</p>
+
+<p>In order to compile Soot from source, you will also need a copy of
+the Jasmin and Polyglot classes, available from this page. Occasionally,
+Jasmin is updated and it is available in the same subversion repository.
+</p>
+
+<!--<br><p>
+If you use the development version of Soot checked out from Subversion,
+you will need the <a href="http://www.sable.mcgill.ca/jedd">Jedd</a>
+runtime library to compile it. For your convenience, a precompiled
+jar file of the Jedd 0.2 runtime library is 
+available for download:<br>
+<b><a href="http://www.sable.mcgill.ca/software/jedd-runtime-0.2.jar">jedd-runtime-0.2.jar</a></b>
+</p>
+<br>
+-->
+
+<p>You can also browse our latest version of the Soot repository, as well as a ViewCVS history, using
+just a web browser. For further instructions, please see
+<a href="http://svn.sable.mcgill.ca/">http://svn.sable.mcgill.ca/</a>.</p>
+</blockquote>
+
+<a name="svn"> <table width=100%> <tr>
+<td width=97% align=left><b><font face="helvetica,arial" size="+1">Downloads</b></font></td></a>
+<td width=3% align=left><font size="-2"><a href="#top">top</a></td>
+</table>
+
+<blockquote>
+<!--<br><p>
+If you use the development version of Soot checked out from Subversion,
+you will need the <a href="http://www.sable.mcgill.ca/jedd">Jedd</a>
+runtime library to compile it. For your convenience, a precompiled
+jar file of the Jedd 0.2 runtime library is 
+available for download:<br>
+<b><a href="http://www.sable.mcgill.ca/software/jedd-runtime-0.2.jar">jedd-runtime-0.2.jar</a></b>
+</p>
+<br>
+License: GNU Lesser General Public License<br>-->
+
+Version: 2.2.0 <br>
+Date: Dec 15, 2004<br>
+
+</p><p><a href="http://www.sable.mcgill.ca/soot">Visit Soot's home page</a>
+
+<a name="download">
+</p><p><b>Release 2.2.0</b><br>
+
+<table cellpadding="5" border="1">
+
+<tbody><tr><td>
+If you download the full files, you will get the Java source and class
+files for Soot, Jasmin and Polyglot, Soot tutorials, Javadoc
+documentation for Soot, source and
+compiled forms of the Eclipse plugin. This is the easiest way to get
+Soot and we recommend the full download.
+This will unpack into three directories soot-2.2.0, jasmin-2.2.0 and
+polyglot-1.3.
+</td>
+<td><!--empty column--></td>
+<td>
+<b>Complete Package</b><br>
+<a href="http://www.sable.mcgill.ca/software/sootall-2.2.0.jar">sootall-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/sootall-2.2.0.tar.gz">sootall-2.2.0.tar.gz</a>
+</td></tr>
+
+
+<tr><td>
+<p>The following three files are jars containing just the
+<tt>classes</tt> directory from Soot, Jasmin, and Polyglot. They can be
+added to
+one's <tt>CLASSPATH</tt>
+and, from there, executed directly. 
+<!--Use Polyglot 1.1.0 with released
+versions of Soot and 1.2.0 with development versions of Soot checked
+out from Subversion.-->
+</p></td>
+<td></td>
+<td>
+<b>Pre-compiled Jar</b><br>
+<a href="http://www.sable.mcgill.ca/software/sootclasses-2.2.0.jar">sootclasses-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/jasminclasses-2.2.0.jar">jasminclasses-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/polyglotclasses-1.3.jar">polyglotclasses-1.3.jar</a>
+<br>
+</td></tr>
+
+<tr><td>
+<p>This package contains a compiled form of everything needed
+to run the Eclipse Soot plugin. Simply expand this package inside your
+Eclipse plugins directory, and restart Eclipse.
+</p></td>
+<td></td>
+<td>
+<b>Eclipse Plugin Quickstart</b><br>
+<a href="http://www.sable.mcgill.ca/software/soot-eclipse-quickstart-2.2.0.jar">soot-eclipse-quickstart-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-eclipse-quickstart-2.2.0.tar.gz">soot-eclipse-quickstart-2.2.0.tar.gz</a>
+</td></tr>
+
+<tr><td>
+Finally, if you have a slow connection you may want to download
+only the source code for Soot, or Jasmin or Polyglot. From these jars
+you can generate
+the Javadoc and the class files (including the Eclipse plugin),
+using the enclosed instructions.
+</td>
+<td></td>
+<td>
+<b>Soot Source</b><br>
+<a href="http://www.sable.mcgill.ca/software/sootbarebones-2.2.0.jar">sootbarebones-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/sootbarebones-2.2.0.tar.gz">sootbarebones-2.2.0.tar.gz</a>
+<br>
+<b>Jasmin Source</b><br>
+<a href="http://www.sable.mcgill.ca/software/jasminbarebones-2.2.0.jar">jasminbarebones-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/jasminbarebones-2.2.0.tar.gz">jasminbarebones-2.2.0.tar.gz</a>
+<br>
+<b>Polyglot Source</b>
+<a href="http://www.sable.mcgill.ca/software/polyglotbarebones-1.3.jar">polyglotbarebones-1.3.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/polyglotbarebones-1.3.tar.gz">polyglotbarebones-1.3.tar.gz</a>
+</td></tr>
+
+<tr><td>
+The tutorials are also available for separate download.  They are
+contained in the full package above.
+</td>
+<td></td>
+<td>
+<b>Tutorials Only</b><br>
+<a href="http://www.sable.mcgill.ca/software/soot-tutorial-2.2.0.jar">soot-tutorial-2.2.0.jar</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-tutorial-2.2.0.tar.gz">soot-tutorial-2.2.0.tar.gz</a>
+</td></tr>
+
+</tbody></table>
+
+
+</p><p><b>Older Releases</b><br>
+
+
+<table width="100%" cellpadding="5" border="0">
+
+<tbody><tr><td>
+Release 2.1.0
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-2.1.0.jar">Download .jar file</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-2.1.0.tar.gz">Download .tar.gz</a>
+</td>
+
+</tr><tr><td>
+Release 2.0.1
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-2.0.1.jar">Download .jar file</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-2.0.1.tar.gz">Download .tar.gz</a>
+</td>
+
+</tr><tr><td>
+Release 2.0
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-2.0.jar">Download .jar file</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-2.0.tar.gz">Download .tar.gz</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.5
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.5.jar">Download .jar file</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.5.tar.gz">Download .tar.gz</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.4
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.4.jar">Download .jar file</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.4.tar.gz">Download .tar.gz</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.3
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.3.jar">Download .jar file (7.9M)</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.3.tar.gz">Download .tar.gz (4.4M)</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.2
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.2.jar">Download .jar file (7.34M)</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.2.tar.gz">Download .tar.gz (4.08M)</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.1
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.1.jar">Download .jar file (7.2M)</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.1.tar.gz">Download .tar.gz (3.9M)</a>
+</td>
+
+</tr><tr><td>
+Release 1.2.0
+</td>
+<td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.0.jar">Download .jar file (7.54M)</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.2.0.tar.gz">Download the .tar.gz (4.11M)</a>
+      
+</td>
+
+</tr><tr><td>
+Release 1.0.0
+</td><td>
+<a href="http://www.sable.mcgill.ca/software/soot-1.0.0.jar">Download .jar file (5.4M)</a>
+<br>
+<a href="http://www.sable.mcgill.ca/software/soot-1.0.0.tar.gz">Download the .tar.gz (2.57M)</a>
+</td>
+
+</tr></tbody></table>
+
+</p></blockquote>
+<br>
+
+<!-- release 1.0.0
+
+Version: 1.0.0 <br>
+Date: March 24, 2000<br>
+
+<p><b>Summary</b> <br>
+Soot is a Java bytecode analysis and transformation framework.  It provides a Java API for building intermediate representations (IRs),
+analyses and transformations.
+                          
+<p><a href="./soot-1.0.0.jar">Download the jar (5.44M)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<a href="./soot-1.0.0.tar.gz">Download the .tar.gz (2.57M)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="../soot">Visit Soot's home page</a>
+
+<p>The following two files are jars containing just the
+<tt>classes</tt> directory from Soot and jasmin.  They can be added to
+one's <tt>CLASSPATH</tt> and, from there, executed directly.
+
+<p><a href="./sootclasses-1.0.0.jar">Download the Soot classes jar (1.20M)</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<a href="./jasminclasses-1.06-s7.jar">Download the Jasmin 1.06s7 classes jar (144K)</a>
+
+</blockquote>
+<br>
+
+release 1.0.0-->
+
+</td>
+</tr>
+</tbody></table>
+</body></html>

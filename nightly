@@ -178,7 +178,7 @@ function buildComplete(){
 function updateNightlyHtml(){
     cd $HOME/autobuild/tmp/soot-$rev;
     sed s/sootall/sootall-$rev/g nightly.html > temp1.html;
-    sed s/sootclasses/sootclasses-$rev/g temp1.html | sed s/jasminclasses/jasminclasses-$rev/g  | sed s/polyglotclasses/polyglotclasses-$polyglotrev/g | sed s/quickstart/soot-eclipse-quickstart-$rev/g | sed s/sootbarebones/sootbarebones-$rev/g | sed s/jasminbarebones/jasminbarebones-$rev/g  | sed s/polyglotbarebones/polyglotbarebones-$polyglotrev/g > nightly.html;
+    sed s/sootclasses/sootclasses-$rev/g temp1.html | sed s/jasminclasses/jasminclasses-$rev/g  | sed s/polyglotclasses/polyglotclasses-$polyglotrev/g | sed s/quickstart/soot-eclipse-quickstart-$rev/g | sed s/sootbarebones/sootsrc-$rev/g | sed s/jasminbarebones/jasminsrc-$rev/g  | sed s/polyglotbarebones/polyglotsrc-$polyglotrev/g > nightly.html;
 
     rm temp1.html;
 

@@ -395,7 +395,10 @@ public class Util {
      * Type handling
      */
     public static soot.Type getSootType(polyglot.types.Type type) {
-		
+
+        if (type == null){
+            throw new RuntimeException("Trying to get soot type for null polyglot type");
+        }
 		soot.Type sootType = null;
 	
 		if (type.isInt()){

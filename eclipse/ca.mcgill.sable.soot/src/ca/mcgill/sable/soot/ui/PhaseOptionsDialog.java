@@ -252,6 +252,8 @@ Composite japjap_rdtaggerChild = japjap_rdtaggerCreate(getPageContainer());
 
 Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
 
+Composite japjap_umtChild = japjap_umtCreate(getPageContainer());
+
 Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
 
 Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
@@ -831,6 +833,12 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleon_fly_cg_widget(), "on-fly-cg");
 
 		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_heap_widget(), "context-heap");
+
+		
+		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprecise_newinstance_widget(), "precise-newinstance");
+
+		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimplify_offline_widget(), "simplify-offline");
 
 		
@@ -1377,6 +1385,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		getjapjap_cheenabled_widget().getButton().addSelectionListener(this);
 		
 		
+		makeNewEnableGroup("jap", "jap.umt");
+		
+		
+		addToEnableGroup("jap", "jap.umt", getjapjap_umtenabled_widget(), "enabled");
+		
+		getjapjap_umtenabled_widget().getButton().addSelectionListener(this);
+		
+		
 		makeNewEnableGroup("gb");
 		
 		
@@ -1664,6 +1680,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getGeneral_Optionswhole_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsvalidate_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsvalidate_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionsdebug_widget().getButton().getSelection();
 		
 		
@@ -1713,6 +1739,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsuse_old_type_assigner_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsuse_old_type_assigner_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
 		
 		defStringRes = "";
@@ -1730,6 +1766,15 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
+		
+		stringRes = getInput_Optionsmain_class_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsmain_class_widget().getAlias(), stringRes);
+		}
 		 
 		stringRes = getInput_Optionssrc_prec_widget().getSelectedAlias();
 
@@ -1739,6 +1784,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getInput_Optionssrc_prec_widget().getAlias(), stringRes);
+		}
+		
+		boolRes = getOutput_Optionsoutput_jar_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsoutput_jar_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
@@ -2361,7 +2416,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getcgsafe_forname_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -2371,7 +2426,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getcgsafe_newinstance_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -2955,6 +3010,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleon_fly_cg_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddlecontext_heap_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddlecontext_heap_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_paddleprecise_newinstance_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_paddleprecise_newinstance_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_paddlesimplify_offline_widget().getButton().getSelection();
@@ -3931,6 +4006,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_cheenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjapjap_umtenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjapjap_umtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getgbenabled_widget().getButton().getSelection();
@@ -5116,6 +5201,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_che_branch;
 			
 			
+			SootOption jap_jap_umt_branch = new SootOption("Unreachable Method Transformer", "japjap_umt");
+			subParent.addChild(jap_jap_umt_branch);
+
+
+			
+
+			
+			subSectParent = jap_jap_umt_branch;
+			
+			
 			//Grimp Body Creation
 			SootOption gb_branch = new SootOption("Grimp Body Creation", "gb");
 			parent.addChild(gb_branch);
@@ -5376,6 +5471,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return General_Optionswhole_shimple_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsvalidate_widget;
+	
+	private void setGeneral_Optionsvalidate_widget(BooleanOptionWidget widget) {
+		General_Optionsvalidate_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsvalidate_widget() {
+		return General_Optionsvalidate_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsdebug_widget;
 	
 	private void setGeneral_Optionsdebug_widget(BooleanOptionWidget widget) {
@@ -5428,6 +5533,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Input_Optionsallow_phantom_refs_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsuse_old_type_assigner_widget;
+	
+	private void setInput_Optionsuse_old_type_assigner_widget(BooleanOptionWidget widget) {
+		Input_Optionsuse_old_type_assigner_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsuse_old_type_assigner_widget() {
+		return Input_Optionsuse_old_type_assigner_widget;
+	}	
+	
 
 	private ListOptionWidget Input_Optionsprocess_dir_widget;
 	
@@ -5453,6 +5568,18 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	
 	
+	private StringOptionWidget Input_Optionsmain_class_widget;
+	
+	private void setInput_Optionsmain_class_widget(StringOptionWidget widget) {
+		Input_Optionsmain_class_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsmain_class_widget() {
+		return Input_Optionsmain_class_widget;
+	}
+	
+	
+	
 	private MultiOptionWidget Input_Optionssrc_prec_widget;
 	
 	private void setInput_Optionssrc_prec_widget(MultiOptionWidget widget) {
@@ -5463,6 +5590,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return Input_Optionssrc_prec_widget;
 	}	
 	
+	
+	private BooleanOptionWidget Output_Optionsoutput_jar_widget;
+	
+	private void setOutput_Optionsoutput_jar_widget(BooleanOptionWidget widget) {
+		Output_Optionsoutput_jar_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsoutput_jar_widget() {
+		return Output_Optionsoutput_jar_widget;
+	}	
 	
 	private BooleanOptionWidget Output_Optionsxml_attributes_widget;
 	
@@ -6708,6 +6845,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgcg_paddleon_fly_cg_widget;
 	}	
 	
+	private BooleanOptionWidget cgcg_paddlecontext_heap_widget;
+	
+	private void setcgcg_paddlecontext_heap_widget(BooleanOptionWidget widget) {
+		cgcg_paddlecontext_heap_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddlecontext_heap_widget() {
+		return cgcg_paddlecontext_heap_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_paddleprecise_newinstance_widget;
+	
+	private void setcgcg_paddleprecise_newinstance_widget(BooleanOptionWidget widget) {
+		cgcg_paddleprecise_newinstance_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_paddleprecise_newinstance_widget() {
+		return cgcg_paddleprecise_newinstance_widget;
+	}	
+	
 	private BooleanOptionWidget cgcg_paddlesimplify_offline_widget;
 	
 	private void setcgcg_paddlesimplify_offline_widget(BooleanOptionWidget widget) {
@@ -7712,6 +7869,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return japjap_cheenabled_widget;
 	}	
 	
+	private BooleanOptionWidget japjap_umtenabled_widget;
+	
+	private void setjapjap_umtenabled_widget(BooleanOptionWidget widget) {
+		japjap_umtenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjapjap_umtenabled_widget() {
+		return japjap_umtenabled_widget;
+	}	
+	
 	private BooleanOptionWidget gbenabled_widget;
 	
 	private void setgbenabled_widget(BooleanOptionWidget widget) {
@@ -8275,6 +8442,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"validate";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsvalidate_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Validate", "", "","validate", "\nCauses internal checks to be done on bodies in the various Soot \nIRs, to make sure the transformations have not done something \nstrange. This option may degrade Soot's performance. ", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"debug";
 		defKey = defKey.trim();
 
@@ -8384,6 +8567,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		
 		
+		defKey = ""+" "+""+" "+"use-old-type-assigner";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsuse_old_type_assigner_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use old Type Assigner ", "", "","use-old-type-assigner", "\nDisable the reimplemented type assigner. This uses improved \ndata structures to provide a significant performance benefit, \nbut has not yet been thoroughly tested. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Class File",
@@ -8449,6 +8648,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
 		
+		
+		defKey = ""+" "+""+" "+"main-class";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class mentioned on the command-line is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default. ", defaultString)));
+		
 
 		
 		return editGroupInput_Options;
@@ -8477,6 +8691,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"outjar";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved. ", defaultBool)));
 		
 		
 		
@@ -10441,7 +10671,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
@@ -10457,7 +10687,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
@@ -11893,6 +12123,38 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgcg_paddleon_fly_cg_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.paddle","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"context-heap";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.paddle"+" "+"precise-newinstance";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_paddleprecise_newinstance_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Precise newInstance", "p", "cg.paddle","precise-newinstance", "\nNormally, newInstance() calls are treated as if they may \nreturn an object of any type. Setting this option to true \ncauses them to be treated as if they return only objects of \nthe type of some dynamic class. ", defaultBool)));
 		
 		
 
@@ -15080,6 +15342,52 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		
 		return editGroupjapjap_che;
+	}
+
+
+
+	private Composite japjap_umtCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjapjap_umt = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjapjap_umt.setLayout(layout);
+	
+	 	editGroupjapjap_umt.setText("Unreachable Method Transformer");
+	 	
+		editGroupjapjap_umt.setData("id", "japjap_umt");
+		
+		String descjapjap_umt = "Inserts assertions into unreachable methods";	
+		if (descjapjap_umt.length() > 0) {
+			Label descLabeljapjap_umt = new Label(editGroupjapjap_umt, SWT.WRAP);
+			descLabeljapjap_umt.setText(descjapjap_umt);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jap.umt"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjapjap_umtenabled_widget(new BooleanOptionWidget(editGroupjapjap_umt, SWT.NONE, new OptionData("Enabled", "p", "jap.umt","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjapjap_umt;
 	}
 
 

@@ -153,14 +153,14 @@
         </junit>
     </target>
 
-    <target name="release" depends="barebones,settings">
+    <target name="release" depends="barebones,quickstart,settings">
     </target>
 
     <target name="barebones" depends="clean,options,sablecc,settings">
-        <tar destfile="${release.loc}/soot-${soot.version}-barebones.tar.gz" compression="gzip" longfile="gnu">
+        <tar destfile="${release.loc}/sootsrc-${soot.version}.tar.gz" compression="gzip" longfile="gnu">
             <tarfileset dir="."/>
         </tar>
-        <jar destfile="${release.loc}/soot-${soot.version}-barebones.jar">
+        <jar destfile="${release.loc}/sootsrc-${soot.version}.jar">
             <fileset dir="."/>
         </jar>
     </target>

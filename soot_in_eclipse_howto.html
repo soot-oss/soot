@@ -1,0 +1,124 @@
+<html><head><title>Developing With Soot in Eclipse</title></head>
+<body background="background6.gif" TEXT="#000000" BGCOLOR="#F3F3F3" LINK="#0000CC">
+
+<table cellspacing="3" cellpadding="0" border="0">
+
+<tbody><tr>
+
+<!--LeftHandTable-->
+
+<td width="160" rowspace="1" valign="top" align="left">
+
+<p>
+<p><font face="helvetica,arial" size="+1"><b>Soot Home</b></font>
+
+<p>
+<a href="#introduction"><font face="helvetica,arial" size="+0">Introduction</font></a><br>
+<a href="#status"><font face="helvetica,arial" size="+0">Release Status</font></a><br>
+<a href="#svn"><font face="helvetica,arial" size="+0">Repository Access</font></a><br>
+<a href="#eclipse"><font face="helvetica,arial" size="+0">Eclipse Plugin</font></a><br>
+<a href="/sootbugs"><font face="helvetica,arial" size="+0">Soot Bug Tracking</font></a><br>
+<a href="#download"><font face="helvetica,arial" size="+0">Download</font></a><br>
+<a href="#compilation"><font face="helvetica,arial" size="+0">Compilation</font></a><br>
+<a href="#documentation"><font face="helvetica,arial" size="+0">Documentation</font></a><br>
+<a href="#mailingLists"><font face="helvetica,arial" size="+0">Mailing List</font></a><br>
+<a href="#credits"><font face="helvetica,arial" size="+0">Credits</font></a><br>
+<a href="#users"><font face="helvetica,arial" size="+0">Soot Users</font></a><br>
+
+<p><a href="http://www.sable.mcgill.ca">Sable Home</a>
+
+
+<!--ActualContents-->
+
+</p></td><td valign="top" align="left">
+
+
+<h4>Developing With Soot in Eclipse</h4>
+
+<h5>Step 1: Creating a Project</h5>
+<ul>
+<li>Start Eclipse
+<li>Select <tt>File </tt>-- <tt>New</tt> -- <tt>Project</tt>
+<li>Select <tt>Java</tt> and <tt>Java Project</tt>
+<li>Click <tt>Next</tt>
+<br><br>
+<li>Give a name to the project
+<li>Click <tt>Next</tt>
+<li>Click <tt>Finish</tt>
+</ul>
+<p>You should now have an empty project.</p>
+
+<h5>Step 2: Importing the Soot Source Files</h5>
+<ul>
+<li>Right click on your project and select <tt>Import</tt>
+<li>Select <tt>File System</tt>
+<li>Click <tt>Next</tt>
+<li>Use <tt>Browse</tt> to find your Soot source files
+<li>Select the Soot package root directory to import
+<li>Click <tt>Finish</tt>
+</ul>
+<p>You should now have the regular Soot source files in a src directory in your project.</p>
+
+<p>You also need to import the generated src files. Make sure you have these
+built first. (They come built - but if you used ant veryclean at some point you may have deleted them.)</p>
+
+<ul>
+<li>Right click on your project and select <tt>Import</tt>
+<li>Select <tt>File System</tt>
+<li>Click <tt>Next</tt>
+<li>Use browse to find the generated Soot sources directories.
+<li>Select the generated/options generated/singletons and generated/sablecc directories.
+<li>Click <tt>Finish</tt>
+</ul>
+
+<h5>Step 3: Making Eclipse Recognize Source Files</h5>
+
+<p>Now you need to make Eclipse recognize these directories as src directories.</p>
+
+<ul>
+<li>Right click on your project
+<li>Select <tt>Properties</tt>
+<li>From the tree on the right select <tt>Java Build Path</tt>
+<li>Pick the <tt>Source</tt> tab
+<li>Select <tt>Add Folder</tt>
+<li>Select your project src folder
+<li>Click <tt>Ok</tt>
+<li>Repeat for each of the generated folders
+</ul>
+
+<h5>Step 4: Adding libraries needed by Soot</h5>
+<p>Now you need to add the Jasmin and Polyglot and Ant libraries to your project.</p>
+
+<ul>
+<li>Right click on your project
+<li>Select <tt>Properties</tt>
+<li>From the tree on the right select <tt>Java Build Path</tt>
+<li>Select the <tt>Libraries</tt> tab
+<li>Select <tt>Add External Jars</tt> 
+<li>Use the dialog to select your jasminclasses.jar file
+<li>Click <tt>OK</tt>
+<li>Repeat for your polyglotclasses.jar file and ant.jar file
+<li>Click <tt>OK</tt> again
+</ul>
+
+<h5>Step 5: Building your project</h5>
+
+<ul>
+<li>Select your project
+<li>Select <tt>Project</tt> -- <tt>Build Project</tt>
+</ul>
+
+<p>Your project should compile with no problems but there will be lots
+of warnings. You can ignore these. They are mostly for unused imports.</p>
+
+<h5>Step 6: Running your project</h5>
+<ul>
+<li>Select <tt>Run</tt> -- <tt>Run ...</tt> or <tt>Debug ...</tt>
+<li>Select <tt>Java Application</tt>
+<li>Select <tt>New</tt>
+<li>Use search to find the main class to run
+<li>Set arguments under the <tt>Argument</tt> tab
+</ul>
+
+</td></tr></tbody></table>
+</body></html>

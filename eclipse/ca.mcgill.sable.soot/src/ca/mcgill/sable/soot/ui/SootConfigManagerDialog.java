@@ -109,6 +109,7 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	
 	public SootConfigManagerDialog(Shell parentShell) {
 		super(parentShell);
+		this.setShellStyle(SWT.RESIZE);
 	}
 	
 	protected void configureShell(Shell shell){

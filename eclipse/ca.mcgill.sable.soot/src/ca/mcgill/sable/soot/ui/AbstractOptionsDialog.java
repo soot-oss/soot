@@ -75,6 +75,7 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	 */
 	public AbstractOptionsDialog(Shell parentShell) {
 		super(parentShell);
+		this.setShellStyle(SWT.RESIZE);
 	}
 
 	public void addToEclipseDefList(String key, Object val) {
