@@ -412,7 +412,7 @@ public class JimpleBodyBuilder {
      * Stmt creation
      */
     private void createStmt(polyglot.ast.Stmt stmt) {
-        //System.out.println("Stmt: "+stmt);
+        //System.out.println("Stmt: "+stmt+" type: "+stmt.getClass());
         if (stmt instanceof polyglot.ast.Eval) {
             //System.out.println("Eval: "+((polyglot.ast.Eval)stmt).expr().getClass());
 			createExpr(((polyglot.ast.Eval)stmt).expr());  
@@ -715,6 +715,7 @@ public class JimpleBodyBuilder {
                 rhs = handleCondBinExpr((soot.jimple.ConditionExpr)rhs);
             }
 		    soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(lhs, rhs);
+            //System.out.println("created localdecl assign: "+stmt);
             body.getUnits().add(stmt);
             Util.addLineTag(stmt, localDecl);
             Util.addLnPosTags(stmt, localDecl.position()); 
@@ -1413,7 +1414,7 @@ public class JimpleBodyBuilder {
      * Expression Creation
      */
     private soot.Value createExpr(polyglot.ast.Expr expr){
-        //System.out.println("Expr at start of createExpr: "+expr);
+        //System.out.println("Expr: "+expr+" type: "+expr.getClass());
         if (expr instanceof polyglot.ast.Assign) {
             return getAssignLocal((polyglot.ast.Assign)expr);
         }
@@ -1472,6 +1473,7 @@ public class JimpleBodyBuilder {
     private soot.Value getAssignLocal(polyglot.ast.Assign assign) {
         
         soot.jimple.AssignStmt stmt;
+        //System.out.println("assign type: "+assign.type());
           
         soot.Value left = createLHS(assign.left());
         soot.Value right = createExpr(assign.right());
@@ -1504,12 +1506,13 @@ public class JimpleBodyBuilder {
            
             // handle special case of string concatenation here -->
             // not a binary add 
-            if (((leftLocal instanceof soot.jimple.StringConstant) || (right instanceof soot.jimple.StringConstant)) || ((leftLocal.getType().toString().equals("java.lang.String")) || (right.getType().toString().equals("java.lang.String")))){
-                soot.Value rValue = getStringConcatLocal(leftLocal, right);
+            if (assign.type().toString().equals("java.lang.String")){
+            //if (((leftLocal instanceof soot.jimple.StringConstant) || (right instanceof soot.jimple.StringConstant)) || ((leftLocal.getType().toString().equals("java.lang.String")) || (right.getType().toString().equals("java.lang.String")))){
+                soot.Value rValue = getStringConcatLocal(assign);
+                //soot.Value rValue = getStringConcatLocal(leftLocal, right);
                 stmt = soot.jimple.Jimple.v().newAssignStmt(leftLocal, rValue);
                 body.getUnits().add(stmt);
                 Util.addLnPosTags(stmt, assign.position());
-                
             }
             // binary add assign
             else {
@@ -1867,6 +1870,13 @@ public class JimpleBodyBuilder {
         if (binary.operator() == polyglot.ast.Binary.COND_OR) {
             return createCondOr(binary);
         }
+
+        if (binary.type().toString().equals("java.lang.String")){
+            return getStringConcatLocal(binary);
+        }
+        
+        //System.out.println("binary: "+binary);
+        //System.out.println("binary type: "+binary.type());
         soot.Value lVal = createExpr(binary.left());
         soot.Value rVal = createExpr(binary.right());
 
@@ -1925,14 +1935,15 @@ public class JimpleBodyBuilder {
             rVal = handleCondBinExpr((soot.jimple.ConditionExpr)rVal);
         }
         if (operator == polyglot.ast.Binary.ADD){
-            
+           
+            //System.out.println("bin add: left: "+lVal+" and right: "+rVal); 
             // this is not a jimple add expr its a string concat
-            if (((lVal instanceof soot.jimple.StringConstant) || (rVal instanceof soot.jimple.StringConstant)) || ((lVal.getType().toString().equals("java.lang.String")) || (rVal.getType().toString().equals("java.lang.String")))){
-               rValue = getStringConcatLocal(lVal, rVal);
-            }
-		    else {	
+            //if (((lVal instanceof soot.jimple.StringConstant) || (rVal instanceof soot.jimple.StringConstant)) || ((lVal.getType().toString().equals("java.lang.String")) || (rVal.getType().toString().equals("java.lang.String")))){
+            //   rValue = getStringConcatLocal(lVal, rVal);
+            //}
+		    //else {	
 			    rValue = soot.jimple.Jimple.v().newAddExpr(lVal, rVal);
-            }
+            //}
 		}
 		else if (operator == polyglot.ast.Binary.SUB){
 			rValue = soot.jimple.Jimple.v().newSubExpr(lVal, rVal);
@@ -2249,24 +2260,50 @@ public class JimpleBodyBuilder {
     /**
      * Creates a local with all parts of the string
      */
-    private soot.Local getStringConcatLocal(soot.Value lVal, soot.Value rVal) {
-   
+    //private soot.Local getStringConcatLocal(soot.Value lVal, soot.Value rVal) {
+    private soot.Local getStringConcatLocal(polyglot.ast.Expr expr) {
+  
+        polyglot.ast.Expr left = null;
+        polyglot.ast.Expr right = null;
+        
+        if (expr instanceof polyglot.ast.Binary){
+            left = ((polyglot.ast.Binary)expr).left();
+            right = ((polyglot.ast.Binary)expr).right();
+        }
+        else {
+            left = ((polyglot.ast.Assign)expr).left();
+            right = ((polyglot.ast.Assign)expr).right();
+        }
+        
+        // create and add one string buffer 
         soot.Local local = lg.generateLocal(soot.RefType.v("java.lang.StringBuffer"));
         soot.jimple.NewExpr newExpr = soot.jimple.Jimple.v().newNewExpr(soot.RefType.v("java.lang.StringBuffer"));
         soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(local, newExpr);
         
         body.getUnits().add(assign);
+        Util.addLnPosTags(assign, expr.position());
+        
         soot.SootClass classToInvoke1 = soot.Scene.v().getSootClass("java.lang.StringBuffer");
         soot.SootMethod methodToInvoke1 = getMethodFromClass(classToInvoke1, "<init>", new ArrayList(), soot.VoidType.v()); 
         
         soot.jimple.SpecialInvokeExpr invoke = soot.jimple.Jimple.v().newSpecialInvokeExpr(local, methodToInvoke1);
             
-        body.getUnits().add(soot.jimple.Jimple.v().newInvokeStmt(invoke));
-
-
+        soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
+        body.getUnits().add(invokeStmt);
+        Util.addLnPosTags(invokeStmt, expr.position());
+        
+        // generate append list for entire left and right exprs
+        HashMap appendList = generateAppendList(left, right);
+        
+        // append
+        Iterator it = appendList.keySet().iterator();
+        while (it.hasNext()){
+            Object next = it.next();
+            local = generateAppendStmts((soot.Value)next, local, (polyglot.ast.Expr)appendList.get(next));
+        }
         // generate appends for left and right
-        local = generateAppendStmts(lVal, local);
-        local = generateAppendStmts(rVal, local);
+        //local = generateAppendStmts(lVal, local);
+        //local = generateAppendStmts(rVal, local);
         
         // invoke toString on local (type StringBuffer)
         soot.Local newString = lg.generateLocal(soot.RefType.v("java.lang.String"));
@@ -2278,14 +2315,37 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt lastAssign = soot.jimple.Jimple.v().newAssignStmt(newString, toStringInvoke);
 
         body.getUnits().add(lastAssign);
+        Util.addLnPosTags(lastAssign, expr.position());
         
         return newString; 
     }
 
+    private HashMap generateAppendList(polyglot.ast.Expr left, polyglot.ast.Expr right){
+        HashMap map = new HashMap();
+        if (!left.type().toString().equals("java.lang.String")){
+            map.put(createExpr(left), left);
+        }
+        else if (left instanceof polyglot.ast.Binary){
+            polyglot.ast.Binary tempLeft = (polyglot.ast.Binary)left;
+            if (tempLeft.operator() == polyglot.ast.Binary.ADD){
+                map.putAll(generateAppendList(tempLeft.left(), tempLeft.right()));        
+            }
+            else {
+                map.put(createExpr(left), left);
+            }
+        }
+        else {
+            map.put(createExpr(left), left);
+        }
+        map.put(createExpr(right), right);
+
+        return map;
+    }
+    
     /**
      * Generates one part of a concatenation String
      */
-    private soot.Local generateAppendStmts(soot.Value toApp, soot.Local base) {
+    private soot.Local generateAppendStmts(soot.Value toApp, soot.Local base, polyglot.ast.Expr origExpr) {
 
         soot.Type appendType = null;
         if (toApp instanceof soot.jimple.StringConstant) {
@@ -2340,7 +2400,9 @@ public class JimpleBodyBuilder {
         soot.jimple.Stmt appendAssign = soot.jimple.Jimple.v().newAssignStmt(nextSB, appendInvoke);
 
         body.getUnits().add(appendAssign);
-
+        
+        Util.addLnPosTags(appendAssign, origExpr.position()); 
+        
         return nextSB;
     }
 
