@@ -30,21 +30,35 @@ import java.util.*;
  */
 public class BDDCflowStack
 { 
-    List/*Shadow*/ shadows;
     BDDCflow cflow;
 
-    public BDDCflowStack( BDDCflow cflow, List/*Shadow*/ shadows ) {
-        this.shadows = shadows;
+    public BDDCflowStack( BDDCflow cflow, Collection/*Shadow*/ shadows, Collection/*Stmt*/ isValids ) {
         this.cflow = cflow;
+        for( Iterator sIt = isValids.iterator(); sIt.hasNext(); ) {
+            final Stmt s = (Stmt) sIt.next();
+            this.isValids |= new {s=>stmt};
+        }
+        for( Iterator sIt = shadows.iterator(); sIt.hasNext(); ) {
+            final Shadow s = (Shadow) sIt.next();
+            this.shadows |= new {s=>shadow};
+        }
     }
 
+    private static final boolean DEBUG = false;
+    private void debug(String s) {
+        if(DEBUG) System.err.println(s);
+    }
     private <stmt> within(Shadow sh) {
+        debug("Doing within "+sh);
         <stmt> ret = 0B;
         boolean inShadow = false;
         for( Iterator sIt = sh.method().getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s == sh.popStmt() ) inShadow = false;
-            if( inShadow ) { ret |= new{s=>stmt}; }
+            if( inShadow ) {
+                ret |= new{s=>stmt}; 
+                debug("within: "+s);
+            }
             if( s == sh.pushStmt() ) inShadow = true;
         }
         return ret;
@@ -54,19 +68,27 @@ public class BDDCflowStack
         return (srcm=>, tgtm=>method) cflow.callGraph(){stmt} <> calls{stmt};
     }
 
+    private <shadow, method> targetsOfShadow(<shadow, stmt> calls) {
+        return (srcm=>, tgtm=>method) cflow.callGraph(){stmt} <> calls{stmt};
+    }
+
     private <stmt> stmtsIn(<method> methods) {
         return cflow.stmtMethod(){method} <> methods{method};
     }
 
-    private <stmt> mayCflow() {
-        <stmt> ret = 0B;
+    private <shadow, stmt> stmtsInShadow(<shadow, method> methods) {
+        return cflow.stmtMethod(){method} <> methods{method};
+    }
+
+    private <shadow, stmt> mayCflow() {
+        <shadow, stmt> ret = 0B;
         for( Iterator shIt = shadows.iterator(); shIt.hasNext(); ) {
             final Shadow sh = (Shadow) shIt.next();
-            ret |= within(sh);
+            ret |= new {sh=>shadow}{} >< within(sh){};
         }
         while(true) {
-            <method> targets = targetsOf(ret);
-            if( ret == (ret |= stmtsIn(targets)) ) break;
+            <shadow, method> targets = targetsOfShadow(ret);
+            if( ret == (ret |= stmtsInShadow(targets)) ) break;
         }
         return ret;
     }
@@ -86,15 +108,19 @@ public class BDDCflowStack
         return ret;
     }
 
+    private <shadow:V1> shadows = 0B;
     private <stmt> mustCflow = 1B;
-    private <stmt> mayCflow = 1B;
+    private <shadow, stmt> mayCflow = 1B;
+    private <stmt> isValids = 0B;
+    private <stmt> neverValid = 0B;
+    private <stmt> alwaysValid = 0B;
 
     /** Returns true if the call to isValid() in statement s always returns
      * false.
      */
     public boolean neverValid( Stmt s ) {
         if( mayCflow == 1B ) mayCflow = mayCflow();
-        return new{s=>stmt}{stmt} >< mayCflow{stmt} == 0B;
+        return new{s=>stmt}{stmt} >< (shadow=>) mayCflow{stmt} == 0B;
     }
 
     /** Returns true if the call to isValid() in statement s always returns
@@ -103,6 +129,47 @@ public class BDDCflowStack
     public boolean alwaysValid( Stmt s ) {
         if( mustCflow == 1B ) mustCflow = mustCflow();
         return new{s=>stmt}{stmt} >< mustCflow{stmt} != 0B;
+    }
+
+    private <stmt> computeNeverValid() {
+        if(neverValid != 0B) return neverValid;
+        if( mayCflow == 1B ) mayCflow = mayCflow();
+        <stmt> mayBeValid = (shadow=>) mayCflow{stmt} >< isValids{stmt};
+        neverValid = isValids - mayBeValid;
+        return neverValid;
+    }
+    /** Returns the subset of isValid statements in which the call to isValid()
+     * always returns false.
+     */
+    public Iterator/*Stmt*/ neverValid() {
+        return computeNeverValid().iterator();
+    }
+
+    private <stmt> computeAlwaysValid() {
+        if( mustCflow == 1B ) mustCflow = mustCflow();
+        alwaysValid = mustCflow{stmt} >< isValids{stmt};
+        return alwaysValid;
+    }
+
+    /** Returns the subset of isValid statements in which the call to isValid()
+     * always returns true.
+     */
+    public Iterator/*Stmt*/ alwaysValid() {
+        return computeAlwaysValid().iterator();
+    }
+
+    /** Returns the subset of shadows whose effect cannot be observed by
+     * any of the isValid statements. Specifically, returns the shadows
+     * whose mayCflow does not contain any isValid statements that are
+     * neither neverValid nor alwaysValid.
+     */
+    public Iterator/*Shadow*/ unnecessaryShadows() {
+        <stmt> interestingIsValids = isValids;
+        interestingIsValids -= computeAlwaysValid();
+        interestingIsValids -= computeNeverValid();
+        if( mayCflow == 1B ) mayCflow = mayCflow();
+        <shadow> necessaryShadows = mayCflow{stmt} <> interestingIsValids{stmt};
+        return (shadows - necessaryShadows).iterator();
     }
 }
 

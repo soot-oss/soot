@@ -1,0 +1,9 @@
+package soot.jimple.paddle.bdddomains;
+import jedd.*;
+import soot.*;
+
+public class ShadowDomain(16) extends Domain {
+    public Numberer numberer() {
+        return new soot.util.JeddNumberer( new soot.util.MapNumberer() );
+    }
+}
