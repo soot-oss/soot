@@ -90,6 +90,13 @@ public class ShimpleBodyBuilder
     public ShimpleBodyBuilder(ShimpleBody body)
     {
         this.body = body;
+
+        // Jimple sometimes assigns the same variable name to different locals.
+        // Since our local name tables currently index on the String name, this
+        // caused bug #7.  By ensuring unique local names we avoid the problem.
+        // Jimple probably shouldn't do that though.
+        makeUniqueLocalNames(body); 
+
         sf = G.v().shimpleFactory;
         sf.setBody(body);
         initialize();
