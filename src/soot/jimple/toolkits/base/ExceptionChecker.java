@@ -42,8 +42,15 @@ public class ExceptionChecker extends BodyTransformer{
         }
     }
 
-    // does the method declare the throw
+    // does the method declare the throw if its a throw that needs declaring
+    // RuntimeException and subclasses do not need to be declared
+    // Error and subclasses do not need to be declared
     private boolean isThrowDeclared(Body b, SootClass throwClass){
+        if (hierarchy == null){
+            hierarchy = new FastHierarchy();
+        }
+        if (throwClass.equals(Scene.v().getSootClass("java.lang.RuntimeException")) || throwClass.equals(Scene.v().getSootClass("java.lang.Error"))) return true;
+        if (hierarchy.getSubclassesOf(Scene.v().getSootClass("java.lang.RuntimeException")).contains(throwClass) || hierarchy.getSubclassesOf(Scene.v().getSootClass("java.lang.Error")).contains(throwClass)) return true;
         if (b.getMethod().throwsException(throwClass)) return true;
         return false;
     }

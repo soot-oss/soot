@@ -741,6 +741,10 @@ public class InitialResolver {
             ((PolyglotMethodSource)clinitMethod.getSource()).setStaticFieldInits(staticFieldInits);
             ((PolyglotMethodSource)clinitMethod.getSource()).setStaticInitializerBlocks(staticInitializerBlocks);
 
+            /*Iterator it = sootClass.getMethods().iterator();
+            while (it.hasNext()){
+                ((PolyglotMethodSource)((soot.SootMethod)it.next()).getSource()).setStaticFieldInits(staticFieldInits);
+            }*/
         }
 
        
@@ -775,6 +779,7 @@ public class InitialResolver {
 	}
 
     private void handleFieldInits(){
+        //System.out.println("field inits: "+fieldInits+" for class: "+sootClass);
         if ((fieldInits != null) || (initializerBlocks != null)) {
             Iterator methodsIt = sootClass.getMethods().iterator();
             while (methodsIt.hasNext()) {
@@ -782,6 +787,7 @@ public class InitialResolver {
                 if (next.getName().equals("<init>")){
                
                     //if (next.getSource() instanceof soot.javaToJimple.PolyglotMethodSource){
+                   //System.out.println("setting fieldInits: "+fieldInits+" for meth: "+next);
                         soot.javaToJimple.PolyglotMethodSource src = (soot.javaToJimple.PolyglotMethodSource)next.getSource();
                         src.setInitializerBlocks(initializerBlocks);
                         src.setFieldInits(fieldInits);

@@ -136,5 +136,20 @@ public class JjBinary_c extends Binary_c {
 
 
     }
+
+    /*public Node foldConstants(ConstantFolder cf) {
+        if (left instanceof Binary || left instanceof Field){
+            left = left.del.foldConstants(cf);
+        }
+        if (right instanceof Binary || right instanceof Field){
+            right = right.del.foldConstants(cf);
+        }
+        if (left instanceof StringLit && right instanceof StringLit) {
+            String l = ((StringLit) left).value();
+            String r = ((StringLit) right).value();
+            if (op == ADD) return nf.StringLit(position(), l + r);
+        }
+        else if (left instanceof 
+    }*/
 }
 
