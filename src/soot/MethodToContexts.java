@@ -41,6 +41,7 @@ public final class MethodToContexts
     public void add( Iterator it ) {
         while( it.hasNext() ) {
             MethodOrMethodContext momc = (MethodOrMethodContext) it.next();
+            add(momc);
         }
     }
     public List get( SootMethod m ) {
