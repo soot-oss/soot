@@ -2,7 +2,18 @@
 \begin{itemize}
 \item The Soot - Eclipse plugin provides a mechanism for viewing
 attribute information in visual ways within Eclipse.
-\item This can aid in software visualization and program understanding.
+\item This can aid in software visualization, program understanding and analysis debugging.
+\end{itemize}
+\end{slide}
+
+\begin{slide}{Visual Representations}
+\begin{itemize}
+\item There are currently three different visual representations of attribute informatation within the plugin.
+\begin{itemize}
+\item Text is displayed in tooltips over a statement.
+\item Chunks of code can be highlighted with different colors.
+\item Links are displayed in a popup list and reposition the cursor when selected.
+\end{itemize}
 \end{itemize}
 \end{slide}
 
@@ -16,9 +27,10 @@ s.addTag(new StringTag(val+": NonNull"));
 }
 \item The Soot - Eclipse plugin displays the string as a tooltip when the mouse hovers over a line of text in the Java editor and Jimple editor.
 \end{itemize}
+\sablefootnote{soot.tagkit.StringTag}
 \end{slide}
 
-\begin{slide}{Color and Position Tags}
+\begin{slide}{Color Tags}
 \begin{itemize}
 \item {\red ColorTag}s attach a color to a {\red Host}.
 {\scriptsize
@@ -29,6 +41,7 @@ v.addTag(new ColorTag(255, 0, 0));
 }
 \item The Soot - Eclipse plugin highlights the background color of the text in the editor at the appropriate positions with the given color in the Jimple editor.
 \end{itemize}
+\sablefootnote{soot.tagkit.ColorTag}
 \end{slide}
 
 \begin{slide}{Link Tags}
@@ -44,5 +57,6 @@ s.addTag(new LinkTag(text, h, cName));
 }
 \item The Soot - Eclipse plugin displays link which jumps to a another part of the code when clicked in the Jimple Editor.
 \end{itemize}
+\sablefootnote{soot.tagkit.LinkTag}
 \end{slide}
 

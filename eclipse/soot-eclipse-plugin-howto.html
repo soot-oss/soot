@@ -22,11 +22,15 @@ You must also switch to the Java Perspective in Eclipse:
 <br>
 Select Window -- Open Perspective -- Java
 <br>
-This isn't actually necessary to use Soot, but it is if you want to demonstrat that your Java class runs<br><p>
+This isn't actually necessary to use Soot, but it is if you want to demonstrate that your Java class runs.<br><p>
 
 <p>
 As Soot runs on java classes, you must create or import some.
 Follow the Eclipse guidelines on creating a Java Project found at www.eclipse.org (look for Online Help section)
+<br><br><b>
+One note, currently there are problems with the soot plugin in you don't make a src folder in your Java project and instead use the project as the source folder. What happens is the first time you run Soot everything works fine, except that the sootOutput folder automatically becaomes a package (as the project output folder is the project folder). The second time you run Soot (at the project level) it tries to process files inside the sootOutput folder which are not on the class path and all sorts of errors occur. So don't do this. </b>
+<p>
+<hr>
 
 <h4>Caveat: source folders</h4> 
 
@@ -37,21 +41,21 @@ as the source folder yet.
 </p>
 
 <h4>
-Running Soot on all the classes in your project:
+Running Soot on all the classes in the output folder of your project:
 </h4>
 
 <ul>
 <li>First build the classes.</li>
 <li>Then select any java file in the project.</li>
-<li>Then select Project -- Soot and any menu item under</li>
+<li>Then select Project -- Soot and any menu item:</li>
 
 
 <ul>
 <li><h5>There are currently four:</h5></li>
-<li>Create Jimple - creates Jimple files</li>
-<li>Dava Decompile - decompiles</li>
-<li>Soot Options - opens a dialog box containing all Soot options</li> 
-<li>Manage Configurations - opens a dialog where you can create and save, edit, remove and run different configurations of the Soot options</li>
+<li>Create Jimple for Project - creates Jimple files </li>
+<li>Dava Decompile Project - decompiles </li>
+<li>Run Soot ... - opens a dialog box containing all Soot options</li> 
+<li>Manage Configurations ... - opens a dialog where you can create and save, edit, remove and run different configurations of the Soot options</li>
 </ul>
 </ul>
 
@@ -74,6 +78,7 @@ Select the file. Right click and select Soot -- and any menu item (they ar
 e similar to the project menu items)</li>
 </ul>
 
+<hr>
 <h4>
 Attributes:
 </h4>
@@ -98,6 +103,7 @@ Mouse over the line in the editor with a marker and you should see a tooltip wit
 Also these attributes tooltips should appear in the original Java source file.
 <p>
 
+<hr>
 <h4>Using a Different Main Class<h4>
 <a href="different-main.html">documentation and example</a>
 
@@ -107,5 +113,6 @@ One other note: For long-running memory intensive Soot configurations Eclipse ma
 eclipse -vmargs -Xmx300M
 </p>
 
+<p>For more detailed documentation: <a href="ca.mcgill.sable.soot.help/doc/concepts/concepts.html">Plugin Help</a>
 </body>
 </html>
