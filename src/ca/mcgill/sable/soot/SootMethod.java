@@ -301,7 +301,7 @@ public class SootMethod
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("'" + getDeclaringClass().getName() + "'");
+        buffer.append("<'" + getDeclaringClass().getName() + "'");
         buffer.append(":'" + getName() + "'");
         buffer.append(":(");
 
@@ -320,7 +320,7 @@ public class SootMethod
 
         buffer.append(")");
 
-        buffer.append(":" + getReturnType().toString());
+        buffer.append(":" + getReturnType().toString() + ">");
 
         return buffer.toString();
     }

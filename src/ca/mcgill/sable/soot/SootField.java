@@ -103,9 +103,9 @@ public class SootField
     {
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("'" + getDeclaringClass().getName() + "'");
+        buffer.append("<'" + getDeclaringClass().getName() + "'");
         buffer.append(":" + "'" + getName() + "'");
-        buffer.append(":" + getType());
+        buffer.append(":" + getType() + ">");
 
         return buffer.toString();
 

@@ -101,7 +101,7 @@ public class AbstractInstanceFieldRef implements InstanceFieldRef
 
     public String toString()
     {
-        return baseBox.getValue().toString() + ".<" + field.getSignature() + ">";
+        return baseBox.getValue().toString() + "." + field.getSignature();
     }
 
     public String toBriefString()

@@ -121,10 +121,15 @@ public class JimpleBody extends AbstractBody implements StmtBody
         Construct an empty JimpleBody 
      **/
      
-    JimpleBody(SootMethod m)
+    public JimpleBody(SootMethod m)
     {
         super(m);
         stmtList = new StmtList(this);   
+    }
+
+    public JimpleBody(Body body)
+    {
+        this(body, 0);
     }
     
     /**
