@@ -58,22 +58,21 @@ public class LCMOptions
      * Use a naive side effect analysis even if interprocedural 
      * information is available.
     
-     * If naive-side-effect is set to true Lazy Code Motion uses the 
-     * conservative side effect information provided by the 
+     * If Naive Side Effect Tester is set to true, Lazy Code Motion 
+     * uses the conservative side effect information provided by the 
      * NaiveSideEffectTester class, even if interprocedural information 
      * about side effects is available. The naive side effect analysis 
      * is based solely on the information available locally about a 
      * statement. It assumes, for example, that any method call has the 
      * potential to write and read all instance and static fields in 
-     * the program. If naive-side-effect is set to false and whole 
-     * program analysis has been specified by the -w or -whole-program 
-     * options, then Lazy Code Motion uses the side effect information 
-     * provided by the PASideEffectTester class. PASideEffectTester 
-     * uses the information provided by a points-to analysis to 
-     * determine which fields and statics may be written or read by a 
-     * given statement. If whole program analysis is not performed, 
-     * naive side effect information is used regardless of the setting 
-     * of naive-side-effect. 
+     * the program. If Naive Side Effect Tester is set to false and 
+     * Soot is in whole program mode, then Lazy Code Motion uses the 
+     * side effect information provided by the PASideEffectTester 
+     * class. PASideEffectTester uses a points-to analysis to determine 
+     * which fields and statics may be written or read by a given 
+     * statement. If whole program analysis is not performed, naive 
+     * side effect information is used regardless of the setting of 
+     * Naive Side Effect Tester. 
      */
     public boolean naive_side_effect() {
         return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );

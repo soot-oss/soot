@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Static Method Binding. */
+/** Option parser for Static Method Binder. */
 public class SMBOptions
 {
     private Map options;
@@ -46,9 +46,11 @@ public class SMBOptions
     
      * .
     
-     * The receiver object is checked for nullness before the target 
-     * method is invoked. If the target is null, then a NullPointer 
-     * exception is thrown. 
+     * Insert a check that, before invoking the static copy of the 
+     * target method, throws a NullPointerException if the receiver 
+     * object is null. This ensures that static method binding does 
+     * not eliminate exceptions which would have occurred in its 
+     * absence. 
      */
     public boolean insert_null_checks() {
         return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
@@ -58,13 +60,22 @@ public class SMBOptions
     
      * .
     
-     * Inserts extra casts for the verifier. The verifier will 
-     * complain if the target uses `this' (so we have to pass an extra 
-     * parameter), and the argument passed to the method is not the 
-     * same type. For instance, Bottle.pricestatic is a method which 
-     * takes a Cost object, and Cost is an interface implemented by 
-     * Bottle. We must then cast the Cost to a Bottle before passing 
-     * it to pricestatic. 
+     * Insert extra casts for the Java bytecode verifier. If the 
+     * target method uses its this parameter, a reference to the 
+     * receiver object must be passed to the static copy of the target 
+     * method. The verifier may complain if the declared type of the 
+     * receiver parameter does not match the type implementing the 
+     * target method. Say, for example, that Singer is an interface 
+     * declaring the sing() method and that the call graph shows all 
+     * receiver objects at a particular call site, singer.sing() (with 
+     * singer declared as a Singer) are in fact Bird objects (Bird 
+     * being a class that implements Singer). The virtual call 
+     * singer.sing() is effectively replaced with the static call 
+     * Bird.staticsing(singer). Bird.staticsing() may perform 
+     * operations on its parameter which are only allowed on Birds, 
+     * rather than Singers. The Insert Redundant Casts option inserts 
+     * a cast of singer to the Bird type, to prevent complaints from 
+     * the verifier.
      */
     public boolean insert_redundant_casts() {
         return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
@@ -73,16 +84,11 @@ public class SMBOptions
     public static final int allowed_modifier_changes_unsafe = 1;
     public static final int allowed_modifier_changes_safe = 2;
     public static final int allowed_modifier_changes_none = 3;
-    /** Allow Modifier Changes --
+    /** Allowed Modifier Changes --
     
      * .
     
-     * Determines what changes in visibility modifiers are allowed. 
-     * ``unsafe'' modifies the visibility on code so that all inlining 
-     * is permitted; some IllegalAccessErrors may be missed. ``safe'' 
-     * preserves the exact meaning of the analysed program, and 
-     * ``none'' changes no modifiers whatsoever. 
-     * 
+     * Specify which changes in visibility modifiers are allowed. 
      */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );

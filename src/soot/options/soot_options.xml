@@ -821,6 +821,13 @@ are assumed not to call the constructor of the created object.
                                         <long_desc>Due to the effects of native methods and reflection, it may not always be possible to construct a fully conservative call graph. Setting this option to true causes Soot to point out the parts of the call graph that may be incomplete, so that they can be checked by hand.
                                         </long_desc>
                                 </boolopt>
+                                <boolopt>
+                                        <name>All Application Class Methods Reachable</name>
+                                        <alias>all-reachable</alias>
+                                        <default>false</default>
+                                        <short_desc>Assume all methods of application classes are reachable.</short_desc>
+                                        <long_desc>When this option is false, the call graph is built starting at a set of entry points, and only methods reachable from those entry points are processed. Unreachable methods will not have any call graph edges generated out of them. Setting this option to true makes Soot consider all methods of application classes to be reachable, so call edges are generated for all of them. This leads to a larger call graph. For program visualization purposes, it is sometimes desirable to include edges from unreachable methods; although these methods are unreachable in the version being analyzed, they may become reachable if the program is modified.</long_desc>
+                                </boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>

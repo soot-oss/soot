@@ -411,14 +411,24 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		addToEnableGroup("cg", getcgsafe_forname_widget(), "safe-forname");
 		
 		
+		addToEnableGroup("cg", getcgsafe_newinstance_widget(), "safe-newinstance");
+		
+		
 		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
+		
+		
+		addToEnableGroup("cg", getcgall_reachable_widget(), "all-reachable");
 		
 		
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
 		
+		getcgsafe_newinstance_widget().getButton().addSelectionListener(this);
+		
 		getcgverbose_widget().getButton().addSelectionListener(this);
+		
+		getcgall_reachable_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -1516,11 +1526,21 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		boolRes = getcgsafe_forname_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgsafe_forname_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgsafe_newinstance_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgsafe_newinstance_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgverbose_widget().getButton().getSelection();
@@ -1531,6 +1551,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgverbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgall_reachable_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgall_reachable_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
@@ -2749,13 +2779,13 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		stringRes = getSingle_File_Mode_Optionsprocess_path_widget().getText().getText();
+		stringRes = getSingle_File_Mode_Optionsprocess_dir_widget().getText().getText();
 		
 		defStringRes = "";
 		
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getSingle_File_Mode_Optionsprocess_path_widget().getAlias(), stringRes);
+			getConfig().put(getSingle_File_Mode_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
@@ -2776,22 +2806,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			getConfig().put(getApplication_Mode_Optionsexclude_widget().getAlias(), stringRes);
 		}
 		
-		stringRes = getApplication_Mode_Optionsdynamic_classes_widget().getText().getText();
+		stringRes = getApplication_Mode_Optionsdynamic_class_widget().getText().getText();
 		
 		defStringRes = "";
 		
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getApplication_Mode_Optionsdynamic_classes_widget().getAlias(), stringRes);
+			getConfig().put(getApplication_Mode_Optionsdynamic_class_widget().getAlias(), stringRes);
 		}
 		
-		stringRes = getApplication_Mode_Optionsdynamic_path_widget().getText().getText();
+		stringRes = getApplication_Mode_Optionsdynamic_dir_widget().getText().getText();
 		
 		defStringRes = "";
 		
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
-			getConfig().put(getApplication_Mode_Optionsdynamic_path_widget().getAlias(), stringRes);
+			getConfig().put(getApplication_Mode_Optionsdynamic_dir_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getApplication_Mode_Optionsdynamic_package_widget().getText().getText();
@@ -3059,8 +3089,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jb_jb_uce_branch;
 			
 			
-			//Call Graph
-			SootOption cg_branch = new SootOption("Call Graph", "cg");
+			//Call Graph Constructor
+			SootOption cg_branch = new SootOption("Call Graph Constructor", "cg");
 			parent.addChild(cg_branch);
 			subParent = cg_branch;
 
@@ -3120,7 +3150,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			SootOption wjop_wjop_smb_branch = new SootOption("Static Method Binding", "wjopwjop_smb");
+			SootOption wjop_wjop_smb_branch = new SootOption("Static Method Binder", "wjopwjop_smb");
 			subParent.addChild(wjop_wjop_smb_branch);
 
 
@@ -3130,7 +3160,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjop_wjop_smb_branch;
 			
 			
-			SootOption wjop_wjop_si_branch = new SootOption("Static Inlining", "wjopwjop_si");
+			SootOption wjop_wjop_si_branch = new SootOption("Static Inliner", "wjopwjop_si");
 			subParent.addChild(wjop_wjop_si_branch);
 
 
@@ -3157,8 +3187,8 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = wjap_wjap_ra_branch;
 			
 			
-			//Shimple Phase Options
-			SootOption shimple_branch = new SootOption("Shimple Phase Options", "shimple");
+			//Shimple Body Creation
+			SootOption shimple_branch = new SootOption("Shimple Body Creation", "shimple");
 			parent.addChild(shimple_branch);
 			subParent = shimple_branch;
 
@@ -3178,7 +3208,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			SootOption sop_sop_cpf_branch = new SootOption("Constant Propagator and Folder", "sopsop_cpf");
+			SootOption sop_sop_cpf_branch = new SootOption("Shimple Constant Propagator and Folder", "sopsop_cpf");
 			subParent.addChild(sop_sop_cpf_branch);
 
 
@@ -3242,7 +3272,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jop_jop_cp_branch;
 			
 			
-			SootOption jop_jop_cpf_branch = new SootOption("Constant Propagator and Folder", "jopjop_cpf");
+			SootOption jop_jop_cpf_branch = new SootOption("Jimple Constant Propagator and Folder", "jopjop_cpf");
 			subParent.addChild(jop_jop_cpf_branch);
 
 
@@ -3329,7 +3359,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 
 
 			
-			SootOption jap_jap_npc_branch = new SootOption("Null Pointer Check Options", "japjap_npc");
+			SootOption jap_jap_npc_branch = new SootOption("Null Pointer Check", "japjap_npc");
 			subParent.addChild(jap_jap_npc_branch);
 
 
@@ -3339,7 +3369,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_npc_branch;
 			
 			
-			SootOption jap_jap_npcolorer_branch = new SootOption("Null Pointer Coloring Options", "japjap_npcolorer");
+			SootOption jap_jap_npcolorer_branch = new SootOption("Null Pointer Coloring", "japjap_npcolorer");
 			subParent.addChild(jap_jap_npcolorer_branch);
 
 
@@ -3349,7 +3379,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			subSectParent = jap_jap_npcolorer_branch;
 			
 			
-			SootOption jap_jap_abc_branch = new SootOption("Array Bound Check Options", "japjap_abc");
+			SootOption jap_jap_abc_branch = new SootOption("Array Bound Checker", "japjap_abc");
 			subParent.addChild(jap_jap_abc_branch);
 
 
@@ -4011,6 +4041,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		return cgsafe_forname_widget;
 	}	
 	
+	private BooleanOptionWidget cgsafe_newinstance_widget;
+	
+	private void setcgsafe_newinstance_widget(BooleanOptionWidget widget) {
+		cgsafe_newinstance_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgsafe_newinstance_widget() {
+		return cgsafe_newinstance_widget;
+	}	
+	
 	private BooleanOptionWidget cgverbose_widget;
 	
 	private void setcgverbose_widget(BooleanOptionWidget widget) {
@@ -4019,6 +4059,16 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	public BooleanOptionWidget getcgverbose_widget() {
 		return cgverbose_widget;
+	}	
+	
+	private BooleanOptionWidget cgall_reachable_widget;
+	
+	private void setcgall_reachable_widget(BooleanOptionWidget widget) {
+		cgall_reachable_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgall_reachable_widget() {
+		return cgall_reachable_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
@@ -5266,14 +5316,14 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	}	
 	
 
-	private ListOptionWidget Single_File_Mode_Optionsprocess_path_widget;
+	private ListOptionWidget Single_File_Mode_Optionsprocess_dir_widget;
 	
-	private void setSingle_File_Mode_Optionsprocess_path_widget(ListOptionWidget widget) {
-		Single_File_Mode_Optionsprocess_path_widget = widget;
+	private void setSingle_File_Mode_Optionsprocess_dir_widget(ListOptionWidget widget) {
+		Single_File_Mode_Optionsprocess_dir_widget = widget;
 	}
 	
-	public ListOptionWidget getSingle_File_Mode_Optionsprocess_path_widget() {
-		return Single_File_Mode_Optionsprocess_path_widget;
+	public ListOptionWidget getSingle_File_Mode_Optionsprocess_dir_widget() {
+		return Single_File_Mode_Optionsprocess_dir_widget;
 	}	
 	
 	
@@ -5302,26 +5352,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	
 	
 
-	private ListOptionWidget Application_Mode_Optionsdynamic_classes_widget;
+	private ListOptionWidget Application_Mode_Optionsdynamic_class_widget;
 	
-	private void setApplication_Mode_Optionsdynamic_classes_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsdynamic_classes_widget = widget;
+	private void setApplication_Mode_Optionsdynamic_class_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsdynamic_class_widget = widget;
 	}
 	
-	public ListOptionWidget getApplication_Mode_Optionsdynamic_classes_widget() {
-		return Application_Mode_Optionsdynamic_classes_widget;
+	public ListOptionWidget getApplication_Mode_Optionsdynamic_class_widget() {
+		return Application_Mode_Optionsdynamic_class_widget;
 	}	
 	
 	
 
-	private ListOptionWidget Application_Mode_Optionsdynamic_path_widget;
+	private ListOptionWidget Application_Mode_Optionsdynamic_dir_widget;
 	
-	private void setApplication_Mode_Optionsdynamic_path_widget(ListOptionWidget widget) {
-		Application_Mode_Optionsdynamic_path_widget = widget;
+	private void setApplication_Mode_Optionsdynamic_dir_widget(ListOptionWidget widget) {
+		Application_Mode_Optionsdynamic_dir_widget = widget;
 	}
 	
-	public ListOptionWidget getApplication_Mode_Optionsdynamic_path_widget() {
-		return Application_Mode_Optionsdynamic_path_widget;
+	public ListOptionWidget getApplication_Mode_Optionsdynamic_dir_widget() {
+		return Application_Mode_Optionsdynamic_dir_widget;
 	}	
 	
 	
@@ -5452,7 +5502,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nThis option displays the textual help message and exits \nimmediately without doing any further processing.", defaultBool)));
+		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nDisplay the textual help message and exit immediately without \nfurther processing. ", defaultBool)));
 		
 		
 		
@@ -5468,7 +5518,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nThis option causes Soot to print a list of the available phases \nand sub-phases, and exit.", defaultBool)));
+		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nPrint a list of the available phases and sub-phases, then exit. \n", defaultBool)));
 		
 		
 		
@@ -5484,7 +5534,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nThis option displays the Soot version information and exits \nimmediately without doing any further processing.", defaultBool)));
+		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nDisplay information about the version of Soot being run, then \nexit without further processing. ", defaultBool)));
 		
 		
 		
@@ -5500,7 +5550,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nThis option causes Soot to display detailed information about \nwhat it is doing.", defaultBool)));
+		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nProvide detailed information about what Soot is doing as it \nruns. ", defaultBool)));
 		
 		
 		
@@ -5516,7 +5566,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nThis option causes Soot to process any application classes \nreferenced by the classes specified on the command line, in \naddition to the specified classes.", defaultBool)));
+		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nRun in application mode, processing all classes referenced by \nargument classes.", defaultBool)));
 		
 		
 		
@@ -5532,7 +5582,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nThis option causes Soot to run in whole program mode, taking \ninto consideration the whole program when performing \noptimizations.", defaultBool)));
+		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations.", defaultBool)));
 		
 		
 		
@@ -5548,7 +5598,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nThis option causes Soot to print various debugging information, \nparticularly from the Baf Body Phase and the Jimple Annotation \nPack Phase.", defaultBool)));
+		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot runs, particularly \nfrom the Baf Body Phase and the Jimple Annotation Pack Phase. ", defaultBool)));
 		
 		
 
@@ -5564,7 +5614,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nThis option causes Soot to print a help message about the phase \nor sub-phase specified by its argument, and exit. \n", defaultString)));
+		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or sub-phase named , then \nexit. To see the help message of more than one phase, specify \nmultiple phase-help options. ", defaultString)));
 		
 
 		
@@ -5607,7 +5657,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nThis option causes Soot to process a class even if it cannot \nfind classes referenced by that class. This may cause Soot to \nproduce incorrect results.", defaultBool)));
+		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all \nclasses referenced by that class. This may cause Soot to produce \nincorrect results. ", defaultBool)));
 		
 		
 		
@@ -5615,20 +5665,20 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Class File",
 		"c",
-		"\n",
+		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Fall back to .jimple files only when unable to \nfind a .class file. ",
 		
 		true),
 		
 		new OptionData("Jimple File",
 		"J",
-		"\n",
+		"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .class file. ",
 		
 		false),
 		
 		};
 		
 										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nBy default, Soot will resolve classes from .class files. If a \nclass cannot be resolved from a .class file, Soot will attempt \nto resolve it from a .jimple file. Setting this option to jimple \nspecifies the opposite policy: classes are resolved from .jimple \nfiles, and only if this fails will an attempt be made to resolve \nthem from .class files.")));
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSet Soot's preference for what type of source files to read \nwhen it looks for a class. ")));
 		
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
@@ -5653,7 +5703,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUses given PATH as the classpath for finding classes for Soot \nprocessing.", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse as the list of directories in which Soot should search for \nclasses. should be a series of directories, separated by the \npath separator character for your system. If no classpath is set \non the command line, but the system property soot.class.path has \nbeen set, Soot uses its value as the classpath. If neither the \ncommand line nor the system properties specify a Soot classpath, \nSoot falls back on a default classpath consisting of the value \nof the system property java.class.path followed \njava.home/lib/rt.jar, where java.home stands for the contents of \nthe system property java.home and / stands for the system file \nseparator.", defaultString)));
 		
 
 		
@@ -5696,7 +5746,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nThis option converts Jimple to bytecode via Grimp instead of via \nBaf.", defaultBool)));
+		setOutput_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimple intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation. ", defaultBool)));
 		
 		
 		
@@ -5712,7 +5762,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nThis option saves a variety of tags which are attached to hosts \nto an XML file that is later read by Eclipse to show program \nunderstanding annotations within Eclipse.", defaultBool)));
+		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot has attached to \nits internal representations of the application classes. The XML \nfile can then be read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding. ", defaultBool)));
 		
 		
 		
@@ -5720,86 +5770,86 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Jimple File",
 		"J",
-		"\nProduces .jimple files that contain a textual representation for \ntypes in Soot's Jimple internal representation.",
+		"\nProduce .jimple files, which contain a textual form of Soot's \nJimple internal representation. ",
 		
 		false),
 		
 		new OptionData("Jimp File",
 		"j",
-		"\nProduces .jimp files which contain an abbreviated \ntextual form for Soot's Jimple internal representation. The \nabbreviated form is easier to read than the non-abbreviated \ncounterpart, but may also contain ambiguities; for \ninstance, method signatures are not uniquely determined.",
+		"\nProduce .jimp files, which contain an abbreviated form of \nJimple. ",
 		
 		false),
 		
 		new OptionData("Shimple File",
 		"S",
-		"\nProduces .shimple files containing the textual \nrepresentation of Soot's SSA Shimple internal \nrepresentation. Shimple is very similar to Jimple except \nthat it supports Phi nodes.",
+		"\nProduce .shimple files, containing a textual form of Soot's SSA \nShimple internal representation. Shimple adds Phi nodes to \nJimple. ",
 		
 		false),
 		
 		new OptionData("Shimp File",
 		"s",
-		"\nProduces .shimp files which contain an abbreviated \ntextual form for Soot's SSA Shimple internal representation. \nThe abbreviated form is easier to read than the \nnon-abbreviated counterpart, but may also contain ambiguities; \nfor instance, method signatures are not uniquely \ndetermined.",
+		"\nProduce .shimp files, which contain an abbreviated form of \nShimple. ",
 		
 		false),
 		
 		new OptionData("Baf File",
 		"B",
-		"\nProduces .baf files that contain a textual representation for \ntypes in Soot's Baf internal representation.",
+		"\nProduce .baf files, which contain a textual form of Soot's Baf \ninternal representation. ",
 		
 		false),
 		
 		new OptionData("Abbreviated Baf File",
 		"b",
-		"\nProduces .b files. These contain an abbreviated textual form for \nSoot's Baf internal representation. It is easier to read than \nits non-abbreviated counterpart, but can also contain \nambiguities; for instance, method signatures are not uniquely \ndetermined.",
+		"\nProduce .b files, which contain an abbreviated form of Baf. ",
 		
 		false),
 		
 		new OptionData("Grimple File",
 		"G",
-		"\nProduces .grimple files that contain a textual representation \nfor types in Soot's Grimp internal representation.",
+		"\nProduce .grimple files, which contain a textual form of Soot's \nGrimp internal representation. ",
 		
 		false),
 		
 		new OptionData("Grimp File",
 		"g",
-		"\nProduces .grimp files which contain an abbreviated \ntextual form for Soot's Grimple internal representation. \nThe abbreviated form is easier to read than the \nnon-abbreviated counterpart, but may also contain ambiguities; \nfor instance, method signatures are not uniquely \ndetermined.",
+		"\nProduce .grimp files, which contain an abbreviated form of \nGrimple. ",
 		
 		false),
 		
 		new OptionData("Xml File",
 		"X",
-		"\nProduces .xml files of classes based on the Jimple statements.",
+		"\nProduce .xml files containing an annotated version of the \nSoot's Jimple internal representation. ",
 		
 		false),
 		
 		new OptionData("No Output File",
 		"n",
-		"\nThis option causes Soot to produces no output files.",
+		"\nProduce no output files. ",
 		
 		false),
 		
 		new OptionData("Jasmin File",
 		"jasmin",
-		"\nProduces .jasmin files as output. These can be understood by the \njasmin bytecode assembler tool.",
+		"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler. ",
 		
 		false),
 		
 		new OptionData("Class File",
 		"c",
-		"\nProduces Java .class files executable under any Java Virtual \nMachine.",
+		"\nProduce Java .class files, executable by any Java Virtual \nMachine. ",
 		
 		true),
 		
 		new OptionData("Dava Decompiled File",
 		"d",
-		"\nProduces dava decompiled .java files.",
+		"\nProduce .java files generated by the Dava decompiler. ",
 		
 		false),
 		
 		};
 		
 										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nThis option sets the output format of files Soot will produce or \nno output.")));
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify which format of output files Soot should produce, if \nany. Note that while the abbreviated formats (jimp, shimp, b, \nand grimp) are easier to read than their unabbreviated \ncounterparts (jimple, shimple, baf, and grimple), they may \ncontain ambiguities. Method signatures in the abbreviated \nformats, for instance, are not uniquely determined.")));
 		
 		defKey = ""+" "+""+" "+"f";
 		defKey = defKey.trim();
@@ -5824,7 +5874,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nSpecifies that the outputted files are to be stored in PATH. The \npath may be relative to the working directory. This PATH must \nalready exist before running Soot.", defaultString)));
+		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files in . may be relative to the working \ndirectory. ", defaultString)));
 		
 
 		
@@ -5867,7 +5917,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform scalar optimizations on the classfiles.", defaultBool)));
+		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform intraprocedural optimizations on the application \nclasses. ", defaultBool)));
 		
 		
 		
@@ -5883,7 +5933,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the classfiles; this also \nenables -O.", defaultBool)));
+		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the application classes. \nThis enables the Whole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations. ", defaultBool)));
 		
 		
 		
@@ -5899,7 +5949,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nThis option ... ", defaultBool)));
+		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This generates \nShimple bodies for the application classes, optionally \ntransforms them with analyses that run on SSA form, then turns \nthem back into Jimple for processing by the rest of Soot. For \nmore information, see the documentation for the shimp, stp, and \nsop phases. ", defaultBool)));
 		
 		
 
@@ -6511,7 +6561,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO \nENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE? ", defaultBool)));
+		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
 		
 		
 
@@ -6618,7 +6668,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupcg.setLayout(layout);
 	
-	 	editGroupcg.setText("Call Graph");
+	 	editGroupcg.setText("Call Graph Constructor");
 	 	
 		editGroupcg.setData("id", "cg");
 		
@@ -6655,11 +6705,27 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
-		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are not assumed to call any static initializers. ", defaultBool)));
+		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are assumed to call no static initializers. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"safe-newinstance";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgsafe_newinstance_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe newInstance", "p", "cg","safe-newinstance", "\nWhen a program calls Class.newInstance(), a new object is \ncreated and its constructor executed. Soot does not determine \nstatically which type of object will be created, and which \nconstructor executed. When this option is set to true, Soot will \nconservatively assume that any constructor could be executed. \nThis may make the call graph very large. When this option is set \nto false, any calls to Class.newInstance() are assumed not to \ncall the constructor of the created object. ", defaultBool)));
 		
 		
 		
@@ -6676,6 +6742,22 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		}
 
 		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully conservative call graph. \nSetting this option to true causes Soot to point out the parts \nof the call graph that may be incomplete, so that they can be \nchecked by hand. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"all-reachable";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods reachable from those entry \npoints are processed. Unreachable methods will not have any call \ngraph edges generated out of them. Setting this option to true \nmakes Soot consider all methods of application classes to be \nreachable, so call edges are generated for all of them. This \nleads to a larger call graph. For program visualization \npurposes, it is sometimes desirable to include edges from \nunreachable methods; although these methods are unreachable in \nthe version being analyzed, they may become reachable if the \nprogram is modified.", defaultBool)));
 		
 		
 
@@ -7103,7 +7185,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nforming single-entry subgraphs (so they must have the same \npoints-to set) are merged together before propagation begins. \n", defaultBool)));
+		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
 		
 		
 		
@@ -7119,7 +7201,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged together before propagation begins. \n", defaultBool)));
+		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
 		
 		
 		
@@ -7262,7 +7344,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelects an implementation of a points-to set that Spark should \nuse. ")));
+		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelect an implementation of points-to sets for Spark to use. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
 		defKey = defKey.trim();
@@ -7310,7 +7392,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelects an implementation for the sets of old objects in the \ndouble points-to set implementation. This option has no effect \nunless set-impl is set to double. ")));
+		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
 		defKey = defKey.trim();
@@ -7358,7 +7440,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		};
 		
 										
-		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelects an implementation for the sets of new objects in the \ndouble points-to set implementation. This option has no effect \nunless setImpl is set to double. ")));
+		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
 		defKey = defKey.trim();
@@ -7443,7 +7525,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the dump-pag option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
+		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
 		
 		
 		
@@ -7459,7 +7541,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \ndump-pag is true. ", defaultBool)));
+		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
 		
 		
 		
@@ -7475,7 +7557,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option includes type information for all nodes. \nThis option has no effect unless dump-pag is true. ", defaultBool)));
+		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
 		
 		
 		
@@ -7491,7 +7573,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe dump-pag option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless dump-pag is true. Setting class-method-var to true \nhas the effect of setting topo-sort to false. ", defaultBool)));
+		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
 		
 		
 		
@@ -7523,7 +7605,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded inside tags, and printed with the resulting \nJimple code. ", defaultBool)));
+		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
 		
 		
 		
@@ -7646,7 +7728,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupwjopwjop_smb.setLayout(layout);
 	
-	 	editGroupwjopwjop_smb.setText("Static Method Binding");
+	 	editGroupwjopwjop_smb.setText("Static Method Binder");
 	 	
 		editGroupwjopwjop_smb.setData("id", "wjopwjop_smb");
 		
@@ -7687,7 +7769,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nThe receiver object is checked for nullness before the target \nmethod is invoked. If the target is null, then a NullPointer \nexception is thrown. ", defaultBool)));
+		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nInsert a check that, before invoking the static copy of the \ntarget method, throws a NullPointerException if the receiver \nobject is null. This ensures that static method binding does \nnot eliminate exceptions which would have occurred in its \nabsence. ", defaultBool)));
 		
 		
 		
@@ -7703,7 +7785,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInserts extra casts for the verifier. The verifier will \ncomplain if the target uses `this' (so we have to pass an extra \nparameter), and the argument passed to the method is not the \nsame type. For instance, Bottle.pricestatic is a method which \ntakes a Cost object, and Cost is an interface implemented by \nBottle. We must then cast the Cost to a Bottle before passing \nit to pricestatic. ", defaultBool)));
+		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. If the \ntarget method uses its this parameter, a reference to the \nreceiver object must be passed to the static copy of the target \nmethod. The verifier may complain if the declared type of the \nreceiver parameter does not match the type implementing the \ntarget method. Say, for example, that Singer is an interface \ndeclaring the sing() method and that the call graph shows all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The virtual call \nsinger.sing() is effectively replaced with the static call \nBird.staticsing(singer). Bird.staticsing() may perform \noperations on its parameter which are only allowed on Birds, \nrather than Singers. The Insert Redundant Casts option inserts \na cast of singer to the Bird type, to prevent complaints from \nthe verifier.", defaultBool)));
 		
 		
 		
@@ -7711,26 +7793,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"\n",
+		"\nModify the visibility on code so that all inlining is \npermitted. ",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"\n",
+		"\nPreserve the exact meaning of the analyzed program. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\n",
+		"\nChange no modifiers whatsoever. ",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nDetermines what changes in visibility modifiers are allowed. \n``unsafe'' modifies the visibility on code so that all inlining \nis permitted; some IllegalAccessErrors may be missed. ``safe'' \npreserves the exact meaning of the analysed program, and \n``none'' changes no modifiers whatsoever. \n")));
+		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers are allowed. ")));
 		
 		defKey = "p"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -7758,7 +7840,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupwjopwjop_si.setLayout(layout);
 	
-	 	editGroupwjopwjop_si.setText("Static Inlining");
+	 	editGroupwjopwjop_si.setText("Static Inliner");
 	 	
 		editGroupwjopwjop_si.setData("id", "wjopwjop_si");
 		
@@ -7799,7 +7881,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nAs in StaticMethodBinder.", defaultBool)));
+		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nInsert, before the inlined body of the target method, a check \nthat throws a NullPointerException if the receiver object is \nnull. This ensures that inlining will not eliminate exceptions \nwhich would have occurred in its absence. ", defaultBool)));
 		
 		
 		
@@ -7815,7 +7897,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nAs in StaticMethodBinder.", defaultBool)));
+		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. The \nverifier may complain if the inlined method uses this and the \ndeclared type of the receiver of the call being inlined is \ndifferent from the type implementing the target method being \ninlined. Say, for example, that Singer is an interface declaring \nthe sing() method and that the call graph shows that all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The implementation of \nBird.sing() may perform operations on this which are only \nallowed on Birds, rather than Singers. The Insert Redundant \nCasts option ensures that this cannot lead to verification \nerrors, by inserting a cast of bird to the Bird type before \ninlining the body of Bird.sing().", defaultBool)));
 		
 		
 		
@@ -7823,26 +7905,26 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"\n",
+		"\nModify the visibility on code so that all inlining is \npermitted. ",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"\n",
+		"\nPreserve the exact meaning of the analyzed program. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\n",
+		"\nChange no modifiers whatsoever. ",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allow Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nAs in StaticMethodBinder.")));
+		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers are allowed. ")));
 		
 		defKey = "p"+" "+"wjop.si"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -7867,7 +7949,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than \nexpansion-factor. ", defaultString)));
+		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than the \nExpansion Factor. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"max-container-size";
@@ -7940,7 +8022,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "\nSome analyses do not transform Jimple body directly, but \nannotate statements or values with tags. Whole-Jimple annotation \npack provides a place for annotation-oriented analysis in a \nwhole program mode. 					", defaultBool)));
+		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "\n", defaultBool)));
 		
 		
 
@@ -7963,7 +8045,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupwjapwjap_ra.setData("id", "wjapwjap_ra");
 		
-		String descwjapwjap_ra = "";	
+		String descwjapwjap_ra = " Find array variables always pointing to rectangular two-dimensional array objects. ";	
 		if (descwjapwjap_ra.length() > 0) {
 			Label descLabelwjapwjap_ra = new Label(editGroupwjapwjap_ra, SWT.WRAP);
 			descLabelwjapwjap_ra.setText(descwjapwjap_ra);
@@ -7984,7 +8066,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "\nIn Java, a multi-dimensional array is an array of arrays, \nwhich means the shape of the array can be ragged. However, many \napplications use rectangular arrays. Such information is very \nhelpful in proving safe array bounds checks. Rectangular array \nfinder traverses Jimple statements based on static call graph, \nand finds array variables always holding rectangular \ntwo-dimensional array objects. The analysis results are used by \narray bounds check elimination (jap.abc). This phase does not \nchange the program. 						", defaultBool)));
+		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8003,11 +8085,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupshimple.setLayout(layout);
 	
-	 	editGroupshimple.setText("Shimple Phase Options");
+	 	editGroupshimple.setText("Shimple Body Creation");
 	 	
 		editGroupshimple.setData("id", "shimple");
 		
-		String descshimple = "General Shimple options.";	
+		String descshimple = "";	
 		if (descshimple.length() > 0) {
 			Label descLabelshimple = new Label(editGroupshimple, SWT.WRAP);
 			descLabelshimple.setText(descshimple);
@@ -8036,19 +8118,19 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 		new OptionData("Naive Phi Node Elimination",
 		"none",
-		"\nIf enabled, neither pre-optimization nor \npost-optimization will be applied to the Phi elimination \nprocess. This is useful for monitoring and understanding \nthe behaviour of Shimple optimizations or \ntransformations.",
+		"\nDo not optimize as part of Phi node elimination, either before \nor after eliminating Phi nodes. This is useful for monitoring \nand understanding the behaviour of Shimple optimizations and \ntransformations.",
 		
 		false),
 		
-		new OptionData("Pre-optimize Phi Elimination",
+		new OptionData("Pre-optimize Phi elimination",
 		"pre",
-		"\nIf enabled, some recommended optimizations such as \ndead code elimination and local packing are applied \nbefore Phi node elimination. This does not appear to be as \neffective as post-optimization, but the option is \nprovided for future testing and investigation.",
+		"\nPerform some optimizations, such as dead code elimination and \nlocal packing, before eliminating Phi nodes. This appears to be \nless effective than post-optimization, but the option is \nprovided for future testing and investigation.",
 		
 		false),
 		
 		new OptionData("Post-optimize Phi Elimination",
 		"post",
-		"\nIf enabled, applies recommended optimizations such \nas dead code elimination and local packing after Phi \nnode elimination. This appears to be more effective than \npre-optimization.",
+		"\nPerform some optimizations, such as dead code elimination and \nlocal packing, after eliminating Phi nodes. This appears to be \nmore effective than post-optimization.",
 		
 		true),
 		
@@ -8093,7 +8175,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupstp.setData("id", "stp");
 		
-		String descstp = "";	
+		String descstp = "Apply Shimple-based transformations";	
 		if (descstp.length() > 0) {
 			Label descLabelstp = new Label(editGroupstp, SWT.WRAP);
 			descLabelstp.setText(descstp);
@@ -8114,7 +8196,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "\nIf the Shimple phase is enabled, Soot applies the \ncontents of the Shimple Transformation Pack to each method \nunder analysis. This pack contains no transformations in an \nunmodified version of Soot.", defaultBool)));
+		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8137,7 +8219,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 	 	
 		editGroupsop.setData("id", "sop");
 		
-		String descsop = "";	
+		String descsop = "Apply Shimple-based optimizations";	
 		if (descsop.length() > 0) {
 			Label descLabelsop = new Label(editGroupsop, SWT.WRAP);
 			descLabelsop.setText(descsop);
@@ -8158,7 +8240,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "\nWhen enabled, Soot applies the Shimple Optimization \nPack to every ShimpleBody in application classes. \nThis section lists the default transformations in the \nShimple Optimization Pack.", defaultBool)));
+		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8177,11 +8259,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupsopsop_cpf.setLayout(layout);
 	
-	 	editGroupsopsop_cpf.setText("Constant Propagator and Folder");
+	 	editGroupsopsop_cpf.setText("Shimple Constant Propagator and Folder");
 	 	
 		editGroupsopsop_cpf.setData("id", "sopsop_cpf");
 		
-		String descsopsop_cpf = "";	
+		String descsopsop_cpf = "Performs constant propagation and folding on Shimple.";	
 		if (descsopsop_cpf.length() > 0) {
 			Label descLabelsopsop_cpf = new Label(editGroupsopsop_cpf, SWT.WRAP);
 			descLabelsopsop_cpf.setText(descsopsop_cpf);
@@ -8202,7 +8284,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p", "sop.cpf","enabled", "\nAn example implementation of constant 						propagation using \nShimple. Informal tests show that this 						analysis is already \nmore powerful than the simplistic \n						ConstantPropagatorAndFolder optimization provided by \n						Jimple, particularly when control flow is involved. This \n						optimization demonstrates some of the benefits of SSA -- \n						particularly the fact that Phi nodes represent natural \n						merge points in the control flow. This implementation \n						also demonstrates how to access U/D and D/U chains in \n						Shimple.", defaultBool)));
+		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p", "sop.cpf","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8246,7 +8328,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "\nSoot applies the contents of the Jimple Transformation Pack to \neach method under analysis. This pack contains no \ntransformations in an unmodified version of Soot. ", defaultBool)));
+		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "\n", defaultBool)));
 		
 		
 
@@ -8350,7 +8432,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf naive-side-effect is set to true the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If naive-side-effect \nis set to false and whole program analysis has been specified by \nthe -W or -whole-program options, then the Common Subexpression \nEliminator uses the side effect information provided by the \nPASideEffectTester class. PASideEffectTester uses the \ninformation provided by a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of \nnaive-side-effect. ", defaultBool)));
+		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf Naive Side Effect Tester is true, the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If Naive Side Effect \nTester is set to false and Soot is in whole program mode, then \nthe Common Subexpression Eliminator uses the side effect \ninformation provided by the PASideEffectTester class. \nPASideEffectTester uses a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of Naive Side \nEffect Tester. ", defaultBool)));
 		
 		
 
@@ -8410,7 +8492,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf naive-side-effect is set to true Busy Code Motion uses the \nconservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If naive-side-effect is set to false and whole \nprogram analysis has been specified by the -W or -whole-program \noptions, then Busy Code Motion uses the side effect information \nprovided by the PASideEffectTester class. PASideEffectTester \nuses the information provided by a points-to analysis to \ndetermine which fields and statics may be written or read by a \ngiven statement. If whole program analysis is not performed, \nnaive side effect information is used regardless of the setting \nof naive-side-effect. ", defaultBool)));
+		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Busy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Busy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
 		
 		
 
@@ -8486,7 +8568,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf naive-side-effect is set to true Lazy Code Motion uses the \nconservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If naive-side-effect is set to false and whole \nprogram analysis has been specified by the -W or -whole-program \noptions, then Lazy Code Motion uses the side effect information \nprovided by the PASideEffectTester class. PASideEffectTester \nuses the information provided by a points-to analysis to \ndetermine which fields and statics may be written or read by a \ngiven statement. If whole program analysis is not performed, \nnaive side effect information is used regardless of the setting \nof naive-side-effect. ", defaultBool)));
+		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Lazy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Lazy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
 		
 		
 		
@@ -8617,7 +8699,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjopjop_cpf.setLayout(layout);
 	
-	 	editGroupjopjop_cpf.setText("Constant Propagator and Folder");
+	 	editGroupjopjop_cpf.setText("Jimple Constant Propagator and Folder");
 	 	
 		editGroupjopjop_cpf.setData("id", "jopjop_cpf");
 		
@@ -8746,7 +8828,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\n", defaultBool)));
+		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -9029,7 +9111,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npc.setLayout(layout);
 	
-	 	editGroupjapjap_npc.setText("Null Pointer Check Options");
+	 	editGroupjapjap_npc.setText("Null Pointer Check");
 	 	
 		editGroupjapjap_npc.setData("id", "japjap_npc");
 		
@@ -9070,7 +9152,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nBy default, all bytecodes that need null pointer checks \nare annotated with the analysis result. When this option is \nset to true, Soot will annotate only array-referencing \nbytecodes with null pointer check information; other bytecodes, \nsuch as getfield and putfield, will not be annotated. \n", defaultBool)));
+		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nAnnotate only array-referencing instructions, instead of all \ninstructions that need null pointer checks. ", defaultBool)));
 		
 		
 		
@@ -9086,7 +9168,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nIf this option is true, the analysis inserts profiling \ninstructions counting the number of eliminated safe null pointer \nchecks at runtime. This is only for profiling purpose. 						", defaultBool)));
+		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions counting the number of eliminated \nsafe null pointer checks at runtime. This is only for profiling \npurpose. 						", defaultBool)));
 		
 		
 
@@ -9105,11 +9187,11 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_npcolorer.setLayout(layout);
 	
-	 	editGroupjapjap_npcolorer.setText("Null Pointer Coloring Options");
+	 	editGroupjapjap_npcolorer.setText("Null Pointer Coloring");
 	 	
 		editGroupjapjap_npcolorer.setData("id", "japjap_npcolorer");
 		
-		String descjapjap_npcolorer = "";	
+		String descjapjap_npcolorer = "Produce color tags for null and non-null references";	
 		if (descjapjap_npcolorer.length() > 0) {
 			Label descLabeljapjap_npcolorer = new Label(editGroupjapjap_npcolorer, SWT.WRAP);
 			descLabeljapjap_npcolorer.setText(descjapjap_npcolorer);
@@ -9149,7 +9231,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		GridLayout layout = new GridLayout();
 		editGroupjapjap_abc.setLayout(layout);
 	
-	 	editGroupjapjap_abc.setText("Array Bound Check Options");
+	 	editGroupjapjap_abc.setText("Array Bound Checker");
 	 	
 		editGroupjapjap_abc.setData("id", "japjap_abc");
 		
@@ -10181,7 +10263,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. SHOULD WE ENSURE THAT IF jb.ulp IS ALSO \nENABLED, THEN ITS unsplit-original-locals MATCHES THIS ONE? ", defaultBool)));
+		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
 		
 		
 
@@ -10477,7 +10559,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 		
 
 
-		defKey = ""+" "+""+" "+"process-path";
+		defKey = ""+" "+""+" "+"process-dir";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -10489,7 +10571,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setSingle_File_Mode_Optionsprocess_path_widget(new ListOptionWidget(editGroupSingle_File_Mode_Options, SWT.NONE, new OptionData("Process Path",  "", "","process-path", "\nProcess all classes in PATH. All the classes found in PATH will \nbe loaded and transformed in single-file mode. ", defaultString)));
+		setSingle_File_Mode_Optionsprocess_dir_widget(new ListOptionWidget(editGroupSingle_File_Mode_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-dir", "\nAdd all classes found in to the set of argument classes which \nis analyzed and transformed by Soot. You can specify the option \nmore than once, to add argument classes from multiple \ndirectories. If subdirectories of contain .class or .jimple \nfiles, Soot assumes that the subdirectory names correspond to \ncomponents of the classes' package names. If contains \nsubA/subB/MyClass.class, for instance, then Soot assumes MyClass \nis in package subA.subB.", defaultString)));
 		
 
 		
@@ -10532,7 +10614,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nMarks the classfiles in PACKAGE (e.g. java.util.) as application \nclasses. This option can be used to transform library types \nwhich by default are not transformed by Soot.", defaultString)));
+		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names begin with (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"x";
@@ -10547,10 +10629,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nMarks classfiles in PACKAGE (e.g. java.) as context classes. \nJimple is not produced for context classes, but the SootClass, \nSootField and SootMethod signature objects are created.", defaultString)));
+		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose names begin with from \nthe set of application classes which are analyzed and output, \ntreating them as library classes instead. This option allows you \nto selectively exclude classes which would normally be treated \nas application classes You can use the exclude option multiple \ntimes, to designate the classes of multiple packages as library \nclasses. If you specify both include and exclude options, first \nthe classes from all excluded packages are marked as library \nclasses, then the classes from all included packages are marked \nas application classes.", defaultString)));
 		
 
-		defKey = ""+" "+""+" "+"dynamic-classes";
+		defKey = ""+" "+""+" "+"dynamic-class";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -10562,10 +10644,10 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_classes_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-classes", "\nThis option marks CLASSES (separated by colons) as potentially \ndynamic classes. ", defaultString)));
+		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark as a class which the application may load dynamically. \nSoot will read it as a library class even if it is not \nreferenced from the argument classes. This permits whole \nprogram optimizations on programs which load classes dynamically \nif the set of classes that can be loaded is known at compile \ntime. You can use the dynamic class option multiple times to \nspecify more than one dynamic class.", defaultString)));
 		
 
-		defKey = ""+" "+""+" "+"dynamic-path";
+		defKey = ""+" "+""+" "+"dynamic-dir";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -10577,7 +10659,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_path_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Path",  "", "","dynamic-path", "\nMarks all class files in PATH as potentially dynamic classes. \nThis allows aggressive optimization of applications for which \nthe set of dynamic classes that can be loaded is known at \ncompile time.", defaultString)));
+		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in as classes that may be loaded \ndynamically. Soot will read them as library classes even if they \nare not referenced from the argument classes. You can specify \nmore than one directory of potentially dynamic classes by \nspecifying multiple dynamic directory options.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-package";
@@ -10592,7 +10674,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to a package listed in PACKAGES \n(or one of its subpackages) as potentially dynamic classes.", defaultString)));
+		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package or any of its \nsubpackages as classes which the application may load \ndynamically. Soot will read all classes in as library classes, \neven if they are not referenced by any of the argument \nclasses.To specify more than one dynamic package, use the \ndynamic package option multiple times.", defaultString)));
 		
 
 		
@@ -10635,7 +10717,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserves the line number tables of class files throughout the \ntransformations.", defaultBool)));
+		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserve line number tables for class files throughout the \ntransformations. ", defaultBool)));
 		
 		
 		
@@ -10651,7 +10733,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset", "\nPreserves the bytecode offset tables of class files throughout \nthe transformations.", defaultBool)));
+		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset", "\nMaintain bytecode offset tables for class files throughout the \ntransformations.", defaultBool)));
 		
 		
 
@@ -10695,7 +10777,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nThis option turns on annotations for Null Pointer. This creates \nannotations that can be added to class files and later used by \nthe JVM.", defaultBool)));
+		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nPerform a static analysis of which dereferenced pointers may \nhave null values, and annotate class files with attributes \nencoding the results of the analysis. For details, see the \ndocumentation for Null Pointer Annotation and for the Array \nBounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
 		
 		
 		
@@ -10711,7 +10793,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nThis option turns on annotations for Array Bound Check. This \ncreates annotations that can be added to class files and later \nused by the JVM.", defaultBool)));
+		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nPerform a static analysis of which array bounds checks may \nsafely be eliminated and annotate output class files with \nattributes encoding the results of the analysis. For details, \nsee the documentation for Array Bounds Annotation and for the \nArray Bounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
 		
 		
 		
@@ -10727,7 +10809,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nThis option turns on the generation of side-effect attributes.", defaultBool)));
+		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nEnable the generation of side-effect attributes. ", defaultBool)));
 		
 		
 		
@@ -10743,7 +10825,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "\nThis option turns on the generation of field read/write \nattributes.", defaultBool)));
+		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "\nEnable the generation of field read/write attributes.", defaultBool)));
 		
 		
 
@@ -10787,7 +10869,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nPrint out time statistics about transformations.", defaultBool)));
+		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nReport the time required to perform some of Soot's \ntransformations. ", defaultBool)));
 		
 		
 		
@@ -10803,7 +10885,7 @@ Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
 			
 		}
 
-		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract garbage-collection time from the time stats.", defaultBool)));
+		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations. ", defaultBool)));
 		
 		
 

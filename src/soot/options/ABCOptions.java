@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Array Bound Check Options. */
+/** Option parser for Array Bound Checker. */
 public class ABCOptions
 {
     private Map options;

@@ -114,6 +114,19 @@ public class EntryPoints
         }
         return ret;
     }
+
+    /** Returns a list of all concrete methods of all application classes. */
+    public List methodsOfApplicationClasses() {
+        List ret = new ArrayList();
+        for( Iterator clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = (SootMethod) mIt.next();
+                if( m.isConcrete() ) ret.add( m );
+            }
+        }
+        return ret;
+    }
 }
 
 

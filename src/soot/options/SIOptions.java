@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Static Inlining. */
+/** Option parser for Static Inliner. */
 public class SIOptions
 {
     private Map options;
@@ -46,7 +46,10 @@ public class SIOptions
     
      * .
     
-     * As in StaticMethodBinder.
+     * Insert, before the inlined body of the target method, a check 
+     * that throws a NullPointerException if the receiver object is 
+     * null. This ensures that inlining will not eliminate exceptions 
+     * which would have occurred in its absence. 
      */
     public boolean insert_null_checks() {
         return soot.PhaseOptions.getBoolean( options, "insert-null-checks" );
@@ -56,7 +59,20 @@ public class SIOptions
     
      * .
     
-     * As in StaticMethodBinder.
+     * Insert extra casts for the Java bytecode verifier. The 
+     * verifier may complain if the inlined method uses this and the 
+     * declared type of the receiver of the call being inlined is 
+     * different from the type implementing the target method being 
+     * inlined. Say, for example, that Singer is an interface declaring 
+     * the sing() method and that the call graph shows that all 
+     * receiver objects at a particular call site, singer.sing() (with 
+     * singer declared as a Singer) are in fact Bird objects (Bird 
+     * being a class that implements Singer). The implementation of 
+     * Bird.sing() may perform operations on this which are only 
+     * allowed on Birds, rather than Singers. The Insert Redundant 
+     * Casts option ensures that this cannot lead to verification 
+     * errors, by inserting a cast of bird to the Bird type before 
+     * inlining the body of Bird.sing().
      */
     public boolean insert_redundant_casts() {
         return soot.PhaseOptions.getBoolean( options, "insert-redundant-casts" );
@@ -93,8 +109,8 @@ public class SIOptions
      * .
     
      * Determines the maximum allowed expansion of a method. Inlining 
-     * will cause the method to grow by a factor of no more than 
-     * expansion-factor. 
+     * will cause the method to grow by a factor of no more than the 
+     * Expansion Factor. 
      */
     public float expansion_factor() {
         return soot.PhaseOptions.getFloat( options, "expansion-factor" );
@@ -103,11 +119,11 @@ public class SIOptions
     public static final int allowed_modifier_changes_unsafe = 1;
     public static final int allowed_modifier_changes_safe = 2;
     public static final int allowed_modifier_changes_none = 3;
-    /** Allow Modifier Changes --
+    /** Allowed Modifier Changes --
     
      * .
     
-     * As in StaticMethodBinder.
+     * Specify which changes in visibility modifiers are allowed. 
      */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );

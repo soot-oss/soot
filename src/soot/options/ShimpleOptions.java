@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Shimple Phase Options. */
+/** Option parser for Shimple Body Creation. */
 public class ShimpleOptions
 {
     private Map options;

@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Call Graph. */
+/** Option parser for Call Graph Constructor. */
 public class CGOptions
 {
     private Map options;
@@ -54,7 +54,7 @@ public class CGOptions
      * initializer could be executed. This may make the call graph very 
      * large. When this option is set to false, any calls to 
      * Class.forName() for which the class cannot be determined 
-     * statically are not assumed to call any static initializers. 
+     * statically are assumed to call no static initializers. 
      */
     public boolean safe_forname() {
         return soot.PhaseOptions.getBoolean( options, "safe-forname" );
@@ -89,6 +89,26 @@ public class CGOptions
      */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
+    }
+    
+    /** All Application Class Methods Reachable --
+    
+     * Assume all methods of application classes are reachable..
+    
+     * When this option is false, the call graph is built starting at a 
+     * set of entry points, and only methods reachable from those entry 
+     * points are processed. Unreachable methods will not have any call 
+     * graph edges generated out of them. Setting this option to true 
+     * makes Soot consider all methods of application classes to be 
+     * reachable, so call edges are generated for all of them. This 
+     * leads to a larger call graph. For program visualization 
+     * purposes, it is sometimes desirable to include edges from 
+     * unreachable methods; although these methods are unreachable in 
+     * the version being analyzed, they may become reachable if the 
+     * program is modified.
+     */
+    public boolean all_reachable() {
+        return soot.PhaseOptions.getBoolean( options, "all-reachable" );
     }
     
 }

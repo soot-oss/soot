@@ -39,9 +39,17 @@ public final class CallGraphBuilder
     private boolean appOnly = false;
     public ReachableMethods reachables() { return reachables; }
 
+    /** This constructor builds a complete call graph using the given
+     * PointsToAnalysis to resolve virtual calls. */
     public CallGraphBuilder( PointsToAnalysis pa ) {
         this.pa = pa;
         options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+        if( options.all_reachable() ) {
+            List entryPoints = new ArrayList();
+            entryPoints.addAll( EntryPoints.v().all() );
+            entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
+            Scene.v().setEntryPoints( entryPoints );
+        }
         cg = new CallGraph();
         Scene.v().setCallGraph( cg );
         reachables = Scene.v().getReachableMethods();
@@ -50,6 +58,11 @@ public final class CallGraphBuilder
             G.v().out.println( "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase." );
         }
     }
+    /** This constructor builds the incomplete hack call graph for the
+     * Dava ThrowFinder.
+     * It uses all application class methods as entry points, and it ignores
+     * any calls by non-application class methods.
+     * Don't use this constructor if you need a real call graph. */
     public CallGraphBuilder() {
         G.v().out.println( "Warning: using incomplete callgraph containing "+
                 "only application classes." );
@@ -57,7 +70,10 @@ public final class CallGraphBuilder
         options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         cg = new CallGraph();
         Scene.v().setCallGraph(cg);
-        reachables = Scene.v().getReachableMethods();
+        List entryPoints = new ArrayList();
+        entryPoints.addAll( EntryPoints.v().methodsOfApplicationClasses() );
+        entryPoints.addAll( EntryPoints.v().implicit() );
+        reachables = new ReachableMethods( cg, entryPoints );
         worklist = reachables.listener();
         appOnly = true;
     }

@@ -805,7 +805,7 @@ public class Options extends OptionsBase {
 +padOpt(" -src-prec ARG", "Sets source precedence for soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
-+padOpt(" -allow-phantom-refs", "Allow unresolved classes: may cause errors" )
++padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "Store output files in " )
@@ -840,7 +840,7 @@ public class Options extends OptionsBase {
 +padOpt(" -x ARG -exclude ARG", "Exclude classes in  from application classes" )
 +padOpt(" -dynamic-class ARG", "Note that  may be loaded dynamically" )
 +padOpt(" -dynamic-dir ARG", "Mark all classes in  as potentially dynamic" )
-+padOpt(" -dynamic-package ARG", "Marks Class Files in PACKAGES (separated by commas) as Potentially Dynamic Classes" )
++padOpt(" -dynamic-package ARG", "Marks classes in  as potentially dynamic" )
 +"\nInput Attribute Options:\n"
       
 +padOpt(" -keep-line-number", "Keep line number tables" )
@@ -849,8 +849,8 @@ public class Options extends OptionsBase {
       
 +padOpt(" -annot-nullpointer", "Emit null pointer attributes" )
 +padOpt(" -annot-arraybounds", "Emit array bounds check attributes" )
-+padOpt(" -annot-side-effect", "Enable side-effect attributes" )
-+padOpt(" -annot-fieldrw", "Enable field read/write attributes" )
++padOpt(" -annot-side-effect", "Emit side-effect attributes" )
++padOpt(" -annot-fieldrw", "Emit field read/write attributes" )
 +"\nMiscellaneous Options:\n"
       
 +padOpt(" -time", "Report time required for tranformations" )
@@ -882,11 +882,11 @@ public class Options extends OptionsBase {
         +padVal("wjop.smb", "")
         +padVal("wjop.si", "")
         +padOpt("wjap", "")
-        +padVal("wjap.ra", "")
-        +padOpt("shimple", "General Shimple options.")
-        +padOpt("stp", "")
-        +padOpt("sop", "")
-        +padVal("sop.cpf", "")
+        +padVal("wjap.ra", " Find array variables always pointing to rectangular two-dimensional array objects. ")
+        +padOpt("shimple", "")
+        +padOpt("stp", "Apply Shimple-based transformations")
+        +padOpt("sop", "Apply Shimple-based optimizations")
+        +padVal("sop.cpf", "Performs constant propagation and folding on Shimple.")
         +padOpt("jtp", "")
         +padOpt("jop", "")
         +padVal("jop.cse", "")
@@ -946,20 +946,20 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.a" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Jimple Local Aggregator removes some unnecessary copies by \ncombining some local variables. Essentially, it finds \ndefinitions which have only a single use and, if it is safe to \ndo so, removes the original definition after replacing the use \nwith the definition's right-hand side. At this stage in \nJimpleBody construction, local aggregation serves largely to \nremove the copies to and from stack variables which simulate \nload and store instructions in the original bytecode."
+                "\nThe Jimple Local Aggregator removes some unnecessary copies by \ncombining local variables. Essentially, it finds definitions \nwhich have only a single use and, if it is safe to do so, \nremoves the original definition after replacing the use with the \ndefinition's right-hand side. At this stage in JimpleBody \nconstruction, local aggregation serves largely to remove the \ncopies to and from stack variables which simulate load and store \ninstructions in the original bytecode."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-stack-locals (true)", "" );
     
         if( phaseName.equals( "jb.ule" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Unused Local Eliminator phase removes any unused locals \nfrom the method. "
+                "\nThe Unused Local Eliminator removes any unused locals from the \nmethod. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jb.tr" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in the variable by the method. "
+                "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in them over the course of the \nmethod. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -994,7 +994,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.cp-ule" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis phase removes any locals that are unused as a result of \ncopy propagation. "
+                "\nThis phase removes any locals that are unused after copy \npropagation. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1007,7 +1007,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.ne" ) )
             return "Phase "+phaseName+":\n"+
-                "\nRemoves nop statements from the method. "
+                "\nThe Nop Eliminator removes nop statements from the method. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1019,16 +1019,17 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe purpose of this pack is to compute a call graph. When this \npack finishes, a call graph is available in the Scene. The \ndifferent phases in this pack are different ways to construct \nthe call graph. Exactly one phase in this pack may be enabled; \nSoot will raise an error otherwise. "
+                "\nThe Call Graph Constructor computes a call graph for whole \nprogram analysis. When this pack finishes, a call graph is \navailable in the Scene. The different phases in this pack are \ndifferent ways to construct the call graph. Exactly one phase in \nthis pack may be enabled; Soot will raise an error otherwise. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "safe-forname (true)", "Handle Class.forName() calls conservatively" )
                 +padOpt( "safe-newinstance (true)", "Handle Class.newInstance() calls conservatively" )
-                +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" );
+                +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
+                +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis phase generates uses Class Hierarchy Analysis to generate a \ncall graph."
+                "\nThis phase uses Class Hierarchy Analysis to generate a call \ngraph."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "verbose (false)", "Print statistics about the resulting call graph" );
@@ -1115,19 +1116,19 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSoot can do whole-program analyses. For the current version of \nSoot, this means that Jimple bodies are created for each method \nin the application, and analyses run on this set of Jimple \nbodies. The application consists of one class, specified on the \ncommand-line, plus all classes referenced (directly or \nindirectly) by it. It excludes classes in java.*, javax.*, and \nsun.*. This mode is triggered by the --app option. In \nwhole-program mode, Soot applies the contents of the \nWhole-Jimple Transformation Pack to each method under analysis. \nThis occurs after all Jimple bodies have been created. In an \nunmodified version of Soot, the only transformation in wjtp is \nthe Spark pointer analysis kit. Spark has many options, which \nare listed at spark.ps. "
+                "\nSoot can perform whole-program analyses. In whole-program \nmode, Soot applies the contents of the Whole-Jimple \nTransformation Pack to the scene as a whole after construcing a \ncall graph for the program. In an unmodified copy of Soot the \nWhole-Jimple Transformation Pack is empty."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nTo run optimizing transformations on the whole program, use the \n-w command-line option. This tells Soot to apply Whole-Jimple \nOptimization Pack. The default behaviour of this Pack has \nstatic method binding disabled and static inlining enabled. To \nreverse this, give the options -p wjop.smb enabled:true -p \nwjop.si disabled. "
+                "\nIf Soot is running in whole program mode and the Whole-Jimple \nOptimization Pack is enabled, the pack's transformations are \napplied to the scene as a whole after construction of the call \ngraph and application of any enabled Whole-Jimple \nTransformations."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "wjop.smb" ) )
             return "Phase "+phaseName+":\n"+
-                "\nStatic method binding uses CHA or VTA to statically bind \nmonomorphic call sites. That is, smb takes the call graph \nreturned by CHA or VTA; if the analysis result shows that any \nvirtual invoke statement in the Jimple bodies actually only \ncalls one method, then a static copy of the method is made, and \nthe virtual invoke is changed to a static invoke. \n"
+                "\nThe Static Method Binder statically binds monomorphic call \nsites. That is, it searches the call graph for virtual method \ninvocations that can be determined statically to call only a \nsingle implementation of the called method. Then it replaces \nsuch virtual invocations with invocations of a static copy of \nthe single called implementation. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "insert-null-checks (true)", "" )
@@ -1142,7 +1143,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjop.si" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe StaticInliner takes an call graph returned by CHA or VTA \nand visits all call sites in the application in a bottom-up \nfashion, inlining invoke statements which is determined to be \nmonomorphic by analysis result. Note that the modifier \n``static'' is supposed to be compared to a \n(not-currently-implemented) profile-guided inliner. \n"
+                "\nThe Static Inliner visits all call sites in the call graph in a \nbottom-up fashion, replacing monomorphic calls with inlined \ncopies of the invoked methods. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "insert-null-checks (true)", "" )
@@ -1160,25 +1161,25 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjap" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nSome analyses do not transform Jimple body directly, but \nannotate statements or values with tags. Whole-Jimple annotation \npack provides a place for annotation-oriented analyses in whole \nprogram mode."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "wjap.ra" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Rectangular Array Finder traverses Jimple statements based \non the static call graph, and finds array variables which always \nhold rectangular two-dimensional array objects. In Java, a \nmulti-dimensional array is an array of arrays, which means the \nshape of the array can be ragged. Nevertheless, many \napplications use rectangular arrays. Knowing that an array is \nrectangular can be very helpful in proving safe array bounds \nchecks. The Rectangular Array Finder does not change the program \nbeing analyzed. Its results are used by the Array Bound Checker."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", " Find array variables always pointing to rectangular two-dimensional array objects. " );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "shimple" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThese options affect the Shimple body behaviour. \nCurrently, the only available options affect Shimple during Phi \n	 node elimination."
+                "\nShimple Body Creation creates a 	 ShimpleBody for each input \nmethod. Shimple 	 is Soot's SSA representation."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "phi-elim-opt", "Options affecting Phi node             elimination." )
-                +padVal( "none", "If enabled, no optimizations are applied             before or after eliminating Phi nodes." )
+                +padVal( "none", "Do not optimize during Phi elimination" )
                 
-                +padVal( "pre", "If enabled, some optimizations are applied               before Phi nodes are eliminated." )
+                +padVal( "pre", "Perform some optimizations before eliminating Phi nodes" )
                 
                 +padVal( "post (default)", "If enabled, some optimizations are applied after               Phi nodes are eliminated." )
                 
@@ -1187,40 +1188,40 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "stp" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nWhen the Shimple representation is produced, Soot applies the \ncontents of the Shimple Transformation Pack to each method under \nanalysis. This pack contains no transformations in an \nunmodified version of Soot."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "When enabled, Shimple-based transformations are applied." );
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "sop" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Shimple Optimization Pack contains transformations that \nperform optimizations on Shimple, Soot's SSA representation."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "When enabled, Shimple-based optimizations are           applied." );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "sop.cpf" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nAn example implementation of constant propagation using \nShimple. Informal tests show that this analysis is already more \npowerful than the Jimple Constant Propagator and Folder, \nparticularly when control flow is involved. This optimization \ndemonstrates some of the benefits of SSA --- particularly the \nfact that Phi nodes represent natural merge points in the \ncontrol flow. This implementation also demonstrates how to \naccess U/D and D/U chains in Shimple."
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "An example optimization written for 						Shimple." );
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jtp" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nSoot applies the contents of the Jimple Transformation Pack to \neach method under analysis. This pack contains no \ntransformations in an unmodified version of Soot. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nWhen Soot is given the -O or -optimize command-line option, it \napplies the Jimple Optimization Pack to every JimpleBody in \napplication classes. This section lists the default \ntransformations in the Jimple Optimization Pack. "
+                "\nWhen Soot's Optimize option is on, Soot applies the Jimple \nOptimization Pack to every JimpleBody in application classes. \nThis section lists the default transformations in the Jimple \nOptimization Pack. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "jop.cse" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Common Subexpression Eliminator runs an available \nexpressions analysis on the method body, then eliminates common \nsubexpressions. This implementation is especially slow, as it \nruns on individual statements rather than on basic blocks. A \nbetter implementation (which would find most common \nsubexpressions, but not all) would use basic blocks instead. \nThis implementation is also slow because the flow universe is \nexplicitly created; it need not be. A better implementation \nwould implicitly compute the kill sets at every node. Because \nof the current slowness, this transformation is not enabled by \ndefault. "
+                "\nThe Common Subexpression Eliminator runs an available \nexpressions analysis on the method body, then eliminates common \nsubexpressions. This implementation is especially slow, as it \nruns on individual statements rather than on basic blocks. A \nbetter implementation (which would find most common \nsubexpressions, but not all) would use basic blocks instead. \nThis implementation is also slow because the flow universe is \nexplicitly created; it need not be. A better implementation \nwould implicitly compute the kill sets at every node. Because \nof its current slowness, this transformation is not enabled by \ndefault. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "naive-side-effect", "Use a naive side effect analysis even if interprocedural information is available" );
+                +padOpt( "naive-side-effect", "Use naive side effect analysis even if interprocedural information is available" );
     
         if( phaseName.equals( "jop.bcm" ) )
             return "Phase "+phaseName+":\n"+
@@ -1254,13 +1255,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.cpf" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Constant Propagator and Folder evaluates any expressions \nconsisting entirely of compile-time constants, for example 2 * \n3, and replaces the expression with the constant result, in this \ncase 6. "
+                "\nThe Jimple Constant Propagator and Folder evaluates any \nexpressions consisting entirely of compile-time constants, for \nexample 2 * 3, and replaces the expression with the constant \nresult, in this case 6. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jop.cbf" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Conditional Branch Folder statically evaluates the \nconditional expression of Jimple IfStmts. If the condition is \nidentically `true' or `false', the Folder replaces the \nconditional branch statement with an unconditional `goto' \nstatement. "
+                "\nThe Conditional Branch Folder statically evaluates the \nconditional expression of Jimple if statements. If the \ncondition is identically true or false, the Folder replaces the \nconditional branch statement with an unconditional goto \nstatement. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1279,7 +1280,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jop.ubf1" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Unconditional Branch Folder removes unnecessary `goto' \nstatements from a JimpleBody. If a GotoStmt's target is the next \ninstruction, then it is removed. If a GotoStmt's target is \nanother GotoStmt, with target y, then the first statement's \ntarget is changed to y'. If some IfStmt's target is a GotoStmt, \nthen the IfStmt's target can be updated to the GotoStmt's \ntarget. (These situations can result from other optimizations, \nand folding branches may itself generate more unreachable code.)"
+                "\nThe Unconditional Branch Folder removes unnecessary `goto' \nstatements from a JimpleBody. If a goto statement's target is \nthe next instruction, then the statement is removed. If a \ngoto's target is another goto, with target y, then the first \nstatement's target is changed to y. If some if statement's \ntarget is a goto statement, then the if's target can be replaced \nwith the goto's target. (These situations can result from other \noptimizations, and branch folding may itself generate more \nunreachable code.)"
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1549,7 +1550,8 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"safe-forname "
                 +"safe-newinstance "
-                +"verbose ";
+                +"verbose "
+                +"all-reachable ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -1897,7 +1899,8 @@ public class Options extends OptionsBase {
               +"enabled:true "
               +"safe-forname:true "
               +"safe-newinstance:true "
-              +"verbose:false ";
+              +"verbose:false "
+              +"all-reachable:false ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

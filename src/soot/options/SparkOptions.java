@@ -221,9 +221,8 @@ public class SparkOptions
      * Collapse single-entry subgraphs of the PAG.
     
      * When this option is set to true, variable (Green) nodes which 
-     * forming single-entry subgraphs (so they must have the same 
-     * points-to set) are merged together before propagation begins. 
-     * 
+     * form single-entry subgraphs (so they must have the same 
+     * points-to set) are merged before propagation begins. 
      */
     public boolean simplify_offline() {
         return soot.PhaseOptions.getBoolean( options, "simplify-offline" );
@@ -235,8 +234,7 @@ public class SparkOptions
     
      * When this option is set to true, variable (Green) nodes which 
      * form strongly-connected components (so they must have the same 
-     * points-to set) are merged together before propagation begins. 
-     * 
+     * points-to set) are merged before propagation begins. 
      */
     public boolean simplify_sccs() {
         return soot.PhaseOptions.getBoolean( options, "simplify-sccs" );
@@ -290,7 +288,7 @@ public class SparkOptions
     
      * When this option is set to true, a representation of the 
      * resulting points-to sets is dumped. The format is similar to 
-     * that of the dump-pag option, and is therefore suitable for 
+     * that of the Dump PAG option, and is therefore suitable for 
      * comparison with the results of other solvers. 
      */
     public boolean dump_solution() {
@@ -302,9 +300,9 @@ public class SparkOptions
      * Sort variable nodes in dump.
     
      * When this option is set to true, the representation dumped by 
-     * the dump-pag option is dumped with the variable (green) nodes in 
+     * the Dump PAG option is dumped with the variable (green) nodes in 
      * (pseudo-)topological order. This option has no effect unless 
-     * dump-pag is true. 
+     * Dump PAG is true. 
      */
     public boolean topo_sort() {
         return soot.PhaseOptions.getBoolean( options, "topo-sort" );
@@ -315,8 +313,8 @@ public class SparkOptions
      * Include declared types in dump.
     
      * When this option is set to true, the representation dumped by 
-     * the dump-pag option includes type information for all nodes. 
-     * This option has no effect unless dump-pag is true. 
+     * the Dump PAG option includes type information for all nodes. 
+     * This option has no effect unless Dump PAG is true. 
      */
     public boolean dump_types() {
         return soot.PhaseOptions.getBoolean( options, "dump-types" );
@@ -327,11 +325,12 @@ public class SparkOptions
      * In dump, label variables by class and method.
     
      * When this option is set to true, the representation dumped by 
-     * the dump-pag option represents nodes by numbering each class, 
+     * the Dump PAG option represents nodes by numbering each class, 
      * method, and variable within the method separately, rather than 
      * assigning a single integer to each node. This option has no 
-     * effect unless dump-pag is true. Setting class-method-var to true 
-     * has the effect of setting topo-sort to false. 
+     * effect unless Dump PAG is true. Setting Class Method Var to 
+     * true has the effect of setting Topological Sort to false. 
+     * 
      */
     public boolean class_method_var() {
         return soot.PhaseOptions.getBoolean( options, "class-method-var" );
@@ -355,7 +354,7 @@ public class SparkOptions
      * Output points-to results in tags for viewing with the Jimple.
     
      * When this option is set to true, the results of the 
-     * analysis are encoded inside tags, and printed with the resulting 
+     * analysis are encoded within tags and printed with the resulting 
      * Jimple code. 
      */
     public boolean add_tags() {
@@ -421,8 +420,7 @@ public class SparkOptions
     
      * Select points-to set implementation.
     
-     * Selects an implementation of a points-to set that Spark should 
-     * use. 
+     * Select an implementation of points-to sets for Spark to use. 
      */
     public int set_impl() {
         String s = soot.PhaseOptions.getString( options, "set-impl" );
@@ -458,9 +456,9 @@ public class SparkOptions
      * Select implementation of points-to set for old part of double 
      * set.
     
-     * Selects an implementation for the sets of old objects in the 
-     * double points-to set implementation. This option has no effect 
-     * unless set-impl is set to double. 
+     * Select an implementation for sets of old objects in the double 
+     * points-to set implementation. This option has no effect unless 
+     * Set Implementation is set to double. 
      */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString( options, "double-set-old" );
@@ -493,9 +491,9 @@ public class SparkOptions
      * Select implementation of points-to set for new part of double 
      * set.
     
-     * Selects an implementation for the sets of new objects in the 
-     * double points-to set implementation. This option has no effect 
-     * unless setImpl is set to double. 
+     * Select an implementation for sets of new objects in the double 
+     * points-to set implementation. This option has no effect unless 
+     * Set Implementation is set to double. 
      */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString( options, "double-set-new" );
