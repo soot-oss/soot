@@ -274,7 +274,7 @@ public class InitialResolver {
         //System.out.println("src source path: "+src.source().path());
         //System.out.println("src package: "+src.package_());
        
-        String srcName = src.source().name();
+        String srcName = src.source().path();
         String srcFileName = null;
         if (src.package_() != null){
             String slashedPkg = soot.util.StringTools.replaceAll(src.package_().package_().fullName(), ".", System.getProperty("file.separator"));
