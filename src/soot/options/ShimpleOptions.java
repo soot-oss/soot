@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Shimple Body Creation. */
+/** Option parser for Shimple Control. */
 public class ShimpleOptions
 {
     private Map options;
@@ -48,10 +48,9 @@ public class ShimpleOptions
     public static final int phi_elim_opt_pre_and_post = 4;
     /** Phi Node Elimination Optimizations --
     
-     * Options affecting Phi node elimination..
+     * Phi node elimination optimizations.
     
-     * These options control Shimple's behaviour when 
-     * eliminating Phi nodes.
+     * 
      */
     public int phi_elim_opt() {
         String s = soot.PhaseOptions.getString( options, "phi-elim-opt" );

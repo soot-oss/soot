@@ -17,9 +17,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
 <xsl:template mode="to_latex" match="dollar">\$</xsl:template>
 
-<xsl:template mode="to_latex" match="lt">\ensuremath{&lt;}</xsl:template>
+<xsl:template mode="to_latex" match="lt"><xsl:choose><xsl:when test="parent::pre">&lt;</xsl:when><xsl:otherwise>\ensuremath{&lt;}</xsl:otherwise></xsl:choose></xsl:template>
 
-<xsl:template mode="to_latex" match="gt">\ensuremath{&gt;}</xsl:template>
+<xsl:template mode="to_latex" match="gt"><xsl:choose><xsl:when test="parent::pre">&gt;</xsl:when><xsl:otherwise>\ensuremath{&gt;}</xsl:otherwise></xsl:choose></xsl:template>
 
 <xsl:template mode="to_latex" match="pre">
 \begin{quote}\begin{verbatim}

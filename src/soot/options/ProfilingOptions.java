@@ -44,9 +44,12 @@ public class ProfilingOptions
     
     /** Not Main Entry --
     
-     * .
+     * Instrument runBenchmark() instead of main().
     
-     * 
+     * Insert the calls to the MultiCounter at the beginning and end 
+     * of methods with the signature long 
+     * runBenchmark(java.lang.String[]) instead of the signature void 
+     * main(java.lang.String[]).
      */
     public boolean notmainentry() {
         return soot.PhaseOptions.getBoolean( options, "notmainentry" );

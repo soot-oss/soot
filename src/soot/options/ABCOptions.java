@@ -46,24 +46,27 @@ public class ABCOptions
     
      * .
     
-     * A macro. Instead of typing a long string of phase options, 
-     * this option will turn on all options of the phase ``jap.abc''. 
-     * 
+     * Setting the With All option to true is equivalent to setting 
+     * each of With CSE, With Array Ref, With Field Ref, With Class 
+     * Field, and With Rectangular Array to true.
      */
     public boolean with_all() {
         return soot.PhaseOptions.getBoolean( options, "with-all" );
     }
     
-    /** With Field References --
+    /** With Common Sub-expressions --
     
      * .
     
-     * The analysis treats field references (static and instance) as 
-     * common subexpressions. The restrictions from the `with-arrayref' 
-     * option also apply. 
+     * The analysis will consider common subexpressions. For example, 
+     * consider the situation where r1 is assigned a*b; later, r2 is 
+     * assigned a*b, where neither a nor b have changed between the two 
+     * statements. The analysis can conclude that r2 has the same value 
+     * as r1. Experiments show that this option can improve the result 
+     * slightly.
      */
-    public boolean with_fieldref() {
-        return soot.PhaseOptions.getBoolean( options, "with-fieldref" );
+    public boolean with_cse() {
+        return soot.PhaseOptions.getBoolean( options, "with-cse" );
     }
     
     /** With Array References --
@@ -72,29 +75,30 @@ public class ABCOptions
     
      * With this option enabled, array references can be considered as 
      * common subexpressions; however, we are more conservative when 
-     * writing into an array, because array objects may be aliased. 
-     * NOTE: We also assume that the application in a single-threaded 
-     * program or in a synchronized block. That is, an array element 
-     * may not be changed by other threads between two array 
-     * references. 
+     * writing into an array, because array objects may be aliased. We 
+     * also assume that the application is single-threaded or that the 
+     * array references occur in a synchronized block. That is, we 
+     * assume that an array element may not be changed by other threads 
+     * between two array references.
      */
     public boolean with_arrayref() {
         return soot.PhaseOptions.getBoolean( options, "with-arrayref" );
     }
     
-    /** With Common Sub-expressions --
+    /** With Field References --
     
      * .
     
-     * The analysis will consider common subexpressions. For example, 
-     * consider the situation where r1 is assigned a*b; later, r2 
-     * is assigned a*b, where both a and b have not been changed 
-     * between the two statements. The analysis can conclude that r2 
-     * has the same value as r1. Experiments show that this option 
-     * can improve the result slightly. 
+     * The analysis treats field references (static and instance) as 
+     * common subexpressions; however, we are more conservative when 
+     * writing to a field, because the base of the field reference may 
+     * be aliased. We also assume that the application is 
+     * single-threaded or that the field references occur in a 
+     * synchronized block. That is, we assume that a field may not be 
+     * changed by other threads between two field references.
      */
-    public boolean with_cse() {
-        return soot.PhaseOptions.getBoolean( options, "with-cse" );
+    public boolean with_fieldref() {
+        return soot.PhaseOptions.getBoolean( options, "with-fieldref" );
     }
     
     /** With Class Field --
@@ -102,11 +106,10 @@ public class ABCOptions
      * .
     
      * This option makes the analysis work on the class level. The 
-     * algorithm analyzes `final' or `private' class fields first. It 
-     * can recognize the fields that hold array objects with constant 
-     * length. In an application using lots of array fields, this 
-     * option can improve the analysis results dramatically. 
-     * 
+     * algorithm analyzes final or private class fields first. It can 
+     * recognize the fields that hold array objects of constant length. 
+     * In an application using lots of array fields, this option can 
+     * improve the analysis results dramatically.
      */
     public boolean with_classfield() {
         return soot.PhaseOptions.getBoolean( options, "with-classfield" );
@@ -130,7 +133,10 @@ public class ABCOptions
     
      * Profile the results of array bounds check analysis..
     
-     * 
+     * Profile the results of array bounds check analysis. The 
+     * inserted profiling code assumes the existence of a MultiCounter 
+     * class implementing the methods invoked. For details, see the 
+     * ArrayBoundsChecker source code.
      */
     public boolean profiling() {
         return soot.PhaseOptions.getBoolean( options, "profiling" );

@@ -14,6 +14,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 \author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca})\\
 Feng Qian (\htmladdnormallink{fqian@sable.mcgill.ca}{mailto:fqian@sable.mcgill.ca})\\
 Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@sable.mcgill.ca})\\
+John Jorgensen\\
 }
 
 \renewcommand{\arraystretch}{1.3}
@@ -28,7 +29,7 @@ Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@
 
 Soot is invoked as follows:
 \begin{quote}
-{\tt java} {\it javaOptions} {\tt soot.Main} [ {\it sootOption}* ] {\it classname}+
+{\tt java} {\it javaOptions} {\tt soot.Main} [ {\it sootOption}* ] {\it classname}*
 \end{quote}
 
 \section{DESCRIPTION} 
@@ -70,9 +71,12 @@ SYNOPSIS}.
   \item[<xsl:for-each select="alias">
   {\tt -<xsl:if test="string-length(string(.))>1">-</xsl:if><xsl:value-of select="."/>}<xsl:value-of select="$argLabel"/><xsl:if test="count(./following-sibling::alias) > 0"><xsl:text>, </xsl:text></xsl:if>
   </xsl:for-each>]
-<xsl:if test="value/default">
-(default value: {\tt 
-<xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each>})
+<xsl:if test="default|value/default">
+(default value: {\tt <xsl:choose>  
+<xsl:when test="default"><xsl:value-of select="default"/></xsl:when>
+<xsl:when test="value/default"><xsl:for-each select="value"><xsl:if test="default"><xsl:value-of select="alias"/></xsl:if></xsl:for-each></xsl:when>
+<xsl:otherwise>false</xsl:otherwise>
+</xsl:choose>})
 </xsl:if>
 
 <xsl:apply-templates mode="to_latex" select="long_desc"/>
@@ -83,11 +87,9 @@ SYNOPSIS}.
 <xsl:if test="value">
 
 Possible values:\\
-\begin{longtable}{p{1in}p{1.5in}p{3in}}
+\begin{longtable}{p{1in}p{4in}}
 <xsl:for-each select="value">
   <xsl:for-each select="alias">{\tt <xsl:value-of select="."/>}<xsl:if test="count(./following-sibling::alias) > 0">,</xsl:if><xsl:text> </xsl:text></xsl:for-each>
-&amp;
-<xsl:value-of select="name"/>
 &amp;
 <xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>

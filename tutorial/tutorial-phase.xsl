@@ -14,6 +14,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 \author{Patrick Lam (\htmladdnormallink{plam@sable.mcgill.ca}{mailto:plam@sable.mcgill.ca})\\
 Feng Qian (\htmladdnormallink{fqian@sable.mcgill.ca}{mailto:fqian@sable.mcgill.ca})\\
 Ond\v{r}ej Lhot\'ak (\htmladdnormallink{olhotak@sable.mcgill.ca}{mailto:olhotak@sable.mcgill.ca})\\
+John Jorgensen\\ 
 }
 
 \begin{document}
@@ -31,8 +32,8 @@ variables ({\tt jb.a}).
 
 Phase options provide a way for you to
 change the behaviour of a phase from the Soot command-line.  They take
-the form {\tt -p {\em phase}.{\em name} 
-{\em option}:{\em value}}.  For instance,
+the form {\tt -p }{\em phase}.{\em name} 
+{\em option}:{\em value}.  For instance,
 to instruct Soot to use original names in Jimple, we would invoke Soot
 like this:
 \begin{verbatim}
@@ -91,7 +92,7 @@ meet your requirements and then calls {\tt soot.Main}.
 \vspace{3ex}
 
 The remainder of this document describes the transformations belonging
-to Soot's various {\tt Pack} and their corresponding phase
+to Soot's various {\tt Pack}s and their corresponding phase
 options.
 
 \tableofcontents
@@ -145,11 +146,9 @@ options.
 <xsl:if test="value">
 
 Possible values:\\
-\begin{longtable}{p{1in}p{1.5in}p{3in}}
+\begin{longtable}{p{1in}p{4in}}
 <xsl:for-each select="value">
-{\tt <xsl:for-each select="alias"><xsl:value-of select="."/><xsl:text> </xsl:text></xsl:for-each>}
-&amp;
-<xsl:value-of select="name"/>
+{\tt <xsl:for-each select="alias"><xsl:value-of select="."/><xsl:if test="count(./following-sibling::alias) > 0">,</xsl:if><xsl:text> </xsl:text></xsl:for-each>}
 &amp;
 <xsl:apply-templates mode="to_latex" select="long_desc"/>\\
 </xsl:for-each>

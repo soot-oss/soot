@@ -155,6 +155,21 @@ public class Options extends OptionsBase {
             }
   
             else if( false
+            || option.equals( "process-dir" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( process_dir == null )
+                    process_dir = new LinkedList();
+
+                process_dir.add( value );
+            }
+  
+            else if( false
             || option.equals( "src-prec" )
             ) {
                 if( !hasMoreOptions() ) {
@@ -391,11 +406,6 @@ public class Options extends OptionsBase {
            }
   
             else if( false 
-            || option.equals( "via-grimp" )
-            )
-                via_grimp = true;
-  
-            else if( false 
             || option.equals( "xml-attributes" )
             )
                 xml_attributes = true;
@@ -457,24 +467,14 @@ public class Options extends OptionsBase {
             }
   
             else if( false 
+            || option.equals( "via-grimp" )
+            )
+                via_grimp = true;
+  
+            else if( false 
             || option.equals( "via-shimple" )
             )
                 via_shimple = true;
-  
-            else if( false
-            || option.equals( "process-dir" )
-            ) {
-                if( !hasMoreOptions() ) {
-                    G.v().out.println( "No value given for option -"+option );
-                    return false;
-                }
-                String value = nextOption();
-    
-                if( process_dir == null )
-                    process_dir = new LinkedList();
-
-                process_dir.add( value );
-            }
   
             else if( false
             || option.equals( "i" )
@@ -690,6 +690,14 @@ public class Options extends OptionsBase {
     public String soot_classpath() { return soot_classpath; }
     public void set_soot_classpath( String setting ) { soot_classpath = setting; }
     private String soot_classpath = "";
+    public List process_dir() { 
+        if( process_dir == null )
+            return java.util.Collections.EMPTY_LIST;
+        else
+            return process_dir;
+    }
+    public void set_process_dir( List setting ) { process_dir = setting; }
+    private List process_dir = null;
     public int src_prec() {
         if( src_prec == 0 ) return src_prec_class;
         return src_prec; 
@@ -709,26 +717,18 @@ public class Options extends OptionsBase {
     }
     public void set_output_format( int setting ) { output_format = setting; }
     private int output_format = 0;
-    public boolean via_grimp() { return via_grimp; }
-    private boolean via_grimp = false;
-    public void set_via_grimp( boolean setting ) { via_grimp = setting; }
-  
     public boolean xml_attributes() { return xml_attributes; }
     private boolean xml_attributes = false;
     public void set_xml_attributes( boolean setting ) { xml_attributes = setting; }
+  
+    public boolean via_grimp() { return via_grimp; }
+    private boolean via_grimp = false;
+    public void set_via_grimp( boolean setting ) { via_grimp = setting; }
   
     public boolean via_shimple() { return via_shimple; }
     private boolean via_shimple = false;
     public void set_via_shimple( boolean setting ) { via_shimple = setting; }
   
-    public List process_dir() { 
-        if( process_dir == null )
-            return java.util.Collections.EMPTY_LIST;
-        else
-            return process_dir;
-    }
-    public void set_process_dir( List setting ) { process_dir = setting; }
-    private List process_dir = null;
     public List include() { 
         if( include == null )
             return java.util.Collections.EMPTY_LIST;
@@ -802,14 +802,15 @@ public class Options extends OptionsBase {
 +"\nInput Options:\n"
       
 +padOpt(" -cp ARG -soot-class-path ARG -soot-classpath ARG", "Use  as the classpath for finding classes." )
-+padOpt(" -src-prec ARG", "Sets source precedence for soot" )
++padOpt(" -process-dir ARG", "Process all classes found in " )
++padOpt(" -src-precARG", "Sets source precedence for soot" )
 +padVal(" c class", "" )
 +padVal(" J jimple", "" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d ARG -output-dir ARG", "Store output files in " )
-+padOpt(" -f ARG -output-format ARG", "Set output format for Soot" )
++padOpt(" -fFORMAT -output-formatFORMAT", "Set output format for Soot" )
 +padVal(" J jimple", "" )
 +padVal(" j jimp", "" )
 +padVal(" S shimple", "" )
@@ -823,17 +824,14 @@ public class Options extends OptionsBase {
 +padVal(" jasmin", "" )
 +padVal(" c class", "" )
 +padVal(" d dava", "" )
-+padOpt(" -via-grimp", "Convert to bytecode via Grimple instead of via Baf" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +"\nProcessing Options:\n"
       
 +padOpt(" -p PHASE-NAME PHASE-OPTIONS -phase-option PHASE-NAME PHASE-OPTIONS", "Set phase's opt option to value" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
++padOpt(" -via-grimp", "Convert to bytecode via Grimp instead of via Baf" )
 +padOpt(" -via-shimple", "Enable Shimple SSA representation" )
-+"\nSingle File Mode Options:\n"
-      
-+padOpt(" -process-dir ARG", "Process all classes found in " )
 +"\nApplication Mode Options:\n"
       
 +padOpt(" -i ARG -include ARG", "Include classes in  as application classes" )
@@ -862,7 +860,7 @@ public class Options extends OptionsBase {
         return ""
     
         +padOpt("jb", "Create a JimpleBody for each method")
-        +padVal("jb.ls", "Associates separate locals with each use-def web")
+        +padVal("jb.ls", "Associates separate locals with each DU-UD web")
         +padVal("jb.a", "Removes some unnecessary copies")
         +padVal("jb.ule", "Removes unused locals")
         +padVal("jb.tr", "Assigns types to locals")
@@ -940,7 +938,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Local Splitter identifies use-def webs for local variables \nand introduces new variables so that each disjoint web is \nassociated with a single local. "
+                "\nThe Local Splitter identifies DU-UD webs for local variables \nand introduces new variables so that each disjoint web is \nassociated with a single local. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -965,7 +963,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.ulp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Unsplit-originals Local Packer executes only when the \n`use-original-names' option is chosen for the `jb' phase. The \nLocal Packer attempts to minimize the number of local variables \nrequired in a method by reusing the same variable for disjoint \ndef-use webs. Conceptually, it is the inverse of the Local \nSplitter. "
+                "\nThe Unsplit-originals Local Packer executes only when the \n`use-original-names' option is chosen for the `jb' phase. The \nLocal Packer attempts to minimize the number of local variables \nrequired in a method by reusing the same variable for disjoint \nDU-UD webs. Conceptually, it is the inverse of the Local \nSplitter. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "unsplit-original-locals (true)", "" );
@@ -1000,7 +998,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.lp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint def-use webs. Conceptually, it is the inverse of the \nLocal Splitter. "
+                "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint DU-UD webs. Conceptually, it is the inverse of the \nLocal Splitter. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "unsplit-original-locals (false)", "" );
@@ -1019,7 +1017,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "cg" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Call Graph Constructor computes a call graph for whole \nprogram analysis. When this pack finishes, a call graph is \navailable in the Scene. The different phases in this pack are \ndifferent ways to construct the call graph. Exactly one phase in \nthis pack may be enabled; Soot will raise an error otherwise. "
+                "\nThe Call Graph Constructor computes a call graph for whole \nprogram analysis. When this pack finishes, a call graph is \navailable in the Scene. The different phases in this pack are \ndifferent ways to construct the call graph. Exactly one phase in \nthis pack must be enabled; Soot will raise an error otherwise. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "safe-forname (true)", "Handle Class.forName() calls conservatively" )
@@ -1173,10 +1171,10 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "shimple" ) )
             return "Phase "+phaseName+":\n"+
-                "\nShimple Body Creation creates a 	 ShimpleBody for each input \nmethod. Shimple 	 is Soot's SSA representation."
+                "\nShimple Control sets parameters which apply throughout the \ncreation and manipulation of Shimple bodies. Shimple is Soot's \nSSA representation."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "phi-elim-opt", "Options affecting Phi node             elimination." )
+                +padOpt( "phi-elim-opt", "Phi node elimination optimizations" )
                 +padVal( "none", "Do not optimize during Phi elimination" )
                 
                 +padVal( "pre", "Perform some optimizations before eliminating Phi nodes" )
@@ -1304,13 +1302,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSoot has a number of phase options to configure the annotation \nprocess. Array bounds check and null pointer check detection \nhave separate phases and phase options. \n"
+                "\nThe Jimple Annotation Pack contains phases which add \nannotations to Jimple bodies individually (as opposed to the \nWhole-Jimple Annotation Pack, which adds annotations based on \nthe analysis of the whole program). "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jap.npc" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Null Pointer Check finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null. "
+                "\nThe Null Pointer Checker finds instruction which have the \npotential to throw NullPointerExceptions and adds annotations \nindicating whether or not the pointer being dereferenced can be \ndetermined statically not to be null. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "only-array-ref", "Annotate only array references" )
@@ -1324,34 +1322,34 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jap.abc" ) )
             return "Phase "+phaseName+":\n"+
-                "\nIf whole-program analysis is required, an extra phase wjap.ra \nfor finding rectangular arrays occurs. "
+                "\nThe Array Bound Checker performs a static analysis to determine \nwhich array bounds checks may safely be eliminated and then \nannotates statements with the results of the analysis. If Soot \nis in whole-program mode, the Array Bound Checker can use the \nresults provided by the Rectangular Array Finder."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "with-all", "" )
-                +padOpt( "with-fieldref", "" )
-                +padOpt( "with-arrayref", "" )
                 +padOpt( "with-cse", "" )
+                +padOpt( "with-arrayref", "" )
+                +padOpt( "with-fieldref", "" )
                 +padOpt( "with-classfield", "" )
                 +padOpt( "with-rectarray", "" )
                 +padOpt( "profiling", "Profile the results of array bounds check analysis." );
     
         if( phaseName.equals( "jap.profiling" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Profiling Generator inserts the method invocations required \nto initialize and to report the results of any profiling \nperformed by the Null Pointer Checker and Array Bound Checker. \nUsers of the Profiling Generator must provide a MultiCounter \nclass implementing the methods invoked. For details, see the \nProfilingGenerator source code. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "notmainentry (false)", "" );
+                +padOpt( "notmainentry (false)", "Instrument runBenchmark() instead of main()" );
     
         if( phaseName.equals( "jap.sea" ) )
             return "Phase "+phaseName+":\n"+
-                "\nUses the active invoke graph to produce side-effect attributes \nas described in the Spark thesis, chapter 6. "
+                "\nThe Side Effect Tagger uses the active invoke graph to produce \nside-effect attributes, as described in the Spark thesis, \nchapter 6."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "naive (false)", "" );
     
         if( phaseName.equals( "jap.fieldrw" ) )
             return "Phase "+phaseName+":\n"+
-                "\nUses the active invoke graph to produce tags indicating which \nfields may be read or written by each statement, including \ninvoke statements. "
+                "\nThe Field Read/Write Tagger uses the active invoke graph to \nproduce tags indicating which fields may be read or written by \neach statement, including invoke statements."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "threshold (100)", "" );
@@ -1370,7 +1368,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "gb" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Grimp Body Creation phase creates a GrimpBody for each \nsource method. It is run only if the output format is grimp or \ngrimple, or if class files are being output and the via-grimp \noption has been specified. "
+                "\nThe Grimp Body Creation phase creates a GrimpBody for each \nsource method. It is run only if the output format is grimp or \ngrimple, or if class files are being output and the Via Grimp \noption has been specified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1389,7 +1387,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "gb.a2" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Grimp Post-folding Aggregator combines local variables \nafter constructors have been folded. Constructor folding \ntypically introduces new opportunities for aggregation, since \nwhen a sequence of instructions like r2 = new \njava.util.ArrayList; r2.init(); r3 = r2 is replaced by r2 = \nnew java.util.ArrayList(); r3 = r2 the invocation of init no \nlonger represents a potential side-effect separating the two \ndefinitions, so they can be combined into r3 = new \njava.util.ArrayList(); (assuming there are no subsequent uses \nof r2"
+                "\nThe Grimp Post-folding Aggregator combines local variables \nafter constructors have been folded. Constructor folding \ntypically introduces new opportunities for aggregation, since \nwhen a sequence of instructions like r2 = new \njava.util.ArrayList; r2.init(); r3 = r2 is replaced by r2 = new \njava.util.ArrayList(); r3 = r2 the invocation of init no longer \nrepresents a potential side-effect separating the two \ndefinitions, so they can be combined into r3 = new \njava.util.ArrayList(); (assuming there are no subsequent uses of \nr2). "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-stack-locals (true)", "" );
@@ -1402,13 +1400,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "gop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Grimp Optimization pack performs optimizations on \nGrimpBodys (currently there are no optimizations performed \nspecifically on GrimpBodys, and the pack is empty). It is run \nonly if the output format is grimp or grimple, or if class files \nare being output and the via-grimp option has been specified. "
+                "\nThe Grimp Optimization pack performs optimizations on \nGrimpBodys (currently there are no optimizations performed \nspecifically on GrimpBodys, and the pack is empty). It is run \nonly if the output format is grimp or grimple, or if class files \nare being output and the Via Grimp option has been specified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "bb" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Baf Body Creation phase creates a BafBody from each source \nmethod. It is run if the output format is baf or b, or if class \nfiles are being output and the via-grimp option has not been \nspecified. "
+                "\nThe Baf Body Creation phase creates a BafBody from each source \nmethod. It is run if the output format is baf or b, or if class \nfiles are being output and the Via Grimp option has not been \nspecified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1426,7 +1424,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb.pho" ) )
             return "Phase "+phaseName+":\n"+
-                "\nApplies peephole optimizations to the Baf intermediate \nrepresentation. Individual optimizations must be implemented by \nclasses implementing the Peephole interface. The Peephole \nOptimizer reads the names of the Peephole classes at runtime \nfrom the file peephole.dat and loads them dynamically. Then it \ncontinues to run apply the Peepholes repeatedly until none of \nthem are able to perform any further optimizations. Soot \nprovides only one Peephole, named ExamplePeephole, which is not \nenabled by the delivered peephole.dat file. ExamplePeephole \nremoves all checkcast instructions."
+                "\nApplies peephole optimizations to the Baf intermediate \nrepresentation. Individual optimizations must be implemented by \nclasses implementing the Peephole interface. The Peephole \nOptimizer reads the names of the Peephole classes at runtime \nfrom the file peephole.dat and loads them dynamically. Then it \ncontinues to apply the Peepholes repeatedly until none of them \nare able to perform any further optimizations. Soot provides \nonly one Peephole, named ExamplePeephole, which is not enabled \nby the delivered peephole.dat file. ExamplePeephole removes all \ncheckcast instructions."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -1438,44 +1436,44 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb.lp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint def-use webs. Conceptually, it is the inverse of the \nLocal Splitter. "
+                "\nThe Local Packer attempts to minimize the number of local \nvariables required in a method by reusing the same variable for \ndisjoint DU-UD webs. Conceptually, it is the inverse of the \nLocal Splitter. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "unsplit-original-locals", "" );
     
         if( phaseName.equals( "bop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b, or if class files are being output and the \nvia-grimp option has not been specified. "
+                "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b, or if class files are being output and the \nVia Grimp option has not been specified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "tag" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Tag Aggregator pack aggregates tags attached to individual \nunits into a code attribute for each method, so that these \nattributes can be encoded in Java class files."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "tag.ln" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Line Number Tag Aggregator aggregates line number tags."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "tag.an" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Array Bounds and Null Pointer Tag Aggregator aggregates \ntags produced by the Array Bound Checker and Null Pointer \nChecker."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "tag.dep" ) )
             return "Phase "+phaseName+":\n"+
-                "\n"
+                "\nThe Dependence Tag Aggregator aggregates tags produced by the \nSide Effect Tagger."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "tag.fieldrw" ) )
             return "Phase "+phaseName+":\n"+
-                "\nAggregates field read/write tags produced by the Field \nRead/Write Tagger, phase jap.fieldrw."
+                "\nThe Field Read/Write Tag Aggregator aggregates field read/write \ntags produced by the Field Read/Write Tagger, phase jap.fieldrw. \n"
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
@@ -1724,9 +1722,9 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"with-all "
-                +"with-fieldref "
-                +"with-arrayref "
                 +"with-cse "
+                +"with-arrayref "
+                +"with-fieldref "
                 +"with-classfield "
                 +"with-rectarray "
                 +"profiling ";

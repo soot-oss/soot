@@ -23,7 +23,7 @@
 package soot.options;
 import java.util.*;
 
-/** Option parser for Null Pointer Check. */
+/** Option parser for Null Pointer Checker. */
 public class NPCOptions
 {
     private Map options;
@@ -57,9 +57,11 @@ public class NPCOptions
     
      * Insert instructions to count safe pointer accesses.
     
-     * Insert profiling instructions counting the number of eliminated 
-     * safe null pointer checks at runtime. This is only for profiling 
-     * purpose. 						
+     * Insert profiling instructions that at runtime count the number 
+     * of eliminated safe null pointer checks. The inserted profiling 
+     * code assumes the existence of a MultiCounter class implementing 
+     * the methods invoked. For details, see the NullPointerChecker 
+     * source code.
      */
     public boolean profiling() {
         return soot.PhaseOptions.getBoolean( options, "profiling" );
