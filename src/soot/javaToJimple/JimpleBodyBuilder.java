@@ -3458,9 +3458,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private soot.SootMethodRef getMethodFromClass(soot.SootClass sootClass, String name, ArrayList paramTypes, soot.Type returnType, boolean isStatic) {
         soot.SootMethodRef ref = soot.Scene.v().makeMethodRef(sootClass, name, paramTypes, returnType, isStatic);
-        if (sootClass.isInterface()){
-            ref = ref.resolve().makeRef();
-        }
         return ref;
     }
   
