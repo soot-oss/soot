@@ -345,8 +345,14 @@ public class InitialResolver {
                 //System.out.println("assuming anon inner sootClass name: "+sootClass.getName());
                 int index = sootClass.getName().indexOf("$");
                 int length = sootClass.getName().length();
-                int count = (new Integer(sootClass.getName().substring(index+1, length))).intValue();
+                int count = 0;
+                try {
+                    count = (new Integer(sootClass.getName().substring(index+1, length))).intValue();
                
+                }
+                catch(NumberFormatException e){
+                    throw new RuntimeException("Trying to process: "+sootClass.getName()+" as an anonymous inner class and it fails!");
+                }
                 int counter = 1;
 
                 Iterator anonIt = nestedClassBuilder.getAnonClassBodyList().iterator();

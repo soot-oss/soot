@@ -47,6 +47,12 @@ public class SootResolver
     private boolean mIsResolving = false;
     private InitialResolver initSourceResolver;
 
+    public InitialResolver getInitSourceResolver(){
+        if (initSourceResolver == null) {
+            initSourceResolver = new InitialResolver();
+        }
+        return initSourceResolver;
+    }
     /** Creates a new SootResolver. */
     //public SootResolver()
     //{
