@@ -75,6 +75,7 @@ public class CFGNodeEditPart
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
 		Node node = (Node)map.get(this);
 		((CFGNodeFigure)getFigure()).setBounds(new Rectangle(node.x, node.y, node.width, node.height));//getFigure().getBounds().height));//getFigure().getBounds().height));
+		//refreshSourceConnections();
 		List outgoing = getSourceConnections();
 		for (int i = 0; i < outgoing.size(); i++){
 			CFGEdgeEditPart edge = (CFGEdgeEditPart)outgoing.get(i);
@@ -91,7 +92,7 @@ public class CFGNodeEditPart
 				((FlowDataEditPart)next).resetChildColors();
 			}
 		}
-		((CFGNodeFigure)getFigure()).resetColors();
+		//((CFGNodeFigure)getFigure()).resetColors();
 	}
 	
 	public CFGNode getNode(){
@@ -123,6 +124,15 @@ public class CFGNodeEditPart
 		int y = getFigure().getBounds().y;
 		int width = getFigure().getBounds().width;
 		int height = getFigure().getBounds().height;
+		Point p = new Point(x, y);
+		System.out.println("loc: x "+((CFGNodeFigure)getFigure()).getLocation().x+" y: "+((CFGNodeFigure)getFigure()).getLocation().y);
+		System.out.println("point: x: "+x+" y: "+y);
+		return new XYAnchor(p);*/
+		//return ((CFGNodeFigure)getFigure()).getSrcAnchor();
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
 		Point p = new Point(x+width/2, y+height);
 		return new XYAnchor(p);*/
 		return new ChopboxAnchor(getFigure());
@@ -147,6 +157,14 @@ public class CFGNodeEditPart
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(Request arg0) {
 		// TODO Auto-generated method stub
+		/*int x = getFigure().getBounds().x;
+		int y = getFigure().getBounds().y;
+		int width = getFigure().getBounds().width;
+		int height = getFigure().getBounds().height;
+		Point p = new Point(x+width/2, y+height);
+		return new XYAnchor(p);*/
+		//return ((CFGNodeFigure)getFigure()).getSrcAnchor();
+		
 		/*int x = getFigure().getBounds().x;
 		int y = getFigure().getBounds().y;
 		int width = getFigure().getBounds().width;

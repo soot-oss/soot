@@ -9,7 +9,8 @@
         />
     </target>
 
-    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options,jflex-lexer,ppg-parser">
+    <!--<target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options,jflex-lexer,ppg-parser">-->
+    <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options">
         <javac
             destdir="classes"
             classpath="classes:${polyglot.jar}:${jasmin.jar}"

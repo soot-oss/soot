@@ -102,6 +102,7 @@ public class FlowInfoEditPart
 	}
 	
 	public void handleClickEvent(Object evt){
-		((FlowDataEditPart)getParent()).handleClickEvent(evt);
+		System.out.println(getParent().getClass());
+		((PartialFlowDataEditPart)getParent()).handleClickEvent(evt);
 	}
 }

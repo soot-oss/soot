@@ -1,8 +1,10 @@
 package soot.javaToJimple.jj;
 
 import polyglot.lex.Lexer;
-import soot.javaToJimple.jj.parse.Lexer_c;
-import soot.javaToJimple.jj.parse.Grm;
+//import soot.javaToJimple.jj.parse.Lexer_c;
+//import soot.javaToJimple.jj.parse.Grm;
+import polyglot.ext.jl.parse.Lexer_c;
+import polyglot.ext.jl.parse.Grm;
 import soot.javaToJimple.jj.ast.*;
 import soot.javaToJimple.jj.types.*;
 

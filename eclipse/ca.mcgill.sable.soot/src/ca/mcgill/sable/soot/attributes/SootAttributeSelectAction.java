@@ -199,6 +199,11 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 				}
 				else {
 					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
+					
+					//getLinkToEditor().selectAndReveal(selOffset, 0);
+					
+					//getLinkToEditor().selectAndReveal(selOffset, 0);
+					//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
 					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).selectAndReveal(selOffset, 0);
 					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).setHighlightRange(selOffset, 1, true);
 					

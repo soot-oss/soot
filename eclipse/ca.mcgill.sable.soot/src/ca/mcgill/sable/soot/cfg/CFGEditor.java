@@ -68,6 +68,11 @@ public class CFGEditor extends GraphicalEditor {
 		getSite().getKeyBindingService().registerAction(zoomIn);
 		getSite().getKeyBindingService().registerAction(zoomOut);
 	
+	
+		IAction print = new PrintAction(this);
+		getActionRegistry().registerAction(print);
+		getSite().getKeyBindingService().registerAction(print);
+		
 		getGraphicalViewer().setEditPartFactory(new CFGPartFactory());
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 		

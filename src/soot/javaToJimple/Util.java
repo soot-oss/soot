@@ -4,10 +4,11 @@ public class Util {
     
     public static void addLnPosTags(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            if (pos instanceof soot.javaToJimple.jj.DPosition){
+            /*if (pos instanceof soot.javaToJimple.jj.DPosition){
                 soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
                 addLnPosTags(host, dpos.line(), dpos.endLine(), dpos.column(), dpos.endCol()); 
-            }
+            }*/
+            addLnPosTags(host, pos.line(), pos.endLine(), pos.column(), pos.endColumn()); 
         }
     }
     
@@ -24,17 +25,17 @@ public class Util {
      */
     public static void addPosTag(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            if (pos instanceof soot.javaToJimple.jj.DPosition){
+            /*if (pos instanceof soot.javaToJimple.jj.DPosition){
                 soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)pos;
-                /*if (host instanceof soot.jimple.Stmt) {
+              */  /*if (host instanceof soot.jimple.Stmt) {
                     System.out.println("host is a stmt and adding SourcePosTag: "+host.toString());
                 }
                 System.out.println("adding pos tag: "+dpos+" to host: "+host.getClass());*/
-                addPosTag(host, dpos.column(), dpos.endCol());
-            }
-            else {
+            addPosTag(host, pos.column(), pos.endColumn());
+            //}
+            /*else {
                 System.out.println("not a dpos");
-            }
+            }*/
         }
     }
 
@@ -64,11 +65,12 @@ public class Util {
 
         if (soot.options.Options.v().keep_line_number()){
             if (node.position() != null) {
-                if (node.position() instanceof soot.javaToJimple.jj.DPosition){
+                /*if (node.position() instanceof soot.javaToJimple.jj.DPosition){
                     soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)node.position();
                     host.addTag(new soot.tagkit.SourceLineNumberTag(dpos.line(), dpos.line()));
                     
-                }
+                }*/
+                host.addTag(new soot.tagkit.SourceLineNumberTag(node.position().line(), node.position().line()));
                 
             }
         }

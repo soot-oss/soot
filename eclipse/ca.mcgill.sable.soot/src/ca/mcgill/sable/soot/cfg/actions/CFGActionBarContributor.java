@@ -56,6 +56,8 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		nextMethod = new NextMethodAction(null);
 		addAction(nextMethod);
 		
+		
+		
 	}
 
 	/* (non-Javadoc)

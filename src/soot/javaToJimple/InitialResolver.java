@@ -709,7 +709,7 @@ public class InitialResolver {
 		addProcedureToClass(sootMethod);
 	
         if (procedure.position() != null){
-            if (procedure.position() instanceof soot.javaToJimple.jj.DPosition){
+            /*if (procedure.position() instanceof soot.javaToJimple.jj.DPosition){
                 soot.javaToJimple.jj.DPosition dpos = (soot.javaToJimple.jj.DPosition)procedure.position();
         
                 if (procedure.body() != null) {
@@ -719,12 +719,13 @@ public class InitialResolver {
                         Util.addLnPosTags(sootMethod, dpos.line(), bodyDpos.endLine(), dpos.column(), bodyDpos.endCol());
                         }
                     }
+                }*/
+                if (procedure.body() != null) {
+                    if (procedure.body().position() != null) {
+                        Util.addLnPosTags(sootMethod, procedure.position().line(), procedure.body().position().endLine(), procedure.position().column(), procedure.body().position().endColumn());
+                    }
                 }
-            }
-            else {
-            }
-        }
-        else {
+                
         }
 
         //handle final local map for local and anon classes

@@ -42,13 +42,14 @@ public class FlowSelectPolicy extends SelectionEditPolicy {
 	 */
 	protected void showSelection() {
 		// TODO Auto-generated method stub
-
+		((FlowInfoEditPart)getHost()).handleClickEvent(((Label)getHostFigure()).getText());
+		
 	}
 	
 	
 	
 	public void showTargetFeedback(Request request){
-		if (request instanceof SelectionRequest){
+		/*if (request instanceof SelectionRequest){
 			//System.out.println("get host figure: "+getHostFigure()+" loc: "+((SelectionRequest)request).getLocation());
 		//}
 		//else if (request instanceof LocationRequest){
@@ -64,7 +65,7 @@ public class FlowSelectPolicy extends SelectionEditPolicy {
 
 			
 		}
-		
+		*/
 	}
 	
 

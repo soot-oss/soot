@@ -10,7 +10,7 @@
       <library name="soot-plugin.jar"/>
       <library name="sootclasses-2.1.0.jar"/>
       <library name="jasminclasses-sable-1.2.jar"/>
-      <library name="polyglot-1.1.0.jar"/>
+      <library name="polyglot-1.2.0.jar"/>
       <library name="myclasses/"/>
    </runtime>
    <requires>

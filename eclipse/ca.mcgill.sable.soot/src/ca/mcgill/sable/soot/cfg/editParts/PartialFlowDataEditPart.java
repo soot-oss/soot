@@ -145,6 +145,7 @@ public class PartialFlowDataEditPart
 
 	
 	public void handleClickEvent(Object evt){
-		((CFGNodeEditPart)getParent()).handleClickEvent(evt);
+		System.out.println(getParent().getClass());
+		((FlowDataEditPart)getParent()).handleClickEvent(evt);
 	}
 }
