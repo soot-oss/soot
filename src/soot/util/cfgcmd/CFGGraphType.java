@@ -40,13 +40,11 @@ import soot.toolkits.graph.ZonedBlockGraph;
 import soot.util.cfgcmd.CFGToDotGraph;
 import soot.util.dot.DotGraph;
 
-  /**
-   * An enumeration type for representing the type of graph to
-   * create, for use in tools that compare or display control	
-   * flow graphs.
-   *
-   * 
-   */
+/**
+ * An enumeration type for representing the varieties of control
+ * flow graph available, for use in tools that compare or display
+ * CFGs.
+ */
 public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
 
   private static final boolean DEBUG = true;  
@@ -54,17 +52,16 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   /**
    * Method that will build a graph of this type.
    *
-   * @param b The method <tt>Body</tt> from which to build the graph.
+   * @param b The method <code>Body</code> from which to build the graph.
    *
-   * @return The control flow graph corresponding to <tt>b</tt>
+   * @return The control flow graph corresponding to <code>b</code>
    */
   public abstract DirectedGraph buildGraph(Body b);
 
   /**
-   * Method that will draw a {@link soot.util.dot.DotGraph DotGraph}
-   * representation of the control flow in this type of graph.  This
-   * method is intended for use within {@link soot.tools.CFGViewer
-   * CFGViewer}.
+   * Method that will draw a {@link DotGraph} representation of the
+   * control flow in this type of graph.  This method is intended for
+   * use within {@link soot.tools.CFGViewer CFGViewer}.
    *
    * @param drawer The {@link CFGToDotGraph} object that will draw the
    * graph.
@@ -73,6 +70,8 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    *
    * @param b The body associated with the graph, <code>g</code>.
    *
+   * @return a <code>DotGraph</code> visualizing the control flow in
+   * <code>g</code>.
    */
   public abstract DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g,
 				     Body b);
@@ -82,7 +81,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
   }
 
   /**
-   * Returns the <tt>CFGGraphType</tt> identified by the
+   * Returns the <code>CFGGraphType</code> identified by the
    * passed name.
    *
    * @param name A {@link String} identifying the graph type.
@@ -103,17 +102,17 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
    * '|' characters. 
    *
    * @param initialIndent The number of blank spaces to insert at the 
-   *	                    beginning of the returned string. Ignored if 
+   *                      beginning of the returned string. Ignored if 
    *                      negative.
    *
    * @param rightMargin   If positive, newlines will be inserted to try
    *                      to keep the length of each line in the
    *                      returned string less than or equal to
-   *                      *<tt>rightMargin</tt>.
+   *                      <code>rightMargin</code>.
    *         
    * @param hangingIndent  If positive, this number of spaces will be
    *                       inserted immediately after each newline 
-   *                       inserted to respect the <tt>rightMargin</tt>.
+   *                       inserted to respect the <code>rightMargin</code>.
    */
   public static String help(int initialIndent, int rightMargin, 
 			    int hangingIndent) {
@@ -188,7 +187,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
       return new ExceptionalBlockGraph(b);
     }
     public DotGraph drawGraph(CFGToDotGraph drawer, DirectedGraph g, Body b) {
-      return drawer.drawCFG((ExceptionalBlockGraph) g, b);
+      return drawer.drawCFG((ExceptionalBlockGraph) g);
     }
   };
 
@@ -257,7 +256,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
 	e.printStackTrace(G.v().out);
       }
       throw new IllegalArgumentException("There is no " + className + 
-					 "(Body, int) constructor: " + 
+					 "(Body) constructor: " + 
 					 e.getMessage());
     }
     catch (InstantiationException e) {
@@ -273,7 +272,7 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
 	e.printStackTrace(G.v().out);
       }
       throw new IllegalArgumentException("Unable to access " + className +
-					 "(Body, int) in alternate classpath: " +
+					 "(Body) in alternate classpath: " +
 					 e.getMessage());
     }
     catch (InvocationTargetException e) {

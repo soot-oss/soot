@@ -27,9 +27,9 @@ import soot.grimp.Grimp;
 import soot.shimple.Shimple;
 
 /**
- * An enumeration type for representing the intermediate
- * representation to use, in tools that compare or display control
- * flow graphs.
+ * An enumeration type for representing the varieties of intermediate
+ * representation available, for use in tools that compare or display
+ * control flow graphs.
  *
  * 
  */
@@ -40,21 +40,21 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
   }
 
   /**
-   * Converts a {@link soot.jimple.JimpleBody JimpleBody} into the
-   * corresponding {@link soot.Body Body} in this intermediate
+   * Converts a <code>JimpleBody</code> into the
+   * corresponding <code>Body</code> in this intermediate
    * representation.
    *
    * @param b The Jimple body to be represented.
    *
    * @return a {@link Body} in this intermediate representation which
-   * represents the same method as the argument body.
+   * represents the same method as <code>b</code>.
    */
   public abstract Body getBody(JimpleBody b);
 
 
   public static final CFGIntermediateRep JIMPLE_IR = new CFGIntermediateRep("jimple") {
       public Body getBody(JimpleBody b) { 
-	return (JimpleBody) b; 
+	return b; 
       }
     };
 
@@ -93,14 +93,14 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
     });
 
   /**
-   * Returns the <tt>CFGIntermediateRep</tt> identified by the
+   * Returns the <code>CFGIntermediateRep</code> identified by the
    * passed name.
    *
    * @param name A {@link String} identifying the intermediate
    * representation.
    *
-   * @return A {@link CFGIntermediateRep} object whose
-   * {@link #getBody()} method will create the desired intermediate
+   * @return A <code>CFGIntermediateRep</code> object whose
+   * {@link #getBody(JimpleBody)} method will create the desired intermediate
    * representation.
    */
   public static CFGIntermediateRep getIR(String name) {
@@ -109,21 +109,21 @@ public abstract class CFGIntermediateRep extends CFGOptionMatcher.CFGOption {
 
   /**
    * Returns a string containing the names of all the
-   * available {@link CFGIntermediateRep}s, separated by
+   * available <code>CFGIntermediateRep</code>s, separated by
    * '|' characters. 
    *
    * @param initialIndent The number of blank spaces to insert at the 
-   *	                    beginning of the returned string. Ignored if 
+   *	                  beginning of the returned string. Ignored if 
    *                      negative.
    *
    * @param rightMargin   If positive, newlines will be inserted to try
    *                      to keep the length of each line in the
    *                      returned string less than or equal to
-   *                      *<tt>rightMargin</tt>.
+   *                      *<code>rightMargin</code>.
    *         
    * @param hangingIndent  If positive, this number of spaces will be
    *                       inserted immediately after each newline 
-   *                       inserted to respect the <tt>rightMargin</tt>.
+   *                       inserted to respect the <code>rightMargin</code>.
    */
   public static String help(int initialIndent, int rightMargin, 
 			    int hangingIndent) {

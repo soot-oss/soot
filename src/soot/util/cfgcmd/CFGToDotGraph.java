@@ -25,7 +25,7 @@ import soot.*;
 import soot.toolkits.exceptions.ThrowableSet;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.BlockGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.Block;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.dot.DotGraph;
@@ -36,7 +36,7 @@ import soot.util.dot.DotGraphNode;
 
 
 /**
- * Class that creates a {@link DotGraph} that provides a visualization
+ * Class that creates a {@link DotGraph} visualization
  * of a control flow graph.
  */
 public class CFGToDotGraph {
@@ -52,11 +52,11 @@ public class CFGToDotGraph {
    * <p>Returns a CFGToDotGraph converter which will draw the graph
    * as a single arbitrarily-sized page, with full-length node labels.</p>
    *
-   * <p> If asked to draw a <code>ExceptionalUnitGraph</code>, the
-   * converter will identify the exceptions that will be thrown, and
-   * will distinguish different edges by coloring regular control flow
-   * edges black, exceptional control flow edges red, and thrown
-   * exception edges light gray.</p>
+   * <p> If asked to draw a <code>ExceptionalGraph</code>, the
+   * converter will identify the exceptions that will be thrown. By
+   * default, it will distinguish different edges by coloring regular
+   * control flow edges black, exceptional control flow edges red, and
+   * thrown exception edges light gray.</p>
    */
   public CFGToDotGraph() {
     setOnePage(true);
@@ -100,10 +100,10 @@ public class CFGToDotGraph {
    * each node may throw, in the form of an edge from the throwing
    * node to the handler (if any), labeled with the possible
    * exception types.  This parameter has an effect only when
-   * drawing <code>ExceptionalUnitGraph</code>s.
+   * drawing <code>ExceptionalGraph</code>s.
    *
-   * @param showExceptions indicates whether to abbreviate the text of 
-   * node labels.
+   * @param showExceptions indicates whether to show possible exceptions
+   * and their handlers.
    */
   public void setShowExceptions(boolean showExceptions) {
     this.showExceptions = showExceptions;
@@ -111,12 +111,15 @@ public class CFGToDotGraph {
 
 
   /**
-   * Specify the dot graph attribute to be used to identify
-   * regular control flow edges.
+   * Specify the dot graph attribute to use for regular control flow
+   * edges.  This parameter has an effect only when
+   * drawing <code>ExceptionalGraph</code>s.
    *
    * @param id The attribute name, for example "style" or "color".
+   *
    * @param value The attribute value, for example "solid" or "black".
-   * @see "Drawing graphs with dot"
+   *
+   * @see <a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">"Drawing graphs with dot"</a>
    */
   public void setUnexceptionalControlFlowAttr(String id, String value) {
     unexceptionalControlFlowAttr = new DotGraphAttribute(id, value);
@@ -124,12 +127,15 @@ public class CFGToDotGraph {
 
 
   /**
-   * Specify the dot graph attribute to be used to identify
-   * exceptional control flow edges.
+   * Specify the dot graph attribute to use for exceptional control
+   * flow edges.  This parameter has an effect only when
+   * drawing <code>ExceptionalGraph</code>s.
    *
    * @param id The attribute name, for example "style" or "color".
+   *
    * @param value The attribute value, for example "dashed" or "red".
-   * @see "Drawing graphs with dot"
+   *
+   * @see <a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">"Drawing graphs with dot"</a>
    */
   public void setExceptionalControlFlowAttr(String id, String value) {
     exceptionalControlFlowAttr = new DotGraphAttribute(id, value);
@@ -137,12 +143,16 @@ public class CFGToDotGraph {
 
 
   /**
-   * Specify the dot graph attribute to be used to edges depicting
-   * the exceptions each node may throw.
+   * Specify the dot graph attribute to use for edges depicting the
+   * exceptions each node may throw, and their handlers.  This
+   * parameter has an effect only when drawing
+   * <code>ExceptionalGraph</code>s.
    *
    * @param id The attribute name, for example "style" or "color".
+   *
    * @param value The attribute value, for example "dotted" or "lightgray".
-   * @see "Drawing graphs with dot"
+   *
+   * @see <a href="http://www.research.att.com/sw/tools/graphviz/dotguide.pdf">"Drawing graphs with dot"</a>
    */
   public void setExceptionEdgeAttr(String id, String value) {
     exceptionEdgeAttr = new DotGraphAttribute(id, value);
@@ -150,38 +160,39 @@ public class CFGToDotGraph {
 
 
   /**
-   * Create a {@link DotGraph} whose nodes and edges depict the
-   * control flow in a control flow graph, without distinguished
+   * Create a <code>DotGraph</code> whose nodes and edges depict 
+   * a control flow graph without distinguished
    * exceptional edges.
    * 
-   * @param graph a directed control flow graph (UnitGraph, BlockGraph ...)
+   * @param graph a <code>DirectedGraph</code> representing a CFG
+   *              (probably an instance of {@link UnitGraph}, {@link BlockGraph},
+   *              or one of their subclasses).
    *
-   * @param body the {@link Body} represented by <code>graph</code> (used
+   * @param body the <code>Body</code> represented by <code>graph</code> (used
    * to format the text within nodes).  If no body is available, pass
    * <code>null</code>.
    *
-   * @return a visualization of the input graph.
+   * @return a visualization of <code>graph</code>.
    */
   public DotGraph drawCFG(DirectedGraph graph, Body body) {
     DotGraph canvas = initDotGraph(body);
-    DotLabeller labeller = new DotLabeller((int)(graph.size()/0.7f), 0.7f);
+    DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
 
     for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
       Object node = nodesIt.next();
-      canvas.drawNode(labeller.getLabel(node));
+      canvas.drawNode(namer.getName(node));
       for (Iterator succsIt = graph.getSuccsOf(node).iterator(); 
 	   succsIt.hasNext(); ) {
         Object succ = succsIt.next();	
-        canvas.drawEdge(labeller.getLabel(node), 
-			labeller.getLabel(succ));
+        canvas.drawEdge(namer.getName(node), namer.getName(succ));
       }
     }
-    setStyle(graph.getHeads(), canvas, labeller,
+    setStyle(graph.getHeads(), canvas, namer, 
 	     DotGraphConstants.NODE_STYLE_FILLED);
-    setStyle(graph.getTails(), canvas, labeller, 
+    setStyle(graph.getTails(), canvas, namer, 
 	     DotGraphConstants.NODE_STYLE_FILLED);
     if (! isBrief) {
-      formatNodeText(body, canvas, labeller);
+      formatNodeText(body, canvas, namer);
     }
 
     return canvas;
@@ -189,47 +200,47 @@ public class CFGToDotGraph {
 
 
   /**
-   * Create a {@link DotGraph} whose nodes and edges depict the
-   * control flow in a {@link ExceptionalUnitGraph}, with 
+   * Create a <code>DotGraph</code> whose nodes and edges depict the
+   * control flow in a <code>ExceptionalGraph</code>, with 
    * distinguished edges for exceptional control flow.
    * 
    * @param graph the control flow graph
    *
-   * @return a visualization of the input graph.
+   * @return a visualization of <code>graph</code>.
    */
-  public DotGraph drawCFG(ExceptionalUnitGraph graph) {
+  public DotGraph drawCFG(ExceptionalGraph graph) {
     Body body = graph.getBody();
     DotGraph canvas = initDotGraph(body);
-    DotLabeller labeller = new DotLabeller((int)(graph.size()/0.7f), 0.7f);
+    DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
 
     for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
-      Unit node = (Unit) nodesIt.next();
+	Object node = nodesIt.next();
 
-      canvas.drawNode(labeller.getLabel(node));
+      canvas.drawNode(namer.getName(node));
 
       for (Iterator succsIt = graph.getUnexceptionalSuccsOf(node).iterator();
 	   succsIt.hasNext(); ) {
         Object succ = succsIt.next();	
-        DotGraphEdge edge = canvas.drawEdge(labeller.getLabel(node), 
-					    labeller.getLabel(succ));
+        DotGraphEdge edge = canvas.drawEdge(namer.getName(node), 
+					    namer.getName(succ));
 	edge.setAttribute(unexceptionalControlFlowAttr);
       }
 
       for (Iterator succsIt = graph.getExceptionalSuccsOf(node).iterator();
 	   succsIt.hasNext(); ) {
 	Object succ = succsIt.next();
-	DotGraphEdge edge = canvas.drawEdge(labeller.getLabel(node),
-					    labeller.getLabel(succ));
+	DotGraphEdge edge = canvas.drawEdge(namer.getName(node),
+					    namer.getName(succ));
 	edge.setAttribute(exceptionalControlFlowAttr);
       }
 
       if (showExceptions) {
 	for (Iterator destsIt = graph.getExceptionDests(node).iterator();
 	     destsIt.hasNext(); ) {
-	  ExceptionalUnitGraph.ExceptionDest dest = 
-	    (ExceptionalUnitGraph.ExceptionDest) destsIt.next();
-	  Object handlerStart = null;
-	  if (dest.trap() == null) {
+	  ExceptionalGraph.ExceptionDest dest = 
+	    (ExceptionalGraph.ExceptionDest) destsIt.next();
+	  Object handlerStart = dest.getHandlerNode();
+	  if (handlerStart == null) {
 	    // Giving each escaping exception its own, invisible
 	    // exceptional exit node produces a less cluttered
 	    // graph.
@@ -239,32 +250,37 @@ public class CFGToDotGraph {
 		}
 	      };
 	    DotGraphNode escapeNode = 
-	      canvas.drawNode(labeller.getLabel(handlerStart));
+	      canvas.drawNode(namer.getName(handlerStart));
 	    escapeNode.setStyle(DotGraphConstants.NODE_STYLE_INVISIBLE);
-
-	  } else {
-	    handlerStart = dest.trap().getHandlerUnit();
 	  }
-	  DotGraphEdge edge = canvas.drawEdge(labeller.getLabel(node),
-					      labeller.getLabel(handlerStart));
+	  DotGraphEdge edge = canvas.drawEdge(namer.getName(node),
+					      namer.getName(handlerStart));
 	  edge.setAttribute(exceptionEdgeAttr);
 	  edge.setLabel(formatThrowableSet(dest.throwables()));
 	}
       }
     }
-    setStyle(graph.getHeads(), canvas, labeller,
+    setStyle(graph.getHeads(), canvas, namer,
 	     DotGraphConstants.NODE_STYLE_FILLED);
-    setStyle(graph.getTails(), canvas, labeller, 
+    setStyle(graph.getTails(), canvas, namer, 
 	     DotGraphConstants.NODE_STYLE_FILLED);
     if (! isBrief) {
-      formatNodeText(graph.getBody(), canvas, labeller);
+      formatNodeText(graph.getBody(), canvas, namer);
     }
     return canvas;
   }
 
 
-  // A utility class that initializes a DotGraph object for use in any 
-  // variety of drawCFG().
+  /**
+   * A utility method that initializes a DotGraph object for use in any 
+   * variety of drawCFG().
+   *
+   * @param body The <code>Body</code> that the graph will represent
+   *		 (used in the graph's title).  If no <code>Body</code>
+   *             is available, pass <code>null</code>.
+   *
+   * @return a <code>DotGraph</code> for visualizing <code>body</code>.
+   */
   private DotGraph initDotGraph(Body body) {
     String graphname = "cfg";
     if (body != null) {
@@ -284,24 +300,24 @@ public class CFGToDotGraph {
   }
 
 
-  // A utility class for assigning unique string labels to DotGraph
-  // entities.
-  public static class DotLabeller extends HashMap {
+  /**
+   * A utility class for assigning unique names to DotGraph
+   * entities.  It maintains a mapping from CFG <code>Object</code>s
+   * to strings identifying the corresponding nodes in generated dot
+   * source.
+   */
+  private static class DotNamer extends HashMap {
     private int nodecount = 0;
 
-    DotLabeller(int initialCapacity, float loadFactor) {
+    DotNamer(int initialCapacity, float loadFactor) {
       super(initialCapacity, loadFactor);
     }
 
-    DotLabeller() {
+    DotNamer() {
       super();
     }
 
-    void resetCount() {
-      nodecount = 0;
-    }
-
-    String getLabel(Object node) {
+    String getName(Object node) {
       Integer index = (Integer)this.get(node);
       if (index == null) {
 	index = new Integer(nodecount++);
@@ -312,8 +328,20 @@ public class CFGToDotGraph {
   }
 
 
-  private void formatNodeText(Body body, DotGraph canvas, 
-			      DotLabeller labeller) {
+
+  /**
+   * A utility method which formats the text for each node in 
+   * a <code>DotGraph</code> representing a CFG.
+   *
+   * @param body the <code>Body</code> whose control flow is visualized in
+   *             <code>canvas</code>.
+   *
+   * @param canvas the <code>DotGraph</code> for visualizing the CFG.
+   *
+   * @param namer provides a mapping from CFG objects to identifiers in
+   *              generated dot source.
+   */
+  private void formatNodeText(Body body, DotGraph canvas, DotNamer namer) {
 
     LabeledUnitPrinter printer = null;
     if (body != null) {
@@ -321,10 +349,10 @@ public class CFGToDotGraph {
       printer.noIndent();
     }
 
-    for (Iterator nodesIt = labeller.keySet().iterator();
+    for (Iterator nodesIt = namer.keySet().iterator();
 	 nodesIt.hasNext(); ) {
       Object node = nodesIt.next();
-      DotGraphNode dotnode = canvas.getNode(labeller.getLabel(node));
+      DotGraphNode dotnode = canvas.getNode(namer.getName(node));
       String nodeLabel = null;
 
       if (printer == null) {
@@ -371,16 +399,16 @@ public class CFGToDotGraph {
    *        nodes are to be styled.
    * @param canvas the {@link DotGraph} containing nodes corresponding
    *        to the collection.
-   * @param labeller maps from {@link Object} to the strings used
+   * @param namer maps from {@link Object} to the strings used
    *        to identify corresponding {@link DotGraphNode}s.
    * @param style the style to set for each of the nodes.
    */
   private void setStyle(Collection objects, DotGraph canvas, 
-			DotLabeller labeller, String style) {
+			DotNamer namer, String style) {
     // Fill the entry and exit nodes.
     for (Iterator it = objects.iterator(); it.hasNext(); ) {
       Object object = it.next();
-      DotGraphNode objectNode = canvas.getNode(labeller.getLabel(object));
+      DotGraphNode objectNode = canvas.getNode(namer.getName(object));
       objectNode.setStyle(style);
     }
   }

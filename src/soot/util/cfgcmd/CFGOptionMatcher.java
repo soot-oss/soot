@@ -1,10 +1,20 @@
-/**
- * A class used for CFG utilities that need to match different option
- * strings with classes that implement those options.
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2003 John Jorgensen
  *
- * A <tt>CFGOptionMatcher</tt> maintains a set of named
- * options, and provides a means for matching abbreviated option
- * values against those names.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
 
 package soot.util.cfgcmd;
@@ -12,11 +22,20 @@ package soot.util.cfgcmd;
 import soot.G;
 import soot.CompilationDeathException;
 
+/**
+ * A class used by CFG utilities that need to match different option
+ * strings with classes that implement those options.
+ *
+ * A <code>CFGOptionMatcher</code> maintains a set of named
+ * options, and provides a means for matching abbreviated option
+ * values against those names.
+ */
+
 public class CFGOptionMatcher {
 
     /**
-     * The type stored within a <tt>CFGOptionMatcher</tt>. Options to
-     * be stored in a <tt>CFGOptionMatcher</tt> must extend this
+     * The type stored within a <code>CFGOptionMatcher</code>. Options to
+     * be stored in a <code>CFGOptionMatcher</code> must extend this
      * class.
      */
     public static abstract class CFGOption {
@@ -41,17 +60,17 @@ public class CFGOptionMatcher {
     }
 
     /**
-     * Searches the options in this <tt>CFGOptionMatcher</tt>
+     * Searches the options in this <code>CFGOptionMatcher</code>
      * looking for one whose name begins with the passed string
      * (ignoring the case of letters in the string). 
      *
      * @param quarry The string to be matched against the stored
      * option names.
      *
-     * @return The matching <tt>CFGOption</tt> if exactly one of the
-     * stored option names begins with <tt>quarry</tt>.
+     * @return The matching {@link CFGOption}, if exactly one of the
+     * stored option names begins with <code>quarry</code>.
      *
-     * @throws soot.CompilationDeathException if <tt>quarry</tt>
+     * @throws soot.CompilationDeathException if <code>quarry</code>
      * matches none of the option names, or if it matches more than
      * one.
      */
@@ -88,7 +107,7 @@ public class CFGOptionMatcher {
 
     /**
      * Returns a string containing the names of all the
-     * options in this <tt>CFGOptionMatcher</tt>, separated by
+     * options in this <code>CFGOptionMatcher</code>, separated by
      * '|' characters. The string is intended for use in 
      * help messages.
      *
@@ -99,11 +118,11 @@ public class CFGOptionMatcher {
      * @param rightMargin   If positive, newlines will be inserted to try
      *                      to keep the length of each line in the
      *                      returned string less than or equal to
-     *                      *<tt>rightMargin</tt>.
+     *                      <code>rightMargin</code>.
      *         
      * @param hangingIndent  If positive, this number of spaces will be
      *                       inserted immediately after each newline 
-     *                       inserted to respect the <tt>rightMargin</tt>.
+     *                       inserted to respect the <code>rightMargin</code>.
      */
     public String help(int initialIndent, int rightMargin, int hangingIndent) {
 

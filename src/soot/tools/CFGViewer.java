@@ -36,6 +36,7 @@ import soot.jimple.JimpleBody;
 import soot.grimp.Grimp;
 import soot.shimple.Shimple;
 import soot.toolkits.graph.*;
+import soot.options.Options;
 import soot.util.dot.DotGraph;
 import soot.util.cfgcmd.AltClassLoader;
 import soot.util.cfgcmd.CFGGraphType;
@@ -51,52 +52,32 @@ import soot.util.*;
  */
 public class CFGViewer extends BodyTransformer {
 
-  /**
-   * An enumeration type for representing the ThrowAnalysis to use. 
-   */
-  abstract class ThrowAnalysisOption extends CFGOptionMatcher.CFGOption {
-    ThrowAnalysisOption(String name) {
-      super(name);
-    }
-    abstract ThrowAnalysis getAnalysis();
-  }
+  private static final String packToJoin = "jtp";
+  private static final String phaseSubname = "printcfg";
+  private static final String phaseFullname = packToJoin + '.' + phaseSubname;
+  private static final String altClassPathOptionName = "alt-class-path";
+  private static final String graphTypeOptionName = "graph-type";
+  private static final String defaultGraph = "BriefUnitGraph";
+  private static final String irOptionName = "ir";
+  private static final String defaultIR = "jimple";
+  private static final String multipageOptionName = "multipages";
+  private static final String briefLabelOptionName = "brief";
 
-  private final ThrowAnalysisOption PEDANTIC_THROW_ANALYSIS = 
-    new ThrowAnalysisOption("pedantic") {
-    ThrowAnalysis getAnalysis() { 
-      return PedanticThrowAnalysis.v(); 
-    }
-  };
-
-  private final ThrowAnalysisOption UNIT_THROW_ANALYSIS = new ThrowAnalysisOption("unit") {
-    ThrowAnalysis getAnalysis() { 
-      return UnitThrowAnalysis.v(); 
-    }
-  };
-
-  private final CFGOptionMatcher throwAnalysisOptions = 
-    new CFGOptionMatcher(new ThrowAnalysisOption[] {    
-      PEDANTIC_THROW_ANALYSIS,
-      UNIT_THROW_ANALYSIS,
-    });
-  private ThrowAnalysis getThrowAnalysis(String option) {
-    return ((ThrowAnalysisOption) 
-	    throwAnalysisOptions.match(option)).getAnalysis();
-  }
-
-  private CFGGraphType graphtype = CFGGraphType.BRIEF_UNIT_GRAPH;
-  private CFGIntermediateRep ir = CFGIntermediateRep.JIMPLE_IR;
-  private ThrowAnalysis throwAnalysis = UNIT_THROW_ANALYSIS.getAnalysis();
-  private CFGToDotGraph drawer = new CFGToDotGraph();
-  private Map methodsToPrint = null; // If the user specifies particular
+  private CFGGraphType graphtype;
+  private CFGIntermediateRep ir;
+  private ThrowAnalysis throwAnalysis;
+  private CFGToDotGraph drawer;
+  private Map methodsToPrint;        // If the user specifies particular
 				     // methods to print, this is a map
 				     // from method name to the class
 				     // name declaring the method.
 
 
   protected void internalTransform(Body b, String phaseName, Map options) {
+    G.v().out.println("jtp.printcfg called\n");
+    initialize(options);
     SootMethod meth = b.getMethod();
-
+    
     if ((methodsToPrint == null) ||
 	(meth.getDeclaringClass().getName() ==
 	 methodsToPrint.get(meth.getName()))) {
@@ -107,42 +88,34 @@ public class CFGViewer extends BodyTransformer {
 
 
   public static void main(String[] args) {
-      new CFGViewer().run( args );
-  }
-
-
-  public void run(String[] args) {
-
-    /* process options */
-    args = parse_options(args);
-for (int i = 0; i < args.length; i++) System.err.println(args[i]);
+    CFGViewer viewer = new CFGViewer();
+    Transform printTransform = new Transform("jtp." + phaseSubname, viewer);
+    printTransform.setDeclaredOptions("enabled " + 
+				      altClassPathOptionName + ' ' +
+				      graphTypeOptionName + ' ' +
+				      irOptionName + ' ' +
+				      multipageOptionName + ' ' +
+				      briefLabelOptionName + ' ');
+    printTransform.setDefaultOptions("enabled " + 
+				     altClassPathOptionName + ": " +
+				     graphTypeOptionName + ':' + defaultGraph +
+				     ' ' + irOptionName + ':' + defaultIR +
+				     ' ' + multipageOptionName + ":false " +
+				     ' ' + briefLabelOptionName + ":false ");
+    PackManager.v().getPack("jtp").add(printTransform);
+    args = viewer.parse_options(args);
     if (args.length == 0) {
       usage();
-      return;
+    } else {
+for (int i = 0; i < args.length; i++) G.v().out.print(args[i] + ' ');
+G.v().out.println("DeclaredOptions == " + printTransform.getDeclaredOptions());
+G.v().out.println("DefaultOptions == " + printTransform.getDefaultOptions());
+      soot.Main.main(args);
     }
-
-    AltClassLoader.v().setAltClasses(new String[] {
-      "soot.toolkits.graph.ArrayRefBlockGraph",
-      "soot.toolkits.graph.Block",
-      "soot.toolkits.graph.Block$AllMapTo",
-      "soot.toolkits.graph.BlockGraph",
-      "soot.toolkits.graph.BriefBlockGraph",
-      "soot.toolkits.graph.BriefUnitGraph",
-      "soot.toolkits.graph.CompleteBlockGraph",
-      "soot.toolkits.graph.CompleteUnitGraph",
-      "soot.toolkits.graph.TrapUnitGraph",
-      "soot.toolkits.graph.UnitGraph",
-      "soot.toolkits.graph.ZonedBlockGraph",
-    });
-
-    Pack jtp = PackManager.v().getPack("jtp");
-    jtp.add(new Transform("jtp.printcfg", this));
-
-    soot.Main.main(args);
   }
 
 
-  private void usage(){
+  private static void usage(){
       G.v().out.println(
 "Usage:\n" +
 "   java soot.util.CFGViewer [soot options] [CFGViewer options] [class[:method]]...\n\n" +
@@ -158,77 +131,76 @@ for (int i = 0; i < args.length; i++) System.err.println(args[i]);
 CFGGraphType.help(0, 70, 
 "                ".length()) + "} :\n" +
 "                show the specified type of graph.\n" +
-"                Defaults to BriefUnitGraph.\n" +
+"                Defaults to " + defaultGraph + ".\n" +
 "       --ir={" +
 CFGIntermediateRep.help(0, 70, 
 "                ".length()) + "} :\n" +
 "                create the CFG from the specified intermediate\n" +
-"                representation. The default is jimple.\n" +
+"                representation. Defaults to " + defaultIR + ".\n" +
 "       --brief :\n" +
 "                label nodes with the unit or block index,\n" +
 "                instead of the text of their statements.\n" +
-"       --throwAnalysis={" +
-throwAnalysisOptions.help(0, 70,
-"              ".length()) + "} :\n" +
-"                use the specified throw analysis when creating Exceptional\n" +
-"                graphs (UnitThrowAnalysis is the default).\n" +
-"       --showExceptions :\n" +
-"                in Exceptional graphs, include edges showing the path of\n" +
-"                exceptions from thrower to catcher, labeled with the\n" +
-"                possible exception types.\n" +
 "       --multipages :\n" +
 "                produce dot file output for multiple 8.5x11\" pages.\n" +
 "                By default, a single page is produced.\n" +
 "       --help :\n" +
-"                print this message.\n"
+"                print this message.\n" +
+"\n" +
+"   Particularly relevant soot options (see \"soot --help\" for details):\n" +
+"       --soot-class-path PATH\n" +
+"       --show-exception-dests\n" +
+"       --throw-analysis {pedantic|unit}\n" +
+"       --omit-excepting-unit-edges\n" +
+"       --trim-cfgs\n"
 );
   }
 
   /**
    * Parse the command line arguments specific to CFGViewer,
+   * and convert them into phase options for jtp.printcfg.
+   *
    * @return an array of arguments to pass on to Soot.Main.main().
    */
   private String[] parse_options(String[] args){
     List sootArgs = new ArrayList(args.length);
 
-    drawer.setBriefLabels(false);
-    drawer.setOnePage(true);
-    drawer.setShowExceptions(false);
-    drawer.setUnexceptionalControlFlowAttr("color", "black");
-    drawer.setExceptionalControlFlowAttr("color", "red");
-    drawer.setExceptionEdgeAttr("color", "lightgray");
-
     for (int i=0, n=args.length; i<n; i++) {
-      if (args[i].equals("--soot-classpath") ||
-	  args[i].equals("--soot-class-path")) {
-	Scene.v().setSootClassPath(args[++i]);
-      } else if (args[i].equals("--alt-classpath") ||
+      if (args[i].equals("--alt-classpath") ||
 	  args[i].equals("--alt-class-path")) {
-	AltClassLoader.v().setAltClassPath(args[++i]);
+	sootArgs.add("-p");
+	sootArgs.add(phaseFullname);
+	sootArgs.add(altClassPathOptionName + ':' + args[++i]);
       } else if (args[i].startsWith("--graph=")) {
-	graphtype = 
-	  CFGGraphType.getGraphType(args[i].substring("--graph=".length()));
+	sootArgs.add("-p");
+	sootArgs.add(phaseFullname);
+	sootArgs.add(graphTypeOptionName + ':' + args[i].substring("--graph=".length()));
       } else if (args[i].startsWith("--ir=")) {
-	ir = 
-	  CFGIntermediateRep.getIR(args[i].substring("--ir=".length()));
+	sootArgs.add("-p");
+	sootArgs.add(phaseFullname);
+	sootArgs.add(irOptionName + ':' + args[i].substring("--ir=".length()));
       } else if (args[i].equals("--brief")) {
-	drawer.setBriefLabels(true);
-      } else if (args[i].startsWith("--throwAnalysis=")) {
-	throwAnalysis = 
-	  getThrowAnalysis(args[i].substring("--throwAnalysis=".length()));
-      } else if (args[i].equals("--showExceptions")) {
-	drawer.setShowExceptions(true);
+	sootArgs.add("-p");
+	sootArgs.add(phaseFullname);
+	sootArgs.add(briefLabelOptionName + ":true");
       } else if (args[i].equals("--multipages")) {
-	drawer.setOnePage(false);
+	sootArgs.add("-p");
+	sootArgs.add(phaseFullname);
+	sootArgs.add(multipageOptionName + ":true");
       } else if (args[i].equals("--help")) {
 	return new String[0];	// This is a cheesy method to inveigle
 				// our caller into printing the help
 				// and exiting.
+      } else if (args[i].equals("--soot-class-path") ||
+		 args[i].equals("-soot-class-path") ||
+		 args[i].equals("--soot-classpath") ||
+		 args[i].equals("-soot-classpath")) {
+	// Pass classpaths without treating ":" as a method specifier.
+	sootArgs.add(args[i]);
+	sootArgs.add(args[++i]);
       } else if (args[i].equals("-p") ||
 		 args[i].equals("--phase-option") ||
 		 args[i].equals("-phase-option")) {
-	// Pass the phase option right away, so the colon doesn't look
-	// like a method specifier.
+	// Pass phase options without treating ":" as a method specifier.
 	sootArgs.add(args[i]);
 	sootArgs.add(args[++i]);
 	sootArgs.add(args[++i]);
@@ -249,6 +221,37 @@ throwAnalysisOptions.help(0, 70,
     }
     String[] sootArgsArray = new String[sootArgs.size()];
     return (String[]) sootArgs.toArray(sootArgsArray);
+  }
+
+  private void initialize(Map options) {
+    if (drawer == null) {
+      drawer = new CFGToDotGraph();
+      drawer.setBriefLabels(PhaseOptions.getBoolean(options, briefLabelOptionName));
+      drawer.setOnePage(! PhaseOptions.getBoolean(options, multipageOptionName));
+      drawer.setUnexceptionalControlFlowAttr("color", "black");
+      drawer.setExceptionalControlFlowAttr("color", "red");
+      drawer.setExceptionEdgeAttr("color", "lightgray");
+      drawer.setShowExceptions(Options.v().show_exception_dests());
+      ir = CFGIntermediateRep.getIR(PhaseOptions.getString(options, irOptionName));
+      graphtype = CFGGraphType.getGraphType(PhaseOptions.getString(options,
+								   graphTypeOptionName));
+
+      AltClassLoader.v().setAltClassPath(PhaseOptions.getString(options,
+								altClassPathOptionName));
+      AltClassLoader.v().setAltClasses(new String[] {
+	"soot.toolkits.graph.ArrayRefBlockGraph",
+	"soot.toolkits.graph.Block",
+	"soot.toolkits.graph.Block$AllMapTo",
+	"soot.toolkits.graph.BlockGraph",
+	"soot.toolkits.graph.BriefBlockGraph",
+	"soot.toolkits.graph.BriefUnitGraph",
+	"soot.toolkits.graph.CompleteBlockGraph",
+	"soot.toolkits.graph.CompleteUnitGraph",
+	"soot.toolkits.graph.TrapUnitGraph",
+	"soot.toolkits.graph.UnitGraph",
+	"soot.toolkits.graph.ZonedBlockGraph",
+      });
+    }
   }
 
   protected void print_cfg(Body body) {

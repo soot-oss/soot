@@ -32,14 +32,14 @@ import soot.Singletons;
 import soot.G;
 
 /**
- * <p>This class is part of Soot's test infrastructure. It provides
- * the capacity to load specific classes from a different class path
- * than that given by the value of <tt>java.class.path</tt> in {@link
- * System#getProperties()}.  This allows the loading of different
- * implementations of a class with a given name.</p>
+ * <p>A {@link ClassLoader} that loads specified classes from a
+ * different class path than that given by the value of
+ * <code>java.class.path</code> in {@link System#getProperties()}.</p>
  *
- * <p>The intended use is for the comparison of different
- * implementations of Soot CFG representations.</p>
+ * <p>This class is part of Soot's test infrastructure. It allows
+ * loading multiple implementations of a class with a given
+ * name, and was written to compare different
+ * implementations of Soot's CFG representations.</p>
  */
 public class AltClassLoader extends ClassLoader {
 
@@ -51,20 +51,20 @@ public class AltClassLoader extends ClassLoader {
 					    // classnames to their
 					    // Class objects.
 
-  private Map nameToKludgedName = new HashMap();// Maps from the names
+  private Map nameToMangledName = new HashMap();// Maps from the names
 						// of classes to be
 						// loaded from the alternate
-						// classpath to kludged
+						// classpath to mangled
 						// names to use for them.
 
-  private Map kludgedNameToName = new HashMap();// Maps from the kludged names
+  private Map mangledNameToName = new HashMap();// Maps from the mangled names
 						// of classes back to their
 						// original names.
 
 
 
   /**
-   * Constructs an <tt>AltClassLoader</tt> for inclusion in Soot's
+   * Constructs an <code>AltClassLoader</code> for inclusion in Soot's
    * global variable manager, {@link G}.
    *
    * @param g guarantees that the constructor may only be called from
@@ -74,11 +74,11 @@ public class AltClassLoader extends ClassLoader {
 
 
   /**
-   * Returns the single instance of <tt>AltClassLoader</tt>, which
+   * Returns the single instance of <code>AltClassLoader</code>, which
    * loads classes from the classpath set by the most recent call to
    * its {@link #setAltClassPath}.
    *
-   * @return Soot's <tt>AltClassLoader</tt>.
+   * @return Soot's <code>AltClassLoader</code>.
    */
   public static AltClassLoader v() {
     return G.v().soot_util_cfgcmd_AltClassLoader();
@@ -89,16 +89,15 @@ public class AltClassLoader extends ClassLoader {
    * Sets the list of locations in the alternate classpath.
    *
    * @param classPath A list of directories and jar files to
-   * search for class files, deliminated by 
+   * search for class files, delimited by 
    * {@link File#pathSeparator}.
-   * @throws java.net.MalformedURLException if some element of the 
    */
   public void setAltClassPath(String altClassPath) {
     List locationList = new LinkedList();
     for (StringTokenizer tokens = 
 	   new StringTokenizer(altClassPath, File.pathSeparator, false);
 	 tokens.hasMoreTokens() ; ) {
-      String location = new String(tokens.nextToken());
+	String location = tokens.nextToken();
       locationList.add(location);
     }
     locations = new String[locationList.size()];
@@ -107,7 +106,7 @@ public class AltClassLoader extends ClassLoader {
 
 
   /**
-   * Specifies the set of class names that the <tt>AltClassLoader</tt>
+   * Specifies the set of class names that the <code>AltClassLoader</code>
    * should load from the alternate classpath instead of the 
    * regular classpath.
    *
@@ -115,47 +114,47 @@ public class AltClassLoader extends ClassLoader {
    * be loaded from the AltClassLoader.
    */
   public void setAltClasses(String[] classNames) {
-    nameToKludgedName.clear();
+    nameToMangledName.clear();
     for (int i = 0; i < classNames.length; i++) {
       String origName = classNames[i];
-      String kludgedName = kludgeName(origName);
-      nameToKludgedName.put(origName, kludgedName);
-      kludgedNameToName.put(kludgedName, origName);
+      String mangledName = mangleName(origName);
+      nameToMangledName.put(origName, mangledName);
+      mangledNameToName.put(mangledName, origName);
     }
   }
 
   /**
    * Mangles a classname so that it will not be found on the system
-   * classpath loader by our parent class loader, even if there is a
-   * class with this name there.  We use a crude heuristic to do this
-   * that happens to work with the names we have needed to kludge to
-   * date, which requires that <tt>origName<tt> have at least two dots
-   * in its name (i.e., the class must be in a package, where the
-   * package name has at least two components). More sophisticated
-   * possibilities certainly exist, but they require proper parsing of
-   * the class file.
+   * classpath by our parent class loader, even if there is a class
+   * with the original name there.  We use a crude heuristic to do this that
+   * happens to work with the names we have needed to mangle to date.
+   * The heuristic requires that <code>origName</code> include at least
+   * two dots (i.e., the class must be in a package, where
+   * the package name has at least two components). More sophisticated
+   * possibilities certainly exist, but they would require 
+   * more thorough parsing of the class file.
    *
    * @param origName the name to be mangled.
    * @return the mangled name.
-   * @throws IllegalArgumentException if <tt>origName</tt> is not
+   * @throws IllegalArgumentException if <code>origName</code> is not
    * amenable to our crude mangling.
    */
-  private static String kludgeName(String origName) 
+  private static String mangleName(String origName) 
   throws IllegalArgumentException {
     final char dot = '.';
     final char dotReplacement = '_';
-    StringBuffer kludgedName = new StringBuffer(origName);
+    StringBuffer mangledName = new StringBuffer(origName);
     int replacements = 0;
     int lastDot = origName.lastIndexOf(dot);
     for (int nextDot = lastDot; 
 	 (nextDot = origName.lastIndexOf(dot, nextDot - 1)) >= 0; ) {
-      kludgedName.setCharAt(nextDot, dotReplacement);
+      mangledName.setCharAt(nextDot, dotReplacement);
       replacements++;
     }
     if (replacements <= 0) {
-      throw new IllegalArgumentException("AltClassLoader.kludgeName()'s crude classname mangling cannot deal with " + origName);
+      throw new IllegalArgumentException("AltClassLoader.mangleName()'s crude classname mangling cannot deal with " + origName);
     }
-    return kludgedName.toString();
+    return mangledName.toString();
   }
       
 
@@ -163,34 +162,35 @@ public class AltClassLoader extends ClassLoader {
    * <p>
    * Loads a class from either the regular classpath, or the alternate
    * classpath, depending on whether it looks like we have already
-   * kludged its name.</p>
+   * mangled its name.</p>
    *
-   * @param maybeKludgedName A string from which the desired class's name
-   * can be determined.  The name has been obfuscated by 
-   * {@link loadAltClass()} so that the regular <tt>ClassLoader</tt>
-   * to which we are delegating won't load any class with the
-   * same name from the regular classpath.
+   * <p> This method follows the steps provided by <a
+   * href="http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html#resources">Ken
+   * McCrary's ClasssLoader tutorial</a>.</p>
    *
-   * <p>
-   * This method follows the steps provided by Ken McCrary's
-   * tutorial at
-   * http://www.javaworld.com/javaworld/jw-03-2000/jw-03-classload.html#resources
-   * </p>
+   * @param maybeMangledName A string from which the desired class's
+   * name can be determined.  It may have been mangled by {@link
+   * AltClassLoader#loadClass(String) AltClassLoader.loadClass()} so
+   * that the regular <code>ClassLoader</code> to which we are
+   * delegating won't load the class from the regular classpath.
+   * @return the loaded class.
+   * @throws ClassNotFoundException if the class cannot be loaded.
+   *
    */
-  protected Class findClass(String maybeKludgedName)
+  protected Class findClass(String maybeMangledName)
     throws ClassNotFoundException {
     if (DEBUG) {
-      G.v().out.println("KludgedClassLoader asked for " + maybeKludgedName);
+      G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
     }
 
-    Class result = (Class) alreadyFound.get(maybeKludgedName);
+    Class result = (Class) alreadyFound.get(maybeMangledName);
     if (result != null) {
       return result;
     }
 
-    String name = (String) kludgedNameToName.get(maybeKludgedName);
+    String name = (String) mangledNameToName.get(maybeMangledName);
     if (name == null) {
-      name = maybeKludgedName;
+      name = maybeMangledName;
     }
     String pathTail = "/" + name.replace('.', File.separatorChar) + ".class";
 
@@ -201,8 +201,8 @@ public class AltClassLoader extends ClassLoader {
 	byte[] classBytes = new byte[stream.available()];
 	stream.read(classBytes);
 	replaceAltClassNames(classBytes);
-	result = defineClass(maybeKludgedName, classBytes, 0, classBytes.length);
-	alreadyFound.put(maybeKludgedName, result);
+	result = defineClass(maybeMangledName, classBytes, 0, classBytes.length);
+	alreadyFound.put(maybeMangledName, result);
 	return result;
       } catch (java.io.IOException e) {
 	// Try the next location.
@@ -210,20 +210,21 @@ public class AltClassLoader extends ClassLoader {
 	if (DEBUG) {
 	  e.printStackTrace(G.v().out);
 	}
+	// Try the next location.
       }
     }
     throw new ClassNotFoundException("Unable to find class" + name +
-				     "in alternate classpath");
+				     " in alternate classpath");
   }
 
 
   /**
    * <p>Loads a class, from the alternate classpath if the class's
-   * name has been added to the list of alternate classes with 
-   * {@link #addAltClass()}; from the regular system classpath
-   * otherwise.  When a alternate class is loaded, its references to
-   * other alternate classes are also resolved to the alternate
-   * classpath.
+   * name has been included in the list of alternate classes with
+   * {@link #setAltClasses(String[]) setAltClasses()}, from the
+   * regular system classpath otherwise.  When a alternate class is
+   * loaded, its references to other alternate classes are also
+   * resolved to the alternate classpath.
    * 
    * @param name the name of the class to load.
    * @return the loaded class.
@@ -235,7 +236,7 @@ public class AltClassLoader extends ClassLoader {
       G.v().out.println("AltClassLoader.loadClass(" + name + ")");
     }
 
-    String nameForParent = (String) nameToKludgedName.get(name);
+    String nameForParent = (String) nameToMangledName.get(name);
     if (nameForParent == null) {
       // This is not an alternate class
       nameForParent = name;
@@ -250,26 +251,26 @@ public class AltClassLoader extends ClassLoader {
 
 
   /**
-   * Replaces any occurrences of the classnames to be loaded from the
-   * alternate class path that occur in <tt>classBytes</tt> with the
-   * corresponding kludged name.  Of course we should really parse
-   * the class pool properly, since the simple-minded, brute
+   * Replaces any occurrences in <code>classBytes</code> of
+   * classnames to be loaded from the alternate class path with
+   * the corresponding mangled names.  Of course we should really
+   * parse the class pool properly, since the simple-minded, brute
    * force replacment done here could produce problems with some
-   * combinations of classnames and class contents. But we've got
-   * away with this so far!.
+   * combinations of classnames and class contents. But we've got away
+   * with this so far!
    */
   private void replaceAltClassNames(byte[] classBytes) {
-    for (Iterator it = nameToKludgedName.entrySet().iterator();
+    for (Iterator it = nameToMangledName.entrySet().iterator();
 	 it.hasNext(); ) {
       Map.Entry entry = (Map.Entry) it.next();
       String origName = (String) entry.getKey();
       origName = origName.replace('.', '/');
-      String kludgedName = (String) entry.getValue();
-      kludgedName = kludgedName.replace('.', '/');
+      String mangledName = (String) entry.getValue();
+      mangledName = mangledName.replace('.', '/');
       findAndReplace(classBytes, stringToUtf8Pattern(origName), 
-		     stringToUtf8Pattern(kludgedName));
+		     stringToUtf8Pattern(mangledName));
       findAndReplace(classBytes, stringToTypeStringPattern(origName), 
-		     stringToTypeStringPattern(kludgedName));
+		     stringToTypeStringPattern(mangledName));
     }
   }
 
@@ -310,10 +311,10 @@ public class AltClassLoader extends ClassLoader {
 
 
   /**
-   * Replaces all occurrences of the <tt>pattern</tt> in <tt>text</tt>
-   * with <tt>replacement</tt>. 
-   * @throws IllegalArgumentException if the lengths of <tt>text</tt>
-   * and <tt>replacement</tt> differ.
+   * Replaces all occurrences of the <code>pattern</code> in <code>text</code>
+   * with <code>replacement</code>. 
+   * @throws IllegalArgumentException if the lengths of <code>text</code>
+   * and <code>replacement</code> differ.
    */
   private static void findAndReplace(byte[] text, byte[] pattern, 
 			      byte[] replacement) 
@@ -338,9 +339,9 @@ public class AltClassLoader extends ClassLoader {
    * @param pattern the string of bytes to search for.
    * @param start the first position in text to search (0-based).
    * @return the index in text where the first occurrence of
-   *         <tt>pattern</tt> in <tt>text</tt> after <tt>start</tt>
-   *         begins.  Returns -1 if <tt>pattern</tt> does not occur
-   *         in <tt>text</tt> after <tt>start</tt>.
+   *         <code>pattern</code> in <code>text</code> after <code>start</code>
+   *         begins.  Returns -1 if <code>pattern</code> does not occur
+   *         in <code>text</code> after <code>start</code>.
    */
   private static int findMatch(byte[] text, byte[] pattern, int start) {
     int textLength = text.length;
@@ -358,20 +359,22 @@ public class AltClassLoader extends ClassLoader {
   }
 
   /**
-   * Replace the <tt>pattern.length</tt> bytes in <tt>text</tt>
-   * starting at <tt>start</tt> with the bytes in <tt>pattern</tt>.
+   * Replace the <code>replacement.length</code> bytes in <code>text</code>
+   * starting at <code>start</code> with the bytes in <code>replacement</code>.
    * @throws ArrayIndexOutOfBounds if there are not
-   * <tt>pattern.length</tt> remaining after <tt>text[start]</tt>.
+   * <code>replacement.length</code> remaining after <code>text[start]</code>.
    */
-  private static void replace(byte[] text, byte[] pattern, int start) {
-    int patternLength = pattern.length;
-    for (int t=start, p = 0; p < pattern.length; t++, p++) {
-      text[t] = pattern[p];
+  private static void replace(byte[] text, byte[] replacement, int start) {
+    for (int t=start, p = 0; p < replacement.length; t++, p++) {
+      text[t] = replacement[p];
     }
   }
-
-  // A main() entry for basic unit testing.
-  // Usage: path class ...
+    
+  /**
+   * <p>A main() entry for basic unit testing.</p>
+   *
+   * <p>Usage: path class ...</p>
+   */
   public static void main(String[] argv) throws ClassNotFoundException {
     AltClassLoader.v().setAltClassPath(argv[0]);
     for (int i = 1; i < argv.length; i++) {
