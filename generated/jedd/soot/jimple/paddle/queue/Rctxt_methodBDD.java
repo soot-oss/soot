@@ -15,8 +15,9 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                                           new PhysicalDomain[] { C1.v(), MS.v() },
                                           ("private <soot.jimple.paddle.bdddomains.ctxt:soot.jimple.padd" +
                                            "le.bdddomains.C1, soot.jimple.paddle.bdddomains.method:soot." +
-                                           "jimple.paddle.bdddomains.MS> bdd at /home/olhotak/soot-trunk" +
-                                           "/src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:31,12-32"));
+                                           "jimple.paddle.bdddomains.MS> bdd at /home/research/ccl/olhot" +
+                                           "a/soot-trunk/src/soot/jimple/paddle/queue/Rctxt_methodBDD.je" +
+                                           "dd:31,12-32"));
     
     void add(final jedd.internal.RelationContainer tuple) { bdd.eqUnion(tuple); }
     
@@ -24,8 +25,8 @@ public final class Rctxt_methodBDD extends Rctxt_method {
         this(name);
         add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                 new PhysicalDomain[] { C1.v(), MS.v() },
-                                                ("add(bdd) at /home/olhotak/soot-trunk/src/soot/jimple/paddle/" +
-                                                 "queue/Rctxt_methodBDD.jedd:33,82-85"),
+                                                ("add(bdd) at /home/research/ccl/olhota/soot-trunk/src/soot/ji" +
+                                                 "mple/paddle/queue/Rctxt_methodBDD.jedd:33,82-85"),
                                                 bdd));
     }
     
@@ -51,9 +52,9 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                     it =
                       new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                           new PhysicalDomain[] { C1.v(), MS.v() },
-                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/olhotak/soot-" +
-                                                           "trunk/src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:45,2" +
-                                                           "5-28"),
+                                                          ("bdd.iterator(new jedd.Attribute[...]) at /home/research/ccl/" +
+                                                           "olhota/soot-trunk/src/soot/jimple/paddle/queue/Rctxt_methodB" +
+                                                           "DD.jedd:45,25-28"),
                                                           bdd).iterator(new Attribute[] { ctxt.v(), method.v() });
                     bdd.eq(jedd.internal.Jedd.v().falseBDD());
                 }
@@ -71,14 +72,15 @@ public final class Rctxt_methodBDD extends Rctxt_method {
                                               new PhysicalDomain[] { C1.v(), MS.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
                                                "mains.C1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
-                                               "addle.bdddomains.MS> ret = bdd; at /home/olhotak/soot-trunk/" +
-                                               "src/soot/jimple/paddle/queue/Rctxt_methodBDD.jedd:55,29-32"),
+                                               "addle.bdddomains.MS> ret = bdd; at /home/research/ccl/olhota" +
+                                               "/soot-trunk/src/soot/jimple/paddle/queue/Rctxt_methodBDD.jed" +
+                                               "d:55,29-32"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
         return new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), method.v() },
                                                    new PhysicalDomain[] { C1.v(), MS.v() },
-                                                   ("return ret; at /home/olhotak/soot-trunk/src/soot/jimple/padd" +
-                                                    "le/queue/Rctxt_methodBDD.jedd:57,8-14"),
+                                                   ("return ret; at /home/research/ccl/olhota/soot-trunk/src/soot" +
+                                                    "/jimple/paddle/queue/Rctxt_methodBDD.jedd:57,8-14"),
                                                    ret);
     }
     

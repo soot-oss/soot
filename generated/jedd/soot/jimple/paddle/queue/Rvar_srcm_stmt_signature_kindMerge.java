@@ -39,12 +39,12 @@ public final class Rvar_srcm_stmt_signature_kindMerge extends Rvar_srcm_stmt_sig
     }
     
     public jedd.internal.RelationContainer get() {
-        return new jedd.internal.RelationContainer(new Attribute[] { kind.v(), srcm.v(), signature.v(), var.v(), stmt.v() },
-                                                   new PhysicalDomain[] { KD.v(), MS.v(), SG.v(), V1.v(), ST.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { signature.v(), var.v(), kind.v(), srcm.v(), stmt.v() },
+                                                   new PhysicalDomain[] { SG.v(), V1.v(), KD.v(), MS.v(), ST.v() },
                                                    ("return jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().r" +
-                                                    "ead(in1.get()), in2.get()); at /home/olhotak/soot-trunk/src/" +
-                                                    "soot/jimple/paddle/queue/Rvar_srcm_stmt_signature_kindMerge." +
-                                                    "jedd:52,8-14"),
+                                                    "ead(in1.get()), in2.get()); at /home/research/ccl/olhota/soo" +
+                                                    "t-trunk/src/soot/jimple/paddle/queue/Rvar_srcm_stmt_signatur" +
+                                                    "e_kindMerge.jedd:52,8-14"),
                                                    jedd.internal.Jedd.v().union(jedd.internal.Jedd.v().read(in1.get()),
                                                                                 in2.get()));
     }

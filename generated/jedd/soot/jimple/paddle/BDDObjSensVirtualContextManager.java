@@ -21,19 +21,20 @@ public class BDDObjSensVirtualContextManager extends AbsVirtualContextManager {
                                                "omains.tgtm:soot.jimple.paddle.bdddomains.MT, soot.jimple.pa" +
                                                "ddle.bdddomains.tgtc:soot.jimple.paddle.bdddomains.H1> newOu" +
                                                "t = jedd.internal.Jedd.v().project(in.get(), new jedd.Physic" +
-                                               "alDomain[...]); at /home/olhotak/soot-trunk/src/soot/jimple/" +
-                                               "paddle/BDDObjSensVirtualContextManager.jedd:35,45-51"),
+                                               "alDomain[...]); at /home/research/ccl/olhota/soot-trunk/src/" +
+                                               "soot/jimple/paddle/BDDObjSensVirtualContextManager.jedd:35,4" +
+                                               "5-51"),
                                               jedd.internal.Jedd.v().project(in.get(),
                                                                              new jedd.PhysicalDomain[] { V1.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), kind.v(), srcc.v(), srcm.v(), tgtm.v(), stmt.v() },
-                                                    new jedd.PhysicalDomain[] { C2.v(), KD.v(), C1.v(), MS.v(), MT.v(), ST.v() },
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), srcc.v(), tgtc.v(), stmt.v(), tgtm.v() },
+                                                    new jedd.PhysicalDomain[] { KD.v(), MS.v(), C1.v(), C2.v(), ST.v(), MT.v() },
                                                     ("out.add(jedd.internal.Jedd.v().replace(newOut, new jedd.Phys" +
-                                                     "icalDomain[...], new jedd.PhysicalDomain[...])) at /home/olh" +
-                                                     "otak/soot-trunk/src/soot/jimple/paddle/BDDObjSensVirtualCont" +
-                                                     "extManager.jedd:37,8-11"),
+                                                     "icalDomain[...], new jedd.PhysicalDomain[...])) at /home/res" +
+                                                     "earch/ccl/olhota/soot-trunk/src/soot/jimple/paddle/BDDObjSen" +
+                                                     "sVirtualContextManager.jedd:37,8-11"),
                                                     jedd.internal.Jedd.v().replace(newOut,
-                                                                                   new jedd.PhysicalDomain[] { H1.v(), C2.v() },
-                                                                                   new jedd.PhysicalDomain[] { C2.v(), C1.v() })));
+                                                                                   new jedd.PhysicalDomain[] { C2.v(), H1.v() },
+                                                                                   new jedd.PhysicalDomain[] { C1.v(), C2.v() })));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }
 }

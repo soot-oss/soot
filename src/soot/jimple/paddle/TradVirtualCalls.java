@@ -151,11 +151,13 @@ public class TradVirtualCalls extends AbsVirtualCalls
                 }
             }
             if( PaddleScene.v().options().verbose() && Scene.v().dynamicClasses().isEmpty()) {
-                G.v().out.println( "Warning: Method "+site.srcm()+
-                    " is reachable, and calls Class.forName on a"+
-                    " non-constant String and you didn't specify"+
-                    " and dynamic classe; graph may be incomplete!"+
-                    " Use safe-forname option for a conservative result." );
+                if(warnedAlready.add(site.srcm())) {
+                    G.v().out.println( "Warning: Method "+site.srcm()+
+                        " is reachable, and calls Class.forName on a"+
+                        " non-constant String and you didn't specify"+
+                        " any dynamic classes; graph may be incomplete!"+
+                        " Use safe-forname option for a conservative result." );
+                }
             }
         } else {
             StringConstantNode scn = (StringConstantNode) obj;
@@ -190,6 +192,8 @@ public class TradVirtualCalls extends AbsVirtualCalls
             }
         }
     }
+
+    private final Set warnedAlready = new HashSet();
 
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
 

@@ -70,6 +70,9 @@ public class NodeManager {
 	}
 	return ret;
     }
+    public GlobalAllocNode findGlobalAllocNode( Object value ) {
+	return (GlobalAllocNode) valToGlobalAllocNode.get( value );
+    }
     public AllocNode makeStringConstantNode( String s ) {
         Type type = RefType.v( "java.lang.String" );
         if( PaddleScene.v().options().types_for_sites() || PaddleScene.v().options().vta() )

@@ -19,8 +19,8 @@ public final class Qvar_typeBDD extends Qvar_type {
                                                 new PhysicalDomain[] { V1.v(), T1.v() },
                                                 ("add(jedd.internal.Jedd.v().literal(new java.lang.Object[...]" +
                                                  ", new jedd.Attribute[...], new jedd.PhysicalDomain[...])) at" +
-                                                 " /home/olhotak/soot-trunk/src/soot/jimple/paddle/queue/Qvar_" +
-                                                 "typeBDD.jedd:34,8-11"),
+                                                 " /home/research/ccl/olhota/soot-trunk/src/soot/jimple/paddle" +
+                                                 "/queue/Qvar_typeBDD.jedd:34,8-11"),
                                                 jedd.internal.Jedd.v().literal(new Object[] { _var, _type },
                                                                                new Attribute[] { var.v(), type.v() },
                                                                                new PhysicalDomain[] { V1.v(), T1.v() })));
@@ -31,8 +31,8 @@ public final class Qvar_typeBDD extends Qvar_type {
             Rvar_typeBDD reader = (Rvar_typeBDD) it.next();
             reader.add(new jedd.internal.RelationContainer(new Attribute[] { var.v(), type.v() },
                                                            new PhysicalDomain[] { V1.v(), T1.v() },
-                                                           ("reader.add(in) at /home/olhotak/soot-trunk/src/soot/jimple/p" +
-                                                            "addle/queue/Qvar_typeBDD.jedd:39,12-18"),
+                                                           ("reader.add(in) at /home/research/ccl/olhota/soot-trunk/src/s" +
+                                                            "oot/jimple/paddle/queue/Qvar_typeBDD.jedd:39,12-18"),
                                                            in));
         }
     }

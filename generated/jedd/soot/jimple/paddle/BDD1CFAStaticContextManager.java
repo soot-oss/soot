@@ -23,18 +23,19 @@ public class BDD1CFAStaticContextManager extends AbsStaticContextManager {
                                                "ce(jedd.internal.Jedd.v().project(in.get(), new jedd.Physica" +
                                                "lDomain[...]), new jedd.PhysicalDomain[...], new jedd.Physic" +
                                                "alDomain[...]), new jedd.PhysicalDomain[...], new jedd.Physi" +
-                                               "calDomain[...]); at /home/olhotak/soot-trunk/src/soot/jimple" +
-                                               "/paddle/BDD1CFAStaticContextManager.jedd:35,45-51"),
+                                               "calDomain[...]); at /home/research/ccl/olhota/soot-trunk/src" +
+                                               "/soot/jimple/paddle/BDD1CFAStaticContextManager.jedd:35,45-5" +
+                                               "1"),
                                               jedd.internal.Jedd.v().copy(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().project(in.get(),
                                                                                                                                         new jedd.PhysicalDomain[] { C2.v() }),
                                                                                                          new jedd.PhysicalDomain[] { ST.v() },
                                                                                                          new jedd.PhysicalDomain[] { C2.v() }),
                                                                           new jedd.PhysicalDomain[] { C2.v() },
                                                                           new jedd.PhysicalDomain[] { ST.v() }));
-        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { tgtc.v(), kind.v(), srcc.v(), srcm.v(), tgtm.v(), stmt.v() },
-                                                    new jedd.PhysicalDomain[] { C2.v(), KD.v(), C1.v(), MS.v(), MT.v(), ST.v() },
-                                                    ("out.add(newOut) at /home/olhotak/soot-trunk/src/soot/jimple/" +
-                                                     "paddle/BDD1CFAStaticContextManager.jedd:37,8-11"),
+        out.add(new jedd.internal.RelationContainer(new jedd.Attribute[] { kind.v(), srcm.v(), srcc.v(), tgtc.v(), stmt.v(), tgtm.v() },
+                                                    new jedd.PhysicalDomain[] { KD.v(), MS.v(), C1.v(), C2.v(), ST.v(), MT.v() },
+                                                    ("out.add(newOut) at /home/research/ccl/olhota/soot-trunk/src/" +
+                                                     "soot/jimple/paddle/BDD1CFAStaticContextManager.jedd:37,8-11"),
                                                     newOut));
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(newOut), jedd.internal.Jedd.v().falseBDD());
     }

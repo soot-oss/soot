@@ -45,39 +45,43 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
             if( !seenEdges.add( new Cons(new Cons(t.srcm(), t.stmt()),
                                         new Cons(t.kind(), t.tgtm())))) continue;
 
-            MethodNodeFactory srcnf = new MethodNodeFactory(t.srcm());
-            MethodNodeFactory tgtnf = new MethodNodeFactory(t.tgtm());
-            if( t.kind().isExplicit() || t.kind() == Kind.THREAD ) {
-                addCallTarget( t, srcnf, tgtnf );
-            } else {
-                if( t.kind() == Kind.PRIVILEGED ) {
-                    // Flow from first parameter of doPrivileged() invocation
-                    // to this of target, and from return of target to the
-                    // return of doPrivileged()
+            processEdge( t );
+        }
+    }
 
-                    InvokeExpr ie = ((Stmt) t.stmt()).getInvokeExpr();
-                    addParmEdge( t, srcnf.getNode(ie.getArg(0)), tgtnf.caseThis() );
+    protected void processEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple t ) {
+        MethodNodeFactory srcnf = new MethodNodeFactory(t.srcm());
+        MethodNodeFactory tgtnf = new MethodNodeFactory(t.tgtm());
+        if( t.kind().isExplicit() || t.kind() == Kind.THREAD ) {
+            addCallTarget( t, srcnf, tgtnf );
+        } else {
+            if( t.kind() == Kind.PRIVILEGED ) {
+                // Flow from first parameter of doPrivileged() invocation
+                // to this of target, and from return of target to the
+                // return of doPrivileged()
 
-                    if( t.stmt() instanceof AssignStmt ) {
-                        AssignStmt as = (AssignStmt) t.stmt();
-                        addRetEdge( t, tgtnf.caseRet(), srcnf.getNode(as.getLeftOp()) );
-                    }
-                } else if( t.kind() == Kind.INVOKE_FINALIZE ) {
-                    addParmEdge( t, srcnf.caseParm(0), tgtnf.caseThis() );
-                } else if( t.kind() == Kind.FINALIZE ) {
+                InvokeExpr ie = ((Stmt) t.stmt()).getInvokeExpr();
+                addParmEdge( t, srcnf.getNode(ie.getArg(0)), tgtnf.caseThis() );
+
+                if( t.stmt() instanceof AssignStmt ) {
                     AssignStmt as = (AssignStmt) t.stmt();
-                    Local lhs = (Local) as.getLeftOp();
-                    addParmEdge( t, srcnf.getNode(lhs), tgtnf.caseParm(0) );
-                } else if( t.kind() == Kind.NEWINSTANCE ) {
-                    Stmt s = (Stmt) t.stmt();
-                    InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
-                    VarNode cls = (VarNode) srcnf.getNode( iie.getBase() );
-                    Node newObject = PaddleScene.v().nodeFactory().caseNewInstance( cls );
-
-                    addParmEdge( t, newObject, tgtnf.caseThis() );
-                } else {
-                    throw new RuntimeException( "Unhandled edge "+t );
+                    addRetEdge( t, tgtnf.caseRet(), srcnf.getNode(as.getLeftOp()) );
                 }
+            } else if( t.kind() == Kind.INVOKE_FINALIZE ) {
+                addParmEdge( t, srcnf.caseParm(0), tgtnf.caseThis() );
+            } else if( t.kind() == Kind.FINALIZE ) {
+                AssignStmt as = (AssignStmt) t.stmt();
+                Local lhs = (Local) as.getLeftOp();
+                addParmEdge( t, srcnf.getNode(lhs), tgtnf.caseParm(0) );
+            } else if( t.kind() == Kind.NEWINSTANCE ) {
+                Stmt s = (Stmt) t.stmt();
+                InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+                VarNode cls = (VarNode) srcnf.getNode( iie.getBase() );
+                Node newObject = PaddleScene.v().nodeFactory().caseNewInstance( cls );
+
+                addParmEdge( t, newObject, tgtnf.caseThis() );
+            } else {
+                throw new RuntimeException( "Unhandled edge "+t );
             }
         }
     }
@@ -111,7 +115,7 @@ public class TradCallEdgeHandler extends AbsCallEdgeHandler
         }
     }
 
-    private void addParmEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple cgEdge, Node src, Node dst ) {
+    protected void addParmEdge( Rsrcc_srcm_stmt_kind_tgtc_tgtm.Tuple cgEdge, Node src, Node dst ) {
         parms.add(cgEdge.srcm(), cgEdge.stmt(), cgEdge.kind(), cgEdge.tgtm(),
                 (VarNode) src, (VarNode) dst);
     }

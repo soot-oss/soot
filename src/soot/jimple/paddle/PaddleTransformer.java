@@ -41,6 +41,12 @@ public class PaddleTransformer extends SceneTransformer
 
     protected void internalTransform( String phaseName, Map options )
     {
+        PaddleOptions opts = new PaddleOptions( options );
+        setup(opts);
+        solve(opts);
+    }
+
+    public void setup( PaddleOptions opts ) {
         CGOptions cgoptions = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         switch( cgoptions.context() ) {
             case CGOptions.context_insens:
@@ -61,14 +67,15 @@ public class PaddleTransformer extends SceneTransformer
             default:
                 throw new RuntimeException( "Unhandled kind of context" );
         }
-        PaddleOptions opts = new PaddleOptions( options );
 
         if( opts.simulate_natives() ) {
             NativeHelper.register( PaddleScene.v().nativeHelper() );
         }
 
         PaddleScene.v().setup( opts );
+    }
 
+    public void solve(PaddleOptions opts) {
         if( opts.pre_jimplify() ) preJimplify();
 
         Date startSolve = new Date();
