@@ -229,10 +229,6 @@ public class NaiveCommonSubexpressionEliminator extends BodyTransformer
 
     public static NaiveCommonSubexpressionEliminator v() { return instance; }
 
-    public String getDeclaredOptions() { return super.getDeclaredOptions(); }
-
-    public String getDefaultOptions() { return "disabled"; }
-
     /** Common subexpression eliminator. */
     protected void internalTransform(Body b, String phaseName, Map options)
     {
@@ -249,25 +245,25 @@ so that we may refer to the common subexpression eliminator as
 
 Once we have done this, we want to ensure that the transformation
 is triggered at the appropriate times.  Soot runs a number of {\tt Pack}s 
-at different stages of its execution; they are built in the {\tt Scene}'s
+at different stages of its execution; they are built in the {\tt PackManager}'s
 constructor.  One notable {\tt Pack} is the Jimple transformation pack
 ({\tt jtp}); the user may wish to add transformations to this pack:
 
 \begin{verbatim}
-        Scene.v().getPack("jtp").add(
+        PackManager.v().getPack("jtp").add(
              new Transform("jtp.gotoinstrumenter", GotoInstrumenter.v()));
 \end{verbatim}
 
 The {\tt Transform} object just keeps track of the pair (phase name,
 transformation object).  Phases are described in more detail in the
 \htmladdnormallink{document about phase
-options}{http://www.sable.mcgill.ca/soot/tutorial/phase-options}.
+options}{http://www.sable.mcgill.ca/soot/tutorial/phase}.
 
 \section{Extending Soot}
 
 The approved way of extending Soot is to provide a {\tt Main} classfile
 in a custom package, say {\tt plam.Main}.  This class can make adjustments
-to the {\tt Pack}s contained in the Scene, for instance adding a
+to the {\tt Pack}s contained in the PackManager, for instance adding a
 goto instrumentor:
 
 \begin{verbatim}
@@ -281,15 +277,10 @@ goto instrumentor:
             System.exit(0);
         }            
         
-        Scene.v().getPack("jtp").add(
+        PackManager.v().getPack("jtp").add(
              new Transform("jtp.gotoinstrumenter", GotoInstrumenter.v()));
         soot.Main.main(args);
     }
-\end{verbatim}
-
-It may also choose to override the default Jimple statement printer:
-\begin{verbatim}
-    Scene.v().setJimpleStmtPrinter(MyFancyStmtPrinter.v());
 \end{verbatim}
 
 \section{Conclusions}
@@ -302,6 +293,7 @@ this into the Soot framework.
 
 \begin{itemize}
 \item March 17, 2000: Initial version.
+\item May 31, 2003: Initial version.
 \end{itemize}
 
 \appendix

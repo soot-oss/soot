@@ -57,11 +57,11 @@ Jimple can be found in the source code distribution of Soot; it is called
 
 The default output format for Soot is classfiles. However, Soot can
 also produce output in other formats, i.e. textual Jimple. To output
-{\tt .jimple} files, invoke Soot using the {\tt -}{\tt -jimple} command line
+{\tt .jimple} files, invoke Soot using the {\tt -f jimple} command line
 option. For example,
 
 \begin{verbatim}
-  java soot.Main --jimple --app test
+  java soot.Main -f jimple --app test
 \end{verbatim}
 
 will output test and dependent classes as {\tt .jimple} files.
@@ -86,12 +86,13 @@ will read the class {\tt test} from the file {\tt test.jimple}, and its
 related classes from the other {\tt .jimple} files produced in the previous
 step.
 
-For more details on the {\tt -}{\tt -jimple} and {\tt -}{\tt -src-prec} options
+For more details on the {\tt -f} and {\tt -}{\tt -src-prec} options
 the user can refer to the Soot \htmladdnormallink{command line documentation}{../usage}.
 
 \section*{History}
 \begin{itemize}
 \item March 24, 2000: Initial version.
+\item May 31, 2003: Updated for Soot 2.0.
 \end{itemize}
 
 \end{document}

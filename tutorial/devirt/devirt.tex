@@ -2,7 +2,7 @@
 \usepackage{fullpage}
 \usepackage{html}
 
-\title{Optimizations using Variable Type Analysis}
+\title{Whole-program Devirtualization Optimizations}
 \author{Felix Kwok \htmladdnormallink{(wkwok@sable.mcgill.ca)}{mailto:wkwok@sable.mcgill.ca}}
 \date{September 5, 2000}
 
@@ -10,32 +10,22 @@
 
 \maketitle
 
-This note explains how to apply Variable Type Analysis to whole-program optimizations.
+This note explains how to use call graph information for whole-program devirtualization optimizations.
 The user should first be familiar with material in both 
 \htmladdnormallink{Soot command-line options}{../usage} and
-\htmladdnormallink{Phase options}{../phase-options}.
-
-\section{What is Variable Type Analysis?}
-Variable Type Analysis (VTA) is a linear algorithm that determines statically a set of possible
-runtime types of each variable in the program. This analysis is useful for virtual method call
-elimination: if VTA discovers that the receiver of a virtual invoke site can only have one
-possible type, we can use this information to inline the target method or to bind the method
-statically, so that virtual method lookup is no longer needed.
-\par For more information on VTA, see
-\htmladdnormallink{the Sable technical report 1999-4}{http://www.sable.mcgill.ca/publications/\#report1999-4}.
+\htmladdnormallink{Phase options}{../phase}.
 
 \section{Running whole-program optimizations}
 
-Soot provides tools for whole-program optimizations in the {\tt wjop} pack, some of which uses VTA. 
+Soot provides tools for whole-program optimizations in the {\tt wjop} pack.
 To use these tools, one must run {\tt soot} in whole-program mode and must have turned on optimization. This is
-accomplished by the command-line options {\tt -}{\tt -app} and {\tt -W}. Also, since VTA needs to analyze the bodies
-of the java library code, one must include the command-line option {\tt -a} or {\tt -}{\tt -analyze-context} to tell
-Soot to obtain Jimple code for library methods.
+accomplished by the command-line option {\tt -W}. Since we want Soot to output
+all the classes in our application, we should also use the {\tt -app} option.
 
 \section{The {\tt wjop} Pack}
 The {\tt wjop} pack contains two transformers, {\tt StaticMethodBinder} and {\tt StaticInliner}.
 Only one transformer should be applied for each execution. By default, {\tt StaticMethodBinder}
-is disabled and {\tt StaticInliner} enabled. This can be changed by setting the {\tt disabled}
+is disabled and {\tt StaticInliner} enabled. This can be changed by setting the {\tt enabled}
 option for each transformer.
 
 \par 
@@ -58,48 +48,44 @@ parameter is the object that used to be the receiver;
 \item redirects the original call site to the newly-created static method.
 \end{enumerate}
 
-By default, {\tt StaticInliner} and {\tt StaticMethodBinder} uses Class Hierarchy Analysis (CHA)
-to find monomorphic call sites. Changing the {\tt VTA-passes} option can cause them to 
-use VTA once or several times.
+By default, the call graph is build using CHA. Spark can be used instead
+by enabling it with the option {\tt -p cg.spark on}. Spark can also simulate
+other analyses such as VTA ({\tt -p cg.spark vta}) or RTA ({\tt -p cg.spark rta}).
 
 \section{Including dynamically-loaded classes}
 If the program to be optimized loads classes dynamically using the {\tt newInstance} method, Soot will be
 unable to tell statically which classes need to be resolved. In this case, the user will need to tell Soot
 explicitly which classes are loaded. This can be done using one of the following command-line options:
 \begin{enumerate}
-\item {\tt -}{\tt -dynamic-path} lets the user specify paths under which all classes are considered potentially
-dynamic. This option works provided the class files do not belong to any packages (i.e.~ the fully quantified
-name is the same as the class name). For example, this will work for a stand-alone class file, but will not
-work for classes like {\tt sun.security.provider.Provider}.
-\item {\tt -}{\tt -dynamic-packages} lets the user specify packages, separated by commas,
-for which all class files belonging to this package
+\item {\tt -}{\tt -dynamic-dir} lets the user specify paths under which all classes are considered potentially
+dynamic. 
+\item {\tt -}{\tt -dynamic-package} lets the user specify packages
+for which all class files belonging to the package
 or any subpackage thereof are considered potentially dynamic. For instance, saying 
-\begin{verbatim}--dynamic-packages sun.security.provider\end{verbatim}
+\begin{verbatim}--dynamic-package sun.security.provider\end{verbatim}
 will mark a class like {\tt sun.security.provider.Provider} as potentially dynamic.
+\item {\tt -}{\tt -dynamic-class} lets the user specify specific dynamic classes.
 \end{enumerate}
-We currently do not provide a way for the user to specify individual classes as potentially dynamic, but we hope
-to do that in the future. 
-Note: \textit{The user must specify all potentially dynamic classes using one (or both) of the above, or the results
-of VTA may be incorrect.} 
+These options may be specified multiple times to specify multiple dynamic directories, packages, or classes.
+Note: \textit{The user must specify all potentially dynamic classes using one (or both) of the above, or the call graph may be incomplete.}
 
 \section{Examples}
 \begin{itemize}
 \item 
 \begin{verbatim} 
-    java -mx300m soot.Main --app -W -a -p wjop.smb disabled:false -p wjop.si disabled
-    -p wjop.smb VTA-passes:2 spec.benchmarks._201_compress.Main
+    java -mx300m soot.Main --app -W -p wjop.smb on -p wjop.si off
+    spec.benchmarks._201_compress.Main
 \end{verbatim}
-This command runs {\tt StaticMethodBinder} instead of {\tt StaticInliner}. It also asks Soot
-to apply VTA twice on the analysis. It analyzes library classes, but does not include any dynamic packages. 
+This command runs {\tt StaticMethodBinder} instead of {\tt StaticInliner}. It does not include any dynamic packages. 
 The {\tt -mx300m} switch is present so that the virtual machine is allowed to use more memory 
 (300 Mb) than the default value (since whole-program analysis usually uses a lot of memory). Note
 that the switch for allowing more memory usage may be different depending on the virtual machine used.
 \item
 \begin{verbatim}
-    java -mx500m soot.Main --app -W -a --dynamic-packages
-    java.text.resources,spec.benchmarks._213_javac SpecApplication
+    java -mx500m soot.Main --app -W --dynamic-package java.text.resources
+    --dynamic-package spec.benchmarks._213_javac SpecApplication
 \end{verbatim}
-This command runs {\tt StaticInliner} with no VTA. It uses CHA to find monomorphic
+This command runs {\tt StaticInliner}. It uses CHA to find monomorphic
 sites. It analyzes library classes, and it includes all classes in the packages
 {\tt java.text.resources}, 
 {\tt spec.benchmarks.\_213\_javac}, or any of their subpackages,
@@ -108,6 +94,7 @@ as potentially dynamic classes. It allows the virtual machine to use 500 Mb of m
 \section*{History}
 \begin{itemize}
 \item September 5, 2000: Initial version.
+\item May 31, 2003: Updated for Soot 2.0.
 \end{itemize}
 
 \end{document}

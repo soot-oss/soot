@@ -83,9 +83,9 @@ Now, I am creating a wrapper class to add a phase in Soot for
 inserting profiling instructions, then call {\em
 soot.Main.main()}. The main method of this driver class addes a
 transformation phase named {\tt ``jtp.instrumenter''} to Soot's {\tt
-``jtp''} pack. The {\tt Scene} class manages environment for Soot,
-such as all phases, loaded classes. When {\em MainDriver} makes a call
-to {\em soot.Main.main}, Soot will know from {\em Scene} that a new
+``jtp''} pack. The {\tt PackManager} class the various Packs of phases of Soot.
+When {\em MainDriver} makes a call
+to {\em soot.Main.main}, Soot will know from {\em PackManager} that a new
 phase was registered, and the {\tt internalTransform} method of
 new phase will be called by Soot.  
 {\Large MainDriver.java :}
@@ -106,7 +106,7 @@ new phase will be called by Soot.
     14      }
     15
     16      /* add a phase to transformer pack by call Pack.add */
-    17      Pack jtp = Scene.v().getPack("jtp");
+    17      Pack jtp = PackManager.v().getPack("jtp");
     18      jtp.add(new Transform("jtp.instrumenter",
     19                            new InvokeStaticInstrumenter()));
     20

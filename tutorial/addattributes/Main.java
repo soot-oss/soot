@@ -42,7 +42,7 @@ public class Main
     public static void main(String[] args)
     {
         /* adds the transformer. */
-        Scene.v().getPack("jtp").add(new
+        PackManager.v().getPack("jtp").add(new
                         Transform("annotexample",
                         AnnExampleWrapper.v()));
 

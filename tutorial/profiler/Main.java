@@ -46,7 +46,7 @@ public class Main
             System.exit(0);
         }            
         
-        Scene.v().getPack("jtp").add(new Transform("jtp.instrumenter", GotoInstrumenter.v()));
+        PackManager.v().getPack("jtp").add(new Transform("jtp.instrumenter", GotoInstrumenter.v()));
         soot.Main.main(args);
     }
 }
@@ -67,8 +67,6 @@ class GotoInstrumenter extends BodyTransformer
     private GotoInstrumenter() {}
 
     public static GotoInstrumenter v() { return instance; }
-
-    public String getDeclaredOptions() { return super.getDeclaredOptions(); }
 
     private boolean addedFieldToMainClassAndLoadedPrintStream = false;
     private SootClass javaIoPrintStream;

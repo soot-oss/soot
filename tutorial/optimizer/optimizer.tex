@@ -46,7 +46,7 @@ Transforming Hello...
 \end{verbatim}
 
 Soot will then leave a new, improved {\tt Hello.class} file in the
-current directory.  For this class, the improvement after
+{\tt sootOutput} directory.  For this class, the improvement after
 Sootification is not so obvious.  Soot does, however, eliminate unused
 locals.  Try adding an unused local to {\tt Hello} and giving this command:
 
@@ -72,13 +72,13 @@ little effect on the program execution time.
 
 \section{Program Optimization}
 
-Soot has another mode of operation; it can run in {\em application} mode.
-In that case, the user specifies the main classfile, and Soot will load
-all needed classes.  
+Soot provides the {\tt -app} switch to make it work on all the class
+files in an applicaion. When this switch is present, the user specifies
+the main classfile, and Soot will load all needed classes.
 
-This allows Soot to carry out whole-program transformations; for
-instance, method inlining requires the whole program
-to correctly resolve virtual method calls.
+Soot has a whole-program mode in which allows it to carry out
+whole-program transformations; for instance, method inlining requires
+the whole program to correctly resolve virtual method calls.
 
 To specify that Soot should do whole-program optimizations ({\tt -W}),
 as well as single-class optimizations, use the command:
@@ -95,7 +95,7 @@ The default behaviour of {\tt -W} is to statically inline methods.
 Soot is also capable of static method binding; use 
 
 \begin{verbatim}
-> java soot.Main --app -p wjop.smb disabled:false -p wjop.si disabled -W -O
+> java soot.Main --app -p wjop.smb on -p wjop.si off -W -O
        Hello
 \end{verbatim}
 
@@ -112,6 +112,8 @@ and whole applications.
 
 \item March 23, 2000: Changed documentation to reflect fact that -W
 includes -O.
+
+\item May 31, 2003: Updated for Soot 2.0.
 \end{itemize}
 
 \end{document}

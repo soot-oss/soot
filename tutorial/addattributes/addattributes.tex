@@ -122,26 +122,14 @@ attached to a method's code attribute.  One implementation of a
 {\tt TagAggregator} is 
 {\tt soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator}.
 
-Aggregators can be active or inactive; the effect of being active or
-inactive is described later.
+One of the things that an aggregator must do is decide which bytecode
+instructions a tag will be associated with, since each Jimple statement
+may turn into several bytecode instructions. Two subclasses of 
+{\tt TagAggregator}, {\tt ImportantTagAggregator} and {\tt FirstTagAggregator},
+attach the tags to important instructions containing field or array references
+or method invocations, and to the first bytecode instruction for the Jimple
+statement, respectively.
 
-\begin{verbatim}
-public interface TagAggregator 
-{
-    /** Adds a new (unit, tag) pair. */
-    public void aggregateTag(Tag t, Unit u);
-
-    /** Generates the aggregated tag. */    
-    public Tag produceAggregateTag();
-
-    /** Clears old accumulated tags. */
-    public void refresh();
-
-    /** Returns true if the aggregator is active. */
-    public boolean isActive();
-}
-\end{verbatim}
-  
 \item[Base64] tool class\\
 This utility class allows the encoding of raw bytes to base64-encoded 
 characters and the decoding of base64 characters back to raw bytes.
@@ -216,23 +204,8 @@ The above classes provide APIs useful for adding new attributes. Soot
 attributes are represented as {\tt Tag}s, and are attached to {\tt
 Host}s.  An exception is CodeAttribute. Because the tags for
 CodeAttribute are attached to units, a {\tt TagAggregator} is used to
-combine them. Another class, \\ {\tt
-soot.baf.toolkits.base.CodeAttributeGenerator}, is a phase of Baf
-generation.  This class calls some {\tt TagAggregator}s and attaches the
-resulting aggregated tags to method bodies, corresponding to
-attributes on the code attribute. The {\tt CodeAttributeGenerator}
-class has a method {\tt registerAggregator}, which an aggregator can
-use to register callbacks. An aggregator can be set as active or
-inactive; during Baf generation, an active aggregator will accept tags
-according to the tag type.
-
-In the array bounds check attribute example, a {\tt
-ArrayNullTagAggregator} is registered by the {\tt Main} class, accepting
-{\tt ArrayCheckTag}s and {\tt NullCheckTag}s.
-
-\begin{verbatim}
-    CodeAttributeGenerator.v().registerAggregator(new ArrayNullTagAggregator(true));
-\end{verbatim}
+combine them. {\tt TagAggregator}s are instances of {\tt BodyTransformer}s,
+and are generally included in the {\tt tag} pack.
 
 \section{Adding method attributes in Soot}
 Adding a code attribute is non-trivial, as it requires that an aggregator
@@ -257,8 +230,8 @@ public class AnnExample
     public static void main(String[] args)
     {
         /* adds the transformer. */
-        Scene.v().getPack("jtp").add(new
-                        Transform("annotexample",
+        PackManager.v().getPack("jtp").add(new
+                        Transform("jtp.annotexample",
                         AnnExampleWrapper.v()));
 
         /* invokes Soot */
@@ -413,70 +386,41 @@ public class ArrayNullCheckTag implements OneByteCodeTag
 
 The {\tt ArrayNullTagAggregator} implements the {\tt TagAggregator}
 interface.  It is called while Baf is generating its backend code.
-The {\tt refresh()} method clears accumulated tags; it
-is called when a new method is examined.  The {\tt aggregateTag}
+The {\tt wantTag} returns true for tags that are to be considered
+by this aggregator.
+The {\tt considerTag}
 method accumulates one (unit, tag) pair, typically encountered
-during Baf's traversal of the units.  Finally, the {\tt
-produceAggregateTag} generates a fresh {\tt CodeAttribute} with the name and
-(unit, tag) pairs we have collected from the method under consideration.
+during Baf's traversal of the units.
 
 \begin{verbatim}
-public class ArrayNullTagAggregator implements TagAggregator
+public class ArrayNullTagAggregator extends TagAggregator
 {    
-    private boolean status = false;
-    private List tags = new LinkedList();
-    private List units = new LinkedList();
+    public ArrayNullTagAggregator( Singletons.Global g ) {}
+    public static ArrayNullTagAggregator v() { return G.v().ArrayNullTagAggregator(); }
 
-    private Unit lastUnit = null;
-    private ArrayNullCheckTag lastTag = null;
-    
-    public ArrayNullTagAggregator(boolean active)
-    {
-        this.status = active;
+    public boolean wantTag( Tag t ) {
+	return (t instanceof OneByteCodeTag);
     }
-    
-    public boolean isActive()
+    public void considerTag(Tag t, Unit u)
     {
-        return this.status;
-    }
+        Inst i = (Inst) u;
+        if(! ( i.containsInvokeExpr()
+            || i.containsFieldRef()
+            || i.containsArrayRef() ) ) return;
 
-    public void refresh()
-    {
-        tags.clear();
-        units.clear();
-        lastUnit = null;
-        lastTag = null;
-    }
+        OneByteCodeTag obct = (OneByteCodeTag) t;
 
-    public void aggregateTag(Tag t, Unit u)
-    {
-        if(t instanceof OneByteCodeTag) 
-        {        
-            if (lastUnit == u)
-            {
-                byte[] v = ((OneByteCodeTag)t).getValue();
-                    lastTag.accumulate(v[0]);
-            }
-            else
-            {
-                units.add(u);
-                lastUnit = u;
-                
-                byte[] v = ((Attribute)t).getValue();
-                lastTag = new ArrayNullCheckTag(v[0]);
-                tags.add(lastTag);
-            }
+        if( units.size() == 0 || units.getLast() != u ) {
+            units.add( u );
+            tags.add( new ArrayNullCheckTag() );
         }
+        ArrayNullCheckTag anct = (ArrayNullCheckTag) tags.getLast();
+        anct.accumulate(obct.getValue()[0]);
     }
     
-    public Tag produceAggregateTag()
+    public String aggregatedName()
     {
-        if(units.size() == 0)
-            return null;
-        else
-            return new CodeAttribute("ArrayNullCheckAttribute", 
-                                        new LinkedList(units), 
-                                        new LinkedList(tags));
+        return "ArrayNullCheckAttribute"; 
     }
 }
 \end{verbatim}
@@ -588,6 +532,7 @@ any debug information from {\tt javac} would be lost after annotation.
 \section*{History}
 \begin{itemize}
 \item October 6, 2000 : Initial version.
+\item May 31, 2003 : Updated for Soot 2.0.
 \end{itemize}
 
 \end{document}

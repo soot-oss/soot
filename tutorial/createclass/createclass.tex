@@ -205,15 +205,15 @@ identify the method), and invoke it with the {\tt StringConstant}
 
 \section{Write to class file}
 
-The demonstration program writes the {\tt SootClass} to a {\tt .jasmin}
-file and invokes {\tt jasmin} to assemble it into a {\tt .class} file.
+The demonstration program uses Soot's {\tt Printer} to write the {\tt SootClass} to a {\tt .jasmin}
+file and invoke {\tt jasmin} to assemble it into a {\tt .class} file.
 
 \noindent
-\begin{verbatim}    sClass.write(); \end{verbatim}
+\begin{verbatim}    Printer.v().write(sClass,""); \end{verbatim}
 
 In order to generate Jimple instead, one would instead use the following code:
 \noindent
-\begin{verbatim}    sClass.printTo(new java.io.PrintWriter(System.out, true)); \end{verbatim}
+\begin{verbatim}    Printer.v().printTo(sClass,new java.io.PrintWriter(System.out, true)); \end{verbatim}
 
 The Jimple created for the HelloWorld class is:
 
@@ -364,7 +364,7 @@ public class Main
                 units.add(Jimple.v().newReturnVoidStmt());
         }
 
-        sClass.write();
+        Printer.v().write(sClass,"");
     }
         
 }
@@ -374,6 +374,7 @@ public class Main
 \begin{itemize}
 \item March 8, 2000: Initial version.
 \item September 1, 2000: Changed syntax to conform with the current release.
+\item May 31, 2003: Updated for Soot 2.0.
 \end{itemize}
 
 \end{document}

@@ -14,7 +14,7 @@ public class MainDriver {
     }
     
     /* add a phase to transformer pack by call Pack.add */
-    Pack jtp = Scene.v().getPack("jtp");
+    Pack jtp = PackManager.v().getPack("jtp");
     jtp.add(new Transform("jtp.instrumenter", 
 			  new InvokeStaticInstrumenter()));
 
