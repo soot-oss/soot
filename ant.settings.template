@@ -1,5 +1,5 @@
 ## Location of Polyglot classes jar file
-polyglot.jar=${user.home}/polyglot-1.1.0.jar
+polyglot.jar=${user.home}/polyglot-1.2.0.jar
 
 ## Location of Jasmin classes jar file
 jasmin.jar=${user.home}/jasminclasses-sable-1.2.jar
