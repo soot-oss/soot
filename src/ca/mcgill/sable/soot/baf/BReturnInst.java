@@ -126,7 +126,7 @@ public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
     
     public boolean fallsThrough()
     {
-	return false;
+        return false;
     }
 
 

@@ -124,7 +124,7 @@ public class BReturnVoidInst extends AbstractInst implements ReturnVoidInst
 
      public boolean fallsThrough()
     {
-	return false;
+        return false;
     }
   
 

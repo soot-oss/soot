@@ -161,11 +161,11 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
 
     public boolean fallsThrough()
     {
-	return false;
+        return false;
     }
     public boolean branches()
     {
-	return true;
+        return true;
     }
 
     

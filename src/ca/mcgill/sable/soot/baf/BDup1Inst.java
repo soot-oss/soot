@@ -91,25 +91,25 @@ public class BDup1Inst extends BDupInst implements Dup1Inst
 
     BDup1Inst(Type aOpType)
     {
-	mOpType = Baf.getDescriptorTypeOf(aOpType);
+        mOpType = Baf.getDescriptorTypeOf(aOpType);
     }
 
     public Type getOp1Type()
     {
-	return mOpType;
+        return mOpType;
     }
 
 
     public List getOpTypes()
     {
-	List res =  new ArrayList();
-	res.add(mOpType);
-	return res;
+        List res =  new ArrayList();
+        res.add(mOpType);
+        return res;
     }
     
     public List getUnderTypes()
     {
-	return new ArrayList();
+        return new ArrayList();
     }
 
     
@@ -125,7 +125,7 @@ public class BDup1Inst extends BDupInst implements Dup1Inst
 
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-        return indentation + "dup1." +  Baf.bafDescriptorOf(mOpType);	
+        return indentation + "dup1." +  Baf.bafDescriptorOf(mOpType);        
     }
 
   

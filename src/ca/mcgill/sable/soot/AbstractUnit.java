@@ -230,8 +230,8 @@ public abstract class AbstractUnit implements Unit
         List boxesPointing = this.getBoxesPointingToThis();
 
         Object[] boxes = boxesPointing.toArray();
-	// important to change this to an array to have a static copy
-	
+        // important to change this to an array to have a static copy
+        
         for(int i = 0; i < boxes.length; i++)
         {
             UnitBox box = (UnitBox) boxes[i];

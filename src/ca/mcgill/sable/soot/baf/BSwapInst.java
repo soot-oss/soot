@@ -94,32 +94,32 @@ public class BSwapInst extends AbstractInst implements SwapInst
     BSwapInst(Type fromType, Type toType)
     {
 
-	if(fromType instanceof LongType || fromType instanceof DoubleType)
-	    throw  new RuntimeException("fromType is LongType or DoubleType !");
-	if(toType instanceof LongType || toType instanceof DoubleType)
-	    throw  new RuntimeException("toType is LongType or DoubleType !");
-	
-	mFromType = Baf.getDescriptorTypeOf(fromType);
-	mToType = Baf.getDescriptorTypeOf(toType);
+        if(fromType instanceof LongType || fromType instanceof DoubleType)
+            throw  new RuntimeException("fromType is LongType or DoubleType !");
+        if(toType instanceof LongType || toType instanceof DoubleType)
+            throw  new RuntimeException("toType is LongType or DoubleType !");
+        
+        mFromType = Baf.getDescriptorTypeOf(fromType);
+        mToType = Baf.getDescriptorTypeOf(toType);
     }
 
     public Type getFromType()
     {
-	return mFromType;
+        return mFromType;
     }
     public void setFromType(Type fromType)
     {
-	mFromType = fromType;
+        mFromType = fromType;
     }
     
     public Type getToType()
     {
-	return mToType;
+        return mToType;
     }
     
     public void setToType(Type toType)
     {
-	mToType = toType;
+        mToType = toType;
     }
 
 
@@ -151,7 +151,7 @@ public class BSwapInst extends AbstractInst implements SwapInst
     
     protected String toString(boolean isBrief, Map unitToName, String indentation)
     {
-	return indentation + "swap." + Baf.bafDescriptorOf(mFromType)  + Baf.bafDescriptorOf(mToType);
+        return indentation + "swap." + Baf.bafDescriptorOf(mFromType)  + Baf.bafDescriptorOf(mToType);
     }
     
     

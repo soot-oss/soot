@@ -92,8 +92,8 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
     AbstractOpTypeBranchInst(Type opType, UnitBox targetBox)
     {
         super(targetBox);
-	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-	    opType = RefType.v();
+        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+            opType = RefType.v();
 
 
         this.opType = opType;
@@ -117,8 +117,8 @@ public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
     public void setOpType(Type t)
     {
         opType = t;
-	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-	    opType = RefType.v();
+        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+            opType = RefType.v();
     }
 
    

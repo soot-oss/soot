@@ -129,6 +129,7 @@ public class BafBody extends Body
                 ((ConvertToBaf) s).convertToBaf(context, conversionList);
                 
                 stmtToFirstInstruction.put(s, conversionList.get(0));
+                getUnits().addAll(conversionList);
             }
         }
         

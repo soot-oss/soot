@@ -167,12 +167,12 @@ public class BIncInst extends AbstractInst implements IncInst
 
     public List getUseBoxes() 
     {
-	return useBoxes;
+        return useBoxes;
     }
     
     public List getDefBoxes() 
     {
-	return mDefBoxes;
+        return mDefBoxes;
     }
 
   

@@ -93,7 +93,7 @@ public abstract class AbstractInst extends AbstractUnit implements Inst
 
     public int getInCount()
     {
-	throw new RuntimeException("undefined "+ toString() + "!" );
+        throw new RuntimeException("undefined "+ toString() + "!" );
     }
     
     public int getOutCount()

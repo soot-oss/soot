@@ -169,8 +169,8 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     
                     if(isValidCase && x >= Short.MIN_VALUE && x <= Short.MAX_VALUE)
                     {
-			out.add(Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
-			return;
+                        out.add(Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l),  IntConstant.v((expr instanceof AddExpr) ? x : -x)));    
+                        return;
                     }        
                 }
             }

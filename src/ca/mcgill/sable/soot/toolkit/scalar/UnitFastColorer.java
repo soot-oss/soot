@@ -82,27 +82,27 @@ public class UnitFastColorer
     public static void unsplitAssignColorsToLocals(Body unitBody, Map localToGroup, 
         Map localToColor, Map groupToColorCount)
     {
-	
-	CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
+        
+        CompleteUnitGraph unitGraph = new CompleteUnitGraph(unitBody);
 
         UnitLiveLocals liveLocals;
 
         
-	liveLocals = new SimpleUnitLiveLocals(unitGraph);
+        liveLocals = new SimpleUnitLiveLocals(unitGraph);
         
         
         UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
 
-	Iterator it = intGraph.getLocals().iterator();
-	
-	while(it.hasNext()) {
-	    Local local = (Local) it.next();
-	    Local[] locals = intGraph.getInterferencesOf(local);
-	    System.out.println(local);
-	    System.out.println(locals); 
-	}
+        Iterator it = intGraph.getLocals().iterator();
+        
+        while(it.hasNext()) {
+            Local local = (Local) it.next();
+            Local[] locals = intGraph.getInterferencesOf(local);
+            System.out.println(local);
+            System.out.println(locals); 
+        }
 
-	    
+            
 
 
 
@@ -230,7 +230,7 @@ public class UnitFastColorer
         UnitLiveLocals liveLocals;
 
        
-	liveLocals = new SimpleUnitLiveLocals(unitGraph);
+        liveLocals = new SimpleUnitLiveLocals(unitGraph);
        
 
         UnitInterferenceGraph intGraph = new UnitInterferenceGraph(unitBody, localToGroup, liveLocals);
@@ -342,42 +342,42 @@ public class UnitFastColorer
                 Iterator codeIt = body.getUnits().iterator();
     
                 while(codeIt.hasNext())
-		    {
-			Unit unit = (Unit) codeIt.next();
+                    {
+                        Unit unit = (Unit) codeIt.next();
     
-			List liveLocalsAtUnit = liveLocals.getLiveLocalsAfter(unit);
+                        List liveLocalsAtUnit = liveLocals.getLiveLocalsAfter(unit);
                     
-			// Note interferences if this statement is a definition
-			{
-			    List defBoxes = unit.getDefBoxes();
-		
-			    if(!defBoxes.isEmpty()) {
-		
-				if(!(defBoxes.size() ==1)) 
-				    throw new RuntimeException("UnitFastColorer: invalid number of def boxes");
-			    
-				if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
-		
-				    Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                  
-				    Iterator localIt = liveLocalsAtUnit.iterator();
-				
-				    while(localIt.hasNext())
-					{
-					    Local otherLocal = (Local) localIt.next();
+                        // Note interferences if this statement is a definition
+                        {
+                            List defBoxes = unit.getDefBoxes();
                 
-					    if(localToGroup.get(otherLocal).equals(
-										   localToGroup.get(defLocal)))
-					    {
-		
-						setInterference(defLocal, otherLocal);
-					    }
-					}
-				}   
-			    } 
-		    
-			}                    
-		    }
+                            if(!defBoxes.isEmpty()) {
+                
+                                if(!(defBoxes.size() ==1)) 
+                                    throw new RuntimeException("UnitFastColorer: invalid number of def boxes");
+                            
+                                if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
+                
+                                    Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
+                  
+                                    Iterator localIt = liveLocalsAtUnit.iterator();
+                                
+                                    while(localIt.hasNext())
+                                        {
+                                            Local otherLocal = (Local) localIt.next();
+                
+                                            if(localToGroup.get(otherLocal).equals(
+                                                                                   localToGroup.get(defLocal)))
+                                            {
+                
+                                                setInterference(defLocal, otherLocal);
+                                            }
+                                        }
+                                }   
+                            } 
+                    
+                        }                    
+                    }
             }
         }
     

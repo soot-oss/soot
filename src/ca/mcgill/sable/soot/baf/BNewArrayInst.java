@@ -98,7 +98,7 @@ public class BNewArrayInst extends AbstractInst implements NewArrayInst
 
     public int getOutCount()
     {
-	return 1;
+        return 1;
     }
 
 
@@ -106,7 +106,7 @@ public class BNewArrayInst extends AbstractInst implements NewArrayInst
 
     public Object clone() 
     {
-	return new  BNewArrayInst(baseType);
+        return new  BNewArrayInst(baseType);
     }
 
     public int getInMachineCount()

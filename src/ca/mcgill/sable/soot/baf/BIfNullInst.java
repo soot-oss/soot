@@ -95,7 +95,7 @@ public class BIfNullInst extends AbstractBranchInst implements IfNullInst
     }
     public int getOutCount() 
     {
-	return 0;
+        return 0;
     }
 
 

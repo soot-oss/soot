@@ -94,7 +94,7 @@ public class BInstanceOfInst extends AbstractInst
         if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
             throw new RuntimeException("invalid InstanceOfInst: "+ opType);
 
-	checkType = opType;
+        checkType = opType;
     }
     
     public int getInCount()
@@ -130,7 +130,7 @@ public class BInstanceOfInst extends AbstractInst
 
     public Object clone() 
     {
-	return new BInstanceOfInst(checkType); 
+        return new BInstanceOfInst(checkType); 
     }
 
 }

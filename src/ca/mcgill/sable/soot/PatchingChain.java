@@ -14,7 +14,7 @@ class PatchingChain extends AbstractCollection implements Chain {
     
     public PatchingChain(Chain aChain)
     {
-	innerChain = aChain;
+        innerChain = aChain;
     }
 
     public boolean add(Object o)
@@ -24,19 +24,19 @@ class PatchingChain extends AbstractCollection implements Chain {
 
     public void insertAfter(Object toInsert, Object point)
     {
-	innerChain.insertAfter(toInsert, point);
+        innerChain.insertAfter(toInsert, point);
     }
 
 
     public void insertBefore(Object toInsert, Object point)
     {
-	((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
-	innerChain.insertBefore(toInsert, point);
+        ((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
+        innerChain.insertBefore(toInsert, point);
     }
 
     public boolean follows(Object a, Object b)
     {
-	return innerChain.follows(a,b);
+        return innerChain.follows(a,b);
     }
 
     public boolean remove(Object obj)
@@ -47,36 +47,36 @@ class PatchingChain extends AbstractCollection implements Chain {
         {
             Unit successor;
             
-	    if((successor = (Unit)getSuccOf(obj)) == null)
-		successor = (Unit)getPredOf(obj);
+            if((successor = (Unit)getSuccOf(obj)) == null)
+                successor = (Unit)getPredOf(obj);
             
-	    res = innerChain.remove(obj);
+            res = innerChain.remove(obj);
 
             ((Unit)obj).redirectJumpsToThisTo(successor);
         }
 
-        return res;	
+        return res;        
     }
 
     public void addFirst(Object u)
     {
-	insertBefore(u, innerChain.getFirst());
+        insertBefore(u, innerChain.getFirst());
     }
     
 
     public void addLast(Object u)
     {
-	innerChain.addLast(u);
+        innerChain.addLast(u);
     }
     
     public void removeFirst() 
     {
-	remove(innerChain.getFirst());
+        remove(innerChain.getFirst());
     }
     
     public void removeLast()
     {
-	remove(innerChain.getLast());
+        remove(innerChain.getLast());
     }
     
     public Object getFirst(){ return innerChain.getFirst();}
@@ -104,10 +104,10 @@ class PatchingChain extends AbstractCollection implements Chain {
 
             Unit successor;
             
-  	    if((successor = (Unit)getSuccOf(lastObject)) == null)
-  		successor = (Unit)getPredOf(lastObject);
+              if((successor = (Unit)getSuccOf(lastObject)) == null)
+                  successor = (Unit)getPredOf(lastObject);
             
-	    innerIterator.remove();
+            innerIterator.remove();
 
             ((Unit)lastObject).redirectJumpsToThisTo(successor);
         }

@@ -90,26 +90,26 @@ public class BPopInst extends AbstractInst implements PopInst
     
     BPopInst(Type aType)
     {
-	mType = aType;
+        mType = aType;
     }
 
     //public interface PopInst extends Inst
 
     public int getWordCount()
     {
-	return getInMachineCount();
+        return getInMachineCount();
     }
     
     public void setWordCount(int count)
     {
-	throw new RuntimeException("not implemented");
+        throw new RuntimeException("not implemented");
     }   
     
 
 
     public Object clone() 
     {
-	return new  BPopInst(mType);
+        return new  BPopInst(mType);
     }
 
 

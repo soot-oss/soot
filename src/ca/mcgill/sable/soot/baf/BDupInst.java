@@ -92,19 +92,19 @@ public abstract class BDupInst extends AbstractInst implements DupInst
 
     public int getInMachineCount()
     {
-	int count = 0;
+        int count = 0;
 
-	Iterator underTypesIt = getUnderTypes().iterator();
-	while(underTypesIt.hasNext()) {
-	    count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
-	}
+        Iterator underTypesIt = getUnderTypes().iterator();
+        while(underTypesIt.hasNext()) {
+            count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+        }
 
-	Iterator opTypesIt = getOpTypes().iterator();
-	while(opTypesIt.hasNext()) {
-	    count += JasminClass.sizeOfType(((Type) opTypesIt.next()));
-	}
-	
-	
+        Iterator opTypesIt = getOpTypes().iterator();
+        while(opTypesIt.hasNext()) {
+            count += JasminClass.sizeOfType(((Type) opTypesIt.next()));
+        }
+        
+        
         return count;
     }
     
@@ -117,17 +117,17 @@ public abstract class BDupInst extends AbstractInst implements DupInst
 
     public int getOutMachineCount()
     {
-	int count = 0;
+        int count = 0;
 
-	Iterator underTypesIt = getUnderTypes().iterator();
-	while(underTypesIt.hasNext()) {
-	    count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
-	}
+        Iterator underTypesIt = getUnderTypes().iterator();
+        while(underTypesIt.hasNext()) {
+            count += JasminClass.sizeOfType(((Type) underTypesIt.next()));
+        }
 
-	Iterator opTypesIt = getOpTypes().iterator();
-	while(opTypesIt.hasNext()) {	    	    
-	    count += 2*JasminClass.sizeOfType(((Type) opTypesIt.next()));
-	}		
+        Iterator opTypesIt = getOpTypes().iterator();
+        while(opTypesIt.hasNext()) {                        
+            count += 2*JasminClass.sizeOfType(((Type) opTypesIt.next()));
+        }                
         return count;
     }
     
@@ -135,7 +135,7 @@ public abstract class BDupInst extends AbstractInst implements DupInst
     
     public void apply(Switch sw)
     {
-	throw new RuntimeException();
+        throw new RuntimeException();
     }   
 
 }

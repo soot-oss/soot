@@ -93,7 +93,7 @@ public class BInstanceCastInst extends AbstractInst
         
         if (!(opType instanceof RefType) && !(opType instanceof ArrayType))
             throw new RuntimeException("invalid InstanceCastInst: "+ opType);
-	castType = opType;
+        castType = opType;
     }
 
     
@@ -109,7 +109,7 @@ public class BInstanceCastInst extends AbstractInst
     public Object clone() 
     {
 
-	return new  BInstanceCastInst(castType);
+        return new  BInstanceCastInst(castType);
 
     }
 

@@ -130,7 +130,7 @@ public class BGotoInst extends AbstractBranchInst implements GotoInst
    
     public boolean fallsThrough()
     {
-	return false;
+        return false;
     }
 }
 

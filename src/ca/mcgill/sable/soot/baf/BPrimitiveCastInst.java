@@ -114,13 +114,13 @@ public class BPrimitiveCastInst extends AbstractInst
     { 
         
         this.fromType = fromType;
-	this.toType = toType;
+        this.toType = toType;
     }
 
     
     public Object clone() 
     {
-	return new BPrimitiveCastInst(getFromType(), toType);
+        return new BPrimitiveCastInst(getFromType(), toType);
     }
 
 

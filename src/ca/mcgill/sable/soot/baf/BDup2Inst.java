@@ -90,32 +90,32 @@ public class BDup2Inst extends BDupInst implements Dup2Inst
 
     BDup2Inst(Type aOp1Type, Type aOp2Type)
     {
-	mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
-	mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
+        mOp1Type = Baf.getDescriptorTypeOf(aOp1Type);
+        mOp2Type = Baf.getDescriptorTypeOf(aOp2Type);
     }
 
     public Type getOp1Type()
     {
-	return mOp1Type;
+        return mOp1Type;
     }
 
     public Type getOp2Type()
     {
-	return mOp2Type;
+        return mOp2Type;
     }
 
 
     public List getOpTypes()
     {
-	List res =  new ArrayList();
-	res.add(mOp1Type);
-	res.add(mOp2Type);
-	return res;
+        List res =  new ArrayList();
+        res.add(mOp1Type);
+        res.add(mOp2Type);
+        return res;
     }
     
     public List getUnderTypes()
     {
-	return new ArrayList();
+        return new ArrayList();
     }
 
     

@@ -90,30 +90,30 @@ public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayIns
 
     public BNewMultiArrayInst(ArrayType opType, int dimensionCount)
     {
-	this.dimensionCount = dimensionCount;
-	baseType = opType;
+        this.dimensionCount = dimensionCount;
+        baseType = opType;
     }
 
 
 
     public int getInCount() 
     {
-	return dimensionCount;
+        return dimensionCount;
     }
 
     public int getOutCount()
     {
-	return 1; 
+        return 1; 
     }
 
     public int getInMachineCount() 
     {
-	return dimensionCount;
+        return dimensionCount;
     }
 
     public int getOutMachineCount()
     {
-	return 1; 	
+        return 1;         
     }
 
 

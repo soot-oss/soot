@@ -13,23 +13,23 @@ class Walker extends DepthFirstAdapter
 
     public void inAFile(AFile node)
     {
-	System.out.println("reading class " + node.getName());
+        System.out.println("reading class " + node.getName());
     } // inAFile
 
     public void inAMethodMember(AMethodMember node)
     {
-	System.out.println("  reading method " + node.getName());
-	stmtCount = 0;
+        System.out.println("  reading method " + node.getName());
+        stmtCount = 0;
     } // inAMethodMember
 
     public void outAMethodMember(AMethodMember node)
     {
-	// System.out.println("    found " + stmtCount +
-	//                    " assignment statements");
+        // System.out.println("    found " + stmtCount +
+        //                    " assignment statements");
     } // outAMethodMember
 
     public void inAAssignStatement(AAssignStatement node)
     {
-	// stmtCount++;
+        // stmtCount++;
     } // inAAssignStatement
 } // Walker

@@ -82,11 +82,11 @@ public class Baf implements BodyRepresentation
 
 
     static Type getDescriptorTypeOf(Type opType) 
-    {	
-	if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-	    opType = RefType.v();
-	
-	return opType;
+    {        
+        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
+            opType = RefType.v();
+        
+        return opType;
     }
 
     private Baf()
@@ -256,7 +256,7 @@ public class Baf implements BodyRepresentation
 
     public PopInst newPopInst(Type aType) 
     {
-	return new BPopInst(aType);
+        return new BPopInst(aType);
     }
 
     public SubInst newSubInst(Type opType)
@@ -470,29 +470,29 @@ public class Baf implements BodyRepresentation
 
     public SwapInst newSwapInst(Type fromType, Type toType)
     {
-	return new BSwapInst(fromType, toType);
+        return new BSwapInst(fromType, toType);
     }
   
     /*
     public DupInst newDupInst(Type type)
     {
-	return new BDupInst(new ArrayList(), Arrays.asList(new Type[] {type}));
-	}*/
+        return new BDupInst(new ArrayList(), Arrays.asList(new Type[] {type}));
+        }*/
     
 
     public Dup1Inst newDup1Inst(Type type)
     {
-	return new BDup1Inst(type);
+        return new BDup1Inst(type);
     }
 
     public Dup2Inst newDup2Inst(Type aOp1Type, Type aOp2Type)
     {
-	return new BDup2Inst(aOp1Type,aOp2Type);
+        return new BDup2Inst(aOp1Type,aOp2Type);
     }
 
     public Dup1_x1Inst newDup1_x1Inst(Type aOpType, Type aUnderType)
     {
-	return new BDup1_x1Inst(aOpType, aUnderType);
+        return new BDup1_x1Inst(aOpType, aUnderType);
     }
     
 
@@ -562,11 +562,11 @@ public class Baf implements BodyRepresentation
                 setResult("s");
             }
 
-	    
-	    public void defaultCase(Type t)
-	    {
+            
+            public void defaultCase(Type t)
+            {
                 throw new RuntimeException("Invalid type: " + t);
-	    }
+            }
 
             public void caseRefType(RefType t)
             {

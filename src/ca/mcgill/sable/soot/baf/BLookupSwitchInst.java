@@ -173,11 +173,11 @@ public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
 
     public boolean fallsThrough()
     {
-	return false;
+        return false;
     }
     public boolean branches()
     {
-	return true;
+        return true;
     }
 
 

@@ -13,27 +13,27 @@ public class InUsesOfAction implements SimpleAction
     UnitLocalDefs mDefs;
     
     public InUsesOfAction(Unit aX, Unit aY, Local aLocal, UnitLocalDefs aDefs)
-    {	
-	UnitLocalDefs mDefs = aDefs;
-	Unit mX = aX;
-	Unit mY = aY;
-	Local mLocal = aLocal;	
+    {        
+        UnitLocalDefs mDefs = aDefs;
+        Unit mX = aX;
+        Unit mY = aY;
+        Local mLocal = aLocal;        
     }
 
     
     
     public boolean eval()
     {
-	
-	List list = mDefs.getDefsOfAt(mLocal, mY);
-	if(list != null) {
-	    Iterator it = list.iterator();
-	
-	    while(it.hasNext()) {
-		if(it.next() == mX) 
-		    return true;
-	    }
-	}
-	return false;
+        
+        List list = mDefs.getDefsOfAt(mLocal, mY);
+        if(list != null) {
+            Iterator it = list.iterator();
+        
+            while(it.hasNext()) {
+                if(it.next() == mX) 
+                    return true;
+            }
+        }
+        return false;
     }    
 }

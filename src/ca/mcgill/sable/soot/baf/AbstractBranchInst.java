@@ -131,7 +131,7 @@ public abstract class AbstractBranchInst extends AbstractInst
     
     public boolean branches()
     {
-	return true;
+        return true;
     }
     
 
