@@ -30,12 +30,23 @@ public class MethodRWSet extends RWSet {
     public static final int MAX_SIZE = Integer.MAX_VALUE;
 
     public String toString() {
+        boolean empty = true;
         StringBuffer ret = new StringBuffer();
-        if( fields == null ) return "empty\n";
-        for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); ) {
-            final Object field = (Object) fieldIt.next();
-            ret.append( "[Field: "+field+" "+fields.get(field)+"]\n" );
+        if( fields != null ) {
+            for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); ) {
+                final Object field = (Object) fieldIt.next();
+                ret.append( "[Field: "+field+" "+fields.get(field)+"]\n" );
+                empty = false;
+            }
         }
+        if( globals != null ) {
+            for( Iterator globalIt = globals.iterator(); globalIt.hasNext(); ) {
+                final Object global = (Object) globalIt.next();
+                ret.append( "[Global: "+global+"]\n" );
+                empty = false;
+            }
+        }
+        if(empty) ret.append("empty");
         return ret.toString();
     }
 

@@ -27,11 +27,15 @@ public class SiteRWSet extends RWSet {
     protected boolean callsNative = false;
 
     public String toString() {
+        boolean empty = true;
         final StringBuffer ret = new StringBuffer();
+        ret.append("SiteRWSet: ");
         for( Iterator keyIt = sets.iterator(); keyIt.hasNext(); ) {
             final Object key = (Object) keyIt.next();
             ret.append( key.toString() );
+            empty = false;
         }
+        if(empty) ret.append("empty");
         return ret.toString();
     }
 

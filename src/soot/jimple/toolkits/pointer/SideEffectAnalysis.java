@@ -37,12 +37,20 @@ public class SideEffectAnalysis {
 	if( methodToNTReadSet.containsKey( method )
 	    && methodToNTWriteSet.containsKey( method ) ) return;
 	
-	MethodRWSet read = new MethodRWSet();
-	MethodRWSet write = new MethodRWSet();
+	MethodRWSet read = null;
+	MethodRWSet write = null;
 	for( Iterator sIt = method.retrieveActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
 	    final Stmt s = (Stmt) sIt.next();
-            read.union( ntReadSet( method, s ) );
-            write.union( ntWriteSet( method, s ) );
+            RWSet ntr = ntReadSet( method, s );
+            if( ntr != null ) {
+                if( read == null ) read = new MethodRWSet();
+                read.union( ntr );
+            }
+            RWSet ntw = ntWriteSet( method, s );
+            if( ntw != null ) {
+                if( write == null ) write = new MethodRWSet();
+                write.union( ntw );
+            }
 	}
 	methodToNTReadSet.put( method, read );
 	methodToNTWriteSet.put( method, write );
@@ -82,8 +90,11 @@ public class SideEffectAnalysis {
                 if( ret == null ) ret = new SiteRWSet();
                 ret.setCallsNative();
             } else if( target.isConcrete() ) {
-                if( ret == null ) ret = new SiteRWSet();
-                ret.union( nonTransitiveReadSet( target ) );
+                RWSet ntr = nonTransitiveReadSet(target);
+                if( ntr != null ) {
+                    if( ret == null ) ret = new SiteRWSet();
+                    ret.union( ntr );
+                }
             }
         }
         if( ret == null ) return ntReadSet( method, stmt );
@@ -108,8 +119,11 @@ public class SideEffectAnalysis {
                 if( ret == null ) ret = new SiteRWSet();
                 ret.setCallsNative();
             } else if( target.isConcrete() ) {
-                if( ret == null ) ret = new SiteRWSet();
-                ret.union( nonTransitiveWriteSet( target ) );
+                RWSet ntw = nonTransitiveWriteSet(target);
+                if( ntw != null ) {
+                    if( ret == null ) ret = new SiteRWSet();
+                    ret.union( ntw );
+                }
             }
 	}
         if( ret == null ) return ntWriteSet( method, stmt );
