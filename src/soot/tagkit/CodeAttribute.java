@@ -91,6 +91,6 @@ public class CodeAttribute extends JasminAttribute
 	}
 
 	return unitBoxes;
-    }
+    }    
 }
 	  

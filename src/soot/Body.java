@@ -324,8 +324,8 @@ public abstract class Body extends AbstractHost
 	    Iterator it = getTags().iterator();
 	    while(it.hasNext()) {
 		Tag t = (Tag) it.next();
-		if( t instanceof Attribute) 		    
-		    unitBoxList.addAll(((Attribute) t).getUnitBoxes());
+		if( t instanceof CodeAttribute) 		    
+		    unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
 	    }
 	}
 	
