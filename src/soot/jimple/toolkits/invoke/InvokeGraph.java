@@ -29,6 +29,9 @@ import java.util.*;
 import soot.*;
 import soot.jimple.*;
 
+/** Maps invokeExpr's to their declaring and target methods. 
+ * ClassHierarchyAnalysis is the default source of InvokeGraphs, although
+ * VTA and RTA can create or trim these graphs. */
 public class InvokeGraph
 {   
     HashMap invokeExprToDeclaringMethod = new HashMap();

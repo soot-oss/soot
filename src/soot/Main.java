@@ -119,6 +119,7 @@ public class Main
     static private boolean isOptimizingWhole;
     static private boolean isUsingVTA;
     static private boolean isUsingRTA;
+    static private boolean isApplication = false;
     
     static public long stmtCount;
     static String finalRep = "grimp";
@@ -154,7 +155,6 @@ public class Main
     
     public static void main(String[] args) throws RuntimeException
     {
-        boolean isApplication = false;
         boolean isAnalyzingLibraries = false;
 
         // The following lists are paired.  false is exclude in the first list.
@@ -179,7 +179,7 @@ public class Main
         if(args.length == 0)
         {
 // $Format: "            System.out.println(\"Soot version $ProjectVersion$\");"$
-            System.out.println("Soot version 1.beta.4.dev.113");
+            System.out.println("Soot version 1.beta.4.dev.114");
             System.out.println("Copyright (C) 1997-1999 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
@@ -767,20 +767,7 @@ public class Main
                 } 
             }
         }
-/*
-        {
-            Iterator methodIt = c.getMethods().iterator();
-            
-            while(methodIt.hasNext())
-            {   
-                SootMethod m = (SootMethod) methodIt.next();
-                Body body = m.getActiveBody();
 
-                soot.jimple.toolkits.temp.JimpleInliner.inlineAll(body);
-            }
-        }
-*/
-            
         if(targetExtension.equals(".jasmin"))
         {
             if(c.containsBafBody())
@@ -805,23 +792,22 @@ public class Main
                 writerOut.flush();
                 streamOut.close();
             }
-            catch(IOException e )
+            catch(IOException e)
             {
                 System.out.println("Cannot close output file " + fileName);
             }
         }
 
-        // Release bodies, if not performing whole program optimizations
-            if(!isOptimizingWhole)
-            {
-                Iterator methodIt = c.getMethods().iterator();
+        // Release bodies
+        {
+            Iterator methodIt = c.getMethods().iterator();
                 
-                while(methodIt.hasNext())
-                {   
-                    SootMethod m = (SootMethod) methodIt.next();
-                    m.releaseActiveBody();
-                }
+            while(methodIt.hasNext())
+            {   
+                SootMethod m = (SootMethod) methodIt.next();
+                m.releaseActiveBody();
             }
+        }
     }
     
     public static double truncatedOf(double d, int numDigits)

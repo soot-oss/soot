@@ -57,5 +57,27 @@ public class WholeJimpleOptimizationPack extends SceneTransformer
 
         StaticMethodBinder.v().transform("wjop.smb");
         System.out.println();
+
+//          Iterator applicationClassesIt = Scene.v().getApplicationClasses().iterator();
+//          while (applicationClassesIt.hasNext())
+//          {
+//              SootClass c = (SootClass)applicationClassesIt.next();
+
+//              if (c.isApplicationClass())
+//              {
+//                  Iterator methodIt = c.getMethods().iterator();
+            
+//                  while(methodIt.hasNext())
+//                  {   
+//                      SootMethod m = (SootMethod) methodIt.next();
+//                      if (!m.isPhantom())
+//                      {
+//                          Body body = m.getActiveBody();
+
+//                          soot.jimple.toolkits.invoke.JimpleInliner.inlineAll(body);
+//                      }
+//                  }
+//              }
+//          }
     }
 }

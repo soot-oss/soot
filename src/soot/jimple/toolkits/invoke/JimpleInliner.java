@@ -60,6 +60,10 @@ public class JimpleInliner
         Body containerB = (JimpleBody)container.getActiveBody();
         Chain containerUnits = containerB.getUnits();
 
+        if (!(inlinee.getDeclaringClass().isApplicationClass() ||
+              inlinee.getDeclaringClass().isLibraryClass()))
+            return;
+
         Body inlineeB = (JimpleBody)inlinee.getActiveBody();
         Chain inlineeUnits = inlineeB.getUnits();
 
