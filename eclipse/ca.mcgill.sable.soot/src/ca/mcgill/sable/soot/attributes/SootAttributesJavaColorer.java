@@ -121,6 +121,7 @@ public class SootAttributesJavaColorer {
 			//System.out.println("slineOffset: "+sLineOffset);
 		}
 		catch(Exception e){	
+			return;
 		}
 		//System.out.println("style range: ");
         //System.out.println("start: "+start);
