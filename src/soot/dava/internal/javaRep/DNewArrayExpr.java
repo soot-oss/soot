@@ -41,10 +41,22 @@ public class DNewArrayExpr extends AbstractNewArrayExpr implements Precedence
     public void toString( UnitPrinter up ) {
         up.literal( "new" );
         up.literal( " " );
-        up.type( getBaseType() );
-        up.literal( "[" );
-        getSizeBox().toString( up );
-        up.literal( "]" );
+        Type type = getBaseType();
+        if(type instanceof ArrayType) {
+            ArrayType arrayType = (ArrayType)type;
+            up.type(arrayType.baseType);
+            up.literal( "[" );
+            getSizeBox().toString( up );
+            up.literal( "]" );
+            for(int i = 0; i < arrayType.numDimensions; i++) {
+                up.literal("[]");
+            }
+        } else {
+            up.type( getBaseType() );
+            up.literal( "[" );
+            getSizeBox().toString( up );
+            up.literal( "]" );
+        }
     }
     public String toString()
     {
