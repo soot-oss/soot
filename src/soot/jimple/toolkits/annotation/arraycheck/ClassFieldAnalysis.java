@@ -51,7 +51,7 @@ public class ClassFieldAnalysis
  
     private Map classToFieldInfoMap = new HashMap();	
   
-    public void internalTransform(SootClass c)
+    protected void internalTransform(SootClass c)
     {
  	if (classToFieldInfoMap.containsKey(c))
 		return;

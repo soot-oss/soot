@@ -51,7 +51,7 @@ public class SparkTransformer extends SceneTransformer
         System.gc();
         System.gc();
     }
-    public void internalTransform( String phaseName, Map options )
+    protected void internalTransform( String phaseName, Map options )
     {
         SparkOptions opts = new SparkOptions( options );
 

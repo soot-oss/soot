@@ -42,7 +42,7 @@ public abstract class TagAggregator extends BodyTransformer {
     /** Return name of the resulting aggregated tag. */
     public abstract String aggregatedName();
 
-    public void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map options)
     {
         BafBody body = (BafBody) b;
        

@@ -29,7 +29,7 @@ public class FieldTagAggregator extends TagAggregator
     public FieldTagAggregator( Singletons.Global g ) {}
     public static FieldTagAggregator v() { return G.v().FieldTagAggregator(); }
 
-    public void internalTransform( Body b, String phaseName, Map options ) {
+    protected void internalTransform( Body b, String phaseName, Map options ) {
         FieldReadTagAggregator.v().transform( b, phaseName, options );
         FieldWriteTagAggregator.v().transform( b, phaseName, options );
     }

@@ -44,7 +44,7 @@ public class ProfilingGenerator extends BodyTransformer
 
     //    private String mainSignature = "long runBenchmark(java.lang.String[])";
 
-    public void internalTransform(Body body, String phaseName, Map opts)
+    protected void internalTransform(Body body, String phaseName, Map opts)
     {
         ProfilingOptions options = new ProfilingOptions( opts );
 	if (options.notmainentry())

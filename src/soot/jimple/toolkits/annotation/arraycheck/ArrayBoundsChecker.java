@@ -46,7 +46,7 @@ public class ArrayBoundsChecker extends BodyTransformer
     protected boolean takeCSE = false;
     protected boolean takeRectArray = false;
 
-    public void internalTransform(Body body, String phaseName, Map opts)
+    protected void internalTransform(Body body, String phaseName, Map opts)
     {
         ABCOptions options = new ABCOptions( opts );
         if (options.with_all())
