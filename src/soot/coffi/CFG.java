@@ -38,6 +38,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+import soot.tagkit.*;
 
 /** A Control Flow Graph.
  * @author Clark Verbrugge
@@ -99,6 +100,20 @@ public class CFG {
 	    firstInstruction = cfg.head;
 	else
 	    firstInstruction = null;
+
+	/*
+	if (m.code_attr != null)
+	{
+	    for (int i=0; i<m.code_attr.attributes.length; i++)
+	    {
+		if (m.code_attr.attributes[i] 
+		    instanceof LineNumberTable_attribute)
+		{
+		    System.out.print(m.code_attr.attributes[i]);
+		}
+	    }
+	}
+	*/
     }
 
     private void printBBCFGSucc()
@@ -451,7 +466,7 @@ public class CFG {
 	    method.instructions = this.sentinel.next;
 
 	    adjustExceptionTable();
-
+      	    adjustLineNumberTable();
 	    adjustBranchTargets();
 	}
 	return true;
@@ -796,8 +811,36 @@ public class CFG {
 	    if (newinsn != null)
 		entry.handler_inst = newinsn;
 	}
-   }
+    }
 
+    private void adjustLineNumberTable()
+    {
+	if (!soot.Main.keepLineNumberAttribute)
+	    return;
+	if (method.code_attr == null)
+	    return;
+
+	attribute_info[] attributes = method.code_attr.attributes;
+
+	for (int i=0; i<attributes.length; i++)
+	{
+	    if (attributes[i] instanceof LineNumberTable_attribute)
+	    {
+		LineNumberTable_attribute lntattr =
+		    (LineNumberTable_attribute)attributes[i];
+		for (int j=0; j<lntattr.line_number_table.length; j++)
+		{
+		    Instruction oldinst = 
+			lntattr.line_number_table[j].start_inst;
+		    Instruction newinst =
+			(Instruction)replacedInsns.get(oldinst);
+		    if (newinst != null)
+			lntattr.line_number_table[j].start_inst = newinst;
+		}
+	    }
+	}
+    }
+    
    /** Reconstructs the instruction stream by appending the Instruction
     * lists associated with each basic block.
     * <p>
@@ -1311,82 +1354,84 @@ public class CFG {
         {
             Map targetToHandler = new HashMap();
             
-              for(int i = 0; i < codeAttribute.exception_table_length; i++)
-              {
-                    Instruction startIns = codeAttribute.exception_table[i].start_inst;
-                    Instruction endIns = codeAttribute.exception_table[i].end_inst;
-                    Instruction targetIns = codeAttribute.exception_table[i].handler_inst;
+	    for(int i = 0; i < codeAttribute.exception_table_length; i++)
+	    {
+		Instruction startIns = 
+		    codeAttribute.exception_table[i].start_inst;
+		Instruction endIns = 
+		    codeAttribute.exception_table[i].end_inst;
+		Instruction targetIns = 
+		    codeAttribute.exception_table[i].handler_inst;
 
-                    if(!instructionToFirstStmt.containsKey(startIns) ||
-                        !instructionToLastStmt.containsKey(endIns))
+		if(!instructionToFirstStmt.containsKey(startIns) ||
+		   !instructionToLastStmt.containsKey(endIns))
+                {
+		    throw new RuntimeException("Exception range does not coincide with jimple instructions");
+		}
+
+		Stmt firstStmt = (Stmt) instructionToFirstStmt.get(startIns);
+		Stmt lastStmt;
+
+		// Determine the last stmt		
+		lastStmt = 
+		    (Stmt)units.getPredOf(instructionToLastStmt.get(endIns));
+		
+		if(!instructionToFirstStmt.containsKey(targetIns))
+                {
+		    throw new RuntimeException
+			("Exception handler does not coincide with jimple instruction");
+		}
+
+		SootClass exception;
+
+		// Determine exception to catch
+		{
+		    int catchType = 
+			codeAttribute.exception_table[i].catch_type;
+		    if(catchType != 0)
                     {
-                        throw new RuntimeException("Exception range does not coincide with jimple instructions");
-                    }
+			CONSTANT_Class_info classinfo = (CONSTANT_Class_info)
+			    constant_pool[catchType];
 
-                    Stmt firstStmt = (Stmt) instructionToFirstStmt.get(startIns);
-                    Stmt lastStmt;
+			String name = ((CONSTANT_Utf8_info) 
+				       (constant_pool[classinfo.name_index])).convert();
+			name = name.replace('/', '.');
+			exception = cm.getSootClass(name);
+		    }
+		    else
+			exception = cm.getSootClass("java.lang.Throwable");
+		}
 
-                    // Determine the last stmt
-                    {
-                        lastStmt = (Stmt)units.getPredOf(instructionToLastStmt.get(endIns));
-                    }
+		Stmt newTarget;
 
-                    if(!instructionToFirstStmt.containsKey(targetIns))
-                    {
-                        throw new RuntimeException
-                            ("Exception handler does not coincide with jimple instruction");
-                    }
-
-                    SootClass exception;
-
-                    // Determine exception to catch
-                    {
-                        int catchType = codeAttribute.exception_table[i].catch_type;
-
-                        if(catchType != 0)
-                        {
-                            CONSTANT_Class_info classinfo = (CONSTANT_Class_info)
-                                constant_pool[catchType];
-
-                            String name = ((CONSTANT_Utf8_info) (constant_pool[classinfo.name_index])).
-                                convert();
-                            name = name.replace('/', '.');
-
-                            exception = cm.getSootClass(name);
-                        }
-                        else
-                            exception = cm.getSootClass("java.lang.Throwable");
-
-                    }
-
-                    Stmt newTarget;
-
-                    // Insert assignment of exception
-                    {
-                        Stmt firstTargetStmt = (Stmt) instructionToFirstStmt.get(targetIns);
+		// Insert assignment of exception
+		{
+		    Stmt firstTargetStmt = 
+			(Stmt) instructionToFirstStmt.get(targetIns);
                         
-                        if(targetToHandler.containsKey(firstTargetStmt))
-                            newTarget = (Stmt) targetToHandler.get(firstTargetStmt);
-                        else
-                        {
-                            Local local = Util.getLocalCreatingIfNecessary(listBody, "$stack0",
-                                UnknownType.v());
-    
-                            newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
-    
-                            units.insertBefore(newTarget, firstTargetStmt);
-                            
-                            targetToHandler.put(firstTargetStmt, newTarget);
-                        }
-                    }
-
-                    // Insert trap
+		    if(targetToHandler.containsKey(firstTargetStmt))
+			newTarget = 
+			    (Stmt) targetToHandler.get(firstTargetStmt);
+		    else
                     {
-                        Stmt afterEndStmt = (Stmt)units.getSuccOf(lastStmt);
+			Local local = 
+			    Util.getLocalCreatingIfNecessary(listBody, "$stack0",UnknownType.v());
+			
+			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
+			
+			units.insertBefore(newTarget, firstTargetStmt);
+                            
+			targetToHandler.put(firstTargetStmt, newTarget);
+		    }
+		}
 
-                        Trap trap = Jimple.v().newTrap(exception, firstStmt, afterEndStmt, newTarget);
-                        listBody.getTraps().add(trap);
-                    }
+		// Insert trap
+		{
+		    Stmt afterEndStmt = (Stmt)units.getSuccOf(lastStmt);
+
+		    Trap trap = Jimple.v().newTrap(exception, firstStmt, afterEndStmt, newTarget);
+		    listBody.getTraps().add(trap);
+		}
 
                     /*
                     // Insert begincatch
@@ -1404,8 +1449,55 @@ public class CFG {
 
                         stmtList.add(endIndex + 1, endCatchStmt);
                     } */
-              }
+	    }
         }
+
+	/* covert line number table to tags attached to statements */
+	if (soot.Main.keepLineNumberAttribute)
+	{
+	    HashMap stmtstags = new HashMap();
+	    LinkedList startstmts = new LinkedList();
+
+	    attribute_info[] attrs = codeAttribute.attributes;
+	    for (int i=0; i<attrs.length; i++)
+	    {
+		if (attrs[i] instanceof LineNumberTable_attribute)
+		{
+		    LineNumberTable_attribute lntattr =
+			(LineNumberTable_attribute)attrs[i];
+		    for (int j=0; j<lntattr.line_number_table.length; j++)
+		    {
+			Stmt start_stmt = (Stmt)instructionToFirstStmt.get(
+				 lntattr.line_number_table[j].start_inst);
+
+			if (start_stmt != null)
+			{
+			    LineNumberTag lntag= new LineNumberTag(
+		   		    lntattr.line_number_table[j].line_number);
+			    stmtstags.put(start_stmt, lntag);
+			    startstmts.add(start_stmt);
+			}
+		    }
+		}
+	    }
+
+	    /* attach line number tag to each statement. */
+	    for (int i=0; i<startstmts.size(); i++)
+	    {
+		Stmt stmt = (Stmt)startstmts.get(i);
+		Tag tag = (Tag)stmtstags.get(stmt);
+		
+		stmt.addTag(tag);
+		
+		stmt = (Stmt)units.getSuccOf(stmt);
+		while (stmt != null 
+		       && !stmtstags.containsKey(stmt))
+		{
+		    stmt.addTag(tag);
+		    stmt = (Stmt)units.getSuccOf(stmt);
+		}
+	    }
+	}
     }
 
     private Type byteCodeTypeOf(Type type)

@@ -32,6 +32,8 @@ import soot.*;
 
 
 /** A CodeAttribute object holds PC -> Tag pairs.
+ * It represents abstracted attributes of Code_attribute 
+ * such as LineNumberTable, ArrayBoundsCheck. 
  */
 public class CodeAttribute extends JasminAttribute
 {
@@ -121,5 +123,77 @@ public class CodeAttribute extends JasminAttribute
 
 	return unitBoxes;
     }    
+
+    public byte[] decode(String attr, Hashtable labelToPc)
+    {
+	if (soot.Main.isVerbose)
+	    System.out.println("[] JasminAttribute decode...");
+
+	List attributeHunks = new LinkedList();
+	int attributeSize = 0;
+
+	StringTokenizer st = new StringTokenizer(attr, "%");
+	boolean isLabel = false;
+	if(attr.startsWith("%"))
+	    isLabel = true;
+
+	int tablesize = 0;
+
+	byte[] pcArray;
+	while(st.hasMoreTokens()) {	    
+	    String token = st.nextToken();
+	    if(isLabel) {		
+		Integer pc = (Integer) labelToPc.get(token);
+
+		if(pc == null)
+		    throw new RuntimeException("PC is null, the token is "+token);
+
+		int pcvalue = pc.intValue();
+		if(pcvalue > 65535) 
+		    throw new RuntimeException("PC great than 65535, the token is "+token+" : " +pcvalue);
+
+		pcArray = new byte[2];
+
+		pcArray[1] = (byte)(pcvalue&0x0FF);
+				
+		pcArray[0] = (byte)((pcvalue>>8)&0x0FF);
+
+		attributeHunks.add(pcArray);
+		attributeSize += 2;
+		tablesize++;
+	    } else {
+
+		byte[] hunk = Base64.decode(token.toCharArray());		
+		attributeSize += hunk.length;
+
+		attributeHunks.add(hunk);
+	    }
+	    isLabel = !isLabel;	  
+	}
+	
+	/* first two bytes indicate the length of attribute table. */
+	attributeSize += 2;
+	byte[] attributeValue = new byte[attributeSize];
+	{
+	    attributeValue[0] = (byte)((tablesize>>8)&0x0FF);
+	    attributeValue[1] = (byte)(tablesize&0x0FF);
+	}
+	int index=2;
+	Iterator it = attributeHunks.iterator();
+	while(it.hasNext()) {
+	    byte[] hunk = (byte[]) it.next();
+	    for(int i = 0; i < hunk.length; i++) {
+		attributeValue[index++] = hunk[i];
+	    }
+	}
+
+	if(index != (attributeSize))
+	    throw new RuntimeException("Index does not euqal to attrubute size :"+index+" -- "+attributeSize);
+
+	if (soot.Main.isVerbose)
+	    System.out.println("[] Jasmin.decode finished...");
+
+	return attributeValue;
+    }
 }
 	  

@@ -6,6 +6,8 @@ Improvements in current version
      preds and succs edges to a removed node. (Felix Kwok, wkwok)
 3. fix for Windows classpaths which contain less than two letters.
      Formerly, this crashed in charAt(1).  (plam, reported by Mary Payne)
+4. add an option '-A LineNumber' to keep line number attributes in
+   source class files. (feng)
 
 Improvements in version 1.2.2 (Thu Mar 29 11:45:13 EST 2001)
 

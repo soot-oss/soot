@@ -59,6 +59,12 @@ public class method_info {
     * @see attribute_info
     */
     public attribute_info attributes[];
+
+    /** A shortcut into attributes array for Code_attribute
+     * @see Code_attribute
+     */
+    public Code_attribute code_attr;
+
    /** List of Instructions constructed when the method is parsed.
     * @see Instruction
     */

@@ -163,25 +163,16 @@ public class ClassFile {
     */
     public ClassFile(String nfn) { fn = nfn; }
 
-
-
-    
-
-
-
-
-
-
     static soot.Timer fieldTimer = new soot.Timer();
     static soot.Timer methodTimer = new soot.Timer();
     static soot.Timer attributeTimer = new soot.Timer();
     static soot.Timer locatorTimer = new soot.Timer();
     static soot.Timer readTimer = new soot.Timer();
 
-   /** Returns the name of this Class. */
-   public String toString() {
-      return (constant_pool[this_class].toString(constant_pool));
-   }
+    /** Returns the name of this Class. */
+    public String toString() {
+	return (constant_pool[this_class].toString(constant_pool));
+    }
 
    /** Main entry point for reading in a class file.
     * The file name is given in the constructor; this opens the
@@ -189,35 +180,36 @@ public class ClassFile {
     * @return <i>true</i> on success.
     */
     public boolean loadClassFile() {
-      InputStream f = null;
-      InputStream classFileStream;
-      DataInputStream d;
-      boolean b;
+	InputStream f = null;
+	InputStream classFileStream;
+	DataInputStream d;
+	boolean b;
 
-      locatorTimer.start();
+	locatorTimer.start();
       
-      try
-      {   
-          if(!soot.Scene.v().getSootClassPath().equals("<external-class-path>"))
-          {   
-	      classFileStream = SourceLocator.getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
-          }
-          else
-          {   classFileStream = SourceLocator.getInputStreamOf(fn);
-          }
-      }
-      catch(ClassNotFoundException e)
-      {   
-          locatorTimer.end();
+	try
+	{   
+	    if(!soot.Scene.v().getSootClassPath().
+	       equals("<external-class-path>"))
+	    {   
+		classFileStream = SourceLocator.
+		    getInputStreamOf(soot.Scene.v().getSootClassPath(), fn);
+	    }
+	    else
+	    {   
+		classFileStream = SourceLocator.getInputStreamOf(fn);
+	    }
+	}
+	catch(ClassNotFoundException e)
+	{   
+	    locatorTimer.end();
+	    return false;      
+	}
+	
+	locatorTimer.end();
 
-          return false;
-      
-      }
-
-      locatorTimer.end();
-
-      return loadClassFile(classFileStream);
-   }
+	return loadClassFile(classFileStream);
+    }
 
     public boolean loadClassFile(InputStream is) 
     {
@@ -671,19 +663,19 @@ public class ClassFile {
             a = (attribute_info)ea;
          } else if(s.compareTo(attribute_info.LineNumberTable)==0) 
          {
-            LineNumberTable_attribute la = new LineNumberTable_attribute();
-            la.line_number_table_length = d.readUnsignedShort();
-            int k;
-            line_number_table_entry e;
-            la.line_number_table = new
-               line_number_table_entry[la.line_number_table_length];
-            for (k=0; k<la.line_number_table_length; k++) {
-               e = new line_number_table_entry();
-               e.start_pc = d.readUnsignedShort();
-               e.line_number = d.readUnsignedShort();
-               la.line_number_table[k] = e;
-            }
-            a = (attribute_info)la;
+	     LineNumberTable_attribute la = new LineNumberTable_attribute();
+	     la.line_number_table_length = d.readUnsignedShort();
+	     int k;
+	     line_number_table_entry e;
+	     la.line_number_table = new
+		 line_number_table_entry[la.line_number_table_length];
+	     for (k=0; k<la.line_number_table_length; k++) {
+		 e = new line_number_table_entry();
+		 e.start_pc = d.readUnsignedShort();
+		 e.line_number = d.readUnsignedShort();
+		 la.line_number_table[k] = e;
+	     }
+	     a = (attribute_info)la;
          } else if(s.compareTo(attribute_info.LocalVariableTable)==0) 
          {
             LocalVariableTable_attribute la = new LocalVariableTable_attribute();
@@ -778,9 +770,16 @@ public class ClassFile {
          
          if (mi.attributes_count>0) {
             mi.attributes = new attribute_info[mi.attributes_count];
-            
             readAttributes(d,mi.attributes_count,mi.attributes);
-            
+
+	    for (int j=0; j<mi.attributes_count; j++)
+	    {
+		if (mi.attributes[j] instanceof Code_attribute)
+		{
+		    mi.code_attr = (Code_attribute)mi.attributes[j];
+		    break;
+		}
+	    }
          }
 
          /*if ("main".compareTo(ci.convert())==0) {
@@ -1118,6 +1117,23 @@ public class ClassFile {
       }
 
       m.instructions = head;
+
+      // now also update LineNumberTable attribute by pointers instead of absolute addresses
+      for (int k=0; k<ca.attributes.length; k++)
+      {
+	  if (ca.attributes[k] instanceof LineNumberTable_attribute)
+	  {
+	      LineNumberTable_attribute lntattr =
+		  (LineNumberTable_attribute)ca.attributes[k];
+
+	      for (int l=0; l<lntattr.line_number_table.length; l++)
+	      {
+		  lntattr.line_number_table[l].start_inst =
+		      bc.locateInst(lntattr.line_number_table[l].start_pc);
+	      }
+	  }
+      }
+
       return head;
    }
 

@@ -41,6 +41,7 @@ import soot.jimple.toolkits.annotation.arraycheck.*;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 import soot.jimple.toolkits.annotation.profiling.*;
 import soot.jimple.toolkits.annotation.tags.*;
+import soot.tagkit.*;
 
 import java.io.*;
 import java.text.*;
@@ -58,6 +59,7 @@ public class Main implements Runnable
      // DEBUG
     static boolean isAnalyzingLibraries = false;
 
+    public static boolean keepLineNumberAttribute = false;
 
     private static List compilationListeners = new ArrayList(1);
     public static void addCompilationListener(ICompilationListener l)
@@ -523,6 +525,12 @@ public class Main implements Runnable
 	    doNullPointerCheck = true;
 	}
 	else
+	if (opt.equals("LineNumber"))
+	{
+		soot.Main.keepLineNumberAttribute = true;
+		CodeAttributeGenerator.v().registerAggregator(new LineNumberTagAggregator(true));
+	}
+	else
 	    System.out.println("Annotation phase \"" + opt + "\" is not valid.");
 
 	// put null pointer check before bounds check for profiling purpose
@@ -548,7 +556,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
          // $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.9)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.10)");
             System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
             System.out.println("All rights reserved.");
             System.out.println("");
