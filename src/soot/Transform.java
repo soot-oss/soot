@@ -70,6 +70,6 @@ public class Transform implements HasPhaseOptions
     }
 
     public void apply(Body b) {
-        ((BodyTransformer) t).transform( b, phaseName );
+        ((BodyTransformer) t).transform( b, phaseName, PackManager.v().getPhaseOptions( phaseName ) );
     }
 }
