@@ -29,8 +29,10 @@ import java.util.*;
  */
 public class BDDCflow
 { 
+    public static final boolean DEBUG = false;
     public BDDCflow() {
         stmtMethod = 0B;
+        if(DEBUG) G.v().out.println("Getting call graph");
         for( Iterator scIt = Scene.v().getApplicationClasses().iterator(); scIt.hasNext(); ) {
             final SootClass sc = (SootClass) scIt.next();
             for( Iterator mIt = sc.getMethods().iterator(); mIt.hasNext(); ) {
@@ -55,6 +57,7 @@ public class BDDCflow
 
         callGraph = (srcc=>, tgtc=>) PaddleScene.v().cg.edges().get(){kind}
                                                        <> wantedKinds{kind};
+        if(DEBUG) G.v().out.println("Done getting call graph");
     }
     private <stmt, method> stmtMethod;
     <stmt, method> stmtMethod() { return stmtMethod; }

@@ -37,8 +37,8 @@ public final class Qctxt_var_obj_srcm_stmt_kind_tgtmBDD extends Qctxt_var_obj_sr
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rctxt_var_obj_srcm_stmt_kind_tgtmBDD reader = (Rctxt_var_obj_srcm_stmt_kind_tgtmBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), kind.v(), var.v(), tgtm.v(), ctxt.v(), obj.v() },
-                                                           new PhysicalDomain[] { MS.v(), ST.v(), KD.v(), V1.v(), MT.v(), C1.v(), H1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { ctxt.v(), stmt.v(), srcm.v(), var.v(), tgtm.v(), kind.v(), obj.v() },
+                                                           new PhysicalDomain[] { C1.v(), ST.v(), MS.v(), V1.v(), MT.v(), KD.v(), H1.v() },
                                                            ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                             "ddle/queue/Qctxt_var_obj_srcm_stmt_kind_tgtmBDD.jedd:40,12-1" +
                                                             "8"),

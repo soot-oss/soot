@@ -27,8 +27,8 @@ public final class Rsrcm_stmt_kind_tgtm_src_dstBDD extends Rsrcm_stmt_kind_tgtm_
     
     public Rsrcm_stmt_kind_tgtm_src_dstBDD(final jedd.internal.RelationContainer bdd, String name) {
         this(name);
-        add(new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), dst.v(), kind.v(), tgtm.v(), src.v() },
-                                                new PhysicalDomain[] { MS.v(), ST.v(), V2.v(), KD.v(), MT.v(), V1.v() },
+        add(new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), dst.v(), tgtm.v(), src.v(), kind.v() },
+                                                new PhysicalDomain[] { ST.v(), MS.v(), V2.v(), MT.v(), V1.v(), KD.v() },
                                                 ("add(bdd) at /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/q" +
                                                  "ueue/Rsrcm_stmt_kind_tgtm_src_dstBDD.jedd:33,130-133"),
                                                 bdd));
@@ -54,8 +54,8 @@ public final class Rsrcm_stmt_kind_tgtm_src_dstBDD extends Rsrcm_stmt_kind_tgtm_
             public Object next() {
                 if (it == null || !it.hasNext()) {
                     it =
-                      new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), dst.v(), kind.v(), tgtm.v(), src.v() },
-                                                          new PhysicalDomain[] { MS.v(), ST.v(), V2.v(), KD.v(), MT.v(), V1.v() },
+                      new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), dst.v(), tgtm.v(), src.v(), kind.v() },
+                                                          new PhysicalDomain[] { ST.v(), MS.v(), V2.v(), MT.v(), V1.v(), KD.v() },
                                                           ("bdd.iterator(new jedd.Attribute[...]) at /tmp/olhotak/soot-t" +
                                                            "runk/src/soot/jimple/paddle/queue/Rsrcm_stmt_kind_tgtm_src_d" +
                                                            "stBDD.jedd:45,25-28"),
@@ -90,8 +90,8 @@ public final class Rsrcm_stmt_kind_tgtm_src_dstBDD extends Rsrcm_stmt_kind_tgtm_
                                                "Rsrcm_stmt_kind_tgtm_src_dstBDD.jedd:55,61-64"),
                                               bdd);
         bdd.eq(jedd.internal.Jedd.v().falseBDD());
-        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), dst.v(), kind.v(), tgtm.v(), src.v() },
-                                                   new PhysicalDomain[] { MS.v(), ST.v(), V2.v(), KD.v(), MT.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), dst.v(), tgtm.v(), src.v(), kind.v() },
+                                                   new PhysicalDomain[] { ST.v(), MS.v(), V2.v(), MT.v(), V1.v(), KD.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Rsrcm_stmt_kind_tgtm_src_dstBDD.jedd:57,8-14"),
                                                    ret);

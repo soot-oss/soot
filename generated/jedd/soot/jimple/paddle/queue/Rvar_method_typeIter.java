@@ -46,8 +46,8 @@ public class Rvar_method_typeIter extends Rvar_method_type {
                                                        new Attribute[] { var.v(), method.v(), type.v() },
                                                        new PhysicalDomain[] { V1.v(), MS.v(), T1.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { method.v(), var.v(), type.v() },
-                                                   new PhysicalDomain[] { MS.v(), V1.v(), T1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v(), method.v() },
+                                                   new PhysicalDomain[] { T1.v(), V1.v(), MS.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Rvar_method_typeIter.jedd:50,8-14"),
                                                    ret);

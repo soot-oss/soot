@@ -31,8 +31,8 @@ public final class Qvar_method_typeBDD extends Qvar_method_type {
             invalidate();
         for (Iterator it = readers.iterator(); it.hasNext(); ) {
             Rvar_method_typeBDD reader = (Rvar_method_typeBDD) it.next();
-            reader.add(new jedd.internal.RelationContainer(new Attribute[] { method.v(), var.v(), type.v() },
-                                                           new PhysicalDomain[] { MS.v(), V1.v(), T1.v() },
+            reader.add(new jedd.internal.RelationContainer(new Attribute[] { type.v(), var.v(), method.v() },
+                                                           new PhysicalDomain[] { T1.v(), V1.v(), MS.v() },
                                                            ("reader.add(in) at /tmp/olhotak/soot-trunk/src/soot/jimple/pa" +
                                                             "ddle/queue/Qvar_method_typeBDD.jedd:40,12-18"),
                                                            in));

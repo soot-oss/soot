@@ -30,6 +30,7 @@ import java.util.*;
  */
 public class BDDCflowStack
 { 
+    public static final boolean DEBUG = false;
     BDDCflow cflow;
     boolean bindsArgs;
 
@@ -51,9 +52,8 @@ public class BDDCflowStack
         }
     }
 
-    private static final boolean DEBUG = false;
     private void debug(String s) {
-        if(DEBUG) System.err.println(s);
+        if(DEBUG) G.v().out.println(s);
     }
     private <stmt> within(Shadow sh) {
         debug("Doing within "+sh);
@@ -64,7 +64,6 @@ public class BDDCflowStack
             if( s == sh.popStmt() ) inShadow = false;
             if( inShadow ) {
                 ret |= new{s=>stmt}; 
-                debug("within: "+s);
             }
             if( s == sh.pushStmt() ) inShadow = true;
         }
@@ -177,7 +176,10 @@ public class BDDCflowStack
      * always returns false.
      */
     public Iterator/*Stmt*/ neverValid() {
-        return computeNeverValid().iterator();
+        debug("Computing neverValid");
+        Iterator ret = computeNeverValid().iterator();
+        debug("Done computing neverValid");
+        return ret;
     }
 
     private <stmt> computeAlwaysValid() {
@@ -194,7 +196,10 @@ public class BDDCflowStack
      * always returns true.
      */
     public Iterator/*Stmt*/ alwaysValid() {
-        return computeAlwaysValid().iterator();
+        debug("Computing alwaysValid");
+        Iterator ret = computeAlwaysValid().iterator();
+        debug("Done computing alwaysValid");
+        return ret;
     }
 
     /** Returns the subset of shadows whose effect cannot be observed by
@@ -203,6 +208,7 @@ public class BDDCflowStack
      * neither neverValid nor alwaysValid.
      */
     public Iterator/*Shadow*/ unnecessaryShadows() {
+        debug("Computing unnecessaryShadows");
         <stmt> interestingIsValids = isValids;
         interestingIsValids -= computeAlwaysValid();
         interestingIsValids -= computeNeverValid();
@@ -211,7 +217,9 @@ public class BDDCflowStack
         if( !bindsArgs ) {
             necessaryShadows -= mustCflow{stmt} <> pushes{stmt};
         }
-        return (shadows - necessaryShadows).iterator();
+        Iterator ret = (shadows - necessaryShadows).iterator();
+        debug("Done computing unnecessaryShadows");
+        return ret;
     }
 }
 

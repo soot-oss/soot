@@ -55,9 +55,9 @@ public class ExecutesManyAnalysis extends SceneTransformer {
     protected void internalTransform(String phaseName, Map options) {
         final jedd.internal.RelationContainer allContexts =
           new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v() },
-                                              new jedd.PhysicalDomain[] { C1.v() },
+                                              new jedd.PhysicalDomain[] { C2.v() },
                                               ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                               "mains.C1> allContexts = jedd.internal.Jedd.v().trueBDD(); at" +
+                                               "mains.C2> allContexts = jedd.internal.Jedd.v().trueBDD(); at" +
                                                " /tmp/olhotak/soot-trunk/src/soot/jimple/paddle/ExecutesMany" +
                                                "Analysis.jedd:104,15-26"),
                                               jedd.internal.Jedd.v().trueBDD());
@@ -73,7 +73,7 @@ public class ExecutesManyAnalysis extends SceneTransformer {
                     Scene.v().getUnitNumberer().add(s);
                     stmtMethod.eqUnion(jedd.internal.Jedd.v().literal(new Object[] { s, m },
                                                                       new jedd.Attribute[] { stmt.v(), method.v() },
-                                                                      new jedd.PhysicalDomain[] { ST.v(), MT.v() }));
+                                                                      new jedd.PhysicalDomain[] { ST.v(), MS.v() }));
                     if (intra.mayExecuteTwice(s)) {
                         twiceUnit.eqUnion(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().literal(new Object[] { s },
                                                                                                                                  new jedd.Attribute[] { stmt.v() },
@@ -89,39 +89,41 @@ public class ExecutesManyAnalysis extends SceneTransformer {
         while (true) {
             final jedd.internal.RelationContainer oldUnit =
               new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), stmt.v() },
-                                                  new jedd.PhysicalDomain[] { C1.v(), ST.v() },
+                                                  new jedd.PhysicalDomain[] { C2.v(), ST.v() },
                                                   ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                                   "mains.C1, soot.jimple.paddle.bdddomains.stmt:soot.jimple.pad" +
+                                                   "mains.C2, soot.jimple.paddle.bdddomains.stmt:soot.jimple.pad" +
                                                    "dle.bdddomains.ST> oldUnit = twiceUnit; at /tmp/olhotak/soot" +
                                                    "-trunk/src/soot/jimple/paddle/ExecutesManyAnalysis.jedd:126," +
                                                    "25-32"),
                                                   twiceUnit);
             final jedd.internal.RelationContainer oldMethod =
               new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
-                                                  new jedd.PhysicalDomain[] { C1.v(), MT.v() },
+                                                  new jedd.PhysicalDomain[] { C2.v(), MS.v() },
                                                   ("<soot.jimple.paddle.bdddomains.ctxt:soot.jimple.paddle.bdddo" +
-                                                   "mains.C1, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
-                                                   "addle.bdddomains.MT> oldMethod = twiceMethod; at /tmp/olhota" +
+                                                   "mains.C2, soot.jimple.paddle.bdddomains.method:soot.jimple.p" +
+                                                   "addle.bdddomains.MS> oldMethod = twiceMethod; at /tmp/olhota" +
                                                    "k/soot-trunk/src/soot/jimple/paddle/ExecutesManyAnalysis.jed" +
                                                    "d:127,27-36"),
                                                   twiceMethod);
-            twiceMethod.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(twiceUnit),
+            twiceMethod.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(twiceUnit,
+                                                                                                                                                         new jedd.PhysicalDomain[] { C2.v() },
+                                                                                                                                                         new jedd.PhysicalDomain[] { C1.v() })),
                                                                                               jedd.internal.Jedd.v().project(callGraph,
                                                                                                                              new jedd.PhysicalDomain[] { MS.v() }),
                                                                                               new jedd.PhysicalDomain[] { ST.v(), C1.v() }),
-                                                               new jedd.PhysicalDomain[] { C2.v() },
-                                                               new jedd.PhysicalDomain[] { C1.v() }));
+                                                               new jedd.PhysicalDomain[] { MT.v() },
+                                                               new jedd.PhysicalDomain[] { MS.v() }));
             twiceMethod.eqUnion(jedd.internal.Jedd.v().replace(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().replace(twiceMethod,
-                                                                                                                                                         new jedd.PhysicalDomain[] { MT.v() },
-                                                                                                                                                         new jedd.PhysicalDomain[] { MS.v() })),
+                                                                                                                                                         new jedd.PhysicalDomain[] { C2.v() },
+                                                                                                                                                         new jedd.PhysicalDomain[] { C1.v() })),
                                                                                               jedd.internal.Jedd.v().project(callGraph,
                                                                                                                              new jedd.PhysicalDomain[] { ST.v() }),
                                                                                               new jedd.PhysicalDomain[] { MS.v(), C1.v() }),
-                                                               new jedd.PhysicalDomain[] { C2.v() },
-                                                               new jedd.PhysicalDomain[] { C1.v() }));
+                                                               new jedd.PhysicalDomain[] { MT.v() },
+                                                               new jedd.PhysicalDomain[] { MS.v() }));
             twiceUnit.eqUnion(jedd.internal.Jedd.v().compose(jedd.internal.Jedd.v().read(twiceMethod),
                                                              stmtMethod,
-                                                             new jedd.PhysicalDomain[] { MT.v() }));
+                                                             new jedd.PhysicalDomain[] { MS.v() }));
             if (jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(oldUnit), twiceUnit) &&
                   jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(oldMethod), twiceMethod))
                 break;
@@ -130,7 +132,7 @@ public class ExecutesManyAnalysis extends SceneTransformer {
     
     public boolean executesMany(Unit s) {
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(twiceUnit,
-                                                                                                                                                                 new jedd.PhysicalDomain[] { C1.v() })),
+                                                                                                                                                                 new jedd.PhysicalDomain[] { C2.v() })),
                                                                                                       jedd.internal.Jedd.v().literal(new Object[] { s },
                                                                                                                                      new jedd.Attribute[] { stmt.v() },
                                                                                                                                      new jedd.PhysicalDomain[] { ST.v() }),
@@ -140,17 +142,17 @@ public class ExecutesManyAnalysis extends SceneTransformer {
     
     public boolean executesMany(SootMethod m) {
         return !jedd.internal.Jedd.v().equals(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().join(jedd.internal.Jedd.v().read(jedd.internal.Jedd.v().project(twiceMethod,
-                                                                                                                                                                 new jedd.PhysicalDomain[] { C1.v() })),
+                                                                                                                                                                 new jedd.PhysicalDomain[] { C2.v() })),
                                                                                                       jedd.internal.Jedd.v().literal(new Object[] { m },
                                                                                                                                      new jedd.Attribute[] { method.v() },
-                                                                                                                                     new jedd.PhysicalDomain[] { MT.v() }),
-                                                                                                      new jedd.PhysicalDomain[] { MT.v() })),
+                                                                                                                                     new jedd.PhysicalDomain[] { MS.v() }),
+                                                                                                      new jedd.PhysicalDomain[] { MS.v() })),
                                               jedd.internal.Jedd.v().falseBDD());
     }
     
     protected final jedd.internal.RelationContainer stmtMethod =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { stmt.v(), method.v() },
-                                          new jedd.PhysicalDomain[] { ST.v(), MT.v() },
+                                          new jedd.PhysicalDomain[] { ST.v(), MS.v() },
                                           ("protected <soot.jimple.paddle.bdddomains.stmt, soot.jimple.p" +
                                            "addle.bdddomains.method> stmtMethod at /tmp/olhotak/soot-tru" +
                                            "nk/src/soot/jimple/paddle/ExecutesManyAnalysis.jedd:143,14-2" +
@@ -158,14 +160,14 @@ public class ExecutesManyAnalysis extends SceneTransformer {
     
     protected final jedd.internal.RelationContainer twiceUnit =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), stmt.v() },
-                                          new jedd.PhysicalDomain[] { C1.v(), ST.v() },
+                                          new jedd.PhysicalDomain[] { C2.v(), ST.v() },
                                           ("protected <soot.jimple.paddle.bdddomains.ctxt, soot.jimple.p" +
                                            "addle.bdddomains.stmt> twiceUnit at /tmp/olhotak/soot-trunk/" +
                                            "src/soot/jimple/paddle/ExecutesManyAnalysis.jedd:144,14-26"));
     
     protected final jedd.internal.RelationContainer twiceMethod =
       new jedd.internal.RelationContainer(new jedd.Attribute[] { ctxt.v(), method.v() },
-                                          new jedd.PhysicalDomain[] { C1.v(), MT.v() },
+                                          new jedd.PhysicalDomain[] { C2.v(), MS.v() },
                                           ("protected <soot.jimple.paddle.bdddomains.ctxt, soot.jimple.p" +
                                            "addle.bdddomains.method> twiceMethod at /tmp/olhotak/soot-tr" +
                                            "unk/src/soot/jimple/paddle/ExecutesManyAnalysis.jedd:145,14-" +

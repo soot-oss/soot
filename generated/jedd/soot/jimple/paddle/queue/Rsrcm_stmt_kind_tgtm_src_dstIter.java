@@ -57,8 +57,8 @@ public class Rsrcm_stmt_kind_tgtm_src_dstIter extends Rsrcm_stmt_kind_tgtm_src_d
                                                        new Attribute[] { srcm.v(), stmt.v(), kind.v(), tgtm.v(), src.v(), dst.v() },
                                                        new PhysicalDomain[] { MS.v(), ST.v(), KD.v(), MT.v(), V1.v(), V2.v() }));
         }
-        return new jedd.internal.RelationContainer(new Attribute[] { srcm.v(), stmt.v(), dst.v(), kind.v(), tgtm.v(), src.v() },
-                                                   new PhysicalDomain[] { MS.v(), ST.v(), V2.v(), KD.v(), MT.v(), V1.v() },
+        return new jedd.internal.RelationContainer(new Attribute[] { stmt.v(), srcm.v(), dst.v(), tgtm.v(), src.v(), kind.v() },
+                                                   new PhysicalDomain[] { ST.v(), MS.v(), V2.v(), MT.v(), V1.v(), KD.v() },
                                                    ("return ret; at /tmp/olhotak/soot-trunk/src/soot/jimple/paddl" +
                                                     "e/queue/Rsrcm_stmt_kind_tgtm_src_dstIter.jedd:50,8-14"),
                                                    ret);
