@@ -82,6 +82,9 @@ public class Main implements Runnable
     static Chain cmdLineClasses = new HashChain();
     // <-------------
 
+    // for POINTS-TO analysis
+    public static final int NO_OUTPUT = -1;
+
     public static final int BAF = 0;
     public static final int B = 1;
 
@@ -96,9 +99,6 @@ public class Main implements Runnable
     
     public static final int DAVA = 8;
     public static final int JASMIN = 9;
-    
-
-
 
 
     public static String getExtensionFor(int rep)
@@ -147,8 +147,11 @@ public class Main implements Runnable
 
     public static String getFileNameFor( SootClass c, int rep)
     {
+	// add an option for no output
+	if (rep == NO_OUTPUT) return null;
+
 	StringBuffer b = new StringBuffer();
-	
+
 	if (outputDir != null)
 	    b.append( outputDir);
 	
@@ -292,6 +295,12 @@ public class Main implements Runnable
     static private boolean isUsingVTA;
     static private boolean isUsingRTA;
     static private boolean isApplication = false;
+
+    // In application mode, we can choose lazy invocation mode
+    // and also choose no output, this is only used for 
+    // our point-to analysis right now.
+    static private boolean isLazyInvocation = false;
+
     static private SootClass mainClass = null;        
     
     static public long stmtCount;
@@ -424,6 +433,11 @@ public class Main implements Runnable
     public static boolean isAppMode()
     {
         return isApplication;
+    }
+
+    /* for POINTs-TO analysis */
+    public static void setLazyInvocation(boolean val) {
+	isLazyInvocation = val;
     }
 
     public static void setJavaStyle( boolean val)
@@ -651,7 +665,7 @@ public class Main implements Runnable
     private static void printVersion()
     {
 	// $Format: "            System.out.println(\"Soot version 1.2.2 (build $ProjectVersion$)\");"$
-            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.42)");
+            System.out.println("Soot version 1.2.2 (build 1.2.2.dev.43)");
 	System.out.println("Copyright (C) 1997-2001 Raja Vallee-Rai (rvalleerai@sable.mcgill.ca).");
 	System.out.println("All rights reserved.");
 	System.out.println("");
@@ -1209,9 +1223,13 @@ public class Main implements Runnable
 	    String arg = args[i];
 	    if(arg.equals("--app"))
 		continue; // ignore
+
+	    else if(arg.equals("--lazy")) 
+		setLazyInvocation(true);
+	    else if(arg.equals("--nooutput"))
+		setTargetRep(NO_OUTPUT);
 	    else if(arg.equals("-j") || arg.equals("--jimp"))
 		setTargetRep(JIMP);
-
 	    else if(arg.equals("--njimple"))
 		setTargetRep(NJIMPLE);
 	    else if(arg.equals("-s") || arg.equals("--jasmin"))
@@ -1938,6 +1956,14 @@ public class Main implements Runnable
 	    }
     }
 
+    /* lazyHandleClass only processes methods reachable from the entry points
+     * by the call graph, it does not have any output.
+     */
+    private static void lazyHandleClass(SootClass c) {
+	
+
+    }
+
     private static void handleClass(SootClass c)
     {
         FileOutputStream streamOut = null;
@@ -1947,8 +1973,10 @@ public class Main implements Runnable
 	    produceBaf   = false,
 	    produceGrimp = false,
 	    produceDava  = false;
-        
-	switch( targetExtension) {	    
+
+	switch( targetExtension) {	
+	case NO_OUTPUT:
+	    break;
 	case JIMPLE:
 	case NJIMPLE:
 	case JIMP:                   
@@ -1977,19 +2005,18 @@ public class Main implements Runnable
 	    }
 	}
 
+       
         String fileName = getFileNameFor( c, targetExtension);
 	
-        if(targetExtension != CLASS)
-	    {
-		try {
-		    streamOut = new FileOutputStream(fileName);
-		    writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-		}
-		catch (IOException e)
-		    {
-			System.out.println("Cannot output file " + fileName);
-		    }
+	// add an option for no output
+        if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS)) {
+	    try {
+		streamOut = new FileOutputStream(fileName);
+		writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+	    } catch (IOException e) {
+		    System.out.println("Cannot output file " + fileName);
 	    }
+	}
 
 
 	HashChain newMethods = new HashChain();
@@ -2060,7 +2087,10 @@ public class Main implements Runnable
 	    }
         }
 
-        switch(targetExtension) {
+	switch(targetExtension) {
+	    // add an option for no output
+	case NO_OUTPUT:
+	    break;
         case JASMIN:
             if(c.containsBafBody())
                 new soot.baf.JasminClass(c).print(writerOut);            
@@ -2093,8 +2123,8 @@ public class Main implements Runnable
         default:
             throw new RuntimeException();
         }
-
-        if(targetExtension != CLASS)
+    
+	if ((targetExtension != NO_OUTPUT) && (targetExtension != CLASS))
 	    {
 		try {
 		    writerOut.flush();
