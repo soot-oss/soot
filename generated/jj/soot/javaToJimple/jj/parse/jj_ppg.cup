@@ -466,7 +466,7 @@ modifiers_opt ::=
 modifiers ::=
     modifier:a {:  RESULT = a;  :}
  |  modifiers:a modifier:b {:
-                           if (a .intersects(b)) parser.die(parser.position());    
+                           if (a .intersects(b)) parser.die(parser.pos(a, b));    
                  RESULT = a.set(b); 
                            :};
 
