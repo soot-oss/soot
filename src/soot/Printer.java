@@ -164,7 +164,11 @@ public class Printer {
                             out.println(t);
                         }
                     }*/
-                    incJimpleLnNum();
+                    if (addJimpleLn()) {
+                        setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), f));		
+                    }
+
+                    //incJimpleLnNum();
                 }
             }
         }
@@ -457,6 +461,12 @@ public class Printer {
 
     private int addJimpleLnTags(int lnNum, SootMethod meth) {
     	meth.addTag(new JimpleLineNumberTag(lnNum));
+	lnNum++;
+	return lnNum;
+    }
+    
+    private int addJimpleLnTags(int lnNum, SootField f) {
+    	f.addTag(new JimpleLineNumberTag(lnNum));
 	lnNum++;
 	return lnNum;
     }

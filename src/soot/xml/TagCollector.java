@@ -30,7 +30,8 @@ public class TagCollector {
 		while (it.hasNext()) {
 			SootMethod sm = (SootMethod)it.next();
 			collectMethodTags(sm);
-			
+		
+            if (!sm.hasActiveBody()) continue;
 			Body b = sm.getActiveBody();
             collectBodyTags(b);
         }
