@@ -30,7 +30,8 @@ public class PolyglotMethodSource implements MethodSource {
     public soot.Body getBody(soot.SootMethod sm, String phaseName) {
         JimpleBodyBuilder jbb = new JimpleBodyBuilder();
         soot.jimple.JimpleBody jb = jbb.createJimpleBody(block, formals, sm);
-        
+       
+        PackManager.v().getTransform("jb.ne").apply(jb);
         PackManager.v().getPack("jb").apply(jb);
         return jb;
     }

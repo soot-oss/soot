@@ -46,6 +46,7 @@ public class AnonClassInitMethodSource implements soot.MethodSource {
         // return
         soot.jimple.ReturnVoidStmt retStmt = soot.jimple.Jimple.v().newReturnVoidStmt();
         body.getUnits().add(retStmt);
+        PackManager.v().getTransform("jb.ne").apply(body);
         
         PackManager.v().getPack("jb").apply(body);
     
