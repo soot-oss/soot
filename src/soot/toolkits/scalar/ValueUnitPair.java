@@ -22,7 +22,9 @@ package soot.toolkits.scalar;
 import soot.*;
 
 /**
- *   Utility class used to package a Value and a Unit together.
+ * Utility class used to package a Value and a Unit together.
+ * 
+ * @author Navindra Umanee
  */
 public class ValueUnitPair extends AbstractUnitBox implements ValueBox, UnitBox
 {
