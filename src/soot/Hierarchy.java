@@ -498,8 +498,11 @@ public class Hierarchy
 
         ArraySet s = new ArraySet();
         
-        while (classesIt.hasNext())
-            s.add(resolveConcreteDispatch((SootClass)classesIt.next(), m));
+        while (classesIt.hasNext()) {
+            SootClass cl = (SootClass) classesIt.next();
+            if( Modifier.isAbstract( cl.getModifiers() ) ) continue;
+            s.add(resolveConcreteDispatch(cl, m));
+        }
 
         List l = new ArrayList(); l.addAll(s);
         return Collections.unmodifiableList(l);
