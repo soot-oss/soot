@@ -450,7 +450,18 @@ class TypeNode
   {
     if(type instanceof ArrayType ||
        type instanceof NullType ||
-       (type instanceof RefType))
+       type instanceof RefType)
+      {
+	return true;
+      }
+
+    return false;
+  }
+
+  public boolean isArray()
+  {
+    if(type instanceof ArrayType ||
+       type instanceof NullType)
       {
 	return true;
       }
