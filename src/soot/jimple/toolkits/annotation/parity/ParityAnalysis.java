@@ -84,6 +84,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
         //System.out.println(inVal1);
 		String inVal2 = (String)inMap2.get(var1);
         //System.out.println(inVal2);
+       // System.out.println("before out "+outMap.get(var1));
 
         if (inVal2 == null){
             outMap.put(var1, inVal1);
@@ -114,10 +115,15 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 //
 
     protected void copy(Object source, Object dest) {
-      HashMap sourceIn = (HashMap)source;
-      HashMap destOut = (HashMap)dest;
 
-      destOut.putAll(sourceIn);
+        //System.out.println("copy");
+        HashMap sourceIn = (HashMap)source;
+        HashMap destOut = (HashMap)dest;
+        //dest = new HashMap();
+        //HashMap destOut = new HashMap();
+        destOut.putAll(sourceIn);
+        dest = destOut;
+
     }
    
     // Parity Tests: 	even + even = even
@@ -132,19 +138,18 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
     //
 
     private String getParity(HashMap in, Value val) {
-        //System.out.println("val: "+val);
+        //System.out.println("get Parity in: "+in);
         if ((val instanceof AddExpr) | (val instanceof SubExpr)) {
         	String resVal1 = getParity(in, ((BinopExpr)val).getOp1());
 	        String resVal2 = getParity(in, ((BinopExpr)val).getOp2());
-            //System.out.println("add: res1: "+resVal1+" res2: "+resVal2);
 	        if (resVal1.equals(TOP) | resVal2.equals(TOP)) {
-	            return TOP;
+                return TOP;
 	        }  
             else if (resVal1.equals(BOTTOM) | resVal2.equals(BOTTOM)){
                 return BOTTOM;
             }
 	        else if (resVal1.equals(resVal2)) {
-	            return EVEN;
+                return EVEN;
 	        }
 	        else {
 	            return ODD;
@@ -166,19 +171,12 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	            return EVEN;
 	        }
         }
-        else if (in.containsKey(val)) {
-            //System.out.println("in contained : "+in.get(val));
-      	    return (String)in.get(val);
-        }
         else if (val instanceof IntConstant) {
 	        int value = ((IntConstant)val).value;
 	        if ((value % 2) == 0) {
-                //System.out.println("int const even");
-          
 	            return EVEN;
 	        }
 	        else {
-                //System.out.println("int const odd");
 	            return ODD;
 	        }
         }
@@ -190,6 +188,9 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 	        else {
 	            return ODD;
 	        }
+        }
+        else if (in.containsKey(val)) {
+      	    return (String)in.get(val);
         }
         else {
             return TOP;
@@ -218,11 +219,11 @@ public class ParityAnalysis extends ForwardFlowAnalysis {
 		out.put(left, getParity(out, right));
         //System.out.println("local val: "+left+" parity: "+out.get(left));
 	  }
-	  else {
+	  /*else {
 	    out.put(left, TOP);
-	  }
+	  }*/
 	}
-	
+
     }
 
 // STEP 6: Determine value for start/end node, and

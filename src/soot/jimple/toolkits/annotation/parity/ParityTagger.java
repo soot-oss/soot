@@ -35,6 +35,8 @@ public class ParityTagger extends BodyTransformer
     protected void internalTransform(
             Body b, String phaseName, Map options)
     {
+
+        //System.out.println("parity tagger for method: "+b.getMethod().getName());
         ParityAnalysis a = new ParityAnalysis(
 		new BriefUnitGraph( b ) );
 
