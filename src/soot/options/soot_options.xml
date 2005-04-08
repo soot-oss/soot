@@ -369,7 +369,7 @@ not yet been thoroughly tested.
 			<name>Main Class</name>
 			<alias>main-class</alias>
 			<set_arg_label>class</set_arg_label>
-			<short_desc>Sets the main class for whole-program.</short_desc>
+			<short_desc>Sets the main class for whole-program analysis.</short_desc>
 			<long_desc>
 <p>
 By default, the first class mentioned on the command-line is treated
@@ -2182,6 +2182,15 @@ to be used in Paddle.
                                                         Causes Paddle to use BDD versions of its components
         </long_desc>
 						</boolopt>
+                                <intopt>
+                                        <name>Variable ordering</name>
+                                        <alias>order</alias>
+                                        <default>17</default>
+                                        <short_desc/>
+                                        <long_desc>
+                                        Selects one of the BDD variable orderings hard-coded in Paddle.
+                </long_desc>
+                                </intopt>
 						<boolopt>
 							<name>Profile</name>
 							<alias>profile</alias>
@@ -2667,6 +2676,16 @@ This option has no effect unless Set Implementation is set to double.
 Causes Paddle to print the number of contexts for each method and
 call edge, and the number of equivalence classes of contexts for
 each variable node.
+        </long_desc>
+						</boolopt>
+						<boolopt>
+							<name>Print Context Counts (Totals only)</name>
+							<alias>total-context-counts</alias>
+							<default>false</default>
+                                                        <short_desc>Print total number of contexts</short_desc>
+							<long_desc>
+Causes Paddle to print the number of contexts and number of context
+equivalence classes.
         </long_desc>
 						</boolopt>
 						<boolopt>

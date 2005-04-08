@@ -1096,7 +1096,7 @@ public class Options extends OptionsBase {
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
-+padOpt(" -main-class CLASS", "Sets the main class for whole-program." )
++padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
@@ -1577,6 +1577,7 @@ public class Options extends OptionsBase {
                 +padVal( "ofcg-context", "OFCG-Context callgraph" )
                 
                 +padOpt( "bdd (false)", "Use BDD version of Paddle" )
+                +padOpt( "order (17)", "" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
                 +padOpt( "q", "Select queue implementation" )
                 +padVal( "trad (default)", "Normal worklist queue implementation" )
@@ -1655,6 +1656,7 @@ public class Options extends OptionsBase {
                 +padVal( "array", "Sorted array representation" )
                 
                 +padOpt( "context-counts (false)", "Print number of contexts for each method" )
+                +padOpt( "total-context-counts (false)", "Print total number of contexts" )
                 +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
                 +padOpt( "number-nodes (true)", "Print node numbers in dumps" );
@@ -2313,6 +2315,7 @@ public class Options extends OptionsBase {
                 +"verbose "
                 +"conf "
                 +"bdd "
+                +"order "
                 +"profile "
                 +"q "
                 +"backend "
@@ -2333,6 +2336,7 @@ public class Options extends OptionsBase {
                 +"double-set-old "
                 +"double-set-new "
                 +"context-counts "
+                +"total-context-counts "
                 +"add-tags "
                 +"set-mass "
                 +"number-nodes ";
@@ -2839,6 +2843,7 @@ public class Options extends OptionsBase {
               +"verbose:false "
               +"conf:ofcg "
               +"bdd:false "
+              +"order:17 "
               +"profile:false "
               +"q:trad "
               +"backend:buddy "
@@ -2859,6 +2864,7 @@ public class Options extends OptionsBase {
               +"double-set-old:hybrid "
               +"double-set-new:hybrid "
               +"context-counts:false "
+              +"total-context-counts:false "
               +"add-tags:false "
               +"set-mass:false "
               +"number-nodes:true ";

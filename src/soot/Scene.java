@@ -579,6 +579,16 @@ public class Scene  //extends AbstractHost
         this.entryPoints = entryPoints;
     }
 
+    private ContextSensitiveCallGraph cscg;
+    public ContextSensitiveCallGraph getContextSensitiveCallGraph() {
+        if(cscg == null) throw new RuntimeException("No context-sensitive call graph present in Scene. You can bulid one with Paddle.");
+        return cscg;
+    }
+
+    public void setContextSensitiveCallGraph(ContextSensitiveCallGraph cscg) {
+        this.cscg = cscg;
+    }
+
     public CallGraph getCallGraph() 
     {
         if(!hasCallGraph()) {

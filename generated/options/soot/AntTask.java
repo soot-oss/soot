@@ -1327,6 +1327,12 @@ public class AntTask extends MatchingTask {
             addArg("context-counts:"+(arg?"true":"false"));
           }
       
+          public void settotal_context_counts(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("total-context-counts:"+(arg?"true":"false"));
+          }
+      
           public void setadd_tags(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
@@ -1349,6 +1355,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.paddle");
             addArg("conf:"+arg);
+          }
+      
+          public void setorder(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("order:"+arg);
           }
       
           public void setq(String arg) {

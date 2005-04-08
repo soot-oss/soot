@@ -241,6 +241,17 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "context-counts" );
     }
     
+    /** Print Context Counts (Totals only) --
+    
+     * Print total number of contexts.
+    
+     * Causes Paddle to print the number of contexts and number of 
+     * context equivalence classes. 
+     */
+    public boolean total_context_counts() {
+        return soot.PhaseOptions.getBoolean( options, "total-context-counts" );
+    }
+    
     /** Add Tags --
     
      * Output points-to results in tags for viewing with the Jimple.
@@ -274,6 +285,17 @@ public class PaddleOptions
      */
     public boolean number_nodes() {
         return soot.PhaseOptions.getBoolean( options, "number-nodes" );
+    }
+    
+    /** Variable ordering --
+    
+     * .
+    
+     * Selects one of the BDD 
+     * variable orderings hard-coded in Paddle. 
+     */
+    public int order() {
+        return soot.PhaseOptions.getInt( options, "order" );
     }
     
     public static final int conf_ofcg = 1;

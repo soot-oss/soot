@@ -312,8 +312,12 @@ public class PackManager {
                 G.v().out.println("Running in interactive mode.");
             }
         }
-        runBodyPacks( reachableClasses() );
+        runBodyPacks();
         handleInnerClasses();
+    }
+
+    public void runBodyPacks() {
+        runBodyPacks( reachableClasses() );
     }
 
     private ZipOutputStream jarFile = null;
