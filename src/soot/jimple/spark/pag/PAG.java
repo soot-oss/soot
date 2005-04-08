@@ -170,7 +170,8 @@ public class PAG implements PointsToAnalysis {
                 (f instanceof SootField) ? ((SootField)f).getType() : null, this );
         bases.forall( new P2SetVisitor() {
         public final void visit( Node n ) {
-            ret.addAll( ((AllocNode) n).dot( f ).getP2Set(), null );
+            Node nDotF = ((AllocNode) n).dot( f );
+            if(nDotF != null) ret.addAll( nDotF.getP2Set(), null );
         }} );
         return ret;
     }
