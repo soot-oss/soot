@@ -64,6 +64,17 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "bdd" );
     }
     
+    /** Dynamic reordering --
+    
+     * .
+    
+     * Allows the BDD package 
+     * to perform dynamic variable ordering. 
+     */
+    public boolean dynamic_order() {
+        return soot.PhaseOptions.getBoolean( options, "dynamic-order" );
+    }
+    
     /** Profile --
     
      * Profile BDDs using JeddProfiler.

@@ -1585,6 +1585,7 @@ public class Options extends OptionsBase {
                 
                 +padOpt( "bdd (false)", "Use BDD version of Paddle" )
                 +padOpt( "order (17)", "" )
+                +padOpt( "dynamic-order", "" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
                 +padOpt( "q", "Select queue implementation" )
                 +padVal( "trad (default)", "Normal worklist queue implementation" )
@@ -2327,6 +2328,7 @@ public class Options extends OptionsBase {
                 +"conf "
                 +"bdd "
                 +"order "
+                +"dynamic-order "
                 +"profile "
                 +"q "
                 +"backend "

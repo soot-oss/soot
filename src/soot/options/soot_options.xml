@@ -2204,6 +2204,14 @@ to be used in Paddle.
                                         Selects one of the BDD variable orderings hard-coded in Paddle.
                 </long_desc>
                                 </intopt>
+                                <boolopt>
+                                        <name>Dynamic reordering</name>
+                                        <alias>dynamic-order</alias>
+                                        <short_desc/>
+                                        <long_desc>
+                                        Allows the BDD package to perform dynamic variable ordering.
+                </long_desc>
+                                </boolopt>
 						<boolopt>
 							<name>Profile</name>
 							<alias>profile</alias>

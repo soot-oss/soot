@@ -1258,6 +1258,12 @@ public class AntTask extends MatchingTask {
             addArg("bdd:"+(arg?"true":"false"));
           }
       
+          public void setdynamic_order(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("dynamic-order:"+(arg?"true":"false"));
+          }
+      
           public void setprofile(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
