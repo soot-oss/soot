@@ -1330,6 +1330,19 @@ traps whose catch blocks are empty.
                                                 <default>true</default>
 					</boolopt>
 				</sub_phase>
+				<sub_phase>
+					<name>Conditional And Transformer</name>
+					<alias>jj.ct</alias>
+					<short_desc>Conditional and optimizer transformer</short_desc>
+					<long_desc>
+The conditional and optimizer transformer finds sequences of poorly generated code related to conditional ands and optimizes them by removing uneccesary control flow.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
 			</phase>
 			<radio_phase>
 				<name>Call Graph Constructor</name>

@@ -43,6 +43,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     HashMap labelBreakMap; // for break label --> nop to jump to
     HashMap labelContinueMap; // for continue label --> nop to jump to
+    String lastLabel;
     HashMap localsMap = new HashMap();    // localInst --> soot local 
 
     HashMap getThisMap = new HashMap(); // type --> local to ret
@@ -665,19 +666,12 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     private void createWhile(polyglot.ast.While whileStmt){
 
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
+        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
 
         // these are for break and continue
         endControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
         condControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
         
-        // handle body
-        
-        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
-        soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
-        body.getUnits().add(goto1);
-        body.getUnits().add(noop1);
-        createStmt(whileStmt.body());
-
         body.getUnits().add(noop2);
         
         // handle cond
@@ -687,9 +681,10 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.Value sootCond = base().createExpr(condition);
         boolean needIf = needSootIf(sootCond);
         if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
-            sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
+            sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
         }
         else {
+            sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
             sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
         }
 
@@ -700,13 +695,53 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
             Util.addLnPosTags(ifStmt, condition.position());
         }
-        else {
+        /*else {
             soot.jimple.GotoStmt gotoIf = soot.jimple.Jimple.v().newGotoStmt(noop1);
             body.getUnits().add(gotoIf);
-        }
+        }*/
+            
+        
+        // handle body
+        
+        //soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+        //soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
+        //body.getUnits().add(goto1);
+        //body.getUnits().add(noop1);
+        createStmt(whileStmt.body());
+        soot.jimple.GotoStmt gotoLoop = soot.jimple.Jimple.v().newGotoStmt(noop2);
+        body.getUnits().add(gotoLoop);
+
+        //body.getUnits().add(noop2);
+        
+        // handle cond
+        //body.getUnits().add((soot.jimple.Stmt)(condControlNoop.pop()));
+        
+        //polyglot.ast.Expr condition = whileStmt.cond();
+        //soot.Value sootCond = base().createExpr(condition);
+        //boolean needIf = needSootIf(sootCond);
+        //if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
+        //    sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
+        //}
+        //else {
+        //    sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
+        //    sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
+        //}
+
+        //if (needIf){
+        //    soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, noop1);
+        
+        //    body.getUnits().add(ifStmt);
+        //    Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
+        //    Util.addLnPosTags(ifStmt, condition.position());
+        //}
+        //else {
+        //    soot.jimple.GotoStmt gotoIf = soot.jimple.Jimple.v().newGotoStmt(noop1);
+        //    body.getUnits().add(gotoIf);
+        //}
+        
         
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
-        
+        body.getUnits().add(noop1);
     }
     
     /**
@@ -726,6 +761,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 
         // handle cond
         body.getUnits().add((soot.jimple.Stmt)(condControlNoop.pop()));
+        
+        // handle label continue
+        if ((labelContinueMap != null) && (labelContinueMap.containsKey(lastLabel))){
+            body.getUnits().add((soot.jimple.Stmt)labelContinueMap.get(lastLabel));
+        }
         
         polyglot.ast.Expr condition = doStmt.cond();
         soot.Value sootCond = base().createExpr(condition);
@@ -774,8 +814,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // handle continue
         body.getUnits().add((soot.jimple.Stmt)(condControlNoop.pop()));
 
+        // handle label continue
+        if ((labelContinueMap != null) && (labelContinueMap.containsKey(lastLabel))){
+            body.getUnits().add((soot.jimple.Stmt)labelContinueMap.get(lastLabel));
+        }
+        
         // handle iters
         Iterator itersIt = forStmt.iters().iterator();
+        System.out.println("for iters: "+forStmt.iters());
         while (itersIt.hasNext()){
             createStmt((polyglot.ast.Stmt)itersIt.next());
         }
@@ -1088,10 +1134,15 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private void createLabeled(polyglot.ast.Labeled labeledStmt){
         String label = labeledStmt.label();
+        lastLabel = label;
+
         polyglot.ast.Stmt stmt = labeledStmt.statement();
 
         soot.jimple.Stmt noop = soot.jimple.Jimple.v().newNopStmt();
-        body.getUnits().add(noop);
+        if (!(stmt instanceof polyglot.ast.For) && !(stmt instanceof polyglot.ast.Do)){
+            body.getUnits().add(noop);
+        }
+        
 
         if (labelBreakMap == null) {
             labelBreakMap = new HashMap();
@@ -3534,7 +3585,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
  
         
         // if its already the right type
-        if (castExpr.expr().type().equals(castExpr.type())) {
+        if (castExpr.expr().type().equals(castExpr.type()) || (castExpr.type().isClass() && Util.getSootType(castExpr.type()).toString().equals("java.lang.Object"))) {
             return base().createExpr(castExpr.expr());
         }
 

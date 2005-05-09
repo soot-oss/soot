@@ -48,6 +48,7 @@ import soot.jimple.toolkits.annotation.defs.*;
 import soot.jimple.toolkits.annotation.liveness.*;
 import soot.jimple.toolkits.annotation.logic.*;
 import soot.jimple.toolkits.annotation.purity.*; // [AM]
+import soot.javaToJimple.toolkits.*; 
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -104,6 +105,7 @@ public class PackManager {
             p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
             p.add(new Transform("jj.ne", NopEliminator.v()));
             p.add(new Transform("jj.tr", TypeAssigner.v()));
+            p.add(new Transform("jj.ct", CondTransformer.v()));
             p.add(new Transform("jj.ulp", LocalPacker.v()));
             p.add(new Transform("jj.lns", LocalNameStandardizer.v()));
             p.add(new Transform("jj.cp", CopyPropagator.v()));

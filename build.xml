@@ -14,6 +14,7 @@
             destdir="classes"
             classpath="classes:${polyglot.jar}:${jasmin.jar}"
             debug="true"
+            deprecation="on"
         >
             <src path="src"/>
             <src path="generated/singletons"/>

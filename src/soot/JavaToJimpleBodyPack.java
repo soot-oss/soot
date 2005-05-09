@@ -79,7 +79,7 @@ public class JavaToJimpleBodyPack extends BodyPack
         PackManager.v().getTransform( "jj.dae" ).apply( b );
         PackManager.v().getTransform( "jj.cp-ule" ).apply( b );
         PackManager.v().getTransform( "jj.lp" ).apply( b );
-        //PackManager.v().getTransform( "jb.ne" ).apply( b );
+        PackManager.v().getTransform( "jj.ct" ).apply( b );
         PackManager.v().getTransform( "jj.uce" ).apply( b );
                     
         if(Options.v().time())

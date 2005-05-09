@@ -1060,4 +1060,16 @@ public class Singletons {
         return instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis;
     }
 
+    private soot.javaToJimple.toolkits.CondTransformer instance_soot_javaToJimple_toolkits_CondTransformer;
+    public soot.javaToJimple.toolkits.CondTransformer soot_javaToJimple_toolkits_CondTransformer() {
+        if( instance_soot_javaToJimple_toolkits_CondTransformer == null ) instance_soot_javaToJimple_toolkits_CondTransformer = new soot.javaToJimple.toolkits.CondTransformer( g );
+        return instance_soot_javaToJimple_toolkits_CondTransformer;
+    }
+
+    private soot.javaToJimple.toolkits.GotoEliminator instance_soot_javaToJimple_toolkits_GotoEliminator;
+    public soot.javaToJimple.toolkits.GotoEliminator soot_javaToJimple_toolkits_GotoEliminator() {
+        if( instance_soot_javaToJimple_toolkits_GotoEliminator == null ) instance_soot_javaToJimple_toolkits_GotoEliminator = new soot.javaToJimple.toolkits.GotoEliminator( g );
+        return instance_soot_javaToJimple_toolkits_GotoEliminator;
+    }
+
 }

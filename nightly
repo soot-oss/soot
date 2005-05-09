@@ -192,8 +192,9 @@ function updateNightlyHtml(){
     cd $HOME/autobuild/releases/ || return;
     chmod o+r nightly.html || return;
     chmod g+r nightly.html || return;
-    cp *$rev ~sable/public_html/soot/nightly/
-    cp *$polyglotrev ~sable/public_html/soot/nightly/
+    cp nightly.html ~sable/public_html/soot/ || return;
+    cp *$rev* ~sable/public_html/soot/nightly/ || return;
+    cp *$polyglotrev* ~sable/public_html/soot/nightly/ || return;
     
 }
 
@@ -234,8 +235,8 @@ function makeNightly(){
 }
 
 
-makeStable
-#makeNightly
+#makeStable
+makeNightly
 
 #cd $HOME/autobuild &&
 

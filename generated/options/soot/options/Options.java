@@ -1191,6 +1191,7 @@ public class Options extends OptionsBase {
         +padVal("jj.lp", "Local packer: minimizes number of locals")
         +padVal("jj.ne", "Nop eliminator")
         +padVal("jj.uce", "Unreachable code eliminator")
+        +padVal("jj.ct", "Conditional and optimizer transformer")
         +padOpt("cg", "Call graph constructor")
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
         +padVal("cg.spark", "Spark points-to analysis framework")
@@ -1440,6 +1441,12 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jj.uce" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Unreachable Code Eliminator removes unreachable code and \ntraps whose catch blocks are empty. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "jj.ct" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe conditional and optimizer transformer finds sequences of \npoorly generated code related to conditional ands and optimizes \nthem by removing uneccesary control flow. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -2259,6 +2266,10 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "jj.ct" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "cg" ) )
             return ""
                 +"enabled "
@@ -2787,6 +2798,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "jj.ct" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "cg" ) )
             return ""
               +"enabled:true "
@@ -3217,6 +3232,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jj.lp" ) ) return;
         if( phaseName.equals( "jj.ne" ) ) return;
         if( phaseName.equals( "jj.uce" ) ) return;
+        if( phaseName.equals( "jj.ct" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
         if( phaseName.equals( "cg.spark" ) ) return;
@@ -3345,6 +3361,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jj.ne" );
         if( !PackManager.v().hasPhase( "jj.uce" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jj.uce" );
+        if( !PackManager.v().hasPhase( "jj.ct" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jj.ct" );
         if( !PackManager.v().hasPhase( "cg" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase cg" );
         if( !PackManager.v().hasPhase( "cg.cha" ) )
