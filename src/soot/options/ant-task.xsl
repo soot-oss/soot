@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ *
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
@@ -45,7 +46,7 @@ import java.io.*;
  */
 
 public class AntTask extends MatchingTask {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private void debug(String s) {
         if(DEBUG) System.err.println(s);
     }
@@ -136,13 +137,13 @@ public class AntTask extends MatchingTask {
   <xsl:template mode="parse" match="listopt">
         public void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>(Path arg) {
             if(<xsl:value-of select="translate(alias[last()],'-. ','___')"/> == null )
-                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = new Path(project);
+                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = new Path(getProject());
             <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = appendToPath(<xsl:value-of select="translate(alias[last()],'-. ','___')"/>, arg);
         }
 
         public Path create<xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
             if(<xsl:value-of select="translate(alias[last()],'-. ','___')"/> == null )
-                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = new Path(project);
+                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = new Path(getProject());
             return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>.createPath();
         }
   </xsl:template>

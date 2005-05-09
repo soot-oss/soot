@@ -16,6 +16,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
+ *
  */
 
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
@@ -33,7 +34,7 @@ import java.io.*;
  */
 
 public class AntTask extends MatchingTask {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
     private void debug(String s) {
         if(DEBUG) System.err.println(s);
     }
@@ -113,13 +114,13 @@ public class AntTask extends MatchingTask {
   
         public void setphase_help(Path arg) {
             if(phase_help == null )
-                phase_help = new Path(project);
+                phase_help = new Path(getProject());
             phase_help = appendToPath(phase_help, arg);
         }
 
         public Path createphase_help() {
             if(phase_help == null )
-                phase_help = new Path(project);
+                phase_help = new Path(getProject());
             return phase_help.createPath();
         }
   
@@ -166,13 +167,13 @@ public class AntTask extends MatchingTask {
   
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
-                process_dir = new Path(project);
+                process_dir = new Path(getProject());
             process_dir = appendToPath(process_dir, arg);
         }
 
         public Path createprocess_dir() {
             if(process_dir == null )
-                process_dir = new Path(project);
+                process_dir = new Path(getProject());
             return process_dir.createPath();
         }
   
@@ -271,25 +272,25 @@ public class AntTask extends MatchingTask {
   
         public void setdump_body(Path arg) {
             if(dump_body == null )
-                dump_body = new Path(project);
+                dump_body = new Path(getProject());
             dump_body = appendToPath(dump_body, arg);
         }
 
         public Path createdump_body() {
             if(dump_body == null )
-                dump_body = new Path(project);
+                dump_body = new Path(getProject());
             return dump_body.createPath();
         }
   
         public void setdump_cfg(Path arg) {
             if(dump_cfg == null )
-                dump_cfg = new Path(project);
+                dump_cfg = new Path(getProject());
             dump_cfg = appendToPath(dump_cfg, arg);
         }
 
         public Path createdump_cfg() {
             if(dump_cfg == null )
-                dump_cfg = new Path(project);
+                dump_cfg = new Path(getProject());
             return dump_cfg.createPath();
         }
   
@@ -340,25 +341,25 @@ public class AntTask extends MatchingTask {
   
         public void setinclude(Path arg) {
             if(include == null )
-                include = new Path(project);
+                include = new Path(getProject());
             include = appendToPath(include, arg);
         }
 
         public Path createinclude() {
             if(include == null )
-                include = new Path(project);
+                include = new Path(getProject());
             return include.createPath();
         }
   
         public void setexclude(Path arg) {
             if(exclude == null )
-                exclude = new Path(project);
+                exclude = new Path(getProject());
             exclude = appendToPath(exclude, arg);
         }
 
         public Path createexclude() {
             if(exclude == null )
-                exclude = new Path(project);
+                exclude = new Path(getProject());
             return exclude.createPath();
         }
   
@@ -368,37 +369,37 @@ public class AntTask extends MatchingTask {
   
         public void setdynamic_class(Path arg) {
             if(dynamic_class == null )
-                dynamic_class = new Path(project);
+                dynamic_class = new Path(getProject());
             dynamic_class = appendToPath(dynamic_class, arg);
         }
 
         public Path createdynamic_class() {
             if(dynamic_class == null )
-                dynamic_class = new Path(project);
+                dynamic_class = new Path(getProject());
             return dynamic_class.createPath();
         }
   
         public void setdynamic_dir(Path arg) {
             if(dynamic_dir == null )
-                dynamic_dir = new Path(project);
+                dynamic_dir = new Path(getProject());
             dynamic_dir = appendToPath(dynamic_dir, arg);
         }
 
         public Path createdynamic_dir() {
             if(dynamic_dir == null )
-                dynamic_dir = new Path(project);
+                dynamic_dir = new Path(getProject());
             return dynamic_dir.createPath();
         }
   
         public void setdynamic_package(Path arg) {
             if(dynamic_package == null )
-                dynamic_package = new Path(project);
+                dynamic_package = new Path(getProject());
             dynamic_package = appendToPath(dynamic_package, arg);
         }
 
         public Path createdynamic_package() {
             if(dynamic_package == null )
-                dynamic_package = new Path(project);
+                dynamic_package = new Path(getProject());
             return dynamic_package.createPath();
         }
   
