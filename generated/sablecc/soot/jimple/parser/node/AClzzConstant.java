@@ -7,7 +7,7 @@ import soot.jimple.parser.analysis.*;
 
 public final class AClzzConstant extends PConstant
 {
-    private TCls _cls_;
+    private TClass _id_;
     private TStringConstant _stringConstant_;
 
     public AClzzConstant()
@@ -15,10 +15,10 @@ public final class AClzzConstant extends PConstant
     }
 
     public AClzzConstant(
-        TCls _cls_,
+        TClass _id_,
         TStringConstant _stringConstant_)
     {
-        setCls(_cls_);
+        setId(_id_);
 
         setStringConstant(_stringConstant_);
 
@@ -26,7 +26,7 @@ public final class AClzzConstant extends PConstant
     public Object clone()
     {
         return new AClzzConstant(
-            (TCls) cloneNode(_cls_),
+            (TClass) cloneNode(_id_),
             (TStringConstant) cloneNode(_stringConstant_));
     }
 
@@ -35,16 +35,16 @@ public final class AClzzConstant extends PConstant
         ((Analysis) sw).caseAClzzConstant(this);
     }
 
-    public TCls getCls()
+    public TClass getId()
     {
-        return _cls_;
+        return _id_;
     }
 
-    public void setCls(TCls node)
+    public void setId(TClass node)
     {
-        if(_cls_ != null)
+        if(_id_ != null)
         {
-            _cls_.parent(null);
+            _id_.parent(null);
         }
 
         if(node != null)
@@ -57,7 +57,7 @@ public final class AClzzConstant extends PConstant
             node.parent(this);
         }
 
-        _cls_ = node;
+        _id_ = node;
     }
 
     public TStringConstant getStringConstant()
@@ -88,15 +88,15 @@ public final class AClzzConstant extends PConstant
     public String toString()
     {
         return ""
-            + toString(_cls_)
+            + toString(_id_)
             + toString(_stringConstant_);
     }
 
     void removeChild(Node child)
     {
-        if(_cls_ == child)
+        if(_id_ == child)
         {
-            _cls_ = null;
+            _id_ = null;
             return;
         }
 
@@ -110,9 +110,9 @@ public final class AClzzConstant extends PConstant
 
     void replaceChild(Node oldChild, Node newChild)
     {
-        if(_cls_ == oldChild)
+        if(_id_ == oldChild)
         {
-            setCls((TCls) newChild);
+            setId((TClass) newChild);
             return;
         }
 

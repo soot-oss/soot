@@ -381,7 +381,7 @@ class_name_list =
     {integer} minus? integer_constant |
     {float}   minus? float_constant |
     {string}  string_constant |
-    {clzz}    cls string_constant |
+    {clzz}    [id]:class string_constant |
     {null}    null;
 
   binop =

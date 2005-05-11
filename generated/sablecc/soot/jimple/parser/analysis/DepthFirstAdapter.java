@@ -3104,9 +3104,9 @@ public class DepthFirstAdapter extends AnalysisAdapter
     public void caseAClzzConstant(AClzzConstant node)
     {
         inAClzzConstant(node);
-        if(node.getCls() != null)
+        if(node.getId() != null)
         {
-            node.getCls().apply(this);
+            node.getId().apply(this);
         }
         if(node.getStringConstant() != null)
         {

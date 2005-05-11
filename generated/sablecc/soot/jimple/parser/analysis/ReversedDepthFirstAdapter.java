@@ -3107,9 +3107,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         {
             node.getStringConstant().apply(this);
         }
-        if(node.getCls() != null)
+        if(node.getId() != null)
         {
-            node.getCls().apply(this);
+            node.getId().apply(this);
         }
         outAClzzConstant(node);
     }

@@ -61,7 +61,7 @@ public class ClassConstant extends Constant
 
     public String toString()
     {
-        return "cls "+StringTools.getQuotedStringOf(value);
+        return "class "+StringTools.getQuotedStringOf(value);
     }
 
     public String getValue(){
