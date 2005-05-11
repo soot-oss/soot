@@ -106,9 +106,9 @@ public class XMLAttributesPrinter {
 		while (it.hasNext()){
 			Tag t = (Tag)it.next();
 			//G.v().out.println(t.getClass().toString());
-			if (t instanceof SourceLineNumberTag) {
+			if (t instanceof SourceLnPosTag) {
 				//G.v().out.println("t is LineNumberTag");
-				return ((SourceLineNumberTag)t).getStartLineNumber();
+				return ((SourceLnPosTag)t).startLn();
 			}
             else if (t instanceof LineNumberTag){
                 return (new Integer(((LineNumberTag)t).toString())).intValue();

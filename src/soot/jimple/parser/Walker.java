@@ -1073,6 +1073,12 @@ public class Walker extends DepthFirstAdapter
         */
     }
 
+    public void outAClzzConstant(AClzzConstant node)
+    {
+	    String s = (String)mProductions.removeLast();
+	    mProductions.addLast(ClassConstant.v(s));
+    }
+
 
 
   /* ('#' (('-'? 'Infinity') | 'NaN') ('f' | 'F')? ) ; */
@@ -1642,8 +1648,12 @@ public class Walker extends DepthFirstAdapter
         modifier |= Modifier.TRANSIENT;
       else if(t instanceof AVolatileModifier)
         modifier |= Modifier.VOLATILE;
+      else if(t instanceof AEnumModifier)
+        modifier |= Modifier.ENUM;
+      else if(t instanceof AAnnotationModifier)
+        modifier |= Modifier.ANNOTATION;
       else
-        throw new RuntimeException("Impossible");
+        throw new RuntimeException("Impossible: modifier unknown - Have you added a new modifier and not updated this file?");
     }        
     
         return modifier;

@@ -55,7 +55,9 @@ Tokens
   synchronized = 'synchronized';
   transient = 'transient';
   volatile = 'volatile';
-  
+  enum = 'enum';
+  annotation = 'annotation';
+ 
   class = 'class';
   interface = 'interface';
 
@@ -106,6 +108,7 @@ Tokens
   from = 'from';
   to = 'to';
   with = 'with';
+  cls = 'cls';
 
   comma = ',';
   l_brace = '{';
@@ -168,7 +171,9 @@ Productions
     {static}       static |
     {synchronized} synchronized |
     {transient}    transient |
-    {volatile}     volatile;
+    {volatile}     volatile |
+    {enum}         enum |
+    {annotation}   annotation;
 
   file_type =
     {class}     [theclass]:class |
@@ -376,6 +381,7 @@ class_name_list =
     {integer} minus? integer_constant |
     {float}   minus? float_constant |
     {string}  string_constant |
+    {clzz}    cls string_constant |
     {null}    null;
 
   binop =

@@ -63,6 +63,11 @@ public abstract class AbstractConstantSwitch implements ConstantSwitch
         defaultCase(v);
     }
 
+    public void caseClassConstant(ClassConstant v)
+    {
+        defaultCase(v);
+    }
+
     public void defaultCase(Object v)
     {
     }

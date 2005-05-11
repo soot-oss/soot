@@ -890,7 +890,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             //System.out.println("rhs: "+rhs);
 		    soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(lhs, rhs);
             body.getUnits().add(stmt);
-            Util.addLineTag(stmt, localDecl);
+            //Util.addLineTag(stmt, localDecl);
             Util.addLnPosTags(stmt, localDecl.position()); 
             // this is a special case for position tags
             if ( localDecl.position() != null){

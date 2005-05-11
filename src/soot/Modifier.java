@@ -51,9 +51,11 @@ public class Modifier
     public static final int PUBLIC =       0x0001;
     public static final int STATIC =       0x0008;
     public static final int SYNCHRONIZED = 0x0020;
-    public static final int TRANSIENT =    0x0080;
-    public static final int VOLATILE =     0x0040;
+    public static final int TRANSIENT =    0x0080; /* VARARGS for methods */
+    public static final int VOLATILE =     0x0040; /* BRIDGE for methods */
     public static final int STRICTFP =     0x0800; 
+    public static final int ANNOTATION =   0x2000; 
+    public static final int ENUM =         0x4000; 
     
     private Modifier()
     {
@@ -119,6 +121,16 @@ public class Modifier
         return (m & STRICTFP) != 0;
     }
     
+    public static boolean isAnnotation(int m)
+    {
+        return (m & ANNOTATION) != 0;
+    }
+    
+    public static boolean isEnum(int m)
+    {
+        return (m & ENUM) != 0;
+    }
+    
     /**
      *  Converts the given modifiers to their string representation, in canonical form.
      *   @param m  a modifier set
@@ -161,6 +173,12 @@ public class Modifier
 
         if(isStrictFP(m))
             buffer.append("strictfp ");
+        
+        if(isAnnotation(m))
+            buffer.append("annotation ");
+        
+        if(isEnum(m))
+            buffer.append("enum ");
         
         return (buffer.toString()).trim();
     }

@@ -23,6 +23,8 @@ public interface Analysis extends Switch
     void caseASynchronizedModifier(ASynchronizedModifier node);
     void caseATransientModifier(ATransientModifier node);
     void caseAVolatileModifier(AVolatileModifier node);
+    void caseAEnumModifier(AEnumModifier node);
+    void caseAAnnotationModifier(AAnnotationModifier node);
     void caseAClassFileType(AClassFileType node);
     void caseAInterfaceFileType(AInterfaceFileType node);
     void caseAExtendsClause(AExtendsClause node);
@@ -132,6 +134,7 @@ public interface Analysis extends Switch
     void caseAIntegerConstant(AIntegerConstant node);
     void caseAFloatConstant(AFloatConstant node);
     void caseAStringConstant(AStringConstant node);
+    void caseAClzzConstant(AClzzConstant node);
     void caseANullConstant(ANullConstant node);
     void caseAAndBinop(AAndBinop node);
     void caseAOrBinop(AOrBinop node);
@@ -172,6 +175,8 @@ public interface Analysis extends Switch
     void caseTSynchronized(TSynchronized node);
     void caseTTransient(TTransient node);
     void caseTVolatile(TVolatile node);
+    void caseTEnum(TEnum node);
+    void caseTAnnotation(TAnnotation node);
     void caseTClass(TClass node);
     void caseTInterface(TInterface node);
     void caseTVoid(TVoid node);
@@ -219,6 +224,7 @@ public interface Analysis extends Switch
     void caseTFrom(TFrom node);
     void caseTTo(TTo node);
     void caseTWith(TWith node);
+    void caseTCls(TCls node);
     void caseTComma(TComma node);
     void caseTLBrace(TLBrace node);
     void caseTRBrace(TRBrace node);

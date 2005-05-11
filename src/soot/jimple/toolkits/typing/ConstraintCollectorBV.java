@@ -285,6 +285,10 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
       {
 	right = resolver.typeVariable(RefType.v("java.lang.String"));
       }
+    else if(r instanceof ClassConstant)
+      {
+	right = resolver.typeVariable(RefType.v("java.lang.Class"));
+      }
     else if(r instanceof BinopExpr)
       {
 	//******** BINOP EXPR ********
@@ -326,6 +330,10 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
 	  {
 	    lop = resolver.typeVariable(RefType.v("java.lang.String"));
 	  }
+	else if(lv instanceof ClassConstant)
+	  {
+	    lop = resolver.typeVariable(RefType.v("java.lang.Class"));
+	  }
 	else
 	  {
 	    throw new RuntimeException("Unhandled binary expression left operand type: " + lv.getClass());
@@ -359,6 +367,10 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
 	else if(rv instanceof StringConstant)
 	  {
 	    rop = resolver.typeVariable(RefType.v("java.lang.String"));
+	  }
+	else if(rv instanceof ClassConstant)
+	  {
+	    rop = resolver.typeVariable(RefType.v("java.lang.Class"));
 	  }
 	else
 	  {
@@ -675,6 +687,10 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
 	  {
 	    lop = resolver.typeVariable(RefType.v("java.lang.String"));
 	  }
+	else if(lv instanceof ClassConstant)
+	  {
+	    lop = resolver.typeVariable(RefType.v("java.lang.Class"));
+	  }
 	else
 	  {
 	    throw new RuntimeException("Unhandled binary expression left operand type: " + lv.getClass());
@@ -708,6 +724,10 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
 	else if(rv instanceof StringConstant)
 	  {
 	    rop = resolver.typeVariable(RefType.v("java.lang.String"));
+	  }
+	else if(rv instanceof ClassConstant)
+	  {
+	    rop = resolver.typeVariable(RefType.v("java.lang.Class"));
 	  }
 	else
 	  {

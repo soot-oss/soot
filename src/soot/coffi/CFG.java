@@ -1046,8 +1046,10 @@ public class CFG {
         {
             Code_attribute ca = method.locate_code_attribute();
             LocalVariableTable_attribute la = ca.findLocalVariableTable();
+            LocalVariableTypeTable_attribute lt = ca.findLocalVariableTypeTable();
 
             Util.v().activeVariableTable = la;
+            Util.v().activeVariableTypeTable = lt;
             
             Util.v().activeConstantPool = constant_pool;
             
@@ -2712,8 +2714,13 @@ public class CFG {
             typeStack = typeStack.push(RefType.v("java.lang.String"));
         else if (c instanceof CONSTANT_Utf8_info)
             typeStack = typeStack.push(RefType.v("java.lang.String"));
+        else if (c instanceof CONSTANT_Class_info){
+            CONSTANT_Class_info info = (CONSTANT_Class_info)c;
+            String name = ((CONSTANT_Utf8_info) (constant_pool[info.name_index])).convert();
+            typeStack = typeStack.push(RefType.v(name));
+        }
         else
-            throw new RuntimeException("Attempting to push a non-constant cp entry");
+            throw new RuntimeException("Attempting to push a non-constant cp entry"+c.getClass());
 
         return new OutFlow(typeStack);
     }
@@ -3021,8 +3028,16 @@ public class CFG {
          stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack,
             postTypeStack.topIndex()), rvalue);
       }
+      else if (c instanceof CONSTANT_Class_info){
+
+        String className = ((CONSTANT_Utf8_info) (constant_pool[((CONSTANT_Class_info)c).name_index])).convert();
+
+
+        rvalue = ClassConstant.v(className); 
+        stmt = Jimple.v().newAssignStmt(Util.v().getLocalForStackOp(listBody, postTypeStack, postTypeStack.topIndex()), rvalue);
+      }
       else {
-        throw new RuntimeException("Attempting to push a non-constant cp entry");
+        throw new RuntimeException("Attempting to push a non-constant cp entry"+c);
       }
 
       statements.add(stmt);

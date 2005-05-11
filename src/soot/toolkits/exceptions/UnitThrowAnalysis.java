@@ -489,6 +489,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	public void caseStringConstant(StringConstant c) {
 	}
 
+	public void caseClassConstant(ClassConstant c) {
+	}
+
 
 	// Declared by ExprSwitch interface:
 

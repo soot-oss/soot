@@ -421,6 +421,10 @@ public class JasminClass extends AbstractJasminClass
                 {
                     emit("ldc " + i.getConstant().toString());
                 }
+                else if (i.getConstant() instanceof ClassConstant)
+                {
+                    emit("ldc_w " + ((ClassConstant)i.getConstant()).getValue());
+                }
                 else if (i.getConstant() instanceof DoubleConstant)
                 {
                     DoubleConstant v = (DoubleConstant)(i.getConstant());

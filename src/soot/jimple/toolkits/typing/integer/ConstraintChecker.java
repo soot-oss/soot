@@ -369,6 +369,9 @@ class ConstraintChecker extends AbstractStmtSwitch
     else if(r instanceof StringConstant)
       {
       }
+    else if(r instanceof ClassConstant)
+      {
+      }
     else if(r instanceof BinopExpr)
       {
 	//******** BINOP EXPR ********
@@ -441,6 +444,9 @@ class ConstraintChecker extends AbstractStmtSwitch
 	else if(lv instanceof StringConstant)
 	  {
 	  }
+	else if(lv instanceof ClassConstant)
+	  {
+	  }
 	else
 	  {
 	    throw new RuntimeException("Unhandled binary expression left operand type: " + lv.getClass());
@@ -504,6 +510,9 @@ class ConstraintChecker extends AbstractStmtSwitch
 	  {
 	  }
 	else if(rv instanceof StringConstant)
+	  {
+	  }
+	else if(rv instanceof ClassConstant)
 	  {
 	  }
 	else
@@ -998,6 +1007,9 @@ class ConstraintChecker extends AbstractStmtSwitch
     else if(lv instanceof StringConstant)
       {
       }
+    else if(lv instanceof ClassConstant)
+      {
+      }
     else
       {
 	throw new RuntimeException("Unhandled binary expression left operand type: " + lv.getClass());
@@ -1061,6 +1073,9 @@ class ConstraintChecker extends AbstractStmtSwitch
       {
       }
     else if(rv instanceof StringConstant)
+      {
+      }
+    else if(rv instanceof ClassConstant)
       {
       }
     else

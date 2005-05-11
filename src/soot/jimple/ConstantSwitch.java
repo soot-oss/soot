@@ -37,5 +37,6 @@ public interface ConstantSwitch extends soot.util.Switch
     public abstract void caseLongConstant(LongConstant v);
     public abstract void caseNullConstant(NullConstant v);
     public abstract void caseStringConstant(StringConstant v);
+    public abstract void caseClassConstant(ClassConstant v);
     public abstract void defaultCase(Object object);
 }

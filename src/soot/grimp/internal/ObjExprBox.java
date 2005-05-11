@@ -46,6 +46,7 @@ public class ObjExprBox extends ExprBox
             value instanceof Local ||
         value instanceof NullConstant ||
         value instanceof StringConstant ||
+        value instanceof ClassConstant ||
             (value instanceof CastExpr && 
                 canContainValue(((CastExpr)value).getOp()));
     }

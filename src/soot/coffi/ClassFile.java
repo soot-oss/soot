@@ -72,6 +72,10 @@ public class ClassFile {
     static final short ACC_ABSTRACT =  0x0400;
    /** Access bit flag. */
     static final short ACC_STRICT =    0x0800;
+   /** Access bit flag. */
+    static final short ACC_ANNOTATION = 0x2000;
+   /** Access bit flag. */
+    static final short ACC_ENUM = 0x4000;
    /** Remaining bits in the access bit flag. */
     static final short ACC_UNKNOWN =   0x7000;
 
@@ -343,6 +347,16 @@ public class ClassFile {
          else hasone = true;
          s = s + "strict";
       }
+      if ((af & ACC_ANNOTATION) != 0) {
+         if (hasone) s = s + separator;
+         else hasone = true;
+         s = s + "annotation";
+      }
+      if ((af & ACC_ENUM) != 0) {
+         if (hasone) s = s + separator;
+         else hasone = true;
+         s = s + "enum";
+      }
       if ((af & ACC_UNKNOWN) != 0) {
          if (hasone) s = s + separator;
          else hasone = true;
@@ -375,9 +389,9 @@ public class ClassFile {
             return false;
 
          access_flags = d.readUnsignedShort();
-         //if (access_flags!=0)
-         //    G.v().out.println("Access flags: " + access_flags + " = " +
-         //                   access_string(access_flags,", "));
+         /*if (access_flags!=0)
+             G.v().out.println("Access flags: " + access_flags + " = " +
+                            access_string(access_flags,", "));*/
 
          this_class = d.readUnsignedShort();
          super_class = d.readUnsignedShort();
@@ -563,7 +577,6 @@ public class ClassFile {
          j = d.readUnsignedShort();  // read attribute name before allocating
          len = d.readInt() & 0xFFFFFFFFL;
          s = ((CONSTANT_Utf8_info)(constant_pool[j])).convert();
-
          if (s.compareTo(attribute_info.SourceFile)==0) 
          {
             SourceFile_attribute sa = new SourceFile_attribute();
@@ -626,7 +639,8 @@ public class ClassFile {
 		 la.line_number_table[k] = e;
 	     }
 	     a = (attribute_info)la;
-         } else if(s.compareTo(attribute_info.LocalVariableTable)==0) 
+         } 
+         else if(s.compareTo(attribute_info.LocalVariableTable)==0) 
          {
             LocalVariableTable_attribute la = new LocalVariableTable_attribute();
             la.local_variable_table_length = d.readUnsignedShort();
@@ -644,9 +658,44 @@ public class ClassFile {
                la.local_variable_table[k] = e;
             }
             a = (attribute_info)la;
-	 } else if (s.compareTo(attribute_info.Synthetic)==0){
+	 } 
+         else if(s.compareTo(attribute_info.LocalVariableTypeTable)==0) 
+         {
+            LocalVariableTypeTable_attribute la = new LocalVariableTypeTable_attribute();
+            la.local_variable_type_table_length = d.readUnsignedShort();
+            int k;
+            local_variable_type_table_entry e;
+            la.local_variable_type_table =
+               new local_variable_type_table_entry[la.local_variable_type_table_length];
+            for (k=0; k<la.local_variable_type_table_length; k++) {
+               e = new local_variable_type_table_entry();
+               e.start_pc = d.readUnsignedShort();
+               e.length = d.readUnsignedShort();
+               e.name_index = d.readUnsignedShort();
+               e.signature_index = d.readUnsignedShort();
+               e.index = d.readUnsignedShort();
+               la.local_variable_type_table[k] = e;
+            }
+            a = (attribute_info)la;
+	 } 
+     else if (s.compareTo(attribute_info.Synthetic)==0){
         Synthetic_attribute ia = new Synthetic_attribute();
         a = (attribute_info)ia;
+     }
+     else if (s.compareTo(attribute_info.Signature)==0){
+        Signature_attribute ia = new Signature_attribute();
+        ia.signature_index = d.readUnsignedShort();
+        a = (attribute_info)ia;
+     }
+     else if (s.compareTo(attribute_info.Deprecated)==0){
+        Deprecated_attribute da = new Deprecated_attribute();
+        a = (attribute_info)da;
+     }
+     else if (s.compareTo(attribute_info.EnclosingMethod)==0){
+        EnclosingMethod_attribute ea = new EnclosingMethod_attribute();
+        ea.class_index = d.readUnsignedShort();
+        ea.method_index = d.readUnsignedShort();
+        a = (attribute_info)ea;
      }
          else if(s.compareTo(attribute_info.InnerClasses)==0)
 	 {
@@ -662,7 +711,83 @@ public class ClassFile {
 	       ia.inner_classes[k] = e;
 	    }
 	    a = (attribute_info)ia;
-         } else {
+        }
+        else if (s.compareTo(attribute_info.RuntimeVisibleAnnotations)==0)
+        {
+            RuntimeVisibleAnnotations_attribute ra = new RuntimeVisibleAnnotations_attribute();
+            ra.number_of_annotations = d.readUnsignedShort();
+            ra.annotations = new annotation[ra.number_of_annotations];
+            for (int k = 0; k < ra.number_of_annotations; k++){
+                annotation annot = new annotation();
+                annot.type_index = d.readUnsignedShort();
+                annot.num_element_value_pairs = d.readUnsignedShort();
+                annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
+                ra.annotations[k] = annot;
+            }
+        
+            a = (attribute_info)ra;
+         } 
+        else if (s.compareTo(attribute_info.RuntimeInvisibleAnnotations)==0)
+        {
+            RuntimeInvisibleAnnotations_attribute ra = new RuntimeInvisibleAnnotations_attribute();
+            ra.number_of_annotations = d.readUnsignedShort();
+            ra.annotations = new annotation[ra.number_of_annotations];
+            for (int k = 0; k < ra.number_of_annotations; k++){
+                annotation annot = new annotation();
+                annot.type_index = d.readUnsignedShort();
+                annot.num_element_value_pairs = d.readUnsignedShort();
+                annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
+                ra.annotations[k] = annot;
+            }
+            a = (attribute_info)ra;
+         } 
+        else if (s.compareTo(attribute_info.RuntimeVisibleParameterAnnotations)==0)
+        {
+            RuntimeVisibleParameterAnnotations_attribute ra = new RuntimeVisibleParameterAnnotations_attribute();
+            ra.num_parameters = d.readUnsignedByte();
+            ra.parameter_annotations = new parameter_annotation[ra.num_parameters];
+            for (int x = 0; x < ra.num_parameters; x++){
+                parameter_annotation pAnnot = new parameter_annotation();
+                pAnnot.num_annotations = d.readUnsignedShort();
+                pAnnot.annotations = new annotation[pAnnot.num_annotations];
+                for (int k = 0; k < pAnnot.num_annotations; k++){
+                    annotation annot = new annotation();
+                    annot.type_index = d.readUnsignedShort();
+                    annot.num_element_value_pairs = d.readUnsignedShort();
+                    annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
+                    pAnnot.annotations[k] = annot;
+                }
+                ra.parameter_annotations[x] = pAnnot;
+            }
+            a = (attribute_info)ra;
+         } 
+        else if (s.compareTo(attribute_info.RuntimeInvisibleParameterAnnotations)==0)
+        {
+            RuntimeInvisibleParameterAnnotations_attribute ra = new RuntimeInvisibleParameterAnnotations_attribute();
+            ra.num_parameters = d.readUnsignedByte();
+            ra.parameter_annotations = new parameter_annotation[ra.num_parameters];
+            for (int x = 0; x < ra.num_parameters; x++){
+                parameter_annotation pAnnot = new parameter_annotation();
+                pAnnot.num_annotations = d.readUnsignedShort();
+                pAnnot.annotations = new annotation[pAnnot.num_annotations];
+                for (int k = 0; k < pAnnot.num_annotations; k++){
+                    annotation annot = new annotation();
+                    annot.type_index = d.readUnsignedShort();
+                    annot.num_element_value_pairs = d.readUnsignedShort();
+                    annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
+                    pAnnot.annotations[k] = annot;
+                }
+                ra.parameter_annotations[x] = pAnnot;
+            }
+            a = (attribute_info)ra;
+         }
+         else if (s.compareTo(attribute_info.AnnotationDefault)==0){
+             AnnotationDefault_attribute da = new AnnotationDefault_attribute();
+             element_value [] result = readElementValues(1, d, false, 0);
+             da.default_value = result[0];
+             a = (attribute_info)da;
+         }
+         else {
             // unknown attribute
             // G.v().out.println("Generic/Unknown Attribute: " + s);
             Generic_attribute ga = new Generic_attribute();
@@ -679,6 +804,62 @@ public class ClassFile {
       return true;
    }
 
+    private element_value [] readElementValues(int count, DataInputStream d, boolean needName, int name_index)
+        throws IOException {
+        element_value [] list = new element_value[count];
+        for (int x = 0; x < count; x++){
+            if (needName){
+                name_index = d.readUnsignedShort();
+            }
+            int tag = d.readUnsignedByte();
+            char kind = (char)tag;
+            if (kind == 'B' || kind == 'C' || kind == 'D' || kind == 'F' || kind == 'I' || kind == 'J' || kind == 'S' || kind == 'Z' || kind == 's'){
+                constant_element_value elem = new constant_element_value();
+                elem.name_index = name_index;
+                elem.tag = kind;
+                elem.constant_value_index = d.readUnsignedShort();
+                list[x] = elem;
+            }
+            else if (kind == 'e'){
+                enum_constant_element_value elem = new enum_constant_element_value();
+                elem.name_index = name_index;
+                elem.tag = kind;
+                elem.type_name_index = d.readUnsignedShort();
+                elem.constant_name_index = d.readUnsignedShort();
+                list[x] = elem;
+            }
+            else if (kind == 'c'){
+                class_element_value elem = new class_element_value();
+                elem.name_index = name_index;
+                elem.tag = kind;
+                elem.class_info_index = d.readUnsignedShort();
+                list[x] = elem;
+            }
+            else if (kind == '['){
+                array_element_value elem = new array_element_value();
+                elem.name_index = name_index;
+                elem.tag = kind;
+                elem.num_values = d.readUnsignedShort();
+                elem.values = readElementValues(elem.num_values, d, false, name_index);
+                list[x] = elem;
+            }
+            else if (kind == '@'){
+                annotation_element_value elem = new annotation_element_value();
+                elem.name_index = name_index;
+                elem.tag = kind;
+                annotation annot = new annotation();
+                annot.type_index = d.readUnsignedShort();
+                annot.num_element_value_pairs = d.readUnsignedShort();
+                annot.element_value_pairs = readElementValues(annot.num_element_value_pairs, d, true, 0);
+                elem.annotation_value = annot;
+                list[x] = elem;
+            }
+            else {
+                throw new RuntimeException("Unknown element value pair kind: "+kind);
+            }
+        }
+        return list;
+    }
 
    /** Reads in the fields from the given stream.
     * @param d Stream forming the <tt>.class</tt> file.
@@ -730,7 +911,6 @@ public class ClassFile {
          mi.descriptor_index = d.readUnsignedShort();
          
          mi.attributes_count = d.readUnsignedShort();
-         
 
          CONSTANT_Utf8_info ci;
            ci = (CONSTANT_Utf8_info)(constant_pool[mi.name_index]);

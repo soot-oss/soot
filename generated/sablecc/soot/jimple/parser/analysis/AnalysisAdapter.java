@@ -123,6 +123,16 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAEnumModifier(AEnumModifier node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseAAnnotationModifier(AAnnotationModifier node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAClassFileType(AClassFileType node)
     {
         defaultCase(node);
@@ -668,6 +678,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAClzzConstant(AClzzConstant node)
+    {
+        defaultCase(node);
+    }
+
     public void caseANullConstant(ANullConstant node)
     {
         defaultCase(node);
@@ -859,6 +874,16 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTVolatile(TVolatile node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTEnum(TEnum node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTAnnotation(TAnnotation node)
     {
         defaultCase(node);
     }
@@ -1094,6 +1119,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTWith(TWith node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTCls(TCls node)
     {
         defaultCase(node);
     }

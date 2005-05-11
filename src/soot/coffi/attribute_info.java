@@ -69,6 +69,58 @@ class attribute_info {
     * @see Synthetic_attribute
     */
    public static final String Synthetic = "Synthetic";
+   
+   /**
+    * the following tags are added for java1.5
+    */
+   
+   /** String by which a Synthetic attribute is recognized.
+    * @see Signature_attribute
+    */
+   public static final String Signature = "Signature";
+
+   /** String by which a Deprecated attribute is recognized.
+    * @see Deprecated_attribute
+    */
+   public static final String Deprecated = "Deprecated";
+
+   /** String by which a EnclosingMethod attribute is recognized.
+    * @see EnclosingMethod_attribute
+    */
+   public static final String EnclosingMethod = "EnclosingMethod";
+   
+   /** String by which a LocalVariableTypeTable attribute is recognized.
+    * @see LocalVariableTypeTable_attribute
+    */
+   public static final String LocalVariableTypeTable = "LocalVariableTypeTable";
+   
+   /** String by which a runtime visible annotation attribute is recognized.
+    * @see RuntimeVisibleAnnotations_attribute
+    */
+   public static final String RuntimeVisibleAnnotations = "RuntimeVisibleAnnotations";
+
+   /** String by which a runtime invisible annotation attribute is recognized.
+    * @see RuntimeInvisibleAnnotations_attribute
+    */
+   public static final String RuntimeInvisibleAnnotations = "RuntimeInvisibleAnnotations";
+
+   /** String by which a runtime visible parameter annotation attribute 
+    * is recognized.
+    * @see RuntimeVisibleParameterAnnotations_attribute
+    */
+   public static final String RuntimeVisibleParameterAnnotations = "RuntimeVisibleParameterAnnotations";
+
+   /** String by which a runtime invisible parameter annotation attribute 
+    * is recognized.
+    * @see RuntimeInvisibleParameterAnnotations_attribute
+    */
+   public static final String RuntimeInvisibleParameterAnnotations = "RuntimeInvisibleParameterAnnotations";
+
+   /** String by which an annotation default attribute 
+    * is recognized.
+    * @see AnnotationDefault_attribute
+    */
+   public static final String AnnotationDefault = "AnnotationDefault";
 
    /** Constant pool index of the name of this attribute; should be a utf8 String
     * matching one of the constant Strings define here.

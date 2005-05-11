@@ -78,4 +78,19 @@ class Code_attribute extends attribute_info {
       }
       return null;
    }
+   
+   /** Locates the LocalVariableTypeTable attribute, if one is present.
+    * @return the local variable type table attribute, or <i>null</i> 
+    * if not found.
+    * @see LocalVariableTypeTable_attribute
+    * @see method_info#makeLocals
+    */
+   public LocalVariableTypeTable_attribute findLocalVariableTypeTable() {
+      int i;
+      for (i=0;i<attributes_count;i++) {
+         if (attributes[i] instanceof LocalVariableTypeTable_attribute)
+            return (LocalVariableTypeTable_attribute)(attributes[i]);
+      }
+      return null;
+   }
 }

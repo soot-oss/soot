@@ -208,6 +208,165 @@ public abstract class AbstractJasminClass
             code.add(s);
     }
     
+    private String getVisibilityAnnotationAttr(VisibilityAnnotationTag tag){
+        StringBuffer sb = new StringBuffer();
+        if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE){
+            sb.append(".runtime_visible_annotation\n");
+        }
+        else {
+            sb.append(".runtime_invisible_annotation\n");
+        }
+        if (tag.hasAnnotations()){
+            Iterator it = tag.getAnnotations().iterator();
+            while (it.hasNext()){
+                AnnotationTag annot = (AnnotationTag)it.next();
+                sb.append(".annotation ");
+                sb.append(soot.util.StringTools.getQuotedStringOf(annot.getType())+"\n");
+                for (int i = 0; i < annot.getNumElems(); i++){
+                    sb.append(getElemAttr(annot.getElemAt(i)));
+                }
+                sb.append(".end .annotation\n");
+            }
+        }
+        sb.append(".end .annotation_attr\n");
+        return sb.toString();    
+    }
+   
+    
+    private String getVisibilityParameterAnnotationAttr(VisibilityParameterAnnotationTag tag){
+        StringBuffer sb = new StringBuffer();
+        sb.append(".param ");
+        if (tag.getKind() == AnnotationConstants.RUNTIME_VISIBLE){
+            sb.append(".runtime_visible_annotation\n");
+        }
+        else {
+            sb.append(".runtime_invisible_annotation\n");
+        }
+        ArrayList vis_list = tag.getVisibilityAnnotations();
+        if (vis_list != null){
+            Iterator it = vis_list.iterator();
+            while (it.hasNext()){
+                sb.append(getVisibilityAnnotationAttr((VisibilityAnnotationTag)it.next()));
+            }
+        }
+        sb.append(".end .param\n");
+        return sb.toString();    
+    }
+   
+    private String getElemAttr(AnnotationElem elem){
+        StringBuffer result = new StringBuffer(".elem ");
+        switch (elem.getKind()){
+            case 'Z': {
+                        result.append(".bool_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationIntElem)elem).getValue());
+                        result.append("\n");
+                        break;
+                      }
+            case 'S': {
+                        result.append(".short_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationIntElem)elem).getValue());
+                        result.append("\n");
+                        break;
+                      }
+            case 'B': {
+                        result.append(".byte_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationIntElem)elem).getValue());
+                        result.append("\n");
+                        break;
+                      }
+            case 'C': {
+                        result.append(".char_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationIntElem)elem).getValue());
+                        result.append("\n");
+                        break;
+                      }
+            case 'I': {
+                        result.append(".int_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationIntElem)elem).getValue());
+                        result.append("\n");
+                        break;
+                      }
+            case 'J': {
+                        result.append(".long_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(((AnnotationLongElem)elem).getValue());
+                        result.append("\n");
+                        break; 
+                      }
+            case 'F': {
+                        result.append(".float_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(Float.floatToRawIntBits(((AnnotationFloatElem)elem).getValue()));
+                        result.append("\n");
+                        break;
+                      }
+            case 'D': {
+                        result.append(".doub_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(Double.doubleToRawLongBits(((AnnotationDoubleElem)elem).getValue()));
+                        result.append("\n");
+                        break;
+                      }
+            case 's': {
+                        result.append(".str_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationStringElem)elem).getValue()));
+                        result.append("\n");
+                        break;
+                      }
+            case 'e': {
+                        result.append(".enum_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem)elem).getTypeName())); 
+                        result.append(" ");
+                        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationEnumElem)elem).getConstantName())); 
+                        result.append("\n");
+                        break;
+                      }
+            case 'c': {
+                        result.append(".cls_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        result.append(soot.util.StringTools.getQuotedStringOf(((AnnotationClassElem)elem).getDesc())); 
+                        result.append("\n");
+                        break;
+                      }
+            case '[': {
+                        result.append(".arr_kind ");
+                        result.append("\""+elem.getName()+"\" ");
+                        AnnotationArrayElem arrayElem = (AnnotationArrayElem)elem;
+                        result.append("\n");
+                        for (int i = 0; i < arrayElem.getNumValues(); i++){
+                            //result.append("\n");
+                            result.append(getElemAttr(arrayElem.getValueAt(i)));
+                        }
+                        result.append(".end .arr_elem\n");
+                        break;
+                      }
+            case '@': {
+                        result.append(".ann_kind ");
+                        result.append("\""+elem.getName()+"\"\n");
+                        AnnotationTag annot = ((AnnotationAnnotationElem)elem).getValue();
+                        result.append(".annotation ");
+                        result.append(soot.util.StringTools.getQuotedStringOf(annot.getType())+"\n");
+                        for (int i = 0; i < annot.getNumElems(); i++){
+                            result.append(getElemAttr(annot.getElemAt(i)));
+                        }
+                        result.append(".end .annotation\n");
+                        result.append(".end .annot_elem\n");
+                        break;
+                      }
+            default : {
+                throw new RuntimeException("Unknown Elem Attr Kind: "+elem.getKind());
+            }
+        }
+        return result.toString();
+    }
+    
     public AbstractJasminClass(SootClass sootClass)
     {
         if(Options.v().time())
@@ -255,8 +414,9 @@ public abstract class AbstractJasminClass
                 emit(".implements " + slashify(inter.getName()));
             }
 
+            /* why do this????
             if(sootClass.getInterfaceCount() != 0)
-                emit("");
+                emit("");*/
         }
 
 
@@ -270,38 +430,19 @@ public abstract class AbstractJasminClass
 	    Tag tag = (Tag) it.next();
 	    if(tag instanceof Attribute)
 		emit(".class_attribute "  + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue()))+"\"");
-        /*else if (tag instanceof InnerClassAttribute){
-            if (!Options.v().no_output_inner_classes_attribute()){
-                emit(".inner_class_attr ");
-                Iterator innersIt = ((InnerClassAttribute)tag).getSpecs().iterator();
-                while (innersIt.hasNext()){
-                    InnerClassTag ict = (InnerClassTag)innersIt.next();
-                    //System.out.println("inner class tag: "+ict);
-                    emit(".inner_class_spec_attr "+
-                        "\""+ict.getInnerClass()+"\" "+
-                    
-                        "\""+ict.getOuterClass()+"\" "+
-                    
-                        "\""+ict.getShortName()+"\" "+
-                        Modifier.toString(ict.getAccessFlags())+" "+
-
-                    ".end .inner_class_spec_attr");
-                }
-                emit(".end .inner_class_attr\n");
-            }
-        }
-        else if (tag instanceof SyntheticTag){
-            emit(".synthetic");
-        }*/
-        else {
+        /*else {
             emit("");
-        }
+        }*/
 	}
 
 
     // emit synthetic attributes
     if (sootClass.hasTag("SyntheticTag")){
         emit(".synthetic\n");
+    }
+    // emit deprecated attributes
+    if (sootClass.hasTag("DeprecatedTag")){
+        emit(".deprecated\n");
     }
     // emit inner class attributes
     if (sootClass.hasTag("InnerClassAttribute")){
@@ -322,6 +463,28 @@ public abstract class AbstractJasminClass
                 ".end .inner_class_spec_attr");
             }
             emit(".end .inner_class_attr\n");
+        }
+    }
+    if (sootClass.hasTag("EnclosingMethodTag")){
+        String encMeth = ".enclosing_method_attr ";
+        EnclosingMethodTag eMethTag = (EnclosingMethodTag)sootClass.getTag("EnclosingMethodTag");
+        encMeth += "\""+eMethTag.getEnclosingClass()+"\" ";
+        encMeth += "\""+eMethTag.getEnclosingMethod()+"\" ";
+        encMeth += "\""+eMethTag.getEnclosingMethodSig()+"\"\n";
+        emit(encMeth);
+    }
+    if (sootClass.hasTag("SignatureTag")){
+        String sigAttr = ".signature_attr ";
+        SignatureTag sigTag = (SignatureTag)sootClass.getTag("SignatureTag");
+        sigAttr += "\""+sigTag.getSignature()+"\"\n";
+        emit(sigAttr);
+    }
+    
+    Iterator vit = sootClass.getTags().iterator();
+    while (vit.hasNext()){
+        Tag t = (Tag)vit.next();
+        if (t.getName().equals("VisibilityAnnotationTag")){
+            emit(getVisibilityAnnotationAttr((VisibilityAnnotationTag)t));
         }
     }
 
@@ -357,51 +520,34 @@ public abstract class AbstractJasminClass
                     double val = ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
                     fieldString += Double.doubleToRawLongBits(val);
                 }
-                /*if (field.hasTag("ConstantValueTag")){
-                    fieldString += " = ";
-                    Tag t = field.getTag("ConstantValueTag");
-                    fieldString += ((ConstantValueTag)t).toString();
-                    /*if (t instanceof StringConstantValueTag){
-                        fieldString += ((StringConstantValueTag)t).getStringValue();
-                    }
-                    if (t instanceof IntegerConstantValueTag){
-                        fieldString += ((IntegerConstantValueTag)t).getStringValue();
-                    }
-                    else if (t instanceof LongConstantValueTag){
-                        fieldString += ((StringConstantValueTag)t).getStringValue();
-                    }
-                    else if (t instanceof FloatConstantValueTag){
-                        fieldString += ((StringConstantValueTag)t).getStringValue();
-                    }
-                    else if (t instanceof DoubleConstantValueTag){
-                        fieldString += ((StringConstantValueTag)t).getStringValue();
-                    }
-                    else if (t instanceof StringConstantValueTag){
-                        fieldString += ((StringConstantValueTag)t).getStringValue();
-                    }
-                    
-                }*/
                 if (field.hasTag("SyntheticTag")){
                     fieldString +=" .synthetic";
                 }
 
-                emit(fieldString);
-                /*    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
-                     "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType())+" .synthetic");
+                fieldString +="\n";
+                if (field.hasTag("DeprecatedTag")){
+                    fieldString +=".deprecated\n";
                 }
-                else {
-                    emit(".field " + Modifier.toString(field.getModifiers()) + " " +
-                     "\"" + field.getName() + "\"" + " " + jasminDescriptorOf(field.getType()));
-                }*/
+                if (field.hasTag("SignatureTag")){
+                    fieldString += ".signature_attr ";
+                    SignatureTag sigTag = (SignatureTag)field.getTag("SignatureTag");
+                    fieldString += "\""+sigTag.getSignature()+"\"\n";
+                }
+                Iterator vfit = field.getTags().iterator();
+                while (vfit.hasNext()){
+                    Tag t = (Tag)vfit.next();
+                    if (t.getName().equals("VisibilityAnnotationTag")){
+                        fieldString += getVisibilityAnnotationAttr((VisibilityAnnotationTag)t);
+                    }
+                }
+
+                emit(fieldString);
 
 		Iterator attributeIt =  field.getTags().iterator(); 
 		while(attributeIt.hasNext()) {
 		    Tag tag = (Tag) attributeIt.next();
 		    if(tag instanceof Attribute)
 			emit(".field_attribute " + tag.getName() + " \"" + new String(Base64.encode(((Attribute)tag).getValue())) +"\"");
-            /*else if (tag instanceof SyntheticTag){
-                emit(".synthetic");
-            }*/
 		}
 
             }
@@ -505,6 +651,33 @@ public abstract class AbstractJasminClass
             if (method.hasTag("SyntheticTag")){
                 emit(".synthetic");
             }
+            if (method.hasTag("DeprecatedTag")){
+                emit(".deprecated");
+            }
+            if (method.hasTag("SignatureTag")){
+                String sigAttr = ".signature_attr ";
+                SignatureTag sigTag = (SignatureTag)method.getTag("SignatureTag");
+                sigAttr += "\""+sigTag.getSignature()+"\"";
+                emit(sigAttr);
+            }
+            if (method.hasTag("AnnotationDefaultTag")){
+                String annotDefAttr = ".annotation_default ";
+                AnnotationDefaultTag annotDefTag = (AnnotationDefaultTag)method.getTag("AnnotationDefaultTag");
+                annotDefAttr += getElemAttr(annotDefTag.getDefaultVal());
+                annotDefAttr += ".end .annotation_default";
+                emit(annotDefAttr);
+            }
+            Iterator vit = method.getTags().iterator();
+            while (vit.hasNext()){
+                Tag t = (Tag)vit.next();
+                if (t.getName().equals("VisibilityAnnotationTag")){
+                    emit(getVisibilityAnnotationAttr((VisibilityAnnotationTag)t));
+                }
+                if (t.getName().equals("VisibilityParameterAnnotationTag")){
+                    emit(getVisibilityParameterAnnotationAttr((VisibilityParameterAnnotationTag)t));
+                }
+            }
+
        if(method.isConcrete())
        {
             if(!method.hasActiveBody())

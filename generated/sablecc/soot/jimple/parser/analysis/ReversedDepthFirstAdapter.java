@@ -275,6 +275,46 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAVolatileModifier(node);
     }
 
+    public void inAEnumModifier(AEnumModifier node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAEnumModifier(AEnumModifier node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAEnumModifier(AEnumModifier node)
+    {
+        inAEnumModifier(node);
+        if(node.getEnum() != null)
+        {
+            node.getEnum().apply(this);
+        }
+        outAEnumModifier(node);
+    }
+
+    public void inAAnnotationModifier(AAnnotationModifier node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAAnnotationModifier(AAnnotationModifier node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAAnnotationModifier(AAnnotationModifier node)
+    {
+        inAAnnotationModifier(node);
+        if(node.getAnnotation() != null)
+        {
+            node.getAnnotation().apply(this);
+        }
+        outAAnnotationModifier(node);
+    }
+
     public void inAClassFileType(AClassFileType node)
     {
         defaultIn(node);
@@ -3048,6 +3088,30 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             node.getStringConstant().apply(this);
         }
         outAStringConstant(node);
+    }
+
+    public void inAClzzConstant(AClzzConstant node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAClzzConstant(AClzzConstant node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAClzzConstant(AClzzConstant node)
+    {
+        inAClzzConstant(node);
+        if(node.getStringConstant() != null)
+        {
+            node.getStringConstant().apply(this);
+        }
+        if(node.getCls() != null)
+        {
+            node.getCls().apply(this);
+        }
+        outAClzzConstant(node);
     }
 
     public void inANullConstant(ANullConstant node)
