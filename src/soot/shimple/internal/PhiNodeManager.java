@@ -403,9 +403,6 @@ public class PhiNodeManager
         DominatorNode champNode = dt.getDode(champBlock);
         DominatorNode challengerNode = dt.getDode(challengerBlock);
 
-        System.out.println("champ: " + champNode);
-        System.out.println("chall: " + challengerNode);
-        
         return(dt.isDominatorOf(champNode, challengerNode));
     }
     

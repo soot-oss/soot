@@ -69,7 +69,6 @@ public class SPiExpr implements PiExpr
 
     public void clearUnitBoxes()
     {
-        System.out.println("clear unit boxes");
         argBox.setUnit(null);
     }
     
