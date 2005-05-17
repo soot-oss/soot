@@ -803,12 +803,51 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             createStmt((polyglot.ast.Stmt)initsIt.next());
         }
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
+        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+        
+        body.getUnits().add(noop2);
+        
+        // handle cond
+        
+        polyglot.ast.Expr condition = forStmt.cond();
+        if (condition != null) {
+            soot.Value sootCond = base().createExpr(condition);
+            boolean needIf = needSootIf(sootCond);
+            if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
+                sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
+            }
+            else {
+                sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
+                sootCond = handleDFLCond((soot.jimple.ConditionExpr)sootCond);
+            }
+            if (needIf){
+                soot.jimple.IfStmt ifStmt = soot.jimple.Jimple.v().newIfStmt(sootCond, noop1);
+        
+                // add cond
+                body.getUnits().add(ifStmt);
+        
+                // add line and pos tags
+                Util.addLnPosTags(ifStmt.getConditionBox(), condition.position());
+                Util.addLnPosTags(ifStmt, condition.position());
+            }
+            else {
+                soot.jimple.GotoStmt gotoIf = soot.jimple.Jimple.v().newGotoStmt(noop1);
+                body.getUnits().add(gotoIf);
+            }
+            
+        }
+        else {
+            soot.jimple.Stmt goto2 = soot.jimple.Jimple.v().newGotoStmt(noop1);
+            body.getUnits().add(goto2);
+           
+        }
+        
         
         // handle body
-        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
-        soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
-        body.getUnits().add(goto1);
-        body.getUnits().add(noop1);
+        //soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+        //soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
+        //body.getUnits().add(goto1);
+        //body.getUnits().add(noop1);
         createStmt(forStmt.body());
         
         // handle continue
@@ -825,11 +864,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         while (itersIt.hasNext()){
             createStmt((polyglot.ast.Stmt)itersIt.next());
         }
-        body.getUnits().add(noop2);
+        soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
+        body.getUnits().add(goto1);
+        //body.getUnits().add(noop2);
         
         // handle cond
         
-        polyglot.ast.Expr condition = forStmt.cond();
+        /*polyglot.ast.Expr condition = forStmt.cond();
         if (condition != null) {
             soot.Value sootCond = base().createExpr(condition);
             boolean needIf = needSootIf(sootCond);
@@ -859,8 +900,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             soot.jimple.Stmt goto2 = soot.jimple.Jimple.v().newGotoStmt(noop1);
             body.getUnits().add(goto2);
            
-        }
-        
+        }*/
+        body.getUnits().add(noop1);
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
         
     }
