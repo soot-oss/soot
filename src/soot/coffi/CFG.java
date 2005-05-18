@@ -2717,7 +2717,30 @@ public class CFG {
         else if (c instanceof CONSTANT_Class_info){
             CONSTANT_Class_info info = (CONSTANT_Class_info)c;
             String name = ((CONSTANT_Utf8_info) (constant_pool[info.name_index])).convert();
-            typeStack = typeStack.push(RefType.v(name));
+            if (name.charAt(0) == '['){
+                int dim = 0;
+                while (name.charAt(dim+1) == '['){
+                    dim++;
+                }
+                // array type
+                Type baseType = null;
+                char typeIndicator = name.charAt(dim+1);
+                switch (typeIndicator){
+                    case 'I': baseType = IntType.v(); break;
+                    case 'C': baseType = CharType.v(); break;
+                    case 'F': baseType = FloatType.v(); break;          
+                    case 'D': baseType = DoubleType.v(); break;          
+                    case 'B': baseType = ByteType.v(); break;          
+                    case 'S': baseType = ShortType.v(); break;          
+                    case 'Z': baseType = BooleanType.v(); break;          
+                    case 'J': baseType = LongType.v(); break;          
+                    case 'L': baseType = RefType.v(name.substring(dim+2)); break;                   default : throw new RuntimeException("Unknown Array Base Type in Class Constant");
+                }
+                typeStack = typeStack.push(ArrayType.v(baseType, dim));
+            }
+            else {
+                typeStack = typeStack.push(RefType.v(name));
+            }
         }
         else
             throw new RuntimeException("Attempting to push a non-constant cp entry"+c.getClass());
