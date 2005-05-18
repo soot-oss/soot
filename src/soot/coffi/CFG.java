@@ -2719,12 +2719,12 @@ public class CFG {
             String name = ((CONSTANT_Utf8_info) (constant_pool[info.name_index])).convert();
             if (name.charAt(0) == '['){
                 int dim = 0;
-                while (name.charAt(dim+1) == '['){
+                while (name.charAt(dim) == '['){
                     dim++;
                 }
                 // array type
                 Type baseType = null;
-                char typeIndicator = name.charAt(dim+1);
+                char typeIndicator = name.charAt(dim);
                 switch (typeIndicator){
                     case 'I': baseType = IntType.v(); break;
                     case 'C': baseType = CharType.v(); break;
@@ -2734,7 +2734,7 @@ public class CFG {
                     case 'S': baseType = ShortType.v(); break;          
                     case 'Z': baseType = BooleanType.v(); break;          
                     case 'J': baseType = LongType.v(); break;          
-                    case 'L': baseType = RefType.v(name.substring(dim+2)); break;                   default : throw new RuntimeException("Unknown Array Base Type in Class Constant");
+                    case 'L': baseType = RefType.v(name.substring(dim+1)); break;                   default : throw new RuntimeException("Unknown Array Base Type in Class Constant");
                 }
                 typeStack = typeStack.push(ArrayType.v(baseType, dim));
             }

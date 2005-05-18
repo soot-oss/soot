@@ -73,7 +73,7 @@ public class JavaLangStringNative extends NativeMethodClass {
    * is true if and only if s.equals(t) is true.
    *
    * All literal strings and string-valued constant expressions are *
-   * interned. String literals are defined in §3.10.5 of the Java *
+   * interned. String literals are defined in Section 3.10.5 of the Java *
    * Language Specification Returns: a string that has the same
    * contents * as this string, but is guaranteed to be from a pool of
    * unique * strings.
