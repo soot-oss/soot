@@ -814,7 +814,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             soot.Value sootCond = base().createExpr(condition);
             boolean needIf = needSootIf(sootCond);
             if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
-                sootCond = soot.jimple.Jimple.v().newNeExpr(sootCond, soot.jimple.IntConstant.v(0));
+                sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
             }
             else {
                 sootCond = reverseCondition((soot.jimple.ConditionExpr)sootCond);
