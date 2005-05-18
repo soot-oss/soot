@@ -25,7 +25,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class ArrayNumberer implements Numberer {
+public class ArrayNumberer implements IterableNumberer {
     Numberable[] numberToObj = new Numberable[1024];
     int lastNumber = 0;
 
@@ -59,7 +59,7 @@ public class ArrayNumberer implements Numberer {
 
     public int size() { return lastNumber; }
 
-    public NumbererIterator iterator() {
+    public Iterator iterator() {
         return new NumbererIterator();
     }
 
@@ -73,7 +73,7 @@ public class ArrayNumberer implements Numberer {
             return numberToObj[cur++];
         }
         public final void remove() {
-            throw new RuntimeException( "Not implemented" );
+            throw new UnsupportedOperationException();
         }
     }
 }
