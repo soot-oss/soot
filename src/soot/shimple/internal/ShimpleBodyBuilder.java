@@ -101,15 +101,13 @@ public class ShimpleBodyBuilder
     public void transform()
     {
         boolean change = false;
-        if(phi.insertTrivialPhiNodes())
-            phi.trimExceptionalPhiNodes();
+        phi.insertTrivialPhiNodes();
 
         if(options.extended()){
             change = pi.insertTrivialPiNodes();
         
             while(change){
                 if(phi.insertTrivialPhiNodes()){
-                    phi.trimExceptionalPhiNodes();
                     change = pi.insertTrivialPiNodes();
                 }
                 else{
@@ -119,6 +117,7 @@ public class ShimpleBodyBuilder
         }
 
         renameLocals();
+        phi.trimExceptionalPhiNodes();
         makeUniqueLocalNames();
     }
 
