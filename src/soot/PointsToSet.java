@@ -40,7 +40,7 @@ public interface PointsToSet {
 
     /** If this points-to set consists entirely of objects of
      * type java.lang.Class of a known class,
-     * returns a set of strings that are the names of these classes.
+     * returns a set of ClassConstant's that are these classes.
      * If this point-to set may contain something else, returns null. */
     public Set possibleClassConstants();
 }

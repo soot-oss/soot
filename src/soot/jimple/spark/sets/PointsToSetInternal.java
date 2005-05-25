@@ -140,7 +140,7 @@ public abstract class PointsToSetInternal implements PointsToSet {
         return this.forall( new P2SetVisitor() {
         public final void visit( Node n ) {
             if( n instanceof ClassConstantNode ) {
-                ret.add( ((ClassConstantNode)n).getString() );
+                ret.add( ((ClassConstantNode)n).getClassConstant() );
             } else {
                 returnValue = true;
             }

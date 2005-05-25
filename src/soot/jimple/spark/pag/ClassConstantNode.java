@@ -19,6 +19,7 @@
 
 package soot.jimple.spark.pag;
 import soot.jimple.spark.*;
+import soot.jimple.*;
 import soot.*;
 import java.util.*;
 
@@ -30,15 +31,14 @@ public class ClassConstantNode extends AllocNode {
     public String toString() {
 	return "ClassConstantNode "+getNumber()+" "+newExpr;
     }
-
-    public String getString() {
-        return (String) newExpr;
+    public ClassConstant getClassConstant() {
+        return (ClassConstant) newExpr;
     }
 
     /* End of public methods. */
 
-    ClassConstantNode( PAG pag, String sc ) {
-        super( pag, "$$"+sc, RefType.v( "java.lang.Class" ), null );
+    ClassConstantNode( PAG pag, ClassConstant cc ) {
+        super( pag, cc, RefType.v( "java.lang.Class" ), null );
     }
 }
 

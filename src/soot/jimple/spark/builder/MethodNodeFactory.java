@@ -226,7 +226,7 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
         VarNode stringConstantLocal = pag.makeGlobalVarNode(
             stringConstant,
             RefType.v( "java.lang.String" ) );
-        mpag.addInEdge( stringConstant, stringConstantLocal );
+        pag.addEdge( stringConstant, stringConstantLocal );
         setResult( stringConstantLocal );
     }
     final public void caseThisRef( ThisRef tr ) {
@@ -234,6 +234,14 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
     }
     final public void caseNullConstant( NullConstant nr ) {
 	setResult( null );
+    }
+    final public void caseClassConstant( ClassConstant cc ) {
+        AllocNode classConstant = pag.makeClassConstantNode(cc);
+        VarNode classConstantLocal = pag.makeGlobalVarNode(
+            classConstant,
+            RefType.v( "java.lang.Class" ) );
+        pag.addEdge(classConstant, classConstantLocal);
+        setResult(classConstantLocal);
     }
     final public void defaultCase( Object v ) {
 	throw new RuntimeException( "failed to handle "+v );

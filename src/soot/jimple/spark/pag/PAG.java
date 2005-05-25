@@ -428,13 +428,13 @@ public class PAG implements PointsToAnalysis {
 	}
 	return ret;
     }
-    public AllocNode makeClassConstantNode( String s ) {
+    public AllocNode makeClassConstantNode( ClassConstant cc ) {
         if( opts.types_for_sites() || opts.vta() )
             return makeAllocNode( RefType.v( "java.lang.Class" ),
                     RefType.v( "java.lang.Class" ), null );
-        ClassConstantNode ret = (ClassConstantNode) valToAllocNode.get( "$$"+s );
+        ClassConstantNode ret = (ClassConstantNode) valToAllocNode.get(cc);
 	if( ret == null ) {
-	    valToAllocNode.put( "$$"+s, ret = new ClassConstantNode( this, s ) );
+	    valToAllocNode.put(cc, ret = new ClassConstantNode(this, cc));
             newAllocNodes.add( ret );
             addNodeTag( ret, null );
 	}
