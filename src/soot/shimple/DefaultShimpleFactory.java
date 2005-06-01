@@ -136,7 +136,7 @@ public class DefaultShimpleFactory implements ShimpleFactory
         if(ug != null)
             return ug;
 
-        ug = new CompleteUnitGraph(getBody());
+        ug = new ExceptionalUnitGraph(getBody());
         return ug;
     }
     
