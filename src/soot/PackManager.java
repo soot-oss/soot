@@ -105,7 +105,7 @@ public class PackManager {
             p.add(new Transform("jj.ule", UnusedLocalEliminator.v()));
             p.add(new Transform("jj.ne", NopEliminator.v()));
             p.add(new Transform("jj.tr", TypeAssigner.v()));
-            p.add(new Transform("jj.ct", CondTransformer.v()));
+            //p.add(new Transform("jj.ct", CondTransformer.v()));
             p.add(new Transform("jj.ulp", LocalPacker.v()));
             p.add(new Transform("jj.lns", LocalNameStandardizer.v()));
             p.add(new Transform("jj.cp", CopyPropagator.v()));
