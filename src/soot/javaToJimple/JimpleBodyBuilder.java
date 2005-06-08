@@ -676,7 +676,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         body.getUnits().add(noop2);
         
         // handle cond
-        body.getUnits().add((soot.jimple.Stmt)(condControlNoop.pop()));
+        soot.jimple.Stmt continueStmt = (soot.jimple.Stmt)condControlNoop.pop();
+        body.getUnits().add(continueStmt);
+        condControlNoop.push(continueStmt);
         
         polyglot.ast.Expr condition = whileStmt.cond();
         soot.Value sootCond = base().createExpr(condition);
@@ -743,6 +745,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
         body.getUnits().add(noop1);
+        condControlNoop.pop();
     }
     
     /**
@@ -761,7 +764,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         createStmt(doStmt.body());
                 
         // handle cond
-        body.getUnits().add((soot.jimple.Stmt)(condControlNoop.pop()));
+        soot.jimple.Stmt continueStmt = (soot.jimple.Stmt)condControlNoop.pop();
+        body.getUnits().add(continueStmt);
+        condControlNoop.push(continueStmt);
         
         // handle label continue
         if ((labelContinueMap != null) && (labelContinueMap.containsKey(lastLabel))){
@@ -788,6 +793,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             body.getUnits().add(gotoIf);
         }
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
+        condControlNoop.pop();
     }
     
     /**
