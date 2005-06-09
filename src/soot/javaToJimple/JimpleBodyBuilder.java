@@ -843,11 +843,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
             
         }
-        else {
-            soot.jimple.Stmt goto2 = soot.jimple.Jimple.v().newGotoStmt(noop1);
-            body.getUnits().add(goto2);
+        //else {
+        //    soot.jimple.Stmt goto2 = soot.jimple.Jimple.v().newGotoStmt(noop1);
+        //    body.getUnits().add(goto2);
            
-        }
+        //}
         
         
         // handle body
