@@ -628,6 +628,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         // handle cond 
         polyglot.ast.Expr condition = ifExpr.cond();
         soot.Value sootCond = base().createExpr(condition);
+
+        // pop true false noops right away
+        soot.jimple.Stmt tNoop = (soot.jimple.Stmt)trueNoop.pop();
+        soot.jimple.Stmt fNoop = (soot.jimple.Stmt)falseNoop.pop();
+        
         boolean needIf = needSootIf(sootCond);
         if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
             sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
@@ -649,7 +654,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
 	
         // add true nop
-        soot.jimple.Stmt tNoop = (soot.jimple.Stmt)trueNoop.pop();
         body.getUnits().add(tNoop);
         
         // add consequence
@@ -666,7 +670,6 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         body.getUnits().add(noop1);
         
         // add false nop
-        soot.jimple.Stmt fNoop = (soot.jimple.Stmt)falseNoop.pop();
         body.getUnits().add(fNoop);
         
         
@@ -705,6 +708,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         polyglot.ast.Expr condition = whileStmt.cond();
         soot.Value sootCond = base().createExpr(condition);
+        soot.jimple.Stmt tNoop = (soot.jimple.Stmt)trueNoop.pop();
+        soot.jimple.Stmt fNoop = (soot.jimple.Stmt)falseNoop.pop();
         boolean needIf = needSootIf(sootCond);
         if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
             sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
@@ -733,7 +738,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         //soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
         //body.getUnits().add(goto1);
         //body.getUnits().add(noop1);
-        body.getUnits().add(trueNoop.pop());
+        body.getUnits().add(tNoop);
         createStmt(whileStmt.body());
         soot.jimple.GotoStmt gotoLoop = soot.jimple.Jimple.v().newGotoStmt(noop2);
         body.getUnits().add(gotoLoop);
@@ -769,7 +774,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
         body.getUnits().add(noop1);
-        body.getUnits().add(falseNoop.pop());
+        body.getUnits().add(fNoop);
         condControlNoop.pop();
     }
     
@@ -779,14 +784,14 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     private void createDo(polyglot.ast.Do doStmt){
         
         // create true/false noops to handle cond and/or
-        trueNoop.push(soot.jimple.Jimple.v().newNopStmt());
-        falseNoop.push(soot.jimple.Jimple.v().newNopStmt());
+        soot.jimple.Stmt tNoop = soot.jimple.Jimple.v().newNopStmt();
+        soot.jimple.Stmt fNoop = soot.jimple.Jimple.v().newNopStmt();
    
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         body.getUnits().add(noop1);
         
         // add true noop - for cond and/or
-        body.getUnits().add(trueNoop.peek());
+        body.getUnits().add(tNoop);
         
         // these are for break and continue
         endControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
@@ -804,6 +809,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         if ((labelContinueMap != null) && (labelContinueMap.containsKey(lastLabel))){
             body.getUnits().add((soot.jimple.Stmt)labelContinueMap.get(lastLabel));
         }
+        
+        trueNoop.push(tNoop);
+        falseNoop.push(fNoop);
         
         polyglot.ast.Expr condition = doStmt.cond();
         soot.Value sootCond = base().createExpr(condition);
@@ -838,8 +846,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     private void createForLoop(polyglot.ast.For forStmt){
         
         // create true/false noops to handle cond and/or
-        trueNoop.push(soot.jimple.Jimple.v().newNopStmt());
-        falseNoop.push(soot.jimple.Jimple.v().newNopStmt());
+        soot.jimple.Stmt tNoop = soot.jimple.Jimple.v().newNopStmt();
+        soot.jimple.Stmt fNoop = soot.jimple.Jimple.v().newNopStmt();
         
         // these ()are for break and continue
         endControlNoop.push(soot.jimple.Jimple.v().newNopStmt());
@@ -859,7 +867,12 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         polyglot.ast.Expr condition = forStmt.cond();
         if (condition != null) {
+            trueNoop.push(tNoop);
+            falseNoop.push(fNoop);
             soot.Value sootCond = base().createExpr(condition);
+            trueNoop.pop();
+            falseNoop.pop();
+            
             boolean needIf = needSootIf(sootCond);
             if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
                 sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(0));
@@ -896,7 +909,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         //soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
         //body.getUnits().add(goto1);
         //body.getUnits().add(noop1);
-        body.getUnits().add(trueNoop.pop());
+        body.getUnits().add(tNoop);
         createStmt(forStmt.body());
         
         // handle continue
@@ -955,7 +968,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }*/
         body.getUnits().add(noop1);
         body.getUnits().add((soot.jimple.Stmt)(endControlNoop.pop()));
-        body.getUnits().add(falseNoop.pop());
+        body.getUnits().add(fNoop);
         
     }
     
@@ -3161,10 +3174,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         return retLocal;
     }
 
+    int inLeftOr = 0;
+
     /**
      * Creates a conditional OR expr
      */
     private soot.Value createCondOr(polyglot.ast.Binary binary) {
+        //System.out.println("cond or binary: "+binary);
         soot.Local retLocal = lg.generateLocal(soot.BooleanType.v());
             
         //end 
@@ -3172,7 +3188,10 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
          
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+        inLeftOr++;
         soot.Value lVal = base().createExpr(binary.left());
+        inLeftOr--;
+        
         //System.out.println("leftval : "+lVal);
         boolean leftNeedIf = needSootIf(lVal);
         if (!(lVal instanceof soot.jimple.ConditionExpr)) {
@@ -3204,14 +3223,21 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         else {
             // need to reverse right part of conditional or expr
-            rVal = reverseCondition((soot.jimple.ConditionExpr)rVal);
+            if (!trueNoop.empty() && inLeftOr == 0){
+                rVal = reverseCondition((soot.jimple.ConditionExpr)rVal);
+            }
             rVal = handleDFLCond((soot.jimple.ConditionExpr)rVal);
         }
         if (rightNeedIf){
             
             soot.jimple.IfStmt ifRight;
-            if (!falseNoop.empty()){
-                ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, (soot.jimple.Stmt)falseNoop.peek());
+            if (!trueNoop.empty()){
+                if (inLeftOr == 0){
+                    ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, (soot.jimple.Stmt)falseNoop.peek());
+                }
+                else {
+                    ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, (soot.jimple.Stmt)trueNoop.peek());
+                }
             }
             else {
                 ifRight = soot.jimple.Jimple.v().newIfStmt(rVal, noop2);
@@ -3222,7 +3248,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         
         // return if cond will be used in if 
-        if (!falseNoop.empty()){
+        if (!trueNoop.empty()){
             return soot.jimple.IntConstant.v(1);
         }
         
