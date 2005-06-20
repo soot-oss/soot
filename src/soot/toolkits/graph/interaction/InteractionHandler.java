@@ -108,7 +108,13 @@ public class InteractionHandler {
     public void handleCallGraphStart(Object info, CallGraphGrapher grapher){
         setGrapher(grapher);
         doInteraction(new InteractionEvent(IInteractionConstants.CALL_GRAPH_START, info));
-        handleCallGraphNextMethod();
+        if (!isCgReset()){
+            handleCallGraphNextMethod();
+        }
+        else {
+            setCgReset(false);
+            handleReset();
+        }
     }
    
     public void handleCallGraphNextMethod(){
@@ -119,9 +125,29 @@ public class InteractionHandler {
         }
     }
 
+    private boolean cgReset = false;
+    public void setCgReset(boolean v){
+        cgReset = v;
+    }
+    public boolean isCgReset(){
+        return cgReset;
+    }
+    
+    public void handleReset(){
+        if (!cgDone()){
+            getGrapher().reset();
+        }
+    }
+
     public void handleCallGraphPart(Object info){
         doInteraction(new InteractionEvent(IInteractionConstants.CALL_GRAPH_PART, info));
-        handleCallGraphNextMethod();
+        if (!isCgReset()){
+            handleCallGraphNextMethod();
+        }
+        else {
+            setCgReset(false);
+            handleReset();
+        }
     }
         
     private CallGraphGrapher grapher;

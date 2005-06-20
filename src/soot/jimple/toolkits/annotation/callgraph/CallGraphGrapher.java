@@ -42,6 +42,9 @@ public class CallGraphGrapher extends SceneTransformer
     
     private ArrayList getTgtMethods(SootMethod method, boolean recurse){
         //G.v().out.println("meth for tgts: "+method);
+        if (!method.hasActiveBody()){
+            return new ArrayList();
+        }
         Body b = method.getActiveBody();
         ArrayList list = new ArrayList();
         Iterator sIt = b.getUnits().iterator();
@@ -128,23 +131,26 @@ public class CallGraphGrapher extends SceneTransformer
             setShowLibMeths(true);
         }
         cg = Scene.v().getCallGraph();
+        if (Options.v().interactive_mode()){
+            reset();
+        }
+    }
+
+    public void reset() {
         if (methodToContexts == null){
             methodToContexts = new MethodToContexts(Scene.v().getReachableMethods().listener());
         }
-
-        //G.v().out.println("Running call graph grapher"); 
-        if (Options.v().interactive_mode()){
-            SootClass sc = Scene.v().getMainClass();
-            SootMethod sm = getFirstMethod(sc);
-            //G.v().out.println("got first method");
-            ArrayList tgts = getTgtMethods(sm, true);
-            //G.v().out.println("got tgt methods");
-            ArrayList srcs = getSrcMethods(sm, true);
-            //G.v().out.println("got src methods");
-            CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
-            //G.v().out.println("will handle new call graph");
-            InteractionHandler.v().handleCallGraphStart(info, this);
-        }
+        
+        SootClass sc = Scene.v().getMainClass();
+        SootMethod sm = getFirstMethod(sc);
+        //G.v().out.println("got first method");
+        ArrayList tgts = getTgtMethods(sm, true);
+        //G.v().out.println("got tgt methods");
+        ArrayList srcs = getSrcMethods(sm, true);
+        //G.v().out.println("got src methods");
+        CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
+        //G.v().out.println("will handle new call graph");
+        InteractionHandler.v().handleCallGraphStart(info, this);
     }
 
     private SootMethod getFirstMethod(SootClass sc){

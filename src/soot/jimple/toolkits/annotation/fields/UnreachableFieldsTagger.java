@@ -85,8 +85,8 @@ public class UnreachableFieldsTagger extends SceneTransformer
         Iterator unusedIt = fieldList.iterator();
         while (unusedIt.hasNext()) {
             SootField unusedField = (SootField)unusedIt.next();
-            unusedField.addTag(new StringTag("Field "+unusedField.getName()+" is not used!"));
-            unusedField.addTag(new ColorTag(ColorTag.RED, true));   
+            unusedField.addTag(new StringTag("Field "+unusedField.getName()+" is not used!", "Unreachable Fields"));
+            unusedField.addTag(new ColorTag(ColorTag.RED, true, "Unreachable Fields"));   
             //System.out.println("tagged field: "+unusedField);
 
         }

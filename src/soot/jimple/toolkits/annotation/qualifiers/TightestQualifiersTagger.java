@@ -100,12 +100,12 @@ public class TightestQualifiersTagger extends SceneTransformer {
         
             if (!sRes.equals(actual)) {
                 if (meth.getName().equals("<init>")){
-                    meth.addTag(new StringTag("Constructor: "+meth.getDeclaringClass().getName()+" has "+actual+" level access, can have: "+sRes+" level access."));
+                    meth.addTag(new StringTag("Constructor: "+meth.getDeclaringClass().getName()+" has "+actual+" level access, can have: "+sRes+" level access.", "Tightest Qualifiers"));
                 }
                 else {
-                    meth.addTag(new StringTag("Method: "+meth.getName()+" has "+actual+" level access, can have: "+sRes+" level access."));
+                    meth.addTag(new StringTag("Method: "+meth.getName()+" has "+actual+" level access, can have: "+sRes+" level access.", "Tightest Qualifiers"));
                 }
-                meth.addTag(new ColorTag(255, 10, 0, true));
+                meth.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
             }
         }
     }
@@ -315,8 +315,8 @@ public class TightestQualifiersTagger extends SceneTransformer {
             //System.out.println("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
         
             if (!sRes.equals(actual)){
-                f.addTag(new StringTag("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access."));
-                f.addTag(new ColorTag(255, 10, 0, true));
+                f.addTag(new StringTag("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.", "Tightest Qualifiers"));
+                f.addTag(new ColorTag(255, 10, 0, true, "Tightest Qualifiers"));
             }
         }
     }

@@ -7,10 +7,16 @@
 package ca.mcgill.sable.graph.editparts;
 
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.draw2d.*;
 import org.eclipse.draw2d.graph.*;
 import java.util.*;
 import java.beans.*;
+
+import org.eclipse.draw2d.*;
+
+import ca.mcgill.sable.graph.model.Element;
 
 /**
  * @author jlhotak
@@ -19,8 +25,10 @@ import java.beans.*;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class EdgeEditPart extends AbstractConnectionEditPart 
+	implements PropertyChangeListener
 	{
-
+	Font f = new Font(null, "Arial", 8, SWT.NORMAL);
+	
 	/**
 	 * 
 	 */
@@ -42,6 +50,12 @@ public class EdgeEditPart extends AbstractConnectionEditPart
 		
 		conn.setTargetDecoration(new PolygonDecoration());
 		conn.setConnectionRouter(new BendpointConnectionRouter());
+		if (((ca.mcgill.sable.graph.model.Edge)getModel()).getLabel() != null){
+			Label connLabel = new Label(((ca.mcgill.sable.graph.model.Edge)getModel()).getLabel());
+			connLabel.setFont(f);
+			conn.add(connLabel);
+			conn.getLayoutManager().setConstraint(connLabel, new MidpointLocator(conn, 0));
+		}
 		return conn;
 	}
 	
@@ -99,5 +113,33 @@ public class EdgeEditPart extends AbstractConnectionEditPart
 		return (Edge)getModel();
 	}
 	
-
+	public void propertyChange(PropertyChangeEvent event){
+		System.out.println(event.getPropertyName());
+		if (event.getPropertyName().equals(Element.EDGE_LABEL)){
+			refreshVisuals();
+			System.out.println("new value: "+event.getNewValue());
+		}
+		
+	}
+	public void refreshVisuals(){
+		System.out.println("refresh edge");
+		if (((ca.mcgill.sable.graph.model.Edge)getModel()).getLabel() != null){
+			System.out.println("label: "+((ca.mcgill.sable.graph.model.Edge)getModel()).getLabel());
+			Label connLabel = new Label(((ca.mcgill.sable.graph.model.Edge)getModel()).getLabel());
+			connLabel.setFont(f);
+			((PolylineConnection)getFigure()).add(connLabel);
+			((PolylineConnection)getFigure()).getLayoutManager().setConstraint(connLabel, new MidpointLocator((PolylineConnection)getFigure(), 0));
+		}
+		getFigure().revalidate();
+	}
+	
+	public void activate(){
+		super.activate();
+		((ca.mcgill.sable.graph.model.Edge)getModel()).addPropertyChangeListener(this);
+	}
+	
+	public void deactivate(){
+		super.deactivate();
+		((ca.mcgill.sable.graph.model.Edge)getModel()).removePropertyChangeListener(this);	
+	}
 }

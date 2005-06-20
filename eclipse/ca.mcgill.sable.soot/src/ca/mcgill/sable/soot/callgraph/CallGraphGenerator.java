@@ -78,6 +78,7 @@ public class CallGraphGenerator {
 			//CGMenuProvider provider = new CGMenuProvider(((GraphEditor)part).getGraphEditorGraphicalViewer(), ((GraphEditor)part).getGraphEditorActionRegistry());
 			addActions((GraphEditor)part);	
 			((GraphEditor)part).setMenuProvider(new CGMenuProvider(((GraphEditor)part).getGraphEditorGraphicalViewer(), ((GraphEditor)part).getGraphEditorActionRegistry(), part));
+			
 			buildModel();
 		}
 		catch (PartInitException e3){
@@ -138,19 +139,29 @@ public class CallGraphGenerator {
 	private void makeCons(CallGraphInfo info, CallGraphNode center){
 		Iterator it1 = info.getInputs().iterator();
 		while (it1.hasNext()){
-			SootMethod sm = ((MethInfo)it1.next()).method();
+			MethInfo mInfo = (MethInfo)it1.next();
+			SootMethod sm = mInfo.method();
 			CallGraphNode inNode = getNodeForMethod(sm);
 			inNode.setGenerator(this);
-			Edge inEdge = new Edge(inNode, center);
+			//if (!inNode.equals(center)){
+				Edge inEdge = new Edge(inNode, center);
+				inEdge.setLabel(mInfo.edgeKind().name());
+				System.out.println("edge kind: "+mInfo.edgeKind().name());
+			//}
 		}
 		
 		Iterator it2 = info.getOutputs().iterator();
 		while (it2.hasNext()){
-			SootMethod sm = ((MethInfo)it2.next()).method();
+			MethInfo mInfo = (MethInfo)it2.next();
+			SootMethod sm = mInfo.method();
 			//System.out.println("making target connection for: "+sm);
 			CallGraphNode outNode = getNodeForMethod(sm);
 			outNode.setGenerator(this);
-			Edge inEdge = new Edge(center, outNode);
+			//if (!center.equals(outNode)){
+				Edge inEdge = new Edge(center, outNode);
+				inEdge.setLabel(mInfo.edgeKind().name());
+				System.out.println("edge kind: "+mInfo.edgeKind().name());
+			//}
 		}	
 	}
 	

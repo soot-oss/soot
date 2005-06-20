@@ -124,11 +124,27 @@
             id="ca.mcgill.sable.soot.cg.actions">
          <action
                label="Done"
+               tooltip="Done"
                class="ca.mcgill.sable.soot.callgraph.CGDoneAction"
                toolbarPath="Normal/Call Graph/Done"
-               icon="icons/done.gif"
+               icon="icons/stop_icon.gif"
                id="ca.mcgill.sable.soot.cg.doneaction">
          </action>
+         <action
+               label="Collapse All"
+               tooltip="Collapse All"
+               class="ca.mcgill.sable.soot.callgraph.CollapseAllAction"
+               toolbarPath="Normal/Call Graph/Collapse All"
+               icon="icons/collapse_all.gif"
+               id="ca.mcgill.sable.soot.cg.collapseallaction">
+         </action>
+         <!--<action
+               label="Expand All"
+               class="ca.mcgill.sable.soot.callgraph.ExpandAllAction"
+               toolbarPath="Normal/Call Graph/Expand All"
+               icon="icons/expandAll.gif"
+               id="ca.mcgill.sable.soot.cg.expandallaction">
+         </action>-->
       </editorContribution>
    </extension>
    

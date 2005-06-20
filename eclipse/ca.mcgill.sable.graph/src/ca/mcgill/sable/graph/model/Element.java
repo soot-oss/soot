@@ -24,7 +24,7 @@ public class Element implements IPropertySource {
 	public static final String OUTPUTS = "outputs";
 	public static final String DATA = "data";
 	public static final String COMPLEX_CHILD_ADDED = "complex child added";
-	
+	public static final String EDGE_LABEL = "edge label";
 	/**
 	 * 
 	 */

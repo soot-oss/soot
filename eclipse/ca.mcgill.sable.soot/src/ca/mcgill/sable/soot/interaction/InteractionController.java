@@ -320,9 +320,10 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	}
 	
 	private void handleCallGraphPartEvent(Object info){
+		System.out.println("handling call graph part event");
 		final CallGraphGenerator cgg = getGenerator();
 		final Object cgInfo = info;
-		getDisplay().syncExec(new Runnable(){
+		getDisplay().asyncExec(new Runnable(){
 			public void run(){
 				System.out.println("received next meth");
 				cgg.addToGraph(cgInfo);

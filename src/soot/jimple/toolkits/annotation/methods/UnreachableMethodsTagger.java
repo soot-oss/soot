@@ -55,8 +55,8 @@ public class UnreachableMethodsTagger extends SceneTransformer
         Iterator unusedIt = methodList.iterator();
         while (unusedIt.hasNext()) {
             SootMethod unusedMethod = (SootMethod)unusedIt.next();
-            unusedMethod.addTag(new StringTag("Method "+unusedMethod.getName()+" is not reachable!"));
-            unusedMethod.addTag(new ColorTag(255,0,0,true));   
+            unusedMethod.addTag(new StringTag("Method "+unusedMethod.getName()+" is not reachable!", "Unreachable Methods"));
+            unusedMethod.addTag(new ColorTag(255,0,0,true, "Unreachable Methods"));   
             //System.out.println("tagged method: "+unusedMethod);
 
         }

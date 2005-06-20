@@ -16,7 +16,21 @@ public class Edge extends Element {
 
 	private SimpleNode src;
 	private SimpleNode tgt;
+	private String label;
 	
+	/**
+	 * @return Returns the label.
+	 */
+	public String getLabel() {
+		return label;
+	}
+	/**
+	 * @param label The label to set.
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+		fireStructureChange(EDGE_LABEL, label);
+	}
 	/**
 	 * 
 	 */
