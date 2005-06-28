@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Ondrej Lhotak
+ * Copyright (C) 2004, 2005 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,10 +29,10 @@ public class PaddleHook extends SceneTransformer
     public PaddleHook( Singletons.Global g ) {}
     public static PaddleHook v() { return G.v().soot_jimple_paddle_PaddleHook(); }
 
-    private SceneTransformer paddleTransformer;
-    public SceneTransformer paddleTransformer() {
+    private IPaddleTransformer paddleTransformer;
+    public IPaddleTransformer paddleTransformer() {
         if(paddleTransformer == null) {
-            paddleTransformer = (SceneTransformer)
+            paddleTransformer = (IPaddleTransformer)
                 instantiate("soot.jimple.paddle.PaddleTransformer");
         }
         return paddleTransformer;
@@ -63,6 +63,12 @@ public class PaddleHook extends SceneTransformer
             paddleG = instantiate("soot.PaddleG");
         }
         return paddleG;
+    }
+    /** This is called when Soot finishes executing all interprocedural phases.
+     * Paddle uses it to stop profiling if profiling is enabled. */
+    public void finishPhases()
+    {
+        paddleTransformer().finishPhases();
     }
 }
 

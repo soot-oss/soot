@@ -1577,7 +1577,7 @@ public class Options extends OptionsBase {
                 +padVal( "ofcg-context", "OFCG-Context callgraph" )
                 
                 +padOpt( "bdd (false)", "Use BDD version of Paddle" )
-                +padOpt( "order (17)", "" )
+                +padOpt( "order (32)", "" )
                 +padOpt( "dynamic-order", "" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
                 +padOpt( "q", "Select queue implementation" )
@@ -2845,7 +2845,7 @@ public class Options extends OptionsBase {
               +"verbose:false "
               +"conf:ofcg "
               +"bdd:false "
-              +"order:17 "
+              +"order:32 "
               +"profile:false "
               +"q:trad "
               +"backend:buddy "

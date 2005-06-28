@@ -2185,7 +2185,7 @@ to be used in Paddle.
                                 <intopt>
                                         <name>Variable ordering</name>
                                         <alias>order</alias>
-                                        <default>17</default>
+                                        <default>32</default>
                                         <short_desc/>
                                         <long_desc>
                                         Selects one of the BDD variable orderings hard-coded in Paddle.

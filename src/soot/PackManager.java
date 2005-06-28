@@ -359,6 +359,7 @@ public class PackManager {
             getPack("wjop").apply();
             getPack("wjap").apply();
         }
+        PaddleHook.v().finishPhases();
     }
 
     /* preprocess classes for DAVA */
