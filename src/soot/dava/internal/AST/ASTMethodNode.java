@@ -1,5 +1,7 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
+
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,11 +23,104 @@ package soot.dava.internal.AST;
 
 import soot.*;
 import java.util.*;
+import soot.dava.*;
+import soot.util.*;
+import soot.jimple.*;
+import soot.dava.internal.javaRep.*;
+import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTMethodNode extends ASTNode
 {
     private List body;
+    private DavaBody davaBody;
+
+    private ASTStatementSequenceNode declarations;
+
+
+    /*
+      typeToLocals stores the type of the local and a list of all locals with that type
+    */
+    private Map typeToLocals;
+
+    public ASTStatementSequenceNode getDeclarations(){
+	return declarations;
+    }
+
+    public void storeLocals(Body OrigBody){
+	if ((OrigBody instanceof DavaBody) == false)
+            throw new RuntimeException("Only DavaBodies should invoke this method");
+
+        davaBody = (DavaBody) OrigBody;
+	typeToLocals =
+	    new DeterministicHashMap(OrigBody.getLocalCount() * 2 + 1, 0.7f);
+
+	HashSet params = new HashSet();
+	params.addAll(davaBody.get_ParamMap().values());
+	params.addAll(davaBody.get_CaughtRefs());
+	HashSet thisLocals = davaBody.get_ThisLocals();
+	
+
+	//populating the typeToLocals Map
+	Iterator localIt = OrigBody.getLocals().iterator();
+	while (localIt.hasNext()) {
+	    Local local = (Local) localIt.next();
+
+	    if (params.contains(local) || thisLocals.contains(local))
+		continue;
+
+	    List localList;
+
+	    String typeName;
+	    Type t = local.getType();
+
+	    typeName = t.toString();
+
+	    if (typeToLocals.containsKey(t))
+		localList = (List) typeToLocals.get(t);
+	    else {
+		localList = new ArrayList();
+		typeToLocals.put(t, localList);
+	    }
+	    
+	    localList.add(local);
+	}
+
+
+	//create a StatementSequenceNode with all the declarations
+	
+	List statementSequence = new ArrayList();
+	
+	Iterator typeIt = typeToLocals.keySet().iterator();
+
+	while (typeIt.hasNext()) {
+	    Type typeObject = (Type) typeIt.next();
+	    String type = typeObject.toString();
+
+	    List localList = (List) typeToLocals.get(typeObject);
+	    Object[] locals = localList.toArray();
+
+	    DVariableDeclarationStmt varStmt = null;
+	    varStmt = new DVariableDeclarationStmt(typeObject);
+	    
+	    for (int k = 0; k < locals.length; k++) {
+		varStmt.addLocal((Local)locals[k]);
+	    }
+	    AugmentedStmt as = new AugmentedStmt(varStmt);
+	    statementSequence.add(as);
+	}
+
+	declarations = new ASTStatementSequenceNode(statementSequence);
+
+	body.add(0,declarations);
+	subBodies = new ArrayList();
+	subBodies.add( body);
+    }
+
+
+
+
 
     public ASTMethodNode( List body)
     {
@@ -34,6 +129,17 @@ public class ASTMethodNode extends ASTNode
 
 	subBodies.add( body);
     }
+
+    /*
+      Nomair A Naeem 21-FEB-2005
+      Used by UselessLabeledBlockRemove to update a body
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
+    }
+
 
     public Object clone()
     {
@@ -45,12 +151,78 @@ public class ASTMethodNode extends ASTNode
 	perform_AnalysisOnSubBodies( a);
     }
 
+
     public void toString( UnitPrinter up ) {
+	if(!(up instanceof DavaUnitPrinter))
+            throw new RuntimeException("Only DavaUnitPrinter should be used to print DavaBody");	    
+	
+	DavaUnitPrinter dup = (DavaUnitPrinter)up;
+
+	/*
+	  Print out constructor first
+	*/
+	InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
+	if (constructorExpr != null) {
+
+	    if (davaBody.getMethod().getDeclaringClass().getName()
+		.equals(constructorExpr.getMethodRef().declaringClass().toString()))
+		dup.printString("        this(");
+	    else
+		dup.printString("        super(");
+
+	    Iterator ait = constructorExpr.getArgs().iterator();
+	    while (ait.hasNext()) {
+		dup.printString(ait.next().toString());
+		
+		if (ait.hasNext())
+		    dup.printString(", ");
+	    }
+	    
+	    dup.printString(");\n\n");
+	}
+	
+	// print out the remaining body
         body_toString( up, body );
     }
 
-    public String toString()
-    {
-	return body_toString(body);
+
+    public String toString(){
+	StringBuffer b = new StringBuffer();
+	/*
+	  Print out constructor first
+	*/
+	InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
+	if (constructorExpr != null) {
+
+	    if (davaBody.getMethod().getDeclaringClass().getName()
+		.equals(constructorExpr.getMethodRef().declaringClass().toString()))
+		b.append("        this(");
+	    else
+		b.append("        super(");
+
+	    Iterator ait = constructorExpr.getArgs().iterator();
+	    while (ait.hasNext()) {
+		b.append(ait.next().toString());
+		
+		if (ait.hasNext())
+		    b.append(", ");
+	    }
+	    
+	    b.append(");\n\n");
+	}
+	
+	
+	// print out the remaining body
+	b.append(body_toString(body));
+	return b.toString();
+    }
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTMethodNode(this);
     }
 }

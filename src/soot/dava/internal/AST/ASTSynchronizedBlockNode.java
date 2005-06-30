@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import soot.jimple.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTSynchronizedBlockNode extends ASTLabeledNode
 {
@@ -39,6 +41,16 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
 	subBodies.add( body);
     }
 
+    /*
+      Nomair A Naeem 21-FEB-2005
+      Used by UselessLabeledBlockRemove to update a body
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
+    }
+
     public int size()
     {
 	return body.size();
@@ -46,6 +58,11 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
     
     public Local getLocal() {
         return (Local) localBox.getValue();
+    }
+
+
+    public void setLocal(Local local){
+	this.localBox = Jimple.v().newLocalBox( local );
     }
 
     public Object clone()
@@ -57,10 +74,10 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
     {
 	label_toString(up);
 
-        up.literal( "synchronized" );
-        up.literal( " " );
-        up.literal( "(" );
-
+	/*        up.literal( "synchronized" );
+		  up.literal( " " );
+		  up.literal( "(" );
+	*/
 	up.literal( "synchronized (");
 	localBox.toString(up);
 	up.literal( ")");
@@ -97,5 +114,17 @@ public class ASTSynchronizedBlockNode extends ASTLabeledNode
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTSynchronizedBlockNode(this);
     }
 }

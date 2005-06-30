@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTIfNode extends ASTControlFlowNode
 {
@@ -37,10 +39,57 @@ public class ASTIfNode extends ASTControlFlowNode
 	subBodies.add( body);
     }
 
+
+    /*
+      Nomair A. Naeem 17-FEB-05
+      Needed because of change of grammar of condition being stored as a ASTCondition rather 
+      than the ConditionExpr which was the case before
+    */
+    public ASTIfNode( SETNodeLabel label, ASTCondition condition, List body)
+    {
+	super( label, condition);
+	this.body = body;
+
+	subBodies.add( body);
+    }
+
+
+    /*
+      Nomair A. Naeem 21-FEB-05
+      Used by OrAggregatorTwo
+    */
+    public List getIfBody(){
+	return body;
+    }
+
     public Object clone()
     {
 	return new ASTIfNode( get_Label(), get_Condition(), body);
     }
+
+    /*
+      Nomair A. Naeem 19-FEB-2005
+      Added to support aggregation of conditions
+    */
+    public void replace(SETNodeLabel label,ASTCondition condition, List body){
+	this.body=body;
+	subBodies= new ArrayList();
+	subBodies.add(body);
+	set_Condition(condition);
+	set_Label(label);
+    }
+
+
+    /*
+      Nomair A Naeem 20-FEB-2005
+      Added for UselessLabeledBlockRemover
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
+    }
+
 
     public void toString(UnitPrinter up) 
     {
@@ -49,7 +98,7 @@ public class ASTIfNode extends ASTControlFlowNode
         up.literal( "if" );
         up.literal( " " );
         up.literal( "(" );
-        conditionBox.toString( up );
+        condition.toString( up );
 	up.literal( ")");
         up.newline();
 	
@@ -83,5 +132,16 @@ public class ASTIfNode extends ASTControlFlowNode
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTIfNode(this);
     }
 }

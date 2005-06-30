@@ -16,6 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+/*
+   Nomair A. Naeem 08-FEB-2005
+   This analysis class has become obselete.
+   Use soot.dava.toolkits.base.AST.analysis which provides a Visitor Design
+   Pattern
+*/
 
 package soot.dava.toolkits.base.AST;
 

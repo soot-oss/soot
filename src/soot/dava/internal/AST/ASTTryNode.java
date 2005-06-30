@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTTryNode extends ASTLabeledNode
 {
@@ -38,6 +40,10 @@ public class ASTTryNode extends ASTLabeledNode
 	public container( Object o)
 	{
 	    this.o = o;
+	}
+
+	public void replaceBody(Object newBody){
+	    this.o=newBody;
 	}
     }
 
@@ -71,6 +77,29 @@ public class ASTTryNode extends ASTLabeledNode
 	cit = this.catchList.iterator();
 	while (cit.hasNext())
 	    subBodies.add( cit.next());
+    }
+
+
+    /*
+      Nomair A Naeem 21-FEB-2005
+      used to support UselessLabeledBlockRemover
+    */
+    public void replaceTryBody(List tryBody){
+	this.tryBody = tryBody;
+	tryBodyContainer = new container( tryBody);
+	
+	List oldSubBodies=subBodies;
+	subBodies=new ArrayList();
+
+	subBodies.add( tryBodyContainer);
+
+	Iterator oldIt = oldSubBodies.iterator();
+	//discard the first since that was the old tryBodyContainer
+	oldIt.next();
+
+	while (oldIt.hasNext())
+	    subBodies.add( oldIt.next());
+	
     }
 
     protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
@@ -122,6 +151,15 @@ public class ASTTryNode extends ASTLabeledNode
 	return exceptionMap;
     }
 
+
+    /*
+      Nomair A. Naeem 08-FEB-2005
+      Needed for call from DepthFirstAdapter
+    */
+    public Map get_ParamMap(){
+	return paramMap;
+    }
+
     public Set get_ExceptionSet()
     {
 	HashSet s = new HashSet();
@@ -160,6 +198,8 @@ public class ASTTryNode extends ASTLabeledNode
         up.literal( "}" );
         up.newline();
 
+
+
 	Iterator cit = catchList.iterator();
 	while (cit.hasNext()) {
 	    container catchBody = (container) cit.next();
@@ -169,7 +209,7 @@ public class ASTTryNode extends ASTLabeledNode
             up.literal( "(" );
             up.type( ((SootClass) exceptionMap.get(catchBody)).getType() );
 	    up.literal( " ");
-            up.local( (Local) paramMap.get(catchBody) );
+	    up.local( (Local) paramMap.get(catchBody) );
 	    up.literal( ")");
             up.newline();
 
@@ -223,5 +263,15 @@ public class ASTTryNode extends ASTLabeledNode
 	}
 
 	return b.toString();
+    }
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTTryNode(this);
     }
 }

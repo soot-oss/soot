@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,18 +24,28 @@ import soot.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTLabeledBlockNode extends ASTLabeledNode
 {
     private List body;
     private SETNodeLabel label;
-
-    public ASTLabeledBlockNode( SETNodeLabel label, List body)
-    {
+    
+    public ASTLabeledBlockNode( SETNodeLabel label, List body){
 	super( label);
 	this.body = body;
-
+	
 	subBodies.add( body);
+    }
+
+    /*
+      Nomair A Naeem 20-FEB-2005
+      Added for OrAggregatorOne/UselessLabeledBlockRemover
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
     }
 
     public int size()
@@ -58,7 +69,12 @@ public class ASTLabeledBlockNode extends ASTLabeledNode
         body_toString( up, body );
         up.decIndent();
 
-        up.literal( "}" );
+        up.literal( "} //end " );
+        label_toString( up );
+
+
+
+
         up.newline();
     }
 
@@ -73,9 +89,23 @@ public class ASTLabeledBlockNode extends ASTLabeledNode
  
 	b.append( body_toString(body));
 
-	b.append( "}");
+	b.append( "} //");
+	b.append( label_toString());
+
+
+
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTLabeledBlockNode(this);
     }
 }

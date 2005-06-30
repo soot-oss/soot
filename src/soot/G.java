@@ -73,7 +73,9 @@ public class G extends Singletons
     public final Map MethodContext_map = new HashMap();
 
     public ShimpleFactory shimpleFactory = new DefaultShimpleFactory();
+
     
+    public boolean ASTTransformations_modified;
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
     // flag isJ2ME true. Type system works around Clonable, Serializeable.

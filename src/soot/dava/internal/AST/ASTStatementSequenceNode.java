@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTStatementSequenceNode extends ASTNode
 {
@@ -81,5 +83,29 @@ public class ASTStatementSequenceNode extends ASTNode
 	}
 
 	return b.toString();
+    }
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public List getStatements(){
+	return statementSequence;
+    }
+
+    public void apply(Analysis a){
+	a.caseASTStatementSequenceNode(this);
+    }
+
+
+
+
+    /*
+      Nomair A. Naeem added 3-MAY-05
+    */
+    public void setStatements(List statementSequence){
+	this.statementSequence=statementSequence;
     }
 }

@@ -81,6 +81,8 @@ public class ExceptionFinder implements FactFinder
 	    }
 	}
 
+
+
 	// Add in gotos that may escape the try body (created by the indirection introduced in DavaBody).
 	{
 	    Iterator enlit = enlist.iterator();
@@ -112,6 +114,14 @@ public class ExceptionFinder implements FactFinder
 		}
 	    }
 	}
+
+
+
+
+
+
+
+
 
 	// Split up the try blocks until they cause no nesting problems.
     splitLoop:
@@ -278,6 +288,13 @@ public class ExceptionFinder implements FactFinder
 
 	body.get_ExceptionFacts().clear();
 	body.get_ExceptionFacts().addAll( enlist);
+
+
+
+
+
+
+
     }
 
     public IterableSet get_CatchBody( AugmentedStmt handlerAugmentedStmt) 

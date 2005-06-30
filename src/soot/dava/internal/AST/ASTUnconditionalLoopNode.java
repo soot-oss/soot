@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@ package soot.dava.internal.AST;
 import java.util.*;
 import soot.*;
 import soot.dava.internal.SET.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTUnconditionalLoopNode extends ASTLabeledNode
 {
@@ -33,6 +35,16 @@ public class ASTUnconditionalLoopNode extends ASTLabeledNode
 	this.body = body;
 
 	subBodies.add( body);
+    }
+
+    /*
+      Nomair A Naeem 20-FEB-2005
+      Added for UselessLabeledBlockRemover
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
     }
 
     public Object clone()
@@ -78,5 +90,15 @@ public class ASTUnconditionalLoopNode extends ASTLabeledNode
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTUnconditionalLoopNode(this);
     }
 }

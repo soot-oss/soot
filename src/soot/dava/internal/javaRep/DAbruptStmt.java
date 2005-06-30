@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -81,5 +82,22 @@ public class DAbruptStmt extends AbstractStmt
     public boolean is_Continue()
     {
 	return command.equals( "continue");
+    }
+
+
+    public boolean is_Break(){
+	return command.equals("break");
+    }
+
+    /*
+      Nomair A. Naeem 20-FEB-2005
+      getter and setter methods for the label are needed for the aggregators of the AST conditionals
+    */
+    public void setLabel(SETNodeLabel label){
+	this.label=label;
+    }
+
+    public SETNodeLabel getLabel(){
+	return label;
     }
 }

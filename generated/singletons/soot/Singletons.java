@@ -1072,4 +1072,16 @@ public class Singletons {
         return instance_soot_javaToJimple_toolkits_GotoEliminator;
     }
 
+    private soot.dava.toolkits.base.AST.transformations.UselessLabelFinder instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder;
+    public soot.dava.toolkits.base.AST.transformations.UselessLabelFinder soot_dava_toolkits_base_AST_transformations_UselessLabelFinder() {
+        if( instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null ) instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder = new soot.dava.toolkits.base.AST.transformations.UselessLabelFinder( g );
+        return instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder;
+    }
+
+    private soot.dava.DavaStaticBlockCleaner instance_soot_dava_DavaStaticBlockCleaner;
+    public soot.dava.DavaStaticBlockCleaner soot_dava_DavaStaticBlockCleaner() {
+        if( instance_soot_dava_DavaStaticBlockCleaner == null ) instance_soot_dava_DavaStaticBlockCleaner = new soot.dava.DavaStaticBlockCleaner( g );
+        return instance_soot_dava_DavaStaticBlockCleaner;
+    }
+
 }

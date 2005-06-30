@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,6 +29,18 @@ import soot.jimple.*;
 
 public class Dava
 {
+    public static BufferedWriter w;
+    // declaring variable to get results delete later
+    static{
+	try{
+	    w = new BufferedWriter(new FileWriter("results.621"));
+	}catch(Exception e){
+	    System.out.println("Error while creating filewriter to write results");
+	}
+    }
+
+
+    //end of change
     public Dava( Singletons.Global g ) {}
     public static Dava v() { return G.v().soot_dava_Dava(); }
     private static final String LOG_TO_FILE = null;

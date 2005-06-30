@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,6 +18,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
 package soot.dava;
 
 import soot.*;
@@ -33,7 +35,10 @@ import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.dava.toolkits.base.finders.*;
-
+import soot.dava.toolkits.base.renamer.*;
+import soot.dava.toolkits.base.AST.analysis.*;
+import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+import soot.dava.toolkits.base.AST.transformations.*;
 
 public class DavaBody extends Body
 {
@@ -180,6 +185,8 @@ public class DavaBody extends Body
 	MonitorConverter.v().convert( this);
 	ThrowNullConverter.v().convert( this);
 
+
+
 	ASTNode AST = SET.emit_AST();
 	
 	// get rid of the grimp representation, put in the new AST
@@ -197,8 +204,153 @@ public class DavaBody extends Body
 
 	} while (G.v().ASTAnalysis_modified);
 
+
+
+
+
+	/*
+	  Nomair A Naeem 10-MARCH-2005
+
+	  IT IS ESSENTIAL TO CALL THIS METHOD
+	  This method initializes the locals of the current method being processed
+	  Failure to invoke this method here will result in no locals being printed out
+	*/
+	if(AST instanceof ASTMethodNode){
+	    ((ASTMethodNode)AST).storeLocals(this);
+	}
+
+	/*
+	  Nomair A. Naeem
+	  Transformations on the AST
+	*/
+	//The BooleanConditionSimplification changes flag==false to just flag
+	AST.apply(new BooleanConditionSimplification());
+	AST.apply(new VoidReturnRemover(this));
+	AST.apply(new DecrementIncrementStmtCreation());
+
+
+	boolean flag=true;
+	int times=0;
+
+	if(flag){
+	    // perform transformations on the AST	
+	    do {
+		//System.out.println("ITERATION");
+		G.v().ASTTransformations_modified = false;
+		times++;
+
+		AST.apply(new AndAggregator());
+		/*
+		  The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null
+		  Always apply a UselessLabeledBlockRemover in the end to remove such labeled blocks
+		*/
+		AST.apply(new OrAggregatorOne());
+		
+		/*
+		  Note OrAggregatorTwo should always be followed by an emptyElseRemover 
+		  since orAggregatorTwo can create empty else bodies and the ASTIfElseNode 
+		  can be replaced by ASTIfNodes
+		  OrAggregator has two patterns see the class for them
+		*/
+
+		AST.apply(new OrAggregatorTwo());
+		AST.apply(new OrAggregatorFour());
+
+
+		/*
+		  ASTCleaner currently does the following tasks:
+		  1, Remove empty Labeled Blocks UselessLabeledBlockRemover
+		  2, convert ASTIfElseNodes with empty else bodies to ASTIfNodes
+		  3, Apply OrAggregatorThree
+		*/
+
+
+		AST.apply(new ASTCleaner());
+
+
+		/*
+		  PushLabeledBlockIn should not be called unless we are sure
+		  that all labeledblocks have non null labels.
+		  A good way of ensuring this is to run the ASTCleaner directly
+		  before calling this
+		*/
+		AST.apply(new PushLabeledBlockIn());
+		
+		AST.apply(new LoopStrengthener());
+
+
+		/*
+		  Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation.
+		  Pattern two was implemented to give loopStrengthening a better chance
+		  SEE IfElseBreaker
+		*/
+		AST.apply(new ASTCleanerTwo());
+
+
+		AST.apply(new ForLoopCreator());
+
+
+	    } while (G.v().ASTTransformations_modified);
+	    //System.out.println("The AST trasnformations has run"+times);
+	}
+
+
+
+
+
+	/*
+	  Structural flow analyses
+	*/
+
+	  CopyPropagation prop = new CopyPropagation(AST);
+	  AST.apply(prop);
+
+
+	
+
+
+	/*
+	  In the end check 
+	    1, if there are labels which can be safely removed
+	    2, int temp; temp=0 to be converted to int temp=0;
+	*/
+	//AST.apply(new ExtraLabelNamesRemover());
+	
+
+
+
+
+	/*
+	  Renamer
+	*/
+	//AST.apply(new infoGatheringAnalysis(this));
+	
+
+
+
+	/*
+	  End of Code added by Nomair
+	*/
 	Dava.v().log( "end method " + body.getMethod().toString());
     }
+
+
+
+
+
+
+public void write(String temp){
+	try{
+	    soot.dava.Dava.w.write(temp);
+	    soot.dava.Dava.w.flush();
+	}catch(Exception e){
+	    throw new RuntimeException("exception while writing");
+	}
+    }
+
+
+
+
 
 
     /*

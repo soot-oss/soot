@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTIfElseNode extends ASTControlFlowNode
 {
@@ -39,6 +41,79 @@ public class ASTIfElseNode extends ASTControlFlowNode
 	subBodies.add( elseBody);
     }
 
+    /*
+      Nomair A. Naeem 17-FEB-05
+      Needed because of change of grammar of condition being stored as a ASTCondition rather 
+      than the ConditionExpr which was the case before
+    */
+    public ASTIfElseNode( SETNodeLabel label, ASTCondition condition, List ifBody, List elseBody)
+    {
+	super( label, condition);
+	this.ifBody = ifBody;
+	this.elseBody = elseBody;
+
+	subBodies.add( ifBody);
+	subBodies.add( elseBody);
+    }
+
+    /*
+      Nomair A. Naeem 19-FEB-2005
+      Added to support aggregation of conditions
+    */
+    public void replace(SETNodeLabel newLabel,ASTCondition newCond,List newBody,List bodyTwo){
+	this.ifBody=newBody;
+	this.elseBody=bodyTwo;
+	subBodies= new ArrayList();
+	subBodies.add(newBody);
+	subBodies.add(bodyTwo);
+	set_Condition(newCond);
+	set_Label(newLabel);
+	
+    }
+
+
+    /*
+      Nomair A. Naeem 21-FEB-2005
+      Added to support UselessLabelBlockRemover
+    */
+    public void replaceBody(List ifBody,List elseBody){
+	this.ifBody=ifBody;
+	this.elseBody=elseBody;
+
+	subBodies= new ArrayList();
+	subBodies.add(ifBody);
+	subBodies.add(elseBody);
+    }
+
+
+    /*
+      Nomair A. Naeem 21-FEB-2005
+      Added to support OrAggregatorTwo
+    */
+    public void replaceElseBody(List elseBody){
+	this.elseBody=elseBody;
+
+	subBodies= new ArrayList();
+	subBodies.add(ifBody);
+	subBodies.add(elseBody);
+    }
+
+
+    /*
+      Nomair A. Naeem 21-FEB-05
+      Used by OrAggregatorTwo
+    */
+    public List getIfBody(){
+	return ifBody;
+    }
+
+    public List getElseBody(){
+	return elseBody;
+    }
+
+
+
+
     public Object clone()
     {
 	return new ASTIfElseNode( get_Label(), get_Condition(), ifBody, elseBody);
@@ -51,7 +126,7 @@ public class ASTIfElseNode extends ASTControlFlowNode
         up.literal( "if" );
         up.literal( " " );
         up.literal( "(" );
-        conditionBox.toString( up );
+        condition.toString( up );
         up.literal( ")" );
         up.newline();
 	
@@ -111,4 +186,14 @@ public class ASTIfElseNode extends ASTControlFlowNode
 
 	return b.toString();
     }
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTIfElseNode(this);
+    }
+
 }

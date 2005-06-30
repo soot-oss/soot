@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,6 +23,7 @@ package soot.dava.internal.AST;
 import soot.*;
 import java.util.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public abstract class ASTNode extends AbstractUnit
 {
@@ -69,6 +71,7 @@ public abstract class ASTNode extends AbstractUnit
 	return subBodies;
     }
 
+
     public abstract void perform_Analysis( ASTAnalysis a);
 
     protected void perform_AnalysisOnSubBodies( ASTAnalysis a)
@@ -99,4 +102,14 @@ public abstract class ASTNode extends AbstractUnit
     {
         return false;
     }
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	throw new RuntimeException("Analysis invoked apply method on ASTNode");
+    }
+    
 }

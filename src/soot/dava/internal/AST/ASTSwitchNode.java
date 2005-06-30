@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTSwitchNode extends ASTLabeledNode
 {
@@ -48,10 +50,47 @@ public class ASTSwitchNode extends ASTLabeledNode
 	}
     }
 
+    /*
+      Nomair A. Naeem 22-FEB-2005
+      Added for ASTCleaner
+    */
+    public List getIndexList(){
+	return indexList;
+    }
+
+    public Map getIndex2BodyList(){
+	return index2BodyList;
+    }
+
+    public void replaceIndex2BodyList(Map index2BodyList){
+	this.index2BodyList=index2BodyList;
+
+	subBodies = new ArrayList();
+	Iterator it = indexList.iterator();
+	while (it.hasNext()) {
+	    List body = (List) index2BodyList.get( it.next());
+	    
+	    if (body != null)
+		subBodies.add( body);
+	}
+    }
+
+
+
+
+
+
+
     public Value get_Key()
     {
 	return keyBox.getValue();
     }
+
+    public void set_Key(Value key){
+	this.keyBox = Jimple.v().newRValueBox( key );
+    }
+
+
 
     public Object clone()
     {
@@ -167,5 +206,16 @@ public class ASTSwitchNode extends ASTLabeledNode
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTSwitchNode(this);
     }
 }

@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,22 +27,57 @@ import soot.dava.toolkits.base.AST.*;
 
 public abstract class ASTControlFlowNode extends ASTLabeledNode
 {
-    protected ValueBox conditionBox;
+    //protected ValueBox conditionBox;
+    ASTCondition condition;
 
     public ASTControlFlowNode( SETNodeLabel label, ConditionExpr condition)
     {
 	super( label);
-        this.conditionBox = Jimple.v().newConditionExprBox(condition);
+        //this.conditionBox = Jimple.v().newConditionExprBox(condition);
+	this.condition = new ASTBinaryCondition(condition);
     }
 
-    public ConditionExpr get_Condition()
+    /*
+      Nomair A. Naeem 17-FEB-05
+      Needed because of change of grammar of condition being stored as a ASTCondition rather 
+      than the ConditionExpr which was the case before
+    */
+    public ASTControlFlowNode( SETNodeLabel label, ASTCondition condition)
     {
-	return (ConditionExpr) conditionBox.getValue();
+	super( label);
+	this.condition = condition;
+    }
+
+
+    public ASTCondition get_Condition()
+    {
+	return condition;
+    }
+
+
+    public void set_Condition(ASTCondition condition){
+	this.condition=condition;
     }
 
     public void perform_Analysis( ASTAnalysis a)
     {
-	ASTWalker.v().walk_value( a, get_Condition());
+	/*
+	  Nomair A Naeem 17-FEB-05 
+	  Changed because the ASTControlFlowNode does not have a ConditionBox anymore
+
+	  The if check is not an ideal way of implementation
+	  What should be done is to do a DepthFirst of the Complete
+	  Condition hierarcy and walk all values that are found
+	  
+	  Notice this condition will always return true UNLESS transformations aggregating
+	  the control flow have been performed.
+
+	  This method is deprecated do not use it. Use the DepthFirstAdapter class in dava.toolkits.base.AST.analysis.
+	*/
+	if(condition instanceof ASTBinaryCondition){ 
+	    ConditionExpr condExpr = ((ASTBinaryCondition)condition).getConditionExpr();
+	    ASTWalker.v().walk_value( a, condExpr);
+	}
 
 	if (a instanceof TryContentsFinder) {
 	    TryContentsFinder tcf = (TryContentsFinder) a;

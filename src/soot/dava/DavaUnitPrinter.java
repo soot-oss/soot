@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,8 +23,8 @@ import soot.*;
 import soot.jimple.*;
 
 /**
-* UnitPrinter implementation for Dava.
-*/
+ * UnitPrinter implementation for Dava.
+ */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
     public void methodRef( SootMethodRef m ) {
         handleIndent();
@@ -71,6 +72,32 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     public void unitRef( Unit u, boolean branchTarget ) {
         throw new RuntimeException( "Dava doesn't have unit references!" );
     }
+
+
+
+
+
+
+    public void addNot() {
+        output.append(" !");
+    }
+    public void addAggregatedOr() {
+        output.append(" || ");
+    }
+    public void addAggregatedAnd() {
+        output.append(" && " );
+    }
+    public void addLeftParen() {
+        output.append(" (" );
+    }
+    public void addRightParen() {
+        output.append(") " );
+    }
+
+    public void printString(String s){
+	output.append(s);
+    }
+
 }
 
 

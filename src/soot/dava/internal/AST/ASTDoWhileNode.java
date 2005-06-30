@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2004-2005 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,6 +25,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.toolkits.base.AST.*;
+import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTDoWhileNode extends ASTControlFlowNode
 {
@@ -35,6 +37,29 @@ public class ASTDoWhileNode extends ASTControlFlowNode
 	this.body = body;
 
 	subBodies.add( body);
+    }
+
+    /*
+      Nomair A. Naeem 17-FEB-05
+      Needed because of change of grammar of condition being stored as a ASTCondition rather 
+      than the ConditionExpr which was the case before
+    */
+    public ASTDoWhileNode( SETNodeLabel label, ASTCondition ce, List body)
+    {
+	super( label, ce);
+	this.body = body;
+
+	subBodies.add( body);
+    }
+
+    /*
+      Nomair A Naeem 20-FEB-2005
+      Added for UselessLabeledBlockRemover
+    */
+    public void replaceBody(List body){
+	this.body=body;
+	subBodies=new ArrayList();
+	subBodies.add(body);
     }
 
     public Object clone()
@@ -62,7 +87,7 @@ public class ASTDoWhileNode extends ASTControlFlowNode
         up.literal( "while" );
         up.literal( " " );
         up.literal( "(" );
-        conditionBox.toString(up);
+        condition.toString(up);
         up.literal( ")" );
         up.literal( ";" );
         up.newline();
@@ -91,5 +116,14 @@ public class ASTDoWhileNode extends ASTControlFlowNode
 	b.append( NEWLINE);
 
 	return b.toString();
+    }
+
+    /*
+      Nomair A. Naeem, 7-FEB-05
+      Part of Visitor Design Implementation for AST
+      See: soot.dava.toolkits.base.AST.analysis For details
+    */
+    public void apply(Analysis a){
+	a.caseASTDoWhileNode(this);
     }
 }
