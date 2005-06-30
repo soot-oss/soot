@@ -1611,6 +1611,7 @@ public class Options extends OptionsBase {
                 +padOpt( "merge-stringbuffer (true)", "Represent all StringBuffers as one object" )
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
+                +padOpt( "global-nodes-in-natives (false)", "Use global node to model variables in simulations of native methods" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
@@ -2330,6 +2331,7 @@ public class Options extends OptionsBase {
                 +"merge-stringbuffer "
                 +"string-constants "
                 +"simulate-natives "
+                +"global-nodes-in-natives "
                 +"simple-edges-bidirectional "
                 +"context-heap "
                 +"precise-newinstance "
@@ -2858,6 +2860,7 @@ public class Options extends OptionsBase {
               +"merge-stringbuffer:true "
               +"string-constants:false "
               +"simulate-natives:true "
+              +"global-nodes-in-natives:false "
               +"simple-edges-bidirectional:false "
               +"context-heap:false "
               +"precise-newinstance:true "

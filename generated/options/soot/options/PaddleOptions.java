@@ -200,6 +200,22 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
     }
     
+    /** Global Nodes in Simulated Natives --
+    
+     * Use global node to model variables in simulations of native 
+     * methods.
+    
+     * The simulations of native methods such as System.arraycopy() 
+     * use temporary local variable nodes. Setting this switch to true 
+     * causes them to use global variable nodes instead, reducing 
+     * precision. The switch exists only to make it possible to measure 
+     * this effect on precision; there is no other practical reason to 
+     * set it to true. 
+     */
+    public boolean global_nodes_in_natives() {
+        return soot.PhaseOptions.getBoolean( options, "global-nodes-in-natives" );
+    }
+    
     /** Simple Edges Bidirectional --
     
      * Equality-based analysis between variable nodes.

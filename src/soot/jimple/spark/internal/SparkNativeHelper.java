@@ -85,4 +85,9 @@ public class SparkNativeHelper extends NativeHelper {
 	return pag.makeGlobalVarNode( new Pair( "TempVar", new Integer( ++G.v().SparkNativeHelper_tempVar ) ),
 		RefType.v( "java.lang.Object" ) );
     }
+    protected ReferenceVariable tempLocalVariableImpl(SootMethod method) {
+        return pag.makeLocalVarNode( new Pair( "TempVar", new Integer( ++G.v().SparkNativeHelper_tempVar ) ),
+                                     RefType.v( "java.lang.Object" ) , method);
+    }
+    
 }

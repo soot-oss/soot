@@ -1310,6 +1310,12 @@ public class AntTask extends MatchingTask {
             addArg("simulate-natives:"+(arg?"true":"false"));
           }
       
+          public void setglobal_nodes_in_natives(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("global-nodes-in-natives:"+(arg?"true":"false"));
+          }
+      
           public void setsimple_edges_bidirectional(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");

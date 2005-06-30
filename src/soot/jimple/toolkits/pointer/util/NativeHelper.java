@@ -138,6 +138,9 @@ public abstract class NativeHelper {
     return G.v().NativeHelper_helper.tempVariableImpl();
   }
 
+  public static ReferenceVariable tempLocalVariable(SootMethod method) {
+  	return G.v().NativeHelper_helper.tempLocalVariableImpl(method);
+  }    
   /**
    * Sub classes should implement both.
    */
@@ -159,4 +162,6 @@ public abstract class NativeHelper {
     ReferenceVariable tempFieldImpl(String fieldsig);
   protected abstract
     ReferenceVariable tempVariableImpl();
+  protected abstract
+    ReferenceVariable tempLocalVariableImpl(SootMethod method);
 }

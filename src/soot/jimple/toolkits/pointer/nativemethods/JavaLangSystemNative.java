@@ -105,7 +105,7 @@ public class JavaLangSystemNative extends NativeMethodClass {
     ReferenceVariable dstElm = NativeHelper.arrayElementOf(params[2]);
     // never make a[] = b[], it violates the principle of jimple statement.
     // make a temporary variable.
-    ReferenceVariable tmpVar = NativeHelper.tempVariable();
+    ReferenceVariable tmpVar = NativeHelper.tempLocalVariable(method);
     NativeHelper.assign(tmpVar, srcElm);
     NativeHelper.assign(dstElm, tmpVar);
   }
