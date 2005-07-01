@@ -74,7 +74,7 @@ public class SiteInliner
         for it to be inlined.  That functionality is handled by the InlinerSafetyManager.
          
      */
-    public static void inlineSite(SootMethod inlinee, Stmt toInline, 
+    public static List inlineSite(SootMethod inlinee, Stmt toInline, 
                                     SootMethod container, Map options)
     {
 
@@ -88,7 +88,7 @@ public class SiteInliner
 
         if (!(inlinee.getDeclaringClass().isApplicationClass() ||
               inlinee.getDeclaringClass().isLibraryClass()))
-            return;
+            return null;
 
         Body inlineeB = (JimpleBody)inlinee.getActiveBody();
         Chain inlineeUnits = inlineeB.getUnits();
@@ -192,6 +192,7 @@ public class SiteInliner
                 Stmt currPrime = (Stmt)curr.clone();
                 if (currPrime == null)
                     throw new RuntimeException("getting null from clone!");
+                currPrime.addAllTagsOf(curr);
 
                 containerUnits.insertAfter(currPrime, cursor);
                 cursor = currPrime;
@@ -333,10 +334,17 @@ public class SiteInliner
             }
         }
 
+        List newStmts = new ArrayList();
+        for(Iterator i = containerUnits.iterator(containerUnits.getSuccOf(toInline), containerUnits.getPredOf(exitPoint)); i.hasNext();) {
+        	newStmts.add(i.next());
+        }
+        
         // Remove the original statement toInline.
         containerUnits.remove(toInline);
 
         // Resolve name collisions.
         LocalNameStandardizer.v().transform(containerB, "ji.lns");
+        
+        return newStmts;
     }
 }
