@@ -306,15 +306,17 @@ class Instance {
                                         int result = stackIndependent(unit, firstLoad, block, STORE_LOAD_ELIMINATION);                                 
                                         if(result == SUCCESS){        
                                   
-                                            // move the first load just after it's defining store.
+                                            // move the first load just after its defining store.
                                             block.remove(firstLoad);
                                             block.insertAfter(firstLoad, unit);                                
                                     
                                  
                                             int res = stackIndependent(unit, secondLoad, block, STORE_LOAD_LOAD_ELIMINATION);
                                             if(res == MAKE_DUP) {                                        
-                                                // replace store by dup, drop both loads                                                                        
-                                                replaceUnit(unit,  Baf.v().newDup1Inst(((LoadInst) secondLoad).getOpType()));
+                                                // replace store by dup, drop both loads
+                                                Dup1Inst dup = Baf.v().newDup1Inst(((LoadInst) secondLoad).getOpType());
+                                                dup.addAllTagsOf(unit);
+                                                replaceUnit(unit, dup);
                                                 unitIt.remove(); // remove store from store list
                                         
                                                 block.remove(firstLoad); 
@@ -486,7 +488,7 @@ class Instance {
      * @return MAKE_DUP when a store/load/load trio can be replaced by a dup unit.
      * @return MAKE_DUP_X1 when store/load/load trio can be replaced by a dup1_x1 unit
      * @return SPECIAL_SUCCESS when a store/load pair can AND must be immediately annihilated. 
-     * @retrun HAS_CHANGED when store load elimination is not possible in any form, but some unit reordering has occured
+     * @return HAS_CHANGED when store load elimination is not possible in any form, but some unit reordering has occured
      */
     
     private  int stackIndependent(Unit from, Unit to, Block block, int aContext) 
@@ -836,7 +838,7 @@ class Instance {
     
 
 
-    /* 
+    /** 
      *  Replace 1 or 2 units by a third unit in a block. Both units to 
      *  replace should be in the same block. The map 'mUnitToBlockMap'   
      *  is updated. The replacement unit is inserted in the position,
