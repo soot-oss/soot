@@ -66,13 +66,15 @@ no data. The generated class file will now have these attributes.
 
 First, we create our class attribute and add it to the {\tt SootClass}. In the 
 resultant class file, the {\tt attribute\_info} structure's {\tt 
-attribute\_name\_index} field will point to the Unicode string ``MyClassAttr'' 
-in the constant pool, and the info field will contain the bytes of the Unicode 
-string ``foo''.
+attribute\_name\_index} field will point to the Unicode string 
+``ca.\-mcgill\-.sable\-.My\-Class\-Attr'' in the constant pool, and the info 
+field will contain the bytes of the Unicode string ``foo''.
 
 \begin{verbatim}
         // create and add the class attribute, with data ``foo''
-           GenericAttribute classAttr = new GenericAttribute("MyClassAttr", "foo".getBytes());
+           GenericAttribute classAttr = new GenericAttribute(
+               "ca.mcgill.sable.MyClassAttr",
+               "foo".getBytes());
            sClass.addTag(classAttr);
 \end{verbatim}
 
@@ -80,7 +82,9 @@ We do basically the same thing for a method attribute:
 
 \begin{verbatim}
         // Create and add the method attribute with no data
-           GenericAttribute mAttr = new GenericAttribute("MyMethodAttr", "".getBytes());
+           GenericAttribute mAttr = new GenericAttribute(
+               "ca.mcgill.sable.MyMethodAttr",
+               "".getBytes());
            method.addTag(mAttr);
 \end{verbatim}
 
@@ -125,9 +129,9 @@ attached to such statements don't correspond directly to an attribute in the
 produced class file, but rather are converted later by Soot, we add {\tt Tag}s 
 not {\tt Attribute}s.
 
-Let us say we wish to add an attribute called ``My Tag'' to each bytecode, and 
-that the tag will have an integer value. First we define a new class 
-representing the tag:
+Let us say we wish to add an attribute called ``ca.mcgill.sable.MyTag'' to each
+bytecode, and that the tag will have an integer value. First we define a new
+class representing the tag:
 
 \begin{verbatim}
     private class MyTag implements Tag {
@@ -139,7 +143,7 @@ representing the tag:
         }
 
         public String getName() {
-            return "MyTag";
+            return "ca.mcgill.sable.MyTag";
         }
 
         // output the value as a 4-byte array
@@ -163,7 +167,8 @@ Next, we add it to several Jimple statements in our program:
 \begin{verbatim}
             // add "l0 = @parameter0"
                 tmpUnit = Jimple.v().newIdentityStmt(arg,
-                     Jimple.v().newParameterRef(ArrayType.v(RefType.v("java.lang.String"), 1), 0));
+                    Jimple.v().newParameterRef(
+                        ArrayType.v(RefType.v("java.lang.String"), 1), 0));
                 tmpUnit.addTag(new MyTag(1));
                 units.add(tmpUnit);
 \end{verbatim}
@@ -211,7 +216,7 @@ AggregatedName}, returns the name of the resultant attribute.
 class MyTagAggregator extends TagAggregator {
 
     public String aggregatedName() {
-        return "MyTag";
+        return "ca.mcgill.sable.MyTag";
     }
 
     public boolean wantTag(Tag t) {
@@ -246,11 +251,12 @@ class out to a file:
 
 \begin{verbatim}
         // write the class to a file
-        String fileName = SourceLocator.v().getFileNameFor(sClass, Options.output_format_class);
+        String fileName = SourceLocator.v()
+            .getFileNameFor(sClass, Options.output_format_class);
         OutputStream streamOut = new JasminOutputStream(
-                                    new FileOutputStream(fileName));
+            new FileOutputStream(fileName));
         PrintWriter writerOut = new PrintWriter(
-                                    new OutputStreamWriter(streamOut));
+            new OutputStreamWriter(streamOut));
         AbstractJasminClass jasminClass = new soot.baf.JasminClass(sClass);
         jasminClass.print(writerOut);
         writerOut.flush();
@@ -345,7 +351,9 @@ public class Main
            Scene.v().addClass(sClass);
            
         // create and add the class attribute
-           GenericAttribute classAttr = new GenericAttribute("MyClassAttr", "foo".getBytes());
+           GenericAttribute classAttr = new GenericAttribute(
+               "ca.mcgill.sable.MyClassAttr", 
+               "foo".getBytes());
            sClass.addTag(classAttr);
            
         // Create the method, public static void main(String[])
@@ -356,7 +364,9 @@ public class Main
            sClass.addMethod(method);
 
         // Create and add the method attribute
-           GenericAttribute mAttr = new GenericAttribute("MyMethodAttr", "".getBytes());
+           GenericAttribute mAttr = new GenericAttribute(
+               "ca.mcgill.sable.MyMethodAttr", 
+               "".getBytes());
            method.addTag(mAttr);
            
         // Create the method body
@@ -389,8 +399,12 @@ public class Main
             
             // insert "tmpRef.println("Hello world!")"
             {
-                SootMethod toCall = Scene.v().getMethod("<java.io.PrintStream: void println(java.lang.String)>");
-                tmpUnit = Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), StringConstant.v("Hello world!")));
+                SootMethod toCall = Scene.v().getMethod(
+                    "<java.io.PrintStream: void println(java.lang.String)>");
+                tmpUnit = Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(
+                    tmpRef, 
+                    toCall.makeRef(),
+                    StringConstant.v("Hello world!")));
                 tmpUnit.addTag(new MyTag(2));
                 units.add(tmpUnit);
             }
@@ -429,7 +443,7 @@ class MyTag implements Tag {
     }
 
     public String getName() {
-        return "MyTag";
+        return "ca.mcgill.sable.MyTag";
     }
 
     // output the value as a 4-byte array
@@ -451,7 +465,7 @@ class MyTag implements Tag {
 class MyTagAggregator extends TagAggregator {
 
     public String aggregatedName() {
-        return "MyTag";
+        return "ca.mcgill.sable.MyTag";
     }
 
     public boolean wantTag(Tag t) {
