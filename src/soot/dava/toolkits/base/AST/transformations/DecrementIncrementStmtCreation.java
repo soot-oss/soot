@@ -25,7 +25,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.dava.*;
 import soot.dava.internal.asg.*;
-import soot.dava.internal.javarep.*;
+import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 

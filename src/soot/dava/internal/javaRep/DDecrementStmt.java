@@ -17,7 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.dava.internal.javarep;
+package soot.dava.internal.javaRep;
 
 import soot.*;
 import soot.grimp.*;
