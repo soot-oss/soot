@@ -137,7 +137,23 @@ public class HashChain extends AbstractCollection
                 previousPoint = o;
             }
     }
+    
+    public void insertAfter(Chain toInsert, Object point)
+    {
+        // if the list is null, treat it as an empty list
+        if (toInsert == null)
+            throw new RuntimeException("Warning! You tried to insert "
+                                       + "a null list into a Chain!");            
 
+        Object previousPoint = point;
+        Iterator it = toInsert.iterator();
+        while (it.hasNext())
+            {
+                Object o = it.next();
+                insertAfter(o, previousPoint);
+                previousPoint = o;
+            }
+    }
 
     public void insertBefore(Object toInsert, Object point)
     {
@@ -155,6 +171,21 @@ public class HashChain extends AbstractCollection
     }
     
     public void insertBefore(List toInsert, Object point)
+    {
+        // if the list is null, treat it as an empty list
+        if (toInsert == null)
+            throw new RuntimeException("Warning! You tried to insert "
+                                       + "a null list into a Chain!");
+
+        Iterator it = toInsert.iterator();
+        while (it.hasNext())
+            {
+                Object o = it.next();
+                insertBefore(o, point);
+            }
+    }
+
+    public void insertBefore(Chain toInsert, Object point)
     {
         // if the list is null, treat it as an empty list
         if (toInsert == null)

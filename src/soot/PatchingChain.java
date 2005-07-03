@@ -79,8 +79,35 @@ public class PatchingChain extends AbstractCollection implements Chain
         innerChain.insertAfter(toInsert, point);
     }
     
+    public void insertAfter(Chain toInsert, Object point)
+    {
+        innerChain.insertAfter(toInsert, point);
+    }
+
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(List toInsert, Object point)
+    {
+        LinkedList backwardList = new LinkedList();
+        // Insert toInsert backwards into the list
+        {
+            Iterator it = toInsert.iterator();
+            
+            while(it.hasNext())
+                backwardList.addFirst(it.next());
+        }
+                
+        Object previousPoint = point;
+        Iterator it = backwardList.iterator();
+        while (it.hasNext())
+        {
+            Object o = it.next();
+            insertBefore(o, previousPoint);
+            previousPoint = o;
+        }
+    }
+    
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
+    public void insertBefore(Chain toInsert, Object point)
     {
         LinkedList backwardList = new LinkedList();
         // Insert toInsert backwards into the list

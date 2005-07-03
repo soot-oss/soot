@@ -42,7 +42,14 @@ public interface Chain extends Collection, Serializable
     public void insertAfter(Object toInsert, Object point);
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(Object toInsert, Object point);
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code>.
+     * (It would probably be better to make Chain implement List)*/
+    public void insertBefore(Chain toInsert, Object point);
+    /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. 
+     * (It would probably be better to make Chain implement List)*/
+    public void insertAfter(Chain toInsert, Object point);
 
+    
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(Object out, Object in);
 
