@@ -22,7 +22,11 @@ David Eng (flynn@sable.mcgill.ca)
 
 Etienne Gagnon (gagnon@sable.mcgill.ca)
     - Jimple typing algorithm
-      
+
+Chris Goard (cgoard@sable.mcgill.ca)
+    - general bug fixes
+    - documentation
+
 Laurie Hendren (hendren@sable.mcgill.ca)
     - project advisor
 
