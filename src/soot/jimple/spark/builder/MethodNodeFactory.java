@@ -26,13 +26,14 @@ import soot.util.*;
 import soot.toolkits.scalar.Pair;
 import soot.jimple.spark.internal.*;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.shimple.*;
 import java.util.*;
 
 /** Class implementing builder parameters (this decides
  * what kinds of nodes should be built for each kind of Soot value).
  * @author Ondrej Lhotak
  */
-public class MethodNodeFactory extends AbstractJimpleValueSwitch {
+public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     public MethodNodeFactory( PAG pag, MethodPAG mpag ) {
 	this.pag = pag;
 	this.mpag = mpag;
@@ -126,6 +127,18 @@ public class MethodNodeFactory extends AbstractJimpleValueSwitch {
         return ret;
     }
 
+    final public void casePhiExpr(PhiExpr e) {
+        Pair phiPair = new Pair( e, PointsToAnalysis.PHI_NODE );
+        Node phiNode = pag.makeLocalVarNode( phiPair, e.getType(), method );
+        for(Iterator opsIt = e.getValues().iterator(); opsIt.hasNext();){
+            Value op = (Value) opsIt.next();
+            op.apply( MethodNodeFactory.this );
+            Node opNode = getNode();
+            mpag.addInternalEdge( opNode, phiNode );
+        }
+        setResult( phiNode );
+    }
+    
     final public Node caseRet() {
         VarNode ret = pag.makeLocalVarNode(
                     Parm.v( method, PointsToAnalysis.RETURN_NODE ),

@@ -24,6 +24,7 @@ import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -58,6 +59,7 @@ public interface ShimpleFactory
     public DominatorTree getDominatorTree();
     public DominanceFrontier getDominanceFrontier();
 
+    public GlobalValueNumberer getGlobalValueNumberer();
     public ReversibleGraph getReverseBlockGraph();
     public DominatorsFinder getReverseDominatorsFinder();
     public DominatorTree getReverseDominatorTree();

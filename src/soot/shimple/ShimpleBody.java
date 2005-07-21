@@ -156,6 +156,7 @@ public class ShimpleBody extends StmtBody
     public JimpleBody toJimpleBody()
     {
         ShimpleBody sBody = (ShimpleBody) this.clone();
+
         sBody.eliminateNodes();
         JimpleBody jBody = Jimple.v().newBody(sBody.getMethod());
         jBody.importBodyContentsFrom(sBody);

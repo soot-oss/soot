@@ -24,6 +24,7 @@ import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -100,9 +101,9 @@ public class ShimpleBodyBuilder
 
     public void transform()
     {
-        boolean change = false;
         phi.insertTrivialPhiNodes();
 
+        boolean change = false;
         if(options.extended()){
             change = pi.insertTrivialPiNodes();
         

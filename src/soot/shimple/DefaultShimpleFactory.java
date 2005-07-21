@@ -25,6 +25,7 @@ import java.util.*;
 import soot.shimple.*;
 import soot.shimple.internal.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -46,6 +47,10 @@ public class DefaultShimpleFactory implements ShimpleFactory
     protected DominatorsFinder dFinder;
     protected DominatorTree dTree;
     protected DominanceFrontier dFrontier;
+    protected PointsToAnalysis pta;
+    protected CallGraph cg;
+    protected SideEffectAnalysis sea;
+    protected GlobalValueNumberer gvn;
 
     protected ReversibleGraph rbg;
     protected DominatorTree rdTree;
@@ -63,6 +68,10 @@ public class DefaultShimpleFactory implements ShimpleFactory
         dFinder = null;
         dTree = null;
         dFrontier = null;
+        pta = null;
+        cg = null;
+        sea = null;
+        gvn = null;
         rbg = null;
         rdTree = null;
         rdFinder = null;
@@ -165,5 +174,14 @@ public class DefaultShimpleFactory implements ShimpleFactory
 
         dFrontier = new CytronDominanceFrontier(getDominatorTree());
         return dFrontier;
+    }
+
+    public GlobalValueNumberer getGlobalValueNumberer()
+    {
+        if(gvn != null)
+            return gvn;
+        
+        gvn = new SimpleGlobalValueNumberer(getBlockGraph());
+        return gvn;
     }
 }

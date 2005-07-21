@@ -30,11 +30,13 @@ import java.util.*;
  **/
 public class SPiExpr implements PiExpr
 {
-    ValueUnitPair argBox;
+    protected ValueUnitPair argBox;
+    protected Object targetKey;
 
-    public SPiExpr(Value v, Unit u)
+    public SPiExpr(Value v, Unit u, Object o)
     {
         argBox = new SValueUnitPair(v, u);
+        this.targetKey = o;
     }
     
     public ValueUnitPair getArgBox()
@@ -47,9 +49,14 @@ public class SPiExpr implements PiExpr
         return argBox.getValue();
     }
     
-    public Unit getPred()
+    public Unit getCondStmt()
     {
         return argBox.getUnit();
+    }
+
+    public Object getTargetKey()
+    {
+        return targetKey;
     }
     
     public void setValue(Value value)
@@ -57,9 +64,14 @@ public class SPiExpr implements PiExpr
         argBox.setValue(value);
     }
     
-    public void setPred(Unit pred)
+    public void setCondStmt(Unit pred)
     {
         argBox.setUnit(pred);
+    }
+
+    public void setTargetKey(Object targetKey)
+    {
+        this.targetKey = targetKey;
     }
     
     public List getUnitBoxes()
@@ -69,6 +81,7 @@ public class SPiExpr implements PiExpr
 
     public void clearUnitBoxes()
     {
+        System.out.println("clear unit boxes");
         argBox.setUnit(null);
     }
     
@@ -93,7 +106,7 @@ public class SPiExpr implements PiExpr
 
     public Object clone()
     {
-        return new SPiExpr(getValue(), getPred());
+        return new SPiExpr(getValue(), getCondStmt(), getTargetKey());
     }
 
     public String toString()
@@ -107,7 +120,9 @@ public class SPiExpr implements PiExpr
         up.literal(Shimple.PI);
         up.literal("(");
         argBox.toString(up);
-        up.literal(")");
+        up.literal(" [");
+        up.literal(targetKey.toString());
+        up.literal("])");
     }
 
     public Type getType()

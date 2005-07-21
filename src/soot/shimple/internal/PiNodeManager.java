@@ -24,6 +24,7 @@ import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -201,17 +202,17 @@ public class PiNodeManager
     {
         Unit target = u.getTarget();
         
-        PiExpr pi1 = Shimple.v().newPiExpr(local, u);
-        PiExpr pi2 = Shimple.v().newPiExpr(local, u);
-        Unit add1 = Jimple.v().newAssignStmt(local, pi1);
-        Unit add2 = Jimple.v().newAssignStmt(local, pi2);
+        PiExpr pit = Shimple.v().newPiExpr(local, u, Boolean.TRUE);
+        PiExpr pif = Shimple.v().newPiExpr(local, u, Boolean.FALSE);
+        Unit addt = Jimple.v().newAssignStmt(local, pit);
+        Unit addf = Jimple.v().newAssignStmt(local, pif);
             
         PatchingChain units = body.getUnits();
             
         // insert after should be safe; a new block should result if
         // the Unit originally after the IfStmt had another predecessor.
         // what about SPatchingChain?  seems sane.
-        units.insertAfter(add1, u);
+        units.insertAfter(addf, u);
 
         /* we need to be careful with insertBefore, if target
            already had some other predecessors. */
@@ -238,17 +239,45 @@ public class PiNodeManager
         }
 
         // we do not want to move the pointers for other branching statements
-        units.getNonPatchingChain().insertBefore(add2, target);
-        u.setTarget(add2);
+        units.getNonPatchingChain().insertBefore(addt, target);
+        u.setTarget(addt);
     }
 
     public void piHandleSwitchStmt(Local local, Unit u)
     {
-        for(Iterator targetIt = u.getUnitBoxes().iterator(); targetIt.hasNext();){
-            UnitBox targetBox = (UnitBox) targetIt.next();
-            Unit target = targetBox.getUnit();
+        List targetBoxes = new ArrayList();
+        List targetKeys = new ArrayList();
+
+        if(u instanceof LookupSwitchStmt){
+            LookupSwitchStmt lss = (LookupSwitchStmt) u;
+            targetBoxes.add(lss.getDefaultTargetBox());
+            targetKeys.add("default");
+            for(int i = 0; i < lss.getTargetCount(); i++)
+                targetBoxes.add(lss.getTargetBox(i));
+            targetKeys.addAll(lss.getLookupValues());
+        }
+        else if(u instanceof TableSwitchStmt){
+            TableSwitchStmt tss = (TableSwitchStmt) u;
+            int low = tss.getLowIndex();
+            int hi = tss.getHighIndex();
+
+            targetBoxes.add(tss.getDefaultTargetBox());
+            targetKeys.add("default");
+            for(int i = 0; i <= (hi - low); i++)
+                targetBoxes.add(tss.getTargetBox(i));
+            for(int i = low; i <= hi; i++)
+                targetKeys.add(new Integer(i));
+        }
+        else{
+            throw new RuntimeException("Assertion failed.");
+        }
             
-            PiExpr pi1 = Shimple.v().newPiExpr(local, u);
+        for(int count = 0; count < targetBoxes.size(); count++){
+            UnitBox targetBox = (UnitBox) targetBoxes.get(count);
+            Unit target = targetBox.getUnit();
+            Object targetKey = targetKeys.get(count);
+            
+            PiExpr pi1 = Shimple.v().newPiExpr(local, u, targetKey);
             Unit add1 = Jimple.v().newAssignStmt(local, pi1);
             
             PatchingChain units = body.getUnits();

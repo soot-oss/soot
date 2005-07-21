@@ -39,6 +39,10 @@ public class ShimpleTransformer extends SceneTransformer
     {
         if(Options.v().verbose())
             G.v().out.println("Transforming all classes in the Scene to Shimple...");
+
+        // *** FIXME: Add debug output to indicate which class/method is being shimplified.
+        // *** FIXME: Is ShimpleTransformer the right solution?  The call graph may deem
+        //            some classes unreachable.
         
         Iterator classesIt = Scene.v().getClasses().iterator();
         while(classesIt.hasNext()){

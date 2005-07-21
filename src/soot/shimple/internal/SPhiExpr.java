@@ -329,6 +329,20 @@ public class SPhiExpr implements PhiExpr
         return true;
     }
 
+    int blockId = -1;
+
+    public void setBlockId(int blockId)
+    {
+        this.blockId = blockId;
+    }
+
+    public int getBlockId()
+    {
+        if(blockId == -1)
+            throw new RuntimeException("Assertion failed:  Block Id unknown.");
+        return blockId;
+    }
+    
     /* misc */
 
     /**

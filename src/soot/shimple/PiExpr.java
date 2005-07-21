@@ -31,7 +31,9 @@ public interface PiExpr extends ShimpleExpr
 {
     public ValueUnitPair getArgBox();
     public Value getValue();
-    public Unit getPred();
-    public void setValue(Value value);
-    public void setPred(Unit pred);
+    public Unit getCondStmt();
+    public Object getTargetKey();
+    public void setValue(Value v);
+    public void setCondStmt(Unit cs);
+    public void setTargetKey(Object targetKey);
 }

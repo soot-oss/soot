@@ -213,6 +213,17 @@ public interface PhiExpr extends ShimpleExpr
     public boolean addArg(Value arg, Unit predTailUnit);
         
     /**
+     * Set the block number of the Phi node.
+     **/
+    public void setBlockId(int blockId);
+     
+    /**
+     * Returns the id number of the block from which the Phi node
+     * originated from.
+     **/
+    public int getBlockId();
+
+    /**
      * The type of the PhiExpr is usually the same as the type of its
      * arguments.
      **/

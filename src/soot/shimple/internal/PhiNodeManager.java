@@ -24,6 +24,7 @@ import soot.util.*;
 import java.util.*;
 import soot.shimple.*;
 import soot.shimple.toolkits.scalar.*;
+import soot.shimple.toolkits.graph.*;
 import soot.options.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -159,6 +160,7 @@ public class PhiNodeManager
     {
         List preds = frontierBlock.getPreds();
         PhiExpr pe = Shimple.v().newPhiExpr(local, preds);
+        pe.setBlockId(frontierBlock.getIndexInMethod());
         Unit trivialPhi = Jimple.v().newAssignStmt(local, pe);
         Unit blockHead = frontierBlock.getHead();
 
@@ -403,6 +405,9 @@ public class PhiNodeManager
         DominatorNode champNode = dt.getDode(champBlock);
         DominatorNode challengerNode = dt.getDode(challengerBlock);
 
+        // *** FIXME: System.out.println("champ: " + champNode);
+        // System.out.println("chall: " + challengerNode);
+        
         return(dt.isDominatorOf(champNode, challengerNode));
     }
     

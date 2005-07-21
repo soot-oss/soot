@@ -49,6 +49,8 @@ import java.io.*;
 **/
 public class Shimple
 {
+    public static final String IFALIAS = "IfAlias";
+    public static final String MAYMODIFY = "MayModify";
     public static final String PHI = "Phi";
     public static final String PI = "Pi";
     public static final String PHASE = "shimple";
@@ -107,9 +109,9 @@ public class Shimple
         return new SPhiExpr(leftLocal, preds);
     }
 
-    public PiExpr newPiExpr(Local local, Unit pred)
+    public PiExpr newPiExpr(Local local, Unit predicate, Object targetKey)
     {
-        return new SPiExpr(local, pred);
+        return new SPiExpr(local, predicate, targetKey);
     }
     
     /**

@@ -73,6 +73,6 @@ public interface PointsToAnalysis {
     public static final String CANONICAL_PATH_LOCAL = "CANONICAL_PATH_LOCAL";
     public static final String PRIVILEGED_ACTION_EXCEPTION = "PRIVILEGED_ACTION_EXCEPTION";
     public static final String PRIVILEGED_ACTION_EXCEPTION_LOCAL = "PRIVILEGED_ACTION_EXCEPTION_LOCAL";
-
+    public static final String PHI_NODE = "PHI_NODE";
 }
 
