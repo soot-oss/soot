@@ -397,7 +397,8 @@ public class ClassResolver {
    
         AnonLocalClassInfo info = (AnonLocalClassInfo)InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
       
-        if (aNew.qualifier() != null) {
+        if (aNew.qualifier() != null){// && (!(aNew.qualifier() instanceof polyglot.ast.Special && ((polyglot.ast.Special)aNew.qualifier()).kind() == polyglot.ast.Special.THIS)) ){
+        //if (aNew.qualifier() != null ) {
             // add qualifier ref - do this first to get right order
             addQualifierRefToInit(aNew.qualifier().type());
             src.hasQualifier(true);

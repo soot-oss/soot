@@ -48,7 +48,9 @@ public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
     
         if (n instanceof polyglot.ast.Local){
             if (!(locals.contains(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance())))){
-                locals.add(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance()));
+                if (!((polyglot.ast.Local)n).isConstant()){
+                    locals.add(new polyglot.util.IdentityKey(((polyglot.ast.Local)n).localInstance()));
+                }
             }
         }
 

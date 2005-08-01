@@ -53,6 +53,8 @@ public class CFGActionBarContributor extends ActionBarContributor {
 	private FinishMethodAction finishMethod;
 	private NextMethodAction nextMethod;
 	private FlowSelectAction flowSelect;
+	private StopInteractionAction stopInteraction;
+
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
@@ -75,6 +77,8 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		nextMethod = new NextMethodAction(null);
 		addAction(nextMethod);
 		
+		stopInteraction = new StopInteractionAction(null);
+		addAction(stopInteraction);
 		
 		
 	}
@@ -98,6 +102,7 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		toolBarManager.add(getAction(FinishMethodAction.FINISH_METHOD));	
 		toolBarManager.add(getAction(NextMethodAction.NEXT_METHOD));	
 
+		toolBarManager.add(getAction(StopInteractionAction.STOP_INTERACTION));
 	}
 	
 	public void contributeToMenu(IMenuManager menuManager){
@@ -117,6 +122,7 @@ public class CFGActionBarContributor extends ActionBarContributor {
 		finishMethod.setEditorPart(editor);
 		nextMethod.setEditorPart(editor);
 		flowSelect.setEditorPart(editor);
+		stopInteraction.setEditorPart(editor);
 	}
 
 }

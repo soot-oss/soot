@@ -23,6 +23,7 @@ import soot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.toolkits.annotation.callgraph.*;
 import java.util.*;
+import soot.options.*;
 
 public class InteractionHandler {
    
@@ -45,7 +46,7 @@ public class InteractionHandler {
             stopUnitList.remove(elem);
         }
     }
-    
+
     public void handleNewAnalysis(Transform t, Body b){
         // here save current phase name and only send if actual data flow analysis exists
         if (PhaseOptions.getBoolean(PhaseOptions.v().getPhaseOptions( t.getPhaseName()), "enabled")){
@@ -245,4 +246,12 @@ public class InteractionHandler {
     public boolean autoCon(){
         return autoCon;
     }
+
+    private boolean stopInteraction = false;
+    public void stopInteraction(boolean b){
+        stopInteraction = b;
+        Options.v().set_interactive_mode(false);
+    }
+    
 }
+
