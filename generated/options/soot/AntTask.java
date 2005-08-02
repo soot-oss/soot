@@ -983,6 +983,12 @@ public class AntTask extends MatchingTask {
             addArg("all-reachable:"+(arg?"true":"false"));
           }
       
+          public void setimplicit_entry(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("implicit-entry:"+(arg?"true":"false"));
+          }
+      
           public void settrim_clinit(boolean arg) {
             addArg("-p");
             addArg("cg");
@@ -1322,6 +1328,12 @@ public class AntTask extends MatchingTask {
             addArg("simple-edges-bidirectional:"+(arg?"true":"false"));
           }
       
+          public void setthis_edges(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("this-edges:"+(arg?"true":"false"));
+          }
+      
           public void setcontext_heap(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
@@ -1344,12 +1356,6 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.paddle");
             addArg("total-context-counts:"+(arg?"true":"false"));
-          }
-      
-          public void setadd_tags(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("add-tags:"+(arg?"true":"false"));
           }
       
           public void setset_mass(boolean arg) {

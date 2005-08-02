@@ -111,6 +111,19 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "all-reachable" );
     }
     
+    /** Implicit Entry Points --
+    
+     * Include methods called implicitly by the VM as entry points.
+    
+     * When this option is true, methods that are called implicitly by 
+     * the VM are considered entry points of the call graph. When it is 
+     * false, these methods are not considered entry points, leading to 
+     * a possibly incomplete call graph.
+     */
+    public boolean implicit_entry() {
+        return soot.PhaseOptions.getBoolean( options, "implicit-entry" );
+    }
+    
     /** Trim Static Initializer Edges --
     
      * Removes redundant static initializer calls.
@@ -159,6 +172,7 @@ public class CGOptions
     public static final int context_kcfa = 3;
     public static final int context_objsens = 4;
     public static final int context_kobjsens = 5;
+    public static final int context_uniqkobjsens = 6;
     /** Context sensitivity --
     
      * Select context-sensitivity level.
@@ -183,6 +197,9 @@ public class CGOptions
         
         if( s.equalsIgnoreCase( "kobjsens" ) )
             return context_kobjsens;
+        
+        if( s.equalsIgnoreCase( "uniqkobjsens" ) )
+            return context_uniqkobjsens;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option context" );
     }

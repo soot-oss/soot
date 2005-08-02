@@ -33,10 +33,12 @@ public class CallGraphPack extends RadioScenePack
 
     protected void internalApply()
     {
+        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions(this) );
+        if(!options.implicit_entry()) {
+            Scene.v().setEntryPoints(EntryPoints.v().application());
+        }
         super.internalApply();
         ClinitElimTransformer trimmer = new ClinitElimTransformer();
-
-        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions(this) );
 
         if( options.trim_clinit() ) {
             for( Iterator clIt = Scene.v().getClasses(SootClass.BODIES).iterator(); clIt.hasNext(); ) {

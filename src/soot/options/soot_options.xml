@@ -1402,6 +1402,13 @@ are assumed not to call the constructor of the created object.
                                         <long_desc>When this option is false, the call graph is built starting at a set of entry points, and only methods reachable from those entry points are processed. Unreachable methods will not have any call graph edges generated out of them. Setting this option to true makes Soot consider all methods of application classes to be reachable, so call edges are generated for all of them. This leads to a larger call graph. For program visualization purposes, it is sometimes desirable to include edges from unreachable methods; although these methods are unreachable in the version being analyzed, they may become reachable if the program is modified.</long_desc>
                                 </boolopt>
                                 <boolopt>
+                                        <name>Implicit Entry Points</name>
+                                        <alias>implicit-entry</alias>
+                                        <default>true</default>
+                                        <short_desc>Include methods called implicitly by the VM as entry points</short_desc>
+                                        <long_desc>When this option is true, methods that are called implicitly by the VM are considered entry points of the call graph. When it is false, these methods are not considered entry points, leading to a possibly incomplete call graph.</long_desc>
+                                </boolopt>
+                                <boolopt>
                                         <name>Trim Static Initializer Edges</name>
                                         <alias>trim-clinit</alias>
                                         <default>true</default>
@@ -1461,6 +1468,17 @@ Builds an object-sensitive call graph.
 <long_desc>
 Builds a context-sensitive call graph where the context is a string of up to
 k receiver objects.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>Unique k-Object Sensitive</name>
+                                                <alias>uniqkobjsens</alias>
+<short_desc>Builds a unique-k-object-sensitive call graph</short_desc>
+<long_desc>
+Builds a context-sensitive call graph where the context is a string of up to
+k unique receiver objects. If the receiver of a call already appears in the
+context string, the context string is just reused as is.
 </long_desc>
 
                                         </value>
@@ -2434,6 +2452,20 @@ nodes are made bidirectional, as in <a href="http://doi.acm.org/10.1145/237721.2
         </long_desc>
 						</boolopt>
 						<boolopt>
+							<name>this Pointer Assignment Edge</name>
+							<alias>this-edges</alias>
+							<default>false</default>
+                                                        <short_desc>Use pointer assignment edges to model this parameters</short_desc>
+							<long_desc>
+When constructing a call graph on-the-fly during points-to analysis, Paddle
+normally propagates only those receivers that cause a method to be invoked
+to the this pointer of the method. When this option is set to true, however,
+Paddle instead models flow of receivers as an assignnment edge from the
+receiver at the call site to the this pointer of the method, reducing
+precision.
+        </long_desc>
+						</boolopt>
+						<boolopt>
 							<name>Context-sensitive Heap Locations</name>
 							<alias>context-heap</alias>
 							<default>false</default>
@@ -2707,17 +2739,6 @@ each variable node.
 							<long_desc>
 Causes Paddle to print the number of contexts and number of context
 equivalence classes.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Add Tags</name>
-							<alias>add-tags</alias>
-							<default>false</default>
-                                                        <short_desc>Output points-to results in tags for viewing with the Jimple</short_desc>
-							<long_desc>
-        When this option is set to true, the results of the analysis are encoded within
-tags and printed with the resulting Jimple code.
-
         </long_desc>
 						</boolopt>
 						<boolopt>

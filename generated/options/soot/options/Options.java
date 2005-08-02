@@ -1453,6 +1453,7 @@ public class Options extends OptionsBase {
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "jdkver (3)", "JDK version for native methods" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
+                +padOpt( "implicit-entry (true)", "Include methods called implicitly by the VM as entry points" )
                 +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
                 +padOpt( "context", "Select context-sensitivity level" )
                 +padVal( "insens (default)", "Builds a context-insensitive call graph" )
@@ -1464,6 +1465,8 @@ public class Options extends OptionsBase {
                 +padVal( "objsens", "Builds an object-sensitive call graph" )
                 
                 +padVal( "kobjsens", "Builds a k-object-sensitive call graph" )
+                
+                +padVal( "uniqkobjsens", "Builds a unique-k-object-sensitive call graph" )
                 
                 +padOpt( "k (2)", "" );
     
@@ -1613,6 +1616,7 @@ public class Options extends OptionsBase {
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "global-nodes-in-natives (false)", "Use global node to model variables in simulations of native methods" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
+                +padOpt( "this-edges (false)", "Use pointer assignment edges to model this parameters" )
                 +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
                 +padOpt( "propagator", "Select propagation algorithm" )
@@ -1659,7 +1663,6 @@ public class Options extends OptionsBase {
                 
                 +padOpt( "context-counts (false)", "Print number of contexts for each method" )
                 +padOpt( "total-context-counts (false)", "Print total number of contexts" )
-                +padOpt( "add-tags (false)", "Output points-to results in tags for viewing with the Jimple" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
                 +padOpt( "number-nodes (true)", "Print node numbers in dumps" );
     
@@ -2269,6 +2272,7 @@ public class Options extends OptionsBase {
                 +"verbose "
                 +"jdkver "
                 +"all-reachable "
+                +"implicit-entry "
                 +"trim-clinit "
                 +"context "
                 +"k ";
@@ -2333,6 +2337,7 @@ public class Options extends OptionsBase {
                 +"simulate-natives "
                 +"global-nodes-in-natives "
                 +"simple-edges-bidirectional "
+                +"this-edges "
                 +"context-heap "
                 +"precise-newinstance "
                 +"propagator "
@@ -2341,7 +2346,6 @@ public class Options extends OptionsBase {
                 +"double-set-new "
                 +"context-counts "
                 +"total-context-counts "
-                +"add-tags "
                 +"set-mass "
                 +"number-nodes ";
     
@@ -2799,6 +2803,7 @@ public class Options extends OptionsBase {
               +"verbose:false "
               +"jdkver:3 "
               +"all-reachable:false "
+              +"implicit-entry:true "
               +"trim-clinit:true "
               +"context:insens "
               +"k:2 ";
@@ -2862,6 +2867,7 @@ public class Options extends OptionsBase {
               +"simulate-natives:true "
               +"global-nodes-in-natives:false "
               +"simple-edges-bidirectional:false "
+              +"this-edges:false "
               +"context-heap:false "
               +"precise-newinstance:true "
               +"propagator:worklist "
@@ -2870,7 +2876,6 @@ public class Options extends OptionsBase {
               +"double-set-new:hybrid "
               +"context-counts:false "
               +"total-context-counts:false "
-              +"add-tags:false "
               +"set-mass:false "
               +"number-nodes:true ";
     

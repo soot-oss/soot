@@ -228,6 +228,22 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "simple-edges-bidirectional" );
     }
     
+    /** this Pointer Assignment Edge --
+    
+     * Use pointer assignment edges to model this parameters.
+    
+     * When constructing a call graph on-the-fly during points-to 
+     * analysis, Paddle normally propagates only those receivers that 
+     * cause a method to be invoked to the this pointer of the method. 
+     * When this option is set to true, however, Paddle instead models 
+     * flow of receivers as an assignnment edge from the receiver at 
+     * the call site to the this pointer of the method, reducing 
+     * precision. 
+     */
+    public boolean this_edges() {
+        return soot.PhaseOptions.getBoolean( options, "this-edges" );
+    }
+    
     /** Context-sensitive Heap Locations --
     
      * Treat allocation sites context-sensitively.
@@ -277,18 +293,6 @@ public class PaddleOptions
      */
     public boolean total_context_counts() {
         return soot.PhaseOptions.getBoolean( options, "total-context-counts" );
-    }
-    
-    /** Add Tags --
-    
-     * Output points-to results in tags for viewing with the Jimple.
-    
-     * When this option is set to true, the results of the 
-     * analysis are encoded within tags and printed with the resulting 
-     * Jimple code. 
-     */
-    public boolean add_tags() {
-        return soot.PhaseOptions.getBoolean( options, "add-tags" );
     }
     
     /** Calculate Set Mass --
