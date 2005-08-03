@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangStringNative extends NativeMethodClass {
-    public JavaLangStringNative( Singletons.Global g ) {}
-    public static JavaLangStringNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangStringNative(); }
+    public JavaLangStringNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -89,10 +88,10 @@ public class JavaLangStringNative extends NativeMethodClass {
    *
    * public native java.lang.String intern();
    */
-  public static void java_lang_String_intern(SootMethod method,
+  public void java_lang_String_intern(SootMethod method,
 					     ReferenceVariable thisVar,
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 }

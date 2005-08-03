@@ -27,6 +27,7 @@ import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.spark.internal.*;
 import soot.jimple.spark.builder.*;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
 import soot.util.*;
 import soot.util.queue.*;
 import soot.options.SparkOptions;
@@ -876,6 +877,7 @@ public class PAG implements PointsToAnalysis {
     private Map nodeToTag;
     private GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
     public GlobalNodeFactory nodeFactory() { return nodeFactory; }
+    public NativeMethodDriver nativeMethodDriver;
 
 }
 

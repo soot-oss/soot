@@ -30,8 +30,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangObjectNative extends NativeMethodClass {
-    public JavaLangObjectNative( Singletons.Global g ) {}
-    public static JavaLangObjectNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangObjectNative(); }
+    public JavaLangObjectNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -67,11 +66,11 @@ public class JavaLangObjectNative extends NativeMethodClass {
    *
    * public final native java.lang.Class getClass();
    */
-  public static void java_lang_Object_getClass(SootMethod method,
+  public void java_lang_Object_getClass(SootMethod method,
 					       ReferenceVariable thisVar,
 					       ReferenceVariable returnVar,
 					       ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**
@@ -102,12 +101,12 @@ public class JavaLangObjectNative extends NativeMethodClass {
    * protected native java.lang.Object clone() 
    *                  throws java.lang.CloneNotSupported
    */
-  public static void java_lang_Object_clone(SootMethod method,
+  public void java_lang_Object_clone(SootMethod method,
 					    ReferenceVariable thisVar,
 					    ReferenceVariable returnVar,
 					    ReferenceVariable params[]) {
-    ReferenceVariable newVar = NativeHelper.cloneObject(thisVar);
-    NativeHelper.assign(returnVar, newVar);
+    ReferenceVariable newVar = helper.cloneObject(thisVar);
+    helper.assign(returnVar, newVar);
   }
 
   /**

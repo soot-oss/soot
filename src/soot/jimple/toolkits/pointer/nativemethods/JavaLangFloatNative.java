@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangFloatNative extends NativeMethodClass {
-    public JavaLangFloatNative( Singletons.Global g ) {}
-    public static JavaLangFloatNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangFloatNative(); }
+    public JavaLangFloatNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.

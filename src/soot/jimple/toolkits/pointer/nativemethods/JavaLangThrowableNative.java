@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangThrowableNative extends NativeMethodClass {
-    public JavaLangThrowableNative( Singletons.Global g ) {}
-    public static JavaLangThrowableNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangThrowableNative(); }
+    public JavaLangThrowableNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -64,12 +63,12 @@ public class JavaLangThrowableNative extends NativeMethodClass {
    *
    * public native java.lang.Throwable fillInStackTrace();
    */
-  public static 
+  public 
     void java_lang_Throwable_fillInStackTrace(SootMethod method,
 					      ReferenceVariable thisVar,
 					      ReferenceVariable returnVar,
 					      ReferenceVariable params[]) {
-    NativeHelper.assign(returnVar, thisVar);
+    helper.assign(returnVar, thisVar);
   }
 
   /**

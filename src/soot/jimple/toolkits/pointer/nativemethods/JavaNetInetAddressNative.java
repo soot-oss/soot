@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaNetInetAddressNative extends NativeMethodClass {
-    public JavaNetInetAddressNative( Singletons.Global g ) {}
-    public static JavaNetInetAddressNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaNetInetAddressNative(); }
+    public JavaNetInetAddressNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.

@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaNetInetAddressImplNative extends NativeMethodClass {
-    public JavaNetInetAddressImplNative( Singletons.Global g ) {}
-    public static JavaNetInetAddressImplNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaNetInetAddressImplNative(); }
+    public JavaNetInetAddressImplNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -76,13 +75,13 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
    *     native java.lang.String getLocalHostName() 
    *                      throws java.net.UnknownHostException;
    */
-  public static 
+  public 
     void java_net_InetAddressImpl_getLocalHostName(
 					  SootMethod method,
                                           ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
   
   /**
@@ -91,12 +90,12 @@ public class JavaNetInetAddressImplNative extends NativeMethodClass {
    *     native java.lang.String getHostByAddr(int) 
    *                     throws java.net.UnknownHostException;
    */
-  public static 
+  public 
     void java_net_InetAddressImpl_getHostByAddr(SootMethod method,
 						ReferenceVariable thisVar,
 						ReferenceVariable returnVar,
 						ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**

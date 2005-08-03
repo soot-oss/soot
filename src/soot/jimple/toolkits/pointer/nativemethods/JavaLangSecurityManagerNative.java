@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangSecurityManagerNative extends NativeMethodClass {
-    public JavaLangSecurityManagerNative( Singletons.Global g ) {}
-    public static JavaLangSecurityManagerNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangSecurityManagerNative(); }
+    public JavaLangSecurityManagerNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -79,12 +78,12 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
    * 
    *     protected native java.lang.Class getClassContext()[];
    */
-  public static 
+  public 
     void java_lang_SecurityManager_getClassContext(SootMethod method,
 						   ReferenceVariable thisVar,
 						   ReferenceVariable returnVar,
 						   ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
+    helper.assignObjectTo(returnVar, Environment.v().getLeastArrayObject());
   }
 
   /**
@@ -98,13 +97,13 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
    *
    *     private native java.lang.ClassLoader currentClassLoader0();
    */
-  public static 
+  public 
     void java_lang_SecurityManager_currentClassLoader0(
 			    SootMethod method,
 			    ReferenceVariable thisVar,
 			    ReferenceVariable returnVar,
 			    ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**
@@ -112,13 +111,13 @@ public class JavaLangSecurityManagerNative extends NativeMethodClass {
    * 
    *    private native java.lang.Class currentLoadedClass0();
    */
-  public static 
+  public 
     void java_lang_SecurityManager_currentLoadedClass0(
 					 SootMethod method,
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
-    public JavaIoObjectOutputStreamNative( Singletons.Global g ) {}
-    public static JavaIoObjectOutputStreamNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaIoObjectOutputStreamNative(); }
+    public JavaIoObjectOutputStreamNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -67,7 +66,7 @@ public class JavaIoObjectOutputStreamNative extends NativeMethodClass {
    * private static native 
    *         java.lang.Object getObjectFieldValue(java.lang.Object, long);
    */
-  public static 
+  public 
     void java_io_ObjectOutputStream_getObjectFieldValue(
 				    SootMethod method,
 				    ReferenceVariable thisVar,

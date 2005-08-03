@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangReflectMethodNative extends NativeMethodClass {
-    public JavaLangReflectMethodNative( Singletons.Global g ) {}
-    public static JavaLangReflectMethodNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangReflectMethodNative(); }
+    public JavaLangReflectMethodNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -85,7 +84,7 @@ public class JavaLangReflectMethodNative extends NativeMethodClass {
    *                           java.lang.IllegalArgumentException, 
    *                           java.lang.reflect.InvocationTargetException
    */
-  public static 
+  public 
     void java_lang_reflect_Method_invoke(SootMethod method,
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,

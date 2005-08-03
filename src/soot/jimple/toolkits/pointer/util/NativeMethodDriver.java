@@ -32,87 +32,87 @@ import soot.jimple.toolkits.pointer.nativemethods.*;
 import java.util.*;
 
 public class NativeMethodDriver {
-    public NativeMethodDriver( Singletons.Global g ) {
-        cnameToSim.put("java.lang.Object", JavaLangObjectNative.v());
-        cnameToSim.put("java.lang.System", JavaLangSystemNative.v());
-        cnameToSim.put("java.lang.Runtime", JavaLangRuntimeNative.v());
-        cnameToSim.put("java.lang.Shutdown", JavaLangShutdownNative.v());
-        cnameToSim.put("java.lang.String", JavaLangStringNative.v());
-        cnameToSim.put("java.lang.Float", JavaLangFloatNative.v());
-        cnameToSim.put("java.lang.Double", JavaLangDoubleNative.v());
-        cnameToSim.put("java.lang.StrictMath", JavaLangStrictMathNative.v());
-        cnameToSim.put("java.lang.Throwable", JavaLangThrowableNative.v());
-        cnameToSim.put("java.lang.Class", JavaLangClassNative.v());
-        cnameToSim.put("java.lang.Package", JavaLangPackageNative.v());
-        cnameToSim.put("java.lang.Thread", JavaLangThreadNative.v());
-        cnameToSim.put("java.lang.ClassLoader", JavaLangClassLoaderNative.v());
+    private NativeHelper helper;
+    public NativeMethodDriver( NativeHelper helper ) {
+        this.helper = helper;
+        cnameToSim.put("java.lang.Object", new JavaLangObjectNative(helper));
+        cnameToSim.put("java.lang.System", new JavaLangSystemNative(helper));
+        cnameToSim.put("java.lang.Runtime", new JavaLangRuntimeNative(helper));
+        cnameToSim.put("java.lang.Shutdown", new JavaLangShutdownNative(helper));
+        cnameToSim.put("java.lang.String", new JavaLangStringNative(helper));
+        cnameToSim.put("java.lang.Float", new JavaLangFloatNative(helper));
+        cnameToSim.put("java.lang.Double", new JavaLangDoubleNative(helper));
+        cnameToSim.put("java.lang.StrictMath", new JavaLangStrictMathNative(helper));
+        cnameToSim.put("java.lang.Throwable", new JavaLangThrowableNative(helper));
+        cnameToSim.put("java.lang.Class", new JavaLangClassNative(helper));
+        cnameToSim.put("java.lang.Package", new JavaLangPackageNative(helper));
+        cnameToSim.put("java.lang.Thread", new JavaLangThreadNative(helper));
+        cnameToSim.put("java.lang.ClassLoader", new JavaLangClassLoaderNative(helper));
         cnameToSim.put("java.lang.ClassLoader$NativeLibrary",
-                       JavaLangClassLoaderNativeLibraryNative.v());
+                       new JavaLangClassLoaderNativeLibraryNative(helper));
         cnameToSim.put("java.lang.SecurityManager",
-                       JavaLangSecurityManagerNative.v());
+                       new JavaLangSecurityManagerNative(helper));
 
 
         cnameToSim.put("java.lang.reflect.Field",
-                       JavaLangReflectFieldNative.v());
+                       new JavaLangReflectFieldNative(helper));
         cnameToSim.put("java.lang.reflect.Array",
-                       JavaLangReflectArrayNative.v());
+                       new JavaLangReflectArrayNative(helper));
         cnameToSim.put("java.lang.reflect.Method",
-                       JavaLangReflectMethodNative.v());
+                       new JavaLangReflectMethodNative(helper));
         cnameToSim.put("java.lang.reflect.Constructor",
-                       JavaLangReflectConstructorNative.v());
+                       new JavaLangReflectConstructorNative(helper));
         cnameToSim.put("java.lang.reflect.Proxy",
-                       JavaLangReflectProxyNative.v());
+                       new JavaLangReflectProxyNative(helper));
 
 
         cnameToSim.put("java.io.FileInputStream", 
-                       JavaIoFileInputStreamNative.v());
+                       new JavaIoFileInputStreamNative(helper));
         cnameToSim.put("java.io.FileOutputStream", 
-                       JavaIoFileOutputStreamNative.v());
+                       new JavaIoFileOutputStreamNative(helper));
         cnameToSim.put("java.io.ObjectInputStream",
-                       JavaIoObjectInputStreamNative.v());
+                       new JavaIoObjectInputStreamNative(helper));
         cnameToSim.put("java.io.ObjectOutputStream",
-                       JavaIoObjectOutputStreamNative.v());
+                       new JavaIoObjectOutputStreamNative(helper));
         cnameToSim.put("java.io.ObjectStreamClass",
-                       JavaIoObjectStreamClassNative.v());
-        cnameToSim.put("java.io.FileSystem", JavaIoFileSystemNative.v());
-        cnameToSim.put("java.io.FileDescriptor", JavaIoFileDescriptorNative.v());
+                       new JavaIoObjectStreamClassNative(helper));
+        cnameToSim.put("java.io.FileSystem", new JavaIoFileSystemNative(helper));
+        cnameToSim.put("java.io.FileDescriptor", new JavaIoFileDescriptorNative(helper));
 
 
         cnameToSim.put("java.util.ResourceBundle", 
-                       JavaUtilResourceBundleNative.v());
-        cnameToSim.put("java.util.TimeZone", JavaUtilTimeZoneNative.v());
+                       new JavaUtilResourceBundleNative(helper));
+        cnameToSim.put("java.util.TimeZone", new JavaUtilTimeZoneNative(helper));
         
 
         cnameToSim.put("java.util.jar.JarFile",
-                       JavaUtilJarJarFileNative.v());
+                       new JavaUtilJarJarFileNative(helper));
         
         cnameToSim.put("java.util.zip.CRC32",
-                       JavaUtilZipCRC32Native.v());
+                       new JavaUtilZipCRC32Native(helper));
         cnameToSim.put("java.util.zip.Inflater",
-                       JavaUtilZipInflaterNative.v());
+                       new JavaUtilZipInflaterNative(helper));
         cnameToSim.put("java.util.zip.ZipFile",
-                       JavaUtilZipZipFileNative.v());
+                       new JavaUtilZipZipFileNative(helper));
         cnameToSim.put("java.util.zip.ZipEntry",
-                       JavaUtilZipZipEntryNative.v());
+                       new JavaUtilZipZipEntryNative(helper));
         
 
         cnameToSim.put("java.security.AccessController",
-                       JavaSecurityAccessControllerNative.v());
+                       new JavaSecurityAccessControllerNative(helper));
         
 
         cnameToSim.put("java.net.InetAddress", 
-                       JavaNetInetAddressNative.v());
+                       new JavaNetInetAddressNative(helper));
         cnameToSim.put("java.net.InetAddressImpl", 
-                       JavaNetInetAddressImplNative.v());
+                       new JavaNetInetAddressImplNative(helper));
 
 
         cnameToSim.put("sun.misc.Signal",
-                       SunMiscSignalNative.v());
+                       new SunMiscSignalNative(helper));
         cnameToSim.put("sun.misc.NativeSignalHandler",
-                       SunMiscSignalHandlerNative.v());
+                       new SunMiscSignalHandlerNative(helper));
     }
-
-    public static NativeMethodDriver v() { return G.v().soot_jimple_toolkits_pointer_util_NativeMethodDriver(); }
 
   private HashMap cnameToSim = new HashMap(100);
   private boolean DEBUG = false;

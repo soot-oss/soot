@@ -176,7 +176,7 @@ public final class MethodPAG {
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
 	    args[i] = (ValNode) nodeFactory.caseParm(i);
         }
-        NativeMethodDriver.v().process( method, thisNode, retNode, args );
+        pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }
 
     protected void addMiscEdges() {

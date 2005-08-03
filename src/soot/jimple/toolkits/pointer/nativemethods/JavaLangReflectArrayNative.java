@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangReflectArrayNative extends NativeMethodClass {
-    public JavaLangReflectArrayNative( Singletons.Global g ) {}
-    public static JavaLangReflectArrayNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangReflectArrayNative(); }
+    public JavaLangReflectArrayNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -81,7 +80,7 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    *                     throws java.lang.IllegalArgumentException, 
    *                            java.lang.ArrayIndexOutOfBoundsException;
    */
-  public static 
+  public 
     void java_lang_reflect_Array_get(SootMethod method,
 				     ReferenceVariable thisVar,
 				     ReferenceVariable returnVar,
@@ -96,7 +95,7 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    *                         throws java.lang.IllegalArgumentException, 
    *                                java.lang.ArrayIndexOutOfBoundsException;
    */
-  public static 
+  public 
     void java_lang_reflect_Array_set(SootMethod method,
 				     ReferenceVariable thisVar,
 				     ReferenceVariable returnVar,
@@ -111,7 +110,7 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    * private static native java.lang.Object newArray(java.lang.Class, int) 
    *                        throws java.lang.NegativeArraySizeException;
    */
-  public static 
+  public 
     void java_lang_reflect_Array_newArray(SootMethod method,
 					  ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
@@ -128,7 +127,7 @@ public class JavaLangReflectArrayNative extends NativeMethodClass {
    *                        throws java.lang.IllegalArgumentException, 
    *                               java.lang.NegativeArraySizeException;
    */
-  public static 
+  public 
     void java_lang_reflect_Array_multiNewArray(SootMethod method,
 					       ReferenceVariable thisVar,
 					       ReferenceVariable returnVar,

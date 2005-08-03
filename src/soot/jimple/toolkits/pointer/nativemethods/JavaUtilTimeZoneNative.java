@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilTimeZoneNative extends NativeMethodClass {
-    public JavaUtilTimeZoneNative( Singletons.Global g ) {}
-    public static JavaUtilTimeZoneNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaUtilTimeZoneNative(); }
+    public JavaUtilTimeZoneNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -68,11 +67,11 @@ public class JavaUtilTimeZoneNative extends NativeMethodClass {
    *   java.lang.String getSystemTimeZoneID(java.lang.String, 
    *                                        java.lang.String);
    */
-  public static 
+  public 
     void java_util_TimeZone_getSystemTimeZoneID(SootMethod method,
 						ReferenceVariable thisVar,
 						ReferenceVariable returnVar,
 						ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 }

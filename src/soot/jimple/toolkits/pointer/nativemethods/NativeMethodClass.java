@@ -30,6 +30,10 @@ import soot.jimple.toolkits.pointer.util.*;
 public abstract class NativeMethodClass {
 
   private static final boolean DEBUG = false;
+  protected NativeHelper helper;
+  public NativeMethodClass(NativeHelper helper) {
+      this.helper = helper;
+  }
 
   /* If a native method has no side effect, call this method.
    * Currently, it does nothing.

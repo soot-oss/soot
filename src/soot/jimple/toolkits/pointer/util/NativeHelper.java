@@ -32,18 +32,10 @@ public abstract class NativeHelper {
 
 
   /**
-   * Somewhere should register an instance of this sub class.
-   */
-  public static final void register(NativeHelper impl){
-    G.v().NativeHelper_helper = impl;
-  }
-
-
-  /**
    * Regular assignment such as "a = b".
    */
-  public static void assign(ReferenceVariable lhs, ReferenceVariable rhs){
-    G.v().NativeHelper_helper.assignImpl(lhs, rhs);
+  public void assign(ReferenceVariable lhs, ReferenceVariable rhs){
+    assignImpl(lhs, rhs);
   }  
 
   /**
@@ -54,23 +46,23 @@ public abstract class NativeHelper {
    * This method is used to fomulate the effect of getting
    * an environmental constant object such as 'getClass'.
    */
-  public static void assignObjectTo(ReferenceVariable lhs, AbstractObject obj){
-    G.v().NativeHelper_helper.assignObjectToImpl(lhs, obj);
+  public void assignObjectTo(ReferenceVariable lhs, AbstractObject obj){
+    assignObjectToImpl(lhs, obj);
   }
 
   /**
    * Throw of an abstract object as an exception.
    */
-  public static void throwException(AbstractObject obj){
-    G.v().NativeHelper_helper.throwExceptionImpl(obj);
+  public void throwException(AbstractObject obj){
+    throwExceptionImpl(obj);
   }
 
   /**
    * Returns a reference variable representing the array element of
    * this variable. Now it does not look at the array index.
    */
-  public static ReferenceVariable arrayElementOf(ReferenceVariable base){
-    return G.v().NativeHelper_helper.arrayElementOfImpl(base);
+  public ReferenceVariable arrayElementOf(ReferenceVariable base){
+    return arrayElementOfImpl(base);
   }
 
   /**
@@ -81,8 +73,8 @@ public abstract class NativeHelper {
    *       Vr.isAssigned(Vb.cloneObject());
    *       Va = Vr;
    */
-  public static ReferenceVariable cloneObject(ReferenceVariable source){
-    return G.v().NativeHelper_helper.cloneObjectImpl(source);
+  public ReferenceVariable cloneObject(ReferenceVariable source){
+    return cloneObjectImpl(source);
   }
 
   /**
@@ -94,8 +86,8 @@ public abstract class NativeHelper {
    * It is used for simulating java.lang.Class.newInstance0();
    * To verify, @this variable mush have CLASSCLASS type.
    */
-  public static ReferenceVariable newInstanceOf(ReferenceVariable cls){
-    return G.v().NativeHelper_helper.newInstanceOfImpl(cls);
+  public ReferenceVariable newInstanceOf(ReferenceVariable cls){
+    return newInstanceOfImpl(cls);
   }
   
   /** 
@@ -105,8 +97,8 @@ public abstract class NativeHelper {
    *
    * @param field, must be a static field
    */
-  public static ReferenceVariable staticField(String className, String fieldName ){
-    return G.v().NativeHelper_helper.staticFieldImpl(className, fieldName);
+  public ReferenceVariable staticField(String className, String fieldName ){
+    return staticFieldImpl(className, fieldName);
   }
 
   /**
@@ -119,8 +111,8 @@ public abstract class NativeHelper {
    *
    * The temporary fields are uniquely indexed by signatures.
    */
-  public static ReferenceVariable tempField(String fieldsig){
-    return G.v().NativeHelper_helper.tempFieldImpl(fieldsig);
+  public ReferenceVariable tempField(String fieldsig){
+    return tempFieldImpl(fieldsig);
   }
 
   /**
@@ -134,12 +126,12 @@ public abstract class NativeHelper {
    *
    * The temporary variable has to be unique.
    */
-  public static ReferenceVariable tempVariable(){
-    return G.v().NativeHelper_helper.tempVariableImpl();
+  public ReferenceVariable tempVariable(){
+    return tempVariableImpl();
   }
 
-  public static ReferenceVariable tempLocalVariable(SootMethod method) {
-  	return G.v().NativeHelper_helper.tempLocalVariableImpl(method);
+  public ReferenceVariable tempLocalVariable(SootMethod method) {
+  	return tempLocalVariableImpl(method);
   }    
   /**
    * Sub classes should implement both.

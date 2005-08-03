@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoObjectInputStreamNative extends NativeMethodClass {
-    public JavaIoObjectInputStreamNative( Singletons.Global g ) {}
-    public static JavaIoObjectInputStreamNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaIoObjectInputStreamNative(); }
+    public JavaIoObjectInputStreamNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -82,13 +81,13 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
    * private static native java.lang.ClassLoader latestUserDefinedLoader() 
    *                        throws java.lang.ClassNotFoundException;
    */
-  public static 
+  public 
     void java_io_ObjectInputStream_latestUserDefinedLoader(
 				        SootMethod method,
 					ReferenceVariable thisVar,
 					ReferenceVariable returnVar,
 					ReferenceVariable params[]){
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassLoaderObject());
   }
 
   /**
@@ -100,7 +99,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
    *                             throws java.lang.InstantiationException, 
    *                             java.lang.IllegalAccessException;
    */
-  public static 
+  public 
     void java_io_ObjectInputStream_allocateNewObject(
 						 SootMethod method,
                                                  ReferenceVariable thisVar,
@@ -113,7 +112,7 @@ public class JavaIoObjectInputStreamNative extends NativeMethodClass {
    * private static native java.lang.Object allocateNewArray(java.lang.Class, 
    *                                                         int);
    */
-  public static 
+  public 
     void java_io_ObjectInputStream_allocateNewArray(
 						 SootMethod method,
 						 ReferenceVariable thisVar,

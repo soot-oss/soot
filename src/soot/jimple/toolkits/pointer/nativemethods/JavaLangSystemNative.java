@@ -30,8 +30,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangSystemNative extends NativeMethodClass {
-    public JavaLangSystemNative( Singletons.Global g ) {}
-    public static JavaLangSystemNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaLangSystemNative(); }
+    public JavaLangSystemNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -97,17 +96,17 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *                                      int, 
    *                                      int);
    */
-  public static void java_lang_System_arraycopy(SootMethod method,
+  public void java_lang_System_arraycopy(SootMethod method,
 						ReferenceVariable thisVar,
 						ReferenceVariable returnVar,
 						ReferenceVariable params[]){
-    ReferenceVariable srcElm = NativeHelper.arrayElementOf(params[0]);
-    ReferenceVariable dstElm = NativeHelper.arrayElementOf(params[2]);
+    ReferenceVariable srcElm = helper.arrayElementOf(params[0]);
+    ReferenceVariable dstElm = helper.arrayElementOf(params[2]);
     // never make a[] = b[], it violates the principle of jimple statement.
     // make a temporary variable.
-    ReferenceVariable tmpVar = NativeHelper.tempLocalVariable(method);
-    NativeHelper.assign(tmpVar, srcElm);
-    NativeHelper.assign(dstElm, tmpVar);
+    ReferenceVariable tmpVar = helper.tempLocalVariable(method);
+    helper.assign(tmpVar, srcElm);
+    helper.assign(dstElm, tmpVar);
   }
 
   /** 
@@ -117,13 +116,13 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *
    * private static native void setIn0(java.io.InputStream);
    */
-  public static void java_lang_System_setIn0(SootMethod method,
+  public void java_lang_System_setIn0(SootMethod method,
 					     ReferenceVariable thisVar,
 					     ReferenceVariable returnVar,
 					     ReferenceVariable params[]) {
     ReferenceVariable sysIn = 
-      NativeHelper.staticField("java.lang.System", "in");
-    NativeHelper.assign(sysIn, params[0]);
+      helper.staticField("java.lang.System", "in");
+    helper.assign(sysIn, params[0]);
   }
 
   /**
@@ -132,13 +131,13 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *
    * private static native void setOut0(java.io.PrintStream);
    */
-  public static void java_lang_System_setOut0(SootMethod method,
+  public void java_lang_System_setOut0(SootMethod method,
 					      ReferenceVariable thisVar,
 					      ReferenceVariable returnVar,
 					      ReferenceVariable params[]) {
     ReferenceVariable sysOut = 
-      NativeHelper.staticField("java.lang.System", "out");
-    NativeHelper.assign(sysOut, params[0]);
+      helper.staticField("java.lang.System", "out");
+    helper.assign(sysOut, params[0]);
   }
 
   /**
@@ -147,13 +146,13 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *
    * private static native void setErr0(java.io.PrintStream);  
    */
-  public static void java_lang_System_setErr0(SootMethod method,
+  public void java_lang_System_setErr0(SootMethod method,
 					      ReferenceVariable thisVar,
 					      ReferenceVariable returnVar,
 					      ReferenceVariable params[]) {
     ReferenceVariable sysErr = 
-      NativeHelper.staticField("java.lang.System", "err");
-    NativeHelper.assign(sysErr, params[0]);
+      helper.staticField("java.lang.System", "err");
+    helper.assign(sysErr, params[0]);
   }
 
   /**
@@ -164,15 +163,15 @@ public class JavaLangSystemNative extends NativeMethodClass {
    * private static native 
    *         java.util.Properties initProperties(java.util.Properties);
    */
-  public static 
+  public 
     void java_lang_System_initProperties(SootMethod method,
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
     ReferenceVariable sysProps = 
-      NativeHelper.staticField("java.lang.System", "props");
-    NativeHelper.assign(returnVar, sysProps);
-    NativeHelper.assign(sysProps, params[0]);
+      helper.staticField("java.lang.System", "props");
+    helper.assign(returnVar, sysProps);
+    helper.assign(sysProps, params[0]);
   }
 
   /**
@@ -180,12 +179,12 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *
    * public static native java.lang.String mapLibraryName(java.lang.String);
    */
-  public static 
+  public 
     void java_lang_System_mapLibraryName(SootMethod method,
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 
   /**
@@ -193,12 +192,12 @@ public class JavaLangSystemNative extends NativeMethodClass {
    *
    * static native java.lang.Class getCallerClass();
    */
-  public static 
+  public 
     void java_lang_System_getCallerClass(SootMethod method,
 					 ReferenceVariable thisVar,
 					 ReferenceVariable returnVar,
 					 ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getClassObject());
+    helper.assignObjectTo(returnVar, Environment.v().getClassObject());
   }
 
   /**

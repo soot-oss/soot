@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileDescriptorNative extends NativeMethodClass {
-    public JavaIoFileDescriptorNative( Singletons.Global g ) {}
-    public static JavaIoFileDescriptorNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaIoFileDescriptorNative(); }
+    public JavaIoFileDescriptorNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.

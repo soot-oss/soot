@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoFileSystemNative extends NativeMethodClass {
-    public JavaIoFileSystemNative( Singletons.Global g ) {}
-    public static JavaIoFileSystemNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaIoFileSystemNative(); }
+    public JavaIoFileSystemNative( NativeHelper helper ) { super(helper); }
 
 
   /**
@@ -63,11 +62,11 @@ public class JavaIoFileSystemNative extends NativeMethodClass {
    *
    *    public static native java.io.FileSystem getFileSystem();
    */
-  public static 
+  public 
     void java_io_FileSystem_getFileSystem(SootMethod method,
 					  ReferenceVariable thisVar,
 					  ReferenceVariable returnVar,
 					  ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getFileSystemObject());
+    helper.assignObjectTo(returnVar, Environment.v().getFileSystemObject());
   }
 }

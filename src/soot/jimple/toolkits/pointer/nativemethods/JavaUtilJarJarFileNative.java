@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilJarJarFileNative extends NativeMethodClass {
-    public JavaUtilJarJarFileNative( Singletons.Global g ) {}
-    public static JavaUtilJarJarFileNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaUtilJarJarFileNative(); }
+    public JavaUtilJarJarFileNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
@@ -68,12 +67,12 @@ public class JavaUtilJarJarFileNative extends NativeMethodClass {
    *
    *     private native java.lang.String getMetaInfEntryNames()[];
    */
-  public static 
+  public 
     void java_util_jar_JarFile_getMetaInfoEntryNames(
 				        SootMethod method,
                                         ReferenceVariable thisVar,
 					ReferenceVariable returnVar,
 					ReferenceVariable params[]) {
-    NativeHelper.assignObjectTo(returnVar, Environment.v().getStringObject());
+    helper.assignObjectTo(returnVar, Environment.v().getStringObject());
   }
 }

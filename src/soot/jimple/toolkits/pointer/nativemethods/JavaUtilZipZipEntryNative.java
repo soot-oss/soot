@@ -31,8 +31,7 @@ import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipZipEntryNative extends NativeMethodClass {
-    public JavaUtilZipZipEntryNative( Singletons.Global g ) {}
-    public static JavaUtilZipZipEntryNative v() { return G.v().soot_jimple_toolkits_pointer_nativemethods_JavaUtilZipZipEntryNative(); }
+    public JavaUtilZipZipEntryNative( NativeHelper helper ) { super(helper); }
 
   /**
    * Implements the abstract method simulateMethod.
