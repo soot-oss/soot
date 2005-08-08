@@ -41,14 +41,7 @@ public final class CallGraphBuilder
     public ReachableMethods reachables() { return reachables; }
 
     public static ContextManager makeContextManager( CallGraph cg ) {
-        CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
-        if( options.context() == options.context_insens ) {
-            return new ContextInsensitiveContextManager( cg );
-        } else if( options.context() == options.context_1cfa ) {
-            return new OneCFAContextManager( cg );
-        } else if( options.context() == options.context_objsens ) {
-            return new ObjSensContextManager( cg );
-        } else throw new RuntimeException( "Unhandled context-sensitivity level." );
+        return new ContextInsensitiveContextManager( cg );
     }
 
     /** This constructor builds a complete call graph using the given

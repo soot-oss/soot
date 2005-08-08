@@ -155,54 +155,5 @@ public class CGOptions
         return soot.PhaseOptions.getInt( options, "jdkver" );
     }
     
-    /** Context length (k) --
-    
-     * .
-    
-     * The maximum length of 
-     * call string or receiver object string used as context. 
-     * 
-     */
-    public int k() {
-        return soot.PhaseOptions.getInt( options, "k" );
-    }
-    
-    public static final int context_insens = 1;
-    public static final int context_1cfa = 2;
-    public static final int context_kcfa = 3;
-    public static final int context_objsens = 4;
-    public static final int context_kobjsens = 5;
-    public static final int context_uniqkobjsens = 6;
-    /** Context sensitivity --
-    
-     * Select context-sensitivity level.
-    
-     * This option tells Paddle which level of context-sensitivity to 
-     * use in constructing the call graph. 
-     */
-    public int context() {
-        String s = soot.PhaseOptions.getString( options, "context" );
-        
-        if( s.equalsIgnoreCase( "insens" ) )
-            return context_insens;
-        
-        if( s.equalsIgnoreCase( "1cfa" ) )
-            return context_1cfa;
-        
-        if( s.equalsIgnoreCase( "kcfa" ) )
-            return context_kcfa;
-        
-        if( s.equalsIgnoreCase( "objsens" ) )
-            return context_objsens;
-        
-        if( s.equalsIgnoreCase( "kobjsens" ) )
-            return context_kobjsens;
-        
-        if( s.equalsIgnoreCase( "uniqkobjsens" ) )
-            return context_uniqkobjsens;
-        
-        throw new RuntimeException( "Invalid value "+s+" of phase option context" );
-    }
-    
 }
         

@@ -1454,21 +1454,7 @@ public class Options extends OptionsBase {
                 +padOpt( "jdkver (3)", "JDK version for native methods" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
                 +padOpt( "implicit-entry (true)", "Include methods called implicitly by the VM as entry points" )
-                +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
-                +padOpt( "context", "Select context-sensitivity level" )
-                +padVal( "insens (default)", "Builds a context-insensitive call graph" )
-                
-                +padVal( "1cfa", "Builds a 1-CFA call graph" )
-                
-                +padVal( "kcfa", "Builds a k-CFA call graph" )
-                
-                +padVal( "objsens", "Builds an object-sensitive call graph" )
-                
-                +padVal( "kobjsens", "Builds a k-object-sensitive call graph" )
-                
-                +padVal( "uniqkobjsens", "Builds a unique-k-object-sensitive call graph" )
-                
-                +padOpt( "k (2)", "" );
+                +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -1606,8 +1592,22 @@ public class Options extends OptionsBase {
                 +padVal( "none", "No BDDs" )
                 
                 +padOpt( "ignore-types (false)", "Make Paddle completely ignore declared types of variables" )
-                +padOpt( "force-gc (false)", "Force garbage collection for measuring memory usage" )
                 +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Paddle" )
+                +padOpt( "context", "Select context-sensitivity level" )
+                +padVal( "insens (default)", "Builds a context-insensitive call graph" )
+                
+                +padVal( "1cfa", "Builds a 1-CFA call graph" )
+                
+                +padVal( "kcfa", "Builds a k-CFA call graph" )
+                
+                +padVal( "objsens", "Builds an object-sensitive call graph" )
+                
+                +padVal( "kobjsens", "Builds a k-object-sensitive call graph" )
+                
+                +padVal( "uniqkobjsens", "Builds a unique-k-object-sensitive call graph" )
+                
+                +padOpt( "k (2)", "" )
+                +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
                 +padOpt( "types-for-sites (false)", "Represent objects by their actual type rather than allocation site" )
@@ -1617,7 +1617,6 @@ public class Options extends OptionsBase {
                 +padOpt( "global-nodes-in-natives (false)", "Use global node to model variables in simulations of native methods" )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "this-edges (false)", "Use pointer assignment edges to model this parameters" )
-                +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
                 +padOpt( "propagator", "Select propagation algorithm" )
                 +padVal( "iter", "Simple iterative algorithm" )
@@ -2273,9 +2272,7 @@ public class Options extends OptionsBase {
                 +"jdkver "
                 +"all-reachable "
                 +"implicit-entry "
-                +"trim-clinit "
-                +"context "
-                +"k ";
+                +"trim-clinit ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -2327,8 +2324,10 @@ public class Options extends OptionsBase {
                 +"q "
                 +"backend "
                 +"ignore-types "
-                +"force-gc "
                 +"pre-jimplify "
+                +"context "
+                +"k "
+                +"context-heap "
                 +"rta "
                 +"field-based "
                 +"types-for-sites "
@@ -2338,7 +2337,6 @@ public class Options extends OptionsBase {
                 +"global-nodes-in-natives "
                 +"simple-edges-bidirectional "
                 +"this-edges "
-                +"context-heap "
                 +"precise-newinstance "
                 +"propagator "
                 +"set-impl "
@@ -2804,9 +2802,7 @@ public class Options extends OptionsBase {
               +"jdkver:3 "
               +"all-reachable:false "
               +"implicit-entry:true "
-              +"trim-clinit:true "
-              +"context:insens "
-              +"k:2 ";
+              +"trim-clinit:true ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -2857,8 +2853,10 @@ public class Options extends OptionsBase {
               +"q:trad "
               +"backend:buddy "
               +"ignore-types:false "
-              +"force-gc:false "
               +"pre-jimplify:false "
+              +"context:insens "
+              +"k:2 "
+              +"context-heap:false "
               +"rta:false "
               +"field-based:false "
               +"types-for-sites:false "
@@ -2868,7 +2866,6 @@ public class Options extends OptionsBase {
               +"global-nodes-in-natives:false "
               +"simple-edges-bidirectional:false "
               +"this-edges:false "
-              +"context-heap:false "
               +"precise-newinstance:true "
               +"propagator:worklist "
               +"set-impl:double "

@@ -1001,18 +1001,6 @@ public class AntTask extends MatchingTask {
             addArg("jdkver:"+arg);
           }
       
-          public void setcontext(String arg) {
-            addArg("-p");
-            addArg("cg");
-            addArg("context:"+arg);
-          }
-      
-          public void setk(String arg) {
-            addArg("-p");
-            addArg("cg");
-            addArg("k:"+arg);
-          }
-      
         }
     
         public Object createp_cg_cha() {
@@ -1268,16 +1256,16 @@ public class AntTask extends MatchingTask {
             addArg("ignore-types:"+(arg?"true":"false"));
           }
       
-          public void setforce_gc(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("force-gc:"+(arg?"true":"false"));
-          }
-      
           public void setpre_jimplify(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
             addArg("pre-jimplify:"+(arg?"true":"false"));
+          }
+      
+          public void setcontext_heap(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("context-heap:"+(arg?"true":"false"));
           }
       
           public void setrta(boolean arg) {
@@ -1334,12 +1322,6 @@ public class AntTask extends MatchingTask {
             addArg("this-edges:"+(arg?"true":"false"));
           }
       
-          public void setcontext_heap(boolean arg) {
-            addArg("-p");
-            addArg("cg.paddle");
-            addArg("context-heap:"+(arg?"true":"false"));
-          }
-      
           public void setprecise_newinstance(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
@@ -1392,6 +1374,18 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.paddle");
             addArg("backend:"+arg);
+          }
+      
+          public void setcontext(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("context:"+arg);
+          }
+      
+          public void setk(String arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("k:"+arg);
           }
       
           public void setpropagator(String arg) {

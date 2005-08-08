@@ -96,18 +96,6 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "ignore-types" );
     }
     
-    /** Force Garbage Collections --
-    
-     * Force garbage collection for measuring memory usage.
-    
-     * When this option is set to true, calls to System.gc() will be 
-     * made at various points to allow memory usage to be measured. 
-     * 
-     */
-    public boolean force_gc() {
-        return soot.PhaseOptions.getBoolean( options, "force-gc" );
-    }
-    
     /** Pre Jimplify --
     
      * Jimplify all methods before starting Paddle.
@@ -121,6 +109,21 @@ public class PaddleOptions
      */
     public boolean pre_jimplify() {
         return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
+    }
+    
+    /** Context-sensitive Heap Locations --
+    
+     * Treat allocation sites context-sensitively.
+    
+     * When this option is set to true, the context-sensitivity level 
+     * that is set for the context-sensitive call graph and for pointer 
+     * variables is also used to model heap locations 
+     * context-sensitively. When this option is false, heap locations 
+     * are modelled context-insensitively regardless of the 
+     * context-sensitivity level. 
+     */
+    public boolean context_heap() {
+        return soot.PhaseOptions.getBoolean( options, "context-heap" );
     }
     
     /** RTA --
@@ -244,21 +247,6 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "this-edges" );
     }
     
-    /** Context-sensitive Heap Locations --
-    
-     * Treat allocation sites context-sensitively.
-    
-     * When this option is set to true, the context-sensitivity level 
-     * that is set for the context-sensitive call graph and for pointer 
-     * variables is also used to model heap locations 
-     * context-sensitively. When this option is false, heap locations 
-     * are modelled context-insensitively regardless of the 
-     * context-sensitivity level. 
-     */
-    public boolean context_heap() {
-        return soot.PhaseOptions.getBoolean( options, "context-heap" );
-    }
-    
     /** Precise newInstance --
     
      * Make newInstance only allocate objects of dynamic classes.
@@ -327,6 +315,18 @@ public class PaddleOptions
      */
     public int order() {
         return soot.PhaseOptions.getInt( options, "order" );
+    }
+    
+    /** Context length (k) --
+    
+     * .
+    
+     * The maximum length of 
+     * call string or receiver object string used as context. 
+     * 
+     */
+    public int k() {
+        return soot.PhaseOptions.getInt( options, "k" );
     }
     
     public static final int conf_ofcg = 1;
@@ -438,6 +438,43 @@ public class PaddleOptions
             return backend_none;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option backend" );
+    }
+    
+    public static final int context_insens = 1;
+    public static final int context_1cfa = 2;
+    public static final int context_kcfa = 3;
+    public static final int context_objsens = 4;
+    public static final int context_kobjsens = 5;
+    public static final int context_uniqkobjsens = 6;
+    /** Context abstraction --
+    
+     * Select context-sensitivity level.
+    
+     * This option tells Paddle which level of context-sensitivity to 
+     * use in constructing the call graph. 
+     */
+    public int context() {
+        String s = soot.PhaseOptions.getString( options, "context" );
+        
+        if( s.equalsIgnoreCase( "insens" ) )
+            return context_insens;
+        
+        if( s.equalsIgnoreCase( "1cfa" ) )
+            return context_1cfa;
+        
+        if( s.equalsIgnoreCase( "kcfa" ) )
+            return context_kcfa;
+        
+        if( s.equalsIgnoreCase( "objsens" ) )
+            return context_objsens;
+        
+        if( s.equalsIgnoreCase( "kobjsens" ) )
+            return context_kobjsens;
+        
+        if( s.equalsIgnoreCase( "uniqkobjsens" ) )
+            return context_uniqkobjsens;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option context" );
     }
     
     public static final int propagator_iter = 1;

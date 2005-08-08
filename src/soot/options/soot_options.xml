@@ -1422,80 +1422,6 @@ that must have already been executed. Since these static initializers cannot be
 executed again, the corresponding call graph edges are removed from the call graph.
 </long_desc>
                                 </boolopt>
-                                <multiopt>
-                                        <name>Context sensitivity</name>
-                                        <alias>context</alias>
-                                        <value>
-                                                <name>Context-insensitive</name>
-                                                <alias>insens</alias>
-                                                <default/>
-<short_desc>Builds a context-insensitive call graph</short_desc>
-<long_desc>
-Builds a context-insensitive call graph.
-</long_desc>
-                                        </value>
-                                        <value>
-                                                <name>1-CFA</name>
-                                                <alias>1cfa</alias>
-<short_desc>Builds a 1-CFA call graph</short_desc>
-<long_desc>
-Builds a 1-CFA call graph.
-</long_desc>
-
-                                        </value>
-                                        <value>
-                                                <name>k-CFA</name>
-                                                <alias>kcfa</alias>
-<short_desc>Builds a k-CFA call graph</short_desc>
-<long_desc>
-Builds a k-CFA call graph.
-</long_desc>
-
-                                        </value>
-                                        <value>
-                                                <name>Object Sensitive</name>
-                                                <alias>objsens</alias>
-<short_desc>Builds an object-sensitive call graph</short_desc>
-<long_desc>
-Builds an object-sensitive call graph.
-</long_desc>
-
-                                        </value>
-                                        <value>
-                                                <name>k-Object Sensitive</name>
-                                                <alias>kobjsens</alias>
-<short_desc>Builds a k-object-sensitive call graph</short_desc>
-<long_desc>
-Builds a context-sensitive call graph where the context is a string of up to
-k receiver objects.
-</long_desc>
-
-                                        </value>
-                                        <value>
-                                                <name>Unique k-Object Sensitive</name>
-                                                <alias>uniqkobjsens</alias>
-<short_desc>Builds a unique-k-object-sensitive call graph</short_desc>
-<long_desc>
-Builds a context-sensitive call graph where the context is a string of up to
-k unique receiver objects. If the receiver of a call already appears in the
-context string, the context string is just reused as is.
-</long_desc>
-
-                                        </value>
-                                        <short_desc>Select context-sensitivity level</short_desc>
-                                        <long_desc>
-This option tells Paddle which level of context-sensitivity to use in constructing the call graph.
-</long_desc>
-                                </multiopt>
-                                <intopt>
-                                        <name>Context length (k)</name>
-                                        <alias>k</alias>
-                                        <default>2</default>
-                                        <short_desc/>
-                                        <long_desc>
-                                        The maximum length of call string or receiver object string used as context.
-                </long_desc>
-                                </intopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
@@ -2336,16 +2262,6 @@ declared types of variables and casts.
         </long_desc>
 						</boolopt>
 						<boolopt>
-							<name>Force Garbage Collections</name>
-							<alias>force-gc</alias>
-							<default>false</default>
-                                                        <short_desc>Force garbage collection for measuring memory usage</short_desc>
-							<long_desc>
-When this option is set to true, calls to System.gc() will be made at
-various points to allow memory usage to be measured.
-        </long_desc>
-						</boolopt>
-						<boolopt>
 							<name>Pre Jimplify</name>
 							<alias>pre-jimplify</alias>
 							<default>false</default>
@@ -2356,6 +2272,96 @@ before starting the points-to analysis. This allows the Jimplification
 time to be separated from the points-to time. However, it increases the
 total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
+        </long_desc>
+						</boolopt>
+					</section>
+					<section>
+						<name>Paddle Context Sensitivity Options</name>
+                                <multiopt>
+                                        <name>Context abstraction</name>
+                                        <alias>context</alias>
+                                        <value>
+                                                <name>Context-insensitive</name>
+                                                <alias>insens</alias>
+                                                <default/>
+<short_desc>Builds a context-insensitive call graph</short_desc>
+<long_desc>
+Builds a context-insensitive call graph.
+</long_desc>
+                                        </value>
+                                        <value>
+                                                <name>1-CFA</name>
+                                                <alias>1cfa</alias>
+<short_desc>Builds a 1-CFA call graph</short_desc>
+<long_desc>
+Builds a 1-CFA call graph.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>k-CFA</name>
+                                                <alias>kcfa</alias>
+<short_desc>Builds a k-CFA call graph</short_desc>
+<long_desc>
+Builds a k-CFA call graph.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>Object Sensitive</name>
+                                                <alias>objsens</alias>
+<short_desc>Builds an object-sensitive call graph</short_desc>
+<long_desc>
+Builds an object-sensitive call graph.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>k-Object Sensitive</name>
+                                                <alias>kobjsens</alias>
+<short_desc>Builds a k-object-sensitive call graph</short_desc>
+<long_desc>
+Builds a context-sensitive call graph where the context is a string of up to
+k receiver objects.
+</long_desc>
+
+                                        </value>
+                                        <value>
+                                                <name>Unique k-Object Sensitive</name>
+                                                <alias>uniqkobjsens</alias>
+<short_desc>Builds a unique-k-object-sensitive call graph</short_desc>
+<long_desc>
+Builds a context-sensitive call graph where the context is a string of up to
+k unique receiver objects. If the receiver of a call already appears in the
+context string, the context string is just reused as is.
+</long_desc>
+
+                                        </value>
+                                        <short_desc>Select context-sensitivity level</short_desc>
+                                        <long_desc>
+This option tells Paddle which level of context-sensitivity to use in constructing the call graph.
+</long_desc>
+                                </multiopt>
+                                <intopt>
+                                        <name>Context length (k)</name>
+                                        <alias>k</alias>
+                                        <default>2</default>
+                                        <short_desc/>
+                                        <long_desc>
+                                        The maximum length of call string or receiver object string used as context.
+                </long_desc>
+                                </intopt>
+						<boolopt>
+							<name>Context-sensitive Heap Locations</name>
+							<alias>context-heap</alias>
+							<default>false</default>
+                                                        <short_desc>Treat allocation sites context-sensitively</short_desc>
+							<long_desc>
+When this option is set to true, the context-sensitivity level that is set
+for the context-sensitive call graph and for pointer variables is also used
+to model heap locations context-sensitively. When this option is false,
+heap locations are modelled context-insensitively regardless of the
+context-sensitivity level.
         </long_desc>
 						</boolopt>
 					</section>
@@ -2463,19 +2469,6 @@ to the this pointer of the method. When this option is set to true, however,
 Paddle instead models flow of receivers as an assignnment edge from the
 receiver at the call site to the this pointer of the method, reducing
 precision.
-        </long_desc>
-						</boolopt>
-						<boolopt>
-							<name>Context-sensitive Heap Locations</name>
-							<alias>context-heap</alias>
-							<default>false</default>
-                                                        <short_desc>Treat allocation sites context-sensitively</short_desc>
-							<long_desc>
-When this option is set to true, the context-sensitivity level that is set
-for the context-sensitive call graph and for pointer variables is also used
-to model heap locations context-sensitively. When this option is false,
-heap locations are modelled context-insensitively regardless of the
-context-sensitivity level.
         </long_desc>
 						</boolopt>
 						<boolopt>
