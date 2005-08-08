@@ -2153,12 +2153,21 @@ Turns on JeddProfiler for profiling BDD operations.
         </long_desc>
 						</boolopt>
 						<multiopt>
-							<name>Queue Implementation</name>
+							<name>Worklist Implementation</name>
 							<alias>q</alias>
+							<value>
+								<name>Select Automatically</name>
+								<alias>auto</alias>
+								<default/>
+<short_desc>Select queue implementation based on bdd option</short_desc>
+<long_desc>
+When the bdd option is true, the BDD-based worklist implementation will be used.
+When the bdd option is false, the Traditional worklist implementation will be used.
+</long_desc>
+							</value>
 							<value>
 								<name>Traditional</name>
 								<alias>trad</alias>
-								<default/>
 <short_desc>Normal worklist queue implementation</short_desc>
 <long_desc>
 Normal worklist queue implementation
@@ -2489,6 +2498,16 @@ precision.
 							<name>Propagator</name>
 							<alias>propagator</alias>
 							<value>
+								<name>Select Automatically</name>
+								<alias>auto</alias>
+								<default/>
+<short_desc>Select propagation algorithm based on bdd option</short_desc>
+<long_desc>
+When the bdd option is true, the Incremental BDD propagation algorithm will be used.
+When the bdd option is false, the Worklist propagation algorithm will be used.
+</long_desc>
+							</value>
+							<value>
 								<name>Iter</name>
 								<alias>iter</alias>
 <short_desc>Simple iterative algorithm</short_desc>
@@ -2500,7 +2519,6 @@ graph does not change.
 							<value>
 								<name>Worklist</name>
 								<alias>worklist</alias>
-								<default/>
 <short_desc>Fast, worklist-based algorithm</short_desc>
 <long_desc>
 Worklist is a worklist-based algorithm that tries
@@ -2533,16 +2551,6 @@ BDD is a propagator that stores points-to sets in binary decision diagrams.
                                                                 <short_desc>Incrementalized BDD-based propagator</short_desc>
 <long_desc>
 A propagator that stores points-to sets in binary decision diagrams, and propagates them incrementally.
-</long_desc>
-							</value>
-							<value>
-								<name>None</name>
-								<alias>none</alias>
-                                                                <short_desc>Disable propagation</short_desc>
-<long_desc>
-None means that propagation is not done; the graph is only built and
-simplified. This is useful if an external solver is being used to perform the
-propagation.
 </long_desc>
 							</value>
                                                         <short_desc>Select propagation algorithm</short_desc>

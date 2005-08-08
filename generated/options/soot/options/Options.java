@@ -1570,7 +1570,9 @@ public class Options extends OptionsBase {
                 +padOpt( "dynamic-order", "" )
                 +padOpt( "profile (false)", "Profile BDDs using JeddProfiler" )
                 +padOpt( "q", "Select queue implementation" )
-                +padVal( "trad (default)", "Normal worklist queue implementation" )
+                +padVal( "auto (default)", "Select queue implementation based on bdd option" )
+                
+                +padVal( "trad", "Normal worklist queue implementation" )
                 
                 +padVal( "bdd", "BDD-based queue implementation" )
                 
@@ -1619,17 +1621,17 @@ public class Options extends OptionsBase {
                 +padOpt( "this-edges (false)", "Use pointer assignment edges to model this parameters" )
                 +padOpt( "precise-newinstance (true)", "Make newInstance only allocate objects of dynamic classes" )
                 +padOpt( "propagator", "Select propagation algorithm" )
+                +padVal( "auto (default)", "Select propagation algorithm based on bdd option" )
+                
                 +padVal( "iter", "Simple iterative algorithm" )
                 
-                +padVal( "worklist (default)", "Fast, worklist-based algorithm" )
+                +padVal( "worklist", "Fast, worklist-based algorithm" )
                 
                 +padVal( "alias", "Alias-edge based algorithm" )
                 
                 +padVal( "bdd", "BDD-based propagator" )
                 
                 +padVal( "incbdd", "Incrementalized BDD-based propagator" )
-                
-                +padVal( "none", "Disable propagation" )
                 
                 +padOpt( "set-impl", "Select points-to set implementation" )
                 +padVal( "hash", "Use Java HashSet" )
@@ -2850,7 +2852,7 @@ public class Options extends OptionsBase {
               +"bdd:false "
               +"order:32 "
               +"profile:false "
-              +"q:trad "
+              +"q:auto "
               +"backend:buddy "
               +"ignore-types:false "
               +"pre-jimplify:false "
@@ -2867,7 +2869,7 @@ public class Options extends OptionsBase {
               +"simple-edges-bidirectional:false "
               +"this-edges:false "
               +"precise-newinstance:true "
-              +"propagator:worklist "
+              +"propagator:auto "
               +"set-impl:double "
               +"double-set-old:hybrid "
               +"double-set-new:hybrid "

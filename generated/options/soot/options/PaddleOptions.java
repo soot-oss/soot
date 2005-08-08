@@ -374,12 +374,13 @@ public class PaddleOptions
         throw new RuntimeException( "Invalid value "+s+" of phase option conf" );
     }
     
-    public static final int q_trad = 1;
-    public static final int q_bdd = 2;
-    public static final int q_debug = 3;
-    public static final int q_trace = 4;
-    public static final int q_numtrace = 5;
-    /** Queue Implementation --
+    public static final int q_auto = 1;
+    public static final int q_trad = 2;
+    public static final int q_bdd = 3;
+    public static final int q_debug = 4;
+    public static final int q_trace = 5;
+    public static final int q_numtrace = 6;
+    /** Worklist Implementation --
     
      * Select queue implementation.
     
@@ -388,6 +389,9 @@ public class PaddleOptions
      */
     public int q() {
         String s = soot.PhaseOptions.getString( options, "q" );
+        
+        if( s.equalsIgnoreCase( "auto" ) )
+            return q_auto;
         
         if( s.equalsIgnoreCase( "trad" ) )
             return q_trad;
@@ -477,12 +481,12 @@ public class PaddleOptions
         throw new RuntimeException( "Invalid value "+s+" of phase option context" );
     }
     
-    public static final int propagator_iter = 1;
-    public static final int propagator_worklist = 2;
-    public static final int propagator_alias = 3;
-    public static final int propagator_bdd = 4;
-    public static final int propagator_incbdd = 5;
-    public static final int propagator_none = 6;
+    public static final int propagator_auto = 1;
+    public static final int propagator_iter = 2;
+    public static final int propagator_worklist = 3;
+    public static final int propagator_alias = 4;
+    public static final int propagator_bdd = 5;
+    public static final int propagator_incbdd = 6;
     /** Propagator --
     
      * Select propagation algorithm.
@@ -492,6 +496,9 @@ public class PaddleOptions
      */
     public int propagator() {
         String s = soot.PhaseOptions.getString( options, "propagator" );
+        
+        if( s.equalsIgnoreCase( "auto" ) )
+            return propagator_auto;
         
         if( s.equalsIgnoreCase( "iter" ) )
             return propagator_iter;
@@ -507,9 +514,6 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "incbdd" ) )
             return propagator_incbdd;
-        
-        if( s.equalsIgnoreCase( "none" ) )
-            return propagator_none;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option propagator" );
     }
