@@ -1495,11 +1495,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 createBlock(currentTry.finallyBlock());
                 tryStack.push(currentTry);
                 // if return stmt contains a return don't create the other return
-                ReturnStmtChecker rsc = new ReturnStmtChecker();
-                currentTry.finallyBlock().visit(rsc);
-                if (rsc.hasRet()){
-                    return;
-                }
+                //ReturnStmtChecker rsc = new ReturnStmtChecker();
+                //currentTry.finallyBlock().visit(rsc);
+                //if (rsc.hasRet()){
+                //    return;
+                //}
             }
             else {
                 tryStack.push(currentTry);
@@ -1513,11 +1513,12 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 createBlock(currentTry.finallyBlock());
                 catchStack.push(currentTry);
                 // if return stmt contains a return don't create the other return
-                ReturnStmtChecker rsc = new ReturnStmtChecker();
-                currentTry.finallyBlock().visit(rsc);
-                if (rsc.hasRet()){
-                    return;
-                }
+                // extra return remove with some Soot phase
+                //ReturnStmtChecker rsc = new ReturnStmtChecker();
+                //currentTry.finallyBlock().visit(rsc);
+                //if (rsc.hasRet()){
+                //    return;
+                //}
             }
             else {
                 catchStack.push(currentTry);
