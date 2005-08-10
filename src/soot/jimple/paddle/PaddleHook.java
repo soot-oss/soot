@@ -68,7 +68,9 @@ public class PaddleHook extends SceneTransformer
      * Paddle uses it to stop profiling if profiling is enabled. */
     public void finishPhases()
     {
-        paddleTransformer().finishPhases();
+        if(paddleTransformer != null) {
+            paddleTransformer().finishPhases();
+        }
     }
 }
 
