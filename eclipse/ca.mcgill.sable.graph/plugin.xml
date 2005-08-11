@@ -3,7 +3,7 @@
 <plugin
    id="ca.mcgill.sable.graph"
    name="Graph Plug-in"
-   version="1.0.0"
+   version="2.2.2"
    provider-name=""
    class="ca.mcgill.sable.graph.GraphPlugin">
 

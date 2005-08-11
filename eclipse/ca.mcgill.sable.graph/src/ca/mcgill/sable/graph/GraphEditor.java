@@ -180,6 +180,13 @@ public class GraphEditor extends GraphicalEditor {
 	}
 	
 
+	public String getToolTipText(){
+		return getTitle();
+	}
+	
+	public String getTitleToolTip(){
+		return super.getTitleToolTip();
+	}
 	
 	
 	

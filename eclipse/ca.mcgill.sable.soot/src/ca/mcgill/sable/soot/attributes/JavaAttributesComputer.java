@@ -53,8 +53,13 @@ public class JavaAttributesComputer extends AbstractAttributesComputer {
 	protected ArrayList computeNames(AbstractTextEditor editor){
 		IJavaElement jElem = getJavaElement(editor);
 		ArrayList names = new ArrayList();
-		ICompilationUnit cu = (ICompilationUnit)jElem;
-		return getNames(cu);
+		if (jElem instanceof ICompilationUnit){
+			ICompilationUnit cu = (ICompilationUnit)jElem;
+			return getNames(cu);
+		}
+		else {
+			return names;
+		}
 	}
 	
 	private ArrayList getNames(ICompilationUnit cu){

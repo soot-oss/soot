@@ -130,6 +130,10 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 			handleCallGraphStartEvent(getEvent().info());
 		}
 		
+		/*else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_RESET){
+			handleCallGraphResetEvent(getEvent().info());
+		}*/
+		
 		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_NEXT_METHOD){
 			handleCallGraphNextMethodEvent(getEvent().info());
 		}
@@ -297,11 +301,10 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	
 	
 	private void handleCallGraphStartEvent(Object info){
-		System.out.println("about to make new Generator");
-        setGenerator(new CallGraphGenerator());
-		System.out.println("made new call graph generator");
-        System.out.println("info :"+info.getClass());
-        getGenerator().setInfo((CallGraphInfo)info);
+		if (getGenerator() == null){
+        	setGenerator(new CallGraphGenerator());
+        }
+		getGenerator().setInfo((CallGraphInfo)info);
 		getGenerator().setController(this);
 		final CallGraphGenerator cgg = getGenerator();
 		getDisplay().syncExec(new Runnable(){
@@ -311,6 +314,19 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		});
 		waitForContinue();
 	}
+	
+	/*private void handleCallGraphResetEvent(Object info){
+		
+        getGenerator().setInfo((CallGraphInfo)info);
+		
+		final CallGraphGenerator cgg = getGenerator();
+		getDisplay().syncExec(new Runnable(){
+			public void run(){
+				cgg.run();
+			}
+		});
+		waitForContinue();
+	}*/
 	
 	private void handleCallGraphNextMethodEvent(Object info){
 		SootMethod meth = (SootMethod)info;

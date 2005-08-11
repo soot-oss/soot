@@ -226,6 +226,11 @@ public class CFGEditor extends GraphicalEditor {
 		super.setTitleToolTip(text);
 	}
 	
+	public String getToolTipText(){
+		return "cfg editor";
+	}
+	
+
 	
 	
 }

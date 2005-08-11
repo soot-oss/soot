@@ -3,7 +3,7 @@
 <plugin
    id="ca.mcgill.sable.soot"
    name="Soot Plug-in"
-   version="2.0.0"
+   version="2.2.2"
    provider-name=""
    class="ca.mcgill.sable.soot.SootPlugin">
 

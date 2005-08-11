@@ -72,8 +72,14 @@ public class CallGraphGenerator {
 		IWorkbenchPage page = window.getActivePage();;
 		
 		try{
-			setGraph(new Graph());
-			IEditorPart part = page.openEditor(graph, "ca.mcgill.sable.graph.GraphEditor");
+			if (graph == null){
+				setGraph(new Graph());
+				graph.setName("CallGraph");
+			}
+			else{
+				graph.removeAllChildren();
+			}
+			IEditorPart part = page.openEditor(graph, "ca.mcgill.sable.graph.GraphEditor", true);
 			((GraphEditor)part).setPartFactory(new CallGraphPartFactory());
 			//CGMenuProvider provider = new CGMenuProvider(((GraphEditor)part).getGraphEditorGraphicalViewer(), ((GraphEditor)part).getGraphEditorActionRegistry());
 			addActions((GraphEditor)part);	
@@ -278,7 +284,7 @@ public class CallGraphGenerator {
 		
 		try{
 			System.out.println("file to open: "+fileToOpen);
-			IEditorPart part = page.openEditor(new FileEditorInput((IFile)fileToOpen), fileToOpen.getName());
+			IEditorPart part = page.openEditor(new FileEditorInput((IFile)fileToOpen), org.eclipse.jdt.ui.JavaUI.ID_CU_EDITOR);
 			SourceLnPosTag methTag = (SourceLnPosTag)meth.getTag("SourceLnPosTag");
 			if (methTag != null){
 				

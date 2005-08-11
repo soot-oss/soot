@@ -75,6 +75,7 @@ public class ModelCreator {
 				exceptHeads = findExceptionBlockHeads(unitGraph.getBody());
 			}
 		}
+		System.out.println("handled graphs with exceptions");
 		while (nodesIt.hasNext()){
 			Object node = nodesIt.next();
 			CFGNode cfgNode;
@@ -105,7 +106,7 @@ public class ModelCreator {
 				
 			}
 		}
-		
+		System.out.println("handling heads");
 		Iterator headsIt = getSootGraph().getHeads().iterator();
 		while (headsIt.hasNext()){
 			Object next = headsIt.next();
@@ -113,7 +114,7 @@ public class ModelCreator {
 			if ((exceptHeads != null) && exceptHeads.contains(next)) continue;
 			node.getData().setHead(true);
 		}
-		
+		System.out.println("handling tails");
 		Iterator tailsIt = getSootGraph().getTails().iterator();
 		while (tailsIt.hasNext()){
 			Object next = tailsIt.next();
@@ -121,6 +122,7 @@ public class ModelCreator {
 			node.getData().setTail(true);
 		}
 		
+		System.out.println("setting model");
 		setModel(cfgGraph);
 		
 	}
@@ -286,21 +288,29 @@ public class ModelCreator {
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		try{
 			CFGGraph cfgGraph = new CFGGraph();
+			cfgGraph.setName("cfgGraph");
+			
+			System.out.println("cfgGraph: "+cfgGraph);
 			part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
             System.out.println("part kind: "+part.getClass());
-			((CFGEditor)part).setTitle(getEdName());
-			((CFGEditor)part).setTitleTooltip(getEdName());
-			
+			if (part instanceof CFGEditor){
+				((CFGEditor)part).setTitle(getEdName());
+				((CFGEditor)part).setTitleTooltip(getEdName());
+			}
+			System.out.println("about to build model");
 			buildModel(cfgGraph);
+			System.out.println("built model");
 		}
         catch (PartInitException ex){
-        	System.err.println(ex.getMessage());
-        //}
-		//catch (CoreException e){
-			System.err.println("part kind: "+part.getClass());
-			//System.err.println(e.getMessage());
+        	System.out.println("error message: "+ex.getMessage());
+            System.out.println("part kind: "+part.getClass());
 			ex.printStackTrace();
 		}
+        catch(Exception e){
+        	System.out.println("exception error msg: "+e.getMessage());
+        	System.out.println("error type: "+e.getClass());
+        	e.printStackTrace();
+        }
 	}
 	
 	public void setEditorName(String name){
