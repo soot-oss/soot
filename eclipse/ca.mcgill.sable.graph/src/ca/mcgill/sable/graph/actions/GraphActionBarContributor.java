@@ -1,9 +1,23 @@
-/*
- * Created on Jan 16, 2004
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+
 package ca.mcgill.sable.graph.actions;
 
 import org.eclipse.gef.ui.actions.ActionBarContributor;
@@ -12,12 +26,6 @@ import org.eclipse.gef.ui.actions.*;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class GraphActionBarContributor extends ActionBarContributor {
 
 	/**
@@ -25,7 +33,6 @@ public class GraphActionBarContributor extends ActionBarContributor {
 	 */
 	public GraphActionBarContributor() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	
@@ -33,27 +40,21 @@ public class GraphActionBarContributor extends ActionBarContributor {
 	 * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
 	 */
 	protected void buildActions() {
-		// TODO Auto-generated method stub
 		addRetargetAction(new ZoomInRetargetAction());
 		addRetargetAction(new ZoomOutRetargetAction());
-	
-		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
 	 */
 	protected void declareGlobalActionKeys() {
-		// TODO Auto-generated method stub
 		addGlobalActionKey(IWorkbenchActionConstants.PRINT);
 	}
 	
 	//  this is for zoom toolbar buttons
 	public void contributeToToolBar(IToolBarManager toolBarManager){
 		super.contributeToToolBar(toolBarManager);
-		
 		toolBarManager.add(new Separator());
-		
 	}
 	
 	public void contributeToMenu(IMenuManager menuManager){

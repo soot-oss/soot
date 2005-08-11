@@ -1,9 +1,23 @@
-/*
- * Created on Jan 15, 2004
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+
 package ca.mcgill.sable.graph.editparts;
 
 import java.beans.PropertyChangeEvent;
@@ -22,31 +36,21 @@ import org.eclipse.swt.widgets.Display;
 import ca.mcgill.sable.graph.editpolicies.*;
 import ca.mcgill.sable.graph.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class SimpleNodeEditPart
 	extends AbstractGraphicalEditPart
 	implements NodeEditPart, PropertyChangeListener {
 
 	private Object data;
 	
-	/**
-	 * 
-	 */
+
 	public SimpleNodeEditPart() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		// TODO Auto-generated method stub
 		RectangleFigure rect = new RectangleFigure();
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
@@ -74,25 +78,18 @@ public class SimpleNodeEditPart
 		List outgoing = getSourceConnections();
 		for (int i = 0; i < outgoing.size(); i++){
 			EdgeEditPart edge = (EdgeEditPart)outgoing.get(i);
-			//System.out.println("edge src: "+edge.getSource()+" edge tgt: "+edge.getTarget());
-			//if (map.containsKey(edge.getSource()) && map.containsKey(edge.getTarget())){
-			//System.out.println("contribute edge: src: "+((ca.mcgill.sable.graph.model.Edge)edge.getModel()).getSrc().getData()+" tgt: "+((ca.mcgill.sable.graph.model.Edge)edge.getModel()).getTgt().getData());
-				edge.contributeToGraph(graph, map);
-			//}
+			edge.contributeToGraph(graph, map);
 		}
 	}
 	
 	public void applyGraphResults(DirectedGraph graph, HashMap map){
 		Node node = (Node)map.get(this);
 		if (node != null){
-			//System.out.println("node.x: "+node.x+" node.y: "+node.y);
 			getFigure().setBounds(new Rectangle(node.x+10, node.y, node.width, node.height));//getFigure().getBounds().height));//getFigure().getBounds().height));
 			List outgoing = getSourceConnections();
 			for (int i = 0; i < outgoing.size(); i++){
 				EdgeEditPart edge = (EdgeEditPart)outgoing.get(i);
-				//if (map.containsKey(edge.getSource()) && map.containsKey(edge.getTarget())){
-					edge.applyGraphResults(graph, map);
-				//}
+				edge.applyGraphResults(graph, map);
 			}
 		}
 	
@@ -108,8 +105,6 @@ public class SimpleNodeEditPart
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
-		//installEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE, new SimpleNodeSelectPolicy()); 
 	}
 
 	public List getModelSourceConnections(){
@@ -124,7 +119,6 @@ public class SimpleNodeEditPart
 	 * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart arg0) {
-		// TODO Auto-generated method stub
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -132,7 +126,6 @@ public class SimpleNodeEditPart
 	 * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.ConnectionEditPart)
 	 */
 	public ConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart arg0) {
-		// TODO Auto-generated method stub
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -140,7 +133,6 @@ public class SimpleNodeEditPart
 	 * @see org.eclipse.gef.NodeEditPart#getSourceConnectionAnchor(org.eclipse.gef.Request)
 	 */
 	public ConnectionAnchor getSourceConnectionAnchor(Request arg0) {
-		// TODO Auto-generated method stub
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -148,7 +140,6 @@ public class SimpleNodeEditPart
 	 * @see org.eclipse.gef.NodeEditPart#getTargetConnectionAnchor(org.eclipse.gef.Request)
 	 */
 	public ConnectionAnchor getTargetConnectionAnchor(Request arg0) {
-		// TODO Auto-generated method stub
 		return new ChopboxAnchor(getFigure());
 	}
 
@@ -176,11 +167,6 @@ public class SimpleNodeEditPart
 		else if (event.getPropertyName().equals(Element.OUTPUTS)){
 			refreshSourceConnections();
 		}
-		//else if (event.getPropertyName().equals(Element.COMPLEX_CHILD_ADDED)){
-			//System.out.println("receive COMPLEX_ADDED event");
-			//System.out.println("child: "+getModelChildren().get(0).getClass());
-			//refreshChildren();
-		//}
 		
 	}
 	
@@ -194,9 +180,7 @@ public class SimpleNodeEditPart
 			Object next = it.next();
 			if (next instanceof Label){
 				((Label)next).setText(getData().toString());
-				//System.out.println("data: "+getData());
 				if (getData() != null){
-					//((Label)next).setSize(getData().length()*7, ((Label)next).getBounds().height);
 					getFigure().setSize((getData().toString().length()*7)+10, ((((Label)next).getBounds().height/2)+10));
 					getFigure().revalidate();
 					((GraphEditPart)getParent()).getFigure().revalidate();
@@ -270,9 +254,5 @@ public class SimpleNodeEditPart
 	public void setTopLevel(boolean b) {
 		topLevel = b;
 	}
-	
-	/*public void performRequest(Request req){
-		System.out.println("req: "+req.getType());
-	}*/
 
 }

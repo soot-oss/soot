@@ -1,9 +1,23 @@
-/*
- * Created on Feb 25, 2004
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+
 package ca.mcgill.sable.graph.editpolicies;
 
 import org.eclipse.gef.editpolicies.*;
@@ -13,75 +27,29 @@ import org.eclipse.gef.requests.*;
 import ca.mcgill.sable.graph.editparts.*;
 
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class SimpleNodeSelectPolicy extends SelectionEditPolicy {
 
-	/**
-	 * 
-	 */
+	
 	public SimpleNodeSelectPolicy() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#hideSelection()
 	 */
 	protected void hideSelection() {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.SelectionEditPolicy#showSelection()
 	 */
 	protected void showSelection() {
-		// TODO Auto-generated method stub
 		((SimpleNodeEditPart)getHost()).setSelected(EditPart.SELECTED);//switchToComplex();
-		//getHost().setFocus(false);
-		//((SimpleNodeEditPart)getHost()).getViewer().deselect(getHost());		//this.setSelectedState(EditPart.SELECTED_NONE);
 	}
-	
-	
-	
+
 	public void showTargetFeedback(Request request){
-		System.out.println("request: "+request);
-		//super.showTargetFeedback(request);
-		/*System.out.println("req type: "+request.getType());
-		System.out.println("req class: "+request.getClass());
-		System.out.println("part sel state: "+getHost().getSelected());
-		if (getHost().getSelected() == EditPart.SELECTED){
-			System.out.println("edit part is selected");
-		}
-		if (request instanceof SelectionRequest){
-		//if (request.getType().equals(RequestConstants.REQ_SELECTION_HOVER)){
-		//}
-		//else if (request.getType().equals(RequestConstants.REQ_SELECTION)){
-			SelectionRequest req = (SelectionRequest)request;
-			System.out.println("any button pressed: "+req.isAnyMouseButtonPressed());
-			System.out.println("left pressed: "+req.isLeftMouseButtonPressed());
-			System.out.println(getHost().getClass());
-			if (getHost().getSelected() == EditPart.SELECTED_PRIMARY){
-				((SimpleNodeEditPart)getHost()).switchToComplex();
-			}
-		}*/
-		
-		
-	}
 	
-	/*public boolean understandsRequest(Request req){
-		if (req.getType() == RequestConstants.REQ_SELECTION){
-			return true;
-		}
-		else {
-			return false;
-		}
-	*/
+	}
 	
 
 }

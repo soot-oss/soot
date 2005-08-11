@@ -1,9 +1,23 @@
-/*
- * Created on Jan 15, 2004
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+
 package ca.mcgill.sable.graph.editparts;
 
 import org.eclipse.draw2d.*;
@@ -15,31 +29,21 @@ import java.util.*;
 import ca.mcgill.sable.graph.model.*;
 import java.beans.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class GraphEditPart extends AbstractGraphicalEditPart 
 	implements PropertyChangeListener {
 
 	private int figureWidth = 20000;
 	private int figureHeight = 20000;
 	
-	/**
-	 * 
-	 */
+
 	public GraphEditPart() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		// TODO Auto-generated method stub
 		IFigure f = new Figure() {
 			public void setBound(Rectangle rect){
 				int x = bounds.x; 
@@ -77,33 +81,14 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
-
 	}
 	
-	/*private void contributeNodes(DirectedGraph graph, HashMap map, SimpleNodeEditPart part ){
-		if (part.isExpanded()){
-			Iterator it = part.getChildren().iterator();
-			while (it.hasNext()){
-				Object next = it.next();
-				if (next instanceof SimpleNodeEditPart){
-					contributeNodes(graph, map, (SimpleNodeEditPart)next);	
-				}
-			}
-		}
-		else {
-			part.contributeNodesToGraph(graph, map);
-		}
-	}*/
-	
 	public void contributeNodesToGraph(DirectedGraph graph, HashMap map){
-		//System.out.println("adding nodes to graph - graph");
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();
 			if (next instanceof SimpleNodeEditPart){
 				SimpleNodeEditPart child = (SimpleNodeEditPart)next;
-				//contributeNodes(graph, map, child);
 				child.contributeNodesToGraph(graph, map);
 		
 			}
@@ -111,27 +96,12 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		
 	}
 	
-	/*private void contributeEdges(DirectedGraph graph, HashMap map, SimpleNodeEditPart part ){
-		if (part.isExpanded()){
-			Iterator it = part.getChildren().iterator();
-			while (it.hasNext()){
-				Object next = it.next();
-				if (next instanceof SimpleNodeEditPart){
-					contributeEdges(graph, map, (SimpleNodeEditPart)next);	
-				}
-			}
-		}
-		else {
-			part.contributeEdgesToGraph(graph, map);
-		}
-	}*/
 	
 	public void contributeEdgesToGraph(DirectedGraph graph, HashMap map){
 		Iterator it = getChildren().iterator();
 		while (it.hasNext()){
 			Object next = it.next();
 			if (next instanceof SimpleNodeEditPart){
-				//contributeEdges(graph, map, (SimpleNodeEditPart)next);
 				((SimpleNodeEditPart)next).contributeEdgesToGraph(graph, map);
 
 			}
@@ -226,7 +196,4 @@ public class GraphEditPart extends AbstractGraphicalEditPart
 		figureWidth = i;
 	}
 
-	/*public void handleClickEvent(Object evt){
-		((CFGGraph)getModel()).handleClickEvent(evt);
-	}*/
 }

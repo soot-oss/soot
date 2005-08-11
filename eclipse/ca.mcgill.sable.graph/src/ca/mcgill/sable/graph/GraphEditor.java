@@ -1,9 +1,23 @@
-/*
- * Created on Jan 13, 2004
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 2005 Jennifer Lhotak
  *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+
 package ca.mcgill.sable.graph;
 
 import org.eclipse.core.resources.IMarker;
@@ -22,33 +36,24 @@ import ca.mcgill.sable.graph.actions.*;
 
 import java.util.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class GraphEditor extends GraphicalEditor {
 
 	private Graph graph;
-	//private PaletteRoot root; 
+	
 	/**
 	 * 
 	 */
 	public GraphEditor() {
 		DefaultEditDomain defaultEditDomain = new DefaultEditDomain(this);
-		
 		setEditDomain(defaultEditDomain);
-		//getEditDomain().setDefaultTool(new SimpleSelectTool());
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#initializeGraphicalViewer()
 	 */
 	protected void initializeGraphicalViewer() {
-		// TODO Auto-generated method stub
 		getGraphicalViewer().setContents(graph);		
-
 	}
 	
 	protected void configureGraphicalViewer() {
@@ -99,31 +104,24 @@ public class GraphEditor extends GraphicalEditor {
 	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IEditorPart#gotoMarker(org.eclipse.core.resources.IMarker)
 	 */
 	public void gotoMarker(IMarker marker) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.ISaveablePart#isDirty()
 	 */
 	public boolean isDirty() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -131,10 +129,8 @@ public class GraphEditor extends GraphicalEditor {
 	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
 	 */
 	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
 		return false;
 	}
-
 
 	/**
 	 * @return
@@ -164,7 +160,6 @@ public class GraphEditor extends GraphicalEditor {
 		IAction action = new SimpleSelectAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-		//registry.getAction(action.getId());
 	}
 	
 	public ActionRegistry getGraphEditorActionRegistry(){
@@ -187,8 +182,6 @@ public class GraphEditor extends GraphicalEditor {
 	public String getTitleToolTip(){
 		return super.getTitleToolTip();
 	}
-	
-	
-	
+
 	
 }
