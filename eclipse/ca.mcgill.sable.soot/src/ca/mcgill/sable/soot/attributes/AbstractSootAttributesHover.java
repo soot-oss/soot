@@ -50,18 +50,10 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	 * @param ed
 	 */
 	public void setEditor(IEditorPart ed) {
-		//System.out.println("editor set");
 		editor = ed;
-		//formTextViewer(editor);
 	}
 	
 
-	/*public void formTextViewer(IEditorPart edPart) {
-		SourceViewer input= (SourceViewer)((AbstractTextEditor)edPart).getAdapter(ITextOperationTarget.class);
-		System.out.println("editor name is: "+edPart.getTitle());
-		System.out.println("text viewer is: "+input);
-	
-	}*/
 	
 	/**
 	 * Method getAttributes.
@@ -79,21 +71,12 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 		
 		// this prevents showing incorrect tags - at least temporaily
 		// and hopefully if the editor has ever changed
-		
-		/*if (editor.isDirty()) {
-			setEditorHasChanged(true);
-			return null;
-		}
-		
-		if (isEditorHasChanged()) {
-			return null;
-		}*/
+	
 					
 		getHoverRegion(textViewer, hoverRegion.getOffset());
 		String attr = null;
-		//if (getAttrsHandler() != null) {
-			attr = getAttributes((AbstractTextEditor)getEditor());
-		//}
+		attr = getAttributes((AbstractTextEditor)getEditor());
+	
 		return attr;
 		
 	}
@@ -104,10 +87,7 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 	public org.eclipse.jface.text.IRegion getHoverRegion(ITextViewer textViewer, int offset) {
 	    try {
 			setLineNum(textViewer.getDocument().getLineOfOffset(offset)+1);
-			//System.out.println("getting hover region and setting text viewer.");
-			//handleViewer(textViewer);
 			setDocument(textViewer.getDocument());
-			//System.out.println(getLineNum());
 			return textViewer.getDocument().getLineInformationOfOffset(offset);
 		} catch (BadLocationException e) {
 			return null;
@@ -115,27 +95,6 @@ public abstract class AbstractSootAttributesHover implements ITextHover {
 
 	}
 	
-	/*public void handleViewer(ITextViewer viewer){
-		if (getViewer() != null) return;
-		setViewer(viewer);
-		computeAttributes();
-		//addSootAttributeMarkers();
-		addColorTags();
-		addSootAttributeMarkers();
-	}
-
-	protected abstract void computeAttributes();
-	protected abstract void addSootAttributeMarkers();
-	protected abstract void addColorTags();
-	protected void removeOldMarkers() {
-		try {
-			
-			SootPlugin.getWorkspace().getRoot().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
-			//System.out.println("removed old markers");
-		}
-		catch(CoreException e) {
-		}
-	}
 	
 	/**
 	 * Returns the lineNum.

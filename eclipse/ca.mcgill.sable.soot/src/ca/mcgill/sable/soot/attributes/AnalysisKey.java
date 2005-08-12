@@ -25,12 +25,6 @@
  */
 package ca.mcgill.sable.soot.attributes;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class AnalysisKey {
 	private int red;
 	private int green;

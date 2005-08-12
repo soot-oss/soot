@@ -21,8 +21,6 @@ package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
 
-//import org.eclipse.swt.graphics.RGB;
-
 
 public class SootAttribute {
 
@@ -34,8 +32,7 @@ public class SootAttribute {
 	private int jimpleEndPos;
     private int javaStartPos;
     private int javaEndPos;
-	//private ColorAttribute color;
-	//private String text;
+
 	private ArrayList colorList;
 	private ArrayList textList;
 
@@ -52,7 +49,6 @@ public class SootAttribute {
 			while (it.hasNext()){
 				TextAttribute ta = (TextAttribute)it.next();
 				if (!types.contains(ta.getType())){
-					//System.out.println("adding type: "+ta.getType());
 					types.add(ta.getType());
 				}
 			}
@@ -62,17 +58,11 @@ public class SootAttribute {
 			while (lit.hasNext()){
 				LinkAttribute la = (LinkAttribute)lit.next();
 				if (!types.contains(la.getType())){
-					//System.out.println("adding type: "+la.getType());
 					types.add(la.getType());
 				}
 			}
 		}
-		/*if (color != null){
-			if (!types.contains(color.type())){
-				//System.out.println("adding type: "+color.type());
-				types.add(color.type());
-			}
-		}*/
+		
 		if (getColorList() != null){
 			Iterator cit = getColorList().iterator();
 			while (cit.hasNext()){
@@ -100,7 +90,6 @@ public class SootAttribute {
 			setLinkList(new ArrayList());
 		}
 		getLinkList().add(link);
-		//System.out.println("added link for line: "+getJavaStartLn()+" "+link.getLabel());
 		TextAttribute ta = new TextAttribute();
 		ta.setInfo(link.getLabel());
 		ta.setType(link.getType());
@@ -131,7 +120,6 @@ public class SootAttribute {
 		if (getTextList() != null){
 			Iterator it = getTextList().iterator();
 			while (it.hasNext()){
-				//String next = (String)it.next();
 				TextAttribute ta = (TextAttribute)it.next();
 				String next = ta.getInfo();
 				if (lineSep.equals("<br>")){
@@ -151,7 +139,6 @@ public class SootAttribute {
 		if (getTextList() != null){
 			Iterator it = getTextList().iterator();
 			while (it.hasNext()){
-				//String next = (String)it.next();
 				TextAttribute ta = (TextAttribute)it.next();
 				if (ta.getType().equals(type)){
 					String next = ta.getInfo();
@@ -170,19 +157,12 @@ public class SootAttribute {
 	public String convertHTMLTags(String next){
 		if (next == null) return null;
 		else {
-			//System.out.println("next before replace: "+next);
 			next = next.replaceAll("<", "&lt;");
 			next = next.replaceAll(">", "&gt;");
-			//System.out.println("next after replace: "+next);
 			return next;
 		}
 	}
 	
-	/*public RGB getRGBColor(){
-
-		//System.out.println("RGB Color: "+getRed()+" "+getGreen()+" "+getBlue());
-		return new RGB(color.red(), color.green(), color.blue());
-	}*/
 
 	// these two are maybe not accurate maybe
 	// need to check if ln in question is between
@@ -193,7 +173,6 @@ public class SootAttribute {
 	}
 	
 	public boolean attrForJavaLn(int java_ln) {
-		//System.out.println("java start line: "+getJavaStartLn()+" java_ln: "+java_ln);
 		if (getJavaStartLn() == java_ln) return true;
 		else return false;
 	}
@@ -201,48 +180,7 @@ public class SootAttribute {
 	public SootAttribute() {
 	}
 	
-	/**
-	 * Returns the filename.
-	 * @return String
-	 */
-	/*public String getFilename() {
-		return filename;
-	}*/
-
-
-	/**
-	 * Returns the text.
-	 * @return String
-	 */
-	/*public String getText() {
-		return text;
-	}*/
-
-	/**
-	 * Sets the filename.
-	 * @param filename The filename to set
-	 */
-	/*public void setFilename(String filename) {
-		this.filename = filename;
-	}*/
-
-
-
-
-	/**
-	 * Sets the text.
-	 * @param text The text to set
-	 */
-	/*public void setText(String text) {
-		this.text = text;
-	}*/
-
-	/**
-	 * @return
-	 */
-	/*public ColorAttribute getColor() {
-		return color;
-	}*/
+	
 
 	/**
 	 * @return
@@ -258,12 +196,6 @@ public class SootAttribute {
 		return jimpleStartPos;
 	}
 
-	/**
-	 * @param i
-	 */
-	/*public void setColor(ColorAttribute i) {
-		color = i;
-	}*/
 
 	/**
 	 * @param i
@@ -293,65 +225,7 @@ public class SootAttribute {
 		textList = list;
 	}
 
-	/**
-	 * @return
-	 */
-	/*public ArrayList getValueAttrs() {
-		return valueAttrs;
-	}*/
 
-	/**
-	 * @param list
-	 */
-	/*public void setValueAttrs(ArrayList list) {
-		valueAttrs = list;
-	}*/
-
-	/**
-	 * @return
-	 */
-	/*public int getBlue() {
-		return blue;
-	}*/
-
-	/**
-	 * @return
-	 */
-	/*public int getGreen() {
-		return green;
-	}*/
-
-
-
-	/**
-	 * @return
-	 */
-	/*public int getRed() {
-		return red;
-	}*/
-
-	/**
-	 * @param i
-	 */
-	/*public void setBlue(int i) {
-		blue = i;
-	}*/
-
-	/**
-	 * @param i
-	 */
-	/*public void setGreen(int i) {
-		green = i;
-	}*/
-
-	
-
-	/**
-	 * @param i
-	 */
-	/*public void setRed(int i) {
-		red = i;
-	}*/
 
 	/**
 	 * @return
@@ -395,19 +269,7 @@ public class SootAttribute {
         javaStartPos = i;
     }
 
-	/**
-	 * @return
-	 */
-	/*public int getFg() {
-		return fg;
-	}*/
 
-	/**
-	 * @param b
-	 */
-	/*public void setFg(int b) {
-		fg = b;
-	}*/
 
 	/**
 	 * @return

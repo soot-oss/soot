@@ -41,8 +41,7 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
         computeColors();	
 	}
 	
-	public void computeColors(){//SootAttributesHandler handler, ITextViewer viewer, IEditorPart editorPart){
-		System.out.println("computing colors: handler: "+getHandler().getAttrList());
+	public void computeColors(){
 		if ((getHandler() == null) || (getHandler().getAttrList() == null)) return;
         ArrayList sortedAttrs = sortAttrsByLength(getHandler().getAttrList());
 		Iterator it = getHandler().getAttrList().iterator();
@@ -58,8 +57,7 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
 		while (it.hasNext()) {
 			// sets colors for stmts
 			SootAttribute sa = (SootAttribute)it.next();
-            System.out.println("next sa: "+sa);
-            if ((sa.getJimpleStartLn() != 0) && (sa.getJimpleEndLn() != 0)) {
+             if ((sa.getJimpleStartLn() != 0) && (sa.getJimpleEndLn() != 0)) {
                 if ((sa.getJimpleStartPos() != 0) && (sa.getJimpleEndPos() != 0)){
 			       if (sa.getColorList() != null){
 						Iterator cit = sa.getColorList().iterator();
@@ -77,12 +75,7 @@ public class SootAttributesJimpleColorer extends AbstractAttributesColorer imple
 							}
 						}
 					}
-			        /*if (sa.getColor() != null){
-			
-                        boolean fg = sa.getColor().fg() == 1 ? true: false;
-                   
-			    	    setAttributeTextColor(sa.getJimpleStartLn(), sa.getJimpleEndLn(), sa.getJimpleStartPos()+1, sa.getJimpleEndPos()+1, sa.getRGBColor(), fg);//, tp);
-                    }*/
+			       
                 }
 			}
 			        

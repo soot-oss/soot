@@ -32,12 +32,7 @@ import org.eclipse.ui.part.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 
 	public SootAttributeJavaSelectAction(ResourceBundle bundle, String prefix, ITextEditor editor, IVerticalRulerInfo rulerInfo) {	
@@ -49,12 +44,9 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 	 */
 	public ArrayList getMarkerLinks(){
 		SootAttributesHandler handler = SootPlugin.getDefault().getManager().getAttributesHandlerForFile((IFile)getResource(getEditor()));
-		//if (handler == null ) System.out.println("handler is null");
 		ArrayList links = handler.getJavaLinks(getLineNumber()+1);
 		Iterator it = links.iterator();
-		/*while (it.hasNext()){
-			System.out.println("link for line: "+(getLineNumber()+1)+" is: "+it.next());
-		}*/
+		
 		return links;
 	}
 	
@@ -64,30 +56,19 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 
 	
 	public void findClass(String className){
-		//System.out.println("className: "+className);
-		//System.out.println("rec: "+getResource(getEditor()).getName());
 		setLinkToEditor(getEditor());		
 		String resource = removeExt(getResource(getEditor()).getName());
-		//System.out.println("rec: "+resource);
-	
+		
 		String ext = getResource(getEditor()).getFileExtension();
 	
 		IProject proj = getResource(getEditor()).getProject();
-	
-		//System.out.println("proj: "+proj);
-	
 		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
 		String classNameToFind = slashedClassName+"."+ext;
-	
-		//System.out.println("slashedClassName: "+slashedClassName);
-		//IResource fileFound = proj.findMember(slashedClassName);
-	
 		IJavaProject jProj = JavaCore.create(proj);
 		try {
 	
 			IPackageFragmentRoot [] roots = jProj.getAllPackageFragmentRoots();
 			for (int i = 0; i < roots.length; i++){
-				//System.out.println(roots[i].getResource());
 				if (!(roots[i].getResource() instanceof IContainer)) continue;
 				IResource fileToFind = ((IContainer)roots[i].getResource()).findMember(classNameToFind);
 				if (fileToFind == null) continue;
@@ -95,7 +76,6 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 				if (!fileToFind.equals(resource)){
 					try {
 						setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput((IFile)fileToFind), fileToFind.getName()));
-						//System.out.println("after setting link to editor - diff file");
 					}
 					catch (PartInitException e){
 					}

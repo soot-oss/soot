@@ -23,7 +23,7 @@ import java.util.*;
 //import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
-//import org.xml.sax.*;
+
 
 public class AttributeDomProcessor {
 
@@ -52,7 +52,6 @@ public class AttributeDomProcessor {
 
 	private void processNode(Node node) {
 
-		//System.out.println("Start Processing: "+System.currentTimeMillis());
 		if (node.getNodeType() == Node.DOCUMENT_NODE) {
 			NodeList children = node.getChildNodes();
 			if (children != null) {
@@ -61,9 +60,7 @@ public class AttributeDomProcessor {
 					processNode(children.item(i));
 				}			
 			}
-			else {
-				//System.out.println("children are null"); 
-			}
+			
 		}
 		else if (node.getNodeType() == Node.ELEMENT_NODE) {
 			if ( node.getNodeName().equals("attribute")) { 
@@ -96,31 +93,14 @@ public class AttributeDomProcessor {
 			}
 			
 		}
-		else if (node.getNodeType() == Node.TEXT_NODE) {	
-			
-		}	
-		else {
-		
-		}
-		//System.out.println("Stop Processing: "+System.currentTimeMillis());
 		
 	}
 	
 	private void processAttributeNode(SootAttribute current, Node node) {
 
-		//System.out.println("node type: "+node.getNodeType());
 		if (node.getNodeType() == Node.ELEMENT_NODE) {
-			/*if (node.getNodeName().equals("value_box_attribute")){
-				NodeList children = node.getChildNodes();
-				PosColAttribute vbAttr = new PosColAttribute();
-				for (int i = 0; i < children.getLength(); i++) {
-					processVBNode(vbAttr, children.item(i));
-				}
-				current.addValueAttr(vbAttr);
-			}*/
 			if (node.getNodeName().equals("link")){
 				NamedNodeMap map = node.getAttributes();
-				//NodeList children = node.getChildNodes();
 				LinkAttribute la = new LinkAttribute();
 				
 				la.setLabel(map.getNamedItem("label").getNodeValue());
@@ -128,10 +108,6 @@ public class AttributeDomProcessor {
 				la.setJimpleLink((new Integer(map.getNamedItem("jmpLink").getNodeValue()).intValue()));
 				la.setClassName(map.getNamedItem("clssNm").getNodeValue());
 				la.setType(map.getNamedItem("aType").getNodeValue());
-				
-				/*for (int i = 0; i < children.getLength(); i++){
-					processLinkNode(la,children.item(i));	
-				}*/
 				current.addLinkAttr(la);
 			}
 			else if (node.getNodeName().equals("color")){
@@ -188,81 +164,9 @@ public class AttributeDomProcessor {
 		}
 		else if (node.getNodeType() == Node.TEXT_NODE){
 			String type = node.getParentNode().getNodeName();
-			
-
-			/*if (type.equals("text")) {
-				//System.out.println("reading text node");
-				current.addTextAttr(node.getNodeValue());
-			}*/
 		}
 	}
 	
-	/*private void processVBNode(PosColAttribute vbAttr, Node node){
-		if (node.getNodeType() == Node.ELEMENT_NODE){
-			NodeList children = node.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-				processVBNode(vbAttr, children.item(i));
-			}
-		}
-		else if (node.getNodeType() == Node.TEXT_NODE){
-			String type = node.getParentNode().getNodeName();
-				
-			if (type.equals("jimpleStartPos")){
-				vbAttr.setStartOffset((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("jimpleEndPos")){ 
-				vbAttr.setEndOffset((new Integer(node.getNodeValue()).intValue()));
-			}
-            else if (type.equals("javaStartPos")){
-                vbAttr.setSourceStartOffset((new Integer(node.getNodeValue()).intValue()));
-                //System.out.println("java start offset: "+vbAttr.getSourceStartOffset());
-                           
-            }
-            else if (type.equals("javaEndPos")){ 
-                vbAttr.setSourceEndOffset((new Integer(node.getNodeValue()).intValue()));
-                //System.out.println("java end offset: "+vbAttr.getSourceEndOffset());
-                 
-            }
-			else if (type.equals("red")) {
-				vbAttr.setRed((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("green")) {
-				vbAttr.setGreen((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("blue")){
-				vbAttr.setBlue((new Integer(node.getNodeValue()).intValue()));
-			}
-			else if (type.equals("fg")){
-				vbAttr.setFg((new Integer(node.getNodeValue()).intValue()));
-			}
-		
-		}
-	}
-	
-	private void processLinkNode(LinkAttribute la, Node node){
-		
-		if (node.getNodeType() == Node.ELEMENT_NODE){
-			NodeList children = node.getChildNodes();
-			for (int i = 0; i < children.getLength(); i++) {
-				processLinkNode(la, children.item(i));
-			}
-		}
-		else if (node.getNodeType() == Node.TEXT_NODE){
-			String type = node.getParentNode().getNodeName();
-			if (type.equals("jimple_link")){
-				la.setJimpleLink((new Integer(node.getNodeValue())).intValue());	
-			}
-			else if (type.equals("java_link")){
-				la.setJavaLink((new Integer(node.getNodeValue())).intValue());	
-			}
-			else if (type.equals("link_label")){
-				la.setLabel(node.getNodeValue());
-			}
-			else if (type.equals("className")){
-				la.setClassName(node.getNodeValue());
-			}
-		}
-	}*/
 	
 	/**
 	 * Returns the domDoc.

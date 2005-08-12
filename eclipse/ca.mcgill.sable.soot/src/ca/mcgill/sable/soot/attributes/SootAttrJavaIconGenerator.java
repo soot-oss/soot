@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Nov 7, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
@@ -31,12 +26,7 @@ import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.texteditor.MarkerUtilities;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class SootAttrJavaIconGenerator implements Runnable{
 
 	private IFile rec;
@@ -62,7 +52,6 @@ public class SootAttrJavaIconGenerator implements Runnable{
 	public void addSootAttributeMarkers(){//SootAttributesHandler handler, IFile rec) {
 		
 		if (getHandler().getAttrList() == null) return;
-		System.out.println("Are attrs");
 		Iterator it = getHandler().getAttrList().iterator();
 		HashMap markerAttr = new HashMap();
 	
@@ -72,7 +61,6 @@ public class SootAttrJavaIconGenerator implements Runnable{
 				if (((sa.getAllTextAttrs("<br>") == null) || (sa.getAllTextAttrs("<br>").length() == 0)) && 
 					((sa.getAllLinkAttrs() == null) || (sa.getAllLinkAttrs().size() ==0))) continue;
 				markerAttr.put(IMarker.LINE_NUMBER, new Integer(sa.getJavaStartLn()));
-				//System.out.println("add marker: "+sa.getJavaStartLn());
 				try {
 					MarkerUtilities.createMarker(getRec(), markerAttr, "ca.mcgill.sable.soot.sootattributemarker");
 				}
@@ -84,7 +72,6 @@ public class SootAttrJavaIconGenerator implements Runnable{
 	}
 	public void removeOldMarkers(){//IFile file){
 		try{
-			//System.out.println("removing old markers");
 			getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 		}
 		catch(CoreException e){

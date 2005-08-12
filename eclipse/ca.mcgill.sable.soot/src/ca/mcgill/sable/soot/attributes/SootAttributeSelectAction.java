@@ -55,9 +55,6 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 	public SootAttributeSelectAction(ResourceBundle bundle, String prefix, ITextEditor editor, IVerticalRulerInfo rulerInfo) {
 		
 		super(bundle, prefix);
-		
-		//System.out.println("called SootAttributeSelectAction constr");
-		//System.out.println("editor: "+editor.getClass().toString());
 		setEditor((AbstractTextEditor)editor);
 		
 		setRulerInfo(rulerInfo);
@@ -83,36 +80,25 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 		}
 		
 		int markerLine = getRulerInfo().getLineOfLastMouseButtonActivity();
-		//System.out.println("markerLine: "+markerLine);
 		IResource rec = getResource(getEditor());
 		try {
 			IMarker [] markers = rec.findMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 			for (int i = 0; i < markers.length; i++){
-				//System.out.println("document: "+getDocument());
-				//System.out.println("model: "+getModel());
-				//System.out.println("model marker pos: "+getModel().getMarkerPosition(markers[i]));
 				if (getModel().getMarkerPosition(markers[i]) == null) continue;
 				setLineNumber(getDocument().getLineOfOffset(getModel().getMarkerPosition(markers[i]).getOffset()));
   
                 
 				if (getLineNumber() == markerLine){
 					
-					//System.out.println("just before getMarkerLinks()");
 					ArrayList links = getMarkerLinks();
 					Iterator lit = links.iterator();
-					//while (lit.hasNext()){
-						//System.out.println("link: "+lit.next());
-					//}
 					String [] list = getMarkerLabels(links);
 					if ((list == null) || (list.length == 0)) {
-						//System.out.println("no links");
 						// show no links
 					}
 					else {
 						IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getWorkbenchWindow();
-						//if (window == null ){
-							//System.out.println("window is null");
-						//}
+						
 						PopupListSelector popup = new PopupListSelector(window.getShell());
 						popup.setItems(list);
 						
@@ -120,30 +106,20 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 						
 						if (getEditor() instanceof JimpleEditor){
 							int topIndex = ((JimpleEditor)getEditor()).getViewer().getTopIndex();
-                            //System.out.println("Marker Offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
-                            //System.out.println("Top Inset: "+((JimpleEditor)getEditor()).getViewer().getTopInset());
-                            //System.out.println("Document First Visible Line Offset: "+getDocument().getLineOffset(topIndex));
-                            //System.out.println("Document Line Offset: "+getDocument().getLineOffset(getLineNumber()+1));
-							Rectangle rect = new Rectangle(320, (getLineNumber()+1-topIndex), listWidth, 45 );
+                            Rectangle rect = new Rectangle(320, (getLineNumber()+1-topIndex), listWidth, 45 );
 							
 							popup.open(rect);
-                            //System.out.println("popup open");
-                            //popup.open(new Rectangle(400, getDocument().getLineOffset(getLineNumber()+1)-getDocument().getLineOffset(topIndex), 600, 45 ));
-						}	
+                        }	
 						else {
 							int topIndex = ((ITextViewer)((AbstractTextEditor)getEditor()).getAdapter(ITextOperationTarget.class)).getTopIndex();
-							//System.out.println(getEditor().getClass());
-							//System.out.println("offset: "+getModel().getMarkerPosition(markers[i]).getOffset());
 							int pos = getModel().getMarkerPosition(markers[i]).getOffset();
 							pos = pos / getLineNumber();
 							Rectangle rect = new Rectangle(320, getLineNumber()+1-topIndex, listWidth, 45 );
-							//System.out.println("popup open");
 							popup.open(rect);
 
 						}
 						
 						handleSelection(popup.getSelected(), links);
-						//System.out.println("popup should be closed");
 					}
 				}			
 			}
@@ -180,15 +156,9 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 					
 					className = la.getClassName();
 					findClass(className);
-					//System.out.println("return from findClass");
 				}
 			}
-		
-			//System.out.println("line to show: "+toShow);
-			
 			int selOffset = getLinkToEditor().getDocumentProvider().getDocument(getLinkToEditor().getEditorInput()).getLineOffset(toShow);
-			//System.out.println("line to show: "+toShow);
-			//System.out.println("offset of line to show: "+selOffset);
 			if ((selOffset != -1) && (selOffset != 0)){
 				
 				if (getLinkToEditor() instanceof JimpleEditor){
@@ -199,19 +169,9 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 				}
 				else {
 					SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
-					
-					//getLinkToEditor().selectAndReveal(selOffset, 0);
-					
-					//getLinkToEditor().selectAndReveal(selOffset, 0);
-					//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
 					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).selectAndReveal(selOffset, 0);
 					((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).setHighlightRange(selOffset, 1, true);
 					
-					//getLinkToEditor().selectAndReveal(selOffset, 0);
-					
-					//getLinkToEditor().selectAndReveal(selOffset, 0);
-					//SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(getLinkToEditor());
-			
 				}
 			}
 		}

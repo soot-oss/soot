@@ -21,24 +21,7 @@ package ca.mcgill.sable.soot.attributes;
 
 import java.io.*;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
+
 public class AttributeFileReader {
 
 	private String filename;
@@ -59,13 +42,11 @@ public class AttributeFileReader {
 	public String readFile() {
 		StringBuffer file = new StringBuffer();
 		try {
-			System.out.println("reading file: "+getFilename());
 			BufferedReader br = new BufferedReader( new
-				FileReader(getFilename()));
+					FileReader(getFilename()));
 			while (true) {
 				String temp = br.readLine();
 				if (temp == null) break;
-				//System.out.println(temp);
 				temp = temp.trim();
 				file.append(temp);
 							

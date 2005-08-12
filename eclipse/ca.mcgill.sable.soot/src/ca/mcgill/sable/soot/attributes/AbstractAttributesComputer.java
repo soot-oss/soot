@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Nov 6, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.attributes;
 
 import java.io.File;
@@ -34,12 +28,7 @@ import org.eclipse.ui.texteditor.*;
 
 import ca.mcgill.sable.soot.SootPlugin;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public abstract class AbstractAttributesComputer {
 
 	private IResource rec;
@@ -49,21 +38,16 @@ public abstract class AbstractAttributesComputer {
 	 * compute list of xml filenames
 	 */
 	protected ArrayList computeFiles(ArrayList names){
-		System.out.println("computing files for: "+names);
 		ArrayList fileList = new ArrayList();
 		String sep = System.getProperty("file.separator");
 		IContainer con = (IContainer)getProj().getFolder("sootOutput"+sep+"attributes"+sep);
 		try {
 			IResource [] files = con.members();
-			System.out.println("con.members: "+files);
 			for (int i = 0; i < files.length; i++){
 				Iterator it = names.iterator();
 				while (it.hasNext()){
 					String fileNameToMatch = (String)it.next();
-					System.out.println("fileNameToMatch: "+fileNameToMatch);
-					System.out.println("files[i]: "+files[i].getName());
 					if (files[i].getName().matches(fileNameToMatch+"[$].*") || files[i].getName().equals(fileNameToMatch+".xml")){
-						System.out.println("file list for attributes+ "+files[i]);
 						fileList.add(files[i]);
 					}
 				}
@@ -89,15 +73,12 @@ public abstract class AbstractAttributesComputer {
 	 * compute attributes
 	 */
 	protected SootAttributesHandler computeAttributes(ArrayList files, SootAttributesHandler sah) {
-		System.out.println("computing attributes: files: "+files);
 		SootAttributeFilesReader safr = new SootAttributeFilesReader();
 		Iterator it = files.iterator();
 		while (it.hasNext()){
 			String fileName = ((IPath)((IFile)it.next()).getLocation()).toOSString();
-			System.out.println("computing attributes for : "+fileName);
 			AttributeDomProcessor adp = safr.readFile(fileName);
 			if (adp != null) {
-				System.out.println("updating attrs in sah");	
 				sah.setAttrList(adp.getAttributes());
 				sah.setKeyList(adp.getKeys());
 			}
@@ -128,32 +109,23 @@ public abstract class AbstractAttributesComputer {
 		if (handler != null){
 		
 			long valuesSetTime = handler.getValuesSetTime();
-			//System.out.println("value set time: "+valuesSetTime);
 			boolean update = handler.isUpdate();
 		
 			Iterator it = files.iterator();
 			while (it.hasNext()){
 				IFile next = (IFile)it.next();
-				//System.out.println(next.getModificationStamp());
 				File realFile = new File(next.getLocation().toOSString());
-				System.out.println("val set mod time: "+valuesSetTime);
-				System.out.println("real set time: "+realFile.lastModified());
 				
 				if (realFile.lastModified() > valuesSetTime){
 					update = true;
 				}
 			}
-			//update = true;
 			handler.setUpdate(update);
 			// if no return handler
 			if (!update){
-				//handler.setUpdate(false);
-				System.out.println("attr already set");
 				return handler;
-				//return computeAttributes(files, handler);
 			}
 			else {
-				System.out.println("compute attr");
 				return computeAttributes(files, handler);
 			}
 		}

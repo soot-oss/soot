@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Nov 6, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.attributes;
 
 import java.util.*;
@@ -33,12 +28,7 @@ import org.eclipse.jdt.core.*;
 import org.eclipse.ui.*;
 import org.eclipse.ui.texteditor.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class JavaAttributesComputer extends AbstractAttributesComputer {
 
 	protected ArrayList computeNames(IFile file){

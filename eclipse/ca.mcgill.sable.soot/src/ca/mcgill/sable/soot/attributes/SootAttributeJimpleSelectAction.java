@@ -34,12 +34,6 @@ import ca.mcgill.sable.soot.SootPlugin;
 import org.eclipse.ui.*;
 import org.eclipse.ui.part.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class SootAttributeJimpleSelectAction
 	extends SootAttributeSelectAction {
 		
@@ -49,7 +43,6 @@ public class SootAttributeJimpleSelectAction
 	
 	public ArrayList getMarkerLinks(){
 		SootAttributesHandler handler = SootPlugin.getDefault().getManager().getAttributesHandlerForFile((IFile)getResource(getEditor()));
-		//if (handler == null ) System.out.println("handler is null");
 		ArrayList links = handler.getJimpleLinks(getLineNumber()+1);
 		return links;
 	}
@@ -58,40 +51,20 @@ public class SootAttributeJimpleSelectAction
 	}
 	
 	public void findClass(String className){
-		//System.out.println("className: "+className);
-		//System.out.println("rec: "+getResource(getEditor()).getName());
-
 		setLinkToEditor(getEditor());		
 		String resource = removeExt(getResource(getEditor()).getName());
-		//System.out.println("rec: "+resource);
-	
 		String ext = getResource(getEditor()).getFileExtension();
 	
 		IProject proj = getResource(getEditor()).getProject();
-	
-		//System.out.println("proj: "+proj);
-	
 		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
 		String classNameToFind = slashedClassName+"."+ext;
-	
-		//System.out.println("slashedClassName: "+slashedClassName);
-		//IResource fileFound = proj.findMember(slashedClassName);
-	
-
-	
-		//System.out.println("file Found: "+fileToFind);
-	
 		if (!resource.equals(className)){
 			IContainer parent = getResource(getEditor()).getParent();
-			//System.out.println("parent: "+parent);
 			IResource file = parent.findMember(className+"."+ext);
-			//System.out.println("file: "+file);
 			try {
 				setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput((IFile)file), file.getName()));
-					//System.out.println("after setting link to editor - diff file");
 			}
 			catch (PartInitException e){
-			
 			}
 			
 		}

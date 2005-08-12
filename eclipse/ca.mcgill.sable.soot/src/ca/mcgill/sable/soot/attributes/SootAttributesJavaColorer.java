@@ -77,11 +77,7 @@ public class SootAttributesJavaColorer extends AbstractAttributesColorer impleme
 							}
 						}
 					}	
-					/*if (sa.getColor() != null){
 					
-                		boolean fg = sa.getColor().fg() == 1 ? true: false;
-                		setAttributeTextColor(sa.getJavaStartLn(), sa.getJavaEndLn(), sa.getJavaStartPos()+1, sa.getJavaEndPos()+1, sa.getRGBColor(), fg);//, tp);
-					}*/
 				}
 			}
 	

@@ -76,7 +76,6 @@ public class SootAttrJimpleIconGenerator implements Runnable {
 	
 	public void removeOldMarkers(){//IFile file){
 		try{
-			//System.out.println("removing old markers");
 			getRec().deleteMarkers("ca.mcgill.sable.soot.sootattributemarker", true, IResource.DEPTH_INFINITE);
 		}
 		catch(CoreException e){

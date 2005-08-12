@@ -165,7 +165,6 @@ public abstract class AbstractAttributesColorer {
                 else {
                     sr = new StyleRange(sOffset, len, oldBgColor, color);
                 }
-                //System.out.println("adding sr: "+sr);
                 getStyleList().add(sr);
             }
             else {
@@ -176,8 +175,7 @@ public abstract class AbstractAttributesColorer {
                     else {
                         sr = new StyleRange(starts[i], lengths[i], oldBgColor, color);
                     }
-                    //System.out.println("adding sr: "+sr);
-                    getStyleList().add(sr);
+                   getStyleList().add(sr);
                 }
             }
         }
