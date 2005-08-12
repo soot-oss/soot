@@ -106,7 +106,6 @@ public class SootPlugin extends AbstractUIPlugin {
 	
 		try {
 			resourceBundle= ResourceBundle.getBundle(ISootConstants.SOOT_PLUGIN_RESOURCES_ID);
-			//System.out.println("resource bundle not missing");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
@@ -114,10 +113,8 @@ public class SootPlugin extends AbstractUIPlugin {
 		// maybe should go in startUp method
 		// resource manager
 		setManager(new SootResourceManager());
-		//getManager().initialize();
 		
 		PlatformUI.getWorkbench().addWindowListener(new SootWorkbenchListener());
-		//System.out.println("added window listener");
 		setPartManager(new SootPartManager());
 	}
 	
