@@ -29,7 +29,6 @@ import org.eclipse.jface.action.*;
  */
 public class SootProjectLauncher extends SootLauncher {
 
-	//private String output_location;
 	private String process_path;
 	private ArrayList javaProcessPath;
 	private String classpathAppend = null;
@@ -37,7 +36,6 @@ public class SootProjectLauncher extends SootLauncher {
 	public void run(IAction action) {
 		super.run(action);
 		classpathAppend = null;
-		//super.resetSootOutputFolder();
 		try {
 			setProcess_path(platform_location+getSootSelection().getJavaProject().getOutputLocation().toOSString());
 			IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
@@ -55,13 +53,11 @@ public class SootProjectLauncher extends SootLauncher {
 				}
 			}
 			
-			//setJavaProcessPath(platform_location+getSootSelection().getJavaProject().get)
 			addJars();
 		}
 		catch(Exception e1) {
 			System.out.println(e1.getMessage());
 		}
-		//setOutput_location(platform_location+getSootOutputFolder().getFullPath().toOSString());
 	}
 	
 	/**
@@ -75,16 +71,8 @@ public class SootProjectLauncher extends SootLauncher {
 		else {
 			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
 		}
-		//System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
-	/**
-	 * Returns the output_location.
-	 * @return String
-	 */
-	/*public String getOutput_location() {
-		return output_location;
-	}
 
 	/**
 	 * Returns the process_path.
@@ -94,13 +82,6 @@ public class SootProjectLauncher extends SootLauncher {
 		return process_path;
 	}
 
-	/**
-	 * Sets the output_location.
-	 * @param output_location The output_location to set
-	 */
-	/*public void setOutput_location(String output_location) {
-		this.output_location = output_location;
-	}
 
 	/**
 	 * Sets the process_path.

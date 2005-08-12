@@ -38,20 +38,15 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	}
 	
 	public void startUp() {
-		//System.out.println("Soot doc registers as listener");
 		SootPlugin.getDefault().addSootOutputEventListener(this);
-		//notifySootOutputView();
 	}
 	
 	
 	public void handleSootOutputEvent(SootOutputEvent event) {
-		//System.out.println(event.getEventType());
 		if (!viewShown) {
-			//System.out.println("view wasn't shown and now will be");
 			showSootOutputView();
 			notifySootOutputView();
 			getViewer().getTextViewer().setDocument(this);
-			//showSootOutputView();
 			viewShown = true;
 		}
 		switch (event.getEventType()) {
@@ -64,46 +59,22 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 			default:
 				break;
 		}
-		//notifySootOutputView();
-		//System.out.println("handling Soot Event");
-		/*if (!viewShown) {
-			//System.out.println("view wasn't shown and now will be");
-			showSootOutputView();
-			notifySootOutputView();
-			getViewer().getTextViewer().setDocument(this);
-			//showSootOutputView();
-			viewShown = true;
-		}*/
-		//showSootOutputView();
 	}
 	
 	private void notifySootOutputView() {
 		IWorkbench workbench= PlatformUI.getWorkbench();
 		IWorkbenchWindow[] windows= workbench.getWorkbenchWindows();
-		//System.out.println(windows.length);
 		for (int i = 0; i < windows.length; i++) {
 			IWorkbenchWindow iWorkbenchWindow = windows[i];
 			IWorkbenchPage[] pages= iWorkbenchWindow.getPages();
-			//System.out.println(pages.length);
 			for (int j = 0; j < pages.length; j++) {
-				//System.out.println(pages[j]);
 				IWorkbenchPage iWorkbenchPage = pages[j];
 				IViewPart part= iWorkbenchPage.findView(ISootConstants.SOOT_OUTPUT_VIEW_ID);
-				//System.out.println("asked to find part");
 				if (part == null) {
-					//System.out.println("part is null");
 					IViewReference refs [] = iWorkbenchPage.getViewReferences();
-					/*for (int k = 0; k < refs.length; k++) {
-						System.out.println(refs[k].getPart(true).getClass().toString());
-					}*/
-					//System.out.println("part is null");
 				}
-				//System.out.println(part.getClass().toString());
 				if (part instanceof SootOutputView) {
-					//System.out.println("part is a SootOutputView");
 					setViewer((SootOutputView)part);
-					//getViewer().setSootDocument(this);
-					//System.out.println("notifying and adding listener to view");
 					this.addDocumentListener(getViewer());
 				}
 			}
@@ -111,7 +82,6 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	}
 	
 	private void clearText() {
-		//System.out.println("clearing text");
 		set(new String());
 		setNewStreamWriteEnd(0);
 		setOldStreamWriteEnd(0);
@@ -124,10 +94,8 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 			public void run() {
 				int appendedLength= text.length();
 				setNewStreamWriteEnd(getOldStreamWriteEnd() + appendedLength);
-				//updateOutputStyleRanges(source, getLength() + appendedLength, fLastStreamWriteEnd, fNewStreamWriteEnd);
 				replace0(getOldStreamWriteEnd(), 0, text);
 				setOldStreamWriteEnd(getNewStreamWriteEnd());
-				//setAppendInProgress(false);
 				getViewer().getTextViewer().setTopIndex(getNumberOfLines());
 			}
 		});
@@ -139,36 +107,28 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 		try {		
 			super.replace(pos, replaceLength, text);
 		} catch (BadLocationException ble) {
-			//DebugUIPlugin.log(ble);
 		}
 	}
 	
 	 
 	private void showSootOutputView() {
-		//System.out.println("in showSootOutputView");
-		//System.out.println(SootPlugin.getDefault().getWorkbench());
 		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();		
 		
 		if (window != null) {
-			//System.out.println("window not null");
 			IWorkbenchPage page= window.getActivePage();
 			if (page != null) {
 				try {
 					IViewPart sootOutputViewer = page.findView("ca.mcgill.sable.soot.ui.sootoutputview.view");
 					if(sootOutputViewer == null) {
-						//System.out.println("page not null");
 						IWorkbenchPart activePart= page.getActivePart();
-						//System.out.println("active part gotten");
 						page.showView("ca.mcgill.sable.soot.ui.sootoutputview.view");
 						//restore focus stolen by the creation of the console
 						page.activate(activePart);
-						//System.out.println("activated part");
 						sootOutputViewer = page.findView("ca.mcgill.sable.soot.ui.sootoutputview.view");
 					
 					} 
 					else {
 						page.bringToTop(sootOutputViewer);
-						//System.out.println("brought part to top");
 					}
 				} 
 				catch (PartInitException pie) {
@@ -181,13 +141,6 @@ public class SootDocument extends Document implements ISootOutputEventListener {
 	private void update(Runnable runnable) {
 		if (getViewer().getTextViewer() != null && getViewer().getTextViewer().getControl() != null && getViewer().getControl().getDisplay() != null) {
 			getViewer().getTextViewer().getControl().getDisplay().asyncExec(runnable);
-			//System.out.println("viewer was null maybe");
-			//notifySootOutputView();
-		} else {
-			//Display display= SootPlugin.getDefault().getDefault().getStandardDisplay();
-			//if (display != null && !display.isDisposed()) {
-			//	display.asyncExec(runnable);
-			//}
 		}
 	}
 	

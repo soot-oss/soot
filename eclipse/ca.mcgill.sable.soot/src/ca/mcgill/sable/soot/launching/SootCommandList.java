@@ -52,9 +52,7 @@ public class SootCommandList {
 		StringTokenizer st = new StringTokenizer(key);
 		while (st.hasMoreTokens()) {
 			String token = st.nextToken();	
-			//if (!getList().contains(token)) {
 			getList().add(token);
-			//}
 		}
 	}
 	
@@ -66,28 +64,7 @@ public class SootCommandList {
 	public void addDoubleOpt(String key, String val) {
 		addSingleOpt(key);
 		addSingleOpt(val);
-		/*if (!getList().contains((key+SPACE+val))) {
-			getList().add((key+SPACE+val));
-		}*/
 	}
-	
-	/*public void appendToSootClasspath(String val) {
-		Iterator it = getList().iterator();
-		while (it.hasNext()) {
-			//System.out.println(it.next().getClass().toString());
-			String temp = (String)it.next();
-			System.out.println(temp);
-			if (temp.indexOf(LaunchCommands.SOOT_CLASSPATH) != -1) {
-				System.out.println("match found");
-				getList()..remove(temp);
-				int index =
-				temp = temp+System.getProperty("path.separator")+val;
-				System.out.println(temp);
-				getList().add(temp);
-				System.out.println(temp);
-			}
-		}
-	}*/
 	
 	public void addDashes(){
 	
@@ -104,7 +81,6 @@ public class SootCommandList {
 	}
 
 	public void printList(){
-		System.out.println("Soot Command List:");
 		Iterator it = list.iterator();
 		while (it.hasNext()){
 			System.out.println(it.next());

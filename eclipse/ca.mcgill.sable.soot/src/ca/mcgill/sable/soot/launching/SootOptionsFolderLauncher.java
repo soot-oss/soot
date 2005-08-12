@@ -19,7 +19,6 @@
 
 package ca.mcgill.sable.soot.launching;
 
-//import java.util.HashMap;
 
 import java.util.ArrayList;
 
@@ -55,10 +54,7 @@ public class SootOptionsFolderLauncher extends SootFolderLauncher {
       		
       		
       		setCmd(ssc.toRunArray());
-      		//setCmd(ssc.toRunString());
-      		//System.out.println("to run soot main class "+dialog.getSootMainClass());
       		String mainClass = dialog.getSootMainClass();
-      		//System.out.println("mainClass: "+mainClass);
       		if ((mainClass == null) || (mainClass.length() == 0)){
       			runSootDirectly();
       		}
@@ -75,17 +71,11 @@ public class SootOptionsFolderLauncher extends SootFolderLauncher {
 	}
 	
 	private void presetDialog() {
-		//System.out.println("presetting dialog");
 		getSdc().setOutputDir(getOutputLocation());
-		//System.out.println("presetting output dir");
 		getSdc().setSootClassPath(getProcessPath()+getSootClasspath().getSeparator()+getClasspathAppend());
-		//System.out.println("presetting cp");
 		getSdc().setProcessPath(getProcessPath());
-		//System.out.println("presetting process-path"+getProcess_path());
 		getSdc().setKeepLineNum();
-		//System.out.println("presetting keep line num");
 		getSdc().setPrintTags();	
-		//System.out.println("presetting print tags");
 		getSdc().setSootMainClass();
 	}
 	

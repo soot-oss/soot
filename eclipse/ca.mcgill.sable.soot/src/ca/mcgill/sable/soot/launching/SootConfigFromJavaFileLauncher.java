@@ -67,7 +67,6 @@ public class SootConfigFromJavaFileLauncher extends SootFileLauncher {
 		while (it.hasNext()){
 			getSootCommandList().addSingleOpt((String)it.next());
 		}
-		//getSootCommandList().addSingleOpt(getToProcess());
 		
 		if ((mainClass == null) || (mainClass.length() == 0)){
 			runSootDirectly();

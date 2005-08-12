@@ -42,15 +42,12 @@ public class SootJimpleProjectLauncher extends SootProjectLauncher {
 		ArrayList commands = new ArrayList();
 		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
 		commands.add(getProcess_path()+getSootClasspath().getSeparator()+getClasspathAppend());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
 		commands.add(getOutputLocation());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		commands.add("--"+LaunchCommands.PROCESS_PATH);
 		commands.add(getProcess_path());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
 		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
 		getSootCommandList().addSingleOpt(commands);
 		

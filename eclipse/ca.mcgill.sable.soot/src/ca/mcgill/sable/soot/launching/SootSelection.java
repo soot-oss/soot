@@ -25,14 +25,6 @@ import org.eclipse.core.resources.*;
 import org.eclipse.jdt.core.*;
 import org.eclipse.jface.viewers.*;
 import ca.mcgill.sable.soot.*;
-/**
- * @author jlhotak
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
 public class SootSelection {
 
 	private IStructuredSelection structured;

@@ -19,13 +19,11 @@
 
 package ca.mcgill.sable.soot.launching;
 
-//import java.util.HashMap;
 
 import java.util.ArrayList;
 
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.*;
-//import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.ui.*;
 /**
  * Displays the Soot Options dialog and launches Soot with
@@ -54,10 +52,7 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
       		
       		
       		setCmd(ssc.toRunArray());
-      		//setCmd(ssc.toRunString());
-      		//System.out.println("to run soot main class "+dialog.getSootMainClass());
       		String mainClass = dialog.getSootMainClass();
-      		//System.out.println("mainClass: "+mainClass);
       		if ((mainClass == null) || (mainClass.length() == 0)){
       			runSootDirectly();
       		}
@@ -74,17 +69,11 @@ public class SootOptionsProjectLauncher extends SootProjectLauncher {
 	}
 	
 	private void presetDialog() {
-		//System.out.println("presetting dialog");
 		getSdc().setOutputDir(getOutputLocation());
-		//System.out.println("presetting output dir");
 		getSdc().setSootClassPath(getProcess_path()+getSootClasspath().getSeparator()+getClasspathAppend());
-		//System.out.println("presetting cp");
 		getSdc().setProcessPath(getProcess_path());
-		//System.out.println("presetting process-path"+getProcess_path());
 		getSdc().setKeepLineNum();
-		//System.out.println("presetting keep line num");
 		getSdc().setPrintTags();	
-		//System.out.println("presetting print tags");
 		getSdc().setSootMainClass();
 	}
 	

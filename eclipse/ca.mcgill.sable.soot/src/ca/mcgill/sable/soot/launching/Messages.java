@@ -25,12 +25,6 @@ package ca.mcgill.sable.soot.launching;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class Messages {
 
 	private static final String BUNDLE_NAME = "ca.mcgill.sable.soot.launching.launching"; //$NON-NLS-1$
@@ -42,15 +36,12 @@ public class Messages {
 	 * 
 	 */
 	private Messages() {
-
-		// TODO Auto-generated constructor stub
 	}
 	/**
 	 * @param key
 	 * @return
 	 */
 	public static String getString(String key) {
-		// TODO Auto-generated method stub
 		try {
 			return RESOURCE_BUNDLE.getString(key);
 		} catch (MissingResourceException e) {

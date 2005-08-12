@@ -21,9 +21,6 @@ package ca.mcgill.sable.soot.launching;
 
 import java.util.*;
 
-/**
- * 
- */
 public class SootConfiguration {
 
 

@@ -43,13 +43,6 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 		if (isDoNotContinue()) return;
 		// sometimes window needs to be reset (not sure why)
 		window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			//System.out.println("window is null");
-		}
-		else {
-			//System.out.println("window not null");
-		}
-		
 		PhaseOptionsDialog dialog = new PhaseOptionsDialog(window.getShell());
         setSdc(new SootDefaultCommands(dialog));
         presetDialog();
@@ -105,7 +98,6 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 		while (it.hasNext()){
 			getSootCommandList().addSingleOpt((String)it.next());
 		}
-		//getSootCommandList().addSingleOpt(getToProcess());
 	}
 	private void setCmd(String user_cmd) {
 		
@@ -116,11 +108,7 @@ public class SootOptionsFromJavaFileLauncher extends SootFileLauncher {
 		while (it.hasNext()){
 			commands.add((String)it.next());
 		}
-		//commands.add(getToProcess());
-		//getSootCommandList().addSingleOpt(getToProcess());
 		getSootCommandList().addSingleOpt(commands);
-	  	//return cmd.toString();
-	  	
 		
 	}
 

@@ -43,7 +43,6 @@ public class SavedConfigManager {
 			Iterator it = getDeleteList().iterator();
 			while (it.hasNext()) {
 				String name = (String)it.next();
-				//System.out.println("about to remove: "+name);
 				remove(name);
 			}
 		}
@@ -60,16 +59,13 @@ public class SavedConfigManager {
 		String [] pointers = new String [count];
 		for (int i = 1; i <= count; i++) {
 			pointers[i-1] = settings.get("soot_run_config_"+i);
-			//System.out.println("pointers[i]: "+pointers[i-1]);
 		}
 
 		int i = 1;
 		int j = 0;
 		while (j < count) {
-		//for (int i = 1; i <= count; i++) {
 			if (!pointers[j].equals(name)) {
 			  	settings.put("soot_run_config_"+i, pointers[j]);
-			  	//System.out.println("soot_run_config_"+i+": "+pointers[j]);
 			  	i++;
 			}
 			j++;		
@@ -81,17 +77,8 @@ public class SavedConfigManager {
 			count = 0;
 		}
 		settings.put("config_count", count);
-		//System.out.println("new config_count: "+count);
 		settings.put(name, (String)null);	
 		
-				/*
-			if (settings.get("soot_run_config_"+i).equals(name)) {
-				settings.put("soot_run_config_"+i, "");
-				settings.put(name, "");
-				count--;
-				settings.put("config_count", count);
-			}
-		}*/ 
 	}
 	
 	public void handleEdits() {
@@ -99,14 +86,10 @@ public class SavedConfigManager {
 			Iterator it = getEditMap().keySet().iterator();
 			while (it.hasNext()) {
 				String name = (String)it.next();
-				//System.out.println("will save: "+name);
 				if (alreadyInList(name)) {
-					//System.out.println("claims it will update: "+name);
 					update(name, (ArrayList)getEditMap().get(name));
 				}
 				else {
-					//System.out.println("claims it will add: "+name);
-					//System.out.println(getEditMap().get(name).getClass().toString());
 					add(name, (ArrayList)getEditMap().get(name));
 				}
 			}
@@ -127,7 +110,6 @@ public class SavedConfigManager {
 				return true;
 			}
 		}
-		//if (settings.getArray(name) == null) return false;
 		return false;
 	}
 
@@ -151,20 +133,15 @@ public class SavedConfigManager {
 	private void update(String name, String val) {
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
-		// TODO test this - I think it doesn't ever put "default" 
-		// keyword -- test using it also
 		if (val != null) {
-			//System.out.println("about to update "+name);
-			//SootSavedConfiguration ssc = new SootSavedConfiguration(name, val);
 			settings.put(name, val);
-			//System.out.println("updated");
 		}
 		else {
 			settings.put(name, "default");
 		}
 	}
 	
-	// TODO use this instaed of String, String
+	// TODO use this instead of String, String
 	private void add(String name, ArrayList val){
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		int count = 0;
@@ -175,7 +152,6 @@ public class SavedConfigManager {
 		}
 		count++;
 		settings.put("config_count", count);
-		//System.out.println("config_count: "+count);
 		settings.put("soot_run_config_"+count, name);
 		update(name, val);	
 	}
@@ -191,7 +167,6 @@ public class SavedConfigManager {
 		}
 		count++;
 		settings.put("config_count", count);
-		//System.out.println("config_count: "+count);
 		settings.put("soot_run_config_"+count, name);
 		update(name, val);
 	}

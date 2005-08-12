@@ -104,22 +104,6 @@ public class SootOutputFilesHandler {
 			IResource [] children = getSootOutputFolder().members();
 		
 			IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();		
-			if (window != null) {
-				IWorkbenchPage page= window.getActivePage();
-				if (page != null) {
-				
-					//System.out.println("soot output folder has: "+children.length+" files");
-					for (int i = 0; i < children.length; i++) {
-						//System.out.println(children[i].getName());
-						if (children[i] instanceof IFile) {
-							if (page == null ) {
-								//System.out.println("page is null");
-							}
-							//getOldFilelist().add(page.openEditor(new FileEditorInput((IFile)children[i])), children[i].getName());
-						}
-					}
-				}
-			}
 		}
 		catch (Exception e) {
 			System.out.println("Open Editor ex: "+e.getMessage());

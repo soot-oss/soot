@@ -29,14 +29,10 @@ public class SootFolderLauncher extends SootLauncher {
 
 	private String processPath;
 	private String classpathAppend = null;
-	//private String outputLocation;
 
 	public void run(IAction action) {
 		super.run(action);
 		classpathAppend = null;
-		
-		//super.resetSootOutputFolder();
-		//setOutputLocation(platform_location+getSootOutputFolder().getFullPath().toOSString());
 		
 		if (getSootSelection().getType() == SootSelection.PACKAGEROOT_SELECTED_TYPE){
 			addJars();
@@ -60,16 +56,8 @@ public class SootFolderLauncher extends SootLauncher {
 		else {
 			this.classpathAppend = this.classpathAppend+getSootClasspath().getSeparator()+ca;
 		}
-		System.out.println("classpathAppend: "+this.classpathAppend);
 	}
 
-	/**
-	 * Returns the outputLocation.
-	 * @return String
-	 */
-	/*public String getOutputLocation() {
-		return outputLocation;
-	}
 
 	/**
 	 * Returns the processPath.
@@ -79,13 +67,6 @@ public class SootFolderLauncher extends SootLauncher {
 		return processPath;
 	}
 
-	/**
-	 * Sets the outputLocation.
-	 * @param outputLocation The outputLocation to set
-	 */
-	/*public void setOutputLocation(String outputLocation) {
-		this.outputLocation = outputLocation;
-	}
 
 	/**
 	 * Sets the processPath.

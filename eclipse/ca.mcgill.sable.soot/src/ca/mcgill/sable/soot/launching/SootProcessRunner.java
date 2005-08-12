@@ -25,9 +25,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.*;
 
-//import ca.mcgill.sable.soot.util.*;
-//import ca.mcgill.sable.soot.*;
-
 /**
  * Handles launching Soot as a separate J*ava process. 
  * Not currently used.
@@ -52,12 +49,9 @@ public class SootProcessRunner implements IRunnableWithProgress {
 	public void run(IProgressMonitor monitor)
 		throws InvocationTargetException, InterruptedException {
 		
-			//System.out.println("SootProcessRunner - running");
 		try {
                               
         	String exec1 = "java -cp \""+getSootClasspath().getSootClasspath()+"\" soot.Main -p jb use-original-names "+ getCmd();
-            //System.out.println(exec1);
-            //newProcessStarting();
             setProc(Runtime.getRuntime().exec(exec1));
             
            

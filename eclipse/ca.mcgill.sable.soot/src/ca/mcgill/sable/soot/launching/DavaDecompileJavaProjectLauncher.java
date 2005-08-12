@@ -51,24 +51,10 @@ public class DavaDecompileJavaProjectLauncher extends SootProjectLauncher {
 		}
 		cp = cp + getSootClasspath().getSeparator()+ getClasspathAppend();
 		commands.add(cp);
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
-			
-				/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-				classpath.append(getSootClasspath().getSootClasspath());
-				classpath.append(getSootClasspath().getSeparator());
-				classpath.append(getProcessPath());
-
-		
-				String output_path = LaunchCommands.OUTPUT_DIR + getOutputLocation();
-				
-				StringBuffer cmd = new StringBuffer();
-				cmd.append(classpath+" ");
-				cmd.append(output_path+" ");*/
 			
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
 		commands.add(getOutputLocation());
 		
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SRC_PREC, "java");
@@ -78,27 +64,9 @@ public class DavaDecompileJavaProjectLauncher extends SootProjectLauncher {
 			commands.add("--"+LaunchCommands.PROCESS_PATH);
 			commands.add((String)it2.next());
 		}	
-		//commands.add("--"+LaunchCommands.PROCESS_PATH);
-		//commands.add(getProcess_path());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
 		getSootCommandList().addSingleOpt(commands);	
-		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-		classpath.append(getSootClasspath().getSootClasspath());
-		classpath.append(getSootClasspath().getSeparator());
-		classpath.append(getProcess_path());
-	
-		
-		String output_path = LaunchCommands.OUTPUT_DIR+getOutputLocation();
-				
-		StringBuffer cmd = new StringBuffer();
-		cmd.append(classpath+" ");
-		cmd.append(output_path+" ");
-		cmd.append(LaunchCommands.PROCESS_PATH+getProcess_path()+" ");
-		cmd.append(LaunchCommands.DAVA);
-		
-	  	return cmd.toString();*/
 	}
 
 }

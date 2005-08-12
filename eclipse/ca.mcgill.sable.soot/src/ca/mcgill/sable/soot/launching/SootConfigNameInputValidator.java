@@ -41,7 +41,6 @@ public class SootConfigNameInputValidator implements IInputValidator {
 	 * @see org.eclipse.jface.dialogs.IInputValidator#isValid(String)
 	 */
 	public String isValid(String newText) {
-		System.out.println("newText: "+newText);
 		if (newText.equals("")){
 			return "You must enter a name!";
 		}

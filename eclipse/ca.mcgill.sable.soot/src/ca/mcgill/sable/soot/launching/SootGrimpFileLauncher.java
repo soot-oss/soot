@@ -48,11 +48,8 @@ public class SootGrimpFileLauncher extends SootFileLauncher {
 	  	ArrayList commands = new ArrayList();
 	  	commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
 	  	commands.add(getClasspathAppend());
-	  	
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getClasspathAppend());
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
 		commands.add(getOutputLocation());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.GRIMP_OUT);
@@ -64,14 +61,10 @@ public class SootGrimpFileLauncher extends SootFileLauncher {
         if (isSrcPrec()) {
             getSootCommandList().addDoubleOpt("--"+LaunchCommands.SRC_PREC, getSrcPrec());
         }
-        //getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
 		Iterator it = getToProcessList().iterator();
 		while (it.hasNext()){
 			commands.add((String)it.next());
 		}
-		//commands.add(getToProcess());
-		//getSootCommandList().addSingleOpt(getToProcess());
 		getSootCommandList().addSingleOpt(commands);
-		//return cmd.toString();
 	}
 }

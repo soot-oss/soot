@@ -60,7 +60,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	protected String external_jars_location;
 	public SootClasspath sootClasspath = new SootClasspath();
 	public SootSelection sootSelection;
-	//private IFolder sootOutputFolder;
 	private SootCommandList sootCommandList;
 	private String outputLocation;
 	private SootDefaultCommands sdc;
@@ -74,7 +73,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		getSootSelection().initialize(); 		
 		setFileHandler(new SootOutputFilesHandler(window));
 		getFileHandler().resetSootOutputFolder(getSootSelection().getProject());		
-		//System.out.println("starting SootLauncher");
 		setDavaHandler(new DavaHandler());
 		getDavaHandler().setSootOutputFolder(getFileHandler().getSootOutputFolder());
 		getDavaHandler().handleBefore();
@@ -108,7 +106,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 	protected void runSootDirectly(String mainClass) {
 		
 		int length = getSootCommandList().getList().size();
-		//Object [] temp = getSootCommandList().getList().toArray();
 		String temp [] = new String [length];
 		
 		getSootCommandList().getList().toArray(temp);
@@ -120,25 +117,18 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		
 		for (int i = 0; i < temp.length; i++) {
 			
-			//System.out.println(temp[i]);
 			sendSootOutputEvent(temp[i]);
 			sendSootOutputEvent(" ");
 		}
 		sendSootOutputEvent("\n");
 		
 		
-		//System.out.println("about to make list be array of strings");
-		//final String [] cmdAsArray = (String []) temp;
 		IRunnableWithProgress op; 
 		try {   
         	newProcessStarting();
-        	System.out.println("new process starting");
             op = new SootRunner(temp, Display.getCurrent(), mainClass);
-           	System.out.println("op:"+op);
            	((SootRunner)op).setParent(this);
-           	System.out.println("setting parent to this");
             ModalContext.run(op, true, new NullProgressMonitor(), Display.getCurrent());
-            //setCfgList(((SootRunner)op).getCfgList());
  		} 
  		catch (InvocationTargetException e1) {
     		// handle exception
@@ -149,23 +139,9 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		catch (InterruptedException e2) {
     		// handle cancelation
     		System.out.println("InterruptedException: "+e2.getMessage());
-    		//op.getProc().destroy();
  		}
 
 	}
-	
-	/*public boolean handleNewAnalysis(String name){
-		IWorkbenchWindow window = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		
-		Shell shell = Display.getCurrent().getActiveShell();
-		if (shell == null){
-			System.out.println("shell is null");
-		}
-		MessageDialog msgDialog = new MessageDialog(shell, "Interaction Question",  null,"Do you want to interact with analysis: "+name+" ?",0, new String []{"Yes", "No"}, 0);
-		msgDialog.open();
-		boolean result = msgDialog.getReturnCode() == 0 ? true: false;
-		return result;
-	}*/
 	
 	protected void runSootAsProcess(String cmd) {
 		
@@ -187,7 +163,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
  		catch (InterruptedException e2) {
     		// handle cancelation
     		System.out.println(e2.getMessage());
-    		//op.getProc().destroy();
  		}
  
    
@@ -211,7 +186,6 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
         
         while(st.hasMoreTokens()) {
             cmdLine[count++] = st.nextToken();
-            //System.out.println(cmdLine[count-1]); 
         }
         
         return cmdLine; 
@@ -222,13 +196,9 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		sootClasspath.initialize();
 		
 		// platform location 
-		//platform_location = Platform.getLocation().toOSString();
 		platform_location = getSootSelection().getJavaProject().getProject().getLocation().toOSString();
-		//System.out.println("platform_location: "+platform_location);
 		platform_location = platform_location.substring(0, platform_location.lastIndexOf(System.getProperty("file.separator")));
-        //System.out.println("platform_location: "+platform_location);
 		// external jars location - may need to change don't think I use this anymore
-		//external_jars_location = Platform.getLocation().removeLastSegments(2).toOSString();
 		setOutputLocation(platform_location+getFileHandler().getSootOutputFolder().getFullPath().toOSString());
 		
 	}
@@ -239,31 +209,15 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 			IPackageFragmentRoot [] roots = getSootSelection().getJavaProject().getAllPackageFragmentRoots();
 			
 			for (int i = 0; i < roots.length; i++){
-				//System.out.println("root: "+roots[i]);
-				//System.out.println("root kind: "+roots[i].getKind());
-				//System.out.println("root path: "+roots[i].getPath());
-				
-				
 				if (roots[i].isArchive()){
 					if (roots[i].getResource() != null){
 					
-						//System.out.println("resource: "+roots[i].getResource());
-						//System.out.println("Jar File: "+platform_location+roots[i].getResource().getFullPath().toOSString());
 						setClasspathAppend(platform_location+roots[i].getPath().toOSString());
-
 					}
 					else {
-
-						//System.out.println("Jar File: "+roots[i].getPath().toOSString());
 						setClasspathAppend(roots[i].getPath().toOSString());
 
 					}
-					//System.out.println("Jar File Kind: "+roots[i].getRawClasspathEntry().getEntryKind());
-					//System.out.println("Jar File raw classpath entry: "+roots[i].getRawClasspathEntry());
-					
-					//if (roots[i].getRawClasspathEntry().getEntryKind() == IClasspathEntry.CPE_LIBRARY){
-						//setClasspathAppend(roots[i].getPath().toOSString());
-					//}
 				}
 			}
 		}
@@ -278,52 +232,17 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		getFileHandler().refreshAll(getSootSelection().getProject());
 		//for updating markers
 		SootPlugin.getDefault().getManager().updateSootRanFlag();
-		//getDavaHandler().handleAfter();
-		//getFileHandler().handleFilesChanged();
 		final IEditorPart activeEdPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-		/*if ((activeEdPart != null) && (activeEdPart instanceof JimpleEditor)){
-            if (activeEdPart.getEditorInput() != null){
-                System.out.println("will update ed first");
-                    
-                activeEdPart.getSite().getShell().getDisplay().asyncExec(new Runnable(){
-                    public void run() {
-                        ((AbstractTextEditor)activeEdPart).setInput(activeEdPart.getEditorInput());
-                    };
-                });
-            }
-		}*/
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
-		//System.out.println("after update part");
 		// run cfgviewer
-		//System.out.println("call graph list: "+getCfgList());
 		if (getCfgList() != null){
 			// currently this is the call graph list of pkgs
-			//System.out.println("callgraph list not null");
 			GraphGenerator generator = new GraphGenerator();
-			//System.out.println("new generator made");
 			generator.setChildren(convertPkgList(getCfgList()));
 			GraphPlugin.getDefault().setGenerator(generator);
 		
 			generator.run(null);
-			
-			
-			/*Iterator it = getCfgList().iterator();
-			while (it.hasNext()){
-				ModelCreator mc = new ModelCreator();
-				System.out.println("struct: "+getStructured().getFirstElement().getClass());
-				//mc.setResource((IResource)getStructured().getFirstElement());
-				mc.setSootGraph((soot.toolkits.graph.DirectedGraph)it.next());
-				//mc.createModel();
-				mc.displayModel();
-			
-			}*/
 		}
-		//CFGViewer cv;
-		//Iterator it = getCfgList().iterator();
-		//while (it.hasNext()){
-		//	cv = new CFGViewer();
-		//	cv.run(it.next());
-		//}
 	}
 	
 	HashMap alreadyDone = new HashMap();
@@ -333,10 +252,8 @@ public abstract class SootLauncher  implements IWorkbenchWindowActionDelegate {
 		Iterator it = pkgList.iterator();
 		while(it.hasNext()){
 			CallData cd = (CallData)it.next();
-			System.out.println("cd: "+cd);
 			TestNode tn = null;
 			if (alreadyDone.containsKey(cd)){
-				System.out.println("already done: "+cd);
 				tn = (TestNode)alreadyDone.get(cd);
 			}
 			else {

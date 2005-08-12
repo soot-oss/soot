@@ -50,19 +50,15 @@ public class SootJimpleJavaProjectLauncher extends SootProjectLauncher {
 		}
 		cp = cp + getSootClasspath().getSeparator() + getClasspathAppend();
 		commands.add(cp);
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcess_path());
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
 		commands.add(getOutputLocation());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
-		//commands.add("--"+LaunchCommands.PROCESS_PATH);
 		Iterator it2 = getJavaProcessPath().iterator();
 		while (it2.hasNext()){
 			commands.add("--"+LaunchCommands.PROCESS_PATH);
 			commands.add((String)it2.next());
 		}	
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcess_path());
 		getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT, LaunchCommands.JIMPLE_OUT);
 		getSootCommandList().addDoubleOpt("--"+LaunchCommands.SRC_PREC,"java");
 		getSootCommandList().addSingleOpt(commands);

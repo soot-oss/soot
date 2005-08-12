@@ -34,17 +34,7 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 	public void run(IAction action) {
 	  	super.run(action);
 	  	
-		//setCmd();
-/*		SootSavedConfiguration ssc = new SootSavedConfiguration("Temp", getSootCommandList());
-      		ssc.toSaveString();
-      		
-      		
-      		//HashMap temp = dialog.getOkMap();
-      		//System.out.println("ok map: "+temp.get("test"));
-      		//TestOptionsDialogHandler handler = new TestOptionsDialogHandler();
-      		setCmd(ssc.toRunString());*/
 		setCmd();
-		//getSootCommandList().addDashes();
 		runSootDirectly();
 		runFinish();
 	
@@ -58,32 +48,16 @@ public class DavaDecompileFolderLauncher extends SootFolderLauncher {
 		ArrayList commands = new ArrayList();
 		commands.add("--"+LaunchCommands.SOOT_CLASSPATH);
 		commands.add(getProcessPath()+getSootClasspath().getSeparator()+getClasspathAppend());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.SOOT_CLASSPATH, getSootClasspath().getSootClasspath()+getSootClasspath().getSeparator()+getProcessPath());
-			
-		/*StringBuffer classpath = new StringBuffer(LaunchCommands.SOOT_CLASSPATH);
-		classpath.append(getSootClasspath().getSootClasspath());
-		classpath.append(getSootClasspath().getSeparator());
-		classpath.append(getProcessPath());
-
-		
-		String output_path = LaunchCommands.OUTPUT_DIR + getOutputLocation();
-				
-		StringBuffer cmd = new StringBuffer();
-		cmd.append(classpath+" ");
-		cmd.append(output_path+" ");*/
 		commands.add("--"+LaunchCommands.OUTPUT_DIR);
 		commands.add(getOutputLocation());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.OUTPUT_DIR, getOutputLocation());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.KEEP_LINE_NUMBER);
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.XML_ATTRIBUTES);
 		
 		commands.add("--"+LaunchCommands.PROCESS_PATH);
 		commands.add(getProcessPath());
-		//getSootCommandList().addDoubleOpt("--"+LaunchCommands.PROCESS_PATH, getProcessPath());
 		getSootCommandList().addSingleOpt("--"+LaunchCommands.DAVA);
 		
 		getSootCommandList().addSingleOpt(commands);
-	  	//return cmd.toString();
 	}
 
 }	
