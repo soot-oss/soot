@@ -182,7 +182,6 @@ public class SootPlugin extends AbstractUIPlugin {
 	 */
 	public void startUp() throws CoreException {
 		super.startup();
-		//System.out.println("starting up plugin"); //$NON-NLS-1$
 		soot_output_doc = new SootDocument();
 		soot_output_doc.startUp();		
 	}
