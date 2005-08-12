@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-	/*
- * Created on Jan 15, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg;
 
 import soot.toolkits.graph.*;
@@ -36,12 +30,7 @@ import soot.toolkits.graph.interaction.*;
 import soot.toolkits.scalar.*;
 import soot.*;
 
-/**
- * @author jlhotak
- *
- * this class has to either get a soot dg or talk
- * with soot for the parts of a soot dg
- */
+
 
 public class ModelCreator {
 
@@ -51,9 +40,7 @@ public class ModelCreator {
 	private String edName = "CFG Editor";
 	private HashMap nodeMap = new HashMap();
 	
-	/**
-	 * 
-	 */
+	
 	public ModelCreator() {
 	}
 	
@@ -75,7 +62,6 @@ public class ModelCreator {
 				exceptHeads = findExceptionBlockHeads(unitGraph.getBody());
 			}
 		}
-		System.out.println("handled graphs with exceptions");
 		while (nodesIt.hasNext()){
 			Object node = nodesIt.next();
 			CFGNode cfgNode;
@@ -83,7 +69,6 @@ public class ModelCreator {
 				cfgNode = new CFGNode();
 				initializeNode(node, cfgNode, cfgGraph);
 				getNodeMap().put(node, cfgNode);
-				//cfgGraph.addChild(cfgNode);
 			}
 			else {
 				cfgNode = (CFGNode)getNodeMap().get(node);
@@ -96,8 +81,6 @@ public class ModelCreator {
 					cfgSucc = new CFGNode();
 					initializeNode(succ, cfgSucc, cfgGraph);	
 					getNodeMap().put(succ, cfgSucc);
-					//cfgGraph.addChild(cfgSucc);
-					
 				}
 				else {
 					cfgSucc = (CFGNode)getNodeMap().get(succ);
@@ -106,7 +89,6 @@ public class ModelCreator {
 				
 			}
 		}
-		System.out.println("handling heads");
 		Iterator headsIt = getSootGraph().getHeads().iterator();
 		while (headsIt.hasNext()){
 			Object next = headsIt.next();
@@ -114,7 +96,6 @@ public class ModelCreator {
 			if ((exceptHeads != null) && exceptHeads.contains(next)) continue;
 			node.getData().setHead(true);
 		}
-		System.out.println("handling tails");
 		Iterator tailsIt = getSootGraph().getTails().iterator();
 		while (tailsIt.hasNext()){
 			Object next = tailsIt.next();
@@ -122,7 +103,6 @@ public class ModelCreator {
 			node.getData().setTail(true);
 		}
 		
-		System.out.println("setting model");
 		setModel(cfgGraph);
 		
 	}
@@ -166,7 +146,6 @@ public class ModelCreator {
 			if (next.equals(fi.unit())){
 				CFGNode node = (CFGNode)getNodeMap().get(next);
 				getModel().newFlowData();
-				//System.out.println("flow info type: "+fi.info().getClass());
 				CFGFlowData data = new CFGFlowData();
 				if (fi.isBefore()){
 					node.setBefore(data);
@@ -181,7 +160,6 @@ public class ModelCreator {
 					CFGPartialFlowData nextFlow = new CFGPartialFlowData();
 					data.addChild(nextFlow);
 					nextFlow.addChild(startBrace);
-					//data.addChild(startBrace);
 					startBrace.setText("{");
 					
 					while (fsIt.hasNext()){
@@ -196,18 +174,15 @@ public class ModelCreator {
 							nextFlow.addChild(info);
 						}
 						
-						//data.addChild(info);
 						info.setText(elem.toString());
 						if(fsIt.hasNext()){
 							CFGFlowInfo comma = new CFGFlowInfo();
 							nextFlow.addChild(comma);
-							//data.addChild(comma);
 							comma.setText(", ");
 						}
 					}
 					CFGFlowInfo endBrace = new CFGFlowInfo();
 					nextFlow.addChild(endBrace);
-					//data.addChild(endBrace);
 					endBrace.setText("}");
 				}
 				else {
@@ -236,16 +211,10 @@ public class ModelCreator {
 						pFlow.addChild(info);
 						info.setText(nextGroup);
 					}
-					
-					
-					//CFGFlowInfo info = new CFGFlowInfo();
-					//data.addChild(info);
-					//info.setText(fi.info().toString());
 				}
 				
 			}
 		}
-		//((CFGEditor)part).setContentsChanged();
 	}
 	
 	private void initializeNode(Object sootNode, CFGNode cfgNode, CFGGraph cfgGraph){
@@ -259,12 +228,10 @@ public class ModelCreator {
 				if (width < u.toString().length()){
 					width = u.toString().length();
 				}
-				//textList.add(u.toString());
 				textList.add(u);
 			}
 		}
 		else {
-			//textList.add(sootNode.toString());
 			textList.add(sootNode);
 			width = sootNode.toString().length();
 		}
@@ -275,11 +242,6 @@ public class ModelCreator {
 		cfgNode.setData(nodeData);
 		
 		nodeData.setText(textList);
-		//cfgNode.setData(nodeData);
-		
-		//cfgNode.setData(nodeData);
-		//cfgNode.setText(textList);
-		//cfgNode.setWidth(width*7);
 	}
 	
 	IEditorPart part;
@@ -290,16 +252,12 @@ public class ModelCreator {
 			CFGGraph cfgGraph = new CFGGraph();
 			cfgGraph.setName("cfgGraph");
 			
-			System.out.println("cfgGraph: "+cfgGraph);
 			part = page.openEditor(cfgGraph, "ca.mcgill.sable.soot.cfg.CFGEditor");
-            System.out.println("part kind: "+part.getClass());
-			if (part instanceof CFGEditor){
+            if (part instanceof CFGEditor){
 				((CFGEditor)part).setTitle(getEdName());
 				((CFGEditor)part).setTitleTooltip(getEdName());
 			}
-			System.out.println("about to build model");
 			buildModel(cfgGraph);
-			System.out.println("built model");
 		}
         catch (PartInitException ex){
         	System.out.println("error message: "+ex.getMessage());

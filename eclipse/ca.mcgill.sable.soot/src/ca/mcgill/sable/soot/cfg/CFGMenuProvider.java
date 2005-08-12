@@ -63,8 +63,8 @@ public class CFGMenuProvider extends ContextMenuProvider {
 		
 		// TODO Auto-generated method stub
 		//IAction showCode = new ShowCodeAction(part);
-		System.out.println("registry: "+getRegistry());
-		System.out.println("acion: "+getRegistry().getAction(StopAction.STOP));
+		//System.out.println("registry: "+getRegistry());
+		//System.out.println("acion: "+getRegistry().getAction(StopAction.STOP));
 		menu.add(getRegistry().getAction(StopAction.STOP));
 		menu.add(getRegistry().getAction(UnStopAction.UN_STOP));
 		//getRegistry().registerAction(showCode);

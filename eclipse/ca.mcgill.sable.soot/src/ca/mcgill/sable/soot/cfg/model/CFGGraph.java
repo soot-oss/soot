@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 15, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg.model;
 
 import java.util.*;
@@ -32,12 +26,6 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.draw2d.graph.*;
 import org.eclipse.core.resources.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGGraph extends CFGElement implements IEditorInput {
 
 	private String name;
@@ -45,9 +33,6 @@ public class CFGGraph extends CFGElement implements IEditorInput {
 	private IResource resource;
 	
 	
-	/**
-	 * 
-	 */
 	public CFGGraph() {
 	}
 

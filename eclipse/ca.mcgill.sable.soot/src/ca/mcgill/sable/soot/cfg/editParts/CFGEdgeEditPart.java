@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 15, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.cfg.editParts;
 
 import org.eclipse.gef.editparts.AbstractConnectionEditPart;
@@ -32,29 +27,18 @@ import java.util.*;
 import ca.mcgill.sable.soot.cfg.model.*;
 import java.beans.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGEdgeEditPart extends AbstractConnectionEditPart 
 	{
 
-	/**
-	 * 
-	 */
+
 	public CFGEdgeEditPart() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editparts.AbstractEditPart#createEditPolicies()
 	 */
 	protected void createEditPolicies() {
-		// TODO Auto-generated method stub
-
 	}
 
 	protected IFigure createFigure(){

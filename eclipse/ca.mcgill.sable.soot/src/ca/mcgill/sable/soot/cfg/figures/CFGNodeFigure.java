@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 15, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg.figures;
 
 import org.eclipse.draw2d.*;
@@ -34,12 +28,6 @@ import org.eclipse.draw2d.text.*;
 import ca.mcgill.sable.soot.editors.*;
 import org.eclipse.jface.resource.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGNodeFigure extends Figure {
 
 	private Panel nodeFigure;//RectangleFigure rect;
@@ -62,17 +50,7 @@ public class CFGNodeFigure extends Figure {
 	 */
 	public CFGNodeFigure() {
 		super();
-		/*Figure f = new Figure();
 		
-
-		ToolbarLayout layout = new ToolbarLayout();
-		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
-	
-		f.setLayoutManager(layout);
-		layout.setStretchMinorAxis(false);
-		
-		this.add(f);
-		*/
 		ToolbarLayout layout2 = new ToolbarLayout();
 		layout2.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
 	
@@ -173,44 +151,12 @@ public class CFGNodeFigure extends Figure {
 	
 
 	public void addIndicator(){
-		System.out.println("adding indicator");
-		//Color c = SootPlugin.getDefault().getColorManager().getColor(new RGB(0, 0 ,155));
-		//this.setBackgroundColor(c);
-		/*if (indicatorFigure == null){
-			if (indicatorImage == null){
-				ImageDescriptor desc = SootPlugin.getImageDescriptor("indicator_icon.gif");
-				indicatorImage = desc.createImage();
-			}
-			indicatorFigure = new Label(indicatorImage);
-		}
-		this.add(indicatorFigure,0);*/
 		
-		//this.setBorder(new LineBorder());
-		//getData().setBackgroundColor(c);
-		/*if (indicatorImage == null){
-			ImageDescriptor desc = SootPlugin.getImageDescriptor("indicator_icon.gif");
-			indicatorImage = desc.createImage();
-		}
-		//Label l = new Label(stopImage);
-		Label l = new Label(indicatorImage);
-		//getData().addFigure(l, 0);*/
 	
 	}
 	
 	public void removeIndicator(){
-		/*if (indicatorFigure != null){
-			boolean hasIndic = false;
-			Iterator it = this.getChildren().iterator();
-			while (it.hasNext()){
-				if (it.next().equals(indicatorFigure)){
-					hasIndic = true;
-				}
-			}
-			if (hasIndic){
-				this.remove(indicatorFigure);
-			}
-		}*/
-		//this.setBorder(null);
+		
 	}
 	
 

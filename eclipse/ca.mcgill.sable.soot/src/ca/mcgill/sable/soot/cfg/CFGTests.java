@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 11, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg;
 
 import org.eclipse.ui.*;
@@ -35,12 +29,7 @@ import org.eclipse.draw2d.graph.*;
 import org.eclipse.draw2d.geometry.*;
 import java.util.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class CFGTests  implements IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action){
@@ -49,13 +38,9 @@ public class CFGTests  implements IWorkbenchWindowActionDelegate {
 		shell.setText("CFG Test");
 		
 		LightweightSystem lws = new LightweightSystem(shell);
-		//FigureCanvas canvas = new FigureCanvas(shell, lws);
 		Panel p = new Panel();
 		p.setBounds(new Rectangle(0,0,-1,-1));
 		lws.setContents(p);
-		//IFigure label = new org.eclipse.draw2d.Label("CFG Tests");
-		//canvas.add(label);
-		//p.add(label);
 		HashMap nodeMap = new HashMap();
 		DirectedGraph dg = makeSimpleGraph();
 		Iterator nIt = dg.nodes.iterator();
@@ -66,7 +51,6 @@ public class CFGTests  implements IWorkbenchWindowActionDelegate {
 			label.setSize(nextNode.width, 36);
 			node.add(label);
 			int len = ((String)nextNode.data).length() * 5;
-			//node.setBounds(new Rectangle(nextNode.x, nextNode.y, -1, -1));
 			node.setLocation(new Point(nextNode.x, nextNode.y));
 			node.setSize(nextNode.width, 36);
 			System.out.println("bounds: "+node.getBounds());

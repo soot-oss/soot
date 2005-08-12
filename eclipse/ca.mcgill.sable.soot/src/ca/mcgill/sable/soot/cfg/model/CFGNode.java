@@ -17,24 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 14, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg.model;
 
 import java.util.*;
 import org.eclipse.draw2d.graph.*;
 
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGNode extends CFGElement {
 
 	
@@ -46,12 +33,8 @@ public class CFGNode extends CFGElement {
 	
 	private ArrayList children = new ArrayList();
 	
-	/**
-	 * 
-	 */
 	public CFGNode() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public void addInput(CFGEdge input){

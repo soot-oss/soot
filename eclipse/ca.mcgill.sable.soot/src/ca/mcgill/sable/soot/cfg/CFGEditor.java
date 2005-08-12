@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 13, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.cfg;
 
 import org.eclipse.core.resources.*;
@@ -36,24 +31,11 @@ import ca.mcgill.sable.soot.cfg.editParts.*;
 //import org.eclipse.gef.palette.*;
 import org.eclipse.jface.action.*;
 import org.eclipse.gef.ui.actions.*;
-//import ca.mcgill.sable.soot.*;
 
-//import java.util.*;
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGEditor extends GraphicalEditor {
 
 	private CFGGraph cfgGraph;
-	//private boolean isSaved = false;
-	//private PaletteRoot root; 
-	/**
-	 * 
-	 */
+	
 	public CFGEditor() {
 		DefaultEditDomain defaultEditDomain = new DefaultEditDomain(this);
 		setEditDomain(defaultEditDomain);
@@ -64,7 +46,6 @@ public class CFGEditor extends GraphicalEditor {
 	 * @see org.eclipse.gef.ui.parts.GraphicalEditor#initializeGraphicalViewer()
 	 */
 	protected void initializeGraphicalViewer() {
-		// TODO Auto-generated method stub
 		getGraphicalViewer().setContents(cfgGraph);		
 
 	}
@@ -90,16 +71,6 @@ public class CFGEditor extends GraphicalEditor {
 		getSite().getKeyBindingService().registerAction(zoomOut);
 	
 	
-		//IAction print = new PrintAction(this);
-		//getActionRegistry().registerAction(print);
-		//getSite().getKeyBindingService().registerAction(print);
-		
-		/*IAction save = new SaveAction(this);
-		save.setEnabled(true);
-		getActionRegistry().registerAction(save);
-		getSite().getKeyBindingService().registerAction(save);
-		this.getPropertyActions().add(save.getId());
-		*/
 		getGraphicalViewer().setEditPartFactory(new CFGPartFactory());
 		getGraphicalViewer().setKeyHandler(new GraphicalViewerKeyHandler(getGraphicalViewer()));
 		
@@ -116,7 +87,6 @@ public class CFGEditor extends GraphicalEditor {
 		getGraphicalViewer().setContextMenu(menuProvider);
 		getSite().registerContextMenu(menuProvider, getGraphicalViewer());
 	
-		//this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 	
 	// this is for zoom

@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 11, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg;
 
 import org.eclipse.ui.*;
@@ -38,12 +32,6 @@ import ca.mcgill.sable.soot.launching.*;
 import soot.toolkits.graph.*;
 import org.eclipse.swt.SWT;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGViewer {
 	
 	public void run(Object sootGraph){
@@ -52,23 +40,9 @@ public class CFGViewer {
 		shell.setText("CFG Test");
 		
 		LightweightSystem lws = new LightweightSystem(shell);
-		//FigureCanvas canvas = new FigureCanvas(shell, lws);
-		
-		//ScrollPane sp = new ScrollPane();
-		//sp.setVerticalScrollBarVisibility(ScrollPane.NEVER);
-		//sp.setHorizontalScrollBarVisibility(ScrollPane.AUTOMATIC);
 		
 		Panel p = new Panel();
-		//FigureCanvas fg = new FigureCanvas(shell, lws);
-		//fg.setHorizontalScrollBarVisibility(FigureCanvas.AUTOMATIC);
-		//fg.setVerticalScrollBarVisibility(FigureCanvas.AUTOMATIC);
-		//p.setBounds(new Rectangle(0,0,-1,-1));
-		//lws.setContents(p);
-		//IFigure label = new org.eclipse.draw2d.Label("CFG Tests");
-		//canvas.add(label);
-		//p.add(label);
 		HashMap nodeMap = new HashMap();
-		//DirectedGraph dg = makeSimpleGraph();
 		org.eclipse.draw2d.graph.DirectedGraph dg = makeSootGraph((soot.toolkits.graph.DirectedGraph)sootGraph);
 		Iterator nIt = dg.nodes.iterator();
 		while (nIt.hasNext()){
@@ -78,10 +52,8 @@ public class CFGViewer {
 			label.setSize(nextNode.width, 36);
 			node.add(label);
 			int len = ((String)nextNode.data).length() * 5;
-			//node.setBounds(new Rectangle(nextNode.x, nextNode.y, -1, -1));
 			node.setLocation(new Point(nextNode.x, nextNode.y));
 			node.setSize(nextNode.width, 36);
-			System.out.println("bounds: "+node.getBounds());
 			p.add(node);
 			nodeMap.put(nextNode, node);
 		}
@@ -97,8 +69,6 @@ public class CFGViewer {
 			edge.setTargetDecoration(new PolygonDecoration());
 			p.add(edge);
 		}
-		//fg.setContents(p);
-		
 		
 		lws.setContents(p);
 		Display display = Display.getDefault();
@@ -117,7 +87,6 @@ public class CFGViewer {
 		Iterator it = sootGraph.iterator();
 		while (it.hasNext()){
 			Object node = it.next();
-			System.out.println("node: "+node.toString());
 			Node n;
 			if (!nodeMap.containsKey(node)){
 				n = new Node(node.toString());
@@ -131,7 +100,6 @@ public class CFGViewer {
 			Iterator succIt = sootGraph.getSuccsOf(node).iterator();
 			while (succIt.hasNext()){
 				Object succ = succIt.next();
-				System.out.println("succ: "+succ.toString());
 				Node s;
 				if (!nodeMap.containsKey(succ)){
 					s = new Node(succ.toString());
@@ -145,7 +113,6 @@ public class CFGViewer {
 				Edge e = new Edge(n, s);
 				edges.add(e);
 			}	
-			//System.out.println("node: "+it.next().toString());
 		}
 		
 		dg.nodes = nodes;
@@ -204,12 +171,9 @@ public class CFGViewer {
 	
 	}
 	
-	/**
-	 * 
-	 */
+	
 	public CFGViewer() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 }

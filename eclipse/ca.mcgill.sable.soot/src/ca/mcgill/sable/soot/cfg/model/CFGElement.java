@@ -17,27 +17,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 14, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.cfg.model;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import java.beans.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public class CFGElement implements IPropertySource {
 
-	//public static final String WIDTH = "node width";
 	public static final String TEXT = "node text";
 	public static final String CHILDREN = "children";
 	public static final String INPUTS = "inputs";
@@ -83,14 +72,12 @@ public class CFGElement implements IPropertySource {
 	 */
 	public CFGElement() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
 	 */
 	public Object getEditableValue() {
-		// TODO Auto-generated method stub
 		return this;
 	}
 
@@ -98,7 +85,6 @@ public class CFGElement implements IPropertySource {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
 	 */
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		// TODO Auto-generated method stub
 		return new IPropertyDescriptor[1];
 	}
 
@@ -106,7 +92,6 @@ public class CFGElement implements IPropertySource {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyValue(java.lang.Object)
 	 */
 	public Object getPropertyValue(Object id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -114,7 +99,6 @@ public class CFGElement implements IPropertySource {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
 	 */
 	public boolean isPropertySet(Object id) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -122,16 +106,14 @@ public class CFGElement implements IPropertySource {
 	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
 	 */
 	public void resetPropertyValue(Object id) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
 	 */
 	public void setPropertyValue(Object id, Object value) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 }

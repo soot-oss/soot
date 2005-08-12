@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 15, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.cfg.figures;
 
 import org.eclipse.draw2d.*;
@@ -35,12 +29,6 @@ import ca.mcgill.sable.soot.editors.*;
 import org.eclipse.draw2d.geometry.*;
 import org.eclipse.jface.resource.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CFGNodeDataFigure extends Figure {
 
 	private Panel nodeFigure;//RectangleFigure rect;
@@ -51,10 +39,7 @@ public class CFGNodeDataFigure extends Figure {
 	
 	Font f = new Font(null, "Arial", 8, SWT.NORMAL);
 		
-	
-	/**
-	 * 
-	 */
+
 	public CFGNodeDataFigure() {
 		super();
 		setRect(new RectangleFigure());
@@ -68,12 +53,7 @@ public class CFGNodeDataFigure extends Figure {
 		
 		this.setLayoutManager(layout);
 		
-		//XYLayout xylayout = new XYLayout();
 		getRect().setLayoutManager(layout);
-		//layout.setStretchMinorAxis(false);
-		//this.setLayoutManager(layout);
-		
-		//layout.calculateMinimumSize(getRect(), -1, -1);	
 	}
 	
 
@@ -86,7 +66,6 @@ public class CFGNodeDataFigure extends Figure {
 		int width = 0;
 		Iterator it = getData().iterator();
 		while (it.hasNext()){
-			//String next = (String)it.next();
 			unit = (soot.Unit)it.next();
 			String next = unit.toString();
 			
@@ -99,14 +78,12 @@ public class CFGNodeDataFigure extends Figure {
 			height = height + l.getSize().height/2;
 			int length = next.length()*7;
 			width = length > width ? length : width;
-			//l.setPreferredSize(-1, -1);
 			getRect().add(l);
 			
 		}
 			
 		getRect().setSize(width+10, height+10);
 		this.setSize(width+10, height+10);
-		//this.setConstraint(getRect(), new org.eclipse.draw2d.geometry.Rectangle(getRect().getLocation(), getRect().getSize()));
 		
 	}
 
@@ -126,15 +103,7 @@ public class CFGNodeDataFigure extends Figure {
 			ImageDescriptor desc = SootPlugin.getImageDescriptor("stop_icon.gif");
 			stopImage = desc.createImage();
 		}
-		/*if (highlightImage == null){
-			ImageDescriptor desc = SootPlugin.getImageDescriptor("highlight_icon.gif");
-			highlightImage = desc.createImage();
-		}*/
-		//Label l = new Label(stopImage);
-		
 		((Label)getRect().getChildren().get(0)).setIcon(stopImage);
-		//Label l = new Label(highlightImage);
-		//this.add(l, 0);
 	}
 	
 	Label indicatorLabel;
