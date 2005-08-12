@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on May 20, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.callgraph;
 
 import org.eclipse.gef.ContextMenuProvider;
@@ -33,12 +28,6 @@ import org.eclipse.ui.*;
 import ca.mcgill.sable.graph.*;
 
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CGMenuProvider extends ContextMenuProvider {
 
 	ActionRegistry registry;
@@ -52,7 +41,6 @@ public class CGMenuProvider extends ContextMenuProvider {
 		super(viewer);
 		setRegistry(registry);
 		this.part = part;
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
@@ -60,15 +48,10 @@ public class CGMenuProvider extends ContextMenuProvider {
 	 */
 	public void buildContextMenu(IMenuManager menu) {
 		GEFActionConstants.addStandardActionGroups(menu);
-		
-		// TODO Auto-generated method stub
-		//IAction showCode = new ShowCodeAction(part);
 		menu.add(getRegistry().getAction(ExpandAction.EXPAND));
 		menu.add(getRegistry().getAction(CollapseAction.COLLAPSE));
 		
 		menu.add(getRegistry().getAction(ShowCodeAction.SHOW_IN_CODE));
-		//getRegistry().registerAction(showCode);
-		//((GraphEditor)part).getGraphEditorSelectionActions().add(showCode);
 	}
 
 	/**

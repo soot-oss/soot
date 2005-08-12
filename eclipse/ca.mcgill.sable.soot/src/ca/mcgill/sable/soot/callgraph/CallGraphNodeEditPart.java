@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Mar 10, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.callgraph;
 
 import ca.mcgill.sable.graph.editparts.SimpleNodeEditPart;
@@ -36,20 +30,11 @@ import org.eclipse.jface.resource.*;
 import ca.mcgill.sable.soot.*;
 
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 
-	/**
-	 * 
-	 */
+	
 	public CallGraphNodeEditPart() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	Font f = new Font(null, "Arial", 8, SWT.NORMAL);
 	
@@ -58,7 +43,6 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 	 * @see org.eclipse.gef.editparts.AbstractGraphicalEditPart#createFigure()
 	 */
 	protected IFigure createFigure() {
-		// TODO Auto-generated method stub
 		RectangleFigure rect = new RectangleFigure();
 		ToolbarLayout layout = new ToolbarLayout();
 		layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
@@ -110,7 +94,6 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 		Label cLabel = (Label)getFigure().getChildren().get(0);
 		Label mLabel = (Label)getFigure().getChildren().get(1);
 		if (getData() != null){
-			System.out.println("data: "+getData()+" class; "+getData().getClass());
 			SootMethod currMeth = (SootMethod)getData();
 			String c = currMeth.getSignature().substring(0, currMeth.getSignature().indexOf(":")+1);
 			String m = currMeth.getSignature().substring(currMeth.getSignature().indexOf(":")+1);
@@ -118,7 +101,6 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 			mLabel.setText(m);
 			int len = m.length() > c.length() ? m.length() : c.length();
 			getFigure().setSize(len*7-6, 38);
-			//getFigure().revalidate();
 			loadImages();
 			Image image = null;
 			if (currMeth.isPublic()){
@@ -134,25 +116,10 @@ public class CallGraphNodeEditPart extends SimpleNodeEditPart {
 			getFigure().revalidate();
 			
 		}
-		/*Iterator it = getFigure().getChildren().iterator();
-		while (it.hasNext()){
-			Object next = it.next();
-			if (next instanceof Label){
-				((Label)next).setText(getData());
-				//System.out.println("data: "+getData());
-				if (getData() != null){
-					//((Label)next).setSize(getData().length()*7, ((Label)next).getBounds().height);
-					getFigure().setSize((getData().length()*7)+10, ((((Label)next).getBounds().height/2)+10));
-					getFigure().revalidate();
-					((GraphEditPart)getParent()).getFigure().revalidate();
-				}
-			}
-		}*/
+		
 	}
 
-	/*public void switchToComplex(){
-		((CallGraphNode)getNode()).getGenerator().expandGraph((CallGraphNode)getNode());
-	}*/
+	
 	
 	public void expandGraph(){
 		((CallGraphNode)getNode()).getGenerator().expandGraph((CallGraphNode)getNode());

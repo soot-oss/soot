@@ -17,23 +17,12 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Mar 10, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.callgraph;
 
 import ca.mcgill.sable.graph.model.*;
 import soot.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CallGraphNode extends SimpleNode {
 
 	private CallGraphGenerator generator;
@@ -45,13 +34,9 @@ public class CallGraphNode extends SimpleNode {
 		if ((getOutputs() == null) ||(getOutputs().size() == 0)) return true;
 		return false;
 	}
-	
-	/**
-	 * 
-	 */
+
 	public CallGraphNode() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	
 	public void setData(Object obj){

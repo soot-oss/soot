@@ -17,12 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Mar 5, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 package ca.mcgill.sable.soot.callgraph;
 import org.eclipse.ui.*;
 import org.eclipse.jface.action.*;
@@ -45,12 +40,6 @@ import org.eclipse.jdt.core.*;
 import org.eclipse.ui.texteditor.*;
 import org.eclipse.ui.part.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class CallGraphGenerator {
 	
 	private CallGraphInfo info;
@@ -58,12 +47,9 @@ public class CallGraphGenerator {
 	private InteractionController controller;
 	private ArrayList centerList;
 	
-	/**
-	 * 
-	 */
+
 	public CallGraphGenerator() {
-	    System.out.println("creating call graph generator");
-    }
+	}
 	
 	public void run(){
 		
@@ -81,7 +67,6 @@ public class CallGraphGenerator {
 			}
 			IEditorPart part = page.openEditor(graph, "ca.mcgill.sable.graph.GraphEditor", true);
 			((GraphEditor)part).setPartFactory(new CallGraphPartFactory());
-			//CGMenuProvider provider = new CGMenuProvider(((GraphEditor)part).getGraphEditorGraphicalViewer(), ((GraphEditor)part).getGraphEditorActionRegistry());
 			addActions((GraphEditor)part);	
 			((GraphEditor)part).setMenuProvider(new CGMenuProvider(((GraphEditor)part).getGraphEditorGraphicalViewer(), ((GraphEditor)part).getGraphEditorActionRegistry(), part));
 			
@@ -90,9 +75,6 @@ public class CallGraphGenerator {
 		catch (PartInitException e3){
 			e3.printStackTrace();
 		}
-		/*catch (CoreException e){
-			e.printStackTrace();
-		}*/
 		catch (Exception e2){
 			e2.printStackTrace();
 		}
@@ -119,7 +101,6 @@ public class CallGraphGenerator {
 		cgn.setGenerator(this);
 		cgn.setData(getInfo().getCenter());
 
-		//addToCenterList(getInfo().getCenter());
 		cgn.setExpand(false);
 		makeCons(getInfo(), cgn);
 			
@@ -149,30 +130,22 @@ public class CallGraphGenerator {
 			SootMethod sm = mInfo.method();
 			CallGraphNode inNode = getNodeForMethod(sm);
 			inNode.setGenerator(this);
-			//if (!inNode.equals(center)){
-				Edge inEdge = new Edge(inNode, center);
-				inEdge.setLabel(mInfo.edgeKind().name());
-				System.out.println("edge kind: "+mInfo.edgeKind().name());
-			//}
+			Edge inEdge = new Edge(inNode, center);
+			inEdge.setLabel(mInfo.edgeKind().name());
 		}
 		
 		Iterator it2 = info.getOutputs().iterator();
 		while (it2.hasNext()){
 			MethInfo mInfo = (MethInfo)it2.next();
 			SootMethod sm = mInfo.method();
-			//System.out.println("making target connection for: "+sm);
 			CallGraphNode outNode = getNodeForMethod(sm);
 			outNode.setGenerator(this);
-			//if (!center.equals(outNode)){
-				Edge inEdge = new Edge(center, outNode);
-				inEdge.setLabel(mInfo.edgeKind().name());
-				System.out.println("edge kind: "+mInfo.edgeKind().name());
-			//}
+			Edge inEdge = new Edge(center, outNode);
+			inEdge.setLabel(mInfo.edgeKind().name());
 		}	
 	}
 	
 	public void collapseGraph(CallGraphNode node){
-		System.out.println("should remove unwanted nodes");
 		// need to undo (remove in and out nodes
 		// who are not in center list)
 		ArrayList inputsToRemove = new ArrayList();
@@ -184,10 +157,7 @@ public class CallGraphGenerator {
 			while (inIt.hasNext()){
 				Edge next = (Edge)inIt.next();
 				CallGraphNode src = (CallGraphNode)next.getSrc();
-				//System.out.println("next to remove: "+next.getClass());
-				//if (!getCenterList().contains(src.getData())){
 				if (src.isLeaf()){
-					//System.out.println("removing: "+src);
 					inputsToRemove.add(next);
 					nodesToRemove.add(src);
 				}
@@ -199,9 +169,7 @@ public class CallGraphGenerator {
 			while (outIt.hasNext()){
 				Edge next = (Edge)outIt.next();
 				CallGraphNode tgt = (CallGraphNode)next.getTgt();
-				//if (!getCenterList().contains(tgt.getData())){
 				if (tgt.isLeaf()){
-					//System.out.println("removing: "+tgt);
 					outputsToRemove.add(next);
 					nodesToRemove.add(tgt);
 				}
@@ -211,36 +179,29 @@ public class CallGraphGenerator {
 		Iterator inRIt = inputsToRemove.iterator();
 		while (inRIt.hasNext()){
 			Edge temp = (Edge)inRIt.next();
-			//System.out.println("removing edge: src: "+temp.getSrc().getData()+" tgt: "+temp.getTgt().getData());
 			node.removeInput(temp);
 		}
 		
 		Iterator outRIt = outputsToRemove.iterator();
 		while (outRIt.hasNext()){
 			Edge temp = (Edge)outRIt.next();
-			//System.out.println("removing edge: src: "+temp.getSrc().getData()+" tgt: "+temp.getTgt().getData());
-			
 			node.removeInput(temp);
 		}
 		
 		Iterator nodeRIt = nodesToRemove.iterator();
 		while (nodeRIt.hasNext()){
 			CallGraphNode temp = (CallGraphNode)nodeRIt.next();
-			//System.out.println("removing node: "+temp.getData());
 			temp.removeAllInputs();
 			temp.removeAllOutputs();
 			getGraph().removeChild(temp);
 		}
 		
 		node.setExpand(true);
-		//
 	}
 	
 	public void expandGraph(CallGraphNode node){
-		System.out.println("should expand graph");
-	
-			getController().setEvent(new InteractionEvent(IInteractionConstants.CALL_GRAPH_NEXT_METHOD, node.getData()));
-			getController().handleEvent();
+		getController().setEvent(new InteractionEvent(IInteractionConstants.CALL_GRAPH_NEXT_METHOD, node.getData()));
+		getController().handleEvent();
 	
 	}
 	
@@ -251,7 +212,6 @@ public class CallGraphGenerator {
 		sootClassName = sootClassName + ".java";
 		String sootMethName = meth.getName();
 		
-		System.out.println("soot classname to find: "+sootClassName);
 		IProject [] progs = SootPlugin.getWorkspace().getRoot().getProjects();
 		IResource fileToOpen = null;
 		for (int i = 0; i < progs.length; i++){
@@ -262,7 +222,6 @@ public class CallGraphGenerator {
 	
 				IPackageFragmentRoot [] roots = jProj.getAllPackageFragmentRoots();
 				for (int j = 0; j < roots.length; j++){
-				//System.out.println(roots[i].getResource());
 					if (!(roots[j].getResource() instanceof IContainer)) continue;
 					fileToOpen = ((IContainer)roots[j].getResource()).findMember(sootClassName);
 					if (fileToOpen == null) continue;
@@ -271,8 +230,7 @@ public class CallGraphGenerator {
 			}
 			catch(Exception e){
 			}
-			System.out.println("project: "+project);
-			
+		
 			if (fileToOpen != null) break;
 		}
 		
@@ -283,7 +241,6 @@ public class CallGraphGenerator {
 		IWorkbenchPage page = window.getActivePage();;
 		
 		try{
-			System.out.println("file to open: "+fileToOpen);
 			IEditorPart part = page.openEditor(new FileEditorInput((IFile)fileToOpen), org.eclipse.jdt.ui.JavaUI.ID_CU_EDITOR);
 			SourceLnPosTag methTag = (SourceLnPosTag)meth.getTag("SourceLnPosTag");
 			if (methTag != null){
@@ -291,16 +248,13 @@ public class CallGraphGenerator {
 				int selOffset = ((AbstractTextEditor)part).getDocumentProvider().getDocument(part.getEditorInput()).getLineOffset(methTag.startLn()-1);
 			
 				((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).selectAndReveal(selOffset, 0);
-				//((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()).setHighlightRange(selOffset, 1, true);
 			}
 					
 		}
 		catch (PartInitException e3){
 			e3.printStackTrace();
 		}
-		/*catch (CoreException e){
-			e.printStackTrace();
-		}*/
+		
 		catch (Exception e2){
 			e2.printStackTrace();
 		}
@@ -311,7 +265,6 @@ public class CallGraphGenerator {
 		
 		SootMethod center = cgInfo.getCenter();
 		
-		System.out.println("adding to graph: "+center.getName());
 		// find the center who is already in the graph
 		CallGraphNode centerNode = getNodeForMethod(cgInfo.getCenter());
 		//addToCenterList(cgInfo.getCenter());
