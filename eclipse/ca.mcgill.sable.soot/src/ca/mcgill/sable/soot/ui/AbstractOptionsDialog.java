@@ -33,24 +33,6 @@ import ca.mcgill.sable.soot.launching.SootSavedConfiguration;
 import ca.mcgill.sable.soot.testing.*;
 
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 public abstract class AbstractOptionsDialog extends TitleAreaDialog implements ISelectionChangedListener {
 
 	private SashForm sashForm;
@@ -92,7 +74,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		if (getDefList() == null) {
 			setDefList(new HashMap());
 		}
-		//System.out.println("adding to defList: key: "+key+" val: "+val); //$NON-NLS-1$ //$NON-NLS-2$
 		getDefList().put(key, val);
 		
 	} 
@@ -114,7 +95,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 
 	public String getArrayDef(String key){
 		String res = "";
-		//System.out.println(getDefList().get(key).getClass());
 		if (getDefList().get(key) instanceof ArrayList){
 		
 		ArrayList list = (ArrayList)getDefList().get(key);
@@ -149,28 +129,21 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	public void handleWidgetSelected(SelectionEvent e){
 		
-		//System.out.println(e.getSource().getClass().toString());
 		if (getRadioGroups() != null) {
-			//System.out.println("radioGroups not null");
 			Iterator it = getRadioGroups().keySet().iterator();
 			while (it.hasNext()){
 				Integer key = (Integer)it.next();
-				//System.out.println("Key is: "+key);
 				if (getRadioGroups().get(key) == null) break;
 				ArrayList buttons = (ArrayList)getRadioGroups().get(key);
 				Iterator itButtons = buttons.iterator();
-				//System.out.println(buttons.size());
 				while (itButtons.hasNext()){
-					//System.out.println("Testing Button");
 					if (((BooleanOptionWidget)itButtons.next()).getButton().equals(e.getSource())) {
-						//System.out.println("radio phase button changed");
 						switchButtons(buttons, (Button)e.getSource());
 					}
 				}
 			}
 		}
 		
-		//updateEnableGroup((Button)e.getSource());
 		updateAllEnableGroups();
 		
 	}
@@ -182,22 +155,16 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			EnableGroup eGroup = (EnableGroup)it.next();
 			if (eGroup.getLeader().getButton().equals(button)){
 				// group found
-				//if (eGroup.getLeader().getButton().getSelection()){
-					// enable control list
-					eGroup.changeControlState(eGroup.getLeader().getButton().getSelection());
-					if (eGroup.getControls() != null){
-						Iterator itCon = eGroup.getControls().iterator();
-						while (itCon.hasNext()){
-							Object obj = itCon.next();
-							if (obj instanceof BooleanOptionWidget){
-								updateEnableGroup(((BooleanOptionWidget)obj).getButton());
-							}
-						}
-					}
-				//}
-				//else {
-					// disable control list
-				//}
+                eGroup.changeControlState(eGroup.getLeader().getButton().getSelection());
+                if (eGroup.getControls() != null){
+                    Iterator itCon = eGroup.getControls().iterator();
+                    while (itCon.hasNext()){
+                        Object obj = itCon.next();
+                        if (obj instanceof BooleanOptionWidget){
+                            updateEnableGroup(((BooleanOptionWidget)obj).getButton());
+                        }
+                    }
+                }
 			}
 		}
 	}
@@ -207,7 +174,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			Iterator it = buttons.iterator();
 			while (it.hasNext()){
 				BooleanOptionWidget nextWidget = (BooleanOptionWidget)it.next();
-				//System.out.println(nextWidget.getButton()+" and change button: "+change); 
 				if (nextWidget.getButton().equals(change)){
 					nextWidget.getButton().setSelection(true);
 				}
@@ -239,7 +205,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		eGroup.setPhaseAlias(phaseAlias);
 		
 		getEnableGroups().add(eGroup);
-		//System.out.println("Made new enable group for: "+phaseAlias);
 	}
 	
 	protected void makeNewEnableGroup(String phaseAlias, String subPhaseAlias){
@@ -252,19 +217,14 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		eGroup.setSubPhaseAlias(subPhaseAlias);
 		
 		getEnableGroups().add(eGroup);
-		//System.out.println("Made new enable group for: "+phaseAlias+" and: "+subPhaseAlias);
 	}
 	
 	protected void addToEnableGroup(String phaseAlias, ISootOptionWidget widget, String alias){
 		EnableGroup eGroup = findEnableGroup(phaseAlias);
-		if (eGroup == null){
-			//System.out.println("Exception generating option dialog (phase).");
-		}
 		if (widget instanceof BooleanOptionWidget){
 			// could be leader
 			if (isEnableButton(alias)){
 				eGroup.setLeader(((BooleanOptionWidget)widget));
-				//System.out.println("Phase enable group leader: "+eGroup.getLeader().getAlias());
 			}
 			else {
 				eGroup.addControl(widget);
@@ -276,7 +236,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	}
 	
 	private EnableGroup findEnableGroup(String phaseAlias){
-		//System.out.println("Trying to find group for: "+phaseAlias);
 		Iterator it = getEnableGroups().iterator();
 		while (it.hasNext()){
 			EnableGroup next = (EnableGroup)it.next();
@@ -288,12 +247,8 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	protected void addToEnableGroup(String phaseAlias, String subPhaseAlias, ISootOptionWidget widget, String alias){
 		EnableGroup eGroup = findEnableGroup(phaseAlias, subPhaseAlias);
-		if (eGroup == null){
-			//System.out.println("Exception generating option dialog (subphase).");
-		}
 		if (widget instanceof BooleanOptionWidget){
 			// could be leader
-			//System.out.println("Adding boolean widget to enable group: "+alias);
 			
 			if (isEnableButton(alias)){
 				eGroup.setLeader(((BooleanOptionWidget)widget));
@@ -309,7 +264,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	}
 
 	private EnableGroup findEnableGroup(String phaseAlias, String subPhaseAlias){
-		//System.out.println("Trying to find group for: "+phaseAlias+" and: "+subPhaseAlias);
 		Iterator it = getEnableGroups().iterator();
 		while (it.hasNext()){
 			EnableGroup next = (EnableGroup)it.next();
@@ -322,14 +276,12 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	
 	protected void updateAllEnableGroups(){
 		if (getEnableGroups() == null) return;
-		//System.out.println("Updating All Enable Groups");
 		Iterator it = getEnableGroups().iterator();
 		
 		while (it.hasNext()){
 			EnableGroup eGroup = (EnableGroup)it.next();
 			if (eGroup.isPhaseOptType()){
 				if (eGroup.getLeader() == null){
-					//System.out.println("This enable Group has no leader.");
 					continue;
 				}
 				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
@@ -347,7 +299,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 			EnableGroup eGroup = (EnableGroup)it.next();
 			if (!eGroup.isPhaseOptType()){
 				if (eGroup.getLeader() == null){
-					//System.out.println("This enable Group has no leader.");
 					continue;
 				}
 				if (eGroup.getLeader().getButton().getSelection() && eGroup.getLeader().getButton().isEnabled()){
@@ -358,17 +309,14 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 				}
 			}
 		}
-		//printEnableGroups();
 	}
 	
 	private void printEnableGroups(){
 		if (getEnableGroups() == null) return;
-		//System.out.println("EGroups:");
 		Iterator it = getEnableGroups().iterator();
 		while (it.hasNext()){
 			EnableGroup eGroup = (EnableGroup)it.next();
-			//System.out.println(eGroup);
-		
+            System.out.println(eGroup);
 		}
 	}
 	
@@ -446,7 +394,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	protected void buttonPressed(int i){
 		switch(i) {
 			case 0: {
-				//System.out.println("Saving"); //$NON-NLS-1$
 				handleSaving();
 				break;
 			} 
@@ -483,13 +430,11 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		SootSavedConfiguration newConfig = new SootSavedConfiguration(name, savePressed());
 		
 		newConfig.setEclipseDefs(getEclipseDefList());
-		//System.out.println("about to add config to editMap"); //$NON-NLS-1$
 		if (getEditMap() == null) {
 			setEditMap(new HashMap());
 		}
 		
 		getEditMap().put(name, newConfig.toSaveArray());
-		//System.out.println("put in editMap: "+name); //$NON-NLS-1$
 					
 	}
 		
@@ -539,7 +484,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		
 		tree.addSelectionChangedListener(this);
 		
-		//tree.expandAll();
 		tree.getControl().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				handleKeyPressed(e);
@@ -555,14 +499,10 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	 */
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-		if (selection.isEmpty()) {
-			//System.out.println("selection empty");	 //$NON-NLS-1$
-		}
-		else {
+		if (!selection.isEmpty()) {
 			Object elem = selection.getFirstElement();
 			if (elem instanceof SootOption) {
 				SootOption sel = (SootOption)elem;
-				//System.out.println(sel.getLabel());
 				Control [] children = getPageContainer().getChildren();
 				String childTitle = null;
 				for (int i = 0; i < children.length; i++) {
@@ -692,22 +632,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 	}
 
 	/**
-	 * Returns the okMap.
-	 * @return HashMap
-	 */
-	/*public HashMap getOkMap() {
-		return okMap;
-	}
-
-	/**
-	 * Sets the okMap.
-	 * @param okMap The okMap to set
-	 */
-	/*public void setOkMap(HashMap okMap) {
-		this.okMap = okMap;
-	}
-
-	/**
 	 * Returns the config.
 	 * @return HashMap
 	 */
@@ -755,13 +679,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		this.eclipseDefList = eclipseDefList;
 	}
 
-	/**
-	 * Returns the deleteList.
-	 * @return ArrayList
-	 */
-	/*public ArrayList getDeleteList() {
-		return deleteList;
-	}
 
 	/**
 	 * Returns the editMap.
@@ -771,13 +688,6 @@ public abstract class AbstractOptionsDialog extends TitleAreaDialog implements I
 		return editMap;
 	}
 
-	/**
-	 * Sets the deleteList.
-	 * @param deleteList The deleteList to set
-	 */
-	/*public void setDeleteList(ArrayList deleteList) {
-		this.deleteList = deleteList;
-	}
 
 	/**
 	 * Sets the editMap.

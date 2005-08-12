@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Dec 19, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -36,12 +30,6 @@ import java.util.*;
 import org.eclipse.core.resources.*;
 import ca.mcgill.sable.soot.attributes.*;
 
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class AnalysisVisManipDialog
 	extends TitleAreaDialog implements ISelectionChangedListener {
 
@@ -57,7 +45,6 @@ public class AnalysisVisManipDialog
 	 */
 	public AnalysisVisManipDialog(Shell parentShell) {
 		super(parentShell);
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -117,7 +104,6 @@ public class AnalysisVisManipDialog
 		/* create global tab */
 		Composite global = new Composite(tabFolder, SWT.NONE);
 		GridLayout globalLayout = new GridLayout();
-		//globalLayout.numColumns = 2;
 		
 		global.setLayout(globalLayout);
 		
@@ -125,7 +111,6 @@ public class AnalysisVisManipDialog
 		TableViewer allTypesList = new TableViewer(allTable);
 		allTypesList.setContentProvider(new ArrayContentProvider());
 		allTypesList.setLabelProvider(new LabelProvider());
-	  	//allTypesList.setInput(getAllTypesInput());
 		
 		gd = new GridData(GridData.FILL_BOTH);
 		allTypesList.getControl().setLayoutData(gd);
@@ -202,7 +187,6 @@ public class AnalysisVisManipDialog
 		files.addSelectionChangedListener(this);
 	
 		
-		//files.setSelection((ISelection)files.getElementAt(0));
 		files.getControl().addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				handleKeyPressed(e);
@@ -218,19 +202,12 @@ public class AnalysisVisManipDialog
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
 		if (selection.isEmpty()) {
-			//System.out.println("selection empty");	 //$NON-NLS-1$
 			checkTypes.setInput(getCheckInput(""));
 		}
 		else {
 			Object elem = selection.getFirstElement();
-			System.out.println("elem: "+elem.getClass().toString());
-			//System.out.println("selected elem: "+elem);
 			if (!(elem instanceof IFile)) return;
 			ArrayList list = (ArrayList)getCheckInput(elem);
-			/*Iterator it = list.iterator();
-			while (it.hasNext()){
-				System.out.println("list:"+it.next());
-			}*/
 			handleLast();
 			checkTypes.setInput(list);
 			Object [] checkElems;
@@ -294,19 +271,6 @@ public class AnalysisVisManipDialog
 	private IContainer getInitialInput(){
 		IContainer proj = getProj();
 		return proj;
-		/*ArrayList list = new ArrayList();
-		Iterator it = dataMap.keySet().iterator();
-		while (it.hasNext()){
-			Object next = it.next();
-			
-			if (dataMap.get(next) != null){
-				if (((ArrayList)dataMap.get(next)).size() != 0){
-					list.add(next);
-				}
-			}
-		}
-		return list;*/
-		//return getFileList();
 	}
 	
 	private SootAttributesHandler getHandlerForFile(IFile next){
@@ -336,11 +300,9 @@ public class AnalysisVisManipDialog
 			
 				while (attrsIt.hasNext()){
 					SootAttribute sa = (SootAttribute)attrsIt.next();
-					//System.out.println("sa: "+sa);
 					Iterator typesIt = sa.getAnalysisTypes().iterator();
 					while (typesIt.hasNext()){
 						String val = (String)typesIt.next();
-						//System.out.println("will add: "+val+" if not there");
 						if (!allTypes.contains(val)){
 							allTypes.add(val);
 						}
@@ -357,7 +319,6 @@ public class AnalysisVisManipDialog
 		ArrayList list = new ArrayList();
 		if (!(key instanceof IFile)) return list;
 		IFile next = (IFile)key;
-			//System.out.println("next file: "+next);
 		SootAttributesHandler handler = getHandlerForFile(next);
 		
 		if ((handler != null) && (handler.getAttrList() != null)){
@@ -365,11 +326,9 @@ public class AnalysisVisManipDialog
 			ArrayList types = new ArrayList();
 			while (attrsIt.hasNext()){
 				SootAttribute sa = (SootAttribute)attrsIt.next();
-				//System.out.println("sa: "+sa);
 				Iterator typesIt = sa.getAnalysisTypes().iterator();
 				while (typesIt.hasNext()){
 					String val = (String)typesIt.next();
-					//System.out.println("will add: "+val+" if not there");
 					if (!types.contains(val)){
 						types.add(val);
 					}
@@ -380,12 +339,6 @@ public class AnalysisVisManipDialog
 		else {
 			return null;
 		}
-		/*if (dataMap.containsKey(key)){
-			//System.out.println("key is in list");
-			list = (ArrayList)dataMap.get(key);
-			//System.out.println("list: "+list);
-		}
-		return list;*/
 	}
 	
 	private void handleKeyPressed(KeyEvent e){

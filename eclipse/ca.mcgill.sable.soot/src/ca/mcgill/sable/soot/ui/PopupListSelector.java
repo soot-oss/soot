@@ -93,8 +93,6 @@ public class PopupListSelector {
 		int spaceBelow = screenSize.height - (rect.y + rect.height) - 30;
 		int spaceAbove = rect.y - 30;
 
-		//System.out.println("spaceBelow: "+spaceBelow);
-		//System.out.println("spaceAbove: "+spaceAbove);
 		int y = 0;
 		if (spaceAbove > spaceBelow && listSize.y > spaceBelow) {
 			// place popup list above table cell
@@ -126,17 +124,12 @@ public class PopupListSelector {
 		y = 0;
 		if (spaceAbove <= spaceBelow){
 			y = spaceAbove + rect.y;
-			///System.out.println(spaceBelow - spaceAbove);
 		}
 		else {
 			y = rect.y - spaceBelow;
-			//System.out.println(spaceAbove - spaceAbove);
 		}
 		
 		y = (rect.y * 16) + 85;
-        //y = rect.y - 80;
-        //System.out.println("y: "+y);
-
 	
 	
 		getShell().setBounds(rect.x, y, listSize.x, listSize.y);
@@ -154,7 +147,6 @@ public class PopupListSelector {
 		if (!shell.isDisposed ()) {
 			String [] strings = list.getSelection ();
 			shell.dispose();
-			System.out.println("disposing popup list");
 			if (strings.length != 0) result = strings [0];
 		}
 		return result;
@@ -169,7 +161,6 @@ public class PopupListSelector {
 	* @param width the minimum width of the list
 	*/
 	public void setMinimumWidth (int width) {
-		//if (width < 0)
 		minimumWidth = width;
 	}
 	

@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 20, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.ui;
 
 import org.eclipse.swt.widgets.Composite;
@@ -36,13 +30,6 @@ import ca.mcgill.sable.soot.attributes.*;
 import ca.mcgill.sable.soot.*;
 import org.eclipse.ui.*;
 
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class AnalysisTypeView extends ViewPart implements ICheckStateListener {
 
 	private CheckboxTableViewer viewer;
@@ -51,19 +38,14 @@ public class AnalysisTypeView extends ViewPart implements ICheckStateListener {
 	private ArrayList typesChecked;
 	private IFile file;
 	
-	/**
-	 * 
-	 */
 	public AnalysisTypeView() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
 		Table table = new Table(parent, SWT.CHECK);
 		setViewer(new CheckboxTableViewer(table));
 		getViewer().setContentProvider(new ArrayContentProvider());
@@ -91,8 +73,6 @@ public class AnalysisTypeView extends ViewPart implements ICheckStateListener {
 	 * @see org.eclipse.ui.IWorkbenchPart#setFocus()
 	 */
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -122,8 +102,6 @@ public class AnalysisTypeView extends ViewPart implements ICheckStateListener {
 	public void setInputTypes(ArrayList list) {
 		inputTypes = list;
 		getViewer().setInput(inputTypes);
-		System.out.println("is all check: "+isAllTypesChecked());
-		System.out.println("types check: "+getTypesChecked());
 		if (isAllTypesChecked()){
 			getViewer().setAllChecked(true);
 		}

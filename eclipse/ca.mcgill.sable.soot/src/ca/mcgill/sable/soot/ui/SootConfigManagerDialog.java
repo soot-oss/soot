@@ -47,25 +47,7 @@ import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.launching.*;
 import ca.mcgill.sable.soot.ui.PhaseOptionsDialog;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-public class SootConfigManagerDialog extends TitleAreaDialog implements ISelectionChangedListener {//, MouseListener {
+public class SootConfigManagerDialog extends TitleAreaDialog implements ISelectionChangedListener {
 
 	private SashForm sashForm;
 	private Composite selectionArea;
@@ -114,7 +96,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	
 	protected void configureShell(Shell shell){
 		super.configureShell(shell);
-		//System.out.println(Messages.getString("SootConfigManagerDialog.Manage_Configurations"));
 		shell.setText(Messages.getString("SootConfigManagerDialog.Manage_Configurations")); //$NON-NLS-1$
 	}
 	/**
@@ -206,15 +187,10 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 
 	public void selectionChanged(SelectionChangedEvent event) {
 		IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-		if (selection.isEmpty()) {
-			//System.out.println("selection empty");	 //$NON-NLS-1$
-		}
-		else {
+		if (!selection.isEmpty()) {
 			Object elem = selection.getFirstElement();
-			//System.out.println(elem.getClass().toString());
 			if (elem instanceof SootConfiguration) {
 				SootConfiguration sel = (SootConfiguration)elem;
-				//System.out.println("selected: "+sel.getLabel()); //$NON-NLS-1$
 				setSelected(sel.getLabel());
 			}
 			enableButtons();
@@ -241,7 +217,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		catch(NumberFormatException e) {
 		}
 
-		//System.out.println("config_count: "+numConfig); //$NON-NLS-1$
 		SootConfiguration root = new SootConfiguration(""); //$NON-NLS-1$
 		
 		if (numConfig != 0) {		
@@ -251,7 +226,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			for (int i = 0; i < numConfig; i++) {
 				configNames[i] = settings.get(Messages.getString("SootConfigManagerDialog.soot_run_config")+(i+1)); //$NON-NLS-1$
 				root.addChild(new SootConfiguration(configNames[i]));
-				//System.out.println("added to tree "+configNames[i]); //$NON-NLS-1$
 			}
 		
 			
@@ -335,8 +309,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		createSpecialButton(parent, 2, Messages.getString("SootConfigManagerDialog.Delete"), false, false); //$NON-NLS-1$
 		createSpecialButton(parent, 3, Messages.getString("SootConfigManagerDialog.Rename"), false, false); //$NON-NLS-1$
 		createSpecialButton(parent, 4, Messages.getString("SootConfigManagerDialog.Clone"), false, false); //$NON-NLS-1$
-		//createSpecialButton(parent, 7, Messages.getString("SootConfigManagerDialog.Import"), false); //$NON-NLS-1$
-		//createSpecialButton(parent, 8, Messages.getString("SootConfigManagerDialog.Export"), false); //$NON-NLS-1$
 	
 	}
 	
@@ -371,11 +343,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 				break;
 			}
 			case 7: {
-				//importPressed();
 				break;
 			}
 			case 8: {
-				//exportPressed();
 				break;
 			}
 			 
@@ -400,7 +370,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			currentNames.add(settings.get(Messages.getString("SootConfigManagerDialog.soot_run_config")+i)); //$NON-NLS-1$
 		}
 		
-		//currentNames.add("");			
 		// sets validator to know about already used names - but it doesn't use
 		// them because then editing a file cannot use same file name
 		SootConfigNameInputValidator validator = new SootConfigNameInputValidator();
@@ -414,14 +383,12 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (nameDialog.getReturnCode() == Dialog.OK) {
 			setEditDefs(null);
 			int returnCode = displayOptions(nameDialog.getValue(), "soot.Main");
-			//System.out.println("return code: "+returnCode); //$NON-NLS-1$
 			//handle selection of main class here
 			
 			if (returnCode != Dialog.CANCEL) {
 				getTreeRoot().addChild(new SootConfiguration(nameDialog.getValue()));
 				refreshTree();
 				
-				//System.out.println("updated tree"); //$NON-NLS-1$
 			}
 		
 		}
@@ -473,33 +440,24 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		PhaseOptionsDialog dialog = new PhaseOptionsDialog(getShell());
 		addEclipseDefsToDialog(dialog);
 		setMainClassInDialog(dialog, mainClass);
-		//System.out.println("created dialog"); //$NON-NLS-1$
 		if (getEditDefs() != null) {
 			Iterator it = getEditDefs().keySet().iterator();
 			while (it.hasNext()) {
 				Object next = it.next();
-				//System.out.println("next: "+next.getClass());
 				String key = (String)next;
-				//System.out.println("type: "+getEditDefs().get(key).getClass());
 				String val = (String)getEditDefs().get(key);
 				if ((val.equals("true")) || (val.equals("false"))) { //$NON-NLS-1$ //$NON-NLS-2$
-					//System.out.println("about to add boolean");
 					dialog.addToDefList(key, new Boolean(val));
 				}
 				else {
-					//System.out.println("about to add non boolean");
 					dialog.addToDefList(key, val);
 				}
 			}
 		}
 		
-		//System.out.println("added defaults to dialog"); //$NON-NLS-1$
 		
 		dialog.setConfigName(name);
-		//System.out.println("name set");
 		dialog.setCanRun(false);
-		//System.out.println("can run set to false");
-		//System.out.println("about to open dialog"); //$NON-NLS-1$
 		dialog.open();
 		if (dialog.getReturnCode() == Dialog.OK){
 			//save main class
@@ -515,17 +473,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	private void editPressed() {
 		if (getSelected() == null) return;
 		
-		//Object [] temp = this.getSelected();
 		String result = this.getSelected();
-		//System.out.println("result selected: "+result); //$NON-NLS-1$
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
-		//System.out.println("Edit: before getting array");
 		String [] saveArray = settings.getArray(result);
-		//System.out.println("Edit: after getting array");
 		SootSavedConfiguration ssc = new SootSavedConfiguration(result, saveArray);
-		//System.out.println("Edit: after ssc");
 		setEditDefs(ssc.toHashMapFromArray());
-		//System.out.println("Edit: after getting hashmap");
 		displayOptions(result, getMainClass(result));
 		
 				
@@ -536,7 +488,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (getSelected() == null) return;
 		
 		String result = this.getSelected();
-		//System.out.println("will remove: "+result); //$NON-NLS-1$
 		
 		// maybe ask if they are sure here first
 		MessageDialog msgDialog = new MessageDialog(this.getShell(), Messages.getString("SootConfigManagerDialog.Soot_Configuration_Remove_Message"), null, Messages.getString("SootConfigManagerDialog.Are_you_sure_you_want_to_remove_this_configuration"), 0, new String [] {Messages.getString("SootConfigManagerDialog.Yes"), Messages.getString("SootConfigManagerDialog.No")}, 0); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -562,7 +513,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (getSelected() == null) return;
 		
 		String result = this.getSelected();
-		//System.out.println("will rename: "+result); //$NON-NLS-1$
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
@@ -575,11 +525,9 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		catch (NumberFormatException e) {	
 		}
 
-		//System.out.println("config_count: "+config_count); //$NON-NLS-1$
 		ArrayList currentNames = new ArrayList();
 		for (int i = 1; i <= config_count; i++) {
 			currentNames.add(settings.get(Messages.getString("SootConfigManagerDialog.soot_run_config")+i)); //$NON-NLS-1$
-			//System.out.println(currentNames.get(i-1));
 			if (((String)currentNames.get(i-1)).equals(result)){
 				oldNameCount = i;
 			}
@@ -594,7 +542,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		nameDialog.open();
 		if (nameDialog.getReturnCode() == Dialog.OK){
 			settings.put(Messages.getString("SootConfigManagerDialog.soot_run_config")+oldNameCount, nameDialog.getValue()); //$NON-NLS-1$
-			//System.out.println("setting pointer: "+oldNameCount+" with: "+nameDialog.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 			settings.put(nameDialog.getValue(), settings.getArray(result));
 			getTreeRoot().renameChild(result, nameDialog.getValue());
 			saveMainClass(nameDialog.getValue(), settings.get(result+"_mainClass"));
@@ -608,7 +555,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (getSelected() == null) return;
 		
 		String result = this.getSelected();
-		//System.out.println("will clone: "+result); //$NON-NLS-1$
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		
@@ -619,8 +565,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		}
 		catch (NumberFormatException e) {	
 		}
-
-		//System.out.println("config_count: "+config_count); //$NON-NLS-1$
 		ArrayList currentNames = new ArrayList();
 		for (int i = 1; i <= config_count; i++) {
 			currentNames.add(settings.get(Messages.getString("SootConfigManagerDialog.soot_run_config")+i)); //$NON-NLS-1$
@@ -637,7 +581,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 		if (nameDialog.getReturnCode() == Dialog.OK){
 			config_count++;
 			settings.put(Messages.getString("SootConfigManagerDialog.soot_run_config")+config_count, nameDialog.getValue()); //$NON-NLS-1$
-			//System.out.println("setting pointer: "+oldNameCount+" with: "+nameDialog.getValue());
 			settings.put(nameDialog.getValue(), settings.getArray(result));
 			settings.put(Messages.getString("SootConfigManagerDialog.config_count"), config_count); //$NON-NLS-1$
 			getTreeRoot().addChild(new SootConfiguration(nameDialog.getValue()));
@@ -649,13 +592,11 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 	// runs the config
 	private void runPressed() {
 		super.okPressed();
-		//System.out.println("get selected: "+getSelected());
 		if (getSelected() == null) return;
 		
 		IDialogSettings settings = SootPlugin.getDefault().getDialogSettings();
 		String mainClass = settings.get(getSelected()+"_mainClass");
 		
-		//System.out.println(getLauncher().getClass());	
 		if (getLauncher() instanceof SootConfigProjectLauncher) {
 			((SootConfigProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
@@ -663,7 +604,6 @@ public class SootConfigManagerDialog extends TitleAreaDialog implements ISelecti
 			((SootConfigJavaProjectLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		else if (getLauncher() instanceof SootConfigFileLauncher) {
-			//System.out.println("Is File Launcher");
 			((SootConfigFileLauncher)getLauncher()).launch(getSelected(), mainClass);
 		}
 		else if (getLauncher() instanceof SootConfigFromJavaFileLauncher){
