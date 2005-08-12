@@ -17,24 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 
 package ca.mcgill.sable.soot.resources;
 
@@ -56,13 +38,11 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException {
-		// TODO Auto-generated method stub
 		switch (delta.getKind()) {
 			case IResourceDelta.CHANGED: {
 			
 				int flags = delta.getFlags();
 				if ((flags & IResourceDelta.CONTENT) != 0) {
-					//System.out.println("Contents changed: "+delta.getResource().getFullPath().toOSString());
 					if (delta.getResource() instanceof IFile){
 						SootPlugin.getDefault().getManager().updateFileChangedFlag((IFile)delta.getResource());
 						if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
@@ -75,7 +55,6 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 				break;
 			}
 			case IResourceDelta.ADDED: {
-				//System.out.println("Resource added event: "+delta.getResource().getFullPath().toOSString());
 				SootPlugin.getDefault().getManager().addToLists(delta.getResource());
 				if (delta.getResource() instanceof IFile){
 					if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
@@ -94,7 +73,6 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 		
 		IEditorReference [] refs = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
 		for (int i = 0; i < refs.length; i++){
-			//System.out.println(refs[i].getName());
 			if (refs[i] == null) continue;
 			if (refs[i].getName() == null) continue;
 			if (refs[i].getName().equals(file.getName())){

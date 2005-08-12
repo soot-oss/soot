@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Nov 6, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.resources;
 
 import org.eclipse.ui.*;
@@ -40,20 +34,12 @@ import ca.mcgill.sable.soot.ui.*;
 import ca.mcgill.sable.soot.*;
 import java.util.*;
 
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class SootPartManager {
 	
 	private boolean updateForOpen;
 	
 	public void updatePart(IEditorPart part){
 		
-		System.out.println("part in update: "+part);
 		if (part == null) return;
 		
 		if (part instanceof JimpleEditor){
@@ -63,23 +49,17 @@ public class SootPartManager {
 			
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
-			//System.out.println("Part Manager for Jimple: Handler: "+handler);
 			if (handler != null){
-				System.out.println("jimple hanlder is not null");
-				System.out.println("jimple should update for open?: "+isUpdateForOpen());
-				System.out.println("jimple should update?: "+handler.isUpdate());
 				
 				if (isUpdateForOpen() || handler.isUpdate()){
 				
 					sajc.setEditorPart(part);
 					sajc.setViewer(viewer);
 					sajc.setHandler(handler);
-					System.out.println("will set colors");
 					Thread cThread = new Thread(sajc);
 					cThread.start();
 				
 					
-					//System.out.println("will set sa icons");
 					saji.setHandler(handler);
 					saji.setRec((IFile)aac.getRec());
 					Thread iThread = new Thread(saji);
@@ -102,34 +82,23 @@ public class SootPartManager {
 			
 			SourceViewer viewer = (SourceViewer)((AbstractTextEditor)part).getAdapter(ITextOperationTarget.class);
 			SootAttributesHandler handler = aac.getAttributesHandler((AbstractTextEditor)part);
-			System.out.println("Part Manager for Java: Handler: "+handler);
 			if (handler != null){
-				//System.out.println("java hanlder is not null");
-				//System.out.println("java should update for open?: "+isUpdateForOpen());
-				System.out.println("java should update?: "+handler.isUpdate());
 				if (isUpdateForOpen() || handler.isUpdate()){
-				
-					System.out.println("updating colors");
-					//saji.removeOldMarkers((IFile)aac.getRec());
 					sajc.setEditorPart(part);
 					sajc.setViewer(viewer);
 					sajc.setHandler(handler);
 					Thread cThread = new Thread(sajc);
 					cThread.start();
 				
-					System.out.println("updating sa icons");
-					//sajc.computeColors();//handler, viewer, part);
 					saji.setHandler(handler);
 					saji.setRec((IFile)aac.getRec());
 					Thread iThread = new Thread(saji);
 					iThread.start();
-					//saji.addSootAttributeMarkers();//handler, (IFile)aac.getRec());
 					handler.setUpdate(false);
 				}
 				
 			}
 	
-			//System.out.println("active Ed: "+part.getTitle());
 			handleKeys(handler);
 			handleTypes(handler, (IFile)aac.getRec());
 		}
@@ -137,15 +106,12 @@ public class SootPartManager {
 	}
 	
 	private void handleTypes(SootAttributesHandler handler, IFile file){
-		System.out.println("handler all types: "+handler.isShowAllTypes());
-		System.out.println("handler types: "+handler.getTypesToShow());
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		ArrayList types = computeTypes(handler);
 		if (!types.isEmpty()){
 			IViewPart view = page.findView(ISootConstants.ANALYSIS_TYPES_VIEW_ID);
 			try {
 				if (view == null) {
-					//System.out.println("view part was null");
 					IWorkbenchPart activePart = page.getActivePart();
 					page.showView(ISootConstants.ANALYSIS_TYPES_VIEW_ID);
 					//restore focus stolen by the creation of the console
@@ -161,7 +127,6 @@ public class SootPartManager {
 				} 
 				else {
 					if (view != null){
-						//System.out.println("view part was not null");
 						((AnalysisTypeView)view).setFile(file);
 						((AnalysisTypeView)view).setAllTypesChecked(handler.isShowAllTypes());
 						((AnalysisTypeView)view).setTypesChecked(handler.getTypesToShow());
@@ -183,11 +148,9 @@ public class SootPartManager {
 			Iterator attrsIt = handler.getAttrList().iterator();
 			while (attrsIt.hasNext()){
 				SootAttribute sa = (SootAttribute)attrsIt.next();
-				//System.out.println("sa: "+sa);
 				Iterator typesIt = sa.getAnalysisTypes().iterator();
 				while (typesIt.hasNext()){
 					String val = (String)typesIt.next();
-					//System.out.println("will add: "+val+" if not there");
 					if (!types.contains(val)){
 						types.add(val);
 					}
@@ -203,13 +166,8 @@ public class SootPartManager {
 		// area (bring to top if necessary - make list of keys
 		IWorkbenchPage page = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart viewPart = SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ISootConstants.ANALYSIS_KEY_VIEW_ID);
-		/*if ((handler.getKeyList() == null) || handler.getKeyList().isEmpty()){
-			page.hideView(viewPart);
-		}
-		else {*/ 
 			try {
 				if (viewPart == null) {
-					//System.out.println("view part was null");
 					IWorkbenchPart activePart = page.getActivePart();
 					page.showView(ISootConstants.ANALYSIS_KEY_VIEW_ID);
 					//restore focus stolen by the creation of the console
@@ -223,7 +181,6 @@ public class SootPartManager {
 				else {
 					
 					if (viewPart != null){
-						//System.out.println("view part was not null");
 						((AnalysisKeyView)viewPart).setInputKeys(handler.getKeyList());
 					}
 					page.bringToTop(viewPart);
@@ -235,7 +192,6 @@ public class SootPartManager {
 			if (viewPart != null){
 				((AnalysisKeyView)viewPart).setInputKeys(handler.getKeyList());
 			}
-		//}
 	}
 	/**
 	 * @return

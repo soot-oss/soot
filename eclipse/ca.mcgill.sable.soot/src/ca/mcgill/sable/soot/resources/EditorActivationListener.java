@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Nov 6, 2003
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.resources;
 
 import org.eclipse.core.resources.IResource;
@@ -40,21 +34,12 @@ import ca.mcgill.sable.soot.SootPlugin;
 import ca.mcgill.sable.soot.attributes.*;
 import org.eclipse.ui.texteditor.*;
 
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 public class EditorActivationListener implements IPartListener {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IPartListener#partActivated(org.eclipse.ui.IWorkbenchPart)
 	 */
 	public void partActivated(IWorkbenchPart part) {
-		//System.out.println("part activated");
-		//System.out.println("part activated: "+part.getTitle());
 		if (!(part instanceof ITextEditor)) return;
 		IEditorPart activeEdPart = (IEditorPart)part;
 		SootPlugin.getDefault().getPartManager().updatePart(activeEdPart);
@@ -71,8 +56,6 @@ public class EditorActivationListener implements IPartListener {
 	 * @see org.eclipse.ui.IPartListener#partClosed(org.eclipse.ui.IWorkbenchPart)
 	 */
 	public void partClosed(IWorkbenchPart part) {
-		// remove colors here
-		//System.out.println("part closed");
 	}
 
 	/* (non-Javadoc)
@@ -87,7 +70,6 @@ public class EditorActivationListener implements IPartListener {
 	 */
 	public void partOpened(IWorkbenchPart part) {
 		// maybe need to handle this as well
-		System.out.println("part opened");
 		SootPlugin.getDefault().getPartManager().setUpdateForOpen(true);
 	}
 
