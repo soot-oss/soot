@@ -17,12 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Created on Jan 28, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package ca.mcgill.sable.soot.interaction;
 
 import soot.AbstractTrap;
@@ -40,14 +34,7 @@ import ca.mcgill.sable.soot.callgraph.*;
 import ca.mcgill.sable.soot.cfg.*;
 import soot.jimple.toolkits.annotation.callgraph.*;
 import soot.*;
-
-/**
- * @author jlhotak
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
-public class InteractionController /*extends Thread*/ implements IInteractionController, IInteractionListener {
+public class InteractionController  implements IInteractionController, IInteractionListener {
 
 	private ArrayList listeners;
 	private Thread sootThread;
@@ -59,12 +46,7 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	private ModelCreator mc;
 	private CallGraphGenerator generator;
 	
-	/**
-	 * 
-	 */
 	public InteractionController() {
-		//super();
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -113,7 +95,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		}
 		else if (getEvent().type() == IInteractionConstants.DONE){
 			// remove controller and listener from soot
-			System.out.println("done event has occured");
 			waitForContinue();
 		}
 		else if (getEvent().type() == IInteractionConstants.STOP_AT_NODE){
@@ -129,11 +110,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_START){
 			handleCallGraphStartEvent(getEvent().info());
 		}
-		
-		/*else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_RESET){
-			handleCallGraphResetEvent(getEvent().info());
-		}*/
-		
 		else if (getEvent().type() == IInteractionConstants.CALL_GRAPH_NEXT_METHOD){
 			handleCallGraphNextMethodEvent(getEvent().info());
 		}
@@ -157,20 +133,7 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	private void handleNewAnalysisEvent(Object info){
 		
 		SootPlugin.getDefault().setDataKeeper(new DataKeeper(this));
-		
-		/*final Shell myShell = getShell();
-		
-		final boolean [] result = new boolean[1];
-		final String analysisName = info.toString();
-		getDisplay().syncExec(new Runnable() {
-			public void run(){
-		MessageDialog msgDialog = new MessageDialog(myShell, "Interaction Question",  null,"Do you want to interact with analysis: "+analysisName+" ?",0, new String []{"Yes", "No"}, 0);
-		msgDialog.open();
-		boolean res = msgDialog.getReturnCode() == 0 ? true: false;
-		result[0] = res;
-			};
-		});*/
-		InteractionHandler.v().setInteractThisAnalysis(true);//result[0]);
+		InteractionHandler.v().setInteractThisAnalysis(true);
 		
 	}
 	
@@ -184,7 +147,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 				
 		if (cfg instanceof soot.toolkits.graph.UnitGraph){
 			soot.Body body = ((soot.toolkits.graph.UnitGraph)cfg).getBody();
-			//System.out.println("method: "+body.getMethod().getName()+" class: "+body.getMethod().getDeclaringClass().getName());
 			editorName = body.getMethod().getDeclaringClass().getName()+"."+body.getMethod().getName();
 		}
 		mc.setEditorName(editorName);
@@ -219,7 +181,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		Iterator it = getCurrentGraph().iterator();
 		
 		final Shell myShell = getShell();
-		//final String flowInfo = fi.info().toString();
 		final FlowInfo flowBefore = fi;
 		final ModelCreator mc = getMc();
 		getDisplay().syncExec(new Runnable() {
@@ -242,7 +203,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 	
 	private void handleAfterEvent(Object fi){
 		final Shell myShell = getShell();
-		//final String flowInfo = ((FlowInfo)fi).info().toString();
 		SootPlugin.getDefault().getDataKeeper().addFlowInfo(fi);
 		
 		
@@ -296,7 +256,6 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 				mc.updateNode(fi);
 			};
 		});
-		//waitForContinue();
 	}
 	
 	
@@ -315,33 +274,17 @@ public class InteractionController /*extends Thread*/ implements IInteractionCon
 		waitForContinue();
 	}
 	
-	/*private void handleCallGraphResetEvent(Object info){
-		
-        getGenerator().setInfo((CallGraphInfo)info);
-		
-		final CallGraphGenerator cgg = getGenerator();
-		getDisplay().syncExec(new Runnable(){
-			public void run(){
-				cgg.run();
-			}
-		});
-		waitForContinue();
-	}*/
-	
 	private void handleCallGraphNextMethodEvent(Object info){
 		SootMethod meth = (SootMethod)info;
 		InteractionHandler.v().setNextMethod(meth);
-		System.out.println("next meth: "+meth.getName());
 		InteractionHandler.v().setInteractionCon();
 	}
 	
 	private void handleCallGraphPartEvent(Object info){
-		System.out.println("handling call graph part event");
 		final CallGraphGenerator cgg = getGenerator();
 		final Object cgInfo = info;
 		getDisplay().asyncExec(new Runnable(){
 			public void run(){
-				System.out.println("received next meth");
 				cgg.addToGraph(cgInfo);
 		}
 		});

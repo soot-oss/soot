@@ -23,12 +23,6 @@ package ca.mcgill.sable.soot.interaction;
 import soot.toolkits.graph.interaction.*;
 import java.util.*;
 
-/**
- * @author jlhotak
- *
- * 
- */
-
 public class DataKeeper {
 
 	private List flowInfoList;
@@ -56,22 +50,15 @@ public class DataKeeper {
 		FlowInfo previous;
 		FlowInfo clearTo;
 		// on first iter need to replace with empty
-		//if (getCurrent().iteration() == 1){
-			if (index > 0) {
-				previous = (FlowInfo)getFlowInfoList().get(index-1);
-				
-			}
-			else {
-				// at first node and want to go back
-				previous = null;
-			}
-			clearTo = findLast();//new FlowInfo("", getCurrent().unit(), getCurrent().isBefore(), 1);
-		//}
-		// need to replace with previous
-		//else {
-		//	previous = (FlowInfo)getFlowInfoList().get(index-1);
-		//	clearTo = findLast();
-		//}
+        if (index > 0) {
+            previous = (FlowInfo)getFlowInfoList().get(index-1);
+            
+        }
+        else {
+            // at first node and want to go back
+            previous = null;
+        }
+        clearTo = findLast();
 		
 		setCurrent(previous);
 		getController().setEvent(new InteractionEvent(IInteractionConstants.CLEARTO, clearTo));
@@ -89,17 +76,13 @@ public class DataKeeper {
 		
 		while (it.hasNext()){
 			FlowInfo next = (FlowInfo)it.next();
-			System.out.println("next: "+next.info()+" unit: "+next.unit());
 			
 			if (getCurrent().equals(next)) break;
-			//System.out.println("next: "+next.info()+" unit: "+next.unit());
 			if (getCurrent().unit().equals(next.unit()) && (getCurrent().isBefore() == next.isBefore())){
 				retInfo = next;
-				System.out.println("found retInfo: "+retInfo.info());
 		
 			}
 		}
-		System.out.println("returning retInfo: "+retInfo.info());
 		return retInfo;
 	}
 	
@@ -108,7 +91,6 @@ public class DataKeeper {
 			setFlowInfoList(new ArrayList());
 		}
 		getFlowInfoList().add(fi);
-		System.out.println("added to flowinfo list: "+getFlowInfoList());
 		setCurrent((FlowInfo)fi);
 	}
 	
@@ -119,15 +101,11 @@ public class DataKeeper {
 	}
 	
 	public boolean canGoBack(){
-		System.out.println("first cond");
 		if (getFlowInfoList() == null) return false;
-		System.out.println("second cond");
 		
 		if (getFlowInfoList().size() == 0) return false;
-		System.out.println("third cond");
 		
 		if (getCurrent().equals(getFlowInfoList().get(0))) return false;
-		System.out.println("fourth cond");
 		
 		return true;
 	}
