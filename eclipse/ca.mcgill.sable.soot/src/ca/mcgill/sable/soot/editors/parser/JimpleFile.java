@@ -24,24 +24,6 @@ import java.util.*;
 
 import ca.mcgill.sable.soot.editors.JimpleOutlineObject;
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 public class JimpleFile {
 
 	private String file;
@@ -133,7 +115,6 @@ public class JimpleFile {
 			className = token;
 			break;
 		}
-		//System.out.println(className);
 		
 		JimpleOutlineObject outline = new JimpleOutlineObject("", JimpleOutlineObject.NONE, null);
 		
@@ -173,9 +154,6 @@ public class JimpleFile {
 			file.addChild(new JimpleOutlineObject(method.getLabel(), method.getImageType(), method.findDecorators()));
 		}
 		
-		
-		/*HashMap outline = new HashMap();
-		outline.put(className, methods);*/
 		return outline;
 	}
 	
@@ -212,12 +190,8 @@ public class JimpleFile {
 		int count = 0;
 		while (it.hasNext()){
 			String temp = (String)it.next();
-			//System.out.println("temp: "+temp);
-			//System.out.println("val: "+val);
 			if (temp.indexOf(search.trim()) != -1){
-				//System.out.println("val index: "+	temp.indexOf(val.trim()));
 				count = count + temp.indexOf(search.trim());
-				//System.out.println("count: "+count);
 				return count;
 			}
 			count = count + temp.length() + 1;

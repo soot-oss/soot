@@ -17,24 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 
 package ca.mcgill.sable.soot.editors;
 
@@ -46,7 +28,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-//import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import ca.mcgill.sable.soot.SootPlugin;
 
 
@@ -80,45 +61,34 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 					break;
 				}
 				case JimpleOutlineObject.PUBLIC_METHOD:{
-					//System.out.println("is method type");
 					descriptor = SootPlugin.getImageDescriptor("public_co.gif");
-					//System.out.println("found descriptor for method image");
 					break;
 				}
 				case JimpleOutlineObject.PROTECTED_METHOD:{
-					//System.out.println("is method type");
 					descriptor = SootPlugin.getImageDescriptor("protected_co.gif");
-					//System.out.println("found descriptor for method image");
 					break;
 				}
 				case JimpleOutlineObject.PRIVATE_METHOD:{
-					//System.out.println("is method type");
 					descriptor = SootPlugin.getImageDescriptor("private_co.gif");
-					//System.out.println("found descriptor for method image");
 					break;
 				}
 				case JimpleOutlineObject.NONE_METHOD: {
 					descriptor = SootPlugin.getImageDescriptor("default_co.gif");
-					//System.out.println("found descriptor for method image");
 					break;
 				}
 				case JimpleOutlineObject.PUBLIC_FIELD: {
-					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_public_obj.gif");
 					break;
 				}
 				case JimpleOutlineObject.PROTECTED_FIELD: {
-					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_protected_obj.gif");
 					break;
 				}
 				case JimpleOutlineObject.PRIVATE_FIELD: {
-					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_private_obj.gif");
 					break;
 				}	
 				case JimpleOutlineObject.NONE_FIELD: {
-					//System.out.println("is field type");
 					descriptor = SootPlugin.getImageDescriptor("field_default_obj.gif");
 					break;
 				}				
@@ -134,9 +104,7 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 		}
 		Image image = (Image)getImageCache().get(descriptor);
 		if (image == null) {
-		 	//System.out.println("image was null");
 		  	image = descriptor.createImage();
-		  	//System.out.println("created image");
 		   	getImageCache().put(descriptor, image);
             
 		}
@@ -165,7 +133,6 @@ public class JimpleOutlineLabelProvider implements ILabelProvider {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
-        //System.out.println("disposing images");
 		if (getImageCache() != null){
 			Iterator it = getImageCache().values().iterator();
 			while (it.hasNext()){

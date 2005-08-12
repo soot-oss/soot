@@ -22,26 +22,6 @@ package ca.mcgill.sable.soot.editors;
 import java.util.*;
 import org.eclipse.jface.text.rules.*;
 import org.eclipse.jface.text.*;
-//import org.eclipse.jface.preference.*;
-
-/**
- * @author jlhotak
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
 
 public class JimpleScanner extends RuleBasedScanner {
 
@@ -114,9 +94,8 @@ public class JimpleScanner extends RuleBasedScanner {
     IToken string = new Token(new TextAttribute(manager.getColor(IJimpleColorConstants.JIMPLE_STRING)));
     IToken def= new Token(new TextAttribute(manager.getColor(IJimpleColorConstants.JIMPLE_DEFAULT)));
     IToken key= new Token(new TextAttribute(manager.getColor(IJimpleColorConstants.JIMPLE_KEYWORD)));
-    //IToken key= new Token(new TextAttribute(manager.getColor(IJimpleColorConstants.JIMPLE_KEYWORD),manager.getColor(IJimpleColorConstants.JIMPLE_BACKGROUND),1));
    
-    rules.add(new SingleLineRule("\"", "\"", string, '\\')); //$NON-NLS-2$ //$NON-NLS-1$
+    rules.add(new SingleLineRule("\"", "\"", string, '\\'));
     rules.add(new SingleLineRule("'", "'", string, '\\')); 
     
     WordRule wordRule= new WordRule(new JimpleWordDetector(), def);
