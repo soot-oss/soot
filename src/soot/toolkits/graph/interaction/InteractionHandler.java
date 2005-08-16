@@ -121,7 +121,6 @@ public class InteractionHandler {
     public void handleCallGraphNextMethod(){
         if (!cgDone()){
             getGrapher().setNextMethod(getNextMethod());
-            System.out.println("about to handle next method: "+getNextMethod());
             getGrapher().handleNextMethod();
         }
     }
@@ -175,7 +174,6 @@ public class InteractionHandler {
 
     public synchronized void waitForContinue(){
         try {
-            System.out.println("Soot wait");
             this.wait();
         }
         catch (InterruptedException e){
@@ -193,7 +191,6 @@ public class InteractionHandler {
     private boolean interactionCon;
     public synchronized void setInteractionCon(){
         this.notify();
-        System.out.println("Soot notify");
     }
 
     public boolean isInteractionCon(){
