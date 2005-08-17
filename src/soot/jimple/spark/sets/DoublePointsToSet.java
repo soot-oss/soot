@@ -48,8 +48,8 @@ public class DoublePointsToSet extends PointsToSetInternal {
     /** Set of all possible run-time types of objects in the set. */
     public Set possibleTypes() {
         Set ret = new HashSet();
-        ret.add(oldSet.possibleTypes());
-        ret.add(newSet.possibleTypes());
+        ret.addAll(oldSet.possibleTypes());
+        ret.addAll(newSet.possibleTypes());
         return ret;
     }
     /** Adds contents of other into this set, returns true if this set 
