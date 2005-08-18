@@ -283,6 +283,18 @@ public class PaddleOptions
         return soot.PhaseOptions.getBoolean( options, "total-context-counts" );
     }
     
+    /** Method Context Counts (Totals only) --
+    
+     * Print number of contexts for each method.
+    
+     * Causes Paddle to print the number of contexts and number of 
+     * context equivalence classes split out by method. Requires 
+     * total-context-counts to also be turned on. 
+     */
+    public boolean method_context_counts() {
+        return soot.PhaseOptions.getBoolean( options, "method-context-counts" );
+    }
+    
     /** Calculate Set Mass --
     
      * Calculate statistics about points-to set sizes.

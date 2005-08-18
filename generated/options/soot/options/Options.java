@@ -1664,6 +1664,7 @@ public class Options extends OptionsBase {
                 
                 +padOpt( "context-counts (false)", "Print number of contexts for each method" )
                 +padOpt( "total-context-counts (false)", "Print total number of contexts" )
+                +padOpt( "method-context-counts (false)", "Print number of contexts for each method" )
                 +padOpt( "set-mass (false)", "Calculate statistics about points-to set sizes" )
                 +padOpt( "number-nodes (true)", "Print node numbers in dumps" );
     
@@ -2346,6 +2347,7 @@ public class Options extends OptionsBase {
                 +"double-set-new "
                 +"context-counts "
                 +"total-context-counts "
+                +"method-context-counts "
                 +"set-mass "
                 +"number-nodes ";
     
@@ -2875,6 +2877,7 @@ public class Options extends OptionsBase {
               +"double-set-new:hybrid "
               +"context-counts:false "
               +"total-context-counts:false "
+              +"method-context-counts:false "
               +"set-mass:false "
               +"number-nodes:true ";
     

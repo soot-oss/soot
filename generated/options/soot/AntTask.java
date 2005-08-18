@@ -1340,6 +1340,12 @@ public class AntTask extends MatchingTask {
             addArg("total-context-counts:"+(arg?"true":"false"));
           }
       
+          public void setmethod_context_counts(boolean arg) {
+            addArg("-p");
+            addArg("cg.paddle");
+            addArg("method-context-counts:"+(arg?"true":"false"));
+          }
+      
           public void setset_mass(boolean arg) {
             addArg("-p");
             addArg("cg.paddle");
