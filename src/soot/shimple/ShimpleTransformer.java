@@ -53,9 +53,9 @@ public class ShimpleTransformer extends SceneTransformer
             while(methodsIt.hasNext()){
                 SootMethod method = (SootMethod) methodsIt.next();
                 if(!method.isConcrete()) continue;
-                
-                {
-                    Body body = method.retrieveActiveBody();
+
+                if(method.hasActiveBody()){
+                    Body body = method.getActiveBody();
                     ShimpleBody sBody = null;
 
                     if(body instanceof ShimpleBody){
@@ -68,6 +68,10 @@ public class ShimpleTransformer extends SceneTransformer
                     }
 
                     method.setActiveBody(sBody);
+                }
+                else{
+                    MethodSource ms = new ShimpleMethodSource(method.getSource());
+                    method.setSource(ms);
                 }
             }
         }
