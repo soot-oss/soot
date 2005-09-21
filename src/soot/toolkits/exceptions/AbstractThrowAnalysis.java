@@ -25,6 +25,7 @@ import soot.RefType;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
+import soot.NullType;
 import soot.Value;
 import soot.Singletons;
 import soot.toolkits.exceptions.*;
@@ -59,6 +60,10 @@ public abstract class AbstractThrowAnalysis implements ThrowAnalysis {
 	if (thrownType == null || thrownType instanceof UnknownType) {
 	    // We can't identify the type of thrownExpression, so...
 	    return ThrowableSet.Manager.v().ALL_THROWABLES;
+        } else if (thrownType instanceof NullType) {
+            ThrowableSet result = ThrowableSet.Manager.v().EMPTY;
+            result = result.add(ThrowableSet.Manager.v().NULL_POINTER_EXCEPTION);
+            return result;
 	} else if (! (thrownType instanceof RefType)) {
 	    throw new IllegalStateException("UnitThrowAnalysis StmtSwitch: type of throw argument is not a RefType!");
 	} else {
