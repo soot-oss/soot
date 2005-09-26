@@ -1648,6 +1648,8 @@ public class Walker extends DepthFirstAdapter
         modifier |= Modifier.TRANSIENT;
       else if(t instanceof AVolatileModifier)
         modifier |= Modifier.VOLATILE;
+      else if(t instanceof AStrictfpModifier)
+        modifier |= Modifier.STRICTFP;
       else if(t instanceof AEnumModifier)
         modifier |= Modifier.ENUM;
       else if(t instanceof AAnnotationModifier)

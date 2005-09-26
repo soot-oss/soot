@@ -23,6 +23,7 @@ public interface Analysis extends Switch
     void caseASynchronizedModifier(ASynchronizedModifier node);
     void caseATransientModifier(ATransientModifier node);
     void caseAVolatileModifier(AVolatileModifier node);
+    void caseAStrictfpModifier(AStrictfpModifier node);
     void caseAEnumModifier(AEnumModifier node);
     void caseAAnnotationModifier(AAnnotationModifier node);
     void caseAClassFileType(AClassFileType node);
@@ -175,6 +176,7 @@ public interface Analysis extends Switch
     void caseTSynchronized(TSynchronized node);
     void caseTTransient(TTransient node);
     void caseTVolatile(TVolatile node);
+    void caseTStrictfp(TStrictfp node);
     void caseTEnum(TEnum node);
     void caseTAnnotation(TAnnotation node);
     void caseTClass(TClass node);

@@ -276,6 +276,26 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAVolatileModifier(node);
     }
 
+    public void inAStrictfpModifier(AStrictfpModifier node)
+    {
+        defaultIn(node);
+    }
+
+    public void outAStrictfpModifier(AStrictfpModifier node)
+    {
+        defaultOut(node);
+    }
+
+    public void caseAStrictfpModifier(AStrictfpModifier node)
+    {
+        inAStrictfpModifier(node);
+        if(node.getStrictfp() != null)
+        {
+            node.getStrictfp().apply(this);
+        }
+        outAStrictfpModifier(node);
+    }
+
     public void inAEnumModifier(AEnumModifier node)
     {
         defaultIn(node);

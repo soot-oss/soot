@@ -123,6 +123,11 @@ public class AnalysisAdapter implements Analysis
         defaultCase(node);
     }
 
+    public void caseAStrictfpModifier(AStrictfpModifier node)
+    {
+        defaultCase(node);
+    }
+
     public void caseAEnumModifier(AEnumModifier node)
     {
         defaultCase(node);
@@ -874,6 +879,11 @@ public class AnalysisAdapter implements Analysis
     }
 
     public void caseTVolatile(TVolatile node)
+    {
+        defaultCase(node);
+    }
+
+    public void caseTStrictfp(TStrictfp node)
     {
         defaultCase(node);
     }

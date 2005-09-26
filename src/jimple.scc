@@ -55,6 +55,7 @@ Tokens
   synchronized = 'synchronized';
   transient = 'transient';
   volatile = 'volatile';
+  strictfp = 'strictfp';
   enum = 'enum';
   annotation = 'annotation';
  
@@ -172,6 +173,7 @@ Productions
     {synchronized} synchronized |
     {transient}    transient |
     {volatile}     volatile |
+    {strictfp}     strictfp |
     {enum}         enum |
     {annotation}   annotation;
 
