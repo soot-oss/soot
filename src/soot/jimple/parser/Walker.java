@@ -1002,10 +1002,13 @@ public class Walker extends DepthFirstAdapter
         int sign = 1;
         if(node.getMinus() != null)
             sign = -1;
-        
+       
         if(s.endsWith("L")) {            
 	    mProductions.addLast(LongConstant.v(sign * Long.parseLong(s.substring(0, s.length()-1))));
-        } else
+        }
+        else if (s.equals("2147483648"))
+	    mProductions.addLast(IntConstant.v(sign * Integer.MIN_VALUE));
+        else
 	    mProductions.addLast(IntConstant.v(sign * Integer.parseInt(s)));
     }
 
@@ -1053,7 +1056,10 @@ public class Walker extends DepthFirstAdapter
         s = buf.toString();
         if(s.endsWith("L")) {                        
 	    mProductions.addLast(LongConstant.v(Long.parseLong(s.substring(0, s.length()-1))));
-        } else
+        } 
+        else if (s.equals("2147483648"))
+	    mProductions.addLast(IntConstant.v(Integer.MIN_VALUE));
+        else
 	    mProductions.addLast(IntConstant.v(Integer.parseInt(s)));
     }
     
