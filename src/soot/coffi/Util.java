@@ -837,10 +837,12 @@ swtch:
                     activeOriginalIndex++;
 
                 name = activeVariableTable.getLocalVariableName(activeConstantPool, index, activeOriginalIndex);
+                if (activeVariableTypeTable != null){
                debug_type = activeVariableTypeTable.getLocalVariableType(activeConstantPool, index, activeOriginalIndex);
                if (debug_type != null){
                     assignedType = true;
                }
+                }
                 if(name != null) 
                     assignedName = true;
             }
