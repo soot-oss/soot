@@ -88,13 +88,13 @@ public interface FlowSet {
   public void intersection(FlowSet other, FlowSet dest);
 
   /** 
-   * Returns the set difference (this join ~other) of this FlowSet and
+   * Returns the set difference (this intersect ~other) of this FlowSet and
    * <code>other</code>, putting result into <code>this</code>.
    */
   public void difference(FlowSet other);
 
   /**
-   * Returns the set difference (this join ~other) of this FlowSet and 
+   * Returns the set difference (this intersect ~other) of this FlowSet and 
    * <code>other</code>, putting result into <code>dest</code>.
    * <code>dest</code>, <code>other</code> and <code>this</code> could be the
    * same object.

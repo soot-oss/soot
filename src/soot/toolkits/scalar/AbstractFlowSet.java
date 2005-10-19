@@ -131,6 +131,7 @@ public abstract class AbstractFlowSet implements FlowSet {
 
     Iterator it = this.toList().iterator();
     FlowSet flowSet = (other == dest)? (FlowSet)other.clone(): other;
+    dest.clear(); // now safe, since we have copies of this & other
 
     while (it.hasNext()) {
       Object o = it.next();
