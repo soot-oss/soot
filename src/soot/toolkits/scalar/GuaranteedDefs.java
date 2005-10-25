@@ -79,26 +79,24 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
     GuaranteedDefsAnalysis(UnitGraph graph)
     {
         super(graph);
+        DominatorsFinder df = new SimpleDominatorsFinder(graph);
+        unitToGenerateSet = new HashMap(graph.size() * 2 + 1, 0.7f);
 
         // pre-compute generate sets
-        {
-            unitToGenerateSet = new HashMap(graph.size() * 2 + 1, 0.7f);
-            Iterator unitIt = graph.iterator();
-
-            while(unitIt.hasNext()){
-                Unit s = (Unit) unitIt.next();
-                FlowSet genSet = (FlowSet) emptySet.clone();
-                Iterator boxIt = s.getDefBoxes().iterator();
-
-                while(boxIt.hasNext()){
+        for(Iterator unitIt = graph.iterator(); unitIt.hasNext();){
+            Unit s = (Unit) unitIt.next();
+            FlowSet genSet = (FlowSet) emptySet.clone();
+            
+            for(Iterator domsIt = df.getDominators(s).iterator(); domsIt.hasNext();){
+                Unit dom = (Unit) domsIt.next();
+                for(Iterator boxIt = dom.getDefBoxes().iterator(); boxIt.hasNext();){
                     ValueBox box = (ValueBox) boxIt.next();
-
                     if(box.getValue() instanceof Local)
                         genSet.add(box.getValue(), genSet);
                 }
-
-                unitToGenerateSet.put(s, genSet);
             }
+            
+            unitToGenerateSet.put(s, genSet);
         }
 
         doAnalysis();
