@@ -2819,6 +2819,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         else if (node instanceof polyglot.ast.FloatLit){
             s = "" + ((polyglot.ast.FloatLit)node).value();
         }
+        else if (node instanceof polyglot.ast.NullLit){
+            s = "null";
+        }
         else if (node instanceof polyglot.ast.Field){
             polyglot.ast.Field field = (polyglot.ast.Field)node;
             if (field.fieldInstance().constantValue() instanceof String){
