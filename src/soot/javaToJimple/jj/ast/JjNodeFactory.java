@@ -28,10 +28,12 @@ import polyglot.types.Qualifier;
 import polyglot.util.*;
 import java.util.*;
 
+import polyglot.ext.jl5.ast.*;
+
 /**
  * NodeFactory for jj extension.
  */
-public interface JjNodeFactory extends NodeFactory {
+public interface JjNodeFactory extends JL5NodeFactory {
     // TODO: Declare any factory methods for new AST nodes.
     public JjComma_c JjComma(Position pos, Expr first, Expr second);
 }

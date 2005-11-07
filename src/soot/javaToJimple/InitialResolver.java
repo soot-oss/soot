@@ -149,7 +149,18 @@ public class InitialResolver {
     // resolves all types and deals with .class literals and asserts
     public List resolveFromJavaFile(soot.SootClass sc) {
         List references = new ArrayList();
-        ClassResolver cr = new ClassResolver(sc, references);
+
+        // here distinguish between source levels
+        soot.jl5j.AbstractClassResolver cr;
+        if (soot.options.Options.v().source_level() == soot.options.Options.source_level_pre_java_five){
+            cr = new ClassResolver(sc, references);
+        }
+        else {
+            ClassResolver original_cr = new ClassResolver(sc, references);
+            soot.jl5j.JL5ClassResolver new_cr = new soot.jl5j.JL5ClassResolver(sc, references);
+            new_cr.ext(original_cr);
+            cr = new_cr;
+        }
         
         // create class to source map first 
         // create source file

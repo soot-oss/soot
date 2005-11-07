@@ -40,7 +40,7 @@ import java.io.*;
 /**
  * Extension information for jj extension.
  */
-public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
+public class ExtensionInfo extends polyglot.ext.jl5.ExtensionInfo {
     static {
         // force Topics to load
         Topics t = new Topics();

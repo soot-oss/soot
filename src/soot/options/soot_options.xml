@@ -327,6 +327,25 @@ unable to find a <tt>.java</tt> file.
 </long_desc>
 			</value>
 		</multiopt>
+        <multiopt>
+            <name>Source level</name>
+            <alias>source-level</alias>
+            <short_desc>Determines level of processing for source inputs</short_desc>
+            <long_desc>Determines the level of processing (pre Java 1.5 or Java 1.5 sytle) when input is source code.</long_desc>
+            <value>
+                <name>Pre Java Five</name>
+                <alias>pre-java-five</alias>
+                <short_desc>Processes source input at pre Java 1.5 level</short_desc>
+                <long_desc>Processes source input at pre Java 1.5 level</long_desc>
+                <default/>
+            </value>
+            <value>
+                <name>Java Five</name>
+                <alias>java-five</alias>
+                <short_desc>Processes source input at Java 1.5 level</short_desc>
+                <long_desc>Processes source input at Java 1.5 level</long_desc>
+            </value>
+        </multiopt>    
 		<boolopt>
 			<name>Force complete resolver</name>
 			<alias>full-resolver</alias>
