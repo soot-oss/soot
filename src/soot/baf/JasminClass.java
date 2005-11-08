@@ -1770,6 +1770,9 @@ public class JasminClass extends AbstractJasminClass
     {
         Iterator it = aBlock.iterator();
         int blockHeight =  ((Integer)blockToStackHeight.get(aBlock)).intValue();
+        if( blockHeight > maxStackHeight) {
+            maxStackHeight = blockHeight;
+        }
         
         while(it.hasNext()) {
           Inst nInst = (Inst) it.next();

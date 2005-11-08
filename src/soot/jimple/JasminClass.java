@@ -46,6 +46,9 @@ public class JasminClass extends AbstractJasminClass
     
     void modifyStackHeight(int stackChange)
     {
+        if(currentStackHeight > maxStackHeight)
+            maxStackHeight = currentStackHeight;
+
         currentStackHeight += stackChange;
         
         if(currentStackHeight < 0)
