@@ -193,19 +193,6 @@ public class AntTask extends MatchingTask {
             }
         }
   
-        public void setsource_level(String arg) {
-            if(false
-    
-                || arg.equals( "pre-java-five" )
-                || arg.equals( "java-five" )
-                ) {
-                addArg("-source-level");
-                addArg(arg);
-            } else {
-                throw new BuildException("Bad value "+arg+" for option source_level");
-            }
-        }
-  
         public void setfull_resolver(boolean arg) {
             if(arg) addArg("-full-resolver");
         }

@@ -21,7 +21,6 @@ package soot.javaToJimple.jj.ast;
 
 import polyglot.ast.*;
 import polyglot.ext.jl.ast.*;
-import polyglot.ext.jl5.ast.*;
 import polyglot.types.Flags;
 import polyglot.types.Package;
 import polyglot.types.Type;
@@ -32,7 +31,7 @@ import java.util.*;
 /**
  * NodeFactory for jj extension.
  */
-public class JjNodeFactory_c extends JL5NodeFactory_c implements JjNodeFactory {
+public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     // TODO:  Implement factory methods for new AST nodes.
     // TODO:  Override factory methods for overriden AST nodes.
     // TODO:  Override factory methods for AST nodes with new extension nodes.

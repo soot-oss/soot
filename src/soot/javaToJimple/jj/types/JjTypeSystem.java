@@ -20,8 +20,7 @@
 package soot.javaToJimple.jj.types;
 
 import polyglot.types.*;
-import polyglot.ext.jl5.types.*;
 
-public interface JjTypeSystem extends JL5TypeSystem {
+public interface JjTypeSystem extends TypeSystem {
     // TODO: declare any new methods needed
 }

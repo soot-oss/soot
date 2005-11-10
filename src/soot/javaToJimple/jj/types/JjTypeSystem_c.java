@@ -20,9 +20,9 @@
 package soot.javaToJimple.jj.types;
 
 import polyglot.types.*;
-import polyglot.ext.jl5.types.JL5TypeSystem_c;
+import polyglot.ext.jl.types.TypeSystem_c;
 
-public class JjTypeSystem_c extends JL5TypeSystem_c implements JjTypeSystem {
+public class JjTypeSystem_c extends TypeSystem_c implements JjTypeSystem {
     // TODO: implement new methods in JjTypeSystem.
     // TODO: override methods as needed from TypeSystem_c.
 }

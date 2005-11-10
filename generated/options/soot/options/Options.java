@@ -39,8 +39,6 @@ public class Options extends OptionsBase {
     public static final int src_prec_J = 2;
     public static final int src_prec_jimple = 2;
     public static final int src_prec_java = 3;
-    public static final int source_level_pre_java_five = 1;
-    public static final int source_level_java_five = 2;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -239,45 +237,6 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_java;
-                }
-    
-                else {
-                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
-                    return false;
-                }
-           }
-  
-            else if( false
-            || option.equals( "source-level" )
-            ) {
-                if( !hasMoreOptions() ) {
-                    G.v().out.println( "No value given for option -"+option );
-                    return false;
-                }
-                String value = nextOption();
-    
-                if( false );
-    
-                else if( false
-                || value.equals( "pre-java-five" )
-                ) {
-                    if( source_level != 0
-                    && source_level != source_level_pre_java_five ) {
-                        G.v().out.println( "Multiple values given for option "+option );
-                        return false;
-                    }
-                    source_level = source_level_pre_java_five;
-                }
-    
-                else if( false
-                || value.equals( "java-five" )
-                ) {
-                    if( source_level != 0
-                    && source_level != source_level_java_five ) {
-                        G.v().out.println( "Multiple values given for option "+option );
-                        return false;
-                    }
-                    source_level = source_level_java_five;
                 }
     
                 else {
@@ -962,12 +921,6 @@ public class Options extends OptionsBase {
     }
     public void set_src_prec( int setting ) { src_prec = setting; }
     private int src_prec = 0;
-    public int source_level() {
-        if( source_level == 0 ) return source_level_pre_java_five;
-        return source_level; 
-    }
-    public void set_source_level( int setting ) { source_level = setting; }
-    private int source_level = 0;
     public boolean full_resolver() { return full_resolver; }
     private boolean full_resolver = false;
     public void set_full_resolver( boolean setting ) { full_resolver = setting; }
@@ -1140,9 +1093,6 @@ public class Options extends OptionsBase {
 +padVal(" c class (default)", "Favour class files as Soot source" )
 +padVal(" J jimple", "Favour Jimple files as Soot source" )
 +padVal(" java", "Favour Java files as Soot source" )
-+padOpt(" -source-level ARG", "Determines level of processing for source inputs" )
-+padVal(" pre-java-five (default)", "Processes source input at pre Java 1.5 level" )
-+padVal(" java-five", "Processes source input at Java 1.5 level" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +padOpt(" -use-old-type-assigner", "Use old type assigner - may be slower" )
