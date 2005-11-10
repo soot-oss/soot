@@ -426,7 +426,7 @@ public class ClassResolver {
         Util.addLnPosTags(sootClass, aNew.position().line(), aNew.body().position().endLine(), aNew.position().column(), aNew.body().position().endColumn());
     }
 
-    public void getModifiers(polyglot.types.Flags flags){
+    public int getModifiers(polyglot.types.Flags flags){
         return Util.getModifier(flags);
     }
     
