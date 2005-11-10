@@ -454,7 +454,7 @@ public class ClassResolver {
             }
         }
         else {
-            modifiers = base().getModifiers(flags);
+            modifiers = getModifiers(flags);
         }
         sootClass.setModifiers(modifiers);
     }
