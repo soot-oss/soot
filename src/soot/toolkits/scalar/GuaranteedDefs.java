@@ -79,7 +79,7 @@ class GuaranteedDefsAnalysis extends ForwardFlowAnalysis
     GuaranteedDefsAnalysis(UnitGraph graph)
     {
         super(graph);
-        DominatorsFinder df = new SimpleDominatorsFinder(graph);
+        DominatorsFinder df = new MHGDominatorsFinder(graph);
         unitToGenerateSet = new HashMap(graph.size() * 2 + 1, 0.7f);
 
         // pre-compute generate sets
