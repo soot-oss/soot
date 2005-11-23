@@ -45,7 +45,21 @@ public class InitialResolver {
     private HashMap privateMethodGetAccessMap;
     private ArrayList interfacesList;
     private ArrayList cCallList;
-        
+    
+    private HashMap anonConstructorMap;
+
+    public void addToAnonConstructorMap(polyglot.ast.New anonNew, polyglot.types.ConstructorInstance ci){
+        if (anonConstructorMap == null){
+            anonConstructorMap = new HashMap();
+        }
+        anonConstructorMap.put(anonNew, ci);
+    }
+   
+    public polyglot.types.ConstructorInstance getConstructorForAnon(polyglot.ast.New anonNew){
+        if (anonConstructorMap == null) return null;
+        return (polyglot.types.ConstructorInstance)anonConstructorMap.get(anonNew);
+    }
+
     private FastHierarchy hierarchy;
 
     private AbstractJBBFactory jbbFactory = new JimpleBodyBuilderFactory();
