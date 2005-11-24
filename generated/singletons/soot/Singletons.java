@@ -844,4 +844,10 @@ public class Singletons {
         return instance_soot_dava_DavaStaticBlockCleaner;
     }
 
+    private soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder;
+    public soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder() {
+        if( instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder == null ) instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder = new soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder( g );
+        return instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder;
+    }
+
 }

@@ -18,11 +18,31 @@
  */
 
 
+/*
+ * Maintained by: Nomair A. Naeem
+ * Initial code taken from an existing implementation of the AbstractFlowSet in Soot
+ */
+
+
+/*
+ * CHANGE LOG:
+ * 16 nov, 2005:  Adding <implicitTargets> feature to be able to store mappings of breaks 
+ *                and continues implicitly targetting nodes
+ * 21 Nov, 2005   * Reasoning that this implmentation is correct. Adding comments
+ *                * Refactored addIfNotDuplicate method since the same chunk of code was being used in
+ *                  multiple places
+ */
+
+
+
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.toolkits.scalar.*;
 import java.util.*;
-
+import soot.dava.internal.AST.*;
+import soot.dava.internal.SET.*;
+import soot.dava.internal.javaRep.*;
+import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
 
 public class DavaFlowSet extends AbstractFlowSet{
 
@@ -33,26 +53,39 @@ public class DavaFlowSet extends AbstractFlowSet{
     int maxElements;
     public Object[] elements;
 
-    public HashMap breakList;
+    /**
+     * Whenever in a structured flow analysis a break or continue stmt is encountered the current DavaFlowSet
+     * is stored in the break/continue list with the appropriate label for the target code.
+     * This is how explicit breaks and continues are handled by the analysis framework
+     */
+    HashMap breakList; 
     HashMap continueList;
 
+    /**
+     * To handle implicit breaks and continues the following HashMaps store the DavaFlowSets as value
+     * with the key being the targeted piece of code (an ASTNode)
+     */
+    HashMap implicitBreaks; //map a node and all the dataflowsets due to implicit breaks targetting it
+    HashMap implicitContinues; //map a node and all the dataflowsets due to implicit continues targetting it
 
-    public DavaFlowSet()
-    {
+    public DavaFlowSet(){
         maxElements = DEFAULT_SIZE;
         elements = new Object[DEFAULT_SIZE];
         numElements = 0;
 	breakList = new HashMap();
 	continueList = new HashMap();
+	implicitBreaks = new HashMap();
+	implicitContinues = new HashMap();
     }
     
-    private DavaFlowSet(DavaFlowSet other)
-    {
+    private DavaFlowSet(DavaFlowSet other){
         numElements = other.numElements;
         maxElements = other.maxElements;
         elements = (Object[]) other.elements.clone();
 	breakList = (HashMap)other.breakList.clone();
 	continueList = (HashMap)other.continueList.clone();
+	implicitBreaks = (HashMap)other.implicitBreaks.clone();
+	implicitContinues = (HashMap)other.implicitContinues.clone();
     }
     
     /** Returns true if flowSet is the same type of flow set as this. */
@@ -97,9 +130,8 @@ public class DavaFlowSet extends AbstractFlowSet{
   /* Expand array only when necessary, pointed out by Florian Loitsch
    * March 08, 2002
    */
-    public void add(Object e)
-    {
-      /* Expand only if necessary! and removes one if too:) */
+    public void add(Object e){
+	/* Expand only if necessary! and removes one if too:) */
         // Add element
             if(!contains(e)) {
               // Expand array if necessary
@@ -142,8 +174,12 @@ public class DavaFlowSet extends AbstractFlowSet{
       elements[index] = elements[--numElements];
     }
 
-    public void union(FlowSet otherFlow, FlowSet destFlow)
-    {
+    /**
+     * Notice that the union method only merges the elements of the flow set
+     * DavaFlowSet also contains information regarding abrupt control flow
+     * This should also be merged using the copyInternalDataFrom method
+     */
+    public void union(FlowSet otherFlow, FlowSet destFlow){
       if (sameType(otherFlow) && sameType(destFlow)) {
         DavaFlowSet other = (DavaFlowSet) otherFlow;
         DavaFlowSet dest = (DavaFlowSet) destFlow;
@@ -167,6 +203,12 @@ public class DavaFlowSet extends AbstractFlowSet{
         super.union(otherFlow, destFlow);
     }
 
+
+    /**
+     * Notice that the intersection method only merges the elements of the flow set
+     * DavaFlowSet also contains information regarding abrupt control flow
+     * This should also be merged using the copyInternalDataFrom method
+     */
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
       if (sameType(otherFlow) &&
@@ -194,6 +236,8 @@ public class DavaFlowSet extends AbstractFlowSet{
         super.intersection(otherFlow, destFlow);
     }
 
+
+
     public void difference(FlowSet otherFlow, FlowSet destFlow)
     {
       if (sameType(otherFlow) &&
@@ -220,6 +264,8 @@ public class DavaFlowSet extends AbstractFlowSet{
       } else
         super.difference(otherFlow, destFlow);
     }
+
+
     
     public boolean contains(Object obj)
     {
@@ -229,6 +275,15 @@ public class DavaFlowSet extends AbstractFlowSet{
                 
         return false;
     }
+
+
+
+
+    /**
+     * Notice that the equals method only checks the equality of  the elements of the flow set
+     * DavaFlowSet also contains information regarding abrupt control flow
+     * This should also be checked by invoking the internalDataMatchesTo method
+     */
 
     public boolean equals(Object otherFlow)
     {
@@ -277,7 +332,30 @@ public class DavaFlowSet extends AbstractFlowSet{
 
 
 
+    /**
+     * A private method used to add an element into a List if it is NOT a duplicate
+     */
+    private List addIfNotDuplicate(List into, DavaFlowSet addThis){
+	//if set is not already present in the labelsBreakList then add it
+	Iterator it = into.iterator();
+	boolean found=false;
+	while(it.hasNext()){
+	    DavaFlowSet temp = (DavaFlowSet)it.next();
+	    if(temp.equals(addThis) && temp.internalDataMatchesTo(addThis)){
+		found=true;
+		break;
+	    }
+	}
+	if(!found)
+	    into.add(addThis);
+	return into;
+    }
 
+
+    /**
+     * When an explicit break statement is encountered this method should be called
+     * to store the current davaflowset 
+     */
     public void addToBreakList(String labelBroken, DavaFlowSet set){
 	Object obj = breakList.get(labelBroken);
 	if(obj == null){
@@ -288,29 +366,18 @@ public class DavaFlowSet extends AbstractFlowSet{
 	}
 	else{
 	    List labelsBreakList = (List)obj;
-
-	    //if set is not already present in the labelsBreakList then add it
-	    Iterator it = labelsBreakList.iterator();
-	    boolean found=false;
-	    while(it.hasNext()){
-		DavaFlowSet temp = (DavaFlowSet)it.next();
-		if(temp.equals(set) && temp.internalDataMatchesTo(set)){
-		    found=true;
-		    break;
-		}
-	    }
-	    if(!found){
-		labelsBreakList.add(set);
-		breakList.put(labelBroken,labelsBreakList);
-		//System.out.println("ADDED"+labelBroken+" with"+set.toString());
-	    }
+	    //add set into this list if its not a duplicate and update the hashMap
+	    breakList.put(labelBroken,addIfNotDuplicate(labelsBreakList,set));
 	}
     }
 
 
 
 
-
+    /**
+     * When an explicit continue statement is encountered this method should be called
+     * to store the current davaflowset 
+     */
     public void addToContinueList(String labelContinued, DavaFlowSet set){
 	Object obj = continueList.get(labelContinued);
 	if(obj == null){
@@ -321,24 +388,83 @@ public class DavaFlowSet extends AbstractFlowSet{
 	}
 	else{
 	    List labelsContinueList = (List)obj;
-
-	    //if set is not already present in the labelsContinueList then add it
-	    Iterator it = labelsContinueList.iterator();
-	    boolean found=false;
-	    while(it.hasNext()){
-		DavaFlowSet temp = (DavaFlowSet)it.next();
-		if(temp.equals(set) && temp.internalDataMatchesTo(set)){
-		    found=true;
-		    break;
-		}
-	    }
-	    if(!found){
-		labelsContinueList.add(set);
-		continueList.put(labelContinued,labelsContinueList);
-	    }
+	    continueList.put(labelContinued,addIfNotDuplicate(labelsContinueList,set));
 	}
     }
 
+
+
+    /**
+     * Checks whether the input stmt is an implicit break/continue
+     * A abrupt stmt is implicit if the SETLabelNode is null or the label.toString results in null
+     */
+    private boolean checkImplicit(DAbruptStmt ab){
+	SETNodeLabel label = ab.getLabel();
+	if(label==null)
+	    return true;
+	if(label.toString()==null)
+	    return true;
+	return false;
+    }
+
+    /**
+     * The next two methods take an abruptStmt as input along with a flowSet.
+     * It should be only invoked for abrupt stmts which do not have explicit labels
+
+     * The node being targeted by this implicit stmt should be found 
+     * Then the flow set should be added to the list within the appropriate hashmap
+     */
+    public void addToImplicitBreaks(DAbruptStmt ab, DavaFlowSet set){
+	if(!checkImplicit(ab))
+	    throw new RuntimeException("Tried to add explicit break statement in the implicit list in");
+
+	if(!ab.is_Break())
+	    throw new RuntimeException("Tried to add continue statement in the break list in DavaFlowSet.addToImplicitBreaks");
+
+	//okkay so its an implicit break
+	//get the targetted node, use the ClosestAbruptTargetFinder
+	ASTNode node = ClosestAbruptTargetFinder.v().getTarget(ab);
+	
+	//get the list of flow sets already stored for this node
+	Object list = implicitBreaks.get(node);
+	ArrayList listSets = null;
+	if(list == null){
+	    listSets = new ArrayList();
+	}
+	else{
+	    //if not null
+	    listSets = (ArrayList)list;
+	}
+
+	//if set is not already present in listSets add it and update hashMap
+	implicitBreaks.put(node,addIfNotDuplicate(listSets,set));	
+    }
+    
+    public void addToImplicitContinues(DAbruptStmt ab, DavaFlowSet set){
+	if(!checkImplicit(ab))
+	    throw new RuntimeException("Tried to add explicit continue statement in the implicit list ");
+
+	if(!ab.is_Continue())
+	    throw new RuntimeException("Tried to add break statement in the continue list");
+
+	//okkay so its an implicit continue
+	//get the targetted node, use the ClosestAbruptTargetFinder
+	ASTNode node = ClosestAbruptTargetFinder.v().getTarget(ab);
+	
+	//get the list of flow sets already stored for this node
+	Object list = implicitContinues.get(node);
+	ArrayList listSets = null;
+	if(list == null){
+	    listSets = new ArrayList();
+	}
+	else{
+	    //if not null
+	    listSets = (ArrayList)list;
+	}
+
+	//if set is not already present in listSets add it and update hashMap
+	implicitContinues.put(node,addIfNotDuplicate(listSets,set));
+    }
 
 
 
@@ -346,11 +472,61 @@ public class DavaFlowSet extends AbstractFlowSet{
 	return breakList;
     }
 
-
     private HashMap getContinueList(){
 	return continueList;
     }
 
+    public HashMap getImplicitBreaks(){
+	return implicitBreaks;
+    }
+
+    public HashMap getImplicitContinues(){
+	return implicitContinues;
+    }
+
+
+    public List getImplicitlyBrokenSets(ASTNode node){	
+	Object toReturn = implicitBreaks.get(node);
+	if(toReturn != null)
+	    return (List)toReturn;
+	return null;
+    }
+
+    public List getImplicitlyContinuedSets(ASTNode node){
+	Object toReturn = implicitContinues.get(node);
+	if(toReturn != null)
+	    return (List)toReturn;
+	return null;
+    }
+
+
+
+
+
+    /** 
+     * An internal method used to copy non-duplicate entries from the temp list 
+     * into the currentList
+     */
+    private List copyDavaFlowSetList(List currentList, List temp){
+	Iterator tempIt = temp.iterator();
+	while(tempIt.hasNext()){
+	    DavaFlowSet check = (DavaFlowSet)tempIt.next();
+	    Iterator currentListIt = currentList.iterator();
+	    boolean found=false;
+	    while(currentListIt.hasNext()){
+		//see if currentList has check
+		DavaFlowSet currentSet = (DavaFlowSet)currentListIt.next();
+		if(check.equals(currentSet) && check.internalDataMatchesTo(currentSet)){
+		    found=true;
+		    break;
+		}
+	    }
+	    if(!found){
+		currentList.add(check);
+	    }
+	}
+	return currentList;
+    }
     
     public void copyInternalDataFrom(Object fromThis){
 	if(!sameType(fromThis))
@@ -365,30 +541,15 @@ public class DavaFlowSet extends AbstractFlowSet{
 		String labelBroken = (String)keys.next();
 		List temp = (List)fromThisBreakList.get(labelBroken);
 		
-		List currentList = (List)breakList.get(labelBroken);
-		if(currentList == null){
+		Object list = breakList.get(labelBroken);
+
+		if(list == null){
 		    breakList.put(labelBroken,temp);
 		}
 		else{
-		    //add those elements from temp to currentList which dont already exist there
-		    Iterator tempIt = temp.iterator();
-		    while(tempIt.hasNext()){
-			DavaFlowSet check = (DavaFlowSet)tempIt.next();
-			Iterator currentListIt = currentList.iterator();
-			boolean found=false;
-			while(currentListIt.hasNext()){
-			    //see if currentList has check
-			    DavaFlowSet currentSet = (DavaFlowSet)currentListIt.next();
-			    if(check.equals(currentSet) && check.internalDataMatchesTo(currentSet)){
-				found=true;
-				break;
-			    }
-			}
-			if(!found){
-			    currentList.add(check);
-			}
-		    }
-		    breakList.put(labelBroken,currentList);
+		List currentList = (List)list;
+		    List complete = copyDavaFlowSetList(currentList,temp);
+		    breakList.put(labelBroken,complete);
 		}
 	    }
 	}
@@ -405,38 +566,86 @@ public class DavaFlowSet extends AbstractFlowSet{
 		String labelContinued = (String)keys.next();
 		List temp = (List)fromThisContinueList.get(labelContinued);
 		
-		List currentList = (List)continueList.get(labelContinued);
-		if(currentList == null){
+		Object list = (List)continueList.get(labelContinued);
+		if(list == null){
 		    continueList.put(labelContinued,temp);
 		}
 		else{
-		    //add those elements from temp to currentList which dont already exist there
-		    Iterator tempIt = temp.iterator();
-		    while(tempIt.hasNext()){
-			DavaFlowSet check = (DavaFlowSet)tempIt.next();
-			Iterator currentListIt = currentList.iterator();
-			boolean found=false;
-			while(currentListIt.hasNext()){
-			    //see if currentList has check
-			    DavaFlowSet currentSet = (DavaFlowSet)currentListIt.next();
-			    if(check.equals(currentSet) && check.internalDataMatchesTo(currentSet)){
-				found=true;
-				break;
-			    }
-			}
-			if(!found){
-			    currentList.add(check);
-			}
-		    }
+		    List currentList = (List)list;
+		    List complete = copyDavaFlowSetList(currentList,temp);
 		    continueList.put(labelContinued,currentList);
 		}
 	    }
 	}
+	
+	//copy elements of implicitBreaks
+	//this hashMap contains a mapping of ASTNodes to DavaFlowSets due to impicit breaks
+	{
+	    HashMap copyThis = ((DavaFlowSet)fromThis).getImplicitBreaks();
+	    Iterator it = copyThis.keySet().iterator();
+	    while(it.hasNext()){ //going through all nodes in the other objects implicitBreaks hashMap
+		//each is a node
+		ASTNode node = (ASTNode)it.next();
+		//get list of dava flow sets targetting this node implicitly
+		ArrayList fromDavaFlowSets = (ArrayList)copyThis.get(node);
+		//Have copy non duplicates in this to the implicitbreak hashMap the current dava flow set has
+		
+
+		Object list = implicitBreaks.get(node);
+		if(list==null){
+		    //there was no dava flow set currently targetting this node implicitly
+		    //put the fromDavaFlowSets into the hashMap
+		    implicitBreaks.put(node,fromDavaFlowSets);
+		}
+		else{
+		    ArrayList toDavaFlowSets = (ArrayList)list;
+		    List complete = copyDavaFlowSetList(toDavaFlowSets,fromDavaFlowSets);
+		    implicitBreaks.put(node,complete);		    
+		}
+	    }
+	}
+
+	//copy elements of implicitContinues
+	//this hashMap contains a mapping of ASTNodes to DavaFlowSets due to impicit continues
+	{
+	    HashMap copyThis = ((DavaFlowSet)fromThis).getImplicitContinues();
+	    Iterator it = copyThis.keySet().iterator();
+	    while(it.hasNext()){ //going through all nodes in the other objects implicitcontinues hashMap
+		//each is a node
+		ASTNode node = (ASTNode)it.next();
+		//get list of dava flow sets targetting this node implicitly
+		ArrayList fromDavaFlowSets = (ArrayList)copyThis.get(node);
+		//Have copy non duplicates in this to the implicitContinue hashMap the current dava flow set has
+		
+
+
+		Object list = implicitContinues.get(node);
+		if(list==null){
+		    //there was no dava flow set currently targetting this node implicitly
+		    //put the fromDavaFlowSets into the hashMap
+		    implicitContinues.put(node,fromDavaFlowSets);
+		}
+		else{
+		    ArrayList toDavaFlowSets = (ArrayList)list;
+		    List complete = copyDavaFlowSetList(toDavaFlowSets,fromDavaFlowSets);
+		    implicitContinues.put(node,complete);		    
+		}
+	    }
+	    
+	}
+
     }
 
+    private boolean compareLists(Object One , Object Two){
+	if(One==null && Two == null)
+	    return true;
 
+	if(One == null || Two == null)
+	    return false;
 
-    private boolean compareLists(List listOne , List listTwo){
+	List listOne = (List)One;
+	List listTwo = (List)Two;
+
 	//compare elements of the list
 	if(listOne.size()!= listTwo.size()){
 	    //size has to be same for lists to match
@@ -468,105 +677,79 @@ public class DavaFlowSet extends AbstractFlowSet{
 	return true;
     }
 
-    public boolean internalDataMatchesTo(Object thisObj){
-	if(!(thisObj instanceof DavaFlowSet))
+    public boolean internalDataMatchesTo(Object otherObj){
+	if(!(otherObj instanceof DavaFlowSet))
 	    return false;
 
+	DavaFlowSet other = (DavaFlowSet)otherObj;
+
 	//check if same break list
-	{
-	    HashMap otherBreakList = ((DavaFlowSet)thisObj).getBreakList();
-	    List otherKeyList = new ArrayList();
-
-	    Iterator keys = otherBreakList.keySet().iterator();
- 	    while(keys.hasNext()){
-	 	String labelBroken = (String)keys.next();
-		otherKeyList.add(labelBroken);
-		List temp = (List)otherBreakList.get(labelBroken);
- 		List currentList = (List)breakList.get(labelBroken);
-	 	if(currentList == null){
-		    return false;
- 		}
-	 	else{
-		    //compare the two lists
-		    if(!compareLists(temp,currentList)){
-			//if lists done match internalData doesnt match
-			return false;
-		    }
-		}
-	    }
-	    //have gone through the first hashMap
-
-	    //going through the second one
-	    keys = breakList.keySet().iterator();
-	    while(keys.hasNext()){
-	 	String labelBroken = (String)keys.next();
-
-		Iterator keyListIt = otherKeyList.iterator();
-		boolean alreadyDone=false;
-
-		while(keyListIt.hasNext()){
-		    String doneLabel = (String)keyListIt.next();
-		    if(labelBroken.equals(doneLabel)){
-			alreadyDone=true;
-			break;
-		    }
-		}
-		if(!alreadyDone){
-		    //we have come across a label
-		    //which was not done by the first hashmap
-		    //meaning it was NOT in the first hashMap
-		    return false;
-		}
-	    }
-	}
+	HashMap otherMap = other.getBreakList();
+	if( ! compareHashMaps(breakList,otherMap) )
+	    return false;
 
 
 	//check if same continue list
-	{
-	    HashMap otherContinueList = ((DavaFlowSet)thisObj).getContinueList();
-	    List otherKeyList = new ArrayList();
+	otherMap = other.getContinueList();
+	if( ! compareHashMaps(continueList,otherMap) )
+	    return false;
 
-	    Iterator keys = otherContinueList.keySet().iterator();
- 	    while(keys.hasNext()){
-	 	String labelContinued = (String)keys.next();
-		otherKeyList.add(labelContinued);
 
-		List temp = (List)otherContinueList.get(labelContinued);
- 		List currentList = (List)continueList.get(labelContinued);
-	 	if(currentList == null){
-		    return false;
- 		}
-	 	else{
-		    //compare the two lists
-		    if(!compareLists(temp,currentList)){
-			//if lists done match internalData doesnt match
-			return false;
-		    }
+	//check implicitBreaks match
+	otherMap = other.getImplicitBreaks();
+	if( ! compareHashMaps(implicitBreaks,otherMap) )
+	    return false;
+
+	//check implicitContinues match
+	otherMap = other.getImplicitContinues();
+	if( ! compareHashMaps(implicitContinues,otherMap) )
+	    return false;
+	
+	return true;
+    }
+
+
+    private boolean compareHashMaps(HashMap thisMap,HashMap otherMap){
+	List otherKeyList = new ArrayList();
+	
+	Iterator keys = otherMap.keySet().iterator();
+	while(keys.hasNext()){
+	    String otherKey = (String)keys.next();
+	    otherKeyList.add(otherKey);
+	    
+	    Object listOther = otherMap.get(otherKey);
+	    Object listThis = thisMap.get(otherKey);
+
+	    //compare the two lists
+	    if(!compareLists(listOther,listThis)){
+		//if lists dont match internalData doesnt match
+		return false;
+	    }
+	}
+	//have gone through otherMap
+	
+	//going through thisMap
+	keys = thisMap.keySet().iterator();
+	while(keys.hasNext()){
+	    String key = (String)keys.next();
+	    
+	    Iterator keyListIt = otherKeyList.iterator();
+	    boolean alreadyDone=false;
+	    
+	    while(keyListIt.hasNext()){
+		String doneKey = (String)keyListIt.next();
+		if(key.equals(doneKey)){
+		    alreadyDone=true;
+		    break;
 		}
 	    }
-	    //have gone through the first hashMap
-
-	    //going through the second one
-	    keys = continueList.keySet().iterator();
-	    while(keys.hasNext()){
-	 	String labelContinued = (String)keys.next();
-
-		Iterator keyListIt = otherKeyList.iterator();
-		boolean alreadyDone=false;
-
-		while(keyListIt.hasNext()){
-		    String doneLabel = (String)keyListIt.next();
-		    if(labelContinued.equals(doneLabel)){
-			alreadyDone=true;
-			break;
-		    }
-		}
-		if(!alreadyDone){
-		    //we have come across a label
-		    //which was not done by the first hashmap
-		    //meaning it was NOT in the first hashMap
-		    return false;
-		}
+	    if(!alreadyDone){
+		/*
+		  we have come across a label
+		  which was not done by the first hashmap
+		  meaning it was NOT in the first hashMap
+		*/
+		return false;
 	    }
 	}
 	return true;

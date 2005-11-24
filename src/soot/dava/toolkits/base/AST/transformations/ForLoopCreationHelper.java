@@ -253,7 +253,7 @@ public class ForLoopCreationHelper{
 	//there are some vars which are 
 	//1, defined in the stmtseq node
 	//2, used in the condition
-	System.out.println(commonVars);
+	//System.out.println(commonVars);
 
 
 

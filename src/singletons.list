@@ -134,3 +134,4 @@ soot.javaToJimple.toolkits.CondTransformer
 soot.javaToJimple.toolkits.GotoEliminator
 soot.dava.toolkits.base.AST.transformations.UselessLabelFinder
 soot.dava.DavaStaticBlockCleaner
+soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder

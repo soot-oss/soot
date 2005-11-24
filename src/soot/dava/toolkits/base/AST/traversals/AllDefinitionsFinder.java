@@ -18,57 +18,56 @@
  */
 
 /*
- * Maintained by Nomair A. Naeem
+ * Maintained by: Nomair A. Naeem
  */
 
 /*
- * Class does a traversal of the AST and checks all definitions of fields.
- * If any of the fields which are assigned is a final field the boolean
- * finalFieldDefined is set to true
+ * CHANGE LOG:   24th November   Created Class since the newinitialFlow of reachingDefs need a universal set of defs
+ *              
+ *              
+ *              
  */
-package soot.dava;
 
-import java.util.*;
+
+package soot.dava.toolkits.base.AST.traversals;
 
 import soot.*;
+import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
+import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
-public class StaticDefinitionFinder extends DepthFirstAdapter{
 
-    SootMethod method;
-    boolean finalFieldDefined;
+/*
+ * DefinitionStmts can occur in either ASTStatementSequenceNode or the for init and for update
+ * These are needed for the newinitialFlow method of reachingDefs which needs a universal set of definitions
+ */
 
-    public StaticDefinitionFinder(SootMethod method){
-	this.method = method;
-	finalFieldDefined=false;
+
+public class AllDefinitionsFinder extends DepthFirstAdapter{
+    ArrayList allDefs = new ArrayList();
+
+    public AllDefinitionsFinder(){
+
     }
 
-    public StaticDefinitionFinder(boolean verbose,SootMethod method){
+    public AllDefinitionsFinder(boolean verbose){
 	super(verbose);
-	this.method= method;
-	finalFieldDefined=false;
     }
 
     public void inDefinitionStmt(DefinitionStmt s){
-	Value leftOp = s.getLeftOp();
-	if(leftOp instanceof FieldRef){
-	    //System.out.println("leftOp is a fieldRef:"+s);
-	    SootField field = ((FieldRef)leftOp).getField();
-	    //check if this is a final field
-	    if(field.isFinal()){
-		//System.out.println("the field is a final variable");
-		finalFieldDefined=true;
-	    }
-	}
-	
+	allDefs.add(s);
     }
-		
-    public boolean anyFinalFieldDefined(){
-	return finalFieldDefined;
+
+
+    public List getAllDefs(){
+	return allDefs;
     }
 
 }
+
+
+

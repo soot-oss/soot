@@ -23,6 +23,7 @@ package soot.dava.toolkits.base.AST.analysis;
 import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
+import soot.dava.internal.javaRep.*;
 
 public class AnalysisAdapter implements Analysis{
 
@@ -103,6 +104,9 @@ public class AnalysisAdapter implements Analysis{
 	defaultCase(s);
     }
     public void caseThrowStmt(ThrowStmt s){
+	defaultCase(s);
+    }
+    public void caseDVariableDeclarationStmt(DVariableDeclarationStmt s){
 	defaultCase(s);
     }
     public void caseStmt(Stmt s){

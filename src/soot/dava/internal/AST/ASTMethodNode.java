@@ -19,6 +19,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+
+/**
+ * Maintained by Nomair A. Naeem
+ */
+
+
+/*
+ * CHANGE LOG:  23rd november 2005, Adding method getDeclaredLocals to return all locals
+ *              declared in the declarations ASTStatementSequenceNode
+ */
+
 package soot.dava.internal.AST;
 
 import soot.*;
@@ -129,6 +140,100 @@ public class ASTMethodNode extends ASTNode
 
 	subBodies.add( body);
     }
+
+    /*
+      Nomair A. Naeem 23rd November 2005
+      Need to efficiently get all locals being declared in the declarations node
+      Dont really care what type they are.. Interesting thing is that they are all different names :)
+    */
+    public List getDeclaredLocals(){
+	List toReturn = new ArrayList();
+
+	Iterator it = declarations.getStatements().iterator();
+
+	while(it.hasNext()){//going through each stmt
+	    Stmt s = ((AugmentedStmt)it.next()).get_Stmt();
+
+	    if(! (s instanceof DVariableDeclarationStmt))
+		continue;//shouldnt happen since this node only contains declarations
+
+	    DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt)s;
+
+	    //get the locals of this particular type
+	    List declarations = varStmt.getDeclarations();
+	    Iterator decIt = declarations.iterator();
+	    while(decIt.hasNext()){
+		//going through each local declared
+		
+		toReturn.add(decIt.next());
+	    }//going through all locals of this type
+	}//going through all stmts 
+	return toReturn;
+    }
+
+
+    /*
+     * Given a local first searches the declarations for the local
+     * Once it is found the local is removed from its declaring stmt
+     * If the declaring stmt does not declare any more locals the stmt itself is removed
+     * IT WOULD BE NICE TO ALSO CHECK IF THIS WAS THE LAST STMT IN THE NODE IN WHICH CASE THE NODE SHOULD BE REMOVED
+     * just afraid of its after effects on other analyses!!!!
+     */
+    public void removeDeclaredLocal(Local local){
+	Stmt s=null;
+	Iterator it = declarations.getStatements().iterator();
+	while(it.hasNext()){//going through each stmt
+	    s = ((AugmentedStmt)it.next()).get_Stmt();
+
+	    if(! (s instanceof DVariableDeclarationStmt))
+		continue;//shouldnt happen since this node only contains declarations
+	    
+	    DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt)s;
+
+	    //get the locals declared in this stmt
+	    List declarations = varStmt.getDeclarations();
+	    Iterator decIt = declarations.iterator();
+
+	    boolean foundIt=false;//becomes true if the local was found in this stmt
+	    while(decIt.hasNext()){
+		//going through each local declared
+		Local temp = (Local)decIt.next();
+		if(temp.getName().compareTo(local.getName())==0){
+		    //found it
+		    foundIt = true;
+		    break;
+		}
+	    }
+
+	    if(foundIt){
+		varStmt.removeLocal(local);
+		break; //breaks going through other stmts as we already did what we needed to do
+	    }
+	}
+	//the removal of a local might have made some declaration empty
+	//remove such a declaraion
+
+	List newSequence = new ArrayList();
+	it = declarations.getStatements().iterator();
+	while(it.hasNext()){
+	    AugmentedStmt as = (AugmentedStmt)it.next();
+	    s = as.get_Stmt();
+
+	    if(! (s instanceof DVariableDeclarationStmt))
+		continue;
+
+	    DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt)s;
+
+	    if(varStmt.getDeclarations().size()!=0)
+		newSequence.add(as);
+	    
+	}
+	declarations.setStatements(newSequence);
+
+    }
+
+
+
 
     /*
       Nomair A Naeem 21-FEB-2005

@@ -17,13 +17,24 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/*
+ * Maintained by Nomair A. Naeem
+ */
 
-package soot.dava.toolkits.base.AST.structuredAnalysis;
+/*
+ * Change log: * November 22nd 2005: Moved this class from structuredAnalysis
+ *               package to traversals package. Since this is a traversal not an analysis
+ *
+ */
+
+
+package soot.dava.toolkits.base.AST.traversals;
 
 
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
+import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 
@@ -32,6 +43,10 @@ import soot.dava.toolkits.base.AST.analysis.*;
  * regarding the different nodes and statements in the AST.
  * The class produces a HashMap between the node/statement given as
  * key and the parent of this construct (value)
+ *
+ * November 23rd, 2005. (Nomair) It is used for instance in the CopyPropagation algorithm 
+ * to be able to remove a particular copy
+ * stmt for instance from its parent.
  */
 
 public class ASTParentNodeFinder extends DepthFirstAdapter{
@@ -193,8 +208,6 @@ public class ASTParentNodeFinder extends DepthFirstAdapter{
 	parentOf.put(s,parentStack.peek());
     }
 
-
-
     public void inInvokeStmt(InvokeStmt s){
 	parentOf.put(s,parentStack.peek());
     }
@@ -203,6 +216,10 @@ public class ASTParentNodeFinder extends DepthFirstAdapter{
 
 
     public void inThrowStmt(ThrowStmt s){
+	parentOf.put(s,parentStack.peek());
+    }
+
+    public void inDVariableDeclarationStmt(DVariableDeclarationStmt s){
 	parentOf.put(s,parentStack.peek());
     }
 

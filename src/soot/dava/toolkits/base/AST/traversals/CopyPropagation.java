@@ -17,8 +17,26 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/*
+ * Maintained by Nomair A. Naeem
+ */
 
-package soot.dava.toolkits.base.AST.structuredAnalysis;
+/*
+ * Change log: * November 22nd 2005: Moved this class from structuredAnalysis
+ *               package to traversals package. Since this is a traversal not an analysis
+ *
+ *             * November 23rd 2005. MASSIVE CHANGES
+ *                                   Created a Class LocalVariableCleaner which should
+ *                                   be run after running copy prop and moved some of the
+ *                                   functionality from this class to localVariableCleaner
+ */
+
+/*
+ * TODO: November 23rd, 2005. What if removeStmt removes a copyStmt and that was the only 
+ *       stmt in the stmtSequenceBlock. Shouldnt that block be removed??
+ */
+
+package soot.dava.toolkits.base.AST.traversals;
 
 import soot.*;
 import java.util.*;
@@ -31,7 +49,8 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 /*
   This analysis uses the results from
-      ReachingCopies and uD and dU chains 
+      1 ReachingCopies 
+      2 uD and dU chains 
   to eliminate extra copies
 
 
@@ -48,9 +67,6 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 	b, for loop init      -------> dont want to remove this
 	c, for loop update   ---------> dont want to remove this
 
-    IMPORTANT: NEED TO REMOVE LOCALS WHICH ARE NO LONGER USED
-    At the end of the depth first traversal i.e. outASTMethodNode method
-    we need to check that any locals declared which are unnecceasy should be removed
 */
 
 public class CopyPropagation extends DepthFirstAdapter{
@@ -61,9 +77,15 @@ public class CopyPropagation extends DepthFirstAdapter{
     
     boolean someCopyStmtModified;
 
+    //need to keep track of whenever we modify the AST
+    //this flag is set to true whenever a stmt is removed or a local substituted for another
+    boolean ASTMODIFIED;
+
     public CopyPropagation(ASTNode AST){
+	super();
 	someCopyStmtModified=false;
 	this.AST=AST;
+	ASTMODIFIED=false;
 	setup();
     }
 
@@ -71,9 +93,9 @@ public class CopyPropagation extends DepthFirstAdapter{
 	super(verbose);
 	someCopyStmtModified=false;
 	this.AST=AST;
+	ASTMODIFIED=false;
 	setup();
     }
-
 
 
 
@@ -90,6 +112,23 @@ public class CopyPropagation extends DepthFirstAdapter{
     }
 
 
+    /*
+     * If any copy stmt was removed or any substitution made
+     * we might be able to get better results by redoing the analysis
+     */
+    public void outASTMethodNode(ASTMethodNode node){
+	if(ASTMODIFIED){
+	    //need to rerun copy prop
+
+	    //before running a structured flow analysis have to do this one
+	    AST.apply(ClosestAbruptTargetFinder.v());
+
+	    //System.out.println("\n\n\nCOPY PROP\n\n\n\n");
+	
+	    CopyPropagation prop1 = new CopyPropagation(AST);
+	    AST.apply(prop1);
+	}
+    }
 
 
 
@@ -102,7 +141,7 @@ public class CopyPropagation extends DepthFirstAdapter{
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    Stmt s = as.get_Stmt();
 	    if(isCopyStmt(s)){
-		handleCopyStmt(s,s);
+		handleCopyStmt((DefinitionStmt)s);
 	    }
 	}
     }
@@ -137,19 +176,16 @@ public class CopyPropagation extends DepthFirstAdapter{
      * Remove Copy Stmt
      * Replace use of a with use of b
     */
-    public void handleCopyStmt(Stmt copyStmt,Object nodeOrStmt){
+    public void handleCopyStmt(DefinitionStmt copyStmt){
 	//System.out.println("COPY STMT FOUND-----------------------------------"+copyStmt);
 
-	//get defined local
-	Value leftVal = ((DefinitionStmt)copyStmt).getLeftOp();
-	if(!(leftVal instanceof Local))
-	    return;
-	Local definedLocal = (Local)leftVal;
+	//get defined local...safe to cast since this is copyStmt
+	Local definedLocal = (Local)copyStmt.getLeftOp();
 
 	//get all uses of this local from the dU chain
 	Object temp = useDefs.getDUChain(copyStmt);
 
-	ArrayList uses = new ArrayList();
+	ArrayList uses= new ArrayList();
 	if(temp != null){
 	    uses = (ArrayList)temp;
 	}
@@ -158,25 +194,20 @@ public class CopyPropagation extends DepthFirstAdapter{
 
 	//check if uses is non-empty
 	if(uses.size()!=0){
-	    //System.out.println("The defined local:"+definedLocal+" is used in the following");
-	    //System.out.println("\n numof uses:"+uses.size()+uses+"\n\n");
 	    
+	    //System.out.println(">>>>The defined local:"+definedLocal+" is used in the following");
+	    //System.out.println("\n numof uses:"+uses.size()+uses+">>>>>>>>>>>>>>>\n\n");
+
+
 	    //continuing with copy propagation algorithm
 	    
-	    //create localPair for copy stmt in question
-	    Value leftOp = ((DefinitionStmt)copyStmt).getLeftOp();
-	    Value rightOp = ((DefinitionStmt)copyStmt).getRightOp();
+	    //create localPair for copy stmt in question...same to cast as its a copyStmt
+	    Local leftLocal = (Local)copyStmt.getLeftOp();
+	    Local rightLocal = (Local)copyStmt.getRightOp();
 
-	    if(!(leftOp instanceof Local && rightOp instanceof Local)){	    
-		return;
-	    }
+	    ReachingCopies.LocalPair localPair = reachingCopies.new LocalPair(leftLocal,rightLocal);
 	    
-	    Local leftLocal = (Local)leftOp;
-	    Local rightLocal = (Local)rightOp;
-
-	    LocalPair localPair = new LocalPair(leftLocal,rightLocal);
-
-	    //check for all uses
+	    //check for all the non zero uses
 	    Iterator useIt = uses.iterator();
 	    while(useIt.hasNext()){
 		//check that the reaching copies of each use has the copy stmt
@@ -187,6 +218,7 @@ public class CopyPropagation extends DepthFirstAdapter{
 		
 		if(!reaching.contains(localPair)){
 		    //this copy stmt does not reach this use
+		    //no copy elimination can be done 
 		    return;
 		}
 	    }
@@ -202,11 +234,10 @@ public class CopyPropagation extends DepthFirstAdapter{
 
 	    //remove copy stmt a=b
 	    removeStmt(copyStmt);
-	    
-
-
+	   
 
 	    if(someCopyStmtModified){
+		//get all the analyses re-set
 		setup();
 		someCopyStmtModified=false;
 	    }
@@ -250,6 +281,8 @@ public class CopyPropagation extends DepthFirstAdapter{
 	}
 	//System.out.println("STMT REMOVED---------------->"+stmt);
 	parentNode.setStatements(newSequence);
+
+	ASTMODIFIED=true;
 	return;
     }
 
@@ -258,7 +291,10 @@ public class CopyPropagation extends DepthFirstAdapter{
 
 
 
-
+    /*
+     * If the value inside a useBox is a local with toString giving <from>
+     * this is replaced by the local <to>
+     */
     public void replaceBoxes(Local from, Local to, List useBoxes){
 	Iterator it = useBoxes.iterator();
 	while(it.hasNext()){
@@ -269,6 +305,7 @@ public class CopyPropagation extends DepthFirstAdapter{
 		if(local.getName().compareTo(from.getName())==0){
 		    //replace the name with the one in "to"
 		    valBox.setValue(to);
+		    ASTMODIFIED=true;
 		}
 	    }
 	}
@@ -278,13 +315,14 @@ public class CopyPropagation extends DepthFirstAdapter{
 
 
 
-
-
+    /*
+     * Method goes depth first into the condition tree and returns a list of use boxes
+     */
     public List getUseList(ASTCondition cond){
 	if(cond instanceof ASTAggregatedCondition){
 	    ArrayList useList = new ArrayList();
 	    useList.addAll(getUseList(((ASTAggregatedCondition)cond).getLeftOp()));
-	    useList.addAll(getUseList(((ASTAggregatedCondition)cond).getLeftOp()));
+	    useList.addAll(getUseList(((ASTAggregatedCondition)cond).getRightOp()));
 	    return useList;
 	}
 	else if(cond instanceof ASTUnaryCondition){
@@ -309,7 +347,12 @@ public class CopyPropagation extends DepthFirstAdapter{
 
 
 
-
+    /*
+     * Invoked by handleCopyStmt to replace the use of local <from>
+     * to the use of local <to> in <use>
+     *
+     * Notice <use> can be a stmt or an ASTNode
+     */
 
     public void replace(Local from, Local to, Object use){
 	if(use instanceof Stmt){
@@ -327,6 +370,7 @@ public class CopyPropagation extends DepthFirstAdapter{
 		if(val instanceof Local){
 		    if(((Local)val).getName().compareTo(from.getName())==0){
 			//replace the name with the one in "to"
+			ASTMODIFIED=true;
 			temp.set_Key(to);
 		    }
 		}
@@ -341,6 +385,7 @@ public class CopyPropagation extends DepthFirstAdapter{
 		if(local.getName().compareTo(from.getName())==0){
 		    //replace the name with the one in "to"
 		    temp.setLocal(to);
+		    ASTMODIFIED=true;
 		}
 	    }
 	    else if(use instanceof ASTIfNode){
@@ -406,180 +451,4 @@ public class CopyPropagation extends DepthFirstAdapter{
     }
 
 
-
-
-
-
-    /*
-     * Get all locals declared in the method
-     * If the local is never defined (and hence never used) remove it
-     * If the local is defined BUT never used then you may remove it IF AND ONLY IF
-     *    The definition is either a copy stmt or an assignment of a constant
-     */
-    public void outASTMethodNode(ASTMethodNode node){
-	//create the uD and dU chains
-	//System.out.println("outASTMethod Node");
-	useDefs = new ASTUsesAndDefs(AST);
-
-
-	AST.apply(useDefs);
-
-
-	//useDefs.print();
-
-
-	ASTStatementSequenceNode stmtNode = node.getDeclarations();
-	List sequence = stmtNode.getStatements();
-	Iterator it = sequence.iterator();
-	while(it.hasNext()){
-	    AugmentedStmt as = (AugmentedStmt)it.next();
-	    Stmt s = as.get_Stmt();
-	    if(! (s instanceof DVariableDeclarationStmt))
-		continue;
-	    DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt)s;
-	    ArrayList removeList = new ArrayList();
-
-	    //System.out.println("Variable declaration stmt is :"+varStmt);
-	    List declarations = varStmt.getDeclarations();
-	    Iterator decIt = declarations.iterator();
-	    while(decIt.hasNext()){
-		Object var = decIt.next();
-		//System.out.println("CHECKING:"+var);
-
-		//var is either a local or a definition stmt
-		if(var instanceof Local){
-		    if(!isDefined((Local)var)){
-			//var is never defined and hence is certainly not used anywhere
-			removeList.add((Local)var);
-		    }
-		    else{
-			//System.out.println(var+" is defined");
-
-			//if a var is defined but not used then in some conditions we can remove it
-			
-			//get all defs
-			List defs = getDefs((Local)var);
-			//System.out.println("DEFS reaching are:"+defs);
-
-			//check that each def is never used
-			Iterator defIt = defs.iterator();
-			boolean removeVar=true;
-			while(defIt.hasNext()){
-			    boolean defRemoved=false;
-
-			    //DefinitionStmt ds = (DefinitionStmt)defIt.next();
-			    Object tempds = defIt.next();
-			    List uses = useDefs.getDUChain(tempds);
-			    DefinitionStmt ds = (DefinitionStmt)tempds;
-			    if(uses.size()==0){
-				/*
-				  there is no use of this def, we can remove it if it is
-				  copy stmt or a constant assignment
-				*/
-				//System.out.println("the variable:"+var+" and def:"+ds+" is never used");
-				if(ds.getRightOp() instanceof Local){
-				    //removeStmt(ds);
-				    defRemoved=true;
-				    //System.out.println("Chose to remove stmt:"+ds);
-				}
-				else if(ds.getRightOp() instanceof Constant){
-				    //removeStmt(ds);
-				    //System.out.println("Chose to remove stmt:"+ds);
-				    defRemoved=true;
-				}
-			    }
-			    if(!defRemoved)
-				removeVar=false;
-			}
-			if(removeVar){
-			    removeList.add((Local)var);			    
-			}
-
-		    }
-		}
-		else if (var instanceof DefinitionStmt){
-		    /*
-		      Theoretically we should deal with this occurance also
-		      However Since there are no definitions added into the DVariableDeclationStmt
-		      there is no need to do this at this time
-		    */
-		    
-		}
-		else{
-		    //System.out.println("here???");
-		}
-		
-	    }
-
-
-	    //go through the removeList and remove all locals
-	    Iterator remIt = removeList.iterator();
-	    while(remIt.hasNext()){
-		Local removeLocal = (Local)remIt.next();
-		varStmt.removeLocal(removeLocal);
-	    }
-	}
-
-	//since we might have removed locals from VariableDeclarationStmts
-	//check to see if some variable DeclarationStmt is un needed
-
-	
-	List newSequence = new ArrayList();
-	sequence = stmtNode.getStatements();
-	it = sequence.iterator();
-	while(it.hasNext()){
-	    AugmentedStmt as = (AugmentedStmt)it.next();
-	    Stmt s = as.get_Stmt();
-	    if(! (s instanceof DVariableDeclarationStmt))
-		continue;
-	    DVariableDeclarationStmt varStmt = (DVariableDeclarationStmt)s;
-	    List declarations = varStmt.getDeclarations();
-	    if(declarations.size()!=0){
-		newSequence.add(as);
-	    }
-	}
-	stmtNode.setStatements(newSequence);
-
-
-	
-    }
-
-
-
-    /*
-     * This method looks up all defs and returns those of this local
-     */
-    public List getDefs(Local var){
-	List toReturn = new ArrayList();
-	
-	HashMap dU = useDefs.getDUHashMap();
-	Iterator it = dU.keySet().iterator();
-	while(it.hasNext()){
-	    DefinitionStmt s = (DefinitionStmt)it.next();
-	    Value left = s.getLeftOp();
-	    if(left instanceof Local){
-		if(((Local)left).getName().compareTo(var.getName())==0)
-		    toReturn.add(s);
-	    }
-	}
-	return toReturn;
-    }
-
-    /*
-     * Go through all definition stmts in the system and check if the local
-     * in question has a definition
-     */
-    public boolean isDefined(Local var){
-	HashMap dU = useDefs.getDUHashMap();
-	Iterator it = dU.keySet().iterator();
-	while(it.hasNext()){
-	    DefinitionStmt s = (DefinitionStmt)it.next();
-	    Value left = s.getLeftOp();
-	    if(left instanceof Local){
-		if(((Local)left).getName().compareTo(var.getName())==0)
-		    return true;
-	    }
-	}
-	return false;
-    }
 }

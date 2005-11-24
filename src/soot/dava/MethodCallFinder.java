@@ -17,6 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/**
+ * This class is created by the DavaStaticBlockCleaner classes method staticBlockInlining
+ * It is only invoked for the bodies of clinit methods
+ */
+
 package soot.dava;
 
 import java.util.*;
@@ -29,7 +34,8 @@ import soot.dava.internal.asg.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+import soot.dava.toolkits.base.AST.traversals.*;
 
 public class MethodCallFinder extends DepthFirstAdapter{
     ASTMethodNode underAnalysis;
@@ -62,16 +68,22 @@ public class MethodCallFinder extends DepthFirstAdapter{
      * End ASTConstruct
      */
 
+
+    /*
+     * Notice that since this class is only invoked for clinit methods this invoke statement is some
+     * invocation that occured within the clinit method
+     */
     public void inInvokeStmt(InvokeStmt s){
 	InvokeExpr invokeExpr = s.getInvokeExpr();
 	SootMethod maybeInline = invokeExpr.getMethod();
 
+	//check whether we want to inline
 	ASTMethodNode toInlineASTMethod = cleaner.inline(maybeInline);
 	if(toInlineASTMethod ==null){
 	    //not to inline
 	    return;
 	}
-	else{
+	else{//yes we want to inline 
 	    // we know that the method to be inlined has no declarations.
 	    List subBodies = toInlineASTMethod.get_SubBodies();
 	    if(subBodies.size() != 1){
@@ -79,7 +91,7 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	    }
 	    List body = (List)subBodies.get(0);
 
-
+	    
 	    ASTParentNodeFinder finder = new ASTParentNodeFinder();
 	    underAnalysis.apply(finder);
 	    
@@ -87,7 +99,15 @@ public class MethodCallFinder extends DepthFirstAdapter{
 
 
 	    boolean replaced = replaceSubBody(s,newChangedBodyPart,finder);
+
+	    
 	    if(replaced){
+		//so the invoke stmt has been replaced with the body of the method invoked
+
+		/*
+		 * if the inlined method contained an assignment to a static field
+		 * we want to replace that with a throw stmt
+		 */
 		StaticDefinitionFinder defFinder = new StaticDefinitionFinder(maybeInline);
 		toInlineASTMethod.apply(defFinder);
 
@@ -347,6 +367,12 @@ public class MethodCallFinder extends DepthFirstAdapter{
 
 
 
+    /*
+     * Given an invoke stmt this method finds the parent of this stmt which should always be a StatementSequenceNode
+     * Then the sequence is broken into three parts.
+     * The first part contains stmts till above the invoke stmt. The second part contains the body argument which is the
+     * body of the inlined method and the third part are the stmts below the invoke stmt
+     */
     
     public List createChangedBodyPart(InvokeStmt s, List body, ASTParentNodeFinder finder){
 	//get parent node of invoke stmt
@@ -361,7 +387,9 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	}    
 	
 	ASTStatementSequenceNode orignal = (ASTStatementSequenceNode)parentNode;
-	
+
+
+	//copying the stmts till above the inoke stmt into one stmt sequence node
 	List newInitialNode = new ArrayList();
 	Iterator it = orignal.getStatements().iterator();
 	while(it.hasNext()){

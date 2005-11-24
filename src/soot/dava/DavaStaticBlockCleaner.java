@@ -26,6 +26,31 @@ import java.util.*;
 import soot.dava.*;
 import soot.dava.internal.AST.*;
 
+
+/*
+ * Coded to remove the static "final" bug from Dava. Usually occurs in AspectJ code
+ * **********The staticBlockInlining Method is invoked by PackManager**************
+ *
+ * In the bug this is what used to happen:
+ *
+ *        public static final ClassName myField;
+ *        static{
+               CLASSNAME.postClinit();
+            
+          }
+
+ *        postClinit(){ myField = new ClassName(); }
+ * 
+ *  Now this causes a problem since final fields can not be defined using a method call
+ * So the solution was to inline just this method. to get something like
+ *        static{
+             myField = new ClassName();
+	  }
+ * At the same time the code in the method postClinit is removed and an exception is thrown if this method is invoked
+ */
+
+
+
 public class DavaStaticBlockCleaner {
     SootClass sootClass;
 
@@ -37,11 +62,14 @@ public class DavaStaticBlockCleaner {
         return G.v().soot_dava_DavaStaticBlockCleaner();
     }
 
+
+    //invoked by the PackManager
     public void staticBlockInlining(SootClass sootClass){
 	this.sootClass=sootClass;
 	//retrieve the clinit method if any for sootClass
+	//the clinit method gets converted into the static block which could initialize the final variable
 	if(!sootClass.declaresMethod("void <clinit>()")){
-	    System.out.println("no clinit");
+	    //System.out.println("no clinit");
 	    return;
 	}
 
@@ -53,8 +81,7 @@ public class DavaStaticBlockCleaner {
 	    throw new RuntimeException("method "+ clinit.getName()+ " has no active body!");
 
 	
-	Body clinitBody = clinit.getActiveBody();
-	
+	Body clinitBody = clinit.getActiveBody();	
         Chain units = ((DavaBody) clinitBody).getUnits();
 
         if (units.size() != 1) {
@@ -65,13 +92,19 @@ public class DavaStaticBlockCleaner {
 	if(! (AST instanceof ASTMethodNode))
             throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
 
+	//running methodCallFinder on the Clinit method 
 	AST.apply(new MethodCallFinder(this));
-
-
-	
     }
 
 
+
+
+    /*
+     * Method called with a sootMethod to decide whether this method should be inlined or not
+     * returns null if it shouldnt be inlined
+     *
+     * A method can be inlined if it belongs to the same class and also if its static....(why???)
+     */
     public ASTMethodNode inline(SootMethod maybeInline){
 	//check if this method should be inlined
 	
@@ -108,7 +141,7 @@ public class DavaStaticBlockCleaner {
 		    ASTStatementSequenceNode declarations = toReturn.getDeclarations();
 		    if(declarations.getStatements().size() == 0){
 			//inline only if there are no declarations in the method inlined
-			System.out.println("No declarations in the method. we can inline this method");
+			//System.out.println("No declarations in the method. we can inline this method");
 			return toReturn;
 		    }
 		}

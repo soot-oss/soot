@@ -338,7 +338,7 @@ public class DavaPrinter {
 			    out.println("    " + f.getDeclaration() + " = \"" + val + "\";");
 			}
 			else{
-			    System.out.println("Couldnt find type of field");
+			    //System.out.println("Couldnt find type of field"+f.getDeclaration());
 			    out.println("    " + f.getDeclaration() + ";");
 			}
 		    } //field is static final

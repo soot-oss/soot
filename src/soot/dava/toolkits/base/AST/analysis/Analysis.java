@@ -23,6 +23,7 @@ package soot.dava.toolkits.base.AST.analysis;
 import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
+import soot.dava.internal.javaRep.*;
 
 public interface Analysis{
 
@@ -50,6 +51,7 @@ public interface Analysis{
     public void caseReturnStmt(ReturnStmt s);
     public void caseInvokeStmt(InvokeStmt s);
     public void caseThrowStmt(ThrowStmt s);
+    public void caseDVariableDeclarationStmt(DVariableDeclarationStmt s);
     public void caseStmt(Stmt s);
     public void caseValue(Value v);
     public void caseExpr(Expr e);

@@ -17,7 +17,22 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/*
+ *TODO: Nomair (November 23rd 2005) should look at all methods in AbstractUnit 
+ *                                  and figure out what to do with them!!
+ *      With the changed semantics maybe another stmt which deals with int i=2; separatly should be
+ *      created
+ */
 
+
+/*
+ *  CHANGE LOG:  November 23rd 2005: Changing the semantics of DVariableDeclarationStmt. 
+ *                   The fact that we can have definition stmts inside the list of locals
+ *                   declared is going to lead to way too many problems. So DVairableDeclarationStmt
+ *                   is going to be restricted to declaration which do not have definitions
+ *            e.g. int i,j,k; is allowed
+ *                  int i=2,j; is not allowed
+ */
 package soot.dava.internal.javaRep;
 
 import soot.*;
@@ -30,10 +45,6 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
     Type declarationType=null;
 
-    /*
-      Declarations can either be identifiers (locals) eg int i;
-      Or they can be DefinitionStmts  eg int i=0;
-    */
     List declarations=null;
 
 
@@ -46,6 +57,8 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 	}
     }
 
+
+
     public List getDeclarations(){
 	return declarations;
     }
@@ -56,27 +69,20 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
     public void removeLocal(Local remove){
 	for(int i=0;i<declarations.size();i++){
-	    Object temp = declarations.get(i);
-	    if(temp instanceof Local){
-		if(((Local)temp).getName().compareTo(remove.getName())==0){
-		    //this is the local to be removed
-		    //System.out.println("REMOVED"+temp);
-		    declarations.remove(i);
-		    return;
-		}
+	    Local temp = (Local)declarations.get(i);
+	    if(temp.getName().compareTo(remove.getName())==0){
+		//this is the local to be removed
+		//System.out.println("REMOVED"+temp);
+		declarations.remove(i);
+		return;
 	    }
 	}
     }
 
-    public void addDefinitionLocal(DefinitionStmt stmt){
-	declarations.add(stmt);
-    }
-
-
     public Type getType(){
 	return declarationType;
     }
-
+    
     public boolean isOfType(Type type){
 	if(type.toString().compareTo(declarationType.toString())==0)
 	    return true;
@@ -91,61 +97,56 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 	DVariableDeclarationStmt temp =  new DVariableDeclarationStmt(declarationType);
 	Iterator it = declarations.iterator();
 	while(it.hasNext()){
-	    Object obj = it.next();
-	    if(obj instanceof Local){
-		Value temp1 = Grimp.cloneIfNecessary((Local)obj);
-		if(temp1 instanceof Local)
-		    temp.addLocal((Local)temp1);
-	    }
-	    else if (obj instanceof DefinitionStmt){
-		temp.addDefinitionLocal((DefinitionStmt)((DefinitionStmt)obj).clone());
-	    }
+	    Local obj = (Local)it.next();
+
+	    Value temp1 = Grimp.cloneIfNecessary(obj);
+	    if(temp1 instanceof Local)
+		temp.addLocal((Local)temp1);
 	}
 	return temp;
     }
 
+
+
     public String toString(){
 	StringBuffer b = new StringBuffer();
-
+	 
 	if(declarations.size()==0)
 	    return b.toString();
-
+	 
 	String type = declarationType.toString();
-
+	 
 	if (type.equals("null_type"))
 	    b.append("Object");
 	else
 	    b.append(type);
 	b.append(" ");
-	    
+	 
 	Iterator decIt = declarations.iterator();
 	while(decIt.hasNext()){
-	    Object tempDec = decIt.next();
-	    if(tempDec instanceof Local)
-		b.append(((Local)tempDec).getName());
-	    else if (tempDec instanceof DefinitionStmt){
-		b.append( ((Unit)tempDec).toString());
-	    }
+	    Local tempDec = (Local)decIt.next();
+	    b.append(tempDec.getName());
+
 	    if (decIt.hasNext())
 		b.append(", ");
 	}
 	return b.toString();
     }
-
+    
 
 
 
     public void toString(UnitPrinter up){
 	if(declarations.size()==0)
 	    return;
-
+	  
 	if(!(up instanceof DavaUnitPrinter))
 	    throw new RuntimeException("DavaBody should always be printed using the DavaUnitPrinter");	    
 	else{
 	    DavaUnitPrinter dup = (DavaUnitPrinter)up;
-
+	  
 	    String type = declarationType.toString();
-
+	    
 	    if (type.equals("null_type"))
 		dup.printString("Object");
 	    else
@@ -154,19 +155,13 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 	    
 	    Iterator decIt = declarations.iterator();
 	    while(decIt.hasNext()){
-		Object tempDec = decIt.next();
-		if(tempDec instanceof Local)
-		    dup.printString(((Local)tempDec).getName());
-		else if (tempDec instanceof DefinitionStmt){
-		    Unit u = (Unit)tempDec;
-		    u.toString( up );
-		}
+		Local tempDec = (Local)decIt.next();
+		dup.printString(tempDec.getName());
 		if (decIt.hasNext())
 		    dup.printString(", ");
 	    }
 	}
     }
-
 
 
     /*

@@ -17,6 +17,17 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/*
+ * Maintained by Nomair A. Naeem
+ */
+
+/*
+ * CHANGE LOG: * November 22nd: Removed check of DAbruptStmt from analysis since
+ *               this is now handled by the structredAnalysis framework
+ *             
+ *             * November 22nd: Inlined the LocalPair class
+ *               Tested Extensively: found bug in implementation of process_doWhile in structuredAnalysis :)
+ */
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
@@ -25,8 +36,6 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
-
-
 
 /*
   ReachingCopies
@@ -45,17 +54,78 @@ import soot.dava.internal.AST.*;
 	 
 	 if expr is a local , y
 	 gen = (x,y) 
-
   Step 6:
+         out(start) = {}
          newInitialFlow: No copies are available. an empty flow set
+	 remember new InitialFlow is ONLY used for input to catchBodies
+
+	 In ordinary flow analyses one has to assume that out(Si) is the universal set
+	 for reaching copies. However the way structured flow analysis works
+	 there is no need for such an assumption since it is never used in the structured flow analysis code
 */
 
 public class ReachingCopies extends StructuredAnalysis{
-    final DavaFlowSet NOPATH = new DavaFlowSet();
+
+
+    /***************** DEFINIING LOCAL PAIR CLASS ************************/
+    public class LocalPair{
+	private Local leftLocal;
+	private Local rightLocal;
+	
+	public LocalPair(Local left, Local right){
+	    leftLocal=left;
+	    rightLocal=right;
+	}
+	
+	
+	public Local getLeftLocal(){
+	    return leftLocal;
+	}
+	
+	public Local getRightLocal(){
+	    return rightLocal;
+	}
+	
+	public boolean equals(Object other){
+	    if(other instanceof LocalPair){
+		if(this.leftLocal.toString().equals(((LocalPair)other).getLeftLocal().toString())){
+		    if(this.rightLocal.toString().equals(((LocalPair)other).getRightLocal().toString())){
+			return true;
+		    }
+		}
+	    }
+	    return false;
+	}
+	
+	/**
+	 * Method checks whether local occurs in the left or right side of the localpair
+	 * different semantics than the usual contains method which checks something in a list
+	 */
+	public boolean contains(Local local){
+	    if(leftLocal.toString().equals(local.toString()) || rightLocal.toString().equals(local.toString())){
+		return true;
+	    }
+	    return false;
+	}
+	
+	public String toString(){
+	    StringBuffer b = new StringBuffer();
+	    b.append("<"+leftLocal.toString()+","+rightLocal.toString()+">");
+	    return b.toString();
+	}
+	
+    }
+
+    /******************************END OF LOCAL PAIR CLASS ***********************/
+
+
+
+
+
 
     public ReachingCopies(Object analyze){
 	super();
-	setMergeType();
+	//the input to the process method is an empty DavaFlow Set meaning out(start) ={}
 	DavaFlowSet temp = (DavaFlowSet)process(analyze,new DavaFlowSet());
     }
 
@@ -162,30 +232,6 @@ public class ReachingCopies extends StructuredAnalysis{
 	    }
 	    return toReturn;
 	}
-	else if(s instanceof DAbruptStmt){
-	    DAbruptStmt abStmt = (DAbruptStmt)s;
-
-	    //see if its a break or continue
-	    if(!(abStmt.is_Continue()|| abStmt.is_Break())){
-		//DAbruptStmt is of only two kinds
-		throw new RuntimeException("Found a DAbruptStmt which is neither break nor continue!!");
-	    }		    
-		
-	    String label = abStmt.getLabel().toString();
-	    DavaFlowSet temp = NOPATH;
-		
-	    if(abStmt.is_Continue()){
-		//System.out.println("invoking addtocontinueList");
-		temp.addToContinueList(label,inSet);
-		//System.out.println("addtocontinueList returned");
-	    }
-	    else if (abStmt.is_Break()){
-		//System.out.println("invoking addtobreakList");
-		temp.addToBreakList(label,inSet);
-		//System.out.println("addtobreakList returned");
-	    }
-	    return temp;
-	}
 	else{
 	    /*
 	      Analysis cares only about break and continue stmts along with DEFINTION STMT
@@ -196,8 +242,9 @@ public class ReachingCopies extends StructuredAnalysis{
 
 
     public void gen(DavaFlowSet in, Local left, Local right){
+	//adding localpair
+	//no need to check for duplicates as the DavaFlowSet checks that
 	LocalPair localp = new LocalPair(left,right);
-	//System.out.println("Generating "+localp.toString());
 	in.add(localp);
     }
     
@@ -209,11 +256,12 @@ public class ReachingCopies extends StructuredAnalysis{
 	    LocalPair tempPair = (LocalPair)listIt.next();
 	    if(tempPair.contains(redefined)){
 		//need to kill this from the list
-		//System.out.println("Killing "+tempPair.toString());
 		in.remove(tempPair);
 	    }
 	}
     }
+
+
 
     /*
      * Wrapper method to get before set of an ASTNode or Statement

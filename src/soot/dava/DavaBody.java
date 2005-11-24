@@ -38,7 +38,9 @@ import soot.dava.toolkits.base.finders.*;
 import soot.dava.toolkits.base.renamer.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+import soot.dava.toolkits.base.AST.traversals.*;
 import soot.dava.toolkits.base.AST.transformations.*;
+
 
 public class DavaBody extends Body
 {
@@ -151,6 +153,7 @@ public class DavaBody extends Body
     DavaBody(Body body)
     {
         this( body.getMethod());
+	//System.out.println("Decompiling method");
 
 	Dava.v().log( "\nstart method " + body.getMethod().toString());
 
@@ -263,8 +266,6 @@ public class DavaBody extends Body
 		  2, convert ASTIfElseNodes with empty else bodies to ASTIfNodes
 		  3, Apply OrAggregatorThree
 		*/
-
-
 		AST.apply(new ASTCleaner());
 
 
@@ -289,24 +290,47 @@ public class DavaBody extends Body
 
 		AST.apply(new ForLoopCreator());
 
-
 	    } while (G.v().ASTTransformations_modified);
 	    //System.out.println("The AST trasnformations has run"+times);
 	}
 
+	/*
+	  ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST
+	  This is utilized internally by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
+	*/
+	AST.apply(ClosestAbruptTargetFinder.v());
 
+	//TESTING REACHING DEFS
+	//ReachingDefs defs = new ReachingDefs(AST);
+	//AST.apply(new tester(true,defs));
 
+	//TESTING REACHING COPIES
+	//ReachingCopies copies = new ReachingCopies(AST);
+	//AST.apply(new tester(true,copies));
+	
+	//TESTING ASTUSESANDDEFS
+	//AST.apply(new ASTUsesAndDefs(AST));
+
+	/*
+	  Structural flow analyses.....
+	*/
+
+	CopyPropagation prop = new CopyPropagation(AST);
+	AST.apply(prop);
+
+	
+	//copy propagation should be followed by LocalVariableCleaner to get max effect
+	AST.apply(new LocalVariableCleaner(AST));
+	
+
+	
 
 
 	/*
-	  Structural flow analyses
+	  Renamer
 	*/
+	//AST.apply(new infoGatheringAnalysis(this));
 
-	  CopyPropagation prop = new CopyPropagation(AST);
-	  AST.apply(prop);
-
-
-	
 
 
 	/*
@@ -315,15 +339,11 @@ public class DavaBody extends Body
 	    2, int temp; temp=0 to be converted to int temp=0;
 	*/
 	//AST.apply(new ExtraLabelNamesRemover());
-	
 
 
 
 
-	/*
-	  Renamer
-	*/
-	//AST.apply(new infoGatheringAnalysis(this));
+
 	
 
 

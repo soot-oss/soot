@@ -17,7 +17,16 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/*
+ * Maintained by Nomair A. Naeem
+ */
 
+/*
+ * CHANGE LOG:   23rd November, 2005: Added explicit check for DVariableDeclarationStmt in checking stmts
+ *                       This is essential because to get complete code coverage the traversal routine needs
+ *                       to go into the DVariableDeclarationStmt and invoke applies on the defs or local
+ *                       being declared in there. 
+ */
 package soot.dava.toolkits.base.AST.analysis;
 
 import soot.*;
@@ -566,6 +575,8 @@ public class DepthFirstAdapter extends AnalysisAdapter{
 		caseInvokeStmt((InvokeStmt)s);
 	    else if (s instanceof ThrowStmt) 
 		caseThrowStmt((ThrowStmt)s);
+	    else if (s instanceof DVariableDeclarationStmt)
+		caseDVariableDeclarationStmt((DVariableDeclarationStmt)s);
 	    else
 		caseStmt(s);
 	    
@@ -652,6 +663,36 @@ public class DepthFirstAdapter extends AnalysisAdapter{
 
 	outThrowStmt(s);
     }
+
+
+
+
+
+
+    public void inDVariableDeclarationStmt(DVariableDeclarationStmt s){
+	if(verbose)
+	    System.out.println("\n\ninDVariableDeclarationStmt\n\n"+s);
+    }
+    public void outDVariableDeclarationStmt(DVariableDeclarationStmt s){
+	if(verbose)
+	    System.out.println("outDVariableDeclarationStmt");
+    }
+    public void caseDVariableDeclarationStmt(DVariableDeclarationStmt s){
+	inDVariableDeclarationStmt(s);
+
+	//a variableDeclarationStmt has a type followed by a list of locals
+	Type type = s.getType();
+	caseType(type);
+
+	List listDeclared = s.getDeclarations();
+	Iterator it = listDeclared.iterator();
+	while(it.hasNext()){
+	    Local declared = (Local)it.next();
+	    decideCaseExprOrRef(declared);
+	}
+
+	outDVariableDeclarationStmt(s);
+    }
     
 
 
@@ -659,6 +700,7 @@ public class DepthFirstAdapter extends AnalysisAdapter{
     public void inStmt(Stmt s){
 	if(verbose)
 	    System.out.println("inStmt: "+s);
+
 	/*
 	  if(s instanceof DAbruptStmt)
 	  System.out.println("DAbruptStmt: "+s);
