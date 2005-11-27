@@ -36,6 +36,7 @@ public class StringTools
      * <code>'\\unnnn'</code>.  Used by SootClass to generate output. */
     public static java.lang.String getEscapedStringOf(String fromString)
     {
+        System.out.println("escaping string "+fromString);
        char[] fromStringArray;
        int cr, lf, ch;
         StringBuffer whole = new StringBuffer();
@@ -54,6 +55,7 @@ public class StringTools
            ch = (int) fromStringArray[i];
            if ((ch >= 32 && ch <= 126) || ch == cr || ch == lf || ch == '\\')
            {
+        System.out.println("foudn a special char: "+ch);
                whole.append((char) ch);
 
                continue;
