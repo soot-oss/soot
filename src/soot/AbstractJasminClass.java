@@ -384,7 +384,7 @@ public abstract class AbstractJasminClass
             
             if ((sootClass.getTag("SourceFileTag") != null) && (!Options.v().no_output_source_file_attribute())){
                 String srcName = ((SourceFileTag)sootClass.getTag("SourceFileTag")).getSourceFile();
-                emit(".source "+srcName);
+                emit(".source "+soot.util.StringTools.getEscapedStringOf(srcName));
             }
             if(Modifier.isInterface(modifiers))
             {
