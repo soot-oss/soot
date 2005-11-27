@@ -52,7 +52,7 @@ public class StringTools
        for (int i = 0; i < fromStringArray.length; i++)
        {
            ch = (int) fromStringArray[i];
-           if (ch >= 32 && ch <= 126 || ch == cr || ch == lf || ch == '\\')
+           if ((ch >= 32 && ch <= 126) || ch == cr || ch == lf || ch == '\\')
            {
                whole.append((char) ch);
 
