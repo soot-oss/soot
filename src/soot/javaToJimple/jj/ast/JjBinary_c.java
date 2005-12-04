@@ -137,18 +137,11 @@ public class JjBinary_c extends Binary_c {
         }
         
         if (op == SHL || op == SHR || op == USHR) {
-            //if (other.type().isNumeric()) {
-            if (other.type().isChar() || other.type().isByte() || other.type().isShort()) {
-                //System.out.println("other type: "+other.type());
+            if (child == right || !child.type().isLong()) {
                 return ts.Int();
-            }
-            else {
-                //System.out.println("other type: "+other.type());
-                //System.out.println("child type: "+other.type());
+            } else {
                 return child.type();
             }
-            //}
-            //return ts.Long();
         }
 
         return child.type();
