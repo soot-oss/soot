@@ -71,7 +71,12 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
     }
     public void local( Local l ) { 
         handleIndent();
-        output.append( l.getName() );
+        if( quotableLocals == null )
+            initializeQuotableLocals();
+        if( quotableLocals.contains(l.getName()) )
+            output.append ( "'" + l.getName() + "'");
+        else
+            output.append( l.getName() );
     }
     public void constant( Constant c ) {
         handleIndent();
@@ -91,9 +96,15 @@ public abstract class AbstractUnitPrinter implements UnitPrinter {
         startOfLine = false;
     }
 
+    protected void initializeQuotableLocals() {
+        quotableLocals = new HashSet();
+        quotableLocals.addAll (Jimple.jimpleKeywordList());
+    }
+
     protected boolean startOfLine = true;
     protected String indent = "        ";
     protected StringBuffer output = new StringBuffer();
     protected AttributesUnitPrinter pt;
+    protected HashSet quotableLocals;
 }
 

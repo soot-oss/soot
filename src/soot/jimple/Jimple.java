@@ -49,7 +49,7 @@ public class Jimple
 {
     public Jimple( Singletons.Global g ) {}
     public static Jimple v() { return G.v().soot_jimple_Jimple(); }
-    
+
     public final static String NEWARRAY = "newarray";
     public final static String NEWMULTIARRAY = "newmultiarray";
     public final static String NOP = "nop";
@@ -106,8 +106,28 @@ public class Jimple
     public final static String THROWS = "throws";
     public final static String NULL = "null";
 
-    
-  
+    public static List jimpleKeywordList()
+    {
+        List l = new LinkedList();
+        l.add (NEWARRAY); l.add (NEWMULTIARRAY); l.add (NOP);
+        l.add (RET); l.add (SPECIALINVOKE); l.add (STATICINVOKE);
+        l.add (TABLESWITCH); l.add (VIRTUALINVOKE); l.add (NULL_TYPE);
+        l.add (UNKNOWN); l.add (CMP); l.add (CMPG); l.add (CMPL);
+        l.add (ENTERMONITOR); l.add (EXITMONITOR); l.add (INTERFACEINVOKE);
+        l.add (LENGTHOF); l.add (LOOKUPSWITCH); l.add (NEG);
+        l.add (IF); l.add (ABSTRACT); l.add (BOOLEAN); l.add (BREAK);
+        l.add (BYTE); l.add(CASE); l.add (CATCH); l.add (CHAR); 
+        l.add (CLASS); l.add (FINAL); l.add (NATIVE); l.add (PUBLIC);
+        l.add (PROTECTED); l.add (PRIVATE); l.add (STATIC);
+        l.add (SYNCHRONIZED); l.add (TRANSIENT); l.add (VOLATILE);
+        l.add (INTERFACE); l.add (VOID); l.add (SHORT);
+        l.add (INT); l.add (LONG); l.add (FLOAT); l.add (DOUBLE);
+        l.add (EXTENDS); l.add (IMPLEMENTS); l.add (BREAKPOINT);
+        l.add (DEFAULT); l.add (GOTO); l.add (INSTANCEOF); 
+        l.add (NEW); l.add (RETURN); l.add (THROW); l.add (THROWS);
+        l.add (NULL);
+        return l;
+    }
   
   public static boolean isJavaKeywordType(Type t)
   {
