@@ -87,6 +87,9 @@ public class Jimple
     public final static String SYNCHRONIZED = "synchronized";
     public final static String TRANSIENT = "transient";
     public final static String VOLATILE = "volatile";
+    public final static String STRICTFP = "strictfp";
+    public final static String ENUM = "enum";
+    public final static String ANNOTATION = "annotation";
     public final static String INTERFACE = "interface";
     public final static String VOID = "void";
     public final static String SHORT = "short";
@@ -105,6 +108,12 @@ public class Jimple
     public final static String THROW = "throw";
     public final static String THROWS = "throws";
     public final static String NULL = "null";
+    public final static String FROM = "from";
+    public final static String TO = "to";
+    public final static String WITH = "with";
+    public final static String CLS = "cls";
+    public final static String TRUE = "true";
+    public final static String FALSE = "false";
 
     public static List jimpleKeywordList()
     {
@@ -120,12 +129,14 @@ public class Jimple
         l.add (CLASS); l.add (FINAL); l.add (NATIVE); l.add (PUBLIC);
         l.add (PROTECTED); l.add (PRIVATE); l.add (STATIC);
         l.add (SYNCHRONIZED); l.add (TRANSIENT); l.add (VOLATILE);
+        l.add (STRICTFP); l.add (ENUM); l.add (ANNOTATION);
         l.add (INTERFACE); l.add (VOID); l.add (SHORT);
         l.add (INT); l.add (LONG); l.add (FLOAT); l.add (DOUBLE);
         l.add (EXTENDS); l.add (IMPLEMENTS); l.add (BREAKPOINT);
         l.add (DEFAULT); l.add (GOTO); l.add (INSTANCEOF); 
         l.add (NEW); l.add (RETURN); l.add (THROW); l.add (THROWS);
-        l.add (NULL);
+        l.add (NULL); l.add (FROM); l.add (TO); l.add (WITH);
+        l.add (CLS); l.add (TRUE); l.add (FALSE);
         return l;
     }
   
