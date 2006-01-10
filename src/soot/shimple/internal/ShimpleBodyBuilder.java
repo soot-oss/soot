@@ -125,9 +125,10 @@ public class ShimpleBodyBuilder
     public void preElimOpt()
     {
         boolean optElim = options.node_elim_opt();
-        
-        if(optElim)
-            DeadAssignmentEliminator.v().transform(body);
+
+        // *** FIXME: 89e9a0470601091906j26489960j65290849dbe0481f@mail.gmail.com
+        //if(optElim)
+        //DeadAssignmentEliminator.v().transform(body);
     }
 
     public void postElimOpt()
@@ -135,6 +136,7 @@ public class ShimpleBodyBuilder
         boolean optElim = options.node_elim_opt();
         
         if(optElim){
+            DeadAssignmentEliminator.v().transform(body);
             UnreachableCodeEliminator.v().transform(body);
             UnconditionalBranchFolder.v().transform(body);
             Aggregator.v().transform(body);
