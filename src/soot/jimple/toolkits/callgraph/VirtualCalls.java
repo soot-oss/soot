@@ -54,7 +54,7 @@ public final class VirtualCalls
         }
     }
 
-    private SootMethod resolveNonSpecial( RefType t, NumberedString subSig ) {
+    public SootMethod resolveNonSpecial( RefType t, NumberedString subSig ) {
         SmallNumberedMap vtbl = (SmallNumberedMap) typeToVtbl.get( t );
         if( vtbl == null ) {
             typeToVtbl.put( t, vtbl =
