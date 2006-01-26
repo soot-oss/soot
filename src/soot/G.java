@@ -76,6 +76,7 @@ public class G extends Singletons
 
     
     public boolean ASTTransformations_modified;
+
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
     // flag isJ2ME true. Type system works around Clonable, Serializeable.
@@ -85,5 +86,28 @@ public class G extends Singletons
     //           soot/jimple/toolkits/typing/TypeVariable.java
     //           soot/jimple/toolkits/typing/TypeNode.java
     public final boolean isJ2ME = false;
+
+    /*
+     * Nomair A. Naeem January 15th 2006
+     * Added For Dava.toolkits.AST.transformations.SuperFirstStmtHandler
+     *
+     * The SootMethodAddedByDava is checked by the PackManager after
+     * decompiling methods for a class. If any additional methods
+     * were added by the decompiler (refer to filer SuperFirstStmtHandler)
+     * SootMethodsAdded ArrayList contains these method. These
+     * methods are then added to the SootClass
+     * 
+     * Some of these newly added methods make use of an object of 
+     * a static inner class DavaSuperHandler which is to be output 
+     * in the decompilers
+     * output. The class is marked to need a DavaSuperHandlerClass
+     * by adding it into the SootClassNeedsDavaSuperHandlerClass list.
+     * The DavaPrinter when printing out the class checks this list and
+     * if this class's name exists in the list prints out an implementation
+     * of DavSuperHandler
+     * 
+    public boolean SootMethodAddedByDava;
+    public ArrayList SootClassNeedsDavaSuperHandlerClass = new ArrayList();
+    public ArrayList SootMethodsAdded = new ArrayList();
 }
 

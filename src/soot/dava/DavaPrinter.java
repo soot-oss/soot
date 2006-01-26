@@ -376,6 +376,7 @@ public class DavaPrinter {
                         if (methodIt.hasNext())
                             out.println();
                     } else {
+			//if method is abstract then print the declaration
                         out.print("    ");
                         out.print(method.getDavaDeclaration());
                         out.println(";");
@@ -386,6 +387,35 @@ public class DavaPrinter {
                 }
             }
         }
+
+
+
+
+	/*
+	 * January 23rd, 2006
+	 * In trying to handle the suepr class problem we need to introduce an inner class
+	 * Instead of creating a data structure for it we are right now just going to print it in the form
+	 * of a string
+	 *
+	 * It would be interesting to later have an internal inner class structure so that we could 
+	 * decompile inner classes into inner classes
+	 */
+
+	if(G.v().SootClassNeedsDavaSuperHandlerClass.contains(cl)){
+	    out.println("\n    private static class DavaSuperHandler{");
+	    out.println("         java.util.Vector myVector = new java.util.Vector();");
+
+	    out.println("\n         public Object get(int pos){");
+	    out.println("            return myVector.elementAt(pos);");
+	    out.println("         }");
+
+	    out.println("\n         public void store(Object obj){");
+	    out.println("            myVector.add(obj);");
+	    out.println("         }");
+	    out.println("    }");
+	}
+
+
         out.println("}");
     }
 

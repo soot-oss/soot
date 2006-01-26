@@ -153,6 +153,21 @@ public class SootMethod
         return name;
     }
 
+    /** Nomair A. Naeem , January 14th 2006
+     * Need it for the decompiler to create a new SootMethod
+     * The SootMethod can be created fine but when one tries to create a SootMethodRef there is an error because
+     * there is no declaring class set. Dava cannot add the method to the class until after it has ended decompiling
+     * the remaining method (new method added is added in the PackManager)
+     * It would make sense to setDeclared to true within this method too. However later when the sootMethod is added it checks
+     * that the method is not set to declared (isDeclared).
+     */
+    public void setDeclaringClass(SootClass declClass){
+	if(declClass != null){
+	    declaringClass=declClass;
+	    //setDeclared(true);
+	}
+    }
+    
     /** Returns the class which declares the current <code>SootMethod</code>. */
     public SootClass getDeclaringClass() {
         if (!isDeclared)
@@ -271,7 +286,7 @@ public class SootMethod
         Retrieves the active body for this method.
      */
     public Body getActiveBody() {
-        if (declaringClass.isPhantomClass())
+        if (declaringClass!=null && declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot get active body for phantom class: " + getSignature());
 
@@ -576,10 +591,9 @@ public class SootMethod
             buffer.append(t);
 
             buffer.append(" ");
-            if (hasActiveBody())
-                buffer.append(
-                    ((DavaBody) getActiveBody()).get_ParamMap().get(
-                        new Integer(count++)));
+            if (hasActiveBody()){
+                buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(new Integer(count++)));
+	    }
             else {
                 if (t == BooleanType.v())
                     buffer.append("z" + count++);

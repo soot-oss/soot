@@ -58,7 +58,7 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     private String toString(Value op, String opString, String rightString)
     {
         String leftOp = opString;
-
+	
         if (getBase() instanceof Precedence && 
             ((Precedence)getBase()).getPrecedence() < getPrecedence()) 
             leftOp = "(" + leftOp + ")";

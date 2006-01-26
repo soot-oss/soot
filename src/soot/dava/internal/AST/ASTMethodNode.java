@@ -37,6 +37,11 @@ import java.util.*;
 import soot.dava.*;
 import soot.util.*;
 import soot.jimple.*;
+import soot.jimple.internal.*;
+
+import soot.grimp.*;
+import soot.grimp.internal.*;
+
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
@@ -53,11 +58,26 @@ public class ASTMethodNode extends ASTNode
     /*
       typeToLocals stores the type of the local and a list of all locals with that type
     */
-    private Map typeToLocals;
+    private Map typeToLocals;//Nomair A. Naeem 24th January why is this a field? why not a localVar of storeLocals???
 
     public ASTStatementSequenceNode getDeclarations(){
 	return declarations;
     }
+
+    public void setDeclarations(ASTStatementSequenceNode decl){
+	declarations=decl;
+    }
+
+
+    public void setDavaBody(DavaBody bod){
+	this.davaBody=bod;
+    }
+
+    public DavaBody getDavaBody(){
+	return davaBody;
+    }
+
+
 
     public void storeLocals(Body OrigBody){
 	if ((OrigBody instanceof DavaBody) == false)
@@ -172,6 +192,8 @@ public class ASTMethodNode extends ASTNode
     }
 
 
+
+
     /*
      * Given a local first searches the declarations for the local
      * Once it is found the local is removed from its declaring stmt
@@ -248,7 +270,9 @@ public class ASTMethodNode extends ASTNode
 
     public Object clone()
     {
-	return new ASTMethodNode( body);
+	ASTMethodNode toReturn = new ASTMethodNode( body);
+	toReturn.setDeclarations((ASTStatementSequenceNode)declarations.clone());
+	return toReturn;
     }
 
     public void perform_Analysis( ASTAnalysis a)
@@ -266,27 +290,55 @@ public class ASTMethodNode extends ASTNode
 	/*
 	  Print out constructor first
 	*/
-	InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
-	if (constructorExpr != null) {
+	if(davaBody != null){
+	    InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
 
-	    if (davaBody.getMethod().getDeclaringClass().getName()
-		.equals(constructorExpr.getMethodRef().declaringClass().toString()))
-		dup.printString("        this(");
-	    else
-		dup.printString("        super(");
-
-	    Iterator ait = constructorExpr.getArgs().iterator();
-	    while (ait.hasNext()) {
-		dup.printString(ait.next().toString());
+	    if (constructorExpr != null) {
+		if (davaBody.getMethod().getDeclaringClass().getName()
+		    .equals(constructorExpr.getMethodRef().declaringClass().toString()))
+		    dup.printString("        this(");
+		else
+		    dup.printString("        super(");
 		
-		if (ait.hasNext())
-		    dup.printString(", ");
+		Iterator ait = constructorExpr.getArgs().iterator();
+		while (ait.hasNext()) {
+		    /*
+		     * January 12th, 2006
+		     * found a problem here. If a super has a method
+		     * call as one of the args then the toString prints the
+		     * jimple representation and does not convert it into java
+		     * syntax
+		     */
+		    Object arg = ait.next();
+		    if(arg instanceof Value){
+			//dup.printString(((Value)arg).toString());
+			//already in super no indentation required
+			dup.noIndent();
+			((Value)arg).toString(dup);
+		    }
+		    else{
+			/**
+			 * Staying with the old style
+			 */ 
+			dup.printString(arg.toString());
+		    }
+		    
+		    if (ait.hasNext())
+			dup.printString(", ");
+		}
+		
+		dup.printString(");\n");
 	    }
 	    
-	    dup.printString(");\n\n");
-	}
+	    // print out the remaining body
+	    up.newline();
+	}//if //davaBody != null
+
+	//notice that for an ASTMethod Node the first element of the body list is the
+	//declared variables
 	
-	// print out the remaining body
+
+	//System.out.println("printing body from within MEthodNode\n\n"+body.toString());
         body_toString( up, body );
     }
 
@@ -296,26 +348,27 @@ public class ASTMethodNode extends ASTNode
 	/*
 	  Print out constructor first
 	*/
-	InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
-	if (constructorExpr != null) {
-
-	    if (davaBody.getMethod().getDeclaringClass().getName()
-		.equals(constructorExpr.getMethodRef().declaringClass().toString()))
-		b.append("        this(");
-	    else
-		b.append("        super(");
-
-	    Iterator ait = constructorExpr.getArgs().iterator();
-	    while (ait.hasNext()) {
-		b.append(ait.next().toString());
+	if(davaBody != null){
+	    InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
+	    if (constructorExpr != null) {
 		
-		if (ait.hasNext())
-		    b.append(", ");
+		if (davaBody.getMethod().getDeclaringClass().getName()
+		    .equals(constructorExpr.getMethodRef().declaringClass().toString()))
+		    b.append("        this(");
+		else
+		    b.append("        super(");
+		
+		Iterator ait = constructorExpr.getArgs().iterator();
+		while (ait.hasNext()) {
+		    b.append(ait.toString());
+		    
+		    if (ait.hasNext())
+			b.append(", ");
+		}
+		
+		b.append(");\n\n");
 	    }
-	    
-	    b.append(");\n\n");
 	}
-	
 	
 	// print out the remaining body
 	b.append(body_toString(body));

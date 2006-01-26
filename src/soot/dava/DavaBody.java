@@ -1,3 +1,4 @@
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
  * Copyright (C) 2004-2005 Nomair A. Naeem
@@ -48,8 +49,8 @@ public class DavaBody extends Body
     private HashSet consumedConditions, thisLocals;
     private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts, packagesUsed;
     private Local controlLocal;
-    private InstanceInvokeExpr constructorExpr;
-    private Unit constructorUnit;
+    private InstanceInvokeExpr constructorExpr; //holds constructorUnit.getInvokeExpr
+    private Unit constructorUnit; //holds a stmt (this.init<>)
     private List caughtrefs;
     
     /**
@@ -77,7 +78,7 @@ public class DavaBody extends Body
     {
 	return constructorUnit;
     }
-    
+
     public List get_CaughtRefs()
     {
 	return caughtrefs;
@@ -88,9 +89,26 @@ public class DavaBody extends Body
 	return constructorExpr;
     }
 
+
+    public void set_ConstructorExpr(InstanceInvokeExpr expr)
+    {
+	constructorExpr=expr;
+    }
+
+    public void set_ConstructorUnit(Unit s)
+    {
+	constructorUnit=s;
+    }
+
     public Map get_ParamMap()
     {
 	return pMap;
+    }
+
+
+    public void set_ParamMap(Map map)
+    {
+	pMap=map;
     }
 
     public HashSet get_ThisLocals()
@@ -118,8 +136,7 @@ public class DavaBody extends Body
 	consumedConditions.add( as);
     }
 
-    public Object clone()
-    {
+    public Object clone(){
         Body b = Dava.v().newBody(getMethod());
         b.importBodyContentsFrom(this);
         return b;
@@ -208,9 +225,6 @@ public class DavaBody extends Body
 	} while (G.v().ASTAnalysis_modified);
 
 
-
-
-
 	/*
 	  Nomair A Naeem 10-MARCH-2005
 
@@ -220,8 +234,65 @@ public class DavaBody extends Body
 	*/
 	if(AST instanceof ASTMethodNode){
 	    ((ASTMethodNode)AST).storeLocals(this);
+
+	    /*
+	     * January 12th, 2006
+	     * Deal with the super() problem before continuing
+	     */
+	    AST.apply(new SuperFirstStmtHandler((ASTMethodNode)AST));
+	    
 	}
 
+
+
+
+
+	//all analyses should be invoked from within the analyzeAST method
+	//the reason being that if superFirstStmtHandler creates a new method
+	//you can invoke the analyzeAST method directly on it
+	analyzeAST(AST);
+	Dava.v().log( "end method " + body.getMethod().toString());
+    }
+
+
+
+    public void analyzeAST(ASTNode AST){
+	/*
+	 * Nomair A. Naeem
+	 * tranformations on the AST
+	 * Any AST Transformations added should be added to the applyASTAnalyses method
+	 * unless we are want to delay the analysis till for example THE LAST THING DONE
+	 */
+		applyASTAnalyses(AST);
+	
+	/*
+	 * Nomair A. Naeem
+	 * apply structural flow analyses now
+	 *
+	 */
+	applyStructuralAnalyses(AST);
+
+	/*
+	 * Renamer
+	 * It might be worthwhile to invoke a method applyRenameAnalyses which could do the analyses and 
+	 * subsequenct changes
+	 */
+	//AST.apply(new infoGatheringAnalysis(this));
+	
+	/*
+	  In the end check 
+	  1, if there are labels which can be safely removed
+	  2, int temp; temp=0 to be converted to int temp=0;
+	*/
+	//AST.apply(new ExtraLabelNamesRemover());
+
+    }	
+
+
+    
+
+
+    private void applyASTAnalyses(ASTNode AST){
 	/*
 	  Nomair A. Naeem
 	  Transformations on the AST
@@ -230,18 +301,18 @@ public class DavaBody extends Body
 	AST.apply(new BooleanConditionSimplification());
 	AST.apply(new VoidReturnRemover(this));
 	AST.apply(new DecrementIncrementStmtCreation());
-
-
+	
+	
 	boolean flag=true;
 	int times=0;
-
+	
 	if(flag){
 	    // perform transformations on the AST	
 	    do {
 		//System.out.println("ITERATION");
 		G.v().ASTTransformations_modified = false;
 		times++;
-
+		
 		AST.apply(new AndAggregator());
 		/*
 		  The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null
@@ -255,11 +326,11 @@ public class DavaBody extends Body
 		  can be replaced by ASTIfNodes
 		  OrAggregator has two patterns see the class for them
 		*/
-
+		
 		AST.apply(new OrAggregatorTwo());
 		AST.apply(new OrAggregatorFour());
-
-
+		
+		
 		/*
 		  ASTCleaner currently does the following tasks:
 		  1, Remove empty Labeled Blocks UselessLabeledBlockRemover
@@ -267,8 +338,8 @@ public class DavaBody extends Body
 		  3, Apply OrAggregatorThree
 		*/
 		AST.apply(new ASTCleaner());
-
-
+		
+		
 		/*
 		  PushLabeledBlockIn should not be called unless we are sure
 		  that all labeledblocks have non null labels.
@@ -278,88 +349,58 @@ public class DavaBody extends Body
 		AST.apply(new PushLabeledBlockIn());
 		
 		AST.apply(new LoopStrengthener());
-
-
+		
+		
 		/*
 		  Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation.
 		  Pattern two was implemented to give loopStrengthening a better chance
 		  SEE IfElseBreaker
 		*/
 		AST.apply(new ASTCleanerTwo());
-
-
+		
+		
 		AST.apply(new ForLoopCreator());
-
+		
 	    } while (G.v().ASTTransformations_modified);
 	    //System.out.println("The AST trasnformations has run"+times);
 	}
-
+	
 	/*
 	  ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST
 	  This is utilized internally by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
 	*/
 	AST.apply(ClosestAbruptTargetFinder.v());
+	
+    }
 
+    private void applyStructuralAnalyses(ASTNode AST){
 	//TESTING REACHING DEFS
 	//ReachingDefs defs = new ReachingDefs(AST);
 	//AST.apply(new tester(true,defs));
-
+	
 	//TESTING REACHING COPIES
 	//ReachingCopies copies = new ReachingCopies(AST);
 	//AST.apply(new tester(true,copies));
 	
 	//TESTING ASTUSESANDDEFS
 	//AST.apply(new ASTUsesAndDefs(AST));
-
+	
 	/*
 	  Structural flow analyses.....
 	*/
-
+	
 	CopyPropagation prop = new CopyPropagation(AST);
 	AST.apply(prop);
 
-	
 	//copy propagation should be followed by LocalVariableCleaner to get max effect
 	AST.apply(new LocalVariableCleaner(AST));
-	
-
-	
-
-
-	/*
-	  Renamer
-	*/
-	//AST.apply(new infoGatheringAnalysis(this));
-
-
-
-	/*
-	  In the end check 
-	    1, if there are labels which can be safely removed
-	    2, int temp; temp=0 to be converted to int temp=0;
-	*/
-	//AST.apply(new ExtraLabelNamesRemover());
-
-
-
-
-
-	
-
-
-
-	/*
-	  End of Code added by Nomair
-	*/
-	Dava.v().log( "end method " + body.getMethod().toString());
+       	
     }
 
 
 
 
-
-
-public void write(String temp){
+    public void write(String temp){
 	try{
 	    soot.dava.Dava.w.write(temp);
 	    soot.dava.Dava.w.flush();
@@ -951,4 +992,6 @@ public void write(String temp){
 	if (packagesUsed.contains( newPackage) == false)
 	    packagesUsed.add( newPackage);
     }
+
+
 }

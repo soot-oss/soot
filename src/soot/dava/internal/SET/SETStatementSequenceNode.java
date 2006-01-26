@@ -86,8 +86,18 @@ public class SETStatementSequenceNode extends SETNode
 		if (s instanceof MonitorStmt)
 		    continue;
 		
-		if (s == davaBody.get_ConstructorUnit())
-		    continue;
+		/*
+		  January 12th 2006
+		  Trying to fix the super problem we need to not ignore constructor unit
+		  i.e. this or super
+		  
+		*/
+		if (s == davaBody.get_ConstructorUnit()){
+		    //System.out.println("ALLOWING this.init STMT TO GET ADDED..............SETStatementSequenceNode");
+		    //  continue;
+		}
+
+
 
 		if (s instanceof IdentityStmt) {
 		    IdentityStmt ids = (IdentityStmt) s;

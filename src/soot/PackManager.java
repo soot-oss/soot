@@ -482,6 +482,9 @@ public class PackManager {
         final int format = Options.v().output_format();
         if (format == Options.output_format_dava) {
             G.v().out.print("Decompiling ");
+
+	     //January 13th, 2006  SootMethodAddedByDava is set to false for SuperFirstStmtHandler
+	    G.v().SootMethodAddedByDava=false;
         } else {
             G.v().out.print("Transforming ");
         }
@@ -596,9 +599,29 @@ public class PackManager {
                 SootMethod m = (SootMethod) methodIt.next();
 
                 if (!m.isConcrete()) continue;
-
+		//all the work done in decompilation is done in DavaBody which is invoked from within newBody
                 m.setActiveBody(Dava.v().newBody(m.getActiveBody()));
             }
+
+	    /*
+	     * January 13th, 2006
+	     * SuperFirstStmtHandler might have set SootMethodAddedByDava if it needs to create a new
+	     * method. 
+	     */
+	    //could use G to add new method...................
+	    if(G.v().SootMethodAddedByDava){
+		//System.out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
+
+
+		ArrayList sootMethodsAdded = G.v().SootMethodsAdded;
+		Iterator it = sootMethodsAdded.iterator();
+		while(it.hasNext()){
+		    c.addMethod((SootMethod)it.next());
+		}
+		G.v().SootMethodsAdded = new ArrayList();
+		G.v().SootMethodAddedByDava=false;
+
+	    }
         }
     }
 
