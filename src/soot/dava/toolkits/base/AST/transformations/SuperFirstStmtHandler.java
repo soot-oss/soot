@@ -229,7 +229,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	    Unit u = as.get_Stmt();
 
 	    if (u == originalConstructorUnit){
-		System.out.println("Found the constructorUnit"+u);
+		//System.out.println("Found the constructorUnit"+u);
 
 		//ONE: make sure the parent of the super() call is an ASTMethodNode
 		ASTParentNodeFinder parentFinder = new ASTParentNodeFinder();
@@ -237,7 +237,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 		Object tempParent = parentFinder.getParentOf(node);
 		if( tempParent != originalASTMethod){
-		    System.out.println("ASTMethod node is not the parent of constructorUnit");
+		    //System.out.println("ASTMethod node is not the parent of constructorUnit");
 		    //notice since we cant remove one call of super there is no point
 		    //in trying to remove any other calls to super
 		    removeInit();
@@ -261,14 +261,14 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		if(newASTPreInitMethod == null){
 		    //could not create ASTMethodNode for some reason or the other
 		    //just silently return
-		    System.out.println(">>>>>>>>>>>>>>>>Couldnt not create ASTMethodNode for the new PreInitMethod");
+		    //System.out.println(">>>>>>>>>>>>>>>>Couldnt not create ASTMethodNode for the new PreInitMethod");
 		    removeInit();
 		    return;
 		}
 
 		if(!finalizePreInitMethod()){
 		    //shouldnt be creating PreInit
-		    System.out.println(">>>>>>>>>>>>>>SHOULDNT BE CREATING PREINIT");
+		    //System.out.println(">>>>>>>>>>>>>>SHOULDNT BE CREATING PREINIT");
 		    removeInit();
 		    return;
 		}
@@ -287,7 +287,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		if(!createCallToSuper()){
 		    //could not create call to super
 		    //still safe to simply exit
-		    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>Could not create call to super...SuperFirstStmtHandler");
+		    //System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>Could not create call to super...SuperFirstStmtHandler");
 		    removeInit();
 		    return;
 		}
@@ -299,7 +299,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		/************** CHANGE ORIGINAL CONSTRUCTOR ***************/
 		/**********************************************************/
 		if(changeOriginalAST()){
-		    System.out.println("Done Done Done");
+		    //System.out.println("Done Done Done");
 
 		    G.v().SootMethodAddedByDava=true;
 		    G.v().SootMethodsAdded.add(newSootPreInitMethod);
@@ -316,7 +316,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		    G.v().SootClassNeedsDavaSuperHandlerClass.add(originalSootClass);
 
 
-		    System.out.println("\n\nSet SootMethodAddedByDava to true\n\n");
+		    //System.out.println("\n\nSet SootMethodAddedByDava to true\n\n");
 		}
 		
 
@@ -391,7 +391,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//fix up the call within the constructorUnit....the args should be argsOne followed by a method call to preInit
 	if(originalConstructorExpr == null){
 	    //hmm that means there was no call to super in the original code
-	    System.out.println("originalConstructorExpr is null");
+	    //System.out.println("originalConstructorExpr is null");
 	    return false;
 	}
 
@@ -444,10 +444,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//check that whether this call is even to be made or not
 	if (originalConstructorExpr == null) {
 	    //hmm that means there was no call to super in the original code
-	    System.out.println("originalConstructorExpr is null");
+	    //System.out.println("originalConstructorExpr is null");
 	    return false;
 	}
-	System.out.println("ConstructorExpr is non null...call to super has to be made");
+	//System.out.println("ConstructorExpr is non null...call to super has to be made");
 
 	//find the parent class of the current method being decompiled
 	SootClass parentClass =originalSootClass.getSuperclass();
@@ -455,7 +455,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//retrieve the constructor of the super class that we want to call
 	//remember argsTwoTypes contains the ParameterType to the call to the super method
 	if(!(parentClass.declaresMethod("<init>",argsTwoTypes))){
-	    System.out.println("parentClass does not have a constructor with this name and ParamTypes");
+	    //System.out.println("parentClass does not have a constructor with this name and ParamTypes");
 	    return false;
 	}
 
@@ -497,20 +497,20 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	    DVirtualInvokeExpr tempInvokeExpr = 
 		new DVirtualInvokeExpr(jimpleLocal,getMethodRef,tempArgList,new HashSet());
 
-	    System.out.println("Type is:"+tempType);
-	    System.out.println("VirtualInvoke for this is:"+tempInvokeExpr);
+	    //System.out.println("Type is:"+tempType);
+	    //System.out.println("VirtualInvoke for this is:"+tempInvokeExpr);
 
 
 	    //NECESASARY CASTING OR RETRIEVAL OF PRIM TYPES TO BE DONE HERE
 	    Value toAddExpr = null;
 	    if(tempType instanceof RefType){
-		System.out.println("This is a reftype:"+tempType);
+		//System.out.println("This is a reftype:"+tempType);
 		toAddExpr = new GCastExpr(tempInvokeExpr,tempType);
 	    }
 	    else if(tempType instanceof PrimType){
 		//The argument has a primType however get will return an object
 		//Cast to Wrapper class and then extract primtype
-		System.out.println("This is a primType:"+tempType);
+		//System.out.println("This is a primType:"+tempType);
 		Type wrapperType=null;
 		
 		
@@ -678,7 +678,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	    if(tempNode instanceof ASTStatementSequenceNode){
 		List stmts = ((ASTStatementSequenceNode)tempNode).getStatements();
 		if(stmts.size()==0){
-		    System.out.println("Stmt size is 0");
+		    //System.out.println("Stmt size is 0");
 		    return false;
 		}
 	    }
@@ -1000,7 +1000,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//At this moment we have the newPreInitBody containing declarations followed by code X
 	//we need to check whether this actually contains anything cos otherwise super is infact the first stmt
 	if(newPreinitBody.size()<1){
-	    System.out.println("Method node empty doing nothing returning");
+	    //System.out.println("Method node empty doing nothing returning");
 	    newASTPreInitMethod = null;//meaning ASTMethodNode for this method not created
 	    return;
 	}
@@ -1282,7 +1282,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 	    if(tempType instanceof RefType){
 		//simply add this to the handler using handler.store(tempVal);
-		System.out.println("This is a reftype:"+tempType);
+		//System.out.println("This is a reftype:"+tempType);
 		
 		davaHandlerStmts.add(createAugmentedStmtToAdd(newLocal,getMethodRef,tempVal));
 	    }

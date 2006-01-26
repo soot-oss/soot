@@ -105,7 +105,7 @@ public class G extends Singletons
      * The DavaPrinter when printing out the class checks this list and
      * if this class's name exists in the list prints out an implementation
      * of DavSuperHandler
-     * 
+     */
     public boolean SootMethodAddedByDava;
     public ArrayList SootClassNeedsDavaSuperHandlerClass = new ArrayList();
     public ArrayList SootMethodsAdded = new ArrayList();
