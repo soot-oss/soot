@@ -170,7 +170,7 @@ public class DavaBody extends Body
     DavaBody(Body body)
     {
         this( body.getMethod());
-	//System.out.println("Decompiling method");
+	//System.out.println("\n\n\nDecompiling method"+body.getMethod().toString());
 
 	Dava.v().log( "\nstart method " + body.getMethod().toString());
 
@@ -179,6 +179,7 @@ public class DavaBody extends Body
 	
 	// prime the analysis
         AugmentedStmtGraph asg = new AugmentedStmtGraph( new BriefUnitGraph( this), new TrapUnitGraph( this));
+	//System.out.println(asg.toString());
 
 	ExceptionFinder.v().preprocess( this, asg);
 	SETNode SET = new SETTopNode( asg.get_ChainView());
