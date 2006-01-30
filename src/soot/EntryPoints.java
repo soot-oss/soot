@@ -87,6 +87,8 @@ public class EntryPoints
         addMethod( ret, "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>");
         //addMethod( ret, "<java.lang.ref.Finalizer: void register(java.lang.Object)>");
         addMethod( ret, "<java.lang.ref.Finalizer: void runFinalizer()>");
+        addMethod( ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.Runnable)>");
+        addMethod( ret, "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>");
         return ret;
     }
     /** Returns all the entry points. */
