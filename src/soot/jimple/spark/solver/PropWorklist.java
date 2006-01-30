@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Ondrej Lhotak
+ * Copyright (C) 2002 - 2006 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,6 +113,7 @@ public final class PropWorklist extends Propagator {
      * successors. */
     protected final boolean handleVarNode( final VarNode src ) {
 	boolean ret = false;
+        boolean flush = true;
 
         if( src.getReplacement() != src ) throw new RuntimeException(
                 "Got bad node "+src+" with rep "+src.getReplacement() );
@@ -134,14 +135,18 @@ public final class PropWorklist extends Propagator {
                         VarNode edgeSrc = (VarNode) addedSrc.getReplacement();
                         VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
 
-                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) ) 
+                        if( edgeTgt.makeP2Set().addAll( edgeSrc.getP2Set(), null ) ) {
                             varNodeWorkList.add( edgeTgt );
+                            if(edgeTgt == src) flush = false;
+                        }
                     }
                 } else if( addedSrc instanceof AllocNode ) {
                     AllocNode edgeSrc = (AllocNode) addedSrc;
                     VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
-                    if( edgeTgt.makeP2Set().add( edgeSrc ) )
+                    if( edgeTgt.makeP2Set().add( edgeSrc ) ) {
                         varNodeWorkList.add( edgeTgt );
+                        if(edgeTgt == src) flush = false;
+                    }
                 }
             }
         }
@@ -150,6 +155,7 @@ public final class PropWorklist extends Propagator {
 	for( int i = 0; i < simpleTargets.length; i++ ) {
 	    if( simpleTargets[i].makeP2Set().addAll( newP2Set, null ) ) {
                 varNodeWorkList.add( (VarNode) simpleTargets[i] );
+                if(simpleTargets[i] == src) flush = false;
                 ret = true;
             }
 	}
@@ -207,7 +213,7 @@ public final class PropWorklist extends Propagator {
                 } );
             }
 	}
-	src.getP2Set().flushNew();
+        if(flush) src.getP2Set().flushNew();
         for( Iterator pIt = storesToPropagate.iterator(); pIt.hasNext(); ) {
             final Node[] p = (Node[]) pIt.next();
             VarNode storeSource = (VarNode) p[0];
