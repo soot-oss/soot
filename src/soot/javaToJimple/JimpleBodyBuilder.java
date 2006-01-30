@@ -1002,7 +1002,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 rhs = getArrayInitLocal((polyglot.ast.ArrayInit)expr, localInst.type());
             }
             else {
+                //System.out.println("create local decl: "+expr+" is a: "+expr.getClass());
                 rhs = base().createExpr(expr);
+                //System.out.println("rhs is: "+rhs+" is a: "+rhs.getClass());
             }
             if (rhs instanceof soot.jimple.ConditionExpr) {
                 rhs = handleCondBinExpr((soot.jimple.ConditionExpr)rhs);
@@ -1995,8 +1997,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             paramTypes.add(conClass.getType());
             //paramTypes.add(Util.getSootType(field.target().type()));
         }
-        paramTypes.add(param.getType());
-        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, param.getType(), soot.Modifier.STATIC);
+        soot.Type retType; 
+        if (param.getType() instanceof soot.NullType){
+            paramTypes.add(soot.RefType.v("java.lang.Object"));
+            retType = soot.RefType.v("java.lang.Object");
+        }
+        else {
+            paramTypes.add(param.getType());
+            retType = param.getType();
+        }
+        soot.SootMethod meth = new soot.SootMethod(name, paramTypes, retType, soot.Modifier.STATIC);
         PrivateFieldSetMethodSource pfsms = new PrivateFieldSetMethodSource(
 		Util.getSootType(field.type()),
 		field.name(),
