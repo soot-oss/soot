@@ -315,7 +315,6 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		    //output the inner class will be output also
 		    G.v().SootClassNeedsDavaSuperHandlerClass.add(originalSootClass);
 
-
 		    //System.out.println("\n\nSet SootMethodAddedByDava to true\n\n");
 		}
 		
@@ -606,15 +605,15 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 			new DVirtualInvokeExpr(tempExpr,tempMethodRef,new ArrayList(),new HashSet());
 		}
                 else {
-		    throw new RuntimeException("UNHANDLED PRIMTYPE:"+tempType);
+		    throw new DecompilationException("Unhandle primType:"+tempType);
 		}
 	    }
 	    else{
-		throw new RuntimeException("UHNKNOWN TYPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:"+tempType);
+		throw new DecompilationException("The type:"+tempType+" was not a reftye or primtype. PLEASE REPORT.");
 	    }
 
 	    if(toAddExpr == null)
-		throw new RuntimeException("UNABLE TO CREATE TOADDEXPR:"+tempType);
+		throw new DecompilationException("UNABLE TO CREATE TOADDEXPR:"+tempType);
 
 
 	    //the above virtualInvokeExpr is one of the args for the constructor
@@ -644,6 +643,9 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 	newConstructorDavaBody.getUnits().clear();
 	newConstructorDavaBody.getUnits().addLast(newASTConstructorMethod);
+	
+	System.out.println("Setting declaring class of method"+newConstructor.getSubSignature());
+ 	newConstructor.setDeclaringClass(originalSootClass);
 
 	//run all the analysis on the newly created method
 	newConstructorDavaBody.analyzeAST(newASTConstructorMethod);
@@ -734,7 +736,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//adding body Y now
 	List originalASTMethodSubBodies = (List)originalASTMethod.get_SubBodies();
 	if(originalASTMethodSubBodies.size() != 1)
-	    throw new RuntimeException("size of ASTMethodNode subBody not 1");
+	    throw new CorruptASTException("size of ASTMethodNode subBody not 1");
 
 	List oldASTBody = (List)originalASTMethodSubBodies.get(0);
 
@@ -755,7 +757,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 	if(!sanity){
 	    //means we never found the initNode which shouldnt happen
-	    throw new RuntimeException("never found the init node");
+	    throw new DecompilationException("never found the init node");
 	}
 
 	//so we have found the init node
@@ -917,7 +919,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 	List originalASTMethodSubBodies = (List)originalASTMethod.get_SubBodies();
 	if(originalASTMethodSubBodies.size() != 1)
-	    throw new RuntimeException("size of ASTMethodNode subBody not 1");
+	    throw new CorruptASTException("size of ASTMethodNode subBody not 1");
 
 	List oldASTBody = (List)originalASTMethodSubBodies.get(0);
 
@@ -945,7 +947,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	}
 	if(!sanity){
 	    //means we never found the initNode which shouldnt happen
-	    throw new RuntimeException("never found the init node");
+	    throw new DecompilationException("never found the init node");
 	}
 	
 
@@ -1115,7 +1117,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		    }
 		}
 		else
-		    throw new RuntimeException("SootClass returned a non SootMethod method");
+		    throw new DecompilationException("SootClass returned a non SootMethod method");
 	    }
 	    
 	    //if we get here this means that the orignal names are different
@@ -1387,16 +1389,16 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		    davaHandlerStmts.add(createAugmentedStmtToAdd(newLocal,getMethodRef,argForStore));
 		}
                 else {
-		    throw new RuntimeException("UNHANDLED PRIMTYPE:"+tempType);
+		    throw new DecompilationException("UNHANDLED PRIMTYPE:"+tempType);
 		}
 	    }//end of primitivetypes		    
 	    else{
-		throw new RuntimeException("UHNKNOWN TYPEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE:"+tempType);
+		throw new DecompilationException("The type:"+tempType+" is neither a reftype or a primtype");
 	    }
 	}//end of going through all the types and vals
 	//sanity check
 	if(typeIt.hasNext() || valIt.hasNext())
-	    throw new RuntimeException("Error creating DavaHandler stmts");
+	    throw new DecompilationException("Error creating DavaHandler stmts");
 
 
 	/*
@@ -1416,7 +1418,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	//add to method body
 	List subBodies = (List)newASTPreInitMethod.get_SubBodies();
 	if(subBodies.size()!=1)
-	    throw new RuntimeException("ASTMethodNode does not have one subBody");
+	    throw new CorruptASTException("ASTMethodNode does not have one subBody");
 	List body = (List)subBodies.get(0);
 	body.add(addedNode);
 

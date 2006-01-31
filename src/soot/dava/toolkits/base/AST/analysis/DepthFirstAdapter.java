@@ -735,8 +735,30 @@ public class DepthFirstAdapter extends AnalysisAdapter{
 
 
     public void inValue(Value v){
-	if(verbose)
+	if(verbose){
 	    System.out.println("inValue"+v);
+	    
+	    if(v instanceof DThisRef)
+		System.out.println("DTHISREF.................");
+	    else if(v instanceof Immediate){
+		System.out.println("\tIMMEDIATE");
+		if(v instanceof soot.jimple.internal.JimpleLocal){
+		    System.out.println("\t\tJimpleLocal...................."+v);
+		    
+		}
+		else if(v instanceof Constant){
+		    System.out.println("\t\tconstant....................");
+		}
+		else if(v instanceof soot.baf.internal.BafLocal){
+		    System.out.println("\t\tBafLocal....................");
+		}
+		else
+		    System.out.println("\t\telse!!!!!!!!!!!!");
+	    }
+	    else {
+		System.out.println("NEITHER................");
+	    }
+	}
     }
     public void outValue(Value v){
 	if(verbose)
@@ -995,8 +1017,14 @@ public class DepthFirstAdapter extends AnalysisAdapter{
 
 
     public void inInstanceFieldRef(InstanceFieldRef ifr){
-	if(verbose)
-	System.out.println("inInstanceFieldRef");
+	if(verbose){
+	    System.out.println("inInstanceFieldRef");
+
+	    if(ifr instanceof DInstanceFieldRef){
+		System.out.println("...........DINSTANCEFIELDREF");
+		
+	    }
+	}
     }
     public void outInstanceFieldRef(InstanceFieldRef ifr){
 	if(verbose)

@@ -455,8 +455,24 @@ public class PackManager {
 	    /*
 	     * Nomair A. Naeem 5-Jun-2005
 	     * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
-	     */
+	     */ 
 	    DavaStaticBlockCleaner.v().staticBlockInlining(s);
+	    
+	    /*
+	     * Nomair A. Naeem 29th Jan 2006
+	     * Added hook into going through each decompiled method again
+	     * Need it for last minute analyses
+	     */
+            Iterator methodIt = s.methodIterator();
+            while (methodIt.hasNext()) {
+                SootMethod m = (SootMethod) methodIt.next();
+		DavaBody body = (DavaBody)m.getActiveBody();
+		body.lastAnalyses();
+
+            }
+
+	     
+
 	    
             G.v().out.print("Generating " + fileName + "... ");
             G.v().out.flush();
@@ -597,8 +613,7 @@ public class PackManager {
             methodIt = c.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
-
-                if (!m.isConcrete()) continue;
+		if (!m.isConcrete()) continue;
 		//all the work done in decompilation is done in DavaBody which is invoked from within newBody
                 m.setActiveBody(Dava.v().newBody(m.getActiveBody()));
             }
@@ -620,8 +635,8 @@ public class PackManager {
 		}
 		G.v().SootMethodsAdded = new ArrayList();
 		G.v().SootMethodAddedByDava=false;
-
 	    }
+
         }
     }
 

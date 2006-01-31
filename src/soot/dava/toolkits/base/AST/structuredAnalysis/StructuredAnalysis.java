@@ -27,6 +27,11 @@
  *     November 21st, 2005: Reasoning about correctness of implementation.
  *     November 22nd, 2005: Found bug in process_DoWhile while implementing ReachingCopies..
  *                          see method for details
+ *     January 30th, 2006:  Found bug in handling of breaks inside the ASTTryNode while implementing 
+ *                          MustMayinitialize...see ASTTryNode method for details
+ *     January 30th, 2006:  Found bug in handling of switchNode while implementing MustMayInitialize
+ *                          NEEDS THOROUGH TESTING!!!
+ *
  */ 
 
 
@@ -34,6 +39,8 @@
  * TODO:
  * Refactor the class into a top level class and a forward analysis subclass
  * Write the backwards flow analysis
+ *
+ *  THOROUGH TESTING OF BUG FOUND ON 30th January
  */
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
@@ -79,6 +86,7 @@ public abstract class StructuredAnalysis{
 	MERGETYPE=UNDEFINED;
 	//invoke user defined function which makes sure that you have the merge operator set
 	setMergeType();
+	//System.out.println("MergeType is"+MERGETYPE);
 	if(MERGETYPE == UNDEFINED)
 	    throw new RuntimeException("MERGETYPE UNDEFINED");
     }
@@ -338,7 +346,10 @@ public abstract class StructuredAnalysis{
 	    
 	    DavaFlowSet temp = NOPATH;
 	    SETNodeLabel nodeLabel = abStmt.getLabel();
+	    //System.out.println("here");
 	    if(nodeLabel != null && nodeLabel.toString() != null){
+		//System.out.println("explicit");
+		//System.out.println(input);
 		//explicit abrupt stmt
 		if(abStmt.is_Continue())
 		    temp.addToContinueList(nodeLabel.toString(),input);
@@ -348,6 +359,7 @@ public abstract class StructuredAnalysis{
 		    throw new RuntimeException("Found abruptstmt which is neither break nor continue");
 	    }
 	    else{
+		//System.out.println("implicit");
 		//found implicit break/continue
 		if(abStmt.is_Continue())
 		    temp.addToImplicitContinues(abStmt,input);
@@ -594,49 +606,6 @@ public abstract class StructuredAnalysis{
 	Object temp= handleBreak(label,output,node);
 	return temp;
 
-	/*	
-	  November 22nd 2005, The implementation below had a bug caused by the fact that
-	  the orignal input to the do while was not being merged with the output at the end
-	  of the do while....found while implementing reachingCopies
-	*/
-
-	//A do while node gets executed atleast once
-
-	/*	Object output = processSingleSubBodyNode(node,input);
-	//System.out.println(output);
-
-	//we need to handle the info about continues in the body
-	String label = getLabel(node);
-	input = handleContinue(label,output,node);
-
-	Object initialInput = cloneFlowSet(input);
-
-	input = processCondition(node.get_Condition(),input);
-	//notice if the condition would evaluate to false the "input" set is the flowset leaving out
-
-	//do a fixed point of the dowhile body
-	Object lastin=null;
-	do{
-	    lastin = cloneFlowSet(input);
-	    output = processSingleSubBodyNode(node,input);
-	  
-	    //handle continues
-	    output = handleContinue(label,output,node);
-
-	    //output contains all back edges to condition
-	    //need to merge this info with the initial input
-	    input = merge(initialInput,output);
-
-	    //apply the condition
-	    output = processCondition(node.get_Condition(),input);
-	}while(isDifferent(lastin,input));
-
-	//output contains the result of the fixed point
-
-	//handle breaks
-	Object temp = handleBreak(label,output,node);
-	return temp;
-	*/
     }
 
 
@@ -760,9 +729,10 @@ public abstract class StructuredAnalysis{
 
 
 
-
-
-
+    /*
+     * Notice ASTSwitch is horribly conservative....eg. if all cases break properly
+     * it will still merge with defaultOut which will be a NOPATH and bound to have empty or full sets
+     */
     public Object processASTSwitchNode(ASTSwitchNode node,Object input){
 	List indexList = node.getIndexList();
 	Map index2BodyList = node.getIndex2BodyList();
@@ -774,11 +744,23 @@ public abstract class StructuredAnalysis{
 	Object initialIn = cloneFlowSet(input);
 
 	Object out = null;
+	Object defaultOut = null;
+	
+	List toMergeBreaks = new ArrayList();
+
 	while (it.hasNext()) {//going through all the cases of the switch statement
 	    Object currentIndex = it.next();
 	    List body = (List) index2BodyList.get( currentIndex);
 
 	    out=process(body,input);
+
+	    //	    System.out.println("Breaklist for this out is"+out.getBreakList());
+	    toMergeBreaks.add(cloneFlowSet(out));
+
+	    if(currentIndex instanceof String){
+		//this is the default
+		defaultOut=out;
+	    }
 
 	    //the input to the next can be a fall through or directly input
 	    input=merge(out,initialIn);
@@ -786,14 +768,52 @@ public abstract class StructuredAnalysis{
 
 	//have to handle the case when no case matches. The input is the output
 	Object output=null;
-	if(out!=null)//just to make sure that there were some cases present
-	    output = merge(initialIn,out);
+	if(out!=null){//just to make sure that there were some cases present
+
+	    /*
+	     * January 30th 2006, FOUND BUG
+	     * The initialIn should only be merge with the out if there is no default
+	     * in the list of switch cases
+	     * If there is a default then there is no way that the initialIn is the actual
+	     * result. Then its either the default or one of the outs!!!
+	     */
+	    if(defaultOut!=null){
+		//there was a default
+		//System.out.println("DEFAULTSET");
+		//System.out.println("defaultOut is"+defaultOut);
+		//System.out.println("out is"+out);
+
+		output=merge(defaultOut,out);
+	    }else{
+		//there was no default so no case might match
+		output = merge(initialIn,out);
+	    }
+
+	}
 	else
 	    output = initialIn; 
 
 	//handle break
 	String label = getLabel(node);
-	return handleBreak(label,output,node);
+
+	//have to handleBreaks for all the different cases
+
+	List outList = new ArrayList();
+	
+	//handling breakLists of each of the toMergeBreaks
+	it = toMergeBreaks.iterator();
+	while(it.hasNext()){
+	    outList.add(handleBreak(label,it.next(),node));
+	}
+
+	//merge all outList elements. since these are the outputs with breaks handled
+	Object finalOut=output;
+	it = outList.iterator();
+	while(it.hasNext()){
+	    finalOut = merge(finalOut,it.next());
+	}
+
+	return finalOut;
     }
 
 
@@ -815,8 +835,10 @@ public abstract class StructuredAnalysis{
 
 
     public Object processASTTryNode(ASTTryNode node,Object input){
+	//System.out.println("SET beginning of tryBody is:"+input);
 	List tryBody = node.get_TryBody();
 	Object tryBodyOutput = process(tryBody,input);
+	//System.out.println("SET end of tryBody is:"+tryBodyOutput);
 
 	/*
 	  By default take either top or bottom as the input to the catch statements
@@ -835,19 +857,56 @@ public abstract class StructuredAnalysis{
 	    //list of ASTNodes
 
 	    //result because of going through the catchBody
-	    catchOutput.add(process(body,cloneFlowSet(inputCatch)));
+	    Object tempResult = process(body,cloneFlowSet(inputCatch));
+	    //System.out.println("TempResult going through body"+tempResult);
+	    catchOutput.add(tempResult);
 	}
 		
 	//handle breaks
 	String label = getLabel(node);
-	Object out = tryBodyOutput;
 
-	out = handleBreak(label,tryBodyOutput,node);
+
+
+	/*
+	 * 30th Jan 2005, 
+	 * Found bug in handling out breaks
+	 * what was being done was that handleBreak was invoked using just handleBreak(label,tryBodyoutput,node)
+	 * Now what it does is that it looks for the breakList stored in the tryBodyOutput node
+	 * What might happen is that there might be some breaks in the catchOutput which would have gotten
+	 * stored in the breakList of the respective catchoutput
+	 * 
+	 * The correct way to handle this is create a list of handledBreak objects (in the outList)
+	 * And then to merge them
+	 */
+	List outList = new ArrayList();
+	
+	//handle breaks out of tryBodyOutput
+	outList.add(handleBreak(label,tryBodyOutput,node));
+	//System.out.println("After handling break from tryBodyOutput"+outList.get(0));
+	
+	//handling breakLists of each of the catchOutputs
+	it = catchOutput.iterator();
+	while(it.hasNext()){
+	    outList.add(handleBreak(label,it.next(),node));
+	}
+
+
+	//merge all outList elements. since these are the outputs with breaks handled
+	Object out=tryBodyOutput;
+	it = outList.iterator();
+	while(it.hasNext()){
+	    out = merge(out,it.next());
+	}
+
+
+
+	//System.out.println("After handling break"+out);
 
 	it = catchOutput.iterator();
 	while(it.hasNext()){
 	    out = merge(out,it.next());
 	}
+	//System.out.println("SET end of complete trycatch is:"+out);
 	return out;
     }
 
@@ -981,12 +1040,13 @@ public abstract class StructuredAnalysis{
 
 	//get the explicit list with this label from the breakList
 	List explicitSet = out.getBreakSet(label);
-	
+	//System.out.println("\n\nExplicit set is"+explicitSet);
 	//getting the implicit list now
 	if(node ==null)
 	    throw new RuntimeException("ASTNode sent to handleBreak was null");
 	
 	List implicitSet = out.getImplicitlyBrokenSets(node);
+	//System.out.println("\n\nImplicit set is"+implicitSet);
 	    
 	//invoke mergeExplicitAndImplicit
 	return mergeExplicitAndImplicit(label,out,explicitSet,implicitSet);

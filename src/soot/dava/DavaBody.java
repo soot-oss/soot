@@ -1,7 +1,6 @@
-
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2004-2005 Nomair A. Naeem
+ * Copyright (C) 2004-2006 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,7 +51,7 @@ public class DavaBody extends Body
     private InstanceInvokeExpr constructorExpr; //holds constructorUnit.getInvokeExpr
     private Unit constructorUnit; //holds a stmt (this.init<>)
     private List caughtrefs;
-    
+
     /**
      *  Construct an empty DavaBody 
      */
@@ -163,6 +162,7 @@ public class DavaBody extends Body
     }
 
 
+
     /**
      * Constructs a DavaBody from the given Body.
      */
@@ -170,6 +170,7 @@ public class DavaBody extends Body
     DavaBody(Body body)
     {
         this( body.getMethod());
+
 	//System.out.println("\n\n\nDecompiling method"+body.getMethod().toString());
 
 	Dava.v().log( "\nstart method " + body.getMethod().toString());
@@ -246,13 +247,13 @@ public class DavaBody extends Body
 
 
 
-
-
 	//all analyses should be invoked from within the analyzeAST method
 	//the reason being that if superFirstStmtHandler creates a new method
 	//you can invoke the analyzeAST method directly on it
 	analyzeAST(AST);
 	Dava.v().log( "end method " + body.getMethod().toString());
+	//System.out.println("\nEND Decompiling method"+body.getMethod().toString());
+
     }
 
 
@@ -264,7 +265,8 @@ public class DavaBody extends Body
 	 * Any AST Transformations added should be added to the applyASTAnalyses method
 	 * unless we are want to delay the analysis till for example THE LAST THING DONE
 	 */
-		applyASTAnalyses(AST);
+	applyASTAnalyses(AST);
+	
 	
 	/*
 	 * Nomair A. Naeem
@@ -273,6 +275,7 @@ public class DavaBody extends Body
 	 */
 	applyStructuralAnalyses(AST);
 
+
 	/*
 	 * Renamer
 	 * It might be worthwhile to invoke a method applyRenameAnalyses which could do the analyses and 
@@ -280,6 +283,8 @@ public class DavaBody extends Body
 	 */
 	//AST.apply(new infoGatheringAnalysis(this));
 	
+
+
 	/*
 	  In the end check 
 	  1, if there are labels which can be safely removed
@@ -302,8 +307,8 @@ public class DavaBody extends Body
 	AST.apply(new BooleanConditionSimplification());
 	AST.apply(new VoidReturnRemover(this));
 	AST.apply(new DecrementIncrementStmtCreation());
-	
-	
+
+
 	boolean flag=true;
 	int times=0;
 	
@@ -397,6 +402,40 @@ public class DavaBody extends Body
 	AST.apply(new LocalVariableCleaner(AST));
        	
     }
+
+
+
+
+    /*
+     * This is the very very very last thing done before outputting Decompiled files
+     * Only add here something if there is no way of doing it beforehand
+     */
+
+    public void lastAnalyses(){
+	ASTNode AST = (ASTNode)this.getUnits().getFirst();
+
+	System.out.println("\nLast analyses for"+this.getMethod().getSubSignature());
+
+	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
+	//29th Jan 2006
+	//make sure when recompiling there is no variable might not be initialized error
+	//AST.apply(new FinalFieldInitializer());
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
