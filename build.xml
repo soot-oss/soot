@@ -12,10 +12,14 @@
     <target name="compile" depends="settings,sablecc,copypeephole,settings,singletons,options">
         <javac
             destdir="classes"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}"
             debug="true"
             deprecation="on"
         >
+        	<classpath>
+        		<pathelement location="classes"/>
+        		<pathelement location="${polyglot.jar}"/>
+           		<pathelement location="${jasmin.jar}"/>
+        	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
             <src path="generated/sablecc"/>
