@@ -461,13 +461,13 @@ public class PackManager {
 	    /*
 	     * Nomair A. Naeem 29th Jan 2006
 	     * Added hook into going through each decompiled method again
-	     * Need it for last minute analyses
+	     * Need it for all the implemented AST analyses
 	     */
             Iterator methodIt = s.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
 		DavaBody body = (DavaBody)m.getActiveBody();
-		body.lastAnalyses();
+		body.analyzeAST();
 
             }
 

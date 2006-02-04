@@ -78,7 +78,10 @@ public class ASTSwitchNode extends ASTLabeledNode
 
 
 
-
+    public ValueBox getKeyBox(){
+	return keyBox;
+    }
+    
 
 
     public Value get_Key()

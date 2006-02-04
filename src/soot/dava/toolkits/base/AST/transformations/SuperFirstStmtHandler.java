@@ -648,7 +648,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
  	newConstructor.setDeclaringClass(originalSootClass);
 
 	//run all the analysis on the newly created method
-	newConstructorDavaBody.analyzeAST(newASTConstructorMethod);
+	//commenting as analyzeAST will be invoked onthis once its added to the SootClass
+	//newConstructorDavaBody.analyzeAST(newASTConstructorMethod);
     }
 
 
@@ -664,7 +665,15 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	
 		    
 	//run all the analysis on the newly created method
-	newPreInitDavaBody.analyzeAST(newASTPreInitMethod);
+	//	newPreInitDavaBody.analyzeAST(newASTPreInitMethod);
+
+
+
+
+
+
+
+
 
 	//check whether there is something in side the ASTBody
 	//if its empty (maybe there were only declarations and that got removed
@@ -674,25 +683,45 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	    return false;
 
 	List body = (List)subBodies.get(0);
-	if(body.size()==1){
-	    //check if this is a statement sequence node with no statements
-	    ASTNode tempNode = (ASTNode)body.get(0);
-	    if(tempNode instanceof ASTStatementSequenceNode){
-		List stmts = ((ASTStatementSequenceNode)tempNode).getStatements();
-		if(stmts.size()==0){
-		    //System.out.println("Stmt size is 0");
-		    return false;
+
+	//body is NOT allowed to contain one declaration node with whatever in it
+	//after that it is NOT allowed all ASTStatement nodes with empty bodies
+
+	Iterator it = body.iterator();
+	boolean empty = true; //indicating that method is empty
+
+	while(it.hasNext()){
+	    ASTNode tempNode = (ASTNode)it.next();
+	    if(!(tempNode instanceof ASTStatementSequenceNode)){
+		//found some node other than stmtseq...body not empty return true
+		empty = false;
+		break;
+	    }
+
+	    List stmts = ((ASTStatementSequenceNode)tempNode).getStatements();	    
+
+	    //all declaration stmts are allowed
+	    Iterator stmtIt = stmts.iterator();
+	    while(stmtIt.hasNext()){
+		AugmentedStmt as = (AugmentedStmt)stmtIt.next();
+		Stmt s = as.get_Stmt();
+		if(!(s instanceof DVariableDeclarationStmt)){
+		    empty=false;
+		    break;
 		}
 	    }
+	    if(!empty)
+		break;
 	}
-	
 
+	if(empty){
+	    //System.out.println("Method is empty not creating it");
+	    return false;//should not be creating the method
+	}
+	     
 	//about to return true enter all DavaSuperHandler stmts to make it part of the preinit method
 	createDavaStoreStmts();
-
-
 	return true;
-
     }
 
 

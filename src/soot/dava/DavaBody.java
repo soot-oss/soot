@@ -171,8 +171,6 @@ public class DavaBody extends Body
     {
         this( body.getMethod());
 
-	//System.out.println("\n\n\nDecompiling method"+body.getMethod().toString());
-
 	Dava.v().log( "\nstart method " + body.getMethod().toString());
 
 	// copy and "convert" the grimp representation
@@ -206,7 +204,6 @@ public class DavaBody extends Body
 
 	MonitorConverter.v().convert( this);
 	ThrowNullConverter.v().convert( this);
-
 
 
 	ASTNode AST = SET.emit_AST();
@@ -244,21 +241,50 @@ public class DavaBody extends Body
 	    AST.apply(new SuperFirstStmtHandler((ASTMethodNode)AST));
 	    
 	}
-
-
-
-	//all analyses should be invoked from within the analyzeAST method
-	//the reason being that if superFirstStmtHandler creates a new method
-	//you can invoke the analyzeAST method directly on it
-	analyzeAST(AST);
 	Dava.v().log( "end method " + body.getMethod().toString());
-	//System.out.println("\nEND Decompiling method"+body.getMethod().toString());
-
     }
 
 
 
-    public void analyzeAST(ASTNode AST){
+
+
+    /*
+     * This is the very very very last thing done before outputting Decompiled files
+     */
+    /*    public void lastAnalyses(){
+	//all analyses should be invoked from within the analyzeAST method
+	//the reason being that if superFirstStmtHandler creates a new method
+	//you can invoke the analyzeAST method directly on it
+
+
+	ASTNode AST = (ASTNode)this.getUnits().getFirst();
+	System.out.println("\n\n\nApplying AST analyzes for method"+body.getMethod().toString());
+
+
+	//all these analyzes used to be done before in DavaBody() but now we are going to do them 
+	//once no new methods are to be created. 
+	analyzeAST(AST);
+
+	//29th Jan 2006
+	//make sure when recompiling there is no variable might not be initialized error
+	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
+
+
+
+	System.out.println("\nEND analyzing method"+body.getMethod().toString());
+    }
+*/
+
+
+    /*
+     * Method is invoked by the packmanager just before it is actually about to generate
+     * decompiled code. Works as a separate stage from the DavaBody() constructor.
+     * All AST transformations should be implemented from within this method.
+     */
+    public void analyzeAST(){
+	ASTNode AST = (ASTNode)this.getUnits().getFirst();
+	System.out.println("\n\n\nApplying AST analyzes for method"+this.getMethod().toString());
+
 	/*
 	 * Nomair A. Naeem
 	 * tranformations on the AST
@@ -266,6 +292,7 @@ public class DavaBody extends Body
 	 * unless we are want to delay the analysis till for example THE LAST THING DONE
 	 */
 	applyASTAnalyses(AST);
+
 	
 	
 	/*
@@ -292,6 +319,7 @@ public class DavaBody extends Body
 	*/
 	//AST.apply(new ExtraLabelNamesRemover());
 
+	System.out.println("\nEND analyzing method"+this.getMethod().toString());
     }	
 
 
@@ -307,6 +335,7 @@ public class DavaBody extends Body
 	AST.apply(new BooleanConditionSimplification());
 	AST.apply(new VoidReturnRemover(this));
 	AST.apply(new DecrementIncrementStmtCreation());
+	AST.apply(new DeInliningFinalFields());
 
 
 	boolean flag=true;
@@ -376,8 +405,13 @@ public class DavaBody extends Body
 	  This is utilized internally by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
 	*/
 	AST.apply(ClosestAbruptTargetFinder.v());
-	
+
+	//29th Jan 2006
+	//make sure when recompiling there is no variable might not be initialized error
+	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
     }
+
+
 
     private void applyStructuralAnalyses(ASTNode AST){
 	//TESTING REACHING DEFS
@@ -406,23 +440,6 @@ public class DavaBody extends Body
 
 
 
-    /*
-     * This is the very very very last thing done before outputting Decompiled files
-     * Only add here something if there is no way of doing it beforehand
-     */
-
-    public void lastAnalyses(){
-	ASTNode AST = (ASTNode)this.getUnits().getFirst();
-
-	System.out.println("\nLast analyses for"+this.getMethod().getSubSignature());
-
-	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
-	//29th Jan 2006
-	//make sure when recompiling there is no variable might not be initialized error
-	//AST.apply(new FinalFieldInitializer());
-
-
-    }
 
 
 

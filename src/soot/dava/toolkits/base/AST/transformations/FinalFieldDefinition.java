@@ -137,91 +137,61 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 
     public void analyzeMethod(ASTMethodNode node, List varsOfInterest){
-	//System.out.println("****************START MUST ANALYSIS******************************");
 	MustMayInitialize must = new MustMayInitialize(node,MustMayInitialize.MUST);
-	//System.out.println("****************END MUST ANALYSIS******************************");
-
 
 	Iterator it = varsOfInterest.iterator();
 	while(it.hasNext()){
 	    SootField interest = (SootField)it.next();
-	    //System.out.println("\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>Var of interest is:"+interest);
-	    if(!(must.isMustInitialized(interest))){
-		//might not be initialized on all paths which is the ideal case we want
 
-
-		//System.out.println("SootField: "+interest+" might not be initialized on all paths");
-		//System.out.println("\n\n\nChecking if it is initialized on any path......MAY Analysis");
-		MustMayInitialize may = new MustMayInitialize(node,MustMayInitialize.MAY);
-		if(may.isMayInitialized(interest)){
-		    //System.out.println("It is initialized on some path just not all paths\n");
-
-
-
-
-
-
-
-
-
-
-		    List defs = must.getDefs(interest);
-		    if(defs == null)
-			throw new RuntimeException("Sootfield: " + interest+ " is mayInitialized but the defs is null");
-		    
-		    handleAssignOnSomePaths(node,interest,defs);
-		}
-		else{
-		    //not initialized on any path.
-		    //SHOULD ASSIGN DEFAULT VALUE
-		    //System.out.println("Final field is not initialized on any path----------MAYBE ASSIGN DEFAULT VALUE");
-		    
-		    maybeAssignDefault(node,interest);
-		    //System.out.println("out of trying to assign default val....maybe didnt assign it though");
-		}
-
+	    //check for constant value tags
+	    Type fieldType = interest.getType();
+	    if(fieldType instanceof DoubleType && interest.hasTag("DoubleConstantValueTag")){
+		continue;
 	    }
-	    else{//was initialized on all paths couldnt ask for more
-		//System.out.println("Is Initialized on all paths so life is great");
+	    else if (fieldType instanceof FloatType && interest.hasTag("FloatConstantValueTag")){
+		continue;
+	    }
+	    else if (fieldType instanceof LongType && interest.hasTag("LongConstantValueTag")){
+		continue;
+	    }
+	    else if (fieldType instanceof CharType && interest.hasTag("IntegerConstantValueTag")){
+		continue;
+	    }
+	    else if (fieldType instanceof BooleanType && interest.hasTag("IntegerConstantValueTag")){
+		continue;
+	    }
+	    else if ( (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType) && 
+		      interest.hasTag("IntegerConstantValueTag")){
+		continue;
+	    }
+	    else if(interest.hasTag("StringConstantValueTag")){
+		continue;
+	    }
+
+	    if(must.isMustInitialized(interest)){
+		//was initialized on all paths couldnt ask for more
+		continue;
+	    }
+
+	    //System.out.println("SootField: "+interest+" not initialized. checking may analysis");
+	    MustMayInitialize may = new MustMayInitialize(node,MustMayInitialize.MAY);
+	    if(may.isMayInitialized(interest)){
+		//System.out.println("It is initialized on some path just not all paths\n");
+		List defs = must.getDefs(interest);
+		if(defs == null)
+		    throw new RuntimeException("Sootfield: " + interest+ " is mayInitialized but the defs is null");
+
+		handleAssignOnSomePaths(node,interest,defs);
+	    }
+	    else{
+		//not initialized on any path., assign default
+		//System.out.println("Final field is not initialized on any path--------ASSIGN DEFAULT VALUE");
+		assignDefault(node,interest);		    
 	    }
 	}
     }
 
 
-    /*
-     * If we get to this method we know the field is a final since we are dealing with final fields only in this class
-     * if we get here and the field is static then this means the node must be the static initializer because
-     * only in that method are static finals interesting
-     */
-    public void maybeAssignDefault(ASTMethodNode node, SootField f){
-	Type fieldType = f.getType();
-	if(fieldType instanceof DoubleType && f.hasTag("DoubleConstantValueTag")){
-	    return;
-	}
-	else if (fieldType instanceof FloatType && f.hasTag("FloatConstantValueTag")){
-	    return;
-	}
-	else if (fieldType instanceof LongType && f.hasTag("LongConstantValueTag")){
-	    return;
-	}
-	else if (fieldType instanceof CharType && f.hasTag("IntegerConstantValueTag")){
-	    return;
-	}
-	else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")){
-	    return;
-	}
-	else if ( (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType) && 
-		  f.hasTag("IntegerConstantValueTag")){
-	    return;
-	}
-	else if(f.hasTag("StringConstantValueTag")){
-	    return;
-	}
-	else{
-	    //System.out.println("Did not find CONSTANT TAG Assignment........going for default");
-	    assignDefault(node,f);
-	}
-    }
 
 
     /*
@@ -237,8 +207,6 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 	if(defaultStmt == null)
 	    return;
-
-
 
 	List subBodies = (List)node.get_SubBodies();
 	if(subBodies.size()!=1)
@@ -387,6 +355,27 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 
 		/*
+		 * February 2nd, 2006: Laurie mentioned that apart from direct uses we also have to be conservative
+		 * about method calls since we are dealing with fields here
+		 * What if some method was invoked and it tried to use a field whose initialization we are about
+		 * to delay. Since that should not happen we are going to check if there is any method call
+		 * made from this point to the end of the method.
+		 * Done by implementing a small analysis......however we need to first find the location of
+		 * the initialization which we are about to delay...that is given by defs.get(0)
+		 */
+		MethodCallFinder myMethodCallFinder = new MethodCallFinder((GAssignStmt)defs.get(0));
+		node.apply(myMethodCallFinder);
+
+		if(myMethodCallFinder.anyMethodCalls()){
+		    //there was some method call after the definition stmt so we cant continue
+		    //remove the final modifier and leave
+		    System.out.println("Method invoked somewhere after definition");
+		    cancelFinalModifier.add(field);
+		    return;
+		}
+		
+
+		/*
 		 * so lets recap till now what we know about this field
 		 * Field is of interest meaning its definetly final
 		 *
@@ -394,6 +383,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		 * It is however initialized on some path
 		 * There is only one initialization of it
 		 * The field is not used anywhere in this method
+		 * And neither is there and method call after the original definition stmt
 		 */
 		
 
@@ -525,4 +515,55 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 	}
     }
     
+}
+
+
+class MethodCallFinder extends DepthFirstAdapter{
+    
+    GAssignStmt def;
+    boolean foundIt = false;
+    boolean anyMethodCalls=false;
+
+
+    public MethodCallFinder(GAssignStmt def){
+	this.def=def;
+    }
+
+
+    public MethodCallFinder(boolean verbose,GAssignStmt def){
+	super(verbose);
+	this.def=def;
+    }
+
+
+
+    public void outDefinitionStmt(DefinitionStmt s){
+	if(s instanceof GAssignStmt){
+	    if(( (GAssignStmt)s).equals(def)){
+		foundIt=true;
+		System.out.println("Found it"+s);
+	    }
+	}
+    }
+
+
+
+    public void inInvokeExpr(InvokeExpr ie){
+	System.out.println("In invoke Expr");
+	if(foundIt){
+	    System.out.println("oops invoking something after definition");
+	    anyMethodCalls=true;
+	}
+    }
+
+
+
+    /*
+     * Method will return false if there were no method calls made after the definition stmt
+     */
+    public boolean anyMethodCalls(){
+	return anyMethodCalls;
+	//return false;
+    }
+
 }

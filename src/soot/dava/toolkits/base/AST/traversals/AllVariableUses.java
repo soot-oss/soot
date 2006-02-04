@@ -1,3 +1,4 @@
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2006 Nomair A. Naeem (nomair.naeem@mail.mcgill.ca)
  *
@@ -311,6 +312,87 @@ public class AllVariableUses extends DepthFirstAdapter{
 	    }
 	}//end of going through all locals uses in condition
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+     * The condition of an if node can use a local
+     *
+     */
+    public void inASTIfNode(ASTIfNode node){
+	ASTCondition cond = node.get_Condition();
+	checkConditionalUses(cond,node);
+    }
+
+
+    /*
+     * The condition of an ifElse node can use a local
+     *
+     */
+    public void inASTIfElseNode(ASTIfElseNode node){
+	ASTCondition cond = node.get_Condition();
+	checkConditionalUses(cond,node);
+    }
+
+
+
+
+    /*
+     * The condition of a while node can use a local
+     *
+     */
+    public void inASTWhileNode(ASTWhileNode node){
+	ASTCondition cond = node.get_Condition();
+	checkConditionalUses(cond,node);
+    }
+
+
+
+    /*
+     * The condition of a doWhile node can use a local
+     *
+     */
+    public void inASTDoWhileNode(ASTDoWhileNode node){
+	ASTCondition cond = node.get_Condition();
+	checkConditionalUses(cond,node);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
