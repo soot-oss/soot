@@ -1,3 +1,4 @@
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
  * Copyright (C) 2004-2006 Nomair A. Naeem
@@ -247,35 +248,6 @@ public class DavaBody extends Body
 
 
 
-
-    /*
-     * This is the very very very last thing done before outputting Decompiled files
-     */
-    /*    public void lastAnalyses(){
-	//all analyses should be invoked from within the analyzeAST method
-	//the reason being that if superFirstStmtHandler creates a new method
-	//you can invoke the analyzeAST method directly on it
-
-
-	ASTNode AST = (ASTNode)this.getUnits().getFirst();
-	System.out.println("\n\n\nApplying AST analyzes for method"+body.getMethod().toString());
-
-
-	//all these analyzes used to be done before in DavaBody() but now we are going to do them 
-	//once no new methods are to be created. 
-	analyzeAST(AST);
-
-	//29th Jan 2006
-	//make sure when recompiling there is no variable might not be initialized error
-	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
-
-
-
-	System.out.println("\nEND analyzing method"+body.getMethod().toString());
-    }
-*/
-
-
     /*
      * Method is invoked by the packmanager just before it is actually about to generate
      * decompiled code. Works as a separate stage from the DavaBody() constructor.
@@ -283,7 +255,7 @@ public class DavaBody extends Body
      */
     public void analyzeAST(){
 	ASTNode AST = (ASTNode)this.getUnits().getFirst();
-	System.out.println("\n\n\nApplying AST analyzes for method"+this.getMethod().toString());
+	//System.out.println("\n\n\nApplying AST analyzes for method"+this.getMethod().toString());
 
 	/*
 	 * Nomair A. Naeem
@@ -319,7 +291,7 @@ public class DavaBody extends Body
 	*/
 	//AST.apply(new ExtraLabelNamesRemover());
 
-	System.out.println("\nEND analyzing method"+this.getMethod().toString());
+	//System.out.println("\nEND analyzing method"+this.getMethod().toString());
     }	
 
 
@@ -347,7 +319,7 @@ public class DavaBody extends Body
 		//System.out.println("ITERATION");
 		G.v().ASTTransformations_modified = false;
 		times++;
-		
+ 		
 		AST.apply(new AndAggregator());
 		/*
 		  The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null
@@ -408,6 +380,8 @@ public class DavaBody extends Body
 
 	//29th Jan 2006
 	//make sure when recompiling there is no variable might not be initialized error
+
+
 	FinalFieldDefinition finalDefinition = new FinalFieldDefinition((ASTMethodNode)AST);
     }
 
