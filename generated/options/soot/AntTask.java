@@ -182,6 +182,7 @@ public class AntTask extends MatchingTask {
     
                 || arg.equals( "c" )
                 || arg.equals( "class" )
+                || arg.equals( "only-class" )
                 || arg.equals( "J" )
                 || arg.equals( "jimple" )
                 || arg.equals( "java" )

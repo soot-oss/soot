@@ -306,6 +306,16 @@ only when unable to find a <tt>.class</tt> file.
 				<default/>
 			</value>
 			<value>
+				<name>Only Class File</name>
+				<alias>only-class</alias>
+				<short_desc>Use only class files as Soot source</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.class</tt> files found in
+the Soot classpath.  Do not try any other types of files even when
+unable to find a <tt>.class</tt> file.
+</long_desc>
+			</value>
+			<value>
 				<name>Jimple File</name>
 				<alias>J</alias>
 				<alias>jimple</alias>

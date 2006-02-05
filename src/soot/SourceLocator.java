@@ -55,6 +55,9 @@ public class SourceLocator
                 classProviders.add(new JimpleClassProvider());
                 classProviders.add(new JavaClassProvider());
                 break;
+            case Options.src_prec_only_class:
+                classProviders.add(new CoffiClassProvider());
+                break;
             case Options.src_prec_java:
                 classProviders.add(new JavaClassProvider());
                 classProviders.add(new CoffiClassProvider());
