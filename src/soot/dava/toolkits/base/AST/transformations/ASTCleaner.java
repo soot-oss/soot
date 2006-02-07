@@ -112,6 +112,12 @@ public class ASTCleaner extends DepthFirstAdapter{
 			if(nextNode instanceof ASTIfNode){
 			    //found an If followed by another if might match Patter 3. 
 			    OrAggregatorThree.checkAndTransform(node,(ASTIfNode)temp,(ASTIfNode)nextNode,nodeNumber,subBodyNumber);
+			    if(G.v().ASTTransformations_modified){
+				//if we modified something we want to stop since the tree is stale
+				//System.out.println("here");
+				return;
+			    }
+			    
 			}
 		    }
 		}

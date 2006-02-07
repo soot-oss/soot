@@ -55,8 +55,6 @@ public class OrAggregatorThree {
 
     public static void checkAndTransform(ASTNode node,ASTIfNode ifOne,ASTIfNode ifTwo, int nodeNumber,int subBodyNumber){
 
-
-
 	if(!(node instanceof ASTIfElseNode)){
 	    //these are the nodes which always have one subBody
 	    List subBodies = node.get_SubBodies();

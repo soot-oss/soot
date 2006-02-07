@@ -752,18 +752,22 @@ public abstract class StructuredAnalysis{
 	    Object currentIndex = it.next();
 	    List body = (List) index2BodyList.get( currentIndex);
 
-	    out=process(body,input);
+	    //BUG FIX if body is null (fall through we shouldnt invoke process
+	    //Reported by Steffen Pingel 14th Jan 2006 on the soot mailing list
+	    if(body != null){
+		out=process(body,input);
+		
+		//	    System.out.println("Breaklist for this out is"+out.getBreakList());
+		toMergeBreaks.add(cloneFlowSet(out));
+		
+		if(currentIndex instanceof String){
+		    //this is the default
+		    defaultOut=out;
+		}
 
-	    //	    System.out.println("Breaklist for this out is"+out.getBreakList());
-	    toMergeBreaks.add(cloneFlowSet(out));
-
-	    if(currentIndex instanceof String){
-		//this is the default
-		defaultOut=out;
-	    }
-
-	    //the input to the next can be a fall through or directly input
-	    input=merge(out,initialIn);
+		//the input to the next can be a fall through or directly input
+		input=merge(out,initialIn);
+	    }//body was non null
 	}
 
 	//have to handle the case when no case matches. The input is the output

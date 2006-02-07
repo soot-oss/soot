@@ -38,6 +38,21 @@ public class ForLoopCreationHelper{
 
     Map varToStmtMap;
 
+    /*
+     * Bug Reported by Steffen Pingel on the soot mailing list (january 2006)
+     * Fixed by Nomair February 6th, 2006
+     *
+     * There was a bug in the getUpdate method since it removed the update statement whenver it found one
+     * Later on if the ForLoop Creation terminated the update stmt had been removed
+     * We delay the removal of the update stmt until we are sure that the for loop is being created
+     * This is done by storing the list of stmts from which to remove the update statement in the following
+     * field. The boolean (although redundant) indicates when such an update stmt should be removed
+     */
+    List myStmts;//stores the statementseq list of statements whose last stmt has to be removed
+    boolean removeLast=false;//the last stmt in the above stmts is removed if this boolean is true
+
+    
+
     public ForLoopCreationHelper(ASTStatementSequenceNode stmtSeqNode, ASTWhileNode whileNode){
 	this.stmtSeqNode=stmtSeqNode;
 	this.whileNode=whileNode;
@@ -232,21 +247,15 @@ public class ForLoopCreationHelper{
 	  Also at the same time see if the update list has
 	  some update stmt whose var should be added to commonVars
 	*/
+
 	List update = getUpdate(defs,condUses,commonVars);
-	if(update==null){
-	    return false;
-	}
-	if(update.size()==0){
-	    return false;
-	}
-
-
-
-	if(commonVars==null){
+	if(update==null  || update.size() == 0){
+	    //System.out.println("Aborting because of update");
 	    return false;
 	}
 
-	if(commonVars.size()==0){
+	if(commonVars==null || commonVars.size()==0){
+	    //System.out.println("Aborting because of commonVars");
 	    return false;
 	}
 	
@@ -260,6 +269,7 @@ public class ForLoopCreationHelper{
 	//create new stmtSeqNode and get the init list for the for loop
 	List init= createNewStmtSeqNodeAndGetInit(commonVars);
 	if(init.size()==0){
+	    //System.out.println("Aborting because of init size");
 	    return false;
 	}
 
@@ -277,7 +287,13 @@ public class ForLoopCreationHelper{
 	  we need to declare it as int i = bla bla instead of i = bla bla
 	*/
 	//init=analyzeInit(init);
-
+	
+	//about to create loop make sure to remove the update stmt
+	if(removeLast){
+	    //System.out.println("Removing"+myStmts.get(myStmts.size()-1));
+	    myStmts.remove(myStmts.size()-1);
+	    removeLast=false;
+	}
 
 	forNode = new ASTForLoopNode(label,init,condition,update,body);
 	return true;
@@ -300,73 +316,92 @@ public class ForLoopCreationHelper{
 	Iterator it = subBody.iterator();
 	while(it.hasNext()){
 	    ASTNode temp = (ASTNode)it.next();
-	    if(!(it.hasNext())){
-		if(temp instanceof ASTStatementSequenceNode){
-		    List stmts = ((ASTStatementSequenceNode)temp).getStatements();
-		    AugmentedStmt last = (AugmentedStmt)stmts.get(stmts.size()-1);
-		    Stmt lastStmt = last.get_Stmt();
-		    if(lastStmt instanceof DefinitionStmt){
-			//check if it defines a def
-			
-			Value left = ((DefinitionStmt)lastStmt).getLeftOp();
-			Iterator defIt = defs.iterator();
-			while(defIt.hasNext()){
-			    String defString = (String)defIt.next();
-			    if(left.toString().compareTo(defString)==0){
-				//match
-				toReturn.add(last);
-				
-				stmts.remove(stmts.size()-1);
 
-				//see if commonUses has this otherwise add it
-				Iterator coIt = commonUses.iterator();
-				boolean matched=false;
-				while(coIt.hasNext()){
-				    if (defString.compareTo((String)coIt.next())==0){
-					matched=true;
-				    }
-				}
-				if(!matched){
-				    //it is not in commonUses
-				    commonUses.add(defString);
-				}
-				
-				return toReturn;
-			    }
+	    if(it.hasNext()){
+		//not the last node in the loop body
+		continue;
+	    }
+
+	    //this is the last node in the loop body
+
+	    if(!(temp instanceof ASTStatementSequenceNode)){
+		//not a statementsequence node
+		//System.out.println("Aborting because last node is not a stmtseqnode");
+		return null;
+	    }
+
+	    List stmts = ((ASTStatementSequenceNode)temp).getStatements();
+	    AugmentedStmt last = (AugmentedStmt)stmts.get(stmts.size()-1);
+	    Stmt lastStmt = last.get_Stmt();
+
+	    if(!(lastStmt instanceof DefinitionStmt)){
+		//not a definition stmt
+		//System.out.println("Aborting because last stmt is not definition stmt");
+		return null;
+	    }
+
+
+
+
+	    //check if it assigns to a def
+	    Value left = ((DefinitionStmt)lastStmt).getLeftOp();
+	    Iterator defIt = defs.iterator();
+	    while(defIt.hasNext()){
+		String defString = (String)defIt.next();
+		if(left.toString().compareTo(defString)==0){
+		    //match
+		    toReturn.add(last);
+
+		    myStmts=stmts;
+		    removeLast=true;
+		    //stmts.remove(stmts.size()-1);
+		    
+		    //see if commonUses has this otherwise add it
+		    Iterator coIt = commonUses.iterator();
+		    boolean matched=false;
+		    while(coIt.hasNext()){
+			if (defString.compareTo((String)coIt.next())==0){
+			    matched=true;
 			}
-
-			Iterator condIt = condUses.iterator();
-			while(condIt.hasNext()){
-			    String condString = (String)condIt.next();
-			    if(left.toString().compareTo(condString)==0){
-				//match
-				toReturn.add(last);
-
-				stmts.remove(stmts.size()-1);
-				
-				//see if commonUses has this otherwise add it
-				Iterator coIt = commonUses.iterator();
-				boolean matched=false;
-				while(coIt.hasNext()){
-				    if (condString.compareTo((String)coIt.next())==0){
-					matched=true;
-				    }
-				}
-				if(!matched){
-				    //it is not in commonUses
-				    commonUses.add(condString);
-				}
-				return toReturn;
-			    }
-			}
-
-
-
 		    }
-		}//the last node is a stmtSeqNode
-	    }//there is no next node
-	}//going through ASTNodes
+		    if(!matched){
+			//it is not in commonUses
+			commonUses.add(defString);
+		    }
+		    
+		    return toReturn;
+		}
+	    }
 
+	    //the code gets here only in the case when none of the def strings matched the updated variable
+	    Iterator condIt = condUses.iterator();
+	    while(condIt.hasNext()){
+		String condString = (String)condIt.next();
+		if(left.toString().compareTo(condString)==0){
+		    //match
+		    toReturn.add(last);
+
+		    myStmts=stmts;
+		    removeLast=true;		    
+		    //stmts.remove(stmts.size()-1);
+		    
+		    //see if commonUses has this otherwise add it
+		    Iterator coIt = commonUses.iterator();
+		    boolean matched=false;
+		    while(coIt.hasNext()){
+			if (condString.compareTo((String)coIt.next())==0){
+			    matched=true;
+			}
+		    }
+		    if(!matched){
+			//it is not in commonUses
+			commonUses.add(condString);
+		    }
+		    return toReturn;
+		}
+	    }
+	}//going through ASTNodes
+	
 	return toReturn;
     }
 
