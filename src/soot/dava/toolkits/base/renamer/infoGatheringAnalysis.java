@@ -22,13 +22,16 @@ package soot.dava.toolkits.base.renamer;
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.*;
 import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.dava.internal.AST.*;
 import java.util.*;
 import soot.util.*;
 import soot.dava.*;
-import soot.dava.internal.javaRep.*;
 import soot.grimp.*;
+import soot.grimp.internal.*;
+import soot.dava.internal.javaRep.*;
+import soot.dava.internal.asg.*;
+import soot.jimple.internal.*;
+import soot.dava.internal.AST.*;
+
 
 
 
@@ -39,11 +42,12 @@ public class infoGatheringAnalysis extends DepthFirstAdapter{
     public final static int IF=3;
     public final static int WHILE=4;
     public final static int SWITCH=5;
-    public final static int INDEX=6;
+    public final static int ARRAYINDEX=6;
     public final static int MAINARG=7;
     public final static int FIELDASSIGN=8;
+    public final static int FORLOOPUPDATE=9;
 
-    public final static int NUMBITS=9;
+    public final static int NUMBITS=10;
 
     //dataset to store all information gathered
     heuristicSet info;
@@ -59,6 +63,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter{
 
     //if we are within a subtree rooted at a WhileNode or DoWhileNode this boolean is true
     boolean inWhile = false;
+
+    //if we are within a subtree rooted at a ForLoop this boolean is true
+    boolean inFor = false;
 
     public infoGatheringAnalysis(DavaBody davaBody){
 	info = new heuristicSet();
@@ -311,7 +318,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter{
     public void inArrayRef(ArrayRef ar){
 	Value index = ar.getIndex();
 	if(index instanceof Local)
-	    info.setHeuristic((Local)index,infoGatheringAnalysis.INDEX);
+	    info.setHeuristic((Local)index,infoGatheringAnalysis.ARRAYINDEX);
     }
 
 
@@ -341,6 +348,37 @@ public class infoGatheringAnalysis extends DepthFirstAdapter{
 
 
 
+    /*
+      setting flag to true
+    */
+    public void inASTForLoopNode(ASTForLoopNode node){
+	System.out.println("In a for loop");
+	inFor=true;
+
+	Iterator updateIt = node.getUpdate().iterator();
+	while(updateIt.hasNext()){
+	    AugmentedStmt as = (AugmentedStmt)updateIt.next();
+	    Stmt s = as.get_Stmt();
+	    if(s instanceof GAssignStmt){
+		System.out.println("Update Stmt is"+s);
+		Value leftOp = ((GAssignStmt)s).getLeftOp();
+		if(leftOp instanceof Local){
+		    info.setHeuristic((Local)leftOp,infoGatheringAnalysis.FORLOOPUPDATE);
+		}
+	    }
+	}
+    }
+
+
+
+
+    /*
+      setting flag to false
+    */
+    public void outASTForLoopNode(ASTForLoopNode node){
+	System.out.println("out of a for loop");
+	inFor=false;
+    }
 
 
 
@@ -399,5 +437,12 @@ public class infoGatheringAnalysis extends DepthFirstAdapter{
 		return null;//meaning no local used as boolean found
 	}
 	return null; //meaning no local used as boolean found
+    }
+
+
+
+
+    public heuristicSet getHeuristicSet(){
+	return info;
     }
 }

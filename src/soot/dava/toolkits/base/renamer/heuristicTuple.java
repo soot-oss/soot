@@ -25,37 +25,34 @@ import java.util.*;
 public class heuristicTuple{
     BitSet heuristics;
     int bitSetSize;
-    Vector methodName;
-    String objectClassName;
-    String fieldName;
+    Vector methodName;  //local is assigned the result of this method call
+    Vector objectClassName; //local is initialized with a new invocation of this class
+    Vector fieldName; //local is initialized with a field
    
 
     public heuristicTuple(int bits){
 	heuristics =new BitSet(bits);
 	this.methodName= new Vector();
-	this.objectClassName=null;
+	this.objectClassName = new Vector();
+	this.fieldName = new Vector();
 	bitSetSize=bits;
     }
 
     public void setFieldName(String fieldName){
-	if(fieldName != null){
-	    this.fieldName=fieldName;
-	    setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
-	}
+	this.fieldName.add(fieldName);
+	setHeuristic(infoGatheringAnalysis.FIELDASSIGN);
     }
     
-    public String getFieldName(){
+    public List getFieldName(){
 	return fieldName;
     }
 
     public void setObjectClassName(String objectClassName){
-	if(objectClassName != null){
-	    this.objectClassName=objectClassName;
-	    setHeuristic(infoGatheringAnalysis.CLASSNAME);
-	}
+	this.objectClassName.add(objectClassName);
+	setHeuristic(infoGatheringAnalysis.CLASSNAME);
     }
     
-    public String getObjectClassName(){
+    public List getObjectClassName(){
 	return objectClassName;
     }
 
@@ -66,8 +63,8 @@ public class heuristicTuple{
 	    setHeuristic(infoGatheringAnalysis.GETSET);
     }
     
-    public Iterator getMethodName(){
-	return methodName.iterator();
+    public List getMethodName(){
+	return methodName;
     }
 
     public void setHeuristic(int bitIndex){
@@ -92,15 +89,15 @@ public class heuristicTuple{
 		temp=temp.concat("0");
 	}
 
-	temp=temp.concat("  Field: "+fieldName);
+	temp=temp.concat("  Field: "+fieldName.toString());
 
 	temp=temp.concat("  Method: ");
-	Iterator it = getMethodName();
+	Iterator it = getMethodName().iterator();
 	while(it.hasNext()){
 	    temp = temp.concat((String)it.next()+" , ");
 	}
 
-	temp=temp.concat("  Class: "+objectClassName);
+	temp=temp.concat("  Class: "+objectClassName.toString());
 
 	//System.out.println("TUPLE:"+temp);
 	return temp;

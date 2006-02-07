@@ -96,6 +96,9 @@ public class ASTCleaner extends DepthFirstAdapter{
 		    if(label.toString()==null){
 			//uselessLabeledBlock Found REMOVE IT
 			UselessLabeledBlockRemover.removeLabeledBlock(node,labelBlock,subBodyNumber,nodeNumber);
+			if(G.v().ASTTransformations_modified){
+			    return;
+			}			
 		    }
 		}
 		else if(temp instanceof ASTIfElseNode){
@@ -166,6 +169,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			node.replaceTryBody(newBody);
 			G.v().ASTTransformations_modified = true;
 			//System.out.println("REMOVED ELSEBODY from within trybody");
+			return;
 		    }
 		}
 	    }
@@ -180,6 +184,9 @@ public class ASTCleaner extends DepthFirstAdapter{
 			    //something did not go wrong and pattern was matched
 			    node.replaceTryBody(newBody);
 			    G.v().ASTTransformations_modified = true;
+			    //we modified something we want to stop since the tree is stale
+			    //System.out.println("here");
+			    return;
 			    //System.out.println("OR AGGREGATOR THREE");
 			}
 		    }
@@ -250,6 +257,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			    catchBody.replaceBody(newBody);
 			    G.v().ASTTransformations_modified = true;
 			    //System.out.println("REMOVED ELSEBODY FROm within catchlist");
+			    return;
 			}
 		    }
 		}
@@ -265,6 +273,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				catchBody.replaceBody(newBody);
 				G.v().ASTTransformations_modified = true;
 				//System.out.println("OR AGGREGATOR THREE");
+				return;
 			    }
 			}
 		    }
@@ -332,6 +341,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				node.replaceIndex2BodyList(index2BodyList);
 				G.v().ASTTransformations_modified = true;
 				//System.out.println("REMOVED ELSEBODY FROM WITHIN SWITCH");
+				return;
 			    }
 			}
 		    }
@@ -352,6 +362,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 
 				    G.v().ASTTransformations_modified = true;
 				    //System.out.println("OR AGGREGATOR THREE");
+				    return;
 				}
 			    }
 			}

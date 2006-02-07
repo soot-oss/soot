@@ -44,7 +44,7 @@ public class heuristicSet{
 	retrieved.setFieldName(fieldName);
     }    
     
-    public String getFieldName(Local var){
+    public List getFieldName(Local var){
 	heuristicTuple retrieved = getTuple(var);
 	return retrieved.getFieldName();
     }
@@ -54,7 +54,7 @@ public class heuristicSet{
 	retrieved.setObjectClassName(objectClassName);
     }    
     
-    public String getObjectClassName(Local var){
+    public List getObjectClassName(Local var){
 	heuristicTuple retrieved = getTuple(var);
 	return retrieved.getObjectClassName();
     }
@@ -64,7 +64,7 @@ public class heuristicSet{
 	retrieved.setMethodName(methodName);
     }    
     
-    public Iterator getMethodName(Local var){
+    public List getMethodName(Local var){
 	heuristicTuple retrieved = getTuple(var);
 	return retrieved.getMethodName();
     }
@@ -96,4 +96,9 @@ public class heuristicSet{
     }
 
 
+
+
+    public Iterator getLocalsIterator(){
+	return set.keySet().iterator();
+    }
 }

@@ -42,9 +42,27 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 import soot.dava.toolkits.base.AST.traversals.*;
 import soot.dava.toolkits.base.AST.transformations.*;
 
+/*
+ * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
+ *             These are now invoked as a very last staged (just before generating decompiled
+ *             output. Invoked by PackManager
+ *
+ *             Nomair - 7th Feb, 2006: Starting work on a naming mechanism
+ */
 
-public class DavaBody extends Body
-{
+
+
+/*
+ * TODO:   Nomair- February 7th. Refactor the call
+ *	    AST.perform_Analysis( UselessTryRemover.v());
+ *         use the new AnalysisAdapter routines to write this analysis. Then delete these
+ *         obselete and rather clumsy way of writing analyses
+ *
+ */
+
+
+public class DavaBody extends Body{
+
     private Map pMap;
     private HashSet consumedConditions, thisLocals;
     private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts, packagesUsed;
@@ -57,8 +75,7 @@ public class DavaBody extends Body
      *  Construct an empty DavaBody 
      */
              
-    DavaBody(SootMethod m)
-    {
+    DavaBody(SootMethod m){
         super(m);
 
 	pMap = new HashMap();
@@ -74,50 +91,49 @@ public class DavaBody extends Body
 	constructorExpr = null;
     }
 
-    public Unit get_ConstructorUnit()
-    {
+
+    public Unit get_ConstructorUnit(){
 	return constructorUnit;
     }
 
-    public List get_CaughtRefs()
-    {
+
+    public List get_CaughtRefs(){
 	return caughtrefs;
     }
 
-    public InstanceInvokeExpr get_ConstructorExpr()
-    {
+
+    public InstanceInvokeExpr get_ConstructorExpr(){
 	return constructorExpr;
     }
 
 
-    public void set_ConstructorExpr(InstanceInvokeExpr expr)
-    {
+
+    public void set_ConstructorExpr(InstanceInvokeExpr expr){
 	constructorExpr=expr;
     }
 
-    public void set_ConstructorUnit(Unit s)
-    {
+
+    public void set_ConstructorUnit(Unit s){
 	constructorUnit=s;
     }
 
-    public Map get_ParamMap()
-    {
+
+    public Map get_ParamMap(){
 	return pMap;
     }
 
 
-    public void set_ParamMap(Map map)
-    {
+    public void set_ParamMap(Map map){
 	pMap=map;
     }
 
-    public HashSet get_ThisLocals()
-    {
+
+    public HashSet get_ThisLocals(){
 	return thisLocals;
     }
 
-    public Local get_ControlLocal()
-    {
+
+    public Local get_ControlLocal(){
 	if (controlLocal == null) {
 	    controlLocal = new JimpleLocal( "controlLocal", IntType.v());
 	    getLocals().add( controlLocal);
@@ -126,15 +142,18 @@ public class DavaBody extends Body
 	return controlLocal;
     }
 
-    public Set get_ConsumedConditions()
-    {
+
+
+    public Set get_ConsumedConditions(){
 	return consumedConditions;
     }
 
-    public void consume_Condition( AugmentedStmt as)
-    {
+
+    public void consume_Condition( AugmentedStmt as){
 	consumedConditions.add( as);
     }
+
+
 
     public Object clone(){
         Body b = Dava.v().newBody(getMethod());
@@ -142,23 +161,26 @@ public class DavaBody extends Body
         return b;
     }
 
-    public IterableSet get_SynchronizedBlockFacts()
-    {
+
+    public IterableSet get_SynchronizedBlockFacts(){
 	return synchronizedBlockFacts;
     }
 
-    public IterableSet get_ExceptionFacts()
-    {
+
+
+    public IterableSet get_ExceptionFacts(){
 	return exceptionFacts;
     }
 
-    public IterableSet get_MonitorFacts()
-    {
+
+
+    public IterableSet get_MonitorFacts(){
 	return monitorFacts;
     }
 
-    public IterableSet get_PackagesUsed()
-    {
+
+
+    public IterableSet get_PackagesUsed(){
 	return packagesUsed;
     }
 
@@ -168,8 +190,7 @@ public class DavaBody extends Body
      * Constructs a DavaBody from the given Body.
      */
     
-    DavaBody(Body body)
-    {
+    DavaBody(Body body){
         this( body.getMethod());
 
 	Dava.v().log( "\nstart method " + body.getMethod().toString());
@@ -214,13 +235,16 @@ public class DavaBody extends Body
 	getUnits().clear();
 	getUnits().addLast( AST);
 
+
+	
 	// perform transformations on the AST	
+	/*
+	 * Nomair This should be refactored to use the new AnalysisAdapter classes
+	 */
 	do {
 	    G.v().ASTAnalysis_modified = false;
 
 	    AST.perform_Analysis( UselessTryRemover.v());
-	    // AST.perform( UselessLabeledBlockRemover.v());
-	    // AST.perform( UselessBreakRemover.v());
 
 	} while (G.v().ASTAnalysis_modified);
 
@@ -280,9 +304,11 @@ public class DavaBody extends Body
 	 * It might be worthwhile to invoke a method applyRenameAnalyses which could do the analyses and 
 	 * subsequenct changes
 	 */
-	//AST.apply(new infoGatheringAnalysis(this));
+	//infoGatheringAnalysis info = new infoGatheringAnalysis(this);
+	//AST.apply(info);
 	
-
+	//Renamer renamer = new Renamer(info.getHeuristicSet());
+	//renamer.rename();
 
 	/*
 	  In the end check 
