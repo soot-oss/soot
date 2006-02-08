@@ -23,6 +23,7 @@ package soot.dava;
 import soot.dava.internal.AST.*;
 
 import soot.*;
+
 import java.util.*;
 import soot.util.*;
 import soot.jimple.*;
@@ -154,6 +155,10 @@ public class DavaPrinter {
     }
 
     public void printTo(SootClass cl, PrintWriter out) {
+    	
+    	
+        IterableSet packagesUsed = new IterableSet();
+        
         {
 
             String curPackage = cl.getJavaPackageName();
@@ -162,8 +167,6 @@ public class DavaPrinter {
                 out.println("package " + curPackage + ";");
                 out.println();
             }
-
-            IterableSet packagesUsed = new IterableSet();
 
             if (cl.hasSuperclass()) {
                 SootClass superClass = cl.getSuperclass();
@@ -271,8 +274,23 @@ public class DavaPrinter {
 
         // Print extension
         if (cl.hasSuperclass()
-            && !(cl.getSuperclass().getName().equals("java.lang.Object")))
-            out.print(" extends " + cl.getSuperclass().getName() + "");
+            && !(cl.getSuperclass().getName().equals("java.lang.Object"))){
+        		
+        	String superClassName = cl.getSuperclass().getName();
+        	
+        	//Nomair Naeem 8th Feb 2006
+        	//also check if the super class name is not a fully qualified
+        	//name. in which case if the package is imported no need for
+        	//the long name
+        	
+        	if(G.v().Dava_RemoveFullyQualifiedNames){
+
+        		superClassName = getShortName(superClassName,packagesUsed);
+  
+        	}
+            out.print(" extends " + superClassName + "");
+        }
+
 
         // Print interfaces
         {
@@ -295,59 +313,97 @@ public class DavaPrinter {
 
         // Print fields
         {
-            Iterator fieldIt = cl.getFields().iterator();
-            if (fieldIt.hasNext()) {
-                while (fieldIt.hasNext()) {
-                    SootField f = (SootField) fieldIt.next();
+			Iterator fieldIt = cl.getFields().iterator();
+			if (fieldIt.hasNext()) {
+				while (fieldIt.hasNext()) {
+					SootField f = (SootField) fieldIt.next();
 
-                    if (f.isPhantom())
-                        continue;
+					if (f.isPhantom())
+						continue;
 
-		    if( f.isFinal() && f.isStatic() ){
-			Type fieldType = f.getType();
-			if(fieldType instanceof DoubleType && f.hasTag("DoubleConstantValueTag")){
-			    double val = ((DoubleConstantValueTag)f.getTag("DoubleConstantValueTag")).getDoubleValue();
-			    out.println("    " + f.getDeclaration() + " = " + val + ";");
+
+					String declaration = null;
+					
+					Type fieldType = f.getType();
+					
+				
+			        String qualifiers = Modifier.toString(f.getModifiers()) + " ";
+			        
+			        
+			        //See if we want to shorten fully qualified names
+			        if(G.v().Dava_RemoveFullyQualifiedNames){
+		        	
+			        	qualifiers += getShortName(fieldType.toString(),packagesUsed); 
+			        }
+			        else
+			        	qualifiers += fieldType.toString();
+			        
+			        
+			        
+			        qualifiers = qualifiers.trim();
+
+			        if(qualifiers.equals(""))
+			            declaration =  Scene.v().quotedNameOf(f.getName());
+			        else
+			            declaration = qualifiers + " " + Scene.v().quotedNameOf(f.getName()) + "";
+
+
+			        if (f.isFinal() && f.isStatic()) {
+										
+						if (fieldType instanceof DoubleType && f.hasTag("DoubleConstantValueTag")) {
+							
+							double val = ((DoubleConstantValueTag) f.getTag("DoubleConstantValueTag")).getDoubleValue();
+							out.println("    " + declaration + " = "+ val + ";");
+							
+						} else if (fieldType instanceof FloatType && f.hasTag("FloatConstantValueTag")) {
+							
+							float val = ((FloatConstantValueTag) f.getTag("FloatConstantValueTag")).getFloatValue();
+							out.println("    " + declaration + " = "+ val + "f;");
+							
+						} else if (fieldType instanceof LongType && f.hasTag("LongConstantValueTag")) {
+
+							long val = ((LongConstantValueTag) f.getTag("LongConstantValueTag")).getLongValue();
+							out.println("    " + declaration + " = "+ val + "l;");
+							
+						} else if (fieldType instanceof CharType && f.hasTag("IntegerConstantValueTag")) {
+
+							int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
+							out.println("    " + declaration + " = '" + ((char) val) + "';");
+
+						} else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")) {
+							
+							int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
+
+							if (val == 0)
+								out.println("    " + declaration+ " = false;");
+							else
+								out.println("    " + declaration+ " = true;");
+							
+						} else if ((fieldType instanceof IntType
+								|| fieldType instanceof ByteType || 
+								fieldType instanceof ShortType)
+								&& f.hasTag("IntegerConstantValueTag")) {
+							
+							int val = ((IntegerConstantValueTag) f.getTag("IntegerConstantValueTag")).getIntValue();
+							out.println("    " + declaration + " = "+ val + ";");
+							
+						} else if (f.hasTag("StringConstantValueTag")) {
+
+							String val = ((StringConstantValueTag) f.getTag("StringConstantValueTag")).getStringValue();
+							out.println("    " + declaration + " = \""+ val + "\";");
+							
+						} else {
+							// System.out.println("Couldnt find type of
+							// field"+f.getDeclaration());
+							out.println("    " + declaration + ";");
+						}
+					} // field is static final
+					else {
+						out.println("    " + declaration + ";");
+					}
+				}
 			}
-			else if (fieldType instanceof FloatType && f.hasTag("FloatConstantValueTag")){
-			    float val = ((FloatConstantValueTag)f.getTag("FloatConstantValueTag")).getFloatValue();
-			    out.println("    " + f.getDeclaration() + " = " + val + "f;");
-			}
-			else if (fieldType instanceof LongType && f.hasTag("LongConstantValueTag")){
-			    long val = ((LongConstantValueTag)f.getTag("LongConstantValueTag")).getLongValue();
-			    out.println("    " + f.getDeclaration() + " = " + val + "l;");
-			}
-			else if (fieldType instanceof CharType && f.hasTag("IntegerConstantValueTag")){
-			    int val = ((IntegerConstantValueTag)f.getTag("IntegerConstantValueTag")).getIntValue();
-			    out.println("    " + f.getDeclaration() + " = '" + ((char)val) + "';");
-			}
-			else if (fieldType instanceof BooleanType && f.hasTag("IntegerConstantValueTag")){
-			    int val = ((IntegerConstantValueTag)f.getTag("IntegerConstantValueTag")).getIntValue();
-			    if (val ==0)
-				out.println("    " + f.getDeclaration() + " = false;");
-			    else
-				out.println("    " + f.getDeclaration() + " = true;");
-			}
-			else if ( (fieldType instanceof IntType || fieldType instanceof ByteType || fieldType instanceof ShortType) && 
-				  f.hasTag("IntegerConstantValueTag")){
-			    int val = ((IntegerConstantValueTag)f.getTag("IntegerConstantValueTag")).getIntValue();
-			    out.println("    " + f.getDeclaration() + " = " + val + ";");
-			}
-			else if(f.hasTag("StringConstantValueTag")){
-			    String val = ((StringConstantValueTag)f.getTag("StringConstantValueTag")).getStringValue();
-			    out.println("    " + f.getDeclaration() + " = \"" + val + "\";");
-			}
-			else{
-			    //System.out.println("Couldnt find type of field"+f.getDeclaration());
-			    out.println("    " + f.getDeclaration() + ";");
-			}
-		    } //field is static final
-		    else{
-			out.println("    " + f.getDeclaration() + ";");
-		    }
-                }
-            }
-        }
+		}
 
         // Print methods
         {
@@ -419,6 +475,27 @@ public class DavaPrinter {
         out.println("}");
     }
 
+    
+    
+    
+    
+    
+    
+	public String getShortName(String name, IterableSet packagesUsed) {
+		// get the package name of the object if one exists
+		String packageName = null;
+		if (name.lastIndexOf('.') > 0) {// 0 doesnt make sense
+			packageName = name.substring(0, name.lastIndexOf('.'));
+		}
+
+		if (packageName != null && packagesUsed.contains(packageName)) {
+			// change superclassname to just the object type name
+			name = name.substring(name.lastIndexOf('.') + 1);
+		}
+
+		return name;
+	}
+	
     /**
      *   Prints out the method corresponding to b Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode b body.

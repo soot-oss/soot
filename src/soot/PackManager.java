@@ -48,7 +48,7 @@ import soot.jimple.toolkits.annotation.defs.*;
 import soot.jimple.toolkits.annotation.liveness.*;
 import soot.jimple.toolkits.annotation.logic.*;
 import soot.jimple.toolkits.annotation.purity.*; // [AM]
-import soot.javaToJimple.toolkits.*; 
+//import soot.javaToJimple.toolkits.*; 
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -62,7 +62,7 @@ import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
-import soot.toolkits.graph.*;
+//import soot.toolkits.graph.*;
 import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
@@ -452,7 +452,14 @@ public class PackManager {
             }
 
 
-	    /*
+
+            
+            
+            
+            
+            
+        G.v().out.print("Generating " + fileName + "... ");
+        /*
 	     * Nomair A. Naeem 5-Jun-2005
 	     * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
 	     */ 
@@ -466,15 +473,14 @@ public class PackManager {
             Iterator methodIt = s.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
-		DavaBody body = (DavaBody)m.getActiveBody();
-		body.analyzeAST();
-
+		        DavaBody body = (DavaBody)m.getActiveBody();
+		        body.analyzeAST();
             }
 
 	     
 
 	    
-            G.v().out.print("Generating " + fileName + "... ");
+ 
             G.v().out.flush();
 
             DavaPrinter.v().printTo(s, writerOut);

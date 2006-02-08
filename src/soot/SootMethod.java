@@ -551,6 +551,13 @@ public class SootMethod
         return getSignature();
     }
 
+    /*
+     * TODO: Nomair A. Naeem .... 8th Feb 2006
+     * This is really messy coding
+     * So much for modularization!!
+     * Should some day look into creating the DavaDeclaration from within
+     * DavaBody
+     */
     public String getDavaDeclaration() {
         if (getName().equals(staticInitializerName))
             return "static";
@@ -576,7 +583,41 @@ public class SootMethod
         else {
             Type t = this.getReturnType();
 
-            buffer.append(t + " ");
+            String tempString = t.toString();    
+            
+			if (G.v().Dava_RemoveFullyQualifiedNames) {
+				DavaBody body = (DavaBody) getActiveBody();
+				IterableSet set = body.get_PackagesUsed();
+
+				// get the package name of the object if one exists
+				String packageName = null;
+				if (tempString.lastIndexOf('.') > 0) {// 0 doesnt make sense
+					packageName = tempString.substring(0, tempString
+							.lastIndexOf('.'));
+				}
+				if (packageName != null) {
+					// System.out.println("Parameter belongs to
+					// package"+packageName);
+					// check if package is not contained in packages retrieved
+					if (!set.contains(packageName)) {
+						// add package
+						body.addPackage(packageName);
+						// System.out.println(packageName+ "added to list");
+					} else {
+						// System.out.println(packageName+ "already in list");
+					}
+
+					// change tempString to just the object type name
+					tempString = tempString.substring(tempString
+							.lastIndexOf('.') + 1);
+				}
+			}			
+						
+			buffer.append(tempString + " ");
+
+			
+            
+            //buffer.append(t + " ");
             buffer.append(Scene.v().quotedNameOf(this.getName()));
         }
 
@@ -587,8 +628,45 @@ public class SootMethod
         int count = 0;
         while (typeIt.hasNext()) {
             Type t = (Type) typeIt.next();
+			String tempString = t.toString();
+            
+            /*
+			 *  Nomair A. Naeem 7th Feb 2006
+			 *  It is nice to remove the fully qualified type names
+			 *  of parameters if the package they belong to have been imported
+			 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
+			 *  If not imported WHY NOT..import it!! 
+			 */
 
-            buffer.append(t);
+			if (G.v().Dava_RemoveFullyQualifiedNames) {
+				DavaBody body = (DavaBody) getActiveBody();
+				IterableSet set = body.get_PackagesUsed();
+
+				// get the package name of the object if one exists
+				String packageName = null;
+				if (tempString.lastIndexOf('.') > 0) {// 0 doesnt make sense
+					packageName = tempString.substring(0, tempString
+							.lastIndexOf('.'));
+				}
+				if (packageName != null) {
+					//System.out.println("Parameter belongs to");
+					// package"+packageName);
+					// check if package is not contained in packages retrieved
+					if (!set.contains(packageName)) {
+						// add package
+						body.addPackage(packageName);
+						// System.out.println(packageName+ "added to list");
+					} else {
+						// System.out.println(packageName+ "already in list");
+					}
+
+					// change tempString to just the object type name
+					tempString = tempString.substring(tempString
+							.lastIndexOf('.') + 1);
+				}
+			}			
+						
+			buffer.append(tempString);
 
             buffer.append(" ");
             if (hasActiveBody()){
@@ -674,7 +752,7 @@ public class SootMethod
 
         // parameters
         Iterator typeIt = this.getParameterTypes().iterator();
-        int count = 0;
+        //int count = 0;
         while (typeIt.hasNext()) {
             Type t = (Type) typeIt.next();
 

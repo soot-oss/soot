@@ -19,86 +19,82 @@
 
 package soot.dava.toolkits.base.renamer;
 
-
 import java.util.*;
 import soot.*;
-public class heuristicSet{
-    HashMap set;
 
-    public heuristicSet(){
-	set = new HashMap();
-    }
+public class heuristicSet {
+	HashMap set;
 
-    private heuristicTuple getTuple(Local var){
-	return (heuristicTuple)set.get(var);
-    }
-
-
-    public void add(Local var,int bits){
-	heuristicTuple temp = new heuristicTuple(bits);
-	set.put(var,temp);
-    }
-    
-    public void setFieldName(Local var, String fieldName){
-	heuristicTuple retrieved = getTuple(var);
-	retrieved.setFieldName(fieldName);
-    }    
-    
-    public List getFieldName(Local var){
-	heuristicTuple retrieved = getTuple(var);
-	return retrieved.getFieldName();
-    }
-
-    public void setObjectClassName(Local var, String objectClassName){
-	heuristicTuple retrieved = getTuple(var);
-	retrieved.setObjectClassName(objectClassName);
-    }    
-    
-    public List getObjectClassName(Local var){
-	heuristicTuple retrieved = getTuple(var);
-	return retrieved.getObjectClassName();
-    }
-
-    public void setMethodName(Local var, String methodName){
-	heuristicTuple retrieved = getTuple(var);
-	retrieved.setMethodName(methodName);
-    }    
-    
-    public List getMethodName(Local var){
-	heuristicTuple retrieved = getTuple(var);
-	return retrieved.getMethodName();
-    }
-
-    public void setHeuristic(Local var, int bitIndex){
-	heuristicTuple retrieved = getTuple(var);
-	retrieved.setHeuristic(bitIndex);
-    }
-
-    public boolean getHeuristic(Local var, int bitIndex){
-	heuristicTuple retrieved = getTuple(var);
-	return retrieved.getHeuristic(bitIndex);
-    }
-
-    public boolean isAnyHeuristicSet(Local var){
-	heuristicTuple retrieved = getTuple(var);
-	return retrieved.isAnyHeuristicSet();
-    }
-
-
-    public void print(){
-	Iterator it = set.keySet().iterator();
-	while(it.hasNext()){
-	    Object local = it.next();
-	    heuristicTuple temp = (heuristicTuple)set.get(local);
-	    String tuple = temp.getPrint();
-	    System.out.println(local+"  "+tuple+" DefinedType: "+((Local)local).getType());
+	public heuristicSet() {
+		set = new HashMap();
 	}
-    }
 
+	private heuristicTuple getTuple(Local var) {
+		return (heuristicTuple) set.get(var);
+	}
 
+	public void add(Local var, int bits) {
+		heuristicTuple temp = new heuristicTuple(bits);
+		set.put(var, temp);
+	}
 
+	public void setFieldName(Local var, String fieldName) {
+		heuristicTuple retrieved = getTuple(var);
+		retrieved.setFieldName(fieldName);
+	}
 
-    public Iterator getLocalsIterator(){
-	return set.keySet().iterator();
-    }
+	public List getFieldName(Local var) {
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.getFieldName();
+	}
+
+	public void setObjectClassName(Local var, String objectClassName) {
+		heuristicTuple retrieved = getTuple(var);
+		retrieved.setObjectClassName(objectClassName);
+	}
+
+	public List getObjectClassName(Local var) {
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.getObjectClassName();
+	}
+
+	public void setMethodName(Local var, String methodName) {
+		heuristicTuple retrieved = getTuple(var);
+		retrieved.setMethodName(methodName);
+	}
+
+	public List getMethodName(Local var) {
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.getMethodName();
+	}
+
+	public void setHeuristic(Local var, int bitIndex) {
+		heuristicTuple retrieved = getTuple(var);
+		retrieved.setHeuristic(bitIndex);
+	}
+
+	public boolean getHeuristic(Local var, int bitIndex) {
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.getHeuristic(bitIndex);
+	}
+
+	public boolean isAnyHeuristicSet(Local var) {
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.isAnyHeuristicSet();
+	}
+
+	public void print() {
+		Iterator it = set.keySet().iterator();
+		while (it.hasNext()) {
+			Object local = it.next();
+			heuristicTuple temp = (heuristicTuple) set.get(local);
+			String tuple = temp.getPrint();
+			System.out.println(local + "  " + tuple + " DefinedType: "
+					+ ((Local) local).getType());
+		}
+	}
+
+	public Iterator getLocalsIterator() {
+		return set.keySet().iterator();
+	}
 }

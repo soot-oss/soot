@@ -1181,38 +1181,6 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*
      *    Create the following code:
      *
@@ -1252,7 +1220,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	  Create      *    DavaSuperHandler handler;  *
 	*/
 	DVariableDeclarationStmt varStmt = null;
-	varStmt = new DVariableDeclarationStmt(localType);
+	varStmt = new DVariableDeclarationStmt(localType,newPreInitDavaBody);
 	varStmt.addLocal(newLocal);
 	AugmentedStmt as = new AugmentedStmt(varStmt);
 	davaHandlerStmts.add(as);

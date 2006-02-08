@@ -109,5 +109,6 @@ public class G extends Singletons
     public boolean SootMethodAddedByDava;
     public ArrayList SootClassNeedsDavaSuperHandlerClass = new ArrayList();
     public ArrayList SootMethodsAdded = new ArrayList();
+    public boolean Dava_RemoveFullyQualifiedNames=false;
 }
 

@@ -24,7 +24,6 @@
  *      created
  */
 
-
 /*
  *  CHANGE LOG:  November 23rd 2005: Changing the semantics of DVariableDeclarationStmt. 
  *                   The fact that we can have definition stmts inside the list of locals
@@ -36,193 +35,222 @@
 package soot.dava.internal.javaRep;
 
 import soot.*;
+
 import java.util.*;
 import soot.jimple.*;
+import soot.util.IterableSet;
 import soot.grimp.*;
 import soot.dava.*;
 
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
-    Type declarationType=null;
+	Type declarationType = null;
 
-    List declarations=null;
-
-
-    public DVariableDeclarationStmt(Type decType){
-	if(declarationType!=null)
-	    throw new RuntimeException("creating a VariableDeclaration which has already been created");
-	else{
-	    declarationType=decType;
-	    declarations = new ArrayList();
+	List declarations = null;
+	
+	//added solely for the purpose of retrieving packages used when printing
+	DavaBody davaBody = null;
+	
+	public DVariableDeclarationStmt(Type decType, DavaBody davaBody) {
+		if (declarationType != null)
+			throw new RuntimeException(
+					"creating a VariableDeclaration which has already been created");
+		else {
+			declarationType = decType;
+			declarations = new ArrayList();
+			this.davaBody=davaBody;
+		}
 	}
-    }
 
-
-
-    public List getDeclarations(){
-	return declarations;
-    }
-
-    public void addLocal(Local add){
-	declarations.add(add);
-    }
-
-    public void removeLocal(Local remove){
-	for(int i=0;i<declarations.size();i++){
-	    Local temp = (Local)declarations.get(i);
-	    if(temp.getName().compareTo(remove.getName())==0){
-		//this is the local to be removed
-		//System.out.println("REMOVED"+temp);
-		declarations.remove(i);
-		return;
-	    }
+	public List getDeclarations() {
+		return declarations;
 	}
-    }
 
-    public Type getType(){
-	return declarationType;
-    }
-    
-    public boolean isOfType(Type type){
-	if(type.toString().compareTo(declarationType.toString())==0)
-	    return true;
-	else
-	    return false;
-    }
-
-
-
-
-    public Object clone(){
-	DVariableDeclarationStmt temp =  new DVariableDeclarationStmt(declarationType);
-	Iterator it = declarations.iterator();
-	while(it.hasNext()){
-	    Local obj = (Local)it.next();
-
-	    Value temp1 = Grimp.cloneIfNecessary(obj);
-	    if(temp1 instanceof Local)
-		temp.addLocal((Local)temp1);
+	public void addLocal(Local add) {
+		declarations.add(add);
 	}
-	return temp;
-    }
 
-
-
-    public String toString(){
-	StringBuffer b = new StringBuffer();
-	 
-	if(declarations.size()==0)
-	    return b.toString();
-	 
-	String type = declarationType.toString();
-	 
-	if (type.equals("null_type"))
-	    b.append("Object");
-	else
-	    b.append(type);
-	b.append(" ");
-	 
-	Iterator decIt = declarations.iterator();
-	while(decIt.hasNext()){
-	    Local tempDec = (Local)decIt.next();
-	    b.append(tempDec.getName());
-
-	    if (decIt.hasNext())
-		b.append(", ");
+	public void removeLocal(Local remove) {
+		for (int i = 0; i < declarations.size(); i++) {
+			Local temp = (Local) declarations.get(i);
+			if (temp.getName().compareTo(remove.getName()) == 0) {
+				//this is the local to be removed
+				//System.out.println("REMOVED"+temp);
+				declarations.remove(i);
+				return;
+			}
+		}
 	}
-	return b.toString();
-    }
-    
 
-
-
-    public void toString(UnitPrinter up){
-	if(declarations.size()==0)
-	    return;
-	  
-	if(!(up instanceof DavaUnitPrinter))
-	    throw new RuntimeException("DavaBody should always be printed using the DavaUnitPrinter");	    
-	else{
-	    DavaUnitPrinter dup = (DavaUnitPrinter)up;
-	  
-	    String type = declarationType.toString();
-	    
-	    if (type.equals("null_type"))
-		dup.printString("Object");
-	    else
-		dup.printString(type);
-	    dup.printString(" ");
-	    
-	    Iterator decIt = declarations.iterator();
-	    while(decIt.hasNext()){
-		Local tempDec = (Local)decIt.next();
-		dup.printString(tempDec.getName());
-		if (decIt.hasNext())
-		    dup.printString(", ");
-	    }
+	public Type getType() {
+		return declarationType;
 	}
-    }
 
+	public boolean isOfType(Type type) {
+		if (type.toString().compareTo(declarationType.toString()) == 0)
+			return true;
+		else
+			return false;
+	}
 
-    /*
-      Methods needed to satisfy all obligations due to extension from AbstractUnit
-      and implementing Stmt
+	public Object clone() {
+		DVariableDeclarationStmt temp = new DVariableDeclarationStmt(
+				declarationType,davaBody);
+		Iterator it = declarations.iterator();
+		while (it.hasNext()) {
+			Local obj = (Local) it.next();
 
-    */
+			Value temp1 = Grimp.cloneIfNecessary(obj);
+			if (temp1 instanceof Local)
+				temp.addLocal((Local) temp1);
+		}
+		return temp;
+	}
 
+	public String toString() {
+		StringBuffer b = new StringBuffer();
 
+		if (declarations.size() == 0)
+			return b.toString();
 
-    public boolean fallsThrough() { return true;}        
-    public boolean branches() { return false;}
+		String type = declarationType.toString();
 
-    public boolean containsInvokeExpr(){
-        return false;
-    }
+		if (type.equals("null_type"))
+			b.append("Object");
+		else
+			b.append(type);
+		b.append(" ");
 
-    public InvokeExpr getInvokeExpr(){
-        throw new RuntimeException("getInvokeExpr() called with no invokeExpr present!");
-    }
+		Iterator decIt = declarations.iterator();
+		while (decIt.hasNext()) {
+			Local tempDec = (Local) decIt.next();
+			b.append(tempDec.getName());
 
-    public ValueBox getInvokeExprBox(){
-        throw new RuntimeException("getInvokeExprBox() called with no invokeExpr present!");
-    }
+			if (decIt.hasNext())
+				b.append(", ");
+		}
+		return b.toString();
+	}
 
-    public boolean containsArrayRef(){
-	return false;
-    }
+	public void toString(UnitPrinter up) {
+		if (declarations.size() == 0)
+			return;
 
-    public ArrayRef getArrayRef(){
-	throw new RuntimeException("getArrayRef() called with no ArrayRef present!");
-    }
+		if (!(up instanceof DavaUnitPrinter))
+			throw new RuntimeException(
+					"DavaBody should always be printed using the DavaUnitPrinter");
+		else {
+			DavaUnitPrinter dup = (DavaUnitPrinter) up;
 
-    public ValueBox getArrayRefBox(){
-	throw new RuntimeException("getArrayRefBox() called with no ArrayRef present!");
-    }
+			String type = declarationType.toString();
 
-    public boolean containsFieldRef(){
-	return false;
-    }
+			if (type.equals("null_type"))
+				dup.printString("Object");
+			else{
+				
+				
+				/*
+				 *  Nomair A. Naeem 8th Feb 2006
+				 *  It is nice to remove the fully qualified type names
+				 *  of locals if the package they belong to have been imported
+				 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
+				 *  If not imported WHY NOT..import it!! 
+				 */
 
-    public FieldRef getFieldRef(){
-	throw new RuntimeException("getFieldRef() called with no FieldRef present!");
-    }
+				if (G.v().Dava_RemoveFullyQualifiedNames) {
+					IterableSet set = davaBody.get_PackagesUsed();
 
-    public ValueBox getFieldRefBox(){
-	throw new RuntimeException("getFieldRefBox() called with no FieldRef present!");
-    }
+					// get the package name of the object if one exists
+					String packageName = null;
+					if (type.lastIndexOf('.') > 0) {// 0 doesnt make sense
+						packageName = type.substring(0, type.lastIndexOf('.'));
+					}
+					if (packageName != null) {
+						//System.out.println("Parameter belongs to
+						// package"+packageName);
+						// check if package is not contained in packages retrieved
+						if (!set.contains(packageName)) {
+							// add package
+							davaBody.addPackage(packageName);
+							// System.out.println(packageName+ "added to list");
+						} else {
+							// System.out.println(packageName+ "already in list");
+						}
 
+						// change tempString to just the object type name
+						type = type.substring(type.lastIndexOf('.') + 1);
+					}
+				}	
+				
+				
+				dup.printString(type);
+			}
+			dup.printString(" ");
 
+			Iterator decIt = declarations.iterator();
+			while (decIt.hasNext()) {
+				Local tempDec = (Local) decIt.next();
+				dup.printString(tempDec.getName());
+				if (decIt.hasNext())
+					dup.printString(", ");
+			}
+		}
+	}
 
-    
+	/*
+	 Methods needed to satisfy all obligations due to extension from AbstractUnit
+	 and implementing Stmt
+
+	 */
+
+	public boolean fallsThrough() {
+		return true;
+	}
+
+	public boolean branches() {
+		return false;
+	}
+
+	public boolean containsInvokeExpr() {
+		return false;
+	}
+
+	public InvokeExpr getInvokeExpr() {
+		throw new RuntimeException(
+				"getInvokeExpr() called with no invokeExpr present!");
+	}
+
+	public ValueBox getInvokeExprBox() {
+		throw new RuntimeException(
+				"getInvokeExprBox() called with no invokeExpr present!");
+	}
+
+	public boolean containsArrayRef() {
+		return false;
+	}
+
+	public ArrayRef getArrayRef() {
+		throw new RuntimeException(
+				"getArrayRef() called with no ArrayRef present!");
+	}
+
+	public ValueBox getArrayRefBox() {
+		throw new RuntimeException(
+				"getArrayRefBox() called with no ArrayRef present!");
+	}
+
+	public boolean containsFieldRef() {
+		return false;
+	}
+
+	public FieldRef getFieldRef() {
+		throw new RuntimeException(
+				"getFieldRef() called with no FieldRef present!");
+	}
+
+	public ValueBox getFieldRefBox() {
+		throw new RuntimeException(
+				"getFieldRefBox() called with no FieldRef present!");
+	}
 
 }
-
-
-
-
-
-
-
-
-
-
