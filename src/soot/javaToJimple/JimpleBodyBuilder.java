@@ -1222,6 +1222,30 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private void createBranch(polyglot.ast.Branch branchStmt){
         
+        //handle finally blocks before branch if inside try block
+        if (tryStack != null && !tryStack.isEmpty()){
+            polyglot.ast.Try currentTry = (polyglot.ast.Try)tryStack.pop();
+            if (currentTry.finallyBlock() != null){
+                createBlock(currentTry.finallyBlock());
+                tryStack.push(currentTry);
+            }
+            else {
+                tryStack.push(currentTry);
+            }
+        }
+       
+        //handle finally blocks before branch if inside catch block
+        if (catchStack != null && !catchStack.isEmpty()){
+            polyglot.ast.Try currentTry = (polyglot.ast.Try)catchStack.pop();
+            if (currentTry.finallyBlock() != null){
+                createBlock(currentTry.finallyBlock());
+                catchStack.push(currentTry);
+            }
+            else {
+                catchStack.push(currentTry);
+            }
+        }
+        
         body.getUnits().add(soot.jimple.Jimple.v().newNopStmt());
         if (branchStmt.kind() == polyglot.ast.Branch.BREAK){
             if (branchStmt.label() == null) {
@@ -1998,14 +2022,16 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             //paramTypes.add(Util.getSootType(field.target().type()));
         }
         soot.Type retType; 
-        if (param.getType() instanceof soot.NullType){
+        paramTypes.add(Util.getSootType(field.type()));
+        retType = Util.getSootType(field.type());
+        /*if (param.getType() instanceof soot.NullType){
             paramTypes.add(soot.RefType.v("java.lang.Object"));
             retType = soot.RefType.v("java.lang.Object");
         }
         else {
             paramTypes.add(param.getType());
             retType = param.getType();
-        }
+        }*/
         soot.SootMethod meth = new soot.SootMethod(name, paramTypes, retType, soot.Modifier.STATIC);
         PrivateFieldSetMethodSource pfsms = new PrivateFieldSetMethodSource(
 		Util.getSootType(field.type()),
