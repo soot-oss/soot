@@ -19,7 +19,6 @@
 
 package soot;
 import soot.jimple.*;
-import java.util.*;
 
 /**
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
@@ -77,9 +76,9 @@ public class BriefUnitPrinter extends LabeledUnitPrinter {
         eatSpace = false;
         if( !baf ) {
             if( false
-            ||  s.equals( Jimple.v().STATICINVOKE )
-            ||  s.equals( Jimple.v().VIRTUALINVOKE )
-            ||  s.equals( Jimple.v().INTERFACEINVOKE )
+            ||  s.equals( Jimple.STATICINVOKE )
+            ||  s.equals( Jimple.VIRTUALINVOKE )
+            ||  s.equals( Jimple.INTERFACEINVOKE )
               ) {
                 eatSpace = true;
                 return;
