@@ -44,7 +44,7 @@ class AbstractSootMethodRef implements SootMethodRef {
         if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null class" );
         if( name == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null name" );
         if( parameterTypes == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null parameterTypes" );
-        if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );
+        if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );        
     }
 
     private final SootClass declaringClass;
@@ -101,7 +101,6 @@ class AbstractSootMethodRef implements SootMethodRef {
         return ret;
     }
     private SootMethod resolve(StringBuffer trace) {
-        SootMethod ret = null;
         SootClass cl = declaringClass;
         while(true) {
             if(trace != null) trace.append(
