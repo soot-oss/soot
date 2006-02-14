@@ -28,16 +28,26 @@ public class heuristicTuple{
     Vector methodName;  //local is assigned the result of this method call
     Vector objectClassName; //local is initialized with a new invocation of this class
     Vector fieldName; //local is initialized with a field
-   
+    Vector castStrings; //local is casted to a type
 
     public heuristicTuple(int bits){
-	heuristics =new BitSet(bits);
-	this.methodName= new Vector();
-	this.objectClassName = new Vector();
-	this.fieldName = new Vector();
-	bitSetSize=bits;
+    	heuristics =new BitSet(bits);
+    	this.methodName= new Vector();
+    	this.objectClassName = new Vector();
+    	this.fieldName = new Vector();
+    	this.castStrings = new Vector();
+    	bitSetSize=bits;
     }
 
+    public void addCastString(String castString){
+    	this.castStrings.add(castString);
+    	setHeuristic(infoGatheringAnalysis.CAST);
+    }
+    
+    public List getCastStrings(){
+    	return castStrings;
+    }
+    
     public void setFieldName(String fieldName){
 	this.fieldName.add(fieldName);
 	setHeuristic(infoGatheringAnalysis.FIELDASSIGN);

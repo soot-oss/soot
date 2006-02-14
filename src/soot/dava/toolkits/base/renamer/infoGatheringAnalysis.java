@@ -34,11 +34,9 @@ import soot.dava.internal.AST.*;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
 	
-	
-	
 	public boolean DEBUG=false;
 	
-	public final static int CLASSNAME = 0;
+	public final static int CLASSNAME = 0;  //used by renamer
 
 	public final static int METHODNAME = 1;
 
@@ -52,13 +50,15 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 
 	public final static int ARRAYINDEX = 6;
 
-	public final static int MAINARG = 7;
+	public final static int MAINARG = 7; //used by renamer
 
-	public final static int FIELDASSIGN = 8;
+	public final static int FIELDASSIGN = 8; //used by renamer
 
-	public final static int FORLOOPUPDATE = 9;
+	public final static int FORLOOPUPDATE = 9; //used by renamer
+	
+	public final static int CAST = 10; 
 
-	public final static int NUMBITS = 10;
+	public final static int NUMBITS = 11;
 
 	//dataset to store all information gathered
 	heuristicSet info;
@@ -102,14 +102,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 				continue;
 			localList.add(local);
 		}
-		//System.out.println();
-/*
-		ASTMethodNode AST = (ASTMethodNode) davaBody.getUnits().getFirst();
-		localList = AST.getDeclaredLocals();
-		if(localList == null)
-			localList = new ArrayList();
-		//have to add arguments from method declaration also
-	*/	
 
 		//localList is a list with all locals
 		//initialize the info Set with empty info for each local
@@ -117,7 +109,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		while (it.hasNext()) {
 			Local local = (Local) it.next();
 			info.add(local, NUMBITS);
-			debug("added "+local.getName()+ " to the heuristicset");
+			debug("infoGatheringAnalysis","added "+local.getName()+ " to the heuristicset");
 		}
 
 		/*
@@ -157,17 +149,36 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		Value v = s.getLeftOp();
 		if (v instanceof Local) {
 			//System.out.println("This is a local:"+v);
-			definedLocal = (Local) v;
+			/*
+			 * We want definedLocal to be set only if we are interested in naming it
+			 * Variables that are created by Dava itself e.g. handler (refer to SuperFirstStmtHandler)
+			 * Need not be renamed. So we check whether definedLocal is present in the info set
+			 * if it is we set this other wise we dont
+			 */
+			if(info.contains((Local)v))
+				definedLocal = (Local) v;
+			else
+				definedLocal = null;
+			
+			
 		} else {
 			//System.out.println("Not a local"+v);
 		}
 	}
 
 	public void outDefinitionStmt(DefinitionStmt s) {
+		//checking casting here because we want to see if the expr
+		//on the right of def stmt is a cast expr not whether it contains a cast expr
+		if(definedLocal != null && s.getRightOp() instanceof CastExpr){
+			Type castType = ((CastExpr)s.getRightOp()).getCastType();
+			info.addCastString(definedLocal,castType.toString());
+		}
 		inDefinitionStmt = false;
 		definedLocal = null;
 	}
 
+	
+	
 	/*
 	 Deals with cases in which a local is assigned a value from a static field
 	 int local = field
@@ -196,6 +207,12 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		}
 	}
 
+	/*
+	 *  (non-Javadoc)
+	 * @see soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter#outInvokeExpr(soot.jimple.InvokeExpr)
+	 * If it is a newInvoke expr we know that the name of the class can come in handy
+	 * while renaming because this could be a subtype
+	 */
 	public void outInvokeExpr(InvokeExpr ie) {
 		//If this is within a definitionStmt of a local 
 		if (inDefinitionStmt && (definedLocal != null)) {
@@ -204,7 +221,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 				//System.out.println("new object being created retrieve the name");
 				RefType ref = ((NewInvokeExpr) ie).getBaseType();
 				String className = ref.getClassName();
+				debug("outInvokeExpr","defined local is"+definedLocal);
 				info.setObjectClassName(definedLocal, className);
+				
 			} else {
 				SootMethodRef methodRef = ie.getMethodRef();
 				String name = methodRef.name();
@@ -313,22 +332,6 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 
 	public void inASTTryNode(ASTTryNode node) {
 
-		Map exceptionMap = node.get_ExceptionMap();
-		Map paramMap = node.get_ParamMap();
-		//get catch list and for each local in the catch set the type to that of the type of exception
-
-		List catchList = node.get_CatchList();
-		Iterator it = catchList.iterator();
-		while (it.hasNext()) {
-			ASTTryNode.container catchBody = (ASTTryNode.container) it.next();
-
-			SootClass sootClass = ((SootClass) exceptionMap.get(catchBody));
-			String name = sootClass.getJavaStyleName();
-
-			Local local = (Local) paramMap.get(catchBody); 
-			info.setObjectClassName(local, name);
-		}
-		
 	}
 
 	/*
@@ -408,10 +411,12 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		return info;
 	}
 	
-	public void debug(String debug){
+	public void debug(String methodName, String debug){
+		
 		if(DEBUG)
-			System.out.println(debug);
+			System.out.println(methodName+ "    DEBUG: "+debug);
 	}
+
 
 }
 

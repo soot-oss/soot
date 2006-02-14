@@ -38,6 +38,16 @@ public class heuristicSet {
 		set.put(var, temp);
 	}
 
+	public void addCastString(Local var, String castString){
+		heuristicTuple retrieved = getTuple(var);
+		retrieved.addCastString(castString);
+	}
+	
+	public List getCastStrings(Local var){
+		heuristicTuple retrieved = getTuple(var);
+		return retrieved.getCastStrings();
+	}
+	
 	public void setFieldName(Local var, String fieldName) {
 		heuristicTuple retrieved = getTuple(var);
 		retrieved.setFieldName(fieldName);
@@ -96,5 +106,12 @@ public class heuristicSet {
 
 	public Iterator getLocalsIterator() {
 		return set.keySet().iterator();
+	}
+	
+	public boolean contains(Local var){
+		if(set.get(var) != null)
+			return true;
+		else
+			return false;
 	}
 }

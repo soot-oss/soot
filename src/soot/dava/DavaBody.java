@@ -21,7 +21,9 @@
 package soot.dava;
 
 import soot.*;
+
 import java.util.*;
+
 import soot.util.*;
 import soot.grimp.*;
 import soot.jimple.*;
@@ -46,6 +48,11 @@ import soot.dava.toolkits.base.AST.transformations.*;
  *             output. Invoked by PackManager
  *
  *             Nomair - 7th Feb, 2006: Starting work on a naming mechanism
+ *             Nomair - 13th Feb 2006: Added db phase options
+ *             	        
+ *				renamer: on /off  DEFAULT:TRUE
+ *				deobfuscate: DEFAULT: FALSE, dead code eliminateion, class/field renaming, constant field elimination
+ *              force-recompilability: DEFAULT TRUE, super, final            
  */
 
 /*
@@ -53,6 +60,9 @@ import soot.dava.toolkits.base.AST.transformations.*;
  *  	    AST.perform_Analysis( UselessTryRemover.v());
  *         use the new AnalysisAdapter routines to write this analysis. Then delete these
  *         obselete and rather clumsy way of writing analyses
+ *         
+ * TODO: Nomair 14th Feb 2006, Use the Dava options renamer, deobfuscate, force-recompilability
+ *                              Specially the deobfuscate option with the boolean constant propagation analysis
  *
  */
 
@@ -238,7 +248,14 @@ public class DavaBody extends Body {
 			 * January 12th, 2006
 			 * Deal with the super() problem before continuing
 			 */
-			AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
+			Map options = PhaseOptions.v().getPhaseOptions("db");
+	        boolean force = PhaseOptions.getBoolean(options, "force-recompilability");
+
+	        if(force){
+				AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
+	        }
+
+
 
 		}
 		Dava.v().log("end method " + body.getMethod().toString());
@@ -270,15 +287,15 @@ public class DavaBody extends Body {
 
 		/*
 		 * Renamer
-		 * It might be worthwhile to invoke a method applyRenameAnalyses which could do the analyses and 
-		 * subsequenct changes
+		 * 
 		 */
-		G.v().Dava_RemoveFullyQualifiedNames=true;
-		infoGatheringAnalysis info = new infoGatheringAnalysis(this);
-		AST.apply(info);
+		Map options = PhaseOptions.v().getPhaseOptions("db");
+        boolean renamer = PhaseOptions.getBoolean(options, "renamer");
 
-		Renamer renamer = new Renamer(info.getHeuristicSet(),(ASTMethodNode)AST);
-		renamer.rename();
+        if(renamer){
+        	//System.out.println("\nRenaming...");
+        	applyRenamerAnalyses(AST);
+        }
 		
 		/*
 		 In the end check 
@@ -328,27 +345,27 @@ public class DavaBody extends Body {
 				AST.apply(new OrAggregatorFour());
 
 				/*
-				 ASTCleaner currently does the following tasks:
-				 1, Remove empty Labeled Blocks UselessLabeledBlockRemover
-				 2, convert ASTIfElseNodes with empty else bodies to ASTIfNodes
-				 3, Apply OrAggregatorThree
+				 * ASTCleaner currently does the following tasks:
+				 * 1, Remove empty Labeled Blocks UselessLabeledBlockRemover
+				 * 2, convert ASTIfElseNodes with empty else bodies to ASTIfNodes
+				 * 3, Apply OrAggregatorThree
 				 */
 				AST.apply(new ASTCleaner());
 
 				/*
-				 PushLabeledBlockIn should not be called unless we are sure
-				 that all labeledblocks have non null labels.
-				 A good way of ensuring this is to run the ASTCleaner directly
-				 before calling this
+				 * PushLabeledBlockIn should not be called unless we are sure
+				 * that all labeledblocks have non null labels.
+				 * A good way of ensuring this is to run the ASTCleaner directly
+				 * before calling this
 				 */
 				AST.apply(new PushLabeledBlockIn());
 
 				AST.apply(new LoopStrengthener());
 
 				/*
-				 Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation.
-				 Pattern two was implemented to give loopStrengthening a better chance
-				 SEE IfElseBreaker
+				 * Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation.
+				 * Pattern two was implemented to give loopStrengthening a better chance
+				 * SEE IfElseBreaker
 				 */
 				AST.apply(new ASTCleanerTwo());
 
@@ -367,7 +384,14 @@ public class DavaBody extends Body {
 		//29th Jan 2006
 		//make sure when recompiling there is no variable might not be initialized error
 
-		new FinalFieldDefinition((ASTMethodNode) AST);
+		Map options = PhaseOptions.v().getPhaseOptions("db");
+        boolean force = PhaseOptions.getBoolean(options, "force-recompilability");
+
+        if(force){
+    		new FinalFieldDefinition((ASTMethodNode) AST);
+        }
+
+
 	}
 
 	private void applyStructuralAnalyses(ASTNode AST) {
@@ -383,7 +407,7 @@ public class DavaBody extends Body {
 		//AST.apply(new ASTUsesAndDefs(AST));
 
 		/*
-		 Structural flow analyses.....
+		 * Structural flow analyses.....
 		 */
 
 		CopyPropagation prop = new CopyPropagation(AST);
@@ -394,6 +418,29 @@ public class DavaBody extends Body {
 
 	}
 
+	
+	private void applyRenamerAnalyses(ASTNode AST){
+		
+		
+		/*
+		 * TODO: Removing Fully Qualified names should not be a flag
+		 * It should check that an object whose qualified name is being
+		 * removed is not declared by two packages being imported
+		 * e.g. java.util.Timer and javax.swing.Timer is bad bad
+		 * 
+		 */
+		
+			//G.v().Dava_RemoveFullyQualifiedNames=true;
+		infoGatheringAnalysis info = new infoGatheringAnalysis(this);
+		AST.apply(info);
+
+		Renamer renamer = new Renamer(info.getHeuristicSet(),(ASTMethodNode)AST);
+		renamer.rename();		
+	}
+
+	
+	
+	
 	public void write(String temp) {
 		try {
 			soot.dava.Dava.w.write(temp);

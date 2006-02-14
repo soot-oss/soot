@@ -247,6 +247,15 @@ public class PackManager {
             p.add(new Transform("tag.fieldrw", FieldTagAggregator.v()));
         }
 
+        // Dummy Dava Phase
+        /*
+         * Nomair A. Naeem 13th Feb 2005
+         * Added so that Dava Options can be added as phase options rather
+         * than main soot options since they only make sense when decompiling
+         * The db phase options are added in soot_options.xml
+         */
+        addPack(p = new BodyPack("db"));
+
         onlyStandardPacks = true;
     }
 

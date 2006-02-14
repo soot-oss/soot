@@ -2726,5 +2726,38 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_db() {
+            Object ret = new PhaseOptdb();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptdb {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("db");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setrenamer(boolean arg) {
+            addArg("-p");
+            addArg("db");
+            addArg("renamer:"+(arg?"true":"false"));
+          }
+      
+          public void setdeobfuscate(boolean arg) {
+            addArg("-p");
+            addArg("db");
+            addArg("deobfuscate:"+(arg?"true":"false"));
+          }
+      
+          public void setforce_recompilability(boolean arg) {
+            addArg("-p");
+            addArg("db");
+            addArg("force-recompilability:"+(arg?"true":"false"));
+          }
+      
+        }
+    
 }
   

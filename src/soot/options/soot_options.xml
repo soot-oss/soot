@@ -4770,6 +4770,116 @@ tags produced by the Field Read/Write Tagger, phase
 					</boolopt>
 				</sub_phase>
 			</phase>
+
+
+
+
+
+
+
+
+
+
+                       <phase>
+	                      <name>Dava Body Creation</name>
+	                      <alias>db</alias>
+          	              <short_desc>Dummy phase to store options for Dava</short_desc>
+
+				<long_desc>
+The decompile (Dava) option is set using the -f dava options in Soot.
+Options provided by Dava are added to this dummy phase so as not to clutter the soot general arguments.
+-p db (option name):(value) will be used to set all required values for Dava. 
+
+****Renamer**** If set, the renaming analyses implemented in Dava are applied to each method body being decompiled. 
+The analyses use heuristics to choose potentially better names for local variables. (As of February 14th 2006, work 
+is still under progress on these analyses (dava.toolkits.base.renamer).
+
+
+**** Deobfuscate**** Certain analyses make sense only when the bytecode is obfuscated code. 
+There are plans to implement such analyses and apply them on methods only if this flag is set. 
+Dead Code elimination which includes removing code guarded by some condition which is always false or always true is one such
+analysis. Another suggested analysis is giving default names to classes and fields. Onfuscators love to use weird names
+for fields and classes and even a simple re-naming of these could be a good help to the user. 
+Another more advanced analysis would be to check for redundant constant fields added by obfuscators and then remove uses 
+of these constant fields from the code.
+
+**** Force-Recompilability**** While decompiling we have to be clear what our aim is: do we want to convert bytecode
+to Java syntax and stay as close to the actual execution of bytecode or do we want recompilably Java source representing
+the bytecode. This distinction is important because some restrictions present in Java source are absent from the bytecode.
+Examples of this include that fact that in Java a call to a constructor or super needs to be the first statement in
+a constructors body. This restriction is absent from the bytecode. Similarly final fields HAVE to be initialized
+once and only once in either the static initializer (static fields) or all the constructors (non-static fields). Additionally
+the fields should be initialized on all possible execution paths. These restrictions are again absent from the bytecode.
+In doing a one-one conversion of bytecode to Java source then no attempt should be made to fix any of these and similar problems
+in the Java source. However, if the aim is to get recompilable code then these and similar issues need to be fixed. 
+Setting the force-recompilability flag will ensure that the decompiler tries its best to produce recompilable Java source.
+
+                                </long_desc>
+				<boolopt>
+					<name>Enabled</name>
+
+					<alias>enabled</alias>
+                                        <default>true</default>
+					<short_desc/>
+					<long_desc/>
+				</boolopt>
+				<boolopt>
+					<name>Renamer</name>
+					<alias>renamer</alias>
+
+					<default>true</default>
+					<short_desc> 
+					  Apply heuristics based renaming of local variables.
+					</short_desc>
+					<long_desc>
+					     If set, the renaming analyses implemented in Dava are applied to each method body being decompiled. The analyses use heuristics to choose potentially better names for local variables. (As of February 14th 2006, work is still under progress on these analyses (dava.toolkits.base.renamer).
+					</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>De-obfuscate</name>
+					<alias>deobfuscate</alias>
+
+					<default>false</default>
+					<short_desc> 
+					   Apply de-obfuscation analyses
+					</short_desc>
+					<long_desc>
+						Certain analyses make sense only when the bytecode is obfuscated code. 
+There are plans to implement such analyses and apply them on methods only if this flag is set. 
+Dead Code elimination which includes removing code guarded by some condition which is always false or always true is one such
+analysis. Another suggested analysis is giving default names to classes and fields. Onfuscators love to use weird names
+for fields and classes and even a simple re-naming of these could be a good help to the user. 
+Another more advanced analysis would be to check for redundant constant fields added by obfuscators and then remove uses 
+of these constant fields from the code.
+					</long_desc>
+				</boolopt>
+				<boolopt>
+					<name>Force Recompilability</name>
+					<alias>force-recompilability</alias>
+
+					<default>true</default>
+					<short_desc> 
+						Try to get recompilable code.
+					</short_desc>
+					<long_desc>
+                                    While decompiling we have to be clear what our aim is: do we want to convert bytecode
+to Java syntax and stay as close to the actual execution of bytecode or do we want recompilably Java source representing
+the bytecode. This distinction is important because some restrictions present in Java source are absent from the bytecode.
+Examples of this include that fact that in Java a call to a constructor or super needs to be the first statement in
+a constructors body. This restriction is absent from the bytecode. Similarly final fields HAVE to be initialized
+once and only once in either the static initializer (static fields) or all the constructors (non-static fields). Additionally
+the fields should be initialized on all possible execution paths. These restrictions are again absent from the bytecode.
+In doing a one-one conversion of bytecode to Java source then no attempt should be made to fix any of these and similar problems
+in the Java source. However, if the aim is to get recompilable code then these and similar issues need to be fixed. 
+Setting the force-recompilability flag will ensure that the decompiler tries its best to produce recompilable Java source.
+					</long_desc>
+				</boolopt>
+
+			</phase>
+
+
+
+
 		</phaseopt>
 		<macroopt>
 			<name>Optimize</name>
