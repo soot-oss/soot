@@ -44,12 +44,7 @@ class AbstractSootMethodRef implements SootMethodRef {
         if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null class" );
         if( name == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null name" );
         if( parameterTypes == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null parameterTypes" );
-        if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );
-        
-        if(name.contains("valueOf")){
-        	System.err.println(getSignature());
-        	new Exception().printStackTrace(System.err);
-        }
+        if( returnType == null ) throw new RuntimeException( "Attempt to create SootMethodRef with null returnType" );        
     }
 
     private final SootClass declaringClass;
@@ -86,9 +81,7 @@ class AbstractSootMethodRef implements SootMethodRef {
         public ClassResolutionFailedException() {
             super("Class "+declaringClass+" doesn't have method "+name+
                     "("+parameterTypes+")"+" : "+returnType+
-                    "; failed to resolve in superclasses and interfaces "+
-                    "(subsignature was: "+getSubSignature()+")"
-            );
+                    "; failed to resolve in superclasses and interfaces" );
         }
         public String toString() {
             StringBuffer ret = new StringBuffer();
@@ -110,9 +103,6 @@ class AbstractSootMethodRef implements SootMethodRef {
     private SootMethod resolve(StringBuffer trace) {
         SootClass cl = declaringClass;
         while(true) {
-        	if(name.contains("valueOf")) {
-        		System.err.println("1: " + getSubSignature());
-        	}
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has methods "+cl.getMethods()+"\n" );
             if( cl.declaresMethod( getSubSignature() ) )
@@ -129,9 +119,6 @@ class AbstractSootMethodRef implements SootMethodRef {
         }
         cl = declaringClass;
         while(true) {
-        	if(name.contains("valueOf")) {
-        		System.err.println("2: " + getSubSignature());
-        	}
             LinkedList queue = new LinkedList();
             queue.addAll( cl.getInterfaces() );
             while( !queue.isEmpty() ) {
