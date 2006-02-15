@@ -181,7 +181,7 @@ public class DavaBody extends Body {
 
 	DavaBody(Body body) {
 		this(body.getMethod());
-
+		debug("DavaBody","creating DavaBody for"+body.getMethod().toString());
 		Dava.v().log("\nstart method " + body.getMethod().toString());
 
 		// copy and "convert" the grimp representation
@@ -248,9 +248,9 @@ public class DavaBody extends Body {
 			 * January 12th, 2006
 			 * Deal with the super() problem before continuing
 			 */
-			Map options = PhaseOptions.v().getPhaseOptions("db");
-	        boolean force = PhaseOptions.getBoolean(options, "force-recompilability");
-
+			Map options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
+	        boolean force = PhaseOptions.getBoolean(options, "enabled");
+	        //System.out.println("force is "+force);
 	        if(force){
 				AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
 	        }
@@ -267,6 +267,7 @@ public class DavaBody extends Body {
 	 * All AST transformations should be implemented from within this method.
 	 */
 	public void analyzeAST() {
+		debug("analyseAST","analyzing AST");
 		ASTNode AST = (ASTNode) this.getUnits().getFirst();
 		//System.out.println("\n\n\nApplying AST analyzes for method"+this.getMethod().toString());
 
@@ -289,9 +290,9 @@ public class DavaBody extends Body {
 		 * Renamer
 		 * 
 		 */
-		Map options = PhaseOptions.v().getPhaseOptions("db");
-        boolean renamer = PhaseOptions.getBoolean(options, "renamer");
-
+		Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+        boolean renamer = PhaseOptions.getBoolean(options, "enabled");
+        //System.out.println("renaming is"+renamer);
         if(renamer){
         	//System.out.println("\nRenaming...");
         	applyRenamerAnalyses(AST);
@@ -323,16 +324,20 @@ public class DavaBody extends Body {
 		if (flag) {
 			// perform transformations on the AST	
 			do {
-				//System.out.println("ITERATION");
+				debug("applyASTAnalyses","ITERATION");
 				G.v().ASTTransformations_modified = false;
 				times++;
 
+
 				AST.apply(new AndAggregator());
+				debug("applyASTAnalyses","after AndAggregator"+G.v().ASTTransformations_modified);
 				/*
 				 The OrAggregatorOne internally calls UselessLabelFinder which sets the label to null
 				 Always apply a UselessLabeledBlockRemover in the end to remove such labeled blocks
 				 */
+
 				AST.apply(new OrAggregatorOne());
+				debug("applyASTAnalyses","after OraggregatorOne"+G.v().ASTTransformations_modified);
 
 				/*
 				 Note OrAggregatorTwo should always be followed by an emptyElseRemover 
@@ -342,7 +347,9 @@ public class DavaBody extends Body {
 				 */
 
 				AST.apply(new OrAggregatorTwo());
+				debug("applyASTAnalyses","after OraggregatorTwo"+G.v().ASTTransformations_modified);
 				AST.apply(new OrAggregatorFour());
+				debug("applyASTAnalyses","after OraggregatorFour"+G.v().ASTTransformations_modified);
 
 				/*
 				 * ASTCleaner currently does the following tasks:
@@ -384,8 +391,9 @@ public class DavaBody extends Body {
 		//29th Jan 2006
 		//make sure when recompiling there is no variable might not be initialized error
 
-		Map options = PhaseOptions.v().getPhaseOptions("db");
-        boolean force = PhaseOptions.getBoolean(options, "force-recompilability");
+		Map options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
+        boolean force = PhaseOptions.getBoolean(options, "enabled");
+        //System.out.println("Force is"+force);
 
         if(force){
     		new FinalFieldDefinition((ASTMethodNode) AST);
@@ -421,16 +429,6 @@ public class DavaBody extends Body {
 	
 	private void applyRenamerAnalyses(ASTNode AST){
 		
-		
-		/*
-		 * TODO: Removing Fully Qualified names should not be a flag
-		 * It should check that an object whose qualified name is being
-		 * removed is not declared by two packages being imported
-		 * e.g. java.util.Timer and javax.swing.Timer is bad bad
-		 * 
-		 */
-		
-			//G.v().Dava_RemoveFullyQualifiedNames=true;
 		infoGatheringAnalysis info = new infoGatheringAnalysis(this);
 		AST.apply(info);
 
@@ -1040,6 +1038,11 @@ public class DavaBody extends Body {
 			if(DEBUG)
 				System.out.println("PACKAGE ADDED"+newPackage);
 		}
+	}
+
+	public void debug(String methodName, String debug){		
+		if(DEBUG)
+			System.out.println(methodName+ "    DEBUG: "+debug);
 	}
 
 }

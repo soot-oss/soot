@@ -309,77 +309,78 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 	public void handleAssignOnSomePaths(ASTMethodNode node, SootField field,
 			List defs) {
-		// System.out.println("Defs of final field: "+field+" are:"+defs);
+	
 		if (defs.size() != 1) {
-			// one definition we might still be able to handle but not more than
-			// those REMOVE FINAL KEYWORD
-			// System.out.println("Setting field to non final");
+			// give up by removing "final" if there are more than one defs
 			cancelFinalModifier.add(field);
 		} else {
-			// we know there is only one definition lets just make sure there is
-			// no use of def
+			// if there is only one definition 
 
-			// check if there are no uses
+			// see if there is no use of def
 			AllVariableUses varUses = new AllVariableUses(node);
 			node.apply(varUses);
-			// System.out.println("Done finding all varUses\n\n");
 
 			List allUses = varUses.getUsesForField(field);
 
 			if (allUses != null && allUses.size() != 0) {
-				// in that case remove final keyword since we dont want to get
-				// into trying to initialize before use
-				// System.out.println("REMOVED FINAL since there was use of a
-				// field and it is not initialized on all paths");
-				cancelFinalModifier.add(field);
-			} else {
-
-				// if there is no use its worth a try to fix definition using
-				// the indirect assignment approach
-				// System.out.println("Going to fix it");
-
 				/*
-				 * February 2nd, 2006: Laurie mentioned that apart from direct
+				 * if the number of uses is not 0 then we dont want to get into
+				 * trying to delay initialization just before assignment.
+				 * Easier to remove "final"
+				 */
+				cancelFinalModifier.add(field);
+			} 
+			else {
+				/*
+				 * we have a final field with 1 def and 0 uses but is not initialized on all paths
+				 * we can try to delay initialization using an indirect approach
+				 *                         STMT0        TYPE DavaTemp_fieldName;            
+				 *                         STMT1        DavaTemp_fieldname = DEFAULT
+				 * try{                                  try{
+				 *     field = ...         STMT2            DavaTemp_fieldname = ... 
+				 *    }                                         X
+ 				 *    catch(...){                        }catch(..){
+				 *       ....                                   ....
+				 *    }                                  }
+				 *                        STMT3          field = Dava_tempVar
+				 * 
+				 * Notice the following code will try to place the field assignment
+				 * as close to the original assignment as possible.
+				 * 
+				 * TODO: However there might still be issues with delaying this assignment
+				 * e.g. what if the place marked by X (more specifically between
+				 * the original def and the new def includes a method invocation
+				 * which access the delayed field.
+				 * 
+				 * Original Comment February 2nd, 2006: Laurie mentioned that apart from direct
 				 * uses we also have to be conservative about method calls since
 				 * we are dealing with fields here What if some method was
 				 * invoked and it tried to use a field whose initialization we
-				 * are about to delay. Since that should not happen we are going
-				 * to check if there is any method call made from this point to
-				 * the end of the method. Done by implementing a small
-				 * analysis......however we need to first find the location of
-				 * the initialization which we are about to delay...that is
-				 * given by defs.get(0)
+				 * are about to delay. This can be done by implementing a small
+				 * analysis. (See end of this class file. 	
+				 * 	 	
+				 *  TODO: SHOULD BE CHECKED FOR CODE BETWEEN THE OLD DEF AND THE NEW ASSIGNMENT
+				 *        Currently checks from some point till end of method
+				 *
+				 * MethodCallFinder myMethodCallFinder = new MethodCallFinder( (GAssignStmt) defs.get(0));
+				 * node.apply(myMethodCallFinder);
+				 * if (myMethodCallFinder.anyMethodCalls()) {
+				 *		// there was some method call after the definition stmt so
+				 *  	// we cant continue
+				 *	 	 // remove the final modifier and leave
+				 *	 	  //System.out.println("Method invoked somewhere after definition");
+				 *	 	   cancelFinalModifier.add(field);
+				 *	 	   return;
+				 * 	 	   }
 				 */
-				MethodCallFinder myMethodCallFinder = new MethodCallFinder(
-						(GAssignStmt) defs.get(0));
-				node.apply(myMethodCallFinder);
-
-				if (myMethodCallFinder.anyMethodCalls()) {
-					// there was some method call after the definition stmt so
-					// we cant continue
-					// remove the final modifier and leave
-					//System.out.println("Method invoked somewhere after definition");
-					cancelFinalModifier.add(field);
-					return;
-				}
-
-				/*
-				 * so lets recap till now what we know about this field Field is
-				 * of interest meaning its definetly final
-				 * 
-				 * It is not initialized on all paths It is however initialized
-				 * on some path There is only one initialization of it The field
-				 * is not used anywhere in this method And neither is there and
-				 * method call after the original definition stmt
-				 */
-
-				// Introduce dummy local var of that Field's type
+				
+				
+				
+				// Creating STMT0
 				Type localType = field.getType();
-				Local newLocal = new JimpleLocal("DavaTemp_" + field.getName(),
-						localType);
+				Local newLocal = new JimpleLocal("DavaTemp_" + field.getName(),localType);
 
-				DVariableDeclarationStmt varStmt = null;
-				varStmt = new DVariableDeclarationStmt(localType,davaBody);
+				DVariableDeclarationStmt varStmt = new DVariableDeclarationStmt(localType,davaBody);
 				
 				varStmt.addLocal(newLocal);
 				AugmentedStmt as = new AugmentedStmt(varStmt);
@@ -390,13 +391,12 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				ASTStatementSequenceNode declNode = node.getDeclarations();
 				List stmts = declNode.getStatements();
 				stmts.add(as);
-
+    			
 				declNode = new ASTStatementSequenceNode(stmts);
 
 				List subBodies = (List) node.get_SubBodies();
 				if (subBodies.size() != 1)
-					throw new RuntimeException(
-							"ASTMethodNode does not have one subBody");
+					throw new DecompilationException("ASTMethodNode does not have one subBody");
 
 				List body = (List) subBodies.get(0);
 
@@ -407,29 +407,26 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 				node.setDeclarations(declNode);
 
-				// initialize it to null
+				
+				// STMT1 initialization
 				AugmentedStmt initialization = createDefaultStmt(newLocal);
-				// System.out.println(initialization);
-
-				// we know that the first node in the ASTMethodNode is a
-				// declaration node
-				// check if the second node is an ASTStatementNode if yes add
-				// initialization there
-				// otherwise add new ASTStatementSequencenode with
-				// initialization
-
+				/*
+				 * The first node in a method is the declarations
+				 * we know there is a second node because originaly the
+				 * field was initialized on some path
+				 */
 				if (body.size() < 2)
 					throw new RuntimeException("Size of body is less than 1");
 
-				// body has to be atleast 1 since we have declarations if its
-				// greater than 1 check the next node
-				// body has to be greater than 1 since we know the original
-				// field is initialized on some path
+				/* 
+				 * If the second node is a stmt seq we put STMT1 there
+				 * otherwise we create a new stmt seq node
+				 */ 
+
 				ASTNode nodeSecond = (ASTNode) body.get(1);
 				if (nodeSecond instanceof ASTStatementSequenceNode) {
 					// the second node is a stmt seq node just add the stmt here
-					List stmts1 = ((ASTStatementSequenceNode) nodeSecond)
-							.getStatements();
+					List stmts1 = ((ASTStatementSequenceNode) nodeSecond).getStatements();
 					stmts1.add(initialization);
 					nodeSecond = new ASTStatementSequenceNode(stmts1);
 					// System.out.println("Init added in exisiting node");
@@ -443,15 +440,17 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				body.add(1, nodeSecond);
 				node.replaceBody(body);
 
-				// replace the definition of final field with the definition of
-				// the local just created
-				// System.out.println("About to replace def of"+defs.get(0));
-
+				
+				
+				//STMT2
+				//done by simply replacing the leftop in the original stmt
 				((GAssignStmt) defs.get(0)).setLeftOp(newLocal);
 
-				// HAVE TO ADD field = newLocal stmt to end of MethodNode
-
-				// have to make a static field ref
+				
+				
+				//STMT3
+				
+				// have to make a field ref
 				SootFieldRef tempFieldRef = ((SootField) field).makeRef();
 
 				Value ref;
@@ -466,35 +465,118 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				GAssignStmt assignStmt = new GAssignStmt(ref, newLocal);
 				AugmentedStmt assignStmt1 = new AugmentedStmt(assignStmt);
 
-				// System.out.println("Last stmt"+assignStmt);
 
-				// body contains the currentBody of the methodnode
-				// check last node
-				// we know body is atleast 2
 
-				ASTNode lastNode = (ASTNode) body.get(body.size() - 1);
-				if (lastNode instanceof ASTStatementSequenceNode) {
-					// the last node is a stmt seq node just add the stmt here
-					List stmtsLast = ((ASTStatementSequenceNode) lastNode)
-							.getStatements();
-					stmtsLast.add(assignStmt1);
-					lastNode = new ASTStatementSequenceNode(stmtsLast);
-					// System.out.println("Last stmt added to existing node");
-					body.remove(body.size() - 1);
-				} else {
-					// System.out.println("had to add new node");
-					List tempList = new ArrayList();
-					tempList.add(assignStmt1);
-					lastNode = new ASTStatementSequenceNode(tempList);
+				/*
+				 * 14th February 2006
+				 * Should add this statement to the first place in the code where
+				 * we will have a mustInitialize satisfied
+				 */
+
+				//the def is at (GAssignStmt) defs.get(0)
+				//its parent is ASTStatementSequence and its parent is now needed
+				ASTParentNodeFinder parentFinder = new ASTParentNodeFinder();
+				node.apply(parentFinder);
+				
+				Object parent = parentFinder.getParentOf(defs.get(0));
+				if(!(parent instanceof ASTStatementSequenceNode)){
+					throw new DecompilationException("Parent of stmt was not a stmt seq node");
 				}
-				body.add(lastNode);
-				node.replaceBody(body);
-
+				
+				Object grandParent = parentFinder.getParentOf(parent);
+				if( !(parent instanceof ASTMethodNode) && grandParent == null){
+					throw new DecompilationException("Parent of stmt seq node was null");
+				}
+				
+				//so we have the parent stmt seq node and the grandparent node
+				//so it is the grandparent which is causing the error in MUSTINitialize
+				//we should move our assign right after the grandParent is done
+				
+				
+				MustMayInitialize must = new MustMayInitialize(node,MustMayInitialize.MUST);
+				while(!must.isMustInitialized(field)) {
+					
+					//System.out.println("not must initialized");
+					Object parentOfGrandParent = parentFinder.getParentOf(grandParent);
+					if( !(grandParent instanceof ASTMethodNode) && parentOfGrandParent == null){
+						throw new DecompilationException("Parent of non method node was null");
+					}
+					boolean notResolved=false;
+					// look for grandParent in parentOfGrandParent
+					ASTNode ancestor = (ASTNode)parentOfGrandParent;
+					List ancestorBodies = ancestor.get_SubBodies();
+					Iterator it = ancestorBodies.iterator();
+					while(it.hasNext()){
+						List ancestorSubBody = null;
+					
+						if (ancestor instanceof ASTTryNode)
+							ancestorSubBody = (List) ((ASTTryNode.container) it.next()).o;
+						else
+							ancestorSubBody = (List) it.next();
+					 
+						if(ancestorSubBody.indexOf(grandParent) > -1) {
+							//grandParent is present in this body
+							int index = ancestorSubBody.indexOf(grandParent); 
+							//check the next index
+						
+							if(index+1 < ancestorSubBody.size() && ancestorSubBody.get(index+1) instanceof ASTStatementSequenceNode ){
+								//there is an stmt seq node node after the grandParent
+								ASTStatementSequenceNode someNode = (ASTStatementSequenceNode)ancestorSubBody.get(index+1);
+							 
+								//add the assign stmt here
+							 
+								List stmtsLast = ((ASTStatementSequenceNode) someNode).getStatements();
+								List newStmts = new ArrayList();
+								newStmts.add(assignStmt1);
+								newStmts.addAll(stmtsLast);
+								someNode.setStatements(newStmts);
+								System.out.println("here1");
+								//check if problem is solved else remove the assign and change parents
+								must = new MustMayInitialize(node,MustMayInitialize.MUST);
+								if(!must.isMustInitialized(field)){
+									//problem not solved remove the stmt just added
+									someNode.setStatements(stmtsLast);
+									notResolved=true;
+								}
+							}
+							else{
+								//create a new stmt seq node and add it here
+									List tempList = new ArrayList();
+									tempList.add(assignStmt1);
+									ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
+									ancestorSubBody.add(index+1,lastNode);
+									//node.replaceBody(body);
+									System.out.println("here2");
+									//check if problem is solved else remove the assign and change parents
+									must = new MustMayInitialize(node,MustMayInitialize.MUST);
+									if(!must.isMustInitialized(field)){
+										//problem not solved remove the stmt just added
+										ancestorSubBody.remove(index+1);
+										notResolved=true;
+									}									
+							}
+							break;//break the loop going through subBodies
+						} //if ancestor was found
+							 	
+					 }	//next subBody
+					if(notResolved){
+						//meaning we still dont have must initialization 
+						//we should put assign in one level above than current
+						grandParent = parentFinder.getParentOf(grandParent);
+						//System.out.println("Going one level up");						
+					}									
+				}//while ! ismustinitialized
 			}
 		}
 	}
-
 }
+
+
+
+/*
+ * TODO: Change the analysis below to find method calls between GAssignStmt def
+ * and the new Assign Stmt.
+ */
 
 class MethodCallFinder extends DepthFirstAdapter {
 

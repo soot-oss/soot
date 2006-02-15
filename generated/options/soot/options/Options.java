@@ -1273,7 +1273,10 @@ public class Options extends OptionsBase {
         +padVal("tag.an", "Array bounds and null pointer check aggregator")
         +padVal("tag.dep", "Dependence aggregator")
         +padVal("tag.fieldrw", "Field read/write aggregator")
-        +padOpt("db", "Dummy phase to store options for Dava");
+        +padOpt("db", "Dummy phase to store options for Dava")
+        +padVal("db.renamer", "Apply heuristics based naming of local variables")
+        +padVal("db.deobfuscate", " Apply de-obfuscation analyses")
+        +padVal("db.force-recompile", " Try to get recompilable code.");
     }
 
     public String getPhaseHelp( String phaseName ) {
@@ -2151,12 +2154,28 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. -p db (option \nname):(value) will be used to set all required values for Dava. \n****Renamer**** If set, the renaming analyses implemented in \nDava are applied to each method body being decompiled. The \nanalyses use heuristics to choose potentially better names for \nlocal variables. (As of February 14th 2006, work is still under \nprogress on these analyses (dava.toolkits.base.renamer). **** \nDeobfuscate**** Certain analyses make sense only when the \nbytecode is obfuscated code. There are plans to implement such \nanalyses and apply them on methods only if this flag is set. \nDead Code elimination which includes removing code guarded by \nsome condition which is always false or always true is one such \nanalysis. Another suggested analysis is giving default names to \nclasses and fields. Onfuscators love to use weird names for \nfields and classes and even a simple re-naming of these could be \na good help to the user. Another more advanced analysis would \nbe to check for redundant constant fields added by obfuscators \nand then remove uses of these constant fields from the code. \n**** Force-Recompilability**** While decompiling we have to be \nclear what our aim is: do we want to convert bytecode to Java \nsyntax and stay as close to the actual execution of bytecode or \ndo we want recompilably Java source representing the bytecode. \nThis distinction is important because some restrictions present \nin Java source are absent from the bytecode. Examples of this \ninclude that fact that in Java a call to a constructor or super \nneeds to be the first statement in a constructors body. This \nrestriction is absent from the bytecode. Similarly final fields \nHAVE to be initialized once and only once in either the static \ninitializer (static fields) or all the constructors (non-static \nfields). Additionally the fields should be initialized on all \npossible execution paths. These restrictions are again absent \nfrom the bytecode. In doing a one-one conversion of bytecode to \nJava source then no attempt should be made to fix any of these \nand similar problems in the Java source. However, if the aim is \nto get recompilable code then these and similar issues need to \nbe fixed. Setting the force-recompilability flag will ensure \nthat the decompiler tries its best to produce recompilable Java \nsource. "
+                "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. -p db (option \nname):(value) will be used to set all required values for Dava. \n"
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "db.renamer" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nIf set, the renaming analyses implemented in Dava are applied to \neach method body being decompiled. The analyses use heuristics \nto choose potentially better names for local variables. (As of \nFebruary 14th 2006, work is still under progress on these \nanalyses (dava.toolkits.base.renamer). 					"
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "renamer (true)", "  					  Apply heuristics based renaming of local variables. 					" )
-                +padOpt( "deobfuscate (false)", "  					   Apply de-obfuscation analyses 					" )
-                +padOpt( "force-recompilability (true)", "  						Try to get recompilable code. 					" );
+                +padOpt( "remove-fully-qualified (true)", "Convert fully qualified names to smaller names" );
+    
+        if( phaseName.equals( "db.deobfuscate" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination \nwhich includes removing code guarded by some condition which is \nalways false or always true is one such analysis. Another \nsuggested analysis is giving default names to classes and \nfields. Onfuscators love to use weird names for fields and \nclasses and even a simple re-naming of these could be a good \nhelp to the user. Another more advanced analysis would be to \ncheck for redundant constant fields added by obfuscators and \nthen remove uses of these constant fields from the code."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "db.force-recompile" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nWhile decompiling we have to be clear what our aim is: do we \nwant to convert bytecode to Java syntax and stay as close to the \nactual execution of bytecode or do we want recompilably Java \nsource representing the bytecode. This distinction is important \nbecause some restrictions present in Java source are absent from \nthe bytecode. Examples of this include that fact that in Java a \ncall to a constructor or super needs to be the first statement \nin a constructors body. This restriction is absent from the \nbytecode. Similarly final fields HAVE to be initialized once and \nonly once in either the static initializer (static fields) or \nall the constructors (non-static fields). Additionally the \nfields should be initialized on all possible execution paths. \nThese restrictions are again absent from the bytecode. In doing \na one-one conversion of bytecode to Java source then no attempt \nshould be made to fix any of these and similar problems in the \nJava source. However, if the aim is to get recompilable code \nthen these and similar issues need to be fixed. Setting the \nforce-recompilability flag will ensure that the decompiler tries \nits best to produce recompilable Java source."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
     
 
         return "Unrecognized phase: "+phaseName;
@@ -2691,10 +2710,20 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "db.renamer" ) )
+            return ""
                 +"enabled "
-                +"renamer "
-                +"deobfuscate "
-                +"force-recompilability ";
+                +"remove-fully-qualified ";
+    
+        if( phaseName.equals( "db.deobfuscate" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "db.force-recompile" ) )
+            return ""
+                +"enabled ";
     
         // The default set of options is just enabled.
         return "enabled";
@@ -3228,10 +3257,20 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return ""
+              +"enabled:true ";
+    
+        if( phaseName.equals( "db.renamer" ) )
+            return ""
               +"enabled:true "
-              +"renamer:true "
-              +"deobfuscate:false "
-              +"force-recompilability:true ";
+              +"remove-fully-qualified:true ";
+    
+        if( phaseName.equals( "db.deobfuscate" ) )
+            return ""
+              +"enabled:true ";
+    
+        if( phaseName.equals( "db.force-recompile" ) )
+            return ""
+              +"enabled:true ";
     
         // The default default value is enabled.
         return "enabled";
@@ -3336,6 +3375,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "tag.dep" ) ) return;
         if( phaseName.equals( "tag.fieldrw" ) ) return;
         if( phaseName.equals( "db" ) ) return;
+        if( phaseName.equals( "db.renamer" ) ) return;
+        if( phaseName.equals( "db.deobfuscate" ) ) return;
+        if( phaseName.equals( "db.force-recompile" ) ) return;
         G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
@@ -3535,6 +3577,12 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase tag.fieldrw" );
         if( !PackManager.v().hasPhase( "db" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase db" );
+        if( !PackManager.v().hasPhase( "db.renamer" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase db.renamer" );
+        if( !PackManager.v().hasPhase( "db.deobfuscate" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase db.deobfuscate" );
+        if( !PackManager.v().hasPhase( "db.force-recompile" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase db.force-recompile" );
     }
   
 }

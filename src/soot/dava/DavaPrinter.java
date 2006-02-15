@@ -25,6 +25,7 @@ import soot.dava.internal.AST.*;
 import soot.*;
 
 import java.util.*;
+
 import soot.util.*;
 import soot.jimple.*;
 import soot.tagkit.*;
@@ -283,10 +284,13 @@ public class DavaPrinter {
         	//name. in which case if the package is imported no need for
         	//the long name
         	
-        	if(G.v().Dava_RemoveFullyQualifiedNames){
+			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
+	        //System.out.println("In DVariableDeclarationStmt Force is"+force);
 
-        		superClassName = getShortName(superClassName,packagesUsed);
-  
+
+			if (force) {
+				superClassName = getShortName(superClassName,packagesUsed);
         	}
             out.print(" extends " + superClassName + "");
         }
@@ -331,8 +335,11 @@ public class DavaPrinter {
 			        
 			        
 			        //See if we want to shorten fully qualified names
-			        if(G.v().Dava_RemoveFullyQualifiedNames){
-		        	
+					Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+			        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
+			        //System.out.println("In DVariableDeclarationStmt Force is"+force);
+
+					if (force) {
 			        	qualifiers += getShortName(fieldType.toString(),packagesUsed); 
 			        }
 			        else

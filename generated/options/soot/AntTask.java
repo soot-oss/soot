@@ -2739,22 +2739,55 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
-          public void setrenamer(boolean arg) {
+        }
+    
+        public Object createp_db_renamer() {
+            Object ret = new PhaseOptdb_renamer();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptdb_renamer {
+      
+          public void setenabled(boolean arg) {
             addArg("-p");
-            addArg("db");
-            addArg("renamer:"+(arg?"true":"false"));
+            addArg("db.renamer");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
-          public void setdeobfuscate(boolean arg) {
+          public void setremove_fully_qualified(boolean arg) {
             addArg("-p");
-            addArg("db");
-            addArg("deobfuscate:"+(arg?"true":"false"));
+            addArg("db.renamer");
+            addArg("remove-fully-qualified:"+(arg?"true":"false"));
           }
       
-          public void setforce_recompilability(boolean arg) {
+        }
+    
+        public Object createp_db_deobfuscate() {
+            Object ret = new PhaseOptdb_deobfuscate();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptdb_deobfuscate {
+      
+          public void setenabled(boolean arg) {
             addArg("-p");
-            addArg("db");
-            addArg("force-recompilability:"+(arg?"true":"false"));
+            addArg("db.deobfuscate");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_db_force_recompile() {
+            Object ret = new PhaseOptdb_force_recompile();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptdb_force_recompile {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("db.force-recompile");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
         }

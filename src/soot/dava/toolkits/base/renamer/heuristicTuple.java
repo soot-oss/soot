@@ -67,10 +67,10 @@ public class heuristicTuple{
     }
 
     public void setMethodName(String methodName){
-	this.methodName.add(methodName);
-	setHeuristic(infoGatheringAnalysis.METHODNAME);
-	if(methodName.substring(0,3).compareTo("get")==0 || methodName.substring(0,3).compareTo("set")==0)
-	    setHeuristic(infoGatheringAnalysis.GETSET);
+    	this.methodName.add(methodName);
+    	setHeuristic(infoGatheringAnalysis.METHODNAME);
+    	if(methodName.startsWith("get") || methodName.startsWith("set"))
+    		setHeuristic(infoGatheringAnalysis.GETSET);
     }
     
     public List getMethodName(){

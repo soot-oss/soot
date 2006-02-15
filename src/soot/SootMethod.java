@@ -28,6 +28,7 @@ package soot;
 import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.dava.*;
 
 /**
@@ -585,7 +586,9 @@ public class SootMethod
 
             String tempString = t.toString();    
             
-			if (G.v().Dava_RemoveFullyQualifiedNames) {
+			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
+			if (force) {
 				DavaBody body = (DavaBody) getActiveBody();
 				IterableSet set = body.get_PackagesUsed();
 
@@ -638,7 +641,9 @@ public class SootMethod
 			 *  If not imported WHY NOT..import it!! 
 			 */
 
-			if (G.v().Dava_RemoveFullyQualifiedNames) {
+			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
+			if (force) {
 				DavaBody body = (DavaBody) getActiveBody();
 				IterableSet set = body.get_PackagesUsed();
 

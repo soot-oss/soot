@@ -37,6 +37,7 @@ package soot.dava.internal.javaRep;
 import soot.*;
 
 import java.util.*;
+
 import soot.jimple.*;
 import soot.util.IterableSet;
 import soot.grimp.*;
@@ -154,10 +155,18 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 				 *  It is nice to remove the fully qualified type names
 				 *  of locals if the package they belong to have been imported
 				 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
-				 *  If not imported WHY NOT..import it!! 
+				 *  If not imported WHY NOT..import it!!
+				 *  
+				 *   However this can cause recompilation problems and hence is added
+				 *   as a flag
 				 */
+				
+				Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
+		        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
+		        //System.out.println("In DVariableDeclarationStmt Force is"+force);
 
-				if (G.v().Dava_RemoveFullyQualifiedNames) {
+
+				if (force) {
 					IterableSet set = davaBody.get_PackagesUsed();
 
 					// get the package name of the object if one exists

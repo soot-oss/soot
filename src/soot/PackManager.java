@@ -255,7 +255,14 @@ public class PackManager {
          * The db phase options are added in soot_options.xml
          */
         addPack(p = new BodyPack("db"));
+        {
+        	p.add(new Transform("db.renamer", null));
+        	p.add(new Transform("db.deobfuscate", null));
+        	p.add(new Transform("db.force-recompile", null));
+        }
 
+       
+        
         onlyStandardPacks = true;
     }
 
@@ -460,12 +467,6 @@ public class PackManager {
                 throw new CompilationDeathException("Cannot output file " + fileName);
             }
 
-
-
-            
-            
-            
-            
             
         G.v().out.print("Generating " + fileName + "... ");
         /*
@@ -473,6 +474,7 @@ public class PackManager {
 	     * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
 	     */ 
 	    DavaStaticBlockCleaner.v().staticBlockInlining(s);
+
 	    
 	    /*
 	     * Nomair A. Naeem 29th Jan 2006
@@ -481,8 +483,11 @@ public class PackManager {
 	     */
             Iterator methodIt = s.methodIterator();
             while (methodIt.hasNext()) {
+            	
                 SootMethod m = (SootMethod) methodIt.next();
+                //System.out.println("SootMethod:"+m.getName().toString());
 		        DavaBody body = (DavaBody)m.getActiveBody();
+                //System.out.println("body"+body.toString());
 		        body.analyzeAST();
             }
 
@@ -628,31 +633,30 @@ public class PackManager {
             methodIt = c.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
-		if (!m.isConcrete()) continue;
-		//all the work done in decompilation is done in DavaBody which is invoked from within newBody
+                if (!m.isConcrete()) 
+                	continue;
+                //all the work done in decompilation is done in DavaBody which is invoked from within newBody
                 m.setActiveBody(Dava.v().newBody(m.getActiveBody()));
             }
 
-	    /*
-	     * January 13th, 2006
-	     * SuperFirstStmtHandler might have set SootMethodAddedByDava if it needs to create a new
-	     * method. 
-	     */
-	    //could use G to add new method...................
-	    if(G.v().SootMethodAddedByDava){
-		//System.out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
+            /*
+             * January 13th, 2006
+             * SuperFirstStmtHandler might have set SootMethodAddedByDava if it needs to create a new
+             * method. 
+             */
+            //could use G to add new method...................
+            if(G.v().SootMethodAddedByDava){
+            	//System.out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
+            	ArrayList sootMethodsAdded = G.v().SootMethodsAdded;
+            	Iterator it = sootMethodsAdded.iterator();	
+            	while(it.hasNext()){
+            		c.addMethod((SootMethod)it.next());
+            	}
+            	G.v().SootMethodsAdded = new ArrayList();
+            	G.v().SootMethodAddedByDava=false;
+            }
 
-
-		ArrayList sootMethodsAdded = G.v().SootMethodsAdded;
-		Iterator it = sootMethodsAdded.iterator();
-		while(it.hasNext()){
-		    c.addMethod((SootMethod)it.next());
-		}
-		G.v().SootMethodsAdded = new ArrayList();
-		G.v().SootMethodAddedByDava=false;
-	    }
-
-        }
+        }//end if produceDava
     }
 
     private void writeClass(SootClass c) {
