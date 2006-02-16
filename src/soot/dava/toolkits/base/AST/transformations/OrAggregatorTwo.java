@@ -65,10 +65,14 @@ we need a reference to the parent node of this if
 */
 public class OrAggregatorTwo extends DepthFirstAdapter{
 
+	
+	
     public OrAggregatorTwo(){
+    	DEBUG=false;
     }
     public OrAggregatorTwo(boolean verbose){
 	super(verbose);
+		DEBUG=false;
     }
 
     public void caseASTStatementSequenceNode(ASTStatementSequenceNode node){
@@ -154,6 +158,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 
 
     public void matchPatternTwo(ASTIfElseNode node){
+		debug("OrAggregatorTwo","matchPatternTwo","Did not match patternOne...trying patternTwo");
 	List ifBody = node.getIfBody();
 	if(ifBody.size()!=1){
 	    //we are only interested if size is one
@@ -194,8 +199,11 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	SETNodeLabel label = node.get_Label();
 
 	node.replace(label,cond,elseBody,ifBody);
-	//System.out.println("REVERSED CONDITIONS AND BODIES");
-	G.v().ASTTransformations_modified = true;
+	debug("","","REVERSED CONDITIONS AND BODIES");
+	debug("","","elseBody is"+elseBody);
+	debug("","","ifBody is"+ifBody);
+	
+	G.v().ASTIfElseFlipped = true;
     }
 
 

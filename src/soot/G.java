@@ -76,7 +76,18 @@ public class G extends Singletons
 
     
     public boolean ASTTransformations_modified;
-
+    
+    /*
+     * 16th Feb 2006 Nomair
+     * The AST transformations are unfortunately non-monotonic.
+     * Infact one transformation on each iteration simply reverses the bodies of an if-else
+     * To make the remaining transformations monotonic this transformation is handled with
+     * a separate flag...clumsy but works
+     */
+    public boolean ASTIfElseFlipped;
+    
+    
+    
     // hack for J2ME, patch provided by Stephen Chen
     // by default, this is set as false, to use SOOT with J2ME library
     // flag isJ2ME true. Type system works around Clonable, Serializeable.

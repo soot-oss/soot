@@ -38,6 +38,8 @@ import soot.dava.internal.javaRep.*;
 
 public class DepthFirstAdapter extends AnalysisAdapter{
 
+	public boolean DEBUG = false;
+	
     boolean verbose=false;
 
     public DepthFirstAdapter(){
@@ -1056,5 +1058,9 @@ public class DepthFirstAdapter extends AnalysisAdapter{
     }
 
 
-    
+	public void debug(String className, String methodName, String debug){		
+		if(DEBUG)
+			System.out.println("Analysis"+className+"..Method:"+methodName+ "    DEBUG: "+debug);
+	}
+
 }

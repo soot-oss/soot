@@ -331,6 +331,11 @@ public class DavaBody extends Body {
 		boolean flag = true;
 		int times = 0;
 
+		G.v().ASTTransformations_modified = false;
+		G.v().ASTIfElseFlipped = false;
+		
+		int countFlipping=0;
+		
 		if (flag) {
 			// perform transformations on the AST	
 			do {
@@ -358,6 +363,8 @@ public class DavaBody extends Body {
 
 				AST.apply(new OrAggregatorTwo());
 				debug("applyASTAnalyses","after OraggregatorTwo"+G.v().ASTTransformations_modified);
+				debug("applyASTAnalyses","after OraggregatorTwo ifElseFlipped is"+G.v().ASTIfElseFlipped);
+				
 				AST.apply(new OrAggregatorFour());
 				debug("applyASTAnalyses","after OraggregatorFour"+G.v().ASTTransformations_modified);
 
@@ -368,6 +375,7 @@ public class DavaBody extends Body {
 				 * 3, Apply OrAggregatorThree
 				 */
 				AST.apply(new ASTCleaner());
+				debug("applyASTAnalyses","after ASTCleaner"+G.v().ASTTransformations_modified);
 
 				/*
 				 * PushLabeledBlockIn should not be called unless we are sure
@@ -376,8 +384,11 @@ public class DavaBody extends Body {
 				 * before calling this
 				 */
 				AST.apply(new PushLabeledBlockIn());
-
+				debug("applyASTAnalyses","after PushLabeledBlockIn"+G.v().ASTTransformations_modified);
+				
+				
 				AST.apply(new LoopStrengthener());
+				debug("applyASTAnalyses","after LoopStrengthener"+G.v().ASTTransformations_modified);
 
 				/*
 				 * Pattern two carried out in OrAggregatorTwo restricts some patterns in for loop creation.
@@ -385,18 +396,49 @@ public class DavaBody extends Body {
 				 * SEE IfElseBreaker
 				 */
 				AST.apply(new ASTCleanerTwo());
+				debug("applyASTAnalyses","after ASTCleanerTwo"+G.v().ASTTransformations_modified);
 
+				
 				AST.apply(new ForLoopCreator());
+				debug("applyASTAnalyses","after ForLoopCreator"+G.v().ASTTransformations_modified);
 
+				/*
+				 * if we matched some useful pattern we reserve the 
+				 * right to flip conditions again
+				 */
+				if(G.v().ASTTransformations_modified){
+					G.v().ASTIfElseFlipped=false;
+					countFlipping=0;
+					debug("applyASTanalyses","Transformation modified was true hence will reiterate. set flipped to false");
+				}
+				else{
+					//check if only the ifelse was flipped
+					if(G.v().ASTIfElseFlipped ){
+						debug("","ifelseflipped and transformations NOT modified");
+						//we couldnt transform but we did flip
+						if(countFlipping==0){
+							debug("","ifelseflipped and transformations NOT modified count is 0");
+							//let this go on just once more in the hope of some other pattern being matched
+							G.v().ASTIfElseFlipped=false;
+							countFlipping++;
+							G.v().ASTTransformations_modified=true;
+						}
+						else{
+							debug("","ifelseflipped and transformations NOT modified count is not 0 TERMINATE");
+						}
+					}
+				}//if ASTTransformations was not modified
+				
 			} while (G.v().ASTTransformations_modified);
 			//System.out.println("The AST trasnformations has run"+times);
 		}
 
 		/*
-		 ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST
-		 This is utilized internally by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
+		 * ClosestAbruptTargetFinder should be reinitialized everytime there is a change to the AST
+		 * This is utilized internally by the DavaFlowSet implementation to handle Abrupt Implicit Stmts
 		 */
 		AST.apply(ClosestAbruptTargetFinder.v());
+		debug("applyASTAnalyses","after ClosestAbruptTargetFinder"+G.v().ASTTransformations_modified);
 
 		//29th Jan 2006
 		//make sure when recompiling there is no variable might not be initialized error
