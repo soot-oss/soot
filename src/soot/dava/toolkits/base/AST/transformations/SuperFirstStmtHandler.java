@@ -134,6 +134,8 @@ import soot.dava.toolkits.base.AST.traversals.*;
 
 public class SuperFirstStmtHandler extends DepthFirstAdapter{
     
+	public final boolean DEBUG = false;
+	
     ASTMethodNode originalASTMethod;    //contains the entire method which was being decompiled
     DavaBody originalDavaBody;  //originalASTMethod.getDavaBody
     Unit originalConstructorUnit;    //contains this.init<>
@@ -301,6 +303,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		if(changeOriginalAST()){
 		    //System.out.println("Done Done Done");
 
+			debug("SuperFirstStmtHandler....inASTStatementSeuqneNode","Added PreInit");
 		    G.v().SootMethodAddedByDava=true;
 		    G.v().SootMethodsAdded.add(newSootPreInitMethod);
 		    G.v().SootMethodsAdded.add(newConstructor);
@@ -1439,5 +1442,9 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 	return  new AugmentedStmt(s);
     }
 
+	public void debug(String methodName, String debug){		
+		if(DEBUG)
+			System.out.println(methodName+ "    DEBUG: "+debug);
+	}
 
 }

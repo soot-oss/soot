@@ -25,6 +25,7 @@ import soot.util.*;
 import java.util.*;
 import soot.dava.*;
 import soot.dava.internal.AST.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
 
 /*
@@ -65,35 +66,35 @@ public class DavaStaticBlockCleaner {
 
     //invoked by the PackManager
     public void staticBlockInlining(SootClass sootClass){
-	this.sootClass=sootClass;
-	//retrieve the clinit method if any for sootClass
-	//the clinit method gets converted into the static block which could initialize the final variable
-	if(!sootClass.declaresMethod("void <clinit>()")){
-	    //System.out.println("no clinit");
-	    return;
-	}
+    	this.sootClass=sootClass;
+    	//retrieve the clinit method if any for sootClass
+    	//the clinit method gets converted into the static block which could initialize the final variable
+    	if(!sootClass.declaresMethod("void <clinit>()")){
+    		//System.out.println("no clinit");
+    		return;
+    	}
 
-	SootMethod clinit = sootClass.getMethod("void <clinit>()");
-	//System.out.println(clinit);
+    	SootMethod clinit = sootClass.getMethod("void <clinit>()");
+    	//System.out.println(clinit);
 
-	//retireve the active body
-	if (!clinit.hasActiveBody())
-	    throw new RuntimeException("method "+ clinit.getName()+ " has no active body!");
+    	//retireve the active body
+    	if (!clinit.hasActiveBody())
+    		throw new RuntimeException("method "+ clinit.getName()+ " has no active body!");
 
 	
-	Body clinitBody = clinit.getActiveBody();	
+    	Body clinitBody = clinit.getActiveBody();	
         Chain units = ((DavaBody) clinitBody).getUnits();
 
         if (units.size() != 1) {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 
-	ASTNode AST = (ASTNode) units.getFirst();
-	if(! (AST instanceof ASTMethodNode))
-            throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
+        ASTNode AST = (ASTNode) units.getFirst();
+        if(! (AST instanceof ASTMethodNode))
+        	throw new RuntimeException("Starting node of DavaBody AST is not an ASTMethodNode");
 
-	//running methodCallFinder on the Clinit method 
-	AST.apply(new MethodCallFinder(this));
+        //running methodCallFinder on the Clinit method 	
+        AST.apply(new MethodCallFinder(this));
     }
 
 

@@ -43,23 +43,23 @@ public class MethodCallFinder extends DepthFirstAdapter{
     DavaStaticBlockCleaner cleaner;
 
     public MethodCallFinder(DavaStaticBlockCleaner cleaner){
-	this.cleaner=cleaner;
-	underAnalysis=null;
+    	this.cleaner=cleaner;
+    	underAnalysis=null;
     }
 
     public MethodCallFinder(boolean verbose,DavaStaticBlockCleaner cleaner){
-	super(verbose);
-	this.cleaner=cleaner;
-	underAnalysis=null;
+    	super(verbose);
+    	this.cleaner=cleaner;
+    	underAnalysis=null;
     }
 
     public void inASTMethodNode(ASTMethodNode node){
-	underAnalysis=node;
+    	underAnalysis=node;
     }
 
     /*
      * some ASTConstuct{                                       ASTConstruct{
-     *    Some bodies                                                Bodies
+     *    Some bodies                                                Some Bodies
      *    Statement SequenceNode                                     New Stmt seq node with some stmts
      *        some stmts                       ---------->           Body of method to inline
      *        the invoke stmt                                        New Stmt seq node with other stmts
@@ -74,49 +74,49 @@ public class MethodCallFinder extends DepthFirstAdapter{
      * invocation that occured within the clinit method
      */
     public void inInvokeStmt(InvokeStmt s){
-	InvokeExpr invokeExpr = s.getInvokeExpr();
-	SootMethod maybeInline = invokeExpr.getMethod();
+    	InvokeExpr invokeExpr = s.getInvokeExpr();
+    	SootMethod maybeInline = invokeExpr.getMethod();
 
-	//check whether we want to inline
-	ASTMethodNode toInlineASTMethod = cleaner.inline(maybeInline);
-	if(toInlineASTMethod ==null){
-	    //not to inline
-	    return;
-	}
-	else{//yes we want to inline 
-	    // we know that the method to be inlined has no declarations.
-	    List subBodies = toInlineASTMethod.get_SubBodies();
-	    if(subBodies.size() != 1){
-		throw new RuntimeException ("Found ASTMEthod node with more than one subBodies");
-	    }
-	    List body = (List)subBodies.get(0);
-
-	    
-	    ASTParentNodeFinder finder = new ASTParentNodeFinder();
-	    underAnalysis.apply(finder);
-	    
-	    List newChangedBodyPart = createChangedBodyPart(s,body,finder);
-
-
-	    boolean replaced = replaceSubBody(s,newChangedBodyPart,finder);
+    	//check whether we want to inline
+    	ASTMethodNode toInlineASTMethod = cleaner.inline(maybeInline);
+    	if(toInlineASTMethod ==null){
+    		//not to inline
+    		return;
+    	}
+    	else{//yes we want to inline 
+    		// we know that the method to be inlined has no declarations.
+    		List subBodies = toInlineASTMethod.get_SubBodies();
+    		if(subBodies.size() != 1){
+    			throw new RuntimeException ("Found ASTMEthod node with more than one subBodies");
+    		}
+    		List body = (List)subBodies.get(0);
 
 	    
-	    if(replaced){
-		//so the invoke stmt has been replaced with the body of the method invoked
+    		ASTParentNodeFinder finder = new ASTParentNodeFinder();
+    		underAnalysis.apply(finder);
+	    
+    		List newChangedBodyPart = createChangedBodyPart(s,body,finder);
 
-		/*
-		 * if the inlined method contained an assignment to a static field
-		 * we want to replace that with a throw stmt
-		 */
-		StaticDefinitionFinder defFinder = new StaticDefinitionFinder(maybeInline);
-		toInlineASTMethod.apply(defFinder);
 
-		if(defFinder.anyFinalFieldDefined()){
-		    //create throw stmt to be added to inlined method
+    		boolean replaced = replaceSubBody(s,newChangedBodyPart,finder);
 
-		    //create a SootMethodRef
-		    SootClass runtime = Scene.v().loadClassAndSupport("java.lang.RuntimeException");
-		    if(runtime.declaresMethod("void <init>(java.lang.String)")){
+	    
+    		if(replaced){
+    			//so the invoke stmt has been replaced with the body of the method invoked
+
+    			/*
+    			 * if the inlined method contained an assignment to a static field
+    			 * we want to replace that with a throw stmt
+    			 */
+    			StaticDefinitionFinder defFinder = new StaticDefinitionFinder(maybeInline);
+    			toInlineASTMethod.apply(defFinder);
+    			
+    			if(defFinder.anyFinalFieldDefined()){
+    				//create throw stmt to be added to inlined method
+
+    				//create a SootMethodRef
+    				SootClass runtime = Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+    				if(runtime.declaresMethod("void <init>(java.lang.String)")){
 			SootMethod sootMethod = runtime.getMethod("void <init>(java.lang.String)");
 			SootMethodRef methodRef = sootMethod.makeRef();
 			RefType myRefType = RefType.v(runtime);
@@ -145,11 +145,11 @@ public class MethodCallFinder extends DepthFirstAdapter{
     }
 
     public List getSubBodyFromSingleSubBodyNode(ASTNode node){
-	List subBodies = node.get_SubBodies();
-	if(subBodies.size() != 1)
-	    throw new RuntimeException("Found a single subBody node with more than 1 subBodies");
+    	List subBodies = node.get_SubBodies();
+    	if(subBodies.size() != 1)
+    		throw new RuntimeException("Found a single subBody node with more than 1 subBodies");
 
-	return (List)subBodies.get(0);
+    	return (List)subBodies.get(0);
     }
 
 
@@ -396,11 +396,11 @@ public class MethodCallFinder extends DepthFirstAdapter{
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    Stmt tempStmt = as.get_Stmt();
 	    if(tempStmt != s){
-		newInitialNode.add(tempStmt);
+	    	newInitialNode.add(as);
 	    }
 	    else{
-		//the first time we get to a stmt which points to the invoke stmt we break
-		break;
+	    	//the first time we get to a stmt which points to the invoke stmt we break
+	    	break;
 	    }
 	}
 	

@@ -44,8 +44,11 @@ public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
 		List statements = node.getStatements();
 		Iterator stmtIt = statements.iterator();
+				
 		while (stmtIt.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) stmtIt.next();
+			Object temp = stmtIt.next();
+			//System.out.println(temp);
+			AugmentedStmt as = (AugmentedStmt)temp;
 			Stmt s = as.get_Stmt();
 			if (!( s instanceof DefinitionStmt)) 
 				continue;

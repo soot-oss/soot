@@ -39,6 +39,7 @@ import soot.dava.toolkits.base.finders.*;
 import soot.dava.toolkits.base.renamer.*;
 //import soot.dava.toolkits.base.AST.analysis.*;
 //import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.*;
 import soot.dava.toolkits.base.AST.transformations.*;
 
@@ -255,7 +256,7 @@ public class DavaBody extends Body {
 				AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
 	        }
 
-
+	        debug("DavaBody","PreInit booleans is" + G.v().SootMethodAddedByDava);
 
 		}
 		Dava.v().log("end method " + body.getMethod().toString());
@@ -267,9 +268,8 @@ public class DavaBody extends Body {
 	 * All AST transformations should be implemented from within this method.
 	 */
 	public void analyzeAST() {
-		debug("analyseAST","analyzing AST");
 		ASTNode AST = (ASTNode) this.getUnits().getFirst();
-		//System.out.println("\n\n\nApplying AST analyzes for method"+this.getMethod().toString());
+		debug("analyzeAST","Applying AST analyzes for method"+this.getMethod().toString());
 
 		/*
 		 * Nomair A. Naeem
@@ -308,16 +308,26 @@ public class DavaBody extends Body {
 	}
 
 	private void applyASTAnalyses(ASTNode AST) {
+		debug("applyASTAnalyses","initial one time analyses started");
 		/*
 		 Nomair A. Naeem
 		 Transformations on the AST
 		 */
 		//The BooleanConditionSimplification changes flag==false to just flag
+
+
 		AST.apply(new BooleanConditionSimplification());
+
 		AST.apply(new VoidReturnRemover(this));
+
 		AST.apply(new DecrementIncrementStmtCreation());
+
 		AST.apply(new DeInliningFinalFields());
 
+		debug("applyASTAnalyses","initial one time analyses completed");
+		
+	     
+	     
 		boolean flag = true;
 		int times = 0;
 
