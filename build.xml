@@ -14,8 +14,8 @@
             destdir="classes"
             debug="true"
             deprecation="on"
-        	source="1.4"
-        	target="1.4"
+        	source="1.2"
+        	target="1.2"
         >
         	<classpath>
         		<pathelement location="classes"/>
