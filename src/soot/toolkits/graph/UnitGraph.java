@@ -31,6 +31,7 @@ package soot.toolkits.graph;
 import soot.*;
 import soot.util.*;
 import java.util.*;
+
 import soot.options.Options;
 
 
@@ -390,8 +391,8 @@ public abstract class UnitGraph implements DirectedGraph
 
     public List getPredsOf(Object u)
     {
-        if(!unitToSuccs.containsKey(u)) 
-	    throw new RuntimeException("Invalid unit " + u);
+        if(!unitToPreds.containsKey(u)) 
+	    throw new NoSuchElementException("Invalid unit " + u);
 
         return (List) unitToPreds.get(u);
     }
@@ -399,7 +400,7 @@ public abstract class UnitGraph implements DirectedGraph
     public List getSuccsOf(Object u)
     {
         if(!unitToSuccs.containsKey(u)) 
-	    throw new RuntimeException("Invalid unit " + u);
+	    throw new NoSuchElementException("Invalid unit " + u);
 
         return (List) unitToSuccs.get(u);
     }
