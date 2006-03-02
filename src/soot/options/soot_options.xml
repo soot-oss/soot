@@ -4815,7 +4815,7 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<name>Enabled</name>
 					<alias>enabled</alias>
 
-					<default>true</default>
+					<default>false</default>
 				</boolopt>
 
 				<boolopt>
@@ -4825,7 +4825,7 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
                                          <long_desc>The conversion works to remove java.lang. from java.lang.String etc.
                         However this might not always be correct and might cause recompilability errors in which case the flag
 should be turned off.</long_desc>
-					<default>true</default>
+					<default>false</default>
 				</boolopt>
 
                                </sub_phase>
