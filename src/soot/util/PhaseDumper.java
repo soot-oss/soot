@@ -233,7 +233,7 @@ public class PhaseDumper {
 
     private void dumpAllBodies(String baseName, 
 				      boolean deleteGraphFiles) {
-	Chain classes = Scene.v().getClasses();
+	List classes = Scene.v().getClasses(SootClass.BODIES);
 	for (Iterator c = classes.iterator(); c.hasNext(); ) {
 	    SootClass cls = (SootClass) c.next();
 	    for (Iterator m = cls.getMethods().iterator(); m.hasNext(); ) {
