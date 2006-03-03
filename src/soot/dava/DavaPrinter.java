@@ -20,17 +20,40 @@
 
 package soot.dava;
 
-import soot.dava.internal.AST.*;
+import java.io.PrintWriter;
+import java.util.Iterator;
+import java.util.Map;
 
-import soot.*;
-
-import java.util.*;
-
-import soot.util.*;
-import soot.jimple.*;
-import soot.tagkit.*;
-import java.io.*;
+import soot.Body;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.LongType;
+import soot.Modifier;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.Scene;
+import soot.ShortType;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.dava.internal.AST.ASTNode;
 import soot.options.Options;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.StringConstantValueTag;
+import soot.tagkit.Tag;
+import soot.util.Chain;
+import soot.util.IterableSet;
 
 public class DavaPrinter {
     public DavaPrinter(Singletons.Global g) {

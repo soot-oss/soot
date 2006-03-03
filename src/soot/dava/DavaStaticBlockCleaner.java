@@ -20,12 +20,16 @@
 package soot.dava;
 
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-import soot.dava.*;
-import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.Body;
+import soot.G;
+import soot.Modifier;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.util.Chain;
 
 
 /*

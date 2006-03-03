@@ -28,14 +28,12 @@
  */
 package soot.dava;
 
-import java.util.*;
-
-import soot.*;
-import soot.jimple.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
-import soot.dava.toolkits.base.AST.structuredAnalysis.*;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Value;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
 
 public class StaticDefinitionFinder extends DepthFirstAdapter{
 

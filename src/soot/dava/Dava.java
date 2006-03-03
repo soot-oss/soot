@@ -20,27 +20,29 @@
 
 package soot.dava;
 
-import soot.*;
-import java.io.*;
-import java.util.*;
-import soot.util.*;
-import soot.jimple.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+
+import soot.Body;
+import soot.CompilationDeathException;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.SootMethod;
+import soot.Type;
+import soot.jimple.Jimple;
+import soot.util.IterableSet;
 
 
 public class Dava
 {
-    public static BufferedWriter w;
-    // declaring variable to get results delete later
-    static{
-	try{
-	    w = new BufferedWriter(new FileWriter("results.621"));
-	}catch(Exception e){
-	    System.out.println("Error while creating filewriter to write results");
-	}
-    }
-
-
-    //end of change
     public Dava( Singletons.Global g ) {}
     public static Dava v() { return G.v().soot_dava_Dava(); }
     private static final String LOG_TO_FILE = null;

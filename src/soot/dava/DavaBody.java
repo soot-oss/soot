@@ -20,28 +20,129 @@
 
 package soot.dava;
 
-import soot.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.*;
-
-import soot.util.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.jimple.internal.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.toolkits.base.AST.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.dava.toolkits.base.finders.*;
-import soot.dava.toolkits.base.renamer.*;
-//import soot.dava.toolkits.base.AST.analysis.*;
-//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
-import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-import soot.dava.toolkits.base.AST.traversals.*;
-import soot.dava.toolkits.base.AST.transformations.*;
+import soot.Body;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.PatchingChain;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.ValueBox;
+import soot.dava.internal.AST.ASTMethodNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.SET.SETNode;
+import soot.dava.internal.SET.SETTopNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.asg.AugmentedStmtGraph;
+import soot.dava.internal.javaRep.DCmpExpr;
+import soot.dava.internal.javaRep.DCmpgExpr;
+import soot.dava.internal.javaRep.DCmplExpr;
+import soot.dava.internal.javaRep.DInstanceFieldRef;
+import soot.dava.internal.javaRep.DIntConstant;
+import soot.dava.internal.javaRep.DInterfaceInvokeExpr;
+import soot.dava.internal.javaRep.DLengthExpr;
+import soot.dava.internal.javaRep.DNegExpr;
+import soot.dava.internal.javaRep.DNewArrayExpr;
+import soot.dava.internal.javaRep.DNewInvokeExpr;
+import soot.dava.internal.javaRep.DNewMultiArrayExpr;
+import soot.dava.internal.javaRep.DSpecialInvokeExpr;
+import soot.dava.internal.javaRep.DStaticFieldRef;
+import soot.dava.internal.javaRep.DStaticInvokeExpr;
+import soot.dava.internal.javaRep.DThisRef;
+import soot.dava.internal.javaRep.DVirtualInvokeExpr;
+import soot.dava.toolkits.base.AST.UselessTryRemover;
+import soot.dava.toolkits.base.AST.transformations.ASTCleaner;
+import soot.dava.toolkits.base.AST.transformations.ASTCleanerTwo;
+import soot.dava.toolkits.base.AST.transformations.AndAggregator;
+import soot.dava.toolkits.base.AST.transformations.BooleanConditionSimplification;
+import soot.dava.toolkits.base.AST.transformations.DeInliningFinalFields;
+import soot.dava.toolkits.base.AST.transformations.DecrementIncrementStmtCreation;
+import soot.dava.toolkits.base.AST.transformations.FinalFieldDefinition;
+import soot.dava.toolkits.base.AST.transformations.ForLoopCreator;
+import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
+import soot.dava.toolkits.base.AST.transformations.LoopStrengthener;
+import soot.dava.toolkits.base.AST.transformations.OrAggregatorFour;
+import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
+import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
+import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
+import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
+import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
+import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
+import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
+import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
+import soot.dava.toolkits.base.finders.CycleFinder;
+import soot.dava.toolkits.base.finders.ExceptionFinder;
+import soot.dava.toolkits.base.finders.IfFinder;
+import soot.dava.toolkits.base.finders.LabeledBlockFinder;
+import soot.dava.toolkits.base.finders.SequenceFinder;
+import soot.dava.toolkits.base.finders.SwitchFinder;
+import soot.dava.toolkits.base.finders.SynchronizedBlockFinder;
+import soot.dava.toolkits.base.misc.MonitorConverter;
+import soot.dava.toolkits.base.misc.ThrowNullConverter;
+import soot.dava.toolkits.base.renamer.Renamer;
+import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
+import soot.grimp.GrimpBody;
+import soot.grimp.NewInvokeExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.BinopExpr;
+import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.CmpExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Expr;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.LengthExpr;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.MonitorStmt;
+import soot.jimple.NegExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.ParameterRef;
+import soot.jimple.Ref;
+import soot.jimple.ReturnStmt;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThisRef;
+import soot.jimple.ThrowStmt;
+import soot.jimple.UnopExpr;
+import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.internal.JGotoStmt;
+import soot.jimple.internal.JimpleLocal;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.TrapUnitGraph;
+import soot.util.IterableSet;
 
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
@@ -488,18 +589,7 @@ public class DavaBody extends Body {
 		renamer.rename();		
 	}
 
-	
-	
-	
-	public void write(String temp) {
-		try {
-			soot.dava.Dava.w.write(temp);
-			soot.dava.Dava.w.flush();
-		} catch (Exception e) {
-			throw new RuntimeException("exception while writing");
-		}
-	}
-
+		
 	/*
 	 *  Copy and patch a GrimpBody so that it can be used to output Java.
 	 */
