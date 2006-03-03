@@ -4997,7 +4997,7 @@ to the surrounding program.
 When constructing an <code>ExceptionalUnitGraph</code> or
 <code>ExceptionalBlockGraph</code>, include edges to an exception
 handler only from the predecessors of an instruction which may
-throw an exceptions to the handler, and not from the excepting
+throw an exception to the handler, and not from the excepting
 instruction itself, unless the excepting instruction has
 potential side effects.
 </p>
