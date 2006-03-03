@@ -19,6 +19,8 @@
 
 package soot;
 import soot.options.*;
+import soot.toolkits.astmetrics.ComputeASTMetrics;
+
 import java.io.*;
 import java.util.*;
 import soot.javaToJimple.*;
@@ -45,6 +47,19 @@ public class JavaClassSource extends ClassSource
         }
         //System.out.println("about to call initial resolver in j2j: "+sc.getName());
         List references = InitialResolver.v().resolveFromJavaFile(sc);
+        
+        /*
+         * 1st March 2006
+         * Nomair
+         * This seems to be a good place to calculate all the
+         * AST Metrics needed from Java's AST
+         */
+		if(Options.v().ast_metrics()){
+			//System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
+			ComputeASTMetrics metrics = new ComputeASTMetrics(InitialResolver.v().getAst());
+			metrics.apply();
+		}
+        
         return references;
     }
 

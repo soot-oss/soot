@@ -25,16 +25,9 @@
 
 package soot;
 
-import soot.util.*;
-import soot.xml.*;
 
+import soot.toolkits.astmetrics.ClassData;
 import java.util.*;
-import soot.jimple.*;
-import soot.grimp.*;
-import soot.baf.*;
-import soot.dava.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.util.queue.*;
 import soot.options.Options;
 
 import java.io.*;
@@ -176,6 +169,37 @@ public class Main {
 
             Scene.v().loadNecessaryClasses();
 
+            /*
+             * By this all the java to jimple has occured so we just check ast-metrics flag
+             * 
+             * If it is set......print the astMetrics.xml file and stop executing soot
+             */
+            if(Options.v().ast_metrics()){
+        	   	try{
+            		OutputStream streamOut = new FileOutputStream("../astMetrics.xml");
+            		PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+            		writerOut.println("<?xml version='1.0'?>");
+            		writerOut.println("<ASTMetrics>");		 		
+            		
+            		Iterator it = G.v().ASTMetricsData.iterator();
+            		while(it.hasNext()){
+            			//each is a classData object
+            			ClassData cData = (ClassData)it.next();
+            			writerOut.println(cData.toString());
+            		}
+
+            		writerOut.println("</ASTMetrics>");
+             		writerOut.flush();
+            		streamOut.close();
+            	} catch (IOException e) {
+            		throw new CompilationDeathException("Cannot output file astMetrics");
+            	}
+                exitCompilation(CompilationDeathException.COMPILATION_SUCCEEDED);
+                return CompilationDeathException.COMPILATION_SUCCEEDED;
+
+            }
+            
+            
             PackManager.v().runPacks();
             PackManager.v().writeOutput();
 

@@ -177,6 +177,10 @@ public class AntTask extends MatchingTask {
             return process_dir.createPath();
         }
   
+        public void setast_metrics(boolean arg) {
+            if(arg) addArg("-ast-metrics");
+        }
+  
         public void setsrc_prec(String arg) {
             if(false
     
@@ -2736,6 +2740,21 @@ public class AntTask extends MatchingTask {
           public void setenabled(boolean arg) {
             addArg("-p");
             addArg("db");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_db_transformations() {
+            Object ret = new PhaseOptdb_transformations();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptdb_transformations {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("db.transformations");
             addArg("enabled:"+(arg?"true":"false"));
           }
       

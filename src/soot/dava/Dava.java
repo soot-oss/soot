@@ -20,10 +20,10 @@
 
 package soot.dava;
 
+
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
@@ -39,6 +39,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.jimple.Jimple;
 import soot.util.IterableSet;
+
 
 
 public class Dava

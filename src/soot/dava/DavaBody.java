@@ -144,6 +144,7 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.toolkits.graph.TrapUnitGraph;
 import soot.util.IterableSet;
 
+
 /*
  * CHANGE LOG: Nomair - January 2006: Moved the AST Analyses to a separate method
  *             These are now invoked as a very last staged (just before generating decompiled
@@ -369,6 +370,23 @@ public class DavaBody extends Body {
 	 * All AST transformations should be implemented from within this method.
 	 */
 	public void analyzeAST() {
+		/*
+		 * 1st March 2006
+		 * Check if we want to apply transformations
+		 * The only reason we might not want to do this is when gathering metrics data!!
+		 */
+		{
+			Map options = PhaseOptions.v().getPhaseOptions("db.transformations");
+			boolean transformations = PhaseOptions.getBoolean(options, "enabled");
+			if(!transformations){
+				debug("analyzeAST","Advanced Analyses ALL DISABLED");
+				//do not do any of Nomair's transformations
+				return;
+			}        	
+        }
+        
+        
+        
 		ASTNode AST = (ASTNode) this.getUnits().getFirst();
 		debug("analyzeAST","Applying AST analyzes for method"+this.getMethod().toString());
 
@@ -399,13 +417,16 @@ public class DavaBody extends Body {
         	applyRenamerAnalyses(AST);
         }
 		
+		
+
 		/*
 		 In the end check 
 		 1, if there are labels which can be safely removed
 		 2, int temp; temp=0 to be converted to int temp=0;
 		 */
 		//AST.apply(new ExtraLabelNamesRemover());
-		//System.out.println("\nEND analyzing method"+this.getMethod().toString());
+        
+        //System.out.println("\nEND analyzing method"+this.getMethod().toString());
 	}
 
 	private void applyASTAnalyses(ASTNode AST) {

@@ -194,6 +194,11 @@ public class Options extends OptionsBase {
                 process_dir.add( value );
             }
   
+            else if( false 
+            || option.equals( "ast-metrics" )
+            )
+                ast_metrics = true;
+  
             else if( false
             || option.equals( "src-prec" )
             ) {
@@ -927,6 +932,10 @@ public class Options extends OptionsBase {
     }
     public void set_process_dir( List setting ) { process_dir = setting; }
     private List process_dir = null;
+    public boolean ast_metrics() { return ast_metrics; }
+    private boolean ast_metrics = false;
+    public void set_ast_metrics( boolean setting ) { ast_metrics = setting; }
+  
     public int src_prec() {
         if( src_prec == 0 ) return src_prec_class;
         return src_prec; 
@@ -1101,6 +1110,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -process-dir DIR", "Process all classes found in DIR" )
++padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )
 +padVal(" only-class", "Use only class files as Soot source" )
@@ -1274,6 +1284,7 @@ public class Options extends OptionsBase {
         +padVal("tag.dep", "Dependence aggregator")
         +padVal("tag.fieldrw", "Field read/write aggregator")
         +padOpt("db", "Dummy phase to store options for Dava")
+        +padVal("db.transformations", "The Dava back-end with all its transformations")
         +padVal("db.renamer", "Apply heuristics based naming of local variables")
         +padVal("db.deobfuscate", " Apply de-obfuscation analyses")
         +padVal("db.force-recompile", " Try to get recompilable code.");
@@ -2158,6 +2169,12 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
+        if( phaseName.equals( "db.transformations" ) )
+            return "Phase "+phaseName+":\n"+
+                "\n					The transformations implemented using AST Traversal and \nstructural flow analses on Dava's AST 					"
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
         if( phaseName.equals( "db.renamer" ) )
             return "Phase "+phaseName+":\n"+
                 "\nIf set, the renaming analyses implemented in Dava are applied to \neach method body being decompiled. The analyses use heuristics \nto choose potentially better names for local variables. (As of \nFebruary 14th 2006, work is still under progress on these \nanalyses (dava.toolkits.base.renamer). 					"
@@ -2712,6 +2729,10 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "db.transformations" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "db.renamer" ) )
             return ""
                 +"enabled "
@@ -3259,6 +3280,10 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "db.transformations" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "db.renamer" ) )
             return ""
               +"enabled:false "
@@ -3375,6 +3400,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "tag.dep" ) ) return;
         if( phaseName.equals( "tag.fieldrw" ) ) return;
         if( phaseName.equals( "db" ) ) return;
+        if( phaseName.equals( "db.transformations" ) ) return;
         if( phaseName.equals( "db.renamer" ) ) return;
         if( phaseName.equals( "db.deobfuscate" ) ) return;
         if( phaseName.equals( "db.force-recompile" ) ) return;
@@ -3577,6 +3603,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase tag.fieldrw" );
         if( !PackManager.v().hasPhase( "db" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase db" );
+        if( !PackManager.v().hasPhase( "db.transformations" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase db.transformations" );
         if( !PackManager.v().hasPhase( "db.renamer" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase db.renamer" );
         if( !PackManager.v().hasPhase( "db.deobfuscate" ) )

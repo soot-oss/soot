@@ -62,7 +62,6 @@ import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
-//import soot.toolkits.graph.*;
 import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
@@ -256,6 +255,7 @@ public class PackManager {
          */
         addPack(p = new BodyPack("db"));
         {
+        	p.add(new Transform("db.transformations", null));
         	p.add(new Transform("db.renamer", null));
         	p.add(new Transform("db.deobfuscate", null));
         	p.add(new Transform("db.force-recompile", null));
@@ -330,6 +330,7 @@ public class PackManager {
                 G.v().out.println("Running in interactive mode.");
             }
         }
+        
         runBodyPacks();
         handleInnerClasses();
     }
@@ -440,6 +441,8 @@ public class PackManager {
 
     /* post process for DAVA */
     private void postProcessDAVA() {
+    	String pathForBuild=null;
+    	ArrayList decompiledClasses = new ArrayList();
         G.v().out.println();
 
         Iterator classIt = Scene.v().getApplicationClasses().iterator();
@@ -449,6 +452,11 @@ public class PackManager {
             OutputStream streamOut = null;
             PrintWriter writerOut = null;
             String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
+            decompiledClasses.add(fileName.substring(fileName.lastIndexOf('/')+1));
+            if(pathForBuild == null){
+            	pathForBuild =fileName.substring(0,fileName.lastIndexOf('/')+1);
+            	//System.out.println(pathForBuild);
+            }
             if( Options.v().gzip() ) fileName = fileName+".gz";
 
             try {
@@ -468,32 +476,29 @@ public class PackManager {
             }
 
             
-        G.v().out.print("Generating " + fileName + "... ");
-        /*
-	     * Nomair A. Naeem 5-Jun-2005
-	     * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
-	     */ 
-	    DavaStaticBlockCleaner.v().staticBlockInlining(s);
+            G.v().out.print("Generating " + fileName + "... ");
+            /*
+             * Nomair A. Naeem 5-Jun-2005
+             * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
+             */ 
+            DavaStaticBlockCleaner.v().staticBlockInlining(s);
 
 	    
-	    /*
-	     * Nomair A. Naeem 29th Jan 2006
-	     * Added hook into going through each decompiled method again
-	     * Need it for all the implemented AST analyses
-	     */
+            /*
+             * Nomair A. Naeem 29th Jan 2006
+             * Added hook into going through each decompiled method again
+             * Need it for all the implemented AST analyses
+             */
             Iterator methodIt = s.methodIterator();
             while (methodIt.hasNext()) {
             	
-                SootMethod m = (SootMethod) methodIt.next();
+            	 SootMethod m = (SootMethod) methodIt.next();
                 //System.out.println("SootMethod:"+m.getName().toString());
 		        DavaBody body = (DavaBody)m.getActiveBody();
                 //System.out.println("body"+body.toString());
 		        body.analyzeAST();
             }
 
-	     
-
-	    
  
             G.v().out.flush();
 
@@ -512,6 +517,32 @@ public class PackManager {
             }
         }
         G.v().out.println();
+
+        
+        /*
+         * Create the build.xml for Dava
+         */
+        {
+        	//path for build is probably ending in sootoutput/dava/src
+        	//definetly remove the src
+        	if(pathForBuild.endsWith("src/"))
+        		pathForBuild=pathForBuild.substring(0,pathForBuild.length()-4);
+        	
+        	String fileName = pathForBuild +"build.xml";
+        
+           	try{
+        		OutputStream streamOut = new FileOutputStream(fileName);
+        		PrintWriter writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
+        		DavaBuildFile.generate(writerOut,decompiledClasses);
+        		writerOut.flush();
+        		streamOut.close();
+        	} catch (IOException e) {
+        		throw new CompilationDeathException("Cannot output file " + fileName);
+        	}
+        }
+
+        
+        
     }
 
     private void runBodyPacks(SootClass c) {

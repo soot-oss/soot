@@ -284,6 +284,14 @@ instance, then Soot assumes <tt>MyClass</tt> is in package
 <tt>subA.subB</tt>.</p>
 </long_desc>
 		</listopt>
+		<boolopt>
+			<name>Compute AST Metrics</name>
+			<alias>ast-metrics</alias>
+			<short_desc>Compute AST Metrics if performing java to jimple</short_desc>
+			<long_desc>
+			If this flag is set and soot converts java to jimple then AST metrics will be computed.
+	</long_desc>
+		</boolopt>
 		<multiopt>
 			<name>Input Source Precedence</name>
 			<alias>src-prec</alias>
@@ -4798,10 +4806,22 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
+				<sub_phase>
+					<name>Transformations</name>
+					<alias>db.transformations</alias>
+					<short_desc>The Dava back-end with all its transformations</short_desc>
+					<long_desc>
+					The transformations implemented using AST Traversal and structural flow analses on Dava's AST
+					</long_desc>
 
 
+				<boolopt>
+					<name>Enabled</name>
+					<alias>enabled</alias>
 
-
+					<default>true</default>
+				</boolopt>
+                               </sub_phase>
 
 				<sub_phase>
 					<name>Renamer</name>

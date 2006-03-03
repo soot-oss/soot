@@ -124,6 +124,14 @@ public class InitialResolver {
     public void setAst(polyglot.ast.Node ast) {
         astNode = ast;
     }
+    
+    /*
+     * March 2nd, 2006 Nomair
+     * Is it okkay get the ast and send it to the ASTMetrics package????
+     */
+    public polyglot.ast.Node getAst(){
+    	return astNode;
+    }
 
     private void makeASTMap() {
         ClassDeclFinder finder = new ClassDeclFinder();
