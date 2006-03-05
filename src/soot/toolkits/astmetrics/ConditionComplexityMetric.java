@@ -1,9 +1,11 @@
 package soot.toolkits.astmetrics;
 
+import polyglot.ast.Binary;
 import polyglot.ast.Expr;
 import polyglot.ast.If;
 import polyglot.ast.Loop;
 import polyglot.ast.Node;
+import polyglot.ast.Unary;
 import polyglot.visit.NodeVisitor;
 
 /*
@@ -44,16 +46,35 @@ public class ConditionComplexityMetric extends ASTMetric {
 		return enter(n);
 	}
 	
-	private int condComplexity(Expr expr){
+	private double condComplexity(Expr expr){
 
 		//boolean literal
 		//binary   check for AND and  OR ... else its relational!!
 		//unary  (Check for NOT)
-		//if(expr instanceof BooleanLit)
 		
-		
-		
-		return 0;
+		if(expr instanceof Binary){
+			Binary b = (Binary)expr;
+			if( b.operator() == Binary.COND_AND   || b.operator() == Binary.COND_OR){
+				System.out.println(">>>>>>>> Binary (AND or OR) "+expr);
+				return 1.0 + condComplexity(b.left()) + condComplexity(b.right());
+			}
+			else{
+				System.out.println(">>>>>>>> Binary (relatinal) "+expr);
+				return 0.5 + condComplexity(b.left()) + condComplexity(b.right());
+			}
+		}
+		else if(expr instanceof Unary){
+			if(((Unary)expr).operator() == Unary.NOT){
+				System.out.println(">>>>>>>>>>>>>>Unary: !"+expr);
+				return 0.5 + condComplexity(((Unary)expr).expr());
+			}
+			else{
+				System.out.println(">>>>>>>>>>>>>>unary but Not ! "+expr);
+				return condComplexity(((Unary)expr).expr());
+			}
+		}
+		else
+			return 1;//should return something as it is a condition after all
 	}
 
 }

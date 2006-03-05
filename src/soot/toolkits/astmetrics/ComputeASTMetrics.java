@@ -36,14 +36,14 @@ public class ComputeASTMetrics {
 	public ComputeASTMetrics(Node astNode){
 		metrics = new ArrayList();
 		//add new metrics below this line
-		//REMEMBER ALL METRICS NEED TO EXTEND ASTMetric
+		//REMEMBER ALL METRICS NEED TO implement MetricInterface
 	
 		//abrupt edges metric calculator
 		metrics.add(new AbruptEdgesMetric(astNode));
 		metrics.add(new NumLocalsMetric(astNode));
 		metrics.add(new ConstructNumbersMetric(astNode));
 		metrics.add(new StmtSumWeightedByDepth(astNode));
-		//metrics.add(new ConditionComplexityMetrics(astNode));
+		metrics.add(new ConditionComplexityMetric(astNode));
 	}
 	
 	public void apply(){
@@ -53,7 +53,7 @@ public class ComputeASTMetrics {
 				
 		Iterator metricIt = metrics.iterator();
 		while(metricIt.hasNext())
-			((ASTMetric)metricIt.next()).execute();
+			((MetricInterface)metricIt.next()).execute();
 		
 	}
 }

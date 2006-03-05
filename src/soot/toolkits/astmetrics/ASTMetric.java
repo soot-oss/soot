@@ -26,7 +26,7 @@ import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 import soot.G;
 
-public abstract class ASTMetric extends NodeVisitor{
+public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 	polyglot.ast.Node astNode;
 	String className=null; //name of Class being currently processed
 	
