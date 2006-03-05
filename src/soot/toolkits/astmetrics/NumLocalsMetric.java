@@ -48,7 +48,7 @@ public class NumLocalsMetric extends ASTMetric {
 	
 	public NodeVisitor enter(Node parent, Node n){
 		if(n instanceof LocalDecl){
-			System.out.println("Local declared is"+ ((LocalDecl)n).name()  );
+			//System.out.println("Local declared is"+ ((LocalDecl)n).name()  );
 			numLocals++;
 		}
 		return enter(n);

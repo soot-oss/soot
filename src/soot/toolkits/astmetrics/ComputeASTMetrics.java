@@ -41,8 +41,9 @@ public class ComputeASTMetrics {
 		//abrupt edges metric calculator
 		metrics.add(new AbruptEdgesMetric(astNode));
 		metrics.add(new NumLocalsMetric(astNode));
-		
-		
+		metrics.add(new ConstructNumbersMetric(astNode));
+		metrics.add(new StmtSumWeightedByDepth(astNode));
+		//metrics.add(new ConditionComplexityMetrics(astNode));
 	}
 	
 	public void apply(){

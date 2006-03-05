@@ -52,7 +52,9 @@ public abstract class ASTMetric extends NodeVisitor{
 	 * 
 	 * This is done by invoking the addMetrics abstract method
 	 */
-	public final Node leave(Node old, Node n, NodeVisitor v){
+	
+	
+	public final Node leave(Node parent, Node old, Node n, NodeVisitor v){
 		if(n instanceof ClassDecl){
 			if(className==null)
 				throw new RuntimeException("className is null");
@@ -64,7 +66,7 @@ public abstract class ASTMetric extends NodeVisitor{
 			addMetrics(data);
 			reset();
 		}
-		return n;
+		return leave(old,n,v);
 	}
 
 	public abstract void reset();
