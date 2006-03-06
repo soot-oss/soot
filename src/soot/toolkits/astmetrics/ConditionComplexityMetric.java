@@ -55,21 +55,21 @@ public class ConditionComplexityMetric extends ASTMetric {
 		if(expr instanceof Binary){
 			Binary b = (Binary)expr;
 			if( b.operator() == Binary.COND_AND   || b.operator() == Binary.COND_OR){
-				System.out.println(">>>>>>>> Binary (AND or OR) "+expr);
+				//System.out.println(">>>>>>>> Binary (AND or OR) "+expr);
 				return 1.0 + condComplexity(b.left()) + condComplexity(b.right());
 			}
 			else{
-				System.out.println(">>>>>>>> Binary (relatinal) "+expr);
+				//System.out.println(">>>>>>>> Binary (relatinal) "+expr);
 				return 0.5 + condComplexity(b.left()) + condComplexity(b.right());
 			}
 		}
 		else if(expr instanceof Unary){
 			if(((Unary)expr).operator() == Unary.NOT){
-				System.out.println(">>>>>>>>>>>>>>Unary: !"+expr);
+				//System.out.println(">>>>>>>>>>>>>>Unary: !"+expr);
 				return 0.5 + condComplexity(((Unary)expr).expr());
 			}
 			else{
-				System.out.println(">>>>>>>>>>>>>>unary but Not ! "+expr);
+				//System.out.println(">>>>>>>>>>>>>>unary but Not ! "+expr);
 				return condComplexity(((Unary)expr).expr());
 			}
 		}

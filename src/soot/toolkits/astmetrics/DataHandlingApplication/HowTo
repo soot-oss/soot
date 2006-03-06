@@ -1,0 +1,62 @@
+Creating the metrics xml files:
+
+    *    Original Java Source:
+         
+         1. execute the command: java soot.Main -ast-metrics --src-prec java <files>. 
+         This generates a file astMetrics.xml in the parent directory from where the above was invokes (Done ask!!)
+         
+         2. mv ../astMetrics.xml /Tables/original.xml
+         
+         
+         
+         
+    *    Decompiled Transformations Disabled:
+         
+         1. execute the command: java soot.Main -f dava -p db.transformations enabled:false <files>. 
+         This generates sootOutput/dava/src/<files> , sootOutput/dava/classes and sootOutput/dava/build.xml
+         
+         2. execute sootOutput/dava/build.xml's default: by typing in "ant"....this tries to compile the decompiled files
+         
+         3. Fix any compilation errors in the files in sootOutput/dava/src
+         
+         4. execute: ant ast-metrics
+            This creates a astMetrics.xml in SootOutput?/dava
+
+         5. mv astMetrics.xml /Tables/disabled.xml
+         
+         
+         
+    *    Decompiled Transformation Enabled:
+    
+         1. execute the command: java soot.Main -f dava <files>. 
+         This generates sootOutput/dava/src/<files> , sootOutput/dava/classes and sootOutput/dava/build.xml
+         
+         2.execute sootOutput/dava/build.xml's default: by typing in "ant"....this tries to compile the decompiled files
+         
+         3.Fix any compilation errors in the files in sootOutput/dava/src
+         
+         4.execute: ant ast-metrics
+			This creates a astMetrics.xml in SootOutput?/dava
+
+         5. mv astMetrics.xml /Tables/enabled.xml
+         
+         
+         
+    *    Producing Tables
+         1. cd /Tables
+         
+         2. ls *.xml should display the files original.xml, disabled.xml and enabled.xml
+         
+         3.run the program soot.toolkits.astmetrics.DataProcessingApplication?.ProcessData? -metricList listOfMetrics *
+
+           This will create a file named "listOfMetric" which will contain all the possible metrics that were being collecting.
+
+         4. Remove the metrics that you dont want in your tables (remember you dont want tooo many columns in each table) from this file
+         
+         5.run the program soot.toolkits.astmetrics.DataProcessingApplication?.ProcessData? -tables listOfMetrics -class *
+
+           This will create files original.tex disabled.tex and enabled.tex which contain class by class info on the the files in the benchmark
+
+         6. run the program soot.toolkits.astmetrics.DataProcessingApplication?.ProcessData? -tables listOfMetrics -benchmark * This will aggregate results of all classes in each of the xml files into a single row of the table generated in the file "listOfMetrics.tex"
+
+Add the tex files created as input into your latex document. Enjoy!!

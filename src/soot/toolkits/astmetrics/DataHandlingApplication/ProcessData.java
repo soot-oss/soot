@@ -167,8 +167,8 @@ public class ProcessData {
 			for(int i=startIndex;i<args.length;i++){
 				String temp = args[i];
 				if(!temp.endsWith(".xml")){
-					System.out.println("Argument number "+(startIndex+1) + ": '" + temp+"' is not a valid xml file");
-					System.exit(1);
+					//System.out.println("Argument number "+(startIndex+1) + ": '" + temp+"' is not a valid xml file");
+					//System.exit(1);
 				}
 				else{
 					xmlFileList.add(temp);
@@ -322,9 +322,9 @@ public class ProcessData {
 			BufferedReader fileInput = new BufferedReader(file);
 			String text;
 					
-			System.out.println("Columns");
+			//System.out.println("Columns");
 			while( (text = fileInput.readLine()) != null){
-				System.out.print(text+"\t");
+				//System.out.print(text+"\t");
 				columns.add(text);
 			}
 			fileInput.close();
@@ -607,7 +607,7 @@ public class ProcessData {
 
 		    	int columnIndex=0; //which one we are printing right now
 		    	
-				for(int s=0; s<metrics.getLength() ; s++){
+				for(int s=0; s<metrics.getLength() && columnIndex < columns.size(); s++){
 					Node metricNode = metrics.item(s);
 					if(metricNode.getNodeType() == Node.ELEMENT_NODE){
 
@@ -623,9 +623,11 @@ public class ProcessData {
 						 * simply skip over it and continue
 						 */
 						if(! tempName.equals(columns.elementAt(columnIndex))){
-							//System.out.println("here");
+							//System.out.println("here");	
 							continue;
 						}
+
+						
 					
 						//We get to this point only if the metric name is the same as the column name
 					

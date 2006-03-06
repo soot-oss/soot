@@ -8,6 +8,8 @@ public class StmtSumWeightedByDepth extends ASTMetric {
 	int currentDepth;
 	int sum;
 	int maxDepth;
+	int returnSum;
+	
 	
 	public StmtSumWeightedByDepth(Node node){
 		super(node);
@@ -19,14 +21,14 @@ public class StmtSumWeightedByDepth extends ASTMetric {
 		currentDepth = 1; //inside a class
 		maxDepth = 1;
 		sum = 0;
-
+		returnSum =0;
 	}
 
 	public void addMetrics(ClassData data) {
 		// TODO Auto-generated method stub
 		data.addMetric(new MetricData("MaxDepth",maxDepth));
 		data.addMetric(new MetricData("D-W-Complexity",sum));
-
+		data.addMetric(new MetricData("Return-Depth-Sum",returnSum));
 	}
 
 	private void increaseDepth(){
@@ -68,8 +70,14 @@ public class StmtSumWeightedByDepth extends ASTMetric {
 		else if(n instanceof Try || n instanceof Synchronized || n instanceof ProcedureDecl || n instanceof Initializer || n instanceof Switch){
 			sum+= currentDepth*3;
 		}
-		else
+		else{
+			if(n instanceof Return){
+				returnSum += currentDepth;
+				System.out.println("RETURN111111111111111111111111111111111"+currentDepth);
+			}
+			
 			sum+= currentDepth;
+		}
 		return enter(n);
 	}
  
