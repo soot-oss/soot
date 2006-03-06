@@ -60,6 +60,7 @@ import soot.jimple.paddle.PaddleHook;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
+import soot.dava.toolkits.base.AST.interProcedural.InterProceduralAnalyses;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
 import soot.toolkits.graph.interaction.*;
@@ -441,14 +442,81 @@ public class PackManager {
 
     /* post process for DAVA */
     private void postProcessDAVA() {
-    	String pathForBuild=null;
-    	ArrayList decompiledClasses = new ArrayList();
         G.v().out.println();
 
-        Iterator classIt = Scene.v().getApplicationClasses().iterator();
+        Chain appClasses = Scene.v().getApplicationClasses();
+
+        Map options = PhaseOptions.v().getPhaseOptions("db.transformations");
+        boolean transformations = PhaseOptions.getBoolean(options, "enabled");
+        /*
+         * apply analyses etc 
+         */
+        Iterator classIt = appClasses.iterator();
         while (classIt.hasNext()) {
             SootClass s = (SootClass) classIt.next();
+            String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
+            
+            /*
+             * Nomair A. Naeem 5-Jun-2005
+             * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
+             */ 
+            DavaStaticBlockCleaner.v().staticBlockInlining(s);
 
+	    
+    		/*
+    		 * Nomair A. Naeem 1st March 2006
+    		 * Check if we want to apply transformations
+    		 * one reason we might not want to do this is when gathering old metrics data!!
+    		 */
+            if(transformations){
+            	//debug("analyzeAST","Advanced Analyses ALL DISABLED");
+            	
+            	G.v().out.println("Analyzing " + fileName + "... ");	 
+    	            
+            	/*
+            	 * Nomair A. Naeem 29th Jan 2006
+            	 * Added hook into going through each decompiled method again
+            	 * Need it for all the implemented AST analyses
+            	 */
+            	Iterator methodIt = s.methodIterator();
+            	while (methodIt.hasNext()) {
+            		
+            		SootMethod m = (SootMethod) methodIt.next();
+            		//System.out.println("SootMethod:"+m.getName().toString());
+            		DavaBody body = (DavaBody)m.getActiveBody();
+            		//System.out.println("body"+body.toString());
+            		body.analyzeAST();
+            	}
+            } //if tansformations are enabled
+        } //going through all classes
+    		
+
+        
+        
+        /*
+         * Nomair A. Naeem March 6th, 2006
+         * Laying the seed for interprocedural analyses
+         * 
+         * SHOULD BE INVOKED ONLY ONCE!!!
+         */
+        if(transformations){
+        	InterProceduralAnalyses.applyInterProceduralAnalyses();
+        }
+    	        	
+        
+          
+            
+            
+        
+         /*
+          * Generate decompiled code
+          */   
+    	String pathForBuild=null;
+    	ArrayList decompiledClasses = new ArrayList();
+        classIt = appClasses.iterator();
+        while (classIt.hasNext()) {
+            SootClass s = (SootClass) classIt.next();
+            
             OutputStream streamOut = null;
             PrintWriter writerOut = null;
             String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
@@ -457,7 +525,8 @@ public class PackManager {
             	pathForBuild =fileName.substring(0,fileName.lastIndexOf('/')+1);
             	//System.out.println(pathForBuild);
             }
-            if( Options.v().gzip() ) fileName = fileName+".gz";
+            if( Options.v().gzip() ) 
+            	fileName = fileName+".gz";
 
             try {
                 if( jarFile != null ) {
@@ -475,30 +544,9 @@ public class PackManager {
                 throw new CompilationDeathException("Cannot output file " + fileName);
             }
 
-            
+           	
+
             G.v().out.print("Generating " + fileName + "... ");
-            /*
-             * Nomair A. Naeem 5-Jun-2005
-             * Added to remove the *final* bug in Dava (often seen in AspectJ programs)
-             */ 
-            DavaStaticBlockCleaner.v().staticBlockInlining(s);
-
-	    
-            /*
-             * Nomair A. Naeem 29th Jan 2006
-             * Added hook into going through each decompiled method again
-             * Need it for all the implemented AST analyses
-             */
-            Iterator methodIt = s.methodIterator();
-            while (methodIt.hasNext()) {
-            	
-            	 SootMethod m = (SootMethod) methodIt.next();
-                //System.out.println("SootMethod:"+m.getName().toString());
-		        DavaBody body = (DavaBody)m.getActiveBody();
-                //System.out.println("body"+body.toString());
-		        body.analyzeAST();
-            }
-
  
             G.v().out.flush();
 
@@ -515,7 +563,7 @@ public class PackManager {
                     throw new CompilationDeathException("Cannot close output file " + fileName);
                 }
             }
-        }
+        } //going through all classes
         G.v().out.println();
 
         

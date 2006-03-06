@@ -370,24 +370,7 @@ public class DavaBody extends Body {
 	 * All AST transformations should be implemented from within this method.
 	 */
 	public void analyzeAST() {
-		/*
-		 * 1st March 2006
-		 * Check if we want to apply transformations
-		 * The only reason we might not want to do this is when gathering metrics data!!
-		 */
-		{
-			Map options = PhaseOptions.v().getPhaseOptions("db.transformations");
-			boolean transformations = PhaseOptions.getBoolean(options, "enabled");
-			if(!transformations){
-				debug("analyzeAST","Advanced Analyses ALL DISABLED");
-				//do not do any of Nomair's transformations
-				return;
-			}        	
-        }
-        
-        
-        
-		ASTNode AST = (ASTNode) this.getUnits().getFirst();
+   		ASTNode AST = (ASTNode) this.getUnits().getFirst();
 		debug("analyzeAST","Applying AST analyzes for method"+this.getMethod().toString());
 
 		/*
