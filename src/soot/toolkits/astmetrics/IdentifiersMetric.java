@@ -20,6 +20,7 @@
 package soot.toolkits.astmetrics;
 
 import soot.G;
+import soot.options.*;
 import polyglot.ast.*;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
@@ -35,6 +36,7 @@ import java.io.*;
 public class IdentifiersMetric extends ASTMetric {
 
   int nameComplexity = 0;
+  int charComplexity = 0;
   
   int dictionarySize = 0;
   ArrayList dictionary;
@@ -77,9 +79,9 @@ public class IdentifiersMetric extends ASTMetric {
     }
       
     if ((dictionarySize = dictionary.size()) == 0)
-      System.out.println("Error reading in dictionary file(s)");  
-    else
-      System.out.println("Read "+dictionarySize+" words in from dictionary file(s)");
+      G.v().out.println("Error reading in dictionary file(s)");  
+    else if (Options.v().verbose())
+      G.v().out.println("Read "+dictionarySize+" words in from dictionary file(s)");
   }
   
   private void addWord(String word) {
@@ -104,13 +106,15 @@ public class IdentifiersMetric extends ASTMetric {
    */
   public void reset() {
     nameComplexity = 0;
+    charComplexity = 0;
   }
 
   /* (non-Javadoc)
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
   public void addMetrics(ClassData data) {
-    data.addMetric(new MetricData("NameComplexity",nameComplexity));
+    data.addMetric(new MetricData("NameComplexity",new Integer(nameComplexity)));
+    data.addMetric(new MetricData("CharComplexity",new Integer(charComplexity)));
   }
   
   public NodeVisitor enter(Node parent, Node n){
@@ -118,10 +122,10 @@ public class IdentifiersMetric extends ASTMetric {
     String name = null;
     if(n instanceof ClassDecl){
       name = ((ClassDecl)n).name();
-      multiplier = 4;
+      multiplier = 3;
     } else if (n instanceof MethodDecl) {
       name = ((MethodDecl)n).name();
-      multiplier = 3;
+      multiplier = 4;
     } else if (n instanceof FieldDecl) {
       name = ((FieldDecl)n).name();
       multiplier = 2;
@@ -133,8 +137,10 @@ public class IdentifiersMetric extends ASTMetric {
     }
     
     if (name!=null)
+    {
       nameComplexity += (int) (multiplier * computeNameComplexity(name));
-    
+      charComplexity += (int) (multiplier * computeCharComplexity(name));
+    }
 	return enter(n);
   }
 
@@ -208,6 +214,13 @@ public class IdentifiersMetric extends ASTMetric {
     return complexity;
   }
   
+  private int computeCharComplexity(String name) {
+    int complexity = 0;
+    
+    //[^[a-zA-Z]]
+    
+    return complexity;
+  }
   /*
    * @author Michael Batchelder 
    * 

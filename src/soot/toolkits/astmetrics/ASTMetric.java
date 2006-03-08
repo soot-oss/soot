@@ -41,7 +41,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 	public final NodeVisitor enter(Node n){
 		if(n instanceof ClassDecl){
 			className = ((ClassDecl)n).name();
-			System.out.println("Starting processing: "+className);
+			System.out.println("Starting processing: "+ className);
 		}
 		return this;	
 	}
@@ -59,7 +59,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 			if(className==null)
 				throw new RuntimeException("className is null");
 			
-			System.out.println("Done with class"+className);
+			System.out.println("Done with class "+className);
 			
 			//get the classData object for this class
 			ClassData data = getClassData();

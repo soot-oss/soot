@@ -28,9 +28,9 @@ public class ConditionComplexityMetric extends ASTMetric {
 	}
 
 	public void addMetrics(ClassData data) {
-		data.addMetric(new MetricData("Loop-Cond-Complexity",loopComplexity));
-		data.addMetric(new MetricData("If-Cond-Complexity",ifComplexity));
-		data.addMetric(new MetricData("Total-Cond-Complexity", (loopComplexity+ifComplexity)));		
+		data.addMetric(new MetricData("Loop-Cond-Complexity",new Integer(loopComplexity)));
+		data.addMetric(new MetricData("If-Cond-Complexity",new Integer(ifComplexity)));
+		data.addMetric(new MetricData("Total-Cond-Complexity",new Integer(loopComplexity+ifComplexity)));		
 	}
 
 	public NodeVisitor enter(Node parent, Node n){

@@ -24,9 +24,9 @@ package soot.toolkits.astmetrics;
  */
 public class MetricData {
 	String metricName;
-	int value;
+	Object value;
 	
-	public MetricData(String name, int val){
+	public MetricData(String name, Object val){
 		metricName=name;
 		value=val;
 	}
@@ -35,7 +35,7 @@ public class MetricData {
 		StringBuffer b = new StringBuffer();
 		b.append("<Metric>\n");
 		b.append("  <MetricName>" + metricName + "</MetricName>\n");
-		b.append("  <Value>" + value + "</Value>\n");
+		b.append("  <Value>" + value.toString() + "</Value>\n");
 		b.append("</Metric>\n");
 		return b.toString();
 	}

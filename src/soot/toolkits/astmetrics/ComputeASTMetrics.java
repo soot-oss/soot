@@ -37,13 +37,15 @@ public class ComputeASTMetrics {
 		metrics = new ArrayList();
 		//add new metrics below this line
 		//REMEMBER ALL METRICS NEED TO implement MetricInterface
-	
+		
 		//abrupt edges metric calculator
 		metrics.add(new AbruptEdgesMetric(astNode));
 		metrics.add(new NumLocalsMetric(astNode));
 		metrics.add(new ConstructNumbersMetric(astNode));
 		metrics.add(new StmtSumWeightedByDepth(astNode));
 		metrics.add(new ConditionComplexityMetric(astNode));
+		metrics.add(new ExpressionComplexityMetric(astNode));
+		metrics.add(new IdentifiersMetric(astNode));
 	}
 	
 	public void apply(){

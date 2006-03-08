@@ -56,17 +56,17 @@ public class ConstructNumbersMetric extends ASTMetric {
 	public void addMetrics(ClassData data) {
 		// TODO Auto-generated method stub
 		//conditionals
-		data.addMetric(new MetricData("If",numIf));
-		data.addMetric(new MetricData("IfElse",numIfElse));
+		data.addMetric(new MetricData("If",new Integer(numIf)));
+		data.addMetric(new MetricData("IfElse",new Integer(numIfElse)));
 		
 		//labels
-		data.addMetric(new MetricData("LabelBlock",numLabeledBlocks));
+		data.addMetric(new MetricData("LabelBlock",new Integer(numLabeledBlocks)));
 		
 		//loops
-		data.addMetric(new MetricData("Do",doLoop));
-		data.addMetric(new MetricData("For",forLoop));
-		data.addMetric(new MetricData("While",whileLoop));
-		data.addMetric(new MetricData("UnConditional",whileTrue));
+		data.addMetric(new MetricData("Do",new Integer(doLoop)));
+		data.addMetric(new MetricData("For",new Integer(forLoop)));
+		data.addMetric(new MetricData("While",new Integer(whileLoop)));
+		data.addMetric(new MetricData("UnConditional",new Integer(whileTrue)));
 	}
 	
 	
