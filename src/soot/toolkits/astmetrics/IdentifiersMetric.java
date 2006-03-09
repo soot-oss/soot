@@ -35,14 +35,47 @@ import java.io.*;
  */
 public class IdentifiersMetric extends ASTMetric {
 
-  int nameComplexity = 0;
-  int charComplexity = 0;
+  double nameComplexity = 0;
   
   int dictionarySize = 0;
   ArrayList dictionary;
+  
+  //cache of names so no recomputation
   HashMap names;
   /**
    * @param astNode
+   * 
+   * This metric will take a measure of the "complexity" of each identifier used
+   * within the program. An identifier's complexity is computed as follows:
+   * 
+   * First the alpha tokens are parsed by splitting on non-alphas and capitals:
+   * 
+   * 	example identifier: getASTNode		alpha tokens: get, AST, Node
+   * 	example identifier: ___Junk$$name	alpha tokens: Junk, name)
+   * 
+   * The alpha tokens are then counted and a 'token complexity' is formed by the ratio
+   * of total tokens to the number of tokens found in the dictionary:
+   * 
+   * 	example identifier: getASTNode		Total: 3, Found: 2, Complexity: 1.5
+   * 
+   * Then the 'character complexity' is computed, which is a ratio of total number of
+   * characters to the number of non-complex characters. Non-complex characters are 
+   * those which are NOT part of a multiple string of non-alphas.
+   * 
+   * 	example identifier: ___Junk$$name	complex char strings: '___', '$$'
+   * 		number of non-complex (Junk + name): 8, total: 13, Complexity: 1.625
+   * 
+   * Finally, the total identifier complexity is the sum of the token and character
+   * complexities multipled by the 'importance' of an identifier:
+   * 
+   * Multipliers are as follows:
+   * 	     
+   * Class multiplier = 3;
+   * Method multiplier = 4;
+   * Field multiplier = 2;
+   * Formal multiplier = 1.5;
+   * Local multiplier = 1;
+   * 
    */
   public IdentifiersMetric(Node astNode) {
     super(astNode);
@@ -106,15 +139,13 @@ public class IdentifiersMetric extends ASTMetric {
    */
   public void reset() {
     nameComplexity = 0;
-    charComplexity = 0;
   }
 
   /* (non-Javadoc)
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
   public void addMetrics(ClassData data) {
-    data.addMetric(new MetricData("NameComplexity",new Integer(nameComplexity)));
-    data.addMetric(new MetricData("CharComplexity",new Integer(charComplexity)));
+    data.addMetric(new MetricData("NameComplexity",new Double(nameComplexity)));
   }
   
   public NodeVisitor enter(Node parent, Node n){
@@ -132,21 +163,20 @@ public class IdentifiersMetric extends ASTMetric {
     } else if (n instanceof Formal) { 		// this is locals and formals
       name = ((Formal)n).name();
       multiplier = 1.5;
-    } else if (n instanceof Local) { 		// this is locals and formals
-      name = ((Local)n).name();
+    } else if (n instanceof LocalDecl) { 		// this is locals and formals
+      name = ((LocalDecl)n).name();
     }
     
     if (name!=null)
     {
-      nameComplexity += (int) (multiplier * computeNameComplexity(name));
-      charComplexity += (int) (multiplier * computeCharComplexity(name));
+      nameComplexity += (double) (multiplier * computeNameComplexity(name));
     }
 	return enter(n);
   }
 
-  private int computeNameComplexity(String name) {
+  private double computeNameComplexity(String name) {
     if (names.containsKey(name))
-      return ((Integer)names.get(name)).intValue();
+      return ((Double)names.get(name)).doubleValue();
     
     int index = 0;
     ArrayList strings = new ArrayList();
@@ -204,23 +234,63 @@ public class IdentifiersMetric extends ASTMetric {
       }
     }
     
-    int complexity = 0;
+    double words = 0;
+    double complexity = 0;
     for (int i = 0; i < tokens.size(); i++)
-      if (!dictionary.contains(tokens.get(i)))
-        complexity++;
-        
-    names.put(name,new Integer(complexity));
+      if (dictionary.contains(tokens.get(i)))
+        words++;
+      
+    if (words>0)
+      complexity = ((double)tokens.size()) / words;
+    
+    names.put(name,new Double(complexity + computeCharComplexity(name)));
     
     return complexity;
   }
   
-  private int computeCharComplexity(String name) {
-    int complexity = 0;
+  private double computeCharComplexity(String name) {
+    int count = 0, index = 0, last = 0, lng = name.length();
+    while (index < lng) {
+      char c = name.charAt(index);
+      if ((c < 65 || c > 90) && (c < 97 || c > 122)) { 
+        last++;
+      } else {
+        if (last>1)
+          count += last;
+        last = 0;
+      }
+      index++;
+    }
     
-    //[^[a-zA-Z]]
+    double complexity = lng - count;
     
-    return complexity;
+    if (complexity > 0)
+      return (((double)lng) / complexity);
+    else return (double)lng;
   }
+  
+  
+  /*
+   * @author Michael Batchelder 
+   * 
+   * Created on 6-Mar-2006
+   * 
+   * @param	name	string to parse
+   * @return		number of leading non-alpha chars
+   */
+  private int countNonAlphas(String name) {
+    int chars = 0;
+    while (chars < name.length()) {
+      char c = name.charAt(chars);
+      if ((c < 65 || c > 90) && (c < 97 || c > 122)) 
+        chars++;
+      else 
+        break;
+    }
+    
+    return chars;
+  }
+  
   /*
    * @author Michael Batchelder 
    * 
