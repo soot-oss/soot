@@ -42,7 +42,7 @@ public class Main {
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly borken in this respect, and causes
     // the code to not compile all the time.
-    public final String versionString = "2.2.2";
+    public final String versionString = "2.2.3";
 
     private Date start;
     private Date finish;
