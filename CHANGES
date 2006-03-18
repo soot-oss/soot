@@ -1,3 +1,16 @@
+Improvements in version 2.2.3 (Sat, Mar 18, 2006)
+
+1. Dava:
+    - Handling invocation of parent constructor and other constructors within
+    a constructor
+    - DeInlining final static fields.
+    - Ensuring initialization of all final fields
+    - Using copy propagation to remove un-necessary copy stmts
+    
+2. many bug fixes and improvements for Dava
+
+3. many bug fixes and improvements for Java To Jimple 
+
 Improvements in version 2.2.2
 
 Improvements in version 2.2.1 (Mon, Jan 3, 2005)
