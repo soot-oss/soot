@@ -503,17 +503,23 @@ public class PackManager {
         	InterProceduralAnalyses.applyInterProceduralAnalyses();
         }
     	        	
-        
-          
+        /*
+         * Check if we need to reinvoke all the above anaylses or not!!!!
+         * right now not doing it but might want a fixed point
+         */
+        outputDava();
+    }
             
-            
-        
+    private void outputDava(){    
+        Chain appClasses = Scene.v().getApplicationClasses();
+
+     
          /*
           * Generate decompiled code
           */   
     	String pathForBuild=null;
     	ArrayList decompiledClasses = new ArrayList();
-        classIt = appClasses.iterator();
+        Iterator classIt = appClasses.iterator();
         while (classIt.hasNext()) {
             SootClass s = (SootClass) classIt.next();
             

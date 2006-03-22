@@ -23,8 +23,8 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   
   
   public void reset() {
-    currentDepth = 1; //inside a class
-    maxDepth = 1;
+    currentDepth = 0; //inside a class
+    maxDepth = 0;
     sum = 0;
     numNodes = 0;
     //returnSum =0;
@@ -38,6 +38,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   }
   
   private void increaseDepth(){
+	  System.out.println("Increasing depth");
     currentDepth++;
     if(currentDepth > maxDepth)
       maxDepth = currentDepth;
@@ -76,6 +77,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
         || n instanceof LocalClassDecl || n instanceof Synchronized 
         || n instanceof ProcedureDecl || n instanceof Initializer ){
       sum += currentDepth*2;
+      System.out.println(n);
       increaseDepth();
     } else if (parent instanceof Block && n instanceof Block) {
       StmtSumWeightedByDepth.tmpAbruptChecker = false;
@@ -104,13 +106,16 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       {
         blocksWithAbruptFlow.add(n);
         sum += currentDepth*2;
+        System.out.println("got here");
         increaseDepth();
       }
-    } else {
+    } 
+    else if (n instanceof Stmt || n instanceof Formal){
       //if(n instanceof Return){
       //	returnSum += currentDepth;
       //	System.out.println("RETURN111111111111111111111111111111111"+currentDepth);
       //}
+    	System.out.println("stmt"+n);
       sum+= currentDepth;
     }
     

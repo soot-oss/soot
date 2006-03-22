@@ -80,6 +80,9 @@ public class ReachingDefs extends StructuredAnalysis{
 	DavaFlowSet temp = (DavaFlowSet)process(analyze,new DavaFlowSet());
     }
 
+    public DavaFlowSet emptyFlowSet(){
+    	return new DavaFlowSet();
+    }
 
     /*
      * Initial flow into catch statements is empty meaning no definition reaches
@@ -113,12 +116,12 @@ public class ReachingDefs extends StructuredAnalysis{
 
 
     public Object cloneFlowSet(Object flowSet){
-	if(flowSet instanceof DavaFlowSet){
-	    return ((DavaFlowSet)flowSet).clone();
-	}
-	else
-	    throw new RuntimeException("cloneFlowSet not implemented for other flowSet types");
-    }
+    	if(flowSet instanceof DavaFlowSet){
+    	    return ((DavaFlowSet)flowSet).clone();
+    	}
+    	else
+    	    throw new RuntimeException("cloneFlowSet not implemented for other flowSet types");
+        }
 
 
 
@@ -157,11 +160,11 @@ public class ReachingDefs extends StructuredAnalysis{
      *
      */
     public Object processSwitchKey(Value key,Object input){
-	if(!(input instanceof DavaFlowSet)){
-	    throw new RuntimeException("processCondition is not implemented for other flowSet types");
-	}
-	DavaFlowSet inSet = (DavaFlowSet)input;
-	return inSet;
+    	if(!(input instanceof DavaFlowSet)){
+    	    throw new RuntimeException("processCondition is not implemented for other flowSet types");
+    	}
+    	DavaFlowSet inSet = (DavaFlowSet)input;
+    	return inSet;
     }
 
 

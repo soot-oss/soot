@@ -36,7 +36,6 @@ import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
@@ -60,6 +59,7 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 */
 public class ASTUsesAndDefs extends DepthFirstAdapter{
+	public static boolean DEBUG=false;
     HashMap uD; //mapping a use to all possible definitions
     HashMap dU; //mapping a def to all possible uses
     ReachingDefs reaching;  //using structural analysis information 
@@ -145,7 +145,8 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	//System.out.println("useNodeOrStatement is"+useNodeOrStatement);
 
 	List reachingDefs = reaching.getReachingDefs(local,useNodeOrStatement);
-	//System.out.println("Reaching def for:"+local+" are:"+reachingDefs);
+	if(DEBUG)
+		System.out.println("Reaching def for:"+local+" are:"+reachingDefs);
 	
 	//add the reaching defs into the use def chain
 	Object tempObj = uD.get(useNodeOrStatement);
@@ -206,11 +207,13 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
 	    Value val = ((ASTUnaryCondition)cond).getValue();
 	    if(val instanceof Local){
-		uses.add(val);
+	    	if(DEBUG)
+	    		System.out.println("adding local from unary condition as a use"+val);
+	    	uses.add(val);
 	    }
 	    else{
-		List useBoxes = val.getUseBoxes();
-		uses= getUsesFromBoxes(useBoxes);
+	    	List useBoxes = val.getUseBoxes();
+	    	uses= getUsesFromBoxes(useBoxes);
 	    }
 	    return uses;
 	}

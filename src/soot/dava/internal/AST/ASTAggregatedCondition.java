@@ -27,15 +27,14 @@ public abstract class ASTAggregatedCondition extends ASTCondition{
     ASTCondition    right;
     boolean not;//used to see if the condition has a not infront of it
     
-    public ASTAggregatedCondition(ASTCondition left, ASTCondition 
-right){
-	not=false;//by default condition does not have a not
-	this.left = left;
-	this.right=right;
+    public ASTAggregatedCondition(ASTCondition left, ASTCondition right){
+    	not=false;//by default condition does not have a not
+    	this.left = left;
+    	this.right=right;
       }
 
       public ASTCondition getLeftOp(){
-	return left;
+    	  return left;
       }
 
       public ASTCondition getRightOp(){
@@ -57,5 +56,8 @@ right){
 	else
 	    not=true;
     }
-    
+
+    public boolean isNotted(){
+    	return not;
+    }
 }

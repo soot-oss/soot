@@ -67,6 +67,7 @@ import soot.dava.internal.javaRep.DStaticInvokeExpr;
 import soot.dava.internal.javaRep.DThisRef;
 import soot.dava.internal.javaRep.DVirtualInvokeExpr;
 import soot.dava.toolkits.base.AST.UselessTryRemover;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.transformations.ASTCleaner;
 import soot.dava.toolkits.base.AST.transformations.ASTCleanerTwo;
 import soot.dava.toolkits.base.AST.transformations.AndAggregator;
@@ -82,7 +83,9 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
+import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
+import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
 import soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder;
 import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
 import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
@@ -165,7 +168,7 @@ import soot.util.IterableSet;
  *         obselete and rather clumsy way of writing analyses
  *         
  * TODO: Nomair 14th Feb 2006, Use the Dava options renamer, deobfuscate, force-recompilability
- *                              Specially the deobfuscate option with the boolean constant propagation analysis
+ *          Specially the deobfuscate option with the boolean constant propagation analysis
  *
  */
 
@@ -368,6 +371,8 @@ public class DavaBody extends Body {
 	 * Method is invoked by the packmanager just before it is actually about to generate
 	 * decompiled code. Works as a separate stage from the DavaBody() constructor.
 	 * All AST transformations should be implemented from within this method.
+	 * 
+	 * Method is also invoked from the InterProceduralAnlaysis method once those have been invoked
 	 */
 	public void analyzeAST() {
    		ASTNode AST = (ASTNode) this.getUnits().getFirst();
@@ -448,7 +453,7 @@ public class DavaBody extends Body {
 				G.v().ASTTransformations_modified = false;
 				times++;
 
-
+				
 				AST.apply(new AndAggregator());
 				debug("applyASTAnalyses","after AndAggregator"+G.v().ASTTransformations_modified);
 				/*
@@ -507,6 +512,7 @@ public class DavaBody extends Body {
 				AST.apply(new ForLoopCreator());
 				debug("applyASTAnalyses","after ForLoopCreator"+G.v().ASTTransformations_modified);
 
+				AST.apply(new UselessLabeledBlockRemover());
 				/*
 				 * if we matched some useful pattern we reserve the 
 				 * right to flip conditions again
@@ -575,10 +581,12 @@ public class DavaBody extends Body {
 		 * Structural flow analyses.....
 		 */
 
+		//CopyPropagation.DEBUG=true;
 		CopyPropagation prop = new CopyPropagation(AST);
 		AST.apply(prop);
 
 		//copy propagation should be followed by LocalVariableCleaner to get max effect
+		//ASTUsesAndDefs.DEBUG=true;
 		AST.apply(new LocalVariableCleaner(AST));
 
 	}

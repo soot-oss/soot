@@ -129,6 +129,9 @@ public class ReachingCopies extends StructuredAnalysis{
 	DavaFlowSet temp = (DavaFlowSet)process(analyze,new DavaFlowSet());
     }
 
+    public DavaFlowSet emptyFlowSet(){
+    	return new DavaFlowSet();
+    }
 
     public void setMergeType(){
 	MERGETYPE=INTERSECTION;
@@ -233,11 +236,8 @@ public class ReachingCopies extends StructuredAnalysis{
 	    return toReturn;
 	}
 	else{
-	    /*
-	      Analysis cares only about break and continue stmts along with DEFINTION STMT
-	    */
 	    return input;
-	}
+		}
     }
 
 

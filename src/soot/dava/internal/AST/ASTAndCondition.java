@@ -26,11 +26,11 @@ import soot.dava.toolkits.base.AST.analysis.*;
 public class ASTAndCondition extends ASTAggregatedCondition{
 
     public ASTAndCondition(ASTCondition left, ASTCondition right){
-	super(left,right);
-      }
+    	super(left,right);
+    }
 
     public void apply(Analysis a){
-	a.caseASTAndCondition(this);
+    	a.caseASTAndCondition(this);
     }
 
     public String toString(){

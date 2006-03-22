@@ -20,12 +20,75 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
+
 import java.util.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
-public class UselessLabeledBlockRemover {
+/*
+ * Class serves two purposes.
+ * If you know there is a useless labeled block then its static methods can be invoked
+ * as done by the ASTCleaner
+ * 
+ * It can also be used to apply the UselessLabelFinder to all nodes of the AST
+ * if that is done then make sure to set the ASTAnalysisModified
+ */
+public class UselessLabeledBlockRemover extends DepthFirstAdapter{
+	boolean changed=false;
+	
+    public UselessLabeledBlockRemover(){
+    }
 
+    public UselessLabeledBlockRemover(boolean verbose){
+    	super(verbose);
+    }
+
+    
+    public void outASTMethodNode(ASTMethodNode node){
+    	if(changed)
+    		G.v().ASTTransformations_modified = true;
+    }
+    
+    public void inASTMethodNode(ASTMethodNode node){
+    	changed=UselessLabelFinder.v().findAndKill(node);	
+    }
+    
+    public void caseASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
+    	changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTLabeledBlockNode (ASTLabeledBlockNode node){
+    	changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTUnconditionalLoopNode (ASTUnconditionalLoopNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTSwitchNode(ASTSwitchNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTIfNode(ASTIfNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTIfElseNode(ASTIfElseNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTWhileNode(ASTWhileNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTForLoopNode(ASTForLoopNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTDoWhileNode(ASTDoWhileNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+    public void caseASTTryNode(ASTTryNode node){
+	    changed=UselessLabelFinder.v().findAndKill(node);
+    }
+
+    
+    
+    
+    
     public static void removeLabeledBlock(ASTNode node, ASTLabeledBlockNode labelBlock, int subBodyNumber, int nodeNumber){
 	if(!(node instanceof ASTIfElseNode)){
 	    //these are the nodes which always have one subBody

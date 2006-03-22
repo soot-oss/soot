@@ -72,20 +72,20 @@ public class DavaFlowSet extends AbstractFlowSet{
         maxElements = DEFAULT_SIZE;
         elements = new Object[DEFAULT_SIZE];
         numElements = 0;
-	breakList = new HashMap();
-	continueList = new HashMap();
-	implicitBreaks = new HashMap();
-	implicitContinues = new HashMap();
+        breakList = new HashMap();
+        continueList = new HashMap();
+        implicitBreaks = new HashMap();
+        implicitContinues = new HashMap();
     }
     
-    private DavaFlowSet(DavaFlowSet other){
+    public DavaFlowSet(DavaFlowSet other){
         numElements = other.numElements;
         maxElements = other.maxElements;
         elements = (Object[]) other.elements.clone();
-	breakList = (HashMap)other.breakList.clone();
-	continueList = (HashMap)other.continueList.clone();
-	implicitBreaks = (HashMap)other.implicitBreaks.clone();
-	implicitContinues = (HashMap)other.implicitContinues.clone();
+        breakList = (HashMap)other.breakList.clone();
+        continueList = (HashMap)other.continueList.clone();
+        implicitBreaks = (HashMap)other.implicitBreaks.clone();
+        implicitContinues = (HashMap)other.implicitContinues.clone();
     }
     
     /** Returns true if flowSet is the same type of flow set as this. */
@@ -131,8 +131,9 @@ public class DavaFlowSet extends AbstractFlowSet{
    * March 08, 2002
    */
     public void add(Object e){
-	/* Expand only if necessary! and removes one if too:) */
-        // Add element
+    	/* Expand only if necessary! and removes one if too:) */
+    	
+    	// Add element
             if(!contains(e)) {
               // Expand array if necessary
               if(numElements == maxElements)
@@ -211,30 +212,30 @@ public class DavaFlowSet extends AbstractFlowSet{
      */
     public void intersection(FlowSet otherFlow, FlowSet destFlow)
     {
-      if (sameType(otherFlow) &&
-          sameType(destFlow)) {
-        DavaFlowSet other = (DavaFlowSet) otherFlow;
-        DavaFlowSet dest = (DavaFlowSet) destFlow;
-        DavaFlowSet workingSet;
-        
-        if(dest == other || dest == this)
-            workingSet = new DavaFlowSet();
-        else { 
-            workingSet = dest;
-            workingSet.clear();
+    	//System.out.println("DAVA FLOWSET INTERSECTION INVOKED!!!");
+        if (sameType(otherFlow) && sameType(destFlow)) {
+            DavaFlowSet other = (DavaFlowSet) otherFlow;
+            DavaFlowSet dest = (DavaFlowSet) destFlow;
+            DavaFlowSet workingSet;
+            
+            if(dest == other || dest == this)
+                workingSet = new DavaFlowSet();
+            else { 
+                workingSet = dest;
+                workingSet.clear();
+            }
+            
+            for(int i = 0; i < this.numElements; i++)
+            {
+                if(other.contains(this.elements[i]))
+                    workingSet.add(this.elements[i]);
+            }
+            
+            if(workingSet != dest)
+                workingSet.copy(dest);
+          } else
+            super.intersection(otherFlow, destFlow);
         }
-        
-        for(int i = 0; i < this.numElements; i++)
-        {
-            if(other.contains(this.elements[i]))
-                workingSet.add(this.elements[i]);
-        }
-        
-        if(workingSet != dest)
-            workingSet.copy(dest);
-      } else
-        super.intersection(otherFlow, destFlow);
-    }
 
 
 
@@ -314,20 +315,19 @@ public class DavaFlowSet extends AbstractFlowSet{
         return super.equals(otherFlow);
     }
 
-    public void copy(FlowSet destFlow)
-    {
-      if (sameType(destFlow)) {
-        DavaFlowSet dest = (DavaFlowSet) destFlow;
+    public void copy(FlowSet destFlow){
+    	if (sameType(destFlow)) {
+    		DavaFlowSet dest = (DavaFlowSet) destFlow;
 
-        while(dest.maxElements < this.maxElements)
-            dest.doubleCapacity();
+    		while(dest.maxElements < this.maxElements)
+    			dest.doubleCapacity();
     
-        dest.numElements = this.numElements;
+    		dest.numElements = this.numElements;
         
-        System.arraycopy(this.elements, 0,
-            dest.elements, 0, this.numElements);
-      } else
-        super.copy(destFlow);
+    		System.arraycopy(this.elements, 0, dest.elements, 0, this.numElements);
+    	} 
+    	else
+    		super.copy(destFlow);
     }
 
 

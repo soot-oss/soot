@@ -494,14 +494,14 @@ public class AllVariableUses extends DepthFirstAdapter{
      * only those are returned which are locals or FieldRefs
      */
     private List getUsesFromBoxes(List useBoxes){
-	ArrayList toReturn = new ArrayList();
-	Iterator it = useBoxes.iterator();
-	while(it.hasNext()){
-	    Value val =((ValueBox)it.next()).getValue();
-	    if(val instanceof Local || val instanceof FieldRef)
-		toReturn.add(val);
-	}
-	//System.out.println("VALUES:"+toReturn);
+    	ArrayList toReturn = new ArrayList();
+    	Iterator it = useBoxes.iterator();
+    	while(it.hasNext()){
+    	    Value val =((ValueBox)it.next()).getValue();
+    	    if(val instanceof Local || val instanceof FieldRef)
+    		toReturn.add(val);
+    	}
+    	//System.out.println("VALUES:"+toReturn);
 	return toReturn;
     }
 

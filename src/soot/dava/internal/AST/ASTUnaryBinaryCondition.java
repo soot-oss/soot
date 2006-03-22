@@ -19,7 +19,6 @@
 
 package soot.dava.internal.AST;
 
-import soot.dava.toolkits.base.AST.analysis.*;
 public abstract class ASTUnaryBinaryCondition extends ASTCondition{
 
 }

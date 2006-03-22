@@ -51,4 +51,12 @@ public class ASTBinaryCondition extends ASTUnaryBinaryCondition{
     public void flip(){
 	this.condition=ConditionFlipper.flip(condition);
     }
+    
+    /*
+     * Since a conditionExpr can always be flipped we always return true
+     * 
+     */
+    public boolean isNotted(){
+    	return true;
+    }
 }

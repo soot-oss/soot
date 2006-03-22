@@ -50,7 +50,7 @@ public class ASTCleaner extends DepthFirstAdapter{
     }
 
     public ASTCleaner(boolean verbose){
-	super(verbose);
+    	super(verbose);
     }
 
     
@@ -71,65 +71,65 @@ public class ASTCleaner extends DepthFirstAdapter{
       ASTSynchronizedBlockNode
     */
     public void normalRetrieving(ASTNode node){
-	if(node instanceof ASTSwitchNode){
-	    dealWithSwitchNode((ASTSwitchNode)node);
-	    return;
-	}
+    	if(node instanceof ASTSwitchNode){
+ 		   dealWithSwitchNode((ASTSwitchNode)node);
+ 	    return;
+ 	}
 
-	//from the Node get the subBodes
-	Iterator sbit = node.get_SubBodies().iterator();
+    	//from the Node get the subBodes
+    	Iterator sbit = node.get_SubBodies().iterator();
 
-	//onlyASTIfElseNode has 2 subBodies but we need to deal with that
-	int subBodyNumber=0; 
-	while (sbit.hasNext()) {
-	    Object subBody = sbit.next();
-	    Iterator it = ((List) subBody).iterator();
+    	//onlyASTIfElseNode has 2 subBodies but we need to deal with that
+    	int subBodyNumber=0; 
+    	while (sbit.hasNext()) {
+    	    Object subBody = sbit.next();
+    	    Iterator it = ((List) subBody).iterator();
 
-	    int nodeNumber=0;
-	    //go over the ASTNodes in this subBody and apply
-	    while (it.hasNext()){
-		ASTNode temp = (ASTNode) it.next();
-		if(temp instanceof ASTLabeledBlockNode){
-		    //check if the label is null
-		    ASTLabeledBlockNode labelBlock = (ASTLabeledBlockNode)temp;
-		    SETNodeLabel label = labelBlock.get_Label();
-		    if(label.toString()==null){
-			//uselessLabeledBlock Found REMOVE IT
-			UselessLabeledBlockRemover.removeLabeledBlock(node,labelBlock,subBodyNumber,nodeNumber);
-			if(G.v().ASTTransformations_modified){
-			    return;
-			}			
-		    }
-		}
-		else if(temp instanceof ASTIfElseNode){
-		    //check if there is an empty else body
-		    List elseBody = ((ASTIfElseNode)temp).getElseBody();
-		    if(elseBody.size()==0){
-			EmptyElseRemover.removeElseBody(node,(ASTIfElseNode)temp,subBodyNumber,nodeNumber);
-		    }
-		}
-		else if(temp instanceof ASTIfNode){
-		    //check if the next node in the subBody is also an ASTIfNode in which case invoke OrAggregatorThree
-		    if(it.hasNext()){//means we can get the nodeNumber+1
-			ASTNode nextNode = (ASTNode)((List)subBody).get(nodeNumber+1);
-			if(nextNode instanceof ASTIfNode){
-			    //found an If followed by another if might match Patter 3. 
-			    OrAggregatorThree.checkAndTransform(node,(ASTIfNode)temp,(ASTIfNode)nextNode,nodeNumber,subBodyNumber);
-			    if(G.v().ASTTransformations_modified){
-				//if we modified something we want to stop since the tree is stale
-				//System.out.println("here");
-				return;
-			    }
-			    
-			}
-		    }
-		}
-		temp.apply(this);
-		nodeNumber++;
-	    }
-	    subBodyNumber++;
-	}//end of going over subBodies
-    }
+    	    int nodeNumber=0;
+    	    //go over the ASTNodes in this subBody and apply
+    	    while (it.hasNext()){
+    		ASTNode temp = (ASTNode) it.next();
+    		if(temp instanceof ASTLabeledBlockNode){
+    		    //check if the label is null
+    		    ASTLabeledBlockNode labelBlock = (ASTLabeledBlockNode)temp;
+    		    SETNodeLabel label = labelBlock.get_Label();
+    		    if(label.toString()==null){
+    			//uselessLabeledBlock Found REMOVE IT
+    			UselessLabeledBlockRemover.removeLabeledBlock(node,labelBlock,subBodyNumber,nodeNumber);
+    			if(G.v().ASTTransformations_modified){
+    			    return;
+    			}			
+    		    }
+    		}
+    		else if(temp instanceof ASTIfElseNode){
+    		    //check if there is an empty else body
+    		    List elseBody = ((ASTIfElseNode)temp).getElseBody();
+    		    if(elseBody.size()==0){
+    		    	EmptyElseRemover.removeElseBody(node,(ASTIfElseNode)temp,subBodyNumber,nodeNumber);
+    		    }
+    		}
+    		else if(temp instanceof ASTIfNode){
+    		    //check if the next node in the subBody is also an ASTIfNode in which case invoke OrAggregatorThree
+    		    if(it.hasNext()){//means we can get the nodeNumber+1
+    			ASTNode nextNode = (ASTNode)((List)subBody).get(nodeNumber+1);
+    			if(nextNode instanceof ASTIfNode){
+    			    //found an If followed by another if might match Patter 3. 
+    			    OrAggregatorThree.checkAndTransform(node,(ASTIfNode)temp,(ASTIfNode)nextNode,nodeNumber,subBodyNumber);
+    			    if(G.v().ASTTransformations_modified){
+    			    	//if we modified something we want to stop since the tree is stale
+    			    	//System.out.println("here");
+    			    	return;
+    			    }
+    			    
+    			}
+    		    }
+    		}
+    		temp.apply(this);
+    		nodeNumber++;
+    	    }
+    	    subBodyNumber++;
+    	}//end of going over subBodies
+        }
 
     public void caseASTTryNode(ASTTryNode node){
 	inASTTryNode(node);

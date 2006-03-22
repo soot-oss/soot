@@ -22,6 +22,7 @@ package soot.dava.toolkits.base.AST.transformations;
 import soot.*;
 import soot.dava.*;
 import soot.tagkit.*;
+import soot.util.Chain;
 import soot.jimple.*;
 //import soot.jimple.internal.*;
 //import soot.grimp.internal.*;
@@ -96,11 +97,29 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
     public void inASTMethodNode(ASTMethodNode node){
 	DavaBody davaBody = node.getDavaBody();
 	sootMethod = davaBody.getMethod();
+	//System.out.println("Deiniling  method: "+sootMethod.getName());
 	sootClass = sootMethod.getDeclaringClass();
 
 	finalFields = new HashMap();
 
-	Iterator fieldIt = sootClass.getFields().iterator();
+	ArrayList fieldChain = new ArrayList();
+
+	Chain appClasses = Scene.v().getApplicationClasses();
+	Iterator it = appClasses.iterator();
+	while(it.hasNext()){
+		SootClass tempClass = (SootClass)it.next(); 
+		//System.out.println("DeInlining"+tempClass.getName());
+		Chain tempChain = tempClass.getFields();
+		Iterator tempIt = tempChain.iterator();
+		while(tempIt.hasNext()){
+			fieldChain.add(tempIt.next());
+		}
+			
+	}
+	
+	
+//	Iterator fieldIt = sootClass.getFields().iterator();
+	Iterator fieldIt = fieldChain.iterator();
 	while(fieldIt.hasNext()){
 	    SootField f = (SootField)fieldIt.next();
 	    if(f.isFinal()){
@@ -181,7 +200,21 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	Object finalField = check(val);
 	if(finalField!=null){
 	    //System.out.println("Final field with this value exists"+finalField);
-	    valBox.setValue(new DStaticFieldRef(((SootField)finalField).makeRef(),true));
+		
+		/*
+		 * If the final field belongs to the same class then we should supress declaring class
+		 */
+		SootField field = (SootField)finalField;
+		
+		if(sootClass.declaresField(field.getName(),field.getType())){
+			//this field is of this class so supress the declaring class
+		    valBox.setValue(new DStaticFieldRef(field.makeRef(),true));
+		}
+		else{
+		    valBox.setValue(new DStaticFieldRef(field.makeRef(),false));
+		}
+		
+
 	}
 	//else
 	//  System.out.println("Final field not found");

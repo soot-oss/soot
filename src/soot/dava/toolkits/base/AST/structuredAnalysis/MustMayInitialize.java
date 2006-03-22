@@ -90,6 +90,10 @@ public class MustMayInitialize extends StructuredAnalysis{
     }
 
 
+    public DavaFlowSet emptyFlowSet(){
+    	return new DavaFlowSet();
+    }
+    
     public void setMergeType(){
 	//System.out.println("here"+MUSTMAY);
 	if(MUSTMAY == MUST){

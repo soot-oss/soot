@@ -28,41 +28,51 @@ import soot.dava.internal.AST.*;
 import soot.dava.internal.javaRep.*;
 
 public class UselessLabelFinder{
+	public static boolean DEBUG = false;
     public UselessLabelFinder( Singletons.Global g ) {}
     public static UselessLabelFinder v() { return G.v().soot_dava_toolkits_base_AST_transformations_UselessLabelFinder(); }
 
 	
     //check whether label on a node is useless 
-    public void findAndKill(ASTNode node){
-	if(!(node instanceof ASTLabeledNode)){
-	    return;
-	}
-	String label = ((ASTLabeledNode)node).get_Label().toString();
-	List subBodies = (List)node.get_SubBodies();
-	Iterator it = subBodies.iterator();
-	while(it.hasNext()){
-	    if(node instanceof ASTTryNode){
-		ASTTryNode.container subBody = (ASTTryNode.container)it.next();
-		if(checkForBreak((List)subBody.o,label)){
-		    //true means break was found so we cant remove
-		}
-		else{
-		    ((ASTLabeledNode)node).set_Label(new SETNodeLabel());	    
-		    //System.out.println("USELESS LABEL DETECTED");
-		    break;
-		}
-	    }
-	    else{//not an astTryNode
-		if(checkForBreak((List)it.next(),label)){
-		    //true means break was found so we cant remove			    
-		}
-		else{
-		    ((ASTLabeledNode)node).set_Label(new SETNodeLabel());	    
-		    //System.out.println("USELESS LABEL DETECTED");
-		    break;
-		}
-	    }
-	}
+    public boolean findAndKill(ASTNode node){
+    	if(!(node instanceof ASTLabeledNode)){
+    		return false;
+    	}
+
+    	String label = ((ASTLabeledNode)node).get_Label().toString();
+    	if(label==null)
+    		return false;
+    	if(DEBUG) System.out.println("dealing with labeled node"+label);
+	
+	
+    	List subBodies = (List)node.get_SubBodies();
+    	Iterator it = subBodies.iterator();
+    	while(it.hasNext()){
+    		if(node instanceof ASTTryNode){
+    			ASTTryNode.container subBody = (ASTTryNode.container)it.next();
+    			if(checkForBreak((List)subBody.o,label)){
+    				//true means break was found so we cant remove
+    			}
+    			else{
+    				((ASTLabeledNode)node).set_Label(new SETNodeLabel());		    
+    				if (DEBUG) System.out.println("USELESS LABEL DETECTED");
+    				return true;
+    			}
+    		}
+    		else{//not an astTryNode
+    			if(checkForBreak((List)it.next(),label)){
+    				//true means break was found so we cant remove
+    				if(DEBUG) System.out.println("Found break for "+label);
+    			}
+    			else{
+    				if (DEBUG) System.out.println("USELESS LABEL DETECTED"+label);
+    				((ASTLabeledNode)node).set_Label(new SETNodeLabel());
+
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
     }
 
     /*
