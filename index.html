@@ -139,7 +139,15 @@ version provides a "clean" copy of only the Soot files themselves.</p>
 
 <p>In order to compile Soot from source, you will also need a copy of
 the Jasmin and Polyglot classes, available from the
-<a href="soot_download.html">download page</a>.</p>
+<a href="soot_download.html">download page</a>.
+Moreover, the Java VM that ant allocates by default when compiling Soot
+may have too small a heap to compile a project as large as Soot. If you
+get an OutOfMemoryError, you will need to create a file called .antrc
+in your home directory containing the following line:
+</p>
+<pre>
+ANT_OPTS="$ANT_OPTS -Xmx700m"
+</pre>
 
 <p>From time to time we update Jasmin. If something Jasmin related seems broken you may need to get the latest Jasmin from the subversion repository:<br>
 <tt>svn checkout https://svn.sable.mcgill.ca/soot/jasmin/trunk jasmin-dev</tt><br>
