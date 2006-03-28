@@ -82,6 +82,7 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorFour;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
+import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
@@ -158,7 +159,12 @@ import soot.util.IterableSet;
  *             	        
  *				renamer: on /off  DEFAULT:TRUE
  *				deobfuscate: DEFAULT: FALSE, dead code eliminateion, class/field renaming, constant field elimination
- *              force-recompilability: DEFAULT TRUE, super, final            
+ *              force-recompilability: DEFAULT TRUE, super, final
+ *              
+ *            Nomair: March 28th, 2006: Removed the applyRenamerAnalyses method from DavaBody to InterProceduralAnalyses
+ *                    Although currently renaming is done intra-proceduraly  there is strong indication that
+ *                    inter procedural analyses will be required to get good names
+ *                    
  */
 
 /*
@@ -395,15 +401,15 @@ public class DavaBody extends Body {
 
 		/*
 		 * Renamer
+		 * March 28th Nomair A. Naeem.  Since there is a chance
+		 * that the analyze method gets involved multiple times
+		 * we dont want renaming done more than once.
 		 * 
+		 * hence removing the call of the renamer from here 
+		 * Also looking ahead i have a feeling that we will be going interprocedural
+		 * for the renamer hence i am placing the renamer code
+		 * inside the interprocedural class
 		 */
-		Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-        boolean renamer = PhaseOptions.getBoolean(options, "enabled");
-        //System.out.println("renaming is"+renamer);
-        if(renamer){
-        	//System.out.println("\nRenaming...");
-        	applyRenamerAnalyses(AST);
-        }
 		
 		
 
@@ -428,8 +434,6 @@ public class DavaBody extends Body {
 
 		AST.apply(new BooleanConditionSimplification());
 
-		AST.apply(new VoidReturnRemover(this));
-
 		AST.apply(new DecrementIncrementStmtCreation());
 
 		AST.apply(new DeInliningFinalFields());
@@ -453,6 +457,7 @@ public class DavaBody extends Body {
 				G.v().ASTTransformations_modified = false;
 				times++;
 
+				
 				
 				AST.apply(new AndAggregator());
 				debug("applyASTAnalyses","after AndAggregator"+G.v().ASTTransformations_modified);
@@ -592,14 +597,6 @@ public class DavaBody extends Body {
 	}
 
 	
-	private void applyRenamerAnalyses(ASTNode AST){
-		
-		infoGatheringAnalysis info = new infoGatheringAnalysis(this);
-		AST.apply(info);
-
-		Renamer renamer = new Renamer(info.getHeuristicSet(),(ASTMethodNode)AST);
-		renamer.rename();		
-	}
 
 		
 	/*

@@ -117,10 +117,7 @@ public class CPApplication extends DepthFirstAdapter{
 			}
 			
 	    		
-		}
-	
-		
-		
+		}		
 	}
 	
 

@@ -48,81 +48,86 @@ public class UselessLabelFinder{
     	List subBodies = (List)node.get_SubBodies();
     	Iterator it = subBodies.iterator();
     	while(it.hasNext()){
+    		List subBodyTemp = null;
+    		
     		if(node instanceof ASTTryNode){
+    			//an astTryNode
     			ASTTryNode.container subBody = (ASTTryNode.container)it.next();
-    			if(checkForBreak((List)subBody.o,label)){
-    				//true means break was found so we cant remove
-    			}
-    			else{
-    				((ASTLabeledNode)node).set_Label(new SETNodeLabel());		    
-    				if (DEBUG) System.out.println("USELESS LABEL DETECTED");
-    				return true;
-    			}
+    			subBodyTemp = (List)subBody.o;
+    			//System.out.println("\ntryNode body");
     		}
     		else{//not an astTryNode
-    			if(checkForBreak((List)it.next(),label)){
-    				//true means break was found so we cant remove
-    				if(DEBUG) System.out.println("Found break for "+label);
-    			}
-    			else{
-    				if (DEBUG) System.out.println("USELESS LABEL DETECTED"+label);
-    				((ASTLabeledNode)node).set_Label(new SETNodeLabel());
-
-    				return true;
-    			}
+    			//System.out.println("not try node in findAndkill");
+    			subBodyTemp = (List)it.next();
+    		}
+    			
+    		if(checkForBreak(subBodyTemp,label)){
+    			//found a break
+    			return false;
     		}
     	}
-    	return false;
+    	
+    	// only if all bodies dont contain a break can we remove the label
+    	
+		//means break was not found so we can remove
+		((ASTLabeledNode)node).set_Label(new SETNodeLabel());		    
+		if (DEBUG) System.out.println("USELESS LABEL DETECTED");
+		return true;
     }
 
     /*
       Returns True if finds a break for this label
     */
     private boolean checkForBreak(List ASTNodeBody,String outerLabel){
-	Iterator it = ASTNodeBody.iterator();
-	while(it.hasNext()){
-	    ASTNode temp = (ASTNode)it.next();
-	    //check if this is ASTStatementSequenceNode
-	    if(temp instanceof ASTStatementSequenceNode){
-		ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
-		List statements = stmtSeq.getStatements();
-		Iterator stmtIt = statements.iterator();
-		while(stmtIt.hasNext()){
-		    AugmentedStmt as = (AugmentedStmt)stmtIt.next();
-		    Stmt s = as.get_Stmt();
-		    String labelBroken = breaksLabel(s);
-		    if(labelBroken != null && outerLabel!=null){//stmt breaks some label
-			if(labelBroken.compareTo(outerLabel)==0){
-			    //we have found a break breaking this label
-			    return true;
-			}
-		    }
-		}
-	    }//if it was a StmtSeq node
-	    else{
-		//otherwise recursion
-		//getSubBodies
-		List subBodies=(List)temp.get_SubBodies();
-		Iterator subIt = subBodies.iterator();
-		while(subIt.hasNext()){
-		    if(temp instanceof ASTTryNode){
-			ASTTryNode.container subBody = (ASTTryNode.container) subIt.next();
-			if(checkForBreak((List)subBody.o,outerLabel)){
-			    //if this is true there was a break found
-			    return true;
-			}
-		    }
-		    else{
-			if(checkForBreak((List)subIt.next(),outerLabel)){
-			    //if this is true there was a break found
-			    return true;
-			}
-		    }
-		}
-	    }
-	}
-    
-	return false;
+//    	if(DEBUG)
+  //  		System.out.println("method checkForBreak..... label is "+outerLabel);
+    	Iterator it = ASTNodeBody.iterator();
+    	while(it.hasNext()){
+    		ASTNode temp = (ASTNode)it.next();
+    		//check if this is ASTStatementSequenceNode
+    		if(temp instanceof ASTStatementSequenceNode){
+    			//if(DEBUG) System.out.println("Stmt seq Node");
+    			ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
+    			List statements = stmtSeq.getStatements();
+    			Iterator stmtIt = statements.iterator();
+    			while(stmtIt.hasNext()){
+    				AugmentedStmt as = (AugmentedStmt)stmtIt.next();
+    				Stmt s = as.get_Stmt();
+    				String labelBroken = breaksLabel(s);
+    				if(labelBroken != null && outerLabel!=null){//stmt breaks some label
+    					if(labelBroken.compareTo(outerLabel)==0){
+    						//we have found a break breaking this label
+    						return true;
+    					}
+    				}
+    			}
+    		}//if it was a StmtSeq node
+    		else{
+    			//otherwise recursion
+    			//getSubBodies
+    			//if(DEBUG) System.out.println("Not Stmt seq Node");
+    			List subBodies=(List)temp.get_SubBodies();
+    			Iterator subIt = subBodies.iterator();
+    			while(subIt.hasNext()){
+    				List subBodyTemp = null;
+    				if(temp instanceof ASTTryNode){
+    					ASTTryNode.container subBody = (ASTTryNode.container) subIt.next();
+    					subBodyTemp = (List)subBody.o;
+    					//System.out.println("Try body node");
+    				}
+    				else{
+    					subBodyTemp = (List)subIt.next();
+    				}
+    					
+    				if(checkForBreak(subBodyTemp,outerLabel)){
+    					//if this is true there was a break found
+    					return true;
+    				}
+    			}
+    		}
+    	}
+    	
+    	return false;
     }
 
 

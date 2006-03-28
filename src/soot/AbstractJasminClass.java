@@ -1,4 +1,6 @@
 /* Soot - a J*va Optimization Framework
+ * 
+ * 
  * Copyright (C) 1999 Patrick Lam, Patrick Pominville and Raja Vallee-Rai
  * Copyright (C) 2004 Jennifer Lhotak, Ondrej Lhotak
  *

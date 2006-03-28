@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import soot.ArrayType;
 import soot.Local;
 import soot.RefLikeType;
 import soot.SootClass;
@@ -82,6 +83,9 @@ public class Renamer {
 		//exceptions are named using first letter of each capital char in the class name
 		exceptionNaming();
 		
+		//arrays get <type>Array
+		arraysGetTypeArray();
+		
 		//if a local is assigned a field that name can be used since fields are conserved
 		assignedFromAField();
 		
@@ -91,13 +95,65 @@ public class Renamer {
 		//check if a local is assigned after casting
 		castedObject();
 		
+	
+		
 		//if nothing else give a reference the name of the class
 		objectsGetClassName();
-
+		
 		//atleast remove the ugly dollar signs
 		removeDollarSigns();
 	}
 
+	
+	
+	/*
+	 * if there is an array int[] x. then if no other heuristic matches give it the name intArray 
+	 */
+	private void arraysGetTypeArray(){
+		Iterator it = heuristics.getLocalsIterator();
+		while (it.hasNext()) {
+			Local tempLocal = (Local) it.next();
+			if(alreadyChanged(tempLocal)){
+				continue;
+			}
+			
+			debug("arraysGetTypeArray","checking "+tempLocal);
+			
+			Type type = tempLocal.getType();
+			if(type instanceof ArrayType){
+				debug("arraysGetTypeArray","Local:"+tempLocal+" is an Array Type: "+type.toString());
+				String tempClassName = type.toString();
+				//remember that a toString of an array gives you the square brackets
+				if(tempClassName.indexOf('[')>=0)
+					tempClassName = tempClassName.substring(0,tempClassName.indexOf('['));
+				
+				//debug("arraysGetTypeArray","type of object is"+tempClassName);
+				if(tempClassName.indexOf('.')!= -1){
+					//contains a dot have to remove that
+					tempClassName=tempClassName.substring(tempClassName.lastIndexOf('.')+1);
+				}
+				
+				
+				String newName = tempClassName.toLowerCase();
+				newName = newName+"Array";
+				int count=0;
+				newName += count;
+				count++;
+				
+				while(!isUniqueName(newName)){
+					newName = newName.substring(0,newName.length()-1)+count;
+					count++;						
+				}
+				setName(tempLocal,newName);
+
+			}
+		}
+		
+		
+	}
+	
+	
+	
 	/*
 	 * The method assigns any local whose name hasnt been changed yet to 
 	 * the name of the class type it belongs to
@@ -113,10 +169,16 @@ public class Renamer {
 			debug("objectsGetClassName","checking "+tempLocal);
 			
 			Type type = tempLocal.getType();
+			if(type instanceof ArrayType){
+				//should have been handled by arraysGetTypeArray heuristic
+				continue;
+			}
+			
 			if(type instanceof RefLikeType){
 				debug("objectsGetClassName","Local:"+tempLocal+" Type: "+type.toString());
-
+				//debug("objectsGetClassName","getting array type"+type.getArrayType());
 				String tempClassName = type.toString();
+				//debug("objectsGetClassName","type of object is"+tempClassName);
 				if(tempClassName.indexOf('.')!= -1){
 					//contains a dot have to remove that
 					tempClassName=tempClassName.substring(tempClassName.lastIndexOf('.')+1);

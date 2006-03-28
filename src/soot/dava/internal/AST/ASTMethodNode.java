@@ -266,7 +266,6 @@ public class ASTMethodNode extends ASTNode {
 					"Only DavaUnitPrinter should be used to print DavaBody");
 
 		DavaUnitPrinter dup = (DavaUnitPrinter) up;
-
 		/*
 		 Print out constructor first
 		 */
@@ -274,13 +273,19 @@ public class ASTMethodNode extends ASTNode {
 			InstanceInvokeExpr constructorExpr = davaBody.get_ConstructorExpr();
 
 			if (constructorExpr != null) {
+				boolean printCloseBrace=true;
 				if (davaBody.getMethod().getDeclaringClass().getName().equals(
-						constructorExpr.getMethodRef().declaringClass()
-								.toString()))
+						constructorExpr.getMethodRef().declaringClass().toString()))
 					dup.printString("        this(");
-				else
-					dup.printString("        super(");
+				else{
+					//only invoke super if its not the default call since the default is 
+					//called automatically
+					if(constructorExpr.getArgCount()>0)
+						dup.printString("        super(");
+					else
+						printCloseBrace=false;
 
+				}
 				Iterator ait = constructorExpr.getArgs().iterator();
 				while (ait.hasNext()) {
 					/*
@@ -307,7 +312,8 @@ public class ASTMethodNode extends ASTNode {
 						dup.printString(", ");
 				}
 
-				dup.printString(");\n");
+				if(printCloseBrace)
+					dup.printString(");\n");
 			}
 
 			// print out the remaining body

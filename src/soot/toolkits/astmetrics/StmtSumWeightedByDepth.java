@@ -10,7 +10,6 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   int sum;
   int maxDepth;
   int numNodes;
-  //int returnSum;
   
   Stack labelNodesSoFar = new Stack();
   ArrayList blocksWithAbruptFlow = new ArrayList();
@@ -27,14 +26,12 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     maxDepth = 0;
     sum = 0;
     numNodes = 0;
-    //returnSum =0;
   }
   
   public void addMetrics(ClassData data) {
     data.addMetric(new MetricData("MaxDepth",new Integer(maxDepth)));
     data.addMetric(new MetricData("D-W-Complexity",new Integer(sum)));
     data.addMetric(new MetricData("AST-Node-Count",new Integer(numNodes)));
-    //data.addMetric(new MetricData("Return-Depth-Sum",new Integer(returnSum)));
   }
   
   private void increaseDepth(){
@@ -111,12 +108,8 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       }
     } 
     else if (n instanceof Stmt || n instanceof Formal){
-      //if(n instanceof Return){
-      //	returnSum += currentDepth;
-      //	System.out.println("RETURN111111111111111111111111111111111"+currentDepth);
-      //}
     	System.out.println("stmt"+n);
-      sum+= currentDepth;
+    	sum+= currentDepth;
     }
     
     return enter(n);

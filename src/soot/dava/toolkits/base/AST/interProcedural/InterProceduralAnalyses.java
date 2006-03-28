@@ -37,6 +37,8 @@ import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
 import soot.dava.toolkits.base.AST.transformations.SimplifyConditions;
 import soot.dava.toolkits.base.AST.transformations.SimplifyExpressions;
 import soot.dava.toolkits.base.AST.transformations.UselessLabelFinder;
+import soot.dava.toolkits.base.renamer.Renamer;
+import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
 
 public class InterProceduralAnalyses {
@@ -57,8 +59,10 @@ public class InterProceduralAnalyses {
 		
 		//finder.printConstantValueFields();
 		
-		
-		
+		/*
+		 * The code above this gathers interprocedural information
+		 * the code below this USES the interprocedural results
+		 */		
 		Iterator it = classes.iterator();
 		while(it.hasNext()){
 			//go though all the methods
@@ -100,17 +104,39 @@ public class InterProceduralAnalyses {
 		        //local variable cleanup
 		        AST.apply(new LocalVariableCleaner((ASTMethodNode)AST));
 
-		        /*
-		         * VERY EXPENSIVE STAGE of redoing all analyses!!!!
-		         */
+		         //VERY EXPENSIVE STAGE of redoing all analyses!!!!
 		        if(deobfuscate){
 		        	//UselessLabelFinder.DEBUG=true;
 		        	body.analyzeAST();
 		        }
-				
+		
+		        //renaming should be applied as the last stage
+				options = PhaseOptions.v().getPhaseOptions("db.renamer");
+		        boolean renamer = PhaseOptions.getBoolean(options, "enabled");
+		        //System.out.println("renaming is"+renamer);
+		        if(renamer){
+		        	applyRenamerAnalyses(AST,body);
+		        }
+
 			}
 
-		}
-		
+		}	
 	}
+	
+	
+	/*
+	 * If there is any interprocedural information required it should be passed as argument
+	 * to this method and then the renamer can make use of it.
+	 * 
+	 *
+	 */
+	private static void applyRenamerAnalyses(ASTNode AST,DavaBody body){
+		//intra procedural heuristic gathering
+		infoGatheringAnalysis info = new infoGatheringAnalysis(body);
+		AST.apply(info);
+
+		Renamer renamer = new Renamer(info.getHeuristicSet(),(ASTMethodNode)AST);
+		renamer.rename();		
+	}
+
 }

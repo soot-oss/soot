@@ -68,8 +68,16 @@ public class AbruptEdgeFinder implements FactFinder
 	    if (prev.get_Body().contains( pas) == false)
 		continue;
 
-	    if (naturalPreds.contains( pas) == false)
-		((SETStatementSequenceNode) pas.myNode).insert_AbruptStmt( new DAbruptStmt( "break", prev.get_Label()));
+	    if (naturalPreds.contains( pas) == false){
+	    	Object temp = pas.myNode;
+	    	/*
+	    	 * Nomair debugging bug number 29
+	    	 */
+	    	//System.out.println();
+	    	//((SETNode)temp).dump();
+	    	//System.out.println("Statement is"+pas);
+	    	((SETStatementSequenceNode)temp).insert_AbruptStmt( new DAbruptStmt( "break", prev.get_Label()));
+	    }
 	}
     }
 }

@@ -9,6 +9,9 @@ import polyglot.ast.Unary;
 import polyglot.visit.NodeVisitor;
 
 /*
+ * TODO compute avarge complexity weighted by depth similar to expression complexity
+ * 
+ * 
  * A unary boolean condition should have the complexity (BooleanLit) 1
  * A noted condition (!)  +0.5 
  * A binary relational operation ( < > <= >= == ) +0.5

@@ -61,6 +61,8 @@ import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.spark.fieldrw.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.AST.interProcedural.InterProceduralAnalyses;
+import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
+import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.misc.*;
 import soot.xml.*;
 import soot.toolkits.graph.interaction.*;
@@ -462,6 +464,13 @@ public class PackManager {
              */ 
             DavaStaticBlockCleaner.v().staticBlockInlining(s);
 
+            //remove returns from void methods
+    		VoidReturnRemover.cleanClass(s);
+    		
+            //remove the default constructor if this is the only one present
+			RemoveEmptyBodyDefaultConstructor.checkAndRemoveDefault(s);
+
+
 	    
     		/*
     		 * Nomair A. Naeem 1st March 2006
@@ -495,18 +504,19 @@ public class PackManager {
         
         /*
          * Nomair A. Naeem March 6th, 2006
-         * Laying the seed for interprocedural analyses
          * 
          * SHOULD BE INVOKED ONLY ONCE!!!
+         * If interprocedural analyses are turned off they are checked within this
+         * method.
+         * 
+         * HAVE TO invoke this analysis since this invokes the renamer!!
          */
         if(transformations){
         	InterProceduralAnalyses.applyInterProceduralAnalyses();
         }
     	        	
-        /*
-         * Check if we need to reinvoke all the above anaylses or not!!!!
-         * right now not doing it but might want a fixed point
-         */
+
+        
         outputDava();
     }
             
