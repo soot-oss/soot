@@ -42,6 +42,7 @@ import soot.jimple.*;
 import soot.util.IterableSet;
 import soot.grimp.*;
 import soot.dava.*;
+import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 
@@ -148,50 +149,12 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 			if (type.equals("null_type"))
 				dup.printString("Object");
 			else{
+				IterableSet importSet = davaBody.getImportList();
+				if(!importSet.contains(type))
+					davaBody.addToImportList(type);
 				
-				
-				/*
-				 *  Nomair A. Naeem 8th Feb 2006
-				 *  It is nice to remove the fully qualified type names
-				 *  of locals if the package they belong to have been imported
-				 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
-				 *  If not imported WHY NOT..import it!!
-				 *  
-				 *   However this can cause recompilation problems and hence is added
-				 *   as a flag
-				 */
-				
-				Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-		        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
-		        //System.out.println("In DVariableDeclarationStmt Force is"+force);
-
-
-				if (force) {
-					IterableSet set = davaBody.get_PackagesUsed();
-
-					// get the package name of the object if one exists
-					String packageName = null;
-					if (type.lastIndexOf('.') > 0) {// 0 doesnt make sense
-						packageName = type.substring(0, type.lastIndexOf('.'));
-					}
-					if (packageName != null) {
-						//System.out.println("Parameter belongs to
-						// package"+packageName);
-						// check if package is not contained in packages retrieved
-						if (!set.contains(packageName)) {
-							// add package
-							davaBody.addPackage(packageName);
-							// System.out.println(packageName+ "added to list");
-						} else {
-							// System.out.println(packageName+ "already in list");
-						}
-
-						// change tempString to just the object type name
-						type = type.substring(type.lastIndexOf('.') + 1);
-					}
-				}	
-				
-				
+				type = RemoveFullyQualifiedName.getReducedName(davaBody.getImportList(),type,declarationType);
+	
 				dup.printString(type);
 			}
 			dup.printString(" ");

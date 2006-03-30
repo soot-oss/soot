@@ -4837,18 +4837,7 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 
 					<default>false</default>
 				</boolopt>
-
-				<boolopt>
-					<name>Remove Fully Qualified Names</name>
-					<alias>remove-fully-qualified</alias>
-                                         <short_desc>Convert fully qualified names to smaller names</short_desc>
-                                         <long_desc>The conversion works to remove java.lang. from java.lang.String etc.
-                        However this might not always be correct and might cause recompilability errors in which case the flag
-should be turned off.</long_desc>
-					<default>false</default>
-				</boolopt>
-
-                               </sub_phase>
+                </sub_phase>
 
 
 

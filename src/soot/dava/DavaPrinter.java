@@ -21,7 +21,9 @@
 package soot.dava;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import soot.Body;
@@ -45,6 +47,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.UnitPrinter;
 import soot.dava.internal.AST.ASTNode;
+import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.options.Options;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
@@ -69,53 +72,57 @@ public class DavaPrinter {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
         }
 
-        UnitPrinter up = new DavaUnitPrinter();
+        UnitPrinter up = new DavaUnitPrinter((DavaBody)body);
         ((ASTNode) units.getFirst()).toString(up);
         out.print( up.toString() );
     }
 
     public void printTo(SootClass cl, PrintWriter out) {
     	
-    	
-        IterableSet packagesUsed = new IterableSet();
-        
+    	//IterableSet packagesUsed = new IterableSet();
+    	IterableSet importList = new IterableSet();
         {
-
             String curPackage = cl.getJavaPackageName();
 
-            if (curPackage.equals("") == false) {
+            if (!curPackage.equals("")) {
                 out.println("package " + curPackage + ";");
                 out.println();
             }
 
             if (cl.hasSuperclass()) {
                 SootClass superClass = cl.getSuperclass();
-                packagesUsed.add(superClass.getJavaPackageName());
+                importList.add(superClass.toString());
+                //packagesUsed.add(superClass.getJavaPackageName());
             }
 
             Iterator interfaceIt = cl.getInterfaces().iterator();
             while (interfaceIt.hasNext()) {
-                String interfacePackage =
-                    ((SootClass) interfaceIt.next()).getJavaPackageName();
-                if (packagesUsed.contains(interfacePackage) == false)
-                    packagesUsed.add(interfacePackage);
+                String interfacePackage = ((SootClass) interfaceIt.next()).toString();
+                
+                if(!importList.contains(interfacePackage))
+                	importList.add(interfacePackage);
+                	
+                //if (!packagesUsed.contains(interfacePackage))
+                  //  packagesUsed.add(interfacePackage);
             }
 
             Iterator methodIt = cl.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod dm = (SootMethod) methodIt.next();
 
-                if (dm.hasActiveBody())
-                    packagesUsed =
-                        packagesUsed.union(
-                            ((DavaBody) dm.getActiveBody()).get_PackagesUsed());
+                if (dm.hasActiveBody()){
+                	//packagesUsed = packagesUsed.union(((DavaBody) dm.getActiveBody()).get_PackagesUsed());
+                    importList = importList.union(((DavaBody) dm.getActiveBody()).getImportList());
+                }
 
                 Iterator eit = dm.getExceptions().iterator();
                 while (eit.hasNext()) {
-                    String thrownPackage =
-                        ((SootClass) eit.next()).getJavaPackageName();
-                    if (packagesUsed.contains(thrownPackage) == false)
-                        packagesUsed.add(thrownPackage);
+                    String thrownPackage =((SootClass) eit.next()).toString();
+                    if(!importList.contains(thrownPackage))
+                    	importList.add(thrownPackage);
+                    
+                    //if (!packagesUsed.contains(thrownPackage))
+                      //  packagesUsed.add(thrownPackage);
                 }
 
                 Iterator pit = dm.getParameterTypes().iterator();
@@ -123,19 +130,26 @@ public class DavaPrinter {
                     Type t = (Type) pit.next();
 
                     if (t instanceof RefType) {
-                        String paramPackage =
-                            ((RefType) t).getSootClass().getJavaPackageName();
-                        if (packagesUsed.contains(paramPackage) == false)
-                            packagesUsed.add(paramPackage);
+                        String paramPackage = ((RefType) t).getSootClass().toString();
+                        
+                        if (!importList.contains(paramPackage))
+                            importList.add(paramPackage);
+                        
+                        //if (packagesUsed.contains(paramPackage) == false)
+                          //  packagesUsed.add(paramPackage);
                     }
                 }
 
                 Type t = dm.getReturnType();
                 if (t instanceof RefType) {
-                    String returnPackage =
-                        ((RefType) t).getSootClass().getJavaPackageName();
-                    if (packagesUsed.contains(returnPackage) == false)
-                        packagesUsed.add(returnPackage);
+                    String returnPackage = ((RefType) t).getSootClass().toString();
+                    
+                    if (!importList.contains(returnPackage))
+                    	importList.add(returnPackage);
+
+                
+                    //if (packagesUsed.contains(returnPackage) == false)
+                      //  packagesUsed.add(returnPackage);
                 }
             }
 
@@ -149,30 +163,91 @@ public class DavaPrinter {
                 Type t = f.getType();
 
                 if (t instanceof RefType) {
-                    String fieldPackage =
-                        ((RefType) t).getSootClass().getJavaPackageName();
-                    if (packagesUsed.contains(fieldPackage) == false)
-                        packagesUsed.add(fieldPackage);
+                    String fieldPackage = ((RefType) t).getSootClass().toString();
+                    
+                    if (!importList.contains(fieldPackage))
+                        importList.add(fieldPackage);
                 }
             }
 
-            if (packagesUsed.contains(curPackage))
-                packagesUsed.remove(curPackage);
 
-            if (packagesUsed.contains("java.lang"))
-                packagesUsed.remove("java.lang");
+            Iterator pit = importList.iterator();
+            List toImport = new ArrayList();
+            while (pit.hasNext()){
+            	/*
+            	 * dont import any file which has currentPackage.className
+            	 * dont import any file which starts with java.lang
+            	 */
+            	String temp = (String)pit.next();
+            	//System.out.println("temp is "+temp);
+            	if(temp.indexOf("java.lang")>-1 ){
+            		//problem is that we need to import sub packages java.lang.ref 
+            		//for instance if the type is java.lang.ref.WeakReference
+            		String tempClassName = RemoveFullyQualifiedName.getClassName(temp);
+            		if(temp.equals("java.lang."+tempClassName)){
+            			//System.out.println("temp was not printed as it belongs to java.lang");
+            			continue;
+            		}
+            	}
 
-            Iterator pit = packagesUsed.iterator();
-            while (pit.hasNext())
-                out.println("import " + (String) pit.next() + ".*;");
+            	if(curPackage.length()>0 && temp.indexOf(curPackage)>-1){
+            		//System.out.println("here  "+temp);
+            		continue;
+            	}
+            	
+            	if(cl.toString().equals(temp))
+            		continue;
+            	               
+            	
+            	//System.out.println("printing"+);
+            	toImport.add(temp);
 
-            if (packagesUsed.isEmpty() == false)
+
+            }
+
+            /*
+             * Check that we are not importing two classes with the same last name
+             * If yes then remove explicit import and import the whole package
+             * else output explicit import statement
+             */
+            Iterator it = toImport.iterator();
+            while(it.hasNext()){
+            	String temp = (String)it.next();
+            	if(RemoveFullyQualifiedName.containsMultiple(toImport.iterator(),temp,null)){
+            		//there are atleast two imports with this className
+            		//import package add *
+            		if(temp.lastIndexOf('.')>-1){
+            			temp = temp.substring(0,temp.lastIndexOf('.'));
+                		out.println("import " + temp + ".*;");
+            		}
+            		else
+            			throw new DecompilationException("Cant find the DOT . for fullyqualified name");
+            	}
+            	else{
+            		if(temp.lastIndexOf('.')==-1){
+            			//dot not found this is a class belonging to this package so dont add
+            		}
+            		else
+            			out.println("import " + temp + ";");
+            	}
+            }
+            boolean addNewLine=false;
+            addNewLine=true;
+            
+           // out.println("import " + temp + ";");
+            
+            
+            if(addNewLine)
+            	out.println();
+            
+            /*if (!packagesUsed.isEmpty())
                 out.println();
 
             packagesUsed.add("java.lang");
             packagesUsed.add(curPackage);
-
-            Dava.v().set_CurrentPackageContext(packagesUsed);
+            */
+            Dava.v().set_CurrentPackageContext(importList);
+            //Dava.v().set_CurrentPackageContext(packagesUsed);
             Dava.v().set_CurrentPackage(curPackage);
         }
 
@@ -202,15 +277,8 @@ public class DavaPrinter {
         	//also check if the super class name is not a fully qualified
         	//name. in which case if the package is imported no need for
         	//the long name
-        	
-			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
-	        //System.out.println("In DVariableDeclarationStmt Force is"+force);
 
-
-			if (force) {
-				superClassName = getShortName(superClassName,packagesUsed);
-        	}
+        	superClassName = RemoveFullyQualifiedName.getReducedName(importList,superClassName,cl.getType());
             out.print(" extends " + superClassName + "");
         }
 
@@ -252,19 +320,7 @@ public class DavaPrinter {
 				
 			        String qualifiers = Modifier.toString(f.getModifiers()) + " ";
 			        
-			        
-			        //See if we want to shorten fully qualified names
-					Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-			        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
-			        //System.out.println("In DVariableDeclarationStmt Force is"+force);
-
-					if (force) {
-			        	qualifiers += getShortName(fieldType.toString(),packagesUsed); 
-			        }
-			        else
-			        	qualifiers += fieldType.toString();
-			        
-			        
+			        qualifiers += RemoveFullyQualifiedName.getReducedName(importList,fieldType.toString(),fieldType); 
 			        
 			        qualifiers = qualifiers.trim();
 
@@ -405,23 +461,7 @@ public class DavaPrinter {
     
     
     
-    
-    
-	public String getShortName(String name, IterableSet packagesUsed) {
-		// get the package name of the object if one exists
-		String packageName = null;
-		if (name.lastIndexOf('.') > 0) {// 0 doesnt make sense
-			packageName = name.substring(0, name.lastIndexOf('.'));
-		}
-
-		if (packageName != null && packagesUsed.contains(packageName)) {
-			// change superclassname to just the object type name
-			name = name.substring(name.lastIndexOf('.') + 1);
-		}
-
-		return name;
-	}
-	
+        
     /**
      *   Prints out the method corresponding to b Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode b body.

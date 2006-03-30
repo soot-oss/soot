@@ -165,6 +165,8 @@ import soot.util.IterableSet;
  *                    Although currently renaming is done intra-proceduraly  there is strong indication that
  *                    inter procedural analyses will be required to get good names
  *                    
+ *			Nomair: March 29th, 2006: dealing with trying to remove fully qualified names 			                    
+ *
  */
 
 /*
@@ -180,14 +182,15 @@ import soot.util.IterableSet;
 
 public class DavaBody extends Body {
 
-	public final boolean DEBUG = false;
+	public boolean DEBUG = false;
 	private Map pMap;
 
 	private HashSet consumedConditions, thisLocals;
 
-	private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts,
-			packagesUsed;
-
+	private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+	
+	private IterableSet importList;
+	
 	private Local controlLocal;
 
 	private InstanceInvokeExpr constructorExpr; //holds constructorUnit.getInvokeExpr
@@ -209,7 +212,8 @@ public class DavaBody extends Body {
 		synchronizedBlockFacts = new IterableSet();
 		exceptionFacts = new IterableSet();
 		monitorFacts = new IterableSet();
-		packagesUsed = new IterableSet();
+		importList = new IterableSet();
+		//packagesUsed = new IterableSet();
 		caughtrefs = new LinkedList();
 
 		controlLocal = null;
@@ -282,11 +286,12 @@ public class DavaBody extends Body {
 	public IterableSet get_MonitorFacts() {
 		return monitorFacts;
 	}
-
-	public IterableSet get_PackagesUsed() {
-		return packagesUsed;
+	
+	public IterableSet getImportList(){
+		return importList;
 	}
-
+	
+	
 	/**
 	 * Constructs a DavaBody from the given Body.
 	 */
@@ -297,8 +302,10 @@ public class DavaBody extends Body {
 		Dava.v().log("\nstart method " + body.getMethod().toString());
 
 		// copy and "convert" the grimp representation
+		//DEBUG=true;
 		copy_Body(body);
-
+		//DEBUG=false;
+		
 		// prime the analysis
 		AugmentedStmtGraph asg = new AugmentedStmtGraph(
 				new BriefUnitGraph(this), new TrapUnitGraph(this));
@@ -807,7 +814,21 @@ public class DavaBody extends Body {
 				if (t instanceof RefType) {
 					RefType rt = (RefType) t;
 
-					addPackage(rt.getSootClass().getJavaPackageName());
+			
+					String className = rt.getSootClass().toString();
+					String packageName = rt.getSootClass().getJavaPackageName();
+					
+					String classPackageName = packageName;
+					
+					if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+						classPackageName = className.substring(0, className.lastIndexOf('.'));
+					}
+					if(!packageName.equals(classPackageName))
+						throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+					
+					addToImportList(className);
+					
+					//addPackage(rt.getSootClass().getJavaPackageName());
 				}
 			}
 
@@ -984,9 +1005,23 @@ public class DavaBody extends Body {
 
 		if (r instanceof StaticFieldRef) {
 			SootFieldRef fieldRef = ((StaticFieldRef) r).getFieldRef();
-			addPackage(fieldRef.declaringClass().getJavaPackageName());
-			vb.setValue(new DStaticFieldRef(fieldRef, getMethod()
-					.getDeclaringClass().getName()));
+			//addPackage(fieldRef.declaringClass().getJavaPackageName());
+			
+			String className = fieldRef.declaringClass().toString();
+			String packageName = fieldRef.declaringClass().getJavaPackageName();
+			
+			String classPackageName = packageName;
+			
+			if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+				classPackageName = className.substring(0, className.lastIndexOf('.'));
+			}
+			if(!packageName.equals(classPackageName))
+				throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+			
+			addToImportList(className);
+			
+			
+			vb.setValue(new DStaticFieldRef(fieldRef, getMethod().getDeclaringClass().getName()));
 		} else if (r instanceof ArrayRef) {
 			ArrayRef ar = (ArrayRef) r;
 
@@ -1034,7 +1069,8 @@ public class DavaBody extends Body {
 					rightOpBox.setValue(DIntConstant.v(
 							((IntConstant) rightOp).value, null));
 			}
-		} else if (leftOp instanceof IntConstant) {
+		} 
+		else if (leftOp instanceof IntConstant) {
 			javafy(rightOpBox);
 			rightOp = rightOpBox.getValue();
 
@@ -1075,47 +1111,46 @@ public class DavaBody extends Body {
 
 	private void javafy_cast_expr(ValueBox vb) {
 		CastExpr ce = (CastExpr) vb.getValue();
-
 		javafy(ce.getOpBox());
 	}
 
 	private void javafy_newarray_expr(ValueBox vb) {
 		NewArrayExpr nae = (NewArrayExpr) vb.getValue();
-
 		javafy(nae.getSizeBox());
 		vb.setValue(new DNewArrayExpr(nae.getBaseType(), nae.getSize()));
 	}
 
 	private void javafy_newmultiarray_expr(ValueBox vb) {
 		NewMultiArrayExpr nmae = (NewMultiArrayExpr) vb.getValue();
-
 		for (int i = 0; i < nmae.getSizeCount(); i++)
 			javafy(nmae.getSizeBox(i));
-
-		vb
-				.setValue(new DNewMultiArrayExpr(nmae.getBaseType(), nmae
-						.getSizes()));
+		vb.setValue(new DNewMultiArrayExpr(nmae.getBaseType(), nmae	.getSizes()));
 	}
 
 	private void javafy_instanceof_expr(ValueBox vb) {
 		InstanceOfExpr ioe = (InstanceOfExpr) vb.getValue();
-
 		javafy(ioe.getOpBox());
 	}
 
 	private void javafy_invoke_expr(ValueBox vb) {
 		InvokeExpr ie = (InvokeExpr) vb.getValue();
-
-		addPackage(ie.getMethodRef().declaringClass().getJavaPackageName());
+		String className = ie.getMethodRef().declaringClass().toString();
+		String packageName = ie.getMethodRef().declaringClass().getJavaPackageName();
+		String classPackageName = packageName;
+		
+		if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+			classPackageName = className.substring(0, className.lastIndexOf('.'));
+		}
+		if(!packageName.equals(classPackageName))
+			throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+		
+		addToImportList(className);
 
 		for (int i = 0; i < ie.getArgCount(); i++) {
 			Value arg = ie.getArg(i);
 
 			if (arg instanceof IntConstant)
-				ie.getArgBox(i).setValue(
-						DIntConstant.v(((IntConstant) arg).value, ie
-								.getMethodRef().parameterType(i)));
-
+				ie.getArgBox(i).setValue(DIntConstant.v(((IntConstant) arg).value, ie.getMethodRef().parameterType(i)));
 			else
 				javafy(ie.getArgBox(i));
 		}
@@ -1125,28 +1160,20 @@ public class DavaBody extends Body {
 
 			if (ie instanceof VirtualInvokeExpr) {
 				VirtualInvokeExpr vie = (VirtualInvokeExpr) ie;
-
-				vb.setValue(new DVirtualInvokeExpr(vie.getBase(), vie
-						.getMethodRef(), vie.getArgs(), thisLocals));
+				vb.setValue(new DVirtualInvokeExpr(vie.getBase(), vie.getMethodRef(), vie.getArgs(), thisLocals));
 			}
 
 			else if (ie instanceof SpecialInvokeExpr) {
 				SpecialInvokeExpr sie = (SpecialInvokeExpr) ie;
-
-				vb.setValue(new DSpecialInvokeExpr(sie.getBase(), sie
-						.getMethodRef(), sie.getArgs()));
+				vb.setValue(new DSpecialInvokeExpr(sie.getBase(), sie.getMethodRef(), sie.getArgs()));
 			}
 
 			else if (ie instanceof InterfaceInvokeExpr) {
 				InterfaceInvokeExpr iie = (InterfaceInvokeExpr) ie;
-
-				vb.setValue(new DInterfaceInvokeExpr(iie.getBase(), iie
-						.getMethodRef(), iie.getArgs()));
+				vb.setValue(new DInterfaceInvokeExpr(iie.getBase(), iie.getMethodRef(), iie.getArgs()));
 			}
-
 			else
-				throw new RuntimeException("InstanceInvokeExpr " + ie
-						+ " not javafied correctly");
+				throw new RuntimeException("InstanceInvokeExpr " + ie+ " not javafied correctly");
 		}
 
 		else if (ie instanceof StaticInvokeExpr) {
@@ -1156,44 +1183,75 @@ public class DavaBody extends Body {
 				NewInvokeExpr nie = (NewInvokeExpr) sie;
 
 				RefType rt = nie.getBaseType();
-				addPackage(rt.getSootClass().getJavaPackageName());
-
-				vb.setValue(new DNewInvokeExpr((RefType) nie.getType(), nie
-						.getMethodRef(), nie.getArgs()));
+				
+				className = rt.getSootClass().toString();
+				packageName = rt.getSootClass().getJavaPackageName();
+				
+				classPackageName = packageName;
+				
+				if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+					classPackageName = className.substring(0, className.lastIndexOf('.'));
+				}
+				if(!packageName.equals(classPackageName))
+					throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+				
+				addToImportList(className);
+				vb.setValue(new DNewInvokeExpr((RefType) nie.getType(), nie.getMethodRef(), nie.getArgs()));
 			}
-
 			else {
 				SootMethodRef methodRef = sie.getMethodRef();
-				addPackage(methodRef.declaringClass().getJavaPackageName());
+				className = methodRef.declaringClass().toString();
+				packageName = methodRef.declaringClass().getJavaPackageName();
+				
+				classPackageName = packageName;
+				
+				if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+					classPackageName = className.substring(0, className.lastIndexOf('.'));
+				}
+				if(!packageName.equals(classPackageName))
+					throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+				
+				addToImportList(className);
+
+				//addPackage(methodRef.declaringClass().getJavaPackageName());
 				vb.setValue(new DStaticInvokeExpr(methodRef, sie.getArgs()));
 			}
 		}
-
 		else
-			throw new RuntimeException("InvokeExpr " + ie
-					+ " not javafied correctly");
+			throw new RuntimeException("InvokeExpr " + ie+ " not javafied correctly");
 	}
 
 	private void javafy_new_expr(ValueBox vb) {
 		NewExpr ne = (NewExpr) vb.getValue();
 
-		addPackage(ne.getBaseType().getSootClass().getJavaPackageName());
+		String className = ne.getBaseType().getSootClass().toString();
+		String packageName = ne.getBaseType().getSootClass().getJavaPackageName();
+		
+		String classPackageName = packageName;
+		
+		if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+			classPackageName = className.substring(0, className.lastIndexOf('.'));
+		}
+		if(!packageName.equals(classPackageName))
+			throw new DecompilationException("Unable to retrieve package name for identifier. Please report to developer.");
+		
+		addToImportList(className);
 	}
 
-	public void addPackage(String newPackage) {
-		if (newPackage.equals(""))
+	
+	public void addToImportList(String className){
+		if(className.equals(""))
 			return;
-
-		if (packagesUsed.contains(newPackage) == false){
-			packagesUsed.add(newPackage);
-			if(DEBUG)
-				System.out.println("PACKAGE ADDED"+newPackage);
+		
+		if(!importList.contains(className)){
+			importList.add(className);
+			if(DEBUG) 
+				System.out.println("Adding to import list: "+className);
 		}
 	}
-
+	
 	public void debug(String methodName, String debug){		
 		if(DEBUG)
 			System.out.println(methodName+ "    DEBUG: "+debug);
 	}
-
 }

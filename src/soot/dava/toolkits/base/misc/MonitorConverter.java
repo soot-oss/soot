@@ -73,7 +73,7 @@ public class MonitorConverter
 	    AugmentedStmt mas = (AugmentedStmt) mfit.next();
 	    MonitorStmt ms = (MonitorStmt) mas.get_Stmt();
 
-	    body.addPackage( "soot.dava.toolkits.base.DavaMonitor");
+	    body.addToImportList("soot.dava.toolkits.base.DavaMonitor.DavaMonitor");
 	    
 	    ArrayList arg = new ArrayList();
 	    arg.add( ms.getOp());

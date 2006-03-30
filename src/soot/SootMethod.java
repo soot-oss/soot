@@ -30,6 +30,7 @@ import soot.util.*;
 import java.util.*;
 
 import soot.dava.*;
+import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 
 /**
     Soot representation of a Java method.  Can be declared to belong to a SootClass. 
@@ -586,41 +587,17 @@ public class SootMethod
 
             String tempString = t.toString();    
             
-			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
-			if (force) {
-				DavaBody body = (DavaBody) getActiveBody();
-				IterableSet set = body.get_PackagesUsed();
+            
+            DavaBody body = (DavaBody) getActiveBody();
+            IterableSet importSet = body.getImportList();
 
-				// get the package name of the object if one exists
-				String packageName = null;
-				if (tempString.lastIndexOf('.') > 0) {// 0 doesnt make sense
-					packageName = tempString.substring(0, tempString
-							.lastIndexOf('.'));
-				}
-				if (packageName != null) {
-					// System.out.println("Parameter belongs to
-					// package"+packageName);
-					// check if package is not contained in packages retrieved
-					if (!set.contains(packageName)) {
-						// add package
-						body.addPackage(packageName);
-						// System.out.println(packageName+ "added to list");
-					} else {
-						// System.out.println(packageName+ "already in list");
-					}
-
-					// change tempString to just the object type name
-					tempString = tempString.substring(tempString
-							.lastIndexOf('.') + 1);
-				}
-			}			
-						
+            if(!importSet.contains(tempString)){
+            	body.addToImportList(tempString);
+            }
+            tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
+									
 			buffer.append(tempString + " ");
 
-			
-            
-            //buffer.append(t + " ");
             buffer.append(Scene.v().quotedNameOf(this.getName()));
         }
 
@@ -640,43 +617,20 @@ public class SootMethod
 			 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
 			 *  If not imported WHY NOT..import it!! 
 			 */
+            DavaBody body = (DavaBody) getActiveBody();
+            IterableSet importSet = body.getImportList();
 
-			Map options = PhaseOptions.v().getPhaseOptions("db.renamer");
-	        boolean force = PhaseOptions.getBoolean(options, "remove-fully-qualified");
-			if (force) {
-				DavaBody body = (DavaBody) getActiveBody();
-				IterableSet set = body.get_PackagesUsed();
-
-				// get the package name of the object if one exists
-				String packageName = null;
-				if (tempString.lastIndexOf('.') > 0) {// 0 doesnt make sense
-					packageName = tempString.substring(0, tempString
-							.lastIndexOf('.'));
-				}
-				if (packageName != null) {
-					//System.out.println("Parameter belongs to");
-					// package"+packageName);
-					// check if package is not contained in packages retrieved
-					if (!set.contains(packageName)) {
-						// add package
-						body.addPackage(packageName);
-						// System.out.println(packageName+ "added to list");
-					} else {
-						// System.out.println(packageName+ "already in list");
-					}
-
-					// change tempString to just the object type name
-					tempString = tempString.substring(tempString
-							.lastIndexOf('.') + 1);
-				}
-			}			
-						
-			buffer.append(tempString);
-
+            if(!importSet.contains(tempString)){
+            	body.addToImportList(tempString);
+            }
+            tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
+									
+			buffer.append(tempString + " ");
+			
             buffer.append(" ");
             if (hasActiveBody()){
                 buffer.append(((DavaBody) getActiveBody()).get_ParamMap().get(new Integer(count++)));
-	    }
+            }
             else {
                 if (t == BooleanType.v())
                     buffer.append("z" + count++);

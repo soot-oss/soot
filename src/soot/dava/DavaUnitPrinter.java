@@ -26,6 +26,7 @@ import soot.SootFieldRef;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.IdentityRef;
 import soot.jimple.Jimple;
 import soot.jimple.ThisRef;
@@ -34,6 +35,15 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for Dava.
  */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
+	DavaBody body;
+	
+	/*
+	 * 30th March 2006, Nomair A Naeem
+	 * Adding constructor so that the current methods DabaBody can be stored
+	 */
+	public DavaUnitPrinter(DavaBody body){
+		this.body = body;
+	}
     public void methodRef( SootMethodRef m ) {
         handleIndent();
         output.append( m.name() );
@@ -70,10 +80,26 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     public void type( Type t ) {
         handleIndent();
         if( t instanceof RefType ) {
-            output.append( ((RefType) t).getSootClass().getJavaStyleName() );
-        } else if( t instanceof ArrayType ) {
+        	
+        	String name = ((RefType) t).getSootClass().getJavaStyleName();
+        	/*
+        	 * March 30th 2006, Nomair
+        	 * Adding check to check that the fully qualified name can actually be removed
+        	 */
+        	if(!name.equals( ((RefType)t).getSootClass().toString())){
+        		//means javaStyle name is probably shorter check that there is no class clash in imports for this
+        		
+        		//System.out.println(">>>>Type is"+t.toString());
+        		//System.out.println(">>>>Name is"+name);
+        		name = RemoveFullyQualifiedName.getReducedName(body.getImportList(),((RefType)t).getSootClass().toString(),t);
+        	
+        	}
+            output.append(name);
+        } 
+        else if( t instanceof ArrayType ) {
             ((ArrayType) t).toString( this );
-        } else {
+        } 
+        else {
             output.append( t.toString() );
         }
     }

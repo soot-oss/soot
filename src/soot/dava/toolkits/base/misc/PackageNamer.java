@@ -31,38 +31,36 @@ public class PackageNamer
     public PackageNamer( Singletons.Global g ) {}
     public static PackageNamer v() { return G.v().soot_dava_toolkits_base_misc_PackageNamer(); }
 
-    public boolean has_FixedNames()
-    {
-	return fixed;
+    public boolean has_FixedNames(){	
+    	return fixed;
     }
 
-    public boolean use_ShortName( String fixedPackageName, String fixedShortClassName)
-    {
-	if (fixed == false)
-	    return false;
+    public boolean use_ShortName( String fixedPackageName, String fixedShortClassName){
+    	if (fixed == false)
+    		return false;
 
-	if (fixedPackageName.equals( Dava.v().get_CurrentPackage()))
-	    return true;
+    	if (fixedPackageName.equals( Dava.v().get_CurrentPackage()))
+    		return true;
 
-	IterableSet packageContext = Dava.v().get_CurrentPackageContext();
-	if (packageContext == null)
-	    return true;
+    	IterableSet packageContext = Dava.v().get_CurrentPackageContext();
+    	if (packageContext == null)
+    		return true;
 
-	packageContext = patch_PackageContext( packageContext);
+    	packageContext = patch_PackageContext( packageContext);
 
-	int count = 0;
-	StringTokenizer st = new StringTokenizer( classPath, pathSep);
-	while (st.hasMoreTokens()) {
-	    String classpathDir = st.nextToken();
+    	int count = 0;
+    	StringTokenizer st = new StringTokenizer( classPath, pathSep);
+    	while (st.hasMoreTokens()) {
+    		String classpathDir = st.nextToken();
+    		
+    		Iterator packIt = packageContext.iterator();
+    		while (packIt.hasNext()) 
+    			if (package_ContainsClass( classpathDir, (String) packIt.next(), fixedShortClassName))
+    				if (++count > 1)
+    					return false;
+    	}
 
-	    Iterator packIt = packageContext.iterator();
-	    while (packIt.hasNext()) 
-		if (package_ContainsClass( classpathDir, (String) packIt.next(), fixedShortClassName))
-		    if (++count > 1)
-			return false;
-	}
-
-	return true;
+    	return true;
     }
 
     public String get_FixedClassName( String originalFullClassName)
@@ -101,84 +99,73 @@ public class PackageNamer
 
     private class NameHolder
     {
-	private String originalName, packageName, className;
-	private ArrayList children;
-	private NameHolder parent;
-	private boolean isClass;
+    	private String originalName, packageName, className;
+    	private ArrayList children;
+    	private NameHolder parent;
+    	private boolean isClass;
 	
 
-	public NameHolder( String name, NameHolder parent, boolean isClass)
-	{
-	    originalName = name;
-	    className = name;
-	    packageName = name;
+    	public NameHolder( String name, NameHolder parent, boolean isClass)
+    	{
+    		originalName = name;
+    		className = name;
+    		packageName = name;
+    		
+    		this.parent = parent;
+    		this.isClass = isClass;
 
-	    this.parent = parent;
-	    this.isClass = isClass;
+    		children = new ArrayList();
+    	}
 
-	    children = new ArrayList();
-	}
+    	public NameHolder get_Parent() {
+			return parent;
+		}
 
-	public NameHolder get_Parent()
-	{
-	    return parent;
-	}
+		public void set_ClassAttr() {
+			isClass = true;
+		}
 
-	public void set_ClassAttr()
-	{
-	    isClass = true;
-	}
+		public boolean is_Class() {
+			if (children.isEmpty())
+				return true;
+			else
+				return isClass;
+		}
 
-	public boolean is_Class()
-	{
-	    if (children.isEmpty())
-		return true;
-	    else
-		return isClass;
-	}
+		public boolean is_Package() {
+			return (children.isEmpty() == false);
+		}
 
-	public boolean is_Package()
-	{
-	    return (children.isEmpty() == false);
-	}
+		public String get_PackageName() {
+			return packageName;
+		}
 
-	public String get_PackageName()
-	{
-	    return packageName;
-	}
+		public String get_ClassName() {
+			return className;
+		}
 
-	public String get_ClassName()
-	{
-	    return className;
-	}
+		public void set_PackageName(String packageName) {
+			this.packageName = packageName;
+		}
 
-	public void set_PackageName( String packageName)
-	{
-	    this.packageName = packageName;
-	}
+		public void set_ClassName(String className) {
+			this.className = className;
+		}
 
-	public void set_ClassName( String className)
-	{
-	    this.className = className;
-	}
+		public String get_OriginalName() {
+			return originalName;
+		}
 
-	public String get_OriginalName()
-	{
-	    return originalName;
-	}
+		public ArrayList get_Children() {
+			return children;
+		}
 
-	public ArrayList get_Children()
-	{
-	    return children;
-	}
-	
-	public String get_FixedPackageName()
-	{
-	    if (parent == null)
-		return "";
+		public String get_FixedPackageName() {
+			if (parent == null)
+				return "";
 
-	    return parent.retrieve_FixedPackageName();
-	}
+			return parent.retrieve_FixedPackageName();
+		}
 
 	public String retrieve_FixedPackageName()
 	{
@@ -208,16 +195,15 @@ public class PackageNamer
 	    String subName = st.nextToken();
 	    Iterator cit = children.iterator();
 	    while (cit.hasNext()) {
-		NameHolder h = (NameHolder) cit.next();
+	    	NameHolder h = (NameHolder) cit.next();
 
-		if (h.get_OriginalName().equals( subName)) {
-		    if (forClass)
-			return h.retrieve_FixedName( st, forClass);
-		    else 
-			return packageName + "." + h.retrieve_FixedName( st, forClass);
-		}
+	    	if (h.get_OriginalName().equals( subName)) {
+	    		if (forClass)
+	    			return h.retrieve_FixedName( st, forClass);
+	    		else 
+	    			return packageName + "." + h.retrieve_FixedName( st, forClass);
+	    	}
 	    }
-
 	    throw new RuntimeException( "Unable to resolve naming.");
 	}
 
@@ -356,8 +342,8 @@ public class PackageNamer
 
 	    Iterator it = children.iterator();
 	    while (it.hasNext())
-		((NameHolder) it.next()).dump( indentation + "  ");
-	}
+	    	((NameHolder) it.next()).dump( indentation + "  ");
+		}
     }
 
     private boolean fixed = false;
