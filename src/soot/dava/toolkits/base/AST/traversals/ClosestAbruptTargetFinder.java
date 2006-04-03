@@ -37,7 +37,7 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 
 /**
- * This class has been created in anticipation of needing the immediate
+ * This class has been created because we need the immediate
  * target of a implicit break/continue statement i.e. a break/continue 
  * statement which does not break/continue a particular label explicitly.
 

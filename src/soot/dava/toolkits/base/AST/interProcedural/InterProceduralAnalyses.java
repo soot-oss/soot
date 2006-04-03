@@ -70,7 +70,16 @@ public class InterProceduralAnalyses {
 			Iterator methodIt = s.methodIterator();
 			while (methodIt.hasNext()) {
 				SootMethod m = (SootMethod) methodIt.next();
-				DavaBody body = (DavaBody)m.getActiveBody();
+				/*
+				 * Adding try block to handle RuntimeException no active body found
+				 */
+				DavaBody body = null;
+				if(m.hasActiveBody()){
+					body = (DavaBody)m.getActiveBody();
+				}
+				else{
+					continue;
+				}
 				ASTNode AST = (ASTNode) body.getUnits().getFirst();
 
 				if(! (AST instanceof ASTMethodNode))

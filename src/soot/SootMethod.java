@@ -587,14 +587,18 @@ public class SootMethod
 
             String tempString = t.toString();    
             
-            
-            DavaBody body = (DavaBody) getActiveBody();
-            IterableSet importSet = body.getImportList();
+            /*
+             * Added code to handle RuntimeExcepotion thrown by getActiveBody
+             */
+            if(hasActiveBody()){
+            	DavaBody body = (DavaBody) getActiveBody();
+            	IterableSet importSet = body.getImportList();
 
-            if(!importSet.contains(tempString)){
-            	body.addToImportList(tempString);
+            	if(!importSet.contains(tempString)){
+            		body.addToImportList(tempString);
+            	}
+            	tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
             }
-            tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
 									
 			buffer.append(tempString + " ");
 
@@ -617,13 +621,15 @@ public class SootMethod
 			 *  javax.swing.ImageIcon should be just ImageIcon if javax.swing is imported
 			 *  If not imported WHY NOT..import it!! 
 			 */
-            DavaBody body = (DavaBody) getActiveBody();
-            IterableSet importSet = body.getImportList();
+			if(hasActiveBody()){
+				DavaBody body = (DavaBody) getActiveBody();
+				IterableSet importSet = body.getImportList();
 
-            if(!importSet.contains(tempString)){
-            	body.addToImportList(tempString);
-            }
-            tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
+				if(!importSet.contains(tempString)){
+					body.addToImportList(tempString);
+				}
+				tempString = RemoveFullyQualifiedName.getReducedName(importSet,tempString,t);
+			}
 									
 			buffer.append(tempString + " ");
 			

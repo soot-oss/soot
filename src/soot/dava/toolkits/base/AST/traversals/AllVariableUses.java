@@ -53,76 +53,46 @@
 */
 
 
-
 package soot.dava.toolkits.base.AST.traversals;
 
 import soot.*;
 import java.util.*;
-import soot.util.*;
 import soot.jimple.*;
-import soot.dava.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
-//import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.AST.analysis.*;
-//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 
 
 
+/*
+ * Creates a mapping of locals and all places where they might be used
+ * creates a mapping of fields and all places where they might be used
+ *    Notice that the mapping is for SootField to uses not for FieldRef to uses
+ */
 public class AllVariableUses extends DepthFirstAdapter{
     ASTMethodNode methodNode;
-
-    //List declaredLocals;
-    //Chain declaredFields;
 
     HashMap localsToUses;
     HashMap fieldsToUses;
 
     public AllVariableUses(ASTMethodNode node){
-	super();
-	this.methodNode=node;
-	init();
+    	super();
+    	this.methodNode=node;
+    	init();
     }
 
     public AllVariableUses(boolean verbose, ASTMethodNode node){
-	super(verbose);
-	this.methodNode=node;
-	init();
+    	super(verbose);
+    	this.methodNode=node;
+    	init();
     }
 
     
 
     public void init(){
-
-	localsToUses = new HashMap();
-	fieldsToUses = new HashMap();
-
-	/*
-	 //get all local variables declared in this method
-	declaredLocals = methodNode.getDeclaredLocals();
-
-	//if no locals dont bother set to null
-	if(declaredLocals.size()==0)
-	    declaredLocals=null;
-	
-
-
-	//store all fields
-
-
-	DavaBody davaBody = methodNode.getDavaBody();
-	SootMethod sootMethod = davaBody.getMethod();
-	SootClass sootClass = sootMethod.getDeclaringClass();
-
-	declaredFields = sootClass.getFields();
-	
-	//if no fields dont bother set to null
-	if(declaredFields.size()==0)
-	    declaredFields=null;
-	*/
-
-       
+    	localsToUses = new HashMap();
+    	fieldsToUses = new HashMap();
     }
 
 
@@ -131,9 +101,8 @@ public class AllVariableUses extends DepthFirstAdapter{
      * Notice as things stand synchblocks cant have the use of a SootField
      */
     public void inASTSynchronizedBlockNode(ASTSynchronizedBlockNode node){
-	Local local = node.getLocal();
-
-	addLocalUse(local,node);
+    	Local local = node.getLocal();
+    	addLocalUse(local,node);
     }
 
 
@@ -448,19 +417,18 @@ public class AllVariableUses extends DepthFirstAdapter{
 
 
     private void addLocalUse(Local local, Object obj){
+    	Object temp = localsToUses.get(local);
+    	List uses;
+    	if(temp == null)
+    		uses = new ArrayList();
+    	else
+    		uses = (ArrayList)temp;
 
-	Object temp = localsToUses.get(local);
-	List uses;
-	if(temp == null)
-	    uses = new ArrayList();
-	else
-	    uses = (ArrayList)temp;
+    	//add local to useList
+    	uses.add(obj);
 
-	//add local to useList
-	uses.add(obj);
-
-	//update mapping
-	localsToUses.put(local,uses);
+    	//update mapping
+    	localsToUses.put(local,uses);
     }
 
 

@@ -2179,8 +2179,7 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nIf set, the renaming analyses implemented in Dava are applied to \neach method body being decompiled. The analyses use heuristics \nto choose potentially better names for local variables. (As of \nFebruary 14th 2006, work is still under progress on these \nanalyses (dava.toolkits.base.renamer). 					"
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" )
-                +padOpt( "remove-fully-qualified (false)", "Convert fully qualified names to smaller names" );
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return "Phase "+phaseName+":\n"+
@@ -2735,8 +2734,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db.renamer" ) )
             return ""
-                +"enabled "
-                +"remove-fully-qualified ";
+                +"enabled ";
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return ""
@@ -3286,8 +3284,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db.renamer" ) )
             return ""
-              +"enabled:false "
-              +"remove-fully-qualified:false ";
+              +"enabled:false ";
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return ""

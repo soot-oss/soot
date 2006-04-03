@@ -2773,12 +2773,6 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
-          public void setremove_fully_qualified(boolean arg) {
-            addArg("-p");
-            addArg("db.renamer");
-            addArg("remove-fully-qualified:"+(arg?"true":"false"));
-          }
-      
         }
     
         public Object createp_db_deobfuscate() {

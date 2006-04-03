@@ -308,7 +308,17 @@ public class ConstantFieldValueFinder {
 			Iterator methodIt = s.methodIterator();
 			while (methodIt.hasNext()) {
 				SootMethod m = (SootMethod) methodIt.next();
-				DavaBody body = (DavaBody)m.getActiveBody();
+				DavaBody body = null;
+				if(m.hasActiveBody()){
+					/*
+					 * Added to try to fix the no active body found exception
+					 */
+					body = (DavaBody)m.getActiveBody();
+				}
+				else{
+					continue;
+				}
+				
 				ASTNode AST = (ASTNode) body.getUnits().getFirst();
 				
 				//find all definitions in the program

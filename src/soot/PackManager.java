@@ -492,9 +492,20 @@ public class PackManager {
             		
             		SootMethod m = (SootMethod) methodIt.next();
             		//System.out.println("SootMethod:"+m.getName().toString());
-            		DavaBody body = (DavaBody)m.getActiveBody();
-            		//System.out.println("body"+body.toString());
-            		body.analyzeAST();
+            		
+            		/*
+            		 * 3rd April 2006
+            		 * Fixing RuntimeException caused when you
+            		 * retrieve an active body when one is not present
+            		 * 
+            		 */
+            		if(m.hasActiveBody()){
+            			DavaBody body = (DavaBody)m.getActiveBody();
+                		//System.out.println("body"+body.toString());
+                		body.analyzeAST();
+            		}
+            		else
+            			continue;
             	}
             } //if tansformations are enabled
         } //going through all classes
