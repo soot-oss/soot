@@ -108,7 +108,22 @@ public class InterProceduralAnalyses {
 		        
 		        // condition elimination      
 		        //EliminateConditions.DEBUG=true;
-		        AST.apply(new EliminateConditions((ASTMethodNode)AST));
+		        //TODO condition elimination causes bug
+		        /*
+		         * label 1:
+		         *   Code A
+		         *   if(true){
+		         *      break label 1;
+		         *    }
+		         *    Code B
+		         * }
+		         * 
+		         * If we remove the if statement then break label1
+		         * always happens and hence Code B is dead code!!!!
+		         * TODO: DAVA-TODO/constantPropagationBug
+		         * 
+		         */
+		        //AST.apply(new EliminateConditions((ASTMethodNode)AST));
 		        
 		        //local variable cleanup
 		        AST.apply(new LocalVariableCleaner((ASTMethodNode)AST));
