@@ -36,6 +36,7 @@ import soot.dava.internal.AST.ASTForLoopNode;
 import soot.dava.internal.AST.ASTIfElseNode;
 import soot.dava.internal.AST.ASTIfNode;
 import soot.dava.internal.AST.ASTLabeledBlockNode;
+import soot.dava.internal.AST.ASTLabeledNode;
 import soot.dava.internal.AST.ASTMethodNode;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTStatementSequenceNode;
@@ -398,22 +399,54 @@ public class EliminateConditions extends DepthFirstAdapter {
 
     		int index = bodyContainingNode.indexOf(temp);
     		if(temp instanceof ASTIfNode ){
-    			bodyContainingNode.remove(temp);
-    		
-    			if (returned.booleanValue()){
-    				//if statement and value was true put the body of if into the code
-    				bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
+    			
+    			/*
+    			 * Only going to removed if returned has value "false"
+    			 * Since removing might cause problems
+    			 *  
+    			 * if(true){
+    			 *    bla bla 
+    			 * 
+    			 * }
+    			 */
+    			if (!returned.booleanValue()){
+        			bodyContainingNode.remove(temp);
+        			return true;
     			}
-    			return true;
+    			return false;
     		}
     		else if(temp instanceof ASTIfElseNode){
     			bodyContainingNode.remove(temp);
     			if(returned.booleanValue()){
     				//true so the if branch's body has to be added
-    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(0));
+    				/*
+    				 * In this case the ifelse is converted to an if(true) with code A as body
+    				 * if(true){
+    				 *   code A
+    				 * }
+    				 * else{
+    				 *   code B
+    				 * 
+    				 * }
+    				 */
+    				bodyContainingNode.add(index, new ASTIfNode( ((ASTLabeledNode)temp).get_Label(), ((ASTControlFlowNode)temp).get_Condition(),   (List)temp.get_SubBodies().get(0)));
     			}
     			else{
-    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(1));
+    				//the condition is false hence the else branch should execute
+    				/*
+    				 * convert the ifelse to an if with true and the body as the else branch (code B)
+    				 * 
+    				 * if(false){
+    				 *   code A
+    				 * }
+    				 * else{
+    				 *   code B
+    				 *  }
+    				 */
+    				ASTCondition tempCondition = ((ASTControlFlowNode)temp).get_Condition();
+    				tempCondition.flip();
+    				bodyContainingNode.add(index, new ASTIfNode( ((ASTLabeledNode)temp).get_Label(), tempCondition,   (List)temp.get_SubBodies().get(1)));
+    				//bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(1));
     			}
     			return true;
     		}

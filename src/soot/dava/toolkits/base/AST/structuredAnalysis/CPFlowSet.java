@@ -244,9 +244,9 @@ public class CPFlowSet extends DavaFlowSet{
 		 *            THIS       OTHER          RESULT
 		 *          
 		 *      1    BOTTOM       BOTTOM        WHO CARES                              
-		 *      2    BOTTOM         C              C       (Laurie Convinced me) (FOR A LOCAL THOUGH FIELD GETS TOP)  
+		 *      2    BOTTOM         C              C       (Laurie Convinced me)  
 		 *      3    BOTTOM        TOP            TOP							
-		 *      4     C           BOTTOM           C        (Laurie Convinced me) FOR A LOCAL THOUGH FIELD GETS TOP)
+		 *      4     C           BOTTOM           C        (Laurie Convinced me)
 		 *      5     C1             C2            C if C1 == C2 else TOP 
 		 *      6     C            TOP            TOP 
 		 *      7    TOP          BOTTOM          TOP 
@@ -321,16 +321,29 @@ public class CPFlowSet extends DavaFlowSet{
 				//CASE 4 and 7 (cant be case 1 since element[i]s presence means its not bottom
 					
 				//add CLONE OF element[i] to working set unchanged
-				if(thisTuple.containsField()){
-					//add top
-					workingSet.add(new CPTuple(thisTuple.getSootClassName(),thisTuple.getVariable(),true));
-				}
-				else if(thisTuple.containsLocal()){
-					workingSet.add(thisTuple.clone());					
-				}
+				/*
+				 * TODO: why should a field be turned to TOP... a field is only a constant value field and hence 
+				 * should never be changed!!!!!
+				 * 
+				 * BUG FOUND DUE TO CHROMOSOME benchmark if(Debug.flag) was not being detected as it was being
+				 * set to top
+				 * 
+				 * April 3rd 2006
+				 */
+				/*		if(thisTuple.containsField()){
+				 //add top
+				  workingSet.add(new CPTuple(thisTuple.getSootClassName(),thisTuple.getVariable(),true));
+				  }
+				  else if(thisTuple.containsLocal()){
+				  */
+				
+				workingSet.add(thisTuple.clone());					
+				
+				
+				/*}
 				else
 					throw new DecompilationException("CPVariable is not local and not field");
-				
+				*/
 
 			}
 				
@@ -377,16 +390,22 @@ public class CPFlowSet extends DavaFlowSet{
 				 * 
 				 * if field then add top
 				 */
-				if(otherTuple.containsField()){
-					//add top
-					workingSet.add(new CPTuple(otherTuple.getSootClassName(),otherTuple.getVariable(),true));
-				}
-				else if(otherTuple.containsLocal()){
-					workingSet.add(otherTuple.clone());					
-				}
-				else
-					throw new DecompilationException("CPVariable is not local and not field");
-
+				
+				
+				/*
+				 * TODO why should a field be converted to TOP when all the fiels are only constant value fields
+				 *//*				if(otherTuple.containsField()){
+				 //add top
+				  workingSet.add(new CPTuple(otherTuple.getSootClassName(),otherTuple.getVariable(),true));
+				  }
+				  else if(otherTuple.containsLocal()){
+				  */
+				
+				workingSet.add(otherTuple.clone());						
+				/*		}
+				 else
+				 throw new DecompilationException("CPVariable is not local and not field");
+				 */
 			}					
 		}//end going through other elements	
 	}

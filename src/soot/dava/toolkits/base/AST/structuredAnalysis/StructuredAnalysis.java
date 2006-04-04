@@ -69,6 +69,7 @@ public abstract class StructuredAnalysis{
 	public static boolean DEBUG_IF = false;
 	public static boolean DEBUG_WHILE = false;
 	public static boolean DEBUG_STATEMENTS = false;
+	public static boolean DEBUG_TRY = false;
 	
     /**
      * Whenever an abrupt edge is encountered the flow set is
@@ -888,6 +889,10 @@ public abstract class StructuredAnalysis{
 
 
     public Object processASTTryNode(ASTTryNode node,Object input){
+    	
+		if(DEBUG_TRY)
+			System.out.println("TRY START is:"+input);
+
 	//System.out.println("SET beginning of tryBody is:"+input);
 	List tryBody = node.get_TryBody();
 	Object tryBodyOutput = process(tryBody,input);
@@ -898,6 +903,8 @@ public abstract class StructuredAnalysis{
 	  Which goes in depends on the type of analysis.
 	*/
 	Object inputCatch = newInitialFlow();
+	if(DEBUG_TRY)
+		System.out.println("TRY initialFLOW is:"+inputCatch);
 
        	List catchList = node.get_CatchList();
         Iterator it = catchList.iterator();
@@ -940,7 +947,12 @@ public abstract class StructuredAnalysis{
 	//handling breakLists of each of the catchOutputs
 	it = catchOutput.iterator();
 	while(it.hasNext()){
-	    outList.add(handleBreak(label,it.next(),node));
+		Object temp = handleBreak(label,it.next(),node);
+
+		if(DEBUG_TRY)
+			System.out.println("TRY handling breaks is:"+temp);
+
+		outList.add(temp);
 	}
 
 
@@ -951,6 +963,8 @@ public abstract class StructuredAnalysis{
 	    out = merge(out,it.next());
 	}
 
+	if(DEBUG_TRY)
+		System.out.println("TRY after merge outList is:"+out);
 
 
 	//System.out.println("After handling break"+out);
@@ -959,7 +973,9 @@ public abstract class StructuredAnalysis{
 	while(it.hasNext()){
 	    out = merge(out,it.next());
 	}
-	//System.out.println("SET end of complete trycatch is:"+out);
+	if(DEBUG_TRY)
+		System.out.println("TRY END RESULT is:"+out);
+	
 	return out;
     }
 

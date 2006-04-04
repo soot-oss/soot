@@ -260,7 +260,8 @@ public class CPApplication extends DepthFirstAdapter{
 	
 	
 	
-    public void inASTIfNode(ASTIfNode node){   	
+    public void inASTIfNode(ASTIfNode node){
+    	//System.out.println(node);
     	Object obj = cp.getBeforeSet(node);
     	
 	    if(obj == null )
@@ -270,6 +271,8 @@ public class CPApplication extends DepthFirstAdapter{
 	    
 	    //before set is a non null CPFlowSet
 	    CPFlowSet beforeSet = (CPFlowSet)obj;
+	    
+	    //System.out.println("Printing before Set for IF"+beforeSet.toString());
 	    
 		ASTCondition cond = node.get_Condition();
 		

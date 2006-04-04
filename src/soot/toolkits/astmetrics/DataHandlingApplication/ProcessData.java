@@ -397,8 +397,17 @@ public class ProcessData {
 					//at this point the hashmap contains aggregatedValue of all columns
 					tempIt = columns.iterator();
 					while(tempIt.hasNext()){
-						int val = ((Integer)aggregatedValues.get(tempIt.next())).intValue();
-						bench.print("&"+val);
+						Object temp = aggregatedValues.get(tempIt.next());
+						if(temp instanceof Integer){
+							int val = ((Integer)temp).intValue();
+							bench.print("&"+val);
+						}
+						else if(temp instanceof Double){
+							double val = ((Double)temp).doubleValue();
+							bench.print("&"+val);
+						}
+						else
+							throw new RuntimeException("Unknown type of object stored!!!");
 						if(tempIt.hasNext())
 							bench.print("   ");
 						else
@@ -499,19 +508,52 @@ public class ProcessData {
 					continue;
 				}
 				
-				Integer valSoFar = (Integer)tempObj;
-				
 				//We get to this point only if the metric is important
-					
+				
 				NodeList value = metricElement.getElementsByTagName("Value");
 				Element name1 = (Element)value.item(0);
-
+				
 				NodeList textFNList1 = name1.getChildNodes();
 				String valToPrint = ((Node)textFNList1.item(0)).getNodeValue().trim();
-				int temp = Integer.parseInt(valToPrint);
+
+				boolean notInt = false;
+				try{
+					int temp = Integer.parseInt(valToPrint);
+					if(tempObj instanceof Integer){
+						Integer valSoFar = (Integer)tempObj;				
+						aggregated.put(tempName, new Integer(valSoFar.intValue()+temp) );
+					}
+					else if(tempObj instanceof Double){
+						Double valSoFar = (Double)tempObj;
+						aggregated.put(tempName, new Double(valSoFar.doubleValue() + temp));
+					}
+					else
+						throw new RuntimeException("\n\nobject type not found");
+				}
+				catch(Exception e){
+					//temp was not an int
+					notInt = true;
+				}
 				
-				aggregated.put(tempName, new Integer(valSoFar.intValue()+temp) );
-				
+				if(notInt){
+					//probably a double
+					try{
+						double temp = Double.parseDouble(valToPrint);
+						if(tempObj instanceof Integer){
+							Integer valSoFar = (Integer)tempObj;				
+							aggregated.put(tempName, new Double(valSoFar.intValue()+temp) );
+						}
+						else if(tempObj instanceof Double){
+							Double valSoFar = (Double)tempObj;
+							aggregated.put(tempName, new Double(valSoFar.doubleValue() + temp));
+						}
+						else
+							throw new RuntimeException("\n\nobject type not found");								
+					}	
+					catch(Exception e){
+						throw new RuntimeException("\n\n not an integer not a double unhandled!!!!");
+					}
+				}
 			}//end of if metricNode is an element_Node	
 		}//end of for loop with s var
 	}
@@ -693,12 +735,14 @@ public class ProcessData {
 		out.println("\\end{tabular}");
 		out.println("\\caption{ ..."+tableCaption+"..... }");
 		out.println("\\end{table}");
+		//out.println("\\end{figure}");
 	}
 	
 	
 	
 	private static void printTexTableHeader(PrintWriter out, String rowHeading, Vector columns){
-		out.println("\\begin{table}");
+		//out.println("\\begin{figure}[hbtp]");
+		out.println("\\begin{table}[hbtp]");
 		out.print("\\begin{tabular}{");
 
 		for(int i =0;i<=columns.size();i++)
