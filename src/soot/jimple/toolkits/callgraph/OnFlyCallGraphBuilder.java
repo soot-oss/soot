@@ -249,6 +249,13 @@ public final class OnFlyCallGraphBuilder
                             addEdge( source, s, tgt, Kind.NEWINSTANCE );
                         }
                     } else {
+                        for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
+                            final SootClass cls = (SootClass) clsIt.next();
+                            if( cls.declaresMethod(sigInit) ) {
+                                addEdge( source, s, cls.getMethod(sigInit), Kind.NEWINSTANCE );
+                            }
+                        }
+                        
                         if( options.verbose() ) {
                             G.v().out.println( "Warning: Method "+source+
                                 " is reachable, and calls Class.newInstance;"+
@@ -277,6 +284,13 @@ public final class OnFlyCallGraphBuilder
                                 addEdge( source, s, tgt, Kind.CLINIT );
                             }
                         } else {
+                            for( Iterator clsIt = Scene.v().dynamicClasses().iterator(); clsIt.hasNext(); ) {
+                                final SootClass cls = (SootClass) clsIt.next();
+                                for( Iterator clinitIt = EntryPoints.v().clinitsOf(cls).iterator(); clinitIt.hasNext(); ) {
+                                    final SootMethod clinit = (SootMethod) clinitIt.next();
+                                    addEdge( source, s, clinit, Kind.CLINIT);
+                                }
+                            }
                             VirtualCallSite site = new VirtualCallSite( s, source, null, null, Kind.CLINIT );
                             List sites = (List) stringConstToSites.get(constant);
                             if (sites == null) {
@@ -389,6 +403,8 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void finalize()" );
     private final NumberedString sigExit = Scene.v().getSubSigNumberer().
         findOrAdd( "void exit()" );
+    private final NumberedString sigInit = Scene.v().getSubSigNumberer().
+        findOrAdd( "void <init>()" );
     private final NumberedString sigStart = Scene.v().getSubSigNumberer().
         findOrAdd( "void start()" );
     private final NumberedString sigRun = Scene.v().getSubSigNumberer().

@@ -763,6 +763,13 @@ public class PAG implements PointsToAnalysis {
                 initThis = initThis.getReplacement();
 
                 addEdge( newObject, initThis );
+                if (s instanceof AssignStmt) {
+                    AssignStmt as = (AssignStmt)s;
+                    Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
+                    asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
+                    asLHS = asLHS.getReplacement();
+                    addEdge( newObject, asLHS);
+                }
             } else {
                 throw new RuntimeException( "Unhandled edge "+e );
             }

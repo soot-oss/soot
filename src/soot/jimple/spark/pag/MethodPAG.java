@@ -84,16 +84,25 @@ public final class MethodPAG {
         if( src == null ) return;
         internalEdges.add( src );
         internalEdges.add( dst );
+        if (hasBeenAdded) {
+            pag.addEdge(src, dst);
+        }        
     }
     public void addInEdge( Node src, Node dst ) {
         if( src == null ) return;
         inEdges.add( src );
         inEdges.add( dst );
+        if (hasBeenAdded) {
+            pag.addEdge(src, dst);
+        }        
     }
     public void addOutEdge( Node src, Node dst ) {
         if( src == null ) return;
         outEdges.add( src );
         outEdges.add( dst );
+        if (hasBeenAdded) {
+            pag.addEdge(src, dst);
+        }        
     }
     private ChunkedQueue internalEdges = new ChunkedQueue();
     private ChunkedQueue inEdges = new ChunkedQueue();
@@ -191,22 +200,80 @@ public final class MethodPAG {
             addInEdge( pag().nodeFactory().caseMainThreadGroup(), nodeFactory.caseParm( 0 ) );
         }
 
-        if( method.getSubSignature().equals(
-            "java.lang.Class loadClass(java.lang.String)" ) ) {
+        if (method.getSignature().equals(
+                "<java.lang.ref.Finalizer: void <init>(java.lang.Object)>")) {
+            addInEdge( nodeFactory.caseThis(), pag().nodeFactory().caseFinalizeQueue());
+        }
+        if (method.getSignature().equals(
+                "<java.lang.ref.Finalizer: void runFinalizer()>")) {
+            addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseThis());
+        }
+
+        if (method.getSignature().equals(
+                "<java.lang.ref.Finalizer: void access$100(java.lang.Object)>")) {
+            addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseParm(0));
+        }
+
+        if (method.getSignature().equals(
+                "<java.lang.ClassLoader: void <init>()>")) {
+            addInEdge(pag.nodeFactory().caseDefaultClassLoader(), nodeFactory.caseThis());
+        }
+
+        if (method.getSignature().equals("<java.lang.Thread: void exit()>")) {
+            addInEdge(pag.nodeFactory().caseMainThread(), nodeFactory.caseThis());
+        }
+
+        if (method
+                .getSignature()
+                .equals(
+                        "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>")) {
+            addInEdge(pag.nodeFactory().caseThrow(), nodeFactory.caseParm(0));
+            addInEdge(pag.nodeFactory().casePrivilegedActionException(), nodeFactory.caseThis());
+        }
+
+        if (method.getNumberedSubSignature().equals(sigCanonicalize)) {
+            SootClass cl = method.getDeclaringClass();
+            while (true) {
+                if (cl.equals(Scene.v().getSootClass("java.io.FileSystem"))) {
+                    addInEdge(pag.nodeFactory().caseCanonicalPath(), nodeFactory.caseRet());
+                }
+                if (!cl.hasSuperclass())
+                    break;
+                cl = cl.getSuperclass();
+            }
+        }
+
+        boolean isImplicit = false;
+        for (Iterator implicitMethodIt = EntryPoints.v().implicit().iterator(); implicitMethodIt
+                .hasNext();) {
+            final SootMethod implicitMethod = (SootMethod) implicitMethodIt
+                    .next();
+            if (implicitMethod.getNumberedSubSignature().equals(
+                    method.getNumberedSubSignature())) {
+                isImplicit = true;
+            }
+        }
+        if (isImplicit) {
             SootClass c = method.getDeclaringClass();
-outer:      do {
-                while( !c.getName().equals( "java.lang.ClassLoader" ) ) {
-                    if( !c.hasSuperclass() ) {
+            outer: do {
+                while (!c.getName().equals("java.lang.ClassLoader")) {
+                    if (!c.hasSuperclass()) {
                         break outer;
                     }
                     c = c.getSuperclass();
                 }
-                addInEdge( pag().nodeFactory().caseDefaultClassLoader(),
-                        nodeFactory.caseThis() );
-                addInEdge( pag().nodeFactory().caseMainClassNameString(),
-                        nodeFactory.caseParm(0) );
-            } while( false );
+                if (method.getName().equals("<init>"))
+                    continue;
+                addInEdge(pag().nodeFactory().caseDefaultClassLoader(),
+                        nodeFactory.caseThis());
+                addInEdge(pag().nodeFactory().caseMainClassNameString(),
+                        nodeFactory.caseParm(0));
+            } while (false);
         }
     }
+
+
+    protected final NumberedString sigCanonicalize = Scene.v().getSubSigNumberer().
+    findOrAdd("java.lang.String canonicalize(java.lang.String)");
 }
 

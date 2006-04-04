@@ -66,6 +66,26 @@ public class GlobalNodeFactory {
 	pag.addEdge( threadGroupNode, threadGroupNodeLocal );
 	return threadGroupNodeLocal;
     }
+    final public Node casePrivilegedActionException() {
+        AllocNode a = pag.makeAllocNode( 
+            PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION,
+            AnySubType.v( RefType.v( "java.security.PrivilegedActionException" ) ), null );
+        VarNode v = pag.makeGlobalVarNode(
+            PointsToAnalysis.PRIVILEGED_ACTION_EXCEPTION_LOCAL,
+            RefType.v( "java.security.PrivilegedActionException" ) );
+        pag.addEdge( a, v );
+        return v;
+        }
+    final public Node caseCanonicalPath() {
+        AllocNode a = pag.makeAllocNode( 
+            PointsToAnalysis.CANONICAL_PATH,
+            RefType.v( "java.lang.String" ) , null);
+        VarNode v = pag.makeGlobalVarNode(
+            PointsToAnalysis.CANONICAL_PATH_LOCAL,
+            RefType.v( "java.lang.String" ) );
+        pag.addEdge( a, v );
+        return v;
+        }
     final public Node caseMainThread() {
 	AllocNode threadNode = pag.makeAllocNode( 
 		PointsToAnalysis.MAIN_THREAD_NODE,
@@ -75,6 +95,9 @@ public class GlobalNodeFactory {
 		RefType.v("java.lang.Thread") );
 	pag.addEdge( threadNode, threadNodeLocal );
 	return threadNodeLocal;
+    }
+    final public Node caseFinalizeQueue() {
+        return pag.makeGlobalVarNode(PointsToAnalysis.FINALIZE_QUEUE, RefType.v("java.lang.Object"));
     }
     final public Node caseArgv() {
 	AllocNode argv = pag.makeAllocNode( 
@@ -98,9 +121,12 @@ public class GlobalNodeFactory {
 
     final public Node caseNewInstance( VarNode cls ) {
         if( cls instanceof ContextVarNode ) cls = pag.findLocalVarNode( cls.getVariable() );
-        AllocNode site = pag.makeAllocNode( cls, AnySubType.v( RefType.v( "java.lang.Object" ) ), null );
-	VarNode local = pag.makeGlobalVarNode( site, RefType.v( "java.lang.Object" ) );
-        pag.addEdge( site, local );
+	VarNode local = pag.makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
+        for( Iterator clIt = Scene.v().dynamicClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = (SootClass) clIt.next();
+            AllocNode site = pag.makeAllocNode( new Pair(cls, cl), cl.getType(), null );
+            pag.addEdge( site, local );
+        }
         return local;
     }
 
