@@ -23,6 +23,7 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+/* 04.04.2006 mbatch  added handling of \r, as compilers throw error if unicode */
 
 package soot.util;
 
@@ -93,7 +94,7 @@ public class StringTools
             char ch = fromStringArray[i];
             {
               if (ch == '\\')
-                { toStringBuffer.append("\\\\"); continue;}
+                { toStringBuffer.append("\\\\"); continue; }
               if (ch == '\'')
                 { toStringBuffer.append("\\\'"); continue; }
               if (ch == '\"')
@@ -102,6 +103,9 @@ public class StringTools
                 { toStringBuffer.append("\\n"); continue; }
               if (ch == '\t')
                 { toStringBuffer.append("\\t"); continue; }
+              /* 04.04.2006 mbatch  added handling of \r, as compilers throw error if unicode */ 
+              if (ch == '\r')
+                { toStringBuffer.append("\\r"); continue; }
               else if((int) ch >= 32 && (int) ch <= 126)
                 {toStringBuffer.append(ch); continue;}
             }
