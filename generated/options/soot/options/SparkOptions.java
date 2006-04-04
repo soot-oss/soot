@@ -406,7 +406,6 @@ public class SparkOptions
     public static final int set_impl_hybrid = 3;
     public static final int set_impl_array = 4;
     public static final int set_impl_double = 5;
-    public static final int set_impl_shared = 6;
     /** Set Implementation --
     
      * Select points-to set implementation.
@@ -431,9 +430,6 @@ public class SparkOptions
         if( s.equalsIgnoreCase( "double" ) )
             return set_impl_double;
         
-        if( s.equalsIgnoreCase( "shared" ) )
-            return set_impl_shared;
-        
         throw new RuntimeException( "Invalid value "+s+" of phase option set-impl" );
     }
     
@@ -441,7 +437,6 @@ public class SparkOptions
     public static final int double_set_old_bit = 2;
     public static final int double_set_old_hybrid = 3;
     public static final int double_set_old_array = 4;
-    public static final int double_set_old_shared = 5;
     /** Double Set Old --
     
      * Select implementation of points-to set for old part of double 
@@ -466,9 +461,6 @@ public class SparkOptions
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_old_array;
         
-        if( s.equalsIgnoreCase( "shared" ) )
-            return double_set_old_shared;
-        
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-old" );
     }
     
@@ -476,7 +468,6 @@ public class SparkOptions
     public static final int double_set_new_bit = 2;
     public static final int double_set_new_hybrid = 3;
     public static final int double_set_new_array = 4;
-    public static final int double_set_new_shared = 5;
     /** Double Set New --
     
      * Select implementation of points-to set for new part of double 
@@ -500,9 +491,6 @@ public class SparkOptions
         
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_new_array;
-        
-        if( s.equalsIgnoreCase( "shared" ) )
-            return double_set_new_shared;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-new" );
     }

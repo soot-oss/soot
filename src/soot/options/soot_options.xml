@@ -1785,13 +1785,6 @@ reconsidered. This allows the propagation algorithms to be incremental,
 often speeding them up significantly.
 </long_desc>
 							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
-							</value>
                                                         <short_desc>Select points-to set implementation</short_desc>
 							<long_desc>
 Select an implementation of points-to sets for Spark to use.
@@ -1838,13 +1831,6 @@ points-to set in a sorted array. Set membership is tested using
 binary search, and set union and intersection are computed using
 an algorithm based on the merge step from merge sort.
 </long_desc>
-							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
 							</value>
                                                         <short_desc>Select implementation of points-to set for old part of double set</short_desc>
 							<long_desc>
@@ -1895,13 +1881,6 @@ points-to set in a sorted array. Set membership is tested using
 binary search, and set union and intersection are computed using
 an algorithm based on the merge step from merge sort.
 </long_desc>
-							</value>
-							<value>
-								<name>Shared bit-vector</name>
-								<alias>shared</alias>
-                                                                <short_desc>Shared bit-vector representation</short_desc>
-                                                                <long_desc>This is a bit-vector representation, in which duplicate bit-vectors are found and stored only once to save memory.</long_desc>
-
 							</value>
                                                         <short_desc>Select implementation of points-to set for new part of double set</short_desc>
 							<long_desc>

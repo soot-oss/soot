@@ -53,9 +53,6 @@ public class PAG implements PointsToAnalysis {
             case SparkOptions.set_impl_hybrid:
                 setFactory = HybridPointsToSet.getFactory();
                 break;
-            case SparkOptions.set_impl_shared:
-                setFactory = SharedPointsToSet.getFactory();
-                break;
             case SparkOptions.set_impl_array:
                 setFactory = SortedArraySet.getFactory();
                 break;
@@ -72,9 +69,6 @@ public class PAG implements PointsToAnalysis {
                     case SparkOptions.double_set_old_hybrid:
                         oldF = HybridPointsToSet.getFactory();
                         break;
-                    case SparkOptions.double_set_old_shared:
-                        oldF = SharedPointsToSet.getFactory();
-                        break;
                     case SparkOptions.double_set_old_array:
                         oldF = SortedArraySet.getFactory();
                         break;
@@ -90,9 +84,6 @@ public class PAG implements PointsToAnalysis {
                         break;
                     case SparkOptions.double_set_new_hybrid:
                         newF = HybridPointsToSet.getFactory();
-                        break;
-                    case SparkOptions.double_set_new_shared:
-                        newF = SharedPointsToSet.getFactory();
                         break;
                     case SparkOptions.double_set_new_array:
                         newF = SortedArraySet.getFactory();

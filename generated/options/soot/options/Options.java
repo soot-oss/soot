@@ -1536,8 +1536,6 @@ public class Options extends OptionsBase {
                 
                 +padVal( "double (default)", "Double set representation for incremental propagation" )
                 
-                +padVal( "shared", "Shared bit-vector representation" )
-                
                 +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
                 
@@ -1547,8 +1545,6 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
-                +padVal( "shared", "Shared bit-vector representation" )
-                
                 +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
                 
@@ -1557,8 +1553,6 @@ public class Options extends OptionsBase {
                 +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
                 
                 +padVal( "array", "Sorted array representation" )
-                
-                +padVal( "shared", "Shared bit-vector representation" )
                 
                 +padOpt( "dump-html (false)", "Dump pointer assignment graph to HTML for debugging" )
                 +padOpt( "dump-pag (false)", "Dump pointer assignment graph for other solvers" )
