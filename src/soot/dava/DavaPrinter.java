@@ -66,6 +66,10 @@ public class DavaPrinter {
     }
 
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
+      
+      if (Options.v().verbose())
+        System.out.println("Printing "+body.getMethod().getName());
+      
         Chain units = ((DavaBody) body).getUnits();
 
         if (units.size() != 1) {
