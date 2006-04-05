@@ -134,6 +134,12 @@ public class PatchingChain extends AbstractCollection implements Chain
         ((Unit) point).redirectJumpsToThisTo((Unit) toInsert);
         innerChain.insertBefore(toInsert, point);
     }
+    
+    /** Inserts <code>toInsert</code> in the Chain before <code>point</code> WITHOUT redirecting jumps. */
+    public void insertBeforeNoRedirect(Object toInsert, Object point)
+    {
+        innerChain.insertBefore(toInsert, point);
+    }
 
     /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
     public boolean follows(Object a, Object b)
