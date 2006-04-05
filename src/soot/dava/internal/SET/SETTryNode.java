@@ -17,6 +17,11 @@
  * Boston, MA 02111-1307, USA.
  */
 
+/* 04.04.2006	mbatch		if an implicit try due to a finally block,
+ * 							make sure to get the exception identifier
+ * 							from the goto target (it's a different block)
+ */
+
 package soot.dava.internal.SET;
 
 import soot.*;
@@ -125,6 +130,17 @@ public class SETTryNode extends SETNode
 	    while (bit.hasNext()) {
 		Stmt s = ((AugmentedStmt) bit.next()).get_Stmt();
 
+		/* 04.04.2006	mbatch		if an implicit try due to a finally block,
+		 * 							make sure to get the exception identifier
+		 * 							from the goto target (it's a different block)
+		 */
+		
+		// TODO: HOW the heck do you handle finallys with NO finally? Semantics are 
+		//			technically incorrect here
+		if (s instanceof GotoStmt) 
+		  s = (Stmt)((GotoStmt)s).getTarget();
+		/* 04.04.2006	mbatch end */
+		
 		if (s instanceof IdentityStmt) {
 		    IdentityStmt ids = (IdentityStmt) s;
 		    
@@ -136,7 +152,7 @@ public class SETTryNode extends SETNode
 			paramMap.put( astBody, leftOp);
 			break;
 		    }
-		}
+		} 
 	    }
 	}
 
