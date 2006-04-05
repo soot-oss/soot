@@ -398,6 +398,11 @@ public class JasminClass extends AbstractJasminClass
             { 
                 emit("goto " + unitToLabel.get(i.getTarget()));
             }
+            
+            public void caseJSRInst(JSRInst i)
+            { 
+                emit("jsr " + unitToLabel.get(i.getTarget()));
+            }
 
             public void casePushInst(PushInst i)
             {
