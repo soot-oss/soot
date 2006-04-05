@@ -16,6 +16,11 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+ 	        	
+/* 04.04.2006 mbatch	if there is a $ in the name,
+ *						we need to check if it's a real file, 
+ * 						not just inner class								
+ */
 
 package soot;
 import java.io.*;
@@ -34,11 +39,32 @@ public class JavaClassProvider implements ClassProvider
             return new JavaClassSource(className);
         }
         else {
+        	/* 04.04.2006 mbatch	if there is a $ in the name,
+			 *						we need to check if it's a real file, 
+			 * 						not just inner class								
+			 */
+          	boolean checkAgain = className.indexOf('$') >= 0;
+          	
             String javaClassName = SourceLocator.v().getSourceForClass(className);
             String fileName = javaClassName.replace('.', '/') + ".java";
             SourceLocator.FoundFile file = 
                 SourceLocator.v().lookupInClassPath(fileName);
-            if( file == null ) return null;
+
+            /* 04.04.2006 mbatch	if inner class not found,
+		     *						check if it's a real file							
+			 */
+            if( file == null) {
+            
+              if (checkAgain) {
+                fileName = className.replace('.', '/') + ".java";
+                file = SourceLocator.v().lookupInClassPath(fileName);
+              }
+            }
+            /* 04.04.2006 mbatch	end */
+
+            if (file == null)
+            	return null;         
+            
             if( file.file == null ) {
                 throw new RuntimeException( "Class "+className+" was found in a .jar, but Polyglot doesn't support reading source files out of a .jar" );
             }
@@ -46,4 +72,3 @@ public class JavaClassProvider implements ClassProvider
         }
     }
 }
-
