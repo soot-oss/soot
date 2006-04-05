@@ -471,7 +471,7 @@ public class Hierarchy
     // Questions about method invocation.
 
     /** Returns true if the method m is visible from code in the class from. */
-    private boolean isVisible( SootClass from, SootMethod m ) {
+    public boolean isVisible( SootClass from, SootMethod m ) {
         from.checkLevel(SootClass.HIERARCHY);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         if( m.isPublic() ) return true;
