@@ -44,7 +44,7 @@ public class RefType extends RefLikeType implements Comparable
     public static RefType v() { return G.v().soot_RefType(); }
 
     /** the class name that parametrizes this RefType */
-    private final String className;
+    private String className;
     public String getClassName() { return className; }
     private SootClass sootClass;
     private AnySubType anySubType;
@@ -101,6 +101,11 @@ public class RefType extends RefLikeType implements Comparable
 
     public boolean hasSootClass() {
         return sootClass != null;
+    }
+    
+    public void setClassName( String className )
+    {
+        this.className = className;
     }
 
      /** 
