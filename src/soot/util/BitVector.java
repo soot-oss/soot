@@ -316,7 +316,7 @@ public class BitVector
         long[] retbits = ret.bits;
         long[] bits1 = set1.bits;
         long[] bits2 = set2.bits;
-        min <<= 6;
+        min >>= 6;
         for( int i = 0; i < min; i++ ) {
             retbits[i] = bits1[i] & bits2[i];
         }
@@ -335,8 +335,8 @@ public class BitVector
         long[] retbits = ret.bits;
         long[] bits1 = set1.bits;
         long[] bits2 = set2.bits;
-        min <<= 6;
-        max <<= 6;
+        min >>= 6;
+        max >>= 6;
         for( int i = 0; i < min; i++ ) {
             retbits[i] = bits1[i] | bits2[i];
         }
