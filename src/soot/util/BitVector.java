@@ -32,6 +32,14 @@ public class BitVector
     public BitVector() {
         this(64);
     }
+    
+    /**Copy constructor*/
+    //Added by Adam Richard.  More efficient than clone(), and easier to extend
+    public BitVector(BitVector other)
+    {
+        bits = new long[other.bits.length];
+        System.arraycopy( other.bits, 0, bits, 0, other.bits.length );
+    }
     public BitVector( int numBits ) {
         int lastIndex = indexOf( numBits-1 );
         bits = new long[lastIndex+1];
