@@ -39,6 +39,7 @@ public interface InstSwitch extends Switch
     public void caseReturnInst(ReturnInst i);
     public void caseNopInst(NopInst i);
     public void caseGotoInst(GotoInst i);
+    public void caseJSRInst(JSRInst i);
     public void casePushInst(PushInst i);
     public void casePopInst(PopInst i);
     public void caseIdentityInst(IdentityInst i);
