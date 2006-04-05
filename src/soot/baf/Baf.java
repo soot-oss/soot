@@ -101,6 +101,11 @@ public class Baf
     {
         return new BGotoInst(unit);
     }
+    
+    public JSRInst newJSRInst(Unit unit)
+    {
+      	return new BJSRInst(unit);
+    }
 
     public PlaceholderInst newPlaceholderInst(Unit source)
     {
