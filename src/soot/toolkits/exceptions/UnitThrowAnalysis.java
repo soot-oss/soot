@@ -143,6 +143,9 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	public void caseGotoInst(GotoInst i) {
 	}
 
+	public void caseJSRInst(JSRInst i) {
+	}
+	
 	public void casePushInst(PushInst i) {
 	}
 
