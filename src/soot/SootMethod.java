@@ -42,7 +42,7 @@ public class SootMethod
     implements ClassMember, Numberable, MethodOrMethodContext {
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
-
+    public static boolean DEBUG=false;
     /** Name of the current method. */
     String name;
 
@@ -144,10 +144,17 @@ public class SootMethod
         if (exceptions == null && !thrownExceptions.isEmpty()) {
             exceptions = new ArrayList();
             this.exceptions.addAll(thrownExceptions);
+            /*DEBUG=true;
+            if(DEBUG)
+            	System.out.println("Added thrown exceptions"+thrownExceptions);
+            DEBUG=false;
+            */
         }
         Scene.v().getMethodNumberer().add(this);
         subsignature =
             Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+        
+        
     }
 
     /** Returns the name of this method. */
@@ -360,6 +367,9 @@ public class SootMethod
     }
     /** Adds the given exception to the list of exceptions thrown by this method. */
     public void addException(SootClass e) {
+    	if(DEBUG)
+    		System.out.println("Adding exception "+e);
+    	
         if (exceptions == null)
             exceptions = new ArrayList();
         else if (exceptions.contains(e))
@@ -371,6 +381,9 @@ public class SootMethod
 
     /** Removes the given exception from the list of exceptions thrown by this method. */
     public void removeException(SootClass e) {
+    	if(DEBUG)
+    		System.out.println("Removing exception "+e);
+
         if (exceptions == null)
             exceptions = new ArrayList();
 

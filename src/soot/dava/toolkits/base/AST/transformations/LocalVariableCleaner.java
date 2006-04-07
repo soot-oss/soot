@@ -144,7 +144,8 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 					System.out.println("Locals are:"+body.getLocals());
 				}			
 				Chain localChain = body.getLocals();
-				localChain.remove(removeLocal);
+				if(removeLocal != null && localChain != null)
+					localChain.remove(removeLocal);
 			}
 			else
 				throw new DecompilationException("found AST which is not a methodNode");

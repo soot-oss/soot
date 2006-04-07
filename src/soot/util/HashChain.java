@@ -215,11 +215,20 @@ public class HashChain extends AbstractCollection
                                        + " a null object from a Chain!");
 
         stateCount++;
-        Link link = (Link) map.get(item);
+        /*
+         * 4th April 2005 Nomair A Naeem
+         * map.get(obj) can return null
+         * only return true if this is non null
+         * else return false
+         */
+        if(map.get(item) != null){
+        	Link link = (Link) map.get(item);
         
-        link.unlinkSelf();
-        map.remove(item);
-        return true;
+        	link.unlinkSelf();
+        	map.remove(item);
+        	return true;
+        }
+        return false;
     }
 
     public void addFirst(Object item)

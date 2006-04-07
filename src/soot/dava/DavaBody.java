@@ -295,12 +295,15 @@ public class DavaBody extends Body {
 	/**
 	 * Constructs a DavaBody from the given Body.
 	 */
-
 	DavaBody(Body body) {
 		this(body.getMethod());
 		debug("DavaBody","creating DavaBody for"+body.getMethod().toString());
 		Dava.v().log("\nstart method " + body.getMethod().toString());
-
+		
+		if(DEBUG){
+			if(body.getMethod().getExceptions().size()!=0)
+				debug("DavaBody","printing NON EMPTY exception list for "+body.getMethod().toString()+ " " + body.getMethod().getExceptions().toString());
+		}
 		// copy and "convert" the grimp representation
 		//DEBUG=true;
 		copy_Body(body);
@@ -404,8 +407,9 @@ public class DavaBody extends Body {
 		 * apply structural flow analyses now
 		 *
 		 */
+		debug("analyzeAST","Applying structure analysis"+this.getMethod().toString());
 		applyStructuralAnalyses(AST);
-
+		debug("analyzeAST","Applying structure analysis DONE"+this.getMethod().toString());
 		/*
 		 * Renamer
 		 * March 28th Nomair A. Naeem.  Since there is a chance
@@ -571,10 +575,12 @@ public class DavaBody extends Body {
         //System.out.println("Force is"+force);
 
         if(force){
+    		debug("applyASTAnalyses","before FinalFieldDefinition"+G.v().ASTTransformations_modified);
     		new FinalFieldDefinition((ASTMethodNode) AST);
+    		debug("applyASTAnalyses","after FinalFieldDefinition"+G.v().ASTTransformations_modified);
         }
 
-
+		debug("applyASTAnalyses","end applyASTAnlayses"+G.v().ASTTransformations_modified);
 	}
 
 	private void applyStructuralAnalyses(ASTNode AST) {
@@ -594,12 +600,15 @@ public class DavaBody extends Body {
 		 */
 
 		//CopyPropagation.DEBUG=true;
+		debug("applyStructureAnalyses","invoking copy propagation");
 		CopyPropagation prop = new CopyPropagation(AST);
 		AST.apply(prop);
-
+		debug("applyStructureAnalyses","invoking copy propagation DONE");
 		//copy propagation should be followed by LocalVariableCleaner to get max effect
 		//ASTUsesAndDefs.DEBUG=true;
+		debug("applyStructureAnalyses","Local Variable Cleaner started");
 		AST.apply(new LocalVariableCleaner(AST));
+		debug("applyStructureAnalyses","Local Variable Cleaner DONE");
 
 	}
 

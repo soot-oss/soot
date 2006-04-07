@@ -107,9 +107,18 @@ public class CopyPropagation extends DepthFirstAdapter {
 
 	private void setup() {
 		//create the uD and dU chains
+		if (DEBUG) 
+			System.out.println("computing usesAnd Defs");
 		useDefs = new ASTUsesAndDefs(AST);
 		AST.apply(useDefs);
 
+		
+		
+		if (DEBUG) 
+			System.out.println("computing usesAnd Defs....done");
+
+		
+		
 		//apply the reaching copies Structural flow Analysis
 		reachingCopies = new ReachingCopies(AST);
 

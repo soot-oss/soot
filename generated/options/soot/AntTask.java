@@ -2743,6 +2743,12 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setsource_is_javac(boolean arg) {
+            addArg("-p");
+            addArg("db");
+            addArg("source_is_javac:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_db_transformations() {

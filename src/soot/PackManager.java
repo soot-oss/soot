@@ -69,6 +69,7 @@ import soot.toolkits.graph.interaction.*;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
+	public static boolean DEBUG=false;
     public PackManager( Singletons.Global g ) { PhaseOptions.v().setPackManager(this); init(); }
 
     public boolean onlyStandardPacks() { return onlyStandardPacks; }
@@ -385,7 +386,32 @@ public class PackManager {
     /* preprocess classes for DAVA */
     private void preProcessDAVA() {
         if (Options.v().output_format() == Options.output_format_dava) {
-            ThrowFinder.v().find();
+
+            Map options = PhaseOptions.v().getPhaseOptions("db");
+            boolean isSourceJavac = PhaseOptions.getBoolean(options, "source_is_javac"); 
+        	if(!isSourceJavac){
+        		/*
+        		 * It turns out that the exception attributes of a method i.e. those exceptions that
+        		 * a method can throw are only checked by the Java compiler and not the JVM
+        		 * 
+        		 * Javac does place this information into the attributes but other compilers dont
+        		 * hence if the source is not javac then we have to do this fancy analysis
+        		 * to find all the potential exceptions that might get thrown
+        		 * 
+        		 * BY DEFAULT the option javac of db is set to true so we assume that the source is javac
+        		 * 
+        		 * See ThrowFinder for more details
+        		 */
+        		if(DEBUG)
+        			System.out.println("Source is not Javac hence invoking ThrowFinder");
+        			
+        		ThrowFinder.v().find();
+        	}
+        	else{
+        		if(DEBUG)
+        			System.out.println("Source is javac hence we dont need to invoke ThrowFinder");
+        	}
+
             PackageNamer.v().fixNames();
 
             G.v().out.println();
@@ -574,7 +600,7 @@ public class PackManager {
            	
 
             G.v().out.print("Generating " + fileName + "... ");
- 
+            
             G.v().out.flush();
 
             DavaPrinter.v().printTo(s, writerOut);
@@ -675,7 +701,12 @@ public class PackManager {
         Iterator methodIt = c.methodIterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
-
+            
+            if(DEBUG){
+            	if(m.getExceptions().size()!=0)
+            		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
+            }
+            
             if (!m.isConcrete()) continue;
 
             if (produceShimple || wholeShimple) {
@@ -723,8 +754,7 @@ public class PackManager {
                 m.setActiveBody(Grimp.v().newBody(m.getActiveBody(), "gb"));
                 PackManager.v().getPack("gop").apply(m.getActiveBody());
             } else if (produceBaf) {
-                m.setActiveBody(Baf.v().newBody
-                                ((JimpleBody) m.getActiveBody()));
+                m.setActiveBody(Baf.v().newBody((JimpleBody) m.getActiveBody()));
                 PackManager.v().getPack("bop").apply(m.getActiveBody());
                 PackManager.v().getPack("tag").apply(m.getActiveBody());
             }
@@ -885,6 +915,12 @@ public class PackManager {
             Iterator methodIt = cl.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod m = (SootMethod) methodIt.next();
+                if(DEBUG && cl.isApplicationClass()){                	
+                	if(m.getExceptions().size()!=0)
+                		System.out.println("PackManager printing out from within retrieveAllBodies exceptions for method "+m.toString()+" " + m.getExceptions().toString());
+                	else
+                		System.out.println("in retrieveAllBodies......Currently Method "+ m.toString() +" has no exceptions ");
+                }
 
                 if( m.isConcrete() ) {
                     m.retrieveActiveBody();

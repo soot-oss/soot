@@ -23,8 +23,40 @@ import soot.*;
 import soot.util.*;
 import java.util.*;
 import soot.jimple.*;
+import soot.jimple.internal.JExitMonitorStmt;
 import soot.jimple.toolkits.callgraph.*;
 
+/*
+ * Nomair A. Naeem 7th April 2006
+ * This class detects and propagates whether the signature of a method should have some throws Exception constructs.
+ * 
+ * The reason we need to do this is since the JVM does not force all compilers to store throws information
+ * as attributes (javac does it ) but other compilers are not forced to do it
+ * 
+ * Hence if we are coming from javac we dont need to perform this analysis since we already have the information
+ * if we are not coming from javac then we need to perform this analysis to say what the checked exceptions are for this method.
+ * 
+ * Alls good until u try to decompile code like this
+ *   try{
+ *    synchronized(bla){
+ *      bla
+ *      bla
+ *    } 
+ *   }catch(InterruptedException e){
+ *       bla
+ *   }
+ *   
+ *   If you create bytecode for this you will notice that because exitmointer has to be invoked if an exception occurs
+ *   this is done by catching a Throwable(all possible exceptions) exiting the monitor and rethrowing the exception.
+ *   
+ *   Now that is alright the problem occurs because InterruptedExceptions will be caught but since we are throwing the 
+ *   general Throwable exception this algorithm says that the method should state in its signature that it throws
+ *   java.lang,Throwable.
+ *   CHANGE LOG: current fix is to hack into the algo find the place where we are about to add the java.lang.Throwable
+ *   and if it is near an exit monitor we know dava is going to convert this to a synch and hence not add this exception!!
+ * 
+ * 
+ */
 public class ThrowFinder
 {
     public ThrowFinder( Singletons.Global g ) {}
@@ -33,6 +65,8 @@ public class ThrowFinder
     private HashSet registeredMethods;
     private HashMap protectionSet;
 
+    public static boolean DEBUG=false;
+    
     public void find()
     {
 	G.v().out.print( "Verifying exception handling.. ");
@@ -43,7 +77,8 @@ public class ThrowFinder
         CallGraph cg;
         if( Scene.v().hasCallGraph() ) {
             cg = Scene.v().getCallGraph();
-        } else {
+        } 
+        else {
             new CallGraphBuilder().build();
             cg = Scene.v().getCallGraph();
             Scene.v().releaseCallGraph();
@@ -138,16 +173,58 @@ public class ThrowFinder
 		    HashSet handled = (HashSet) protectionSet.get(u);
 		    
 		    if (u instanceof ThrowStmt) {
-			Type t = ((ThrowStmt) u).getOp().getType();
+		    	Type t = ((ThrowStmt) u).getOp().getType();
 			
-			if (t instanceof RefType) {
-			    SootClass c = ((RefType) t).getSootClass();
+		    	if (t instanceof RefType) {
+		    		SootClass c = ((RefType) t).getSootClass();
 			    
-			    if ((handled_Exception( handled, c) == false) && (exceptionSet.contains( c) == false)) {
-				exceptionSet.add( c);
-				changed = true;
-			    }
-			}
+		    		if ((handled_Exception( handled, c) == false) && (exceptionSet.contains( c) == false)) {
+		    			/*
+		    			 * Nomair A Naeem 7th April
+		    			 * HACK TRYING TO MATCH PATTERN 
+		    			 *  label0:
+		    			        r3 = r0;
+		    			        entermonitor r0;
+ 		      			     label1:
+ 		      			      	r1.up();
+ 		      			      	r0.wait();
+ 		      			      	exitmonitor r3;
+		    			 	label2:
+		    			 		goto label6;
+							label3:
+								$r5 := @caughtexception;
+						 	label4:
+						 		r4 = $r5;
+						 		exitmonitor r3;
+							label5:
+								throw r4;    HERE IS THE THROW WE JUST DETECTED LOOK and see if the previous unit is an exitmonitor
+                      	 	label6:
+                      	 		goto label8;
+							label7:
+								$r6 := @caughtexception;
+								r7 = $r6;
+							label8:
+								r1.down();
+								return;
+        				 catch java.lang.Throwable from label1 to label2 with label3;
+        				 catch java.lang.Throwable from label4 to label5 with label3;
+        				 catch java.lang.InterruptedException from label0 to label6 with label7;
+		    			 * 
+		    			 */
+		    			PatchingChain list = m.retrieveActiveBody().getUnits();
+		    			Unit pred = (Unit)list.getPredOf(u);
+		    			if(! (pred instanceof JExitMonitorStmt)){
+		    				exceptionSet.add( c);
+			    			changed = true;
+			    			if(DEBUG)
+			    				System.out.println("Added exception which is explicitly thrown"+c.getName());
+		    			}
+		    			else{
+		    				if(DEBUG)
+		    					System.out.println("Found monitor exit"+pred+" hence not adding");
+		    			}
+		    		}
+		    	}
 		    }
 		}
 
@@ -185,67 +262,69 @@ public class ThrowFinder
 	// Perform worklist algorithm to propegate the throws information.
 	while (worklist.isEmpty() == false) {
 
-	    SootMethod m = (SootMethod) worklist.getFirst();
+		SootMethod m = (SootMethod) worklist.getFirst();
 	    worklist.removeFirst();
 
 	    IterableSet agreementMethods = (IterableSet) agreementMethodSet.get( m);
 	    if (agreementMethods != null) {
-		Iterator amit = agreementMethods.iterator();
-		while (amit.hasNext()) {
-		    SootMethod otherMethod = (SootMethod) amit.next();
+	    	Iterator amit = agreementMethods.iterator();
+	    	while (amit.hasNext()) {
+	    		SootMethod otherMethod = (SootMethod) amit.next();
+	    		
+	    		List otherExceptionsList = otherMethod.getExceptions();
+	    		IterableSet otherExceptionSet = new IterableSet( otherExceptionsList);
+	    		boolean changed = false;		    
 
-		    List otherExceptionsList = otherMethod.getExceptions();
-		    IterableSet otherExceptionSet = new IterableSet( otherExceptionsList);
-		    boolean changed = false;		    
+	    		Iterator exceptionIt = m.getExceptions().iterator();
+	    		while (exceptionIt.hasNext()) {
+	    			SootClass exception = (SootClass) exceptionIt.next();
 
-		    Iterator exceptionIt = m.getExceptions().iterator();
-		    while (exceptionIt.hasNext()) {
-			SootClass exception = (SootClass) exceptionIt.next();
+	    			if (otherExceptionSet.contains( exception) == false) {
+	    				otherExceptionSet.add( exception);
+	    				changed = true;
+	    			}
+	    		}
 
-			if (otherExceptionSet.contains( exception) == false) {
-			    otherExceptionSet.add( exception);
-			    changed = true;
-			}
-		    }
+	    		if (changed) {
+	    			otherExceptionsList.clear();
+	    			otherExceptionsList.addAll( otherExceptionSet);
 
-		    if (changed) {
-			otherExceptionsList.clear();
-			otherExceptionsList.addAll( otherExceptionSet);
-
-			if (worklist.contains( otherMethod) == false)
-			    worklist.addLast( otherMethod);
-		    }
-		}
+	    			if (worklist.contains( otherMethod) == false)
+	    				worklist.addLast( otherMethod);
+	    		}
+	    	}
 	    }
 
-            Iterator it = cg.edgesOutOf(m);
-            while (it.hasNext()) {
-                Edge e = (Edge) it.next();
-		Stmt callingSite = e.srcStmt();
-                if( callingSite == null ) continue;
-		SootMethod callingMethod = e.src();
-		List exceptionList = callingMethod.getExceptions();
-		IterableSet exceptionSet = new IterableSet( exceptionList);
-		HashSet handled = (HashSet) protectionSet.get( callingSite);
-		boolean changed = false;
+	    Iterator it = cg.edgesOutOf(m);
+	    while (it.hasNext()) {
+	    	Edge e = (Edge) it.next();
+	    	Stmt callingSite = e.srcStmt();
+	    	if( callingSite == null ) 
+	    		continue;
+	    	
+	    	SootMethod callingMethod = e.src();
+	    	List exceptionList = callingMethod.getExceptions();
+	    	IterableSet exceptionSet = new IterableSet( exceptionList);
+	    	HashSet handled = (HashSet) protectionSet.get( callingSite);
+	    	boolean changed = false;
 
-		Iterator exceptionIt = m.getExceptions().iterator();
-		while (exceptionIt.hasNext()) {
-		    SootClass exception = (SootClass) exceptionIt.next();
+	    	Iterator exceptionIt = m.getExceptions().iterator();
+	    	while (exceptionIt.hasNext()) {
+	    		SootClass exception = (SootClass) exceptionIt.next();
 
-		    if ((handled_Exception( handled, exception) == false) && (exceptionSet.contains( exception) == false)) {
-			exceptionSet.add( exception);
-			changed = true;
-		    }
-		}
+	    		if ((handled_Exception( handled, exception) == false) && (exceptionSet.contains( exception) == false)) {
+	    			exceptionSet.add( exception);
+	    			changed = true;
+	    		}
+	    	}
 		
-		if (changed) {
-		    exceptionList.clear();
-		    exceptionList.addAll( exceptionSet);
+	    	if (changed) {
+	    		exceptionList.clear();
+	    		exceptionList.addAll( exceptionSet);
 
-		    if (worklist.contains( callingMethod) == false)
-			worklist.addLast( callingMethod);
-		}
+	    		if (worklist.contains( callingMethod) == false)
+	    			worklist.addLast( callingMethod);
+	    	}
 	    }
 	}
 

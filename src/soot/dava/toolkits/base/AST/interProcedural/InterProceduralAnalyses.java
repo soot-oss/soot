@@ -52,12 +52,13 @@ public class InterProceduralAnalyses {
 	public static void applyInterProceduralAnalyses(){
 		Chain classes = Scene.v().getApplicationClasses();
 		
-		//System.out.println("\n\nInvoking redundantFielduseEliminator");
+		if(DEBUG)
+			System.out.println("\n\nInvoking redundantFielduseEliminator");
 		ConstantFieldValueFinder finder = new ConstantFieldValueFinder(classes);
 		
 		HashMap constantValueFields = finder.getFieldsWithConstantValues();
-		
-		//finder.printConstantValueFields();
+		if(DEBUG)		
+			finder.printConstantValueFields();
 		
 		/*
 		 * The code above this gathers interprocedural information

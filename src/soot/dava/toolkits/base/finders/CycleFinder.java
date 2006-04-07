@@ -1,5 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
+ * Copyright (C) 2006 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,7 +20,8 @@
 
 /*
  * CHANGE LOG:
- * 26-January-2007: Fixed Bug in Dava. Could not detect empty infinte loops.
+ * 26-January-2006: Fixed Bug in Dava. Could not detect empty infinte loops.
+ * 5-April -2006: Fixed bug in Fix_MultiEntryPoint read comment dated 5 th April 2005 
  */
 package soot.dava.toolkits.base.finders;
 
@@ -434,6 +436,20 @@ public class CycleFinder implements FactFinder
 	
 	Unit defaultTarget = (Unit) naturalEntryPoint.get_Stmt();
 	LinkedList targets = new LinkedList();
+	
+	/*
+	 * Nomair A Naeem, Micheal Batchelder
+	 * 5 th April 2005 
+	 * shouldnt send empty targets list to constructor of GTableSwitch since
+	 * then it just creates an empty array to hold the targets..
+	 * we intend to fill these in later using the setTarget method
+	 * 
+	 * hence the hack is to just send in null fully aware that they are going to be changed
+	 * to the target we want within the following while loop
+	 */
+	for(int i=0;i<entry_points.size();i++)
+		targets.add(null);
+	/* 5th April End code change */
 	
 	TableSwitchStmt tss = new GTableSwitchStmt( controlLocal, 0, entry_points.size() - 2, targets, defaultTarget);
 	AugmentedStmt dispatchStmt = new AugmentedStmt( tss);

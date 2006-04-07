@@ -4785,6 +4785,21 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
+				
+				
+				<boolopt>
+					<name>Source</name>
+
+					<alias>source_is_javac</alias>
+                    <default>true</default>
+					<short_desc/>
+					<long_desc>
+					check out soot.dava.toolkits.base.misc.ThrowFinder
+					In short we want to ensure that if there are throw exception info in the class file dava uses this info.					
+					</long_desc>
+				</boolopt>
+				
+				
 				<sub_phase>
 					<name>Transformations</name>
 					<alias>db.transformations</alias>

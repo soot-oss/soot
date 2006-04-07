@@ -70,7 +70,13 @@ public abstract class StructuredAnalysis{
 	public static boolean DEBUG_WHILE = false;
 	public static boolean DEBUG_STATEMENTS = false;
 	public static boolean DEBUG_TRY = false;
-	
+/*
+	public static boolean DEBUG = true;
+	public static boolean DEBUG_IF = true;
+	public static boolean DEBUG_WHILE = true;
+	public static boolean DEBUG_STATEMENTS = true;
+	public static boolean DEBUG_TRY = true;
+/*
     /**
      * Whenever an abrupt edge is encountered the flow set is
      * added into a the break or continue list and a NOPATH

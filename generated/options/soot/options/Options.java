@@ -2161,7 +2161,8 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. -p db (option \nname):(value) will be used to set all required values for Dava. \n"
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (true)", "" );
+                +padOpt( "enabled (true)", "" )
+                +padOpt( "source_is_javac (true)", "" );
     
         if( phaseName.equals( "db.transformations" ) )
             return "Phase "+phaseName+":\n"+
@@ -2720,7 +2721,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return ""
-                +"enabled ";
+                +"enabled "
+                +"source_is_javac ";
     
         if( phaseName.equals( "db.transformations" ) )
             return ""
@@ -3270,7 +3272,8 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return ""
-              +"enabled:true ";
+              +"enabled:true "
+              +"source_is_javac:true ";
     
         if( phaseName.equals( "db.transformations" ) )
             return ""
