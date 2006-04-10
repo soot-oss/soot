@@ -84,6 +84,7 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
 import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
+import soot.dava.toolkits.base.AST.transformations.SystemOutPrintlnCleaner;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
@@ -527,6 +528,11 @@ public class DavaBody extends Body {
 				
 				AST.apply(new ForLoopCreator());
 				debug("applyASTAnalyses","after ForLoopCreator"+G.v().ASTTransformations_modified);
+
+				
+				AST.apply(new SystemOutPrintlnCleaner());
+				debug("applyASTAnalyses","after SystemOutPrintlnCleaner"+G.v().ASTTransformations_modified);
+				
 
 				AST.apply(new UselessLabeledBlockRemover());
 				/*
