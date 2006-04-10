@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import soot.CompilationDeathException;
@@ -350,111 +351,151 @@ public class ProcessData {
 
 			bench = openWriteFile(newClassName);
 
-			printTexTableHeader(bench,"Benchmarks",columns);
-		}	
-		
-		
-	
-		
-		Iterator it = xmlFileList.iterator();
-		while(it.hasNext()){
-			String fileName = (String)it.next();
-
-			try{
-				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-
-				DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-				Document doc = docBuilder.parse (new File(fileName));
-				System.out.println("Gethering metric info from from xml file: "+fileName);
-				// normalize text representation
-				doc.getDocumentElement ().normalize ();
-
-				
-				if(aggregationMechanism == ProcessData.BENCHMARK){
-
-					/*
-					 * TODO:
-					 * so .tex file is already open with the header and all
-					 * writer is in field bench
-					 */
-					
-					//print the name of the xml file as the name of the benchmark
-					if(fileName.endsWith(".xml"))
-						bench.print(fileName.substring(0,fileName.length()-4));
-					else
-						bench.print(fileName);
-					
-					
-					HashMap aggregatedValues = new HashMap();
-					
-					Iterator tempIt = columns.iterator();
-					while(tempIt.hasNext()){
-						aggregatedValues.put(tempIt.next(),new Integer(0));
-					}
-
-					aggregateXMLFileMetrics(doc,aggregatedValues);
-					
-					//at this point the hashmap contains aggregatedValue of all columns
-					tempIt = columns.iterator();
-					while(tempIt.hasNext()){
-						Object temp = aggregatedValues.get(tempIt.next());
-						if(temp instanceof Integer){
-							int val = ((Integer)temp).intValue();
-							bench.print("&"+val);
-						}
-						else if(temp instanceof Double){
-							double val = ((Double)temp).doubleValue();
-							bench.print("&"+val);
-						}
-						else
-							throw new RuntimeException("Unknown type of object stored!!!");
-						if(tempIt.hasNext())
-							bench.print("   ");
-						else
-							bench.println("\\\\");
-					}
-					
-		    	
-		    	
-		    	
-
-				
-				
-				
+			/*
+			 * For benchmarks we want to print xml files dealing with same benchmark in one table
+			 * hence
+			 * fft-enabled.xml fft-disabled.xml should be in one table where as
+			 * matrix-enabled.xml matrix-disabled.xml should be in another table
+			 */
+			HashMap benchMarkToFiles = new HashMap();
+			Iterator it = xmlFileList.iterator();
+			while(it.hasNext()){
+				String fileName = (String)it.next();
+				if(fileName.indexOf('-') <0){
+					System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
+					return;
 				}
-				else if (aggregationMechanism == ProcessData.CLASS){
-					getClassMetrics(fileName,doc,columns);
+				String benchmark = fileName.substring(0,fileName.indexOf('-'));
+				Object temp = benchMarkToFiles.get(benchmark);
+				List tempList = null;
+				if(temp == null){
+					tempList = new ArrayList();
 				}
 				else{
-					System.out.println("Unknown aggregation Mechanism");
-					System.exit(1);
+					tempList = (ArrayList)temp;
 				}
-			}catch (SAXParseException err) {
-				System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
-				System.out.println(" " + err.getMessage ());
+				tempList.add(fileName);
+				benchMarkToFiles.put(benchmark,tempList);
 			}
-			catch (SAXException e) {
-				Exception x = e.getException ();
-				((x == null) ? e : x).printStackTrace ();
-			}
-			catch (Throwable t) {
-				t.printStackTrace ();
-			}
+			
+			
+			Iterator keys = benchMarkToFiles.keySet().iterator();
+			while(keys.hasNext()){
+				//each key gets its own table
+				String key = (String)keys.next();
+				
+				printTexTableHeader(bench,key,columns);				
+				
+				//go through each value which is an xml file
+				Object tempValue = benchMarkToFiles.get(key);
+				if(tempValue == null)
+					continue;
+				List files = (List)tempValue;
+				Iterator fileIt = files.iterator();
+				while(fileIt.hasNext()){
+					String fileName = (String)fileIt.next();
 
-		}
+					try{
+						DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 
-		if(aggregationMechanism == ProcessData.BENCHMARK){
-			printTexTableFooter(bench,"");
+						DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+						Document doc = docBuilder.parse (new File(fileName));
+						System.out.println("Gethering metric info from from xml file: "+fileName);
+						// normalize text representation
+		
+			
+						//print the name of the xml file as the name of the benchmark
+						if(fileName.endsWith(".xml"))
+							bench.print(fileName.substring(0,fileName.length()-4));
+						else
+							bench.print(fileName);
+			
+			
+						HashMap aggregatedValues = new HashMap();
+						
+						Iterator tempIt = columns.iterator();
+						while(tempIt.hasNext()){
+							aggregatedValues.put(tempIt.next(),new Integer(0));
+						}
+					
+						aggregateXMLFileMetrics(doc,aggregatedValues);
+			
+						//at this point the hashmap contains aggregatedValue of all columns
+						tempIt = columns.iterator();
+						while(tempIt.hasNext()){
+							Object temp = aggregatedValues.get(tempIt.next());
+							if(temp instanceof Integer){
+								int val = ((Integer)temp).intValue();
+								bench.print("&"+val);
+							}
+							else if(temp instanceof Double){
+								double val = ((Double)temp).doubleValue();
+								bench.print("&"+val);
+							}
+							else
+								throw new RuntimeException("Unknown type of object stored!!!");
+							if(tempIt.hasNext())
+								bench.print("   ");
+							else
+								bench.println("\\\\");
+						}
+					}catch (SAXParseException err) {
+						System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
+						System.out.println(" " + err.getMessage ());
+					}
+					catch (SAXException e) {
+						Exception x = e.getException ();
+						((x == null) ? e : x).printStackTrace ();
+					}
+					catch (Throwable t) {
+						t.printStackTrace ();
+					}
+				}//done with all files for this benchmark
+				
+				//print closing for the table for this benchmark
+				printTexTableFooter(bench,"");
+			}//done with all benchmarks
 			closeWriteFile(bench,newClassName);
-		}
-		
-		
 
-	
+
+		}
+		else{		
 		
 		
-		
-		
+			Iterator it = xmlFileList.iterator();
+			while(it.hasNext()){
+				String fileName = (String)it.next();
+
+				try{
+					DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+
+					DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+					Document doc = docBuilder.parse (new File(fileName));
+					System.out.println("Gethering metric info from from xml file: "+fileName);
+					// normalize text representation
+					doc.getDocumentElement ().normalize ();
+
+					
+					if (aggregationMechanism == ProcessData.CLASS){
+						getClassMetrics(fileName,doc,columns);
+					}
+					else{
+						System.out.println("Unknown aggregation Mechanism");
+						System.exit(1);
+					}
+				}catch (SAXParseException err) {
+					System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
+					System.out.println(" " + err.getMessage ());
+				}
+				catch (SAXException e) {
+					Exception x = e.getException ();
+					((x == null) ? e : x).printStackTrace ();
+				}
+				catch (Throwable t) {
+					t.printStackTrace ();
+				}
+			}
+		}		
 	}
 
 	

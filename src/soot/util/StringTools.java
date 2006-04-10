@@ -105,7 +105,10 @@ public class StringTools
                 { toStringBuffer.append("\\t"); continue; }
               /* 04.04.2006 mbatch  added handling of \r, as compilers throw error if unicode */ 
               if (ch == '\r')
-                { toStringBuffer.append("\\r"); continue; }
+              { toStringBuffer.append("\\r"); continue; }
+              /* 10.04.2006 Nomait A Naeem  added handling of \f, as compilers throw error if unicode */
+              if(ch == '\f')
+              { toStringBuffer.append("\\f"); continue; }
               else if((int) ch >= 32 && (int) ch <= 126)
                 {toStringBuffer.append(ch); continue;}
             }
