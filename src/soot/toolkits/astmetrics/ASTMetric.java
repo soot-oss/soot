@@ -24,6 +24,7 @@ import java.util.Iterator;
 import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
+import polyglot.util.CodeWriter;
 import soot.G;
 
 public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
@@ -79,8 +80,16 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 	 */
 	public final void execute(){
 		astNode.visit(this);
+		// Testing testing testing
+		if (this instanceof StmtSumWeightedByDepth) {
+		  metricPrettyPrinter p = new metricPrettyPrinter(this);
+		  p.printAst(astNode, new CodeWriter(System.out, 80));
+		}
 	}
 	
+	public void printAstMetric(Node n, CodeWriter w) {
+	  
+	}
 	
 
 	/*

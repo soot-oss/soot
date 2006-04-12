@@ -2,6 +2,7 @@ package soot.toolkits.astmetrics;
 
 import java.util.*;
 import polyglot.ast.*;
+import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
 
 public class StmtSumWeightedByDepth extends ASTMetric {
@@ -13,11 +14,20 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   
   Stack labelNodesSoFar = new Stack();
   ArrayList blocksWithAbruptFlow = new ArrayList();
+  HashMap stmtToMetric = new HashMap();
   
   public static boolean tmpAbruptChecker = false; 
   
   public StmtSumWeightedByDepth(Node node){
     super(node);
+  }
+  
+  public void printAstMetric(Node n, CodeWriter w) {
+    if (n instanceof Stmt) {
+      if (stmtToMetric.containsKey(n)) {
+      	w.write(" // sum : "+stmtToMetric.get(n));
+      }
+    }
   }
   
   
@@ -107,10 +117,13 @@ public class StmtSumWeightedByDepth extends ASTMetric {
         increaseDepth();
       }
     } 
-    else if (n instanceof Stmt || n instanceof Formal){
-    	System.out.println("stmt"+n);
+    // switch from Stmt to Expr here, since Expr is the smallest unit
+    else if (n instanceof Expr || n instanceof Formal){
+    	System.out.println("expr"+n);
     	sum+= currentDepth;
     }
+    
+    if (n instanceof Stmt) stmtToMetric.put(n, new Integer(sum));
     
     return enter(n);
   }
