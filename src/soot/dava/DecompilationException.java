@@ -32,8 +32,7 @@ public class DecompilationException extends RuntimeException
     }
 
     public DecompilationException(String message){
-	System.out.println("DECOMPILATION INCOMPLETE:");
-	System.out.println(message);
+    	super("DECOMPILATION INCOMPLETE"+message);
 	//printStackTrace();
     }
     

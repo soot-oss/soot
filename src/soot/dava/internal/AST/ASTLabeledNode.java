@@ -1,6 +1,6 @@
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Jerome Miecznikowski
- * Copyright (C) 2004-2005 Nomair A. Naeem
+ * Copyright (C) 2004-2006 Nomair A. Naeem
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

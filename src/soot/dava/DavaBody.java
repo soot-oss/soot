@@ -87,6 +87,7 @@ import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstru
 import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
 import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification;
+import soot.dava.toolkits.base.AST.transformations.UselessAbruptStmtRemover;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
@@ -540,9 +541,15 @@ public class DavaBody extends Body {
 				AST.apply(new UselessLabeledBlockRemover());
 				debug("applyASTAnalyses","after UselessLabeledBlockRemover"+G.v().ASTTransformations_modified);
 				
-				AST.apply(new IfElseSplitter());
-				debug("applyASTAnalyses","after IfElseSplitter"+G.v().ASTTransformations_modified);
-				
+				if(!G.v().ASTTransformations_modified){
+					AST.apply(new IfElseSplitter());
+					debug("applyASTAnalyses","after IfElseSplitter"+G.v().ASTTransformations_modified);
+				}				
+			
+				if(!G.v().ASTTransformations_modified){
+					AST.apply(new UselessAbruptStmtRemover());
+					debug("applyASTAnalyses","after UselessAbruptStmtRemover"+G.v().ASTTransformations_modified);
+				}
 				
 				/*
 				 * if we matched some useful pattern we reserve the 
