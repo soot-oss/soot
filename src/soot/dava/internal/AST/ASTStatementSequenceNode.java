@@ -59,17 +59,17 @@ public class ASTStatementSequenceNode extends ASTNode
     }
 
     public void toString( UnitPrinter up ) {
-	Iterator it = statementSequence.iterator();
-	while (it.hasNext()) {
-            AugmentedStmt as = (AugmentedStmt) it.next();
-	    //System.out.println("Stmt is:"+as.get_Stmt());
-            Unit u = as.get_Stmt();
-            up.startUnit( u );
-            u.toString( up );
-            up.literal(";");
-            up.endUnit( u );
-            up.newline();
-        }
+    	Iterator it = statementSequence.iterator();
+    	while (it.hasNext()) {
+                AugmentedStmt as = (AugmentedStmt) it.next();
+    	    //System.out.println("Stmt is:"+as.get_Stmt());
+                Unit u = as.get_Stmt();
+                up.startUnit( u );
+                u.toString( up );
+                up.literal(";");
+                up.endUnit( u );
+                up.newline();
+            }
     }
 
     public String toString()

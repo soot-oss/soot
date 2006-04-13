@@ -37,6 +37,7 @@ import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
 import soot.dava.toolkits.base.AST.transformations.SimplifyConditions;
 import soot.dava.toolkits.base.AST.transformations.SimplifyExpressions;
 import soot.dava.toolkits.base.AST.transformations.UselessLabelFinder;
+import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.renamer.Renamer;
 import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
@@ -128,6 +129,9 @@ public class InterProceduralAnalyses {
 		        if(renamer){
 		        	applyRenamerAnalyses(AST,body);
 		        }
+
+		        //remove returns from void methods
+				VoidReturnRemover.cleanClass(s);
 
 			}
 

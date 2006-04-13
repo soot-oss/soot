@@ -14,7 +14,7 @@ import polyglot.visit.NodeVisitor;
  * 
  * A unary boolean condition should have the complexity (BooleanLit) 1
  * A noted condition (!)  +0.5 
- * A binary relational operation ( < > <= >= == ) +0.5
+ * A binary relational operation ( < > <= >= == !=) +0.5
  * A boolean logical operator ( AND and OR) +1.0
  */
 public class ConditionComplexityMetric extends ASTMetric {

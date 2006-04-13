@@ -35,11 +35,11 @@ import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
 
-abstract public class AbstractDefinitionStmt extends AbstractStmt 
+public abstract class AbstractDefinitionStmt extends AbstractStmt 
     implements DefinitionStmt
 {
-    ValueBox leftBox;
-    ValueBox rightBox;
+	public ValueBox leftBox;
+    public ValueBox rightBox;
 
     List defBoxes;
 

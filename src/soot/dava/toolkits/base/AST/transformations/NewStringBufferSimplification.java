@@ -32,71 +32,29 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.grimp.internal.GAddExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
-//import soot.jimple.internal.InvokeExprBox;
-
-
 
 /*
  * Matches the output pattern
- *   System.out.println( (new StringBuffer()).append ............ .toString());
+ *   (new StringBuffer()).append ............ .toString();
  *   Convert it to 
- *   System.out.println(append1 + append2 .....);
+ *   append1 + append2 .....;
  */
 
-public class SystemOutPrintlnCleaner extends DepthFirstAdapter {
-	
+public class NewStringBufferSimplification extends DepthFirstAdapter {
 	public static boolean DEBUG=false;
 	
-    public SystemOutPrintlnCleaner(){
+    public NewStringBufferSimplification(){
     	
     }
     
-    public SystemOutPrintlnCleaner(boolean verbose){
+    public NewStringBufferSimplification(boolean verbose){
     	super(verbose);
     }
 
-    public void inInvokeStmt(InvokeStmt s){
-    	if(DEBUG)
-    		System.out.println("\n\nIn an invoke stmt");
-    	
-    	ValueBox invokeBox = s.getInvokeExprBox();
-    	if(DEBUG)
-    		System.out.println("InvokeExpr is"+invokeBox.getValue());
-    	
-    	Value val = invokeBox.getValue();
-    	if(! (val instanceof InvokeExpr))
-    		return;
-    	
-    	InvokeExpr invokeExpr = (InvokeExpr)val;
-    	
-    	SootMethod methodInvoked = invokeExpr.getMethod();
-    	
-    	SootClass methodInvokedClass = methodInvoked.getDeclaringClass();
-    	
-    	if(DEBUG)
-    		System.out.println("Method was invoked for class "+methodInvokedClass.toString());
-    	
-    	
-    	if(!methodInvokedClass.toString().equals("java.io.PrintStream"))
-    		return;
 
-    	
+    public void inExprOrRefValueBox(ValueBox argBox){
     	if(DEBUG)
-    		System.out.println("Invoked Method is"+invokeExpr.getMethod().toString());
- 
-
-    	if(! methodInvoked.toString().equals("<java.io.PrintStream: void println(java.lang.String)>"))
-    		return;
-    	
-    	//    	its a call of System.out.println( STRING )
-    	//check whether we need to simplify its argument
-    	if(DEBUG)
-    		System.out.println("Found System.out.println stmt going to check if this needs simplification");
-    	
-    	//we know there is only one argument get that out
-    	ValueBox argBox = invokeExpr.getArgBox(0);
-    	if(DEBUG)
-    		System.out.println("Argument to System.out.println is: "+argBox.toString());
+    		System.out.println("ValBox is: "+argBox.toString());
     	
     	Value tempArgValue = argBox.getValue();
     	if(DEBUG)
@@ -150,9 +108,9 @@ public class SystemOutPrintlnCleaner extends DepthFirstAdapter {
     	 * The arg is a new invoke expr of StringBuffer and all the appends are present in the args list
     	 */
     	if(DEBUG)
-    		System.out.println("Found a System.out.println with a new StringBuffer.append list in it");
+    		System.out.println("Found a new StringBuffer.append list in it");
     	
-    	//argBox contains the argument to System.out.println()
+    	//argBox contains the new StringBuffer
     	Iterator it = args.iterator();
     	Value newVal = null;
     	while(it.hasNext()){

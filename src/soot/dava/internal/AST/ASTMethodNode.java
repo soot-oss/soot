@@ -31,7 +31,9 @@
 package soot.dava.internal.AST;
 
 import soot.*;
+
 import java.util.*;
+
 import soot.dava.*;
 import soot.util.*;
 import soot.jimple.*;
@@ -44,7 +46,12 @@ import soot.dava.internal.javaRep.*;
 import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
+import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 
+/*
+ * ALWAYS REMEMBER THAT THE FIRST NODE IN THE BODY OF A METHODNODE HAS TO BE A STATEMENT
+ * SEQUENCE NODE WITH DECLARATIONS!!!!
+ */
 public class ASTMethodNode extends ASTNode {
 	private List body;
 
@@ -52,6 +59,15 @@ public class ASTMethodNode extends ASTNode {
 
 	private ASTStatementSequenceNode declarations;
 
+	/*
+	 * Variables that are used in shortcu statements are kept in the
+	 * declarations since other analyses need quick access to all the declared
+	 * locals in the method
+	 * 
+	 * Any local in the dontPrintLocals list is not printed in the top declarations
+	 */
+	private List dontPrintLocals = new ArrayList();
+	
 	/*
 	 typeToLocals stores the type of the local and a list of all locals with that type
 	 */
@@ -145,8 +161,7 @@ public class ASTMethodNode extends ASTNode {
 	public ASTMethodNode(List body) {
 		super();
 		this.body = body;
-
-		subBodies.add(body);
+		subBodies.add(body);	
 	}
 
 	/*
@@ -236,7 +251,6 @@ public class ASTMethodNode extends ASTNode {
 
 		}
 		declarations.setStatements(newSequence);
-
 	}
 
 	/*
@@ -251,11 +265,19 @@ public class ASTMethodNode extends ASTNode {
 
 	public Object clone() {
 		ASTMethodNode toReturn = new ASTMethodNode(body);
-		toReturn.setDeclarations((ASTStatementSequenceNode) declarations
-				.clone());
+		toReturn.setDeclarations((ASTStatementSequenceNode) declarations.clone());
+		toReturn.setDontPrintLocals(dontPrintLocals);
 		return toReturn;
 	}
 
+	public void setDontPrintLocals(List list){
+		dontPrintLocals=list;
+	}
+	
+	public void addToDontPrintLocalsList(Local toAdd){
+		dontPrintLocals.add(toAdd);
+	}
+	
 	public void perform_Analysis(ASTAnalysis a) {
 		perform_AnalysisOnSubBodies(a);
 	}
@@ -321,12 +343,118 @@ public class ASTMethodNode extends ASTNode {
 		}//if //davaBody != null
 
 		//notice that for an ASTMethod Node the first element of the body list is the
-		//declared variables
-
-		//System.out.println("printing body from within MEthodNode\n\n"+body.toString());
-		body_toString(up, body);
+		//declared variables print it here so that we can control what gets printed
+		printDeclarationsFollowedByBody(up,body);
 	}
 
+	/*
+	 * This method has been written to bring into the printing of the method body the printing of the
+	 * declared locals
+	 * 
+	 * This is required because the dontPrintLocals list contains a list of locals which are declared from within
+	 * the body and hence we dont want to print them here at the top of the method. However at the same time we dont
+	 * want to remove the local entry in the declarations node since this is used by analyses throughout as a quick and
+	 * easy way to find out which locals are used by this method...... bad code design but hey what can i say :(
+	 */
+	public void printDeclarationsFollowedByBody(UnitPrinter up, List body){
+		//System.out.println("printing body from within MEthodNode\n\n"+body.toString());
+		
+		List stmts = declarations.getStatements();
+		Iterator it = stmts.iterator();
+		while (it.hasNext()) {
+			AugmentedStmt as = (AugmentedStmt) it.next();
+			//System.out.println("Stmt is:"+as.get_Stmt());
+			Unit u = as.get_Stmt();
+			
+			//stupid sanity check cos i am paranoid
+			if(u instanceof DVariableDeclarationStmt){
+				DVariableDeclarationStmt declStmt = (DVariableDeclarationStmt)u;
+				List localDeclarations = declStmt.getDeclarations();
+				/*
+				 * Check that of the localDeclarations List atleast one is not present in the dontPrintLocals list
+				 */
+				boolean shouldContinue=false;
+				Iterator declsIt = localDeclarations.iterator();
+				while(declsIt.hasNext()){
+					if(!dontPrintLocals.contains(declsIt.next())){
+						shouldContinue=true;
+						break;
+					}
+				}
+				if(!shouldContinue){
+					//shouldnt print this declaration stmt
+					continue;
+				}
+				if (localDeclarations.size() == 0)
+					continue;
+
+				if (!(up instanceof DavaUnitPrinter))
+					throw new RuntimeException("DavaBody should always be printed using the DavaUnitPrinter");
+	
+				DavaUnitPrinter dup = (DavaUnitPrinter) up;	
+				dup.startUnit(u);
+				String type = declStmt.getType().toString();
+
+				if (type.equals("null_type"))
+					dup.printString("Object");
+				else{
+					IterableSet importSet = davaBody.getImportList();
+					if(!importSet.contains(type))
+						davaBody.addToImportList(type);
+							
+					type = RemoveFullyQualifiedName.getReducedName(davaBody.getImportList(),type,declStmt.getType());
+					
+					dup.printString(type);
+				}
+				dup.printString(" ");
+
+				int number=0;
+				Iterator decIt = localDeclarations.iterator();
+				while (decIt.hasNext()) {
+					Local tempDec = (Local) decIt.next();
+					if(dontPrintLocals.contains(tempDec))
+						continue;
+
+					if(number!=0)
+						dup.printString(", ");
+					number++;
+					dup.printString(tempDec.getName());
+				}
+				
+                up.literal(";");
+                up.endUnit( u );
+                up.newline();
+			} //if DVariableDeclarationStmt
+			else{
+				up.startUnit( u );
+				u.toString( up );
+				up.literal(";");
+				up.endUnit( u );
+				up.newline();
+			}
+        }
+
+		boolean printed = false;
+		if(body.size()>0){
+			ASTNode firstNode = (ASTNode)body.get(0);
+			if(firstNode instanceof ASTStatementSequenceNode){
+				List tempstmts = ((ASTStatementSequenceNode)firstNode).getStatements();
+				if(tempstmts.size()!=0){
+					AugmentedStmt tempas = (AugmentedStmt)tempstmts.get(0);
+					Stmt temps = tempas.get_Stmt();
+					if(temps instanceof DVariableDeclarationStmt){
+						printed=true;
+						body_toString(up, body.subList(1,body.size()));
+					}
+				}
+			}
+		}
+		if(!printed){
+			//System.out.println("Here for method"+this.getDavaBody().getMethod().toString());
+			body_toString(up, body);
+		}		
+	}
+	
 	public String toString() {
 		StringBuffer b = new StringBuffer();
 		/*

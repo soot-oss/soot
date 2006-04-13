@@ -25,7 +25,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   public void printAstMetric(Node n, CodeWriter w) {
     if (n instanceof Stmt) {
       if (stmtToMetric.containsKey(n)) {
-      	w.write(" // sum : "+stmtToMetric.get(n));
+      	w.write(" /* sum : "+stmtToMetric.get(n)+" */ ");
       }
     }
   }

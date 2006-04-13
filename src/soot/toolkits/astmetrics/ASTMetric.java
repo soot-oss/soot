@@ -81,6 +81,7 @@ public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
 	public final void execute(){
 		astNode.visit(this);
 		// Testing testing testing
+		System.out.println("\n\n\n PRETTY P{RINTING");
 		if (this instanceof StmtSumWeightedByDepth) {
 		  metricPrettyPrinter p = new metricPrettyPrinter(this);
 		  p.printAst(astNode, new CodeWriter(System.out, 80));

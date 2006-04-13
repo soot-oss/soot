@@ -76,6 +76,7 @@ import soot.dava.toolkits.base.AST.transformations.DeInliningFinalFields;
 import soot.dava.toolkits.base.AST.transformations.DecrementIncrementStmtCreation;
 import soot.dava.toolkits.base.AST.transformations.FinalFieldDefinition;
 import soot.dava.toolkits.base.AST.transformations.ForLoopCreator;
+import soot.dava.toolkits.base.AST.transformations.IfElseSplitter;
 import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
 import soot.dava.toolkits.base.AST.transformations.LoopStrengthener;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorFour;
@@ -83,8 +84,9 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorOne;
 import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
 import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
+import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
-import soot.dava.toolkits.base.AST.transformations.SystemOutPrintlnCleaner;
+import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
@@ -443,17 +445,14 @@ public class DavaBody extends Body {
 		 */
 		//The BooleanConditionSimplification changes flag==false to just flag
 
-
+		//AST.apply(new DepthFirstAdapter(true));
+		
 		AST.apply(new BooleanConditionSimplification());
 
 		AST.apply(new DecrementIncrementStmtCreation());
 
-		AST.apply(new DeInliningFinalFields());
-
 		debug("applyASTAnalyses","initial one time analyses completed");
 		
-	     
-	     
 		boolean flag = true;
 		int times = 0;
 
@@ -530,11 +529,21 @@ public class DavaBody extends Body {
 				debug("applyASTAnalyses","after ForLoopCreator"+G.v().ASTTransformations_modified);
 
 				
-				AST.apply(new SystemOutPrintlnCleaner());
-				debug("applyASTAnalyses","after SystemOutPrintlnCleaner"+G.v().ASTTransformations_modified);
-				
+				AST.apply(new NewStringBufferSimplification());
+				debug("applyASTAnalyses","after NewStringBufferSimplification"+G.v().ASTTransformations_modified);
 
+				
+				AST.apply(new ShortcutArrayInit());
+				debug("applyASTAnalyses","after ShortcutArrayInit"+G.v().ASTTransformations_modified);
+
+				
 				AST.apply(new UselessLabeledBlockRemover());
+				debug("applyASTAnalyses","after UselessLabeledBlockRemover"+G.v().ASTTransformations_modified);
+				
+				AST.apply(new IfElseSplitter());
+				debug("applyASTAnalyses","after IfElseSplitter"+G.v().ASTTransformations_modified);
+				
+				
 				/*
 				 * if we matched some useful pattern we reserve the 
 				 * right to flip conditions again
@@ -585,6 +594,9 @@ public class DavaBody extends Body {
     		new FinalFieldDefinition((ASTMethodNode) AST);
     		debug("applyASTAnalyses","after FinalFieldDefinition"+G.v().ASTTransformations_modified);
         }
+
+		//this analysis has to be after ShortcutArrayInit to give that analysis more chances
+		AST.apply(new DeInliningFinalFields());
 
 		debug("applyASTAnalyses","end applyASTAnlayses"+G.v().ASTTransformations_modified);
 	}
