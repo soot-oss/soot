@@ -850,4 +850,16 @@ public class Singletons {
         return instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder;
     }
 
+    private soot.jimple.spark.sets.AllSharedListNodes instance_soot_jimple_spark_sets_AllSharedListNodes;
+    public soot.jimple.spark.sets.AllSharedListNodes soot_jimple_spark_sets_AllSharedListNodes() {
+        if( instance_soot_jimple_spark_sets_AllSharedListNodes == null ) instance_soot_jimple_spark_sets_AllSharedListNodes = new soot.jimple.spark.sets.AllSharedListNodes( g );
+        return instance_soot_jimple_spark_sets_AllSharedListNodes;
+    }
+
+    private soot.jimple.spark.sets.AllSharedHybridNodes instance_soot_jimple_spark_sets_AllSharedHybridNodes;
+    public soot.jimple.spark.sets.AllSharedHybridNodes soot_jimple_spark_sets_AllSharedHybridNodes() {
+        if( instance_soot_jimple_spark_sets_AllSharedHybridNodes == null ) instance_soot_jimple_spark_sets_AllSharedHybridNodes = new soot.jimple.spark.sets.AllSharedHybridNodes( g );
+        return instance_soot_jimple_spark_sets_AllSharedHybridNodes;
+    }
+
 }

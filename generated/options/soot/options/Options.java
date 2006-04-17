@@ -1534,6 +1534,10 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
+                
+                +padVal( "sharedlist", "Shared list representation" )
+                
                 +padVal( "double (default)", "Double set representation for incremental propagation" )
                 
                 +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
@@ -1545,6 +1549,10 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
+                
+                +padVal( "sharedlist", "Shared list representation" )
+                
                 +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
                 
@@ -1553,6 +1561,10 @@ public class Options extends OptionsBase {
                 +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
                 
                 +padVal( "array", "Sorted array representation" )
+                
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
+                
+                +padVal( "sharedlist", "Shared list representation" )
                 
                 +padOpt( "dump-html (false)", "Dump pointer assignment graph to HTML for debugging" )
                 +padOpt( "dump-pag (false)", "Dump pointer assignment graph for other solvers" )

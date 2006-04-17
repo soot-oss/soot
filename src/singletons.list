@@ -135,3 +135,5 @@ soot.javaToJimple.toolkits.GotoEliminator
 soot.dava.toolkits.base.AST.transformations.UselessLabelFinder
 soot.dava.DavaStaticBlockCleaner
 soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder
+soot.jimple.spark.sets.AllSharedListNodes
+soot.jimple.spark.sets.AllSharedHybridNodes

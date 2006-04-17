@@ -18,8 +18,9 @@
  */
 
 package soot.jimple.spark.sets;
-import soot.jimple.spark.*;
+import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
+import soot.util.BitVector;
 import soot.*;
 import java.util.*;
 
@@ -151,5 +152,24 @@ public abstract class PointsToSetInternal implements PointsToSet {
     /* End of package methods. */
 
     protected Type type;
-}
+    
+    //Added by Adam Richard
+    protected BitVector getBitMask(PointsToSetInternal other, PAG pag)
+    {
+		/*Prevents propogating points-to sets of inappropriate type.
+		 *E.g. if you have in the code being analyzed:
+		 *Shape s = (Circle)c;
+		 *then the points-to set of s is only the elements in the points-to set
+		 *of c that have type Circle.
+		 */
+		//Code ripped from BitPointsToSet
 
+    	BitVector mask = null;
+    	TypeManager typeManager = (TypeManager) pag.getTypeManager();
+    	if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
+    		mask = typeManager.get( this.getType() );
+    	}
+    	return mask;
+    }
+    
+}
