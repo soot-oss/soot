@@ -85,6 +85,7 @@ import soot.dava.toolkits.base.AST.transformations.OrAggregatorTwo;
 import soot.dava.toolkits.base.AST.transformations.PushLabeledBlockIn;
 import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
 import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
+import soot.dava.toolkits.base.AST.transformations.ShortcutIfGenerator;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
 import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification;
 import soot.dava.toolkits.base.AST.transformations.UselessAbruptStmtRemover;
@@ -550,6 +551,10 @@ public class DavaBody extends Body {
 					AST.apply(new UselessAbruptStmtRemover());
 					debug("applyASTAnalyses","after UselessAbruptStmtRemover"+G.v().ASTTransformations_modified);
 				}
+				
+				
+				AST.apply(new ShortcutIfGenerator());
+				debug("applyASTAnalyses","after ShortcutIfGenerator"+G.v().ASTTransformations_modified);
 				
 				/*
 				 * if we matched some useful pattern we reserve the 
