@@ -88,6 +88,7 @@ import soot.dava.toolkits.base.AST.transformations.ShortcutArrayInit;
 import soot.dava.toolkits.base.AST.transformations.ShortcutIfGenerator;
 import soot.dava.toolkits.base.AST.transformations.SuperFirstStmtHandler;
 import soot.dava.toolkits.base.AST.transformations.NewStringBufferSimplification;
+import soot.dava.toolkits.base.AST.transformations.TypeCastingError;
 import soot.dava.toolkits.base.AST.transformations.UselessAbruptStmtRemover;
 import soot.dava.toolkits.base.AST.transformations.UselessLabeledBlockRemover;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
@@ -555,7 +556,10 @@ public class DavaBody extends Body {
 				
 				AST.apply(new ShortcutIfGenerator());
 				debug("applyASTAnalyses","after ShortcutIfGenerator"+G.v().ASTTransformations_modified);
-				
+
+				AST.apply(new TypeCastingError());
+				debug("applyASTAnalyses","after TypeCastingError"+G.v().ASTTransformations_modified);
+
 				/*
 				 * if we matched some useful pattern we reserve the 
 				 * right to flip conditions again
