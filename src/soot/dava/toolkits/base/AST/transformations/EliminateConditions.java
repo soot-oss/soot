@@ -51,19 +51,19 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 
 /*
- * if (true)   ---> ELIMINATE the if statement copy body to parent
+ * if (true)   ---> remove conditional copy ifbody to parent
  * 
  * if(false) eliminate in all entirety
  * 
  * if(true)
  *    bla1
  * else 
- *    bla2         copy bla1 to parent remove everything else
+ *    bla2        remove conditional copy bla1 to parent
  *    
  * if(false)
  *    bla1
  *  else
- *    bla2      copy bla2 to parent remove everything else
+ *    bla2      remoce conditional copy bla2 to parent
  *    
  *       
  * while(false)  eliminate in entirety... notice this is not an Uncondition loop but a ASTWhileNode
@@ -75,7 +75,8 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 public class EliminateConditions extends DepthFirstAdapter {
 
 	public static boolean DEBUG=false;
-
+	public boolean modified=false;
+	
 	ASTParentNodeFinder finder;
 	ASTMethodNode AST;
 	List bodyContainingNode=null;
@@ -97,43 +98,49 @@ public class EliminateConditions extends DepthFirstAdapter {
 	
 	
 	public void normalRetrieving(ASTNode node){
+		modified=false;
 		if(node instanceof ASTSwitchNode){
-			   dealWithSwitchNode((ASTSwitchNode)node);
-		    return;
+			do{
+				modified=false;
+				dealWithSwitchNode((ASTSwitchNode)node);
+			}while(modified);				   
+			return;
 		}
-		
-		
 		//from the Node get the subBodes
 		Iterator sbit = node.get_SubBodies().iterator();
-		
 		while (sbit.hasNext()) {
 		    List subBody = (List)sbit.next();
-
-
-		    boolean changed=true;
-		    while(changed){
-			    Iterator it = subBody.iterator();
-		    	changed=false;
-		    	ASTNode temp=null;
-		    	Boolean returned=null;
-		    	while (it.hasNext()){
-		    		temp = (ASTNode) it.next();
-		    		
-		    		//only check condition if this is a control flow node
-		    		if(temp instanceof ASTControlFlowNode){ 
-		    			bodyContainingNode=null;
-		    			returned = eliminate(temp);
-		    			if(returned!=null)
-		    				break;
-		    			else
-		    				bodyContainingNode=null;
+		    Iterator it = subBody.iterator();
+		    ASTNode temp=null;
+		    Boolean returned=null;
+		    while (it.hasNext()){
+		    	temp = (ASTNode) it.next();
+		    	
+		    	//only check condition if this is a control flow node
+		    	if(temp instanceof ASTControlFlowNode){ 
+		    		bodyContainingNode=null;
+		    		returned = eliminate(temp);
+		    		if(returned!=null && canChange(returned,temp)){
+		    			break;
 		    		}
-		    		temp.apply(this);			    	
-		    	}//end while going through nodes in subBody
-		    
-		    	changed = change(returned,temp);
-		    }
+		    		else{
+		    			if(DEBUG)
+		    				System.out.println("returned is null"+temp.getClass());
+		    			bodyContainingNode=null;
+		    		}
+		    	}
+		    	temp.apply(this);				    	
+		    }//end while going through nodes in subBody
+		    		    
+		    boolean changed = change(returned,temp);
+		    if(changed)
+		    	modified=true;		    	
 		}//end of going over subBodies
+		
+		if(modified){
+			//repeat the whole thing
+			normalRetrieving(node);
+		}
 	}
 
     
@@ -315,138 +322,102 @@ public class EliminateConditions extends DepthFirstAdapter {
     
     
     
-    public void caseASTTryNode(ASTTryNode node){    
+    public void caseASTTryNode(ASTTryNode node){
+		modified=false;
     	inASTTryNode(node);
-
-    	//get try body 
-    	List tryBody = node.get_TryBody();
-    	
-    	boolean changed=true;
-    	while(changed){
-    		changed=false;
-    		Iterator it = tryBody.iterator();
-    		//go over the ASTNodes and apply
+    	//get try body iterator 
+    	Iterator it = node.get_TryBody().iterator();
     		
-    		Boolean returned=null;
-    		ASTNode temp=null;
-    		while (it.hasNext()){
-    			temp = (ASTNode) it.next();
-    			
-    			//only check condition if this is a control flow node
-    			if(temp instanceof ASTControlFlowNode){ 	
+    	Boolean returned=null;
+    	ASTNode temp=null;
+    	while (it.hasNext()){
+    		temp = (ASTNode) it.next();    		
+    		//only check condition if this is a control flow node
+    		if(temp instanceof ASTControlFlowNode){ 	
+    			bodyContainingNode=null;
+    			returned = eliminateForTry(temp);
+    			if(returned!=null && canChange(returned,temp))
+    				break;
+    			else
     				bodyContainingNode=null;
-    				returned = eliminateForTry(temp);
-    				if(returned!=null)
-    					break;
-    				else
-    					bodyContainingNode=null;
-    			}
-    			temp.apply(this);
-    		}//end while
+    		}
+    		temp.apply(this);
+    	}//end while
 
-    		
-    		changed = change(returned, temp);
-    		
-    	}
+    	boolean	changed = change(returned, temp);
+    	if(changed)
+    		modified=true;    		
+    
     	//get catch list and apply on the following
     	// a, type of exception caught  ......... NO NEED
     	// b, local of exception ............... NO NEED
     	// c, catchBody
     	List catchList = node.get_CatchList();
     	Iterator itBody=null;
-    	Iterator it = catchList.iterator();
+    	it = catchList.iterator();
     	while (it.hasNext()) {
-    		
     		ASTTryNode.container catchBody = (ASTTryNode.container)it.next();
-    		
     		List body = (List)catchBody.o;
-    		changed = true;
-    		while(changed){
-    			changed=false;
-
-    			itBody = body.iterator();
+    		itBody = body.iterator();
     		
-        		Boolean returned=null;
-        		ASTNode temp=null;
-    			//go over the ASTNodes and apply
-    			while (itBody.hasNext()){
-    				temp = (ASTNode) itBody.next();
-    				//System.out.println("Next node is "+temp);
-    				//only check condition if this is a control flow node
-    				if(temp instanceof ASTControlFlowNode){ 		
+    		returned=null;
+    		temp=null;
+    		//go over the ASTNodes and apply
+    		while (itBody.hasNext()){
+    			temp = (ASTNode) itBody.next();
+    			//System.out.println("Next node is "+temp);
+    			//only check condition if this is a control flow node
+    			if(temp instanceof ASTControlFlowNode){ 		
+    				bodyContainingNode=null;
+    				returned = eliminateForTry(temp);
+    				if(returned!=null && canChange(returned,temp))
+    					break;
+    				else
     					bodyContainingNode=null;
-    					returned = eliminateForTry(temp);
-    					if(returned!=null)
-    						break;
-    					else
-    						bodyContainingNode=null;
-    				}
-    				temp.apply(this);
-    			}
-        		changed = change(returned, temp);
+    			}	
+    			temp.apply(this);
     		}
+    		changed = change(returned, temp);
+    		if(changed)
+    			modified=true;
     	}
-	
     	outASTTryNode(node);
+    	if(modified){
+    		//repeat the whole thing
+    		caseASTTryNode(node);
+    	}
     }
 
     
-    
+
+    public boolean canChange(Boolean returned, ASTNode temp){
+    	return true;
+    }
     
     
     public boolean change(Boolean returned, ASTNode temp){
     	if(bodyContainingNode!=null && returned!=null && temp!=null){
 
     		int index = bodyContainingNode.indexOf(temp);
+			if(DEBUG) System.out.println("in change");
     		if(temp instanceof ASTIfNode ){
-    			
-    			/*
-    			 * Only going to removed if returned has value "false"
-    			 * Since removing might cause problems
-    			 *  
-    			 * if(true){
-    			 *    bla bla 
-    			 * 
-    			 * }
-    			 */
-    			if (!returned.booleanValue()){
-        			bodyContainingNode.remove(temp);
-        			return true;
+    			bodyContainingNode.remove(temp);
+        		
+    			if (returned.booleanValue()){
+    				//if statement and value was true put the body of if into the code
+    				bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
     			}
-    			return false;
+    			if(DEBUG) System.out.println("Removed if"+temp);
+    			return true;
     		}
     		else if(temp instanceof ASTIfElseNode){
     			bodyContainingNode.remove(temp);
     			if(returned.booleanValue()){
     				//true so the if branch's body has to be added
-    				/*
-    				 * In this case the ifelse is converted to an if(true) with code A as body
-    				 * if(true){
-    				 *   code A
-    				 * }
-    				 * else{
-    				 *   code B
-    				 * 
-    				 * }
-    				 */
-    				bodyContainingNode.add(index, new ASTIfNode( ((ASTLabeledNode)temp).get_Label(), ((ASTControlFlowNode)temp).get_Condition(),   (List)temp.get_SubBodies().get(0)));
+    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(0));
     			}
     			else{
-    				//the condition is false hence the else branch should execute
-    				/*
-    				 * convert the ifelse to an if with true and the body as the else branch (code B)
-    				 * 
-    				 * if(false){
-    				 *   code A
-    				 * }
-    				 * else{
-    				 *   code B
-    				 *  }
-    				 */
-    				ASTCondition tempCondition = ((ASTControlFlowNode)temp).get_Condition();
-    				tempCondition.flip();
-    				bodyContainingNode.add(index, new ASTIfNode( ((ASTLabeledNode)temp).get_Label(), tempCondition,   (List)temp.get_SubBodies().get(1)));
-    				//bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(1));
+    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(1));
     			}
     			return true;
     		}
@@ -491,27 +462,25 @@ public class EliminateConditions extends DepthFirstAdapter {
 		    if (body != null){
 			// this body is a list of ASTNodes
 
-		    	boolean changed=true;
-		    	while(changed){
-		    		changed=false;
-		    		Iterator itBody = body.iterator();
-		    		Boolean returned=null;
-		    		ASTNode temp = null;
-		    		while (itBody.hasNext()){
-		    			temp = (ASTNode) itBody.next();
-		    			if(temp instanceof ASTControlFlowNode){ 			
+		    	Iterator itBody = body.iterator();
+		    	Boolean returned=null;
+		    	ASTNode temp = null;
+		    	while (itBody.hasNext()){
+		    		temp = (ASTNode) itBody.next();
+		    		if(temp instanceof ASTControlFlowNode){ 			
+		    			bodyContainingNode=null;
+		    			returned = eliminate(temp);
+		    			if(returned!=null && canChange(returned,temp))
+		    				break;
+		    			else
 		    				bodyContainingNode=null;
-		    				returned = eliminate(temp);
-		    				if(returned!=null)
-		    					break;
-		    				else
-		    					bodyContainingNode=null;
-		    			}				    
-		    			temp.apply(this);
-		    		}
-		    		changed=change(returned,temp);
-		    	}//end while changed
-		    }
+		    		}					    
+		    		temp.apply(this);
+		    	}
+		    	boolean changed=change(returned,temp);
+		    	if(changed)
+		    		modified=true;
+		    }//end while changed
 		}
     }
 }

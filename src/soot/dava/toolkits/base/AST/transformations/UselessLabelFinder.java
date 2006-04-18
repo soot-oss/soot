@@ -36,7 +36,12 @@ public class UselessLabelFinder{
     //check whether label on a node is useless 
     public boolean findAndKill(ASTNode node){
     	if(!(node instanceof ASTLabeledNode)){
+    		if(DEBUG)
+    			System.out.println("Returning from findAndKill for node of type "+node.getClass());
     		return false;
+    	}
+    	else{
+    		if(DEBUG) System.out.println("FindAndKill continuing for node fo type"+node.getClass());
     	}
 
     	String label = ((ASTLabeledNode)node).get_Label().toString();

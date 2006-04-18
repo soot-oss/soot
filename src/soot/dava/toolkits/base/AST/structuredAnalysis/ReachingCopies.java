@@ -124,17 +124,17 @@ public class ReachingCopies extends StructuredAnalysis{
 
 
     public ReachingCopies(Object analyze){
-	super();
-	//the input to the process method is an empty DavaFlow Set meaning out(start) ={}
-	DavaFlowSet temp = (DavaFlowSet)process(analyze,new DavaFlowSet());
-    }
+    	super();
+    	//the input to the process method is an empty DavaFlow Set meaning out(start) ={}
+    	DavaFlowSet temp = (DavaFlowSet)process(analyze,new DavaFlowSet());
+        }
 
     public DavaFlowSet emptyFlowSet(){
     	return new DavaFlowSet();
     }
 
     public void setMergeType(){
-	MERGETYPE=INTERSECTION;
+    	MERGETYPE=INTERSECTION;
     }
 
     public Object newInitialFlow(){
@@ -157,10 +157,10 @@ public class ReachingCopies extends StructuredAnalysis{
      * Hence processing a condition has no effect on this analysis
      */
     public Object processUnaryBinaryCondition(ASTUnaryBinaryCondition cond, Object input){
-	if(!(input instanceof DavaFlowSet)){
-	    throw new RuntimeException("processCondition is not implemented for other flowSet types");
-	}
-	return input;
+    	if(!(input instanceof DavaFlowSet)){
+    	    throw new RuntimeException("processCondition is not implemented for other flowSet types");
+    	}
+    	return input;
     }
 
 

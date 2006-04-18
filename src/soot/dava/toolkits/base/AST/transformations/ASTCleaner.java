@@ -72,9 +72,9 @@ public class ASTCleaner extends DepthFirstAdapter{
     */
     public void normalRetrieving(ASTNode node){
     	if(node instanceof ASTSwitchNode){
- 		   dealWithSwitchNode((ASTSwitchNode)node);
- 	    return;
- 	}
+  		   dealWithSwitchNode((ASTSwitchNode)node);
+  	    return;
+  	}
 
     	//from the Node get the subBodes
     	Iterator sbit = node.get_SubBodies().iterator();

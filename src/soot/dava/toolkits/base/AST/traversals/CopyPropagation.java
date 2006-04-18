@@ -157,6 +157,10 @@ public class CopyPropagation extends DepthFirstAdapter {
 		}
 	}
 
+	
+	/*
+	 * Method returns true if s is a copy stmt i.e. a = b where a and b are both locals
+	 */
 	public boolean isCopyStmt(Stmt s) {
 		if (!(s instanceof DefinitionStmt)) {
 			//only definition stmts can be copy stmts
@@ -213,8 +217,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 			Local leftLocal = (Local) copyStmt.getLeftOp();
 			Local rightLocal = (Local) copyStmt.getRightOp();
 
-			ReachingCopies.LocalPair localPair = reachingCopies.new LocalPair(
-					leftLocal, rightLocal);
+			ReachingCopies.LocalPair localPair = reachingCopies.new LocalPair(leftLocal, rightLocal);
 
 			//check for all the non zero uses
 			Iterator useIt = uses.iterator();
@@ -223,8 +226,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 				//a use is either a statement or a node(condition, synch, switch , for etc)
 				Object tempUse = useIt.next();
 
-				DavaFlowSet reaching = reachingCopies
-						.getReachingCopies(tempUse);
+				DavaFlowSet reaching = reachingCopies.getReachingCopies(tempUse);
 
 				if (!reaching.contains(localPair)) {
 					//this copy stmt does not reach this use

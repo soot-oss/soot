@@ -36,6 +36,7 @@ import soot.dava.toolkits.base.AST.transformations.CPApplication;
 import soot.dava.toolkits.base.AST.transformations.LocalVariableCleaner;
 import soot.dava.toolkits.base.AST.transformations.SimplifyConditions;
 import soot.dava.toolkits.base.AST.transformations.SimplifyExpressions;
+import soot.dava.toolkits.base.AST.transformations.UnreachableCodeEliminator;
 import soot.dava.toolkits.base.AST.transformations.UselessLabelFinder;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
 import soot.dava.toolkits.base.renamer.Renamer;
@@ -112,13 +113,16 @@ public class InterProceduralAnalyses {
 		        //EliminateConditions.DEBUG=true;
 		        
 		        AST.apply(new EliminateConditions((ASTMethodNode)AST));
+		        //the above should ALWAYS be followed by an unreachable code eliminator
+		        AST.apply(new UnreachableCodeEliminator((ASTMethodNode)AST));
 		        
 		        //local variable cleanup
 		        AST.apply(new LocalVariableCleaner((ASTMethodNode)AST));
 
 		         //VERY EXPENSIVE STAGE of redoing all analyses!!!!
 		        if(deobfuscate){
-		        	//UselessLabelFinder.DEBUG=true;
+		        	if(DEBUG)System.out.println("reinvoking analyzeAST");
+		        	UselessLabelFinder.DEBUG=false;
 		        	body.analyzeAST();
 		        }
 		
