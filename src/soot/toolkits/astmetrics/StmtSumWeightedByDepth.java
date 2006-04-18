@@ -15,6 +15,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   Stack labelNodesSoFar = new Stack();
   ArrayList blocksWithAbruptFlow = new ArrayList();
   HashMap stmtToMetric = new HashMap();
+  HashMap stmtToMetricDepth = new HashMap();
   
   public static boolean tmpAbruptChecker = false; 
   
@@ -25,15 +26,16 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   public void printAstMetric(Node n, CodeWriter w) {
     if (n instanceof Stmt) {
       if (stmtToMetric.containsKey(n)) {
-      	w.write(" /* sum : "+stmtToMetric.get(n)+" */ ");
+        w.write(" // sum= "+stmtToMetric.get(n)+" : depth= "+stmtToMetricDepth.get(n)+"\t");
       }
     }
   }
   
   
   public void reset() {
-    currentDepth = 0; //inside a class
-    maxDepth = 0;
+    // if not one, then fields and method sigs don't get counted
+    currentDepth = 1; //inside a class
+    maxDepth = 1;
     sum = 0;
     numNodes = 0;
   }
@@ -113,17 +115,22 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       {
         blocksWithAbruptFlow.add(n);
         sum += currentDepth*2;
-        System.out.println("got here");
+        System.out.println(n);
         increaseDepth();
       }
     } 
     // switch from Stmt to Expr here, since Expr is the smallest unit
     else if (n instanceof Expr || n instanceof Formal){
-    	System.out.println("expr"+n);
-    	sum+= currentDepth;
+    	System.out.print(sum +"  "+n+"  ");
+    	sum += currentDepth*2;
+    	System.out.println(sum);
     }
     
-    if (n instanceof Stmt) stmtToMetric.put(n, new Integer(sum));
+    // carry metric cummulative for each statement for metricPrettyPrinter 
+    if (n instanceof Stmt) {
+      stmtToMetric.put(n, new Integer(sum));
+      stmtToMetricDepth.put(n, new Integer(currentDepth));
+    }
     
     return enter(n);
   }
