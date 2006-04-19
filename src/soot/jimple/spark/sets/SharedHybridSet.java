@@ -275,13 +275,12 @@ public class SharedHybridSet extends PointsToSetInternal {
 			}
 		} else if (other.bitVector != null) {
 			// Now both bitvectors are non-null; merge them
-			PointsToBitVector newBits = new PointsToBitVector(other.bitVector);
-			PointsToBitVector newBitVector = new PointsToBitVector(bitVector);
+			PointsToBitVector newBitVector = new PointsToBitVector(other.bitVector);
 			if (exclude != null)
-				newBits.andNot(exclude.bitVector);
-			if (mask != null) newBits.and(mask);
+				newBitVector.andNot(exclude.bitVector);
+			if (mask != null) newBitVector.and(mask);
 			
-			newBitVector.or(newBits);
+			newBitVector.or(bitVector);
 
 			if (!newBitVector.equals(bitVector)) // if some elements were
 													// actually added
