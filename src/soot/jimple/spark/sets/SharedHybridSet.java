@@ -327,8 +327,18 @@ public class SharedHybridSet extends PointsToSetInternal {
 					+ numAdded - overflow.size();   //might be negative due to 
 						//elements in overflow already being in the new bits
 
-				findAppropriateBitVector(newBitVector, originalOnes);
-				return true;
+				if (size() > originalSize)
+				{
+					findAppropriateBitVector(newBitVector, originalOnes);
+					checkSize();
+					return true;
+				}
+				else return false;   //It might happen that the bitvector being merged in adds some bits
+					//to the existing bitvector, but that those new bits are all elements that were already
+					//in the overflow list.  In that case, the set might not change, and if not we return false.
+					//We also leave the set the way it was by not calling findAppropriateBitvector,
+					//which maximizes sharing and is fastest in the short term.  I'm not sure whether it
+					//would be faster overall to keep the already calculated bitvector anyway.
 			}
 		}
 		// Add all the elements in the overflow list of other, unless they're in
@@ -346,6 +356,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 			}
 		}
 
+		checkSize();
 		return size() > originalSize;
 	}
 
