@@ -119,9 +119,11 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 			
 			//get the target node
 			Object temp = mapper.getTarget(label);
-			if(temp == null)
-				throw new DecompilationException("Could not find target for abrupt stmt"+abrupt.toString());
-			
+			if(temp == null){
+				continue;
+				//throw new DecompilationException("Could not find target for abrupt stmt"+abrupt.toString());
+			}
+		
 			target = (ASTLabeledNode)temp;
 			
 			//will need to find parents of ancestors see if we need to initialize the finder

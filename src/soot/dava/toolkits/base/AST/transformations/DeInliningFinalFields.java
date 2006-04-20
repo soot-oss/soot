@@ -195,29 +195,32 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
 
     public void checkAndSwitch(ValueBox valBox){
-	Value val =valBox.getValue();
+    	Value val =valBox.getValue();
 
-	Object finalField = check(val);
-	if(finalField!=null){
-	    //System.out.println("Final field with this value exists"+finalField);
+    	Object finalField = check(val);
+    	if(finalField!=null){
+    		//System.out.println("Final field with this value exists"+finalField);
 		
-		/*
-		 * If the final field belongs to the same class then we should supress declaring class
-		 */
-		SootField field = (SootField)finalField;
-		
-		if(sootClass.declaresField(field.getName(),field.getType())){
-			//this field is of this class so supress the declaring class
-		    valBox.setValue(new DStaticFieldRef(field.makeRef(),true));
-		}
-		else{
-		    valBox.setValue(new DStaticFieldRef(field.makeRef(),false));
-		}
-		
+    		/*
+    		 * If the final field belongs to the same class then we should supress declaring class
+    		 */
+    		SootField field = (SootField)finalField;
+    		
+    		if(sootClass.declaresField(field.getName(),field.getType())){
+    			//this field is of this class so supress the declaring class
+    			if(valBox.canContainValue(new DStaticFieldRef(field.makeRef(),true))){
+    				valBox.setValue(new DStaticFieldRef(field.makeRef(),true));
+    			}
+    		}
+    		else{
+    			if(valBox.canContainValue(new DStaticFieldRef(field.makeRef(),true))){
+    				valBox.setValue(new DStaticFieldRef(field.makeRef(),false));
+    			}
+    		}
 
-	}
-	//else
-	//  System.out.println("Final field not found");
+    	}
+    	//else
+    	//  System.out.println("Final field not found");
     }
 
 
@@ -345,19 +348,19 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
 
     public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-	List statements = node.getStatements();
-	Iterator it = statements.iterator();
+    	List statements = node.getStatements();
+    	Iterator it = statements.iterator();
 	
-	while(it.hasNext()){
-	    AugmentedStmt as = (AugmentedStmt)it.next();
-	    Stmt s = as.get_Stmt();
-	    Iterator tempIt = s.getUseBoxes().iterator();
-	    while(tempIt.hasNext()){
-		ValueBox tempBox = (ValueBox)tempIt.next();
-		//System.out.println("Checking useBox of stmt");
-		checkAndSwitch(tempBox);
-	    }
-	}
+    	while(it.hasNext()){
+    		AugmentedStmt as = (AugmentedStmt)it.next();
+    		Stmt s = as.get_Stmt();
+    		Iterator tempIt = s.getUseBoxes().iterator();
+    		while(tempIt.hasNext()){
+    			ValueBox tempBox = (ValueBox)tempIt.next();
+    			//System.out.println("Checking useBox of stmt");
+    			checkAndSwitch(tempBox);
+    		}
+    	}
     }
 
 

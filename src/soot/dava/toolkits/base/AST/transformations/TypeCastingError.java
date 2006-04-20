@@ -27,7 +27,7 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.ImmediateBox;
 
 public class TypeCastingError extends DepthFirstAdapter {
-
+	public boolean myDebug=true;
 	public TypeCastingError(){
 		
 	}
@@ -99,9 +99,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 		    			rightType instanceof FloatType || rightType instanceof LongType)) {
 			    	//loss of precision do explicit casting
 		    	
-			    	if(DEBUG)System.out.println("Explicit casting to INT required");
+			    	if(myDebug)System.out.println("Explicit casting to INT required");
 			    	rightBox.setValue(new GCastExpr(right,IntType.v()));
-			    	if(DEBUG)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	if(myDebug)System.out.println("New right expr is "+rightBox.getValue().toString());
 			    	continue;
 			    }
 			    

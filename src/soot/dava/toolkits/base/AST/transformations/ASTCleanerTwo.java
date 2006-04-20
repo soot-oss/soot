@@ -86,13 +86,13 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 		    IfElseBreaker breaker = new IfElseBreaker();
 		    boolean success=false;
 		    if(breaker.isIfElseBreakingPossiblePatternOne((ASTIfElseNode)temp)){
-			success=true;
+		    	success=true;
 		    }
 		    else if(breaker.isIfElseBreakingPossiblePatternTwo((ASTIfElseNode)temp)){
-			success=true;
+		    	success=true;
 		    }
-		    if(G.v().ASTTransformations_modified)
-			return;
+		    //if(G.v().ASTTransformations_modified)
+		    	//return;
 		    if(!success){
 			//System.out.println("not successful");
 		    }

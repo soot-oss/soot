@@ -48,13 +48,14 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   
   private void increaseDepth(){
 	  System.out.println("Increasing depth");
-    currentDepth++;
-    if(currentDepth > maxDepth)
-      maxDepth = currentDepth;
+	  currentDepth++;
+	  if(currentDepth > maxDepth)
+		  maxDepth = currentDepth;
   }
   
   private void decreaseDepth(){
-    currentDepth--;
+	  System.out.println("Decreasing depth");
+	  currentDepth--;
   }
   
   

@@ -405,7 +405,16 @@ public class EliminateConditions extends DepthFirstAdapter {
         		
     			if (returned.booleanValue()){
     				//if statement and value was true put the body of if into the code
-    				bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
+    				//if its a labeled stmt we need a labeled block instead
+    				//notice that its okkay to put a labeled block since other transformations might remove it
+    				String label = ((ASTLabeledNode)temp).get_Label().toString();
+    				if(label != null){
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(0)  );
+    					bodyContainingNode.add(index,labeledNode);
+    				}
+    				else{ 	   				
+    					bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
+    				}
     			}
     			if(DEBUG) System.out.println("Removed if"+temp);
     			return true;
@@ -414,10 +423,28 @@ public class EliminateConditions extends DepthFirstAdapter {
     			bodyContainingNode.remove(temp);
     			if(returned.booleanValue()){
     				//true so the if branch's body has to be added
-    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(0));
+    				//if its a labeled stmt we need a labeled block instead
+    				//notice that its okkay to put a labeled block since other transformations might remove it
+    				String label = ((ASTLabeledNode)temp).get_Label().toString();
+    				if(label != null){
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(0)  );
+    					bodyContainingNode.add(index,labeledNode);
+    				}
+    				else{ 	   				
+    					bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
+    				}
     			}
     			else{
-    				bodyContainingNode.addAll(index, (List)temp.get_SubBodies().get(1));
+    				//if its a labeled stmt we need a labeled block instead
+    				//notice that its okkay to put a labeled block since other transformations might remove it
+    				String label = ((ASTLabeledNode)temp).get_Label().toString();
+    				if(label != null){
+    					ASTLabeledBlockNode labeledNode = new ASTLabeledBlockNode( ((ASTLabeledNode)temp).get_Label(), (List)temp.get_SubBodies().get(1)  );
+    					bodyContainingNode.add(index,labeledNode);
+    				}
+    				else{ 	   				
+    					bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(1));
+    				}
     			}
     			return true;
     		}
