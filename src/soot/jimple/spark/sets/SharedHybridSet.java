@@ -13,15 +13,14 @@ import java.util.*;
  * -It seems like there must be a way to immediately know which subset bitvector
  * will exist, since sets are shared when a node with a smaller points-to set is
  * pointing to another node.  Why not just take that node's bitvector as a base?
- * -When a new bitVector is generated, the old one might now have no more points-to
- * sets that need it, but it's still remaining in the lookup map.  That's a problem.
  * -addAll could probably use many improvements.
  * -Cast masking - calling typeManager.get
- * -An interesting problem is that when merging 2 bitvectors, if the one being merged
+ * -An interesting problem is that when merging a bitvector into an overflow list, if 
+ * the one being merged
  * in has a bitvector, the mask or exclude might mask it down to a bitvector with very
  * few ones.  (In fact, this might even result in one with 0 ones!)
  * Should that new bitvector stay as a bitvector, or be converted to an
- * overflow list?  And how can we tell when it will have few ones?  (Mofidy BitVector?)
+ * overflow list?  And how can we tell when it will have few ones?  (Modify BitVector?)
  * 
  */
 /**
@@ -205,21 +204,30 @@ public class SharedHybridSet extends PointsToSetInternal {
 
         BitVector mask = getBitMask(other, pag);
 
-		if (exclude != null && exclude.overflow.size() > 0) {
-			// Make exclude only a bitvector, for simplicity
-			PointsToBitVector newBitVector;
-			if (bitVector == null) {
-				newBitVector = new PointsToBitVector(pag.getAllocNodeNumberer()
-						.size());
-			} else {
-				newBitVector = new PointsToBitVector(bitVector);
+		if (exclude != null)
+		{
+			if (exclude.overflow.size() > 0) 
+			{
+				// Make exclude only a bitvector, for simplicity
+				PointsToBitVector newBitVector;
+				if (bitVector == null) {
+					newBitVector = new PointsToBitVector(pag.getAllocNodeNumberer()
+							.size());
+				} else {
+					newBitVector = new PointsToBitVector(bitVector);
+				}
+				newBitVector
+						.add(exclude.overflow.overflow, exclude.overflow.size());
+				exclude = new SharedHybridSet(type, pag);
+				exclude.bitVector = newBitVector;
 			}
-			newBitVector
-					.add(exclude.overflow.overflow, exclude.overflow.size());
-			exclude = new SharedHybridSet(type, pag);
-			exclude.bitVector = newBitVector;
-		}
 
+			//It's possible at this point that exclude could have been passed in non-null,
+			//but with no elements.  Simplify the rest of the algorithm by setting it to null
+			//in that case.
+			else if (exclude.bitVector == null) exclude = null;
+		}
+		
 		int originalSize = size(), originalOnes = originalSize
 				- overflow.size();
 

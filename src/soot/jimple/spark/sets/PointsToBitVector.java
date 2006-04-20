@@ -4,7 +4,11 @@ import soot.util.BitVector;
 import soot.jimple.spark.pag.Node;
 
 /** An extension of a bit vector which is convenient to use to represent
- * points-to sets.
+ * points-to sets.  Used by SharedHybridSet.
+ *
+ * We have to extend soot.util.BitVector rather than java.util.BitSet
+ * because PointsToSetInternal.getBitMask() returns a soot.util.BitVector.
+ * which must be combined with other bit vectors.
  * 
  * @author Adam Richard
  *
