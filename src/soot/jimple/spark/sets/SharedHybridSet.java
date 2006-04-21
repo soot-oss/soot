@@ -109,7 +109,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 	private void findAppropriateBitVector(PointsToBitVector newBitVector, PointsToBitVector otherBitVector, int otherSize, int szBitvector) {
 		//First check "other" and "this"'s bitvector, to maximize sharing and
 		//minimize searching for a new bitvector
-/*		if (otherBitVector != null && 
+		if (otherBitVector != null && 
 				otherSize <= numElements &&
 				otherSize + OVERFLOW_THRESHOLD >= numElements &&
 				otherBitVector.isSubsetOf(newBitVector))
@@ -124,7 +124,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 		{
 			overflow = remainder(newBitVector, bitVector);
 		}
-		else*/
+		else
 		{
 			for (int overFlowSize = 0; overFlowSize < OVERFLOW_THRESHOLD; ++overFlowSize) 
 			{
