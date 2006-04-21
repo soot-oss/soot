@@ -210,11 +210,11 @@ public class SharedHybridSet extends PointsToSetInternal {
 			{
 				// Make exclude only a bitvector, for simplicity
 				PointsToBitVector newBitVector;
-				if (bitVector == null) {
+				if (exclude.bitVector == null) {
 					newBitVector = new PointsToBitVector(pag.getAllocNodeNumberer()
 							.size());
 				} else {
-					newBitVector = new PointsToBitVector(bitVector);
+					newBitVector = new PointsToBitVector(exclude.bitVector);
 				}
 				newBitVector
 						.add(exclude.overflow.overflow, exclude.overflow.size());
