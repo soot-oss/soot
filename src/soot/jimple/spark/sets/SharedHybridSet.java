@@ -106,35 +106,56 @@ public class SharedHybridSet extends PointsToSetInternal {
 	// elements missing. If we find one, make that set the new `bitVector', and
 	// the leftovers the new `overflow'
 	//szBitVector is the size of the ORIGINAL bit vector, NOT the size of newBitVector
-	private void findAppropriateBitVector(PointsToBitVector newBitVector, int szBitvector) {
-		for (int overFlowSize = 0; overFlowSize < OVERFLOW_THRESHOLD; ++overFlowSize) {
-			int bitVectorCardinality = numElements - overFlowSize;
-			if (bitVectorCardinality < 0) break;   //We might be trying to add a bitvector
-				//with <OVERFLOW_THRESHOLD ones (in fact, there might be bitvectors with 0
-				//ones).  This results from merging bitvectors and masking out certain values.
-			if (bitVectorCardinality < AllSharedHybridNodes.v().lookupMap.map.length
-					&& AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality] != null) 
+	private void findAppropriateBitVector(PointsToBitVector newBitVector, PointsToBitVector otherBitVector, int otherSize, int szBitvector) {
+		//First check "other" and "this"'s bitvector, to maximize sharing and
+		//minimize searching for a new bitvector
+/*		if (otherBitVector != null && 
+				otherSize <= numElements &&
+				otherSize + OVERFLOW_THRESHOLD >= numElements &&
+				otherBitVector.isSubsetOf(newBitVector))
+		{
+			setNewBitVector(szBitvector, otherBitVector);
+			overflow = remainder(newBitVector, otherBitVector);
+		}
+		else if (bitVector != null && 
+				szBitvector <= numElements &&
+				szBitvector + OVERFLOW_THRESHOLD >= numElements &&
+				bitVector.isSubsetOf(newBitVector))
+		{
+			overflow = remainder(newBitVector, bitVector);
+		}
+		else*/
+		{
+			for (int overFlowSize = 0; overFlowSize < OVERFLOW_THRESHOLD; ++overFlowSize) 
 			{
-				ListIterator i = AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality]
-						.listIterator();
-				while (i.hasNext()) {
-					// for each existing bit vector with bitVectorCardinality
-					// ones
-					PointsToBitVector candidate = (PointsToBitVector) (i.next());
-					if (candidate.isSubsetOf(newBitVector)) {
-						setNewBitVector(szBitvector, candidate);
-						overflow = remainder(newBitVector, candidate);
-						return;
+				int bitVectorCardinality = numElements - overFlowSize;
+				if (bitVectorCardinality < 0) break;   //We might be trying to add a bitvector
+					//with <OVERFLOW_THRESHOLD ones (in fact, there might be bitvectors with 0
+					//ones).  This results from merging bitvectors and masking out certain values.
+				if (bitVectorCardinality < AllSharedHybridNodes.v().lookupMap.map.length
+						&& AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality] != null) 
+				{
+					ListIterator i = AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality]
+							.listIterator();
+					while (i.hasNext()) {
+						// for each existing bit vector with bitVectorCardinality
+						// ones
+						PointsToBitVector candidate = (PointsToBitVector) (i.next());
+						if (candidate.isSubsetOf(newBitVector)) {
+							setNewBitVector(szBitvector, candidate);
+							overflow = remainder(newBitVector, candidate);
+							return;
+						}
 					}
 				}
 			}
+			// Didn't find an appropriate bit vector to use as a base; add the new
+			// bit vector to the map of all bit vectors and set it as the new base
+			// bit vector
+			setNewBitVector(szBitvector, newBitVector);
+			overflow.removeAll();
+			AllSharedHybridNodes.v().lookupMap.add(numElements, newBitVector);
 		}
-		// Didn't find an appropriate bit vector to use as a base; add the new
-		// bit vector to the map of all bit vectors and set it as the new base
-		// bit vector
-		setNewBitVector(szBitvector, newBitVector);
-		overflow.removeAll();
-		AllSharedHybridNodes.v().lookupMap.add(numElements, newBitVector);
 	}
 
 	//Allows for reference counting and deleting the old bit vector if it
@@ -187,7 +208,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 			// The algorithm would still work without this step, but wouldn't be
 			// a
 			// shared implmentation at all.
-			findAppropriateBitVector(newBitVector, numElements - overflow.size() - 1);
+			findAppropriateBitVector(newBitVector, null, 0, numElements - overflow.size() - 1);
 
 		}
 		return true;
@@ -228,8 +249,9 @@ public class SharedHybridSet extends PointsToSetInternal {
 			else if (exclude.bitVector == null) exclude = null;
 		}
 		
-		int originalSize = size(), originalOnes = originalSize
-				- overflow.size();
+		int originalSize = size(), 
+		    originalOnes = originalSize - overflow.size(),
+		    otherBitVectorSize = other.size() - other.overflow.size();
 
 		// Decide on the base bitvector
 		if (bitVector == null) {
@@ -237,7 +259,6 @@ public class SharedHybridSet extends PointsToSetInternal {
 			if (bitVector != null) { // Maybe both bitvectors were null; in
 				                     // that case, no need to do this
 				bitVector.incRefCount();
-				int otherBitVectorSize = other.size() - other.overflow.size();
 
 				// Since merging in new bits might add elements that
 				// were
@@ -268,7 +289,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 						result.add(toReAdd.overflow, toReAdd.size());
 						int newBitVectorSize = result.cardinality(); 
 						numElements = newBitVectorSize;
-						findAppropriateBitVector(result, otherBitVectorSize);
+						findAppropriateBitVector(result, other.bitVector, otherBitVectorSize, otherBitVectorSize);
 						newBitVectorCreated = true;
 					}
 				}
@@ -329,7 +350,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 
 				if (size() > originalSize)
 				{
-					findAppropriateBitVector(newBitVector, originalOnes);
+					findAppropriateBitVector(newBitVector, other.bitVector, otherBitVectorSize, originalOnes);
 					//checkSize();
 					return true;
 				}

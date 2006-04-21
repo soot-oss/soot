@@ -48,7 +48,7 @@ public class PointsToBitVector extends BitVector {
 	public boolean isSubsetOf(PointsToBitVector other) {
 		//B is a subset of A iff the "and" of A and B gives A.
 		BitVector andResult = BitVector.and(this, other);  //Don't want to modify either one
-		return andResult.equals(other);
+		return andResult.equals(this);
 	}
 	
 	/**@return number of 1 bits in the bitset.
