@@ -330,12 +330,12 @@ public class SharedHybridSet extends PointsToSetInternal {
 				if (size() > originalSize)
 				{
 					findAppropriateBitVector(newBitVector, originalOnes);
-					checkSize();
+					//checkSize();
 					return true;
 				}
 				else 
 				{
-					checkSize();
+					//checkSize();
 					return false;   //It might happen that the bitvector being merged in adds some bits
 					//to the existing bitvector, but that those new bits are all elements that were already
 					//in the overflow list.  In that case, the set might not change, and if not we return false.
@@ -360,7 +360,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 			}
 		}
 
-		checkSize();
+		//checkSize();
 		return size() > originalSize;
 	}
 

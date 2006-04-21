@@ -52,7 +52,9 @@ public class PointsToBitVector extends BitVector {
 	}
 	
 	/**@return number of 1 bits in the bitset.
-	 * Call this sparingly because it's probably expensive.*/ 
+	 * Call this sparingly because it's probably expensive.*/
+	
+	/*Old algorithm:
 	public int cardinality() {
 		int retVal = 0;
 		BitSetIterator it = iterator();
@@ -62,6 +64,7 @@ public class PointsToBitVector extends BitVector {
 		}
 		return retVal;
 	}
+	*/
 	
 	public Object clone()
 	{

@@ -150,6 +150,28 @@ public class BitVector
             bits[j] |= otherBits[j];
         }
     }
+    
+    /**Count the number of ones in the bitvector.
+     * @author Adam Richard
+     * This is Brian Kernighan's algorithm from:
+     * http://graphics.stanford.edu/~seander/bithacks.html
+     * and is efficient for sparse bit sets.
+     */
+	public int cardinality()
+	{
+		int c = 0;
+		for (int i = 0; i < bits.length; ++i)
+		{
+			long v = bits[i];
+			while (v != 0)
+			{
+				v &= v - 1;
+				++c;
+			}
+		}
+		return c;
+	}
+
     private void expand( int bit ) {
         int n = indexOf( bit )+1;
         if( n <= bits.length ) return;
