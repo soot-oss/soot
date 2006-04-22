@@ -25,6 +25,9 @@ import soot.grimp.*;
 import soot.jimple.*;
 import soot.grimp.internal.*;
 
+/*
+ * TODO
+ */
 public class DCmpExpr extends AbstractGrimpIntBinopExpr implements CmpExpr
 {
     public DCmpExpr(Value op1, Value op2) { super(op1, op2); }
@@ -35,5 +38,13 @@ public class DCmpExpr extends AbstractGrimpIntBinopExpr implements CmpExpr
     public Object clone() 
     {
         return new DCmpExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    }
+    
+    public Type getType(){
+    	if (getOp1().getType().equals(getOp2().getType())){
+    		return getOp1().getType();
+    	}
+    		
+        return IntType.v();
     }
 }

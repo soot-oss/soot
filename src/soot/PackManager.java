@@ -503,7 +503,7 @@ public class PackManager {
     		 * Check if we want to apply transformations
     		 * one reason we might not want to do this is when gathering old metrics data!!
     		 */
-            if(transformations){
+
             	//debug("analyzeAST","Advanced Analyses ALL DISABLED");
             	
             	G.v().out.println("Analyzing " + fileName + "... ");	 
@@ -528,12 +528,17 @@ public class PackManager {
             		if(m.hasActiveBody()){
             			DavaBody body = (DavaBody)m.getActiveBody();
                 		//System.out.println("body"+body.toString());
-                		body.analyzeAST();
+                        if(transformations){
+                        	body.analyzeAST();
+                        } //if tansformations are enabled
+                        else{
+                        	body.applyBugFixes();
+                        }
             		}
             		else
             			continue;
             	}
-            } //if tansformations are enabled
+            
         } //going through all classes
     		
 

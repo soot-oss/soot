@@ -380,7 +380,7 @@ public class DavaBody extends Body {
 	        boolean force = PhaseOptions.getBoolean(options, "enabled");
 	        //System.out.println("force is "+force);
 	        if(force){
-				AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
+	        	AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
 	        }
 
 	        debug("DavaBody","PreInit booleans is" + G.v().SootMethodAddedByDava);
@@ -389,6 +389,22 @@ public class DavaBody extends Body {
 		Dava.v().log("end method " + body.getMethod().toString());
 	}
 
+	
+	
+	public void applyBugFixes(){
+   		ASTNode AST = (ASTNode) this.getUnits().getFirst();
+		debug("applyBugFixes","Applying AST analyzes for method"+this.getMethod().toString());
+
+
+		AST.apply(new ShortcutIfGenerator());
+		debug("applyBugFixes","after ShortcutIfGenerator"+G.v().ASTTransformations_modified);
+
+		
+		AST.apply(new TypeCastingError());
+		debug("applyBugFixes","after TypeCastingError"+G.v().ASTTransformations_modified);
+	}
+	
+	
 	/*
 	 * Method is invoked by the packmanager just before it is actually about to generate
 	 * decompiled code. Works as a separate stage from the DavaBody() constructor.

@@ -27,7 +27,7 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.ImmediateBox;
 
 public class TypeCastingError extends DepthFirstAdapter {
-	public boolean myDebug=true;
+	public boolean myDebug=false;
 	public TypeCastingError(){
 		
 	}
@@ -46,7 +46,7 @@ public class TypeCastingError extends DepthFirstAdapter {
 				continue;
 			
 			DefinitionStmt ds = (DefinitionStmt)s;
-			
+			if(myDebug) System.out.println("Definition stmt"+ds);			
 			
 			ValueBox rightBox = ds.getRightOpBox();
 			ValueBox leftBox = ds.getLeftOpBox();
@@ -56,14 +56,20 @@ public class TypeCastingError extends DepthFirstAdapter {
 				
 			if(! (left.getType() instanceof PrimType && right.getType() instanceof PrimType )){
 				//only interested in prim type casting errors
+				if(myDebug) System.out.println("\tDefinition stmt does not contain prims no need to modify");
 				continue;
 			}
 			
 			Type leftType = left.getType();
 			Type rightType = right.getType();
-			
+			if(myDebug) System.out.println("Left type is: "+leftType);
+			if(myDebug) System.out.println("Right type is: "+rightType);
+			if(leftType.equals(rightType)){
+				if(myDebug) System.out.println("\tTypes are the same");
+				if(myDebug) System.out.println("Right value is of instance"+right.getClass());
+			}
 			if(!leftType.equals(rightType)){
-				
+				if(myDebug) System.out.println("\tDefinition stmt has to be modified");	
 				// ByteType, DoubleType, FloatType, IntType, LongType, ShortType
 				/*
 				 * byte  	 Byte-length integer  	8-bit two's complement

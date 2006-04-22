@@ -36,4 +36,13 @@ public class DCmplExpr extends AbstractGrimpIntBinopExpr implements CmplExpr
     {
         return new DCmplExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
     }
+    
+    
+    public Type getType(){
+    	if (getOp1().getType().equals(getOp2().getType())){
+    		return getOp1().getType();
+    	}
+    		
+        return IntType.v();
+    }
 }

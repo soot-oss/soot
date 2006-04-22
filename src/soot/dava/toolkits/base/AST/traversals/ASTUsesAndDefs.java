@@ -431,6 +431,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
     /*
      * Give it a def stmt and it will return all places where it is used
+     * a use is either a statement or a node(condition, synch, switch , for etc)
      */
     public List getDUChain(Object node){
 	return (List)dU.get(node);

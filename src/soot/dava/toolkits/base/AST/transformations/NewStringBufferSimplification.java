@@ -72,8 +72,14 @@ public class NewStringBufferSimplification extends DepthFirstAdapter {
     		System.out.println("arg value is a virtual invokeExpr");
     	DVirtualInvokeExpr vInvokeExpr = ((DVirtualInvokeExpr)tempArgValue);
     	
-    	if( ! (vInvokeExpr.getMethod().toString().equals("<java.lang.StringBuffer: java.lang.String toString()>")))
+    	
+    	//need this try catch since DavaStmtHandler expr will not have a "getMethod"
+    	try{
+    		if( ! (vInvokeExpr.getMethod().toString().equals("<java.lang.StringBuffer: java.lang.String toString()>")))
+    			return;
+    	}catch(Exception e){
     		return;
+    	}
     	
     	if(DEBUG)
     		System.out.println("Ends in toString()");
