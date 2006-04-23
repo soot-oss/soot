@@ -63,8 +63,11 @@ import soot.util.dot.DotGraph;
  */
 
 public class PhaseDumper {
-    private List bodyDumpingPhases;
-    private List cfgDumpingPhases;
+    // As a minor optimization, we leave these lists null in the
+    // case were no phases at all are to be dumped, which is the 
+    // most likely case.
+    private List bodyDumpingPhases = null;
+    private List cfgDumpingPhases = null;
 
     private class PhaseStack extends ArrayList {
 	// We eschew java.util.Stack to avoid synchronization overhead.
@@ -102,8 +105,12 @@ public class PhaseDumper {
 
 
     public PhaseDumper(Singletons.Global g) {
-	bodyDumpingPhases = Options.v().dump_body();
-	cfgDumpingPhases = Options.v().dump_cfg();
+	if (! Options.v().dump_body().isEmpty()) {
+	    bodyDumpingPhases = Options.v().dump_body();
+	}
+	if (! Options.v().dump_cfg().isEmpty()) {
+	    cfgDumpingPhases = Options.v().dump_cfg();
+	}
     }
 
 
@@ -118,14 +125,34 @@ public class PhaseDumper {
 
 
     private boolean isBodyDumpingPhase(String phaseName) {
-	return bodyDumpingPhases.contains(phaseName) || 
-	    bodyDumpingPhases.contains(allWildcard);
+	return ((bodyDumpingPhases != null)
+		&& (bodyDumpingPhases.contains(phaseName) || 
+		    bodyDumpingPhases.contains(allWildcard)));
     }
 
 
     private boolean isCFGDumpingPhase(String phaseName) {
-	return cfgDumpingPhases.contains(phaseName) || 
-	    cfgDumpingPhases.contains(allWildcard);
+	if (cfgDumpingPhases == null) {
+	    return false;
+	}
+	if (cfgDumpingPhases.contains(allWildcard)) {
+	  return true;
+	} else {
+	  while (true) { // loop exited by "return" or "break".
+	    if (cfgDumpingPhases.contains(phaseName)) {
+	      return true;
+	    }
+	    // Go on to check if phaseName is a subphase of a
+	    // phase in cfgDumpingPhases.
+	    int lastDot = phaseName.lastIndexOf('.');
+	    if (lastDot < 0) {
+	      break;
+	    } else {
+	      phaseName = phaseName.substring(0, lastDot);
+	    }
+	  }
+	  return false;
+	}
     }
 
 
