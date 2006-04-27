@@ -110,6 +110,7 @@ public class BitVector
         }
         return (int) ( (ret >> 32) ^ ret );
     }
+    /** Returns index of highest-numbered one bit. */
     public int length() {
         int i;
         for( i = bits.length-1; i >= 0; i-- ) {
@@ -198,6 +199,7 @@ public class BitVector
         bits[indexOf(bit)] |= mask(bit);
         return ret;
     }
+    /** Returns number of bits in the underlying array. */
     public int size() {
         return bits.length << 6;
     }
