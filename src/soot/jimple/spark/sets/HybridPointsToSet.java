@@ -237,6 +237,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final void convertToBits() {
         if( bits != null ) return;
+//		++numBitVectors;
         bits = new BitVector( pag.getAllocNodeNumberer().size() );
         if( n1 != null ) fastAdd( n1 );
         if( n2 != null ) fastAdd( n2 );
@@ -256,6 +257,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         if( n16 != null ) fastAdd( n16 );
     }
 
+//	public static int numBitVectors = 0;
     private Node n1 = null;
     private Node n2 = null;
     private Node n3 = null;

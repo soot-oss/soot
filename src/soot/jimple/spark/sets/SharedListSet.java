@@ -92,7 +92,8 @@ public class SharedListSet extends PointsToSetInternal
 	{
 		//If exclude's node is less than other's first node, then there
 		//are elements to exclude that aren't in other, so keep advancing exclude
-		while(exclude != null && exclude.elem.getNumber() < other.elem.getNumber())
+		final int otherNum = other.elem.getNumber();
+		while(exclude != null && exclude.elem.getNumber() < otherNum)
 		{
 			exclude = exclude.next;
 		}
@@ -296,6 +297,8 @@ public class SharedListSet extends PointsToSetInternal
 		public void incRefCount()
 		{
 			++refCount;
+			//Get an idea of how much sharing is taking place
+//			System.out.println(refCount);
 		}
 		public void decRefCount()
 		{

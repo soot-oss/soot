@@ -122,6 +122,25 @@ public class SparkTransformer extends SceneTransformer
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );
         reportTime( "Solution found", startSimplify, endProp );
+	/*	
+		//Measurement code inserted by Adam
+		//Count how many bitvectors are shared for the Heintze set
+		long numBitVectors = 0;
+		for (int i = 0; i < AllSharedHybridNodes.v().lookupMap.map.length; ++i)
+		{
+			if (AllSharedHybridNodes.v().lookupMap.map[i] != null)
+			{
+				ListIterator li = AllSharedHybridNodes.v().lookupMap.map[i].listIterator();
+				while (li.hasNext())
+				{
+					li.next();
+					++numBitVectors;
+				}
+			}
+		}
+		System.out.println("Number of shared bit vectors for Heintze: " + numBitVectors);
+		System.out.println("Number of bit vectors for Hybrid: " + HybridPointsToSet.numBitVectors);	
+*/
         if( opts.force_gc() ) doGC();
         
         if( !opts.on_fly_cg() || opts.vta() ) {

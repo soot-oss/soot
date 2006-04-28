@@ -51,7 +51,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 	}
 
 	// The following 2 constants should be tweaked for efficiency
-	public final static int OVERFLOW_SIZE = 20;
+	public final static int OVERFLOW_SIZE = 16;
 
 	/**
 	 * The max number of elements allowed in the set before creating a new
