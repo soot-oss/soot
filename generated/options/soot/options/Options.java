@@ -1617,7 +1617,9 @@ public class Options extends OptionsBase {
                 +padVal( "numtrace", "Number-tracing queue implementation" )
                 
                 +padOpt( "backend", "Select BDD backend" )
-                +padVal( "buddy (default)", "BuDDy backend" )
+                +padVal( "auto (default)", "Select backend based on bdd option" )
+                
+                +padVal( "buddy", "BuDDy backend" )
                 
                 +padVal( "cudd", "CUDD backend" )
                 
@@ -2941,7 +2943,7 @@ public class Options extends OptionsBase {
               +"order:32 "
               +"profile:false "
               +"q:auto "
-              +"backend:buddy "
+              +"backend:auto "
               +"ignore-types:false "
               +"pre-jimplify:false "
               +"context:insens "

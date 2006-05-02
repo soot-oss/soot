@@ -423,11 +423,12 @@ public class PaddleOptions
         throw new RuntimeException( "Invalid value "+s+" of phase option q" );
     }
     
-    public static final int backend_buddy = 1;
-    public static final int backend_cudd = 2;
-    public static final int backend_sable = 3;
-    public static final int backend_javabdd = 4;
-    public static final int backend_none = 5;
+    public static final int backend_auto = 1;
+    public static final int backend_buddy = 2;
+    public static final int backend_cudd = 3;
+    public static final int backend_sable = 4;
+    public static final int backend_javabdd = 5;
+    public static final int backend_none = 6;
     /** Backend --
     
      * Select BDD backend.
@@ -437,6 +438,9 @@ public class PaddleOptions
      */
     public int backend() {
         String s = soot.PhaseOptions.getString( options, "backend" );
+        
+        if( s.equalsIgnoreCase( "auto" ) )
+            return backend_auto;
         
         if( s.equalsIgnoreCase( "buddy" ) )
             return backend_buddy;

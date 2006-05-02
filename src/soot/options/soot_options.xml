@@ -2264,9 +2264,19 @@ Select the implementation of worklists to be used in Paddle.
 							<name>Backend</name>
 							<alias>backend</alias>
 							<value>
+								<name>Select Automatically</name>
+								<alias>auto</alias>
+								<default/>
+<short_desc>Select backend based on bdd option</short_desc>
+<long_desc>
+When the bdd option is true, the BuDDy backend will be used.
+When the bdd option is false, the backend will be set to none, to avoid
+loading any BDD backend.
+</long_desc>
+							</value>
+							<value>
 								<name>BuDDy</name>
 								<alias>buddy</alias>
-								<default/>
 <short_desc>BuDDy backend</short_desc>
 <long_desc>
 Use BuDDy implementation of BDDs.
