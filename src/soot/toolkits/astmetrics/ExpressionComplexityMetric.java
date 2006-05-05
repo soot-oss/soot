@@ -36,6 +36,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
   	int currentExprDepth;
 	int exprDepthSum;
 	int exprCount;
+	int inExpr;
 
 	public ExpressionComplexityMetric(polyglot.ast.Node node) {
 	  super(node);
@@ -45,6 +46,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
 	  currentExprDepth = 0;
 	  exprDepthSum = 0;
 	  exprCount = 0;
+	  inExpr = 0;
 	}
 
 	public void addMetrics(ClassData data) {
@@ -58,9 +60,7 @@ public class ExpressionComplexityMetric extends ASTMetric {
 
 	public NodeVisitor enter(Node parent, Node n){
 	  if(n instanceof Expr){
-	    exprCount++;
-	    exprDepthSum+=currentExprDepth;
-	    
+	    inExpr++;
 	    currentExprDepth++;
 	  }
 	  
@@ -69,6 +69,11 @@ public class ExpressionComplexityMetric extends ASTMetric {
 	
 	public Node leave(Node old, Node n, NodeVisitor v){
 	  if(n instanceof Expr){
+	    if (currentExprDepth==1) {
+	      exprCount++;
+	      exprDepthSum+=inExpr;
+	      inExpr = 0;
+	    }
 	    currentExprDepth--;
 	  }
 	  
