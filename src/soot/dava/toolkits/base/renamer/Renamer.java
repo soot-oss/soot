@@ -93,9 +93,7 @@ public class Renamer {
 		newClassName();
 
 		//check if a local is assigned after casting
-		castedObject();
-		
-	
+		castedObject();	
 		
 		//if nothing else give a reference the name of the class
 		objectsGetClassName();

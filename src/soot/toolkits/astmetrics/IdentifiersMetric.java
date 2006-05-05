@@ -36,6 +36,9 @@ import java.io.*;
 public class IdentifiersMetric extends ASTMetric {
 
   double nameComplexity = 0;
+  double nameCount =0;
+  
+  
   
   int dictionarySize = 0;
   ArrayList dictionary;
@@ -139,13 +142,15 @@ public class IdentifiersMetric extends ASTMetric {
    */
   public void reset() {
     nameComplexity = 0;
+    nameCount=0;
   }
 
   /* (non-Javadoc)
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
   public void addMetrics(ClassData data) {
-    data.addMetric(new MetricData("NameComplexity",new Double(nameComplexity)));
+	    data.addMetric(new MetricData("NameComplexity",new Double(nameComplexity)));
+	    data.addMetric(new MetricData("NameCount",new Double(nameCount)));
   }
   
   public NodeVisitor enter(Node parent, Node n){
@@ -154,17 +159,22 @@ public class IdentifiersMetric extends ASTMetric {
     if(n instanceof ClassDecl){
       name = ((ClassDecl)n).name();
       multiplier = 3;
+      nameCount++;
     } else if (n instanceof MethodDecl) {
       name = ((MethodDecl)n).name();
       multiplier = 4;
+      nameCount++;
     } else if (n instanceof FieldDecl) {
       name = ((FieldDecl)n).name();
       multiplier = 2;
+      nameCount++;
     } else if (n instanceof Formal) { 		// this is locals and formals
       name = ((Formal)n).name();
       multiplier = 1.5;
+      nameCount++;
     } else if (n instanceof LocalDecl) { 		// this is locals and formals
       name = ((LocalDecl)n).name();
+      nameCount++;
     }
     
     if (name!=null)

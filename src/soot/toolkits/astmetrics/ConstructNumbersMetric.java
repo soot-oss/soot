@@ -58,6 +58,7 @@ public class ConstructNumbersMetric extends ASTMetric {
 		//conditionals
 		data.addMetric(new MetricData("If",new Integer(numIf)));
 		data.addMetric(new MetricData("IfElse",new Integer(numIfElse)));
+		data.addMetric(new MetricData("Total-Conditionals",new Integer(numIf+numIfElse)));
 		
 		//labels
 		data.addMetric(new MetricData("LabelBlock",new Integer(numLabeledBlocks)));
@@ -67,6 +68,7 @@ public class ConstructNumbersMetric extends ASTMetric {
 		data.addMetric(new MetricData("For",new Integer(forLoop)));
 		data.addMetric(new MetricData("While",new Integer(whileLoop)));
 		data.addMetric(new MetricData("UnConditional",new Integer(whileTrue)));
+		data.addMetric(new MetricData("Total Loops",new Integer(whileTrue+whileLoop+forLoop+doLoop)));
 	}
 	
 	

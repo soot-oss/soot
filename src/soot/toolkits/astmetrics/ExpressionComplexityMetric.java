@@ -52,10 +52,8 @@ public class ExpressionComplexityMetric extends ASTMetric {
 	  double a = (double)exprDepthSum;
 	  double b = (double)exprCount;
 	  
-	  if (b > 0)
-	    avg = a / b;
-	  
-	  data.addMetric(new MetricData("Expr-Complexity",new Double(avg)));
+	  data.addMetric(new MetricData("Expr-Complexity",new Double(a)));
+	  data.addMetric(new MetricData("Expr-Count",new Double(b)));
 	}
 
 	public NodeVisitor enter(Node parent, Node n){

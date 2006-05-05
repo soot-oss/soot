@@ -64,6 +64,10 @@ public class ProcessData {
 	
 	private static OutputStream streamOut;
 	private static PrintWriter bench;
+
+	// set to true to getcsv instead of tex
+	private static final boolean CSV=true;
+	private static final boolean decompiler=false; //else it is obfuscated
 	
 	/**
 	 * @param args
@@ -334,7 +338,33 @@ public class ProcessData {
 			System.out.println("Exception while reading from metricList"+metricListFileName);
 			System.exit(1);
 		}
+
 		
+		
+		
+		
+		
+		
+		
+		Vector allMetrics = new Vector();
+		
+		try{
+			FileReader file = new FileReader("myList");
+			BufferedReader fileInput = new BufferedReader(file);
+			String text;
+					
+			//System.out.println("Columns");
+			while( (text = fileInput.readLine()) != null){
+				//System.out.print(text+"\t");
+				allMetrics.add(text);
+			}
+			fileInput.close();
+		}
+		catch(Exception e){
+			System.out.println("Exception while reading from metricList"+metricListFileName);
+			System.exit(1);
+		}
+
 		
 		
 		
@@ -345,9 +375,18 @@ public class ProcessData {
 		if(aggregationMechanism == ProcessData.BENCHMARK){
 			//TODO: create a metricListfileName.xml with metric info
 		
-			newClassName = metricListFileName+".tex";
-	
-			System.out.println("Creating tex file"+newClassName+" from metrics info");
+			
+			newClassName = metricListFileName;
+			if(CSV){
+				newClassName += ".csv";
+				System.out.println("Creating csv file"+newClassName+" from metrics info");
+			}
+			else{
+				newClassName += ".tex";
+				System.out.println("Creating tex file"+newClassName+" from metrics info");
+			}
+			
+
 
 			bench = openWriteFile(newClassName);
 
@@ -356,7 +395,7 @@ public class ProcessData {
 			 * hence
 			 * fft-enabled.xml fft-disabled.xml should be in one table where as
 			 * matrix-enabled.xml matrix-disabled.xml should be in another table
-			 */
+			 */			
 			HashMap benchMarkToFiles = new HashMap();
 			Iterator it = xmlFileList.iterator();
 			while(it.hasNext()){
@@ -376,25 +415,132 @@ public class ProcessData {
 				}
 				tempList.add(fileName);
 				benchMarkToFiles.put(benchmark,tempList);
+				
+				/*
+				 * if csv check that xml files have proper "property names"
+				 */
+				if(CSV){
+					if(fileName.indexOf('-')<0 || fileName.lastIndexOf(".xml") < 0){
+						System.out.println("XML files should have following syntax:\n <BENCHMARKNAME>-<PROPERTY>.xml\n PROPERTY should be enabled disabled etc");
+						return;
+					}
+					String xmlfileColumnType = fileName.substring(fileName.lastIndexOf('-')+1,fileName.lastIndexOf(".xml"));
+					System.out.println("XML FILE COLUMN TYPE"+xmlfileColumnType);
+					if(xmlfileColumnType.equals("Jad") || xmlfileColumnType.equals("original")
+							|| xmlfileColumnType.equals("SourceAgain") || xmlfileColumnType.equals("disabled") || xmlfileColumnType.equals("enabled")){
+						
+						//TODO will have to change this when dealin with obfuscator xml file names
+					}
+					else{
+						throw new RuntimeException("XML FILE <property> not recognized");
+					}
+				}
 			}
 			
+			if(CSV)
+				printCSVHeader(bench);
 			
 			Iterator keys = benchMarkToFiles.keySet().iterator();
 			while(keys.hasNext()){
 				//each key gets its own table
 				String key = (String)keys.next();
 				
-				printTexTableHeader(bench,key,columns);				
+				if(!CSV)
+					printTexTableHeader(bench,key,columns);				
 				
 				//go through each value which is an xml file
 				Object tempValue = benchMarkToFiles.get(key);
 				if(tempValue == null)
 					continue;
 				List files = (List)tempValue;
+				
+				
+				/*
+				 * We want the files to be read in a specific order depending on decompiler or obfuscator
+				 */
+				if(decompiler){
+					//coming from decompiler ordering is: original, Jad, SourceAgain, Dava(enabled), Dava(disabled)
+
+					if(files.size()!=5)
+						throw new RuntimeException("not all xml files available for this benchmark!!");
+					System.out.println("old order"+files.toString());
+					String[] newFileOrder = new String[files.size()];
+					Iterator tempIt = files.iterator();
+					while(tempIt.hasNext()){
+						String fileSort = (String)tempIt.next();
+						if(fileSort.indexOf("Jad")>-1){
+							newFileOrder[1] = fileSort;
+						}
+						else if(fileSort.indexOf("original")>-1){
+							newFileOrder[0] = fileSort;
+						}
+						else if(fileSort.indexOf("SourceAgain")>-1){
+							newFileOrder[2] = fileSort;
+						}
+						else if(fileSort.indexOf("disabled")>-1){
+							newFileOrder[4] = fileSort;
+						}
+						else if(fileSort.indexOf("enabled")>-1){
+							newFileOrder[3] = fileSort;
+						}
+						else
+							throw new RuntimeException("property xml not correct");
+
+					}
+
+					files = new ArrayList();
+					files.add(newFileOrder[0]);
+					files.add(newFileOrder[1]);
+					files.add(newFileOrder[2]);
+					files.add(newFileOrder[3]);
+					files.add(newFileOrder[4]);
+					System.out.println("new order"+files.toString());
+				}
+				else{
+					//coming from obfuscator ordering is: original,  jbco enabled, jbco disabled, klassmaster enabled,klassmaster disabled,
+
+					if(files.size()!=5)
+						throw new RuntimeException("not all xml files available for this benchmark!!");
+					System.out.println("old order"+files.toString());
+					String[] newFileOrder = new String[files.size()];
+					Iterator tempIt = files.iterator();
+					while(tempIt.hasNext()){
+						String fileSort = (String)tempIt.next();
+						if(fileSort.indexOf("original")>-1){
+							newFileOrder[0] = fileSort;
+						}
+						else if(fileSort.indexOf("jbco-enabled")>-1){
+							newFileOrder[1] = fileSort;
+						}
+						else if(fileSort.indexOf("jbco-disabled")>-1){
+							newFileOrder[2] = fileSort;
+						}
+						else if(fileSort.indexOf("klassmaster-enabled")>-1){
+							newFileOrder[3] = fileSort;
+						}
+						else if(fileSort.indexOf("klassmaster-disabled")>-1){
+							newFileOrder[4] = fileSort;
+						}	
+						else
+							throw new RuntimeException("property xml not correct");
+					}
+
+					files = new ArrayList();
+					files.add(newFileOrder[0]);
+					files.add(newFileOrder[1]);
+					files.add(newFileOrder[2]);
+					files.add(newFileOrder[3]);
+					files.add(newFileOrder[4]);
+					System.out.println("new order"+files.toString());
+					
+				}
+				
+				
 				Iterator fileIt = files.iterator();
+				int count=-1;
 				while(fileIt.hasNext()){
 					String fileName = (String)fileIt.next();
-
+					count++;
 					try{
 						DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 
@@ -404,41 +550,278 @@ public class ProcessData {
 						// normalize text representation
 		
 			
-						//print the name of the xml file as the name of the benchmark
-						if(fileName.endsWith(".xml"))
-							bench.print(fileName.substring(0,fileName.length()-4));
-						else
-							bench.print(fileName);
+						if(!CSV){
+							//print the name of the xml file as the name of the benchmark
+							if(fileName.endsWith(".xml"))
+								bench.print(fileName.substring(0,fileName.length()-4));
+							else
+								bench.print(fileName);
+						}
 			
-			
-						HashMap aggregatedValues = new HashMap();
 						
-						Iterator tempIt = columns.iterator();
+						HashMap aggregatedValues = new HashMap();
+				
+						
+						//TODO Should compute all metrics always
+						//only print out the one we want
+						Iterator tempIt = allMetrics.iterator();
 						while(tempIt.hasNext()){
 							aggregatedValues.put(tempIt.next(),new Integer(0));
 						}
 					
-						aggregateXMLFileMetrics(doc,aggregatedValues);
+						int numClasses = aggregateXMLFileMetrics(doc,aggregatedValues);
 			
-						//at this point the hashmap contains aggregatedValue of all columns
+						//at this point the hashmap contains aggregatedValue of all metrics
+						
+						
+						
+						
+						
+						//get the metrics we might need to divide
+						Object myTemp = aggregatedValues.get("Total-Conditionals");
+						if(myTemp == null){
+							System.out.println("Total-Conditionals not found in aggregatedValues");
+							System.exit(1);	
+						}
+						double total_if_ifelse = ((Integer)myTemp).doubleValue();
+						
+						
+						myTemp = aggregatedValues.get("Total Loops");
+						if(myTemp == null){
+							System.out.println("Total Loops not found in aggregatedValues");
+							System.exit(1);	
+						}
+						double totalLoops = ((Integer)myTemp).doubleValue();
+						
+						double totalConditional = total_if_ifelse+totalLoops;
+						
+						myTemp = aggregatedValues.get("AST-Node-Count");
+						if(myTemp == null){
+							System.out.println("AST-Node-Count not found in aggregatedValues");
+							System.exit(1);	
+						}
+						double astCount = ((Integer)myTemp).doubleValue();
+
+						
+						
+						
+						
+						myTemp = aggregatedValues.get("NameCount");
+						if(myTemp == null){
+							System.out.println("NameCount not found in aggregatedValues");
+							System.exit(1);	
+						}
+						double nameCount = ((Double)myTemp).doubleValue();
+
+						
+						
+						
+						myTemp = aggregatedValues.get("Expr-Count");
+						if(myTemp == null){
+							System.out.println("ExprCount not found in aggregatedValues");
+							System.exit(1);	
+						}
+						double exprCount = ((Double)myTemp).doubleValue();
+
+						
 						tempIt = columns.iterator();
 						while(tempIt.hasNext()){
-							Object temp = aggregatedValues.get(tempIt.next());
+							String nexttempit = (String)tempIt.next();
+							Object temp = aggregatedValues.get(nexttempit);
+							//System.out.println("NEXT TEMP IT ISSSSSSSSSSSSSSSSSSSSSS"+nexttempit);
 							if(temp instanceof Integer){
 								int val = ((Integer)temp).intValue();
-								bench.print("&"+val);
+								if(CSV){
+									switch(count){
+									case 0://original
+											bench.print(fileName.substring(0,fileName.indexOf('-')));
+									case 1:
+									case 2:
+									case 3:
+									case 4:
+										if(nexttempit.equals("Total-Abrupt")){
+											//no averaging
+											bench.print(","+val);
+										}
+										else if(nexttempit.equals("Total-Cond-Complexity")){
+											if(totalConditional !=0 ){
+												//average by dividing total-cond-complexity for sum of if+ifelse+loops
+												System.out.println("conditional complexit is"+val);
+												System.out.println("totalConditionals are"+totalConditional);
+
+												bench.print(","+val/totalConditional);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but toalconds are 0...not good
+												System.out.println("Val not 0 but totalConditionals are zero!!!");
+												System.exit(1);
+											}
+												
+										}
+										else if(nexttempit.equals("D-W-Complexity")){
+											if(astCount !=0 ){
+												//average by dividing D-W-Complexity by node count
+												bench.print(","+val/astCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but astcount is 0...not good
+												System.out.println("Val not 0 but astcount is zero!!!");
+												System.exit(1);
+											}
+												
+										}								
+										else if(nexttempit.equals("Expr-Complexity")){
+
+											if(exprCount !=0 ){
+												//average by dividing expr-complexity for exprCount
+												bench.print(","+val/exprCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but expr-count are 0...not good
+												System.out.println("Val not 0 but exprcount is zero!!!");
+												System.exit(1);
+											}
+
+										}
+										else if(nexttempit.equals("Name-Complexity")){
+
+											if(nameCount !=0 ){
+												//average by dividing name-complexity for nameCount
+												bench.print(","+val/nameCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but name-count are 0...not good
+												System.out.println("Val not 0 but name-count is zero!!!");
+												System.exit(1);
+											}
+										}
+										else{
+											//labeled blocks, locals, if-ifelse, ASTNodeCount
+											bench.print(","+val);
+										}
+										break;
+									default:
+										System.out.println("unhandled count value");
+										System.exit(1);
+									}
+
+								}
+								else{
+									//not CSV
+									bench.print("&"+val);
+								}
 							}
 							else if(temp instanceof Double){
 								double val = ((Double)temp).doubleValue();
-								bench.print("&"+val);
+								if(CSV){
+									switch(count){
+									case 0://original
+											bench.print(fileName.substring(0,fileName.indexOf('-')));
+									case 1:
+									case 2:
+									case 3:
+									case 4:
+										if(nexttempit.equals("Total-Abrupt")){
+											//no averaging
+											bench.print(","+val);
+										}
+										else if(nexttempit.equals("Total-Cond-Complexity")){
+											if(totalConditional !=0 ){
+												//average by dividing total-cond-complexity for sum of if+ifelse+loops
+												System.out.println("conditional complexit is"+val);
+												System.out.println("totalConditionals are"+totalConditional);
+												bench.print(","+val/totalConditional);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but toalconds are 0...not good
+												System.out.println("Val not 0 but totalConditionals are zero!!!");
+												System.exit(1);
+											}
+												
+										}
+										else if(nexttempit.equals("D-W-Complexity")){
+											if(astCount !=0 ){
+												//average by dividing D-W-Complexity by node count
+												bench.print(","+val/astCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but astcount is 0...not good
+												System.out.println("Val not 0 but astcount is zero!!!");
+												System.exit(1);
+											}
+												
+										}								
+										else if(nexttempit.equals("Expr-Complexity")){
+
+											if(exprCount !=0 ){
+												//average by dividing expr-complexity for exprCount
+												bench.print(","+val/exprCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but expr-count are 0...not good
+												System.out.println("Val not 0 but exprcount is zero!!!");
+												System.exit(1);
+											}
+
+										}
+										else if(nexttempit.equals("Name-Complexity")){
+
+											if(nameCount !=0 ){
+												//average by dividing name-complexity for nameCount
+												bench.print(","+val/nameCount);
+											}
+											else if (val ==0)
+												bench.print(","+val);
+											else{
+												//val not 0 but name-count are 0...not good
+												System.out.println("Val not 0 but name-count is zero!!!");
+												System.exit(1);
+											}
+										}
+										else{
+											//labeled blocks, locals, if-ifelse, ASTNodeCount
+											bench.print(","+val);
+										}
+										break;
+									default:
+										System.out.println("unhandled count value");
+										System.exit(1);
+									}
+
+								}
+								else
+									bench.print("&"+val);
 							}
 							else
 								throw new RuntimeException("Unknown type of object stored!!!");
-							if(tempIt.hasNext())
-								bench.print("   ");
-							else
-								bench.println("\\\\");
+							if(CSV){
+								if(tempIt.hasNext()){
+									System.out.println("Only allowed one metric for CSV");
+									System.exit(1);
+								}								
+							}
+							else{
+								if(tempIt.hasNext())
+									bench.print("   ");
+								else
+									bench.println("\\\\");
+							}
 						}
+
 					}catch (SAXParseException err) {
 						System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());
 						System.out.println(" " + err.getMessage ());
@@ -453,8 +836,12 @@ public class ProcessData {
 				}//done with all files for this benchmark
 				
 				//print closing for the table for this benchmark
-				printTexTableFooter(bench,"");
+				if(CSV)
+					bench.println("");
+				else
+					printTexTableFooter(bench,"");
 			}//done with all benchmarks
+
 			closeWriteFile(bench,newClassName);
 
 
@@ -528,7 +915,13 @@ public class ProcessData {
 	 * 
 	 * Should read all of its metrics and add them to the aggregated values
 	 */
-	private static void aggregateXMLFileMetrics(Document doc, HashMap aggregated){
+	private static int aggregateXMLFileMetrics(Document doc, HashMap aggregated){
+		
+		NodeList classes = doc.getElementsByTagName("Class");
+		int numClasses =classes.getLength();
+		
+		
+		System.out.println("NumClasses for this document are"+numClasses);
 		
 		NodeList metrics = doc.getElementsByTagName("Metric");
 
@@ -597,6 +990,7 @@ public class ProcessData {
 				}
 			}//end of if metricNode is an element_Node	
 		}//end of for loop with s var
+		return numClasses;
 	}
 	
 	
@@ -780,6 +1174,17 @@ public class ProcessData {
 	}
 	
 	
+
+	/*
+	 * Prints the name of?? 
+	 */
+	private static void printCSVHeader(PrintWriter out){
+		if(decompiler)
+			out.println(",Original,Jad,SourceAgain,Dava(enabled),Dava(disabled)");
+		else
+			out.println(",Original,JBCO-enabled,JBCO-disabled,klassmaster-enabled,klassmaster-disabled");
+	}
+
 	
 	private static void printTexTableHeader(PrintWriter out, String rowHeading, Vector columns){
 		//out.println("\\begin{figure}[hbtp]");

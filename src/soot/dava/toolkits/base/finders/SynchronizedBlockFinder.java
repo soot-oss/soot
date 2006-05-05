@@ -955,7 +955,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    as = (AugmentedStmt) as.bsuccs.get(0);
 	    //if ((as.bsuccs.size() != 1) || ((as != entryPoint) && (as.cpreds.size() != 1))) {
 	    //return false;
-	    //}
+	   // }
 	    if (as.bsuccs.size() != 1){
 		//System.out.println("here2a");
 		return false;
@@ -1022,7 +1022,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 
 	//this COULD be a copy stmt in which case update the throwlocal
-	if(s instanceof DefinitionStmt &&  
+	while(s instanceof DefinitionStmt &&  
 	   ( ((DefinitionStmt)s).getRightOp().toString().compareTo(throwlocal.toString()) ==0)) {
 
 	    //System.out.println("copy stmt using throwLocal found");
@@ -1030,8 +1030,9 @@ public class SynchronizedBlockFinder implements FactFinder
 	    //return false;
 	    throwlocal = ((DefinitionStmt)s).getLeftOp();
 
-	    //the sucessor of this stmt is the exitmonitor stmt
+	    //the sucessor of this stmt MIGHT be the exitmonitor stmt
 	    as = (AugmentedStmt) as.bsuccs.get(0);
+	    s = as.get_Stmt();
 	}
 
 

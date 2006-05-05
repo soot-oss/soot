@@ -41,9 +41,11 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   }
   
   public void addMetrics(ClassData data) {
-    data.addMetric(new MetricData("MaxDepth",new Integer(maxDepth)));
-    data.addMetric(new MetricData("D-W-Complexity",new Integer(sum)));
-    data.addMetric(new MetricData("AST-Node-Count",new Integer(numNodes)));
+    //data.addMetric(new MetricData("MaxDepth",new Integer(maxDepth)));
+	
+	  data.addMetric(new MetricData("D-W-Complexity",new Double(sum)));
+	  
+	  data.addMetric(new MetricData("AST-Node-Count",new Integer(numNodes)));
   }
   
   private void increaseDepth(){

@@ -72,6 +72,8 @@ public class AbruptEdgesMetric extends ASTMetric {
 		data.addMetric(new MetricData("Total-continues",new Integer(iContinues+eContinues)));
 		data.addMetric(new MetricData("I-continues",new Integer(iContinues)));
 		data.addMetric(new MetricData("E-continues",new Integer(eContinues)));
+		
+		data.addMetric(new MetricData("Total-Abrupt",new Integer(iBreaks+eBreaks+iContinues+eContinues)));
 	}
 	
 	
