@@ -52,6 +52,7 @@ import soot.jimple.toolkits.annotation.purity.*; // [AM]
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.toolkits.transaction.*;
 import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
@@ -136,6 +137,7 @@ public class PackManager {
         // Whole-Jimple transformation pack 
         addPack(p = new ScenePack("wjtp"));
         {
+	    p.add(new Transform("wjtp.tn", TransactionTransformer.v()));
         }
 
         // Whole-Jimple Optimization pack

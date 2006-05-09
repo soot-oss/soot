@@ -2885,9 +2885,6 @@ Soot can perform whole-program analyses.  In whole-program mode,
 Soot applies the contents of the Whole-Jimple Transformation Pack
 to the scene as a whole after constructing a call graph for the
 program.</p>
-<p>
-In an unmodified copy of Soot the Whole-Jimple Transformation
-Pack is empty.</p>
                         </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -2896,6 +2893,17 @@ Pack is empty.</p>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
+				<sub_phase>
+					<name>Transactional Transformation</name>
+					<class>TransactionalTransformation</class>
+					<alias>wjtp.tn</alias>
+					<short_desc>Finds and processes transactional regions</short_desc>
+					<long_desc>
+The Transactional Transformation find transactional regions in
+Java programs and prepares them for transactional execution on
+both optimistic and pessimistic JVMs.
+</long_desc>
+	                        </sub_phase>
 			</phase>
 			<phase>
 				<name>Whole-Jimple Optimization Pack</name>

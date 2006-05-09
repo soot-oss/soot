@@ -1221,6 +1221,7 @@ public class Options extends OptionsBase {
         +padOpt("wstp", "Whole-shimple transformation pack")
         +padOpt("wsop", "Whole-shimple optimization pack")
         +padOpt("wjtp", "Whole-jimple transformation pack")
+        +padVal("wjtp.tn", "Finds and processes transactional regions")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
@@ -1718,9 +1719,14 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nSoot can perform whole-program analyses. In whole-program \nmode, Soot applies the contents of the Whole-Jimple \nTransformation Pack to the scene as a whole after constructing a \ncall graph for the program. In an unmodified copy of Soot the \nWhole-Jimple Transformation Pack is empty."
+                "\nSoot can perform whole-program analyses. In whole-program \nmode, Soot applies the contents of the Whole-Jimple \nTransformation Pack to the scene as a whole after constructing a \ncall graph for the program."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "wjtp.tn" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
+                +"\n\nRecognized options (with default values):\n";
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
@@ -2430,6 +2436,9 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled ";
     
+        if( phaseName.equals( "wjtp.tn" ) )
+            return "";
+    
         if( phaseName.equals( "wjop" ) )
             return ""
                 +"enabled ";
@@ -2981,6 +2990,9 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "wjtp.tn" ) )
+            return "";
+    
         if( phaseName.equals( "wjop" ) )
             return ""
               +"enabled:false ";
@@ -3345,6 +3357,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wstp" ) ) return;
         if( phaseName.equals( "wsop" ) ) return;
         if( phaseName.equals( "wjtp" ) ) return;
+        if( phaseName.equals( "wjtp.tn" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
@@ -3485,6 +3498,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wsop" );
         if( !PackManager.v().hasPhase( "wjtp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp" );
+        if( !PackManager.v().hasPhase( "wjtp.tn" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.tn" );
         if( !PackManager.v().hasPhase( "wjop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjop" );
         if( !PackManager.v().hasPhase( "wjop.smb" ) )

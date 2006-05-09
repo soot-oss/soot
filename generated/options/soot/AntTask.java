@@ -1470,6 +1470,15 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_wjtp_tn() {
+            Object ret = new PhaseOptwjtp_tn();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjtp_tn {
+      
+        }
+    
         public Object createp_wjop() {
             Object ret = new PhaseOptwjop();
             phaseopts.add(ret);
