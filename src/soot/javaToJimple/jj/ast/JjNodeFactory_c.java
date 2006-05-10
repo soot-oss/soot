@@ -98,8 +98,8 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     
     public FieldDecl FieldDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
         FieldDecl n = new JjFieldDecl_c(pos, flags, type, name, init);
-        n = (FieldDecl)n.ext(extFactory().extFieldAssign());
-        n = (FieldDecl)n.del(delFactory().delFieldAssign());
+        n = (FieldDecl)n.ext(extFactory().extFieldDecl());
+        n = (FieldDecl)n.del(delFactory().delFieldDecl());
         return n;
     }
     
