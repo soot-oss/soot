@@ -84,8 +84,8 @@ public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
     
     public LocalDecl LocalDecl(Position pos, Flags flags, TypeNode type, String name, Expr init) {
         LocalDecl n = new JjLocalDecl_c(pos, flags, type, name, init);
-        n = (LocalDecl)n.ext(extFactory().extLocalAssign());
-        n = (LocalDecl)n.del(delFactory().delLocalAssign());
+        n = (LocalDecl)n.ext(extFactory().extLocalDecl());
+        n = (LocalDecl)n.del(delFactory().delLocalDecl());
         return n;
     }
     
