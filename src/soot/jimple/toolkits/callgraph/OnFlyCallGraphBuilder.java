@@ -131,7 +131,7 @@ public final class OnFlyCallGraphBuilder
                         " Use safe-forname option for a conservative result." );
                 }
             } else {
-                if( constant.charAt(0) == '[' ) {
+                if( constant.length() > 0 && constant.charAt(0) == '[' ) {
                     if( constant.length() > 1 && constant.charAt(1) == 'L' 
                     && constant.charAt(constant.length()-1) == ';' ) {
                         constant = constant.substring(2,constant.length()-1);
@@ -351,8 +351,8 @@ public final class OnFlyCallGraphBuilder
         FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
     }
     private void constantForName( String cls, SootMethod src, Stmt srcUnit ) {
-        if( cls.charAt(0) == '[' ) {
-            if( cls.charAt(1) == 'L' && cls.charAt(cls.length()-1) == ';' ) {
+        if( cls.length() > 0 && cls.charAt(0) == '[' ) {
+            if( cls.length() > 1 && cls.charAt(1) == 'L' && cls.charAt(cls.length()-1) == ';' ) {
                 cls = cls.substring(2,cls.length()-1);
                 constantForName( cls, src, srcUnit );
             }
