@@ -2903,6 +2903,13 @@ The Transactional Transformation find transactional regions in
 Java programs and prepares them for transactional execution on
 both optimistic and pessimistic JVMs.
 </long_desc>
+	                                <boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+						<default>false</default>
+						<short_desc/>
+						<long_desc/>
+					</boolopt>
 	                        </sub_phase>
 			</phase>
 			<phase>

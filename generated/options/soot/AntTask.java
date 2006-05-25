@@ -1477,6 +1477,12 @@ public class AntTask extends MatchingTask {
         }
         public class PhaseOptwjtp_tn {
       
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_wjop() {

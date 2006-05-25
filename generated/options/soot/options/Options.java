@@ -1726,7 +1726,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp.tn" ) )
             return "Phase "+phaseName+":\n"+
                 "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
-                +"\n\nRecognized options (with default values):\n";
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
@@ -2437,7 +2438,8 @@ public class Options extends OptionsBase {
                 +"enabled ";
     
         if( phaseName.equals( "wjtp.tn" ) )
-            return "";
+            return ""
+                +"enabled ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -2991,7 +2993,8 @@ public class Options extends OptionsBase {
               +"enabled:true ";
     
         if( phaseName.equals( "wjtp.tn" ) )
-            return "";
+            return ""
+              +"enabled:false ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
