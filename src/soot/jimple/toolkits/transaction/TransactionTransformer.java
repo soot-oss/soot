@@ -10,13 +10,12 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 
 public class TransactionTransformer extends SceneTransformer
 {
-    private static TransactionTransformer instance = new TransactionTransformer();
-    private TransactionTransformer() {}
-
-    public static TransactionTransformer v() { return instance; }
+    public TransactionTransformer(Singletons.Global g){}
+    public static TransactionTransformer v() { return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();}
 
     protected void internalTransform(String phaseName, Map options)
 	{
+		G.v().out.println("TransactionTransformer");
 //    	CallGraph cg = Scene.v().getCallGraph();
     	Map methodToFlowSet = new HashMap();
 

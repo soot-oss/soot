@@ -137,7 +137,7 @@ public class PackManager {
         // Whole-Jimple transformation pack 
         addPack(p = new ScenePack("wjtp"));
         {
-	    p.add(new Transform("wjtp.tn", TransactionTransformer.v()));
+	    	p.add(new Transform("wjtp.tn", TransactionTransformer.v()));
         }
 
         // Whole-Jimple Optimization pack
