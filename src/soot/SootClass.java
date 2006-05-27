@@ -32,12 +32,7 @@ package soot;
 import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
-import java.io.*;
-import soot.baf.toolkits.base.*;
-import soot.jimple.toolkits.base.*;
-import soot.dava.*;
 import soot.dava.toolkits.base.misc.*;
-import soot.jimple.*;
 import soot.options.*;
 
 /*
