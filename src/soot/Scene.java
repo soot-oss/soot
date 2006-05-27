@@ -26,14 +26,12 @@
 
 
 package soot;
-import soot.*;
 import soot.options.*;
 
 
 import soot.util.*;
 import java.util.*;
 import java.io.*;
-import soot.jimple.toolkits.invoke.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.toolkits.exceptions.ThrowAnalysis;
@@ -105,7 +103,6 @@ public class Scene  //extends AbstractHost
 
     // Two default values for constructing ExceptionalUnitGraphs:
     private ThrowAnalysis defaultThrowAnalysis = null;
-    private boolean alwaysAddEdgesFromExceptingUnits = false;
     
     public void setMainClass(SootClass m)
     {
@@ -198,6 +195,15 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException();
 
         classes.remove(c);
+        
+        if(c.isLibraryClass()) {
+            libraryClasses.remove(c);
+        } else if(c.isPhantomClass()) {
+            phantomClasses.remove(c);
+        } else if(c.isApplicationClass()) {
+            applicationClasses.remove(c);
+        }
+        
         c.getType().setSootClass(null);
         c.setInScene(false);
         modifyHierarchy();
