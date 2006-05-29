@@ -29,13 +29,13 @@ import java.util.*;
  */
 public class CallGraph
 { 
-    private Set edges = new HashSet();
-    private ChunkedQueue stream = new ChunkedQueue();
-    private QueueReader reader = stream.reader();
-    private Map srcMethodToEdge = new HashMap();
-    private Map srcUnitToEdge = new HashMap();
-    private Map tgtToEdge = new HashMap();
-    private Edge dummy = new Edge( null, null, null, Kind.INVALID );
+    protected Set edges = new HashSet();
+    protected ChunkedQueue stream = new ChunkedQueue();
+    protected QueueReader reader = stream.reader();
+    protected Map srcMethodToEdge = new HashMap();
+    protected Map srcUnitToEdge = new HashMap();
+    protected Map tgtToEdge = new HashMap();
+    protected Edge dummy = new Edge( null, null, null, Kind.INVALID );
 
     /** Used to add an edge to the call graph. Returns true iff the edge was
      * not already present. */
