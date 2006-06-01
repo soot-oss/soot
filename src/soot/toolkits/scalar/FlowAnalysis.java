@@ -50,7 +50,16 @@ public abstract class FlowAnalysis extends AbstractFlowAnalysis
         unitToAfterFlow = new HashMap(graph.size() * 2 + 1, 0.7f);
     }
 
-    /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction). */
+    /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction).
+     *
+     * This function often causes confusion, because the same interface
+     * is used for both forward and backward flow analyses. The first
+     * parameter is always the argument to the flow function (i.e. it
+     * is the "in" set in a forward analysis and the "out" set in a
+     * backward analysis), and the third parameter is always the result
+     * of the flow function (i.e. it is the "out" set in a forward
+     * analysis and the "in" set in a backward analysis).
+     * */
     protected abstract void flowThrough(Object in, Object d, Object out);
 
     /** Accessor function returning value of OUT set for s. */
