@@ -155,7 +155,7 @@ call.methodInstance().flags().isAbstract()){
     private soot.Local handleFieldSet(soot.javaToJimple.jj.ast.JjAccessField_c accessField, soot.Value right, soot.Local base){
         return handleCall(accessField.field(), accessField.setMeth(), right, base);
     }
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
+    /*protected soot.Value createExpr(polyglot.ast.Expr expr){
         if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
             soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)expr;
          
@@ -166,6 +166,20 @@ call.methodInstance().flags().isAbstract()){
         }
         else {
             return ext().createExpr(expr);
+        }
+    }*/
+
+    protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAgg, boolean revIfNec){
+        if (expr instanceof soot.javaToJimple.jj.ast.JjAccessField_c){
+            soot.javaToJimple.jj.ast.JjAccessField_c accessField = (soot.javaToJimple.jj.ast.JjAccessField_c)expr;
+         
+            
+            // here is where we need to return the field using get method
+            return handleCall(accessField.field(), accessField.getMeth(), null, null);
+            // return ext().createExpr(accessField.field());
+        }
+        else {
+            return ext().createAggressiveExpr(expr, redAgg, revIfNec);
         }
     }
 

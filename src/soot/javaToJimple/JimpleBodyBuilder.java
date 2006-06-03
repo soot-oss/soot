@@ -210,7 +210,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
             else {
                 //System.out.println("field init expr: "+initExpr);
-                sootExpr = base().createExpr(initExpr);
+                sootExpr = base().createAggressiveExpr(initExpr, false, false);
                 //System.out.println("soot expr: "+sootExpr);
             }
             if (sootExpr instanceof soot.jimple.ConditionExpr) {
@@ -271,7 +271,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 }
                 else {
                     //System.out.println("field init expr: "+initExpr);
-                    sootExpr = base().createExpr(initExpr);
+                    sootExpr = base().createAggressiveExpr(initExpr, false, false);
                     //System.out.println("soot expr: "+sootExpr);
                     
                     if (sootExpr instanceof soot.jimple.ConditionExpr) {
@@ -550,7 +550,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     protected void createStmt(polyglot.ast.Stmt stmt) {
         //System.out.println("stmt: "+stmt.getClass());
         if (stmt instanceof polyglot.ast.Eval) {
-			base().createExpr(((polyglot.ast.Eval)stmt).expr());  
+			base().createAggressiveExpr(((polyglot.ast.Eval)stmt).expr(), false, false);  
         }
         else if (stmt instanceof polyglot.ast.If) {
            createIf2((polyglot.ast.If)stmt);
@@ -751,7 +751,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             createBranchingExpr(not.expr(), tgt, !boto);
         }
         else {
-            soot.Value sootCond = base().createExpr(expr);
+            soot.Value sootCond = base().createAggressiveExpr(expr, false, false);
 
             boolean needIf = needSootIf(sootCond);
             if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
@@ -1175,7 +1175,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
             else {
                 //System.out.println("create local decl: "+expr+" is a: "+expr.getClass());
-                rhs = base().createExpr(expr);
+                rhs = base().createAggressiveExpr(expr, false, false);
                 //System.out.println("rhs is: "+rhs+" is a: "+rhs.getClass());
             }
             if (rhs instanceof soot.jimple.ConditionExpr) {
@@ -1211,7 +1211,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
        
 
         polyglot.ast.Expr value = switchStmt.expr();
-        soot.Value sootValue = base().createExpr(value);
+        soot.Value sootValue = base().createAggressiveExpr(value, false, false);
         
         if (switchStmt.elements().size() == 0) return;
         
@@ -1542,7 +1542,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             // don't makeif
         }
         else {
-            soot.Value sootCond = base().createExpr(assertStmt.cond());
+            soot.Value sootCond = base().createAggressiveExpr(assertStmt.cond(), false, false);
             boolean needIf = needSootIf(sootCond);
             if (!(sootCond instanceof soot.jimple.ConditionExpr)) {
                 sootCond = soot.jimple.Jimple.v().newEqExpr(sootCond, soot.jimple.IntConstant.v(1));
@@ -1571,7 +1571,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         ArrayList paramTypes = new ArrayList();
         ArrayList params = new ArrayList();
         if (assertStmt.errorMessage() != null){
-            soot.Value errorExpr = base().createExpr(assertStmt.errorMessage());
+            soot.Value errorExpr = base().createAggressiveExpr(assertStmt.errorMessage(), false, false);
             if (errorExpr instanceof soot.jimple.ConditionExpr) {
                 errorExpr = handleCondBinExpr((soot.jimple.ConditionExpr)errorExpr);
             }
@@ -1633,7 +1633,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Synchronized Stmt Creation
      */
     private void createSynchronized(polyglot.ast.Synchronized synchStmt) {
-        soot.Value sootExpr = base().createExpr(synchStmt.expr());
+        soot.Value sootExpr = base().createAggressiveExpr(synchStmt.expr(), false, false);
         
         soot.jimple.EnterMonitorStmt enterMon = soot.jimple.Jimple.v().newEnterMonitorStmt(sootExpr);
         body.getUnits().add(enterMon);
@@ -1712,7 +1712,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.ast.Expr expr = retStmt.expr();
         soot.Value sootLocal = null;
         if (expr != null){
-            sootLocal = base().createExpr(expr);
+            sootLocal = base().createAggressiveExpr(expr, false, false);
         }
         
         // handle monitor exits before return if necessary
@@ -1788,7 +1788,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      * Throw Stmt Creation
      */
     private void createThrow(polyglot.ast.Throw throwStmt){
-        soot.Value toThrow = base().createExpr(throwStmt.expr());
+        soot.Value toThrow = base().createAggressiveExpr(throwStmt.expr(), false, false);
         soot.jimple.ThrowStmt throwSt = soot.jimple.Jimple.v().newThrowStmt(toThrow);
         body.getUnits().add(throwSt);
         Util.addLnPosTags(throwSt, throwStmt.position());
@@ -2042,7 +2042,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     /**
      * Expression Creation
      */
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
+    /*protected soot.Value createExpr(polyglot.ast.Expr expr){
         //System.out.println("create expr: "+expr+" type: "+expr.getClass());
         // maybe right here check if expr has constant val and return that 
         // instead
@@ -2060,6 +2060,68 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         else if (expr instanceof polyglot.ast.Binary) {
             return getBinaryLocal((polyglot.ast.Binary)expr);
+        }
+        else if (expr instanceof polyglot.ast.Unary) {
+            return getUnaryLocal((polyglot.ast.Unary)expr);
+        }
+        else if (expr instanceof polyglot.ast.Cast) {
+            return getCastLocal((polyglot.ast.Cast)expr);
+        }
+        //else if (expr instanceof polyglot.ast.ArrayInit) {
+           // array init are special and get created elsewhere 
+        //}
+        else if (expr instanceof polyglot.ast.ArrayAccess) {
+            return getArrayRefLocal((polyglot.ast.ArrayAccess)expr);
+        }
+        else if (expr instanceof polyglot.ast.NewArray) {
+            return getNewArrayLocal((polyglot.ast.NewArray)expr);
+        }
+        else if (expr instanceof polyglot.ast.Call) {
+            return getCallLocal((polyglot.ast.Call)expr);
+        }
+        else if (expr instanceof polyglot.ast.New) {
+            return getNewLocal((polyglot.ast.New)expr);
+        }
+        else if (expr instanceof polyglot.ast.Special) {
+            return getSpecialLocal((polyglot.ast.Special)expr);
+        }
+        else if (expr instanceof polyglot.ast.Instanceof) {
+            return getInstanceOfLocal((polyglot.ast.Instanceof)expr);
+        }
+        else if (expr instanceof polyglot.ast.Conditional) {
+            return getConditionalLocal((polyglot.ast.Conditional)expr);
+        }
+        else if (expr instanceof polyglot.ast.Field) {
+            return getFieldLocal((polyglot.ast.Field)expr);
+        }
+        else {
+            throw new RuntimeException("Unhandled Expression: "+expr);
+        }
+       
+    }*/
+
+    /**
+     * Aggressive Expression Creation 
+     * make reduceAggressively true to not reduce all the way to a local
+     */
+    protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean reduceAggressively, boolean reverseCondIfNec){
+        //System.out.println("create expr: "+expr+" type: "+expr.getClass());
+        // maybe right here check if expr has constant val and return that 
+        // instead
+        if (expr.isConstant() && expr.constantValue() != null && expr.type() != null && !(expr instanceof polyglot.ast.Binary && expr.type().toString().equals("java.lang.String")) ){
+            return createConstant(expr);
+        }
+        if (expr instanceof polyglot.ast.Assign) {
+            return getAssignLocal((polyglot.ast.Assign)expr);
+        }
+        else if (expr instanceof polyglot.ast.Lit) {
+            return createLiteral((polyglot.ast.Lit)expr);
+        }
+        else if (expr instanceof polyglot.ast.Local) {
+            return getLocal((polyglot.ast.Local)expr);
+        }
+        else if (expr instanceof polyglot.ast.Binary) {
+            return getBinaryLocal2((polyglot.ast.Binary)expr, reduceAggressively);
         }
         else if (expr instanceof polyglot.ast.Unary) {
             return getUnaryLocal((polyglot.ast.Unary)expr);
@@ -2300,7 +2362,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             repush = true;
         }
         
-        soot.Value right = base().createExpr(assign.right());
+        soot.Value right = base().createAggressiveExpr(assign.right(), false, false);
         
         if (repush){
             trueNoop.push(tNoop);
@@ -2322,7 +2384,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     }
 
     private soot.Local getComplexAssignRightLocal(polyglot.ast.Assign assign, soot.Local leftLocal){
-        soot.Value right = base().createExpr(assign.right());
+        soot.Value right = base().createAggressiveExpr(assign.right(), false, false);
         if (right instanceof soot.jimple.ConditionExpr) {
             right = handleCondBinExpr((soot.jimple.ConditionExpr)right);
         }
@@ -2921,7 +2983,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             localField = getLocal((polyglot.ast.Local)receiver);
         }
         else if (receiver instanceof polyglot.ast.Expr){
-            localField = (soot.Local)base().createExpr((polyglot.ast.Expr)receiver);
+            localField = (soot.Local)base().createAggressiveExpr((polyglot.ast.Expr)receiver, false, false);
         }
         else {
             localField = generateLocal(receiver.type());
@@ -2965,10 +3027,13 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
         }
         
-        soot.Value lVal = base().createExpr(binary.left());
-        soot.Value rVal = base().createExpr(binary.right());
+        //System.out.println("bin exp left: "+binary.left());
+        //System.out.println("bin exp right: "+binary.right());
+        soot.Value lVal = base().createAggressiveExpr(binary.left(), false, false);
+        soot.Value rVal = base().createAggressiveExpr(binary.right(), false, false);
 
         if (isComparisonBinary(binary.operator())) {
+            //System.out.println("bin exp: "+binary);
             rhs = getBinaryComparisonExpr(lVal, rVal, binary.operator());
         }
         else {
@@ -2982,6 +3047,74 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         if (rhs instanceof soot.jimple.ConditionExpr) {
             return rhs;
+        }
+        
+        soot.Local lhs = generateLocal(binary.type());
+
+
+        soot.jimple.AssignStmt assignStmt = soot.jimple.Jimple.v().newAssignStmt(lhs, rhs);
+        body.getUnits().add(assignStmt);
+        //System.out.println("binary pos: "+binary.position());   
+            
+     
+        Util.addLnPosTags(assignStmt.getRightOpBox(), binary.position());
+        Util.addLnPosTags(assignStmt, binary.position());
+        return lhs;
+    } 
+
+    /**
+     * Binary Expression Creation
+     */
+    private soot.Value getBinaryLocal2(polyglot.ast.Binary binary, boolean reduceAggressively) {
+        //System.out.println("binary: "+binary+" class: "+binary.getClass());   
+        
+        soot.Value rhs;
+                
+        if (binary.operator() == polyglot.ast.Binary.COND_AND) {
+            return createCondAnd(binary);
+        }
+        if (binary.operator() == polyglot.ast.Binary.COND_OR) {
+            return createCondOr(binary);
+        }
+
+        if (binary.type().toString().equals("java.lang.String")){
+            //System.out.println("binary: "+binary);
+            if (areAllStringLits(binary)){
+                String result = createStringConstant(binary);
+                //System.out.println("created string constant: "+result);
+                return soot.jimple.StringConstant.v(result);
+            }
+            else {
+                soot.Local sb = (soot.Local)createStringBuffer(binary);
+                sb = generateAppends(binary.left(), sb);
+                sb = generateAppends(binary.right(), sb);
+                return createToString(sb, binary);
+            }
+        }
+        
+        //System.out.println("bin exp left: "+binary.left());
+        //System.out.println("bin exp right: "+binary.right());
+        soot.Value lVal = base().createAggressiveExpr(binary.left(), true, false);
+        soot.Value rVal = base().createAggressiveExpr(binary.right(), true, false);
+
+        if (isComparisonBinary(binary.operator())) {
+            //System.out.println("bin exp: "+binary);
+            rhs = getBinaryComparisonExpr(lVal, rVal, binary.operator());
+        }
+        else {
+            rhs = getBinaryExpr(lVal, rVal, binary.operator());
+        }
+        
+        if (rhs instanceof soot.jimple.BinopExpr) {
+            Util.addLnPosTags(((soot.jimple.BinopExpr)rhs).getOp1Box(), binary.left().position());
+		    Util.addLnPosTags(((soot.jimple.BinopExpr)rhs).getOp2Box(), binary.right().position());
+        }
+        
+        if (rhs instanceof soot.jimple.ConditionExpr && !reduceAggressively) {
+            return rhs;
+        }
+        else if (rhs instanceof soot.jimple.ConditionExpr){
+            rhs = handleCondBinExpr((soot.jimple.ConditionExpr)rhs, true);
         }
         
         soot.Local lhs = generateLocal(binary.type());
@@ -3239,6 +3372,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.Value rValue;
         
             if (operator == polyglot.ast.Binary.EQ){
+                //System.out.println("processing: "+body.getMethod().getDeclaringClass());
+                //System.out.println("lval: "+lVal+" rval: "+rVal);
 			    rValue = soot.jimple.Jimple.v().newEqExpr(lVal, rVal);
 		    }
 		    else if (operator == polyglot.ast.Binary.GE){
@@ -3375,7 +3510,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         
-        soot.Value lVal = base().createExpr(binary.left());
+        soot.Value lVal = base().createAggressiveExpr(binary.left(), false, false);
         boolean leftNeedIf = needSootIf(lVal); 
         if (!(lVal instanceof soot.jimple.ConditionExpr)) {
             lVal = soot.jimple.Jimple.v().newEqExpr(lVal, soot.jimple.IntConstant.v(0));
@@ -3400,7 +3535,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         
         soot.jimple.Stmt endNoop = soot.jimple.Jimple.v().newNopStmt();
-        soot.Value rVal = base().createExpr(binary.right());
+        soot.Value rVal = base().createAggressiveExpr(binary.right(), false, false);
         boolean rightNeedIf = needSootIf(rVal);
         if (!(rVal instanceof soot.jimple.ConditionExpr)) {
             rVal = soot.jimple.Jimple.v().newEqExpr(rVal, soot.jimple.IntConstant.v(0));
@@ -3461,7 +3596,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
         soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
         //inLeftOr++;
-        soot.Value lVal = base().createExpr(binary.left());
+        soot.Value lVal = base().createAggressiveExpr(binary.left(), false, false);
         //inLeftOr--;
         
         //System.out.println("leftval : "+lVal);
@@ -3488,7 +3623,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             Util.addLnPosTags(ifLeft.getConditionBox(), binary.left().position());    
         }
         
-        soot.Value rVal = base().createExpr(binary.right());
+        soot.Value rVal = base().createAggressiveExpr(binary.right(), false, false);
         boolean rightNeedIf = needSootIf(rVal);
         if (!(rVal instanceof soot.jimple.ConditionExpr)) {
             rVal = soot.jimple.Jimple.v().newEqExpr(rVal, soot.jimple.IntConstant.v(0));
@@ -3554,6 +3689,41 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         soot.Value newVal;
        
         newVal = reverseCondition(condExpr);
+        newVal = handleDFLCond((soot.jimple.ConditionExpr)newVal);
+
+        soot.jimple.Stmt ifStmt = soot.jimple.Jimple.v().newIfStmt(newVal, noop1);
+        body.getUnits().add(ifStmt);
+
+        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(1)));
+
+        soot.jimple.Stmt noop2 = soot.jimple.Jimple.v().newNopStmt();
+        
+        soot.jimple.Stmt goto1 = soot.jimple.Jimple.v().newGotoStmt(noop2);
+
+        body.getUnits().add(goto1);
+
+        body.getUnits().add(noop1);
+        
+        body.getUnits().add(soot.jimple.Jimple.v().newAssignStmt(boolLocal, soot.jimple.IntConstant.v(0)));
+
+        body.getUnits().add(noop2);
+
+        return boolLocal;
+        
+        
+    }
+    
+    private soot.Local handleCondBinExpr(soot.jimple.ConditionExpr condExpr, boolean reverse) {
+    
+        soot.Local boolLocal = lg.generateLocal(soot.BooleanType.v());
+
+        soot.jimple.Stmt noop1 = soot.jimple.Jimple.v().newNopStmt();
+            
+        soot.Value newVal = condExpr;
+       
+        if (reverse){
+            newVal = reverseCondition(condExpr);
+        }
         newVal = handleDFLCond((soot.jimple.ConditionExpr)newVal);
 
         soot.jimple.Stmt ifStmt = soot.jimple.Jimple.v().newIfStmt(newVal, noop1);
@@ -3655,7 +3825,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             }
         }
         else {
-            soot.Value toApp = base().createExpr(expr);
+            soot.Value toApp = base().createAggressiveExpr(expr, false, false);
             //System.out.println("toApp: "+toApp+" type: "+toApp.getType());
             soot.Type appendType = null;
             if (toApp instanceof soot.jimple.StringConstant) {
@@ -3919,7 +4089,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             
             soot.Local retLocal = generateLocal(expr.type());
             
-            soot.Value sootExpr = base().createExpr(expr);
+            soot.Value sootExpr = base().createAggressiveExpr(expr, false, false);
             
             soot.jimple.XorExpr xor = soot.jimple.Jimple.v().newXorExpr(sootExpr, base().getConstant(sootExpr.getType(), -1));
 
@@ -3954,7 +4124,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 }
             }
             else {
-                soot.Value local = base().createExpr(expr);
+                soot.Value local = base().createAggressiveExpr(expr, false, false);
 
                 soot.jimple.NegExpr negExpr = soot.jimple.Jimple.v().newNegExpr(local);
                 sootExpr = negExpr;
@@ -3974,7 +4144,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         }
         else if (op == polyglot.ast.Unary.POS) {
             soot.Local retLocal = generateLocal(expr.type());
-            soot.Value sootExpr = base().createExpr(expr);
+            soot.Value sootExpr = base().createAggressiveExpr(expr, false, false);
             soot.jimple.Stmt assign = soot.jimple.Jimple.v().newAssignStmt(retLocal, sootExpr);
             body.getUnits().add(assign);
             
@@ -3995,7 +4165,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 repush = true;
             }
 
-            soot.Value local = base().createExpr(expr);
+            soot.Value local = base().createAggressiveExpr(expr, false, false);
             
             // repush right away to optimize ! for ifs
             if (repush){
@@ -4081,11 +4251,11 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         // if its already the right type
         if (castExpr.expr().type().equals(castExpr.type()) || (castExpr.type().isClass() && Util.getSootType(castExpr.type()).toString().equals("java.lang.Object"))) {
-            return base().createExpr(castExpr.expr());
+            return base().createAggressiveExpr(castExpr.expr(), false, false);
         }
 
         soot.Value val;
-            val = base().createExpr(castExpr.expr());
+            val = base().createAggressiveExpr(castExpr.expr(), false, false);
         soot.Type type = Util.getSootType(castExpr.type());
 
         soot.jimple.CastExpr cast = soot.jimple.Jimple.v().newCastExpr(val, type);
@@ -4108,7 +4278,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         Iterator it = call.arguments().iterator();
         while (it.hasNext()) {
             polyglot.ast.Expr next = (polyglot.ast.Expr)it.next();
-            soot.Value nextExpr = base().createExpr(next);
+            soot.Value nextExpr = base().createAggressiveExpr(next, false, false);
             if (nextExpr instanceof soot.jimple.ConditionExpr){
                 nextExpr = handleCondBinExpr((soot.jimple.ConditionExpr)nextExpr);
             }
@@ -4253,7 +4423,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.types.ClassType objType = (polyglot.types.ClassType)cInst.container();
         soot.Local qVal = null;
         if (cCall.qualifier() != null){// && (!(cCall.qualifier() instanceof polyglot.ast.Special && ((polyglot.ast.Special)cCall.qualifier()).kind() == polyglot.ast.Special.THIS)) ){
-            qVal = (soot.Local)base().createExpr(cCall.qualifier());
+            qVal = (soot.Local)base().createAggressiveExpr(cCall.qualifier(), false, false);
         }
         handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);
         sootParams.addAll(getSootParams(cCall));
@@ -4362,7 +4532,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         //System.out.println("new qualifier: "+newExpr.qualifier());
         //if (newExpr.qualifier() != null) {
         if (newExpr.qualifier() != null){// && (!(newExpr.qualifier() instanceof polyglot.ast.Special && ((polyglot.ast.Special)newExpr.qualifier()).kind() == polyglot.ast.Special.THIS)) ){
-            qVal = base().createExpr(newExpr.qualifier());
+            qVal = base().createAggressiveExpr(newExpr.qualifier(), false, false);
         }
         handleOuterClassParams(sootParams, qVal, sootParamsTypes, objType);
 
@@ -4622,7 +4792,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             return generateLocal(((polyglot.ast.TypeNode)receiver).type());
         }
         else {
-            soot.Value val = base().createExpr((polyglot.ast.Expr)receiver);
+            soot.Value val = base().createAggressiveExpr((polyglot.ast.Expr)receiver, false, false);
             if (val instanceof soot.jimple.Constant) {
                 soot.Local retLocal = lg.generateLocal(val.getType());
                 soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(retLocal, val);
@@ -4649,7 +4819,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 dimLocal = soot.jimple.IntConstant.v(1);
             }
             else {
-                dimLocal = base().createExpr((polyglot.ast.Expr)newArrExpr.dims().get(0));
+                dimLocal = base().createAggressiveExpr((polyglot.ast.Expr)newArrExpr.dims().get(0), false, false);
             }
             //System.out.println("creating new array: "+((soot.ArrayType)sootType).getElementType());
             soot.jimple.NewArrayExpr newArrayExpr = soot.jimple.Jimple.v().newNewArrayExpr(((soot.ArrayType)sootType).getElementType(), dimLocal);
@@ -4663,7 +4833,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
             ArrayList valuesList = new ArrayList();
             Iterator it = newArrExpr.dims().iterator();
             while (it.hasNext()){
-                valuesList.add(base().createExpr((polyglot.ast.Expr)it.next()));
+                valuesList.add(base().createAggressiveExpr((polyglot.ast.Expr)it.next(), false, false));
             }
 
             if (newArrExpr.additionalDims() != 0) {
@@ -4748,7 +4918,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
                 }
             }
             else {
-                elem = base().createExpr(elemExpr);
+                elem = base().createAggressiveExpr(elemExpr, false, false);
             }
             soot.jimple.ArrayRef arrRef = soot.jimple.Jimple.v().newArrayRef(local, soot.jimple.IntConstant.v(index));
             
@@ -4789,8 +4959,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.ast.Expr array = arrayRefExpr.array();
         polyglot.ast.Expr access = arrayRefExpr.index();
         
-        soot.Local arrLocal = (soot.Local)base().createExpr(array);
-        soot.Value arrAccess = base().createExpr(access);
+        soot.Local arrLocal = (soot.Local)base().createAggressiveExpr(array, false, false);
+        soot.Value arrAccess = base().createAggressiveExpr(access, false, false);
 
         soot.Local retLocal = generateLocal(arrayRefExpr.type());
 
@@ -4809,8 +4979,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         polyglot.ast.Expr array = arrayRefExpr.array();
         polyglot.ast.Expr access = arrayRefExpr.index();
         
-        soot.Local arrLocal = (soot.Local)base().createExpr(array);
-        soot.Value arrAccess = base().createExpr(access);
+        soot.Local arrLocal = (soot.Local)base().createAggressiveExpr(array, false, false);
+        soot.Value arrAccess = base().createAggressiveExpr(access, false, false);
 
         soot.Local retLocal = generateLocal(arrayRefExpr.type());
 
@@ -4944,7 +5114,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         
         soot.Type sootType = Util.getSootType(instExpr.compareType().type());
 
-        soot.Value local = base().createExpr(instExpr.expr());
+        soot.Value local = base().createAggressiveExpr(instExpr.expr(), false, false);
 
         soot.jimple.InstanceOfExpr instOfExpr = soot.jimple.Jimple.v().newInstanceOfExpr(local, sootType);
 
@@ -4975,7 +5145,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 		// handle consequence
 		polyglot.ast.Expr consequence = condExpr.consequent();
         
-        soot.Value conseqVal = base().createExpr(consequence);
+        soot.Value conseqVal = base().createAggressiveExpr(consequence, false, false);
         if (conseqVal instanceof soot.jimple.ConditionExpr) {
             conseqVal = handleCondBinExpr((soot.jimple.ConditionExpr)conseqVal);
         }
@@ -4993,7 +5163,7 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         body.getUnits().add(noop1);
         polyglot.ast.Expr alternative = condExpr.alternative();
 		if (alternative != null){
-			soot.Value altVal = base().createExpr(alternative);
+			soot.Value altVal = base().createAggressiveExpr(alternative, false, false);
             if (altVal instanceof soot.jimple.ConditionExpr) {
                 altVal = handleCondBinExpr((soot.jimple.ConditionExpr)altVal);
             }

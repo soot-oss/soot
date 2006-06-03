@@ -54,8 +54,13 @@ public abstract class AbstractJimpleBodyBuilder {
         return ext().createJimpleBody(block, formals, sootMethod);
     }
     
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
+    /*protected soot.Value createExpr(polyglot.ast.Expr expr){
         return ext().createExpr(expr);
+    }*/
+    
+    protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean reduceAggressively, boolean reverseCondIfNec){
+        //System.out.println("in abstract");
+        return ext().createAggressiveExpr(expr, reduceAggressively, reverseCondIfNec);
     }
     
     protected void createStmt(polyglot.ast.Stmt stmt){

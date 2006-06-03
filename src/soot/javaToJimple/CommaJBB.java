@@ -26,18 +26,27 @@ public class CommaJBB extends AbstractJimpleBodyBuilder{
         //base(this);
     }
 
-    protected soot.Value createExpr(polyglot.ast.Expr expr){
+    /*protected soot.Value createExpr(polyglot.ast.Expr expr){
         if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){
             return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr);
         }
         else {
             return ext().createExpr(expr);
         }
+    }*/
+    
+    protected soot.Value createAggressiveExpr(polyglot.ast.Expr expr, boolean redAggr, boolean revIfNec){
+        if (expr instanceof soot.javaToJimple.jj.ast.JjComma_c){
+            return getCommaLocal((soot.javaToJimple.jj.ast.JjComma_c)expr);
+        }
+        else {
+            return ext().createAggressiveExpr(expr, redAggr, revIfNec);
+        }
     }
     
     private soot.Value getCommaLocal(soot.javaToJimple.jj.ast.JjComma_c comma){
-        base().createExpr(comma.first());
-        soot.Value val = base().createExpr(comma.second());
+        base().createAggressiveExpr(comma.first(), false, false);
+        soot.Value val = base().createAggressiveExpr(comma.second(), false, false);
         return val;
     }
 
