@@ -26,9 +26,6 @@
 
 package soot;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 import java.io.*;
 
@@ -95,7 +92,7 @@ public class AbstractTrap implements Trap, Serializable
 
     public UnitBox getHandlerUnitBox()
     {
-        return beginUnitBox;
+        return handlerUnitBox;
     }
 
     public UnitBox getBeginUnitBox()
