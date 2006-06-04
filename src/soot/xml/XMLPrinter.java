@@ -24,17 +24,34 @@
  */
 
 package soot.xml;
-import soot.*;
-import java.util.*;
-import soot.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.InvokeExpr;
-import soot.jimple.SpecialInvokeExpr;
-import soot.jimple.StaticInvokeExpr;
-import soot.jimple.Stmt;
-import soot.jimple.toolkits.invoke.*;
-import java.io.*;
+import java.io.PrintWriter;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import soot.Body;
+import soot.G;
+import soot.LabeledUnitPrinter;
+import soot.Local;
+import soot.Main;
+import soot.Modifier;
+import soot.NormalUnitPrinter;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Unit;
+import soot.ValueBox;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LiveLocals;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.util.Chain;
+import soot.util.StringTools;
 
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter {
@@ -112,13 +129,11 @@ public class XMLPrinter {
         String cleanMethodName = cleanMethod(body.getMethod().getName());
         Iterator unitIt = units.iterator();
         Unit currentStmt = null;
-        Unit previousStmt;
-        String indent = "        ";
+        
         String currentLabel = "default";
         long statementCount = 0;
         long labelCount = 0;
         long labelID = 0;
-        int index = 0;
 
         // lists
         Vector useList = new Vector();
@@ -193,9 +208,7 @@ public class XMLPrinter {
 
         // for each statement...
         while (unitIt.hasNext()) {
-            previousStmt = currentStmt;
             currentStmt = (Unit) unitIt.next();
-            Stmt stmtCurrentStmt = (Stmt) currentStmt;
 
             // new label								
             if (stmtToName.containsKey(currentStmt)) {
@@ -505,7 +518,6 @@ public class XMLPrinter {
         Vector localTypes = new Vector();
         Vector typedLocals = new Vector();
         Vector typeCounts = new Vector();
-        String xmlLongLocals = "";
         int j = 0;
         int currentType = 0;
 
