@@ -19,23 +19,16 @@
 
 package soot.javaToJimple.jj;
 
-import polyglot.lex.Lexer;
-//import soot.javaToJimple.jj.parse.Lexer_c;
-//import soot.javaToJimple.jj.parse.Grm;
-//import polyglot.ext.jl.parse.Lexer_c;
-//import polyglot.ext.jl.parse.Grm;
-import soot.javaToJimple.jj.ast.*;
-import soot.javaToJimple.jj.types.*;
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
-import polyglot.ast.*;
-import polyglot.types.*;
-import polyglot.util.*;
-import polyglot.visit.*;
-import polyglot.frontend.*;
-import polyglot.main.*;
-
-import java.util.*;
-import java.io.*;
+import polyglot.ast.NodeFactory;
+import polyglot.frontend.Job;
+import polyglot.main.Options;
+import polyglot.types.TypeSystem;
+import soot.javaToJimple.jj.ast.JjNodeFactory_c;
+import soot.javaToJimple.jj.types.JjTypeSystem_c;
 
 /**
  * Extension information for jj extension.
@@ -43,7 +36,7 @@ import java.io.*;
 public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
     static {
         // force Topics to load
-        Topics t = new Topics();
+        new Topics();
     }
 
     public String defaultFileExtension() {
@@ -82,5 +75,23 @@ public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
 
     public void sourceJobMap(HashMap map){
         sourceJobMap = map;
+    }
+    
+    /**
+     * Appends the soot classpath to the default system classpath.
+     */
+    protected Options createOptions() {
+    	return new Options(this) {
+
+			/**
+			 * Appends the soot classpath to the default system classpath.
+			 */
+			public String constructFullClasspath() {
+				String cp = super.constructFullClasspath();
+				cp += File.pathSeparator + soot.options.Options.v().soot_classpath();
+				return cp;
+			}
+    		
+    	};
     }
 }
