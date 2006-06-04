@@ -88,6 +88,12 @@ public class ASTWalker
 		walk_value( a, ue.getOp());
 		a.analyseUnopExpr( ue);
 	    }
+	    else if (e instanceof CastExpr) {
+		CastExpr ce = (CastExpr)e;
+
+		walk_value(a, ce.getOp());
+		a.analyseExpr(ce);
+		}
 	    else if (e instanceof NewArrayExpr) {
 		NewArrayExpr nae = (NewArrayExpr) e;
 		
