@@ -191,7 +191,8 @@ public class InlinerSafetyManager
         Value base = (ie instanceof InstanceInvokeExpr) ? 
             ((InstanceInvokeExpr)ie).getBase() : null;
 
-        if (base != null && invokeThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
+        if (base != null && base instanceof RefType &&
+        		invokeThrowsAccessErrorIn(((RefType)base.getType()).getSootClass(), inlinee, container))
             return false;
 
         // Rule 5: Don't inline away any class, method or field access 
