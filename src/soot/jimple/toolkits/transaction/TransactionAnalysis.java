@@ -14,6 +14,7 @@ import soot.jimple.toolkits.pointer.RWSet;
 import soot.jimple.toolkits.pointer.Union;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.InvokeStmt;
+import soot.jimple.RetStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
@@ -24,12 +25,15 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
     FlowSet emptySet = new ArraySparseSet();
     Map unitToGenerateSet;
     Body body;
-    SideEffectAnalysis sea;
+	SootMethod method;
+    Transaction methodTn;
+	SideEffectAnalysis sea;
 
     TransactionAnalysis(UnitGraph graph, Body b)
 	{
 		super(graph);
 		body = b;
+		method = body.getMethod();
 		if( G.v().Union_factory == null ) {
 		    G.v().Union_factory = new UnionFactory() {
 			public Union newUnion() { return FullObjectSet.v(); }
@@ -37,7 +41,16 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
 		}
     	sea = Scene.v().getSideEffectAnalysis();
 		sea.findNTRWSets( body.getMethod() );
+		methodTn = null;
+		if(method.isSynchronized())
+		{
+			// Entire method is transactional
+//			methodTn = new Transaction((Stmt) unit, false, body.getMethod());
+		}
         doAnalysis();
+		if(method.isSynchronized() && methodTn != null)
+		{
+		}
 	}
     	
     /**
@@ -69,7 +82,10 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
         // If there is a (null,anylist) in the flowset, then add reads & writes to anylist
         // If there is a (null,anylist) in the flowset and this instruction is a monitorenter, change (null, anylist) to (unit, anylist)
         boolean addSelf;
-        addSelf = (unit instanceof ExitMonitorStmt); // if we're a monitorexit, we might have to add to the flowset
+		boolean wholeMethod = false;
+        addSelf = ((unit instanceof ExitMonitorStmt) || 
+					(wholeMethod = ((unit instanceof RetStmt) && (method.isSynchronized())))); 
+		// if we're a monitorexit, we might have to add to the flowset
 
         Iterator inIt = in.iterator();
         while(inIt.hasNext())
@@ -81,20 +97,20 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             	tn.units.add(unit);
             	
             	// Add our reads and writes to the "current" transactional region
-            	if(unit instanceof InvokeStmt)
-            	{ 
+//            	if(unit instanceof InvokeStmt)
+//            	{ 
             		// defer calculation of read/write from invoke stmt until
             		// we have compiled a list of all transactions
             		// then use TransactionAwareSideEffectAnalysis
-            		tn.invokes.add(unit);
-            	}
-            	else
-            	{
-                	RWSet stmtRead = sea.readSet( body.getMethod(), (Stmt) unit );
-                	RWSet stmtWrite = sea.writeSet( body.getMethod(), (Stmt) unit );
+//            		tn.invokes.add(unit);
+//            	}
+//            	else
+//            	{
+                	RWSet stmtRead = sea.readSet( method, (Stmt) unit );
+                	RWSet stmtWrite = sea.writeSet( method, (Stmt) unit );
             		tn.read.union(stmtRead);
             		tn.write.union(stmtWrite);
-            	}
+//            	}
             	
             	if(unit instanceof EnterMonitorStmt)
             	{
@@ -109,7 +125,18 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
         }
        	in.copy(out);
         if(addSelf)
-        	out.add(new Transaction((Stmt) unit, body.getMethod()));
+		{
+			if(wholeMethod)
+			{
+				methodTn = new Transaction((Stmt) unit, true, method);
+				methodTn.begin = (Stmt) body.getUnits().getFirst();
+	        	out.add(methodTn);
+			}
+			else
+			{
+				out.add(new Transaction((Stmt) unit, false, method));
+			}
+		}
     }
 
     /**

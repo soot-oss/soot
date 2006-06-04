@@ -11,7 +11,10 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 public class TransactionTransformer extends SceneTransformer
 {
     public TransactionTransformer(Singletons.Global g){}
-    public static TransactionTransformer v() { return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();}
+    public static TransactionTransformer v() 
+	{ 
+		return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();
+	}
 
     protected void internalTransform(String phaseName, Map options)
 	{
@@ -56,23 +59,23 @@ public class TransactionTransformer extends SceneTransformer
     	// to create a TransactionAwareSideEffectAnalysis
     	// This breaks atomicity: inner transaction's effects are visible
     	// as soon as the inner transaction completes.
-    	TransactionAwareSideEffectAnalysis tasea = 
-    		new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), AllTransactions);
-    	Iterator tnIt = AllTransactions.iterator();
-    	while(tnIt.hasNext())
-    	{
-    		Transaction tn = (Transaction) tnIt.next();
-    		Iterator invokeIt = tn.invokes.iterator();
-    		while(invokeIt.hasNext())
-    		{
-    			Stmt stmt = (Stmt) invokeIt.next();
-            	RWSet stmtRead = tasea.readSet( tn.method, stmt );
-            	RWSet stmtWrite = tasea.writeSet( tn.method, stmt );
-        		tn.read.union(stmtRead);
-        		tn.write.union(stmtWrite);
-    		}
-    	}
+//    	TransactionAwareSideEffectAnalysis tasea = 
+//    		new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
+//    				Scene.v().getCallGraph(), AllTransactions);
+//    	Iterator tnIt = AllTransactions.iterator();
+//    	while(tnIt.hasNext())
+//    	{
+//    		Transaction tn = (Transaction) tnIt.next();
+//    		Iterator invokeIt = tn.invokes.iterator();
+//    		while(invokeIt.hasNext())
+//    		{
+//    			Stmt stmt = (Stmt) invokeIt.next();
+//            	RWSet stmtRead = tasea.readSet( tn.method, stmt );
+//            	RWSet stmtWrite = tasea.writeSet( tn.method, stmt );
+//        		tn.read.union(stmtRead);
+//        		tn.write.union(stmtWrite);
+//    		}
+//    	}
     	
     	// *** Calculate locking scheme ***
     	
