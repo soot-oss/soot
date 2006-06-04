@@ -137,7 +137,7 @@ public class Main {
         }
     }
 
-    public String[] cmdLineArgs;
+    public String[] cmdLineArgs = new String[0];
     /**
      *   Entry point for cmd line invocation of soot.
      */
