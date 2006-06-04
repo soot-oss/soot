@@ -76,4 +76,15 @@ public class ArrayNumberer implements IterableNumberer {
             throw new UnsupportedOperationException();
         }
     }
+    
+    /**
+     * Clears references for more friendly memory behavior.
+     */    
+    public void clear() {
+    	for (int i = 0; i < numberToObj.length; i++) {
+    		numberToObj[i] = null;
+    	}
+    	lastNumber = 0;
+    }
+
 }

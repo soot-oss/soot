@@ -40,4 +40,10 @@ public class IntegerNumberer implements Numberer {
     public int size() {
         throw new RuntimeException( "IntegerNumberer does not implement the size() method." );
     }
+
+    /**
+     * Clears references for more friendly memory behavior.
+     */    
+    public void clear() {
+    }
 }

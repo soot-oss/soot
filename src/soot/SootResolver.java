@@ -239,6 +239,18 @@ public class SootResolver
         addToResolveWorklist(cl, resolvingLevel);
         processResolveWorklist();
     }
+    
+    /**
+     * Clears the worklist for more friendly memory behavior.
+     */
+    public void clear() {
+    	classToReferences.clear();
+    	for (int i = 0; i < worklist.length; i++) {
+    		LinkedList list = worklist[i];
+    		if (list != null) list.clear();
+    	}
+    }
+    
 }
 
 

@@ -44,4 +44,11 @@ public class StringNumberer extends ArrayNumberer {
         }
         return ret;
     }
+    /**
+     * Clears references for more friendly memory behavior.
+     */    
+    public void clear() {
+    	super.clear();
+    	stringToNumbered.clear();
+    }
 }
