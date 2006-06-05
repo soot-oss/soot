@@ -31,7 +31,8 @@ class Transaction
 		nextIDNum++;
 		this.begin = null;
 		this.ends = new Vector();
-		ends.add(end);
+		if(end != null)
+			ends.add(end);
 		this.read = new CodeBlockRWSet();
 		this.write = new CodeBlockRWSet();
 		this.invokes = new HashSet();

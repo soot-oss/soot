@@ -147,13 +147,23 @@ public class TransactionBodyTransformer extends BodyTransformer
 						(Stmt) firstUnit);
 			}
 			units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
-			units.remove(tn.begin);
+			if(!tn.wholeMethod)
+				units.remove(tn.begin);
 			Iterator endsIt = tn.ends.iterator();
 			while(endsIt.hasNext())
 			{
 				Stmt sEnd = (Stmt) endsIt.next();
-				units.insertBefore(Jimple.v().newExitMonitorStmt(lockObj[tn.setNumber]), sEnd);
-				units.remove(sEnd);
+				if(tn.wholeMethod)
+				{
+					units.insertAfter(Jimple.v().newExitMonitorStmt(
+						lockObj[tn.setNumber]), sEnd);
+				}
+				else
+				{
+					units.insertBefore(Jimple.v().newExitMonitorStmt(
+						lockObj[tn.setNumber]), sEnd);
+					units.remove(sEnd);
+				}
 			}
 		}
 	}

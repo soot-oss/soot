@@ -45,7 +45,7 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
 		if(method.isSynchronized())
 		{
 			// Entire method is transactional
-//			methodTn = new Transaction((Stmt) unit, false, body.getMethod());
+			methodTn = new Transaction((Stmt) null, false, body.getMethod());
 		}
         doAnalysis();
 		if(method.isSynchronized() && methodTn != null)
@@ -66,7 +66,10 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
      **/
     protected Object entryInitialFlow()
     {
-        return emptySet.clone();
+		FlowSet ret = (FlowSet) emptySet.clone();
+		if(method.isSynchronized() && methodTn != null)
+			ret.add(methodTn);
+        return ret;
     }
 
     /**
@@ -78,13 +81,24 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             in = (FlowSet) inValue,
             out = (FlowSet) outValue;
 
-        // If this instruction is a monitorexit, add a (null,emptylist) to the flowset
-        // If there is a (null,anylist) in the flowset, then add reads & writes to anylist
-        // If there is a (null,anylist) in the flowset and this instruction is a monitorenter, change (null, anylist) to (unit, anylist)
+		// If the flowset has a transaction in it with wholeMethod=true and
+		// ends is empty then the current instruction is the last instruction on
+		// some path of execution in this method, so ends should be set to unit
+		if(method.isSynchronized() && in.size() == 1)
+		{
+			Transaction tn = (Transaction) in.iterator().next();
+			if(!tn.ends.isEmpty())
+				tn.ends.add(unit);
+		}
+
+        // If this instruction is a monitorexit, then 
+        //     add a (null,emptylist) to the flowset
+        // If there is a (null,anylist) in the flowset, then 
+        //     add reads & writes to anylist
+        // If there is a (null,anylist) in the flowset and this instruction is 
+        //     a monitorenter, change (null, anylist) to (unit, anylist)
         boolean addSelf;
-		boolean wholeMethod = false;
-        addSelf = ((unit instanceof ExitMonitorStmt) || 
-					(wholeMethod = ((unit instanceof RetStmt) && (method.isSynchronized())))); 
+        addSelf = (unit instanceof ExitMonitorStmt);
 		// if we're a monitorexit, we might have to add to the flowset
 
         Iterator inIt = in.iterator();
@@ -126,16 +140,7 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
        	in.copy(out);
         if(addSelf)
 		{
-			if(wholeMethod)
-			{
-				methodTn = new Transaction((Stmt) unit, true, method);
-				methodTn.begin = (Stmt) body.getUnits().getFirst();
-	        	out.add(methodTn);
-			}
-			else
-			{
-				out.add(new Transaction((Stmt) unit, false, method));
-			}
+			out.add(new Transaction((Stmt) unit, false, method));
 		}
     }
 
