@@ -43,13 +43,4 @@ public class MapNumberer implements Numberer {
     public int size() { return nextIndex; }
     public MapNumberer() { al.add(null); }
     public boolean contains(Object o) { return map.containsKey(o); }
-
-    /**
-     * Clears references for more friendly memory behavior.
-     */    
-    public void clear() {
-    	map.clear();
-    	al.clear();
-    	nextIndex = 1;
-    }
 }

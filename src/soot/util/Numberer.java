@@ -32,8 +32,4 @@ public interface Numberer {
     public Object get( long number );
     /** Should return the number of objects that have been assigned numbers. */
     public int size();
-    /**
-     * Clears references for more friendly memory behavior.
-     */    
-    public void clear();
 }
