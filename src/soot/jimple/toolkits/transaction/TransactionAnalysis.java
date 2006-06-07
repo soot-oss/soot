@@ -111,20 +111,18 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             	tn.units.add(unit);
             	
             	// Add our reads and writes to the "current" transactional region
-//            	if(unit instanceof InvokeStmt)
-//            	{ 
-            		// defer calculation of read/write from invoke stmt until
-            		// we have compiled a list of all transactions
-            		// then use TransactionAwareSideEffectAnalysis
-//            		tn.invokes.add(unit);
-//            	}
-//            	else
-//            	{
-                	RWSet stmtRead = sea.readSet( method, (Stmt) unit );
-                	RWSet stmtWrite = sea.writeSet( method, (Stmt) unit );
-            		tn.read.union(stmtRead);
-            		tn.write.union(stmtWrite);
-//            	}
+            	if(unit instanceof InvokeStmt)
+            	{
+            		String InvokeSig = ((InvokeStmt)unit).getInvokeExpr().getMethod().getSubSignature();
+            		if(InvokeSig.equals("void notify()"))
+	            		tn.notifys.add(unit);
+//	            	if(InvokeSig.equals("void wait()"))
+//	            		tn.waits.add(unit);
+            	}
+               	RWSet stmtRead = sea.readSet( method, (Stmt) unit );
+               	RWSet stmtWrite = sea.writeSet( method, (Stmt) unit );
+           		tn.read.union(stmtRead);
+           		tn.write.union(stmtWrite);
             	
             	if(unit instanceof EnterMonitorStmt)
             	{

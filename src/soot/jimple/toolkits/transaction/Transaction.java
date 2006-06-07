@@ -16,7 +16,7 @@ class Transaction
 	public Stmt begin;
 	public Vector ends;
 	public CodeBlockRWSet read, write;
-	public HashSet invokes;
+//	public HashSet invokes;
 	public HashSet units;
 	public boolean wholeMethod;
 	
@@ -24,6 +24,8 @@ class Transaction
 	public SootMethod method;
 	public int setNumber; // used for breaking the list of transactions into sets
 	public HashSet edges;
+//	public HashSet waits; // currently unused
+	public HashSet notifys;
 	
 	Transaction(Stmt end, boolean wholeMethod, SootMethod method)
 	{
@@ -35,11 +37,13 @@ class Transaction
 			ends.add(end);
 		this.read = new CodeBlockRWSet();
 		this.write = new CodeBlockRWSet();
-		this.invokes = new HashSet();
+//		this.invokes = new HashSet();
 		this.units = new HashSet();
 		this.wholeMethod = wholeMethod;
 		this.method = method;
 		this.setNumber = 0; // 0 = no group, -1 = DELETE
 		this.edges = new HashSet();
+//		this.waits = new HashSet();
+		this.notifys = new HashSet();
 	}
 }

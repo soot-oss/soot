@@ -31,6 +31,8 @@ public class TransactionBodyTransformer extends BodyTransformer
     	Chain units = b.getUnits();
 		Unit firstUnit = (Unit) units.iterator().next();
 		
+		SootMethod thisMethod = b.getMethod();
+		
 		Local[] lockObj = new Local[maxLockObjs]; 			
 		boolean[] addedLocalLockObj = new boolean[maxLockObjs];
 		SootField[] globalLockObj = new SootField[maxLockObjs];
@@ -41,8 +43,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 			globalLockObj[i] = null;
 		}
 
- 		synchronized(this)
-        {
+// 		synchronized(this)
+//        {
             if (!Scene.v().getMainClass().declaresMethod("void main(java.lang.String[])"))
                 throw new RuntimeException("couldn't find main() in mainClass");
 //            G.v().out.println("Processing: " + b.getMethod().getDeclaringClass().toString() + ":" + b.getMethod().toString());
@@ -63,10 +65,10 @@ public class TransactionBodyTransformer extends BodyTransformer
 	            	globalLockObj[i] = Scene.v().getMainClass().getFieldByName("globalLockObj" + i);
 	            }
     		}
-        }
+//        }
 
         
-        if(b.getMethod().getSubSignature().equals("void main(java.lang.String[])"))
+        if(thisMethod.getSubSignature().equals("void main(java.lang.String[])"))
         {
     		for(int i = 1; i < maxLockObjs; i++)
     		{
@@ -147,7 +149,10 @@ public class TransactionBodyTransformer extends BodyTransformer
 						(Stmt) firstUnit);
 			}
 			units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
-			if(!tn.wholeMethod)
+			if(tn.wholeMethod)
+				// remove synchronized modifier for this method
+				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) );
+			else
 				units.remove(tn.begin);
 			Iterator endsIt = tn.ends.iterator();
 			while(endsIt.hasNext())
@@ -164,6 +169,13 @@ public class TransactionBodyTransformer extends BodyTransformer
 						lockObj[tn.setNumber]), sEnd);
 					units.remove(sEnd);
 				}
+			}
+			Iterator notifysIt = tn.notifys.iterator();
+			while(notifysIt.hasNext())
+			{// Convert all notify()s to notifyAll()s
+				Stmt sNotify = (Stmt) notifysIt.next();
+				sNotify.getInvokeExpr().setMethodRef(
+					sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef());
 			}
 		}
 	}
