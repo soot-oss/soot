@@ -1679,6 +1679,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
+                
                 +padVal( "double (default)", "Double set representation for incremental propagation" )
                 
                 +padOpt( "double-set-old", "Select implementation of points-to set for old part of double set" )
@@ -1690,6 +1692,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "array", "Sorted array representation" )
                 
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
+                
                 +padOpt( "double-set-new", "Select implementation of points-to set for new part of double set" )
                 +padVal( "hash", "Use Java HashSet" )
                 
@@ -1698,6 +1702,8 @@ public class Options extends OptionsBase {
                 +padVal( "hybrid (default)", "Hybrid representation using bit vector for large sets" )
                 
                 +padVal( "array", "Sorted array representation" )
+                
+                +padVal( "heintze", "Heintze's shared bit-vector and overflow list representation" )
                 
                 +padOpt( "context-counts (false)", "Print number of contexts for each method" )
                 +padOpt( "total-context-counts (false)", "Print total number of contexts" )

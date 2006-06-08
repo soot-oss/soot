@@ -48,6 +48,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 		// did it
 		super(type);
 		this.pag = pag;
+		//System.out.println("Using new heintze set");
 	}
 
 	// The following 2 constants should be tweaked for efficiency
@@ -198,10 +199,8 @@ public class SharedHybridSet extends PointsToSetInternal {
 			else
 				newBitVector = new PointsToBitVector(bitVector);
 			newBitVector.add(n); // add n to it
-			newBitVector.add(overflow.overflow, overflow.size()); // add
-																	// overflow
-																	// to
-																	// newBitVector
+			add(newBitVector, overflow);
+			
 			// Now everything is in newBitVector, and it must have numElements
 			// ones
 
@@ -237,8 +236,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 				} else {
 					newBitVector = new PointsToBitVector(exclude.bitVector);
 				}
-				newBitVector
-						.add(exclude.overflow.overflow, exclude.overflow.size());
+				add(newBitVector, exclude.overflow);
 				exclude = new SharedHybridSet(type, pag);
 				exclude.bitVector = newBitVector;
 			}
@@ -286,7 +284,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 					if (mask != null) result.and(mask);
 					if (!result.equals(bitVector))
 					{
-						result.add(toReAdd.overflow, toReAdd.size());
+						add(result, toReAdd);
 						int newBitVectorSize = result.cardinality(); 
 						numElements = newBitVectorSize;
 						findAppropriateBitVector(result, other.bitVector, otherBitVectorSize, otherBitVectorSize);
@@ -297,8 +295,8 @@ public class SharedHybridSet extends PointsToSetInternal {
 				if (!newBitVectorCreated)  //if it was, then toReAdd has
 					//already been re-added
 				{
-					for (int i = 0; i < toReAdd.size(); ++i) {
-						add(toReAdd.overflow[i]);
+					for (OverflowList.ListNode i = toReAdd.overflow; i != null; i = i.next) {
+						add(i.elem);
 					}					
 				}
 			}
@@ -334,7 +332,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 				if (other.overflow.size() != 0) {
 					PointsToBitVector toAdd = 
 						new PointsToBitVector(newBitVector.size());
-					toAdd.add(other.overflow.overflow, other.overflow.size());
+					add(toAdd, other.overflow);
 					if (mask != null) toAdd.and(mask);
 					if (exclude != null) toAdd.andNot(exclude.bitVector);
 					newBitVector.or(toAdd);
@@ -343,7 +341,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 
 				int numOnes = newBitVector.cardinality();  //# of bits in the 
 					//new bitvector
-				int numAdded = newBitVector.add(overflow.overflow, overflow.size());
+				int numAdded = add(newBitVector, overflow);
 				numElements += numOnes - originalOnes   //number of new bits
 					+ numAdded - overflow.size();   //might be negative due to 
 						//elements in overflow already being in the new bits
@@ -369,10 +367,9 @@ public class SharedHybridSet extends PointsToSetInternal {
 		// Add all the elements in the overflow list of other, unless they're in
 		// exclude
 		OverflowList overflow = other.overflow;
-		for (int i = 0; i < overflow.size(); ++i) {
-			Node nodeToMaybeAdd = overflow.overflow[i]; // Here's where
-														// overloaded operators
-														// would be better
+		for (OverflowList.ListNode i = overflow.overflow; i != null; i = i.next) {
+//		for (int i = 0; i < overflow.size(); ++i) {
+			Node nodeToMaybeAdd = i.elem;
 			if ((exclude == null) || !exclude.contains(nodeToMaybeAdd)) {
 				if (mask == null || mask.get(nodeToMaybeAdd.getNumber()))
 				{
@@ -385,6 +382,26 @@ public class SharedHybridSet extends PointsToSetInternal {
 		return size() > originalSize;
 	}
 
+	/**@
+	 * Adds the Nodes in arr to this bitvector.
+	 * @return The number of new nodes actually added.
+	 */ 
+	private int add(PointsToBitVector p, OverflowList arr) {
+		//assert size <= arr.length;
+		int retVal = 0;
+		for (OverflowList.ListNode i = arr.overflow; i != null; i = i.next) {
+			if (p.add(i.elem)) ++retVal;
+/*			int num = arr[i].getNumber();
+			if (!get(num))
+			{
+				set(num);
+				++retVal;
+			}*/
+		}
+		return retVal;
+	}
+
+	/*
 	//A class invariant - numElements correctly holds the size
 	//Only used for testing
 	private void checkSize()
@@ -396,6 +413,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 			throw new RuntimeException("Assertion failed.");
 		}
 	}
+	*/
 	
 	public boolean addAll(PointsToSetInternal other,
 			final PointsToSetInternal exclude) {
@@ -423,8 +441,8 @@ public class SharedHybridSet extends PointsToSetInternal {
 			}
 		}
 		// Iterate through the overflow list
-		for (int i = 0; i < overflow.size(); ++i) {
-			v.visit(overflow.overflow[i]);
+		for (OverflowList.ListNode i = overflow.overflow; i != null; i = i.next) {
+			v.visit(i.elem);
 		}
 		return v.getReturnValue();
 	}
@@ -454,6 +472,15 @@ public class SharedHybridSet extends PointsToSetInternal {
 	}
 
 	private class OverflowList {
+		public class ListNode {
+			public Node elem;
+			public ListNode next;
+			public ListNode(Node elem, ListNode next)
+			{
+				this.elem = elem;
+				this.next = next;
+			}
+		}
 		public OverflowList() {
 		}
 
@@ -473,8 +500,8 @@ public class SharedHybridSet extends PointsToSetInternal {
 			if (full())
 				throw new RuntimeException(
 						"Can't add an element to a full overflow list.");
-			overflow[overflowElements] = n;
-			overflowElements++;
+			overflow = new ListNode(n, overflow);
+			++overflowElements;
 		}
 
 		public int size() {
@@ -486,22 +513,28 @@ public class SharedHybridSet extends PointsToSetInternal {
 		}
 
 		public boolean contains(Node n) {
-			for (int i = 0; i < overflowElements; ++i) {
-				if (n == overflow[i])
+			for (ListNode l = overflow; l != null; l = l.next) {
+				if (n == l.elem)
 					return true;
 			}
 			return false;
 		}
 
 		public void removeAll() {
-			overflow = new Node[OVERFLOW_SIZE];
+			overflow = null;
 			overflowElements = 0;
 		}
 
-		public Node[] overflow = new Node[OVERFLOW_SIZE]; // Not shared with
-															// other
-
-		// points-to sets - the extra elements besides the ones in bitVector
+		/*
+		public ListNode next() {
+			return overflow.next;
+		}
+		public Node elem() {
+			return overflow.elem;
+		}
+		*/
+		public ListNode overflow = null;  //Not shared with
+			//other points-to sets - the extra elements besides the ones in bitVector
 		private int overflowElements = 0; // # of elements actually in the
 		// array `overflow'
 

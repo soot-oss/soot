@@ -538,7 +538,8 @@ public class PaddleOptions
     public static final int set_impl_bit = 2;
     public static final int set_impl_hybrid = 3;
     public static final int set_impl_array = 4;
-    public static final int set_impl_double = 5;
+    public static final int set_impl_heintze = 5;
+    public static final int set_impl_double = 6;
     /** Set Implementation --
     
      * Select points-to set implementation.
@@ -560,6 +561,9 @@ public class PaddleOptions
         if( s.equalsIgnoreCase( "array" ) )
             return set_impl_array;
         
+        if( s.equalsIgnoreCase( "heintze" ) )
+            return set_impl_heintze;
+        
         if( s.equalsIgnoreCase( "double" ) )
             return set_impl_double;
         
@@ -570,6 +574,7 @@ public class PaddleOptions
     public static final int double_set_old_bit = 2;
     public static final int double_set_old_hybrid = 3;
     public static final int double_set_old_array = 4;
+    public static final int double_set_old_heintze = 5;
     /** Double Set Old --
     
      * Select implementation of points-to set for old part of double 
@@ -594,6 +599,9 @@ public class PaddleOptions
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_old_array;
         
+        if( s.equalsIgnoreCase( "heintze" ) )
+            return double_set_old_heintze;
+        
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-old" );
     }
     
@@ -601,6 +609,7 @@ public class PaddleOptions
     public static final int double_set_new_bit = 2;
     public static final int double_set_new_hybrid = 3;
     public static final int double_set_new_array = 4;
+    public static final int double_set_new_heintze = 5;
     /** Double Set New --
     
      * Select implementation of points-to set for new part of double 
@@ -624,6 +633,9 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "array" ) )
             return double_set_new_array;
+        
+        if( s.equalsIgnoreCase( "heintze" ) )
+            return double_set_new_heintze;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option double-set-new" );
     }

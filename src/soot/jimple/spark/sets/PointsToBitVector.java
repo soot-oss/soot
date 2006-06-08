@@ -1,5 +1,4 @@
 package soot.jimple.spark.sets;
-import soot.util.BitSetIterator;
 import soot.util.BitVector;
 import soot.jimple.spark.pag.Node;
 
@@ -15,8 +14,20 @@ import soot.jimple.spark.pag.Node;
  */
 public class PointsToBitVector extends BitVector {
 	public PointsToBitVector(int size) { super(size); }
-	public void add(Node n) {
-		set(n.getNumber());
+	
+	/**
+	 * Adds n to this
+	 * @return Whether this actually changed
+	 */
+	public boolean add(Node n) {
+		int num = n.getNumber();
+		if (!get(num))
+		//if it's not already in this
+		{
+			set(num);
+			return true;
+		}
+		else return false;
 	}
 	
 	public boolean contains(Node n) {
@@ -26,10 +37,11 @@ public class PointsToBitVector extends BitVector {
 		return get(n.getNumber());
 	}
 	
-	/**@
+	/**
 	 * Adds the Nodes in arr to this bitvector, adding at most size Nodes. 
 	 * @return The number of new nodes actually added.
 	 */ 
+	/*
 	public int add(Node[] arr, int size) {
 		//assert size <= arr.length;
 		int retVal = 0;
@@ -43,7 +55,8 @@ public class PointsToBitVector extends BitVector {
 		}
 		return retVal;
 	}
-
+*/
+	
 	/**Returns true iff other is a subset of this bitvector*/
 	public boolean isSubsetOf(PointsToBitVector other) {
 		//B is a subset of A iff the "and" of A and B gives A.
