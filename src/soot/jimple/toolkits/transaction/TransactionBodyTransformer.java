@@ -148,19 +148,23 @@ public class TransactionBodyTransformer extends BodyTransformer
 								Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef())), // synchronize on a new globally accessible static object
 						(Stmt) firstUnit);
 			}
-			units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
 			if(tn.wholeMethod)
-				// remove synchronized modifier for this method
+			{// remove synchronized modifier for this method
+				units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), firstUnit);
 				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) );
+			}
 			else
+			{
+				units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
 				units.remove(tn.begin);
+			}
 			Iterator endsIt = tn.ends.iterator();
 			while(endsIt.hasNext())
 			{
 				Stmt sEnd = (Stmt) endsIt.next();
 				if(tn.wholeMethod)
 				{
-					units.insertAfter(Jimple.v().newExitMonitorStmt(
+					units.insertBefore(Jimple.v().newExitMonitorStmt(
 						lockObj[tn.setNumber]), sEnd);
 				}
 				else
