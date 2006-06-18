@@ -45,11 +45,13 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
 		if(method.isSynchronized())
 		{
 			// Entire method is transactional
-			methodTn = new Transaction((Stmt) null, false, body.getMethod());
+			methodTn = new Transaction((Stmt) null, true, body.getMethod());
 		}
         doAnalysis();
 		if(method.isSynchronized() && methodTn != null)
 		{
+			// TODO: Check if totally safe
+			methodTn.begin = (Stmt) body.getUnits().iterator().next();
 		}
 	}
     	
@@ -87,7 +89,7 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
 		if(method.isSynchronized() && in.size() == 1)
 		{
 			Transaction tn = (Transaction) in.iterator().next();
-			if(!tn.ends.isEmpty())
+			if(tn.ends.isEmpty())
 				tn.ends.add(unit);
 		}
 
