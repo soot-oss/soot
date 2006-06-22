@@ -2735,7 +2735,10 @@ public class CFG {
                     case 'S': baseType = ShortType.v(); break;          
                     case 'Z': baseType = BooleanType.v(); break;          
                     case 'J': baseType = LongType.v(); break;          
-                    case 'L': baseType = RefType.v(name.substring(dim+1)); break;                   default : throw new RuntimeException("Unknown Array Base Type in Class Constant");
+                    case 'L': baseType = RefType.v(
+                                      name.substring(dim+1, name.length()-1));
+                              break;
+                    default : throw new RuntimeException("Unknown Array Base Type in Class Constant");
                 }
                 typeStack = typeStack.push(ArrayType.v(baseType, dim));
             }
