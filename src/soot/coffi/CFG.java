@@ -2717,6 +2717,7 @@ public class CFG {
         else if (c instanceof CONSTANT_Class_info){
             CONSTANT_Class_info info = (CONSTANT_Class_info)c;
             String name = ((CONSTANT_Utf8_info) (constant_pool[info.name_index])).convert();
+            name = name.replace('/', '.');
             if (name.charAt(0) == '['){
                 int dim = 0;
                 while (name.charAt(dim) == '['){
