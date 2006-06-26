@@ -81,6 +81,7 @@ class TypeNode
     {    
       SootClass sClass = type.getSootClass();
       if( sClass == null ) throw new RuntimeException( "Oops, forgot to load "+type );
+      if(sClass.isPhantomClass()) throw new RuntimeException("Jimplification requires "+sClass+", but it is a phantom ref.");
       List plist = new LinkedList();
       
       if(sClass.hasSuperclass() && 
