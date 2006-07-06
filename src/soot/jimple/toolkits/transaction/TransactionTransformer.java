@@ -199,7 +199,7 @@ public class TransactionTransformer extends SceneTransformer
 	    		// If, after comparing to all other transactions, we have no group:
 	    		if(tn1.setNumber == 0)
 	    		{
-	    			if(mightBeInParallel(tn1, tn1))
+	    			if(true) //mightBeInParallel(tn1, tn1))
 	    			{
 	    				tn1.setNumber = nextGroup;
 	    				nextGroup++;
@@ -239,31 +239,35 @@ public class TransactionTransformer extends SceneTransformer
     
     public static boolean mightBeInParallel(Transaction tn1, Transaction tn2)
     {
-    	String Thread2Fcns[] = {"Driver.run", "Driver.Think", "Car.getLocation", "RoadSegment.getCars", "RoadSegment.getPhysicalLocation",
-    							"CollisionDetector.addCollision", "Car.destroy", "RoadSegment.removeCar", "StateActionHistory.add",
-    							"ReinforcementLearner.registerHistory", "StateActionHistory.size", "StateActionHistory.get", "DriverValueFunction.get",
-    							"DriverValueFunction.set"};
+    	String Thread2Fcns[] = {"rotary.Driver.run", "rotary.Driver.Think", "rotary.Car.getLocation", "rotary.RoadSegment.getCars", 								"rotary.RoadSegment.getPhysicalLocation", "rotary.CollisionDetector.addCollision", 									"rotary.Car.destroy", "rotary.RoadSegment.removeCar", "rotary.StateActionHistory.add",
+    							"rotary.ReinforcementLearner.registerHistory", "rotary.StateActionHistory.size", "rotary.StateActionHistory.get", 
+    							"rotary.DriverValueFunction.get", "rotary.DriverValueFunction.set"
+    							};
     							
-    	String Thread3Fcns[] = {"Car.run", "Car.Update", "Driver.getAcceleration", "RoadSegment.removeCar", "RoadSegment.addCar", "Rotary.removeCar"};
+    	String Thread3Fcns[] = {"rotary.Car.run", "rotary.Car.Update", "rotary.Driver.getAcceleration", "rotary.RoadSegment.removeCar", 
+    							"rotary.RoadSegment.addCar", "rotary.Rotary.removeCar"
+    							};
 
-    	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + tn1.method.getName()))
+//		G.v().out.println(tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+
+    	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
     	{
-    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
     			return true;
     		}
-    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
     			return true;
     		}
     	}
-    	else if(contains(Thread3Fcns, tn1.method.getDeclaringClass().getName() + tn1.method.getName()))
+    	else if(contains(Thread3Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
     	{
-    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
     			return true;
     		}
-    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
     			return true;
     		}

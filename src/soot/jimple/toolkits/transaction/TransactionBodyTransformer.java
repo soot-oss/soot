@@ -127,8 +127,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		{
 			Transaction tn = (Transaction) fsIt.next();
 			
-/*			// Print information about this transaction for debugging
-			G.v().out.print("Transaction #" + tn.IDNum + "  ");
+			// Print information about this transaction for debugging
+//			G.v().out.print("Transaction #" + tn.IDNum + "  ");
 //			G.v().out.print("Location: " + b.getMethod().getDeclaringClass().toString() + ":" + b.getMethod().toString() + ":  ");
 //			G.v().out.println("Begin: " + tn.begin.toString() + "  ");
 //			G.v().out.print("End  : " + tn.ends.toString() + " \n");
@@ -137,23 +137,24 @@ public class TransactionBodyTransformer extends BodyTransformer
 //				G.v().out.print("Read :\n" + tn.read.toString());
 //			else
 //				G.v().out.println("Read : " + tn.read.size() + "  ");
-			G.v().out.println("R/Ws : " + (tn.read.size() + tn.write.size()) + "  ");
+//			G.v().out.println("R/Ws : " + (tn.read.size() + tn.write.size()) + "  ");
 //			if(tn.write.size() < 100)
 //				G.v().out.print("Write:\n" + tn.write.toString());
 //			else
 //				G.v().out.println("Write: " + tn.write.size() + "  ");
 //			Iterator tnedgeit = tn.edges.iterator();
-		    G.v().out.println("Edges: " + tn.edges.size());
+//		    G.v().out.println("Edges: " + tn.edges.size());
 //				G.v().out.print("Edges: ");
 //			while(tnedgeit.hasNext())
 //				G.v().out.print(((Transaction)tnedgeit.next()).IDNum + " ");
 //			G.v().out.println("\nGroup: " + tn.setNumber + "\n");
 
-//			Iterator tnedgeit = tn.edges.iterator();
-//			G.v().out.println("n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
-//			while(tnedgeit.hasNext())
-//				G.v().out.println("n" + tn.IDNum + " -- n" + ((Transaction)tnedgeit.next()).IDNum + ";");
-*/			
+			// Print output for GraphViz package
+			Iterator tnedgeit = tn.edges.iterator();
+			G.v().out.println("n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
+			while(tnedgeit.hasNext())
+				G.v().out.println("n" + tn.IDNum + " -- n" + ((Transaction)tnedgeit.next()).IDNum + ";");
+			
 
 			// If this method does not yet have a reference to the lock object
 			// needed for this transaction, then create one.
