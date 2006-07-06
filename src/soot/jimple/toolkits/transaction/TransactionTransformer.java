@@ -213,11 +213,11 @@ public class TransactionTransformer extends SceneTransformer
     	}
     	    	
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
-	// BEGIN AWFUL HACK
+    	// BEGIN AWFUL HACK
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
 		for(int i = 0; i < nextGroup; i++)
 			TransactionBodyTransformer.addedGlobalLockObj[i] = false;
-	// END AWFUL HACK
+		// END AWFUL HACK
     	Iterator doTransformClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (doTransformClassesIt.hasNext()) 
     	{
@@ -239,6 +239,46 @@ public class TransactionTransformer extends SceneTransformer
     
     public static boolean mightBeInParallel(Transaction tn1, Transaction tn2)
     {
-    	return true; // MOST conservative approach possible!!!
+    	String Thread2Fcns[] = {"Driver.run", "Driver.Think", "Car.getLocation", "RoadSegment.getCars", "RoadSegment.getPhysicalLocation",
+    							"CollisionDetector.addCollision", "Car.destroy", "RoadSegment.removeCar", "StateActionHistory.add",
+    							"ReinforcementLearner.registerHistory", "StateActionHistory.size", "StateActionHistory.get", "DriverValueFunction.get",
+    							"DriverValueFunction.set"};
+    							
+    	String Thread3Fcns[] = {"Car.run", "Car.Update", "Driver.getAcceleration", "RoadSegment.removeCar", "RoadSegment.addCar", "Rotary.removeCar"};
+
+    	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + tn1.method.getName()))
+    	{
+    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		{
+    			return true;
+    		}
+    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		{
+    			return true;
+    		}
+    	}
+    	else if(contains(Thread3Fcns, tn1.method.getDeclaringClass().getName() + tn1.method.getName()))
+    	{
+    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		{
+    			return true;
+    		}
+    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + tn2.method.getName()))
+    		{
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+    
+    public static boolean contains(String strings[], String string)
+    {
+    	boolean retval = false;
+    	for(int i = 0; i < strings.length; i++)
+    	{
+    		if(strings[i].equals(string))
+    			retval = true;
+    	}
+    	return retval;
     }
 }
