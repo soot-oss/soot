@@ -13,6 +13,7 @@ class Transaction
 	
 	// Information about the transactional region
 	public int IDNum;
+	public String name;
 	public Stmt begin;
 	public Vector ends;
 	public CodeBlockRWSet read, write;

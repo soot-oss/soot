@@ -151,9 +151,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 
 			// Print output for GraphViz package
 			Iterator tnedgeit = tn.edges.iterator();
-			G.v().out.println("n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
+			G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
 			while(tnedgeit.hasNext())
-				G.v().out.println("n" + tn.IDNum + " -- n" + ((Transaction)tnedgeit.next()).IDNum + ";");
+			{
+				Transaction tnedge = (Transaction) tnedgeit.next();
+				G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " -- " + tnedge.name + "n" + tnedge.IDNum + ";");
+			}
 			
 
 			// If this method does not yet have a reference to the lock object

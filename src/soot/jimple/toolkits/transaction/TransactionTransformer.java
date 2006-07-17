@@ -32,16 +32,19 @@ public class TransactionTransformer extends SceneTransformer
     	    {
     	    	SootMethod method = (SootMethod) methodsIt.next();
 //    	    	G.v().out.println(method.toString());
-    	    	Body b = method.retrieveActiveBody();
-    	    	
-    	    	// run the interprocedural analysis
-    			TransactionAnalysis ptft = new TransactionAnalysis(new ExceptionalUnitGraph(b), b);
-    			Chain units = b.getUnits();
-    			Unit firstUnit = (Unit) units.iterator().next();
-    			FlowSet fs = (FlowSet) ptft.getFlowBefore(firstUnit);
+				if(method.isConcrete())
+				{
+	    	    	Body b = method.retrieveActiveBody();
+    		    	
+    	    		// run the interprocedural analysis
+    				TransactionAnalysis ptft = new TransactionAnalysis(new ExceptionalUnitGraph(b), b);
+    				Chain units = b.getUnits();
+    				Unit firstUnit = (Unit) units.iterator().next();
+    				FlowSet fs = (FlowSet) ptft.getFlowBefore(firstUnit);
     			
-    			// add the results to the list of results
-    			methodToFlowSet.put(method, fs);
+    				// add the results to the list of results
+    				methodToFlowSet.put(method, fs);
+				}
     	    }
     	}
     	
@@ -53,6 +56,31 @@ public class TransactionTransformer extends SceneTransformer
     	{
     		FlowSet fs = (FlowSet) fsIt.next();
     		AllTransactions.addAll(fs.toList());
+    	}
+    	
+    	// Give each method a unique, deterministic identifier (based on an alphabetical sort by method name)
+    	List methodNamesTemp = new ArrayList();
+    	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
+    	while (appClassesIt.hasNext()) 
+    	{
+    	    SootClass appClass = (SootClass) appClassesIt.next();
+    	    Iterator methodsIt = appClass.getMethods().iterator();
+    	    while (methodsIt.hasNext())
+    	    {
+    	    	SootMethod method = (SootMethod) methodsIt.next();
+    	    	methodNamesTemp.add(appClass.getName() + "." + method.getName());
+    	    }
+		}
+		String methodNames[] = new String[1];
+		methodNames = (String []) methodNamesTemp.toArray(methodNames);
+		Arrays.sort(methodNames);
+
+		// Identify each transaction with its method's identifier
+    	Iterator tnIt0 = AllTransactions.iterator();
+    	while(tnIt0.hasNext())
+    	{
+    		Transaction tn1 = (Transaction) tnIt0.next();
+    		tn1.name = "m" + Arrays.binarySearch(methodNames, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
     	}
     	
     	// Complete the read/write set of each transaction using the list
@@ -213,6 +241,8 @@ public class TransactionTransformer extends SceneTransformer
     	}
     	    	
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
+		// Print output for graphviz package
+		G.v().out.println("[transaction] strict graph transactions {");
     	// BEGIN AWFUL HACK
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
 		for(int i = 0; i < nextGroup; i++)
@@ -226,15 +256,19 @@ public class TransactionTransformer extends SceneTransformer
     	    while (methodsIt.hasNext())
     	    {
     	    	SootMethod method = (SootMethod) methodsIt.next();
-    	    	Body b = method.getActiveBody();
+				if(method.isConcrete())
+				{
+	    	    	Body b = method.getActiveBody();
     	    	
-    	    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
+    		    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
     	    	
-   	    		TransactionBodyTransformer.v().setDetails(fs, nextGroup);
-   	    		TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
+   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup);
+   	    			TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
+				}
     	    }
     	}
-
+		// Print output for graphviz package
+		G.v().out.println("[transaction] }");
 	}
     
     public static boolean mightBeInParallel(Transaction tn1, Transaction tn2)
@@ -250,15 +284,17 @@ public class TransactionTransformer extends SceneTransformer
 
 //		G.v().out.println(tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
 
+		return true;
+/*
     	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
     	{
-    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
+    		if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
     			return true;
     		}
-    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
+    		else if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
-    			return true;
+    			return false; // return true for naive MHP (assumes multiples of all threads)
     		}
     	}
     	else if(contains(Thread3Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
@@ -269,10 +305,11 @@ public class TransactionTransformer extends SceneTransformer
     		}
     		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
     		{
-    			return true;
+    			return false; // return true for naive MHP (assumes multiples of all threads)
     		}
     	}
     	return false;
+*/
     }
     
     public static boolean contains(String strings[], String string)
