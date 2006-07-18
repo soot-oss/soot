@@ -150,7 +150,9 @@ public class TransactionTransformer extends SceneTransformer
     		if(tn1.read.size() == 0 && tn1.write.size() == 0)
     		{
     			// this transaction has no effect except on locals... we don't need it!
-    			tn1.setNumber = -1; // AKA delete the transactional region (don't leave the original statements in there!!!)
+    			tn1.setNumber = -1; // AKA delete the transactional region (but don't really so long as we are using
+    								// the synchronized keyword in our language... because java guarantees memory
+    								// barriers at certain points in synchronized blocks)
     		}
     		else
     		{
@@ -180,6 +182,10 @@ public class TransactionTransformer extends SceneTransformer
 	    					tn1.write.hasNonEmptyIntersection(tn2.read) ||
 	    					tn1.read.hasNonEmptyIntersection(tn2.write))
 	    			{
+	    				// Determine the size of the intersection for GraphViz output
+	    				
+	    				
+	    				// Record this 
 	    				tn1.edges.add(tn2);
 	    				tn2.edges.add(tn1);
 	    				

@@ -97,4 +97,44 @@ public class CodeBlockRWSet extends MethodRWSet
 		}
 		return ret;
     }
+    
+    public CodeBlockRWSet intersection( MethodRWSet other )
+    {// May run for a LONG time... O(n^2)
+		CodeBlockRWSet ret = new CodeBlockRWSet();
+
+		if( isFull )
+			return ret;
+
+		if( globals != null && other.globals != null
+			&& !globals.isEmpty() && !other.globals.isEmpty() )
+		{
+		    for( Iterator it = other.globals.iterator(); it.hasNext(); )
+		    {
+		    	SootField sg = (SootField) it.next();
+				if( globals.contains(sg) ) 
+					ret.addGlobal(sg);
+		    }
+		}
+		
+		if( fields != null && other.fields != null
+			&& !fields.isEmpty() && !other.fields.isEmpty() )
+		{
+		    for( Iterator fieldIt = other.fields.keySet().iterator(); fieldIt.hasNext(); )
+		    {
+		        final Object field = (Object) fieldIt.next();
+		        
+				if( fields.containsKey( field ) ) 
+				{
+			    	if( Union.hasNonEmptyIntersection(getBaseForField( field ),
+										other.getBaseForField( field ) ) )
+					{
+						ret.addFieldRef(getBaseForField(field),field);
+			    	}
+				}
+		    }
+		}
+		return ret;
+    }
+
+
 }
