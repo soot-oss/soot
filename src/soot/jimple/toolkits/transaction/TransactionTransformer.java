@@ -183,11 +183,17 @@ public class TransactionTransformer extends SceneTransformer
 	    					tn1.read.hasNonEmptyIntersection(tn2.write))
 	    			{
 	    				// Determine the size of the intersection for GraphViz output
-	    				
+	    				int size = 0;
+	    				if(tn1.write.hasNonEmptyIntersection(tn2.write))
+	    					size += tn1.write.intersection(tn2.write).size();
+	    				if(tn1.write.hasNonEmptyIntersection(tn2.read))
+	    					size += tn1.write.intersection(tn2.read).size();
+	    				if(tn1.read.hasNonEmptyIntersection(tn2.write))
+	    					size += tn1.read.intersection(tn2.write).size();
 	    				
 	    				// Record this 
-	    				tn1.edges.add(tn2);
-	    				tn2.edges.add(tn1);
+	    				tn1.edges.add(new DataDependency(tn2, size));
+	    				tn2.edges.add(new DataDependency(tn1, size));
 	    				
 	    				// if tn1 already is in a group
 	    				if(tn1.setNumber > 0)
@@ -248,7 +254,7 @@ public class TransactionTransformer extends SceneTransformer
     	    	
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
 		// Print output for graphviz package
-		G.v().out.println("[transaction] strict graph transactions {");
+		G.v().out.println("[transaction] strict graph transactions {\nstart=1;");
     	// BEGIN AWFUL HACK
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
 		for(int i = 0; i < nextGroup; i++)

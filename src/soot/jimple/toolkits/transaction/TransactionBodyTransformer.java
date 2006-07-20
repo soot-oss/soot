@@ -154,8 +154,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 			G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
 			while(tnedgeit.hasNext())
 			{
-				Transaction tnedge = (Transaction) tnedgeit.next();
-				G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " -- " + tnedge.name + "n" + tnedge.IDNum + ";");
+				DataDependency edge = (DataDependency) tnedgeit.next();
+				Transaction tnedge = edge.other;
+				G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " -- " + tnedge.name + "n" + tnedge.IDNum + " [color=" + (edge.size > 1 ? (edge.size > 20 ? "black" : "blue") : "black") + " style=" + (edge.size > 20 ? "dashed" : "solid") + "];");
 			}
 			
 
