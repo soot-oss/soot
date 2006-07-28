@@ -484,7 +484,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				}
 				
 				Object grandParent = parentFinder.getParentOf(parent);
-				if( !(parent instanceof ASTMethodNode) && grandParent == null){
+				if(grandParent == null){
 					throw new DecompilationException("Parent of stmt seq node was null");
 				}
 				
