@@ -45,9 +45,7 @@ public class TypeListBuilder extends polyglot.visit.NodeVisitor {
         }
         if (n instanceof polyglot.ast.ClassDecl){
             polyglot.ast.ClassDecl cd = (polyglot.ast.ClassDecl)n;
-            if (cd.type() instanceof polyglot.types.ClassType){
-                list.add(cd.type());
-            }
+            list.add(cd.type());
             
         }
         return n;
