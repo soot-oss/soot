@@ -19,7 +19,6 @@
 
 package soot.jimple.spark.sets;
 import soot.*;
-import soot.jimple.spark.*;
 import soot.jimple.spark.pag.Node;
 import java.util.*;
 
@@ -59,6 +58,13 @@ public class EmptyPointsToSet extends PointsToSetInternal {
 
     public Set possibleStringConstants() { return Collections.EMPTY_SET; }
     public Set possibleClassConstants() { return Collections.EMPTY_SET; }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public String toString() {
+    	return "{}";
+    }
 
 }
 
