@@ -45,16 +45,14 @@ public class MemoryEfficientRasUnion extends Union {
 	return false;
     }
     public boolean addAll( PointsToSet s ) {
-	boolean ret = false;
 	if( subsets == null ) subsets = new HashSet();
-	if( s instanceof Union ) {
-	    MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
+	if( s instanceof MemoryEfficientRasUnion ) {
+		MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
 	    if( meru.subsets == null || subsets.containsAll( meru.subsets ) ) {
 		return false;
 	    }
 	    return subsets.addAll( meru.subsets );
 	} else {
-	    PointsToSet r = (PointsToSet) s;
 	    return subsets.add( s );
 	}
     }
