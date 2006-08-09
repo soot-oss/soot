@@ -399,10 +399,9 @@ public abstract class UnitGraph implements DirectedGraph
 
     public List getSuccsOf(Object u)
     {
-        if(!unitToSuccs.containsKey(u)) 
-	    throw new NoSuchElementException("Invalid unit " + u);
-
-        return (List) unitToSuccs.get(u);
+		List l = (List) unitToSuccs.get(u);
+        if (l == null) throw new RuntimeException("Invalid unit " + u);
+        return l;
     }
 
     public int size()
