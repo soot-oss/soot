@@ -278,6 +278,7 @@ public class JasminClass extends AbstractJasminClass
                     }
                 }
             }
+            
             if (!Modifier.isNative(method.getModifiers())
                 && !Modifier.isAbstract(method.getModifiers()))
                 code.set(stackLimitIndex, "    .limit stack " + maxStackHeight);
@@ -1679,9 +1680,6 @@ public class JasminClass extends AbstractJasminClass
                         emit("dup");
                     emit("dup2"); // (form 2 -- complete the simulation)
                 } else {
-                    //delme[
-                    G.v().out.println("3000:(JasminClass): dup2 created");
-                    //delme
                     emit("dup2"); // form 1
                 }
             }
@@ -1710,6 +1708,14 @@ public class JasminClass extends AbstractJasminClass
                 Type under1Type = i.getUnder1Type();
                 Type under2Type = i.getUnder2Type();
 
+//              07-20-2006 Michael Batchelder
+                // NOW handling all types of dup1_x2
+                /* From VM Spec:    cat1 = category 1 (word type)       cat2 = category 2 (doubleword)
+        
+                  Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2, cat1_value1]
+                  Form 2: [..., cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
+                */ 
+                
                 if (isDwordType(opType)) {
                     if (!isDwordType(under1Type) && !isDwordType(under2Type))
                         emit("dup2_x2"); // (form 2)
@@ -1729,14 +1735,21 @@ public class JasminClass extends AbstractJasminClass
                 Type op2Type = i.getOp2Type();
                 Type under1Type = i.getUnder1Type();
 
+                // 07-20-2006 Michael Batchelder
+                // NOW handling all types of dup2_x1
+                /* From VM Spec:    cat1 = category 1 (word type)       cat2 = category 2 (doubleword)
+        
+                  Form 1: [..., cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value3, cat1_value2, cat1_value1]
+                  Form 2: [..., cat1_value2, cat2_value1]->[..., cat2_value1, cat1_value2, cat2_value1]
+                */ 
                 if (isDwordType(under1Type)) {
                     if (!isDwordType(op1Type) && !isDwordType(op2Type))
                         throw new RuntimeException("magic not implemented yet");
                     else
                         emit("dup2_x2"); // (form 3)
                 } else {
-                    if (isDwordType(op1Type) || isDwordType(op2Type))
-                        throw new RuntimeException("magic not implemented yet");
+                    if ((isDwordType(op1Type) && op2Type != null) || isDwordType(op2Type))
+                        throw new RuntimeException("magic not implemented yet");                    
                 }
 
                 emit("dup2_x1"); // (form 1)
@@ -1751,8 +1764,27 @@ public class JasminClass extends AbstractJasminClass
                 Type under1Type = i.getUnder1Type();
                 Type under2Type = i.getUnder2Type();
 
-                if (isDwordType(op1Type) || isDwordType(op2Type) || 
-                    isDwordType(under1Type) || isDwordType(under1Type))
+                // 07-20-2006 Michael Batchelder
+                // NOW handling all types of dup2_x2
+                
+                /* From VM Spec:    cat1 = category 1 (word type)       cat2 = category 2 (doubleword)
+                  Form 1: [..., cat1_value4, cat1_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat1_value4, cat1_value3, cat1_value2, cat1_value1]
+                  Form 2: [..., cat1_value3, cat1_value2, cat2_value1]->[ ..., cat2_value1, cat1_value3, cat1_value2, cat2_value1]
+                  Form 3: [..., cat2_value3, cat1_value2, cat1_value1]->[..., cat1_value2, cat1_value1, cat2_value3, cat1_value2, cat1_value1]
+                  Form 4: [..., cat2_value2, cat2_value1]->[..., cat2_value1, cat2_value2, cat2_value1]
+                */
+                boolean malformed = true;
+                if (isDwordType(op1Type)) {
+                  if (op2Type == null && under1Type != null)
+                    if( (under2Type == null && isDwordType(under1Type)) 
+                        || (!isDwordType(under1Type) && under2Type != null && !isDwordType(under2Type)))
+                      malformed = false;
+                } else if (op1Type != null && op2Type != null && !isDwordType(op2Type)) {
+                  if ( (under2Type == null && isDwordType(under1Type)) 
+                      || (under1Type !=null && !isDwordType(under1Type) && under2Type !=null && !isDwordType(under2Type)))
+                    malformed = false;
+                }
+                if (malformed)
                     throw new RuntimeException("magic not implemented yet");
 
                 emit("dup2_x2"); // (form 1)
@@ -1785,7 +1817,7 @@ public class JasminClass extends AbstractJasminClass
           blockHeight -= nInst.getInMachineCount();
 	  
           if(blockHeight < 0 ){            
-	      throw new RuntimeException("Negative Stack height has been attained: \n" +
+	      throw new RuntimeException("Negative Stack height has been attained in :"+ aBlock.getBody().getMethod().getSignature() +" \n" +
                                        "StackHeight: " + blockHeight + "\n" +
                                        "At instruction:" + nInst + "\n" +
                                        "Block:\n" + aBlock +
@@ -1808,7 +1840,7 @@ public class JasminClass extends AbstractJasminClass
             Integer i = (Integer) blockToStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
-                    throw new RuntimeException("incoherent stack height at block merge point " + b + aBlock + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
+                    throw new RuntimeException(aBlock.getBody().getMethod().getSignature() + ": incoherent stack height at block merge point " + b + aBlock + "\ncomputed blockHeight == " + blockHeight + " recorded blockHeight = " + i.intValue());
                 }
                 
             } else {
