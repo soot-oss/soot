@@ -74,7 +74,11 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
     {
         List res =  new ArrayList();
         res.add(mOp1Type);
-        res.add(mOp2Type);
+        
+        // 07-20-2006 Michael Batchelder
+        // previously did not handle all types of dup2_x2   Now, will take null as mOp2Type, so don't add to overtypes if it is null
+        if (mOp2Type != null)
+          res.add(mOp2Type);
         return res;
     }
     
@@ -82,7 +86,11 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
     {
         List res =  new ArrayList();
         res.add(mUnder1Type);
-        res.add(mUnder2Type);
+        
+        // 07-20-2006 Michael Batchelder
+        // previously did not handle all types of dup2_x2   Now, will take null as mUnder2Type, so don't add to undertypes if it is null
+        if (mUnder2Type != null)
+          res.add(mUnder2Type);
         return res;
     }
 
@@ -97,9 +105,29 @@ public class BDup2_x2Inst extends BDupInst implements Dup2_x2Inst
 
     public String toString()
     {
-        return "dup2_x2." + Baf.bafDescriptorOf(mOp1Type) + "." + Baf.bafDescriptorOf(mOp2Type) + "_" + Baf.bafDescriptorOf(mUnder1Type) + "." + Baf.bafDescriptorOf(mUnder2Type);
+      // 07-20-2006 Michael Batchelder
+      // previously did not handle all types of dup2_x2   Now, will take null as either mOp2Type or null as mUnder2Type to handle ALL types of dup2_x2
+      
+      // old code:
+      //return "dup2_x2." + Baf.bafDescriptorOf(mOp1Type) + "." + Baf.bafDescriptorOf(mOp2Type) + "_" + Baf.bafDescriptorOf(mUnder1Type) + "." + Baf.bafDescriptorOf(mUnder2Type);
+      
+      String optypes = Baf.bafDescriptorOf(mOp1Type);
+      if (mOp2Type != null)
+        optypes += "." + Baf.bafDescriptorOf(mOp2Type);
+      
+      String undertypes = Baf.bafDescriptorOf(mUnder1Type);
+      if (mUnder2Type != null)
+        optypes += "." + Baf.bafDescriptorOf(mUnder2Type);
+      
+      return "dup2_x2." + optypes + "_" + undertypes;
+      // END 07-20-2006 Michael Batchelder
     }
-  
+    
+    private boolean isDwordType(Type t)
+    {
+        return t instanceof LongType || t instanceof DoubleType
+            || t instanceof DoubleWordType;
+    }
 }
 
 

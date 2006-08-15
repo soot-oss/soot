@@ -98,4 +98,8 @@ public class BPopInst extends AbstractInst implements PopInst
         ((InstSwitch) sw).casePopInst(this);
     }   
     
+    public Type getType() 
+    {
+      return mType;
+    }
 }

@@ -62,7 +62,7 @@ public abstract class BDupInst extends AbstractInst implements DupInst
     
     public int getOutCount()
     {
-        return  getUnderTypes().size() + 2*getOpTypes().size(); 
+	    return  getUnderTypes().size() + 2*getOpTypes().size(); 
     } 
 
     
