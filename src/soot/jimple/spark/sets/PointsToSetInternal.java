@@ -172,4 +172,80 @@ public abstract class PointsToSetInternal implements PointsToSet {
     	return mask;
     }
     
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		P2SetVisitorInt visitor = new P2SetVisitorInt(1) {
+
+			final int PRIME = 31;
+			
+			public void visit(Node n) {
+				intValue = PRIME * intValue + n.hashCode(); 
+			}
+			
+		};
+		
+		return visitor.intValue;
+	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    public boolean equals(Object other) {
+    	if(this==other) {
+    		return true;
+    	}
+    	if(!(other instanceof PointsToSetInternal)) {
+    		return false;
+    	}
+    	PointsToSetInternal otherPts = (PointsToSetInternal) other;
+    	
+    	//both sets are equal if they are supersets of each other 
+    	return superSetOf(otherPts, this) && superSetOf(this, otherPts);
+    	
+    }
+    
+	/**
+	 * Returns <code>true</code> if <code>onePts</code> is a (non-strict) superset of <code>otherPts</code>.
+	 */
+	private boolean superSetOf(PointsToSetInternal onePts, final PointsToSetInternal otherPts) {
+		return onePts.forall(
+    		new P2SetVisitorDefaultTrue() {
+    			
+    			public final void visit( Node n ) {
+                    returnValue = returnValue && otherPts.contains(n);
+                }
+    			
+            }
+    	);
+	}
+
+	/**
+	 * A P2SetVisitor with a default return value of <code>true</code>.
+	 *
+	 * @author Eric Bodden
+	 */
+	protected abstract class P2SetVisitorDefaultTrue extends P2SetVisitor {
+		
+		public P2SetVisitorDefaultTrue() {
+			returnValue = true;
+		}
+		
+	}
+	
+	/**
+	 * A P2SetVisitor with an int value.
+	 *
+	 * @author Eric Bodden
+	 */
+	protected abstract class P2SetVisitorInt extends P2SetVisitor {
+		
+		int intValue;
+		
+		P2SetVisitorInt(int i) {
+			intValue = 1;
+		}
+		
+	}
 }

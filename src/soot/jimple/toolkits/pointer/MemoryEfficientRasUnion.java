@@ -18,62 +18,101 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
 import soot.*;
 import java.util.*;
 
 public class MemoryEfficientRasUnion extends Union {
-    HashSet subsets;
+	HashSet subsets;
 
-    public boolean isEmpty() {
-	if( subsets == null ) return true;
-	for( Iterator subsetIt = subsets.iterator(); subsetIt.hasNext(); ) {
-	    final PointsToSet subset = (PointsToSet) subsetIt.next();
-	    if( !subset.isEmpty() ) return false;
+	public boolean isEmpty() {
+		if (subsets == null)
+			return true;
+		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
+			final PointsToSet subset = (PointsToSet) subsetIt.next();
+			if (!subset.isEmpty())
+				return false;
+		}
+		return true;
 	}
-	return true;
-    }
-    public boolean hasNonEmptyIntersection( PointsToSet other ) {
-	if( subsets == null ) return true;
-	for( Iterator subsetIt = subsets.iterator(); subsetIt.hasNext(); ) {
-	    final PointsToSet subset = (PointsToSet) subsetIt.next();
-	    if( other instanceof Union ) {
-		if( other.hasNonEmptyIntersection( subset ) ) return true;
-	    } else {
-		if( subset.hasNonEmptyIntersection( other ) ) return true;
-	    }
-	}
-	return false;
-    }
-    public boolean addAll( PointsToSet s ) {
-	if( subsets == null ) subsets = new HashSet();
-	if( s instanceof MemoryEfficientRasUnion ) {
-		MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
-	    if( meru.subsets == null || subsets.containsAll( meru.subsets ) ) {
+
+	public boolean hasNonEmptyIntersection(PointsToSet other) {
+		if (subsets == null)
+			return true;
+		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
+			final PointsToSet subset = (PointsToSet) subsetIt.next();
+			if (other instanceof Union) {
+				if (other.hasNonEmptyIntersection(subset))
+					return true;
+			} else {
+				if (subset.hasNonEmptyIntersection(other))
+					return true;
+			}
+		}
 		return false;
-	    }
-	    return subsets.addAll( meru.subsets );
-	} else {
-	    return subsets.add( s );
 	}
-    }
-    public Object clone() {
-	MemoryEfficientRasUnion ret = new MemoryEfficientRasUnion();
-	ret.addAll( this );
-	return ret;
-    }
-    public Set possibleTypes() {
-	if( subsets == null ) {
-	    return Collections.EMPTY_SET;
-	}
-	HashSet ret = new HashSet();
-	for( Iterator subsetIt = subsets.iterator(); subsetIt.hasNext(); ) {
-	    final PointsToSet subset = (PointsToSet) subsetIt.next();
-	    ret.addAll( subset.possibleTypes() );
-	}
-	return ret;
-    }
-    public MemoryEfficientRasUnion() {
-    }
 
+	public boolean addAll(PointsToSet s) {
+		if (subsets == null)
+			subsets = new HashSet();
+		if (s instanceof MemoryEfficientRasUnion) {
+			MemoryEfficientRasUnion meru = (MemoryEfficientRasUnion) s;
+			if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
+				return false;
+			}
+			return subsets.addAll(meru.subsets);
+		} else {
+			return subsets.add(s);
+		}
+	}
 
+	public Object clone() {
+		MemoryEfficientRasUnion ret = new MemoryEfficientRasUnion();
+		ret.addAll(this);
+		return ret;
+	}
+
+	public Set possibleTypes() {
+		if (subsets == null) {
+			return Collections.EMPTY_SET;
+		}
+		HashSet ret = new HashSet();
+		for (Iterator subsetIt = subsets.iterator(); subsetIt.hasNext();) {
+			final PointsToSet subset = (PointsToSet) subsetIt.next();
+			ret.addAll(subset.possibleTypes());
+		}
+		return ret;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		result = PRIME * result + ((subsets == null) ? 0 : subsets.hashCode());
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		//TODO could the following line become a problem?
+		if (getClass() != obj.getClass())
+			return false;
+		final MemoryEfficientRasUnion other = (MemoryEfficientRasUnion) obj;
+		if (subsets == null) {
+			if (other.subsets != null)
+				return false;
+		} else if (!subsets.equals(other.subsets))
+			return false;
+		return true;
+	}
+
+	
 }
