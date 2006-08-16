@@ -107,7 +107,7 @@ public class IdentityHashSet implements Set {
     public boolean addAll(Collection c) {
         boolean b = true;
         for (Iterator iter = c.iterator(); iter.hasNext();) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             b &= add(o);
         }
         return b;
@@ -117,7 +117,15 @@ public class IdentityHashSet implements Set {
      * {@inheritDoc}
      */
     public boolean retainAll(Collection c) {
-        throw new UnsupportedOperationException();
+        boolean b = false;
+        for (Iterator iter = iterator(); iter.hasNext();) {
+            Object o = iter.next();
+            if(!c.contains(o)) {
+            	iter.remove();
+            	b = true;
+            }
+        }
+        return b;
     }
 
     /**
@@ -126,7 +134,7 @@ public class IdentityHashSet implements Set {
     public boolean removeAll(Collection c) {
         boolean b = true;
         for (Iterator iter = c.iterator(); iter.hasNext();) {
-            Object o = (Object) iter.next();
+            Object o = iter.next();
             b &= remove(o);
         }
         return b;
