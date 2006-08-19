@@ -114,5 +114,10 @@ public class MemoryEfficientRasUnion extends Union {
 		return true;
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return subsets.toString();
+	}
 }
