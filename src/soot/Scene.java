@@ -1048,7 +1048,7 @@ public class Scene  //extends AbstractHost
 				try {
 					c.getMethod("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());
 					
-					System.out.println("No main class given. Inferred '"+c.getName()+"' as main class.");
+					G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
 		            setMainClass(c);
 		            break;
 				} catch(RuntimeException e) {
