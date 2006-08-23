@@ -30,6 +30,7 @@ import soot.options.*;
 
 
 import soot.util.*;
+
 import java.util.*;
 import java.io.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -1040,6 +1041,20 @@ public class Scene  //extends AbstractHost
         if( Options.v().main_class() != null
                 && Options.v().main_class().length() > 0 ) {
             setMainClass(getSootClass(Options.v().main_class()));
+        } else {        	
+        	//try to infer a main class if none is given 
+        	for (Iterator classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
+				SootClass c = (SootClass) classIter.next();
+				try {
+					c.getMethod("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());
+					
+					System.out.println("No main class given. Inferred '"+c.getName()+"' as main class.");
+		            setMainClass(c);
+		            break;
+				} catch(RuntimeException e) {
+					//method not found, try next class
+				}
+			}
         }
     }
 }

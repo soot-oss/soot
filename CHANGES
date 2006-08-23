@@ -1,3 +1,7 @@
+Improvements in version 2.2.4 (To Come)
+
+1. Soot is now able to infer a main-class if no main-class attribute is given.
+
 Improvements in version 2.2.3 (Sat, Mar 18, 2006)
 
 1. Dava:
