@@ -133,7 +133,7 @@ public class Main {
         && Options.v().process_dir().isEmpty()) {
             throw new CompilationDeathException(
                 CompilationDeathException.COMPILATION_ABORTED,
-                "No main class specified!");
+                "No input classes specified!");
         }
     }
 
