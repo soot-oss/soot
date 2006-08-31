@@ -2394,6 +2394,16 @@ k receiver objects.
 
                                         </value>
                                         <value>
+                                                <name>Thread and k-Object Sensitive</name>
+                                                <alias>threadkobjsens</alias>
+<short_desc>Builds a thread and k-object-sensitive call graph</short_desc>
+<long_desc>
+Builds a context-sensitive call graph where the context is a string of up to
+(k-1) receiver objects and 1 thread (runnable) object.
+</long_desc>
+
+                                        </value>
+                                        <value>
                                                 <name>Unique k-Object Sensitive</name>
                                                 <alias>uniqkobjsens</alias>
 <short_desc>Builds a unique-k-object-sensitive call graph</short_desc>

@@ -7,6 +7,7 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.pointer.RWSet;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.tagkit.LineNumberTag;
 
 public class TransactionTransformer extends SceneTransformer
 {
@@ -60,29 +61,66 @@ public class TransactionTransformer extends SceneTransformer
     	
     	// Give each method a unique, deterministic identifier (based on an alphabetical sort by method name)
     	List methodNamesTemp = new ArrayList();
-    	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
-    	while (appClassesIt.hasNext()) 
+    	Iterator tnIt5 = AllTransactions.iterator();
+    	while (tnIt5.hasNext()) 
     	{
-    	    SootClass appClass = (SootClass) appClassesIt.next();
-    	    Iterator methodsIt = appClass.getMethods().iterator();
-    	    while (methodsIt.hasNext())
-    	    {
-    	    	SootMethod method = (SootMethod) methodsIt.next();
-    	    	methodNamesTemp.add(appClass.getName() + "." + method.getName());
-    	    }
+    	    Transaction tn1 = (Transaction) tnIt5.next();
+    	    String mname = tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName();
+    	    if(!methodNamesTemp.contains(mname))
+    	    	methodNamesTemp.add(mname);
 		}
 		String methodNames[] = new String[1];
 		methodNames = (String []) methodNamesTemp.toArray(methodNames);
 		Arrays.sort(methodNames);
 
 		// Identify each transaction with its method's identifier
+		int identMatrix[][] = new int[methodNames.length][methodNames.length + 1];
+		for(int i = 0; i < methodNames.length; i++)
+		{
+			for(int j = 0; j < methodNames.length + 1; j++)
+			{
+				if(j != 0)
+					identMatrix[i][j] = 50000;
+				else
+					identMatrix[i][j] = 0;
+			}
+		}
     	Iterator tnIt0 = AllTransactions.iterator();
     	while(tnIt0.hasNext())
     	{
     		Transaction tn1 = (Transaction) tnIt0.next();
-    		tn1.name = "m" + Arrays.binarySearch(methodNames, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+//			// get source line number for identification purposes
+//			LineNumberTag tag = (LineNumberTag) tn1.begin.getTag("LineNumberTag");
+//			Iterator unIt = tn1.units.iterator();
+//			while(tag == null && unIt.hasNext())
+//			{
+//				Unit unit = (Unit) unIt.next();
+//				tag = (LineNumberTag) unit.getTag("LineNumberTag");
+//			}
+//			int lineNumber = 0;
+//			if(tag != null)
+//				lineNumber = tag.getLineNumber();
+			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+			identMatrix[methodNum][0]++;
+			identMatrix[methodNum][identMatrix[methodNum][0]] = tn1.IDNum;
+//    		tn1.name = "m" + ;// + "l" + lineNumber;
     	}
     	
+    	for(int j = 0; j < methodNames.length; j++)
+    	{
+    		identMatrix[j][0] = 0; // set the counter to 0 so it sorts out (into slot 0).
+    		Arrays.sort(identMatrix[j]); // sort this subarray
+		}
+		
+    	Iterator tnIt4 = AllTransactions.iterator();
+    	while(tnIt4.hasNext())
+    	{
+    		Transaction tn1 = (Transaction) tnIt4.next();
+			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum);
+    		tn1.name = "m" + (methodNum < 10? "00" : (methodNum < 100? "0" : "")) + methodNum + "n" + (tnNum < 10? "0" : "") + tnNum;
+    	}
+		
     	// Complete the read/write set of each transaction using the list
     	// to create a TransactionAwareSideEffectAnalysis
     	// This breaks atomicity: inner transaction's effects are visible
@@ -254,7 +292,7 @@ public class TransactionTransformer extends SceneTransformer
     	    	
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
 		// Print output for graphviz package
-		G.v().out.println("[transaction] strict graph transactions {\nstart=1;");
+		G.v().out.println("[transaction] strict graph transactions {\n[transaction] start=1;");
     	// BEGIN AWFUL HACK
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
 		for(int i = 0; i < nextGroup; i++)
@@ -321,7 +359,7 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
     	return false;
-*/
+//*/
     }
     
     public static boolean contains(String strings[], String string)

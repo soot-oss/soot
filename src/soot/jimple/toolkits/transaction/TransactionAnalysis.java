@@ -116,10 +116,10 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             	if(unit instanceof InvokeStmt)
             	{
             		String InvokeSig = ((InvokeStmt)unit).getInvokeExpr().getMethod().getSubSignature();
-            		if(InvokeSig.equals("void notify()"))
+            		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
 	            		tn.notifys.add(unit);
-//	            	if(InvokeSig.equals("void wait()"))
-//	            		tn.waits.add(unit);
+	            	if(InvokeSig.equals("void wait()"))
+	            		tn.waits.add(unit);
             	}
                	RWSet stmtRead = sea.readSet( method, (Stmt) unit );
                	RWSet stmtWrite = sea.writeSet( method, (Stmt) unit );
@@ -190,6 +190,9 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
         	}
         	tn2.read.union(tn1.read);
         	tn2.write.union(tn1.write);
+			tn2.units.addAll(tn1.units);
+			tn2.waits.addAll(tn1.waits);
+			tn2.notifys.addAll(tn1.notifys);
         }
         inSet1.union(inSet2, outSet);
     }

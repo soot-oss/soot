@@ -5,6 +5,7 @@ import soot.*;
 import soot.util.Chain;
 import soot.jimple.Stmt;
 import soot.jimple.Jimple;
+import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
@@ -151,12 +152,12 @@ public class TransactionBodyTransformer extends BodyTransformer
 
 			// Print output for GraphViz package
 			Iterator tnedgeit = tn.edges.iterator();
-			G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " [name=\"" + "Tn" + tn.IDNum + " " + b.getMethod().toString() + "\"];");
+			G.v().out.println("[transaction] " + tn.name + " [name=\"" + b.getMethod().toString() + "\"];");
 			while(tnedgeit.hasNext())
 			{
 				DataDependency edge = (DataDependency) tnedgeit.next();
 				Transaction tnedge = edge.other;
-				G.v().out.println("[transaction] " + tn.name + "n" + tn.IDNum + " -- " + tnedge.name + "n" + tnedge.IDNum + " [color=" + (edge.size > 1 ? (edge.size > 20 ? "black" : "blue") : "black") + " style=" + (edge.size > 20 ? "dashed" : "solid") + "];");
+				G.v().out.println("[transaction] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 5 ? (edge.size > 50 ? "black" : "blue") : "black") + " style=" + (edge.size > 50 ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
 			}
 			
 
@@ -198,12 +199,38 @@ public class TransactionBodyTransformer extends BodyTransformer
 			}
 			
 			// Replace calls to notify() with calls to notifyAll()
+			// Replace base object with appropriate lockobj
 			Iterator notifysIt = tn.notifys.iterator();
 			while(notifysIt.hasNext())
 			{
 				Stmt sNotify = (Stmt) notifysIt.next();
-				sNotify.getInvokeExpr().setMethodRef(
-					sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef());
+				
+	            units.insertBefore(
+            		Jimple.v().newInvokeStmt(
+           				Jimple.v().newVirtualInvokeExpr(
+       						lockObj[tn.setNumber],
+       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
+       						Collections.EMPTY_LIST)),
+                	sNotify);
+
+				units.remove(sNotify);
+			}
+
+			// Replace base object of calls to wait with appropriate lockobj
+			Iterator waitsIt = tn.waits.iterator();
+			while(waitsIt.hasNext())
+			{
+				Stmt sWait = (Stmt) waitsIt.next();
+				
+	            units.insertBefore(
+            		Jimple.v().newInvokeStmt(
+           				Jimple.v().newVirtualInvokeExpr(
+       						lockObj[tn.setNumber],
+       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
+       						Collections.EMPTY_LIST)),
+                	sWait);
+
+				units.remove(sWait);
 			}
 		}
 	}
@@ -227,7 +254,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		// <existing code body>	
 		
 		// add normal flow and labels
-		units.insertAfter(Jimple.v().newExitMonitorStmt(lockObj), end);
+		Unit labelExitMonitorStmt = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
+		units.insertAfter(labelExitMonitorStmt, end);
 		end = (Stmt) units.getSuccOf(end);
 		Unit label1Unit = (Unit) Jimple.v().newGotoStmt((Stmt) units.getSuccOf(end));
 		units.insertAfter(label1Unit, end);
@@ -250,5 +278,18 @@ public class TransactionBodyTransformer extends BodyTransformer
 		SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label0Unit, label1Unit, label2Unit));
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label3Unit, label4Unit, label2Unit));
+
+		// search body for jumps to existing return stmt, and redirect to new monitor exit stmt
+		Iterator unitIt = units.iterator();
+		while(unitIt.hasNext())
+		{
+			Stmt stmt = (Stmt) unitIt.next();
+			if(stmt instanceof GotoStmt)
+			{
+				GotoStmt gotoStmt = (GotoStmt) stmt;
+				if(gotoStmt != label1Unit && gotoStmt.getTarget() == units.getSuccOf(end))
+					gotoStmt.setTarget(labelExitMonitorStmt);
+			}
+		}
 	}
 }

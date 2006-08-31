@@ -25,7 +25,7 @@ class Transaction
 	public SootMethod method;
 	public int setNumber; // used for breaking the list of transactions into sets
 	public HashSet edges;
-//	public HashSet waits; // currently unused
+	public HashSet waits;
 	public HashSet notifys;
 	
 	Transaction(Stmt end, boolean wholeMethod, SootMethod method)
@@ -44,7 +44,7 @@ class Transaction
 		this.method = method;
 		this.setNumber = 0; // 0 = no group, -1 = DELETE
 		this.edges = new HashSet();
-//		this.waits = new HashSet();
+		this.waits = new HashSet();
 		this.notifys = new HashSet();
 	}
 }
