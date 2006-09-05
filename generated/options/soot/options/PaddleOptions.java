@@ -465,7 +465,8 @@ public class PaddleOptions
     public static final int context_kcfa = 3;
     public static final int context_objsens = 4;
     public static final int context_kobjsens = 5;
-    public static final int context_uniqkobjsens = 6;
+    public static final int context_threadkobjsens = 6;
+    public static final int context_uniqkobjsens = 7;
     /** Context abstraction --
     
      * Select context-sensitivity level.
@@ -490,6 +491,9 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "kobjsens" ) )
             return context_kobjsens;
+        
+        if( s.equalsIgnoreCase( "threadkobjsens" ) )
+            return context_threadkobjsens;
         
         if( s.equalsIgnoreCase( "uniqkobjsens" ) )
             return context_uniqkobjsens;
