@@ -1643,8 +1643,6 @@ public class Options extends OptionsBase {
                 
                 +padVal( "kobjsens", "Builds a k-object-sensitive call graph" )
                 
-                +padVal( "threadkobjsens", "Builds a thread and k-object-sensitive call graph" )
-                
                 +padVal( "uniqkobjsens", "Builds a unique-k-object-sensitive call graph" )
                 
                 +padOpt( "k (2)", "" )
