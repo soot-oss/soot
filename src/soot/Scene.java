@@ -1043,19 +1043,16 @@ public class Scene  //extends AbstractHost
                 && Options.v().main_class().length() > 0 ) {
             setMainClass(getSootClass(Options.v().main_class()));
         } else {        	
-        	//try to infer a main class if none is given 
+        	// try to infer a main class if none is given 
         	for (Iterator classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
-				SootClass c = (SootClass) classIter.next();
-				try {
-					c.getMethod("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());
-					
-					G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
-		            setMainClass(c);
-		            break;
-				} catch(RuntimeException e) {
-					//method not found, try next class
-				}
-			}
+                    SootClass c = (SootClass) classIter.next();
+                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    {
+                        G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
+                        setMainClass(c);
+                        break;
+                    }
+                }
         }
     }
 }
