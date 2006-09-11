@@ -1038,6 +1038,7 @@ public class Scene  //extends AbstractHost
     public boolean doneResolving() { return doneResolving; }
     public void setDoneResolving() { doneResolving = true; }
     public void setMainClassFromOptions() {
+        if(mainClass != null) return;
         if( Options.v().main_class() != null
                 && Options.v().main_class().length() > 0 ) {
             setMainClass(getSootClass(Options.v().main_class()));
