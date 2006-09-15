@@ -131,6 +131,11 @@ public class DeadAssignmentEliminator extends BodyTransformer
                             // Can trigger ClassCastException
                             isEssential = true;
                         }
+                        else if(rhs instanceof NewArrayExpr
+                                || rhs instanceof NewMultiArrayExpr) {
+                            // can throw exception
+                            isEssential = true;
+                                }
                     }
                 }
                 
