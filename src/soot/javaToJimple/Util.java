@@ -156,7 +156,13 @@ public class Util {
     
     public static void addLnPosTags(soot.tagkit.Host host, polyglot.util.Position pos) {
         if (pos != null) {
-            addLnPosTags(host, pos.line(), pos.endLine(), pos.column(), pos.endColumn()); 
+            if (soot.options.Options.v().keep_line_number()){
+                host.addTag(
+                		new soot.tagkit.SourceLnNamePosTag(
+                				pos.file(),pos.line(), pos.endLine(), pos.column(), pos.endColumn()
+                		)
+                );
+            }
         }
     }
     
@@ -299,7 +305,6 @@ public class Util {
     private static boolean bodyHasLocal(soot.Body body, soot.Type type) {
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
         Iterator stmtsIt = body.getUnits().iterator();
-        soot.Local correctLocal = null;
         while (stmtsIt.hasNext()){
             soot.jimple.Stmt s = (soot.jimple.Stmt)stmtsIt.next();
             if (s instanceof soot.jimple.IdentityStmt && (s.hasTag("EnclosingTag") || s.hasTag("QualifyingTag"))){
@@ -454,7 +459,6 @@ public class Util {
                     className = (String)soot.javaToJimple.InitialResolver.v().getLocalTypeMap().get(new polyglot.util.IdentityKey(classType));    
                 }
                 else {
-                    String fullName = classType.fullName();
                     String pkgName = "";
                     if (classType.package_() != null){
                         pkgName = classType.package_().fullName();
