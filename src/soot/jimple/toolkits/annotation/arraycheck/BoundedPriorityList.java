@@ -33,12 +33,12 @@ import java.util.*;
 class BoundedPriorityList
 {
     private List fulllist;
-    private LinkedList worklist; 
+    private ArrayList worklist; 
 
     public BoundedPriorityList(List list)
     {
 	this.fulllist = list;
-	this.worklist = new LinkedList(list);
+	this.worklist = new ArrayList(list);
     }
 
     public boolean isEmpty()
@@ -48,7 +48,7 @@ class BoundedPriorityList
 
     public Object removeFirst()
     {
-	return worklist.removeFirst();
+	return worklist.remove(0);
     }
 
     public void add(Object toadd)
@@ -56,17 +56,14 @@ class BoundedPriorityList
 	/* it is not added to the end, but keep it in the order */
 	int index = fulllist.indexOf(toadd);
 
-	int i = 0;
-	int size = worklist.size();
-
-	for (; i<size; i++)
-	{
-	    Object tocomp = worklist.get(i);
+	for (ListIterator worklistIter = worklist.listIterator(); worklistIter.hasNext();) {
+		Object tocomp = (Object) worklistIter.next();
 	    int tmpidx = fulllist.indexOf(tocomp);
-	    if (index < tmpidx)
-		break;
+	    if (index < tmpidx) {
+	    	worklistIter.add(toadd);
+	    	break;
+	    }		
 	}
-
-	worklist.add(i, toadd);
+	
     }
 }
