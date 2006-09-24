@@ -175,5 +175,12 @@ public class IdentityHashSet implements Set {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
+		return delegate.keySet().toString();
+	}
     
 }
