@@ -29,7 +29,6 @@ package soot.jimple.toolkits.annotation.purity;
 import java.util.*;
 import java.io.*;
 import soot.*;
-import soot.util.*;
 import soot.util.dot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -192,8 +191,8 @@ public abstract class AbstractInterproceduralAnalysis {
 
 	// construct reverse pseudo topological order on filtered methods
 	this.order = new HashMap();
-	PseudoTopologicalOrderer o = new ReversePseudoTopologicalOrderer();
-	Iterator it = (o.newList(dg)).iterator();
+	Orderer o = new PseudoTopologicalOrderer();
+	Iterator it = (o.newList(dg,true)).iterator();
 	int i = 0;
 	while (it.hasNext()) {
 	    this.order.put(it.next(), new Integer(i));
@@ -329,12 +328,6 @@ public abstract class AbstractInterproceduralAnalysis {
 		Integer v1 = (Integer)order.get(o1);
 		Integer v2 = (Integer)order.get(o2);
 		return v1.intValue()-v2.intValue();
-	    }
-	    public boolean equals(Object o1, Object o2) 
-	    {
-		Integer v1 = (Integer)order.get(o1);
-		Integer v2 = (Integer)order.get(o2);
-		return v1.intValue()==v2.intValue();
 	    }
 	};
 	SortedSet queue = new TreeSet(new IntComparator());

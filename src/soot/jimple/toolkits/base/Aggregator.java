@@ -115,7 +115,7 @@ public class Aggregator extends BodyTransformer
       localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
       localUses = new SimpleLocalUses(graph, localDefs);
           
-      stmtIt = (new PseudoTopologicalOrderer()).newList(graph).iterator();
+      stmtIt = (new PseudoTopologicalOrderer()).newList(graph,false).iterator();
       
       while (stmtIt.hasNext())
         {
@@ -163,7 +163,6 @@ public class Aggregator extends BodyTransformer
           boolean propagatingArrayRef = false;
           ArrayList fieldRefList = new ArrayList();
       
-          Value rhs = ((AssignStmt)s).getRightOp();
           LinkedList localsUsed = new LinkedList();
           for (Iterator useIt = (s.getUseBoxes()).iterator();
                useIt.hasNext(); )

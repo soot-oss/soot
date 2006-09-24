@@ -28,8 +28,8 @@ package soot.toolkits.scalar;
 
 import soot.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
+
 import soot.options.*;
 import soot.toolkits.graph.interaction.*;
 
@@ -54,7 +54,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         final Map numbers = new HashMap();
-        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        List orderedUnits = constructOrderer().newList(graph,false);
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
             final Object u = (Object) uIt.next();
@@ -62,13 +62,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
             i++;
         }
 
-        TreeSet changedUnits = new TreeSet( new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Integer i1 = (Integer) numbers.get(o1);
-                Integer i2 = (Integer) numbers.get(o2);
-                return (i1.intValue() - i2.intValue());
-            }
-        } );
+        Collection changedUnits = constructWorklist(numbers);
 
         List heads = graph.getHeads();
         int numNodes = graph.size();
@@ -105,13 +99,13 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
         {
             Object previousAfterFlow = newInitialFlow();
 
-            int iterationCounter = 0;
             while(!changedUnits.isEmpty())
             {
                 Object beforeFlow;
                 Object afterFlow;
 
-                Object s = changedUnits.first();
+                //get the first object
+                Object s = changedUnits.iterator().next();
                 changedUnits.remove(s);
                 boolean isHead = heads.contains(s);
 
@@ -122,7 +116,7 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
                     List preds = graph.getPredsOf(s);
 
                     beforeFlow = unitToBeforeFlow.get(s);
-
+                    
                     if(preds.size() == 1)
                         copy(unitToAfterFlow.get(preds.get(0)), beforeFlow);
                     else if(preds.size() != 0)
@@ -133,16 +127,15 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
 
                         while(predIt.hasNext())
                         {
-                            Object otherBranchFlow = unitToAfterFlow.get(predIt.
-next());
+                            Object otherBranchFlow = unitToAfterFlow.get(predIt.next());
                             merge(beforeFlow, otherBranchFlow);
                         }
                     }
 
                     if(isHead && preds.size() != 0)
-                        merge(beforeFlow, entryInitialFlow());
-                }
-
+                    		merge(beforeFlow, entryInitialFlow());
+                    	}
+                    
                 // Compute afterFlow and store it.
                 {
                     afterFlow = unitToAfterFlow.get(s);
@@ -190,8 +183,8 @@ next());
                             changedUnits.add(succ);
                         }
                     }
-            }
-        }
+                }
+}
         
         // G.v().out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
         //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
@@ -199,6 +192,17 @@ next());
         Timers.v().totalFlowNodes += numNodes;
         Timers.v().totalFlowComputations += numComputations;
     }
+    
+	protected Collection constructWorklist(final Map numbers) {
+		return new TreeSet( new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) numbers.get(o1);
+                Integer i2 = (Integer) numbers.get(o2);
+                return (i1.intValue() - i2.intValue());
+            }
+        } );
+	}
+
 }
 
 

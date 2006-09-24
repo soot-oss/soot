@@ -26,12 +26,15 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
 
 /** Convenience class which returns a PseudoTopologicalOrderer with the mReversed
- * flag set by default. */
+ * flag set by default.
+ * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
+ * */
 public class ReversePseudoTopologicalOrderer extends PseudoTopologicalOrderer
 {
-    /** Constructs a PseudoTopologicalOrderer with the mReversed flag set. */
+    /** Constructs a PseudoTopologicalOrderer with the mReversed flag set.
+     * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
+     * */
     public ReversePseudoTopologicalOrderer() { super(); setReverseOrder(true); }
 }

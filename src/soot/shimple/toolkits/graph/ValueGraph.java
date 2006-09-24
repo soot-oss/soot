@@ -32,6 +32,7 @@ import soot.jimple.*;
 import soot.util.*;
 import soot.shimple.*;
 import soot.toolkits.graph.*;
+
 import java.util.*;
 
 // consider implementing DirectedGraph
@@ -57,8 +58,8 @@ public class ValueGraph
         nodeToLocal = new HashMap();
         nodeList = new ArrayList();
         currentNodeNumber = 0;
-        PseudoTopologicalOrderer pto = new PseudoTopologicalOrderer();
-        List blocks = pto.newList(cfg);
+        Orderer pto = new PseudoTopologicalOrderer();
+        List blocks = pto.newList(cfg,false);
 
         for(Iterator blocksIt = blocks.iterator(); blocksIt.hasNext();){
             Block block = (Block) blocksIt.next();
@@ -180,12 +181,6 @@ public class ValueGraph
                 setResult(new Node(unop, true, child));
             }
             
-
-            public void caseDoubleSwitch(DoubleConstant v)
-            {
-                handleConstant(v);
-            }
-
             public void caseFloatConstant(FloatConstant v)
             {
                 handleConstant(v);

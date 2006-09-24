@@ -28,11 +28,9 @@
 package soot.jimple.toolkits.scalar;
 import soot.options.*;
 
-import soot.util.*;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
-import java.io.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 
@@ -54,14 +52,13 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                                "] Propagating and folding constants...");
 
-        Chain units = stmtBody.getUnits();
         ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(stmtBody);
         LocalDefs localDefs;
         
         localDefs = new SmartLocalDefs(unitGraph, new SimpleLiveLocals(unitGraph));
 
         // Perform a constant/local propagation pass.
-        Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(unitGraph).iterator();
+        Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(unitGraph,false).iterator();
 
         // go through each use box in each statement
         while (stmtIt.hasNext()) {

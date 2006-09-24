@@ -26,9 +26,7 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
 import soot.toolkits.graph.*;
-import soot.util.*;
 import java.util.*;
 
 /** An abstract class providing a framework for carrying out dataflow analysis.
@@ -67,4 +65,13 @@ public abstract class FlowAnalysis extends AbstractFlowAnalysis
     {
         return unitToAfterFlow.get(s);
     }
+    
+	/**
+	 * Default implementation constructing a PseudoTopologicalOrderer. 
+	 * @return an Orderer to order the nodes for the fixed-point iteration 
+	 */
+	protected Orderer constructOrderer() {
+		return new PseudoTopologicalOrderer();
+	}
+
 }

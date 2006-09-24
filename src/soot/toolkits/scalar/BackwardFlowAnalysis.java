@@ -26,12 +26,19 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
-import java.util.*;
-import soot.options.*;
-import soot.toolkits.graph.interaction.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.interaction.FlowInfo;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
 
 
@@ -56,7 +63,8 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         final Map numbers = new HashMap();
-        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        List orderedUnits = constructOrderer().newList(graph,false);
+        new PseudoTopologicalOrderer().newList(graph,false);
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
             final Object u = (Object) uIt.next();
@@ -64,13 +72,7 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             i++;
         }
 
-        TreeSet changedUnits = new TreeSet( new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Integer i1 = (Integer) numbers.get(o1);
-                Integer i2 = (Integer) numbers.get(o2);
-                return -(i1.intValue() - i2.intValue());
-            }
-        } );
+        Collection changedUnits = constructWorklist(numbers);
 
 
         // Set initial Flows and nodes to visit.
@@ -111,7 +113,8 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
                 Object beforeFlow;
                 Object afterFlow;
 
-                Object s = changedUnits.first();
+                //get the first object
+                Object s = changedUnits.iterator().next();
                 changedUnits.remove(s);
                 boolean isTail = tails.contains(s);
 
@@ -190,6 +193,16 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
             }
         }
     }
+    
+	protected Collection constructWorklist(final Map numbers) {
+		return new TreeSet( new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Integer i1 = (Integer) numbers.get(o1);
+                Integer i2 = (Integer) numbers.get(o2);
+                return (i1.intValue() - i2.intValue());
+            }
+        } );
+	}
 }
 
 

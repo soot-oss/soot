@@ -25,7 +25,6 @@ import soot.util.*;
 import soot.dava.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.dava.toolkits.base.finders.*;
 
 public class AugmentedStmtGraph implements DirectedGraph
 {
@@ -101,7 +100,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	}
 
 	// make the list of augmented statements in pseudo topological order!
-        it = (new PseudoTopologicalOrderer()).newList( cug).iterator();
+        it = (new PseudoTopologicalOrderer()).newList( cug, false ).iterator();
 	while (it.hasNext()) {
 	    Stmt s = (Stmt) it.next();
 	    aug_list.add( get_AugStmt( s));

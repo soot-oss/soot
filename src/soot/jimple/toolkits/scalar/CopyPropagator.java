@@ -104,11 +104,9 @@ public class CopyPropagator extends BodyTransformer
         
         localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
 
-        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-
         // Perform a local propagation pass.
         {
-            Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(graph).iterator();
+            Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(graph,false).iterator();
 
             while(stmtIt.hasNext())
             {

@@ -27,13 +27,10 @@ package soot.jimple.toolkits.annotation.arraycheck;
 import soot.options.*;
 
 import soot.* ;
-import soot.toolkits.scalar.* ;
 import soot.toolkits.graph.*;
 import soot.jimple.* ;
-import soot.jimple.internal.* ;
 
 import java.util.* ;
-import soot.util.* ;
 
 class ArrayBoundsCheckerAnalysis 
 {
@@ -44,9 +41,7 @@ class ArrayBoundsCheckerAnalysis
     private Set edgeSet;
 
     private HashMap stableRoundOfUnits;
-    private boolean flowStable = false;
 
-    private Body body;
     private ArrayRefBlockGraph graph;
 
     private IntContainer zero = new IntContainer(0);
@@ -54,12 +49,9 @@ class ArrayBoundsCheckerAnalysis
     private boolean fieldin = false;
     private HashMap localToFieldRef;
     private HashMap fieldToFieldRef;
-    private HashSet allFieldRefs;
     private int strictness = 2;
 
     private boolean arrayin = false;
-    private HashMap localToArrayRef;
-    private HashSet allArrayRefs;
 
     private boolean csin = false;
     private HashMap localToExpr;
@@ -87,8 +79,6 @@ class ArrayBoundsCheckerAnalysis
         csin = takeCSE;
         rectarray = takeRectArray;
         
-        this.body = body;
-
         SootMethod thismethod = body.getMethod();
 
         if (Options.v().debug()) 
@@ -100,13 +90,10 @@ class ArrayBoundsCheckerAnalysis
         {
             this.localToFieldRef = ailanalysis.getLocalToFieldRef();
             this.fieldToFieldRef = ailanalysis.getFieldToFieldRef();
-            this.allFieldRefs = ailanalysis.getAllFieldRefs();
         }
         
         if (arrayin)
         {
-            this.localToArrayRef = ailanalysis.getLocalToArrayRef();
-            this.allArrayRefs = ailanalysis.getAllArrayRefs();
             if (rectarray)
             {
                 this.multiarraylocals = ailanalysis.getMultiArrayLocals();
@@ -269,7 +256,7 @@ class ArrayBoundsCheckerAnalysis
         if (Options.v().debug())
             G.v().out.println("Building PseudoTopological order list on "+start);
 
-        LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph);
+        LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph,false);
                         
         BoundedPriorityList changedUnits = 
             new BoundedPriorityList(allUnits);            
@@ -287,28 +274,6 @@ class ArrayBoundsCheckerAnalysis
         }
 
         start = new Date();
-        if (Options.v().debug())
-            G.v().out.println("Doing analysis started on "+start);
-
-        {
-            for (int i=0; i<allUnits.size(); i++)
-            {
-                Block block = (Block)allUnits.get(i);
-                {
-                    Object tail = block.getTail();
-
-                    HashSet livelocals = (HashSet)ailanalysis.getFlowAfter(tail);
-        
-                    /*        
-                    if (Options.v().debug())
-                    {
-                        G.v().out.println(tail);
-                        G.v().out.println(livelocals);
-                    }
-                    */
-                }
-            }
-        }
 
         HashSet changedUnitsSet = new HashSet(allUnits);
 
@@ -320,8 +285,6 @@ class ArrayBoundsCheckerAnalysis
         /* If any output flow set has unknow value, it will be put in this set
          */
         HashSet unvisitedNodes = new HashSet(graph.size()*2+1, 0.7f);
-        
-        int numNodes = graph.size();
 
         /* adjust livelocals set */
         {
@@ -490,7 +453,6 @@ class ArrayBoundsCheckerAnalysis
                 /* Decide to remove or add unit from/to unvisitedNodes set */
                 {
                     unvisitedNodes.remove(s);
-                    flowStable = unvisitedNodes.isEmpty();
                 }
             }
         }
@@ -1428,11 +1390,6 @@ class ArrayBoundsCheckerAnalysis
 
         curgraphs.widenEdges(pregraphs);
         curgraphs.makeShortestPathGraph();
-    }
-
-    private void outputGraphs(Object graphs)
-    {
-        WeightedDirectedSparseGraph gs = (WeightedDirectedSparseGraph)graphs;
     }
 }
 

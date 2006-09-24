@@ -93,7 +93,7 @@ public abstract class ForwardBranchedFlowAnalysis extends BranchedFlowAnalysis
     protected void doAnalysis()
     {
         final Map numbers = new HashMap();
-        List orderedUnits = new PseudoTopologicalOrderer().newList(graph);
+        List orderedUnits = new PseudoTopologicalOrderer().newList(graph,false);
         {
             int i = 1;
             for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
