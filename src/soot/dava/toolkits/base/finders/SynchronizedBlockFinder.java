@@ -826,7 +826,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	}
 
 	if(synchEnter==null){
-	    throw new RuntimeException ("Could not find enter stmt of the synchBody");
+	    throw new RuntimeException ("Could not find enter stmt of the synchBody: " + davaBody.getMethod().getSignature());
 	}
 
 	//System.out.println("Enter stmt of synchBody is:"+synchEnter);
