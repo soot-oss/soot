@@ -126,31 +126,31 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Iterator fsIt = fs.iterator();
 		while(fsIt.hasNext())
 		{
-			Transaction tn = (Transaction) fsIt.next();
+			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
 			
-			// Print information about this transaction for debugging
-//			G.v().out.print("Transaction #" + tn.IDNum + "  ");
-//			G.v().out.print("Location: " + b.getMethod().getDeclaringClass().toString() + ":" + b.getMethod().toString() + ":  ");
-//			G.v().out.println("Begin: " + tn.begin.toString() + "  ");
-//			G.v().out.print("End  : " + tn.ends.toString() + " \n");
-//			G.v().out.println("Size : " + tn.units.size());
-//			if(tn.read.size() < 100)
-//				G.v().out.print("Read :\n" + tn.read.toString());
-//			else
-//				G.v().out.println("Read : " + tn.read.size() + "  ");
+/*			// Print information about this transaction for debugging
+			G.v().out.print("Transaction " + tn.name + "  ");
+			G.v().out.println("Location: " + b.getMethod().getDeclaringClass().toString() + ":" + b.getMethod().toString() + ":  ");
+			G.v().out.println("Begin: " + tn.begin.toString() + "  ");
+			G.v().out.print("End  : " + tn.ends.toString() + " \n");
+			G.v().out.println("Size : " + tn.units.size());
+			if(tn.read.size() < 100)
+				G.v().out.print("Read :\n" + tn.read.toString());
+			else
+				G.v().out.println("Read : " + tn.read.size() + "  ");
 //			G.v().out.println("R/Ws : " + (tn.read.size() + tn.write.size()) + "  ");
-//			if(tn.write.size() < 100)
-//				G.v().out.print("Write:\n" + tn.write.toString());
-//			else
-//				G.v().out.println("Write: " + tn.write.size() + "  ");
-//			Iterator tnedgeit = tn.edges.iterator();
-//		    G.v().out.println("Edges: " + tn.edges.size());
-//				G.v().out.print("Edges: ");
+			if(tn.write.size() < 100)
+				G.v().out.print("Write:\n" + tn.write.toString());
+			else
+				G.v().out.println("Write: " + tn.write.size() + "  ");
+			Iterator tnedgeit = tn.edges.iterator();
+		    G.v().out.println("Edges: " + tn.edges.size());
+//			G.v().out.print("Edges: ");
 //			while(tnedgeit.hasNext())
-//				G.v().out.print(((Transaction)tnedgeit.next()).IDNum + " ");
-//			G.v().out.println("\nGroup: " + tn.setNumber + "\n");
+//				G.v().out.print(((Transaction)tnedgeit.next()).name + " ");
+			G.v().out.println("\nGroup: " + tn.setNumber + "\n");
 
-			// Print output for GraphViz package
+/*			// Print output for GraphViz package
 			Iterator tnedgeit = tn.edges.iterator();
 			G.v().out.println("[transaction] " + tn.name + " [name=\"" + b.getMethod().toString() + "\"];");
 			while(tnedgeit.hasNext())
@@ -159,7 +159,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 				Transaction tnedge = edge.other;
 				G.v().out.println("[transaction] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 5 ? (edge.size > 50 ? "black" : "blue") : "black") + " style=" + (edge.size > 50 ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
 			}
-			
+*/			
 
 			// If this method does not yet have a reference to the lock object
 			// needed for this transaction, then create one.
@@ -186,6 +186,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 			}
 			else
 			{
+				if(tn.begin == null) 
+					G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
 				units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
 				units.remove(tn.begin);
 				Iterator endsIt = tn.ends.iterator();

@@ -99,7 +99,7 @@ public class CodeBlockRWSet extends MethodRWSet
     }
     
     public CodeBlockRWSet intersection( MethodRWSet other )
-    {// May run for a LONG time... O(n^2)
+    {// May run slowly... O(n^2)
 		CodeBlockRWSet ret = new CodeBlockRWSet();
 
 		if( isFull )

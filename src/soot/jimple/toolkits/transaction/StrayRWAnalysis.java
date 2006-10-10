@@ -83,7 +83,7 @@ public class StrayRWAnalysis extends BackwardFlowAnalysis
         in.copy(out);
     	if(addSelf.booleanValue())
     	{
-    		Transaction tn = new Transaction((Stmt) unit, false, body.getMethod());
+    		Transaction tn = new Transaction((Stmt) unit, false, body.getMethod(), 0);
     		tn.begin = (Stmt) unit;
     		tn.units.add((Stmt) unit);
     		tn.read.union(stmtRead);

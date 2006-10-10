@@ -466,6 +466,7 @@ public class PaddleOptions
     public static final int context_objsens = 4;
     public static final int context_kobjsens = 5;
     public static final int context_uniqkobjsens = 6;
+    public static final int context_threadkobjsens = 7;
     /** Context abstraction --
     
      * Select context-sensitivity level.
@@ -493,6 +494,9 @@ public class PaddleOptions
         
         if( s.equalsIgnoreCase( "uniqkobjsens" ) )
             return context_uniqkobjsens;
+        
+        if( s.equalsIgnoreCase( "threadkobjsens" ) )
+            return context_threadkobjsens;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option context" );
     }

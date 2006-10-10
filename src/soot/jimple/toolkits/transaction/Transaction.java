@@ -13,11 +13,12 @@ class Transaction
 	
 	// Information about the transactional region
 	public int IDNum;
+	public int nestLevel;
 	public String name;
 	public Stmt begin;
 	public Vector ends;
 	public CodeBlockRWSet read, write;
-//	public HashSet invokes;
+	public HashSet invokes;
 	public HashSet units;
 	public boolean wholeMethod;
 	
@@ -28,17 +29,16 @@ class Transaction
 	public HashSet waits;
 	public HashSet notifys;
 	
-	Transaction(Stmt end, boolean wholeMethod, SootMethod method)
+	Transaction(Stmt begin, boolean wholeMethod, SootMethod method, int nestLevel)
 	{
 		this.IDNum = nextIDNum;
 		nextIDNum++;
-		this.begin = null;
+		this.nestLevel = nestLevel;
+		this.begin = begin;
 		this.ends = new Vector();
-		if(end != null)
-			ends.add(end);
 		this.read = new CodeBlockRWSet();
 		this.write = new CodeBlockRWSet();
-//		this.invokes = new HashSet();
+		this.invokes = new HashSet();
 		this.units = new HashSet();
 		this.wholeMethod = wholeMethod;
 		this.method = method;
@@ -46,5 +46,28 @@ class Transaction
 		this.edges = new HashSet();
 		this.waits = new HashSet();
 		this.notifys = new HashSet();
+	}
+	
+	Transaction(Transaction tn)
+	{
+		this.IDNum = tn.IDNum;
+		this.nestLevel = tn.nestLevel;
+		this.begin = tn.begin;
+		this.ends = (Vector) tn.ends.clone();
+		this.read = new CodeBlockRWSet(); this.read.union(tn.read);
+		this.write = new CodeBlockRWSet(); this.write.union(tn.write);
+		this.invokes = (HashSet) tn.invokes.clone();
+		this.units = (HashSet) tn.units.clone();
+		this.wholeMethod = tn.wholeMethod;
+		this.method = tn.method;
+		this.setNumber = tn.setNumber;
+		this.edges = (HashSet) tn.edges.clone();
+		this.waits = (HashSet) tn.waits.clone();
+		this.notifys = (HashSet) tn.notifys.clone();
+	}
+
+	protected Object clone()
+	{
+		return new Transaction(this);
 	}
 }

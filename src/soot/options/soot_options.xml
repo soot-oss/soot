@@ -2404,6 +2404,15 @@ context string, the context string is just reused as is.
 </long_desc>
 
                                         </value>
+                                        <value>
+                                                <name>Thread k-Object Sensitive</name>
+                                                <alias>threadkobjsens</alias>
+<short_desc>Experimental option for thread-entry-point sensitivity</short_desc>
+<long_desc>
+Experimental option for thread-entry-point sensitivity.
+</long_desc>
+
+                                        </value>
                                         <short_desc>Select context-sensitivity level</short_desc>
                                         <long_desc>
 This option tells Paddle which level of context-sensitivity to use in constructing the call graph.
@@ -2916,7 +2925,7 @@ program.</p>
 				<boolopt>
 					<name>Enabled</name>
 					<alias>enabled</alias>
-                                        <default>true</default>
+					<default>true</default>
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
@@ -2924,20 +2933,47 @@ program.</p>
 					<name>Transactional Transformation</name>
 					<class>TransactionalTransformation</class>
 					<alias>wjtp.tn</alias>
-					<short_desc>Finds and processes transactional regions</short_desc>
-					<long_desc>
+					<short_desc>Finds and processes transactional regions (EXPERIMENTAL)</short_desc>
+<long_desc>
 The Transactional Transformation find transactional regions in
 Java programs and prepares them for transactional execution on
 both optimistic and pessimistic JVMs.
 </long_desc>
-	                                <boolopt>
+					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
 						<default>false</default>
 						<short_desc/>
 						<long_desc/>
 					</boolopt>
-	                        </sub_phase>
+					<boolopt>
+						<name>Print Topological Graph</name>
+						<alias>print-graph</alias>
+						<default>false</default>
+						<short_desc>Print topological graph of transactions</short_desc>
+<long_desc>
+Print a topological graph of the program's transactions in the format used by the graphviz package.
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Print Table</name>
+						<alias>print-table</alias>
+						<default>false</default>
+						<short_desc>Print table of transactions</short_desc>
+<long_desc>
+Print a table of information about the program's transactions.
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Print Debugging Info</name>
+						<alias>print-debug</alias>
+						<default>false</default>
+						<short_desc>Print debugging info</short_desc>
+<long_desc>
+Print debugging info, including every statement visited.
+</long_desc>
+					</boolopt>
+				</sub_phase>
 			</phase>
 			<phase>
 				<name>Whole-Jimple Optimization Pack</name>

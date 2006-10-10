@@ -49,14 +49,17 @@ public class TransactionAwareSideEffectAnalysis {
 			final Stmt s = (Stmt) sIt.next();
 			
 			boolean ignore = false;
-			Iterator tnIt = transactions.iterator();
-			while(tnIt.hasNext())
+			if(transactions != null)
 			{
-				Transaction tn = (Transaction) tnIt.next();
-				if(tn.method == method && tn.units.contains(s))
+				Iterator tnIt = transactions.iterator();
+				while(tnIt.hasNext())
 				{
-					ignore = true;
-					break;
+					Transaction tn = (Transaction) tnIt.next();
+					if(tn.units.contains(s))
+					{
+						ignore = true;
+						break;
+					}
 				}
 			}
 			
@@ -96,7 +99,8 @@ public class TransactionAwareSideEffectAnalysis {
 		this.transactions = transactions;
 	}
 	
-	private RWSet ntReadSet( SootMethod method, Stmt stmt ) {
+	private RWSet ntReadSet( SootMethod method, Stmt stmt )
+	{
 		if( stmt instanceof AssignStmt ) {
 			AssignStmt a = (AssignStmt) stmt;
 			Value r = a.getRightOp();
@@ -104,6 +108,38 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		return null;
 	}
+	
+	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value v)
+	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 reads (plus reads of all args)
+		RWSet ret = new SiteRWSet();
+		if(v != null)
+		{
+			if( v instanceof Local )
+			{
+				Local vLocal = (Local) v;
+				PointsToSet base = pa.reachingObjects( vLocal );
+				StmtRWSet sSet = new StmtRWSet();
+				sSet.addFieldRef( base, stmt );
+				ret.union(sSet);
+			}
+			else if( v instanceof FieldRef)
+			{
+				ret.union(addValue(v, method, stmt));
+			}
+		}
+		if(stmt.containsInvokeExpr())
+		{
+			for(int i = 0; i < stmt.getInvokeExpr().getArgCount(); i++)
+				ret.union(addValue( stmt.getInvokeExpr().getArg(i), method, stmt ));
+		}
+		if( stmt instanceof AssignStmt ) {
+			AssignStmt a = (AssignStmt) stmt;
+			Value r = a.getRightOp();
+			ret.union(addValue( r, method, stmt ));
+		}
+		return ret;
+	}
+	
 	public RWSet readSet( SootMethod method, Stmt stmt ) {
 		RWSet ret = null;
 		Iterator targets = tt.iterator( stmt );
@@ -135,6 +171,33 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		return null;
 	}
+	
+	public RWSet approximatedWriteSet( SootMethod method, Stmt stmt, Value v )
+	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 writes
+		RWSet ret = new SiteRWSet();
+		if(v != null)
+		{
+			if( v instanceof Local )
+			{
+				Local vLocal = (Local) v;
+				PointsToSet base = pa.reachingObjects( vLocal );
+				StmtRWSet sSet = new StmtRWSet();
+				sSet.addFieldRef( base, stmt );
+				ret.union(sSet);
+			}
+			else if( v instanceof FieldRef)
+			{
+				ret.union(addValue(v, method, stmt));
+			}
+		}
+		if( stmt instanceof AssignStmt ) {
+			AssignStmt a = (AssignStmt) stmt;
+			Value l = a.getLeftOp();
+			ret.union(addValue( l, method, stmt ));
+		}
+		return ret;
+	}
+	
 	public RWSet writeSet( SootMethod method, Stmt stmt ) {
 		RWSet ret = null;
 		Iterator targets = tt.iterator( stmt );
@@ -177,7 +240,7 @@ public class TransactionAwareSideEffectAnalysis {
 	}
 	
 	public String toString() {
-		return "SideEffectAnalysis: PA="+pa+" CG="+cg;
+		return "TransactionAwareSideEffectAnalysis: PA="+pa+" CG="+cg;
 	}
 }
 

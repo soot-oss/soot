@@ -1221,7 +1221,7 @@ public class Options extends OptionsBase {
         +padOpt("wstp", "Whole-shimple transformation pack")
         +padOpt("wsop", "Whole-shimple optimization pack")
         +padOpt("wjtp", "Whole-jimple transformation pack")
-        +padVal("wjtp.tn", "Finds and processes transactional regions")
+        +padVal("wjtp.tn", "Finds and processes transactional regions (EXPERIMENTAL)")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
@@ -1645,6 +1645,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "uniqkobjsens", "Builds a unique-k-object-sensitive call graph" )
                 
+                +padVal( "threadkobjsens", "Experimental option for thread-entry-point sensitivity" )
+                
                 +padOpt( "k (2)", "" )
                 +padOpt( "context-heap (false)", "Treat allocation sites context-sensitively" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
@@ -1733,7 +1735,10 @@ public class Options extends OptionsBase {
             return "Phase "+phaseName+":\n"+
                 "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
                 +"\n\nRecognized options (with default values):\n"
-                +padOpt( "enabled (false)", "" );
+                +padOpt( "enabled (false)", "" )
+                +padOpt( "print-graph (false)", "Print topological graph of transactions" )
+                +padOpt( "print-table (false)", "Print table of transactions" )
+                +padOpt( "print-debug (false)", "Print debugging info" );
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
@@ -2445,7 +2450,10 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
-                +"enabled ";
+                +"enabled "
+                +"print-graph "
+                +"print-table "
+                +"print-debug ";
     
         if( phaseName.equals( "wjop" ) )
             return ""
@@ -3000,7 +3008,10 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
-              +"enabled:false ";
+              +"enabled:false "
+              +"print-graph:false "
+              +"print-table:false "
+              +"print-debug:false ";
     
         if( phaseName.equals( "wjop" ) )
             return ""

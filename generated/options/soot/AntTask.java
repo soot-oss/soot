@@ -1483,6 +1483,24 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setprint_graph(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("print-graph:"+(arg?"true":"false"));
+          }
+      
+          public void setprint_table(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("print-table:"+(arg?"true":"false"));
+          }
+      
+          public void setprint_debug(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("print-debug:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_wjop() {

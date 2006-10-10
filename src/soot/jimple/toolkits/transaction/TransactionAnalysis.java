@@ -1,37 +1,34 @@
 package soot.jimple.toolkits.transaction;
 // PTFindTransactions - Analysis to locate transactional regions
 
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import soot.*;
-import soot.jimple.Stmt;
-import soot.jimple.EnterMonitorStmt;
-import soot.jimple.ExitMonitorStmt;
-import soot.jimple.toolkits.pointer.FullObjectSet;
-import soot.jimple.toolkits.pointer.SideEffectAnalysis;
-import soot.jimple.toolkits.pointer.RWSet;
-import soot.jimple.toolkits.pointer.Union;
-import soot.jimple.toolkits.pointer.UnionFactory;
-import soot.jimple.InvokeStmt;
-import soot.jimple.RetStmt;
-import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.ArraySparseSet;
-import soot.toolkits.scalar.FlowSet;
-import soot.toolkits.scalar.BackwardFlowAnalysis;
+import soot.jimple.*;
+import soot.jimple.toolkits.pointer.*;
+import soot.toolkits.scalar.*;
+import soot.toolkits.graph.*;
 
-public class TransactionAnalysis extends BackwardFlowAnalysis
+public class TransactionAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet = new ArraySparseSet();
     Map unitToGenerateSet;
     Body body;
 	SootMethod method;
     Transaction methodTn;
-	SideEffectAnalysis sea;
+	TransactionAwareSideEffectAnalysis tasea;
+	ExceptionalUnitGraph egraph;
+	public boolean optionPrintDebug = true;
 
     TransactionAnalysis(UnitGraph graph, Body b)
 	{
 		super(graph);
+		
+		if(graph instanceof ExceptionalUnitGraph)
+			egraph = (ExceptionalUnitGraph) graph;
+		else
+			egraph = null;
+		
 		body = b;
 		method = body.getMethod();
 		if( G.v().Union_factory == null ) {
@@ -39,20 +36,20 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
 			public Union newUnion() { return FullObjectSet.v(); }
 		    };
 		}
-    	sea = Scene.v().getSideEffectAnalysis();
-		sea.findNTRWSets( body.getMethod() );
+    	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
+    				Scene.v().getCallGraph(), null);
 		methodTn = null;
-		if(method.isSynchronized())
-		{
+//		if(method.isSynchronized())
+//		{
 			// Entire method is transactional
-			methodTn = new Transaction((Stmt) null, true, body.getMethod());
-		}
+//			methodTn = new Transaction((Stmt) null, true, body.getMethod(), 0);
+//		}
         doAnalysis();
-		if(method.isSynchronized() && methodTn != null)
-		{
+//		if(method.isSynchronized() && methodTn != null)
+//		{
 			// TODO: Check if totally safe
-			methodTn.begin = (Stmt) body.getUnits().iterator().next();
-		}
+//			methodTn.begin = (Stmt) body.getUnits().iterator().next();
+//		}
 	}
     	
     /**
@@ -69,8 +66,8 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
     protected Object entryInitialFlow()
     {
 		FlowSet ret = (FlowSet) emptySet.clone();
-		if(method.isSynchronized() && methodTn != null)
-			ret.add(methodTn);
+//		if(method.isSynchronized() && methodTn != null)
+//			ret.add(methodTn);
         return ret;
     }
 
@@ -83,15 +80,18 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             in = (FlowSet) inValue,
             out = (FlowSet) outValue;
 
+       	copy(in, out);
+       	
 		// If the flowset has a transaction in it with wholeMethod=true and
 		// ends is empty then the current instruction is the last instruction on
 		// some path of execution in this method, so ends should be set to unit
-		if(method.isSynchronized() && in.size() == 1)
+/*		if(method.isSynchronized() && in.size() == 1)
 		{
 			Transaction tn = (Transaction) in.iterator().next();
 			if(tn.ends.isEmpty())
 				tn.ends.add(unit);
 		}
+*/
 
         // If this instruction is a monitorexit, then 
         //     add a (null,emptylist) to the flowset
@@ -99,102 +99,348 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
         //     add reads & writes to anylist
         // If there is a (null,anylist) in the flowset and this instruction is 
         //     a monitorenter, change (null, anylist) to (unit, anylist)
-        boolean addSelf;
-        addSelf = (unit instanceof ExitMonitorStmt);
-		// if we're a monitorexit, we might have to add to the flowset
+        
+        boolean addSelf = (unit instanceof EnterMonitorStmt);
+        
+        List epreds = null;
+    	if(egraph != null)
+    	{
+			epreds = egraph.getExceptionalPredsOf(unit);
+    	}
 
-        Iterator inIt = in.iterator();
-        while(inIt.hasNext())
+		int nestLevel = 0;
+        Iterator outIt0 = out.iterator();
+        while(outIt0.hasNext())
         {
-            Transaction tn = (Transaction) inIt.next();
-            if(tn.begin == null)
+            TransactionFlowPair tfp = (TransactionFlowPair) outIt0.next();
+            if(tfp.tn.nestLevel > nestLevel && tfp.inside == true)
+            	nestLevel = tfp.tn.nestLevel;
+        }
+        
+		// Process this unit's effect on each txn
+        Iterator outIt = out.iterator();
+        boolean printed = false;
+        while(outIt.hasNext())
+        {
+            TransactionFlowPair tfp = (TransactionFlowPair) outIt.next();
+            Transaction tn = tfp.tn;
+            if(tn.begin == (Stmt) unit)
             {
-            	// Register this unit w/ the current transactional region
-            	tn.units.add(unit);
-            	
-            	// Add our reads and writes to the "current" transactional region
-            	if(unit instanceof InvokeStmt)
-            	{
-            		String InvokeSig = ((InvokeStmt)unit).getInvokeExpr().getMethod().getSubSignature();
-            		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
-	            		tn.notifys.add(unit);
-	            	if(InvokeSig.equals("void wait()"))
-	            		tn.waits.add(unit);
-            	}
-               	RWSet stmtRead = sea.readSet( method, (Stmt) unit );
-               	RWSet stmtWrite = sea.writeSet( method, (Stmt) unit );
-           		tn.read.union(stmtRead);
-           		tn.write.union(stmtWrite);
-            	
-            	if(unit instanceof EnterMonitorStmt)
-            	{
-            		// Complete the record for this transaction by adding unit, which is the entry point
-            		tn.begin = (Stmt) unit;
-            	}
-            }
-            if(addSelf && tn.ends.contains((Stmt) unit))
-            {
+            	tfp.inside = true;
             	addSelf = false;
             }
+/*
+            if(tfp.inside == true && tn.nestLevel == nestLevel + 1) // catch unreachable monitorexits
+            {
+            	if(epreds != null && epreds.contains(tn.begin))
+            	{
+            		boolean hasAllEnds = true;
+            		for(int i = 0; i < tn.ends.size(); i++)
+            		{
+            			if(!epreds.contains(tn.ends.get(i)))
+            				hasAllEnds = false;
+            		}
+            		List usuccs = egraph.getUnexceptionalSuccsOf(unit);
+            		if(usuccs.size() > 0 && hasAllEnds)
+  					{
+  						Unit Monitorexit = null;
+// 						G.v().out.print(" ***");
+  						for(int i = 0; i < epreds.size(); i++)
+  						{
+// 							G.v().out.print(" | " + epreds.get(i).toString());
+  							if(epreds.get(i) instanceof ExitMonitorStmt)
+  								Monitorexit = (Unit) epreds.get(i);
+  						}
+// 						G.v().out.print(" ***\n");
+  						if(Monitorexit != null)
+  						{
+            				// Mark this as end of this tn
+            				if(!tn.ends.contains(Monitorexit))
+        		    			tn.ends.add(Monitorexit);
+		            		tfp.inside = false;
+            			}
+  					}	
+            	}
+            }
+*/
+        	if(tfp.inside == true && tn.nestLevel == nestLevel)
+        	{
+        		printed = true;
+            	// Add this unit to the current transactional region
+            	if(!tn.units.contains(unit))
+	            	tn.units.add(unit);
+        		
+            	if(((Stmt) unit).containsInvokeExpr())
+            	{
+            		// Note if this unit is a call to wait() or notify()/notifyAll()
+            		String InvokeSig = ((Stmt)unit).getInvokeExpr().getMethod().getSubSignature();
+//            		G.v().out.println(InvokeSig);
+            		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
+            		{
+				        if(!tn.notifys.contains(unit))
+		            		tn.notifys.add(unit);
+	            		if(optionPrintDebug)
+	            			G.v().out.print("{x,x} ");
+	            	}
+	            	else if(InvokeSig.equals("void wait()"))
+            		{
+				        if(!tn.waits.contains(unit))
+		            		tn.waits.add(unit);
+	            		if(optionPrintDebug)
+	            			G.v().out.print("{x,x} ");
+	            	}
+//	            	else if(InvokeSig.equals("java.lang.Class class$(java.lang.String)"))
+//	            	{
+//	            		if(optionPrintDebug)
+//	            			G.v().out.print("{x,x} ");
+//	            	}
+	            	else if(!tn.invokes.contains(unit))
+	            	{
+	            		// Mark this unit for later read/write set consideration
+		            	tn.invokes.add(unit);
+		            	
+		            	// Debug Output
+	            		if(optionPrintDebug)
+	            		{
+
+		RWSet stmtRead = null;
+		RWSet stmtWrite = null;
+		Stmt stmt = (Stmt) unit;
+
+		Vector sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
+		// Math does not have any synchronization risks, we think :-)
+		sigBlacklist.add("<java.lang.Math: double abs(double)>");
+		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
+		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
+		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
+//		sigBlacklist.add("");
+
+		Vector sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
+		Vector sigWriteGraylist = new Vector();
+		// Vector is synchronized, so we will approximate its effects
+		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+
+		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+
+		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+
+		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+
+		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+//		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+
+		sigReadGraylist.add("<java.util.List: void clear()>");
+		sigWriteGraylist.add("<java.util.List: void clear()>");
+
+		Vector subSigBlacklist = new Vector(); // Subsignatures of methods on all objects known to have read/write sets of size 0
+		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
+		subSigBlacklist.add("void notify()");
+		subSigBlacklist.add("void notifyAll()");
+		subSigBlacklist.add("void wait()");
+//		subSigBlacklist.add("");
+
+			UnitGraph g = new ExceptionalUnitGraph(body);
+			LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+
+
+    			if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+    				{
+    					G.v().out.println("RGI,");
+                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+                    	while (rDefsIt.hasNext())
+                    	{
+                        	Stmt next = (Stmt) rDefsIt.next();
+                        	G.v().out.println("DEF: " + next);
+                        	if(next instanceof DefinitionStmt)
+							{
+		    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
+    							tn.read.union(stmtRead);
+    						}
+    					}
+    				}
+    				else
+    				{
+    					G.v().out.println("RG-,");
+	    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
+    					tn.read.union(stmtRead);
+    				}
+    			}
+    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+				{
+    				G.v().out.println("RB-,");
+    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
+					tn.read.union(stmtRead);
+				}
+				else
+				{
+    				G.v().out.println("R--,");
+            		stmtRead = tasea.readSet( tn.method, stmt );
+	        		tn.read.union(stmtRead);
+	    		}
+    			
+    			if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+    				{
+    					G.v().out.println("WGI,");
+                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
+                    	while (rDefsIt.hasNext())
+                    	{
+                        	Stmt next = (Stmt) rDefsIt.next();
+                        	if(next instanceof DefinitionStmt)
+							{
+		    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
+    							tn.write.union(stmtWrite);
+    						}
+    					}
+    				}
+    				else
+    				{
+    					G.v().out.println("WG-,");
+	    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+    					tn.write.union(stmtWrite);
+    				}
+    			}
+    			else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				G.v().out.println("WB-,");
+    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+					tn.write.union(stmtWrite);
+    			}
+    			// add else ifs for every special case (specifically functions that write to args)
+    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+						 (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+				{
+    				G.v().out.println("WB-,");
+    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+					tn.write.union(stmtWrite);
+				}
+				else
+				{
+   					G.v().out.println("W--,");
+	            	stmtWrite = tasea.writeSet( tn.method, stmt );
+	        		tn.write.union(stmtWrite);
+	    		}
+
+
+//			               	RWSet stmtRead = tasea.readSet( method, (Stmt) unit );
+//				           	RWSet stmtWrite = tasea.writeSet( method, (Stmt) unit );
+			           		G.v().out.print("{");
+				           	if(stmtRead != null)
+				           	{
+					           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
+					           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
+					        }
+					        else
+					        	G.v().out.print( "0" );
+					        G.v().out.print(",");
+					        if(stmtWrite != null)
+					        {
+					           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
+				           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
+				        	}
+				        	else
+				        		G.v().out.print( "0" );
+				        	G.v().out.print("} ");
+						}
+		            }
+            	}
+            	else if(unit instanceof ExitMonitorStmt)
+            	{
+            		// Mark this as end of this tn
+            		if(!tn.ends.contains(unit))
+            			tn.ends.add(unit);
+            		tfp.inside = false;
+	            	if(optionPrintDebug)
+            			G.v().out.print("[0,0] ");
+            	}
+				else
+            	{
+            		// Add this unit's read and write sets to the "current" transactional region
+	               	RWSet stmtRead = tasea.readSet( method, (Stmt) unit );
+		           	RWSet stmtWrite = tasea.writeSet( method, (Stmt) unit );
+
+    		   		tn.read.union(stmtRead);
+        			tn.write.union(stmtWrite);
+		           	
+		           	// Debug Output
+            		if(optionPrintDebug)
+			        {
+			           	G.v().out.print("[");
+			           	if(stmtRead != null)
+			           	{
+				           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
+				           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
+				        }
+				        else
+				        	G.v().out.print( "0" );
+				        G.v().out.print(",");
+				        if(stmtWrite != null)
+				        {
+				           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
+			           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
+			        	}
+			        	else
+			        		G.v().out.print( "0" );
+			        	G.v().out.print("] ");
+					}
+        		}
+			}
         }
-       	in.copy(out);
-        if(addSelf)
+		// DEBUG output
+	    if(optionPrintDebug)
 		{
-			out.add(new Transaction((Stmt) unit, false, method));
+			if(!printed)
+				G.v().out.print("[-,-] ");
+			G.v().out.println(unit.toString());
 		}
+
+        if(addSelf)
+			out.add(new TransactionFlowPair(new Transaction((Stmt) unit, false, method, nestLevel + 1), true));
+            	
+//		if(method.toString().equals("<Passenger: void run()>"))
+//		Iterator outIt2 = out.iterator();
+//		while(outIt2.hasNext())
+//		{
+//			TransactionFlowPair tfp = (TransactionFlowPair) outIt2.next();
+//			G.v().out.print("<" + tfp + ">");
+//		}
+
     }
 
     /**
-     * union, except for transactions in progress.  They get joined
+     * union
      **/
     protected void merge(Object in1, Object in2, Object out)
     {
         FlowSet
-            inSet1 = (FlowSet) ((FlowSet) in1).clone(),
-            inSet2 = (FlowSet) ((FlowSet) in2).clone(),
+            inSet1 = (FlowSet) in1,
+            inSet2 = (FlowSet) in2,
             outSet = (FlowSet) out;
-        boolean hasANull1 = false;
-        Transaction tn1 = null;
+
+		inSet1.union(inSet2, outSet);
+/*		
         Iterator inIt1 = inSet1.iterator();
         while(inIt1.hasNext())
         {
-            tn1 = (Transaction) inIt1.next();
-            if(tn1.begin == null)
-            {
-            	hasANull1 = true;
-            	break;
-            }
+        	TransactionFlowPair tfp1 = (TransactionFlowPair) inIt1.next();
+        	outSet.add(tfp1.clone());
         }
         
-        boolean hasANull2 = false;
-        Transaction tn2 = null;
         Iterator inIt2 = inSet2.iterator();
         while(inIt2.hasNext())
         {
-            tn2 = (Transaction) inIt2.next();
-            if(tn2.begin == null)
-            {
-            	hasANull2 = true;
-            	break;
-            }
+            TransactionFlowPair tfp2 = (TransactionFlowPair) inIt2.next();
+            outSet.add(tfp2.clone());
         }
-        if(hasANull1 && hasANull2)
-        {
-        	inSet1.remove(tn1);
-        	Iterator itends = tn1.ends.iterator();
-        	while(itends.hasNext())
-        	{
-        		Stmt stmt = (Stmt) itends.next();
-        		if(!tn2.ends.contains(stmt))
-        			tn2.ends.add(stmt);
-        	}
-        	tn2.read.union(tn1.read);
-        	tn2.write.union(tn1.write);
-			tn2.units.addAll(tn1.units);
-			tn2.waits.addAll(tn1.waits);
-			tn2.notifys.addAll(tn1.notifys);
-        }
-        inSet1.union(inSet2, outSet);
+*/
     }
 
     protected void copy(Object source, Object dest)
@@ -203,6 +449,27 @@ public class TransactionAnalysis extends BackwardFlowAnalysis
             sourceSet = (FlowSet) source,
             destSet = (FlowSet) dest;
 
-        sourceSet.copy(destSet);
+//		sourceSet.copy(destSet);
+		
+		destSet.clear();
+
+		Iterator it = sourceSet.iterator();
+		while(it.hasNext())
+		{
+			TransactionFlowPair tfp = (TransactionFlowPair) it.next();
+			destSet.add(tfp.clone());
+		}
+		
+/*		G.v().out.println("Copied array is " + (sourceSet.equals(destSet) ? "equal:" : "inequal:") );
+			it = sourceSet.iterator();
+			Iterator it2 = destSet.iterator();
+			while(it.hasNext() && it2.hasNext())
+			{
+				TransactionFlowPair tfp1 = (TransactionFlowPair) it.next();
+				TransactionFlowPair tfp2 = (TransactionFlowPair) it2.next();
+				G.v().out.print("<" + tfp1.toString() + "," + tfp2.toString() + ":" + (tfp1.equals(tfp2) ? "equal" : "inequal") + ">");
+			}
+			G.v().out.println("");
+*/
     }
 }
