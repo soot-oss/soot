@@ -84,7 +84,7 @@ public class IdentityHashSet implements Set {
      * {@inheritDoc}
      */
     public boolean add(Object o) {
-        return delegate.put(o, o)!=null;
+        return delegate.put(o, o)==null;
     }
 
     /**
