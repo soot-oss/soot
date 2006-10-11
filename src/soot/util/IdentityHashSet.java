@@ -18,7 +18,7 @@
  */
 
 package soot.util;
-import java.util.Collection;
+import java.util.AbstractSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -27,7 +27,7 @@ import java.util.Set;
  * Implements a hashset with comparison over identity.
  * @author Eric Bodden
  */
-public class IdentityHashSet implements Set {
+public class IdentityHashSet extends AbstractSet implements Set {
 
     protected IdentityHashMap delegate;
     
@@ -48,13 +48,6 @@ public class IdentityHashSet implements Set {
     /**
      * {@inheritDoc}
      */
-    public boolean isEmpty() {
-        return delegate.isEmpty();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public boolean contains(Object o) {
         return delegate.containsKey(o);
     }
@@ -64,20 +57,6 @@ public class IdentityHashSet implements Set {
      */
     public Iterator iterator() {
         return delegate.keySet().iterator();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Object[] toArray() {
-        return delegate.keySet().toArray();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Object[] toArray(Object[] a) {
-        return delegate.keySet().toArray(a);
     }
 
     /**
@@ -97,58 +76,12 @@ public class IdentityHashSet implements Set {
     /**
      * {@inheritDoc}
      */
-    public boolean containsAll(Collection c) {
-        return delegate.keySet().containsAll(c);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean addAll(Collection c) {
-        boolean b = true;
-        for (Iterator iter = c.iterator(); iter.hasNext();) {
-            Object o = iter.next();
-            b &= add(o);
-        }
-        return b;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean retainAll(Collection c) {
-        boolean b = false;
-        for (Iterator iter = iterator(); iter.hasNext();) {
-            Object o = iter.next();
-            if(!c.contains(o)) {
-            	iter.remove();
-            	b = true;
-            }
-        }
-        return b;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean removeAll(Collection c) {
-        boolean b = true;
-        for (Iterator iter = c.iterator(); iter.hasNext();) {
-            Object o = iter.next();
-            b &= remove(o);
-        }
-        return b;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void clear() {
         delegate.entrySet().clear();
     }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
+	/* 
+	 * Equality based on identity.
 	 */
 	public int hashCode() {
 		final int PRIME = 31;
@@ -157,8 +90,8 @@ public class IdentityHashSet implements Set {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
+	/* 
+	 * Hash code based on identity.
 	 */
 	public boolean equals(Object obj) {
 		if (this == obj)
