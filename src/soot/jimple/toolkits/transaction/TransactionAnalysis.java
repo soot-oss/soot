@@ -203,135 +203,96 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	            		if(optionPrintDebug)
 	            		{
 
-		RWSet stmtRead = null;
-		RWSet stmtWrite = null;
-		Stmt stmt = (Stmt) unit;
+							RWSet stmtRead = null;
+							RWSet stmtWrite = null;
+							Stmt stmt = (Stmt) unit;
 
-		Vector sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
-		// Math does not have any synchronization risks, we think :-)
-		sigBlacklist.add("<java.lang.Math: double abs(double)>");
-		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
-		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
-		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
-//		sigBlacklist.add("");
-
-		Vector sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
-		Vector sigWriteGraylist = new Vector();
-		// Vector is synchronized, so we will approximate its effects
-		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-
-		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-
-		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-
-		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-
-		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-//		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-
-		sigReadGraylist.add("<java.util.List: void clear()>");
-		sigWriteGraylist.add("<java.util.List: void clear()>");
-
-		Vector subSigBlacklist = new Vector(); // Subsignatures of methods on all objects known to have read/write sets of size 0
-		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
-		subSigBlacklist.add("void notify()");
-		subSigBlacklist.add("void notifyAll()");
-		subSigBlacklist.add("void wait()");
-//		subSigBlacklist.add("");
-
-			UnitGraph g = new ExceptionalUnitGraph(body);
-			LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+							UnitGraph g = new ExceptionalUnitGraph(body);
+							LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
 
-    			if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-    				{
-    					G.v().out.println("RGI,");
-                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
-                    	while (rDefsIt.hasNext())
-                    	{
-                        	Stmt next = (Stmt) rDefsIt.next();
-                        	G.v().out.println("DEF: " + next);
-                        	if(next instanceof DefinitionStmt)
+			    			if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+			    			{
+			    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+			    				{
+			    					G.v().out.println("RGI,");
+			                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+			                    	while (rDefsIt.hasNext())
+			                    	{
+			                        	Stmt next = (Stmt) rDefsIt.next();
+			                        	G.v().out.println("DEF: " + next);
+			                        	if(next instanceof DefinitionStmt)
+										{
+					    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
+			    							tn.read.union(stmtRead);
+			    						}
+			    					}
+			    				}
+			    				else
+			    				{
+			    					G.v().out.println("RG-,");
+				    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
+			    					tn.read.union(stmtRead);
+			    				}
+			    			}
+			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+								     (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
 							{
-		    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-    							tn.read.union(stmtRead);
-    						}
-    					}
-    				}
-    				else
-    				{
-    					G.v().out.println("RG-,");
-	    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-    					tn.read.union(stmtRead);
-    				}
-    			}
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				G.v().out.println("RB-,");
-    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-					tn.read.union(stmtRead);
-				}
-				else
-				{
-    				G.v().out.println("R--,");
-            		stmtRead = tasea.readSet( tn.method, stmt );
-	        		tn.read.union(stmtRead);
-	    		}
+			    				G.v().out.println("RB-,");
+			    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
+								tn.read.union(stmtRead);
+							}
+							else
+							{
+			    				G.v().out.println("R--,");
+			            		stmtRead = tasea.readSet( tn.method, stmt );
+				        		tn.read.union(stmtRead);
+				    		}
     			
-    			if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-    				{
-    					G.v().out.println("WGI,");
-                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-                    	while (rDefsIt.hasNext())
-                    	{
-                        	Stmt next = (Stmt) rDefsIt.next();
-                        	if(next instanceof DefinitionStmt)
+			    			if( tasea.sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+			    			{
+			    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+			    				{
+			    					G.v().out.println("WGI,");
+			                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
+			                    	while (rDefsIt.hasNext())
+			                    	{
+			                        	Stmt next = (Stmt) rDefsIt.next();
+			                        	if(next instanceof DefinitionStmt)
+										{
+					    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
+			    							tn.write.union(stmtWrite);
+			    						}
+			    					}
+			    				}
+			    				else
+			    				{
+			    					G.v().out.println("WG-,");
+				    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+			    					tn.write.union(stmtWrite);
+			    				}
+			    			}
+			    			else if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+			    			{
+			    				G.v().out.println("WB-,");
+			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+								tn.write.union(stmtWrite);
+			    			}
+			    			// add else ifs for every special case (specifically functions that write to args)
+			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+									 (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
 							{
-		    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-    							tn.write.union(stmtWrite);
-    						}
-    					}
-    				}
-    				else
-    				{
-    					G.v().out.println("WG-,");
-	    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-    					tn.write.union(stmtWrite);
-    				}
-    			}
-    			else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				G.v().out.println("WB-,");
-    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-					tn.write.union(stmtWrite);
-    			}
-    			// add else ifs for every special case (specifically functions that write to args)
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-						 (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				G.v().out.println("WB-,");
-    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-					tn.write.union(stmtWrite);
-				}
-				else
-				{
-   					G.v().out.println("W--,");
-	            	stmtWrite = tasea.writeSet( tn.method, stmt );
-	        		tn.write.union(stmtWrite);
-	    		}
+			    				G.v().out.println("WB-,");
+			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
+								tn.write.union(stmtWrite);
+							}
+							else
+							{
+			   					G.v().out.println("W--,");
+				            	stmtWrite = tasea.writeSet( tn.method, stmt );
+				        		tn.write.union(stmtWrite);
+				    		}
 
-
-//			               	RWSet stmtRead = tasea.readSet( method, (Stmt) unit );
-//				           	RWSet stmtWrite = tasea.writeSet( method, (Stmt) unit );
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
 				           	{

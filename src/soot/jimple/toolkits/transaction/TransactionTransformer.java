@@ -520,8 +520,8 @@ public class TransactionTransformer extends SceneTransformer
 
 //		G.v().out.println(tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
 
-//		return true;
-
+		return true;
+/*
     	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
     	{
     		if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
@@ -545,7 +545,7 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
     	return false;
-
+// */
     }
     
     public static boolean contains(String strings[], String string)

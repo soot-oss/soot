@@ -39,6 +39,11 @@ public class TransactionAwareSideEffectAnalysis {
 	TransitiveTargets tt;
 	Collection transactions;
 	
+	public Vector sigBlacklist;
+	public Vector sigReadGraylist;
+	public Vector sigWriteGraylist;
+	public Vector subSigBlacklist;
+	
 	public void findNTRWSets( SootMethod method ) {
 		if( methodToNTReadSet.containsKey( method )
 				&& methodToNTWriteSet.containsKey( method ) ) return;
@@ -56,6 +61,11 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					Transaction tn = (Transaction) tnIt.next();
 					if(tn.units.contains(s))
+					{
+						ignore = true;
+						break;
+					}
+					else if(/*isinitstmt*/ false)
 					{
 						ignore = true;
 						break;
@@ -95,8 +105,44 @@ public class TransactionAwareSideEffectAnalysis {
 	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions ) {
 		this.pa = pa;
 		this.cg = cg;
-		this.tt = new TransitiveTargets( cg );
+		this.tt = new TransitiveTargets( cg, new Filter(new NonLibraryEdgesPred()) );
 		this.transactions = transactions;
+		
+		sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
+		// Math does not have any synchronization risks, we think :-)
+		sigBlacklist.add("<java.lang.Math: double abs(double)>");
+		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
+		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
+		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
+//		sigBlacklist.add("");
+
+		sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
+		sigWriteGraylist = new Vector();
+		// Vector is synchronized, so we will approximate its effects
+		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+
+		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
+
+		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
+
+		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
+
+		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+//		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
+
+		sigReadGraylist.add("<java.util.List: void clear()>");
+		sigWriteGraylist.add("<java.util.List: void clear()>");
+
+		subSigBlacklist = new Vector(); // Subsignatures of methods on all objects known to have read/write sets of size 0
+		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
+		subSigBlacklist.add("void notify()");
+		subSigBlacklist.add("void notifyAll()");
+		subSigBlacklist.add("void wait()");
+//		subSigBlacklist.add("");
 	}
 	
 	private RWSet ntReadSet( SootMethod method, Stmt stmt )
@@ -143,7 +189,10 @@ public class TransactionAwareSideEffectAnalysis {
 	public RWSet readSet( SootMethod method, Stmt stmt ) {
 		RWSet ret = null;
 		Iterator targets = tt.iterator( stmt );
-		while( targets.hasNext() ) {
+		if(targets.hasNext())
+			G.v().out.println("STATEMENT: " + stmt.toString() + "\n**********");
+		while( targets.hasNext() )
+		{
 			SootMethod target = (SootMethod) targets.next();
 			if( target.isNative() ) {
 				if( ret == null ) ret = new SiteRWSet();
@@ -151,10 +200,25 @@ public class TransactionAwareSideEffectAnalysis {
 			} 
 			else if( target.isConcrete() ) 
 			{
-				RWSet ntr = nonTransitiveReadSet(target);
-				if( ntr != null ) {
-					if( ret == null ) ret = new SiteRWSet();
-					ret.union( ntr );
+				if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				// This shouldn't happen because all graylisted methods should be by explicit invoke statement only
+    				// approximatedReadSet() should be called instead
+    			}
+    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+				{
+    				// No read set
+				}
+				else
+				{// note that all library functions have already been filtered out (by name) via the filter
+				 // passed to the TransitiveTargets constructor.
+	            	G.v().out.println("Target   : " + target.toString());
+					RWSet ntr = nonTransitiveReadSet(target);
+					if( ntr != null ) {
+						if( ret == null ) ret = new SiteRWSet();
+						ret.union( ntr );
+					}
 				}
 			}
 		}
@@ -207,10 +271,26 @@ public class TransactionAwareSideEffectAnalysis {
 				if( ret == null ) ret = new SiteRWSet();
 				ret.setCallsNative();
 			} else if( target.isConcrete() ) {
-				RWSet ntw = nonTransitiveWriteSet(target);
-				if( ntw != null ) {
-					if( ret == null ) ret = new SiteRWSet();
-					ret.union( ntw );
+				if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				// No write set
+    			}
+    			else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			{
+    				// No write set
+    			}
+    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+				{
+    				// No write set
+				}
+				else
+				{
+					RWSet ntw = nonTransitiveWriteSet(target);
+					if( ntw != null ) {
+						if( ret == null ) ret = new SiteRWSet();
+						ret.union( ntw );
+					}
 				}
 			}
 		}
