@@ -36,6 +36,7 @@ public class TransactionAwareSideEffectAnalysis {
 	Map methodToNTReadSet = new HashMap();
 	Map methodToNTWriteSet = new HashMap();
 	int rwsetcount = 0;
+	NonLibNonTransactionEdgesPred nlntep;
 	TransitiveTargets tt;
 	Collection transactions;
 	
@@ -105,7 +106,8 @@ public class TransactionAwareSideEffectAnalysis {
 	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions ) {
 		this.pa = pa;
 		this.cg = cg;
-		this.tt = new TransitiveTargets( cg, new Filter(new NonLibraryEdgesPred()) );
+		this.nlntep = new NonLibNonTransactionEdgesPred(transactions);
+		this.tt = new TransitiveTargets( cg, new Filter(nlntep) );
 		this.transactions = transactions;
 		
 		sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
@@ -188,6 +190,7 @@ public class TransactionAwareSideEffectAnalysis {
 	
 	public RWSet readSet( SootMethod method, Stmt stmt ) {
 		RWSet ret = null;
+		nlntep.setExcludedMethod(method); // TODO: FIX: This may not be sufficient for recursion if there are multiple tns in this method.
 		Iterator targets = tt.iterator( stmt );
 		if(targets.hasNext())
 			G.v().out.println("STATEMENT: " + stmt.toString() + "\n**********");
