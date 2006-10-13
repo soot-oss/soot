@@ -374,7 +374,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         {
         	Transaction newTn = new Transaction((Stmt) unit, false, method, nestLevel + 1);
         	if(optionPrintDebug)
-        		G.v().out.println("Transaction found in method: " + tn.method.toString());
+        		G.v().out.println("Transaction found in method: " + newTn.method.toString());
 			out.add(new TransactionFlowPair(newTn, true));
 			Iterator prepUnitsIt = prepUnits.iterator();
 			while(prepUnitsIt.hasNext())
