@@ -23,8 +23,8 @@ import java.util.*;
 import soot.*;
 import soot.jimple.toolkits.callgraph.*;
 
-/** A predicate that accepts edges that are the result of an explicit invoke.
- * @author Ondrej Lhotak
+/** A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
+ * @author Richard L. Halpert
  */
 public class NonLibNonTransactionEdgesPred implements EdgePredicate
 {
