@@ -61,7 +61,7 @@ public class TransactionAwareSideEffectAnalysis {
 				while(tnIt.hasNext())
 				{
 					Transaction tn = (Transaction) tnIt.next();
-					if(tn.units.contains(s))
+					if(tn.units.contains(s) || tn.prepStmt == s)
 					{
 						ignore = true;
 						break;

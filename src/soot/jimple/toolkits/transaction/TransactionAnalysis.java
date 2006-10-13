@@ -12,32 +12,48 @@ import soot.toolkits.graph.*;
 public class TransactionAnalysis extends ForwardFlowAnalysis
 {
     FlowSet emptySet = new ArraySparseSet();
+
     Map unitToGenerateSet;
+
     Body body;
 	SootMethod method;
-    Transaction methodTn;
-	TransactionAwareSideEffectAnalysis tasea;
 	ExceptionalUnitGraph egraph;
+	LocalDefs sld;
+	LocalUses slu;
+	TransactionAwareSideEffectAnalysis tasea;
+	
+	List prepUnits;
+
+    Transaction methodTn;
+	
 	public boolean optionPrintDebug = true;
 
     TransactionAnalysis(UnitGraph graph, Body b)
 	{
 		super(graph);
-		
+
+		body = b;
+		method = body.getMethod();
+
 		if(graph instanceof ExceptionalUnitGraph)
 			egraph = (ExceptionalUnitGraph) graph;
 		else
-			egraph = null;
+			egraph = new ExceptionalUnitGraph(b);
+				
+		sld = new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph));
+		slu = new SimpleLocalUses(egraph, sld);
 		
-		body = b;
-		method = body.getMethod();
 		if( G.v().Union_factory == null ) {
 		    G.v().Union_factory = new UnionFactory() {
 			public Union newUnion() { return FullObjectSet.v(); }
 		    };
 		}
+		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null);
+    				
+    	prepUnits = new ArrayList();
+    	
 		methodTn = null;
 //		if(method.isSynchronized())
 //		{
@@ -93,21 +109,43 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		}
 */
 
-        // If this instruction is a monitorexit, then 
-        //     add a (null,emptylist) to the flowset
-        // If there is a (null,anylist) in the flowset, then 
-        //     add reads & writes to anylist
-        // If there is a (null,anylist) in the flowset and this instruction is 
-        //     a monitorenter, change (null, anylist) to (unit, anylist)
-        
+        // Determine if this statement is a preparatory statement for an
+        // upcoming transactional region. Such a statement would be a definition 
+        // which contains no invoke statement, and which corresponds only to 
+        // EnterMonitorStmt and ExitMonitorStmt uses.  In this case, the read
+        // set of this statement should not be considered part of the read set
+        // of any containing transaction
+        if(unit instanceof AssignStmt)
+        {
+	        boolean isPrep = true;
+        	Iterator uses = slu.getUsesOf((Unit) unit).iterator();
+        	if(!uses.hasNext())
+        		isPrep = false;
+        	while(uses.hasNext())
+        	{
+        		UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
+        		Unit useStmt = use.getUnit();
+        		if( !(useStmt instanceof EnterMonitorStmt) && !(useStmt instanceof ExitMonitorStmt) )
+        		{
+        			isPrep = false;
+        			break;
+        		}
+        	}
+        	if(isPrep)
+        	{
+        		prepUnits.add(unit);
+        		if(optionPrintDebug)
+        		{
+        			G.v().out.println("prep: " + unit.toString());
+        		}
+        		return;
+        	}
+        }
+                
+        // Determine if this statement is the start of a transaction
         boolean addSelf = (unit instanceof EnterMonitorStmt);
         
-        List epreds = null;
-    	if(egraph != null)
-    	{
-			epreds = egraph.getExceptionalPredsOf(unit);
-    	}
-
+		// Determine the level of transaction nesting of this statement
 		int nestLevel = 0;
         Iterator outIt0 = out.iterator();
         while(outIt0.hasNext())
@@ -116,7 +154,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             if(tfp.tn.nestLevel > nestLevel && tfp.inside == true)
             	nestLevel = tfp.tn.nestLevel;
         }
-        
+
 		// Process this unit's effect on each txn
         Iterator outIt = out.iterator();
         boolean printed = false;
@@ -124,52 +162,27 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         {
             TransactionFlowPair tfp = (TransactionFlowPair) outIt.next();
             Transaction tn = tfp.tn;
+            
+            // Check if we are revisting the start of this existing transaction
             if(tn.begin == (Stmt) unit)
             {
             	tfp.inside = true;
-            	addSelf = false;
+            	addSelf = false; // this transaction already exists...
             }
-/*
-            if(tfp.inside == true && tn.nestLevel == nestLevel + 1) // catch unreachable monitorexits
-            {
-            	if(epreds != null && epreds.contains(tn.begin))
-            	{
-            		boolean hasAllEnds = true;
-            		for(int i = 0; i < tn.ends.size(); i++)
-            		{
-            			if(!epreds.contains(tn.ends.get(i)))
-            				hasAllEnds = false;
-            		}
-            		List usuccs = egraph.getUnexceptionalSuccsOf(unit);
-            		if(usuccs.size() > 0 && hasAllEnds)
-  					{
-  						Unit Monitorexit = null;
-// 						G.v().out.print(" ***");
-  						for(int i = 0; i < epreds.size(); i++)
-  						{
-// 							G.v().out.print(" | " + epreds.get(i).toString());
-  							if(epreds.get(i) instanceof ExitMonitorStmt)
-  								Monitorexit = (Unit) epreds.get(i);
-  						}
-// 						G.v().out.print(" ***\n");
-  						if(Monitorexit != null)
-  						{
-            				// Mark this as end of this tn
-            				if(!tn.ends.contains(Monitorexit))
-        		    			tn.ends.add(Monitorexit);
-		            		tfp.inside = false;
-            			}
-  					}	
-            	}
-            }
-*/
+            
+            // Check if the statement is within this transaction
         	if(tfp.inside == true && tn.nestLevel == nestLevel)
         	{
-        		printed = true;
+        		printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
+        		
             	// Add this unit to the current transactional region
             	if(!tn.units.contains(unit))
 	            	tn.units.add(unit);
         		
+        		// Check what kind of statement this is
+        		// If it contains an invoke, save it for later processing as part of this transaction
+        		// If it is a monitorexit, mark that it's the end of the transaction
+        		// Otherwise, add it's read/write sets to the transaction's read/write sets
             	if(((Stmt) unit).containsInvokeExpr())
             	{
             		// Note if this unit is a call to wait() or notify()/notifyAll()
@@ -189,11 +202,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	            		if(optionPrintDebug)
 	            			G.v().out.print("{x,x} ");
 	            	}
-//	            	else if(InvokeSig.equals("java.lang.Class class$(java.lang.String)"))
-//	            	{
-//	            		if(optionPrintDebug)
-//	            			G.v().out.print("{x,x} ");
-//	            	}
 	            	else if(!tn.invokes.contains(unit))
 	            	{
 	            		// Mark this unit for later read/write set consideration
@@ -206,10 +214,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 							RWSet stmtRead = null;
 							RWSet stmtWrite = null;
 							Stmt stmt = (Stmt) unit;
-
-							UnitGraph g = new ExceptionalUnitGraph(body);
-							LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-
 
 			    			if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
 			    			{
@@ -324,7 +328,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	}
 				else
             	{
-            		// Add this unit's read and write sets to the "current" transactional region
+            		// Add this unit's read and write sets to this transactional region
 	               	RWSet stmtRead = tasea.readSet( method, (Stmt) unit );
 		           	RWSet stmtWrite = tasea.writeSet( method, (Stmt) unit );
 
@@ -355,6 +359,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         		}
 			}
         }
+        
 		// DEBUG output
 	    if(optionPrintDebug)
 		{
@@ -362,9 +367,32 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 				G.v().out.print("[-,-] ");
 			G.v().out.println(unit.toString());
 		}
-
+		
+		// If this statement was a monitorenter, and no transaction object yet exists for it,
+		// create one.
         if(addSelf)
-			out.add(new TransactionFlowPair(new Transaction((Stmt) unit, false, method, nestLevel + 1), true));
+        {
+        	Transaction newTn = new Transaction((Stmt) unit, false, method, nestLevel + 1);
+        	if(optionPrintDebug)
+        		G.v().out.println("Transaction found in method: " + tn.method.toString());
+			out.add(new TransactionFlowPair(newTn, true));
+			Iterator prepUnitsIt = prepUnits.iterator();
+			while(prepUnitsIt.hasNext())
+			{
+				Unit prepUnit = (Unit) prepUnitsIt.next();
+				
+				Iterator uses = slu.getUsesOf(prepUnit).iterator();
+	        	while(uses.hasNext())
+	        	{
+	        		UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
+	        		if(use.getUnit() == (Unit) unit)
+	        		{// if this transaction's monitorenter statement is one of the uses of this preparatory unit
+	        			newTn.prepStmt = (Stmt) prepUnit;
+	        		}
+	        	}
+
+			}
+		}
             	
 //		if(method.toString().equals("<Passenger: void run()>"))
 //		Iterator outIt2 = out.iterator();

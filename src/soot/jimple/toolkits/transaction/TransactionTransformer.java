@@ -457,7 +457,8 @@ public class TransactionTransformer extends SceneTransformer
 				Transaction tn = (Transaction) tnIt7.next();
 				G.v().out.println("[transaction-table] Transaction " + tn.name);
 				G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
-				G.v().out.println("[transaction-table] Begin: " + tn.begin.toString() + "  ");
+				G.v().out.println("[transaction-table] Prep : " + (tn.prepStmt == null ? "none" : tn.prepStmt.toString()));
+				G.v().out.println("[transaction-table] Begin: " + tn.begin.toString());
 				G.v().out.print("[transaction-table] End  : " + tn.ends.toString() + " \n");
 				G.v().out.println("[transaction-table] Size : " + tn.units.size());
 				if(tn.read.size() < 100)

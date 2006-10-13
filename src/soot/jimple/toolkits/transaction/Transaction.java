@@ -20,6 +20,7 @@ class Transaction
 	public CodeBlockRWSet read, write;
 	public HashSet invokes;
 	public HashSet units;
+	public Stmt prepStmt;
 	public boolean wholeMethod;
 	
 	// Information for analyzing conflicts with other transactions
@@ -40,6 +41,7 @@ class Transaction
 		this.write = new CodeBlockRWSet();
 		this.invokes = new HashSet();
 		this.units = new HashSet();
+		this.prepStmt = null;
 		this.wholeMethod = wholeMethod;
 		this.method = method;
 		this.setNumber = 0; // 0 = no group, -1 = DELETE
@@ -58,6 +60,7 @@ class Transaction
 		this.write = new CodeBlockRWSet(); this.write.union(tn.write);
 		this.invokes = (HashSet) tn.invokes.clone();
 		this.units = (HashSet) tn.units.clone();
+		this.prepStmt = tn.prepStmt;
 		this.wholeMethod = tn.wholeMethod;
 		this.method = tn.method;
 		this.setNumber = tn.setNumber;
