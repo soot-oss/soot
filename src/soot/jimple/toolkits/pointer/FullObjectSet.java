@@ -61,5 +61,12 @@ public class FullObjectSet extends Union {
 
     public Set possibleStringConstants() { return null; }
     public Set possibleClassConstants() { return null; }
+	
+    /**
+	 * {@inheritDoc}
+	 */
+	public int depth() {
+		return 0;
+	}
 }
 

@@ -53,6 +53,8 @@ public class MemoryEfficientRasUnion extends Union {
 	}
 
 	public boolean addAll(PointsToSet s) {
+		boolean result;
+		
 		if (subsets == null)
 			subsets = new HashSet();
 		if (s instanceof MemoryEfficientRasUnion) {
@@ -60,10 +62,15 @@ public class MemoryEfficientRasUnion extends Union {
 			if (meru.subsets == null || subsets.containsAll(meru.subsets)) {
 				return false;
 			}
-			return subsets.addAll(meru.subsets);
+			result = subsets.addAll(meru.subsets);
 		} else {
-			return subsets.add(s);
+			result = subsets.add(s);
 		}
+		
+		int depth = this.depth();
+		if(depth>Intersection.maxDepth) Intersection.maxDepth = depth;
+		
+		return result;
 	}
 
 	public Object clone() {
@@ -102,7 +109,6 @@ public class MemoryEfficientRasUnion extends Union {
 			return true;
 		if (obj == null)
 			return false;
-		//TODO could the following line become a problem?
 		if (getClass() != obj.getClass())
 			return false;
 		final MemoryEfficientRasUnion other = (MemoryEfficientRasUnion) obj;
@@ -120,4 +126,27 @@ public class MemoryEfficientRasUnion extends Union {
 	public String toString() {
 		return subsets.toString();
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int depth() {
+		int max = 0;
+		for (Iterator iter = subsets.iterator(); iter.hasNext();) {
+			int curr = 0;
+			
+			PointsToSet subset = (PointsToSet) iter.next();
+			if(subset instanceof MemoryEfficientRasUnion) {
+				MemoryEfficientRasUnion union = (MemoryEfficientRasUnion) subset;
+				curr = union.depth();
+			} else if(subset instanceof Intersection) {
+				Intersection intersection = (Intersection) subset;
+				curr = intersection.depth();
+			}
+			
+			if(curr>max) max = curr;
+		}
+		return max+1;
+	}
+	
 }

@@ -18,8 +18,9 @@
  */
 
 package soot.jimple.toolkits.pointer;
-import java.util.*;
-import soot.*;
+import java.util.Set;
+
+import soot.PointsToSet;
 
 /** A generic interface to some set of runtime objects computed by a pointer analysis. */
 public abstract class Union implements PointsToSet {
@@ -36,5 +37,8 @@ public abstract class Union implements PointsToSet {
     public Set possibleStringConstants() { return null; }
     public Set possibleClassConstants() { return null; }
 
+    //returns the maximal wrapping depth of this union
+    public abstract int depth();
+    
 }
 
