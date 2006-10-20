@@ -67,9 +67,6 @@ public class MemoryEfficientRasUnion extends Union {
 			result = subsets.add(s);
 		}
 		
-		int depth = this.depth();
-		if(depth>Intersection.maxDepth) Intersection.maxDepth = depth;
-		
 		return result;
 	}
 
@@ -127,26 +124,4 @@ public class MemoryEfficientRasUnion extends Union {
 		return subsets.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int depth() {
-		int max = 0;
-		for (Iterator iter = subsets.iterator(); iter.hasNext();) {
-			int curr = 0;
-			
-			PointsToSet subset = (PointsToSet) iter.next();
-			if(subset instanceof MemoryEfficientRasUnion) {
-				MemoryEfficientRasUnion union = (MemoryEfficientRasUnion) subset;
-				curr = union.depth();
-			} else if(subset instanceof Intersection) {
-				Intersection intersection = (Intersection) subset;
-				curr = intersection.depth();
-			}
-			
-			if(curr>max) max = curr;
-		}
-		return max+1;
-	}
-	
 }
