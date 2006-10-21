@@ -54,7 +54,10 @@ public abstract class ForwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         final Map numbers = new HashMap();
+        Timers.v().orderComputation = new soot.Timer();
+        Timers.v().orderComputation.start();
         List orderedUnits = constructOrderer().newList(graph,false);
+        Timers.v().orderComputation.end();
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
             final Object u = (Object) uIt.next();

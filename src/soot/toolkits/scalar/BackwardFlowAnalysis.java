@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import soot.Timers;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
@@ -63,7 +64,10 @@ public abstract class BackwardFlowAnalysis extends FlowAnalysis
     protected void doAnalysis()
     {
         final Map numbers = new HashMap();
+        Timers.v().orderComputation = new soot.Timer();
+        Timers.v().orderComputation.start();
         List orderedUnits = constructOrderer().newList(graph,false);
+        Timers.v().orderComputation.end();
         new PseudoTopologicalOrderer().newList(graph,false);
         int i = 1;
         for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
