@@ -141,7 +141,8 @@ public class Timers
 	public Timer locatorTimer = new soot.Timer();
 
 	public Timer readTimer = new soot.Timer();
-
+	
+	public Timer orderComputation = new soot.Timer("orderComputation");
 
     public void printProfilingInformation()
     {                                                   
