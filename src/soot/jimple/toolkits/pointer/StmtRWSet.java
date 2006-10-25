@@ -31,6 +31,26 @@ public class StmtRWSet extends RWSet {
         return "[Field: "+field+base+"]\n";
     }
 
+   	public int size()
+	{
+		Set globals = getGlobals();
+		Set fields = getFields();
+		if(globals == null)
+		{
+			if(fields == null)
+				return 0;
+			else
+				return fields.size();
+		}
+		else
+		{
+			if(fields == null)
+				return globals.size();
+			else
+				return globals.size() + fields.size();
+		}
+	}
+
     public boolean getCallsNative() {
 	return callsNative;
     }

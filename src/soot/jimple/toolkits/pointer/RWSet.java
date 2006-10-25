@@ -27,6 +27,7 @@ public abstract class RWSet {
     public abstract boolean setCallsNative();
 
     /** Returns an iterator over any globals read/written. */
+    public abstract int size();
     public abstract Set getGlobals();
     public abstract Set getFields();
     public abstract PointsToSet getBaseForField( Object f );

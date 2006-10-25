@@ -50,6 +50,24 @@ public class MethodRWSet extends RWSet {
         return ret.toString();
     }
 
+   	public int size()
+	{
+		if(globals == null)
+		{
+			if(fields == null)
+				return 0;
+			else
+				return fields.size();
+		}
+		else
+		{
+			if(fields == null)
+				return globals.size();
+			else
+				return globals.size() + fields.size();
+		}
+	}
+
     //static int count = 0;
     public MethodRWSet() {
         /*

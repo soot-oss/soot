@@ -131,7 +131,7 @@ public class TransactionTransformer extends SceneTransformer
     	{
     		Transaction tn1 = (Transaction) tnIt4.next();
 			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());//tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
-			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum);
+			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum) - 1;
     		tn1.name = "m" + (methodNum < 10? "00" : (methodNum < 100? "0" : "")) + methodNum + "n" + (tnNum < 10? "0" : "") + tnNum;
     	}
 		
@@ -194,7 +194,7 @@ public class TransactionTransformer extends SceneTransformer
     			RWSet stmtRead = null;
     			RWSet stmtWrite = null;
     			
-    			if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
     				{
@@ -215,8 +215,8 @@ public class TransactionTransformer extends SceneTransformer
     					tn.read.union(stmtRead);
     				}
     			}
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-					     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+					     (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
 				{
     				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
 					tn.read.union(stmtRead);
@@ -227,7 +227,7 @@ public class TransactionTransformer extends SceneTransformer
 	        		tn.read.union(stmtRead);
 	    		}
     			
-    			if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			if( tasea.sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
     				{
@@ -248,14 +248,14 @@ public class TransactionTransformer extends SceneTransformer
     					tn.write.union(stmtWrite);
     				}
     			}
-    			else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+    			else if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
 					tn.write.union(stmtWrite);
     			}
     			// add else ifs for every special case (specifically functions that write to args)
-    			else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-						 (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+						 (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
 				{
     				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
 					tn.write.union(stmtWrite);
@@ -266,13 +266,13 @@ public class TransactionTransformer extends SceneTransformer
 	        		tn.write.union(stmtWrite);
 	    		}
 	    		
-	    		if(stmtRead instanceof CodeBlockRWSet && ((CodeBlockRWSet) stmtRead).size() > 10)
+	    		if(stmtRead.size() > 10)
 	    		{
-	    			G.v().out.println("Huge Read Set: (" + ((CodeBlockRWSet) stmtRead).size() + ")" + stmt);
+	    			G.v().out.println("Huge Read Set: (" + stmtRead.size() + ")" + stmt);
 	    		}
-	    		if(stmtWrite instanceof CodeBlockRWSet && ((CodeBlockRWSet) stmtWrite).size() > 10)
+	    		if(stmtWrite.size() > 10)
 	    		{
-	    			G.v().out.println("Huge Write Set: (" + ((CodeBlockRWSet) stmtWrite).size() + ")" + stmt);
+	    			G.v().out.println("Huge Write Set: (" + stmtWrite.size() + ")" + stmt);
 	    		}
 	    	}
     	}

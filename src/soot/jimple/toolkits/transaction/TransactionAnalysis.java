@@ -228,7 +228,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			                        	if(next instanceof DefinitionStmt)
 										{
 					    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-			    							tn.read.union(stmtRead);
+//			    							tn.read.union(stmtRead);
 			    						}
 			    					}
 			    				}
@@ -236,7 +236,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			    				{
 			    					G.v().out.println("RG-,");
 				    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-			    					tn.read.union(stmtRead);
+//			    					tn.read.union(stmtRead);
 			    				}
 			    			}
 			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
@@ -244,13 +244,13 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 							{
 			    				G.v().out.println("RB-,");
 			    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-								tn.read.union(stmtRead);
+//								tn.read.union(stmtRead);
 							}
 							else
 							{
 			    				G.v().out.println("R--,");
 			            		stmtRead = tasea.readSet( tn.method, stmt );
-				        		tn.read.union(stmtRead);
+//				        		tn.read.union(stmtRead);
 				    		}
     			
 			    			if( tasea.sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
@@ -265,7 +265,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			                        	if(next instanceof DefinitionStmt)
 										{
 					    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-			    							tn.write.union(stmtWrite);
+//			    							tn.write.union(stmtWrite);
 			    						}
 			    					}
 			    				}
@@ -273,14 +273,14 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			    				{
 			    					G.v().out.println("WG-,");
 				    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-			    					tn.write.union(stmtWrite);
+//			    					tn.write.union(stmtWrite);
 			    				}
 			    			}
 			    			else if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
 			    			{
 			    				G.v().out.println("WB-,");
 			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-								tn.write.union(stmtWrite);
+//								tn.write.union(stmtWrite);
 			    			}
 			    			// add else ifs for every special case (specifically functions that write to args)
 			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
@@ -288,13 +288,13 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 							{
 			    				G.v().out.println("WB-,");
 			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-								tn.write.union(stmtWrite);
+//								tn.write.union(stmtWrite);
 							}
 							else
 							{
 			   					G.v().out.println("W--,");
 				            	stmtWrite = tasea.writeSet( tn.method, stmt );
-				        		tn.write.union(stmtWrite);
+//				        		tn.write.union(stmtWrite);
 				    		}
 
 			           		G.v().out.print("{");

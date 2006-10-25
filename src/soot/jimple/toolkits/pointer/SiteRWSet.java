@@ -26,7 +26,27 @@ public class SiteRWSet extends RWSet {
     protected HashSet sets = new HashSet();
     protected boolean callsNative = false;
 
-    public String toString() {
+   	public int size()
+	{
+		Set globals = getGlobals();
+		Set fields = getFields();
+		if(globals == null)
+		{
+			if(fields == null)
+				return 0;
+			else
+				return fields.size();
+		}
+		else
+		{
+			if(fields == null)
+				return globals.size();
+			else
+				return globals.size() + fields.size();
+		}
+	}
+
+public String toString() {
         boolean empty = true;
         final StringBuffer ret = new StringBuffer();
         ret.append("SiteRWSet: ");
