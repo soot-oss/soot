@@ -299,7 +299,8 @@ public class SootMethod
             throw new RuntimeException(
                 "cannot get active body for phantom class: " + getSignature());
 
-        if (!hasActiveBody())
+		// ignore empty body exceptions if we are just computing coffi metrics
+        if (!soot.jbco.Main.metrics && !hasActiveBody())
             throw new RuntimeException(
                 "no active body present for method " + getSignature());
 
@@ -344,7 +345,7 @@ public class SootMethod
             throw new RuntimeException(
                 "cannot set body for non-concrete method! " + this);
 
-        if (body.getMethod() != this)
+        if (body!= null && body.getMethod() != this)
             body.setMethod(this);
 
         activeBody = body;

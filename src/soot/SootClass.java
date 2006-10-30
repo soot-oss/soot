@@ -873,7 +873,10 @@ public class SootClass extends AbstractHost implements Numberable
     }
     
     private RefType refType;
-    void setRefType( RefType refType ) { this.refType = refType; }
+    
+    // made public for obfuscator..
+    public void setRefType( RefType refType ) { this.refType = refType; }
+    
     public boolean hasRefType() { return refType != null; }
     
     /** Returns the RefType corresponding to this class. */

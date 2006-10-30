@@ -85,7 +85,9 @@ public class CoffiMethodSource implements MethodSource
                     "]     Building Coffi CFG...");
 
              new soot.coffi.CFG(coffiMethod);
-
+             
+             // if just computing metrics, we don't need to actually return body
+             if (soot.jbco.Main.metrics) return null;
          }
 
          if(Options.v().verbose())

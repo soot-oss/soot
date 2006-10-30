@@ -86,8 +86,8 @@ public class CFG {
 	//	printInstructions();
 	//	printExceptionTable();
 
-	eliminateJsrRets();
-
+    eliminateJsrRets();
+    
 	//	printInstructions();
 	//	printExceptionTable();
 
@@ -105,7 +105,10 @@ public class CFG {
 	else
 	    firstInstruction = null;
 
-	/*	
+	// calculate complexity metrics
+    if (soot.jbco.Main.metrics) complexity();
+    
+    /*	
 	if (m.code_attr != null)
 	{
 	    for (int i=0; i<m.code_attr.attributes.length; i++)
@@ -134,6 +137,46 @@ public class CFG {
 	    G.v().out.println();
 	    b = b.next;
 	}
+    }
+    
+    public static HashMap methodsToVEM = new HashMap();
+    private void complexity() 
+    {
+      // ignore all non-app classes
+      if (!method.jmethod.getDeclaringClass().isApplicationClass()) return;
+      
+      BasicBlock b = this.cfg;
+      HashMap block2exc = new HashMap();
+      int tmp, nodes = 0, edges = 0, highest = 0;
+      
+      while (b != null) {
+        tmp = 0;
+        for (int i = 0; i < method.code_attr.exception_table.length; i++)
+        {
+          Instruction start = method.code_attr.exception_table[i].start_inst;
+          Instruction end = method.code_attr.exception_table[i].start_inst;
+          if ((start.label >= b.head.label && start.label <= b.tail.label) ||
+                (end.label > b.head.label && (b.tail.next == null || end.label <= b.tail.next.label)))
+            tmp++;
+        }
+        block2exc.put(b, new Integer(tmp));
+        b = b.next;
+      }
+      
+      b = this.cfg;
+      while ( b!= null )
+      {
+        nodes++;
+        tmp = b.succ.size() + ((Integer)block2exc.get(b)).intValue();
+        
+        // exceptions are not counted in succs and preds so we need to do so manually
+        int deg = b.pred.size() + tmp + (b.beginException ? 1 : 0);
+        if (deg > highest)
+          highest = deg;
+        edges += tmp;
+        b = b.next;
+      }
+      methodsToVEM.put(method.jmethod,new int[]{nodes, edges, highest});
     }
 
     private void printBBCFGPred()
@@ -1513,7 +1556,7 @@ public class CFG {
                 b = b.next;
             }
         }
-        */
+        */ 
 
         // Insert beginCatch/endCatch statements for exception handling
         {
@@ -1576,9 +1619,17 @@ public class CFG {
 			    Util.v().getLocalCreatingIfNecessary(listBody, "$stack0",UnknownType.v());
 			
 			newTarget = Jimple.v().newIdentityStmt(local, Jimple.v().newCaughtExceptionRef());
-			
-			units.insertBefore(newTarget, firstTargetStmt);
+
+			// changed to account for catch blocks which are also part of normal control flow
+            //units.insertBefore(newTarget, firstTargetStmt);			
+            ((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
+
 			targetToHandler.put(firstTargetStmt, newTarget);
+            if (units.getFirst()!=newTarget) {
+              Unit prev = (Unit)units.getPredOf(newTarget);
+              if (prev != null && prev.fallsThrough())
+                units.insertAfter(Jimple.v().newGotoStmt(firstTargetStmt), prev);
+            }
 		    }
 		}
 
