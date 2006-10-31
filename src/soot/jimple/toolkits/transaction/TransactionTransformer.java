@@ -24,8 +24,6 @@ public class TransactionTransformer extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
 	{
-//		G.v().out.println("TransactionTransformer");
-//    	CallGraph cg = Scene.v().getCallGraph();
     	Map methodToFlowSet = new HashMap();
 
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
@@ -41,7 +39,6 @@ public class TransactionTransformer extends SceneTransformer
     	    while (methodsIt.hasNext())
     	    {
     	    	SootMethod method = (SootMethod) methodsIt.next();
-//    	    	G.v().out.println(method.toString());
 				if(method.isConcrete())
 				{
 	    	    	Body b = method.retrieveActiveBody();
@@ -145,41 +142,6 @@ public class TransactionTransformer extends SceneTransformer
     				Scene.v().getCallGraph(), AllTransactions);
     	Iterator tnIt = AllTransactions.iterator();
 
-		Vector sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
-		// Math does not have any synchronization risks, we think :-)
-		sigBlacklist.add("<java.lang.Math: double abs(double)>");
-		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
-		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
-		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
-//		sigBlacklist.add("");
-
-		Vector sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
-		Vector sigWriteGraylist = new Vector();
-		// Vector is synchronized, so we will approximate its effects
-		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
-
-		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-		sigWriteGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
-
-		sigReadGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object clone()>");
-
-		sigReadGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-//		sigWriteGraylist.add("<java.util.Vector: java.lang.Object get(int)>");
-
-		sigReadGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-//		sigWriteGraylist.add("<java.util.Vector: java.util.List subList(int,int)>");
-
-		sigReadGraylist.add("<java.util.List: void clear()>");
-		sigWriteGraylist.add("<java.util.List: void clear()>");
-
-		Vector subSigBlacklist = new Vector(); // Subsignatures of methods on all objects known to have read/write sets of size 0
-		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
-		subSigBlacklist.add("void notify()");
-		subSigBlacklist.add("void notifyAll()");
-		subSigBlacklist.add("void wait()");
-//		subSigBlacklist.add("");
     	while(tnIt.hasNext())
     	{
     		Transaction tn = (Transaction) tnIt.next();
@@ -266,23 +228,25 @@ public class TransactionTransformer extends SceneTransformer
 	        		tn.write.union(stmtWrite);
 	    		}
 	    		
-	    		if(stmtRead.size() > 10)
+	    		if(stmtRead != null && stmtRead.size() > 10)
 	    		{
 	    			G.v().out.println("Huge Read Set: (" + stmtRead.size() + ")" + stmt);
 	    		}
-	    		if(stmtWrite.size() > 10)
+	    		if(stmtWrite != null && stmtWrite.size() > 10)
 	    		{
 	    			G.v().out.println("Huge Write Set: (" + stmtWrite.size() + ")" + stmt);
 	    		}
 	    	}
     	}
     	
-    	// *** Calculate locking scheme ***
+    	// *** Find Stray Reads/Writes *** (DISABLED)
     	
-    	// (1) add external data races as one-line transactions
+    	// add external data races as one-line transactions
     	// note that finding them isn't that hard (though it is time consuming)
     	// however, actually adding entermonitor & exitmonitor statements is rather complex... must deal with exception handling!
     	// For all methods, run the intraprocedural analysis (transaction finder)
+    	// Note that these will only be transformed if they are either added to
+    	// methodToFlowSet or if a loop and new body transformer are used for methodToStrayRWSet
 /*    	Map methodToStrayRWSet = new HashMap();
     	Iterator runRWFinderClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runRWFinderClassesIt.hasNext()) 
@@ -307,7 +271,9 @@ public class TransactionTransformer extends SceneTransformer
     	}
 */    	
     	
-    	// (2) Search for data dependencies between transactions, and split them into disjoint sets
+    	// *** Calculate locking scheme ***
+    	
+    	// Search for data dependencies between transactions, and split them into disjoint sets
     	int nextGroup = 1;
     	Iterator tnIt1 = AllTransactions.iterator();
     	while(tnIt1.hasNext())
@@ -342,11 +308,14 @@ public class TransactionTransformer extends SceneTransformer
 	    				continue;
 
 	    			// check if they're already marked as having an interference
+	    			// NOTE: this results in a sound grouping, but a badly 
+	    			//       incomplete dependency graph. If the dependency 
+	    			//       graph is to be analyzed, we cannot do this
 //	    			if(tn1.setNumber > 0 && tn1.setNumber == tn2.setNumber)
 //	    				continue;
 	    			
 	    			// check if these two transactions can't ever be in parallel
-	    			if(!mightBeInParallel(tn1, tn2))
+	    			if(!mayHappenInParallel(tn1, tn2))
 	    				continue;
 
 	    			// check for RW or WW data dependencies.
@@ -367,8 +336,8 @@ public class TransactionTransformer extends SceneTransformer
 //	    					size += tn1.read.intersection(tn2.write).size();
 	    				
 	    				// Record this 
-	    				tn1.edges.add(new DataDependency(tn2, size));
-//	    				tn2.edges.add(new DataDependency(tn1, size)); // will be added in opposite direction later
+	    				tn1.edges.add(new DataDependency(tn2, size, rw));
+//	    				tn2.edges.add(new DataDependency(tn1, size, rw)); // will be added in opposite direction later
 	    				
 	    				// if tn1 already is in a group
 	    				if(tn1.setNumber > 0)
@@ -414,7 +383,7 @@ public class TransactionTransformer extends SceneTransformer
 	    		// If, after comparing to all other transactions, we have no group:
 	    		if(tn1.setNumber == 0)
 	    		{
-	    			if(true) //mightBeInParallel(tn1, tn1))
+	    			if(true) //mayHappenInParallel(tn1, tn1))
 	    			{
 	    				tn1.setNumber = nextGroup;
 	    				nextGroup++;
@@ -426,7 +395,27 @@ public class TransactionTransformer extends SceneTransformer
 	    		}	    			
     		}
     	}
-    	    	
+    	
+    	// Create an array of RW sets, one for each transaction group
+    	// In each set, put the union of all RW Dependencies in the group
+    	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
+    	for(int i = 0; i < nextGroup - 1; i++)
+    		rws[i] = new CodeBlockRWSet();
+    	Iterator tnIt8 = AllTransactions.iterator();
+    	while(tnIt8.hasNext())
+    	{
+    		Transaction tn = (Transaction) tnIt8.next();
+    		Iterator EdgeIt = tn.edges.iterator();
+    		while(EdgeIt.hasNext())
+    		{
+    			DataDependency dd = (DataDependency) EdgeIt.next();
+	    		rws[tn.setNumber - 1].union(dd.rw);
+    		}
+    	}
+
+		// For each transaction group, if all RW Dependencies are fields of the same object, then that object should be used for synchronization
+
+
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
 		{
@@ -479,6 +468,15 @@ public class TransactionTransformer extends SceneTransformer
 					G.v().out.print(((DataDependency)tnedgeit.next()).other.name + " ");
 				G.v().out.println("\n[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
 			}
+			
+			G.v().out.print("[transaction-table] Group Summaries\n[transaction-table] ");
+			for(int i = 0; i < nextGroup - 1; i++)
+    		{
+    			G.v().out.print("Group" + (i + 1) + "\n[transaction-table] " + 
+    				rws[i].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
+					(rws[i].size() == 0 ? "\n[transaction-table] " : ""));
+	    	}
+			G.v().out.println("");
 		}
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
@@ -508,7 +506,7 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}
     
-    public static boolean mightBeInParallel(Transaction tn1, Transaction tn2)
+    public static boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
     {
     	String Thread2Fcns[] = {"rotary.Driver.run", "rotary.Driver.Think", "rotary.Car.getLocation", "rotary.RoadSegment.getCars", 								"rotary.RoadSegment.getPhysicalLocation", "rotary.CollisionDetector.addCollision", 									"rotary.Car.destroy", "rotary.RoadSegment.removeCar", "rotary.StateActionHistory.add",
     							"rotary.ReinforcementLearner.registerHistory", "rotary.StateActionHistory.size", "rotary.StateActionHistory.get", 
@@ -551,12 +549,12 @@ public class TransactionTransformer extends SceneTransformer
     
     public static boolean contains(String strings[], String string)
     {
-    	boolean retval = false;
     	for(int i = 0; i < strings.length; i++)
     	{
     		if(strings[i].equals(string))
-    			retval = true;
+    			return true;
     	}
-    	return retval;
+    	return false;
     }
 }
+7
