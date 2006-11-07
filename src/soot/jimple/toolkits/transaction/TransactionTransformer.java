@@ -414,7 +414,7 @@ public class TransactionTransformer extends SceneTransformer
     	}
 
 		// For each transaction group, if all RW Dependencies are fields of the same object, then that object should be used for synchronization
-
+		
 
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
