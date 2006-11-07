@@ -55,11 +55,47 @@ public class JimpleConstructorFolder extends BodyTransformer
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
+        // Pre-pass to work around bug found by Eric Bodden: there may
+        // be stuff in between the new and the invokespecial that assigns
+        // the new object to another variable. Workaround is to move
+        // such things to after the invokespecial.
+
         Chain units = body.getUnits();
         List stmtList = new ArrayList();
         stmtList.addAll(units);
 
+        Stmt prev = null;
+        Stmt curr = null;
         Iterator it = stmtList.iterator();
+        while(it.hasNext()) {
+            prev = (Stmt) curr;
+            curr = (Stmt) it.next();
+
+            if(prev == null) continue;
+            if(!(prev instanceof AssignStmt)) continue;
+            AssignStmt as = (AssignStmt) prev;
+            Value lhs = as.getLeftOp();
+            Value rhs = as.getRightOp();
+            if(!(lhs instanceof Local)) continue;
+            if(!(rhs instanceof Local)) continue;
+            if(!(curr instanceof InvokeStmt)) continue;
+            InvokeStmt is = (InvokeStmt) curr;
+            InvokeExpr expr = is.getInvokeExpr();
+            if(!(expr instanceof SpecialInvokeExpr)) continue;
+            SpecialInvokeExpr sie = (SpecialInvokeExpr) expr;
+            if(!sie.getMethodRef().name().equals(SootMethod.constructorName))
+                    continue;
+            if(!sie.getBase().equals(rhs)) continue;
+
+            // OK, found a match; swap them
+            units.remove(prev);
+            units.insertAfter(prev, curr);
+        }
+
+        stmtList = new ArrayList();
+        stmtList.addAll(units);
+
+        it = stmtList.iterator();
         Iterator nextStmtIt = stmtList.iterator();
         // start ahead one
         nextStmtIt.next();
