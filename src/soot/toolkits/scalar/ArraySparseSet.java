@@ -40,11 +40,11 @@ import java.util.*;
  */
 public class ArraySparseSet extends AbstractFlowSet
 {
-    static final int DEFAULT_SIZE = 8; 
+	protected static final int DEFAULT_SIZE = 8; 
     
-    int numElements;
-    int maxElements;
-    Object[] elements;
+    protected int numElements;
+    protected int maxElements;
+    protected Object[] elements;
 
     public ArraySparseSet()
     {
