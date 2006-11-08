@@ -349,7 +349,8 @@ public class PackManager {
     }
     
     public void coffiMetrics() {
-      int tV = 0, tE = 0, aM = 0, hM = 0;
+      int tV = 0, tE = 0, hM = 0;
+      double aM = 0;
       HashMap hashVem = soot.coffi.CFG.methodsToVEM;
       Iterator it = hashVem.keySet().iterator();
       while (it.hasNext()) {
