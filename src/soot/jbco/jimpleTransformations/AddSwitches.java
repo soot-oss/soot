@@ -107,6 +107,8 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     if (zeroheight.size()<3) return;
     
+    if (b.getMethod().getName().indexOf("mutateGene")>=0)
+      out.println();
     int idx = 0;
     Unit u = null;
     for (int i = 0; i < zeroheight.size(); i++)

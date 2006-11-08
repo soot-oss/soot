@@ -33,7 +33,7 @@ import soot.toolkits.exceptions.TrapTightener;
  */
 public class Main {
 
-  public static boolean jbcoDebug = true;
+  public static boolean jbcoDebug = false;
   public static boolean jbcoSummary = true;
   public static boolean jbcoVerbose = false;
   public static boolean metrics = false;
@@ -52,10 +52,7 @@ public class Main {
 
   
   public static void main(String[] argv)
-  {
-    for (int xx = 0; xx < argv.length; xx++)
-      G.v().out.println(argv[xx]);
-    
+  { 
     int rcount = 0;
     Vector transformsToAdd = new Vector();
     boolean remove[] = new boolean[argv.length];
@@ -66,8 +63,14 @@ public class Main {
         System.out.println("\t-jbco:help     -  print this help message.");
         System.out.println("\t-jbco:verbose  -  print extra information during obfuscation.");
         System.out.println("\t-jbco:silent   -  turn off all output, including summary information.");
-        System.out.println("\t-jbco:metrics  -  calculate total vertices and edges; calculate avg. and highest graph degrees.");
-        System.out.println("\t-jbco:debug    -  turn on extra debugging like stack height and type verifier.\n\nTransformations");
+        System.out.println("\t-jbco:metrics  -  calculate total vertices and edges;\n" +
+                           "\t                  calculate avg. and highest graph degrees.");
+        System.out.println("\t-jbco:debug    -  turn on extra debugging like\n" +
+                           "\t                  stack height and type verifier.\n\nTransformations ( -t:[W:]<name>[:pattern] )\n" +
+                           "\tW              -  specify obfuscation weight (0-9)\n" +
+                           "\t<name>         -  name of obfuscation (from list below)\n" +
+                           "\tpattern        -  limit to method names matched by pattern\n" +
+                           "\t                  prepend * to pattern if a regex\n" );
         
         for (int j = 0; j < optionStrings[0].length; j++) {
           String line = "\t"+optionStrings[1][j];

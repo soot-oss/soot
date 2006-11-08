@@ -122,7 +122,11 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
         Constant c = (Constant) cit.next();
         
         name += "_";
-        SootClass rand = (SootClass)classes[Rand.getInt(classes.length)];
+        SootClass rand = null;
+        do {
+          rand = (SootClass)classes[Rand.getInt(classes.length)];
+        } while (rand.isInterface());
+        
         SootField newf = new SootField(FieldRenamer.getNewName(), t, Modifier.STATIC
               ^ Modifier.PUBLIC);
         rand.addField(newf);

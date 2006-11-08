@@ -136,21 +136,20 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     // add goto as FIRST unit to point to new chunk location    
     if (first instanceof GotoStmt) {
       oldFirst = ((GotoStmt)first).getTargetBox().getUnit();
-      first = Jimple.v().newGotoStmt(((GotoStmt)first).getTargetBox());
+      first = Jimple.v().newGotoStmt(((GotoStmt)first).getTargetBox().getUnit());
     } else
       first = Jimple.v().newGotoStmt(first);
     units.insertBeforeNoRedirect(first,u);
-    
+
     // add goto as LAST unit to point to new position of second chunk
     if (((Unit)units.getLast()).fallsThrough()) {
       Stmt gtS = null;
       if (u instanceof GotoStmt)
-        gtS = Jimple.v().newGotoStmt(((GotoStmt)u).getTargetBox());
+        gtS = Jimple.v().newGotoStmt(((GotoStmt)u).getTargetBox().getUnit());
       else
         gtS = Jimple.v().newGotoStmt(u);
     
       units.add(gtS);
-      u.addBoxPointingToThis(Jimple.v().newStmtBox(gtS));
     }
     
     RefType throwable = G.v().soot_Scene().getRefType("java.lang.Throwable");

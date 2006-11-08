@@ -116,12 +116,22 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     while (traps.hasNext()) {
       Trap t = (Trap) traps.next();
       Unit begUnit = t.getBeginUnit();
-      //Unit endUnit = t.getEndUnit();
       if (!isRewritable(t) || Rand.getInt(10) > weight)
         continue;
       
       stackHeightsBefore = StackTypeHeightCalculator.calculateStackHeights(b,bafToJLocals);
-
+      boolean badType = false;
+      Stack s = (Stack)((Stack)stackHeightsBefore.get(begUnit)).clone();
+      if (s.size() > 0) {
+        for (int i = 0; i < s.size(); i++) {
+          if (s.pop() instanceof StmtAddressType) {
+            badType = true;
+            break;
+          }
+        }
+      }
+      if (badType) continue;
+      
       // local to hold control flow flag (0=try, 1=catch)
       Local controlLocal = Baf.v().newLocal("controlLocal_tccomb" + trapCount,
           IntType.v());
@@ -143,7 +153,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.add(storZero);
       
       Stack varsToLoad = new Stack();
-      Stack s = (Stack)stackHeightsBefore.get(begUnit);
+      s = (Stack)stackHeightsBefore.get(begUnit);
       if (s.size() > 0) {
         for (int i = 0; i < s.size(); i++) {
           Type type = (Type)s.pop();          
