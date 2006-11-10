@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2004 Jennifer Lhotak
+ * Copyright (C) 2006 Ondrej Lhotak
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -42,141 +42,222 @@ import soot.tagkit.*;
 
 public class JimpleConstructorFolder extends BodyTransformer
 {
-    //public JimpleConstructorFolder( Singletons.Global g ) {}
-    //public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
+    static boolean isNew(Stmt s) {
+        if(!(s instanceof AssignStmt)) return false;
+        if(!(rhs(s) instanceof NewExpr)) return false;
+        return true;
+    }
+    static boolean isConstructor(Stmt s) {
+        if(!(s instanceof InvokeStmt)) return false;
+        InvokeStmt is = (InvokeStmt) s;
+        InvokeExpr expr = is.getInvokeExpr();
+        if(!(expr instanceof SpecialInvokeExpr)) return false;
+        SpecialInvokeExpr sie = (SpecialInvokeExpr) expr;
+        if(!sie.getMethodRef().name().equals(SootMethod.constructorName))
+                return false;
+        return true;
+    }
+    static Local base(Stmt s) {
+        InvokeStmt is = (InvokeStmt) s;
+        InstanceInvokeExpr expr = (InstanceInvokeExpr) is.getInvokeExpr();
+        return (Local) expr.getBase();
+    }
+    static void setBase(Stmt s, Local l) {
+        InvokeStmt is = (InvokeStmt) s;
+        InstanceInvokeExpr expr = (InstanceInvokeExpr) is.getInvokeExpr();
+        expr.getBaseBox().setValue(l);
+    }
+    static boolean isCopy(Stmt s) {
+        if(!(s instanceof AssignStmt)) return false;
+        if(!(rhs(s) instanceof Local)) return false;
+        if(!(lhs(s) instanceof Local)) return false;
+        return true;
+    }
+    static Value rhs(Stmt s) {
+        AssignStmt as = (AssignStmt) s;
+        return as.getRightOp();
+    }
+    static Value lhs(Stmt s) {
+        AssignStmt as = (AssignStmt) s;
+        return as.getLeftOp();
+    }
+    static Local rhsLocal(Stmt s) { return (Local) rhs(s); }
+    static Local lhsLocal(Stmt s) { return (Local) lhs(s); }
+    private class Fact {
+        private Map varToStmt = new HashMap();
+        private MultiMap stmtToVar = new HashMultiMap();
+        private Stmt alloc = null;
+        public void add(Local l, Stmt s) {
+            varToStmt.put(l, s);
+            stmtToVar.put(s, l);
+        }
+        public Stmt get(Local l) {
+            return (Stmt) varToStmt.get(l);
+        }
+        public Set get(Stmt s) {
+            return stmtToVar.get(s);
+        }
+        public void removeAll(Stmt s) {
+            for(Iterator it = stmtToVar.get(s).iterator(); it.hasNext();) {
+                final Local var = (Local) it.next();
+                varToStmt.remove(var);
+            }
+            stmtToVar.remove(s);
+        }
+        public void copyFrom(Fact in) {
+            varToStmt = new HashMap(in.varToStmt);
+            stmtToVar = new HashMultiMap(in.stmtToVar);
+            alloc = in.alloc;
+        }
+        public void mergeFrom(Fact in1, Fact in2) {
+            varToStmt = new HashMap();
+            Iterator it = in1.varToStmt.keySet().iterator();
+            while(it.hasNext()) {
+                Local l = (Local) it.next();
+                Stmt newStmt = (Stmt) in1.varToStmt.get(l);
+                if(in2.varToStmt.containsKey(l)) {
+                    Stmt newStmt2 = (Stmt) in2.varToStmt.get(l);
+                    if(!newStmt.equals(newStmt2)) {
+                        throw new RuntimeException("Merge of different uninitialized values; are you sure this bytecode is verifiable?");
+                    }
+                }
+                add(l, newStmt);
+            }
+            it = in2.varToStmt.keySet().iterator();
+            while(it.hasNext()) {
+                Local l = (Local) it.next();
+                Stmt newStmt = (Stmt) in2.varToStmt.get(l);
+                add(l, newStmt);
+            }
+            if(in1.alloc != null && in1.alloc.equals(in2.alloc)) {
+                alloc = in1.alloc;
+            } else {
+                alloc = null;
+            }
+        }
+        public boolean equals(Object other) {
+            if(!(other instanceof Fact)) return false;
+            Fact o = (Fact) other;
+            if(!stmtToVar.equals(o.stmtToVar)) return false;
+            if(alloc == null && o.alloc != null) return false;
+            if(alloc != null && o.alloc == null) return false;
+            if(alloc != null && !alloc.equals(o.alloc)) return false;
+            return true;
+        }
+        public Stmt alloc() { return alloc; }
+        public void setAlloc(Stmt newAlloc) { alloc = newAlloc; }
+    }
+    private class Analysis extends ForwardFlowAnalysis {
+        public Analysis(DirectedGraph graph) {
+            super(graph);
+            doAnalysis();
+        }
+        protected Object entryInitialFlow() {
+            return new Fact();
+        }
+        protected Object newInitialFlow() {
+            return new Fact();
+        }
+        public void flowThrough(Object inFact, Object unit, Object outFact) {
+            Stmt s = (Stmt) unit;
+            Fact in = (Fact) inFact;
+            Fact out = (Fact) outFact;
 
+            copy(in, out);
+            out.setAlloc(null);
+
+            if(isNew(s)) {
+                out.add(lhsLocal(s), s);
+            } else if(isCopy(s)) {
+                Stmt newStmt = out.get(rhsLocal(s));
+                if(newStmt != null) out.add(lhsLocal(s), newStmt);
+            } else if(isConstructor(s)) {
+                Stmt newStmt = out.get(base(s));
+                if(newStmt != null) {
+                    out.removeAll(newStmt);
+                    out.setAlloc(newStmt);
+                }
+            }
+        }
+        public void copy(Object source, Object dest) {
+            ((Fact) dest).copyFrom((Fact) source);
+        }
+        public void merge(Object in1, Object in2, Object out) {
+            ((Fact) out).mergeFrom((Fact) in1, (Fact) in2);
+        }
+    }
     /** This method pushes all newExpr down to be the stmt directly before every
      * invoke of the init */
     public void internalTransform(Body b, String phaseName, Map options)
     {
         JimpleBody body = (JimpleBody)b;
 
+        //PhaseDumper.v().dumpBody(body, "constructorfolder.in");
+
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
-        // Pre-pass to work around bug found by Eric Bodden: there may
-        // be stuff in between the new and the invokespecial that assigns
-        // the new object to another variable. Workaround is to move
-        // such things to after the invokespecial.
+        Analysis analysis = new Analysis(new BriefUnitGraph(body));
 
         Chain units = body.getUnits();
         List stmtList = new ArrayList();
         stmtList.addAll(units);
 
-        Stmt prev = null;
-        Stmt curr = null;
-        Iterator it = stmtList.iterator();
+        Iterator it;
+        it = stmtList.iterator();
         while(it.hasNext()) {
-            prev = (Stmt) curr;
-            curr = (Stmt) it.next();
-
-            if(prev == null) continue;
-            if(!(prev instanceof AssignStmt)) continue;
-            AssignStmt as = (AssignStmt) prev;
-            Value lhs = as.getLeftOp();
-            Value rhs = as.getRightOp();
-            if(!(lhs instanceof Local)) continue;
-            if(!(rhs instanceof Local)) continue;
-            if(!(curr instanceof InvokeStmt)) continue;
-            InvokeStmt is = (InvokeStmt) curr;
-            InvokeExpr expr = is.getInvokeExpr();
-            if(!(expr instanceof SpecialInvokeExpr)) continue;
-            SpecialInvokeExpr sie = (SpecialInvokeExpr) expr;
-            if(!sie.getMethodRef().name().equals(SootMethod.constructorName))
-                    continue;
-            if(!sie.getBase().equals(rhs)) continue;
-
-            // OK, found a match; swap them
-            units.remove(prev);
-            units.insertAfter(prev, curr);
+            Stmt s = (Stmt) it.next();
+            if(isCopy(s)) continue;
+            if(isConstructor(s)) continue;
+            Fact before = (Fact) analysis.getFlowBefore(s);
+            Iterator usesIt = s.getUseBoxes().iterator();
+            while(usesIt.hasNext()) {
+                ValueBox usebox = (ValueBox) usesIt.next();
+                Value value = usebox.getValue();
+                if(!(value instanceof Local)) continue;
+                Local local = (Local) value;
+                if(before.get(local) != null)
+                    throw new RuntimeException("Use of an unitialized value "
+                            +"before constructor call; are you sure this "
+                            +"bytecode is verifiable?\n"+s);
+            }
         }
 
-        stmtList = new ArrayList();
-        stmtList.addAll(units);
+        // throw out all new statements
+        it = stmtList.iterator();
+        while(it.hasNext()) {
+            Stmt s = (Stmt) it.next();
+            if(isNew(s)) {
+                units.remove(s);
+            }
+        }
 
         it = stmtList.iterator();
-        Iterator nextStmtIt = stmtList.iterator();
-        // start ahead one
-        nextStmtIt.next();
-        
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-        
-        LocalDefs localDefs = new SmartLocalDefs( graph, new SimpleLiveLocals(graph));
-        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+        while(it.hasNext()) {
+            Stmt s = (Stmt) it.next();
+            Fact before = (Fact) analysis.getFlowBefore(s);
+            Fact after = (Fact) analysis.getFlowAfter(s);
 
-        /* fold in NewExpr's with specialinvoke's */
-        while (it.hasNext())
-        {
-            Stmt s = (Stmt)it.next();
-            
-            if (!(s instanceof AssignStmt))
-                continue;
-            
-            /* this should be generalized to ArrayRefs */
-            // only deal with stmts that are an local = newExpr
-            Value lhs = ((AssignStmt)s).getLeftOp();
-            if (!(lhs instanceof Local))
-                continue;
-            
-            Value rhs = ((AssignStmt)s).getRightOp();
-            if (!(rhs instanceof NewExpr))
-                continue;
+            // throw out copies of uninitialized variables
+            if(isCopy(s)) {
+                Stmt newStmt = before.get(rhsLocal(s));
+                if(newStmt != null) units.remove(s);
+            } else if(after.alloc() != null) {
+                // insert the new just before the constructor
+                Stmt newStmt = before.get(base(s));
+                setBase(s, lhsLocal(newStmt));
+                units.insertBefore(newStmt, s);
 
-            
-            //check if very next statement is invoke -->
-            //this indicates there is no control flow between
-            //new and invoke and should do nothing
-            if (nextStmtIt.hasNext()){
-                Stmt next = (Stmt)nextStmtIt.next();
-                if (next instanceof InvokeStmt){
-                    InvokeStmt invoke = (InvokeStmt)next;
-                
-                    if (invoke.getInvokeExpr() instanceof SpecialInvokeExpr &&
-			invoke.getInvokeExpr().getMethodRef().name().equals(SootMethod.constructorName)) {
-                        SpecialInvokeExpr invokeExpr = (SpecialInvokeExpr)invoke.getInvokeExpr();
-                        if (invokeExpr.getBase() == lhs){
-                            continue;
-                        }
-                    }
+                // add necessary copies
+                Iterator copyIt = before.get(newStmt).iterator();
+                while(copyIt.hasNext()) {
+                    Local l = (Local) copyIt.next();
+                    if(l.equals(base(s))) continue;
+                    units.insertAfter(Jimple.v().newAssignStmt(l, base(s)), s);
                 }
             }
-            
-            List lu = localUses.getUsesOf((DefinitionStmt)s);
-            Iterator luIter = lu.iterator();
-            boolean MadeNewInvokeExpr = false;
-          
-            while (luIter.hasNext())
-            {
-                Unit use = ((UnitValueBoxPair)(luIter.next())).unit;
-                if (!(use instanceof InvokeStmt))
-                    continue;
-                InvokeStmt is = (InvokeStmt)use;
-                if (!(is.getInvokeExpr() instanceof SpecialInvokeExpr) ||
-		    !(is.getInvokeExpr().getMethodRef().name().equals(SootMethod.constructorName)) ||
-                  lhs != ((SpecialInvokeExpr)is.getInvokeExpr()).getBase())
-                    continue;
-              
-             //make a new one here 
-              AssignStmt constructStmt = Jimple.v().newAssignStmt
-                (((DefinitionStmt)s).getLeftOp(), ((DefinitionStmt)s).getRightOp());
-              constructStmt.setRightOp
-                (Jimple.v().newNewExpr
-                 (((NewExpr)rhs).getBaseType()));
-              MadeNewInvokeExpr = true;
-              
-              // redirect jumps
-              use.redirectJumpsToThisTo(constructStmt);
-              // insert new one here
-              units.insertBefore(constructStmt, use);
-              if (s.hasTag("SourceLnPosTag")){
-                constructStmt.addTag((SourceLnPosTag)s.getTag("SourceLnPosTag"));
-              }
-            }
-          if (MadeNewInvokeExpr)
-            {
-              units.remove(s);
-            }
         }
+        //PhaseDumper.v().dumpBody(body, "constructorfolder.out");
     }  
 }
