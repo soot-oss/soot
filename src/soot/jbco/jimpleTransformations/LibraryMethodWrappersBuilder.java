@@ -69,7 +69,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     while (it.hasNext()) {
       SootClass c = (SootClass) it.next();
         
-      if (output) G.v().out.println("\r\tProcessing " + c.getName()+"\r");
+      if (output) out.println("\r\tProcessing " + c.getName()+"\r");
 
       List mList = c.getMethods();
       for (int midx = 0; midx < mList.size(); midx++) {
@@ -120,7 +120,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
             if (sm.getName().endsWith("init>") || !dc.isLibraryClass())
               continue;
 
-            if (output) G.v().out.print("\t\t\tChanging " + sm.getSignature());
+            if (output) out.print("\t\t\tChanging " + sm.getSignature());
             
             SootMethodRef smr = getNewMethodRef(dc, sm);
             if (smr == null) {
@@ -135,7 +135,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
             if (smr == null)
               continue;
 
-            if (output) G.v().out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
+            if (output) out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
             
             List args = ie.getArgs();
             List parms = smr.parameterTypes();
@@ -268,16 +268,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
       }
     } while (similarM != null);
 
-    //G.v().out.println(" PARAMTYPES " + sm.getParameterTypes() + "   new:"
-    //    + smParamTypes);
-    // make new methods static and public so they are always accessible
-    //G.v().out.println("\tOriginal Method is: "
-    //    + Modifier.toString(sm.getModifiers()));
-
     int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC)
         & (Modifier.ABSTRACT ^ 0xFFFF)) & (Modifier.NATIVE ^ 0xFFFF)) 
         & (Modifier.SYNCHRONIZED ^ 0xFFFF));
-    //System.out.println(newName + " is " + Modifier.toString(mods));
     SootMethod newMethod = new SootMethod(newName, smParamTypes, sm
         .getReturnType(), mods);
     randClass.addMethod(newMethod);
@@ -317,7 +310,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
       out.println("\r"+sm.getName()+" was replaced by \r\t"+newMethod.getName()+" which calls \r\t\t"+ie);
 
     if (units.size()<2) 
-      System.out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD "+units);
+      out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD "+units);
     
     builtByMe.add(newMethod);
     

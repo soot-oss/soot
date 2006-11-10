@@ -139,7 +139,6 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
                 {
                   rt.setSootClass((SootClass)newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
                   rt.setClassName((String)oldToNewClassNames.get(rt.getClassName()));
-                  //G.v().out.println("\t\tSet class to: " + rt.getClassName());
                 }
               }
               else if (v.getType() instanceof ArrayType)

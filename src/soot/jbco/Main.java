@@ -222,11 +222,6 @@ public class Main {
           bb.insertBefore(new Transform("bb.jbco_ful",newTransform((Transformer)getTransform("bb.jbco_ful"))), "bb.lso");
           bb.add(new Transform("bb.jbco_rrps",newTransform((Transformer)getTransform("bb.jbco_rrps"))));
           
-          // tmp tmp tmp
-          //bb.insertBefore(new Transform("bb.printout",newTransform((Transformer)getTransform("bb.printout"))), "bb.lso");
-          //bb.add(new Transform("bb.printoutx",newTransform((Transformer)getTransform("bb.printout"))));
-          // end tmp 
-          
           break;
         }
       }
