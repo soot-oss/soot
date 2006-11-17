@@ -26,7 +26,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 
     Transaction methodTn;
 	
-	public boolean optionPrintDebug = true;
+	public boolean optionPrintDebug = false;
 
     TransactionAnalysis(UnitGraph graph, Body b)
 	{

@@ -6,8 +6,13 @@ import soot.*;
 import soot.util.Chain;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
+import soot.toolkits.mhp.*;
+import soot.toolkits.mhp.pegcallgraph.*;
+import soot.toolkits.mhp.findobject.*;
 import soot.tagkit.LineNumberTag;
 
 public class TransactionTransformer extends SceneTransformer
@@ -28,7 +33,7 @@ public class TransactionTransformer extends SceneTransformer
 
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
-		optionPrintDebug = true;//PhaseOptions.getBoolean( options, "print-debug" );
+		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
 		
     	// For all methods, run the intraprocedural analysis (transaction finder)
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -230,11 +235,13 @@ public class TransactionTransformer extends SceneTransformer
 	    		
 	    		if(stmtRead != null && stmtRead.size() > 10)
 	    		{
-	    			G.v().out.println("Huge Read Set: (" + stmtRead.size() + ")" + stmt);
+	    			if(optionPrintDebug)
+	    				G.v().out.println("Huge Read Set: (" + stmtRead.size() + ")" + stmt);
 	    		}
 	    		if(stmtWrite != null && stmtWrite.size() > 10)
 	    		{
-	    			G.v().out.println("Huge Write Set: (" + stmtWrite.size() + ")" + stmt);
+	    			if(optionPrintDebug)
+	    				G.v().out.println("Huge Write Set: (" + stmtWrite.size() + ")" + stmt);
 	    		}
 	    	}
     	}
@@ -270,7 +277,57 @@ public class TransactionTransformer extends SceneTransformer
     	    }
     	}
 */    	
-    	
+
+		// *** Get Parallel Execution Call Graph ***
+/*		SootMethod mainMethod= Scene.v().getMainClass().getMethodByName("main");
+		Body mainBody = mainMethod.retrieveActiveBody();
+		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
+		if (!(pta instanceof PAG))
+		{
+		   System.err.println("You must use Spark for points-to analysis when computing MHP information (for wjtp.tn)!");
+		   System.exit(1);
+		}
+		CallGraph callGraph = Scene.v().getCallGraph();
+
+	    Arguments.setHierarchy(Scene.v().getActiveHierarchy());
+		Arguments.setCallGraph(callGraph);
+		Arguments.setPag((PAG) pta);
+		Arguments.setInlineSites(new ArrayList());
+		Arguments.setSynchObj(new HashMap());
+		Arguments.setAllocNodeToObj(new HashMap());
+		Arguments.setInlineSites(new ArrayList());
+
+		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
+		PegCallGraph pecg = new PegCallGraph(callGraph); // uses nothing, stores nothing
+		System.out.println("1 Built PegCallGraph");
+
+	  	MethodExtentBuilder meb = new MethodExtentBuilder(mainBody, pecg, callGraph);     
+		Arguments.setMethodNeedExtent(meb.getMethodNeedExtent());
+		System.out.println("2 Found Inlinable Methods");
+	      	
+		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph); // uses Arguments.pag, stores Arguments.allocNodes and Arguments.multiObjAllocNodes
+		System.out.println("3 Found MultiObjAllocNodes");
+		
+		PegGraph pegGraph = new PegGraph(mainBody, mainMethod, true,  false); // uses Arguments.callGraph, Arguments.heirarchy, Arguments.pag, Arguments.allocNodes
+		System.out.println("4 Built PEG");									  // and Arguments.methodNeedExtent (optional), Arguments.synchObj (and stores), 
+
+		MethodInliner.inline(Arguments.getInlineSites());
+		System.out.println("5 Performed (Logical) Inlining");
+
+		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
+		System.out.println("6 Found Synchronized Regions");
+
+//		CompactStronglyConnectedComponents cscc = new CompactStronglyConnectedComponents(pegGraph);
+//		System.out.println("7 Compacted Strongly Connected Components");
+
+        CompactSequentNodes csn = new CompactSequentNodes(pegGraph);
+		System.out.println("8 Compacted Sequent Nodes");
+
+//		MhpAnalysis mhpAnalysisAfter = new MhpAnalysis(pegGraph); 
+
+		PegToDotFile printer = new PegToDotFile(pegGraph, false, "main");
+		System.out.println("9 Printed PEG to Dot File");
+*/    	
     	// *** Calculate locking scheme ***
     	
     	// Search for data dependencies between transactions, and split them into disjoint sets

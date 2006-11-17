@@ -192,8 +192,8 @@ public class TransactionAwareSideEffectAnalysis {
 		RWSet ret = null;
 		nlntep.setExcludedMethod(method); // TODO: FIX: This may not be sufficient for recursion if there are multiple tns in this method.
 		Iterator targets = tt.iterator( stmt );
-		if(targets.hasNext())
-			G.v().out.println("STATEMENT: " + stmt.toString() + "\n**********");
+//		if(targets.hasNext())
+//			G.v().out.println("STATEMENT: " + stmt.toString() + "\n**********");
 		while( targets.hasNext() )
 		{
 			SootMethod target = (SootMethod) targets.next();
@@ -216,7 +216,7 @@ public class TransactionAwareSideEffectAnalysis {
 				else
 				{// note that all library functions have already been filtered out (by name) via the filter
 				 // passed to the TransitiveTargets constructor.
-	            	G.v().out.println("Target   : " + target.toString());
+//	            	G.v().out.println("Target   : " + target.toString());
 					RWSet ntr = nonTransitiveReadSet(target);
 					if( ntr != null ) {
 						if( ret == null ) ret = new SiteRWSet();
