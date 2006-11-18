@@ -1,19 +1,36 @@
 package soot.jimple.toolkits.transaction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
-import soot.*;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Unit;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.pointer.CodeBlockRWSet;
+import soot.jimple.toolkits.pointer.RWSet;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.FlowSet;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.util.Chain;
-import soot.jimple.*;
-import soot.jimple.toolkits.pointer.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.spark.pag.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.mhp.*;
-import soot.toolkits.mhp.pegcallgraph.*;
-import soot.toolkits.mhp.findobject.*;
-import soot.tagkit.LineNumberTag;
 
 public class TransactionTransformer extends SceneTransformer
 {
