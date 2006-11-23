@@ -177,6 +177,17 @@ public abstract class AbstractFlowSet implements FlowSet {
       if (!other.contains(it.next())) return false;
     return true;
   }
+  
+	public int hashCode() {
+		final int PRIME = 31;
+		int result = 1;
+		Iterator iter = iterator();
+		while(iter.hasNext()) {
+			Object o = iter.next();
+			result = PRIME * result + o.hashCode();
+		}
+		return hashCode();
+	}
 
   public String toString() {
     StringBuffer buffer = new StringBuffer("{");
