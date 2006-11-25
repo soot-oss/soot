@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import soot.Immediate;
 import soot.Local;
 import soot.RefLikeType;
 import soot.Unit;
@@ -379,14 +380,28 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 		return new AnalysisInfo();
 	}
 	
-	public boolean isAlwaysNullBefore(Unit s, Value v) {
+	/**
+	 * Returns <code>true</code> if the analysis could determine that i is always null
+	 * before the statement s.
+	 * @param s a statement of the respective body
+	 * @param i a local or constant of that body
+	 * @return true if i is always null right before this statement
+	 */
+	public boolean isAlwaysNullBefore(Unit s, Immediate i) {
 		AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-		return ai.get(v)==NULL;
+		return ai.get(i)==NULL;
 	}
 
-	public boolean isAlwaysNonNullBefore(Unit s, Value v) {
+	/**
+	 * Returns <code>true</code> if the analysis could determine that i is always non-null
+	 * before the statement s.
+	 * @param s a statement of the respective body
+	 * @param i a local of that body
+	 * @return true if i is always non-null right before this statement
+	 */
+	public boolean isAlwaysNonNullBefore(Unit s, Immediate i) {
 		AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-		return ai.get(v)==NON_NULL;
+		return ai.get(i)==NON_NULL;
 	}
 
 	/**

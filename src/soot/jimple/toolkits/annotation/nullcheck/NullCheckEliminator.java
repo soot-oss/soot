@@ -23,6 +23,7 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.Immediate;
 import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.EqExpr;
@@ -71,12 +72,12 @@ public class NullCheckEliminator extends BodyTransformer {
 		Value c=is.getCondition();
 		if(!(c instanceof EqExpr || c instanceof NeExpr)) continue;
 		BinopExpr e=(BinopExpr) c;
-		Value v=null;
-		if(e.getOp1() instanceof NullConstant) v=e.getOp2();
-		if(e.getOp2() instanceof NullConstant) v=e.getOp1();
-		if(v==null) continue;
-		boolean alwaysNull = analysis.isAlwaysNullBefore(s, v);
-		boolean alwaysNonNull = analysis.isAlwaysNonNullBefore(s, v);
+		Immediate i=null;
+		if(e.getOp1() instanceof NullConstant) i=(Immediate) e.getOp2();
+		if(e.getOp2() instanceof NullConstant) i=(Immediate) e.getOp1();
+		if(i==null) continue;
+		boolean alwaysNull = analysis.isAlwaysNullBefore(s, i);
+		boolean alwaysNonNull = analysis.isAlwaysNonNullBefore(s, i);
 		int elim=0; // -1 => condition is false, 1 => condition is true
 		if(alwaysNonNull) elim=c instanceof EqExpr ? -1 : 1;
 		if(alwaysNull) elim=c instanceof EqExpr ? 1 : -1;
