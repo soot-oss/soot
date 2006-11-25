@@ -32,6 +32,7 @@ import soot.RefLikeType;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
+import soot.jimple.ClassConstant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
@@ -44,6 +45,7 @@ import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.ParameterRef;
 import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
 import soot.jimple.internal.AbstractBinopExpr;
 import soot.jimple.internal.JCastExpr;
@@ -156,7 +158,21 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			}
 		}
 		
-        // now copy the computed info to all successors
+		//safe memory by only retaining information about locals
+		for (Iterator outIter = out.keySet().iterator(); outIter.hasNext();) {
+			Value v = (Value) outIter.next();
+			if(!(v instanceof Local)) {
+				outIter.remove();
+			}
+		}
+		for (Iterator outBranchIter = outBranch.keySet().iterator(); outBranchIter.hasNext();) {
+			Value v = (Value) outBranchIter.next();
+			if(!(v instanceof Local)) {
+				outBranchIter.remove();
+			}
+		}
+
+		// now copy the computed info to all successors
         for( Iterator it = fallOut.iterator(); it.hasNext(); ) {
             copy( out, it.next() );
         }
@@ -278,7 +294,9 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 			right = castExpr.getOp();
 		}
 		
-		if(right instanceof NewExpr || right instanceof NewArrayExpr || right instanceof NewMultiArrayExpr || right instanceof ThisRef) {
+		if(right instanceof NewExpr || right instanceof NewArrayExpr
+		|| right instanceof NewMultiArrayExpr || right instanceof ThisRef
+		|| right instanceof StringConstant || right instanceof ClassConstant) {
 			//if we assign new... or @this, the result is non-null
 			rhsInfo.put(right,NON_NULL);
 		} else if(right instanceof ParameterRef) {
