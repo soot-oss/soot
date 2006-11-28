@@ -31,10 +31,23 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SmartLocalDefs;
 import soot.util.Chain;
+<<<<<<< .mine
+import soot.jimple.*;
+import soot.jimple.toolkits.pointer.*;
+import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.spark.pag.*;
+import soot.toolkits.scalar.*;
+import soot.toolkits.graph.*;
+//import soot.toolkits.mhp.*;
+//import soot.toolkits.mhp.pegcallgraph.*;
+//import soot.toolkits.mhp.findobject.*;
+import soot.tagkit.LineNumberTag;
+=======
+>>>>>>> .r2539
 
 public class TransactionTransformer extends SceneTransformer
 {
-    public TransactionTransformer(Singletons.Global g){}
+    public TransactionTransformer(Singletons.Global g){MHPLists = null;}
     public static TransactionTransformer v() 
 	{ 
 		return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();
@@ -43,6 +56,8 @@ public class TransactionTransformer extends SceneTransformer
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;
+	
+	List MHPLists;
 
     protected void internalTransform(String phaseName, Map options)
 	{
@@ -293,10 +308,10 @@ public class TransactionTransformer extends SceneTransformer
     			methodToStrayRWSet.put(method, fs);
     	    }
     	}
-*/    	
+//*/    	
 
-		// *** Get Parallel Execution Call Graph ***
-/*		SootMethod mainMethod= Scene.v().getMainClass().getMethodByName("main");
+/*		// *** Get Parallel Execution Graph ***
+		SootMethod mainMethod= Scene.v().getMainClass().getMethodByName("main");
 		Body mainBody = mainMethod.retrieveActiveBody();
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
 		if (!(pta instanceof PAG))
@@ -317,6 +332,7 @@ public class TransactionTransformer extends SceneTransformer
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
 		PegCallGraph pecg = new PegCallGraph(callGraph); // uses nothing, stores nothing
 		System.out.println("1 Built PegCallGraph");
+//		PegCallGraphToDot pecgPrinter = new PegCallGraphToDot(pecg, true, "PECG");
 
 	  	MethodExtentBuilder meb = new MethodExtentBuilder(mainBody, pecg, callGraph);     
 		Arguments.setMethodNeedExtent(meb.getMethodNeedExtent());
@@ -330,23 +346,93 @@ public class TransactionTransformer extends SceneTransformer
 
 		MethodInliner.inline(Arguments.getInlineSites());
 		System.out.println("5 Performed (Logical) Inlining");
+		
+//		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
+//		System.out.println("6 Found Synchronized Regions");
 
-		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
-		System.out.println("6 Found Synchronized Regions");
-
+		// This step fails
 //		CompactStronglyConnectedComponents cscc = new CompactStronglyConnectedComponents(pegGraph);
 //		System.out.println("7 Compacted Strongly Connected Components");
 
-        CompactSequentNodes csn = new CompactSequentNodes(pegGraph);
-		System.out.println("8 Compacted Sequent Nodes");
+//		CompactSequentNodes csn = new CompactSequentNodes(pegGraph);
+//		System.out.println("8 Compacted Sequent Nodes");
 
 //		MhpAnalysis mhpAnalysisAfter = new MhpAnalysis(pegGraph); 
 
-		PegToDotFile printer = new PegToDotFile(pegGraph, false, "main");
-		System.out.println("9 Printed PEG to Dot File");
-*/    	
+//		PegToDotFile printer = new PegToDotFile(pegGraph, false, "main");
+//		System.out.println("9 Printed PEG to Dot File");
+
+		// Build MHP Lists
+		MHPLists = new ArrayList();
+		Iterator threadIt = pegGraph.getAllocNodeToThread().values().iterator();
+		int threadNum = 0;
+		while(threadIt.hasNext())
+		{
+//			Iterator runMethodsIt = ((List) threadIt.next()).iterator();
+			PegChain thread = (PegChain) threadIt.next();
+			List threadMethods = new ArrayList();
+			MHPLists.add(threadMethods);
+//			while(runMethodsIt.hasNext())
+			{
+//				PegChain thread = (PegChain) runMethodsIt.next();
+				SootMethod method = thread.body.getMethod();
+				if(!threadMethods.contains(method))
+					threadMethods.add(method);
+			}
+			// get all the successors, add to threadMethods
+			int methodNum = 0;
+			while(methodNum < threadMethods.size())
+			{
+				Iterator succMethodsIt = pecg.getSuccsOf(threadMethods.get(methodNum)).iterator();
+				while(succMethodsIt.hasNext())
+				{
+					SootMethod method = (SootMethod) succMethodsIt.next();
+					// if all edges into this are of Kind THREAD, ignore it
+					boolean ignoremethod = true;
+					Iterator edgeInIt = callGraph.edgesInto(method);
+					while(edgeInIt.hasNext())
+					{
+						if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
+							ignoremethod = false;
+					}
+					if(!ignoremethod && !threadMethods.contains(method))
+						threadMethods.add(method);
+				}
+				methodNum++;
+			}
+			System.out.println("thread" + threadNum + ": " + threadMethods.toString());
+			threadNum++;
+		}
+
+		// do same for main method
+			List mainMethods = new ArrayList();
+			MHPLists.add(mainMethods);
+			mainMethods.add(mainMethod);
+			// get all the successors, add to threadMethods
+			int methodNum = 0;
+			while(methodNum < mainMethods.size())
+			{
+				Iterator succMethodsIt = pecg.getSuccsOf(mainMethods.get(methodNum)).iterator();
+				while(succMethodsIt.hasNext())
+				{
+					SootMethod method = (SootMethod) succMethodsIt.next();
+					// if all edges into this are of Kind THREAD, ignore it
+					boolean ignoremethod = true;
+					Iterator edgeInIt = callGraph.edgesInto(method);
+					while(edgeInIt.hasNext())
+					{
+						if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
+							ignoremethod = false;
+					}
+					if(!ignoremethod && !mainMethods.contains(method))
+						mainMethods.add(method);
+				}
+				methodNum++;
+			}
+			System.out.println("main   : " + mainMethods.toString());
+//*/    	
+
     	// *** Calculate locking scheme ***
-    	
     	// Search for data dependencies between transactions, and split them into disjoint sets
     	int nextGroup = 1;
     	Iterator tnIt1 = AllTransactions.iterator();
@@ -580,9 +666,35 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}
     
-    public static boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
+    public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
     {
-    	String Thread2Fcns[] = {"rotary.Driver.run", "rotary.Driver.Think", "rotary.Car.getLocation", "rotary.RoadSegment.getCars", 								"rotary.RoadSegment.getPhysicalLocation", "rotary.CollisionDetector.addCollision", 									"rotary.Car.destroy", "rotary.RoadSegment.removeCar", "rotary.StateActionHistory.add",
+//    	System.out.print("MHP: " + tn1.method + " AND " + tn2.method);
+    	if(MHPLists == null)
+    	{
+    		System.out.println("true (null)");
+    		return true;
+		}
+
+		int size = MHPLists.size();
+		for(int i = 0; i < size; i++)
+		{
+			if(((List)MHPLists.get(i)).contains(tn1.method))
+			{
+				for(int j = 0; j < size; j++)
+				{
+					if(((List)MHPLists.get(j)).contains(tn2.method) && i != j)
+					{
+			    		System.out.println("true");
+						return true;
+					}
+				}
+			}
+		}
+		System.out.println("false");
+		return false;
+	}
+
+/*    	String Thread2Fcns[] = {"rotary.Driver.run", "rotary.Driver.Think", "rotary.Car.getLocation", "rotary.RoadSegment.getCars", 								"rotary.RoadSegment.getPhysicalLocation", "rotary.CollisionDetector.addCollision", 									"rotary.Car.destroy", "rotary.RoadSegment.removeCar", "rotary.StateActionHistory.add",
     							"rotary.ReinforcementLearner.registerHistory", "rotary.StateActionHistory.size", "rotary.StateActionHistory.get", 
     							"rotary.DriverValueFunction.get", "rotary.DriverValueFunction.set"
     							};
@@ -594,6 +706,7 @@ public class TransactionTransformer extends SceneTransformer
 //		G.v().out.println(tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
 
 		return true;
+*/
 /*
     	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
     	{
@@ -619,7 +732,6 @@ public class TransactionTransformer extends SceneTransformer
     	}
     	return false;
 // */
-    }
     
     public static boolean contains(String strings[], String string)
     {
