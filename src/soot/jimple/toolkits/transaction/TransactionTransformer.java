@@ -10,10 +10,10 @@ import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
-//import soot.toolkits.mhp.*;
-//import soot.toolkits.mhp.pegcallgraph.*;
-//import soot.toolkits.mhp.findobject.*;
-//import soot.toolkits.mhp.stmt.*;
+import soot.toolkits.mhp.*;
+import soot.toolkits.mhp.pegcallgraph.*;
+import soot.toolkits.mhp.findobject.*;
+import soot.toolkits.mhp.stmt.*;
 import soot.tagkit.LineNumberTag;
 
 
@@ -282,7 +282,7 @@ public class TransactionTransformer extends SceneTransformer
     	}
 //*/    	
 
-/*		// *** Get Parallel Execution Graph ***
+		// *** Get Parallel Execution Graph ***
 		SootMethod mainMethod= Scene.v().getMainClass().getMethodByName("main");
 		Body mainBody = mainMethod.retrieveActiveBody();
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
@@ -296,7 +296,6 @@ public class TransactionTransformer extends SceneTransformer
 	    Arguments.setHierarchy(Scene.v().getActiveHierarchy());
 		Arguments.setCallGraph(callGraph);
 		Arguments.setPag((PAG) pta);
-		Arguments.setInlineSites(new ArrayList());
 		Arguments.setSynchObj(new HashMap());
 		Arguments.setAllocNodeToObj(new HashMap());
 		Arguments.setInlineSites(new ArrayList());
@@ -307,21 +306,21 @@ public class TransactionTransformer extends SceneTransformer
 //		PegCallGraphToDot pecgPrinter = new PegCallGraphToDot(pecg, true, "PECG");
 
 	  	MethodExtentBuilder meb = new MethodExtentBuilder(mainBody, pecg, callGraph);     
-		Arguments.setMethodNeedExtent(meb.getMethodNeedExtent());
+		Arguments.setMethodsNeedingInlining(meb.getMethodsNeedingInlining());
 //		System.out.println("2 Found Inlinable Methods");
 	    
-		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph); // uses Arguments.pag, stores Arguments.allocNodes and Arguments.multiObjAllocNodes
-		Set multiObjAllocNodes = Arguments.getMultiObjAllocNodes();
+		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph); // uses Arguments.pag, stores Arguments.allocNodes and Arguments.multiRunAllocNodes
+		Set multiRunAllocNodes = Arguments.getMultiRunAllocNodes();
 		Set multiCalledMethods = anf.getMultiCalledMethods();
 //		System.out.println("3 Found MultiObjAllocNodes");
 		
 		PegGraph pegGraph = new PegGraph(mainBody, mainMethod, true,  false); // uses Arguments.callGraph, Arguments.heirarchy, Arguments.pag, Arguments.allocNodes
-//		System.out.println("4 Built PEG");									  // and Arguments.methodNeedExtent (optional), Arguments.synchObj (and stores), 
+//		System.out.println("4 Built PEG");									  // and Arguments.methodsNeedingInlining (optional), Arguments.synchObj (and stores), 
 
 		MethodInliner.inline(Arguments.getInlineSites());
 //		System.out.println("5 Performed (Logical) Inlining");
 
-		Map startToAllocSites = pegGraph.getStartToAllocSites();
+		Map startToAllocNodes = pegGraph.getStartToAllocNodes();
 		
 //		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
 //		System.out.println("6 Found Synchronized Regions");
@@ -348,16 +347,16 @@ public class TransactionTransformer extends SceneTransformer
 			// and a list of allocation sites for this thread start statement
 			// and the thread start statement itself
 			Map.Entry e = (Map.Entry) threadIt.next();
-			List runMethods = (List) e.getValue();
-			List threadAllocNodes = (List) startToAllocSites.get(e.getKey());
 			JPegStmt startStmt = (JPegStmt) e.getKey();
+			List runMethodPegChains = (List) e.getValue();
+			List threadAllocNodes = (List) startToAllocNodes.get(e.getKey());
 
 			// Get a list of all possible unique Runnable.run methods for this thread start statement
 			List threadMethods = new ArrayList();
-			Iterator runMethodsIt = runMethods.iterator();
-			while(runMethodsIt.hasNext())
+			Iterator runMethodPegChainsIt = runMethodPegChains.iterator();
+			while(runMethodPegChainsIt.hasNext())
 			{
-				PegChain thread = (PegChain) runMethodsIt.next();
+				PegChain thread = (PegChain) runMethodPegChainsIt.next();
 				SootMethod method = thread.body.getMethod();
 				if(!threadMethods.contains(method))
 					threadMethods.add(method);
@@ -396,7 +395,7 @@ public class TransactionTransformer extends SceneTransformer
 			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1);
 			if(!mayStartMultipleThreadObjects) // if there's only one alloc node
 			{
-				if(multiObjAllocNodes.contains(threadAllocNodes.iterator().next())) // but it gets run more than once
+				if(multiRunAllocNodes.contains(threadAllocNodes.iterator().next())) // but it gets run more than once
 				{
 					mayStartMultipleThreadObjects = true; // then "thread" in "thread.start()" could be more than one object
 				}
@@ -408,10 +407,10 @@ public class TransactionTransformer extends SceneTransformer
 			if(!mayBeRunMultipleTimes)
 			{
 				UnitGraph graph = new CompleteUnitGraph(startStmtMethod.getActiveBody());
-				MultiObjectAllocSitesFinder finder = new MultiObjectAllocSitesFinder(
+				MultiRunStatementsFinder finder = new MultiRunStatementsFinder(
 					graph, startStmtMethod, multiCalledMethods, callGraph);
-				FlowSet fs = finder.getMultiObjSites(); // list of all units that may be run more than once in this method
-				if(fs.contains(startStmt))
+				FlowSet multiRunStatements = finder.getMultiRunStatements(); // list of all units that may be run more than once in this method
+				if(multiRunStatements.contains(startStmt))
 					mayBeRunMultipleTimes = true;
 			}
 
