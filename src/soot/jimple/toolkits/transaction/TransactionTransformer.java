@@ -13,6 +13,7 @@ import soot.toolkits.graph.*;
 //import soot.toolkits.mhp.*;
 //import soot.toolkits.mhp.pegcallgraph.*;
 //import soot.toolkits.mhp.findobject.*;
+//import soot.toolkits.mhp.stmt.*;
 import soot.tagkit.LineNumberTag;
 
 
@@ -302,21 +303,25 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
 		PegCallGraph pecg = new PegCallGraph(callGraph); // uses nothing, stores nothing
-		System.out.println("1 Built PegCallGraph");
+//		System.out.println("1 Built PegCallGraph");
 //		PegCallGraphToDot pecgPrinter = new PegCallGraphToDot(pecg, true, "PECG");
 
 	  	MethodExtentBuilder meb = new MethodExtentBuilder(mainBody, pecg, callGraph);     
 		Arguments.setMethodNeedExtent(meb.getMethodNeedExtent());
-		System.out.println("2 Found Inlinable Methods");
-	      	
+//		System.out.println("2 Found Inlinable Methods");
+	    
 		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph); // uses Arguments.pag, stores Arguments.allocNodes and Arguments.multiObjAllocNodes
-		System.out.println("3 Found MultiObjAllocNodes");
+		Set multiObjAllocNodes = Arguments.getMultiObjAllocNodes();
+		Set multiCalledMethods = anf.getMultiCalledMethods();
+//		System.out.println("3 Found MultiObjAllocNodes");
 		
 		PegGraph pegGraph = new PegGraph(mainBody, mainMethod, true,  false); // uses Arguments.callGraph, Arguments.heirarchy, Arguments.pag, Arguments.allocNodes
-		System.out.println("4 Built PEG");									  // and Arguments.methodNeedExtent (optional), Arguments.synchObj (and stores), 
+//		System.out.println("4 Built PEG");									  // and Arguments.methodNeedExtent (optional), Arguments.synchObj (and stores), 
 
 		MethodInliner.inline(Arguments.getInlineSites());
-		System.out.println("5 Performed (Logical) Inlining");
+//		System.out.println("5 Performed (Logical) Inlining");
+
+		Map startToAllocSites = pegGraph.getStartToAllocSites();
 		
 //		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
 //		System.out.println("6 Found Synchronized Regions");
@@ -335,35 +340,46 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Build MHP Lists
 		MHPLists = new ArrayList();
-		Iterator threadIt = pegGraph.getAllocNodeToThread().values().iterator();
+		Iterator threadIt = pegGraph.getStartToThread().entrySet().iterator();
 		int threadNum = 0;
 		while(threadIt.hasNext())
 		{
-//			Iterator runMethodsIt = ((List) threadIt.next()).iterator();
-			PegChain thread = (PegChain) threadIt.next();
+			// Get list of possible Runnable.run methods (actually, a list of peg chains)
+			// and a list of allocation sites for this thread start statement
+			// and the thread start statement itself
+			Map.Entry e = (Map.Entry) threadIt.next();
+			List runMethods = (List) e.getValue();
+			List threadAllocNodes = (List) startToAllocSites.get(e.getKey());
+			JPegStmt startStmt = (JPegStmt) e.getKey();
+
+			// Get a list of all possible unique Runnable.run methods for this thread start statement
 			List threadMethods = new ArrayList();
-			MHPLists.add(threadMethods);
-//			while(runMethodsIt.hasNext())
+			Iterator runMethodsIt = runMethods.iterator();
+			while(runMethodsIt.hasNext())
 			{
-//				PegChain thread = (PegChain) runMethodsIt.next();
+				PegChain thread = (PegChain) runMethodsIt.next();
 				SootMethod method = thread.body.getMethod();
 				if(!threadMethods.contains(method))
 					threadMethods.add(method);
 			}
-			// get all the successors, add to threadMethods
+			
+			// Get a list containing all methods in the call graph(s) rooted at the possible run methods for this thread start statement
+			// AKA a list of all methods that might be called by the thread started here
 			int methodNum = 0;
-			while(methodNum < threadMethods.size())
+			while(methodNum < threadMethods.size()) // iterate over all methods in threadMethods, even as new methods are being added to it
 			{
 				Iterator succMethodsIt = pecg.getSuccsOf(threadMethods.get(methodNum)).iterator();
 				while(succMethodsIt.hasNext())
 				{
 					SootMethod method = (SootMethod) succMethodsIt.next();
-					// if all edges into this are of Kind THREAD, ignore it
+					// if all edges into this method are of Kind THREAD, ignore it 
+					// (because it's a run method that won't be called as part of THIS thread)
 					boolean ignoremethod = true;
 					Iterator edgeInIt = callGraph.edgesInto(method);
 					while(edgeInIt.hasNext())
 					{
-						if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
+						Edge edge = (Edge) edgeInIt.next();
+						if( edge.kind() != Kind.THREAD && threadMethods.contains(edge.src())) // called directly by any of the thread methods?
 							ignoremethod = false;
 					}
 					if(!ignoremethod && !threadMethods.contains(method))
@@ -371,7 +387,44 @@ public class TransactionTransformer extends SceneTransformer
 				}
 				methodNum++;
 			}
-			System.out.println("thread" + threadNum + ": " + threadMethods.toString());
+			
+			// Add this list of methods to MHPLists
+			MHPLists.add(threadMethods);
+			System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
+			
+			// Find out if the "thread" in "thread.start()" could be more than one object
+			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1);
+			if(!mayStartMultipleThreadObjects) // if there's only one alloc node
+			{
+				if(multiObjAllocNodes.contains(threadAllocNodes.iterator().next())) // but it gets run more than once
+				{
+					mayStartMultipleThreadObjects = true; // then "thread" in "thread.start()" could be more than one object
+				}
+			}
+			
+			// Find out if the "thread.start()" statement may be run more than once
+			boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmt.getMethod()); // if method is called more than once...
+			SootMethod startStmtMethod = startStmt.getMethod();
+			if(!mayBeRunMultipleTimes)
+			{
+				UnitGraph graph = new CompleteUnitGraph(startStmtMethod.getActiveBody());
+				MultiObjectAllocSitesFinder finder = new MultiObjectAllocSitesFinder(
+					graph, startStmtMethod, multiCalledMethods, callGraph);
+				FlowSet fs = finder.getMultiObjSites(); // list of all units that may be run more than once in this method
+				if(fs.contains(startStmt))
+					mayBeRunMultipleTimes = true;
+			}
+
+			// If more than one thread might be started at this start statement,
+			// and this start statement may be run more than once,
+			// then add this list of methods to MHPLists *AGAIN*
+			System.out.println("Start Stmt " + startStmt.toString() + 
+				" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
+			if(mayStartMultipleThreadObjects && mayBeRunMultipleTimes)
+			{
+				MHPLists.add(((ArrayList) threadMethods).clone());
+				System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
+			}
 			threadNum++;
 		}
 
@@ -642,7 +695,7 @@ public class TransactionTransformer extends SceneTransformer
 //    	System.out.print("MHP: " + tn1.method + " AND " + tn2.method);
     	if(MHPLists == null)
     	{
-    		System.out.println("true (null)");
+//    		System.out.println("true (null)");
     		return true;
 		}
 
@@ -655,13 +708,13 @@ public class TransactionTransformer extends SceneTransformer
 				{
 					if(((List)MHPLists.get(j)).contains(tn2.method) && i != j)
 					{
-			    		System.out.println("true");
+//			    		System.out.println("true");
 						return true;
 					}
 				}
 			}
 		}
-		System.out.println("false");
+//		System.out.println("false");
 		return false;
 	}
 
