@@ -21,12 +21,13 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	LocalDefs sld;
 	LocalUses slu;
 	TransactionAwareSideEffectAnalysis tasea;
+	SideEffectAnalysis sea;
 	
 	List prepUnits;
 
     Transaction methodTn;
 	
-	public boolean optionPrintDebug = false;
+	public boolean optionPrintDebug = true;
 
     TransactionAnalysis(UnitGraph graph, Body b)
 	{
@@ -51,21 +52,27 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null);
+    	
+    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph());
     				
     	prepUnits = new ArrayList();
     	
 		methodTn = null;
-//		if(method.isSynchronized())
-//		{
+		if(method.isSynchronized())
+		{
 			// Entire method is transactional
-//			methodTn = new Transaction((Stmt) null, true, body.getMethod(), 0);
-//		}
+			methodTn = new Transaction((Stmt) body.getUnits().iterator().next(), true, method, 0);
+			// note that the precise location of the begin stmt doesn't matter... the
+			// whole method will be transformed correctly regardless of the value.
+		}
         doAnalysis();
-//		if(method.isSynchronized() && methodTn != null)
-//		{
+		if(method.isSynchronized() && methodTn != null)
+		{
 			// TODO: Check if totally safe
-//			methodTn.begin = (Stmt) body.getUnits().iterator().next();
-//		}
+			methodTn.ends.addAll(graph.getTails());
+			// note that the precise locations of the end stmts don't matter... the
+			// whole method will be transformed correctly regardless of the values.
+		}
 	}
     	
     /**
@@ -82,8 +89,10 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     protected Object entryInitialFlow()
     {
 		FlowSet ret = (FlowSet) emptySet.clone();
-//		if(method.isSynchronized() && methodTn != null)
-//			ret.add(methodTn);
+		if(method.isSynchronized() && methodTn != null)
+		{
+			ret.add(new TransactionFlowPair(methodTn, true));
+		}
         return ret;
     }
 
@@ -98,17 +107,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 
        	copy(in, out);
        	
-		// If the flowset has a transaction in it with wholeMethod=true and
-		// ends is empty then the current instruction is the last instruction on
-		// some path of execution in this method, so ends should be set to unit
-/*		if(method.isSynchronized() && in.size() == 1)
-		{
-			Transaction tn = (Transaction) in.iterator().next();
-			if(tn.ends.isEmpty())
-				tn.ends.add(unit);
-		}
-*/
-
         // Determine if this statement is a preparatory statement for an
         // upcoming transactional region. Such a statement would be a definition 
         // which contains no invoke statement, and which corresponds only to 
@@ -187,7 +185,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	{
             		// Note if this unit is a call to wait() or notify()/notifyAll()
             		String InvokeSig = ((Stmt)unit).getInvokeExpr().getMethod().getSubSignature();
-//            		G.v().out.println(InvokeSig);
             		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
             		{
 				        if(!tn.notifys.contains(unit))
@@ -204,98 +201,14 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	            	}
 	            	else if(!tn.invokes.contains(unit))
 	            	{
-	            		// Mark this unit for later read/write set consideration
+	            		// Mark this unit for later read/write set calculation (must be deferred until all tns have been found)
 		            	tn.invokes.add(unit);
 		            	
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-
-							RWSet stmtRead = null;
-							RWSet stmtWrite = null;
-							Stmt stmt = (Stmt) unit;
-
-			    			if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-			    			{
-			    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-			    				{
-			    					G.v().out.println("RGI,");
-			                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
-			                    	while (rDefsIt.hasNext())
-			                    	{
-			                        	Stmt next = (Stmt) rDefsIt.next();
-			                        	G.v().out.println("DEF: " + next);
-			                        	if(next instanceof DefinitionStmt)
-										{
-					    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-//			    							tn.read.union(stmtRead);
-			    						}
-			    					}
-			    				}
-			    				else
-			    				{
-			    					G.v().out.println("RG-,");
-				    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-//			    					tn.read.union(stmtRead);
-			    				}
-			    			}
-			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-								     (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-							{
-			    				G.v().out.println("RB-,");
-			    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-//								tn.read.union(stmtRead);
-							}
-							else
-							{
-			    				G.v().out.println("R--,");
-			            		stmtRead = tasea.readSet( tn.method, stmt );
-//				        		tn.read.union(stmtRead);
-				    		}
-    			
-			    			if( tasea.sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-			    			{
-			    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-			    				{
-			    					G.v().out.println("WGI,");
-			                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-			                    	while (rDefsIt.hasNext())
-			                    	{
-			                        	Stmt next = (Stmt) rDefsIt.next();
-			                        	if(next instanceof DefinitionStmt)
-										{
-					    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-//			    							tn.write.union(stmtWrite);
-			    						}
-			    					}
-			    				}
-			    				else
-			    				{
-			    					G.v().out.println("WG-,");
-				    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-//			    					tn.write.union(stmtWrite);
-			    				}
-			    			}
-			    			else if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-			    			{
-			    				G.v().out.println("WB-,");
-			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-//								tn.write.union(stmtWrite);
-			    			}
-			    			// add else ifs for every special case (specifically functions that write to args)
-			    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-									 (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-							{
-			    				G.v().out.println("WB-,");
-			    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-//								tn.write.union(stmtWrite);
-							}
-							else
-							{
-			   					G.v().out.println("W--,");
-				            	stmtWrite = tasea.writeSet( tn.method, stmt );
-//				        		tn.write.union(stmtWrite);
-				    		}
+							RWSet stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
+							RWSet stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -338,6 +251,9 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
+						stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
+						stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+
 			           	G.v().out.print("[");
 			           	if(stmtRead != null)
 			           	{
@@ -364,7 +280,28 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	    if(optionPrintDebug)
 		{
 			if(!printed)
-				G.v().out.print("[-,-] ");
+			{
+						RWSet stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
+						RWSet stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+
+			           	G.v().out.print("[");
+			           	if(stmtRead != null)
+			           	{
+				           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
+				           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
+				        }
+				        else
+				        	G.v().out.print( "0" );
+				        G.v().out.print(",");
+				        if(stmtWrite != null)
+				        {
+				           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
+			           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
+			        	}
+			        	else
+			        		G.v().out.print( "0" );
+			        	G.v().out.print("] ");
+			}
 			G.v().out.println(unit.toString());
 		}
 		
@@ -393,15 +330,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 
 			}
 		}
-            	
-//		if(method.toString().equals("<Passenger: void run()>"))
-//		Iterator outIt2 = out.iterator();
-//		while(outIt2.hasNext())
-//		{
-//			TransactionFlowPair tfp = (TransactionFlowPair) outIt2.next();
-//			G.v().out.print("<" + tfp + ">");
-//		}
-
     }
 
     /**
@@ -415,21 +343,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             outSet = (FlowSet) out;
 
 		inSet1.union(inSet2, outSet);
-/*		
-        Iterator inIt1 = inSet1.iterator();
-        while(inIt1.hasNext())
-        {
-        	TransactionFlowPair tfp1 = (TransactionFlowPair) inIt1.next();
-        	outSet.add(tfp1.clone());
-        }
-        
-        Iterator inIt2 = inSet2.iterator();
-        while(inIt2.hasNext())
-        {
-            TransactionFlowPair tfp2 = (TransactionFlowPair) inIt2.next();
-            outSet.add(tfp2.clone());
-        }
-*/
     }
 
     protected void copy(Object source, Object dest)
@@ -437,8 +350,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         FlowSet
             sourceSet = (FlowSet) source,
             destSet = (FlowSet) dest;
-
-//		sourceSet.copy(destSet);
 		
 		destSet.clear();
 
@@ -448,17 +359,5 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			TransactionFlowPair tfp = (TransactionFlowPair) it.next();
 			destSet.add(tfp.clone());
 		}
-		
-/*		G.v().out.println("Copied array is " + (sourceSet.equals(destSet) ? "equal:" : "inequal:") );
-			it = sourceSet.iterator();
-			Iterator it2 = destSet.iterator();
-			while(it.hasNext() && it2.hasNext())
-			{
-				TransactionFlowPair tfp1 = (TransactionFlowPair) it.next();
-				TransactionFlowPair tfp2 = (TransactionFlowPair) it2.next();
-				G.v().out.print("<" + tfp1.toString() + "," + tfp2.toString() + ":" + (tfp1.equals(tfp2) ? "equal" : "inequal") + ">");
-			}
-			G.v().out.println("");
-*/
     }
 }

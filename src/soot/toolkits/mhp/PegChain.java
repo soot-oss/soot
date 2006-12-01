@@ -564,13 +564,15 @@ public class PegChain extends HashChain{
 		while (it.hasNext()){
 			AllocNode obj = (AllocNode)it.next();
 			
-			if (allocNodes.contains(obj)){
+//			if (allocNodes.contains(obj)){
 				list.add(obj);
-			}
-			else{
-				System.out.println("===Error! allocNode does not contains "+obj + "for unit: "+unit);
-				throw new RuntimeException("===Error! allocNode does not contains "+obj + "for unit: "+unit);
-			}
+//			}
+//			else{
+				// This simply means that the object in question was not allocated by application code.
+				// It may have been allocated by the library, or by the JVM.
+//				System.out.println("Unknown alloc node: "+obj + " for unit: "+unit);
+//				throw new RuntimeException("===Error! allocNode does not contains "+obj + "for unit: "+unit);
+//			}
 		}
 		return (List)list;
 	}

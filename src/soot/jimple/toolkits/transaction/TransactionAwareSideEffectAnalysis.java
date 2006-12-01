@@ -21,10 +21,8 @@ package soot.jimple.toolkits.transaction;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.MethodRWSet;
-import soot.jimple.toolkits.pointer.RWSet;
-import soot.jimple.toolkits.pointer.SiteRWSet;
-import soot.jimple.toolkits.pointer.StmtRWSet;
+import soot.jimple.toolkits.pointer.*;
+import soot.toolkits.scalar.*;
 
 import java.util.*;
 import soot.util.*;
@@ -157,22 +155,22 @@ public class TransactionAwareSideEffectAnalysis {
 		return null;
 	}
 	
-	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value v)
+	public RWSet approximatedReadSet( SootMethod method, Stmt stmt, Value specialRead)
 	{// used for stmts with method calls where the effect of the method call should be approximated by 0 or 1 reads (plus reads of all args)
 		RWSet ret = new SiteRWSet();
-		if(v != null)
+		if(specialRead != null)
 		{
-			if( v instanceof Local )
+			if( specialRead instanceof Local )
 			{
-				Local vLocal = (Local) v;
+				Local vLocal = (Local) specialRead;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
 				sSet.addFieldRef( base, stmt );
 				ret.union(sSet);
 			}
-			else if( v instanceof FieldRef)
+			else if( specialRead instanceof FieldRef)
 			{
-				ret.union(addValue(v, method, stmt));
+				ret.union(addValue(specialRead, method, stmt));
 			}
 		}
 		if(stmt.containsInvokeExpr())
@@ -186,6 +184,41 @@ public class TransactionAwareSideEffectAnalysis {
 			ret.union(addValue( r, method, stmt ));
 		}
 		return ret;
+	}
+	
+	public RWSet transactionalReadSet( SootMethod method, Stmt stmt, LocalDefs sld )
+	{
+		RWSet stmtRead = null;
+		
+		if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+		{
+			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+			{
+            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+            	while (rDefsIt.hasNext())
+            	{
+                	Stmt next = (Stmt) rDefsIt.next();
+                	if(next instanceof DefinitionStmt)
+					{
+    					stmtRead = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
+					}
+				}
+			}
+			else
+			{
+				stmtRead = approximatedReadSet(method, stmt, null);
+			}
+		}
+		else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+			     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+		{
+			stmtRead = approximatedReadSet(method, stmt, null);
+		}
+		else
+		{
+    		stmtRead = readSet( method, stmt );
+		}
+		return stmtRead;
 	}
 	
 	public RWSet readSet( SootMethod method, Stmt stmt ) {
@@ -263,6 +296,46 @@ public class TransactionAwareSideEffectAnalysis {
 			ret.union(addValue( l, method, stmt ));
 		}
 		return ret;
+	}
+	
+	public RWSet transactionalWriteSet( SootMethod method, Stmt stmt, LocalDefs sld )
+	{
+		RWSet stmtWrite = null;
+		
+		if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+		{
+			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+			{
+            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
+            	while (rDefsIt.hasNext())
+            	{
+                	Stmt next = (Stmt) rDefsIt.next();
+                	if(next instanceof DefinitionStmt)
+					{
+    					stmtWrite = approximatedWriteSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
+					}
+				}
+			}
+			else
+			{
+				stmtWrite = approximatedWriteSet(method, stmt, null);
+			}
+		}
+		else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+		{
+			stmtWrite = approximatedWriteSet(method, stmt, null);
+		}
+		// add else ifs for every special case (specifically functions that write to args)
+		else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
+				 (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
+		{
+			stmtWrite = approximatedWriteSet(method, stmt, null);
+		}
+		else
+		{
+        	stmtWrite = writeSet( method, stmt );
+		}
+		return stmtWrite;
 	}
 	
 	public RWSet writeSet( SootMethod method, Stmt stmt ) {

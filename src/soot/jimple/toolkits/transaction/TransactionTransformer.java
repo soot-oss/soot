@@ -27,7 +27,7 @@ public class TransactionTransformer extends SceneTransformer
 	
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
-	boolean optionPrintDebug = false;
+	boolean optionPrintDebug = true;
 	
 	List MHPLists;
 
@@ -162,90 +162,23 @@ public class TransactionTransformer extends SceneTransformer
     		{
     			Stmt stmt = (Stmt) invokeIt.next();
     			
-    			RWSet stmtRead = null;
-    			RWSet stmtWrite = null;
+    			RWSet stmtRead = tasea.transactionalReadSet(tn.method, stmt, sld);
+    			if(stmtRead != null)
+	    			tn.read.union(stmtRead);
     			
-    			if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-    				{
-                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
-                    	while (rDefsIt.hasNext())
-                    	{
-                        	Stmt next = (Stmt) rDefsIt.next();
-                        	if(next instanceof DefinitionStmt)
-							{
-		    					stmtRead = tasea.approximatedReadSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-    							tn.read.union(stmtRead);
-    						}
-    					}
-    				}
-    				else
-    				{
-	    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-    					tn.read.union(stmtRead);
-    				}
-    			}
-    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-					     (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				stmtRead = tasea.approximatedReadSet(tn.method, stmt, null);
-					tn.read.union(stmtRead);
-				}
-				else
-				{
-            		stmtRead = tasea.readSet( tn.method, stmt );
-	        		tn.read.union(stmtRead);
-	    		}
+    			RWSet stmtWrite = tasea.transactionalWriteSet(tn.method, stmt, sld);
+    			if(stmtWrite != null)
+	    			tn.write.union(stmtWrite);
     			
-    			if( tasea.sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-    				{
-                    	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-                    	while (rDefsIt.hasNext())
-                    	{
-                        	Stmt next = (Stmt) rDefsIt.next();
-                        	if(next instanceof DefinitionStmt)
-							{
-		    					stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, ((DefinitionStmt) next).getRightOp() );
-    							tn.write.union(stmtWrite);
-    						}
-    					}
-    				}
-    				else
-    				{
-	    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-    					tn.write.union(stmtWrite);
-    				}
-    			}
-    			else if( tasea.sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-    			{
-    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-					tn.write.union(stmtWrite);
-    			}
-    			// add else ifs for every special case (specifically functions that write to args)
-    			else if( (tasea.sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-						 (tasea.subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-				{
-    				stmtWrite = tasea.approximatedWriteSet(tn.method, stmt, null);
-					tn.write.union(stmtWrite);
-				}
-				else
-				{
-	            	stmtWrite = tasea.writeSet( tn.method, stmt );
-	        		tn.write.union(stmtWrite);
-	    		}
-	    		
 	    		if(stmtRead != null && stmtRead.size() > 10)
 	    		{
 	    			if(optionPrintDebug)
-	    				G.v().out.println("Huge Read Set: (" + stmtRead.size() + ")" + stmt);
+	    				G.v().out.println("Big Read Set: (" + stmtRead.size() + ")" + stmt);
 	    		}
 	    		if(stmtWrite != null && stmtWrite.size() > 10)
 	    		{
 	    			if(optionPrintDebug)
-	    				G.v().out.println("Huge Write Set: (" + stmtWrite.size() + ")" + stmt);
+	    				G.v().out.println("Big Write Set: (" + stmtWrite.size() + ")" + stmt);
 	    		}
 	    	}
     	}
@@ -691,10 +624,8 @@ public class TransactionTransformer extends SceneTransformer
     
     public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
     {
-//    	System.out.print("MHP: " + tn1.method + " AND " + tn2.method);
     	if(MHPLists == null)
     	{
-//    		System.out.println("true (null)");
     		return true;
 		}
 
@@ -707,54 +638,13 @@ public class TransactionTransformer extends SceneTransformer
 				{
 					if(((List)MHPLists.get(j)).contains(tn2.method) && i != j)
 					{
-//			    		System.out.println("true");
 						return true;
 					}
 				}
 			}
 		}
-//		System.out.println("false");
 		return false;
 	}
-
-/*    	String Thread2Fcns[] = {"rotary.Driver.run", "rotary.Driver.Think", "rotary.Car.getLocation", "rotary.RoadSegment.getCars", 								"rotary.RoadSegment.getPhysicalLocation", "rotary.CollisionDetector.addCollision", 									"rotary.Car.destroy", "rotary.RoadSegment.removeCar", "rotary.StateActionHistory.add",
-    							"rotary.ReinforcementLearner.registerHistory", "rotary.StateActionHistory.size", "rotary.StateActionHistory.get", 
-    							"rotary.DriverValueFunction.get", "rotary.DriverValueFunction.set"
-    							};
-    							
-    	String Thread3Fcns[] = {"rotary.Car.run", "rotary.Car.Update", "rotary.Driver.getAcceleration", "rotary.RoadSegment.removeCar", 
-    							"rotary.RoadSegment.addCar", "rotary.Rotary.removeCar"
-    							};
-
-//		G.v().out.println(tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
-
-		return true;
-*/
-/*
-    	if(contains(Thread2Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
-    	{
-    		if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
-    		{
-    			return true;
-    		}
-    		else if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
-    		{
-    			return true; //false; // return true for naive MHP (assumes multiples of all threads)
-    		}
-    	}
-    	else if(contains(Thread3Fcns, tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName()))
-    	{
-    		if(contains(Thread2Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
-    		{
-    			return true;
-    		}
-    		else if(contains(Thread3Fcns, tn2.method.getDeclaringClass().getName() + "." + tn2.method.getName()))
-    		{
-    			return true; //false; // return true for naive MHP (assumes multiples of all threads)
-    		}
-    	}
-    	return false;
-// */
     
     public static boolean contains(String strings[], String string)
     {
