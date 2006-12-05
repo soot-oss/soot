@@ -74,4 +74,14 @@ public class LocalUnitPair
     {
         return local.hashCode() * 101 + unit.hashCode() + 17;
     }
+    
+    public Local getLocal()
+    {
+    	return local;
+    }
+    
+    public Unit getUnit()
+    {
+    	return unit;
+    }
 }

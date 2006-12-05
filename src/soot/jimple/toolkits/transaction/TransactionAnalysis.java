@@ -5,6 +5,7 @@ import java.util.*;
 
 import soot.*;
 import soot.jimple.*;
+import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -27,11 +28,13 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 
     Transaction methodTn;
 	
-	public boolean optionPrintDebug = true;
+	public boolean optionPrintDebug = false;
 
-    TransactionAnalysis(UnitGraph graph, Body b)
+    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug)
 	{
 		super(graph);
+
+		this.optionPrintDebug = optionPrintDebug;
 
 		body = b;
 		method = body.getMethod();
@@ -53,7 +56,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null);
     	
-    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph());
+    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				
     	prepUnits = new ArrayList();
     	
@@ -154,6 +157,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         }
 
 		// Process this unit's effect on each txn
+		RWSet stmtRead = null;
+		RWSet stmtWrite = null;
         Iterator outIt = out.iterator();
         boolean printed = false;
         while(outIt.hasNext())
@@ -207,8 +212,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							RWSet stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
-							RWSet stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+							stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
+							stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -242,8 +247,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 				else
             	{
             		// Add this unit's read and write sets to this transactional region
-	               	RWSet stmtRead = tasea.readSet( method, (Stmt) unit );
-		           	RWSet stmtWrite = tasea.writeSet( method, (Stmt) unit );
+	               	stmtRead = tasea.readSet( method, (Stmt) unit );
+		           	stmtWrite = tasea.writeSet( method, (Stmt) unit );
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
@@ -281,8 +286,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		{
 			if(!printed)
 			{
-						RWSet stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
-						RWSet stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+						stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
+						stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
 
 			           	G.v().out.print("[");
 			           	if(stmtRead != null)
@@ -303,6 +308,30 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			        	G.v().out.print("] ");
 			}
 			G.v().out.println(unit.toString());
+			
+			// If this unit is an invoke statement calling a library function and the R/W sets are huge, print out the targets
+			if(((Stmt) unit).containsInvokeExpr() && 
+				((Stmt) unit).getInvokeExpr().getMethod().getDeclaringClass().toString().startsWith("java.") &&
+				stmtRead != null && stmtWrite != null)
+				{
+					if(stmtRead.size() < 25 && stmtWrite.size() < 25)
+					{
+						G.v().out.println("        Read/Write Set for LibInvoke:");
+						G.v().out.println("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
+						G.v().out.println("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
+					}
+					else
+					{
+						G.v().out.println("        Target Set for LibInvoke:");
+						TransitiveTargets tt = new TransitiveTargets( Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
+						Iterator targetIt = tt.iterator((Stmt) unit);
+						while(targetIt.hasNext())
+						{
+							SootMethod target = (SootMethod) targetIt.next();
+							G.v().out.println("        Target: " + target.toString());
+						}
+					}
+				}
 		}
 		
 		// If this statement was a monitorenter, and no transaction object yet exists for it,

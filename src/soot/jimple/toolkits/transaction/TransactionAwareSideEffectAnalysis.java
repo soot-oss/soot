@@ -27,7 +27,10 @@ import soot.toolkits.scalar.*;
 import java.util.*;
 import soot.util.*;
 
-/** Generates side-effect information from a PointsToAnalysis. */
+/** Generates side-effect information from a PointsToAnalysis. 
+ *  Uses various heuristic rules to filter out side-effects that 
+ *  are not visible to other threads in a Transactional program.
+ */
 public class TransactionAwareSideEffectAnalysis {
 	PointsToAnalysis pa;
 	CallGraph cg;
@@ -64,7 +67,12 @@ public class TransactionAwareSideEffectAnalysis {
 						ignore = true;
 						break;
 					}
-					else if(/*isinitstmt*/ false)
+					else if(/*is object-pure init statement*/ false)
+					{
+						ignore = true;
+						break;
+					}
+					else if(/*is object-pure stmt called on thread-local object*/ false)
 					{
 						ignore = true;
 						break;
@@ -108,7 +116,7 @@ public class TransactionAwareSideEffectAnalysis {
 		this.tt = new TransitiveTargets( cg, new Filter(nlntep) );
 		this.transactions = transactions;
 		
-		sigBlacklist = new Vector(); // Signatures of methods known to have read/write sets of size 0
+		sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of size 0
 		// Math does not have any synchronization risks, we think :-)
 		sigBlacklist.add("<java.lang.Math: double abs(double)>");
 		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
@@ -118,7 +126,7 @@ public class TransactionAwareSideEffectAnalysis {
 
 		sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
 		sigWriteGraylist = new Vector();
-		// Vector is synchronized, so we will approximate its effects
+		
 		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
 		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
 

@@ -27,7 +27,7 @@ public class TransactionTransformer extends SceneTransformer
 	
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
-	boolean optionPrintDebug = true;
+	boolean optionPrintDebug = false;
 	
 	List MHPLists;
 
@@ -52,12 +52,11 @@ public class TransactionTransformer extends SceneTransformer
 				{
 	    	    	Body b = method.retrieveActiveBody();
     		    	
-    	    		// run the interprocedural analysis
-    				TransactionAnalysis ptft = new TransactionAnalysis(new ExceptionalUnitGraph(b), b);
-    				ptft.optionPrintDebug = optionPrintDebug;
+    	    		// run the intraprocedural analysis
+    				TransactionAnalysis ta = new TransactionAnalysis(new ExceptionalUnitGraph(b), b, optionPrintDebug);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
-    				FlowSet fs = (FlowSet) ptft.getFlowBefore(lastUnit);
+    				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
     			
     				// add the results to the list of results
     				methodToFlowSet.put(method, fs);
@@ -109,21 +108,9 @@ public class TransactionTransformer extends SceneTransformer
     	while(tnIt0.hasNext())
     	{
     		Transaction tn1 = (Transaction) tnIt0.next();
-//			// get source line number for identification purposes
-//			LineNumberTag tag = (LineNumberTag) tn1.begin.getTag("LineNumberTag");
-//			Iterator unIt = tn1.units.iterator();
-//			while(tag == null && unIt.hasNext())
-//			{
-//				Unit unit = (Unit) unIt.next();
-//				tag = (LineNumberTag) unit.getTag("LineNumberTag");
-//			}
-//			int lineNumber = 0;
-//			if(tag != null)
-//				lineNumber = tag.getLineNumber();
-			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());//tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			identMatrix[methodNum][0]++;
 			identMatrix[methodNum][identMatrix[methodNum][0]] = tn1.IDNum;
-//    		tn1.name = "m" + ;// + "l" + lineNumber;
     	}
     	
     	for(int j = 0; j < methodNames.length; j++)
@@ -136,7 +123,7 @@ public class TransactionTransformer extends SceneTransformer
     	while(tnIt4.hasNext())
     	{
     		Transaction tn1 = (Transaction) tnIt4.next();
-			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());//tn1.method.getDeclaringClass().getName() + "." + tn1.method.getName());
+			int methodNum = Arrays.binarySearch(methodNames, tn1.method.getSignature());
 			int tnNum = Arrays.binarySearch(identMatrix[methodNum], tn1.IDNum) - 1;
     		tn1.name = "m" + (methodNum < 10? "00" : (methodNum < 100? "0" : "")) + methodNum + "n" + (tnNum < 10? "0" : "") + tnNum;
     	}
@@ -216,63 +203,34 @@ public class TransactionTransformer extends SceneTransformer
 //*/    	
 
 		// *** Get Parallel Execution Graph ***
-		SootMethod mainMethod= Scene.v().getMainClass().getMethodByName("main");
-		Body mainBody = mainMethod.retrieveActiveBody();
+		SootMethod mainMethod = Scene.v().getMainClass().getMethodByName("main");
+
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
 		if (!(pta instanceof PAG))
 		{
-		   System.err.println("You must use Spark for points-to analysis when computing MHP information (for wjtp.tn)!");
+		   System.err.println("You must use Spark for points-to analysis when computing MHP information (for transaction transformer)!");
 		   System.exit(1);
 		}
 		CallGraph callGraph = Scene.v().getCallGraph();
 
-	    Arguments.setHierarchy(Scene.v().getActiveHierarchy());
-		Arguments.setCallGraph(callGraph);
-		Arguments.setPag((PAG) pta);
-		Arguments.setSynchObj(new HashMap());
-		Arguments.setAllocNodeToObj(new HashMap());
-		Arguments.setInlineSites(new ArrayList());
-
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
-		PegCallGraph pecg = new PegCallGraph(callGraph); // uses nothing, stores nothing
-//		System.out.println("1 Built PegCallGraph");
-//		PegCallGraphToDot pecgPrinter = new PegCallGraphToDot(pecg, true, "PECG");
-
-	  	MethodExtentBuilder meb = new MethodExtentBuilder(mainBody, pecg, callGraph);     
-		Arguments.setMethodsNeedingInlining(meb.getMethodsNeedingInlining());
-//		System.out.println("2 Found Inlinable Methods");
+		PegCallGraph pecg = new PegCallGraph(callGraph);
 	    
-		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph); // uses Arguments.pag, stores Arguments.allocNodes and Arguments.multiRunAllocNodes
-		Set multiRunAllocNodes = Arguments.getMultiRunAllocNodes();
+	    // Find allocation nodes that are run more than once
+	    // Also find methods that are run more than once
+		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
+		Set multiRunAllocNodes = anf.getMultiRunAllocNodes();
 		Set multiCalledMethods = anf.getMultiCalledMethods();
-//		System.out.println("3 Found MultiObjAllocNodes");
+
+		// Find Thread.start() and Thread.join() statements (in live code)
+		StartJoinFinder sjf = new StartJoinFinder((PAG) pta); // does analysis
+		Map startToAllocNodes = sjf.getStartToAllocNodes();
+		Map startToRunMethods = sjf.getStartToRunMethods();
+		Map startToContainingMethod = sjf.getStartToContainingMethod();
 		
-		PegGraph pegGraph = new PegGraph(mainBody, mainMethod, true,  false); // uses Arguments.callGraph, Arguments.heirarchy, Arguments.pag, Arguments.allocNodes
-//		System.out.println("4 Built PEG");									  // and Arguments.methodsNeedingInlining (optional), Arguments.synchObj (and stores), 
-
-		MethodInliner.inline(Arguments.getInlineSites());
-//		System.out.println("5 Performed (Logical) Inlining");
-
-		Map startToAllocNodes = pegGraph.getStartToAllocNodes();
-		
-//		MonitorAnalysis a = new MonitorAnalysis(pegGraph );
-//		System.out.println("6 Found Synchronized Regions");
-
-		// This step fails
-//		CompactStronglyConnectedComponents cscc = new CompactStronglyConnectedComponents(pegGraph);
-//		System.out.println("7 Compacted Strongly Connected Components");
-
-//		CompactSequentNodes csn = new CompactSequentNodes(pegGraph);
-//		System.out.println("8 Compacted Sequent Nodes");
-
-//		MhpAnalysis mhpAnalysisAfter = new MhpAnalysis(pegGraph); 
-
-//		PegToDotFile printer = new PegToDotFile(pegGraph, false, "main");
-//		System.out.println("9 Printed PEG to Dot File");
-
 		// Build MHP Lists
 		MHPLists = new ArrayList();
-		Iterator threadIt = pegGraph.getStartToThread().entrySet().iterator();
+		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
 		while(threadIt.hasNext())
 		{
@@ -280,17 +238,16 @@ public class TransactionTransformer extends SceneTransformer
 			// and a list of allocation sites for this thread start statement
 			// and the thread start statement itself
 			Map.Entry e = (Map.Entry) threadIt.next();
-			JPegStmt startStmt = (JPegStmt) e.getKey();
-			List runMethodPegChains = (List) e.getValue();
+			Stmt startStmt = (Stmt) e.getKey();
+			List runMethods = (List) e.getValue();
 			List threadAllocNodes = (List) startToAllocNodes.get(e.getKey());
 
 			// Get a list of all possible unique Runnable.run methods for this thread start statement
 			List threadMethods = new ArrayList();
-			Iterator runMethodPegChainsIt = runMethodPegChains.iterator();
-			while(runMethodPegChainsIt.hasNext())
+			Iterator runMethodsIt = runMethods.iterator();
+			while(runMethodsIt.hasNext())
 			{
-				PegChain thread = (PegChain) runMethodPegChainsIt.next();
-				SootMethod method = thread.body.getMethod();
+				SootMethod method = (SootMethod) runMethodsIt.next();
 				if(!threadMethods.contains(method))
 					threadMethods.add(method);
 			}
@@ -322,7 +279,8 @@ public class TransactionTransformer extends SceneTransformer
 			
 			// Add this list of methods to MHPLists
 			MHPLists.add(threadMethods);
-			System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
+			if(optionPrintDebug)
+				System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
 			
 			// Find out if the "thread" in "thread.start()" could be more than one object
 			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1);
@@ -335,8 +293,8 @@ public class TransactionTransformer extends SceneTransformer
 			}
 			
 			// Find out if the "thread.start()" statement may be run more than once
-			boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmt.getMethod()); // if method is called more than once...
-			SootMethod startStmtMethod = startStmt.getMethod();
+			SootMethod startStmtMethod = (SootMethod) startToContainingMethod.get(startStmt);
+			boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmtMethod); // if method is called more than once...
 			if(!mayBeRunMultipleTimes)
 			{
 				UnitGraph graph = new CompleteUnitGraph(startStmtMethod.getActiveBody());
@@ -350,43 +308,45 @@ public class TransactionTransformer extends SceneTransformer
 			// If more than one thread might be started at this start statement,
 			// and this start statement may be run more than once,
 			// then add this list of methods to MHPLists *AGAIN*
-			System.out.println("Start Stmt " + startStmt.toString() + 
-				" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
+			if(optionPrintDebug)
+				System.out.println("Start Stmt " + startStmt.toString() + 
+					" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
 			if(mayStartMultipleThreadObjects && mayBeRunMultipleTimes)
 			{
 				MHPLists.add(((ArrayList) threadMethods).clone());
-				System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
+				if(optionPrintDebug)
+					System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
 			}
 			threadNum++;
 		}
 
 		// do same for main method
-			List mainMethods = new ArrayList();
-			MHPLists.add(mainMethods);
-			mainMethods.add(mainMethod);
-			// get all the successors, add to threadMethods
-			int methodNum = 0;
-			while(methodNum < mainMethods.size())
+		List mainMethods = new ArrayList();
+		MHPLists.add(mainMethods);
+		mainMethods.add(mainMethod);
+		// get all the successors, add to threadMethods
+		int methodNum = 0;
+		while(methodNum < mainMethods.size())
+		{
+			Iterator succMethodsIt = pecg.getSuccsOf(mainMethods.get(methodNum)).iterator();
+			while(succMethodsIt.hasNext())
 			{
-				Iterator succMethodsIt = pecg.getSuccsOf(mainMethods.get(methodNum)).iterator();
-				while(succMethodsIt.hasNext())
+				SootMethod method = (SootMethod) succMethodsIt.next();
+				// if all edges into this are of Kind THREAD, ignore it
+				boolean ignoremethod = true;
+				Iterator edgeInIt = callGraph.edgesInto(method);
+				while(edgeInIt.hasNext())
 				{
-					SootMethod method = (SootMethod) succMethodsIt.next();
-					// if all edges into this are of Kind THREAD, ignore it
-					boolean ignoremethod = true;
-					Iterator edgeInIt = callGraph.edgesInto(method);
-					while(edgeInIt.hasNext())
-					{
-						if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
-							ignoremethod = false;
-					}
-					if(!ignoremethod && !mainMethods.contains(method))
-						mainMethods.add(method);
+					if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
+						ignoremethod = false;
 				}
-				methodNum++;
+				if(!ignoremethod && !mainMethods.contains(method))
+					mainMethods.add(method);
 			}
+			methodNum++;
+		}
+		if(optionPrintDebug)
 			System.out.println("main   : " + mainMethods.toString());
-//*/    	
 
     	// *** Calculate locking scheme ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
@@ -444,12 +404,6 @@ public class TransactionTransformer extends SceneTransformer
 	    				rw.union(tn1.write.intersection(tn2.read));
 	    				rw.union(tn1.read.intersection(tn2.write));
 	    				int size = rw.size();
-//	    				if(tn1.write.hasNonEmptyIntersection(tn2.write))
-//	    					size += tn1.write.intersection(tn2.write).size();
-//	    				if(tn1.write.hasNonEmptyIntersection(tn2.read))
-//	    					size += tn1.write.intersection(tn2.read).size();
-//	    				if(tn1.read.hasNonEmptyIntersection(tn2.write))
-//	    					size += tn1.read.intersection(tn2.write).size();
 	    				
 	    				// Record this 
 	    				tn1.edges.add(new DataDependency(tn2, size, rw));
@@ -499,14 +453,14 @@ public class TransactionTransformer extends SceneTransformer
 	    		// If, after comparing to all other transactions, we have no group:
 	    		if(tn1.setNumber == 0)
 	    		{
-	    			if(true) //mayHappenInParallel(tn1, tn1))
+	    			if(mayHappenInParallel(tn1, tn1))
 	    			{
 	    				tn1.setNumber = nextGroup;
 	    				nextGroup++;
 	    			}
 	    			else
 	    			{
-//	    				tn1.setNumber = -1; // delete transactional region
+	    				tn1.setNumber = -1; // delete transactional region, it is (AIS~D without locking)
 	    			}
 	    		}	    			
     		}
@@ -529,7 +483,13 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
 
-		// For each transaction group, if all RW Dependencies are fields of the same object, then that object should be used for synchronization
+		// For each transaction group, if all RW Dependencies are POSSIBLY fields of the same object,
+		// then check if they are DEFINITELY fields of the same object
+		// LIF (Local Info Flow)
+		
+		
+		// If, for all transactions in a group, all RW dependencies are definitely fields of the same object,
+		// then that object should be used for synchronization
 		
 
 		// Print topological graph in format of graphviz package

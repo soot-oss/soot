@@ -281,18 +281,21 @@ public class PegCallGraph implements DirectedGraph{
 	
 	public List getTrimSuccsOf(Object s){
 		if (!methodToSuccsTrim.containsKey(s))
-			throw new RuntimeException("Invalid method"+s);
+			return java.util.Collections.EMPTY_LIST;
+//			throw new RuntimeException("Invalid method"+s);
 		return (List)methodToSuccsTrim.get(s);
 	}
 	public List getSuccsOf(Object s){
 		if (!methodToSuccs.containsKey(s))
-			throw new RuntimeException("Invalid method"+s);
+			return java.util.Collections.EMPTY_LIST;
+//			throw new RuntimeException("Invalid method"+s);
 		return (List)methodToSuccs.get(s);
 	}
 	
 	public List getPredsOf(Object s){
 		if (!methodToPreds.containsKey(s))	
-			throw new RuntimeException("Invalid method"+s);
+			return java.util.Collections.EMPTY_LIST;
+//			throw new RuntimeException("Invalid method"+s);
 		return (List)methodToPreds.get(s);
 	}
 	public Iterator iterator(){

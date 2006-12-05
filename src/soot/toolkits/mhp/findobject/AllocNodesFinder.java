@@ -26,14 +26,16 @@ import java.util.*;
 public class AllocNodesFinder{
 	
 	private Set allocNodes;
-	private Set  multiObjAllocNodes;
+	private Set  multiRunAllocNodes;
 	private Set multiCalledMethods;
 	private HashMap methodsToMultiObjsSites;
+	PAG pag;
 	
-	public  AllocNodesFinder(PegCallGraph pcg, CallGraph cg){
+	public  AllocNodesFinder(PegCallGraph pcg, CallGraph cg, PAG pag){
 		//System.out.println("===inside AllocNodesFinder===");
+		this.pag = pag;
 		allocNodes = new HashSet();
-		multiObjAllocNodes = new HashSet();
+		multiRunAllocNodes = new HashSet();
 		multiCalledMethods = new HashSet();
 		methodsToMultiObjsSites = new HashMap();
 		MultiCalledMethods mcm = new MultiCalledMethods(pcg, multiCalledMethods);
@@ -60,13 +62,13 @@ public class AllocNodesFinder{
 							Value rightOp = ((AssignStmt)unit).getRightOp();
 							
 							Type type = ((NewExpr)rightOp).getType();
-							AllocNode allocNode = Arguments.getPag().makeAllocNode(
+							AllocNode allocNode = pag.makeAllocNode(
 									PointsToAnalysis.STRING_NODE,
 									RefType.v( "java.lang.String" ), null );
-							//AllocNode allocNode = Arguments.getPag().makeAllocNode((NewExpr)rightOp, type, sm);
+							//AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
 							//  System.out.println("make alloc node: "+allocNode);
 							allocNodes.add(allocNode);
-							multiObjAllocNodes.add(allocNode);
+							multiRunAllocNodes.add(allocNode);
 							
 						}
 						
@@ -74,10 +76,10 @@ public class AllocNodesFinder{
 							Value rightOp = ((DefinitionStmt)unit).getRightOp();
 							if (rightOp instanceof NewExpr){
 								Type type = ((NewExpr)rightOp).getType();
-								AllocNode allocNode = Arguments.getPag().makeAllocNode((NewExpr)rightOp, type, sm);
+								AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
 								//System.out.println("make alloc node: "+allocNode);
 								allocNodes.add(allocNode);
-								multiObjAllocNodes.add(allocNode);
+								multiRunAllocNodes.add(allocNode);
 							}
 						}
 					} 
@@ -95,10 +97,10 @@ public class AllocNodesFinder{
 						//System.out.println("unit: "+unit);
 						
 						if (clinitMethods.contains(sm)  && unit instanceof AssignStmt){
-							AllocNode allocNode = Arguments.getPag().makeAllocNode(
+							AllocNode allocNode = pag.makeAllocNode(
 									PointsToAnalysis.STRING_NODE,
 									RefType.v( "java.lang.String" ), null );
-							//   AllocNode allocNode = Arguments.getPag().makeAllocNode((NewExpr)rightOp, type, sm);
+							//   AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
 							//System.out.println("make alloc node: "+allocNode);
 							allocNodes.add(allocNode);
 							/*if (fs.contains(unit)){
@@ -110,12 +112,12 @@ public class AllocNodesFinder{
 							Value rightOp = ((DefinitionStmt)unit).getRightOp();
 							if (rightOp instanceof NewExpr){
 								Type type = ((NewExpr)rightOp).getType();
-								AllocNode allocNode = Arguments.getPag().makeAllocNode((NewExpr)rightOp, type, sm);
+								AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
 								//System.out.println("make alloc node: "+allocNode);
 								allocNodes.add(allocNode);
 								if (fs.contains(unit)){
 									//System.out.println("fs contains: "+unit);
-									multiObjAllocNodes.add(allocNode);
+									multiRunAllocNodes.add(allocNode);
 								}
 							}
 						}
@@ -127,13 +129,21 @@ public class AllocNodesFinder{
 		
 		
 		
-		Arguments.setAllocNodes((Set)allocNodes);
-		Arguments.setMultiRunAllocNodes((Set)multiObjAllocNodes);
+//		Arguments.setAllocNodes((Set)allocNodes);
+//		Arguments.setMultiRunAllocNodes((Set)multiRunAllocNodes);
 		//System.out.println("end ==multiAllocNodes: "+multiRunAllocNodes);
 	}
-	public Set getMultiObjAllocNodes(){
-		return  (Set)multiObjAllocNodes;
+	
+	public Set getAllocNodes()
+	{
+		return (Set) allocNodes;
 	}
+	
+	public Set getMultiRunAllocNodes()
+	{
+		return  (Set) multiRunAllocNodes;
+	}
+	
 	public Set getMultiCalledMethods()
 	{
 		return (Set) multiCalledMethods;

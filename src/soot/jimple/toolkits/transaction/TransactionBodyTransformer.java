@@ -127,6 +127,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		while(fsIt.hasNext())
 		{
 			Transaction tn = ((TransactionFlowPair) fsIt.next()).tn;
+			if(tn.setNumber == -1)
+				continue; // this tn should be deleted... for now just skip it!
 			
 /*			// Print information about this transaction for debugging
 			G.v().out.print("Transaction " + tn.name + "  ");

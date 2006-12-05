@@ -31,9 +31,13 @@ import soot.tagkit.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+// NOTE that this graph builder will only run to completion if all virtual
+// method calls can be resolved to a single target method.  This is a severely
+// limiting caveat.
+
 public class PegChain extends HashChain{
 	
-	
+	CallGraph callGraph;
 	private List heads = new ArrayList();
 	private List tails= new ArrayList() ;
 	private FlowSet pegNodes = new ArraySparseSet();
@@ -45,9 +49,28 @@ public class PegChain extends HashChain{
 	public Body body; // body from which this peg chain was created
 	// private Map startToThread;
 	
+	Hierarchy hierarchy;
+	PAG pag;
+	Set threadAllocSites;
+	Set methodsNeedingInlining;
+	Set allocNodes;
+	List inlineSites;
+	Map synchObj;
+	Set multiRunAllocNodes;
+	Map allocNodeToObj;
 	
-	PegChain(Body unitBody, SootMethod sm,String threadName, boolean addBeginNode, PegGraph pegGraph)
+	PegChain(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set threadAllocSites, Set methodsNeedingInlining, Set allocNodes, List inlineSites, Map synchObj, Set multiRunAllocNodes, Map allocNodeToObj, Body unitBody, SootMethod sm,String threadName, boolean addBeginNode, PegGraph pegGraph)
 	{
+		this.allocNodeToObj = allocNodeToObj;
+		this.multiRunAllocNodes = multiRunAllocNodes;
+		this.synchObj = synchObj;
+		this.inlineSites = inlineSites;
+		this.allocNodes = allocNodes;
+		this.methodsNeedingInlining = methodsNeedingInlining;
+		this.threadAllocSites = threadAllocSites;
+		this.hierarchy = hierarchy;
+		this.pag = pag;
+		this.callGraph = callGraph;
 		body = unitBody;
 		pg = pegGraph;
 		waitingNodes = pegGraph.getWaitingNodes();
@@ -214,7 +237,7 @@ public class PegChain extends HashChain{
 			{
 				//System.out.println("Test method is: "+method);
 				//System.out.println("DeclaringClass: "+method.getDeclaringClass());
-				List superClasses = Arguments.getHierarchy().getSuperclassesOfIncluding(method.getDeclaringClass());
+				List superClasses = hierarchy.getSuperclassesOfIncluding(method.getDeclaringClass());
 				Iterator it = superClasses.iterator();
 				
 				while (it.hasNext())
@@ -257,7 +280,7 @@ public class PegChain extends HashChain{
 					//System.out.println("====start method: "+method);
 					//  System.out.println("unit: "+unit);
 					List mayAlias = null;
-					PointsToSetInternal pts = (PointsToSetInternal)Arguments.getPag().reachingObjects((Local)value );
+					PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
 					mayAlias = findMayAlias(pts, unit);
 					
 					JPegStmt pegStmt = new StartStmt(value.toString(),threadName,unit, graph, sm);
@@ -288,7 +311,7 @@ public class PegChain extends HashChain{
 						//			if (method.getDeclaringClass()
 						/*
 						 TargetMethodsFinder tmd = new TargetMethodsFinder();
-						 List targetList = tmd.find(unit, Arguments.getCallGraph(), false);
+						 List targetList = tmd.find(unit, callGraph, false);
 						 SootMethod meth=null;
 						 if (targetList.size()>1) {
 						 System.out.println("targetList: "+targetList);
@@ -297,7 +320,7 @@ public class PegChain extends HashChain{
 						 else
 						 meth = (SootMethod)targetList.get(0);
 						 */
-						SootMethod meth = Arguments.getHierarchy().resolveConcreteDispatch(maySootClass, method.getDeclaringClass().getMethodByName("run"));
+						SootMethod meth = hierarchy.resolveConcreteDispatch(maySootClass, method.getDeclaringClass().getMethodByName("run"));
 						//System.out.println("==method is: "+meth);
 						
 						Body mBody = meth.getActiveBody();
@@ -310,7 +333,7 @@ public class PegChain extends HashChain{
 						
 						//map caller ()-> start pegStmt
 						pg.getThreadNameToStart().put(callerName, pegStmt);
-						PegChain newChain = new PegChain( mBody, sm, callerName, true, pg);
+						PegChain newChain = new PegChain( callGraph, hierarchy, pag, threadAllocSites, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, mBody, sm, callerName, true, pg);
 						
 						pg.getAllocNodeToThread().put(allocNode, newChain);
 						
@@ -333,7 +356,7 @@ public class PegChain extends HashChain{
 					{
 						
 						//If the may-alias of "join" has more that one elements, we can NOT kill anything.
-						PointsToSetInternal pts = (PointsToSetInternal)Arguments.getPag().reachingObjects((Local)value );
+						PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
 						//System.out.println("pts: "+pts);
 						List mayAlias = findMayAlias(pts, unit);
 						
@@ -343,7 +366,7 @@ public class PegChain extends HashChain{
 							if (mayAlias.size() <1){
 								//System.out.println("===points to set: "+pts);
 								//System.out.println("the size of mayAlias <0 : \n"+mayAlias);	
-								throw new RuntimeException("==threadAllocaSits==\n"+Arguments.getThreadAllocSites().toString());
+								throw new RuntimeException("==threadAllocaSits==\n"+threadAllocSites.toString());
 								
 							}
 							
@@ -434,7 +457,7 @@ public class PegChain extends HashChain{
 									}
 									else{
 										TargetMethodsFinder tmd = new TargetMethodsFinder();
-										targetList = tmd.find(unit, Arguments.getCallGraph(), true, false);
+										targetList = tmd.find(unit, callGraph, true, false);
 										
 										
 										
@@ -442,7 +465,11 @@ public class PegChain extends HashChain{
 											System.out.println("target: "+targetList);
 											System.out.println("unit is: "+unit);
 											System.err.println("exit because target is bigger than 1.");
-											System.exit(1);
+											System.exit(1); // What SHOULD be done is that all possible targets are inlined 
+															// as though each method body is in a big switch on the type of
+															// the receiver object.  The infrastructure to do this is not
+															// currently available, so instead we exit.  Continuing would
+															// yield wrong answers.
 										}
 										else if(targetList.size() < 1){
 											System.err.println("targetList size <1");
@@ -453,7 +480,7 @@ public class PegChain extends HashChain{
 											targetMethod = (SootMethod)targetList.get(0);
 									}
 									
-									if (Arguments.getMethodsNeedingInlining() == null)
+									if (methodsNeedingInlining == null)
 									{
 										System.err.println("methodsNeedingInlining is null at " + unit);
 									}
@@ -461,7 +488,7 @@ public class PegChain extends HashChain{
 									{
 										System.err.println("targetMethod is null at " + unit);
 									}
-									else if (Arguments.getMethodsNeedingInlining().contains(targetMethod))
+									else if (methodsNeedingInlining.contains(targetMethod))
 									{					
 										inlineMethod(targetMethod, objName, name, 
 												threadName,unit, graph, 
@@ -560,19 +587,10 @@ public class PegChain extends HashChain{
 		// returns a list of reaching objects' AllocNodes that are contained in the set of known AllocNodes
 		List list = new ArrayList();
 		Iterator it =  makePtsIterator(pts);
-		Set allocNodes = Arguments.getAllocNodes();
 		while (it.hasNext()){
 			AllocNode obj = (AllocNode)it.next();
 			
-//			if (allocNodes.contains(obj)){
 				list.add(obj);
-//			}
-//			else{
-				// This simply means that the object in question was not allocated by application code.
-				// It may have been allocated by the library, or by the JVM.
-//				System.out.println("Unknown alloc node: "+obj + " for unit: "+unit);
-//				throw new RuntimeException("===Error! allocNode does not contains "+obj + "for unit: "+unit);
-//			}
 		}
 		return (List)list;
 	}
@@ -604,7 +622,7 @@ public class PegChain extends HashChain{
 		addAndPut(unit, pegStmt);
 		
 		
-		PegGraph pG = new PegGraph( unitBody, threadName, targetMethod,true,false );
+		PegGraph pG = new PegGraph( callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, unitBody, threadName, targetMethod,true,false );
 //		pg.addPeg(pG, this); // RLH
 		//PegToDotFile printer1 = new PegToDotFile(pG, false, targetMethod.getName());
 		//System.out.println("NeedInlining for "+targetMethod +": "+pG.getNeedInlining());
@@ -615,14 +633,13 @@ public class PegChain extends HashChain{
 		list.add(this);
 		list.add(pg);
 		list.add(pG);
-		Arguments.getInlineSites().add(list);
+		inlineSites.add(list);
 		//System.out.println("----add list to inlineSites !---------");
 		//}
 		
 	}
 	private String findSynchObj(SootMethod targetMethod){
 		
-		Map synchObj = Arguments.getSynchObj();
 		if (synchObj.containsKey(targetMethod)){
 			return (String)synchObj.get(targetMethod);
 		}
@@ -751,13 +768,12 @@ public class PegChain extends HashChain{
 	}
 	private String makeObjName(Value value, Type type, Unit unit){
 		//System.out.println("unit: "+unit);
-		PointsToSetInternal pts = (PointsToSetInternal)Arguments.getPag().reachingObjects((Local)value );
+		PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
 		//System.out.println("pts for makeobjname: "+pts);
 		List mayAlias = findMayAlias(pts, unit);
 		
 		String objName =null;
-		Set multiObjAllocNodes  = Arguments.getMultiRunAllocNodes();
-		Map allocNodeToObj = Arguments.getAllocNodeToObj();
+		Set multiObjAllocNodes  = multiRunAllocNodes;
 		if (allocNodeToObj == null) throw new RuntimeException("allocNodeToObj is null!");
 		
 		if (mayAlias.size() == 1){

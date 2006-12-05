@@ -61,6 +61,9 @@ import soot.tagkit.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
+// NOTE that this graph builder will only run to completion if all virtual
+// method calls can be resolved to a single target method.  This is a severely
+// limiting caveat.
 
 public class PegGraph implements DirectedGraph
 //public class PegGraph extends SimplePegGraph
@@ -104,6 +107,11 @@ public class PegGraph implements DirectedGraph
 	protected Map allocNodeToThread;
 	protected Map joinStmtToThread;
 //	protected int count=0;
+
+	Set allocNodes;
+	List inlineSites;
+	Map synchObj;
+	Set multiRunAllocNodes;
 	
 	/**
 	 *   Constructs  a graph for the units found in the provided
@@ -117,7 +125,7 @@ public class PegGraph implements DirectedGraph
 	 *   @param PointsToAnalysis   Using point to analysis (SPARK package) to improve the precision of results
 	 */
 	
-	public PegGraph( Body unitBody, 
+	public PegGraph(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set methodsNeedingInlining, Set allocNodes, List inlineSites, Map synchObj, Set multiRunAllocNodes, Map allocNodeToObj, Body unitBody, 
 			SootMethod sm,
 			boolean addExceptionEdges,
 			boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
@@ -126,7 +134,7 @@ public class PegGraph implements DirectedGraph
 		 boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
 		 */
 		
-		this(  unitBody,"main",  sm, addExceptionEdges, 
+		this( callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, unitBody, "main",  sm, addExceptionEdges, 
 				dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock);
 	}
 	
@@ -148,10 +156,19 @@ public class PegGraph implements DirectedGraph
 	 *   @param Hierarchy          Using class hierarchy analysis to find the run method of started thread
 	 *   @param PointsToAnalysis   Using point to analysis (SPARK package) to improve the precision of results
 	 */
-	public PegGraph(Body unitBody,String threadName,
+	public PegGraph(CallGraph callGraph, Hierarchy hierarchy, PAG pag, Set methodsNeedingInlining, Set allocNodes, List inlineSites, Map synchObj, Set multiRunAllocNodes, Map allocNodeToObj, Body unitBody,String threadName,
 			SootMethod sm,boolean addExceEdge,
 			boolean dontAddEdgeFromStmtBeforeAreaOfProtectionToCatchBlock) {
-		
+		this.allocNodeToObj = allocNodeToObj;
+		this.multiRunAllocNodes = multiRunAllocNodes;
+		this.synchObj = synchObj;
+		this.inlineSites = inlineSites;
+		this.allocNodes = allocNodes;
+		this.methodsNeedingInlining = methodsNeedingInlining;
+		this.hierarchy = hierarchy;
+		this.pag = pag;
+		this.callGraph = callGraph;
+
 		logFile = new File("log.txt");
 		try{
 			fileWriter = new FileWriter(logFile);
@@ -166,9 +183,9 @@ public class PegGraph implements DirectedGraph
 		exceHandlers = new HashSet();
 		needInlining = true;
 		//this.arg = arg;
-		this.callGraph = Arguments.getCallGraph();
-		this.hierarchy = Arguments.getHierarchy();
-		this.pag = Arguments.getPag();
+		this.callGraph = callGraph;
+		this.hierarchy = hierarchy;
+		this.pag = pag;
 		this.addExceptionEdges = addExceEdge;
 		monitorObjs = new HashSet();
 		startToBeginNodes = new HashMap();
@@ -209,7 +226,7 @@ public class PegGraph implements DirectedGraph
 		
 		UnitGraph mainUnitGraph = new CompleteUnitGraph(body);
 		//	mainPegChain = new HashChain();
-		mainPegChain = new PegChain( body, sm, threadName,  true, this);
+		mainPegChain = new PegChain( callGraph, hierarchy, pag, threadAllocSites, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, body, sm, threadName,  true, this);
 				
 		//testPegChain();
 		
@@ -1572,7 +1589,7 @@ public class PegGraph implements DirectedGraph
 	
 	private Set findMayAliasThreads(PointsToSetInternal pts){
 		Set set = new HashSet();
-		Iterator it = Arguments.getAllocNodes().iterator();
+		Iterator it = allocNodes.iterator();
 		while (it.hasNext()){
 			AllocNode obj = (AllocNode)it.next();
 			if (pts.contains(obj)){

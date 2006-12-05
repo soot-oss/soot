@@ -73,7 +73,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis
 						
 						TargetMethodsFinder tmd = new TargetMethodsFinder();
 						//	targetList = tmd.find(unit, callGraph, false, true);
-						targetList = tmd.find(unit, Arguments.getCallGraph(), false, true);
+						targetList = tmd.find(unit, callGraph, false, true);
 					}
 					
 					
