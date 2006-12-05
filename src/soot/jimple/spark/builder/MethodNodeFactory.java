@@ -201,7 +201,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = pag.makeAllocNode(
             new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
-        VarNode prevVn = pag.makeLocalVarNode( prevAn, prevAn.getType(), null );
+        VarNode prevVn = pag.makeLocalVarNode( prevAn, prevAn.getType(), method );
         mpag.addInternalEdge( prevAn, prevVn );
         setResult( prevAn );
         while( true ) {
@@ -210,7 +210,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
             type = (ArrayType) t;
             AllocNode an = pag.makeAllocNode(
                 new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
-            VarNode vn = pag.makeLocalVarNode( an, an.getType(), null );
+            VarNode vn = pag.makeLocalVarNode( an, an.getType(), method );
             mpag.addInternalEdge( an, vn );
             mpag.addInternalEdge( vn, pag.makeFieldRefNode( prevVn, ArrayElement.v() ) );
             prevAn = an;
