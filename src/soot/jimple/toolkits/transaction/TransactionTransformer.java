@@ -227,9 +227,11 @@ public class TransactionTransformer extends SceneTransformer
 		Map startToAllocNodes = sjf.getStartToAllocNodes();
 		Map startToRunMethods = sjf.getStartToRunMethods();
 		Map startToContainingMethod = sjf.getStartToContainingMethod();
+		Map startToJoin = sjf.getStartToJoin();
 		
 		// Build MHP Lists
 		MHPLists = new ArrayList();
+		Map containingMethodToThreadMethods = new HashMap();
 		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
 		while(threadIt.hasNext())
@@ -305,6 +307,38 @@ public class TransactionTransformer extends SceneTransformer
 					mayBeRunMultipleTimes = true;
 			}
 
+			// If a run-many thread.start() statement is (always) associated with a join statement in the same method,
+			// then it may be possible to treat it as run-once, if this method is non-reentrant and called only
+			// by one thread (sounds strict, but actually this is the most common case)
+			if(mayBeRunMultipleTimes && startToJoin.containsKey(startStmt))
+			{
+				mayBeRunMultipleTimes = false; // well, actually, we don't know yet
+				methodNum = 0;
+				List containingMethodCalls = new ArrayList();
+				containingMethodCalls.add(startStmtMethod);
+				while(methodNum < containingMethodCalls.size()) // iterate over all methods in threadMethods, even as new methods are being added to it
+				{
+					Iterator succMethodsIt = pecg.getSuccsOf(containingMethodCalls.get(methodNum)).iterator();
+					while(succMethodsIt.hasNext())
+					{
+						SootMethod method = (SootMethod) succMethodsIt.next();
+						if(method == startStmtMethod)
+						{// this method is reentrant
+							mayBeRunMultipleTimes = true; // this time it's for sure
+							break;
+						}
+						if(!containingMethodCalls.contains(method))
+							containingMethodCalls.add(method);
+					}
+					methodNum++;
+				}
+				if(!mayBeRunMultipleTimes)
+				{// There's still one thing that might cause this to be run multiple times: if it can be run in parallel with itself
+				 // but we can't find that out 'till we're done
+					containingMethodToThreadMethods.put(startStmtMethod, threadMethods);
+				}
+			}
+
 			// If more than one thread might be started at this start statement,
 			// and this start statement may be run more than once,
 			// then add this list of methods to MHPLists *AGAIN*
@@ -346,7 +380,29 @@ public class TransactionTransformer extends SceneTransformer
 			methodNum++;
 		}
 		if(optionPrintDebug)
-			System.out.println("main   : " + mainMethods.toString());
+			System.out.println("MAIN   : " + mainMethods.toString());
+			
+		// Revisit the containing methods of start-join pairs that are non-reentrant but might be called in parallel
+		boolean addedNew = true;
+		while(addedNew)
+		{
+			addedNew = false;
+			Iterator it = containingMethodToThreadMethods.entrySet().iterator();
+			while(it.hasNext())
+			{
+				Map.Entry e = (Map.Entry) it.next();
+				SootMethod someStartMethod = (SootMethod) e.getKey();
+				List someThreadMethods = (List) e.getValue();
+				if(mayHappenInParallel(someStartMethod, someStartMethod))
+				{
+					MHPLists.add(((ArrayList) someThreadMethods).clone());
+					containingMethodToThreadMethods.remove(someStartMethod);
+					if(optionPrintDebug)
+						G.v().out.println("THREAD-REVIVED: " + someThreadMethods);
+					addedNew = true;
+				}
+			}
+		}
 
     	// *** Calculate locking scheme ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
@@ -460,7 +516,7 @@ public class TransactionTransformer extends SceneTransformer
 	    			}
 	    			else
 	    			{
-	    				tn1.setNumber = -1; // delete transactional region, it is (AIS~D without locking)
+	    				tn1.setNumber = -1; // delete transactional region
 	    			}
 	    		}	    			
     		}
@@ -584,6 +640,11 @@ public class TransactionTransformer extends SceneTransformer
     
     public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
     {
+    	return mayHappenInParallel(tn1.method, tn2.method);
+    }
+    
+    public boolean mayHappenInParallel(SootMethod m1, SootMethod m2)
+    {
     	if(MHPLists == null)
     	{
     		return true;
@@ -592,11 +653,11 @@ public class TransactionTransformer extends SceneTransformer
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
 		{
-			if(((List)MHPLists.get(i)).contains(tn1.method))
+			if(((List)MHPLists.get(i)).contains(m1))
 			{
 				for(int j = 0; j < size; j++)
 				{
-					if(((List)MHPLists.get(j)).contains(tn2.method) && i != j)
+					if(((List)MHPLists.get(j)).contains(m2) && i != j)
 					{
 						return true;
 					}

@@ -28,6 +28,7 @@ public class StartJoinFinder
 	
 	Map startToRunMethods;
 	Map startToAllocNodes;
+	Map startToJoin;
 	Map startToContainingMethod;
 	
 	public StartJoinFinder(PAG pag)
@@ -37,6 +38,7 @@ public class StartJoinFinder
 
 		startToRunMethods = new HashMap();
 		startToAllocNodes = new HashMap();
+		startToJoin = new HashMap();
 		startToContainingMethod = new HashMap();
 		
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -59,6 +61,7 @@ public class StartJoinFinder
     				joinStatements.addAll(sja.getJoinStatements());
     				startToRunMethods.putAll(sja.getStartToRunMethods());
     				startToAllocNodes.putAll(sja.getStartToAllocNodes());
+    				startToJoin.putAll(sja.getStartToJoin());
     				Iterator startIt = sja.getStartStatements().iterator();
     				while(startIt.hasNext())
     				{
@@ -88,6 +91,11 @@ public class StartJoinFinder
 	public Map getStartToAllocNodes()
 	{
 		return startToAllocNodes;
+	}
+	
+	public Map getStartToJoin()
+	{
+		return startToJoin;
 	}
 	
 	public Map getStartToContainingMethod()

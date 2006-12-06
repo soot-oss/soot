@@ -143,6 +143,11 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		return startToAllocNodes;
 	}
 	
+	public Map getStartToJoin()
+	{
+		return startToJoin;
+	}
+	
 	protected void merge(Object in1, Object in2, Object out)
 	{
 		FlowSet inSet1 = (FlowSet) in1;
