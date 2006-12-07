@@ -445,7 +445,6 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				//STMT2
 				//done by simply replacing the leftop in the original stmt
 				((GAssignStmt) defs.get(0)).setLeftOp(newLocal);
-
 				
 				
 				//STMT3
@@ -475,8 +474,10 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 
 				//the def is at (GAssignStmt) defs.get(0)
 				//its parent is ASTStatementSequence and its parent is now needed
-				ASTParentNodeFinder parentFinder = new ASTParentNodeFinder();
+				soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder parentFinder = 
+					new soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder();
 				node.apply(parentFinder);
+				
 				
 				Object parent = parentFinder.getParentOf(defs.get(0));
 				if(!(parent instanceof ASTStatementSequenceNode)){
@@ -530,7 +531,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 								newStmts.add(assignStmt1);
 								newStmts.addAll(stmtsLast);
 								someNode.setStatements(newStmts);
-								System.out.println("here1");
+								//System.out.println("here1");
 								//check if problem is solved else remove the assign and change parents
 								must = new MustMayInitialize(node,MustMayInitialize.MUST);
 								if(!must.isMustInitialized(field)){
@@ -546,7 +547,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 									ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
 									ancestorSubBody.add(index+1,lastNode);
 									//node.replaceBody(body);
-									System.out.println("here2");
+									//System.out.println("here2");
 									//check if problem is solved else remove the assign and change parents
 									must = new MustMayInitialize(node,MustMayInitialize.MUST);
 									if(!must.isMustInitialized(field)){

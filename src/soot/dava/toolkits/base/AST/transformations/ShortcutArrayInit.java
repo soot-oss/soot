@@ -45,8 +45,13 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 		methodNode=node;
 	}
 	
+	public void debug(String msg){
+		if(DEBUG)
+			System.out.println("[SHortcutArrayInit]  DEBUG"+msg);
+	}
 	
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
+		debug("inASTStatementSequenceNode");
 		List stmts = node.getStatements();
 		Iterator it = stmts.iterator();
 		
@@ -66,10 +71,10 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(! (rightValue instanceof NewArrayExpr))
 				continue;
 
-			if(DEBUG){
-				System.out.println("Found a new ArrayExpr"+rightValue);
-				System.out.println("Type of array is:"+rightValue.getType());
-			}
+
+			debug("Found a new ArrayExpr"+rightValue);
+			debug("Type of array is:"+rightValue.getType());
+			
 				
 			//get type out
 			Type arrayType = rightValue.getType();
@@ -80,6 +85,11 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(! (size instanceof IntConstant))
 				continue;
 			
+			if(((IntConstant)size).value==0){
+				debug("Size of array is 0 dont do anything");
+				continue;
+			}
+				
 			if(DEBUG)
 				System.out.println("Size of array is: "+((IntConstant)size).value);
 
@@ -256,6 +266,10 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(! (size instanceof IntConstant))
 				continue;
 			
+			if( ((IntConstant)size).value==0){
+				debug("Found value to be 0 doing nothing");
+				continue;
+			}
 			if(DEBUG)
 				System.out.println("Size of array is: "+((IntConstant)size).value);
 
