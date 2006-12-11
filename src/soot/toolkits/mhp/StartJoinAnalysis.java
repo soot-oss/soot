@@ -7,6 +7,7 @@ import soot.toolkits.mhp.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;
+import soot.jimple.toolkits.transaction.*; // for LIF, which really should be somewhere else
 import soot.tagkit.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
@@ -44,6 +45,9 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		startToRunMethods = new HashMap();
 		startToAllocNodes = new HashMap();
 		startToJoin = new HashMap();
+		
+		PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
+				LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g, sm);
 		
 		// Get lists of start and join statements
 		doAnalysis();
@@ -87,19 +91,25 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				Stmt join = (Stmt) joinIt.next();
 				Value joinObject = ((InstanceInvokeExpr) (join).getInvokeExpr()).getBase();
 				
-				PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
-
 				// If startObject and joinObject MUST be the same, and if join post-dominates start
-				if(startObject.equivTo(joinObject) && ((FlowSet) getFlowBefore((Unit)join)).contains(start))
+/*				if(startObject.equivTo(joinObject) && ((FlowSet) getFlowBefore((Unit)join)).contains(start))
 				{
+					G.v().out.println("According to StartJoinAnalysis, start and join are matched: " + "JOIN " + join + " START " + start);
 					if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join))
 					{
 						startToJoin.put(start, join); // then this join always joins this start's thread
-						G.v().out.println("JOIN " + join + " DOES     POSTDOMINATE START " + start);
 					}
 					else
 					{
-						G.v().out.println("JOIN " + join + " DOES NOT POSTDOMINATE START " + start);
+					}
+				}
+*/
+				if( lif.mustPointToSameObj( start, (Local) startObject, join, (Local) joinObject ) )
+				{
+					if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join))
+					{
+						G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
+						startToJoin.put(start, join); // then this join always joins this start's thread
 					}
 				}
 			}
