@@ -3,13 +3,7 @@ package soot.jimple.toolkits.transaction;
 import java.util.*;
 import soot.*;
 import soot.util.Chain;
-import soot.jimple.Stmt;
-import soot.jimple.Jimple;
-import soot.jimple.GotoStmt;
-import soot.jimple.IdentityStmt;
-import soot.jimple.RetStmt;
-import soot.jimple.ReturnStmt;
-import soot.jimple.ReturnVoidStmt;
+import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.toolkits.scalar.*;
 
@@ -22,11 +16,13 @@ public class TransactionBodyTransformer extends BodyTransformer
 
     private FlowSet fs;
     private int maxLockObjs;
+    private boolean[] useGlobalLock;
     
-    public void setDetails(FlowSet fs, int maxLockObjs)
+    public void setDetails(FlowSet fs, int maxLockObjs, boolean[] useGlobalLock)
     {
     	this.fs = fs;
-    	this.maxLockObjs = maxLockObjs; 
+    	this.maxLockObjs = maxLockObjs;
+    	this.useGlobalLock = useGlobalLock;
     }
     
     public static boolean[] addedGlobalLockObj = null;
@@ -40,6 +36,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Iterator unitIt = units.iterator();
 		Unit firstUnit = (Unit) units.getFirst();
 		Unit lastUnit = (Unit) units.getLast();
+		
+		// FIND THE FIRST AND LAST UNITS
 		// skip firstUnit past all the identity refs at the beginning
 		while(firstUnit instanceof IdentityStmt)
 		{
@@ -68,20 +66,23 @@ public class TransactionBodyTransformer extends BodyTransformer
         // Get references to them if they do already exist.
   		for(int i = 1; i < maxLockObjs; i++)
    		{
-   			if (!addedGlobalLockObj[i])
-            {
-            	// Add globalLockObj field
-            	globalLockObj[i] = new SootField("globalLockObj" + i, RefType.v("java.lang.Object"), 
-                                      Modifier.STATIC | Modifier.PUBLIC);
-            	Scene.v().getMainClass().addField(globalLockObj[i]);
+   			if( useGlobalLock[i - 1] )
+   			{
+	   			if( !addedGlobalLockObj[i] )
+	            {
+	            	// Add globalLockObj field
+	            	globalLockObj[i] = new SootField("globalLockObj" + i, RefType.v("java.lang.Object"), 
+	                                      Modifier.STATIC | Modifier.PUBLIC);
+	            	Scene.v().getMainClass().addField(globalLockObj[i]);
 
-            	addedGlobalLockObj[i] = true;
-            }
-            else
-            {
-            	globalLockObj[i] = Scene.v().getMainClass().getFieldByName("globalLockObj" + i);
-            }
-   		}
+	            	addedGlobalLockObj[i] = true;
+	            }
+	            else
+	            {
+	            	globalLockObj[i] = Scene.v().getMainClass().getFieldByName("globalLockObj" + i);
+				}
+			}
+		}
    		
    		// If the current method is the main method, for each global lock object,
    		// add a local lock object and assign it a new object.  Copy the new 
@@ -90,35 +91,38 @@ public class TransactionBodyTransformer extends BodyTransformer
         {
     		for(int i = 1; i < maxLockObjs; i++)
     		{
-				// add local lock obj
-    			addedLocalLockObj[i] = true;
-				b.getLocals().add(lockObj[i]);
-	            
-	            // assign new object to lock obj
-				units.insertBefore(
-					Jimple.v().newAssignStmt(
-						lockObj[i],
-						Jimple.v().newNewExpr(RefType.v("java.lang.Object"))),
-					(Stmt) firstUnit);
+    			if( useGlobalLock[i - 1] )
+    			{
+					// add local lock obj
+	    			addedLocalLockObj[i] = true;
+					b.getLocals().add(lockObj[i]);
+		            
+		            // assign new object to lock obj
+					units.insertBefore(
+						Jimple.v().newAssignStmt(
+							lockObj[i],
+							Jimple.v().newNewExpr(RefType.v("java.lang.Object"))),
+						(Stmt) firstUnit);
 
-				// initialize new object
-	            SootClass objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
-	            RefType type = RefType.v(objectClass);
-	            SootMethod initMethod = objectClass.getMethod("void <init>()");
-	            units.insertBefore(
-            		Jimple.v().newInvokeStmt(
-           				Jimple.v().newSpecialInvokeExpr(
-       						lockObj[i],
-       						initMethod.makeRef(), 
-       						Collections.EMPTY_LIST)),
-                	(Stmt) firstUnit);
-		        
-		        // copy new object to global static lock object (for use by other fns)
-	        	units.insertBefore(
-        			Jimple.v().newAssignStmt(
-       					Jimple.v().newStaticFieldRef(globalLockObj[i].makeRef()),
-       					lockObj[i]),
-       				(Stmt) firstUnit);
+					// initialize new object
+		            SootClass objectClass = Scene.v().loadClassAndSupport("java.lang.Object");
+		            RefType type = RefType.v(objectClass);
+		            SootMethod initMethod = objectClass.getMethod("void <init>()");
+		            units.insertBefore(
+	            		Jimple.v().newInvokeStmt(
+	           				Jimple.v().newSpecialInvokeExpr(
+	       						lockObj[i],
+	       						initMethod.makeRef(), 
+	       						Collections.EMPTY_LIST)),
+	                	(Stmt) firstUnit);
+			        
+			        // copy new object to global static lock object (for use by other fns)
+		        	units.insertBefore(
+	        			Jimple.v().newAssignStmt(
+	       					Jimple.v().newStaticFieldRef(globalLockObj[i].makeRef()),
+	       					lockObj[i]),
+	       				(Stmt) firstUnit);
+	       		}
     		}
         }
 		
@@ -168,12 +172,38 @@ public class TransactionBodyTransformer extends BodyTransformer
 			if(!addedLocalLockObj[tn.setNumber])
 			{
 				addedLocalLockObj[tn.setNumber] = true;
-				b.getLocals().add(lockObj[tn.setNumber]);
-				units.insertBefore(
-						Jimple.v().newAssignStmt(
-								lockObj[tn.setNumber],
-								Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef())),
-						(Stmt) firstUnit);
+				if( useGlobalLock[tn.setNumber - 1] )
+				{
+					b.getLocals().add(lockObj[tn.setNumber]);
+					units.insertBefore(
+							Jimple.v().newAssignStmt(
+									lockObj[tn.setNumber],
+									Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef())),
+							(Stmt) firstUnit);
+				}
+				else
+				{
+					if(tn.lockObject instanceof Ref)
+					{
+						b.getLocals().add(lockObj[tn.setNumber]);
+						if(tn.lockObjectArrayIndex != null)
+						{
+							units.insertBefore(
+									Jimple.v().newAssignStmt(
+											lockObj[tn.setNumber],
+											Jimple.v().newArrayRef(tn.lockObject, tn.lockObjectArrayIndex)),
+									(Stmt) firstUnit);
+						}
+						else
+						{												
+							units.insertBefore(
+									Jimple.v().newAssignStmt(
+											lockObj[tn.setNumber],
+											tn.lockObject),
+									(Stmt) firstUnit);
+						}
+					}
+				}
 			}
 			
 			// Add synchronization code
@@ -181,24 +211,36 @@ public class TransactionBodyTransformer extends BodyTransformer
 			// to add all necessary code (including ugly exception handling)
 			// For transactions from synchronized blocks, simply replace the
 			// monitorenter/monitorexit statements with new ones
+			
+			Value currentLockObject;				
+			if( useGlobalLock[tn.setNumber - 1] || tn.lockObject instanceof Ref)
+			{
+				currentLockObject = lockObj[tn.setNumber];
+			}
+			else
+			{
+				currentLockObject = tn.lockObject;
+			}
+
 			if(tn.wholeMethod)
 			{
 				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
-				synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, lockObj[tn.setNumber]);
+				synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) currentLockObject);
 			}
 			else
 			{
 				if(tn.begin == null) 
 					G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
-				units.insertBefore(Jimple.v().newEnterMonitorStmt(lockObj[tn.setNumber]), tn.begin);
+					
+				units.insertBefore(Jimple.v().newEnterMonitorStmt(currentLockObject), tn.begin);
 				units.remove(tn.begin);
+				
 				Iterator endsIt = tn.ends.iterator();
 				while(endsIt.hasNext())
 				{
 					Stmt sEnd = (Stmt) endsIt.next();
-						units.insertBefore(Jimple.v().newExitMonitorStmt(
-							lockObj[tn.setNumber]), sEnd);
-						units.remove(sEnd);
+					units.insertBefore(Jimple.v().newExitMonitorStmt(currentLockObject), sEnd);
+					units.remove(sEnd);
 				}
 			}
 			
@@ -212,7 +254,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 	            units.insertBefore(
             		Jimple.v().newInvokeStmt(
            				Jimple.v().newVirtualInvokeExpr(
-       						lockObj[tn.setNumber],
+       						(Local) currentLockObject,
        						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
        						Collections.EMPTY_LIST)),
                 	sNotify);
@@ -229,7 +271,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 	            units.insertBefore(
             		Jimple.v().newInvokeStmt(
            				Jimple.v().newVirtualInvokeExpr(
-       						lockObj[tn.setNumber],
+       						(Local) currentLockObject,
        						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
        						Collections.EMPTY_LIST)),
                 	sWait);

@@ -31,7 +31,7 @@ public class StartJoinFinder
 	Map startToJoin;
 	Map startToContainingMethod;
 	
-	public StartJoinFinder(PAG pag)
+	public StartJoinFinder(CallGraph callGraph, PAG pag)
 	{
 		startStatements = new HashSet();
 		joinStatements = new HashSet();
@@ -54,7 +54,7 @@ public class StartJoinFinder
 	    	    	Body b = method.retrieveActiveBody();
     		    	
     	    		// run the intraprocedural analysis
-    				StartJoinAnalysis sja = new StartJoinAnalysis(new ExceptionalUnitGraph(b), method, pag);
+    				StartJoinAnalysis sja = new StartJoinAnalysis(new ExceptionalUnitGraph(b), method, callGraph, pag);
     				
     				// Add to interprocedural results
     				startStatements.addAll(sja.getStartStatements());

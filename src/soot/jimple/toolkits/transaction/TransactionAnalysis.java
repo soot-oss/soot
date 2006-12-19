@@ -252,7 +252,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
-		           	
+        					           	
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
@@ -277,6 +277,10 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			        		G.v().out.print( "0" );
 			        	G.v().out.print("] ");
 					}
+					CodeBlockRWSet bothRW = new CodeBlockRWSet();
+					bothRW.union(stmtRead);
+					bothRW.union(stmtWrite);
+        			tn.unitToRWSet.put(unit, bothRW);
         		}
 			}
         }

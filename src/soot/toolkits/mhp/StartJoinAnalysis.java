@@ -33,7 +33,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 	Map startToAllocNodes;
 	Map startToJoin;
 	
-	public StartJoinAnalysis(UnitGraph g, SootMethod sm, PAG pag)
+	public StartJoinAnalysis(UnitGraph g, SootMethod sm, CallGraph callGraph, PAG pag)
 	{
 		super(g);
 		
@@ -47,7 +47,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		startToJoin = new HashMap();
 		
 		PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
-				LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g, sm);
+		LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g);
+		TransitiveTargets runMethodTargets = new TransitiveTargets( callGraph, new Filter(new RunMethodsPred()) );
 		
 		// Get lists of start and join statements
 		doAnalysis();
@@ -65,21 +66,31 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 			Value startObject = ((InstanceInvokeExpr) (start).getInvokeExpr()).getBase();
 			PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) startObject);
 			List mayAlias = getMayAliasList(pts);
-			if (mayAlias.size() < 1 )
+			if( mayAlias.size() < 1 )
 				continue; // If the may alias is empty, this must be dead code
-
-			// For each possible thread object, get run method and alloc node
+				
+			// For each possible thread object, get alloc node
 			Iterator mayAliasIt = mayAlias.iterator();
-			while(mayAliasIt.hasNext())
+			while( mayAliasIt.hasNext() )
 			{
 				AllocNode allocNode = (AllocNode)mayAliasIt.next();
-				SootClass possibleThreadClass = ((NewExpr)allocNode.getNewExpr()).getBaseType().getSootClass();
-				SootMethod runMethod = hierarchy.resolveConcreteDispatch(possibleThreadClass, 
-					start.getInvokeExpr().getMethod().getDeclaringClass().getMethodByName("run"));
-				runMethodsList.add(runMethod);
 				allocNodesList.add(allocNode);
+				NewExpr ne = (NewExpr) allocNode.getNewExpr();
+				
 			}
 			
+			Iterator mayRunIt = runMethodTargets.iterator( start );
+//			G.v().out.println("Edges out of " + start + " are:");
+			while( mayRunIt.hasNext() )
+			{
+				SootMethod runMethod = (SootMethod) mayRunIt.next();
+//				G.v().out.println("    " + runMethod.getSignature() + " AKA (" + runMethod.getSubSignature() + ")");
+				if( runMethod.getSubSignature().equals("void run()") )
+				{
+					runMethodsList.add(runMethod);
+				}
+			}
+
 			// Add this start stmt to both maps
 			startToRunMethods.put(start, runMethodsList);
 			startToAllocNodes.put(start, allocNodesList);

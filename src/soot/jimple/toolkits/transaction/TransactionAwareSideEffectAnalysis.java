@@ -183,7 +183,8 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		if(stmt.containsInvokeExpr())
 		{
-			for(int i = 0; i < stmt.getInvokeExpr().getArgCount(); i++)
+			int argCount = stmt.getInvokeExpr().getArgCount();
+			for(int i = 0; i < argCount; i++)
 				ret.union(addValue( stmt.getInvokeExpr().getArg(i), method, stmt ));
 		}
 		if( stmt instanceof AssignStmt ) {
@@ -208,7 +209,7 @@ public class TransactionAwareSideEffectAnalysis {
                 	Stmt next = (Stmt) rDefsIt.next();
                 	if(next instanceof DefinitionStmt)
 					{
-    					stmtRead = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
+    					stmtRead = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() ); // IS THIS RIGHT?  SHOULD WE BE USING REACHING OBJECTS INSTEAD???
 					}
 				}
 			}

@@ -33,10 +33,12 @@ import java.io.*;
 public class UnsynchronizedMhpAnalysis
 {
 	List MHPLists;
+	boolean optionPrintDebug;
 	
 	public UnsynchronizedMhpAnalysis()
 	{
 		MHPLists = new ArrayList();
+		optionPrintDebug = false;
 		buildMHPLists();
 	}
 
@@ -62,7 +64,7 @@ public class UnsynchronizedMhpAnalysis
 		Set multiCalledMethods = anf.getMultiCalledMethods();
 
 		// Find Thread.start() and Thread.join() statements (in live code)
-		StartJoinFinder sjf = new StartJoinFinder((PAG) pta); // does analysis
+		StartJoinFinder sjf = new StartJoinFinder(callGraph, (PAG) pta); // does analysis
 		Map startToAllocNodes = sjf.getStartToAllocNodes();
 		Map startToRunMethods = sjf.getStartToRunMethods();
 		Map startToContainingMethod = sjf.getStartToContainingMethod();
@@ -119,8 +121,8 @@ public class UnsynchronizedMhpAnalysis
 			
 			// Add this list of methods to MHPLists
 			MHPLists.add(threadMethods);
-//			if(optionPrintDebug)
-//				System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
+			if(optionPrintDebug)
+				System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
 			
 			// Find out if the "thread" in "thread.start()" could be more than one object
 			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1);
@@ -180,14 +182,14 @@ public class UnsynchronizedMhpAnalysis
 			// If more than one thread might be started at this start statement,
 			// and this start statement may be run more than once,
 			// then add this list of methods to MHPLists *AGAIN*
-//			if(optionPrintDebug)
-//				System.out.println("Start Stmt " + startStmt.toString() + 
-//					" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
+			if(optionPrintDebug)
+				System.out.println("Start Stmt " + startStmt.toString() + 
+					" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
 			if(mayStartMultipleThreadObjects && mayBeRunMultipleTimes)
 			{
 				MHPLists.add(((ArrayList) threadMethods).clone());
-//				if(optionPrintDebug)
-//					System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
+				if(optionPrintDebug)
+					System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
 			}
 			threadNum++;
 		}
@@ -217,8 +219,8 @@ public class UnsynchronizedMhpAnalysis
 			}
 			methodNum++;
 		}
-//		if(optionPrintDebug)
-//			G.v().out.println("MAIN   : " + mainMethods.toString());
+		if(optionPrintDebug)
+			G.v().out.println("MAIN   : " + mainMethods.toString());
 			
 		// Revisit the containing methods of start-join pairs that are non-reentrant but might be called in parallel
 		boolean addedNew = true;
@@ -235,8 +237,8 @@ public class UnsynchronizedMhpAnalysis
 				{
 					MHPLists.add(((ArrayList) someThreadMethods).clone());
 					containingMethodToThreadMethods.remove(someStartMethod);
-//					if(optionPrintDebug)
-//						G.v().out.println("THREAD-REVIVED: " + someThreadMethods);
+					if(optionPrintDebug)
+						G.v().out.println("THREAD-REVIVED: " + someThreadMethods);
 					addedNew = true;
 				}
 			}

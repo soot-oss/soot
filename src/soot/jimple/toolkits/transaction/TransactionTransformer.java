@@ -269,8 +269,8 @@ public class TransactionTransformer extends SceneTransformer
     	// Create an array of RW sets, one for each transaction group
     	// In each set, put the union of all RW Dependencies in the group
     	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
-    	for(int i = 0; i < nextGroup - 1; i++)
-    		rws[i] = new CodeBlockRWSet();
+    	for(int group = 0; group < nextGroup - 1; group++)
+    		rws[group] = new CodeBlockRWSet();
     	Iterator tnIt8 = AllTransactions.iterator();
     	while(tnIt8.hasNext())
     	{
@@ -283,19 +283,247 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
 
-		// For each transaction group, find out if all RW Dependencies are POSSIBLY fields of the same object
+		// For each transaction group, inspect RW Dependencies to find best possible locking object
+		boolean mayBeFieldsOfSameObject[] = new boolean[nextGroup - 1];
+		boolean mustBeFieldsOfSameObjectForAllTns[] = new boolean[nextGroup - 1];
+		Value lockObject[] = new Value[nextGroup - 1];
+		for(int group = 0; group < nextGroup - 1; group++)
+		{
+			// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
+			mayBeFieldsOfSameObject[group] = true;
+			lockObject[group] = null;
+			
+			if(rws[group].size() <= 0)
+			{
+				mayBeFieldsOfSameObject[group] = false;
+				continue;
+			}
+
+			if(rws[group].getGlobals().size() > 0)
+			{
+				mayBeFieldsOfSameObject[group] = false;
+				continue;
+			}
+			
+			Iterator grwsIt1 = rws[group].getFields().iterator();
+			while(grwsIt1.hasNext() && mayBeFieldsOfSameObject[group])
+			{
+				Object field1 = (Object) grwsIt1.next();
+				Iterator grwsIt2 = rws[group].getFields().iterator();
+				while(grwsIt2.hasNext() && mayBeFieldsOfSameObject[group])
+				{
+					Object field2 = (Object) grwsIt2.next();
+					if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
+					{
+						mayBeFieldsOfSameObject[group] = false;
+					}
+				}
+			}
+
+			if(rws[group].size() > 0 && mayBeFieldsOfSameObject[group])
+				mustBeFieldsOfSameObjectForAllTns[group] = true; // might be true
+			else
+				mustBeFieldsOfSameObjectForAllTns[group] = false; // can't be true
+		}
 		
-		
-		
-		// then check if they are DEFINITELY fields of the same object
-		// LIF (Local Info Flow)
-		
-		
+		// For each transaction, if the group's R/Ws may be fields of the same object, 
+		// then check for the transaction if they must be fields of the same RUNTIME OBJECT
+    	Iterator tnIt9 = AllTransactions.iterator();
+    	while(tnIt9.hasNext())
+    	{
+    		Transaction tn = (Transaction) tnIt9.next();
+			
+			int group = tn.setNumber - 1;
+			if(group < 0)
+				continue;
+					
+			if(mustBeFieldsOfSameObjectForAllTns[group]) // if still might be true, then inspect for this Transaction
+			{
+				// Get a list of units that read/write to any of the dependencies.
+				Map unitToLocal = new HashMap();
+				Map unitToArrayIndex = new HashMap(); // if all relevant R/Ws are via array references, we need to track the indexes as well.
+				boolean allRefsAreArrayRefs = true;
+				Value value = null;
+				Value index = null; // array index if there is one
+				Iterator entryIt = tn.unitToRWSet.entrySet().iterator();
+				while(entryIt.hasNext())
+				{
+					Map.Entry e = (Map.Entry) entryIt.next();
+					RWSet rw = (RWSet) e.getValue();
+					if(rw.hasNonEmptyIntersection(rws[group]))
+					{
+						// This statement contributes to one of the RW dependencies
+						Unit u = (Unit) e.getKey();
+						Stmt s = (Stmt) u;
+
+						// Get the base object of the field reference at this
+						// statement. If there's an invoke expression, we can't be
+						// sure it doesn't R/W to another object of the same type.
+						value = null;
+						index = null;
+						if(!s.containsInvokeExpr())
+						{
+							if( s instanceof AssignStmt ) {
+								AssignStmt a = (AssignStmt) s;
+								Value r = a.getRightOp();
+								Value l = a.getLeftOp();
+								
+								// which one should we use???
+								RWSet lSet = new StmtRWSet();
+								Local lBase = null;
+								Value lIndex = null;
+								if( l instanceof InstanceFieldRef ) {
+									InstanceFieldRef ifr = (InstanceFieldRef) l;
+									lBase = (Local) ifr.getBase();
+									PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+									lSet.addFieldRef( base, ifr.getField() );
+								} else if( l instanceof ArrayRef ) {
+									ArrayRef ar = (ArrayRef) l;
+									lBase = (Local) ar.getBase();
+									lIndex = ar.getIndex();
+									PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+									lSet.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
+								}
+								if(lSet.hasNonEmptyIntersection(rws[group]))
+								{
+									value = lBase; // if the lvalue's write set contributes, use it
+									index = lIndex;
+								}
+								else // otherwise it must be the rvalue!
+								{
+									RWSet rSet = new StmtRWSet();
+									Local rBase = null;
+									Value rIndex = null;
+									if( r instanceof InstanceFieldRef ) 
+									{
+										InstanceFieldRef ifr = (InstanceFieldRef) r;
+										rBase = (Local) ifr.getBase();
+										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+										rSet.addFieldRef( base, ifr.getField() );
+									}
+									else if( r instanceof ArrayRef )
+									{
+										ArrayRef ar = (ArrayRef) r;
+										rBase = (Local) ar.getBase();
+										rIndex = ar.getIndex();
+										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+										rSet.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
+									}
+									if(rSet.hasNonEmptyIntersection(rws[group]))
+									{
+										value = rBase; // if the lvalue's write set contributes, use it
+										index = rIndex;
+									}
+								}
+							}
+						}
+
+//						G.v().out.println("LOCAL OBJ REF for " + s + 
+//							" containsInvokeExpr:" + s.containsInvokeExpr() + 
+//							" containsFieldRef:" + s.containsFieldRef() + 
+//							" value:" + value);
+
+						if(value == null)
+						{
+							mustBeFieldsOfSameObjectForAllTns[group] = false;
+							break; // move on to next transaction
+						}
+						unitToLocal.put(u, value);
+						
+						if(index == null)
+						{
+							allRefsAreArrayRefs = false;
+						}
+						
+						if(allRefsAreArrayRefs)
+							unitToArrayIndex.put(u, index);
+						
+					}
+				}
+				
+				// Use LocalInfoFlowAnalysis to determine if all contributing units must be accessing fields of the same RUNTIME OBJECT
+//				G.v().out.print("Transaction " + tn.name + " in " + tn.method + " ");
+				UnitGraph g = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
+				LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g);
+				Vector barriers = (Vector) tn.ends.clone();
+				barriers.add(tn.begin);
+				if( lif.mustPointToSameObj(unitToLocal, barriers) ) // runs the analysis
+				{
+					Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
+					CommonAncestorValueAnalysis cav = new CommonAncestorValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+					List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
+					Iterator ancestorsIt = ancestors.iterator();
+					while(ancestorsIt.hasNext())
+					{
+						Object o = ancestorsIt.next();
+						Value v = null;
+						if(o instanceof EquivalentValue)
+						{
+							v = ((EquivalentValue) o).getValue();
+						}
+						else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
+						{
+							v = (Value) o;
+						}
+						else
+						{
+							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
+						}
+						if(v != null)
+						{
+							if(lockObject[group] == null || v instanceof Ref)
+								lockObject[group] = v;
+							if( tn.lockObject == null || v instanceof Ref )
+								tn.lockObject = v;
+						}
+					}
+					
+					if( allRefsAreArrayRefs )
+					{
+//						G.v().out.println("unitToArrayIndex: " + unitToArrayIndex);
+						if( lif.mustPointToSameObj(unitToArrayIndex, barriers) )
+						{
+							firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
+							cav = new CommonAncestorValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+							ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
+							ancestorsIt = ancestors.iterator();
+							while(ancestorsIt.hasNext())
+							{
+								Object o = ancestorsIt.next();
+								Value v = null;
+								if(o instanceof EquivalentValue)
+								{
+									v = ((EquivalentValue) o).getValue();
+								}
+								else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
+								{
+									v = (Value) o;
+								}
+								else
+								{
+									G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
+								}
+								if(v != null)
+								{
+									if( tn.lockObject == null || v instanceof Ref )
+										tn.lockObjectArrayIndex = v;
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					mustBeFieldsOfSameObjectForAllTns[group] = false;
+				}
+			}
+		}
 		
 		// If, for all transactions in a group, all RW dependencies are definitely fields of the same object,
 		// then that object should be used for synchronization
-		
-		
+//		for(int group = 0; group < nextGroup - 1; group++)
+//		{
+//		}
 
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
@@ -347,25 +575,36 @@ public class TransactionTransformer extends SceneTransformer
 				Iterator tnedgeit = tn.edges.iterator();
 				while(tnedgeit.hasNext())
 					G.v().out.print(((DataDependency)tnedgeit.next()).other.name + " ");
-				G.v().out.println("\n[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
+				G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
+				G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
 			}
 			
 			G.v().out.print("[transaction-table] Group Summaries\n[transaction-table] ");
-			for(int i = 0; i < nextGroup - 1; i++)
+			for(int group = 0; group < nextGroup - 1; group++)
     		{
-    			G.v().out.print("Group" + (i + 1) + "\n[transaction-table] " + 
-    				rws[i].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
-					(rws[i].size() == 0 ? "\n[transaction-table] " : ""));
+    			G.v().out.print("Group" + (group + 1) +
+								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
+								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
+								" lock object: " + (lockObject[group] == null? "null" : lockObject[group].toString()) + "\n[transaction-table] " + 
+    				rws[group].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
+					(rws[group].size() == 0 ? "\n[transaction-table] " : ""));
 	    	}
 			G.v().out.println("");
 		}
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
+
     	// BEGIN AWFUL HACK
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
-		for(int i = 0; i < nextGroup; i++)
-			TransactionBodyTransformer.addedGlobalLockObj[i] = false;
+		TransactionBodyTransformer.addedGlobalLockObj[0] = false;
+		boolean useGlobalLock[] = new boolean[nextGroup - 1];
+		for(int i = 1; i < nextGroup; i++)
+		{
+			TransactionBodyTransformer.addedGlobalLockObj[i] = mustBeFieldsOfSameObjectForAllTns[i - 1];
+			useGlobalLock[i - 1] = !mustBeFieldsOfSameObjectForAllTns[i - 1];
+		}
 		// END AWFUL HACK
+		
     	Iterator doTransformClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (doTransformClassesIt.hasNext()) 
     	{
@@ -380,7 +619,7 @@ public class TransactionTransformer extends SceneTransformer
     	    	
     		    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
     	    	
-   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup);
+   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
    	    			TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
 				}
     	    }
