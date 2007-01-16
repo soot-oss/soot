@@ -6,6 +6,12 @@ import java.util.Iterator;
 import soot.PointsToSet;
 import soot.SootField;
 
+import soot.*;
+import soot.jimple.spark.*;
+import soot.jimple.spark.pag.*;
+import soot.jimple.spark.sets.*;
+
+
 public class CodeBlockRWSet extends MethodRWSet
 {
 	public int size()
@@ -125,10 +131,32 @@ public class CodeBlockRWSet extends MethodRWSet
 		        
 				if( fields.containsKey( field ) ) 
 				{
-			    	if( Union.hasNonEmptyIntersection(getBaseForField( field ),
-										other.getBaseForField( field ) ) )
+					PointsToSet pts1 = (PointsToSet) getBaseForField( field );
+					PointsToSet pts2 = (PointsToSet) other.getBaseForField( field );
+			    	if( Union.hasNonEmptyIntersection(pts1, pts2) )
 					{
-						ret.addFieldRef(getBaseForField(field),field);
+						if(pts1 instanceof FullObjectSet)
+							ret.addFieldRef(pts1, field);
+						else if(pts2 instanceof FullObjectSet)
+							ret.addFieldRef(pts2, field);
+						else if((pts1 instanceof PointsToSetInternal) && (pts2 instanceof PointsToSetInternal))
+						{
+							final PointsToSetInternal pti1 = (PointsToSetInternal) pts1;
+							final PointsToSetInternal pti2 = (PointsToSetInternal) pts2;
+							final BitPointsToSet bpts = new BitPointsToSet(pti1.getType(), (PAG) Scene.v().getPointsToAnalysis());
+
+							pti1.forall( 
+								new P2SetVisitor() 
+								{
+    	        					public void visit( Node n )
+    	        					{
+    	            					if( pti2.contains( n ) ) bpts.add(n);
+    	        					}
+    	    					}
+    	    				);
+    	    				
+							ret.addFieldRef(bpts,field);
+    	    			}
 			    	}
 				}
 		    }

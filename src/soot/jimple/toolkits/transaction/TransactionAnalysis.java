@@ -22,7 +22,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	LocalDefs sld;
 	LocalUses slu;
 	TransactionAwareSideEffectAnalysis tasea;
-	SideEffectAnalysis sea;
+//	SideEffectAnalysis sea;
 	
 	List prepUnits;
 
@@ -56,7 +56,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
     				Scene.v().getCallGraph(), null);
     	
-    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
+//    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				
     	prepUnits = new ArrayList();
     	
@@ -212,8 +212,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
-							stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+							stmtRead = tasea.transactionalReadSet(tn.method, (Stmt) unit, tn, sld);
+							stmtWrite = tasea.transactionalWriteSet(tn.method, (Stmt) unit, tn, sld);
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -247,8 +247,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 				else
             	{
             		// Add this unit's read and write sets to this transactional region
-	               	stmtRead = tasea.readSet( method, (Stmt) unit );
-		           	stmtWrite = tasea.writeSet( method, (Stmt) unit );
+	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld );
+		           	stmtWrite = tasea.writeSet( method, (Stmt) unit, tn, sld );
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
@@ -256,8 +256,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
-						stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
-						stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
+//						tasea.readSet(tn.method, (Stmt) unit, tn, sld);
+//						tasea.writeSet(tn.method, (Stmt) unit, tn, sld);
 
 			           	G.v().out.print("[");
 			           	if(stmtRead != null)
@@ -290,26 +290,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		{
 			if(!printed)
 			{
-						stmtRead = sea.readSet(method, (Stmt) unit); // tasea.transactionalReadSet(tn.method, (Stmt) unit, sld);
-						stmtWrite = sea.writeSet(method, (Stmt) unit); // tasea.transactionalWriteSet(tn.method, (Stmt) unit, sld);
-
-			           	G.v().out.print("[");
-			           	if(stmtRead != null)
-			           	{
-				           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
-				           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
-				        }
-				        else
-				        	G.v().out.print( "0" );
-				        G.v().out.print(",");
-				        if(stmtWrite != null)
-				        {
-				           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
-			           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
-			        	}
-			        	else
-			        		G.v().out.print( "0" );
-			        	G.v().out.print("] ");
+	        	G.v().out.print("[0,0] ");
 			}
 			G.v().out.println(unit.toString());
 			
@@ -323,17 +304,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 						G.v().out.println("        Read/Write Set for LibInvoke:");
 						G.v().out.println("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
 						G.v().out.println("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
-					}
-					else
-					{
-						G.v().out.println("        Target Set for LibInvoke:");
-						TransitiveTargets tt = new TransitiveTargets( Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
-						Iterator targetIt = tt.iterator((Stmt) unit);
-						while(targetIt.hasNext())
-						{
-							SootMethod target = (SootMethod) targetIt.next();
-							G.v().out.println("        Target: " + target.toString());
-						}
 					}
 				}
 		}

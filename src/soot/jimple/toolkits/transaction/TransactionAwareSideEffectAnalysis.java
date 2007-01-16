@@ -37,9 +37,10 @@ public class TransactionAwareSideEffectAnalysis {
 	Map methodToNTReadSet = new HashMap();
 	Map methodToNTWriteSet = new HashMap();
 	int rwsetcount = 0;
-	NonLibNonTransactionEdgesPred nlntep;
+	ThreadVisibleEdgesPred tve;
 	TransitiveTargets tt;
 	Collection transactions;
+	EncapsulatedObjectAnalysis eoa;
 	
 	public Vector sigBlacklist;
 	public Vector sigReadGraylist;
@@ -56,6 +57,8 @@ public class TransactionAwareSideEffectAnalysis {
 			final Stmt s = (Stmt) sIt.next();
 			
 			boolean ignore = false;
+
+			// Ignore Reads/Writes inside another transaction
 			if(transactions != null)
 			{
 				Iterator tnIt = transactions.iterator();
@@ -63,16 +66,6 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					Transaction tn = (Transaction) tnIt.next();
 					if(tn.units.contains(s) || tn.prepStmt == s)
-					{
-						ignore = true;
-						break;
-					}
-					else if(/*is object-pure init statement*/ false)
-					{
-						ignore = true;
-						break;
-					}
-					else if(/*is object-pure stmt called on thread-local object*/ false)
 					{
 						ignore = true;
 						break;
@@ -96,7 +89,7 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		methodToNTReadSet.put( method, read );
 		methodToNTWriteSet.put( method, write );
-		SootClass c = method.getDeclaringClass();
+//		SootClass c = method.getDeclaringClass();
 	}
 	
 	public RWSet nonTransitiveReadSet( SootMethod method ) {
@@ -112,22 +105,24 @@ public class TransactionAwareSideEffectAnalysis {
 	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions ) {
 		this.pa = pa;
 		this.cg = cg;
-		this.nlntep = new NonLibNonTransactionEdgesPred(transactions);
-		this.tt = new TransitiveTargets( cg, new Filter(nlntep) );
+		this.tve = new ThreadVisibleEdgesPred(transactions);
+		this.tt = new TransitiveTargets( cg, new Filter(tve) );
 		this.transactions = transactions;
+		this.eoa = new EncapsulatedObjectAnalysis();
 		
 		sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of size 0
 		// Math does not have any synchronization risks, we think :-)
-		sigBlacklist.add("<java.lang.Math: double abs(double)>");
+/*		sigBlacklist.add("<java.lang.Math: double abs(double)>");
 		sigBlacklist.add("<java.lang.Math: double min(double,double)>");
 		sigBlacklist.add("<java.lang.Math: double sqrt(double)>");
 		sigBlacklist.add("<java.lang.Math: double pow(double,double)>");
+//*/
 //		sigBlacklist.add("");
 
 		sigReadGraylist = new Vector(); // Signatures of methods whose effects must be approximated
 		sigWriteGraylist = new Vector();
 		
-		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
+/*		sigReadGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
 		sigWriteGraylist.add("<java.util.Vector: boolean remove(java.lang.Object)>");
 
 		sigReadGraylist.add("<java.util.Vector: boolean add(java.lang.Object)>");
@@ -144,13 +139,14 @@ public class TransactionAwareSideEffectAnalysis {
 
 		sigReadGraylist.add("<java.util.List: void clear()>");
 		sigWriteGraylist.add("<java.util.List: void clear()>");
-
+//*/
 		subSigBlacklist = new Vector(); // Subsignatures of methods on all objects known to have read/write sets of size 0
-		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
+/*		subSigBlacklist.add("java.lang.Class class$(java.lang.String)");
 		subSigBlacklist.add("void notify()");
 		subSigBlacklist.add("void notifyAll()");
 		subSigBlacklist.add("void wait()");
-//		subSigBlacklist.add("");
+		subSigBlacklist.add("void <clinit>()");
+//*/
 	}
 	
 	private RWSet ntReadSet( SootMethod method, Stmt stmt )
@@ -158,6 +154,8 @@ public class TransactionAwareSideEffectAnalysis {
 		if( stmt instanceof AssignStmt ) {
 			AssignStmt a = (AssignStmt) stmt;
 			Value r = a.getRightOp();
+			if(r instanceof NewExpr) // IGNORE NEW STATEMENTS
+				return null;
 			return addValue( r, method, stmt );
 		}
 		return null;
@@ -195,7 +193,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet transactionalReadSet( SootMethod method, Stmt stmt, LocalDefs sld )
+	public RWSet transactionalReadSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
 	{
 		RWSet stmtRead = null;
 		
@@ -225,18 +223,31 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		else
 		{
-    		stmtRead = readSet( method, stmt );
+    		stmtRead = readSet( method, stmt, tn, sld );
 		}
 		return stmtRead;
 	}
 	
-	public RWSet readSet( SootMethod method, Stmt stmt ) {
+	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
+	{
+		boolean ignore = false;
+		if(stmt.containsInvokeExpr())
+		{
+			SootMethod calledMethod = stmt.getInvokeExpr().getMethod();
+			if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+			{
+				ignore = true;
+			}
+//			else if(eoa.isInitMethodPureOnObject(calledMethod) && /*is object thread-local*/ false)
+//			{
+//				ignore = true;
+//			}
+		}
+
 		RWSet ret = null;
-		nlntep.setExcludedMethod(method); // TODO: FIX: This may not be sufficient for recursion if there are multiple tns in this method.
+		tve.setExemptTransaction(tn);
 		Iterator targets = tt.iterator( stmt );
-//		if(targets.hasNext())
-//			G.v().out.println("STATEMENT: " + stmt.toString() + "\n**********");
-		while( targets.hasNext() )
+		while( !ignore && targets.hasNext() )
 		{
 			SootMethod target = (SootMethod) targets.next();
 			if( target.isNative() ) {
@@ -245,7 +256,27 @@ public class TransactionAwareSideEffectAnalysis {
 			} 
 			else if( target.isConcrete() ) 
 			{
-				if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+				if( target.getDeclaringClass().toString().startsWith("java.util") ||
+					target.getDeclaringClass().toString().startsWith("java.lang") )
+				{
+					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+					{
+		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+		            	while (rDefsIt.hasNext())
+		            	{
+		                	Stmt next = (Stmt) rDefsIt.next();
+		                	if(next instanceof DefinitionStmt)
+							{
+		    					ret = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
+							}
+						}
+					}
+					else
+					{
+						ret = approximatedReadSet(method, stmt, null);
+					}
+				}
+				else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				// This shouldn't happen because all graylisted methods should be by explicit invoke statement only
     				// approximatedReadSet() should be called instead
@@ -307,7 +338,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet transactionalWriteSet( SootMethod method, Stmt stmt, LocalDefs sld )
+	public RWSet transactionalWriteSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
 	{
 		RWSet stmtWrite = null;
 		
@@ -342,21 +373,59 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		else
 		{
-        	stmtWrite = writeSet( method, stmt );
+        	stmtWrite = writeSet( method, stmt, tn, sld );
 		}
 		return stmtWrite;
 	}
 	
-	public RWSet writeSet( SootMethod method, Stmt stmt ) {
+	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
+	{
+		boolean ignore = false;
+		if(stmt.containsInvokeExpr())
+		{
+			SootMethod calledMethod = stmt.getInvokeExpr().getMethod();
+			if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+			{
+				ignore = true;
+			}
+//			else if(eoa.isMethodPureOnObject(calledMethod) && /*is object thread-local*/ false)
+//			{
+//				ignore = true;
+//			}
+		}
+
 		RWSet ret = null;
+		tve.setExemptTransaction(tn);
 		Iterator targets = tt.iterator( stmt );
-		while( targets.hasNext() ) {
+		while( !ignore && targets.hasNext() ) {
 			SootMethod target = (SootMethod) targets.next();
 			if( target.isNative() ) {
 				if( ret == null ) ret = new SiteRWSet();
 				ret.setCallsNative();
-			} else if( target.isConcrete() ) {
-				if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+			}
+			else if( target.isConcrete() )
+			{
+				if( target.getDeclaringClass().toString().startsWith("java.util") ||
+					target.getDeclaringClass().toString().startsWith("java.lang") )
+				{
+					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
+					{
+		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
+		            	while (rDefsIt.hasNext())
+		            	{
+		                	Stmt next = (Stmt) rDefsIt.next();
+		                	if(next instanceof DefinitionStmt)
+							{
+		    					ret = approximatedWriteSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
+							}
+						}
+					}
+					else
+					{
+						ret = approximatedWriteSet(method, stmt, null);
+					}
+				}
+				else if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				// No write set
     			}

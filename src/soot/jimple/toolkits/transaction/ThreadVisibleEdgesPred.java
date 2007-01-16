@@ -26,45 +26,69 @@ import soot.jimple.toolkits.callgraph.*;
 /** A predicate that accepts edges that are not part of the class library and do not have a source statement that falls inside a transaction.
  * @author Richard L. Halpert
  */
-public class NonLibNonTransactionEdgesPred implements EdgePredicate
+public class ThreadVisibleEdgesPred implements EdgePredicate
 {
 	Collection tns;
-	SootMethod methodToExclude;
+	Transaction exemptTn;
 	
-	public NonLibNonTransactionEdgesPred(Collection tns)
+	public ThreadVisibleEdgesPred(Collection tns)
 	{
 		this.tns = tns;
 	}
 	
-	public void setExcludedMethod(SootMethod methodToExclude)
+	public void setExemptTransaction(Transaction exemptTn)
 	{
-		this.methodToExclude = methodToExclude;
+		this.exemptTn = exemptTn;
 	}
 	
     /** Returns true iff the edge e is wanted. */
     public boolean want( Edge e )
     {
+		String tgtMethod = e.tgt().toString();
         String tgtClass = e.tgt().getDeclaringClass().toString();
-        if(tgtClass.startsWith("java."))
-        	return false;
-        if(tgtClass.startsWith("javax."))
-	        return false;
+        String srcMethod = e.src().toString();
+        String srcClass = e.src().getDeclaringClass().toString();
+        
+        // Remove Deep Library Calls
 	    if(tgtClass.startsWith("sun."))
 	    	return false;
 	    if(tgtClass.startsWith("com.sun."))
 	    	return false;
+
+    	// Remove static initializers
+    	if(tgtMethod.endsWith("void <clinit>()>"))
+    		return false;
+
+    	// Remove calls to equals in the library
+    	if((tgtClass.startsWith("java.") || tgtClass.startsWith("javax.")) && 
+    		e.tgt().toString().endsWith("boolean equals(java.lang.Object)>"))
+    		return false;
+
+		// Remove anything called inside a class in java.util
+		// the source call will be conservatively simulated as a read and a write to the receiving object
+		if(srcClass.startsWith("java.util"))
+			return false;
+			
+		// Remove anything called inside a class in java.lang
+		// the source call will be conservatively (?) simulated as a read and a write to the receiving object
+		if(srcClass.startsWith("java.lang"))
+			return false;
+    		
+		// Remove Calls from within a transaction
+		// one transaction is exempt - so that we may analyze calls within it
 	    if(tns != null)
 	    {
 			Iterator tnIt = tns.iterator();
 			while(tnIt.hasNext())
 			{
 				Transaction tn = (Transaction) tnIt.next();
-				if(tn.method != methodToExclude && tn.units.contains(e.srcStmt()))
+				if(tn != exemptTn && tn.units.contains(e.srcStmt())) // if this method call originates inside a transaction...
 				{
-					return false;
+					return false; // ignore it
 				}
 			}
 		}
+		
 		return true;
 	}
 }

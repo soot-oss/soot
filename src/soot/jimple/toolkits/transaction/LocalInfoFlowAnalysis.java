@@ -213,8 +213,8 @@ public class LocalInfoFlowAnalysis extends ForwardFlowAnalysis
 			
 			// clear the flow set, and add aliases back in
 			out.clear();
-			if(aliases != null)
-				out.add(aliases);
+//			if(aliases != null)
+//				out.add(aliases);
 		}
 		
 		// if this is a use statement (of interest), flow it forward

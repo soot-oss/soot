@@ -15,6 +15,7 @@ import soot.toolkits.mhp.pegcallgraph.*;
 import soot.toolkits.mhp.findobject.*;
 import soot.toolkits.mhp.stmt.*;
 import soot.tagkit.LineNumberTag;
+import soot.jimple.toolkits.annotation.nullcheck.*;
 
 
 public class TransactionTransformer extends SceneTransformer
@@ -33,13 +34,19 @@ public class TransactionTransformer extends SceneTransformer
 
     protected void internalTransform(String phaseName, Map options)
 	{
-    	Map methodToFlowSet = new HashMap();
-
+		// Get phase options
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
 		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
 		
-    	// For all methods, run the intraprocedural analysis (transaction finder)
+
+
+    	// *** Find and Name Transactions ***
+    	// The transaction finder finds the start, end, and preparatory statements
+    	// for each transaction. It also calculates the non-transitive read/write 
+    	// sets for each transaction.
+    	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
+    	Map methodToFlowSet = new HashMap();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
     	{
@@ -78,12 +85,14 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Assign Names To Transactions
 		assignNamesToTransactions(AllTransactions);
+
     	
-    	// *** Complete the Read/Write Sets ***
-    	// Use TransactionAwareSideEffectAnalysis
-    	// As is, this breaks atomicity: inner transaction's effects are visible
-    	// as soon as the inner transaction completes. ("open nesting")
-    	// As long as we're using "synchronized" keyword, this behavior is implied, so OK!
+
+    	// *** Find Transitive Read/Write Sets ***
+    	// Finds the transitive read/write set for each transaction using a given
+    	// nesting model.
+    	// Note: currently, open-nesting is run by default. This is the implied
+    	// meaning of synchronized regions, so is definitely OK if using that keyword
     	TransactionAwareSideEffectAnalysis tasea = 
     		new TransactionAwareSideEffectAnalysis(
     				Scene.v().getPointsToAnalysis(), 
@@ -100,21 +109,21 @@ public class TransactionTransformer extends SceneTransformer
     		{
     			Stmt stmt = (Stmt) invokeIt.next();
     			
-    			RWSet stmtRead = tasea.transactionalReadSet(tn.method, stmt, sld);
+    			RWSet stmtRead = tasea.transactionalReadSet(tn.method, stmt, tn, sld);
     			if(stmtRead != null)
 	    			tn.read.union(stmtRead);
     			
-    			RWSet stmtWrite = tasea.transactionalWriteSet(tn.method, stmt, sld);
+    			RWSet stmtWrite = tasea.transactionalWriteSet(tn.method, stmt, tn, sld);
 				if(stmtWrite != null)
 					tn.write.union(stmtWrite);
 			}
     	}
     	
-    	// *** Find Stray Reads/Writes *** (DISABLED)
     	
+    	
+    	// *** Find Stray Reads/Writes *** (DISABLED)
     	// add external data races as one-line transactions
     	// note that finding them isn't that hard (though it is time consuming)
-    	// however, actually adding entermonitor & exitmonitor statements is rather complex... must deal with exception handling!
     	// For all methods, run the intraprocedural analysis (transaction finder)
     	// Note that these will only be transformed if they are either added to
     	// methodToFlowSet or if a loop and new body transformer are used for methodToStrayRWSet
@@ -141,11 +150,15 @@ public class TransactionTransformer extends SceneTransformer
     	    }
     	}
 //*/    	
-
+		
+		
+		
 		// *** Build May Happen In Parallel Info ***
 		mhp = new UnsynchronizedMhpAnalysis();
 
-    	// *** Calculate locking scheme ***
+
+
+    	// *** Calculate basic locking scheme ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
     	int nextGroup = 1;
     	Iterator tnIt1 = AllTransactions.iterator();
@@ -171,11 +184,7 @@ public class TransactionTransformer extends SceneTransformer
 	    		while(tnIt2.hasNext())
 	    		{
 	    			Transaction tn2 = (Transaction) tnIt2.next();
-	    			
-	    			// check if it's us!
-//	    			if(tn1 == tn2)
-//	    				continue;
-	    			
+	    				    			
 	    			// check if this transactional region is going to be deleted
 	    			if(tn2.setNumber == -1)
 	    				continue;
@@ -253,7 +262,7 @@ public class TransactionTransformer extends SceneTransformer
 	    		// If, after comparing to all other transactions, we have no group:
 	    		if(tn1.setNumber == 0)
 	    		{
-//	    			if(mayHappenInParallel(tn1, tn1))
+//	    			if(mayHappenInParallel(tn1, tn1)) // we compare to ourselves already
 //	    			{
 //	    				tn1.setNumber = nextGroup;
 //	    				nextGroup++;
@@ -266,8 +275,10 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
     	
-    	// Create an array of RW sets, one for each transaction group
-    	// In each set, put the union of all RW Dependencies in the group
+
+
+		// *** Calculate Lock Objects ***
+    	// Get a list of all dependencies for each group
     	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
     	for(int group = 0; group < nextGroup - 1; group++)
     		rws[group] = new CodeBlockRWSet();
@@ -283,9 +294,11 @@ public class TransactionTransformer extends SceneTransformer
     		}
     	}
 
-		// For each transaction group, inspect RW Dependencies to find best possible locking object
+		// Inspect each group's RW dependencies to determine if there's a possibility
+		// of a shared lock object (if all dependencies are fields/localobjs of the same object)
 		boolean mayBeFieldsOfSameObject[] = new boolean[nextGroup - 1];
 		boolean mustBeFieldsOfSameObjectForAllTns[] = new boolean[nextGroup - 1];
+//		boolean mustBeSameArrayElementForAllTns[] = new boolean[nextGroup - 1];
 		Value lockObject[] = new Value[nextGroup - 1];
 		for(int group = 0; group < nextGroup - 1; group++)
 		{
@@ -321,9 +334,15 @@ public class TransactionTransformer extends SceneTransformer
 			}
 
 			if(rws[group].size() > 0 && mayBeFieldsOfSameObject[group])
+			{
 				mustBeFieldsOfSameObjectForAllTns[group] = true; // might be true
+//				mustBeSameArrayElementForAllTns[group] = true;
+			}
 			else
+			{
 				mustBeFieldsOfSameObjectForAllTns[group] = false; // can't be true
+//				mustBeSameArrayElementForAllTns[group] = true;
+			}
 		}
 		
 		// For each transaction, if the group's R/Ws may be fields of the same object, 
@@ -418,10 +437,8 @@ public class TransactionTransformer extends SceneTransformer
 							}
 						}
 
-//						G.v().out.println("LOCAL OBJ REF for " + s + 
-//							" containsInvokeExpr:" + s.containsInvokeExpr() + 
-//							" containsFieldRef:" + s.containsFieldRef() + 
-//							" value:" + value);
+						G.v().out.println("LOCAL OBJ REF for " + s + 
+							" value:" + value + " index:" + index);
 
 						if(value == null)
 						{
@@ -450,6 +467,8 @@ public class TransactionTransformer extends SceneTransformer
 				if( lif.mustPointToSameObj(unitToLocal, barriers) ) // runs the analysis
 				{
 					Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
+					NullnessAnalysis na = new NullnessAnalysis(g);
+					NullnessAssumptionAnalysis naa = new NullnessAssumptionAnalysis(g);
 					CommonAncestorValueAnalysis cav = new CommonAncestorValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 					List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
 					Iterator ancestorsIt = ancestors.iterator();
@@ -471,18 +490,33 @@ public class TransactionTransformer extends SceneTransformer
 						}
 						if(v != null)
 						{
-							if(lockObject[group] == null || v instanceof Ref)
-								lockObject[group] = v;
-							if( tn.lockObject == null || v instanceof Ref )
-								tn.lockObject = v;
+							if(v instanceof Ref || 
+								(v instanceof Local && 
+									(na.isAlwaysNonNullBefore(tn.begin, (Local) v) ||
+									 naa.isAssumedNonNullBefore(tn.begin, (Local) v))) )
+							{
+								if(lockObject[group] == null || v instanceof Ref)
+									lockObject[group] = v;
+								if( tn.lockObject == null || v instanceof Ref )
+									tn.lockObject = v;
+							}
 						}
 					}
 					
-					if( allRefsAreArrayRefs )
+					if(tn.lockObject == null)
 					{
-//						G.v().out.println("unitToArrayIndex: " + unitToArrayIndex);
+						mustBeFieldsOfSameObjectForAllTns[group] = false;
+						break; // move on to next transaction
+					}
+					
+					if(false) // allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
+													   // null elements in the array.  You cannot lock a null object.
+													   // We need a won't-introduce-a-new-null-object-error analysis!
+					{
+						G.v().out.println("checking for equivalence of these array indices" + unitToArrayIndex.values());
 						if( lif.mustPointToSameObj(unitToArrayIndex, barriers) )
 						{
+							G.v().out.println("array indices are equivalent... finding ancestor value at " + tn.begin);
 							firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
 							cav = new CommonAncestorValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 							ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
@@ -505,10 +539,11 @@ public class TransactionTransformer extends SceneTransformer
 								}
 								if(v != null)
 								{
-									if( tn.lockObject == null || v instanceof Ref )
+									if( tn.lockObjectArrayIndex == null || v instanceof Local )
 										tn.lockObjectArrayIndex = v;
 								}
 							}
+							G.v().out.println("array index ancestor is: " + tn.lockObjectArrayIndex);
 						}
 					}
 				}
@@ -528,68 +563,14 @@ public class TransactionTransformer extends SceneTransformer
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
 		{
-			G.v().out.println("[transaction-graph] strict graph transactions {\n[transaction-graph] start=1;");		
-			Iterator tnIt6 = AllTransactions.iterator();
-			while(tnIt6.hasNext())
-			{
-				Transaction tn = (Transaction) tnIt6.next();
-				Iterator tnedgeit = tn.edges.iterator();
-				G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\"];");
-				while(tnedgeit.hasNext())
-				{
-					DataDependency edge = (DataDependency) tnedgeit.next();
-					Transaction tnedge = edge.other;
-					G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 5 ? (edge.size > 50 ? "black" : "blue") : "black") + " style=" + (edge.size > 50 ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
-				}			
-			}
-			G.v().out.println("[transaction-graph] }");
+			printGraph(AllTransactions);
 		}
 
 		// Print table of transaction information
 		if(optionPrintTable)
 		{
-			G.v().out.println("[transaction-table] ");
-			Iterator tnIt7 = AllTransactions.iterator();
-			while(tnIt7.hasNext())
-			{
-				Transaction tn = (Transaction) tnIt7.next();
-				G.v().out.println("[transaction-table] Transaction " + tn.name);
-				G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
-				G.v().out.println("[transaction-table] Prep : " + (tn.prepStmt == null ? "none" : tn.prepStmt.toString()));
-				G.v().out.println("[transaction-table] Begin: " + tn.begin.toString());
-				G.v().out.print("[transaction-table] End  : " + tn.ends.toString() + " \n");
-				G.v().out.println("[transaction-table] Size : " + tn.units.size());
-				if(tn.read.size() < 100)
-					G.v().out.print("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 
-						tn.read.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
-						(tn.read.size() == 0 ? "\n[transaction-table] " : ""));
-				else
-					G.v().out.print("[transaction-table] Read : " + tn.read.size() + "  \n[transaction-table] ");
-				if(tn.write.size() < 100)
-					G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] " + 
-						tn.write.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
-						(tn.write.size() == 0 ? "\n[transaction-table] " : "")); // label provided by previous print statement
-				else
-					G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
-				G.v().out.print("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
-				Iterator tnedgeit = tn.edges.iterator();
-				while(tnedgeit.hasNext())
-					G.v().out.print(((DataDependency)tnedgeit.next()).other.name + " ");
-				G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
-				G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
-			}
-			
-			G.v().out.print("[transaction-table] Group Summaries\n[transaction-table] ");
-			for(int group = 0; group < nextGroup - 1; group++)
-    		{
-    			G.v().out.print("Group" + (group + 1) +
-								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
-								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
-								" lock object: " + (lockObject[group] == null? "null" : lockObject[group].toString()) + "\n[transaction-table] " + 
-    				rws[group].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
-					(rws[group].size() == 0 ? "\n[transaction-table] " : ""));
-	    	}
-			G.v().out.println("");
+			printTable(AllTransactions);			
+			printGroups(nextGroup, mayBeFieldsOfSameObject, mustBeFieldsOfSameObjectForAllTns, lockObject, rws);
 		}
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
@@ -686,5 +667,71 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}	
 
-}
+	public void printGraph(Collection AllTransactions)
+	{
+		G.v().out.println("[transaction-graph] strict graph transactions {\n[transaction-graph] start=1;");		
+		Iterator tnIt6 = AllTransactions.iterator();
+		while(tnIt6.hasNext())
+		{
+			Transaction tn = (Transaction) tnIt6.next();
+			Iterator tnedgeit = tn.edges.iterator();
+			G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\"];");
+			while(tnedgeit.hasNext())
+			{
+				DataDependency edge = (DataDependency) tnedgeit.next();
+				Transaction tnedge = edge.other;
+				G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 5 ? (edge.size > 50 ? "black" : "blue") : "black") + " style=" + (edge.size > 50 ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
+			}			
+		}
+		G.v().out.println("[transaction-graph] }");
+	}	
 
+	public void printTable(Collection AllTransactions)
+	{
+		G.v().out.println("[transaction-table] ");
+		Iterator tnIt7 = AllTransactions.iterator();
+		while(tnIt7.hasNext())
+		{
+			Transaction tn = (Transaction) tnIt7.next();
+			G.v().out.println("[transaction-table] Transaction " + tn.name);
+			G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
+			G.v().out.println("[transaction-table] Prep : " + (tn.prepStmt == null ? "none" : tn.prepStmt.toString()));
+			G.v().out.println("[transaction-table] Begin: " + tn.begin.toString());
+			G.v().out.print("[transaction-table] End  : " + tn.ends.toString() + " \n");
+			G.v().out.println("[transaction-table] Size : " + tn.units.size());
+			if(tn.read.size() < 100)
+				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 
+					tn.read.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
+					(tn.read.size() == 0 ? "\n[transaction-table] " : ""));
+			else
+				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "  \n[transaction-table] ");
+			if(tn.write.size() < 100)
+				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] " + 
+					tn.write.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ") + 
+					(tn.write.size() == 0 ? "\n[transaction-table] " : "")); // label provided by previous print statement
+			else
+				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
+			G.v().out.print("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
+			Iterator tnedgeit = tn.edges.iterator();
+			while(tnedgeit.hasNext())
+				G.v().out.print(((DataDependency)tnedgeit.next()).other.name + " ");
+			G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
+			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
+		}
+	}
+	
+	public void printGroups(int nextGroup, boolean mayBeFieldsOfSameObject[], boolean mustBeFieldsOfSameObjectForAllTns[], Value lockObject[], RWSet rws[])
+	{
+			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
+			for(int group = 0; group < nextGroup - 1; group++)
+    		{
+    			G.v().out.print("Groups" + (group + 1) +
+								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
+								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
+								" lock object: " + (lockObject[group] == null? "null" : lockObject[group].toString()) + "\n[transaction-groups] " + 
+    							rws[group].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-groups] ") + 
+								(rws[group].size() == 0 ? "\n[transaction-groups] " : ""));
+	    	}
+			G.v().out.println("");
+	}
+}

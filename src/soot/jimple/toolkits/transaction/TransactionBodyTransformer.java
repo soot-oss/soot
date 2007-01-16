@@ -126,6 +126,7 @@ public class TransactionBodyTransformer extends BodyTransformer
     		}
         }
 		
+		int tempNum = 1;
 		// Iterate through all of the transactions in the current method
 		Iterator fsIt = fs.iterator();
 		while(fsIt.hasNext())
@@ -169,11 +170,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 
 			// If this method does not yet have a reference to the lock object
 			// needed for this transaction, then create one.
-			if(!addedLocalLockObj[tn.setNumber])
+			if( useGlobalLock[tn.setNumber - 1] )
 			{
-				addedLocalLockObj[tn.setNumber] = true;
-				if( useGlobalLock[tn.setNumber - 1] )
+				if(!addedLocalLockObj[tn.setNumber])
 				{
+					addedLocalLockObj[tn.setNumber] = true;
 					b.getLocals().add(lockObj[tn.setNumber]);
 					units.insertBefore(
 							Jimple.v().newAssignStmt(
@@ -181,27 +182,40 @@ public class TransactionBodyTransformer extends BodyTransformer
 									Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef())),
 							(Stmt) firstUnit);
 				}
-				else
+			}
+			else
+			{
+				if(!addedLocalLockObj[tn.setNumber])
 				{
-					if(tn.lockObject instanceof Ref)
+					b.getLocals().add(lockObj[tn.setNumber]);
+					addedLocalLockObj[tn.setNumber] = true;
+				}
+				if(tn.lockObject instanceof Ref)
+				{
+					if(tn.lockObjectArrayIndex != null)
 					{
-						b.getLocals().add(lockObj[tn.setNumber]);
-						if(tn.lockObjectArrayIndex != null)
-						{
-							units.insertBefore(
-									Jimple.v().newAssignStmt(
-											lockObj[tn.setNumber],
-											Jimple.v().newArrayRef(tn.lockObject, tn.lockObjectArrayIndex)),
-									(Stmt) firstUnit);
-						}
-						else
-						{												
-							units.insertBefore(
-									Jimple.v().newAssignStmt(
-											lockObj[tn.setNumber],
-											tn.lockObject),
-									(Stmt) firstUnit);
-						}
+						Local temp = Jimple.v().newLocal("lockObjTemp" + tempNum, ((Ref) tn.lockObject).getType());
+						tempNum++;
+						if(!b.getLocals().contains(temp))
+							b.getLocals().add(temp);
+						units.insertBefore(
+								Jimple.v().newAssignStmt(
+										temp,
+										tn.lockObject),
+								(Stmt) tn.begin);
+						units.insertBefore(
+								Jimple.v().newAssignStmt(
+										lockObj[tn.setNumber],
+										Jimple.v().newArrayRef(temp, tn.lockObjectArrayIndex)),
+								(Stmt) tn.begin);
+					}
+					else
+					{												
+						units.insertBefore(
+								Jimple.v().newAssignStmt(
+										lockObj[tn.setNumber],
+										tn.lockObject),
+								(Stmt) tn.begin);
 					}
 				}
 			}
