@@ -26,6 +26,7 @@ public class TransactionTransformer extends SceneTransformer
 		return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();
 	}
 	
+	boolean optionOneGlobalLock = false;
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;
@@ -35,6 +36,7 @@ public class TransactionTransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
 	{
 		// Get phase options
+		optionOneGlobalLock = PhaseOptions.getBoolean( options, "one-global-lock" );
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
 		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
@@ -46,6 +48,7 @@ public class TransactionTransformer extends SceneTransformer
     	// for each transaction. It also calculates the non-transitive read/write 
     	// sets for each transaction.
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
+    	G.v().out.println("*** Find and Name Transactions ***");
     	Map methodToFlowSet = new HashMap();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
@@ -93,6 +96,7 @@ public class TransactionTransformer extends SceneTransformer
     	// nesting model.
     	// Note: currently, open-nesting is run by default. This is the implied
     	// meaning of synchronized regions, so is definitely OK if using that keyword
+    	G.v().out.println("*** Find Transitive Read/Write Sets ***");
     	TransactionAwareSideEffectAnalysis tasea = 
     		new TransactionAwareSideEffectAnalysis(
     				Scene.v().getPointsToAnalysis(), 
@@ -154,145 +158,166 @@ public class TransactionTransformer extends SceneTransformer
 		
 		
 		// *** Build May Happen In Parallel Info ***
-		mhp = new UnsynchronizedMhpAnalysis();
+    	G.v().out.println("*** Build May Happen In Parallel Info ***");
+    	if(optionOneGlobalLock)
+			mhp = null;
+		else
+			mhp = new UnsynchronizedMhpAnalysis();
+		
 
 
-
-    	// *** Calculate basic locking scheme ***
+    	// *** Calculate Locking Groups ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
+    	G.v().out.println("*** Calculate Locking Groups ***");
     	int nextGroup = 1;
-    	Iterator tnIt1 = AllTransactions.iterator();
-    	while(tnIt1.hasNext())
+    	if(optionOneGlobalLock) // use one group for all transactions
     	{
-    		Transaction tn1 = (Transaction) tnIt1.next();
-    		
-    		// if this transaction has somehow already been marked for deletion
-    		if(tn1.setNumber == -1)
-    			continue;
-    		
-    		// if this transaction is empty
-    		if(tn1.read.size() == 0 && tn1.write.size() == 0)
-    		{
-    			// this transaction has no effect except on locals... we don't need it!
-    			tn1.setNumber = -1; // AKA delete the transactional region (but don't really so long as we are using
-    								// the synchronized keyword in our language... because java guarantees memory
-    								// barriers at certain points in synchronized blocks)
+	    	Iterator tnIt1 = AllTransactions.iterator();
+	    	while(tnIt1.hasNext())
+	    	{
+	    		Transaction tn1 = (Transaction) tnIt1.next();
+	    		tn1.setNumber = 1;
     		}
-    		else
-    		{
-	        	Iterator tnIt2 = AllTransactions.iterator();
-	    		while(tnIt2.hasNext())
-	    		{
-	    			Transaction tn2 = (Transaction) tnIt2.next();
-	    				    			
-	    			// check if this transactional region is going to be deleted
-	    			if(tn2.setNumber == -1)
-	    				continue;
-
-	    			// check if they're already marked as having an interference
-	    			// NOTE: this results in a sound grouping, but a badly 
-	    			//       incomplete dependency graph. If the dependency 
-	    			//       graph is to be analyzed, we cannot do this
-//	    			if(tn1.setNumber > 0 && tn1.setNumber == tn2.setNumber)
-//	    				continue;
-	    			
-	    			// check if these two transactions can't ever be in parallel
-	    			if(!mayHappenInParallel(tn1, tn2))
-	    				continue;
-
-	    			// check for RW or WW data dependencies.
-	    			if(tn1.write.hasNonEmptyIntersection(tn2.write) ||
-	    					tn1.write.hasNonEmptyIntersection(tn2.read) ||
-	    					tn1.read.hasNonEmptyIntersection(tn2.write))
-	    			{
-	    				// Determine the size of the intersection for GraphViz output
-	    				CodeBlockRWSet rw = tn1.write.intersection(tn2.write);
-	    				rw.union(tn1.write.intersection(tn2.read));
-	    				rw.union(tn1.read.intersection(tn2.write));
-	    				int size = rw.size();
-	    				
-	    				// Record this 
-	    				tn1.edges.add(new DataDependency(tn2, size, rw));
-//	    				tn2.edges.add(new DataDependency(tn1, size, rw)); // will be added in opposite direction later
-	    				
-	    				// if tn1 already is in a group
-	    				if(tn1.setNumber > 0)
-	    				{
-	    					// if tn2 is NOT already in a group
-	    					if(tn2.setNumber == 0)
-	    					{
-	    						tn2.setNumber = tn1.setNumber;
-	    					}
-	    					// if tn2 is already in a group
-	    					else if(tn2.setNumber > 0)
-	    					{
-	    						if(tn1 != tn2) // if they are equal, then they are already in the same group!
-	    						{
-			    					int setToDelete = tn2.setNumber;
-			    					int setToExpand = tn1.setNumber;
-				    	        	Iterator tnIt3 = AllTransactions.iterator();
-				    	    		while(tnIt3.hasNext())
-				    	    		{
-				    	    			Transaction tn3 = (Transaction) tnIt3.next();
-				    	    			if(tn3.setNumber == setToDelete)
-				    	    			{
-				    	    				tn3.setNumber = setToExpand;
-				    	    			}
-				    	    		}
-				    	    	}
-	    					}
-	    				}
-	    				// if tn1 is NOT already in a group
-	    				else if(tn1.setNumber == 0)
-	    				{
-	    					// if tn2 is NOT already in a group
-	    					if(tn2.setNumber == 0)
- 		    				{
-		    					tn1.setNumber = tn2.setNumber = nextGroup;
-		    					nextGroup++;
-		    				}
-	    					// if tn2 is already in a group
-	    					else if(tn2.setNumber > 0)
-	    					{
-	    						tn1.setNumber = tn2.setNumber;
-	    					}
-	    				}
-	    			}
-	    		}
-	    		// If, after comparing to all other transactions, we have no group:
-	    		if(tn1.setNumber == 0)
-	    		{
-//	    			if(mayHappenInParallel(tn1, tn1)) // we compare to ourselves already
-//	    			{
-//	    				tn1.setNumber = nextGroup;
-//	    				nextGroup++;
-//	    			}
-//	    			else
-//	    			{
-	    				tn1.setNumber = -1; // delete transactional region
-//	    			}
-	    		}	    			
-    		}
+    		nextGroup++;
     	}
-    	
+    	else // calculate separate groups for transactions
+    	{
+	    	Iterator tnIt1 = AllTransactions.iterator();
+	    	while(tnIt1.hasNext())
+	    	{
+	    		Transaction tn1 = (Transaction) tnIt1.next();
+	    		
+	    		// if this transaction has somehow already been marked for deletion
+	    		if(tn1.setNumber == -1)
+	    			continue;
+	    		
+	    		// if this transaction is empty
+	    		if(tn1.read.size() == 0 && tn1.write.size() == 0)
+	    		{
+	    			// this transaction has no effect except on locals... we don't need it!
+	    			tn1.setNumber = -1; // AKA delete the transactional region (but don't really so long as we are using
+	    								// the synchronized keyword in our language... because java guarantees memory
+	    								// barriers at certain points in synchronized blocks)
+	    		}
+	    		else
+	    		{
+		        	Iterator tnIt2 = AllTransactions.iterator();
+		    		while(tnIt2.hasNext())
+		    		{
+		    			Transaction tn2 = (Transaction) tnIt2.next();
+		    				    			
+		    			// check if this transactional region is going to be deleted
+		    			if(tn2.setNumber == -1)
+		    				continue;
+
+		    			// check if they're already marked as having an interference
+		    			// NOTE: this results in a sound grouping, but a badly 
+		    			//       incomplete dependency graph. If the dependency 
+		    			//       graph is to be analyzed, we cannot do this
+	//	    			if(tn1.setNumber > 0 && tn1.setNumber == tn2.setNumber)
+	//	    				continue;
+		    			
+		    			// check if these two transactions can't ever be in parallel
+		    			if(!mayHappenInParallel(tn1, tn2))
+		    				continue;
+
+		    			// check for RW or WW data dependencies.
+		    			if(tn1.write.hasNonEmptyIntersection(tn2.write) ||
+		    					tn1.write.hasNonEmptyIntersection(tn2.read) ||
+		    					tn1.read.hasNonEmptyIntersection(tn2.write))
+		    			{
+		    				// Determine the size of the intersection for GraphViz output
+		    				CodeBlockRWSet rw = tn1.write.intersection(tn2.write);
+		    				rw.union(tn1.write.intersection(tn2.read));
+		    				rw.union(tn1.read.intersection(tn2.write));
+		    				int size = rw.size();
+		    				
+		    				// Record this 
+		    				tn1.edges.add(new DataDependency(tn2, size, rw));
+	//	    				tn2.edges.add(new DataDependency(tn1, size, rw)); // will be added in opposite direction later
+		    				
+		    				// if tn1 already is in a group
+		    				if(tn1.setNumber > 0)
+		    				{
+		    					// if tn2 is NOT already in a group
+		    					if(tn2.setNumber == 0)
+		    					{
+		    						tn2.setNumber = tn1.setNumber;
+		    					}
+		    					// if tn2 is already in a group
+		    					else if(tn2.setNumber > 0)
+		    					{
+		    						if(tn1 != tn2) // if they are equal, then they are already in the same group!
+		    						{
+				    					int setToDelete = tn2.setNumber;
+				    					int setToExpand = tn1.setNumber;
+					    	        	Iterator tnIt3 = AllTransactions.iterator();
+					    	    		while(tnIt3.hasNext())
+					    	    		{
+					    	    			Transaction tn3 = (Transaction) tnIt3.next();
+					    	    			if(tn3.setNumber == setToDelete)
+					    	    			{
+					    	    				tn3.setNumber = setToExpand;
+					    	    			}
+					    	    		}
+					    	    	}
+		    					}
+		    				}
+		    				// if tn1 is NOT already in a group
+		    				else if(tn1.setNumber == 0)
+		    				{
+		    					// if tn2 is NOT already in a group
+		    					if(tn2.setNumber == 0)
+	 		    				{
+			    					tn1.setNumber = tn2.setNumber = nextGroup;
+			    					nextGroup++;
+			    				}
+		    					// if tn2 is already in a group
+		    					else if(tn2.setNumber > 0)
+		    					{
+		    						tn1.setNumber = tn2.setNumber;
+		    					}
+		    				}
+		    			}
+		    		}
+		    		// If, after comparing to all other transactions, we have no group:
+		    		if(tn1.setNumber == 0)
+		    		{
+	//	    			if(mayHappenInParallel(tn1, tn1)) // we compare to ourselves already
+	//	    			{
+	//	    				tn1.setNumber = nextGroup;
+	//	    				nextGroup++;
+	//	    			}
+	//	    			else
+	//	    			{
+		    				tn1.setNumber = -1; // delete transactional region
+	//	    			}
+		    		}	    			
+	    		}
+	    	}
+    	}
 
 
-		// *** Calculate Lock Objects ***
+		// *** Calculate Locking Objects ***
     	// Get a list of all dependencies for each group
+    	G.v().out.println("*** Calculate Locking Objects ***");
     	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
     	for(int group = 0; group < nextGroup - 1; group++)
     		rws[group] = new CodeBlockRWSet();
-    	Iterator tnIt8 = AllTransactions.iterator();
-    	while(tnIt8.hasNext())
-    	{
-    		Transaction tn = (Transaction) tnIt8.next();
-    		Iterator EdgeIt = tn.edges.iterator();
-    		while(EdgeIt.hasNext())
-    		{
-    			DataDependency dd = (DataDependency) EdgeIt.next();
-	    		rws[tn.setNumber - 1].union(dd.rw);
-    		}
-    	}
+		if(!optionOneGlobalLock)
+		{
+	    	Iterator tnIt8 = AllTransactions.iterator();
+	    	while(tnIt8.hasNext())
+	    	{
+	    		Transaction tn = (Transaction) tnIt8.next();
+	    		Iterator EdgeIt = tn.edges.iterator();
+	    		while(EdgeIt.hasNext())
+	    		{
+	    			DataDependency dd = (DataDependency) EdgeIt.next();
+		    		rws[tn.setNumber - 1].union(dd.rw);
+	    		}
+	    	}
+	    }
 
 		// Inspect each group's RW dependencies to determine if there's a possibility
 		// of a shared lock object (if all dependencies are fields/localobjs of the same object)
@@ -300,48 +325,60 @@ public class TransactionTransformer extends SceneTransformer
 		boolean mustBeFieldsOfSameObjectForAllTns[] = new boolean[nextGroup - 1];
 //		boolean mustBeSameArrayElementForAllTns[] = new boolean[nextGroup - 1];
 		Value lockObject[] = new Value[nextGroup - 1];
-		for(int group = 0; group < nextGroup - 1; group++)
+		if(optionOneGlobalLock)
 		{
-			// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
-			mayBeFieldsOfSameObject[group] = true;
-			lockObject[group] = null;
-			
-			if(rws[group].size() <= 0)
+			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				mayBeFieldsOfSameObject[group] = false;
-				continue;
+				mustBeFieldsOfSameObjectForAllTns[group] = false;
+				lockObject[group] = null;
 			}
-
-			if(rws[group].getGlobals().size() > 0)
+		}
+		else
+		{
+			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				mayBeFieldsOfSameObject[group] = false;
-				continue;
-			}
-			
-			Iterator grwsIt1 = rws[group].getFields().iterator();
-			while(grwsIt1.hasNext() && mayBeFieldsOfSameObject[group])
-			{
-				Object field1 = (Object) grwsIt1.next();
-				Iterator grwsIt2 = rws[group].getFields().iterator();
-				while(grwsIt2.hasNext() && mayBeFieldsOfSameObject[group])
+				// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
+				mayBeFieldsOfSameObject[group] = true;
+				lockObject[group] = null;
+				
+				if(rws[group].size() <= 0) // WHAT DOES IT MEAN FOR THIS TO BE 0???
 				{
-					Object field2 = (Object) grwsIt2.next();
-					if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
+					mayBeFieldsOfSameObject[group] = false;
+					continue;
+				}
+
+				if(rws[group].getGlobals().size() > 0)
+				{
+					mayBeFieldsOfSameObject[group] = false;
+					continue;
+				}
+				
+				Iterator grwsIt1 = rws[group].getFields().iterator();
+				while(grwsIt1.hasNext() && mayBeFieldsOfSameObject[group])
+				{
+					Object field1 = (Object) grwsIt1.next();
+					Iterator grwsIt2 = rws[group].getFields().iterator();
+					while(grwsIt2.hasNext() && mayBeFieldsOfSameObject[group])
 					{
-						mayBeFieldsOfSameObject[group] = false;
+						Object field2 = (Object) grwsIt2.next();
+						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
+						{
+							mayBeFieldsOfSameObject[group] = false;
+						}
 					}
 				}
-			}
 
-			if(rws[group].size() > 0 && mayBeFieldsOfSameObject[group])
-			{
-				mustBeFieldsOfSameObjectForAllTns[group] = true; // might be true
-//				mustBeSameArrayElementForAllTns[group] = true;
-			}
-			else
-			{
-				mustBeFieldsOfSameObjectForAllTns[group] = false; // can't be true
-//				mustBeSameArrayElementForAllTns[group] = true;
+				if(rws[group].size() > 0 && mayBeFieldsOfSameObject[group])
+				{
+					mustBeFieldsOfSameObjectForAllTns[group] = true; // might be true
+	//				mustBeSameArrayElementForAllTns[group] = true;
+				}
+				else
+				{
+					mustBeFieldsOfSameObjectForAllTns[group] = false; // can't be true
+	//				mustBeSameArrayElementForAllTns[group] = true;
+				}
 			}
 		}
 		
@@ -486,8 +523,9 @@ public class TransactionTransformer extends SceneTransformer
 						}
 						else
 						{
-							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
+//							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
 						}
+						
 						if(v != null)
 						{
 							if(v instanceof Ref || 
@@ -500,13 +538,22 @@ public class TransactionTransformer extends SceneTransformer
 								if( tn.lockObject == null || v instanceof Ref )
 									tn.lockObject = v;
 							}
+							else
+							{
+//								G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
+							}
+						}
+						else
+						{
+//							G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
 						}
 					}
 					
 					if(tn.lockObject == null)
 					{
+//						G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
 						mustBeFieldsOfSameObjectForAllTns[group] = false;
-						break; // move on to next transaction
+						continue; // move on to next transaction
 					}
 					
 					if(false) // allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
@@ -549,16 +596,20 @@ public class TransactionTransformer extends SceneTransformer
 				}
 				else
 				{
+//					G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
 					mustBeFieldsOfSameObjectForAllTns[group] = false;
 				}
 			}
+			else
+			{
+//				G.v().out.println("No value was found for a lock object in " + tn.name + " (transactions in group access multiple objects of different types)");
+			}
 		}
 		
-		// If, for all transactions in a group, all RW dependencies are definitely fields of the same object,
-		// then that object should be used for synchronization
-//		for(int group = 0; group < nextGroup - 1; group++)
-//		{
-//		}
+		
+		
+		// *** Print Output and Transform Program ***
+    	G.v().out.println("*** Print Output and Transform Program ***");
 
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
@@ -575,16 +626,16 @@ public class TransactionTransformer extends SceneTransformer
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
 
-    	// BEGIN AWFUL HACK
+    	// BEGIN UGLINESS
 		TransactionBodyTransformer.addedGlobalLockObj = new boolean[nextGroup];
 		TransactionBodyTransformer.addedGlobalLockObj[0] = false;
 		boolean useGlobalLock[] = new boolean[nextGroup - 1];
 		for(int i = 1; i < nextGroup; i++)
 		{
-			TransactionBodyTransformer.addedGlobalLockObj[i] = mustBeFieldsOfSameObjectForAllTns[i - 1];
+			TransactionBodyTransformer.addedGlobalLockObj[i] = (!optionOneGlobalLock) && mustBeFieldsOfSameObjectForAllTns[i - 1];
 			useGlobalLock[i - 1] = !mustBeFieldsOfSameObjectForAllTns[i - 1];
 		}
-		// END AWFUL HACK
+		// END UGLINESS
 		
     	Iterator doTransformClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (doTransformClassesIt.hasNext()) 
@@ -614,7 +665,10 @@ public class TransactionTransformer extends SceneTransformer
     
     public void assignNamesToTransactions(List AllTransactions)
     {
-       	// Give each method a unique, deterministic identifier (based on an alphabetical sort by method name)
+       	// Give each method a unique, deterministic identifier
+       	// Sort transactions into bins... one for each method name
+       	
+       	// Get list of method names
     	List methodNamesTemp = new ArrayList();
     	Iterator tnIt5 = AllTransactions.iterator();
     	while (tnIt5.hasNext()) 
@@ -628,20 +682,19 @@ public class TransactionTransformer extends SceneTransformer
 		methodNames = (String []) methodNamesTemp.toArray(methodNames);
 		Arrays.sort(methodNames);
 
-		// Identify each transaction with its method's identifier
+		// Initialize method-named bins
 		// this matrix is <# method names> wide and <max txns possible in one method> + 1 tall
-		// might be possible to calculate a smaller size for this matrix
 		int identMatrix[][] = new int[methodNames.length][Transaction.nextIDNum - methodNames.length + 2];
 		for(int i = 0; i < methodNames.length; i++)
 		{
-			for(int j = 0; j < Transaction.nextIDNum - methodNames.length + 1; j++)
+			identMatrix[i][0] = 0;
+			for(int j = 1; j < Transaction.nextIDNum - methodNames.length + 1; j++)
 			{
-				if(j != 0)
-					identMatrix[i][j] = 50000;
-				else
-					identMatrix[i][j] = 0;
+				identMatrix[i][j] = 50000;
 			}
 		}
+		
+		// Put transactions into bins
     	Iterator tnIt0 = AllTransactions.iterator();
     	while(tnIt0.hasNext())
     	{
@@ -651,12 +704,15 @@ public class TransactionTransformer extends SceneTransformer
 			identMatrix[methodNum][identMatrix[methodNum][0]] = tn1.IDNum;
     	}
     	
+    	// Sort bins by transaction IDNum
+    	// IDNums vary, but always increase in code-order within a method
     	for(int j = 0; j < methodNames.length; j++)
     	{
     		identMatrix[j][0] = 0; // set the counter to 0 so it sorts out (into slot 0).
     		Arrays.sort(identMatrix[j]); // sort this subarray
 		}
 		
+		// Generate a name based on the bin number and location within the bin
     	Iterator tnIt4 = AllTransactions.iterator();
     	while(tnIt4.hasNext())
     	{

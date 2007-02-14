@@ -70,10 +70,21 @@ public class TransactionBodyTransformer extends BodyTransformer
    			{
 	   			if( !addedGlobalLockObj[i] )
 	            {
-	            	// Add globalLockObj field
-	            	globalLockObj[i] = new SootField("globalLockObj" + i, RefType.v("java.lang.Object"), 
-	                                      Modifier.STATIC | Modifier.PUBLIC);
-	            	Scene.v().getMainClass().addField(globalLockObj[i]);
+	            	// Add globalLockObj field if possible...
+	            	
+	       			// Avoid name collision... if it's already there, then just use it!
+	            	try
+	            	{
+	            		globalLockObj[i] = Scene.v().getMainClass().getFieldByName("globalLockObj" + i);
+	            		// field already exists
+	            	}
+	            	catch(RuntimeException re)
+	            	{
+	            		// field does not yet exist (or, as a pre-existing error, there is more than one field by this name)
+		            	globalLockObj[i] = new SootField("globalLockObj" + i, RefType.v("java.lang.Object"), 
+		                                      Modifier.STATIC | Modifier.PUBLIC);
+		            	Scene.v().getMainClass().addField(globalLockObj[i]);
+					}
 
 	            	addedGlobalLockObj[i] = true;
 	            }
@@ -95,7 +106,7 @@ public class TransactionBodyTransformer extends BodyTransformer
     			{
 					// add local lock obj
 	    			addedLocalLockObj[i] = true;
-					b.getLocals().add(lockObj[i]);
+					b.getLocals().add(lockObj[i]); // TODO: add name conflict avoidance code
 		            
 		            // assign new object to lock obj
 					units.insertBefore(
@@ -227,7 +238,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 			// monitorenter/monitorexit statements with new ones
 			
 			Value currentLockObject;				
-			if( useGlobalLock[tn.setNumber - 1] || tn.lockObject instanceof Ref)
+			if( useGlobalLock[tn.setNumber - 1] || tn.lockObject instanceof Ref)	
 			{
 				currentLockObject = lockObj[tn.setNumber];
 			}

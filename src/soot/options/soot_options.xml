@@ -2947,6 +2947,13 @@ both optimistic and pessimistic JVMs.
 						<long_desc/>
 					</boolopt>
 					<boolopt>
+						<name>Use One Global Synchronization Object</name>
+						<alias>one-global-lock</alias>
+						<default>false</default>
+						<short_desc>Use just one global synchronization object for all transactional regions</short_desc>
+						<long_desc> Use just one global synchronization object for all transactional regions </long_desc>
+					</boolopt>
+					<boolopt>
 						<name>Print Topological Graph</name>
 						<alias>print-graph</alias>
 						<default>false</default>

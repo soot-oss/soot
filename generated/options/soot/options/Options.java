@@ -1736,6 +1736,7 @@ public class Options extends OptionsBase {
                 "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
+                +padOpt( "one-global-lock (false)", "Use just one global synchronization object for all transactional regions" )
                 +padOpt( "print-graph (false)", "Print topological graph of transactions" )
                 +padOpt( "print-table (false)", "Print table of transactions" )
                 +padOpt( "print-debug (false)", "Print debugging info" );
@@ -2451,6 +2452,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
                 +"enabled "
+                +"one-global-lock "
                 +"print-graph "
                 +"print-table "
                 +"print-debug ";
@@ -3009,6 +3011,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
               +"enabled:false "
+              +"one-global-lock:false "
               +"print-graph:false "
               +"print-table:false "
               +"print-debug:false ";
