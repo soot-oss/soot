@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Soot - Frequently asked questions</TITLE>
+<META NAME="description" CONTENT="Soot - Frequently asked questions">
+<META NAME="keywords" CONTENT="faq">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="faq.css">
+
+</HEAD>
+
+<BODY >
+
+<P>
+<H1 ALIGN="CENTER">Soot - Frequently asked questions</H1>
+<DIV CLASS="author_info">
+
+<P ALIGN="CENTER"><STRONG>Eric Bodden (<A NAME="tex2html1"
+  HREF="mailto:ebodde@sable.mcgill.ca">ebodde@sable.mcgill.ca</A>)</STRONG></P>
+</DIV>
+
+<P>
+<BR>
+
+<H2><A NAME="SECTION00010000000000000000">
+Contents</A>
+</H2>
+<!--Table of Contents-->
+
+<UL CLASS="TofC">
+<LI><A NAME="tex2html6"
+  HREF="faq.html#SECTION00020000000000000000">I get an exception that java.lang.Object is not found.</A>
+<LI><A NAME="tex2html7"
+  HREF="faq.html#SECTION00030000000000000000">Exception: This operation requires resolving level BODIES but java.lang.System is at resolving level SIGNATURES</A>
+</UL>
+<!--End of Table of Contents-->
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00020000000000000000">
+I get an exception that <TT>java.lang.Object</TT> is not found.</A>
+</H1>
+You should make sure that <TT>rt.jar</TT> is on your <SPAN  CLASS="textit">soot-classpath</SPAN>.
+This JAR file is usually contained in the <SPAN  CLASS="textit">lib</SPAN> subdirectory of your Java
+runtime environment. An example invocation would be:
+
+<P>
+<PRE>
+java soot.Main -cp &lt;cp&gt; -soot-classpath /usr/bin/sunSDK1.4/jre/lib/rt.jar:&lt;scp&gt; ...
+</PRE>
+
+<P>
+In general, <code>&lt;cp&gt;</code> is the classpath with which Soot is <SPAN  CLASS="textit">run</SPAN>, however
+<code>&lt;scp&gt;</code> is the classpath of the program that Soot should <SPAN  CLASS="textit">analyze</SPAN>!
+
+<P>
+
+<H1><A NAME="SECTION00030000000000000000">
+Exception: <TT>This operation requires resolving level BODIES but java.lang.System is at resolving level SIGNATURES</TT></A>
+</H1>
+
+<P>
+You can generally resolve this problem in two different ways.
+<SPAN  CLASS="textbf">If you are using Soot as a command line tool</SPAN>, add the <TT>-w</TT> switch
+to the command line. <SPAN  CLASS="textbf">If you are using Soot via its API</SPAN>, add the
+following calls:
+
+<P>
+<PRE>
+Scene.v().loadBasicClasses();
+Scene.v().loadNecessaryClasses();
+</PRE>
+
+<P>
+
+<H1><A NAME="SECTION00040000000000000000">
+About this document ...</A>
+</H1>
+ <STRONG>Soot - Frequently asked questions</STRONG><P>
+This document was generated using the
+<A HREF="http://www.latex2html.org/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 2002-2-1 (1.71)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>
+Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>faq -split 0 -nonavigation -dir ./</TT>
+<P>
+The translation was initiated by Eric BODDEN on 2007-02-18
+<BR><HR>
+<ADDRESS>
+Eric BODDEN
+2007-02-18
+</ADDRESS>
+</BODY>
+</HTML>
