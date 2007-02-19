@@ -24,8 +24,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.*;
 import org.eclipse.gef.ui.actions.*;
 
-import com.sun.rsasign.t;
-
 import ca.mcgill.sable.graph.actions.*;
 import ca.mcgill.sable.soot.cfg.editParts.*;
 
