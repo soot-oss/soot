@@ -34,8 +34,6 @@ import org.eclipse.draw2d.geometry.*;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
-import com.sun.rsasign.t;
-
 import ca.mcgill.sable.graph.editpolicies.*;
 
 public class ComplexNodeEditPart
