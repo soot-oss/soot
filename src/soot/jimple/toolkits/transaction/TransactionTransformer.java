@@ -17,7 +17,6 @@ import soot.toolkits.mhp.stmt.*;
 import soot.tagkit.LineNumberTag;
 import soot.jimple.toolkits.annotation.nullcheck.*;
 
-
 public class TransactionTransformer extends SceneTransformer
 {
     public TransactionTransformer(Singletons.Global g){}

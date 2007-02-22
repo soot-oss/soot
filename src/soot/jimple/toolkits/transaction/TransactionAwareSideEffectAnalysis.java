@@ -31,6 +31,40 @@ import soot.util.*;
  *  Uses various heuristic rules to filter out side-effects that 
  *  are not visible to other threads in a Transactional program.
  */
+class WholeObject
+{
+	Type type;
+	
+	public WholeObject(Type type)
+	{
+		this.type = type;
+	}
+	
+	public WholeObject()
+	{
+		this.type = null;
+	}
+
+	public String toString()
+	{
+		return "Whole Object" + (type == null ? "" : " (" + type + ")");
+	}
+	
+	public boolean equals(Object o)
+	{
+		if(o instanceof WholeObject)
+		{
+			WholeObject other = (WholeObject) o;
+			if(type != null && other.type != null)
+				return (type == other.type);
+			else
+				return true;
+		}
+		else
+			return true;
+	}
+}
+
 public class TransactionAwareSideEffectAnalysis {
 	PointsToAnalysis pa;
 	CallGraph cg;
@@ -171,7 +205,7 @@ public class TransactionAwareSideEffectAnalysis {
 				Local vLocal = (Local) specialRead;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
-				sSet.addFieldRef( base, stmt );
+				sSet.addFieldRef( base, new WholeObject() ); // we approximate that it's not a specific field, but the whole object
 				ret.union(sSet);
 			}
 			else if( specialRead instanceof FieldRef)
@@ -256,6 +290,7 @@ public class TransactionAwareSideEffectAnalysis {
 			} 
 			else if( target.isConcrete() ) 
 			{
+				// TODO: FIX THIS!!!  What if the declaration is in a parent class of the actual object.
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
 					target.getDeclaringClass().toString().startsWith("java.lang") )
 				{
@@ -322,7 +357,7 @@ public class TransactionAwareSideEffectAnalysis {
 				Local vLocal = (Local) v;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
-				sSet.addFieldRef( base, stmt );
+				sSet.addFieldRef( base, new WholeObject() ); // we approximate not a specific field, but the whole object
 				ret.union(sSet);
 			}
 			else if( v instanceof FieldRef)
