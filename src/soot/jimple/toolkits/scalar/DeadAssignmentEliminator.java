@@ -136,6 +136,12 @@ public class DeadAssignmentEliminator extends BodyTransformer
                             // can throw exception
                             isEssential = true;
                                 }
+                        else if (rhs instanceof NewExpr
+                  			  || (rhs instanceof FieldRef
+                  			    && !(rhs instanceof InstanceFieldRef))) {
+                          // Can trigger class initialization
+                          isEssential = true;
+                        } 
                     }
                 }
                 
