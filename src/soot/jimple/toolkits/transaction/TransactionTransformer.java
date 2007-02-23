@@ -49,6 +49,7 @@ public class TransactionTransformer extends SceneTransformer
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
     	G.v().out.println("*** Find and Name Transactions ***");
     	Map methodToFlowSet = new HashMap();
+    	Map methodToExcUnitGraph = new HashMap();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
     	{
@@ -60,9 +61,11 @@ public class TransactionTransformer extends SceneTransformer
 				if(method.isConcrete())
 				{
 	    	    	Body b = method.retrieveActiveBody();
+	    	    	ExceptionalUnitGraph eug = new ExceptionalUnitGraph(b);
+    		    	methodToExcUnitGraph.put(method, eug);
     		    	
     	    		// run the intraprocedural analysis
-    				TransactionAnalysis ta = new TransactionAnalysis(new ExceptionalUnitGraph(b), b, optionPrintDebug);
+    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
@@ -104,8 +107,9 @@ public class TransactionTransformer extends SceneTransformer
     	while(tnIt.hasNext())
     	{
     		Transaction tn = (Transaction) tnIt.next();
-			Body b = tn.method.retrieveActiveBody();
-			UnitGraph g = new ExceptionalUnitGraph(b);
+//			Body b = tn.method.retrieveActiveBody();
+//			UnitGraph g = new ExceptionalUnitGraph(b);
+			UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
 			LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
     		Iterator invokeIt = tn.invokes.iterator();
     		while(invokeIt.hasNext())
@@ -139,11 +143,12 @@ public class TransactionTransformer extends SceneTransformer
     	    while (methodsIt.hasNext())
     	    {
     	    	SootMethod method = (SootMethod) methodsIt.next();
-//    	    	G.v().out.println(method.toString());
     	    	Body b = method.retrieveActiveBody();
+				UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(method);
     	    	
     	    	// run the interprocedural analysis
-    			PTFindStrayRW ptfrw = new PTFindStrayRW(new ExceptionalUnitGraph(b), b, AllTransactions);
+//    			PTFindStrayRW ptfrw = new PTFindStrayRW(new ExceptionalUnitGraph(b), b, AllTransactions);
+    			PTFindStrayRW ptfrw = new PTFindStrayRW(g, b, AllTransactions);
     			Chain units = b.getUnits();
     			Unit firstUnit = (Unit) units.iterator().next();
     			FlowSet fs = (FlowSet) ptfrw.getFlowBefore(firstUnit);
@@ -496,7 +501,8 @@ public class TransactionTransformer extends SceneTransformer
 				
 				// Use LocalInfoFlowAnalysis to determine if all contributing units must be accessing fields of the same RUNTIME OBJECT
 //				G.v().out.print("Transaction " + tn.name + " in " + tn.method + " ");
-				UnitGraph g = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
+//				UnitGraph g = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
+				UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
 				LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g);
 				Vector barriers = (Vector) tn.ends.clone();
 				barriers.add(tn.begin);

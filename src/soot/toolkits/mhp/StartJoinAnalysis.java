@@ -46,81 +46,73 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		startToAllocNodes = new HashMap();
 		startToJoin = new HashMap();
 		
-		PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
-		LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g);
-		TransitiveTargets runMethodTargets = new TransitiveTargets( callGraph, new Filter(new RunMethodsPred()) );
-		
 		// Get lists of start and join statements
 		doAnalysis();
 		
-		// Build one map from start stmt to possible run methods, and one map from start statement to possible allocation nodes
-		Iterator startIt = startStatements.iterator();
-		while (startIt.hasNext())
+		if(!startStatements.isEmpty())
 		{
-			Stmt start = (Stmt) startIt.next();
+			// Get supporting info and analyses
+			PostDominatorAnalysis pd = new PostDominatorAnalysis(new BriefUnitGraph(sm.getActiveBody()));
+			LocalInfoFlowAnalysis lif = new LocalInfoFlowAnalysis(g);
+			TransitiveTargets runMethodTargets = new TransitiveTargets( callGraph, new Filter(new RunMethodsPred()) );
 			
-			List runMethodsList = new ArrayList(); // will be a list of possible run methods called by this start stmt
-			List allocNodesList = new ArrayList(); // will be a list of possible allocation nodes for the thread object that's getting started
-			
-			// Get possible thread objects (may alias)
-			Value startObject = ((InstanceInvokeExpr) (start).getInvokeExpr()).getBase();
-			PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) startObject);
-			List mayAlias = getMayAliasList(pts);
-			if( mayAlias.size() < 1 )
-				continue; // If the may alias is empty, this must be dead code
-				
-			// For each possible thread object, get alloc node
-			Iterator mayAliasIt = mayAlias.iterator();
-			while( mayAliasIt.hasNext() )
+			// Build a map from start stmt to possible run methods, 
+			// and a map from start stmt to possible allocation nodes,
+			// and a map from start stmt to guaranteed join stmt
+			Iterator startIt = startStatements.iterator();
+			while (startIt.hasNext())
 			{
-				AllocNode allocNode = (AllocNode)mayAliasIt.next();
-				allocNodesList.add(allocNode);
-				NewExpr ne = (NewExpr) allocNode.getNewExpr();
+				Stmt start = (Stmt) startIt.next();
 				
-			}
-			
-			Iterator mayRunIt = runMethodTargets.iterator( start );
-//			G.v().out.println("Edges out of " + start + " are:");
-			while( mayRunIt.hasNext() )
-			{
-				SootMethod runMethod = (SootMethod) mayRunIt.next();
-//				G.v().out.println("    " + runMethod.getSignature() + " AKA (" + runMethod.getSubSignature() + ")");
-				if( runMethod.getSubSignature().equals("void run()") )
+				List runMethodsList = new ArrayList(); // will be a list of possible run methods called by this start stmt
+				List allocNodesList = new ArrayList(); // will be a list of possible allocation nodes for the thread object that's getting started
+				
+				// Get possible thread objects (may alias)
+				Value startObject = ((InstanceInvokeExpr) (start).getInvokeExpr()).getBase();
+				PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local) startObject);
+				List mayAlias = getMayAliasList(pts);
+				if( mayAlias.size() < 1 )
+					continue; // If the may alias is empty, this must be dead code
+					
+				// For each possible thread object, get alloc node
+				Iterator mayAliasIt = mayAlias.iterator();
+				while( mayAliasIt.hasNext() )
 				{
-					runMethodsList.add(runMethod);
+					AllocNode allocNode = (AllocNode)mayAliasIt.next();
+					allocNodesList.add(allocNode);
+					NewExpr ne = (NewExpr) allocNode.getNewExpr();
+					
 				}
-			}
+				
+				Iterator mayRunIt = runMethodTargets.iterator( start );
+				while( mayRunIt.hasNext() )
+				{
+					SootMethod runMethod = (SootMethod) mayRunIt.next();
+					if( runMethod.getSubSignature().equals("void run()") )
+					{
+						runMethodsList.add(runMethod);
+					}
+				}
 
-			// Add this start stmt to both maps
-			startToRunMethods.put(start, runMethodsList);
-			startToAllocNodes.put(start, allocNodesList);
-			
-			// does this start stmt match any join stmt???
-			Iterator joinIt = joinStatements.iterator();
-			while (joinIt.hasNext())
-			{
-				Stmt join = (Stmt) joinIt.next();
-				Value joinObject = ((InstanceInvokeExpr) (join).getInvokeExpr()).getBase();
+				// Add this start stmt to both maps
+				startToRunMethods.put(start, runMethodsList);
+				startToAllocNodes.put(start, allocNodesList);
 				
-				// If startObject and joinObject MUST be the same, and if join post-dominates start
-/*				if(startObject.equivTo(joinObject) && ((FlowSet) getFlowBefore((Unit)join)).contains(start))
+				// does this start stmt match any join stmt???
+				Iterator joinIt = joinStatements.iterator();
+				while (joinIt.hasNext())
 				{
-					G.v().out.println("According to StartJoinAnalysis, start and join are matched: " + "JOIN " + join + " START " + start);
-					if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join))
+					Stmt join = (Stmt) joinIt.next();
+					Value joinObject = ((InstanceInvokeExpr) (join).getInvokeExpr()).getBase();
+					
+					// If startObject and joinObject MUST be the same, and if join post-dominates start
+					if( lif.mustPointToSameObj( start, (Local) startObject, join, (Local) joinObject ) )
 					{
-						startToJoin.put(start, join); // then this join always joins this start's thread
-					}
-					else
-					{
-					}
-				}
-*/
-				if( lif.mustPointToSameObj( start, (Local) startObject, join, (Local) joinObject ) )
-				{
-					if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join))
-					{
-						G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
-						startToJoin.put(start, join); // then this join always joins this start's thread
+						if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join)) // does join post-dominate start?
+						{
+							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
+							startToJoin.put(start, join); // then this join always joins this start's thread
+						}
 					}
 				}
 			}
@@ -185,6 +177,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
+/*
 		in.copy(out);
 
 		// get list of definitions at this unit
@@ -204,7 +197,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 			if(newDefs.contains((Local) ((InstanceInvokeExpr) (outStmt).getInvokeExpr()).getBase()))
 				out.remove(outStmt);
 		}
-				
+*/				
 		// Search for start/join invoke expressions
 		if(stmt.containsInvokeExpr())
 		{
@@ -223,7 +216,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 							startStatements.add(stmt);
 							
 						// Flow this Thread.start() down
-						out.add(stmt);
+//						out.add(stmt);
 					}
 				}
 			}

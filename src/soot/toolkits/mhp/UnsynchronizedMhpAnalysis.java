@@ -55,15 +55,18 @@ public class UnsynchronizedMhpAnalysis
 		CallGraph callGraph = Scene.v().getCallGraph();
 
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
+//		G.v().out.println("    MHP: PegCallGraph");
 		PegCallGraph pecg = new PegCallGraph(callGraph);
 	    
 	    // Find allocation nodes that are run more than once
 	    // Also find methods that are run more than once
+//		G.v().out.println("    MHP: AllocNodesFinder");
 		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
 		Set multiRunAllocNodes = anf.getMultiRunAllocNodes();
 		Set multiCalledMethods = anf.getMultiCalledMethods();
 
 		// Find Thread.start() and Thread.join() statements (in live code)
+//		G.v().out.println("    MHP: StartJoinFinder");
 		StartJoinFinder sjf = new StartJoinFinder(callGraph, (PAG) pta); // does analysis
 		Map startToAllocNodes = sjf.getStartToAllocNodes();
 		Map startToRunMethods = sjf.getStartToRunMethods();
@@ -71,6 +74,7 @@ public class UnsynchronizedMhpAnalysis
 		Map startToJoin = sjf.getStartToJoin();
 		
 		// Build MHP Lists
+//		G.v().out.println("    MHP: Building MHP Lists");
 		Map containingMethodToThreadMethods = new HashMap();
 		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
