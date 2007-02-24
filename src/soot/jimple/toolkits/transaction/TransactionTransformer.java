@@ -74,6 +74,9 @@ public class TransactionTransformer extends SceneTransformer
     				methodToFlowSet.put(method, fs);
 				}
     	    }
+    	    
+    	    // DEBUG
+    	    ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(appClass);
     	}
     	
     	// Create a composite list of all transactions
@@ -786,7 +789,7 @@ public class TransactionTransformer extends SceneTransformer
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
-    			G.v().out.print("Groups" + (group + 1) +
+    			G.v().out.print("Group " + (group + 1) +
 								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
 								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
 								" lock object: " + (lockObject[group] == null? "null" : lockObject[group].toString()) + "\n[transaction-groups] " + 

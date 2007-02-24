@@ -14,25 +14,107 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
-// ClassDataFlowAnalysis written by Richard L. Halpert, 2006-12-26
-// Finds the class's inputs and outputs
+// ClassDataFlowAnalysis written by Richard L. Halpert, 2007-02-22
+// Constructs data flow tables for each method of a class.
+// These tables conservatively approximate how data flows from parameters,
+// fields, and globals to parameters, fields, globals, and the return value.
+// Note that a ref-type parameter (or field or global) might allow access to a
+// large data structure, but that entire structure will be represented only by
+// the parameter's one node in the data flow graph.
 
-public class ClassDataFlowAnalysis // extends ForwardFlowAnalysis
+public class ClassDataFlowAnalysis
 {
-	Map classToMethods;
+	SootClass sootClass;
 	Map methodToDataFlowGraph;
 	
-	public ClassDataFlowAnalysis()
+	public ClassDataFlowAnalysis(SootClass sootClass)
 	{
-		 classToMethods = new HashMap();
+		 this.sootClass = sootClass;
 		 methodToDataFlowGraph = new HashMap();
 		 
-		 
+		 doAnalysis();
+	}
+	
+	public DirectedGraph getDataFlowGraphOf(SootMethod sm)
+	{
+		return (DirectedGraph) methodToDataFlowGraph.get(sm);
+	}
+	
+	private void doAnalysis()
+	{
+		Iterator it = sootClass.getMethods().iterator();
+		while(it.hasNext())
+		{
+			SootMethod method = (SootMethod) it.next();
+			MutableDirectedGraph dataFlowGraph = flowInsensitiveMethodAnalysis(method);
+			methodToDataFlowGraph.put(method, dataFlowGraph);
+			G.v().out.println(method + " has dataFlowGraph: ");
+			printDataFlowGraph(dataFlowGraph);
+		}
+	}
+	
+	private void printDataFlowGraph(DirectedGraph g)
+	{
+		Iterator nodeIt = g.iterator();
+		if(!nodeIt.hasNext())
+			G.v().out.println("    " + " --> ");
+		while(nodeIt.hasNext())
+		{
+			Object node = nodeIt.next();
+			List sources = g.getPredsOf(node);
+			Iterator sourcesIt = sources.iterator();
+			if(!sourcesIt.hasNext())
+				continue;
+			G.v().out.print("    [ ");
+			int sourcesnamelength = 0;
+			int lastnamelength = 0;
+			while(sourcesIt.hasNext())
+			{
+				Ref r = (Ref) ((EquivalentValue) sourcesIt.next()).getValue(); // unwrap the Ref
+				if(r instanceof FieldRef)
+				{
+					FieldRef fr = (FieldRef) r;
+					String name = fr.getFieldRef().name();
+					lastnamelength = name.length();
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.print(name);
+				}
+				else if(r instanceof ParameterRef)
+				{
+					ParameterRef pr = (ParameterRef) r;
+					lastnamelength = 11;
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.print("@parameter" + pr.getIndex());
+				}
+				else
+				{
+					String name = r.toString();
+					lastnamelength = name.length();
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.println(name);
+				}
+				if(sourcesIt.hasNext())
+					G.v().out.print("\n      ");
+			}
+			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
+				G.v().out.print(" ");
+			G.v().out.println(" ] --> " + node.toString());
+		}
 	}
 
-	private MutableDirectedGraph FlowInsensitiveMethodAnalysis(UnitGraph g)
+	private MutableDirectedGraph flowInsensitiveMethodAnalysis(SootMethod sm)
 	{
-		// Checks flow-insensitively which fields, globals, and parameters are accessed
+		// Constructs a graph representing the data flow between fields, parameters, and the
+		// return value of this method.  The graph nodes are EquivalentValue wrapped Refs.
+		// This version is rather stupid... it just assumes all values flow to all others,
+		// except for the return value, which is flowed to by all, but flows to none.
+		
+		//
+		Body b = sm.retrieveActiveBody();
+		UnitGraph g = new ExceptionalUnitGraph(b);
 		HashSet fieldsStaticsParamsAccessed = new HashSet();		
 
 		// Get list of fields, globals, and parameters that are accessed
@@ -46,7 +128,7 @@ public class ClassDataFlowAnalysis // extends ForwardFlowAnalysis
 				IdentityRef ir = (IdentityRef) is.getRightOp();
 				if( ir instanceof ParameterRef )
 				{
-					fieldsStaticsParamsAccessed.add(ir);
+					fieldsStaticsParamsAccessed.add(new EquivalentValue(ir));
 				}
 			}
 			if(s.containsFieldRef())
@@ -56,7 +138,8 @@ public class ClassDataFlowAnalysis // extends ForwardFlowAnalysis
 				{
 					// This should be added to the list of fields accessed
 					// static fields "belong to everyone"
-					fieldsStaticsParamsAccessed.add(ref);
+					StaticFieldRef sfr = (StaticFieldRef) ref;
+					fieldsStaticsParamsAccessed.add(new EquivalentValue(sfr));
 				}
 				else if( ref instanceof InstanceFieldRef )
 				{
@@ -66,39 +149,52 @@ public class ClassDataFlowAnalysis // extends ForwardFlowAnalysis
 					Value base = ifr.getBase();
 					if(base instanceof Local)
 					{
-//		            	Iterator baseDefsIt = sld.getDefsOfAt( (Local) base , s ).iterator();
-//		            	if( baseDefsIt.hasNext() )
-//		            	{
-//		                	DefinitionStmt baseDef = (DefinitionStmt) baseDefsIt.next();
-//	                		if( baseDef.getRightOp() instanceof ThisRef )
-//	                		{
-								fieldsStaticsParamsAccessed.add(ref);
-//	                		}
-//		                }
+						if( (!sm.isStatic()) && base == g.getBody().getThisLocal() )
+							fieldsStaticsParamsAccessed.add(new EquivalentValue(ifr));
 		            }
 				}
 			}
 		}
 		
-		// Assume all fields, globals, and parameters flow data to all others
+		// Each field, global, and parameter becomes a node in the graph
 		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
 		Iterator accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Ref r = (Ref) accessedIt1.next();
-			dataFlowGraph.addNode(r);
+			Object o = accessedIt1.next();
+			dataFlowGraph.addNode(o);
 		}
-
+		
+		// The return value also becomes a node in the graph
+		ParameterRef returnValueRef = null;
+		if(sm.getReturnType() != VoidType.v())
+		{
+			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
+			dataFlowGraph.addNode(new EquivalentValue(returnValueRef));
+		}
+		
+		// Create an edge from each node (except the return value) to every other node (including the return value)
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Ref r = (Ref) accessedIt1.next();
+			Object r = accessedIt1.next();
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
-				Ref s = (Ref) accessedIt2.next();
-				dataFlowGraph.addEdge(r, s);
+				Object s = accessedIt2.next();
+				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
+				if((sRef instanceof ParameterRef) && (
+					Type.toMachineType(((ParameterRef) sRef).getType()) == IntType.v() ||
+					Type.toMachineType(((ParameterRef) sRef).getType()) == DoubleType.v() ||
+					Type.toMachineType(((ParameterRef) sRef).getType()) == FloatType.v() ||
+					Type.toMachineType(((ParameterRef) sRef).getType()) == LongType.v()
+					))
+					;// do nothing
+				else
+					dataFlowGraph.addEdge(r, s);
 			}
+			if(returnValueRef != null)
+				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
 		}
 		
 		return dataFlowGraph;
