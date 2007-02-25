@@ -74,10 +74,22 @@ public class TransactionTransformer extends SceneTransformer
     				methodToFlowSet.put(method, fs);
 				}
     	    }
-    	    
-    	    // DEBUG
-    	    ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(appClass);
     	}
+    	
+    	// DEBUG: do data flow analysis and local objects analysis
+    	DataFlowAnalysis dfa = new DataFlowAnalysis();
+    	Collection runnableImplementers = Scene.v().getActiveHierarchy().getImplementersOf(Scene.v().getSootClass("java.lang.Runnable"));
+    	Iterator possibleRunnableClassesIt = Scene.v().getApplicationClasses().iterator();
+    	while (possibleRunnableClassesIt.hasNext()) 
+    	{
+    	    SootClass possibleRunnableClass = (SootClass) possibleRunnableClassesIt.next();
+    		if(runnableImplementers.contains(possibleRunnableClass))
+    		{
+    			LocalObjectsScopeAnalysis losa = new LocalObjectsScopeAnalysis(possibleRunnableClass, dfa);
+    		}
+    	}
+    	// SootClass scopeClass = Scene.v().getSootClass(new String("Thread1"));
+    	
     	
     	// Create a composite list of all transactions
     	List AllTransactions = new Vector();

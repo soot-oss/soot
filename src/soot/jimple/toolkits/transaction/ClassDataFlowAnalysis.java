@@ -35,9 +35,9 @@ public class ClassDataFlowAnalysis
 		 doAnalysis();
 	}
 	
-	public DirectedGraph getDataFlowGraphOf(SootMethod sm)
+	public MutableDirectedGraph getDataFlowGraphOf(SootMethod sm)
 	{
-		return (DirectedGraph) methodToDataFlowGraph.get(sm);
+		return (MutableDirectedGraph) methodToDataFlowGraph.get(sm);
 	}
 	
 	private void doAnalysis()
@@ -48,8 +48,8 @@ public class ClassDataFlowAnalysis
 			SootMethod method = (SootMethod) it.next();
 			MutableDirectedGraph dataFlowGraph = flowInsensitiveMethodAnalysis(method);
 			methodToDataFlowGraph.put(method, dataFlowGraph);
-			G.v().out.println(method + " has dataFlowGraph: ");
-			printDataFlowGraph(dataFlowGraph);
+//			G.v().out.println(method + " has dataFlowGraph: ");
+//			printDataFlowGraph(dataFlowGraph);
 		}
 	}
 	
@@ -112,7 +112,14 @@ public class ClassDataFlowAnalysis
 		// This version is rather stupid... it just assumes all values flow to all others,
 		// except for the return value, which is flowed to by all, but flows to none.
 		
-		//
+		// This version is also broken... it can't handle the ThisRef without
+		// flow sensitivity.
+		
+		// If this method cannot have a body, then we can't analyze it... 
+		// UNSAFE: a complete graph would be a safe approx!
+		if(!sm.isConcrete())
+			return new MemoryEfficientGraph();
+			
 		Body b = sm.retrieveActiveBody();
 		UnitGraph g = new ExceptionalUnitGraph(b);
 		HashSet fieldsStaticsParamsAccessed = new HashSet();		
@@ -174,26 +181,23 @@ public class ClassDataFlowAnalysis
 		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
+		// non-Ref-type nodes are ignored
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
 			Object r = accessedIt1.next();
+			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
+			if( !(rRef.getType() instanceof RefType) )
+				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
 				Object s = accessedIt2.next();
 				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
-				if((sRef instanceof ParameterRef) && (
-					Type.toMachineType(((ParameterRef) sRef).getType()) == IntType.v() ||
-					Type.toMachineType(((ParameterRef) sRef).getType()) == DoubleType.v() ||
-					Type.toMachineType(((ParameterRef) sRef).getType()) == FloatType.v() ||
-					Type.toMachineType(((ParameterRef) sRef).getType()) == LongType.v()
-					))
-					;// do nothing
-				else
+				if(	sRef.getType() instanceof RefType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if(returnValueRef != null)
+			if( returnValueRef != null && !(returnValueRef.getType() instanceof RefType) )
 				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
 		}
 		

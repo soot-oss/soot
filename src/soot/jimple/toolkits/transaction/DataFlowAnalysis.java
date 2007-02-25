@@ -43,28 +43,75 @@ public class DataFlowAnalysis
     	    classToClassDataFlowAnalysis.put(appClass, new ClassDataFlowAnalysis(appClass));
 		}
 	}
-	
-	// Returns a list of Refs that r flows to when method sm is called
-	public List flowsTo(SootMethod sm, Ref source)
+		
+	// Returns a list of EquivalentValue wrapped Refs that source flows to when method sm is called
+	public List getSinksOf(SootMethod sm, EquivalentValue source)
 	{
-		ClassDataFlowAnalysis cdfa = (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sm.getDeclaringClass());
-		DirectedGraph g = cdfa.getDataFlowGraphOf(sm);
-		List sinksEqVal = g.getPredsOf(new EquivalentValue(source));
-		List sinks = new ArrayList();
-		Iterator it = sinksEqVal.iterator();
-		while(it.hasNext())
-		{
-			Ref sink = (Ref) ((EquivalentValue) it.next()).getValue();
-			sinks.add(sink);
-		}
+		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		MutableDirectedGraph g = cdfa.getDataFlowGraphOf(sm);
+		List sinks = null;
+		if(g.containsNode(source))
+			sinks = g.getSuccsOf(source);
+		else
+			sinks = new ArrayList();
 		return sinks;
 	}
 	
-	// Returns a list of Refs that r may flow to from InvokeExpr ie
+	// Returns a list of EquivalentValue wrapped Refs that sink flows from when method sm is called
+	public List getSourcesOf(SootMethod sm, EquivalentValue sink)
+	{
+		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		MutableDirectedGraph g = cdfa.getDataFlowGraphOf(sm);
+		List sources = null;
+		if(g.containsNode(sink))
+			sources = g.getPredsOf(sink);
+		else
+			sources = new ArrayList();
+		return sources;
+	}
+	
+	private ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
+	{
+		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
+			classToClassDataFlowAnalysis.put(sc, new ClassDataFlowAnalysis(sc));
+		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
+	}
+	
+/*	// Returns a list of Refs that r may flow to from InvokeExpr ie
 	public List flowsTo(InvokeExpr ie, Ref source)
 	{
 		// TODO: make this work!
 		return new ArrayList();
+	}
+//*/
+	
+	// Returns an EquivalentValue wrapped Ref based on sfr
+	// that is suitable for comparison to the nodes of a Data Flow Graph
+	public EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
+	{
+		if(sf.isStatic())
+		{
+			return new EquivalentValue( Jimple.v().newStaticFieldRef(sf.makeRef()) );
+		}
+		else
+		{
+			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
+			return new EquivalentValue( Jimple.v().newInstanceFieldRef(sm.retrieveActiveBody().getThisLocal(), sf.makeRef()) );
+		}
+	}
+	
+	// Returns an EquivalentValue wrapped Ref for @parameter i
+	// that is suitable for comparison to the nodes of a Data Flow Graph
+	public EquivalentValue getEquivalentValueParameterRef(SootMethod sm, int i)
+	{
+		return new EquivalentValue(new ParameterRef(sm.getParameterType(i), i));
+	}
+	
+	// Returns an EquivalentValue wrapped Ref for the return value
+	// that is suitable for comparison to the nodes of a Data Flow Graph
+	public EquivalentValue getEquivalentValueReturnRef(SootMethod sm)
+	{
+		return new EquivalentValue(new ParameterRef(sm.getReturnType(), -1));
 	}
 }
 
