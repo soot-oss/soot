@@ -16,8 +16,7 @@ import soot.toolkits.scalar.*;
 
 // LocalObjectsScopeAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.
-// THIS LOCAL-OBJECTS ANALYSIS IS VALID ONLY FOR OBJECTS OF THE ACTUAL SCOPE TYPE
-// Subtypes of the scope type may have different results!!!
+// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
 
 public class LocalObjectsScopeAnalysis
 {
@@ -215,10 +214,11 @@ public class LocalObjectsScopeAnalysis
 		return true;
 		
 		// public fields require a whole-program search for accesses outside of this class
-		// non-public, non-protected, non-private fields require a this-package search for accesses outside of this class
-		// protected and private fields are assumed local: 
-		// THIS MEANS THAT THE LOCAL-OBJECTS ANALYSIS IS VALID ONLY FOR OBJECTS OF THE ACTUAL SCOPE TYPE
-		// Subtypes of the scope type may have different results!!!
+		//  - beware reentrant behavior, as a LocalObjectsScopeAnalysis will be required to analyze these accesses if found
+		// protected and package-private fields require a this-package search for accesses outside of this class
+		//  - beware reentrant behavior, as a LocalObjectsScopeAnalysis will be required to analyze these accesses if found
+		// private fields are assumed local
+		// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
 	}
 	
 	// Should perform a Local-Inputs analysis on the callsites to this method

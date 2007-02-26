@@ -15,7 +15,7 @@ import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
 // DataFlowAnalysis written by Richard L. Halpert, 2007-02-24
-// Constructs data flow tables for each method of every application class.
+// Constructs data flow tables for each method of every application class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
 // Note that a ref-type parameter (or field or global) might allow access to a
@@ -40,7 +40,7 @@ public class DataFlowAnalysis
     	while (appClassesIt.hasNext()) 
     	{
     	    SootClass appClass = (SootClass) appClassesIt.next();
-    	    classToClassDataFlowAnalysis.put(appClass, new ClassDataFlowAnalysis(appClass));
+    	    classToClassDataFlowAnalysis.put(appClass, new ClassDataFlowAnalysis(appClass, this));
 		}
 	}
 		
@@ -70,10 +70,10 @@ public class DataFlowAnalysis
 		return sources;
 	}
 	
-	private ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
+	public ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
 	{
 		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
-			classToClassDataFlowAnalysis.put(sc, new ClassDataFlowAnalysis(sc));
+			classToClassDataFlowAnalysis.put(sc, new ClassDataFlowAnalysis(sc, this));
 		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
 	}
 	

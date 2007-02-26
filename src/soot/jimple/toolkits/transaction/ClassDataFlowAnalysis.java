@@ -15,7 +15,7 @@ import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
 // ClassDataFlowAnalysis written by Richard L. Halpert, 2007-02-22
-// Constructs data flow tables for each method of a class.
+// Constructs data flow tables for each method of a class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
 // Note that a ref-type parameter (or field or global) might allow access to a
@@ -25,11 +25,14 @@ import soot.toolkits.scalar.*;
 public class ClassDataFlowAnalysis
 {
 	SootClass sootClass;
+	DataFlowAnalysis dfa; // used to access the data flow analyses of other classes
+	
 	Map methodToDataFlowGraph;
 	
-	public ClassDataFlowAnalysis(SootClass sootClass)
+	public ClassDataFlowAnalysis(SootClass sootClass, DataFlowAnalysis dfa)
 	{
 		 this.sootClass = sootClass;
+		 this.dfa = dfa;
 		 methodToDataFlowGraph = new HashMap();
 		 
 		 doAnalysis();
