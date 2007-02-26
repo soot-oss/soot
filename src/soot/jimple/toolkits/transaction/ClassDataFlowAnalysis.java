@@ -35,7 +35,7 @@ public class ClassDataFlowAnalysis
 		 this.dfa = dfa;
 		 methodToDataFlowGraph = new HashMap();
 		 
-		 doAnalysis();
+		 doFlowInsensitiveAnalysis();
 	}
 	
 	public MutableDirectedGraph getDataFlowGraphOf(SootMethod sm)
@@ -43,7 +43,12 @@ public class ClassDataFlowAnalysis
 		return (MutableDirectedGraph) methodToDataFlowGraph.get(sm);
 	}
 	
-	private void doAnalysis()
+	public void doFlowSensitiveAnalysis()
+	{
+		// TODO: FILL IN
+	}
+	
+	private void doFlowInsensitiveAnalysis()
 	{
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())

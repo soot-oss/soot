@@ -73,17 +73,37 @@ public class DataFlowAnalysis
 	public ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
 	{
 		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
-			classToClassDataFlowAnalysis.put(sc, new ClassDataFlowAnalysis(sc, this));
+		{
+			// Create the needed flow analysis object
+			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(sc, this);
+			
+			// Put the preliminary flow-insensitive results here in case they
+			// are needed by the flow-sensitive version.  This method will be
+			// reentrant if any method we are analyzing is reentrant, so we
+			// must do this to prevent an infinite recursive loop.
+			classToClassDataFlowAnalysis.put(sc, cdfa);
+			
+			// Now calculate the flow-sensitive version.  If this classes methods
+			// are reentrant, it will call this method and receive the flow
+			// insensitive version that is already cached.
+			cdfa.doFlowSensitiveAnalysis();
+		}
 		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
 	}
 	
-/*	// Returns a list of Refs that r may flow to from InvokeExpr ie
-	public List flowsTo(InvokeExpr ie, Ref source)
+	protected MutableDirectedGraph getDataFlowGraphOf(SootMethod sm)
 	{
-		// TODO: make this work!
-		return new ArrayList();
+		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		return cdfa.getDataFlowGraphOf(sm);
 	}
-//*/
+	
+/*
+	protected MutableDirectedGraph getDataFlowGraphOf(InvokeExpr ie)
+	{
+		// get the data flow graph for each possible target of ie,
+		// then combine them conservatively and return the result.
+	}
+*/
 	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
