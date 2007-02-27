@@ -37,7 +37,9 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		
 		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 		
+		G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doAnalysis();
+		G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 
 	protected void merge(Object in1, Object in2, Object out)
@@ -103,7 +105,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			Value source = (Value) sourcesIt.next();
 			Pair pair = new Pair(new EquivalentValue(sink), new EquivalentValue(source));
 			if(!fs.contains(pair))
+			{
 				fs.add(pair);
+				if(sink instanceof Ref)
+					G.v().out.println("Found " + source + " flows to " + sink);
+			}
 		}
 	}
 	
@@ -124,24 +130,23 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				Value sink = (Value) sinksIt.next();
 				Pair pair = new Pair(new EquivalentValue(sink), new EquivalentValue(source));
 				if(!fs.contains(pair))
+				{
 					fs.add(pair);
+					if(sink instanceof Ref)
+						G.v().out.println("Found " + source + " flows to " + sink);
+				}
 			}
 		}
 	}
 	
 	// handles the invoke expression AND returns a list of the return value's sources
-	private List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
-	{
-		// get the data flow graph
-		
-		
 		// for each node
 			// if the node is a parameter
-				// source = argument
+				// source = argument <Immediate>
 			// if the node is a static field
-				// source = node
+				// source = node <StaticFieldRef>
 			// if the node is a field
-				// source = receiver object
+				// source = receiver object <Local>
 			// if the node is the return value
 				// continue
 				
@@ -154,9 +159,70 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 					// handleFlowsToDataStructure(receiver object, source, fs)
 				// if the sink is the return value
 					// add node to list of return value sources
+
+	private List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
+	{
+		// get the data flow graph
+		MutableDirectedGraph dataFlowGraph = dfa.getDataFlowGraphOf(ie);
 		
+		List returnValueSources = new ArrayList();
+		
+		Iterator nodeIt = dataFlowGraph.getNodes().iterator();
+		while(nodeIt.hasNext())
+		{
+			EquivalentValue nodeEqVal = (EquivalentValue) nodeIt.next();
+			Ref node = (Ref) nodeEqVal.getValue();
+			
+			Value source = null;
+			
+			if(node instanceof ParameterRef)
+			{
+				ParameterRef param = (ParameterRef) node;
+				if(param.getIndex() == -1)
+					continue;
+				source = ie.getArg(param.getIndex()); // Immediate
+			}
+			else if(node instanceof StaticFieldRef)
+			{
+				source = node; // StaticFieldRef
+			}
+			else if(ie instanceof InstanceInvokeExpr && node instanceof InstanceFieldRef)
+			{
+				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+				source = iie.getBase(); // Local
+			}
+			
+			Iterator sinksIt = dataFlowGraph.getSuccsOf(nodeEqVal).iterator();
+			while(sinksIt.hasNext())
+			{
+				EquivalentValue sinkEqVal = (EquivalentValue) sinksIt.next();
+				Ref sink = (Ref) sinkEqVal.getValue();
+				if(sink instanceof ParameterRef)
+				{
+					ParameterRef param = (ParameterRef) sink;
+					if(param.getIndex() == -1)
+					{
+						returnValueSources.add(source);
+					}
+					else
+					{
+						handleFlowsToDataStructure(ie.getArg(param.getIndex()), source, fs);
+					}
+				}
+				else if(sink instanceof StaticFieldRef)
+				{
+					handleFlowsToValue(sink, source, fs);
+				}
+				else if(ie instanceof InstanceInvokeExpr && sink instanceof InstanceFieldRef)
+				{
+					InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+					handleFlowsToDataStructure(iie.getBase(), source, fs);
+				}
+			}
+		}
+				
 		// return the list of return value sources
-		return null;
+		return returnValueSources;
 	}
 	
 	protected void flowThrough(Object inValue, Object unit,
@@ -238,7 +304,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(lv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) lv;
-				if(ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows into the field ref
+				if(!((UnitGraph) graph).getBody().getMethod().isStatic() && 
+					ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows into the field ref
 				{
 					sink = lv;
 				}
@@ -275,7 +342,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(rv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) rv;
-				if(ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows from the field ref
+				if(!((UnitGraph) graph).getBody().getMethod().isStatic() && 
+					ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows from the field ref
 				{
 					sources.add(rv);
 					interestingFlow = !ignoreThisDataType(rv.getType());

@@ -40,7 +40,20 @@ public class DataFlowAnalysis
     	while (appClassesIt.hasNext()) 
     	{
     	    SootClass appClass = (SootClass) appClassesIt.next();
-    	    classToClassDataFlowAnalysis.put(appClass, new ClassDataFlowAnalysis(appClass, this));
+
+			// Create the needed flow analysis object
+			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(appClass, this);
+			
+			// Put the preliminary flow-insensitive results here in case they
+			// are needed by the flow-sensitive version.  This method will be
+			// reentrant if any method we are analyzing is reentrant, so we
+			// must do this to prevent an infinite recursive loop.
+			classToClassDataFlowAnalysis.put(appClass, cdfa);
+			
+			// Now calculate the flow-sensitive version.  If this classes methods
+			// are reentrant, it will call this method and receive the flow
+			// insensitive version that is already cached.
+			cdfa.doFlowSensitiveAnalysis();
 		}
 	}
 		
@@ -83,10 +96,11 @@ public class DataFlowAnalysis
 			// must do this to prevent an infinite recursive loop.
 			classToClassDataFlowAnalysis.put(sc, cdfa);
 			
-			// Now calculate the flow-sensitive version.  If this classes methods
-			// are reentrant, it will call this method and receive the flow
-			// insensitive version that is already cached.
-			cdfa.doFlowSensitiveAnalysis();
+			// Now calculate the flow-sensitive version if this is an application class.
+			// If this class's methods are reentrant, it will call this method and
+			// receive the flow insensitive version that is already cached.
+			if(sc.isApplicationClass())
+				cdfa.doFlowSensitiveAnalysis();
 		}
 		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
 	}
@@ -97,13 +111,13 @@ public class DataFlowAnalysis
 		return cdfa.getDataFlowGraphOf(sm);
 	}
 	
-/*
 	protected MutableDirectedGraph getDataFlowGraphOf(InvokeExpr ie)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
+		SootMethodRef methodRef = ie.getMethodRef();
+		return getDataFlowGraphOf(methodRef.resolve());
 	}
-*/
 	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph

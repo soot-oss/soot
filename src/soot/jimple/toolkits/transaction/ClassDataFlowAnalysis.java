@@ -45,7 +45,19 @@ public class ClassDataFlowAnalysis
 	
 	public void doFlowSensitiveAnalysis()
 	{
-		// TODO: FILL IN
+		// TODO: store new, improved data flow graph
+		Iterator it = sootClass.getMethods().iterator();
+		while(it.hasNext())
+		{
+			SootMethod method = (SootMethod) it.next();
+			
+			if(!method.isConcrete())
+				continue;
+			
+			Body b = method.retrieveActiveBody();
+			UnitGraph g = new ExceptionalUnitGraph(b);
+			MethodDataFlowAnalysis mdfa = new MethodDataFlowAnalysis(g, dfa, true);
+		}
 	}
 	
 	private void doFlowInsensitiveAnalysis()
