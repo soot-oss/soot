@@ -130,7 +130,14 @@ public class DataFlowAnalysis
 		else
 		{
 			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
-			return new EquivalentValue( Jimple.v().newInstanceFieldRef(sm.retrieveActiveBody().getThisLocal(), sf.makeRef()) );
+			if(!sm.isConcrete())
+			{
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()), sf.makeRef()) );
+			}
+			else
+			{
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(sm.retrieveActiveBody().getThisLocal(), sf.makeRef()) );
+			}
 		}
 	}
 	

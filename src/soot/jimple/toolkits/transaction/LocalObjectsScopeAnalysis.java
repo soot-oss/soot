@@ -23,10 +23,16 @@ public class LocalObjectsScopeAnalysis
 	SootClass scopeClass;
 	DataFlowAnalysis dfa;
 	
+	ArrayList localFields;
+	ArrayList sharedFields;
+		
 	public LocalObjectsScopeAnalysis(SootClass scopeClass, DataFlowAnalysis dfa)
 	{
 		 this.scopeClass = scopeClass;
 		 this.dfa = dfa;
+		 
+		 localFields = new ArrayList();
+		 sharedFields = new ArrayList();
 		 
 		 doAnalysis();
 	}
@@ -87,13 +93,11 @@ public class LocalObjectsScopeAnalysis
 		// This is repeated until no fields move for a complete iteration.
 		
 		// Populate localFields and sharedFields with SootFields
-		ArrayList localFields = new ArrayList();
-		List sharedFields = new ArrayList();
 		Iterator fieldsIt = scopeFields.iterator();
 		while(fieldsIt.hasNext())
 		{
 			SootField field = (SootField) fieldsIt.next();
-			if( fieldIsInitiallyLocal(field.makeRef()) )
+			if( fieldIsInitiallyLocal(field) )
 				localFields.add(field);
 			else
 				sharedFields.add(field);
@@ -122,10 +126,14 @@ public class LocalObjectsScopeAnalysis
 				while(localFieldsIt.hasNext())
 				{
 					SootField localField = (SootField) localFieldsIt.next();
+					List sourcesAndSinks = new ArrayList();
 					List sources = dfa.getSourcesOf(method, dfa.getEquivalentValueFieldRef(method, localField));
-					Iterator sourcesIt = sources.iterator();
+					List sinks = dfa.getSinksOf(method, dfa.getEquivalentValueFieldRef(method, localField));
+					sourcesAndSinks.addAll(sources);
+					sourcesAndSinks.addAll(sinks);
+					Iterator sourcesAndSinksIt = sourcesAndSinks.iterator();
 					if(localField.getDeclaringClass().isApplicationClass() &&
-					   sourcesIt.hasNext())
+					   sourcesAndSinksIt.hasNext())
 					{
 						if(!printedMethodHeading)
 						{
@@ -134,20 +142,20 @@ public class LocalObjectsScopeAnalysis
 						}
 						G.v().out.println("        Field: " + localField.toString());
 					}
-					while(sourcesIt.hasNext())
+					while(sourcesAndSinksIt.hasNext())
 					{
-						EquivalentValue source = (EquivalentValue) sourcesIt.next();
-						Ref sourceRef = (Ref) source.getValue();
+						EquivalentValue sourceOrSink = (EquivalentValue) sourcesAndSinksIt.next();
+						Ref sourceOrSinkRef = (Ref) sourceOrSink.getValue();
 						boolean fieldBecomesShared = false;
-						if(sourceRef instanceof ParameterRef)
+						if(sourceOrSinkRef instanceof ParameterRef) // or return ref
 						{
-							fieldBecomesShared = !parameterIsLocal(method, source);
+							fieldBecomesShared = !parameterIsLocal(method, sourceOrSink);
 						}
-						else if(sourceRef instanceof InstanceFieldRef)
+						else if(sourceOrSinkRef instanceof InstanceFieldRef)
 						{
-							fieldBecomesShared = sharedFields.contains(source);
+							fieldBecomesShared = sharedFields.contains(sourceOrSink);
 						}
-						else if(sourceRef instanceof StaticFieldRef)
+						else if(sourceOrSinkRef instanceof StaticFieldRef)
 						{
 							fieldBecomesShared = true;
 						}
@@ -159,11 +167,11 @@ public class LocalObjectsScopeAnalysis
 						if(fieldBecomesShared)
 						{
 							if(localField.getDeclaringClass().isApplicationClass())
-								G.v().out.println("            Source: " + sourceRef.toString() + " is SHARED");
+								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
 							localFields.remove(localField);
 							sharedFields.add(localField);
 							changed = true;
-//							break; // other sources don't matter now... it only takes one to taint the field
+							break; // other sources don't matter now... it only takes one to taint the field
 						}
 						else
 						{
@@ -175,7 +183,7 @@ public class LocalObjectsScopeAnalysis
 			}
 		}
 		
-		// DEBUG: If we survived that craziness, then print out the resulting list!
+		// DEBUG: Print out the resulting list!
 		G.v().out.println("Found local/shared fields for " + scopeClass.toString());
 		G.v().out.println("    Local fields: ");
 		Iterator localsToPrintIt = localFields.iterator();
@@ -201,7 +209,9 @@ public class LocalObjectsScopeAnalysis
 			SootMethod method = (SootMethod) it.next();
 			
 			// For each method, analyze the body
-			
+			Body b = method.retrieveActiveBody();
+			UnitGraph g = new ExceptionalUnitGraph(b);
+			LocalObjectsMethodAnalysis loma = new LocalObjectsMethodAnalysis(g, this, dfa);
 		}
 	}
 	
@@ -209,7 +219,12 @@ public class LocalObjectsScopeAnalysis
 	// to determine if a field that is accessible is ever directly accessed
 	private boolean fieldIsInitiallyLocal(SootFieldRef fieldRef)
 	{
-		if(fieldRef.isStatic())
+		return fieldIsInitiallyLocal(fieldRef.resolve());
+	}
+	
+	private boolean fieldIsInitiallyLocal(SootField field)
+	{
+		if(field.isStatic() && !field.isPrivate() && field.getType() instanceof RefType)
 			return false;
 		return true;
 		
@@ -222,7 +237,32 @@ public class LocalObjectsScopeAnalysis
 	}
 	
 	// Should perform a Local-Inputs analysis on the callsites to this method
-	private boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
+	private boolean parameterIsInitiallyLocal(SootMethod method, EquivalentValue parameterRef) // can also be return value
+	{
+		return false;
+	}
+	
+	protected List getSharedFields()
+	{
+		return (List) sharedFields.clone();
+	}
+	
+	protected List getLocalFields()
+	{
+		return (List) localFields.clone();
+	}
+	
+	protected boolean fieldIsLocal(SootField field)
+	{
+		return localFields.contains(field);
+	}
+	
+	protected boolean fieldIsLocal(EquivalentValue fieldRef)
+	{
+		return localFields.contains( ((SootFieldRef) fieldRef.getValue()).resolve() );
+	}	
+	
+	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
 	{
 		return false;
 	}

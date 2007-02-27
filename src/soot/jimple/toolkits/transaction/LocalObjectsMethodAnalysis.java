@@ -15,57 +15,58 @@ import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
 // LocalObjectsMethodAnalysis written by Richard L. Halpert, 2007-02-23
-// Finds objects that are local to the given scope.
-// Begins by finding objects created in the given scope.  Then, creates lists
-// of constraints for each of these objects to truly be local.
+// Finds objects that are local to the scope of the LocalObjectsScopeAnalysis
+// that is provided.
+// This is a specialized version of MethodDataFlowAnalysis, in which the data
+// source is the abstract "shared" data source.
 
-public class LocalObjectsMethodAnalysis extends ForwardFlowAnalysis
+public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
 {
-	DataFlowAnalysis dfa;
-	
-	public LocalObjectsMethodAnalysis(UnitGraph g, DataFlowAnalysis dfa)
+	public LocalObjectsMethodAnalysis(UnitGraph g, LocalObjectsScopeAnalysis losa, DataFlowAnalysis dfa)
 	{
-		super(g);
-		this.dfa = dfa;
+		super(g, dfa, true, true); // special version doesn't run analysis yet
+				
+		printMessages = true;
+
+		SootMethod method = g.getBody().getMethod();
 		
+		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
+		
+		// Add a source for every parameter that is shared
+		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... if it shares things, it doesn't matter, because the method exits right then anyways
+		{
+			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(method, i);
+			if(!losa.parameterIsLocal(method, paramEqVal))
+			{
+				addToEntryInitialFlow(sharedDataSource, paramEqVal.getValue());
+				addToNewInitialFlow(sharedDataSource, paramEqVal.getValue());
+			}
+		}
+		
+		// Add a source for every field that is shared
+		for(Iterator it = losa.getSharedFields().iterator(); it.hasNext();)
+		{
+			SootField sf = (SootField) it.next();
+			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(method, sf);
+			addToEntryInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
+			addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
+		}
+		
+		G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doAnalysis();
+		G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
-    protected void merge(Object in1, Object in2, Object out)
-    {
-	    FlowSet inSet1 = (FlowSet) in1;
-	    FlowSet inSet2 = (FlowSet) in2;
-	    FlowSet outSet = (FlowSet) out;
-
-        inSet1.intersection(inSet2, outSet);
-    }
-
-    protected void copy(Object source, Object dest)
-    {
-        FlowSet sourceIn = (FlowSet)source;
-        FlowSet destOut = (FlowSet)dest;
-        
-        sourceIn.copy(destOut);
-    }
-   
-    protected void flowThrough(Object inValue, Object unit,
-            Object outValue)
-    {
-		FlowSet in  = (FlowSet) inValue;
-		FlowSet out = (FlowSet) outValue;
-		Stmt stmt = (Stmt) unit;
-		
-		in.copy(out);
-    }
-
-	protected Object entryInitialFlow()
+	// Interesting sources are summarized (and possibly printed)
+	public boolean isInterestingSource(Value source)
 	{
-		return new ArraySparseSet();
+		return (source instanceof AbstractDataSource);
 	}
-	
-	protected Object newInitialFlow()
+
+	// Interesting sinks are possibly printed
+	public boolean isInterestingSink(Value sink)
 	{
-		return new ArraySparseSet();
-	}	
+		return true; // we're interested in all values
+	}
 }
 

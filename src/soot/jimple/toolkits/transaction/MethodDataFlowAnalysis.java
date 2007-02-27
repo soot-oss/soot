@@ -27,7 +27,13 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	DataFlowAnalysis dfa;
 	boolean refOnly;
 	
+	MutableDirectedGraph dataFlowGraph;
 	Ref returnRef;
+	
+	FlowSet entrySet;
+	FlowSet emptySet;
+	
+	boolean printMessages;
 	
 	public MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
 	{
@@ -35,11 +41,37 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		this.dfa = dfa;
 		this.refOnly = ignoreNonRefTypeFlow;
 		
+		this.dataFlowGraph = new MemoryEfficientGraph();
 		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 		
-		G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+		this.entrySet = new ArraySparseSet();
+		this.emptySet = new ArraySparseSet();
+		
+		printMessages = true;
+		
+		if(printMessages)
+			G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doAnalysis();
-		G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+		if(printMessages)
+			G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+	}
+	
+	protected MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
+	{
+		super(g);
+		this.dfa = dfa;
+		this.refOnly = ignoreNonRefTypeFlow;
+		
+		this.dataFlowGraph = new MemoryEfficientGraph();
+		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
+		
+		this.entrySet = new ArraySparseSet();
+		this.emptySet = new ArraySparseSet();
+	}
+
+	public MutableDirectedGraph getDataFlowGraph()
+	{
+		return dataFlowGraph;
 	}
 
 	protected void merge(Object in1, Object in2, Object out)
@@ -51,19 +83,37 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		inSet1.intersection(inSet2, outSet);
 	}
 	
-	private boolean isNonRefType(Type type)
+	protected boolean isNonRefType(Type type)
 	{
 		return !(type instanceof RefType);
 	}
 	
-	private boolean ignoreThisDataType(Type type)
+	protected boolean ignoreThisDataType(Type type)
 	{
 		return refOnly && isNonRefType(type);
 	}
 	
+	// Interesting sources are summarized (and possibly printed)
+	public boolean isInterestingSource(Value source)
+	{
+		return (source instanceof Ref);
+	}
+	
+	// Trackable sources are added to the flow set
+	public boolean isTrackableSource(Value source)
+	{
+		return isInterestingSource(source) || (source instanceof Ref);
+	}
+
+	// Interesting sinks are possibly printed
+	public boolean isInterestingSink(Value sink)
+	{
+		return (sink instanceof Ref);
+	}
+	
 	private ArrayList getDirectSources(Value v, FlowSet fs)
 	{
-		ArrayList ret = new ArrayList(); // of Refs
+		ArrayList ret = new ArrayList(); // of "interesting sources"
 		EquivalentValue vEqVal = new EquivalentValue(v);
 		Iterator fsIt = fs.iterator();
 		while(fsIt.hasNext())
@@ -77,7 +127,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	
 	private List getSources(Value v, FlowSet fs) // returns all sources, including sources of sources (recursively) (but does not include v, since it might just be a sink)
 	{		
-		ArrayList sources = getDirectSources(v, fs); // of Refs
+		ArrayList sources = getDirectSources(v, fs); // of "interesting sources"
 		for(int i = 0; i < sources.size(); i++)
 		{
 			Value currentSource = (Value) sources.get(i);
@@ -92,48 +142,73 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		}
 		return sources;
 	}
-	
+
 	// For when data flows to a local
-	private void handleFlowsToValue(Value sink, Value initialSource, FlowSet fs)
+	protected void handleFlowsToValue(Value sink, Value initialSource, FlowSet fs)
 	{
 		List sources = getSources(initialSource, fs); // list of Refs... returns all other sources
-		if(initialSource instanceof Ref)
+		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
 		Iterator sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
 			Value source = (Value) sourcesIt.next();
-			Pair pair = new Pair(new EquivalentValue(sink), new EquivalentValue(source));
+			EquivalentValue sinkEqVal = new EquivalentValue(sink);
+			EquivalentValue sourceEqVal = new EquivalentValue(source);
+			if(sinkEqVal.equals(sourceEqVal))
+				continue;
+			Pair pair = new Pair(sinkEqVal, sourceEqVal);
 			if(!fs.contains(pair))
 			{
 				fs.add(pair);
-				if(sink instanceof Ref)
-					G.v().out.println("Found " + source + " flows to " + sink);
+				if(isInterestingSource(source) && isInterestingSink(sink))
+				{
+					if(!dataFlowGraph.containsNode(sinkEqVal))
+						dataFlowGraph.addNode(sinkEqVal);
+					if(!dataFlowGraph.containsNode(sourceEqVal))
+						dataFlowGraph.addNode(sourceEqVal);
+					dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
+					if(printMessages)
+						G.v().out.println("Found " + source + " flows to " + sink);
+				}
 			}
 		}
 	}
 	
 	// for when data flows to the data structure pointed to by a local
-	private void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet fs)
+	protected void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet fs)
 	{
 		List sinks = getSources(base, fs);
+		sinks.add(base);
 		List sources = getSources(initialSource, fs);
-		if(initialSource instanceof Ref)
+		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
 		Iterator sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
 			Value source = (Value) sourcesIt.next();
+			EquivalentValue sourceEqVal = new EquivalentValue(source);
 			Iterator sinksIt = sinks.iterator();
 			while(sinksIt.hasNext())
 			{
 				Value sink = (Value) sinksIt.next();
-				Pair pair = new Pair(new EquivalentValue(sink), new EquivalentValue(source));
+				EquivalentValue sinkEqVal = new EquivalentValue(sink);
+				if(sinkEqVal.equals(sourceEqVal))
+					continue;
+				Pair pair = new Pair(sinkEqVal, sourceEqVal);
 				if(!fs.contains(pair))
 				{
 					fs.add(pair);
-					if(sink instanceof Ref)
-						G.v().out.println("Found " + source + " flows to " + sink);
+					if(isInterestingSource(source) && isInterestingSink(sink))
+					{
+						if(!dataFlowGraph.containsNode(sinkEqVal))
+							dataFlowGraph.addNode(sinkEqVal);
+						if(!dataFlowGraph.containsNode(sourceEqVal))
+							dataFlowGraph.addNode(sourceEqVal);
+						dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
+						if(printMessages)
+							G.v().out.println("Found " + source + " flows to " + sink);
+					}
 				}
 			}
 		}
@@ -160,10 +235,10 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				// if the sink is the return value
 					// add node to list of return value sources
 
-	private List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
+	protected List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getDataFlowGraphOf(ie);
+		MutableDirectedGraph dataFlowGraph = dfa.getDataFlowGraphOf(ie); // must return a graph whose nodes are Refs!!!
 		
 		List returnValueSources = new ArrayList();
 		
@@ -171,6 +246,10 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		while(nodeIt.hasNext())
 		{
 			EquivalentValue nodeEqVal = (EquivalentValue) nodeIt.next();
+			
+			if(!(nodeEqVal.getValue() instanceof Ref))
+				throw new RuntimeException("Illegal node type in data flow graph:" + nodeEqVal.getValue() + " should be an object of type Ref.");
+				
 			Ref node = (Ref) nodeEqVal.getValue();
 			
 			Value source = null;
@@ -305,7 +384,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) lv;
 				if(!((UnitGraph) graph).getBody().getMethod().isStatic() && 
-					ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows into the field ref
+					ifr.getBase().equivTo(((UnitGraph) graph).getBody().getThisLocal())) // data flows into the field ref
 				{
 					sink = lv;
 				}
@@ -326,7 +405,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			}
 			else if(rv instanceof Constant)
 			{
-				interestingFlow = false;
+				sources.add(rv);
+				interestingFlow = !ignoreThisDataType(rv.getType());
 			}
 			else if(rv instanceof ArrayRef) // data flows from the base's data structure
 			{
@@ -342,8 +422,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(rv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) rv;
-				if(!((UnitGraph) graph).getBody().getMethod().isStatic() && 
-					ifr.getBase() == ((UnitGraph) graph).getBody().getThisLocal()) // data flows from the field ref
+				if( (!((UnitGraph) graph).getBody().getMethod().isStatic()) && 
+					ifr.getBase().equivTo(((UnitGraph) graph).getBody().getThisLocal())) // data flows from the field ref
 				{
 					sources.add(rv);
 					interestingFlow = !ignoreThisDataType(rv.getType());
@@ -356,7 +436,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			}
 			else if(rv instanceof AnyNewExpr)
 			{
-				interestingFlow = false;
+				sources.add(rv);
+				interestingFlow = !ignoreThisDataType(rv.getType());
 			}
 			else if(rv instanceof BinopExpr)
 			{
@@ -430,12 +511,38 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	
 	protected Object entryInitialFlow()
 	{
-		return new ArraySparseSet();
+		return entrySet.clone();
 	}
 	
 	protected Object newInitialFlow()
 	{
-		return new ArraySparseSet();
-	}	
+		return emptySet.clone();
+	}
+	
+	public void addToEntryInitialFlow(Value source, Value sink)
+	{
+		EquivalentValue sinkEqVal = new EquivalentValue(sink);
+		EquivalentValue sourceEqVal = new EquivalentValue(source);
+		if(sinkEqVal.equals(sourceEqVal))
+			return;
+		Pair pair = new Pair(sinkEqVal, sourceEqVal);
+		if(!entrySet.contains(pair))
+		{
+			entrySet.add(pair);
+		}
+	}
+	
+	public void addToNewInitialFlow(Value source, Value sink)
+	{
+		EquivalentValue sinkEqVal = new EquivalentValue(sink);
+		EquivalentValue sourceEqVal = new EquivalentValue(source);
+		if(sinkEqVal.equals(sourceEqVal))
+			return;
+		Pair pair = new Pair(sinkEqVal, sourceEqVal);
+		if(!emptySet.contains(pair))
+		{
+			emptySet.add(pair);
+		}
+	}
 }
 
