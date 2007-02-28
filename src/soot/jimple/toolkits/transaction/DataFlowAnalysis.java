@@ -49,10 +49,16 @@ public class DataFlowAnalysis
 			// reentrant if any method we are analyzing is reentrant, so we
 			// must do this to prevent an infinite recursive loop.
 			classToClassDataFlowAnalysis.put(appClass, cdfa);
-			
+		}
+		
+    	Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator();
+    	while (appClassesIt2.hasNext()) 
+    	{
+    	    SootClass appClass = (SootClass) appClassesIt2.next();
 			// Now calculate the flow-sensitive version.  If this classes methods
 			// are reentrant, it will call this method and receive the flow
 			// insensitive version that is already cached.
+			ClassDataFlowAnalysis cdfa = (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(appClass);
 			cdfa.doFlowSensitiveAnalysis();
 		}
 	}

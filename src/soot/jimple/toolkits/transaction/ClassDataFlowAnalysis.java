@@ -60,8 +60,8 @@ public class ClassDataFlowAnalysis
 					methodToDataFlowGraph.remove(method);
 				methodToDataFlowGraph.put(method, mdfa.getDataFlowGraph());
 
-				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
-				printDataFlowGraph(mdfa.getDataFlowGraph());
+//				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
+//				printDataFlowGraph(mdfa.getDataFlowGraph());
 			}
 			else
 			{
@@ -161,6 +161,10 @@ public class ClassDataFlowAnalysis
 			dataFlowGraph.addNode(new EquivalentValue(returnValueRef));
 		}
 		
+		ThisRef thisRef = new ThisRef(sootClass.getType());
+		dataFlowGraph.addNode(new EquivalentValue(thisRef));
+		fieldsStaticsParamsAccessed.add(new EquivalentValue(thisRef));
+		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
 		// non-Ref-type nodes are ignored
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
@@ -168,17 +172,21 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefType) )
+			if( !(rRef.getType() instanceof RefLikeType) )
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
 				Object s = accessedIt2.next();
 				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
-				if(	sRef.getType() instanceof RefType )
+				if( rRef instanceof ThisRef && sRef instanceof InstanceFieldRef )
+					; // don't add this edge
+				else if( sRef instanceof ThisRef && rRef instanceof InstanceFieldRef )
+					; // don't add this edge
+				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && !(returnValueRef.getType() instanceof RefType) )
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType))
 				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
 		}
 		
@@ -221,6 +229,10 @@ public class ClassDataFlowAnalysis
 			dataFlowGraph.addNode(new EquivalentValue(returnValueRef));
 		}
 		
+		ThisRef thisRef = new ThisRef(sootClass.getType());
+		dataFlowGraph.addNode(new EquivalentValue(thisRef));
+		fieldsStaticsParamsAccessed.add(new EquivalentValue(thisRef));
+		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
 		// non-Ref-type nodes are ignored
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
@@ -228,24 +240,28 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefType) )
+			if( !(rRef.getType() instanceof RefLikeType) )
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
 				Object s = accessedIt2.next();
 				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
-				if(	sRef.getType() instanceof RefType )
+				if( rRef instanceof ThisRef && sRef instanceof InstanceFieldRef )
+					; // don't add this edge
+				else if( sRef instanceof ThisRef && rRef instanceof InstanceFieldRef )
+					; // don't add this edge
+				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && !(returnValueRef.getType() instanceof RefType) )
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType) )
 				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
 		}
 		
 		return dataFlowGraph;
 	}
 	
-	private void printDataFlowGraph(DirectedGraph g)
+	public static void printDataFlowGraph(DirectedGraph g)
 	{
 		Iterator nodeIt = g.iterator();
 		if(!nodeIt.hasNext())
@@ -286,7 +302,7 @@ public class ClassDataFlowAnalysis
 					lastnamelength = name.length();
 					if(lastnamelength > sourcesnamelength)
 						sourcesnamelength = lastnamelength;
-					G.v().out.println(name);
+					G.v().out.print(name);
 				}
 				if(sourcesIt.hasNext())
 					G.v().out.print("\n      ");

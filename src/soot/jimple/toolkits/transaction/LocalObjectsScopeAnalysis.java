@@ -151,6 +151,10 @@ public class LocalObjectsScopeAnalysis
 						{
 							fieldBecomesShared = !parameterIsLocal(method, sourceOrSink);
 						}
+						else if(sourceOrSinkRef instanceof ThisRef) // or return ref
+						{
+							fieldBecomesShared = !thisIsLocal(method, sourceOrSink);
+						}
 						else if(sourceOrSinkRef instanceof InstanceFieldRef)
 						{
 							fieldBecomesShared = sharedFields.contains(sourceOrSink);
@@ -263,6 +267,11 @@ public class LocalObjectsScopeAnalysis
 	}	
 	
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
+	{
+		return false;
+	}
+	
+	protected boolean thisIsLocal(SootMethod method, EquivalentValue thisRef)
 	{
 		return false;
 	}

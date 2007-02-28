@@ -24,6 +24,8 @@ import soot.toolkits.scalar.*;
 
 public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 {
+	SootMethod sm;
+	Value thisLocal;
 	DataFlowAnalysis dfa;
 	boolean refOnly;
 	
@@ -38,6 +40,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	public MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
 	{
 		super(g);
+		this.sm = g.getBody().getMethod();
+		if(sm.isStatic())
+			this.thisLocal = null;
+		else
+			this.thisLocal = g.getBody().getThisLocal();
 		this.dfa = dfa;
 		this.refOnly = ignoreNonRefTypeFlow;
 		
@@ -50,15 +57,20 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		printMessages = true;
 		
 		if(printMessages)
-			G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doAnalysis();
 		if(printMessages)
-			G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			G.v().out.println("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	protected MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
 	{
 		super(g);
+		this.sm = g.getBody().getMethod();
+		if(sm.isStatic())
+			this.thisLocal = null;
+		else
+			this.thisLocal = g.getBody().getThisLocal();
 		this.dfa = dfa;
 		this.refOnly = ignoreNonRefTypeFlow;
 		
@@ -80,12 +92,12 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		FlowSet inSet2 = (FlowSet) in2;
 		FlowSet outSet = (FlowSet) out;
 
-		inSet1.intersection(inSet2, outSet);
+		inSet1.union(inSet2, outSet);
 	}
 	
 	protected boolean isNonRefType(Type type)
 	{
-		return !(type instanceof RefType);
+		return !(type instanceof RefLikeType);
 	}
 	
 	protected boolean ignoreThisDataType(Type type)
@@ -111,6 +123,12 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		return (sink instanceof Ref);
 	}
 	
+	// Trackable sinks are added to the flow set
+	public boolean isTrackableSink(Value sink)
+	{
+		return isInterestingSink(sink) || (sink instanceof Ref) || (sink instanceof Local);
+	}
+	
 	private ArrayList getDirectSources(Value v, FlowSet fs)
 	{
 		ArrayList ret = new ArrayList(); // of "interesting sources"
@@ -125,7 +143,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		return ret;
 	}
 	
-	private List getSources(Value v, FlowSet fs) // returns all sources, including sources of sources (recursively) (but does not include v, since it might just be a sink)
+	private List getSources(Value v, FlowSet fs) // returns all sources, including sources of sources (recursively)
 	{		
 		ArrayList sources = getDirectSources(v, fs); // of "interesting sources"
 		for(int i = 0; i < sources.size(); i++)
@@ -146,7 +164,10 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	// For when data flows to a local
 	protected void handleFlowsToValue(Value sink, Value initialSource, FlowSet fs)
 	{
-		List sources = getSources(initialSource, fs); // list of Refs... returns all other sources
+		if(!isTrackableSink(sink))
+			return;
+
+		List sources = getDirectSources(initialSource, fs); // list of Refs... returns all other sources
 		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
 		Iterator sourcesIt = sources.iterator();
@@ -158,8 +179,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			if(sinkEqVal.equals(sourceEqVal))
 				continue;
 			Pair pair = new Pair(sinkEqVal, sourceEqVal);
-			if(!fs.contains(pair))
-			{
+//			if(!fs.contains(pair))
+//			{
 				fs.add(pair);
 				if(isInterestingSource(source) && isInterestingSink(sink))
 				{
@@ -169,18 +190,19 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 						dataFlowGraph.addNode(sourceEqVal);
 					dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 					if(printMessages)
-						G.v().out.println("Found " + source + " flows to " + sink);
+						G.v().out.println("    Found " + source + " flows to " + sink);
 				}
-			}
+//			}
 		}
 	}
 	
 	// for when data flows to the data structure pointed to by a local
 	protected void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet fs)
 	{
-		List sinks = getSources(base, fs);
-		sinks.add(base);
-		List sources = getSources(initialSource, fs);
+		List sinks = getDirectSources(base, fs);
+		if(isTrackableSink(base))
+			sinks.add(base);
+		List sources = getDirectSources(initialSource, fs);
 		if(isTrackableSource(initialSource))
 			sources.add(initialSource);
 		Iterator sourcesIt = sources.iterator();
@@ -192,12 +214,14 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			while(sinksIt.hasNext())
 			{
 				Value sink = (Value) sinksIt.next();
+				if(!isTrackableSink(sink))
+					continue;
 				EquivalentValue sinkEqVal = new EquivalentValue(sink);
 				if(sinkEqVal.equals(sourceEqVal))
 					continue;
 				Pair pair = new Pair(sinkEqVal, sourceEqVal);
-				if(!fs.contains(pair))
-				{
+//				if(!fs.contains(pair))
+//				{
 					fs.add(pair);
 					if(isInterestingSource(source) && isInterestingSink(sink))
 					{
@@ -207,9 +231,9 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 							dataFlowGraph.addNode(sourceEqVal);
 						dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 						if(printMessages)
-							G.v().out.println("Found " + source + " flows to " + sink);
+							G.v().out.println("    Found " + source + " flows to " + sink);
 					}
-				}
+//				}
 			}
 		}
 	}
@@ -239,6 +263,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	{
 		// get the data flow graph
 		MutableDirectedGraph dataFlowGraph = dfa.getDataFlowGraphOf(ie); // must return a graph whose nodes are Refs!!!
+//		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
+//		{
+//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE dataFlowGraph: ");
+//			ClassDataFlowAnalysis.printDataFlowGraph(dataFlowGraph);
+//		}
 		
 		List returnValueSources = new ArrayList();
 		
@@ -311,9 +340,38 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
-		out.clear();
-		in.copy(out);
+		// Calculate the minimum subset of the flow set that we need to consider
+		FlowSet changedFlow = new ArraySparseSet();
+		FlowSet oldFlow = new ArraySparseSet();
+		out.copy(oldFlow);
+		in.union(out, out);
+		out.difference(oldFlow, changedFlow);
 		
+/*
+		Iterator changedFlowIt = changedFlow.iterator();
+		while(changedFlowIt.hasNext())
+		{
+			Pair pair = (Pair) changedFlowIt.next();
+			EquivalentValue defEqVal = (EquivalentValue) pair.getO1();
+			Value def = defEqVal.getValue();
+			boolean defIsUsed = false;
+			Iterator usesIt = stmt.getUseBoxes().iterator();
+			while(usesIt.hasNext())
+			{
+				Value use = ((ValueBox) usesIt.next()).getValue();
+				if(use.equivTo(def))
+					defIsUsed = true;
+			}
+			if(!defIsUsed)
+				changedFlow.remove(pair);
+		}
+*/
+		
+		// Bail out if there's nothing to consider, unless this might be the first run
+//		if(changedFlow.isEmpty() && !oldFlow.equals(emptySet))
+//			return;
+		
+
 		if(stmt instanceof IdentityStmt) // assigns an IdentityRef to a Local
 		{
 			IdentityStmt is = (IdentityStmt) stmt;
@@ -328,7 +386,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				if( !ignoreThisDataType(ir.getType()) )
 				{
 					// <Local, ParameterRef and sources>
-					handleFlowsToValue(is.getLeftOp(), ir, out);
+					handleFlowsToValue(is.getLeftOp(), ir, changedFlow);
 				}
 			}
 			else if(ir instanceof ThisRef)
@@ -336,7 +394,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				if( !ignoreThisDataType(ir.getType()) )
 				{
 					// <Local, ThisRef and sources>
-					handleFlowsToValue(is.getLeftOp(), ir, out);
+					handleFlowsToValue(is.getLeftOp(), ir, changedFlow);
 				}
 			}
 		}
@@ -353,7 +411,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				if( !ignoreThisDataType(rv.getType()) )
 				{
 					// <ReturnRef, sources of Local>
-					handleFlowsToValue(returnRef, rv, out);
+					handleFlowsToValue(returnRef, rv, changedFlow);
 				}
 			}
 		}
@@ -383,8 +441,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(lv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) lv;
-				if(!((UnitGraph) graph).getBody().getMethod().isStatic() && 
-					ifr.getBase().equivTo(((UnitGraph) graph).getBody().getThisLocal())) // data flows into the field ref
+				if( ifr.getBase() == thisLocal ) // data flows into the field ref
 				{
 					sink = lv;
 				}
@@ -422,8 +479,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(rv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) rv;
-				if( (!((UnitGraph) graph).getBody().getMethod().isStatic()) && 
-					ifr.getBase().equivTo(((UnitGraph) graph).getBody().getThisLocal())) // data flows from the field ref
+				if( ifr.getBase() == thisLocal ) // data flows from the field ref
 				{
 					sources.add(rv);
 					interestingFlow = !ignoreThisDataType(rv.getType());
@@ -467,7 +523,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else if(rv instanceof InvokeExpr)
 			{
 				InvokeExpr ie = (InvokeExpr) rv;
-				sources.addAll(handleInvokeExpr(ie, out));
+				sources.addAll(handleInvokeExpr(ie, changedFlow));
 				interestingFlow = !ignoreThisDataType(ie.getType());
 			}
 			
@@ -479,7 +535,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 					while(sourcesIt.hasNext())
 					{
 						Value source = (Value) sourcesIt.next();
-						handleFlowsToDataStructure(sink, source, out);
+						handleFlowsToDataStructure(sink, source, changedFlow);
 					}
 				}
 				else
@@ -488,15 +544,17 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 					while(sourcesIt.hasNext())
 					{
 						Value source = (Value) sourcesIt.next();
-						handleFlowsToValue(sink, source, out);
+						handleFlowsToValue(sink, source, changedFlow);
 					}
 				}
 			}
 		}
 		else if(stmt.containsInvokeExpr()) // flows data between receiver object, parameters, globals, and return value
 		{
-			handleInvokeExpr(stmt.getInvokeExpr(), out);
+			handleInvokeExpr(stmt.getInvokeExpr(), changedFlow);
 		}
+		
+		changedFlow.union(out, out);
 	}
 	
 	protected void copy(Object source, Object dest)

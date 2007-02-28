@@ -52,9 +52,9 @@ public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
 			addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 		}
 		
-		G.v().out.println("----- STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+		G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doAnalysis();
-		G.v().out.println("-----   ENDING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+		G.v().out.println("-----   ENDING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	// Interesting sources are summarized (and possibly printed)
@@ -66,7 +66,7 @@ public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
 	// Interesting sinks are possibly printed
 	public boolean isInterestingSink(Value sink)
 	{
-		return true; // we're interested in all values
+		return (sink instanceof Local); // we're interested in all values
 	}
 }
 
