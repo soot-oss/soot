@@ -14,21 +14,21 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
-// LocalObjectsScopeAnalysis written by Richard L. Halpert, 2007-02-23
+// ClassLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.
 // NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
 
-public class LocalObjectsScopeAnalysis
+public class ClassLocalObjectsAnalysis
 {
-	SootClass scopeClass;
+	SootClass sootClass;
 	DataFlowAnalysis dfa;
 	
 	ArrayList localFields;
 	ArrayList sharedFields;
 		
-	public LocalObjectsScopeAnalysis(SootClass scopeClass, DataFlowAnalysis dfa)
+	public ClassLocalObjectsAnalysis(SootClass sootClass, DataFlowAnalysis dfa)
 	{
-		 this.scopeClass = scopeClass;
+		 this.sootClass = sootClass;
 		 this.dfa = dfa;
 		 
 		 localFields = new ArrayList();
@@ -51,14 +51,14 @@ public class LocalObjectsScopeAnalysis
 		// Also get list of fields declared in this class
 		List scopeMethods = new ArrayList();
 		List scopeFields = new ArrayList();
-		Iterator scopeMethodsIt = scopeClass.methodIterator();
+		Iterator scopeMethodsIt = sootClass.methodIterator();
 		while(scopeMethodsIt.hasNext())
 		{
 			SootMethod scopeMethod = (SootMethod) scopeMethodsIt.next();
 			if(rm.contains(scopeMethod))
 				scopeMethods.add(scopeMethod);
 		}
-		Iterator scopeFieldsIt = scopeClass.getFields().iterator();
+		Iterator scopeFieldsIt = sootClass.getFields().iterator();
 		while(scopeFieldsIt.hasNext())
 		{
 			SootField scopeField = (SootField) scopeFieldsIt.next();
@@ -66,9 +66,9 @@ public class LocalObjectsScopeAnalysis
 		}
 		
 		// Add reachable methods and fields declared in superclasses
-		SootClass superclass = scopeClass;
+		SootClass superclass = sootClass;
 		if(superclass.hasSuperclass())
-			superclass = scopeClass.getSuperclass();
+			superclass = sootClass.getSuperclass();
 		while(superclass.hasSuperclass()) // we don't want to process Object
 		{
 	        Iterator scMethodsIt = superclass.methodIterator();
@@ -188,7 +188,7 @@ public class LocalObjectsScopeAnalysis
 		}
 		
 		// DEBUG: Print out the resulting list!
-		G.v().out.println("Found local/shared fields for " + scopeClass.toString());
+		G.v().out.println("Found local/shared fields for " + sootClass.toString());
 		G.v().out.println("    Local fields: ");
 		Iterator localsToPrintIt = localFields.iterator();
 		while(localsToPrintIt.hasNext())
@@ -207,7 +207,7 @@ public class LocalObjectsScopeAnalysis
 		}
 				
 		// Analyze each method: determine which Locals are local and which are shared
-		Iterator it = scopeClass.getMethods().iterator();
+		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
 		{
 			SootMethod method = (SootMethod) it.next();
@@ -215,7 +215,7 @@ public class LocalObjectsScopeAnalysis
 			// For each method, analyze the body
 			Body b = method.retrieveActiveBody();
 			UnitGraph g = new ExceptionalUnitGraph(b);
-			LocalObjectsMethodAnalysis loma = new LocalObjectsMethodAnalysis(g, this, dfa);
+			MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, this, dfa);
 		}
 	}
 	
@@ -233,9 +233,9 @@ public class LocalObjectsScopeAnalysis
 		return true;
 		
 		// public fields require a whole-program search for accesses outside of this class
-		//  - beware reentrant behavior, as a LocalObjectsScopeAnalysis will be required to analyze these accesses if found
+		//  - beware reentrant behavior, as a ClassLocalObjectsAnalysis will be required to analyze these accesses if found
 		// protected and package-private fields require a this-package search for accesses outside of this class
-		//  - beware reentrant behavior, as a LocalObjectsScopeAnalysis will be required to analyze these accesses if found
+		//  - beware reentrant behavior, as a ClassLocalObjectsAnalysis will be required to analyze these accesses if found
 		// private fields are assumed local
 		// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
 	}

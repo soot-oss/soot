@@ -54,6 +54,7 @@ public class TransactionTransformer extends SceneTransformer
 		// *** Find Thread-Local Objects ***
     	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects ***");
     	Map runnableToLosa = new HashMap();
+/*
     	DataFlowAnalysis dfa = new DataFlowAnalysis();
     	Collection runnableImplementers = Scene.v().getActiveHierarchy().getImplementersOf(Scene.v().getSootClass("java.lang.Runnable"));
     	Iterator possibleRunnableClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -65,7 +66,7 @@ public class TransactionTransformer extends SceneTransformer
     			runnableToLosa.put(possibleRunnableClass, new LocalObjectsScopeAnalysis(possibleRunnableClass, dfa));
     		}
     	}
-
+*/
 
 
     	// *** Find and Name Transactions ***

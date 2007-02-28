@@ -14,15 +14,15 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
-// LocalObjectsMethodAnalysis written by Richard L. Halpert, 2007-02-23
+// MethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the scope of the LocalObjectsScopeAnalysis
 // that is provided.
 // This is a specialized version of MethodDataFlowAnalysis, in which the data
 // source is the abstract "shared" data source.
 
-public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
+public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 {
-	public LocalObjectsMethodAnalysis(UnitGraph g, LocalObjectsScopeAnalysis losa, DataFlowAnalysis dfa)
+	public MethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, DataFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
 				
@@ -36,7 +36,7 @@ public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
 		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... if it shares things, it doesn't matter, because the method exits right then anyways
 		{
 			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(method, i);
-			if(!losa.parameterIsLocal(method, paramEqVal))
+			if(!cloa.parameterIsLocal(method, paramEqVal))
 			{
 				addToEntryInitialFlow(sharedDataSource, paramEqVal.getValue());
 				addToNewInitialFlow(sharedDataSource, paramEqVal.getValue());
@@ -44,7 +44,7 @@ public class LocalObjectsMethodAnalysis extends MethodDataFlowAnalysis
 		}
 		
 		// Add a source for every field that is shared
-		for(Iterator it = losa.getSharedFields().iterator(); it.hasNext();)
+		for(Iterator it = cloa.getSharedFields().iterator(); it.hasNext();)
 		{
 			SootField sf = (SootField) it.next();
 			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(method, sf);

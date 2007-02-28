@@ -39,22 +39,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	
 	public MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
 	{
-		super(g);
-		this.sm = g.getBody().getMethod();
-		if(sm.isStatic())
-			this.thisLocal = null;
-		else
-			this.thisLocal = g.getBody().getThisLocal();
-		this.dfa = dfa;
-		this.refOnly = ignoreNonRefTypeFlow;
-		
-		this.dataFlowGraph = new MemoryEfficientGraph();
-		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
-		
-		this.entrySet = new ArraySparseSet();
-		this.emptySet = new ArraySparseSet();
-		
-		printMessages = false;
+		this(g, dfa, ignoreNonRefTypeFlow, true);
 		
 		if(printMessages)
 			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
@@ -63,6 +48,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			G.v().out.println("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
+	/** A constructor that doesn't run the analysis */
 	protected MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
 	{
 		super(g);
@@ -79,12 +65,13 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		
 		this.entrySet = new ArraySparseSet();
 		this.emptySet = new ArraySparseSet();
+		
+		printMessages = false;
 	}
 	
 	public void doFlowInsensitiveAnalysis()
 	{
 		FlowSet fs = (FlowSet) newInitialFlow();
-//		FlowSet newLastIteration = (FlowSet) newInitialFlow();
 		boolean flowSetChanged = true;
 		while(flowSetChanged)
 		{
@@ -100,11 +87,9 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			else
 				flowSetChanged = false;
 		}
-			
-	
 	}
 
-	public MutableDirectedGraph getDataFlowGraph()
+	public MutableDirectedGraph getMethodDataFlowGraph()
 	{
 		return dataFlowGraph;
 	}
@@ -285,7 +270,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	protected List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getDataFlowGraphOf(ie); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph dataFlowGraph = dfa.getInvokeDataFlowGraph(ie); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
 //			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE dataFlowGraph: ");

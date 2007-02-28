@@ -35,15 +35,15 @@ public class ClassDataFlowAnalysis
 		 this.dfa = dfa;
 		 methodToDataFlowGraph = new HashMap();
 		 
-		 doFlowInsensitiveAnalysis();
+		 doSimpleConservativeDataFlowAnalysis();
 	}
 	
-	public MutableDirectedGraph getDataFlowGraphOf(SootMethod sm)
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm)
 	{
 		return (MutableDirectedGraph) methodToDataFlowGraph.get(sm);
 	}
 	
-	public void doFlowSensitiveAnalysis()
+	public void doFixedPointDataFlowAnalysis()
 	{
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
@@ -57,7 +57,7 @@ public class ClassDataFlowAnalysis
 				MethodDataFlowAnalysis mdfa = new MethodDataFlowAnalysis(g, dfa, true);
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
-				methodToDataFlowGraph.put(method, mdfa.getDataFlowGraph());
+				methodToDataFlowGraph.put(method, mdfa.getMethodDataFlowGraph());
 
 //				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
 //				printDataFlowGraph(mdfa.getDataFlowGraph());
@@ -66,18 +66,18 @@ public class ClassDataFlowAnalysis
 			{
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
-				methodToDataFlowGraph.put(method, triviallyConservativeDataFlowGraph(method));
+				methodToDataFlowGraph.put(method, triviallyConservativeDataFlowAnalysis(method));
 			}
 		}
 	}
 	
-	private void doFlowInsensitiveAnalysis()
+	private void doSimpleConservativeDataFlowAnalysis()
 	{
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
 		{
 			SootMethod method = (SootMethod) it.next();
-			MutableDirectedGraph dataFlowGraph = flowInsensitiveMethodAnalysis(method);
+			MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
 			if(methodToDataFlowGraph.containsKey(method))
 				methodToDataFlowGraph.remove(method);
 			methodToDataFlowGraph.put(method, dataFlowGraph);
@@ -86,7 +86,8 @@ public class ClassDataFlowAnalysis
 		}
 	}
 	
-	private MutableDirectedGraph flowInsensitiveMethodAnalysis(SootMethod sm)
+	/** Does not require any fixed point calculation */
+	private MutableDirectedGraph simpleConservativeDataFlowAnalysis(SootMethod sm)
 	{
 		// Constructs a graph representing the data flow between fields, parameters, and the
 		// return value of this method.  The graph nodes are EquivalentValue wrapped Refs.
@@ -98,7 +99,7 @@ public class ClassDataFlowAnalysis
 		
 		// If this method cannot have a body, then we can't analyze it... 
 		if(!sm.isConcrete())
-			return triviallyConservativeDataFlowGraph(sm);
+			return triviallyConservativeDataFlowAnalysis(sm);
 			
 		Body b = sm.retrieveActiveBody();
 		UnitGraph g = new ExceptionalUnitGraph(b);
@@ -192,7 +193,8 @@ public class ClassDataFlowAnalysis
 		return dataFlowGraph;
 	}
 	
-	public MutableDirectedGraph triviallyConservativeDataFlowGraph(SootMethod sm)
+	/** Does not require the method to have a body */
+	public MutableDirectedGraph triviallyConservativeDataFlowAnalysis(SootMethod sm)
 	{
 		HashSet fieldsStaticsParamsAccessed = new HashSet();
 		

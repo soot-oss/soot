@@ -30,11 +30,9 @@ public class DataFlowAnalysis
 	public DataFlowAnalysis()
 	{
 		 classToClassDataFlowAnalysis = new HashMap();
-		 
-		 doAnalysis();
 	}
 	
-	private void doAnalysis()
+	public void doApplicationClassesAnalysis()
 	{
     	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (appClassesIt.hasNext()) 
@@ -59,15 +57,47 @@ public class DataFlowAnalysis
 			// are reentrant, it will call this method and receive the flow
 			// insensitive version that is already cached.
 			ClassDataFlowAnalysis cdfa = (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(appClass);
-			cdfa.doFlowSensitiveAnalysis();
+			cdfa.doFixedPointDataFlowAnalysis();
 		}
 	}
 		
-	// Returns a list of EquivalentValue wrapped Refs that source flows to when method sm is called
+	public ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
+	{
+		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
+		{
+			// Create the needed flow analysis object
+			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(sc, this);
+			
+			// Put the preliminary simple conservative results here in case they
+			// are needed by the fixed-point version.  This method will be
+			// reentrant if any method we are analyzing is reentrant, so we
+			// must do this to prevent an infinite recursive loop.
+			classToClassDataFlowAnalysis.put(sc, cdfa);
+			
+			// Now calculate the fixed-point version if this is an application class.
+			// If this class's methods are reentrant, it will call this method and
+			// receive the simple conservative version that is already cached.
+			if(sc.isApplicationClass())
+				cdfa.doFixedPointDataFlowAnalysis();
+		}
+		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
+	}
+	
+	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
+	  * wrapped Refs. It's perfectly safe to modify this graph, just so long as 
+	  * new nodes are EquivalentValue wrapped Refs. */
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm)
+	{
+		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		return cdfa.getMethodDataFlowGraph(sm);
+	}
+	
+	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that source
+	  * flows to when method sm is called. */
 	public List getSinksOf(SootMethod sm, EquivalentValue source)
 	{
 		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		MutableDirectedGraph g = cdfa.getDataFlowGraphOf(sm);
+		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
 		List sinks = null;
 		if(g.containsNode(source))
 			sinks = g.getSuccsOf(source);
@@ -76,11 +106,12 @@ public class DataFlowAnalysis
 		return sinks;
 	}
 	
-	// Returns a list of EquivalentValue wrapped Refs that sink flows from when method sm is called
+	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that sink
+	  * flows from when method sm is called. */
 	public List getSourcesOf(SootMethod sm, EquivalentValue sink)
 	{
 		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		MutableDirectedGraph g = cdfa.getDataFlowGraphOf(sm);
+		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
 		List sources = null;
 		if(g.containsNode(sink))
 			sources = g.getPredsOf(sink);
@@ -89,45 +120,9 @@ public class DataFlowAnalysis
 		return sources;
 	}
 	
-	public ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
-	{
-		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
-		{
-			// Create the needed flow analysis object
-			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(sc, this);
-			
-			// Put the preliminary flow-insensitive results here in case they
-			// are needed by the flow-sensitive version.  This method will be
-			// reentrant if any method we are analyzing is reentrant, so we
-			// must do this to prevent an infinite recursive loop.
-			classToClassDataFlowAnalysis.put(sc, cdfa);
-			
-			// Now calculate the flow-sensitive version if this is an application class.
-			// If this class's methods are reentrant, it will call this method and
-			// receive the flow insensitive version that is already cached.
-			if(sc.isApplicationClass())
-				cdfa.doFlowSensitiveAnalysis();
-		}
-		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
-	}
-	
-	protected MutableDirectedGraph getDataFlowGraphOf(SootMethod sm)
-	{
-		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		return cdfa.getDataFlowGraphOf(sm);
-	}
-	
-	protected MutableDirectedGraph getDataFlowGraphOf(InvokeExpr ie)
-	{
-		// get the data flow graph for each possible target of ie,
-		// then combine them conservatively and return the result.
-		SootMethodRef methodRef = ie.getMethodRef();
-		return getDataFlowGraphOf(methodRef.resolve());
-	}
-	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
+	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
 	{
 		if(sf.isStatic())
 		{
@@ -138,27 +133,40 @@ public class DataFlowAnalysis
 			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
 			if(!sm.isConcrete())
 			{
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()), sf.makeRef()) );
+				// Pretends to be a this.<somefield> ref for a method without a body
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
+					new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()),
+					sf.makeRef()) );
 			}
 			else
 			{
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(sm.retrieveActiveBody().getThisLocal(), sf.makeRef()) );
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
+					sm.retrieveActiveBody().getThisLocal(),
+					sf.makeRef()) );
 			}
 		}
 	}
 	
 	// Returns an EquivalentValue wrapped Ref for @parameter i
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public EquivalentValue getEquivalentValueParameterRef(SootMethod sm, int i)
+	public static EquivalentValue getEquivalentValueParameterRef(SootMethod sm, int i)
 	{
 		return new EquivalentValue(new ParameterRef(sm.getParameterType(i), i));
 	}
 	
 	// Returns an EquivalentValue wrapped Ref for the return value
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public EquivalentValue getEquivalentValueReturnRef(SootMethod sm)
+	public static EquivalentValue getEquivalentValueReturnRef(SootMethod sm)
 	{
 		return new EquivalentValue(new ParameterRef(sm.getReturnType(), -1));
+	}
+	
+	protected MutableDirectedGraph getInvokeDataFlowGraph(InvokeExpr ie)
+	{
+		// get the data flow graph for each possible target of ie,
+		// then combine them conservatively and return the result.
+		SootMethodRef methodRef = ie.getMethodRef();
+		return getMethodDataFlowGraph(methodRef.resolve());
 	}
 }
 
