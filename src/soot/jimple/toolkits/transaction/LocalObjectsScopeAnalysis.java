@@ -273,7 +273,7 @@ public class LocalObjectsScopeAnalysis
 	
 	protected boolean thisIsLocal(SootMethod method, EquivalentValue thisRef)
 	{
-		return false;
+		return true;
 	}
 }
 

@@ -30,7 +30,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	
 	public boolean optionPrintDebug = false;
 
-    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug)
+    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, Map runnableToLosa)
 	{
 		super(graph);
 
@@ -54,7 +54,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		}
 		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), null);
+    				Scene.v().getCallGraph(), null, runnableToLosa);
     	
 //    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				

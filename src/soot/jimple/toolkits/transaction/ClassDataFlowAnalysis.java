@@ -45,7 +45,6 @@ public class ClassDataFlowAnalysis
 	
 	public void doFlowSensitiveAnalysis()
 	{
-		// TODO: store new, improved data flow graph
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
 		{

@@ -136,7 +136,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return (RWSet) methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions ) {
+	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, Map runnableToLosa ) {
 		this.pa = pa;
 		this.cg = cg;
 		this.tve = new ThreadVisibleEdgesPred(transactions);

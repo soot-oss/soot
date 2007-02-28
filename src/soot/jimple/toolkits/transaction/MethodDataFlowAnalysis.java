@@ -54,11 +54,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		this.entrySet = new ArraySparseSet();
 		this.emptySet = new ArraySparseSet();
 		
-		printMessages = true;
+		printMessages = false;
 		
 		if(printMessages)
 			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
-		doAnalysis();
+		doFlowInsensitiveAnalysis();
 		if(printMessages)
 			G.v().out.println("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
@@ -79,6 +79,29 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		
 		this.entrySet = new ArraySparseSet();
 		this.emptySet = new ArraySparseSet();
+	}
+	
+	public void doFlowInsensitiveAnalysis()
+	{
+		FlowSet fs = (FlowSet) newInitialFlow();
+//		FlowSet newLastIteration = (FlowSet) newInitialFlow();
+		boolean flowSetChanged = true;
+		while(flowSetChanged)
+		{
+			int sizebefore = fs.size();
+			Iterator stmtIt = graph.iterator();
+			while(stmtIt.hasNext())
+			{
+				Stmt s = (Stmt) stmtIt.next();
+				flowThrough(fs, s, fs);
+			}
+			if(fs.size() > sizebefore)
+				flowSetChanged = true;
+			else
+				flowSetChanged = false;
+		}
+			
+	
 	}
 
 	public MutableDirectedGraph getDataFlowGraph()
@@ -179,8 +202,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			if(sinkEqVal.equals(sourceEqVal))
 				continue;
 			Pair pair = new Pair(sinkEqVal, sourceEqVal);
-//			if(!fs.contains(pair))
-//			{
+			if(!fs.contains(pair))
+			{
 				fs.add(pair);
 				if(isInterestingSource(source) && isInterestingSink(sink))
 				{
@@ -192,7 +215,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 					if(printMessages)
 						G.v().out.println("    Found " + source + " flows to " + sink);
 				}
-//			}
+			}
 		}
 	}
 	
@@ -220,8 +243,8 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				if(sinkEqVal.equals(sourceEqVal))
 					continue;
 				Pair pair = new Pair(sinkEqVal, sourceEqVal);
-//				if(!fs.contains(pair))
-//				{
+				if(!fs.contains(pair))
+				{
 					fs.add(pair);
 					if(isInterestingSource(source) && isInterestingSink(sink))
 					{
@@ -233,7 +256,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 						if(printMessages)
 							G.v().out.println("    Found " + source + " flows to " + sink);
 					}
-//				}
+				}
 			}
 		}
 	}
@@ -340,12 +363,16 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
-		// Calculate the minimum subset of the flow set that we need to consider
-		FlowSet changedFlow = new ArraySparseSet();
-		FlowSet oldFlow = new ArraySparseSet();
-		out.copy(oldFlow);
-		in.union(out, out);
-		out.difference(oldFlow, changedFlow);
+		if(in != out) // this method is reused for flow insensitive analysis, which uses the same FlowSet for in and out
+			in.copy(out);
+		FlowSet changedFlow = out;
+		
+		// Calculate the minimum subset of the flow set that we need to consider - OBSELETE optimization
+//		FlowSet changedFlow = new ArraySparseSet();
+//		FlowSet oldFlow = new ArraySparseSet();
+//		out.copy(oldFlow);
+//		in.union(out, out);
+//		out.difference(oldFlow, changedFlow);
 		
 /*
 		Iterator changedFlowIt = changedFlow.iterator();
@@ -554,7 +581,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			handleInvokeExpr(stmt.getInvokeExpr(), changedFlow);
 		}
 		
-		changedFlow.union(out, out);
+//		changedFlow.union(out, out); - OBSELETE optimization
 	}
 	
 	protected void copy(Object source, Object dest)

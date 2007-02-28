@@ -40,6 +40,32 @@ public class TransactionTransformer extends SceneTransformer
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
 		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
 		
+		
+		
+		// *** Build May Happen In Parallel Info ***
+    	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info ***");
+    	if(optionOneGlobalLock)
+			mhp = null;
+		else
+			mhp = new UnsynchronizedMhpAnalysis();
+		
+
+
+		// *** Find Thread-Local Objects ***
+    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects ***");
+    	Map runnableToLosa = new HashMap();
+    	DataFlowAnalysis dfa = new DataFlowAnalysis();
+    	Collection runnableImplementers = Scene.v().getActiveHierarchy().getImplementersOf(Scene.v().getSootClass("java.lang.Runnable"));
+    	Iterator possibleRunnableClassesIt = Scene.v().getApplicationClasses().iterator();
+    	while (possibleRunnableClassesIt.hasNext()) 
+    	{
+    	    SootClass possibleRunnableClass = (SootClass) possibleRunnableClassesIt.next();
+    		if(runnableImplementers.contains(possibleRunnableClass))
+    		{
+    			runnableToLosa.put(possibleRunnableClass, new LocalObjectsScopeAnalysis(possibleRunnableClass, dfa));
+    		}
+    	}
+
 
 
     	// *** Find and Name Transactions ***
@@ -47,7 +73,7 @@ public class TransactionTransformer extends SceneTransformer
     	// for each transaction. It also calculates the non-transitive read/write 
     	// sets for each transaction.
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
-    	G.v().out.println("*** Find and Name Transactions ***");
+    	G.v().out.println("[wjtp.tn] *** Find and Name Transactions ***");
     	Map methodToFlowSet = new HashMap();
     	Map methodToExcUnitGraph = new HashMap();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -65,7 +91,7 @@ public class TransactionTransformer extends SceneTransformer
     		    	methodToExcUnitGraph.put(method, eug);
     		    	
     	    		// run the intraprocedural analysis
-    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug);
+    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, runnableToLosa);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
@@ -74,22 +100,7 @@ public class TransactionTransformer extends SceneTransformer
     				methodToFlowSet.put(method, fs);
 				}
     	    }
-    	}
-    	
-    	// DEBUG: do data flow analysis and local objects analysis
-    	DataFlowAnalysis dfa = new DataFlowAnalysis();
-    	Collection runnableImplementers = Scene.v().getActiveHierarchy().getImplementersOf(Scene.v().getSootClass("java.lang.Runnable"));
-    	Iterator possibleRunnableClassesIt = Scene.v().getApplicationClasses().iterator();
-    	while (possibleRunnableClassesIt.hasNext()) 
-    	{
-    	    SootClass possibleRunnableClass = (SootClass) possibleRunnableClassesIt.next();
-    		if(runnableImplementers.contains(possibleRunnableClass))
-    		{
-    			LocalObjectsScopeAnalysis losa = new LocalObjectsScopeAnalysis(possibleRunnableClass, dfa);
-    		}
-    	}
-    	// SootClass scopeClass = Scene.v().getSootClass(new String("Thread1"));
-    	
+    	}    	
     	
     	// Create a composite list of all transactions
     	List AllTransactions = new Vector();
@@ -113,11 +124,11 @@ public class TransactionTransformer extends SceneTransformer
     	// nesting model.
     	// Note: currently, open-nesting is run by default. This is the implied
     	// meaning of synchronized regions, so is definitely OK if using that keyword
-    	G.v().out.println("*** Find Transitive Read/Write Sets ***");
+    	G.v().out.println("[wjtp.tn] *** Find Transitive Read/Write Sets ***");
     	TransactionAwareSideEffectAnalysis tasea = 
     		new TransactionAwareSideEffectAnalysis(
     				Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), AllTransactions);
+    				Scene.v().getCallGraph(), AllTransactions, runnableToLosa);
     	Iterator tnIt = AllTransactions.iterator();
     	while(tnIt.hasNext())
     	{
@@ -174,20 +185,11 @@ public class TransactionTransformer extends SceneTransformer
     	}
 //*/    	
 		
-		
-		
-		// *** Build May Happen In Parallel Info ***
-    	G.v().out.println("*** Build May Happen In Parallel Info ***");
-    	if(optionOneGlobalLock)
-			mhp = null;
-		else
-			mhp = new UnsynchronizedMhpAnalysis();
-		
 
 
     	// *** Calculate Locking Groups ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
-    	G.v().out.println("*** Calculate Locking Groups ***");
+    	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups ***");
     	int nextGroup = 1;
     	if(optionOneGlobalLock) // use one group for all transactions
     	{
@@ -319,7 +321,7 @@ public class TransactionTransformer extends SceneTransformer
 
 		// *** Calculate Locking Objects ***
     	// Get a list of all dependencies for each group
-    	G.v().out.println("*** Calculate Locking Objects ***");
+    	G.v().out.println("[wjtp.tn] *** Calculate Locking Objects ***");
     	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
     	for(int group = 0; group < nextGroup - 1; group++)
     		rws[group] = new CodeBlockRWSet();
@@ -493,8 +495,8 @@ public class TransactionTransformer extends SceneTransformer
 							}
 						}
 
-						G.v().out.println("LOCAL OBJ REF for " + s + 
-							" value:" + value + " index:" + index);
+//						G.v().out.println("LOCAL OBJ REF for " + s + 
+//							" value:" + value + " index:" + index);
 
 						if(value == null)
 						{
@@ -629,7 +631,7 @@ public class TransactionTransformer extends SceneTransformer
 		
 		
 		// *** Print Output and Transform Program ***
-    	G.v().out.println("*** Print Output and Transform Program ***");
+    	G.v().out.println("[wjtp.tn] *** Print Output and Transform Program ***");
 
 		// Print topological graph in format of graphviz package
 		if(optionPrintGraph)
