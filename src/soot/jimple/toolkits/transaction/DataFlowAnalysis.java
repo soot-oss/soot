@@ -140,6 +140,7 @@ public class DataFlowAnalysis
 			else
 			{
 				// Pretends to be a this.<somefield> ref for a method without a body
+				// or for a static method
 				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
 					new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()),
 					sf.makeRef()) );
