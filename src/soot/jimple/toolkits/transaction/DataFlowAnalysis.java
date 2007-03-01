@@ -131,17 +131,17 @@ public class DataFlowAnalysis
 		else
 		{
 			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
-			if(!sm.isConcrete())
+			if(sm.isConcrete() && !sm.isStatic())
 			{
-				// Pretends to be a this.<somefield> ref for a method without a body
 				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
-					new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()),
+					sm.retrieveActiveBody().getThisLocal(),
 					sf.makeRef()) );
 			}
 			else
 			{
+				// Pretends to be a this.<somefield> ref for a method without a body
 				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
-					sm.retrieveActiveBody().getThisLocal(),
+					new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()),
 					sf.makeRef()) );
 			}
 		}

@@ -54,14 +54,55 @@ class WholeObject
 	{
 		if(o instanceof WholeObject)
 		{
-			WholeObject other = (WholeObject) o;
-			if(type != null && other.type != null)
-				return (type == other.type);
-			else
-				return true;
+			G.v().out.println("Comparing " + toString() + " to " + ((WholeObject) o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
+		}
+		else if(o instanceof FieldRef)
+		{
+			G.v().out.println("Comparing " + toString() + " to " + ((FieldRef)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
+		}
+		else if(o instanceof SootFieldRef)
+		{
+			G.v().out.println("Comparing " + toString() + " to " + ((SootFieldRef)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
+		}
+		else if(o instanceof SootField)
+		{
+			G.v().out.println("Comparing " + toString() + " to " + ((SootField)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
 		}
 		else
+		{
+			G.v().out.println("Comparing " + toString() + " to " + o.toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
+		}
+		return tempequals(o);
+	}
+	
+	public boolean tempequals(Object o)
+	{
+		if(type == null)
 			return true;
+		if(o instanceof WholeObject)
+		{
+			WholeObject other = (WholeObject) o;
+			if(other.type == null)
+				return true;
+			else
+				return (type == other.type);
+		}
+		else if(o instanceof FieldRef)
+		{
+			return type == ((FieldRef)o).getType();
+		}
+		else if(o instanceof SootFieldRef)
+		{
+			return type == ((SootFieldRef)o).type();
+		}
+		else if(o instanceof SootField)
+		{
+			return type == ((SootField)o).getType();
+		}
+		else
+		{
+			return true;
+		}
 	}
 }
 
@@ -207,7 +248,7 @@ public class TransactionAwareSideEffectAnalysis {
 				Local vLocal = (Local) specialRead;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
-				sSet.addFieldRef( base, new WholeObject() ); // we approximate that it's not a specific field, but the whole object
+				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate that it's not a specific field, but the whole object
 				ret.union(sSet);
 			}
 			else if( specialRead instanceof FieldRef)
@@ -297,11 +338,11 @@ public class TransactionAwareSideEffectAnalysis {
 		while( !ignore && targets.hasNext() )
 		{
 			SootMethod target = (SootMethod) targets.next();
-			if( target.isNative() ) {
-				if( ret == null ) ret = new SiteRWSet();
-				ret.setCallsNative();
-			} 
-			else if( target.isConcrete() ) 
+//			if( target.isNative() ) {
+//				if( ret == null ) ret = new SiteRWSet();
+//				ret.setCallsNative();
+//			} else
+			if( target.isConcrete() ) 
 			{
 				// TODO: FIX THIS!!!  What if the declaration is in a parent class of the actual object.
 				
@@ -312,15 +353,15 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
-		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
-		            	while (rDefsIt.hasNext())
-		            	{
-		                	Stmt next = (Stmt) rDefsIt.next();
-		                	if(next instanceof DefinitionStmt)
-							{
-		    					ret = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
-							}
-						}
+//		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+//		            	while (rDefsIt.hasNext())
+//		            	{
+//		                	Stmt next = (Stmt) rDefsIt.next();
+//		                	if(next instanceof DefinitionStmt)
+//							{
+		    					ret = approximatedReadSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() );
+//							}
+//						}
 					}
 					else
 					{
@@ -374,7 +415,7 @@ public class TransactionAwareSideEffectAnalysis {
 				Local vLocal = (Local) v;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
-				sSet.addFieldRef( base, new WholeObject() ); // we approximate not a specific field, but the whole object
+				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate not a specific field, but the whole object
 				ret.union(sSet);
 			}
 			else if( v instanceof FieldRef)
@@ -463,26 +504,26 @@ public class TransactionAwareSideEffectAnalysis {
 		Iterator targets = tt.iterator( stmt );
 		while( !ignore && targets.hasNext() ) {
 			SootMethod target = (SootMethod) targets.next();
-			if( target.isNative() ) {
-				if( ret == null ) ret = new SiteRWSet();
-				ret.setCallsNative();
-			}
-			else if( target.isConcrete() )
+//			if( target.isNative() ) {
+//				if( ret == null ) ret = new SiteRWSet();
+//				ret.setCallsNative();
+//			} else
+			if( target.isConcrete() )
 			{
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
 					target.getDeclaringClass().toString().startsWith("java.lang") )
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
-		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-		            	while (rDefsIt.hasNext())
-		            	{
-		                	Stmt next = (Stmt) rDefsIt.next();
-		                	if(next instanceof DefinitionStmt)
-							{
-		    					ret = approximatedWriteSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
-							}
-						}
+//		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
+//		            	while (rDefsIt.hasNext())
+//		            	{
+//		                	Stmt next = (Stmt) rDefsIt.next();
+//		                	if(next instanceof DefinitionStmt)
+//							{
+		    					ret = approximatedWriteSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase());
+//							}
+//						}
 					}
 					else
 					{
@@ -523,7 +564,7 @@ public class TransactionAwareSideEffectAnalysis {
 		RWSet ret = null;
 		
 		if(loa != null && loa.isObjectLocal(v, m))
-			return new StmtRWSet();
+			return null;
 		
 		if( v instanceof InstanceFieldRef ) {
 			InstanceFieldRef ifr = (InstanceFieldRef) v;
