@@ -74,17 +74,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				if( mayAlias.size() < 1 )
 					continue; // If the may alias is empty, this must be dead code
 					
-				// For each possible thread object, get alloc node
-				Iterator mayAliasIt = mayAlias.iterator();
-				while( mayAliasIt.hasNext() )
-				{
-					AllocNode allocNode = (AllocNode)mayAliasIt.next();
-					allocNodesList.add(allocNode);
-					NewExpr ne = (NewExpr) allocNode.getNewExpr();
-					
-				}
-				
-				Iterator mayRunIt = runMethodTargets.iterator( start );
+				// For each possible thread object, get run method
+				Iterator mayRunIt = runMethodTargets.iterator( start ); // fails for some call graphs
 				while( mayRunIt.hasNext() )
 				{
 					SootMethod runMethod = (SootMethod) mayRunIt.next();
@@ -93,7 +84,50 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 						runMethodsList.add(runMethod);
 					}
 				}
+				
+				// If haven't found any run methods, then use the type of the startObject,
+				// and add run from it and all subclasses
+				if(runMethodsList.isEmpty() && ((RefType) startObject.getType()).getSootClass().isApplicationClass())
+				{
+					List threadClasses = hierarchy.getSubclassesOfIncluding( ((RefType) startObject.getType()).getSootClass() );
+					Iterator threadClassesIt = threadClasses.iterator();
+					while(threadClassesIt.hasNext())
+					{
+						SootClass currentClass = (SootClass) threadClassesIt.next();
+						if( currentClass.declaresMethod("void run()") )							
+						{
+							runMethodsList.add(currentClass.getMethod("void run()"));
+						}
+					}
+				}
 
+				// For each possible thread object, get alloc node
+				Iterator mayAliasIt = mayAlias.iterator();
+				while( mayAliasIt.hasNext() )
+				{
+					AllocNode allocNode = (AllocNode)mayAliasIt.next();
+					allocNodesList.add(allocNode);
+					if(runMethodsList.isEmpty())
+					{
+						throw new RuntimeException("Can't find run method for: " + startObject);	
+/*
+						if( allocNode.getType() instanceof RefType )
+						{
+							List threadClasses = hierarchy.getSubclassesOf(((RefType) allocNode.getType()).getSootClass());
+							Iterator threadClassesIt = threadClasses.iterator();
+							while(threadClassesIt.hasNext())
+							{
+								SootClass currentClass = (SootClass) threadClassesIt.next();
+								if( currentClass.declaresMethod("void run()") )							
+								{
+									runMethodsList.add(currentClass.getMethod("void run()"));
+								}
+							}
+						}
+*/					
+					}			
+				}
+				
 				// Add this start stmt to both maps
 				startToRunMethods.put(start, runMethodsList);
 				startToAllocNodes.put(start, allocNodesList);

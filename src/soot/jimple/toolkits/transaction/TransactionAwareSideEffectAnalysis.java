@@ -75,6 +75,7 @@ public class TransactionAwareSideEffectAnalysis {
 	TransitiveTargets tt;
 	Collection transactions;
 	EncapsulatedObjectAnalysis eoa;
+	LocalObjectsAnalysis loa;
 	
 	public Vector sigBlacklist;
 	public Vector sigReadGraylist;
@@ -136,13 +137,14 @@ public class TransactionAwareSideEffectAnalysis {
 		return (RWSet) methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, Map runnableToLosa ) {
+	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, LocalObjectsAnalysis loa ) {
 		this.pa = pa;
 		this.cg = cg;
 		this.tve = new ThreadVisibleEdgesPred(transactions);
 		this.tt = new TransitiveTargets( cg, new Filter(tve) );
 		this.transactions = transactions;
 		this.eoa = new EncapsulatedObjectAnalysis();
+		this.loa = loa; // can be null
 		
 		sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of size 0
 		// Math does not have any synchronization risks, we think :-)
@@ -231,7 +233,7 @@ public class TransactionAwareSideEffectAnalysis {
 	{
 		RWSet stmtRead = null;
 		
-		if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+/*		if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
 		{
 			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 			{
@@ -257,8 +259,9 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		else
 		{
+*/
     		stmtRead = readSet( method, stmt, tn, sld );
-		}
+//		}
 		return stmtRead;
 	}
 	
@@ -267,15 +270,25 @@ public class TransactionAwareSideEffectAnalysis {
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
 		{
-			SootMethod calledMethod = stmt.getInvokeExpr().getMethod();
-			if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+			InvokeExpr ie = stmt.getInvokeExpr();
+			SootMethod calledMethod = ie.getMethod();
+			if(ie instanceof StaticInvokeExpr)
 			{
-				ignore = true;
+				// ignore = false;
 			}
-//			else if(eoa.isInitMethodPureOnObject(calledMethod) && /*is object thread-local*/ false)
-//			{
-//				ignore = true;
-//			}
+			else if(ie instanceof InstanceInvokeExpr)
+			{
+				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+				
+				if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+				{
+					ignore = true;
+				}
+				else if(loa != null && !loa.hasNonLocalEffects(method, ie))
+				{
+					ignore = true;
+				}
+			}
 		}
 
 		RWSet ret = null;
@@ -291,6 +304,9 @@ public class TransactionAwareSideEffectAnalysis {
 			else if( target.isConcrete() ) 
 			{
 				// TODO: FIX THIS!!!  What if the declaration is in a parent class of the actual object.
+				
+				// Special treatment for java.util and java.lang... their children are filtered out by the ThreadVisibleEdges filter
+				// Any approximation of their behavior must be performed here
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
 					target.getDeclaringClass().toString().startsWith("java.lang") )
 				{
@@ -311,7 +327,7 @@ public class TransactionAwareSideEffectAnalysis {
 						ret = approximatedReadSet(method, stmt, null);
 					}
 				}
-				else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
+/*				else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				// This shouldn't happen because all graylisted methods should be by explicit invoke statement only
     				// approximatedReadSet() should be called instead
@@ -321,6 +337,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
     				// No read set
 				}
+*/
 				else
 				{// note that all library functions have already been filtered out (by name) via the filter
 				 // passed to the TransitiveTargets constructor.
@@ -377,6 +394,7 @@ public class TransactionAwareSideEffectAnalysis {
 	{
 		RWSet stmtWrite = null;
 		
+/*
 		if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
 		{
 			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
@@ -408,8 +426,9 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		else
 		{
+*/
         	stmtWrite = writeSet( method, stmt, tn, sld );
-		}
+//		}
 		return stmtWrite;
 	}
 	
@@ -418,15 +437,25 @@ public class TransactionAwareSideEffectAnalysis {
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
 		{
-			SootMethod calledMethod = stmt.getInvokeExpr().getMethod();
-			if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+			InvokeExpr ie = stmt.getInvokeExpr();
+			SootMethod calledMethod = ie.getMethod();
+			if(ie instanceof StaticInvokeExpr)
 			{
-				ignore = true;
+				// ignore = false;
 			}
-//			else if(eoa.isMethodPureOnObject(calledMethod) && /*is object thread-local*/ false)
-//			{
-//				ignore = true;
-//			}
+			else if(ie instanceof InstanceInvokeExpr)
+			{
+				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+				
+				if(calledMethod.getSubSignature().startsWith("void <init>") && eoa.isInitMethodPureOnObject(calledMethod))
+				{
+					ignore = true;
+				}
+				else if(loa != null && !loa.hasNonLocalEffects(method, ie))
+				{
+					ignore = true;
+				}
+			}
 		}
 
 		RWSet ret = null;
@@ -460,6 +489,7 @@ public class TransactionAwareSideEffectAnalysis {
 						ret = approximatedWriteSet(method, stmt, null);
 					}
 				}
+/*
 				else if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
     			{
     				// No write set
@@ -473,6 +503,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
     				// No write set
 				}
+*/
 				else
 				{
 					RWSet ntw = nonTransitiveWriteSet(target);
@@ -490,6 +521,10 @@ public class TransactionAwareSideEffectAnalysis {
 	
 	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
 		RWSet ret = null;
+		
+		if(loa != null && loa.isObjectLocal(v, m))
+			return new StmtRWSet();
+		
 		if( v instanceof InstanceFieldRef ) {
 			InstanceFieldRef ifr = (InstanceFieldRef) v;
 			PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );

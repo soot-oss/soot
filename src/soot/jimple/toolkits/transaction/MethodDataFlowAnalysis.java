@@ -614,5 +614,10 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			emptySet.add(pair);
 		}
 	}
+	
+	public Value getThisLocal()
+	{
+		return thisLocal;
+	}
 }
 

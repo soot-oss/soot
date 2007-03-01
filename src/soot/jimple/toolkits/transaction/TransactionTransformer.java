@@ -44,31 +44,18 @@ public class TransactionTransformer extends SceneTransformer
 		
 		// *** Build May Happen In Parallel Info ***
     	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info ***");
-    	if(optionOneGlobalLock)
-			mhp = null;
-		else
+		if(Scene.v().getPointsToAnalysis() instanceof PAG)
 			mhp = new UnsynchronizedMhpAnalysis();
+		else
+			mhp = null;
 		
 
 
 		// *** Find Thread-Local Objects ***
     	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects ***");
-    	Map runnableToLosa = new HashMap();
-/*
     	DataFlowAnalysis dfa = new DataFlowAnalysis();
-    	Collection runnableImplementers = Scene.v().getActiveHierarchy().getImplementersOf(Scene.v().getSootClass("java.lang.Runnable"));
-    	Iterator possibleRunnableClassesIt = Scene.v().getApplicationClasses().iterator();
-    	while (possibleRunnableClassesIt.hasNext()) 
-    	{
-    	    SootClass possibleRunnableClass = (SootClass) possibleRunnableClassesIt.next();
-    		if(runnableImplementers.contains(possibleRunnableClass))
-    		{
-    			runnableToLosa.put(possibleRunnableClass, new LocalObjectsScopeAnalysis(possibleRunnableClass, dfa));
-    		}
-    	}
-*/
-
-
+    	LocalObjectsAnalysis loa = new LocalObjectsAnalysis(dfa); // can tell only that a field/local is local to the object it's being accessed in
+                                                                                                                                                                                                                        
     	// *** Find and Name Transactions ***
     	// The transaction finder finds the start, end, and preparatory statements
     	// for each transaction. It also calculates the non-transitive read/write 
@@ -92,7 +79,7 @@ public class TransactionTransformer extends SceneTransformer
     		    	methodToExcUnitGraph.put(method, eug);
     		    	
     	    		// run the intraprocedural analysis
-    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, runnableToLosa);
+    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, loa);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
@@ -129,7 +116,7 @@ public class TransactionTransformer extends SceneTransformer
     	TransactionAwareSideEffectAnalysis tasea = 
     		new TransactionAwareSideEffectAnalysis(
     				Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), AllTransactions, runnableToLosa);
+    				Scene.v().getCallGraph(), AllTransactions, loa);
     	Iterator tnIt = AllTransactions.iterator();
     	while(tnIt.hasNext())
     	{
@@ -476,7 +463,7 @@ public class TransactionTransformer extends SceneTransformer
 									{
 										InstanceFieldRef ifr = (InstanceFieldRef) r;
 										rBase = (Local) ifr.getBase();
-										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( rBase );
 										rSet.addFieldRef( base, ifr.getField() );
 									}
 									else if( r instanceof ArrayRef )
@@ -484,7 +471,7 @@ public class TransactionTransformer extends SceneTransformer
 										ArrayRef ar = (ArrayRef) r;
 										rBase = (Local) ar.getBase();
 										rIndex = ar.getIndex();
-										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
+										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( rBase );
 										rSet.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
 									}
 									if(rSet.hasNonEmptyIntersection(rws[group]))
@@ -683,6 +670,13 @@ public class TransactionTransformer extends SceneTransformer
     
     public boolean mayHappenInParallel(Transaction tn1, Transaction tn2)
     {
+    	if(mhp == null)
+    	{
+    		ReachableMethods rm = Scene.v().getReachableMethods();
+    		if(!rm.contains(tn1.method) || !rm.contains(tn2.method))
+    			return false;
+    		return true;
+    	}
     	return mhp.mayHappenInParallel(tn1.method, tn2.method);
     }
     

@@ -29,12 +29,16 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     Transaction methodTn;
 	
 	public boolean optionPrintDebug = false;
+	
+//	LocalObjectsAnalysis loa;
 
-    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, Map runnableToLosa)
+    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, LocalObjectsAnalysis loa)
 	{
 		super(graph);
 
 		this.optionPrintDebug = optionPrintDebug;
+		
+//		this.loa = loa;
 
 		body = b;
 		method = body.getMethod();
@@ -54,7 +58,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		}
 		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), null, runnableToLosa);
+    				Scene.v().getCallGraph(), null, loa);
     	
 //    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				
@@ -246,6 +250,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	}
 				else
             	{
+            		
+            		
             		// Add this unit's read and write sets to this transactional region
 	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld );
 		           	stmtWrite = tasea.writeSet( method, (Stmt) unit, tn, sld );

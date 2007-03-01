@@ -13,6 +13,7 @@ import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.invoke.*;
 import soot.jimple.spark.*;
 import soot.jimple.spark.pag.*;
+import soot.options.SparkOptions;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
@@ -49,9 +50,13 @@ public class UnsynchronizedMhpAnalysis
 		PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
 		if (!(pta instanceof PAG))
 		{
-		   System.err.println("You must use Spark for points-to analysis when computing MHP information!");
-		   System.exit(1);
+		   throw new RuntimeException("You must use Spark for points-to analysis when computing MHP information!");
 		}
+		PAG pag = (PAG) pta;
+		SparkOptions so = pag.getOpts();
+		if(so.rta())
+		   throw new RuntimeException("MHP cannot be calculated using RTA due to incomplete call graph");
+
 		CallGraph callGraph = Scene.v().getCallGraph();
 
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
@@ -129,7 +134,7 @@ public class UnsynchronizedMhpAnalysis
 				System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
 			
 			// Find out if the "thread" in "thread.start()" could be more than one object
-			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1);
+			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1) || so.types_for_sites();
 			if(!mayStartMultipleThreadObjects) // if there's only one alloc node
 			{
 				if(multiRunAllocNodes.contains(threadAllocNodes.iterator().next())) // but it gets run more than once

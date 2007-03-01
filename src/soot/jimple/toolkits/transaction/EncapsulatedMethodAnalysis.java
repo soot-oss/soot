@@ -15,9 +15,6 @@ import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
 // EncapsulatedMethodAnalysis written by Richard L. Halpert, 2006-12-26
-// Finds equal/equavalent/aliasing locals to a given local at a given statement, on demand
-// The answer provided is occasionally suboptimal (but correct) in the event where
-// a _re_definition of the given local causes it to become equal to existing locals.
 
 public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
 {
@@ -38,7 +35,7 @@ public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
 			{
 				FieldRef ref = s.getFieldRef();
 				if( (ref instanceof StaticFieldRef) && 
-				    (Type.toMachineType(((StaticFieldRef) ref).getType()) != IntType.v()) )
+				    (Type.toMachineType(((StaticFieldRef) ref).getType()) instanceof RefLikeType) )
 				{
 					isMethodPure = false; // kills purity
 					isMethodConditionallyPure = false; // kills conditional purity

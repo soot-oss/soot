@@ -125,7 +125,8 @@ public class PegCallGraph implements DirectedGraph{
 			SootMethod sm = (SootMethod)it.next();
 			if (sm.getName().equals("main")) heads.add(sm);
 			//if (sm.isConcrete() && !sm.getDeclaringClass().isLibraryClass()){
-			if (sm.hasActiveBody() && sm.getDeclaringClass().isApplicationClass() ){
+			//if (sm.hasActiveBody() && sm.getDeclaringClass().isApplicationClass() ){
+			if (sm.isConcrete() && sm.getDeclaringClass().isApplicationClass() ){
 				if (!chain.contains(sm)){
 					chain.add(sm);
 				}
@@ -135,14 +136,16 @@ public class PegCallGraph implements DirectedGraph{
 					Edge edge = (Edge)edgeIt.next();
 					SootMethod target = edge.tgt();
 					//if (target.isConcrete() && !target.getDeclaringClass().isLibraryClass()){
-					if (target.hasActiveBody()  && target.getDeclaringClass().isApplicationClass()){
+					//if (target.hasActiveBody()  && target.getDeclaringClass().isApplicationClass()){
+					if(target.isConcrete() && target.getDeclaringClass().isApplicationClass())
+					{
 						succsList.add(target);
 						if (!chain.contains(target)){
 							chain.add(target);
 							//			    System.out.println("add: "+target);
 						}
 						if (edge.isClinit()){
-							clinitMethods.add(target);	
+							clinitMethods.add(target);
 						}
 						
 						
@@ -176,7 +179,7 @@ public class PegCallGraph implements DirectedGraph{
 				if (methodToSuccs.containsKey(s)){
 					List succList = (List) methodToSuccs.get(s);
 					if (succList.size()<=0) {
-						methodToSuccs.remove(s);
+//						methodToSuccs.remove(s);
 					}
 				}
 			}

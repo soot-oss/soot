@@ -20,22 +20,47 @@ import soot.toolkits.scalar.*;
 
 public class ClassLocalObjectsAnalysis
 {
-	SootClass sootClass;
+	LocalObjectsAnalysis loa;
 	DataFlowAnalysis dfa;
+	SootClass sootClass;
+
+	ClassLocalObjectsAnalysis context;
+	
+	Map methodToMethodLocalObjectsAnalysis;
 	
 	ArrayList localFields;
 	ArrayList sharedFields;
-		
-	public ClassLocalObjectsAnalysis(SootClass sootClass, DataFlowAnalysis dfa)
+	
+	/** Constructor for when this is the class that defines the scope for "Local" */
+	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, SootClass sootClass)
 	{
-		 this.sootClass = sootClass;
+		 this.loa = loa;
 		 this.dfa = dfa;
+		 this.sootClass = sootClass;
+
+		 this.context = null;
+		 
+		 methodToMethodLocalObjectsAnalysis = new HashMap();
 		 
 		 localFields = new ArrayList();
 		 sharedFields = new ArrayList();
 		 
 		 doAnalysis();
 	}
+	
+/*
+	private ClassLocalObjectsAnalysis(SootClass sootClass, DataFlowAnalysis dfa, ClassLocalObjectsAnalysis context)
+	{
+		 this.sootClass = sootClass;
+		 this.dfa = dfa;
+		 this.context = context;
+		 
+		 localFields = new ArrayList();
+		 sharedFields = new ArrayList();
+		 
+		 doAnalysis();
+	}
+*/
 	
 	private void doAnalysis()
 	{
@@ -108,7 +133,7 @@ public class ClassLocalObjectsAnalysis
 		while(changed)
 		{
 			changed = false;
-			G.v().out.println("Starting iteration:");
+//			G.v().out.println("Starting iteration:");
 			Iterator methodsIt = scopeMethods.iterator();
 			while(methodsIt.hasNext())
 			{
@@ -118,11 +143,6 @@ public class ClassLocalObjectsAnalysis
 					continue;
 				Iterator localFieldsIt = ((List) localFields.clone()).iterator(); // unbacked iterator so we can remove from the original
 				boolean printedMethodHeading = false;
-//				if(method.getDeclaringClass().isApplicationClass() && localFieldsIt.hasNext())
-//				{
-//					G.v().out.println("    Method: " + method.toString());
-//					printedMethodHeading = true;
-//				}
 				while(localFieldsIt.hasNext())
 				{
 					SootField localField = (SootField) localFieldsIt.next();
@@ -135,12 +155,12 @@ public class ClassLocalObjectsAnalysis
 					if(localField.getDeclaringClass().isApplicationClass() &&
 					   sourcesAndSinksIt.hasNext())
 					{
-						if(!printedMethodHeading)
-						{
-							G.v().out.println("    Method: " + method.toString());
-							printedMethodHeading = true;
-						}
-						G.v().out.println("        Field: " + localField.toString());
+//						if(!printedMethodHeading)
+//						{
+//							G.v().out.println("    Method: " + method.toString());
+//							printedMethodHeading = true;
+//						}
+//						G.v().out.println("        Field: " + localField.toString());
 					}
 					while(sourcesAndSinksIt.hasNext())
 					{
@@ -170,8 +190,8 @@ public class ClassLocalObjectsAnalysis
 						
 						if(fieldBecomesShared)
 						{
-							if(localField.getDeclaringClass().isApplicationClass())
-								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
+//							if(localField.getDeclaringClass().isApplicationClass())
+//								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
 							localFields.remove(localField);
 							sharedFields.add(localField);
 							changed = true;
@@ -188,22 +208,22 @@ public class ClassLocalObjectsAnalysis
 		}
 		
 		// DEBUG: Print out the resulting list!
-		G.v().out.println("Found local/shared fields for " + sootClass.toString());
-		G.v().out.println("    Local fields: ");
+//		G.v().out.println("Found local/shared fields for " + sootClass.toString());
+//		G.v().out.println("    Local fields: ");
 		Iterator localsToPrintIt = localFields.iterator();
 		while(localsToPrintIt.hasNext())
 		{
 			SootField localToPrint = (SootField) localsToPrintIt.next();
-			if(localToPrint.getDeclaringClass().isApplicationClass())
-				G.v().out.println("                  " + localToPrint);
+//			if(localToPrint.getDeclaringClass().isApplicationClass())
+//				G.v().out.println("                  " + localToPrint);
 		}
-		G.v().out.println("    Shared fields: ");
+//		G.v().out.println("    Shared fields: ");
 		Iterator sharedsToPrintIt = sharedFields.iterator();
 		while(sharedsToPrintIt.hasNext())
 		{
 			SootField sharedToPrint = (SootField) sharedsToPrintIt.next();
-			if(sharedToPrint.getDeclaringClass().isApplicationClass())
-				G.v().out.println("                  " + sharedToPrint);
+//			if(sharedToPrint.getDeclaringClass().isApplicationClass())
+//				G.v().out.println("                  " + sharedToPrint);
 		}
 				
 		// Analyze each method: determine which Locals are local and which are shared
@@ -216,7 +236,40 @@ public class ClassLocalObjectsAnalysis
 			Body b = method.retrieveActiveBody();
 			UnitGraph g = new ExceptionalUnitGraph(b);
 			MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, this, dfa);
+			methodToMethodLocalObjectsAnalysis.put(method, mloa);
 		}
+	}
+	
+	public boolean isObjectLocal(Value localOrRef, SootMethod sm)
+	{
+		if(localOrRef instanceof StaticFieldRef)
+		{
+			return false;
+		}
+		
+		MethodLocalObjectsAnalysis mloa = getMethodLocalObjectsAnalysis(sm);
+		if(localOrRef instanceof InstanceFieldRef)
+		{
+			InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
+			if( ifr.getBase().equivTo(mloa.getThisLocal()) )
+				return fieldIsLocal(ifr.getFieldRef().resolve());
+			else
+			{
+				// if referred object is local, then find out if field is local in that object
+				if(isObjectLocal(ifr.getBase(), sm))
+				{
+					return loa.isFieldLocal(ifr.getFieldRef().resolve());
+				}
+				else
+					return false;
+			}
+		}
+		return mloa.isObjectLocal(localOrRef);
+	}
+	
+	public MethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
+	{
+		return (MethodLocalObjectsAnalysis) methodToMethodLocalObjectsAnalysis.get(sm);
 	}
 	
 	// Should check field access rights, and possibly perform an analysis
@@ -268,6 +321,10 @@ public class ClassLocalObjectsAnalysis
 	
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
 	{
+//		if(context != null)
+//		{
+//			return context.
+//		}
 		return false;
 	}
 	

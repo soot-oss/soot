@@ -25,7 +25,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 	public MethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, DataFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
-				
+		
 		printMessages = false;
 
 		SootMethod method = g.getBody().getMethod();
@@ -33,7 +33,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
 		
 		// Add a source for every parameter that is shared
-		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... if it shares things, it doesn't matter, because the method exits right then anyways
+		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... 
 		{
 			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(method, i);
 			if(!cloa.parameterIsLocal(method, paramEqVal))
@@ -69,6 +69,25 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 	public boolean isInterestingSink(Value sink)
 	{
 		return true; //(sink instanceof Local); // we're interested in all values
+	}
+	
+	// 
+	public boolean isObjectLocal(Value local)
+	{
+		EquivalentValue source = new EquivalentValue(new AbstractDataSource("SHARED"));
+		if(dataFlowGraph.containsNode(source))
+		{
+			List sinks = dataFlowGraph.getSuccsOf(source);
+			if(printMessages)
+				G.v().out.println("Requested value " + local + " is " + ( !sinks.contains(new EquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm);
+			return !sinks.contains(new EquivalentValue(local));
+		}
+		else
+		{
+			if(printMessages)
+				G.v().out.println("Requested value " + local + " is Local (like all values) in " + sm);
+			return true; // no shared data in this method
+		}
 	}
 }
 
