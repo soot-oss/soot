@@ -1483,10 +1483,16 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
-          public void setone_global_lock(boolean arg) {
+          public void setdo_mhp(boolean arg) {
             addArg("-p");
             addArg("wjtp.tn");
-            addArg("one-global-lock:"+(arg?"true":"false"));
+            addArg("do-mhp:"+(arg?"true":"false"));
+          }
+      
+          public void setdo_tlo(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("do-tlo:"+(arg?"true":"false"));
           }
       
           public void setprint_graph(boolean arg) {
@@ -1505,6 +1511,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("wjtp.tn");
             addArg("print-debug:"+(arg?"true":"false"));
+          }
+      
+          public void setlocking_scheme(String arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("locking-scheme:"+arg);
           }
       
         }

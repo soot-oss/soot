@@ -1736,7 +1736,15 @@ public class Options extends OptionsBase {
                 "\nThe Transactional Transformation find transactional regions in \nJava programs and prepares them for transactional execution on \nboth optimistic and pessimistic JVMs. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
-                +padOpt( "one-global-lock (false)", "Use just one global synchronization object for all transactional regions" )
+                +padOpt( "locking-scheme", "Selects the granularity of the generated lock allocation" )
+                +padVal( "medium-grained (default)", "Try to use runtime objects for synchronization" )
+                
+                +padVal( "coarse-grained", "Use static objects for synchronization" )
+                
+                +padVal( "single-static", "Use just one static synchronization object for all transactional regions" )
+                
+                +padOpt( "do-mhp (true)", "Perform a May-Happen-in-Parallel analysis" )
+                +padOpt( "do-tlo (true)", "Perform a Local-Objects analysis" )
                 +padOpt( "print-graph (false)", "Print topological graph of transactions" )
                 +padOpt( "print-table (false)", "Print table of transactions" )
                 +padOpt( "print-debug (false)", "Print debugging info" );
@@ -2452,7 +2460,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
                 +"enabled "
-                +"one-global-lock "
+                +"locking-scheme "
+                +"do-mhp "
+                +"do-tlo "
                 +"print-graph "
                 +"print-table "
                 +"print-debug ";
@@ -3011,7 +3021,9 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp.tn" ) )
             return ""
               +"enabled:false "
-              +"one-global-lock:false "
+              +"locking-scheme:medium-grained "
+              +"do-mhp:true "
+              +"do-tlo:true "
               +"print-graph:false "
               +"print-table:false "
               +"print-debug:false ";

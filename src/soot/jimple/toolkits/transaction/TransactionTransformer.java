@@ -26,6 +26,10 @@ public class TransactionTransformer extends SceneTransformer
 	}
 	
 	boolean optionOneGlobalLock = false;
+	boolean optionStaticLocks = false;
+	
+	boolean optionDoMHP = true;
+	boolean optionDoTLO = true;
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;
@@ -35,7 +39,27 @@ public class TransactionTransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
 	{
 		// Get phase options
-		optionOneGlobalLock = PhaseOptions.getBoolean( options, "one-global-lock" );
+
+		String lockingScheme = PhaseOptions.getString( options, "locking-scheme" );
+		if(lockingScheme.equals("medium-grained"))
+		{
+			optionOneGlobalLock = false;
+			optionStaticLocks = false;
+		}
+		if(lockingScheme.equals("coarse-grained"))
+		{
+			optionOneGlobalLock = false;
+			optionStaticLocks = true;
+		}
+		if(lockingScheme.equals("single-static"))
+		{
+			optionOneGlobalLock = true;
+			optionStaticLocks = true;
+		}
+
+		optionDoMHP = PhaseOptions.getBoolean( options, "do-mhp" );
+		optionDoTLO = PhaseOptions.getBoolean( options, "do-tlo" );
+
 		optionPrintGraph = PhaseOptions.getBoolean( options, "print-graph" );
 		optionPrintTable = PhaseOptions.getBoolean( options, "print-table" );
 		optionPrintDebug = PhaseOptions.getBoolean( options, "print-debug" );
@@ -43,18 +67,28 @@ public class TransactionTransformer extends SceneTransformer
 		
 		
 		// *** Build May Happen In Parallel Info ***
-    	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info ***");
-		if(Scene.v().getPointsToAnalysis() instanceof PAG)
+		if(optionDoMHP && Scene.v().getPointsToAnalysis() instanceof PAG)
+		{
+	    	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info ***");
 			mhp = new UnsynchronizedMhpAnalysis();
+		}
 		else
+		{
 			mhp = null;
+		}
 		
 
 
 		// *** Find Thread-Local Objects ***
-    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects ***");
-    	DataFlowAnalysis dfa = new DataFlowAnalysis();
-    	LocalObjectsAnalysis loa = new LocalObjectsAnalysis(dfa); // can tell only that a field/local is local to the object it's being accessed in
+		LocalObjectsAnalysis loa = null;
+    	if(optionDoTLO)
+    	{
+	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects ***");
+    		DataFlowAnalysis dfa = new DataFlowAnalysis();
+    		loa = new LocalObjectsAnalysis(dfa); // can tell only that a field/local is local to the object it's being accessed in
+    	}
+
+    		
                                                                                                                                                                                                                         
     	// *** Find and Name Transactions ***
     	// The transaction finder finds the start, end, and preparatory statements
@@ -313,7 +347,7 @@ public class TransactionTransformer extends SceneTransformer
     	RWSet rws[] = new CodeBlockRWSet[nextGroup - 1];
     	for(int group = 0; group < nextGroup - 1; group++)
     		rws[group] = new CodeBlockRWSet();
-		if(!optionOneGlobalLock)
+		if(!optionStaticLocks)
 		{
 	    	Iterator tnIt8 = AllTransactions.iterator();
 	    	while(tnIt8.hasNext())
@@ -334,7 +368,7 @@ public class TransactionTransformer extends SceneTransformer
 		boolean mustBeFieldsOfSameObjectForAllTns[] = new boolean[nextGroup - 1];
 //		boolean mustBeSameArrayElementForAllTns[] = new boolean[nextGroup - 1];
 		Value lockObject[] = new Value[nextGroup - 1];
-		if(optionOneGlobalLock)
+		if(optionStaticLocks)
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{

@@ -353,13 +353,27 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
-//		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
+						ret = new SiteRWSet();
+		            	List rDefs = new ArrayList();
+		            	rDefs.addAll( sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , (Unit) stmt ));
+		            	for(int i = 0; i < rDefs.size(); i++)
+		            	{
+		            		Stmt rDef = (Stmt) rDefs.get(i);
+		            		if(rDef instanceof DefinitionStmt)
+		            		{
+		            			Value r = ((DefinitionStmt) rDef).getRightOp();
+		            			if(r instanceof Local)
+			            			rDefs.addAll(sld.getDefsOfAt( (Local) r , (Unit) rDef ));
+			            		else
+			            			ret.union(approximatedReadSet(method, stmt, r));
+		            		}
+		            	}
 //		            	while (rDefsIt.hasNext())
 //		            	{
 //		                	Stmt next = (Stmt) rDefsIt.next();
 //		                	if(next instanceof DefinitionStmt)
 //							{
-		    					ret = approximatedReadSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() );
+//		    					ret = approximatedReadSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() );
 //							}
 //						}
 					}
@@ -515,13 +529,28 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
+						ret = new SiteRWSet();
+		            	List rDefs = new ArrayList();
+		            	rDefs.addAll( sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ));
+		            	for(int i = 0; i < rDefs.size(); i++)
+		            	{
+		            		Stmt rDef = (Stmt) rDefs.get(i);
+		            		if(rDef instanceof DefinitionStmt)
+		            		{
+		            			Value r = ((DefinitionStmt) rDef).getRightOp();
+		            			if(r instanceof Local)
+			            			rDefs.addAll(sld.getDefsOfAt( (Local)r , (Unit) rDef ));
+			            		else
+			            			ret.union(approximatedWriteSet(method, stmt, r));
+		            		}
+		            	}
 //		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
 //		            	while (rDefsIt.hasNext())
 //		            	{
 //		                	Stmt next = (Stmt) rDefsIt.next();
 //		                	if(next instanceof DefinitionStmt)
 //							{
-		    					ret = approximatedWriteSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase());
+//		    					ret = approximatedWriteSet(method, stmt, ((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase());
 //							}
 //						}
 					}
