@@ -68,14 +68,14 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 	
 	public boolean isInitMethodPureOnObject(SootMethod sm)
 	{
-		G.v().out.print("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
+//		G.v().out.print("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
 		if(isMethodPureOnObject(sm))
 		{
 			boolean ret = objectPureInitMethods.contains(sm);
-			G.v().out.println(ret);
+//			G.v().out.println(ret);
 			return ret;
 		}
-		G.v().out.println("false");
+//		G.v().out.println("false");
 		return false;
 	}
 	

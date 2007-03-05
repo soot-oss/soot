@@ -68,7 +68,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		if(method.isSynchronized())
 		{
 			// Entire method is transactional
-			methodTn = new Transaction((Stmt) body.getUnits().iterator().next(), true, method, 0);
+			methodTn = new Transaction((Stmt) body.getUnits().iterator().next(), true, method, 1);
 			// note that the precise location of the begin stmt doesn't matter... the
 			// whole method will be transformed correctly regardless of the value.
 		}

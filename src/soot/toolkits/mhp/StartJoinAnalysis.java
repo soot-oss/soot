@@ -144,7 +144,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					{
 						if(((FlowSet) pd.getFlowBefore((Unit) start)).contains(join)) // does join post-dominate start?
 						{
-							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
+//							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
 							startToJoin.put(start, join); // then this join always joins this start's thread
 						}
 					}
@@ -236,37 +236,50 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		if(stmt.containsInvokeExpr())
 		{
 			// If this is a start stmt, add it to startStatements
-			SootMethod invokeMethod = stmt.getInvokeExpr().getMethod();
-			if(invokeMethod.getName().equals("start"))
+			InvokeExpr ie = stmt.getInvokeExpr();
+			if(ie instanceof InstanceInvokeExpr)
 			{
-				List superClasses = hierarchy.getSuperclassesOfIncluding(invokeMethod.getDeclaringClass());
-				Iterator it = superClasses.iterator();
-				while (it.hasNext())
+				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+				SootMethod invokeMethod = ie.getMethod();
+				if(invokeMethod.getName().equals("start"))
 				{
-					if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+					RefType baseType = (RefType) iie.getBase().getType();
+					if(!baseType.getSootClass().isInterface())
 					{
-						// This is a Thread.start()
-						if(!startStatements.contains(stmt))
-							startStatements.add(stmt);
-							
-						// Flow this Thread.start() down
-//						out.add(stmt);
+						List superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Iterator it = superClasses.iterator();
+						while (it.hasNext())
+						{
+							if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+							{
+								// This is a Thread.start()
+								if(!startStatements.contains(stmt))
+									startStatements.add(stmt);
+									
+								// Flow this Thread.start() down
+		//						out.add(stmt);
+							}
+						}
 					}
 				}
-			}
 
-			// If this is a join stmt, add it to joinStatements
-			if(invokeMethod.getName().equals("join"))
-			{
-				List superClasses = hierarchy.getSuperclassesOfIncluding(invokeMethod.getDeclaringClass());
-				Iterator it = superClasses.iterator();
-				while (it.hasNext())
+				// If this is a join stmt, add it to joinStatements
+				if(invokeMethod.getName().equals("join"))
 				{
-					if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+					RefType baseType = (RefType) iie.getBase().getType();
+					if(!baseType.getSootClass().isInterface())
 					{
-						// This is a Thread.join()
-						if(!joinStatements.contains(stmt))
-							joinStatements.add(stmt);
+						List superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Iterator it = superClasses.iterator();
+						while (it.hasNext())
+						{
+							if( ((SootClass) it.next()).getName().equals("java.lang.Thread") )
+							{
+								// This is a Thread.join()
+								if(!joinStatements.contains(stmt))
+									joinStatements.add(stmt);
+							}
+						}
 					}
 				}
 			}

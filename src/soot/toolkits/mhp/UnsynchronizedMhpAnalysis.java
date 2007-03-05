@@ -23,7 +23,8 @@ import java.io.*;
  *  of synchronization. Any synchronization statements (synchronized, wait, 
  *  notify, etc.) are ignored. If the program has no synchronization, then this 
  *  actually generates correct MHP. This is useful if you are trying to generate
- *  (replacement) synchronization.
+ *  (replacement) synchronization. It is also useful if an approximation is
+ *  acceptable, because it runs much faster than a synch-aware MHP analysis.
  *
  *  This analysis uses may-alias information to determine the types of threads
  *  launched and the call graph to determine which methods they may call.
@@ -80,7 +81,7 @@ public class UnsynchronizedMhpAnalysis
 		
 		// Build MHP Lists
 //		G.v().out.println("    MHP: Building MHP Lists");
-		Map containingMethodToThreadMethods = new HashMap();
+		List runAtOnceCandidates = new ArrayList();
 		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
 		while(threadIt.hasNext())
@@ -94,44 +95,49 @@ public class UnsynchronizedMhpAnalysis
 			List threadAllocNodes = (List) startToAllocNodes.get(e.getKey());
 
 			// Get a list of all possible unique Runnable.run methods for this thread start statement
-			List threadMethods = new ArrayList();
+			AbstractRuntimeThread thread = new AbstractRuntimeThread(); // provides a list interface to the methods in a threads sub call graph
+			thread.setStartStmt(startStmt);
+//			List threadMethods = new ArrayList();
 			Iterator runMethodsIt = runMethods.iterator();
 			while(runMethodsIt.hasNext())
 			{
 				SootMethod method = (SootMethod) runMethodsIt.next();
-				if(!threadMethods.contains(method))
-					threadMethods.add(method);
+				if(!thread.containsMethod(method))
+				{
+					thread.addMethod(method);
+					thread.addRunMethod(method);
+				}
 			}
 			
 			// Get a list containing all methods in the call graph(s) rooted at the possible run methods for this thread start statement
 			// AKA a list of all methods that might be called by the thread started here
 			int methodNum = 0;
-			while(methodNum < threadMethods.size()) // iterate over all methods in threadMethods, even as new methods are being added to it
+			while(methodNum < thread.methodCount()) // iterate over all methods in threadMethods, even as new methods are being added to it
 			{
-				Iterator succMethodsIt = pecg.getSuccsOf(threadMethods.get(methodNum)).iterator();
+				Iterator succMethodsIt = pecg.getSuccsOf(thread.getMethod(methodNum)).iterator();
 				while(succMethodsIt.hasNext())
 				{
 					SootMethod method = (SootMethod) succMethodsIt.next();
 					// if all edges into this method are of Kind THREAD, ignore it 
-					// (because it's a run method that won't be called as part of THIS thread)
+					// (because it's a run method that won't be called as part of THIS thread) THIS IS NOT OPTIMAL
 					boolean ignoremethod = true;
 					Iterator edgeInIt = callGraph.edgesInto(method);
 					while(edgeInIt.hasNext())
 					{
 						Edge edge = (Edge) edgeInIt.next();
-						if( edge.kind() != Kind.THREAD && threadMethods.contains(edge.src())) // called directly by any of the thread methods?
+						if( edge.kind() != Kind.THREAD && thread.containsMethod(edge.src())) // called directly by any of the thread methods?
 							ignoremethod = false;
 					}
-					if(!ignoremethod && !threadMethods.contains(method))
-						threadMethods.add(method);
+					if(!ignoremethod && !thread.containsMethod(method))
+						thread.addMethod(method);
 				}
 				methodNum++;
 			}
 			
 			// Add this list of methods to MHPLists
-			MHPLists.add(threadMethods);
+			MHPLists.add(thread);
 			if(optionPrintDebug)
-				System.out.println("THREAD" + threadNum + ": " + threadMethods.toString());
+				System.out.println(thread.toString());
 			
 			// Find out if the "thread" in "thread.start()" could be more than one object
 			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1) || so.types_for_sites();
@@ -143,8 +149,12 @@ public class UnsynchronizedMhpAnalysis
 				}
 			}
 			
+			if(mayStartMultipleThreadObjects)
+				thread.setStartStmtHasMultipleReachingObjects();
+			
 			// Find out if the "thread.start()" statement may be run more than once
 			SootMethod startStmtMethod = (SootMethod) startToContainingMethod.get(startStmt);
+			thread.setStartStmtMethod(startStmtMethod);
 			boolean mayBeRunMultipleTimes = multiCalledMethods.contains(startStmtMethod); // if method is called more than once...
 			if(!mayBeRunMultipleTimes)
 			{
@@ -155,12 +165,18 @@ public class UnsynchronizedMhpAnalysis
 				if(multiRunStatements.contains(startStmt))
 					mayBeRunMultipleTimes = true;
 			}
+			
+			if(mayBeRunMultipleTimes)
+			{
+				thread.setStartStmtMayBeRunMultipleTimes();
+			}
 
 			// If a run-many thread.start() statement is (always) associated with a join statement in the same method,
 			// then it may be possible to treat it as run-once, if this method is non-reentrant and called only
 			// by one thread (sounds strict, but actually this is the most common case)
 			if(mayBeRunMultipleTimes && startToJoin.containsKey(startStmt))
 			{
+				thread.setJoinStmt((Stmt) startToJoin.get(startStmt));
 				mayBeRunMultipleTimes = false; // well, actually, we don't know yet
 				methodNum = 0;
 				List containingMethodCalls = new ArrayList();
@@ -174,6 +190,8 @@ public class UnsynchronizedMhpAnalysis
 						if(method == startStmtMethod)
 						{// this method is reentrant
 							mayBeRunMultipleTimes = true; // this time it's for sure
+							thread.setStartMethodIsReentrant();
+							thread.setRunsMany();
 							break;
 						}
 						if(!containingMethodCalls.contains(method))
@@ -184,7 +202,7 @@ public class UnsynchronizedMhpAnalysis
 				if(!mayBeRunMultipleTimes)
 				{// There's still one thing that might cause this to be run multiple times: if it can be run in parallel with itself
 				 // but we can't find that out 'till we're done
-					containingMethodToThreadMethods.put(startStmtMethod, threadMethods);
+					runAtOnceCandidates.add(thread);
 				}
 			}
 
@@ -196,22 +214,29 @@ public class UnsynchronizedMhpAnalysis
 					" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
 			if(mayStartMultipleThreadObjects && mayBeRunMultipleTimes)
 			{
-				MHPLists.add(((ArrayList) threadMethods).clone());
+				MHPLists.add(thread); // add another copy
+				thread.setRunsMany();
 				if(optionPrintDebug)
-					System.out.println("THREAD-AGAIN" + threadNum + ": " + threadMethods.toString());
+					System.out.println(thread.toString());
 			}
+			else
+				thread.setRunsOnce();
 			threadNum++;
 		}
 
 		// do same for main method
-		List mainMethods = new ArrayList();
-		MHPLists.add(mainMethods);
-		mainMethods.add(mainMethod);
+		AbstractRuntimeThread mainThread = new AbstractRuntimeThread();
+//		List mainMethods = new ArrayList();
+		MHPLists.add(mainThread);
+		mainThread.setRunsOnce();
+		mainThread.addMethod(mainMethod);
+		mainThread.addRunMethod(mainMethod);
+		mainThread.setIsMainThread();
 		// get all the successors, add to threadMethods
 		int methodNum = 0;
-		while(methodNum < mainMethods.size())
+		while(methodNum < mainThread.methodCount())
 		{
-			Iterator succMethodsIt = pecg.getSuccsOf(mainMethods.get(methodNum)).iterator();
+			Iterator succMethodsIt = pecg.getSuccsOf(mainThread.getMethod(methodNum)).iterator();
 			while(succMethodsIt.hasNext())
 			{
 				SootMethod method = (SootMethod) succMethodsIt.next();
@@ -223,34 +248,43 @@ public class UnsynchronizedMhpAnalysis
 					if( ((Edge) edgeInIt.next()).kind() != Kind.THREAD )
 						ignoremethod = false;
 				}
-				if(!ignoremethod && !mainMethods.contains(method))
-					mainMethods.add(method);
+				if(!ignoremethod && !mainThread.containsMethod(method))
+					mainThread.addMethod(method);
 			}
 			methodNum++;
 		}
 		if(optionPrintDebug)
-			G.v().out.println("MAIN   : " + mainMethods.toString());
+			G.v().out.println(mainThread.toString());
 			
 		// Revisit the containing methods of start-join pairs that are non-reentrant but might be called in parallel
 		boolean addedNew = true;
 		while(addedNew)
 		{
 			addedNew = false;
-			Iterator it = containingMethodToThreadMethods.entrySet().iterator();
+			Iterator it = runAtOnceCandidates.iterator();
 			while(it.hasNext())
 			{
-				Map.Entry e = (Map.Entry) it.next();
-				SootMethod someStartMethod = (SootMethod) e.getKey();
-				List someThreadMethods = (List) e.getValue();
+				AbstractRuntimeThread someThread = (AbstractRuntimeThread) it.next();
+				SootMethod someStartMethod = someThread.getStartStmtMethod();
 				if(mayHappenInParallel(someStartMethod, someStartMethod))
 				{
-					MHPLists.add(((ArrayList) someThreadMethods).clone());
-					containingMethodToThreadMethods.remove(someStartMethod);
+					MHPLists.add(someThread); // add a second copy of it
+					someThread.setStartMethodMayHappenInParallel();
+					someThread.setRunsMany();
+					runAtOnceCandidates.remove(someThread);
 					if(optionPrintDebug)
-						G.v().out.println("THREAD-REVIVED: " + someThreadMethods);
+						G.v().out.println(someThread.toString());
 					addedNew = true;
 				}
 			}
+		}
+		
+		// mark the remaining threads here as run-one-at-a-time
+		Iterator it = runAtOnceCandidates.iterator();
+		while(it.hasNext())
+		{
+			AbstractRuntimeThread someThread = (AbstractRuntimeThread) it.next();
+			someThread.setRunsOneAtATime();
 		}
 	}
 
@@ -264,11 +298,11 @@ public class UnsynchronizedMhpAnalysis
 		int size = MHPLists.size();
 		for(int i = 0; i < size; i++)
 		{
-			if(((List)MHPLists.get(i)).contains(m1))
+			if(((AbstractRuntimeThread) MHPLists.get(i)).containsMethod(m1))
 			{
 				for(int j = 0; j < size; j++)
 				{
-					if(((List)MHPLists.get(j)).contains(m2) && i != j)
+					if(((AbstractRuntimeThread) MHPLists.get(j)).containsMethod(m2) && i != j)
 					{
 						return true;
 					}
@@ -276,6 +310,25 @@ public class UnsynchronizedMhpAnalysis
 			}
 		}
 		return false;
+	}
+	
+	public void printMhpSummary()
+	{
+		List threads = new ArrayList();
+		int size = MHPLists.size();
+		G.v().out.println("[mhp]");
+		for(int i = 0; i < size; i++)
+		{
+			if( !threads.contains(MHPLists.get(i)) )
+			{
+				G.v().out.println("[mhp] " + 
+					((AbstractRuntimeThread) MHPLists.get(i)).toString().replaceAll(
+						"\n", "\n[mhp] ").replaceAll(
+						">,",">\n[mhp]  "));
+				G.v().out.println("[mhp]");
+			}
+			threads.add(MHPLists.get(i));
+		}
 	}
 }
 
