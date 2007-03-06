@@ -49,7 +49,18 @@ public class StartJoinFinder
     	    while (methodsIt.hasNext())
     	    {
     	    	SootMethod method = (SootMethod) methodsIt.next();
-				if(method.isConcrete())
+    	    	
+    	    	// If this method may have a start or run method as a target, then do a start/join analysis
+    	    	boolean mayHaveStartStmt = false;
+    			Iterator edgesIt = callGraph.edgesOutOf( method );
+    			while(edgesIt.hasNext())
+    			{
+    				SootMethod target = ((Edge) edgesIt.next()).tgt();
+    				if(target.getName().equals("start") || target.getName().equals("run"))
+    					mayHaveStartStmt = true;
+    			}
+    	    	
+				if(mayHaveStartStmt && method.isConcrete())
 				{
 	    	    	Body b = method.retrieveActiveBody();
     		    	

@@ -29,16 +29,12 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     Transaction methodTn;
 	
 	public boolean optionPrintDebug = false;
-	
-//	LocalObjectsAnalysis loa;
 
-    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, LocalObjectsAnalysis loa)
+    TransactionAnalysis(UnitGraph graph, Body b, boolean optionPrintDebug, ThreadLocalObjectsAnalysis tlo)
 	{
 		super(graph);
 
 		this.optionPrintDebug = optionPrintDebug;
-		
-//		this.loa = loa;
 
 		body = b;
 		method = body.getMethod();
@@ -58,7 +54,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		}
 		
     	tasea = new TransactionAwareSideEffectAnalysis(Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), null, loa);
+    				Scene.v().getCallGraph(), null, tlo);
     	
 //    	sea = new SideEffectAnalysis(Scene.v().getPointsToAnalysis(), Scene.v().getCallGraph(), new Filter(new NonClinitEdgesPred()) );
     				
@@ -87,7 +83,12 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
      **/
     protected Object newInitialFlow()
     {
-        return emptySet.clone();
+		FlowSet ret = (FlowSet) emptySet.clone();
+		if(method.isSynchronized() && methodTn != null)
+		{
+			ret.add(new TransactionFlowPair(methodTn, true));
+		}
+        return ret;
     }
 
     /**

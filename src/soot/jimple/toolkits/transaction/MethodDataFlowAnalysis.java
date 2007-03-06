@@ -41,6 +41,23 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	{
 		this(g, dfa, ignoreNonRefTypeFlow, true);
 		
+		// Add every parameter of the method
+		for(int i = 0; i < sm.getParameterCount(); i++)
+		{
+			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			if(!dataFlowGraph.containsNode(parameterRefEqVal))
+				dataFlowGraph.addNode(parameterRefEqVal);
+		}
+		
+		// Add every field of the class (TODO what about superclasses?)
+		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
+		{
+			SootField sf = (SootField) it.next();
+			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+			if(!dataFlowGraph.containsNode(fieldRefEqVal))
+				dataFlowGraph.addNode(fieldRefEqVal);
+		}
+		
 		if(printMessages)
 			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doFlowInsensitiveAnalysis();
@@ -66,7 +83,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		this.entrySet = new ArraySparseSet();
 		this.emptySet = new ArraySparseSet();
 		
-		printMessages = false;
+		printMessages = true;
 	}
 	
 	public void doFlowInsensitiveAnalysis()

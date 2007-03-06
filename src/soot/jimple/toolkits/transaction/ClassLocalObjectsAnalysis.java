@@ -36,6 +36,8 @@ public class ClassLocalObjectsAnalysis
 	{
 		 this.loa = loa;
 		 this.dfa = dfa;
+		 if(!sootClass.isApplicationClass())
+		 	throw new RuntimeException("Cannot do ClassLocalObjectsAnalysis for non- Application Class.");
 		 this.sootClass = sootClass;
 
 		 this.context = null;
@@ -258,7 +260,7 @@ public class ClassLocalObjectsAnalysis
 				// if referred object is local, then find out if field is local in that object
 				if(isObjectLocal(ifr.getBase(), sm))
 				{
-					return loa.isFieldLocal(ifr.getFieldRef().resolve());
+					return loa.isFieldLocalToParent(ifr.getFieldRef().resolve()); // TODO make work with isFieldLocalToContext???
 				}
 				else
 					return false;

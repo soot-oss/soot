@@ -116,7 +116,7 @@ public class TransactionAwareSideEffectAnalysis {
 	TransitiveTargets tt;
 	Collection transactions;
 	EncapsulatedObjectAnalysis eoa;
-	LocalObjectsAnalysis loa;
+	ThreadLocalObjectsAnalysis tlo;
 	
 	public Vector sigBlacklist;
 	public Vector sigReadGraylist;
@@ -178,14 +178,14 @@ public class TransactionAwareSideEffectAnalysis {
 		return (RWSet) methodToNTWriteSet.get( method );
 	}
 	
-	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, LocalObjectsAnalysis loa ) {
+	public TransactionAwareSideEffectAnalysis( PointsToAnalysis pa, CallGraph cg, Collection transactions, ThreadLocalObjectsAnalysis tlo ) {
 		this.pa = pa;
 		this.cg = cg;
 		this.tve = new ThreadVisibleEdgesPred(transactions);
 		this.tt = new TransitiveTargets( cg, new Filter(tve) );
 		this.transactions = transactions;
 		this.eoa = new EncapsulatedObjectAnalysis();
-		this.loa = loa; // can be null
+		this.tlo = tlo; // can be null
 		
 		sigBlacklist = new Vector(); // Signatures of methods known to have effective read/write sets of size 0
 		// Math does not have any synchronization risks, we think :-)
@@ -325,7 +325,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					ignore = true;
 				}
-				else if(loa != null && !loa.hasNonLocalEffects(method, ie))
+				else if(tlo != null && !tlo.hasNonThreadLocalEffects(method, ie))
 				{
 					ignore = true;
 				}
@@ -506,7 +506,7 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					ignore = true;
 				}
-				else if(loa != null && !loa.hasNonLocalEffects(method, ie))
+				else if(tlo != null && !tlo.hasNonThreadLocalEffects(method, ie))
 				{
 					ignore = true;
 				}
@@ -592,7 +592,7 @@ public class TransactionAwareSideEffectAnalysis {
 	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
 		RWSet ret = null;
 		
-		if(loa != null && loa.isObjectLocal(v, m))
+		if(tlo != null && v instanceof FieldRef && tlo.isObjectThreadLocal(v, m))
 			return null;
 		
 		if( v instanceof InstanceFieldRef ) {

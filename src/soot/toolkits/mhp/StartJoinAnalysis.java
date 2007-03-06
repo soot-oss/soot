@@ -46,8 +46,8 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		startToAllocNodes = new HashMap();
 		startToJoin = new HashMap();
 		
-		// Get lists of start and join statements
-		doAnalysis();
+		// Get lists of start and join statements		
+		doFlowInsensitiveSingleIterationAnalysis();
 		
 		if(!startStatements.isEmpty())
 		{
@@ -195,6 +195,17 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 		return startToJoin;
 	}
 	
+	public void doFlowInsensitiveSingleIterationAnalysis()
+	{
+		FlowSet fs = (FlowSet) newInitialFlow();
+		Iterator stmtIt = graph.iterator();
+		while(stmtIt.hasNext())
+		{
+			Stmt s = (Stmt) stmtIt.next();
+			flowThrough(fs, s, fs);
+		}
+	}
+	
 	protected void merge(Object in1, Object in2, Object out)
 	{
 		FlowSet inSet1 = (FlowSet) in1;
@@ -244,7 +255,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				if(invokeMethod.getName().equals("start"))
 				{
 					RefType baseType = (RefType) iie.getBase().getType();
-					if(!baseType.getSootClass().isInterface())
+					if(!baseType.getSootClass().isInterface()) // the start method we're looking for is NOT an interface method
 					{
 						List superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
 						Iterator it = superClasses.iterator();
@@ -264,7 +275,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				}
 
 				// If this is a join stmt, add it to joinStatements
-				if(invokeMethod.getName().equals("join"))
+				if(invokeMethod.getName().equals("join")) // the join method we're looking for is NOT an interface method
 				{
 					RefType baseType = (RefType) iie.getBase().getType();
 					if(!baseType.getSootClass().isInterface())

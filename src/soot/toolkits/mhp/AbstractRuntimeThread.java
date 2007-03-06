@@ -108,6 +108,11 @@ public class AbstractRuntimeThread
 		runMethods.add(method);
 	}
 	
+	public List getRunMethods()
+	{
+		return runMethods;
+	}
+	
 	public int methodCount()
 	{
 		return methods.size();

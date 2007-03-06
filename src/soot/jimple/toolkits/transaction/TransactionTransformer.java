@@ -85,16 +85,16 @@ public class TransactionTransformer extends SceneTransformer
 
 
 		// *** Find Thread-Local Objects ***
-		LocalObjectsAnalysis loa = null;
-    	if(optionDoTLO)
+   		DataFlowAnalysis dfa = new DataFlowAnalysis(); // generates a data flow summary for a given method on-demand
+		ThreadLocalObjectsAnalysis tlo = null;
+    	if(optionDoTLO && mhp != null)
     	{
 	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
-    		DataFlowAnalysis dfa = new DataFlowAnalysis();
-    		loa = new LocalObjectsAnalysis(dfa); // can tell only that a field/local is local to the object it's being accessed in
+    		tlo = new ThreadLocalObjectsAnalysis(dfa, mhp.getThreadClassList()); // can tell only that a field/local is local to the object it's being accessed in
     	}
 
-    		
-                                                                                                                                                                                                                        
+
+
     	// *** Find and Name Transactions ***
     	// The transaction finder finds the start, end, and preparatory statements
     	// for each transaction. It also calculates the non-transitive read/write 
@@ -118,7 +118,7 @@ public class TransactionTransformer extends SceneTransformer
     		    	methodToExcUnitGraph.put(method, eug);
     		    	
     	    		// run the intraprocedural analysis
-    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, loa);
+    				TransactionAnalysis ta = new TransactionAnalysis(eug, b, optionPrintDebug, tlo);
     				Chain units = b.getUnits();
     				Unit lastUnit = (Unit) units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
@@ -155,7 +155,7 @@ public class TransactionTransformer extends SceneTransformer
     	TransactionAwareSideEffectAnalysis tasea = 
     		new TransactionAwareSideEffectAnalysis(
     				Scene.v().getPointsToAnalysis(), 
-    				Scene.v().getCallGraph(), AllTransactions, loa);
+    				Scene.v().getCallGraph(), AllTransactions, tlo);
     	Iterator tnIt = AllTransactions.iterator();
     	while(tnIt.hasNext())
     	{

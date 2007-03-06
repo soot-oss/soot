@@ -59,14 +59,16 @@ public class ClassDataFlowAnalysis
 					methodToDataFlowGraph.remove(method);
 				methodToDataFlowGraph.put(method, mdfa.getMethodDataFlowGraph());
 
-//				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
-//				printDataFlowGraph(mdfa.getDataFlowGraph());
+				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
+				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 			else
 			{
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
 				methodToDataFlowGraph.put(method, triviallyConservativeDataFlowAnalysis(method));
+				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE dataFlowGraph: ");
+				printDataFlowGraph((MutableDirectedGraph) methodToDataFlowGraph.get(method));
 			}
 		}
 	}
@@ -81,8 +83,8 @@ public class ClassDataFlowAnalysis
 			if(methodToDataFlowGraph.containsKey(method))
 				methodToDataFlowGraph.remove(method);
 			methodToDataFlowGraph.put(method, dataFlowGraph);
-//			G.v().out.println(method + " has dataFlowGraph: ");
-//			printDataFlowGraph(dataFlowGraph);
+			G.v().out.println(method + " has dataFlowGraph: ");
+			printDataFlowGraph(dataFlowGraph);
 		}
 	}
 	

@@ -330,5 +330,23 @@ public class UnsynchronizedMhpAnalysis
 			threads.add(MHPLists.get(i));
 		}
 	}
+	
+	public List getThreadClassList()
+	{
+		List threadClasses = new ArrayList();
+		int size = MHPLists.size();
+		for(int i = 0; i < size; i++)
+		{
+			AbstractRuntimeThread thread = (AbstractRuntimeThread) MHPLists.get(i);
+			Iterator threadRunMethodIt = thread.getRunMethods().iterator();
+			while(threadRunMethodIt.hasNext())
+			{
+				SootClass threadClass = ((SootMethod) threadRunMethodIt.next()).getDeclaringClass();
+				if( !threadClasses.contains(threadClass) && threadClass.isApplicationClass() ) // only include application threads
+					threadClasses.add(threadClass);
+			}
+		}
+		return threadClasses;
+	}
 }
 

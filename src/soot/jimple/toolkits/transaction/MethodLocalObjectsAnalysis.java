@@ -43,13 +43,38 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 			}
 		}
 		
-		// Add a source for every field that is shared
+		// Add a source for every field that is shared (DOES THIS INCLUDE GLOBALS?)
 		for(Iterator it = cloa.getSharedFields().iterator(); it.hasNext();)
 		{
 			SootField sf = (SootField) it.next();
 			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(method, sf);
 			addToEntryInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 			addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
+		}
+		
+		if(printMessages)
+			G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+		doFlowInsensitiveAnalysis();
+		if(printMessages)
+			G.v().out.println("-----   ENDING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+	}
+	
+	public MethodLocalObjectsAnalysis(UnitGraph g, CallLocalityContext context, DataFlowAnalysis dfa)
+	{
+		super(g, dfa, true, true); // special version doesn't run analysis yet
+		
+		printMessages = true;
+
+		SootMethod method = g.getBody().getMethod();
+		
+		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
+		
+		Iterator sharedRefEqValIt = context.getSharedRefs().iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
+		while(sharedRefEqValIt.hasNext())
+		{
+			EquivalentValue refEqVal = (EquivalentValue) sharedRefEqValIt.next();
+			addToEntryInitialFlow(sharedDataSource, refEqVal.getValue());
+			addToNewInitialFlow(sharedDataSource, refEqVal.getValue());
 		}
 		
 		if(printMessages)
@@ -72,7 +97,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 	}
 	
 	// 
-	public boolean isObjectLocal(Value local)
+	public boolean isObjectLocal(Value local) // to this analysis of this method (which depends on context)
 	{
 		EquivalentValue source = new EquivalentValue(new AbstractDataSource("SHARED"));
 		if(dataFlowGraph.containsNode(source))
