@@ -592,7 +592,7 @@ public class TransactionAwareSideEffectAnalysis {
 	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
 		RWSet ret = null;
 		
-		if(tlo != null && v instanceof FieldRef && tlo.isObjectThreadLocal(v, m))
+		if(tlo != null && v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(v, m))
 			return null;
 		
 		if( v instanceof InstanceFieldRef ) {

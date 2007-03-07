@@ -77,8 +77,8 @@ public class DataFlowAnalysis
 			// Now calculate the fixed-point version if this is an application class.
 			// If this class's methods are reentrant, it will call this method and
 			// receive the simple conservative version that is already cached.
-			if(sc.isApplicationClass())
-				cdfa.doFixedPointDataFlowAnalysis();
+//			if(sc.isApplicationClass())
+//				cdfa.doFixedPointDataFlowAnalysis();
 		}
 		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
 	}
@@ -160,6 +160,13 @@ public class DataFlowAnalysis
 	public static EquivalentValue getEquivalentValueReturnRef(SootMethod sm)
 	{
 		return new EquivalentValue(new ParameterRef(sm.getReturnType(), -1));
+	}
+	
+	// Returns an EquivalentValue wrapped ThisRef
+	// that is suitable for comparison to the nodes of a Data Flow Graph
+	public static EquivalentValue getEquivalentValueThisRef(SootMethod sm)
+	{
+		return new EquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
 	protected MutableDirectedGraph getInvokeDataFlowGraph(InvokeExpr ie)

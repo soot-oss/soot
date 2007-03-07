@@ -26,7 +26,7 @@ import java.io.*;
 public class CallLocalityContext
 {
 	List nodes;
-	boolean[] isNodeLocal;
+	List isNodeLocal;
 
 	public CallLocalityContext(List nodes)
 	{
@@ -37,10 +37,10 @@ public class CallLocalityContext
 		this.nodes = new ArrayList();
 		this.nodes.addAll(nodes);
 
-		isNodeLocal = new boolean[nodes.size()];
+		isNodeLocal = new ArrayList(nodes.size());
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			isNodeLocal[i] = false;
+			isNodeLocal.add(i, Boolean.FALSE);
 		}
 	}
 	
@@ -50,7 +50,10 @@ public class CallLocalityContext
 		{
 			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
 			if(r instanceof InstanceFieldRef)
-				isNodeLocal[i] = true;
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.TRUE);
+			}
 		}
 	}
 
@@ -60,7 +63,10 @@ public class CallLocalityContext
 		{
 			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
 			if(r instanceof InstanceFieldRef)
-				isNodeLocal[i] = false;
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.FALSE);
+			}
 		}
 	}
 	
@@ -73,7 +79,10 @@ public class CallLocalityContext
 			{
 				ParameterRef pr = (ParameterRef) r;
 				if(pr.getIndex() == index)
-					isNodeLocal[i] = true;
+				{
+					isNodeLocal.remove(i);
+					isNodeLocal.add(i, Boolean.TRUE);
+				}
 			}
 		}
 	}
@@ -87,7 +96,10 @@ public class CallLocalityContext
 			{
 				ParameterRef pr = (ParameterRef) r;
 				if(pr.getIndex() == index)
-					isNodeLocal[i] = false;
+				{
+					isNodeLocal.remove(i);
+					isNodeLocal.add(i, Boolean.FALSE);
+				}
 			}
 		}
 	}
@@ -99,7 +111,12 @@ public class CallLocalityContext
 			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
 			if(r instanceof ParameterRef)
 			{
-				isNodeLocal[i] = true;
+				ParameterRef pr = (ParameterRef) r;
+				if(pr.getIndex() != -1)
+				{
+					isNodeLocal.remove(i);
+					isNodeLocal.add(i, Boolean.TRUE);
+				}
 			}
 		}
 	}
@@ -111,9 +128,50 @@ public class CallLocalityContext
 			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
 			if(r instanceof ParameterRef)
 			{
-				isNodeLocal[i] = false;
+				ParameterRef pr = (ParameterRef) r;
+				if(pr.getIndex() != -1)
+				{
+					isNodeLocal.remove(i);
+					isNodeLocal.add(i, Boolean.FALSE);
+				}
 			}
 		}
+	}
+	
+	public void setThisLocal()
+	{
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
+			if(r instanceof ThisRef)
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.TRUE);
+			}
+		}
+	}
+	
+	public void setThisShared()
+	{
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
+			if(r instanceof ThisRef)
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.FALSE);
+			}
+		}
+	}
+	
+	public void setReturnLocal()
+	{
+		setParamLocal(-1);
+	}
+	
+	public void setReturnShared()
+	{
+		setParamShared(-1);
 	}
 	
 	public List getLocalRefs()
@@ -121,7 +179,7 @@ public class CallLocalityContext
 		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			if(isNodeLocal[i])
+			if(((Boolean) isNodeLocal.get(i)).booleanValue())
 				ret.add(nodes.get(i));
 		}
 		return ret;
@@ -132,7 +190,7 @@ public class CallLocalityContext
 		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			if(!isNodeLocal[i])
+			if(!((Boolean) isNodeLocal.get(i)).booleanValue())
 				ret.add(nodes.get(i));
 		}
 		return ret;
@@ -144,10 +202,45 @@ public class CallLocalityContext
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			if( nodes.get(i).equals(fieldRef) )
-				return isNodeLocal[i];
+				return ((Boolean) isNodeLocal.get(i)).booleanValue();
 		}
-		throw new RuntimeException("Field is not present in CallLocalityContext");
+		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
 //		return false;
+	}
+	
+	public void merge(CallLocalityContext other)
+	{
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			Boolean temp = new Boolean(((Boolean) isNodeLocal.get(i)).booleanValue() && ((Boolean) other.isNodeLocal.get(i)).booleanValue());
+			isNodeLocal.remove(i);
+			isNodeLocal.add(i, temp);
+		}
+	}
+	
+	public boolean equals(Object o)
+	{
+		if(o instanceof CallLocalityContext)
+		{
+			CallLocalityContext other = (CallLocalityContext) o;
+			return isNodeLocal.equals(other.isNodeLocal);// && nodes.equals(other.nodes);
+		}
+		return false;
+	}
+	
+	public int hashCode()
+	{
+		return isNodeLocal.hashCode();
+	}
+	
+	public boolean isAllShared(boolean refsOnly)
+	{
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			if( (!refsOnly || ((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType) && ((Boolean) isNodeLocal.get(i)).booleanValue())
+				return false;
+		}
+		return true;
 	}
 	
 	public String toString()
@@ -162,16 +255,26 @@ public class CallLocalityContext
 		{
 			Ref r = (Ref) ((EquivalentValue) nodes.get(i)).getValue();
 			if(r instanceof InstanceFieldRef)
-				fieldrefs = fieldrefs + r + ": " + (isNodeLocal[i] ? "local" : "shared") + "\n";
+				fieldrefs = fieldrefs + r + ": " + (((Boolean) isNodeLocal.get(i)).booleanValue() ? "local" : "shared") + "\n";
 			else if(r instanceof StaticFieldRef)
-				staticrefs = staticrefs + r + ": " + (isNodeLocal[i] ? "local" : "shared") + "\n";
+				staticrefs = staticrefs + r + ": " + (((Boolean) isNodeLocal.get(i)).booleanValue() ? "local" : "shared") + "\n";
 			else if(r instanceof ParameterRef)
-				paramrefs = paramrefs + r + ": " + (isNodeLocal[i] ? "local" : "shared") + "\n";
+				paramrefs = paramrefs + r + ": " + (((Boolean) isNodeLocal.get(i)).booleanValue() ? "local" : "shared") + "\n";
 			else if(r instanceof ThisRef)
-				thisref = thisref + r + ": " + (isNodeLocal[i] ? "local" : "shared") + "\n";
+				thisref = thisref + r + ": " + (((Boolean) isNodeLocal.get(i)).booleanValue() ? "local" : "shared") + "\n";
 			else
 				return "Call Locality Context: HAS STRANGE NODE " + r + "\n";
 		}
 		return "Call Locality Context: \n" + fieldrefs + paramrefs + thisref + staticrefs;
+	}
+	
+	public String toShortString()
+	{
+		String ret = "[";
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			ret = ret + (((Boolean) isNodeLocal.get(i)).booleanValue() ? "L" : "S");
+		}
+		return ret + "]";
 	}
 }

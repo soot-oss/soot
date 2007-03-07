@@ -36,8 +36,8 @@ public class ClassLocalObjectsAnalysis
 	{
 		 this.loa = loa;
 		 this.dfa = dfa;
-		 if(!sootClass.isApplicationClass())
-		 	throw new RuntimeException("Cannot do ClassLocalObjectsAnalysis for non- Application Class.");
+//		 if(!sootClass.isApplicationClass())
+//		 	throw new RuntimeException("Cannot do ClassLocalObjectsAnalysis for non- Application Class.");
 		 this.sootClass = sootClass;
 
 		 this.context = null;
@@ -228,6 +228,7 @@ public class ClassLocalObjectsAnalysis
 //				G.v().out.println("                  " + sharedToPrint);
 		}
 				
+/*		Done on demand now
 		// Analyze each method: determine which Locals are local and which are shared
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
@@ -240,6 +241,7 @@ public class ClassLocalObjectsAnalysis
 			MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, this, dfa);
 			methodToMethodLocalObjectsAnalysis.put(method, mloa);
 		}
+*/
 	}
 	
 	public boolean isObjectLocal(Value localOrRef, SootMethod sm)
@@ -271,6 +273,14 @@ public class ClassLocalObjectsAnalysis
 	
 	public MethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
 	{
+		if(!methodToMethodLocalObjectsAnalysis.containsKey(sm))
+		{
+			// Analyze this method
+			Body b = sm.retrieveActiveBody();
+			UnitGraph g = new ExceptionalUnitGraph(b);
+			MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, this, dfa);
+			methodToMethodLocalObjectsAnalysis.put(sm, mloa);
+		}
 		return (MethodLocalObjectsAnalysis) methodToMethodLocalObjectsAnalysis.get(sm);
 	}
 	

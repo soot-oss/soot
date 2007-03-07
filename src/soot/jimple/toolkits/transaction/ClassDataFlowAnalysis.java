@@ -29,6 +29,8 @@ public class ClassDataFlowAnalysis
 	
 	Map methodToDataFlowGraph;
 	
+	public static int methodCount = 0;
+	
 	public ClassDataFlowAnalysis(SootClass sootClass, DataFlowAnalysis dfa)
 	{
 		 this.sootClass = sootClass;
@@ -57,18 +59,23 @@ public class ClassDataFlowAnalysis
 				MethodDataFlowAnalysis mdfa = new MethodDataFlowAnalysis(g, dfa, true);
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
+				else
+					methodCount++;
 				methodToDataFlowGraph.put(method, mdfa.getMethodDataFlowGraph());
 
-				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
-				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
+//				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
+//				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 			else
 			{
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
+				else
+					methodCount++;
 				methodToDataFlowGraph.put(method, triviallyConservativeDataFlowAnalysis(method));
-				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE dataFlowGraph: ");
-				printDataFlowGraph((MutableDirectedGraph) methodToDataFlowGraph.get(method));
+
+//				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE dataFlowGraph: ");
+//				printDataFlowGraph((MutableDirectedGraph) methodToDataFlowGraph.get(method));
 			}
 		}
 	}
@@ -82,9 +89,12 @@ public class ClassDataFlowAnalysis
 			MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
 			if(methodToDataFlowGraph.containsKey(method))
 				methodToDataFlowGraph.remove(method);
+			else
+				methodCount++;
 			methodToDataFlowGraph.put(method, dataFlowGraph);
-			G.v().out.println(method + " has dataFlowGraph: ");
-			printDataFlowGraph(dataFlowGraph);
+
+//			G.v().out.println(method + " has dataFlowGraph: ");
+//			printDataFlowGraph(dataFlowGraph);
 		}
 	}
 	

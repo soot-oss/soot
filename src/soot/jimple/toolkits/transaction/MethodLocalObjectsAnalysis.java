@@ -22,9 +22,13 @@ import soot.toolkits.scalar.*;
 
 public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 {
+	public static int mlocounter = 0;
+
 	public MethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, DataFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
+		
+		mlocounter++;
 		
 		printMessages = false;
 
@@ -56,20 +60,23 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 			G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doFlowInsensitiveAnalysis();
 		if(printMessages)
-			G.v().out.println("-----   ENDING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			G.v().out.println("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	public MethodLocalObjectsAnalysis(UnitGraph g, CallLocalityContext context, DataFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
 		
-		printMessages = true;
+		mlocounter++;
+
+		printMessages = false;
 
 		SootMethod method = g.getBody().getMethod();
 		
 		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
 		
-		Iterator sharedRefEqValIt = context.getSharedRefs().iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
+		List sharedRefs = context.getSharedRefs();
+		Iterator sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
 		while(sharedRefEqValIt.hasNext())
 		{
 			EquivalentValue refEqVal = (EquivalentValue) sharedRefEqValIt.next();
@@ -78,10 +85,14 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 		}
 		
 		if(printMessages)
+		{
 			G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			G.v().out.print("      " + context.toString().replaceAll("\n","\n      "));
+			G.v().out.println("found " + sharedRefs.size() + " shared refs in context.");
+		}	
 		doFlowInsensitiveAnalysis();
 		if(printMessages)
-			G.v().out.println("-----   ENDING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			G.v().out.println("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	// Interesting sources are summarized (and possibly printed)
@@ -104,13 +115,13 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 		{
 			List sinks = dataFlowGraph.getSuccsOf(source);
 			if(printMessages)
-				G.v().out.println("Requested value " + local + " is " + ( !sinks.contains(new EquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm);
+				G.v().out.println("      Requested value " + local + " is " + ( !sinks.contains(new EquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
 			return !sinks.contains(new EquivalentValue(local));
 		}
 		else
 		{
 			if(printMessages)
-				G.v().out.println("Requested value " + local + " is Local (like all values) in " + sm);
+				G.v().out.println("      Requested value " + local + " is Local (LIKE ALL VALUES) in " + sm + " ");
 			return true; // no shared data in this method
 		}
 	}

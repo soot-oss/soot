@@ -144,6 +144,9 @@ public class TransactionTransformer extends SceneTransformer
 		// Assign Names To Transactions
 		assignNamesToTransactions(AllTransactions);
 
+    	G.v().out.println("[wjtp.tn] Total Method Data Flow Analyses: " + MethodDataFlowAnalysis.counter);
+    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + MethodLocalObjectsAnalysis.mlocounter);
+
     	
 
     	// *** Find Transitive Read/Write Sets ***
@@ -178,6 +181,8 @@ public class TransactionTransformer extends SceneTransformer
 					tn.write.union(stmtWrite);
 			}
     	}
+    	G.v().out.println("[wjtp.tn] Total Method Data Flow Analyses: " + MethodDataFlowAnalysis.counter);
+    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + MethodLocalObjectsAnalysis.mlocounter);
     	
     	
     	
@@ -670,7 +675,7 @@ public class TransactionTransformer extends SceneTransformer
 		if(optionPrintTable)
 		{
 			printTable(AllTransactions);			
-			printGroups(nextGroup, mayBeFieldsOfSameObject, mustBeFieldsOfSameObjectForAllTns, lockObject, rws);
+			printGroups(AllTransactions, nextGroup, mayBeFieldsOfSameObject, mustBeFieldsOfSameObjectForAllTns, lockObject, rws);
 		}
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
@@ -832,18 +837,35 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 	
-	public void printGroups(int nextGroup, boolean mayBeFieldsOfSameObject[], boolean mustBeFieldsOfSameObjectForAllTns[], Value lockObject[], RWSet rws[])
+	public void printGroups(Collection AllTransactions, int nextGroup, boolean mayBeFieldsOfSameObject[], boolean mustBeFieldsOfSameObjectForAllTns[], Value lockObject[], RWSet rws[])
 	{
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
-    			G.v().out.print("Group " + (group + 1) +
-								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
-								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
-								" lock object: " + (lockObject[group] == null? "null" : lockObject[group].toString()) + "\n[transaction-groups] " + 
+    			G.v().out.print("Group " + (group + 1) + " ");
+				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (lockObject[group] == null? "null" : lockObject[group].toString()) );
+				G.v().out.print("\n[transaction-groups]      : ");
+				Iterator tnIt = AllTransactions.iterator();
+				while(tnIt.hasNext())
+				{
+					Transaction tn = (Transaction) tnIt.next();
+					if(tn.setNumber == group + 1)
+						G.v().out.print(tn.name + " ");
+				}
+//								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
+//								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
+				G.v().out.print("\n[transaction-groups] " + 
     							rws[group].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-groups] ") + 
 								(rws[group].size() == 0 ? "\n[transaction-groups] " : ""));
 	    	}
-			G.v().out.println("");
+			G.v().out.print("Erasing \n[transaction-groups]      : ");
+			Iterator tnIt = AllTransactions.iterator();
+			while(tnIt.hasNext())
+			{
+				Transaction tn = (Transaction) tnIt.next();
+				if(tn.setNumber == -1)
+					G.v().out.print(tn.name + " ");
+			}
+			G.v().out.println("\n[transaction-groups] ");
 	}
 }

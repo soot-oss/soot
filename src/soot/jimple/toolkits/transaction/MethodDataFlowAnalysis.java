@@ -37,11 +37,17 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	
 	boolean printMessages;
 	
+	public static int counter = 0;
+	
 	public MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
 	{
 		this(g, dfa, ignoreNonRefTypeFlow, true);
 		
-		// Add every parameter of the method
+		counter++;
+		
+		// Add all of the nodes necessary to ensure that this is a complete data flow graph
+		
+		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
 			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
@@ -49,7 +55,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				dataFlowGraph.addNode(parameterRefEqVal);
 		}
 		
-		// Add every field of the class (TODO what about superclasses?)
+		// Add every field of this class
 		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
 		{
 			SootField sf = (SootField) it.next();
@@ -57,6 +63,33 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 			if(!dataFlowGraph.containsNode(fieldRefEqVal))
 				dataFlowGraph.addNode(fieldRefEqVal);
 		}
+		
+		// Add every field of this class's superclasses
+		SootClass superclass = sm.getDeclaringClass();
+		if(superclass.hasSuperclass())
+			superclass = sm.getDeclaringClass().getSuperclass();
+		while(superclass.hasSuperclass()) // we don't want to process Object
+		{
+	        Iterator scFieldsIt = superclass.getFields().iterator();
+	        while(scFieldsIt.hasNext())
+	        {
+				SootField scField = (SootField) scFieldsIt.next();
+				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
+				if(!dataFlowGraph.containsNode(fieldRefEqVal))
+					dataFlowGraph.addNode(fieldRefEqVal);
+	        }
+			superclass = superclass.getSuperclass();
+		}
+		
+		// Add thisref of this class
+		EquivalentValue thisRefEqVal = dfa.getEquivalentValueThisRef(sm);
+		if(!dataFlowGraph.containsNode(thisRefEqVal))
+			dataFlowGraph.addNode(thisRefEqVal);
+		
+		// Add returnref of this method
+		EquivalentValue returnRefEqVal = new EquivalentValue(returnRef);
+		if(!dataFlowGraph.containsNode(returnRefEqVal))
+			dataFlowGraph.addNode(returnRefEqVal);
 		
 		if(printMessages)
 			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
@@ -83,7 +116,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		this.entrySet = new ArraySparseSet();
 		this.emptySet = new ArraySparseSet();
 		
-		printMessages = true;
+		printMessages = false;
 	}
 	
 	public void doFlowInsensitiveAnalysis()
@@ -215,7 +248,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 						dataFlowGraph.addNode(sourceEqVal);
 					dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 					if(printMessages)
-						G.v().out.println("    Found " + source + " flows to " + sink);
+						G.v().out.println("      Found " + source + " flows to " + sink);
 				}
 			}
 		}
@@ -256,7 +289,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 							dataFlowGraph.addNode(sourceEqVal);
 						dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 						if(printMessages)
-							G.v().out.println("    Found " + source + " flows to " + sink);
+							G.v().out.println("      Found " + source + " flows to " + sink);
 					}
 				}
 			}
