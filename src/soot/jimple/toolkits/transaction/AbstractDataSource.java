@@ -14,13 +14,13 @@ import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 
-// A value used to represent shared/local data in a LocalObjectsMethodAnalysis
+// Wraps any object as a Value
 
 public class AbstractDataSource implements Value
 {
-	String sourcename;
+	Object sourcename;
 	
-	public AbstractDataSource(String sourcename)
+	public AbstractDataSource(Object sourcename)
 	{
 		this.sourcename = sourcename;
 	}
@@ -40,7 +40,9 @@ public class AbstractDataSource implements Value
      * AbstractDataSources are equal and equivalent if their sourcename is the same */
     public boolean equivTo(Object c)
     {
-        return equals(c);
+    	if(sourcename instanceof Value)
+    		return (c instanceof AbstractDataSource && ((Value) sourcename).equivTo( ((AbstractDataSource)c).sourcename ));
+        return (c instanceof AbstractDataSource && ((AbstractDataSource)c).sourcename.equals(sourcename));
     }
     
     public boolean equals(Object c)
@@ -51,6 +53,8 @@ public class AbstractDataSource implements Value
     /** Returns a hash code consistent with structural equality for this object. */
     public int equivHashCode()
     {
+    	if(sourcename instanceof Value)
+    		return ((Value) sourcename).equivHashCode();
         return sourcename.hashCode();
     }
     
@@ -68,6 +72,6 @@ public class AbstractDataSource implements Value
     
     public String toString()
     {
-    	return sourcename + " data source";
+    	return "sourceof<" + sourcename.toString() + ">";
     }
 }

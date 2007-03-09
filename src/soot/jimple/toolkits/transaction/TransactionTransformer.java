@@ -100,7 +100,8 @@ public class TransactionTransformer extends SceneTransformer
     	// for each transaction. It also calculates the non-transitive read/write 
     	// sets for each transaction.
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
-    	G.v().out.println("[wjtp.tn] *** Find and Name Transactions *** " + (new Date()));
+		Date start = new Date();
+    	G.v().out.println("[wjtp.tn] *** Find and Name Transactions *** " + start);
     	Map methodToFlowSet = new HashMap();
     	Map methodToExcUnitGraph = new HashMap();
     	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -181,7 +182,11 @@ public class TransactionTransformer extends SceneTransformer
 					tn.write.union(stmtWrite);
 			}
     	}
-    	G.v().out.println("[wjtp.tn] Total Method Data Flow Analyses: " + MethodDataFlowAnalysis.counter);
+    	long longTime = ((new Date()).getTime() - start.getTime()) / 100;
+    	float time = ((float) longTime) / 10.0f;
+		G.v().out.println("[wjtp.tn] Total Time for TLO Steps: " + time + "s");
+    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassDataFlowAnalysis.methodCount);
+    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodDataFlowAnalysis.counter);
     	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + MethodLocalObjectsAnalysis.mlocounter);
     	
     	

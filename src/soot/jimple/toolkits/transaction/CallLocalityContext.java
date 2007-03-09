@@ -44,6 +44,38 @@ public class CallLocalityContext
 		}
 	}
 	
+	public void setFieldLocal(EquivalentValue fieldRef)
+	{
+		List ret = new ArrayList();
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			if( fieldRef.equals(nodes.get(i)) )
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.TRUE);
+				return;
+			}
+		}
+		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
+//		return false;
+	}
+	
+	public void setFieldShared(EquivalentValue fieldRef)
+	{
+		List ret = new ArrayList();
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			if( fieldRef.equals(nodes.get(i)) )
+			{
+				isNodeLocal.remove(i);
+				isNodeLocal.add(i, Boolean.FALSE);
+				return;
+			}
+		}
+		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
+//		return false;
+	}
+	
 	public void setAllFieldsLocal()
 	{
 		for(int i = 0; i < nodes.size(); i++)
@@ -201,10 +233,11 @@ public class CallLocalityContext
 		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			if( nodes.get(i).equals(fieldRef) )
+			if( fieldRef.equals(nodes.get(i)) )
 				return ((Boolean) isNodeLocal.get(i)).booleanValue();
 		}
-		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
+		return false; // catches static fields that were not included in the original context
+//		throw new RuntimeException("Field " + fieldRef + " is not present in CallLocalityContext\n" + toString());
 //		return false;
 	}
 	

@@ -23,8 +23,6 @@ public class ClassLocalObjectsAnalysis
 	LocalObjectsAnalysis loa;
 	DataFlowAnalysis dfa;
 	SootClass sootClass;
-
-	ClassLocalObjectsAnalysis context;
 	
 	Map methodToMethodLocalObjectsAnalysis;
 	
@@ -36,11 +34,7 @@ public class ClassLocalObjectsAnalysis
 	{
 		 this.loa = loa;
 		 this.dfa = dfa;
-//		 if(!sootClass.isApplicationClass())
-//		 	throw new RuntimeException("Cannot do ClassLocalObjectsAnalysis for non- Application Class.");
 		 this.sootClass = sootClass;
-
-		 this.context = null;
 		 
 		 methodToMethodLocalObjectsAnalysis = new HashMap();
 		 
@@ -49,20 +43,6 @@ public class ClassLocalObjectsAnalysis
 		 
 		 doAnalysis();
 	}
-	
-/*
-	private ClassLocalObjectsAnalysis(SootClass sootClass, DataFlowAnalysis dfa, ClassLocalObjectsAnalysis context)
-	{
-		 this.sootClass = sootClass;
-		 this.dfa = dfa;
-		 this.context = context;
-		 
-		 localFields = new ArrayList();
-		 sharedFields = new ArrayList();
-		 
-		 doAnalysis();
-	}
-*/
 	
 	private void doAnalysis()
 	{
@@ -149,10 +129,15 @@ public class ClassLocalObjectsAnalysis
 				{
 					SootField localField = (SootField) localFieldsIt.next();
 					List sourcesAndSinks = new ArrayList();
-					List sources = dfa.getSourcesOf(method, dfa.getEquivalentValueFieldRef(method, localField));
-					List sinks = dfa.getSinksOf(method, dfa.getEquivalentValueFieldRef(method, localField));
-					sourcesAndSinks.addAll(sources);
-					sourcesAndSinks.addAll(sinks);
+
+					MutableDirectedGraph dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+					EquivalentValue node = dfa.getEquivalentValueFieldRef(method, localField);
+					if(dataFlowSummary.containsNode(node))
+					{
+						sourcesAndSinks.addAll(dataFlowSummary.getSuccsOf(node));
+						sourcesAndSinks.addAll(dataFlowSummary.getPredsOf(node));
+					}
+
 					Iterator sourcesAndSinksIt = sourcesAndSinks.iterator();
 					if(localField.getDeclaringClass().isApplicationClass() &&
 					   sourcesAndSinksIt.hasNext())
@@ -209,24 +194,25 @@ public class ClassLocalObjectsAnalysis
 			}
 		}
 		
-		// DEBUG: Print out the resulting list!
-//		G.v().out.println("Found local/shared fields for " + sootClass.toString());
-//		G.v().out.println("    Local fields: ");
+/*		// DEBUG: Print out the resulting list!
+		G.v().out.println("Found local/shared fields for " + sootClass.toString());
+		G.v().out.println("    Local fields: ");
 		Iterator localsToPrintIt = localFields.iterator();
 		while(localsToPrintIt.hasNext())
 		{
 			SootField localToPrint = (SootField) localsToPrintIt.next();
-//			if(localToPrint.getDeclaringClass().isApplicationClass())
-//				G.v().out.println("                  " + localToPrint);
+			if(localToPrint.getDeclaringClass().isApplicationClass())
+				G.v().out.println("                  " + localToPrint);
 		}
-//		G.v().out.println("    Shared fields: ");
+		G.v().out.println("    Shared fields: ");
 		Iterator sharedsToPrintIt = sharedFields.iterator();
 		while(sharedsToPrintIt.hasNext())
 		{
 			SootField sharedToPrint = (SootField) sharedsToPrintIt.next();
-//			if(sharedToPrint.getDeclaringClass().isApplicationClass())
-//				G.v().out.println("                  " + sharedToPrint);
+			if(sharedToPrint.getDeclaringClass().isApplicationClass())
+				G.v().out.println("                  " + sharedToPrint);
 		}
+*/
 				
 /*		Done on demand now
 		// Analyze each method: determine which Locals are local and which are shared
@@ -251,37 +237,71 @@ public class ClassLocalObjectsAnalysis
 			return false;
 		}
 		
-		MethodLocalObjectsAnalysis mloa = getMethodLocalObjectsAnalysis(sm);
+//		G.v().out.println("CLOA testing if " + localOrRef + " is local in " + sm);
+
+		SmartMethodLocalObjectsAnalysis smloa = getMethodLocalObjectsAnalysis(sm);
 		if(localOrRef instanceof InstanceFieldRef)
 		{
 			InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
-			if( ifr.getBase().equivTo(mloa.getThisLocal()) )
-				return fieldIsLocal(ifr.getFieldRef().resolve());
+			if( ifr.getBase().equivTo(smloa.getThisLocal()) )
+				return isFieldLocal(ifr.getFieldRef().resolve());
 			else
 			{
 				// if referred object is local, then find out if field is local in that object
 				if(isObjectLocal(ifr.getBase(), sm))
 				{
-					return loa.isFieldLocalToParent(ifr.getFieldRef().resolve()); // TODO make work with isFieldLocalToContext???
+					return loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
 				}
 				else
 					return false;
 			}
 		}
-		return mloa.isObjectLocal(localOrRef);
+		// TODO Prepare a CallLocalityContext!
+		CallLocalityContext context = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
+		// Set context for every parameter that is shared
+		for(int i = 0; i < sm.getParameterCount(); i++) // no need to worry about return value... 
+		{
+			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			if(parameterIsLocal(sm, paramEqVal))
+			{
+				context.setParamLocal(i);
+			}
+			else
+			{
+				context.setParamShared(i);
+			}
+		}
+		
+		// Set context for every field that is local
+		for(Iterator it = getLocalFields().iterator(); it.hasNext();)
+		{
+			SootField sf = (SootField) it.next();
+			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+			context.setFieldLocal(fieldRefEqVal);
+		}
+		
+		// Set context for every field that is shared
+		for(Iterator it = getSharedFields().iterator(); it.hasNext();)
+		{
+			SootField sf = (SootField) it.next();
+			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+			context.setFieldShared(fieldRefEqVal);
+		}
+		
+		return smloa.isObjectLocal(localOrRef, context);
 	}
 	
-	public MethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
+	public SmartMethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
 	{
 		if(!methodToMethodLocalObjectsAnalysis.containsKey(sm))
 		{
 			// Analyze this method
 			Body b = sm.retrieveActiveBody();
 			UnitGraph g = new ExceptionalUnitGraph(b);
-			MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, this, dfa);
-			methodToMethodLocalObjectsAnalysis.put(sm, mloa);
+			SmartMethodLocalObjectsAnalysis smloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
+			methodToMethodLocalObjectsAnalysis.put(sm, smloa);
 		}
-		return (MethodLocalObjectsAnalysis) methodToMethodLocalObjectsAnalysis.get(sm);
+		return (SmartMethodLocalObjectsAnalysis) methodToMethodLocalObjectsAnalysis.get(sm);
 	}
 	
 	// Should check field access rights, and possibly perform an analysis
@@ -321,12 +341,12 @@ public class ClassLocalObjectsAnalysis
 		return (List) localFields.clone();
 	}
 	
-	protected boolean fieldIsLocal(SootField field)
+	protected boolean isFieldLocal(SootField field)
 	{
 		return localFields.contains(field);
 	}
 	
-	protected boolean fieldIsLocal(EquivalentValue fieldRef)
+	protected boolean isFieldLocal(EquivalentValue fieldRef)
 	{
 		return localFields.contains( ((SootFieldRef) fieldRef.getValue()).resolve() );
 	}	

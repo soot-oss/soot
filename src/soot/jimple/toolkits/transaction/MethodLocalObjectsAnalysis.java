@@ -34,7 +34,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 
 		SootMethod method = g.getBody().getMethod();
 		
-		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
+		AbstractDataSource sharedDataSource = new AbstractDataSource(new String("SHARED"));
 		
 		// Add a source for every parameter that is shared
 		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... 
@@ -73,7 +73,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 
 		SootMethod method = g.getBody().getMethod();
 		
-		AbstractDataSource sharedDataSource = new AbstractDataSource("SHARED");
+		AbstractDataSource sharedDataSource = new AbstractDataSource(new String("SHARED"));
 		
 		List sharedRefs = context.getSharedRefs();
 		Iterator sharedRefEqValIt = sharedRefs.iterator(); // returns a list of (correctly structured) EquivalentValue wrapped refs that should be treated as shared
@@ -110,7 +110,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 	// 
 	public boolean isObjectLocal(Value local) // to this analysis of this method (which depends on context)
 	{
-		EquivalentValue source = new EquivalentValue(new AbstractDataSource("SHARED"));
+		EquivalentValue source = new EquivalentValue(new AbstractDataSource(new String("SHARED")));
 		if(dataFlowGraph.containsNode(source))
 		{
 			List sinks = dataFlowGraph.getSuccsOf(source);

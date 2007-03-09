@@ -27,6 +27,7 @@ public class ClassDataFlowAnalysis
 	SootClass sootClass;
 	DataFlowAnalysis dfa; // used to access the data flow analyses of other classes
 	
+	Map methodToDataFlowAnalysis;
 	Map methodToDataFlowGraph;
 	
 	public static int methodCount = 0;
@@ -35,17 +36,78 @@ public class ClassDataFlowAnalysis
 	{
 		 this.sootClass = sootClass;
 		 this.dfa = dfa;
+		 methodToDataFlowAnalysis = new HashMap();
 		 methodToDataFlowGraph = new HashMap();
 		 
-		 doSimpleConservativeDataFlowAnalysis();
+//		 doSimpleConservativeDataFlowAnalysis();
 	}
 	
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm)
+	public SmartMethodDataFlowAnalysis getMethodDataFlowAnalysis(SootMethod method)
 	{
-		return (MutableDirectedGraph) methodToDataFlowGraph.get(sm);
+		if(!methodToDataFlowAnalysis.containsKey(method))
+		{
+			methodCount++;
+
+			// First do simple version that doesn't follow invoke expressions
+			// The "smart" version will be computed later, but since it may
+			// request its own DataFlowGraph, we need this simple version first.
+			if(!methodToDataFlowGraph.containsKey(method))
+			{
+				MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
+				methodToDataFlowGraph.put(method, dataFlowGraph);
+			}
+			
+			// Then do smart version that does follow invoke expressions, if possible
+			if(method.isConcrete())
+			{
+				Body b = method.retrieveActiveBody();
+				UnitGraph g = new ExceptionalUnitGraph(b);
+				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
+
+				methodToDataFlowAnalysis.put(method, smdfa);
+				methodToDataFlowGraph.remove(method);
+				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
+
+//				G.v().out.println(method + " has SMART dataFlowGraph: ");
+//				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
+			}
+		}
+
+		return (SmartMethodDataFlowAnalysis) methodToDataFlowAnalysis.get(method);
 	}
 	
-	public void doFixedPointDataFlowAnalysis()
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method)
+	{
+		if(!methodToDataFlowGraph.containsKey(method))
+		{
+			methodCount++;
+
+			// First do simple version that doesn't follow invoke expressions
+			// The "smart" version will be computed later, but since it may
+			// request its own DataFlowGraph, we need this simple version first.
+			MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
+			methodToDataFlowGraph.put(method, dataFlowGraph);
+			
+			// Then do smart version that does follow invoke expressions, if possible
+			if(method.isConcrete() && method.getDeclaringClass().isApplicationClass())
+			{
+				Body b = method.retrieveActiveBody();
+				UnitGraph g = new ExceptionalUnitGraph(b);
+				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
+
+				methodToDataFlowAnalysis.put(method, smdfa);
+				methodToDataFlowGraph.remove(method);
+				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
+
+//				G.v().out.println(method + " has SMART dataFlowGraph: ");
+//				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
+			}
+		}
+
+		return (MutableDirectedGraph) methodToDataFlowGraph.get(method);
+	}
+	
+/*	public void doFixedPointDataFlowAnalysis()
 	{
 		Iterator it = sootClass.getMethods().iterator();
 		while(it.hasNext())
@@ -56,12 +118,12 @@ public class ClassDataFlowAnalysis
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				MethodDataFlowAnalysis mdfa = new MethodDataFlowAnalysis(g, dfa, true);
+				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
 				if(methodToDataFlowGraph.containsKey(method))
 					methodToDataFlowGraph.remove(method);
 				else
 					methodCount++;
-				methodToDataFlowGraph.put(method, mdfa.getMethodDataFlowGraph());
+				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
 
 //				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
@@ -79,7 +141,8 @@ public class ClassDataFlowAnalysis
 			}
 		}
 	}
-	
+*/	
+/*
 	private void doSimpleConservativeDataFlowAnalysis()
 	{
 		Iterator it = sootClass.getMethods().iterator();
@@ -97,7 +160,7 @@ public class ClassDataFlowAnalysis
 //			printDataFlowGraph(dataFlowGraph);
 		}
 	}
-	
+*/	
 	/** Does not require any fixed point calculation */
 	private MutableDirectedGraph simpleConservativeDataFlowAnalysis(SootMethod sm)
 	{
@@ -128,7 +191,8 @@ public class ClassDataFlowAnalysis
 				IdentityRef ir = (IdentityRef) is.getRightOp();
 				if( ir instanceof ParameterRef )
 				{
-					fieldsStaticsParamsAccessed.add(new EquivalentValue(ir));
+					ParameterRef pr = (ParameterRef) ir;
+					fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueParameterRef(sm, pr.getIndex()));
 				}
 			}
 			if(s.containsFieldRef())
@@ -139,7 +203,7 @@ public class ClassDataFlowAnalysis
 					// This should be added to the list of fields accessed
 					// static fields "belong to everyone"
 					StaticFieldRef sfr = (StaticFieldRef) ref;
-					fieldsStaticsParamsAccessed.add(new EquivalentValue(sfr));
+					fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, sfr.getField()));
 				}
 				else if( ref instanceof InstanceFieldRef )
 				{
@@ -150,13 +214,13 @@ public class ClassDataFlowAnalysis
 					if(base instanceof Local)
 					{
 						if( (!sm.isStatic()) && base.equivTo(g.getBody().getThisLocal()) )
-							fieldsStaticsParamsAccessed.add(new EquivalentValue(ifr));
+							fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
 		            }
 				}
 			}
 		}
 		
-		// Each field, global, and parameter becomes a node in the graph
+		// Each accessed field, global, and parameter becomes a node in the graph
 		MutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
 		Iterator accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
@@ -165,17 +229,62 @@ public class ClassDataFlowAnalysis
 			dataFlowGraph.addNode(o);
 		}
 		
+		// Add all of the nodes necessary to ensure that this is a complete data flow graph
+		// Add every parameter of this method
+		for(int i = 0; i < sm.getParameterCount(); i++)
+		{
+			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			if(!dataFlowGraph.containsNode(parameterRefEqVal))
+				dataFlowGraph.addNode(parameterRefEqVal);
+		}
+		
+		// Add every relevant field of this class (static methods don't get non-static fields)
+		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
+		{
+			SootField sf = (SootField) it.next();
+			if(sf.isStatic() || !sm.isStatic())
+			{
+				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+				if(!dataFlowGraph.containsNode(fieldRefEqVal))
+					dataFlowGraph.addNode(fieldRefEqVal);
+			}
+		}
+		
+		// Add every field of this class's superclasses
+		SootClass superclass = sm.getDeclaringClass();
+		if(superclass.hasSuperclass())
+			superclass = sm.getDeclaringClass().getSuperclass();
+		while(superclass.hasSuperclass()) // we don't want to process Object
+		{
+	        Iterator scFieldsIt = superclass.getFields().iterator();
+	        while(scFieldsIt.hasNext())
+	        {
+				SootField scField = (SootField) scFieldsIt.next();
+				if(scField.isStatic() || !sm.isStatic())
+				{
+					EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
+					if(!dataFlowGraph.containsNode(fieldRefEqVal))
+						dataFlowGraph.addNode(fieldRefEqVal);
+				}
+	        }
+			superclass = superclass.getSuperclass();
+		}
+		
 		// The return value also becomes a node in the graph
 		ParameterRef returnValueRef = null;
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(new EquivalentValue(returnValueRef));
+			dataFlowGraph.addNode(dfa.getEquivalentValueReturnRef(sm));
 		}
 		
-		ThisRef thisRef = new ThisRef(sootClass.getType());
-		dataFlowGraph.addNode(new EquivalentValue(thisRef));
-		fieldsStaticsParamsAccessed.add(new EquivalentValue(thisRef));
+//		ThisRef thisRef = null;
+		if(!sm.isStatic())
+		{
+//			thisRef = new ThisRef(sootClass.getType());
+			dataFlowGraph.addNode(dfa.getEquivalentValueThisRef(sm));
+			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueThisRef(sm));
+		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
 		// non-Ref-type nodes are ignored
@@ -199,7 +308,7 @@ public class ClassDataFlowAnalysis
 					dataFlowGraph.addEdge(r, s);
 			}
 			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType))
-				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
+				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
 		}
 		
 		return dataFlowGraph;
@@ -210,17 +319,42 @@ public class ClassDataFlowAnalysis
 	{
 		HashSet fieldsStaticsParamsAccessed = new HashSet();
 		
-		// Add every parameter of the method
+		// Add all of the nodes necessary to ensure that this is a complete data flow graph
+		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueParameterRef(sm, i));
+			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			fieldsStaticsParamsAccessed.add(parameterRefEqVal);
 		}
 		
-		// Add every field of the class
-		for(Iterator it = sootClass.getFields().iterator(); it.hasNext(); )
+		// Add every relevant field of this class (static methods don't get non-static fields)
+		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
 		{
 			SootField sf = (SootField) it.next();
-			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, sf));
+			if(sf.isStatic() || !sm.isStatic())
+			{
+				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+				fieldsStaticsParamsAccessed.add(fieldRefEqVal);
+			}
+		}
+		
+		// Add every field of this class's superclasses
+		SootClass superclass = sm.getDeclaringClass();
+		if(superclass.hasSuperclass())
+			superclass = sm.getDeclaringClass().getSuperclass();
+		while(superclass.hasSuperclass()) // we don't want to process Object
+		{
+	        Iterator scFieldsIt = superclass.getFields().iterator();
+	        while(scFieldsIt.hasNext())
+	        {
+				SootField scField = (SootField) scFieldsIt.next();
+				if(scField.isStatic() || !sm.isStatic())
+				{
+					EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
+					fieldsStaticsParamsAccessed.add(fieldRefEqVal);
+				}
+	        }
+			superclass = superclass.getSuperclass();
 		}
 		
 		// Don't add any static fields outside of the class... unsafe???
@@ -239,12 +373,16 @@ public class ClassDataFlowAnalysis
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(new EquivalentValue(returnValueRef));
+			dataFlowGraph.addNode(dfa.getEquivalentValueReturnRef(sm));
 		}
 		
-		ThisRef thisRef = new ThisRef(sootClass.getType());
-		dataFlowGraph.addNode(new EquivalentValue(thisRef));
-		fieldsStaticsParamsAccessed.add(new EquivalentValue(thisRef));
+		ThisRef thisRef = null;
+		if(!sm.isStatic())
+		{
+			thisRef = new ThisRef(sootClass.getType());
+			dataFlowGraph.addNode(dfa.getEquivalentValueThisRef(sm));
+			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueThisRef(sm));
+		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
 		// non-Ref-type nodes are ignored
@@ -268,63 +406,12 @@ public class ClassDataFlowAnalysis
 					dataFlowGraph.addEdge(r, s);
 			}
 			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType) )
-				dataFlowGraph.addEdge(r, new EquivalentValue(returnValueRef));
+				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
 		}
 		
 		return dataFlowGraph;
 	}
 	
-	public static void printDataFlowGraph(DirectedGraph g)
-	{
-		Iterator nodeIt = g.iterator();
-		if(!nodeIt.hasNext())
-			G.v().out.println("    " + " --> ");
-		while(nodeIt.hasNext())
-		{
-			Object node = nodeIt.next();
-			List sources = g.getPredsOf(node);
-			Iterator sourcesIt = sources.iterator();
-			if(!sourcesIt.hasNext())
-				continue;
-			G.v().out.print("    [ ");
-			int sourcesnamelength = 0;
-			int lastnamelength = 0;
-			while(sourcesIt.hasNext())
-			{
-				Ref r = (Ref) ((EquivalentValue) sourcesIt.next()).getValue(); // unwrap the Ref
-				if(r instanceof FieldRef)
-				{
-					FieldRef fr = (FieldRef) r;
-					String name = fr.getFieldRef().name();
-					lastnamelength = name.length();
-					if(lastnamelength > sourcesnamelength)
-						sourcesnamelength = lastnamelength;
-					G.v().out.print(name);
-				}
-				else if(r instanceof ParameterRef)
-				{
-					ParameterRef pr = (ParameterRef) r;
-					lastnamelength = 11;
-					if(lastnamelength > sourcesnamelength)
-						sourcesnamelength = lastnamelength;
-					G.v().out.print("@parameter" + pr.getIndex());
-				}
-				else
-				{
-					String name = r.toString();
-					lastnamelength = name.length();
-					if(lastnamelength > sourcesnamelength)
-						sourcesnamelength = lastnamelength;
-					G.v().out.print(name);
-				}
-				if(sourcesIt.hasNext())
-					G.v().out.print("\n      ");
-			}
-			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
-				G.v().out.print(" ");
-			G.v().out.println(" ] --> " + node.toString());
-		}
-	}
 
 }
 

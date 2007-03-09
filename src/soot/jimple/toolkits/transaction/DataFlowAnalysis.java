@@ -32,6 +32,7 @@ public class DataFlowAnalysis
 		 classToClassDataFlowAnalysis = new HashMap();
 	}
 	
+/*
 	public void doApplicationClassesAnalysis()
 	{
     	Iterator appClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -60,27 +61,22 @@ public class DataFlowAnalysis
 			cdfa.doFixedPointDataFlowAnalysis();
 		}
 	}
-		
-	public ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
+*/		
+
+	private ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
 	{
-		if(!classToClassDataFlowAnalysis.containsKey(sc)) // only application classes are precomputed
+		if(!classToClassDataFlowAnalysis.containsKey(sc))
 		{
-			// Create the needed flow analysis object
 			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(sc, this);
-			
-			// Put the preliminary simple conservative results here in case they
-			// are needed by the fixed-point version.  This method will be
-			// reentrant if any method we are analyzing is reentrant, so we
-			// must do this to prevent an infinite recursive loop.
 			classToClassDataFlowAnalysis.put(sc, cdfa);
-			
-			// Now calculate the fixed-point version if this is an application class.
-			// If this class's methods are reentrant, it will call this method and
-			// receive the simple conservative version that is already cached.
-//			if(sc.isApplicationClass())
-//				cdfa.doFixedPointDataFlowAnalysis();
 		}
 		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
+	}
+	
+	public SmartMethodDataFlowAnalysis getMethodDataFlowAnalysis(SootMethod sm)
+	{
+		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		return cdfa.getMethodDataFlowAnalysis(sm);
 	}
 	
 	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
@@ -94,7 +90,7 @@ public class DataFlowAnalysis
 	
 	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that source
 	  * flows to when method sm is called. */
-	public List getSinksOf(SootMethod sm, EquivalentValue source)
+/*	public List getSinksOf(SootMethod sm, EquivalentValue source)
 	{
 		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
 		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
@@ -105,10 +101,10 @@ public class DataFlowAnalysis
 			sinks = new ArrayList();
 		return sinks;
 	}
-	
+*/	
 	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that sink
 	  * flows from when method sm is called. */
-	public List getSourcesOf(SootMethod sm, EquivalentValue sink)
+/*	public List getSourcesOf(SootMethod sm, EquivalentValue sink)
 	{
 		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
 		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
@@ -119,7 +115,7 @@ public class DataFlowAnalysis
 			sources = new ArrayList();
 		return sources;
 	}
-	
+*/	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
 	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
@@ -175,6 +171,58 @@ public class DataFlowAnalysis
 		// then combine them conservatively and return the result.
 		SootMethodRef methodRef = ie.getMethodRef();
 		return getMethodDataFlowGraph(methodRef.resolve());
+	}
+	
+	public static void printDataFlowGraph(DirectedGraph g)
+	{
+		Iterator nodeIt = g.iterator();
+		if(!nodeIt.hasNext())
+			G.v().out.println("    " + " --> ");
+		while(nodeIt.hasNext())
+		{
+			Object node = nodeIt.next();
+			List sources = g.getPredsOf(node);
+			Iterator sourcesIt = sources.iterator();
+			if(!sourcesIt.hasNext())
+				continue;
+			G.v().out.print("    [ ");
+			int sourcesnamelength = 0;
+			int lastnamelength = 0;
+			while(sourcesIt.hasNext())
+			{
+				Value v = ((EquivalentValue) sourcesIt.next()).getValue();
+				if(v instanceof FieldRef)
+				{
+					FieldRef fr = (FieldRef) v;
+					String name = fr.getFieldRef().name();
+					lastnamelength = name.length();
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.print(name);
+				}
+				else if(v instanceof ParameterRef)
+				{
+					ParameterRef pr = (ParameterRef) v;
+					lastnamelength = 11;
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.print("@parameter" + pr.getIndex());
+				}
+				else
+				{
+					String name = v.toString();
+					lastnamelength = name.length();
+					if(lastnamelength > sourcesnamelength)
+						sourcesnamelength = lastnamelength;
+					G.v().out.print(name);
+				}
+				if(sourcesIt.hasNext())
+					G.v().out.print("\n      ");
+			}
+			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
+				G.v().out.print(" ");
+			G.v().out.println(" ] --> " + node.toString());
+		}
 	}
 }
 
