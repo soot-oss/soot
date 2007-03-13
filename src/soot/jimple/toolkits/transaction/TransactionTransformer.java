@@ -90,7 +90,7 @@ public class TransactionTransformer extends SceneTransformer
     	if(optionDoTLO && mhp != null)
     	{
 	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
-    		tlo = new ThreadLocalObjectsAnalysis(dfa, mhp.getThreadClassList()); // can tell only that a field/local is local to the object it's being accessed in
+    		tlo = new ThreadLocalObjectsAnalysis(dfa, mhp.getThreads()); // can tell only that a field/local is local to the object it's being accessed in
     	}
 
 
@@ -145,8 +145,9 @@ public class TransactionTransformer extends SceneTransformer
 		// Assign Names To Transactions
 		assignNamesToTransactions(AllTransactions);
 
-    	G.v().out.println("[wjtp.tn] Total Method Data Flow Analyses: " + MethodDataFlowAnalysis.counter);
-    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + MethodLocalObjectsAnalysis.mlocounter);
+    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassDataFlowAnalysis.methodCount);
+    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodDataFlowAnalysis.counter);
+    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + SmartMethodLocalObjectsAnalysis.counter);
 
     	
 
@@ -187,10 +188,10 @@ public class TransactionTransformer extends SceneTransformer
 		G.v().out.println("[wjtp.tn] Total Time for TLO Steps: " + time + "s");
     	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassDataFlowAnalysis.methodCount);
     	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodDataFlowAnalysis.counter);
-    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + MethodLocalObjectsAnalysis.mlocounter);
-    	
-    	
-    	
+    	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + SmartMethodLocalObjectsAnalysis.counter);
+
+
+
     	// *** Find Stray Reads/Writes *** (DISABLED)
     	// add external data races as one-line transactions
     	// note that finding them isn't that hard (though it is time consuming)

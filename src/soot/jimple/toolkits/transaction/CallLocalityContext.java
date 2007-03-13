@@ -241,6 +241,17 @@ public class CallLocalityContext
 //		return false;
 	}
 	
+	public boolean containsField(EquivalentValue fieldRef)
+	{
+		List ret = new ArrayList();
+		for(int i = 0; i < nodes.size(); i++)
+		{
+			if( fieldRef.equals(nodes.get(i)) )
+				return true;
+		}
+		return false;
+	}
+	
 	public void merge(CallLocalityContext other)
 	{
 		for(int i = 0; i < nodes.size(); i++)

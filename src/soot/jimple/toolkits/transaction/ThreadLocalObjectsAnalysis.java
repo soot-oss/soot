@@ -20,16 +20,16 @@ import soot.toolkits.scalar.*;
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 {
-	List threadClasses;
+	List threads;
 	
 	Map valueCache;
 	Map fieldCache;
 	Map invokeCache;
 	
-	public ThreadLocalObjectsAnalysis(DataFlowAnalysis dfa, List threadClasses) // must include main class
+	public ThreadLocalObjectsAnalysis(DataFlowAnalysis dfa, List threads) // must include main class
 	{
 		super(dfa);
-		this.threadClasses = threadClasses;
+		this.threads = threads;
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
@@ -45,19 +45,29 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
 		}
 			
-		G.v().out.println("- Checking if " + localOrRef + " in " + sm + " is thread-local");
-		Iterator threadClassesIt = threadClasses.iterator();
-		while(threadClassesIt.hasNext())
+		G.v().out.print("- " + localOrRef + " in " + sm + " is ");
+		Iterator threadsIt = threads.iterator();
+		while(threadsIt.hasNext())
 		{
-			SootClass threadClass = (SootClass) threadClassesIt.next();
-			if(!isObjectLocalToContext(localOrRef, sm, threadClass))
+			AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next();
+			Iterator runMethodsIt = thread.getRunMethods().iterator();
+			while(runMethodsIt.hasNext())
 			{
-				G.v().out.println("  THREAD-SHARED");
-				valueCache.put(cacheKey, Boolean.FALSE);
-				return false;
+				SootMethod runMethod = (SootMethod) runMethodsIt.next();
+				if( runMethod.getDeclaringClass().isApplicationClass() &&
+					!isObjectLocalToContext(localOrRef, sm, runMethod))
+				{
+					G.v().out.println("THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
+					valueCache.put(cacheKey, Boolean.FALSE);
+					return false;
+				}
 			}
 		}
-		G.v().out.println("  THREAD-LOCAL");// (" + localOrRef + " in " + sm + ")");
+		G.v().out.println("THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+						 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+						 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
 		valueCache.put(cacheKey, Boolean.TRUE);
 		return true;
 	}
@@ -89,19 +99,29 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 			return ((Boolean) invokeCache.get(cacheKey)).booleanValue();
 		}
 			
-		G.v().out.println("- Checking if " + ie + " in " + containingMethod + " has non-thread-local effects");
-		Iterator threadClassesIt = threadClasses.iterator();
-		while(threadClassesIt.hasNext())
+		G.v().out.print("- " + ie + " in " + containingMethod + " has ");
+		Iterator threadsIt = threads.iterator();
+		while(threadsIt.hasNext())
 		{
-			SootClass threadClass = (SootClass) threadClassesIt.next();
-			if(hasNonLocalEffects(containingMethod, ie, threadClass))
+			AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next();
+			Iterator runMethodsIt = thread.getRunMethods().iterator();
+			while(runMethodsIt.hasNext())
 			{
-				G.v().out.println("  THREAD-SHARED effects");// (" + ie + " in " + containingMethod + ")");
-				invokeCache.put(cacheKey, Boolean.TRUE);
-				return true;
+				SootMethod runMethod = (SootMethod) runMethodsIt.next();
+				if( runMethod.getDeclaringClass().isApplicationClass() &&
+					hasNonLocalEffects(containingMethod, ie, runMethod))
+				{
+					G.v().out.println("THREAD-VISIBLE (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
+					invokeCache.put(cacheKey, Boolean.TRUE);
+					return true;
+				}
 			}
 		}
-		G.v().out.println("  THREAD-LOCAL effects only");// (" + ie + " in " + containingMethod + ")");
+		G.v().out.println("THREAD-PRIVATE (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+												" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+												" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 		invokeCache.put(cacheKey, Boolean.FALSE);
 		return false;
 	}

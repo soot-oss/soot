@@ -348,5 +348,19 @@ public class UnsynchronizedMhpAnalysis
 		}
 		return threadClasses;
 	}
+	
+	public List getThreads()
+	{
+		List threads = new ArrayList();
+		int size = MHPLists.size();
+		for(int i = 0; i < size; i++)
+		{
+			if( !threads.contains(MHPLists.get(i)) )
+			{
+				threads.add(MHPLists.get(i));
+			}
+		}
+		return threads;
+	}
 }
 

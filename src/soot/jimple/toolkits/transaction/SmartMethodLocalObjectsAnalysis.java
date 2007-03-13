@@ -30,7 +30,7 @@ public class SmartMethodLocalObjectsAnalysis
 	{
 		this.method = g.getBody().getMethod();
 		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
-		this.printMessages = true;
+		this.printMessages = false;
 		
 		counter++;
 	}

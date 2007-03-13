@@ -75,12 +75,12 @@ public class LocalObjectsAnalysis
 		return cloa.isFieldLocal(sf);
 	}
 	
-	public boolean isObjectLocalToContext(Value localOrRef, SootMethod sm, SootClass context)
+	public boolean isObjectLocalToContext(Value localOrRef, SootMethod sm, SootMethod context)
 	{
 //		G.v().out.print("    Checking if " + localOrRef + " in " + sm + " is local to " + context + ": ");
 		
 		// Handle special case
-		if(sm.getDeclaringClass() == context)
+		if(sm == context)
 		{
 //			G.v().out.println("Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
@@ -112,43 +112,27 @@ public class LocalObjectsAnalysis
 			// TODO right now we are stupid about virtual calls... but this is UNSAFE
 			
 			// for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?)
-			List classMethods = getAllMethodsForClass(context); // gets methods in context class and superclasses
 			List previousChains = new ArrayList();
 //			List startingMethods = new ArrayList();
 			mergedContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
-			Iterator classMethodsIt = classMethods.iterator();
-			while(classMethodsIt.hasNext())
+			while(true)
 			{
-				SootMethod classMethod = (SootMethod) classMethodsIt.next();
-//				if(classMethod.getDeclaringClass().isApplicationClass())
-//				List methodCallChains = getCallChainsBetween(classMethod, sm);
-//				Iterator methodCallChainsIt = methodCallChains.iterator();
-//				while(methodCallChainsIt.hasNext())
-//				{
-//					callChains.add(methodCallChainsIt.next());
-//					startingMethods.add(classMethod); // need to add this once for each method call chain being added
-//				}
-				while(true)
+//					G.v().out.println("      Getting next call chain...");
+				CallChain nextCallChain = getNextCallChainBetween(context, sm, previousChains);
+				if(nextCallChain == null)
 				{
-					G.v().out.println("      Getting next call chain...");
-					CallChain nextCallChain = getNextCallChainBetween(classMethod, sm, previousChains);
-					if(nextCallChain == null)
-					{
-						// No Chains Left
-						break;
-					}
-					List callChainAsList = nextCallChain.getEdges();
-	//				G.v().out.println(callChain);
-					mergedContext.merge(getContextViaCallChain(context, classMethod, callChainAsList));
-					if(mergedContext.isAllShared(true)) // if all reftype nodes are shared
-					{
-						G.v().out.println("      mergedContext is All Shared after " + (previousChains.size() + 1) + " call chains");
-						break;
-					}
-					previousChains.add(nextCallChain);
-				}
-				if(mergedContext.isAllShared(true))
+					// No Chains Left
 					break;
+				}
+				List callChainAsList = nextCallChain.getEdges();
+//				G.v().out.println(callChain);
+				mergedContext.merge(getContextViaCallChain(context, callChainAsList));
+				if(mergedContext.isAllShared(true)) // if all reftype nodes are shared
+				{
+//						G.v().out.println("      mergedContext is All Shared after " + (previousChains.size() + 1) + " call chains");
+					break;
+				}
+				previousChains.add(nextCallChain);
 			}
 			
 //			G.v().out.println("");
@@ -235,8 +219,8 @@ public class LocalObjectsAnalysis
 		{
 			UnitGraph g = new ExceptionalUnitGraph(b);
 			mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-			G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
-				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
+//			G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
+//				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
 			mloaCache.put(sm, mloa);
 		}
 		boolean isLocal = mloa.isObjectLocal(localOrRef, mergedContext);
@@ -603,14 +587,14 @@ public class LocalObjectsAnalysis
 				if( mloaCache.containsKey(containingMethod) )
 				{
 					mloa = (SmartMethodLocalObjectsAnalysis) mloaCache.get(containingMethod);
-					G.v().out.println("        Retrieved mloa for " + containingMethod.getName() + " on Call Chain: ");
+//					G.v().out.println("        Retrieved mloa for " + containingMethod.getName() + " on Call Chain: ");
 				}
 				else
 				{		
 					UnitGraph g = new ExceptionalUnitGraph(b);
 					mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-					G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
-						" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + containingMethod.getName() + " on Call Chain:");
+//					G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
+//						" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + containingMethod.getName() + " on Call Chain:");
 					mloaCache.put(containingMethod, mloa);
 				}
 			
@@ -618,13 +602,33 @@ public class LocalObjectsAnalysis
 				if(ie instanceof InstanceInvokeExpr)
 				{
 					InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-					if(mloa.isObjectLocal(iie.getBase(), containingContext))
+					if( !containingMethod.isStatic() && iie.getBase().equivTo(b.getThisLocal()) )
 					{
+						// calling another method on same object... basically copy the previous context
+						Iterator localRefsIt = containingContext.getLocalRefs().iterator();
+						while(localRefsIt.hasNext())
+						{
+							EquivalentValue rEqVal = (EquivalentValue) localRefsIt.next();
+							Ref r = (Ref) rEqVal.getValue();
+							if(r instanceof InstanceFieldRef)
+							{
+								EquivalentValue newRefEqVal = dfa.getEquivalentValueFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
+								if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
+									callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
+							}
+							else if(r instanceof ThisRef)
+								callingContext.setThisLocal();
+						}
+					}
+					else if(mloa.isObjectLocal(iie.getBase(), containingContext))
+					{
+						// calling a method on a local object
 						callingContext.setAllFieldsLocal();
 						callingContext.setThisLocal();
 					}
 					else
 					{
+						// calling a method on a shared object
 						callingContext.setAllFieldsShared();
 						callingContext.setThisShared();
 					}
@@ -655,7 +659,7 @@ public class LocalObjectsAnalysis
 		return callingContext;
 	}
 	
-	private CallLocalityContext getInitialContext(SootClass context, SootMethod startingMethod, Edge e)
+	private CallLocalityContext getInitialContext(SootMethod startingMethod, Edge e)
 	{
 		// get first calling method and calling context
 		InvokeExpr ie = e.srcStmt().getInvokeExpr();
@@ -721,14 +725,14 @@ public class LocalObjectsAnalysis
 	}
 */
 	
-	private CallLocalityContext getContextViaCallChain(SootClass context, SootMethod startingMethod, List callChain) // destroys callChain
+	private CallLocalityContext getContextViaCallChain(SootMethod startingMethod, List callChain) // destroys callChain
 	{
 		// SHOULD PERFORM CACHING, since it's likely that we'll ask about several values in the same method
 		
 	
 		// Get context and method from the first call
 		Edge e = (Edge) callChain.get(0);
-		CallLocalityContext callContext = getInitialContext(context, startingMethod, e); // gets calllocalitycontext of first call
+		CallLocalityContext callContext = getInitialContext(startingMethod, e); // gets calllocalitycontext of first call
 		SootMethod callMethod = e.tgt();
 		
 		// Remove the first call, and get context at end of chain (method is sm)
@@ -752,7 +756,7 @@ public class LocalObjectsAnalysis
 			return false;
 
 		// get the local/shared info for sm given callChain from context, startingMethod
-		CallLocalityContext smContext = getContextViaCallChain(context, startingMethod, callChain);
+		CallLocalityContext smContext = getContextViaCallChain(startingMethod, callChain);
 		
 		//
 		Body b = sm.retrieveActiveBody();
@@ -790,7 +794,7 @@ public class LocalObjectsAnalysis
 			throw new RuntimeException("Cannot determine if a Local is local via a call chain that does not end in the Local's containing method");
 
 		// get the local/shared info for sm given callChain from context, startingMethod
-		CallLocalityContext smContext = getContextViaCallChain(context, startingMethod, callChain);
+		CallLocalityContext smContext = getContextViaCallChain(startingMethod, callChain);
 		G.v().out.print(smContext.toString());
 		return smContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, sf));
 	}
@@ -831,7 +835,7 @@ public class LocalObjectsAnalysis
 		return scopeMethods;
 	}
 	
-	public boolean hasNonLocalEffects(SootMethod containingMethod, InvokeExpr ie, SootClass context)
+	public boolean hasNonLocalEffects(SootMethod containingMethod, InvokeExpr ie, SootMethod context)
 	{
 		SootMethod target = ie.getMethodRef().resolve();
 		MutableDirectedGraph dataFlowGraph = dfa.getMethodDataFlowGraph(target); // TODO actually we want a graph that is sensitive to scalar data, too

@@ -41,7 +41,7 @@ public class CallChain
 	public List getEdges()
 	{
 		List ret = new LinkedList();
-		if(edge == null)
+		if(edge != null)
 			ret.add(edge);
 		CallChain current = next;
 		while(current != null)

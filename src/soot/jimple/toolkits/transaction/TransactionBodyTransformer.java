@@ -46,6 +46,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		// skip lastUnit to before the final return statement
 		if(lastUnit instanceof RetStmt || lastUnit instanceof ReturnStmt || lastUnit instanceof ReturnVoidStmt)
 			lastUnit = (Unit) units.getPredOf(lastUnit);
+		else
+			units.insertAfter(Jimple.v().newNopStmt(), lastUnit); // needs to have something after it
 		
 		// Objects of synchronization, plus book keeping
 		Local[] lockObj = new Local[maxLockObjs]; 			
@@ -257,14 +259,18 @@ public class TransactionBodyTransformer extends BodyTransformer
 				if(tn.begin == null) 
 					G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
 					
-				units.insertBefore(Jimple.v().newEnterMonitorStmt(currentLockObject), tn.begin);
+				Stmt newBegin = Jimple.v().newEnterMonitorStmt(currentLockObject);
+				units.insertBefore(newBegin, tn.begin);
+//				tn.begin.redirectJumpsToThisTo(newBegin);
 				units.remove(tn.begin);
 				
 				Iterator endsIt = tn.ends.iterator();
 				while(endsIt.hasNext())
 				{
 					Stmt sEnd = (Stmt) endsIt.next();
-					units.insertBefore(Jimple.v().newExitMonitorStmt(currentLockObject), sEnd);
+					Stmt newEnd = Jimple.v().newExitMonitorStmt(currentLockObject);
+					units.insertBefore(newEnd, sEnd);
+//					sEnd.redirectJumpsToThisTo(newEnd);
 					units.remove(sEnd);
 				}
 			}
@@ -275,15 +281,14 @@ public class TransactionBodyTransformer extends BodyTransformer
 			while(notifysIt.hasNext())
 			{
 				Stmt sNotify = (Stmt) notifysIt.next();
-				
-	            units.insertBefore(
-            		Jimple.v().newInvokeStmt(
+				Stmt newNotify = 
+					Jimple.v().newInvokeStmt(
            				Jimple.v().newVirtualInvokeExpr(
        						(Local) currentLockObject,
        						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
-       						Collections.EMPTY_LIST)),
-                	sNotify);
-
+       						Collections.EMPTY_LIST));
+	            units.insertBefore(newNotify, sNotify);
+//				sNotify.redirectJumpsToThisTo(newNotify);
 				units.remove(sNotify);
 			}
 
@@ -292,15 +297,14 @@ public class TransactionBodyTransformer extends BodyTransformer
 			while(waitsIt.hasNext())
 			{
 				Stmt sWait = (Stmt) waitsIt.next();
-				
-	            units.insertBefore(
-            		Jimple.v().newInvokeStmt(
+				Stmt newWait = 
+					Jimple.v().newInvokeStmt(
            				Jimple.v().newVirtualInvokeExpr(
        						(Local) currentLockObject,
        						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
-       						Collections.EMPTY_LIST)),
-                	sWait);
-
+       						Collections.EMPTY_LIST));
+	            units.insertBefore(newWait, sWait);
+//				sWait.redirectJumpsToThisTo(newWait);
 				units.remove(sWait);
 			}
 		}
@@ -326,22 +330,22 @@ public class TransactionBodyTransformer extends BodyTransformer
 		
 		// add normal flow and labels
 		Unit labelExitMonitorStmt = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
-		units.insertAfter(labelExitMonitorStmt, end);
-		end = (Stmt) units.getSuccOf(end);
+		units.insertBefore(labelExitMonitorStmt, end); // steal jumps to end, send them to monitorexit
+//		end = (Stmt) units.getSuccOf(end);
 		Unit label1Unit = (Unit) Jimple.v().newGotoStmt((Stmt) units.getSuccOf(end));
-		units.insertAfter(label1Unit, end);
-		end = (Stmt) units.getSuccOf(end);
+		units.insertBefore(label1Unit, end);
+//		end = (Stmt) units.getSuccOf(end);
 		
 		// add exceptional flow and labels
 		Unit label2Unit = (Unit) Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
-		units.insertAfter(label2Unit, end);
-		end = (Stmt) units.getSuccOf(end);
+		units.insertBefore(label2Unit, end);
+//		end = (Stmt) units.getSuccOf(end);
 		Unit label3Unit = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
-		units.insertAfter(label3Unit, end);
-		end = (Stmt) units.getSuccOf(end);
+		units.insertBefore(label3Unit, end);
+//		end = (Stmt) units.getSuccOf(end);
 		Unit label4Unit = (Unit) Jimple.v().newThrowStmt(throwableLocal);
-		units.insertAfter(label4Unit, end);
-		end = (Stmt) units.getSuccOf(end);
+		units.insertBefore(label4Unit, end);
+//		end = (Stmt) units.getSuccOf(end);
 		
 		// <existing return statement>
 		
@@ -350,6 +354,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label0Unit, label1Unit, label2Unit));
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label3Unit, label4Unit, label2Unit));
 
+/*
 		// search body for jumps to existing return stmt, and redirect to new monitor exit stmt
 		Iterator unitIt = units.iterator();
 		while(unitIt.hasNext())
@@ -362,5 +367,6 @@ public class TransactionBodyTransformer extends BodyTransformer
 					gotoStmt.setTarget(labelExitMonitorStmt);
 			}
 		}
+*/
 	}
 }
