@@ -90,6 +90,7 @@ public class CommonAncestorValueAnalysis extends BackwardFlowAnalysis
 			Iterator newDefsIt = newDefs.iterator();
 			while(newDefsIt.hasNext())
 				out.remove( newDefsIt.next() );
+			// to be smarter, we could also add the right side to the list of aliases...
 		}
 
 //		G.v().out.println(stmt + " HAS ALIASES in" + in + " out" + out);

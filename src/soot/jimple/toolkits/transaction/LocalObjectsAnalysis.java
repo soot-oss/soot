@@ -35,7 +35,7 @@ public class LocalObjectsAnalysis
 	Map mergedContextsCache;
 	Map mloaCache;
 	
-	public LocalObjectsAnalysis(DataFlowAnalysis dfa) //, boolean threadBased)
+	public LocalObjectsAnalysis(DataFlowAnalysis dfa)
 	{
 		this.dfa = dfa;
 		this.cg = Scene.v().getCallGraph();
