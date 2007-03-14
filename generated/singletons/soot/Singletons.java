@@ -862,9 +862,9 @@ public class Singletons {
         return instance_soot_jimple_spark_sets_AllSharedHybridNodes;
     }
 
-    private soot.jimple.toolkits.transaction.TransactionTransformer instance_soot_jimple_toolkits_transaction_TransactionTransformer;
-    public soot.jimple.toolkits.transaction.TransactionTransformer soot_jimple_toolkits_transaction_TransactionTransformer() {
-        if( instance_soot_jimple_toolkits_transaction_TransactionTransformer == null ) instance_soot_jimple_toolkits_transaction_TransactionTransformer = new soot.jimple.toolkits.transaction.TransactionTransformer( g );
+    private soot.jimple.toolkits.thread.transaction.TransactionTransformer instance_soot_jimple_toolkits_transaction_TransactionTransformer;
+    public soot.jimple.toolkits.thread.transaction.TransactionTransformer soot_jimple_toolkits_transaction_TransactionTransformer() {
+        if( instance_soot_jimple_toolkits_transaction_TransactionTransformer == null ) instance_soot_jimple_toolkits_transaction_TransactionTransformer = new soot.jimple.toolkits.thread.transaction.TransactionTransformer( g );
         return instance_soot_jimple_toolkits_transaction_TransactionTransformer;
     }
 

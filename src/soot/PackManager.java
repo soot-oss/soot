@@ -52,7 +52,7 @@ import soot.jimple.toolkits.annotation.purity.*; // [AM]
 import soot.jimple.toolkits.annotation.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.transaction.*;
+import soot.jimple.toolkits.thread.transaction.TransactionTransformer;
 import soot.tagkit.*;
 import soot.options.Options;
 import soot.toolkits.scalar.*;
