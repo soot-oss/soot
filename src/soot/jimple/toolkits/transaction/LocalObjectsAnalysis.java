@@ -28,6 +28,7 @@ import soot.toolkits.scalar.*;
 public class LocalObjectsAnalysis
 {
 	DataFlowAnalysis dfa;
+	UseFinder uf;
 	CallGraph cg;
 
 	Map classToClassLocalObjectsAnalysis;
@@ -38,6 +39,7 @@ public class LocalObjectsAnalysis
 	public LocalObjectsAnalysis(DataFlowAnalysis dfa)
 	{
 		this.dfa = dfa;
+		this.uf = new UseFinder();
 		this.cg = Scene.v().getCallGraph();
 		
 		classToClassLocalObjectsAnalysis = new HashMap();
@@ -49,7 +51,7 @@ public class LocalObjectsAnalysis
 	{
 		if(!classToClassLocalObjectsAnalysis.containsKey(sc))
 		{
-			ClassLocalObjectsAnalysis cloa = new ClassLocalObjectsAnalysis(this, dfa, sc);
+			ClassLocalObjectsAnalysis cloa = new ClassLocalObjectsAnalysis(this, dfa, uf, sc);
 			classToClassLocalObjectsAnalysis.put(sc, cloa);
 		}
 		return (ClassLocalObjectsAnalysis) classToClassLocalObjectsAnalysis.get(sc);

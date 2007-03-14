@@ -22,6 +22,7 @@ public class ClassLocalObjectsAnalysis
 {
 	LocalObjectsAnalysis loa;
 	DataFlowAnalysis dfa;
+	UseFinder uf;
 	SootClass sootClass;
 	
 	Map methodToMethodLocalObjectsAnalysis;
@@ -30,10 +31,11 @@ public class ClassLocalObjectsAnalysis
 	ArrayList sharedFields;
 	
 	/** Constructor for when this is the class that defines the scope for "Local" */
-	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, SootClass sootClass)
+	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sootClass)
 	{
 		 this.loa = loa;
 		 this.dfa = dfa;
+		 this.uf = uf;
 		 this.sootClass = sootClass;
 		 
 		 methodToMethodLocalObjectsAnalysis = new HashMap();
@@ -313,16 +315,41 @@ public class ClassLocalObjectsAnalysis
 	
 	private boolean fieldIsInitiallyLocal(SootField field)
 	{
-		if(field.isStatic() && !field.isPrivate() && field.getType() instanceof RefType)
+		if(field.isStatic())
+		{
+			// Static fields are always shared
 			return false;
-		return true;
-		
-		// public fields require a whole-program search for accesses outside of this class
-		//  - beware reentrant behavior, as a ClassLocalObjectsAnalysis will be required to analyze these accesses if found
-		// protected and package-private fields require a this-package search for accesses outside of this class
-		//  - beware reentrant behavior, as a ClassLocalObjectsAnalysis will be required to analyze these accesses if found
-		// private fields are assumed local
-		// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
+		}
+		else if(field.isPrivate())
+		{
+			// Private fields may be local
+			return true;
+		}
+		else
+		{
+			// Package-private, protected, and public fields may be local if they
+			// are not directly accessed outside the class
+			if(field.getDeclaringClass().isApplicationClass())
+			{
+				List fieldAccesses = uf.getExtFieldAccesses(sootClass); // returns all external accesses
+				boolean isFieldExternallyAccessed = false;
+				Iterator accessIt = fieldAccesses.iterator();
+				while(accessIt.hasNext())
+				{
+					Pair access = (Pair) accessIt.next();
+					Stmt s = (Stmt) access.getO2();
+					if(s.getFieldRef().getFieldRef().resolve() == field)
+					{
+						return false; // field is assumed shared if it's ever externally accessed
+					}
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 	
 	// Should perform a Local-Inputs analysis on the callsites to this method
