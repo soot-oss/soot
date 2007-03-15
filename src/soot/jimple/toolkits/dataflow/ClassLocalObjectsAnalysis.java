@@ -9,7 +9,7 @@ import soot.jimple.*;
 
 // ClassLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the given scope.
-// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE SCOPE CLASS
+// NOTE THAT THIS ANALYSIS'S RESULTS DO NOT APPLY TO SUBCLASSES OF THE GIVEN CLASS
 
 public class ClassLocalObjectsAnalysis
 {
@@ -345,12 +345,6 @@ public class ClassLocalObjectsAnalysis
 		}
 	}
 	
-	// Should perform a Local-Inputs analysis on the callsites to this method
-	private boolean parameterIsInitiallyLocal(SootMethod method, EquivalentValue parameterRef) // can also be return value
-	{
-		return false;
-	}
-	
 	protected List getSharedFields()
 	{
 		return (List) sharedFields.clone();
@@ -373,11 +367,33 @@ public class ClassLocalObjectsAnalysis
 	
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
 	{
-//		if(context != null)
-//		{
-//			return context.
-//		}
-		return false;
+		List extClassCalls = uf.getExtCalls(sootClass); // returns all external accesses
+		Iterator extClassCallsIt = extClassCalls.iterator();
+		while(extClassCallsIt.hasNext())
+		{
+			Pair extCall = (Pair) extClassCallsIt.next();
+			Stmt s = (Stmt) extCall.getO2();
+			if(s.getInvokeExpr().getMethodRef().resolve() == method)
+			{
+				return false;
+			}
+		}
+		
+		List intClassCalls = uf.getIntCalls(sootClass);
+		Iterator intClassCallsIt = intClassCalls.iterator(); // returns all external accesses
+		while(intClassCallsIt.hasNext())
+		{
+			Pair intCall = (Pair) intClassCallsIt.next();
+			SootMethod containingMethod = (SootMethod) intCall.getO1();
+			Stmt s = (Stmt) intCall.getO2();
+			InvokeExpr ie = s.getInvokeExpr();
+			if(ie.getMethodRef().resolve() == method)
+			{
+				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod )) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+					return false;
+			}
+		}
+		return true;
 	}
 	
 	protected boolean thisIsLocal(SootMethod method, EquivalentValue thisRef)
