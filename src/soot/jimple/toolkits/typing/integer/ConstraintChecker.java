@@ -532,7 +532,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  {
 		    if(fix)
 		      {
-			be.setOp1(insertCast(be.getOp1(), lop.type(), IntType.v(), stmt));
+			be.setOp1(insertCast(be.getOp1(), getTypeForCast(lop), IntType.v(), stmt));
 		      }
 		    else
 		      {
@@ -544,7 +544,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  {
 		    if(fix)
 		      {
-			be.setOp2(insertCast(be.getOp2(), rop.type(), IntType.v(), stmt));
+			be.setOp2(insertCast(be.getOp2(), getTypeForCast(rop), IntType.v(), stmt));
 		      }
 		    else
 		      {
@@ -569,13 +569,13 @@ class ConstraintChecker extends AbstractStmtSwitch
 		      {
 			if(!lop.hasAncestor_1(ClassHierarchy.v().INT))
 			  {
-			    be.setOp1(insertCast(be.getOp1(), lop.type(), rop.type(), stmt));
+			    be.setOp1(insertCast(be.getOp1(), getTypeForCast(lop), getTypeForCast(rop), stmt));
 			    lca = rop;
 			  }
 			
 			if(!rop.hasAncestor_1(ClassHierarchy.v().INT))
 			  {
-			    be.setOp2(insertCast(be.getOp2(), rop.type(), lop.type(), stmt));
+			    be.setOp2(insertCast(be.getOp2(), getTypeForCast(rop), getTypeForCast(lop), stmt));
 			    lca = lop;			
 			  }
 		      }
@@ -596,7 +596,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  {
 		    if(fix)
 		      {
-			be.setOp1(insertCast(be.getOp1(), lop.type(), IntType.v(), stmt));
+			be.setOp1(insertCast(be.getOp1(), getTypeForCast(lop), IntType.v(), stmt));
 		      }
 		    else
 		      {
@@ -609,7 +609,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		if(fix)
 		  {
-		    be.setOp2(insertCast(be.getOp2(), rop.type(), IntType.v(), stmt));
+		    be.setOp2(insertCast(be.getOp2(), getTypeForCast(rop), IntType.v(), stmt));
 		  }
 		else
 		  {
@@ -628,7 +628,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  {
 		    if(fix)
 		      {
-			be.setOp1(insertCast(be.getOp1(), lop.type(), ByteType.v(), stmt));
+			be.setOp1(insertCast(be.getOp1(), getTypeForCast(lop), ByteType.v(), stmt));
 			lop = ClassHierarchy.v().BYTE;
 		      }
 		    else
@@ -642,7 +642,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		if(fix)
 		  {
-		    be.setOp2(insertCast(be.getOp2(), rop.type(), IntType.v(), stmt));
+		    be.setOp2(insertCast(be.getOp2(), getTypeForCast(rop), IntType.v(), stmt));
 		  }
 		else
 		  {
@@ -673,12 +673,12 @@ class ConstraintChecker extends AbstractStmtSwitch
 		  {
 		    if(!lop.hasAncestor_1(ClassHierarchy.v().INT))
 		      {
-			be.setOp1(insertCast(be.getOp1(), lop.type(), rop.type(), stmt));
+			be.setOp1(insertCast(be.getOp1(), getTypeForCast(lop), getTypeForCast(rop), stmt));
 		      }
 		    
 		    if(!rop.hasAncestor_1(ClassHierarchy.v().INT))
 		      {
-			be.setOp2(insertCast(be.getOp2(), rop.type(), lop.type(), stmt));
+			be.setOp2(insertCast(be.getOp2(), getTypeForCast(rop), getTypeForCast(lop), stmt));
 		      }
 		  }
 		else
@@ -913,7 +913,7 @@ class ConstraintChecker extends AbstractStmtSwitch
 	      {
 		if(fix)
 		  {
-		    ((soot.jimple.internal.JIdentityStmt) stmt).setLeftOp(insertCastAfter((Local) l, left.type(), right.type(), stmt));
+		    ((soot.jimple.internal.JIdentityStmt) stmt).setLeftOp(insertCastAfter((Local) l, getTypeForCast(left), getTypeForCast(right), stmt));
 		  }
 		else
 		  {

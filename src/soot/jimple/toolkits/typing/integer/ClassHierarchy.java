@@ -54,9 +54,9 @@ public class ClassHierarchy
   public final TypeNode CHAR = new TypeNode(3, CharType.v());
   public final TypeNode INT = new TypeNode(4, IntType.v());
   public final TypeNode TOP = new TypeNode(5, null);
-  public final TypeNode R0_1 = new TypeNode(6, null);
-  public final TypeNode R0_127 = new TypeNode(7, null);
-  public final TypeNode R0_32767 = new TypeNode(8, null);
+  public final TypeNode R0_1 = new TypeNode(6, null); 		//eventually becomes boolean
+  public final TypeNode R0_127 = new TypeNode(7, null); 	//eventually becomes byte
+  public final TypeNode R0_32767 = new TypeNode(8, null);	//eventually becomes short 
 
   private final TypeNode[] typeNodes =
   {
