@@ -33,7 +33,7 @@ import java.io.*;
  *  determine if a thread may be run in parallel with itself.
  */
 
-public class UnsynchronizedMhpAnalysis
+public class UnsynchronizedMhpAnalysis implements MhpTester
 {
 	List MHPLists;
 	boolean optionPrintDebug;
@@ -313,6 +313,11 @@ public class UnsynchronizedMhpAnalysis
 		return false;
 	}
 	
+    public boolean mayHappenInParallel(SootMethod m1, Unit u1, SootMethod m2, Unit u2)
+    {
+		return mayHappenInParallel(m1, m2);
+	}
+
 	public void printMhpSummary()
 	{
 		List threads = new ArrayList();
@@ -342,7 +347,7 @@ public class UnsynchronizedMhpAnalysis
 			Iterator threadRunMethodIt = thread.getRunMethods().iterator();
 			while(threadRunMethodIt.hasNext())
 			{
-				SootClass threadClass = ((SootMethod) threadRunMethodIt.next()).getDeclaringClass();
+				SootClass threadClass = ((SootMethod) threadRunMethodIt.next()).getDeclaringClass(); // what about subclasses???
 				if( !threadClasses.contains(threadClass) && threadClass.isApplicationClass() ) // only include application threads
 					threadClasses.add(threadClass);
 			}

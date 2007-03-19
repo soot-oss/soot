@@ -1743,6 +1743,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "single-static", "Use just one static synchronization object for all transactional regions" )
                 
+                +padVal( "leave-original", "Analyse the existing lock structure without making changes" )
+                
                 +padOpt( "do-mhp (true)", "Perform a May-Happen-in-Parallel analysis" )
                 +padOpt( "do-tlo (true)", "Perform a Local-Objects analysis" )
                 +padOpt( "print-graph (false)", "Print topological graph of transactions" )

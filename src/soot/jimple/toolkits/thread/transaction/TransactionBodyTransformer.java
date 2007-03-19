@@ -61,8 +61,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 		}
 		
 		// Make sure a main routine exists.  We will insert some code into it.
-        if (!Scene.v().getMainClass().declaresMethod("void main(java.lang.String[])"))
-            throw new RuntimeException("couldn't find main() in mainClass");
+//        if (!Scene.v().getMainClass().declaresMethod("void main(java.lang.String[])"))
+//            throw new RuntimeException("couldn't find main() in mainClass");
         
         // Add all global lock objects to the main class if not yet added.
         // Get references to them if they do already exist.

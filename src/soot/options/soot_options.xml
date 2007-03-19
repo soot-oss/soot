@@ -2981,6 +2981,16 @@ Insert one static object into the program for synchronization for all
 transactional regions.  This locking scheme is for research purposes.
 </long_desc>
 						</value>
+						<value>
+							<name>Leave Original Locks</name>
+							<alias>leave-original</alias>
+							<short_desc>Analyse the existing lock structure without making changes</short_desc>
+							<long_desc>
+Analyse the existing lock structure of the program, but do not change it.  With
+one of the print options, this can be useful for comparison between the original
+program and one of the generated locking schemes.
+</long_desc>
+						</value>
 					</multiopt>
 					<boolopt>
 						<name>Perform May-Happen-in-Parallel Analysis</name>

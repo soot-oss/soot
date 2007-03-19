@@ -72,29 +72,36 @@ public class LocalObjectsAnalysis
 	
 	public boolean isObjectLocalToContext(Value localOrRef, SootMethod sm, SootMethod context)
 	{
-//		G.v().out.print("    Checking if " + localOrRef + " in " + sm + " is local to " + context + ": ");
+		G.v().out.println("    Checking if " + localOrRef + " in " + sm + " is local to " + context + ": ");
 		
 		// Handle special case
 		if(sm == context)
 		{
-//			G.v().out.println("Directly Reachable: ");
+			G.v().out.println("      Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
+			G.v().out.println("    " + (isLocal ? "LOCAL" : "SHARED"));
 			return isLocal;
 		}
 	
 		// Handle obvious case
 		if( localOrRef instanceof StaticFieldRef )
+		{
+			G.v().out.println("    SHARED");
 			return false;
+		}
 
 		// Handle uncheckable case
 		if(!sm.isConcrete())
+		{
+			G.v().out.println("    SHARED");
 			return false; // no way to tell... and how do we have access to a Local anyways???
+		}
 
 		CallLocalityContext mergedContext = null;
 		if( mergedContextsCache.containsKey(new Pair(sm, context)) )
 		{
 			mergedContext = (CallLocalityContext) mergedContextsCache.get(new Pair(sm, context));
-//			G.v().out.println("\n      Retrieved mergedContext From Cache: ");
+//			G.v().out.println("      Retrieved mergedContext From Cache: ");
 		}
 		else
 		{
@@ -112,19 +119,28 @@ public class LocalObjectsAnalysis
 			mergedContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
 			while(true)
 			{
-//					G.v().out.println("      Getting next call chain...");
+				G.v().out.println("      Getting next call chain...");
 				CallChain nextCallChain = getNextCallChainBetween(context, sm, previousChains);
 				if(nextCallChain == null)
 				{
 					// No Chains Left
+					
+					if(previousChains.size() == 0) // no chains at all
+					{
+						G.v().out.println("      Unreachable: treat as local.");
+						return true; // it's not non-local...
+					}
 					break;
 				}
 				List callChainAsList = nextCallChain.getEdges();
 //				G.v().out.println(callChain);
-				mergedContext.merge(getContextViaCallChain(context, callChainAsList));
+				if(previousChains.size() == 0)
+					mergedContext = getContextViaCallChain(context, callChainAsList);
+				else
+					mergedContext.merge(getContextViaCallChain(context, callChainAsList));
 				if(mergedContext.isAllShared(true)) // if all reftype nodes are shared
 				{
-//						G.v().out.println("      mergedContext is All Shared after " + (previousChains.size() + 1) + " call chains");
+					G.v().out.println("      mergedContext is All Shared after " + (previousChains.size() + 1) + " call chains");
 					break;
 				}
 				previousChains.add(nextCallChain);
@@ -192,10 +208,10 @@ public class LocalObjectsAnalysis
 			if(ifr.getBase() == thisLocal)
 			{
 				boolean isLocal = mergedContext.isFieldLocal(new EquivalentValue(localOrRef));
-//				if(isLocal)
-//					G.v().out.println("      LOCAL");
-//				else
-//					G.v().out.println("      SHARED");
+				if(isLocal)
+					G.v().out.println("      LOCAL  (InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");
+				else
+					G.v().out.println("      SHARED (InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");
 				return isLocal;
 			}
 			
@@ -220,10 +236,10 @@ public class LocalObjectsAnalysis
 		}
 		boolean isLocal = mloa.isObjectLocal(localOrRef, mergedContext);
 		
-//		if(isLocal)
-//			G.v().out.println("      LOCAL");
-//		else
-//			G.v().out.println("      SHARED");
+		if(isLocal)
+			G.v().out.println("      LOCAL  (Local" + localOrRef + ")");
+		else
+			G.v().out.println("      SHARED (Local" + localOrRef + ")");
 		return isLocal;
 	}
 
@@ -331,11 +347,11 @@ public class LocalObjectsAnalysis
 		path = new CallChain(endToPath, path); // initially, path and endToPath can be null
 		if(start == end)
 		{
-			if(previouslyFound.contains(path)) // don't return a call chain that was already returned in a previous run
-			{
+//			if(previouslyFound.contains(path)) // don't return a call chain that was already returned in a previous run
+//			{
 //				G.v().out.print("P");
-				return null;
-			}
+//				return null;
+//			}
 
 //			G.v().out.print("F");
 			return path;
@@ -366,7 +382,8 @@ public class LocalObjectsAnalysis
 				if(newpath != null)
 				{
 //		        	G.v().out.print("|");
-					return newpath;
+					if(!previouslyFound.contains(newpath))
+						return newpath;
 				}
 //				Iterator newpathsIt = newpaths.iterator();
 //				while(newpathsIt.hasNext())
@@ -650,6 +667,7 @@ public class LocalObjectsAnalysis
 				callingContext.setThisShared();				
 				callingContext.setAllParamsShared();
 			}
+			G.v().out.println("      " + callingMethod.getName() + " " + callingContext.toShortString());
 		}
 		return callingContext;
 	}
@@ -669,7 +687,28 @@ public class LocalObjectsAnalysis
 		if(ie instanceof InstanceInvokeExpr)
 		{
 			InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-			if(isObjectLocalToParent(iie.getBase(), startingMethod))
+			if( !startingMethod.isStatic() && iie.getBase().equivTo(startingMethod.retrieveActiveBody().getThisLocal()) )
+			{
+				// calling another method on same object... basically copy the previous context
+				ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(startingMethod.getDeclaringClass());
+				CallLocalityContext containingContext = cloa.getContextFor(startingMethod);
+
+				Iterator localRefsIt = containingContext.getLocalRefs().iterator();
+				while(localRefsIt.hasNext())
+				{
+					EquivalentValue rEqVal = (EquivalentValue) localRefsIt.next();
+					Ref r = (Ref) rEqVal.getValue();
+					if(r instanceof InstanceFieldRef)
+					{
+						EquivalentValue newRefEqVal = dfa.getEquivalentValueFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
+						if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
+							callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
+					}
+					else if(r instanceof ThisRef)
+						callingContext.setThisLocal();
+				}
+			}
+			else if(isObjectLocalToParent(iie.getBase(), startingMethod))
 			{
 				callingContext.setAllFieldsLocal();
 				callingContext.setThisLocal();
@@ -729,6 +768,7 @@ public class LocalObjectsAnalysis
 		Edge e = (Edge) callChain.get(0);
 		CallLocalityContext callContext = getInitialContext(startingMethod, e); // gets calllocalitycontext of first call
 		SootMethod callMethod = e.tgt();
+		G.v().out.println("      " + callMethod.getName() + " " + callContext.toShortString());
 		
 		// Remove the first call, and get context at end of chain (method is sm)
 		callChain.remove(0);

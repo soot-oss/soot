@@ -4,6 +4,7 @@ import soot.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.dataflow.*;
+import soot.jimple.toolkits.thread.mhp.*;
 import soot.jimple.*;
 
 // ThreadLocalObjectsAnalysis written by Richard L. Halpert, 2007-03-05
@@ -12,16 +13,18 @@ import soot.jimple.*;
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 {
+	MhpTester mhp;
 	List threads;
 	
 	Map valueCache;
 	Map fieldCache;
 	Map invokeCache;
 	
-	public ThreadLocalObjectsAnalysis(DataFlowAnalysis dfa, List threads) // must include main class
+	public ThreadLocalObjectsAnalysis(DataFlowAnalysis dfa, MhpTester mhp) // must include main class
 	{
 		super(dfa);
-		this.threads = threads;
+		this.mhp = mhp;
+		this.threads = mhp.getThreads();
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
@@ -31,13 +34,15 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	// Determines if a RefType Local or a FieldRef is Thread-Local
 	public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm)
 	{
+		if(threads.size() <= 1)
+			return true;
 		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
 		if(valueCache.containsKey(cacheKey))
 		{
 			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
 		}
 			
-		G.v().out.print("- " + localOrRef + " in " + sm + " is ");
+		G.v().out.println("- " + localOrRef + " in " + sm + " is...");
 		Iterator threadsIt = threads.iterator();
 		while(threadsIt.hasNext())
 		{
@@ -49,7 +54,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 				if( runMethod.getDeclaringClass().isApplicationClass() &&
 					!isObjectLocalToContext(localOrRef, sm, runMethod))
 				{
-					G.v().out.println("THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+					G.v().out.println("  THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
 													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
 													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 					valueCache.put(cacheKey, Boolean.FALSE);
@@ -57,7 +62,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 				}
 			}
 		}
-		G.v().out.println("THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+		G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
 						 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
 						 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
 		valueCache.put(cacheKey, Boolean.TRUE);
@@ -85,6 +90,10 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public boolean hasNonThreadLocalEffects(SootMethod containingMethod, InvokeExpr ie)
 	{
+		if(threads.size() <= 1)
+			return true;
+		return true;
+/*
 		Pair cacheKey = new Pair(new EquivalentValue(ie), containingMethod);
 		if(invokeCache.containsKey(cacheKey))
 		{
@@ -116,5 +125,6 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 												" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 		invokeCache.put(cacheKey, Boolean.FALSE);
 		return false;
+//*/
 	}
 }

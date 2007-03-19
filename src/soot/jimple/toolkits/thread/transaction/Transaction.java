@@ -1,9 +1,12 @@
 package soot.jimple.toolkits.thread.transaction;
 
+import soot.Local;
 import soot.jimple.Stmt;
+import soot.jimple.EnterMonitorStmt;
 import java.util.Vector;
 import java.util.HashSet;
 import java.util.HashMap;
+import soot.jimple.toolkits.dataflow.AbstractDataSource;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.SootMethod;
 import soot.Value;
@@ -17,6 +20,7 @@ class Transaction
 	public int nestLevel;
 	public String name;
 	public Stmt begin;
+	public Value origLock;
 	public Vector ends;
 	public CodeBlockRWSet read, write;
 	public HashSet invokes;
@@ -42,6 +46,20 @@ class Transaction
 		nextIDNum++;
 		this.nestLevel = nestLevel;
 		this.begin = begin;
+		if(begin != null && begin instanceof EnterMonitorStmt)
+			this.origLock = (Local) ((EnterMonitorStmt) begin).getOp();
+		else
+		{
+			if(wholeMethod)
+			{
+				if(method.isStatic())
+					this.origLock = new AbstractDataSource( method.getDeclaringClass().getName() + ".class" ); // a dummy type meant for display
+				else
+					this.origLock = method.retrieveActiveBody().getThisLocal();
+			}
+			else
+				this.origLock = null;
+		}
 		this.ends = new Vector();
 		this.read = new CodeBlockRWSet();
 		this.write = new CodeBlockRWSet();
@@ -64,6 +82,7 @@ class Transaction
 		this.IDNum = tn.IDNum;
 		this.nestLevel = tn.nestLevel;
 		this.begin = tn.begin;
+		this.origLock = tn.origLock;
 		this.ends = (Vector) tn.ends.clone();
 		this.read = new CodeBlockRWSet(); this.read.union(tn.read);
 		this.write = new CodeBlockRWSet(); this.write.union(tn.write);

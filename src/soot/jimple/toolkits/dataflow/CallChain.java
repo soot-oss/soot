@@ -76,4 +76,17 @@ public class CallChain
 			
 		return new CallChain(edge, (CallChain) next.clone());	
 	}
+	
+	public boolean equals(Object o)
+	{
+		if(o instanceof CallChain)
+		{
+			CallChain other = (CallChain) o;
+			if(edge == other.edge && 
+			   ((next == null && other.next == null) ||
+				(next != null && other.next != null && next.equals(other.next))))
+				return true;
+		}
+		return false;
+	}
 }

@@ -268,8 +268,14 @@ public class CallLocalityContext
 	{
 		for(int i = 0; i < nodes.size(); i++)
 		{
-			if( (!refsOnly || ((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType) && ((Boolean) isNodeLocal.get(i)).booleanValue())
+			if( (!refsOnly) && ((Boolean) isNodeLocal.get(i)).booleanValue() )
+			{
 				return false;
+			}
+			else if( ((EquivalentValue) nodes.get(i)).getValue().getType() instanceof RefLikeType && ((Boolean) isNodeLocal.get(i)).booleanValue() )
+			{
+				return false;
+			}
 		}
 		return true;
 	}

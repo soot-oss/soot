@@ -140,7 +140,13 @@ public class UseFinder
 							else
 							{
 								// ref to some other class is considered external
-								((List) classToExtFieldAccesses.get(appClass)).add(new Pair(method, s));
+								List otherClassList = ((List) classToExtFieldAccesses.get(fr.getFieldRef().resolve().getDeclaringClass()));
+								if(otherClassList == null)
+								{
+									otherClassList = new ArrayList();
+									classToExtFieldAccesses.put(fr.getFieldRef().resolve().getDeclaringClass(), otherClassList);
+								}
+								otherClassList.add(new Pair(method, s));
 							}
 						}
 						if(s.containsInvokeExpr())
@@ -171,7 +177,13 @@ public class UseFinder
 							else
 							{
 								// ref to some other class is considered external
-								((List) classToExtCalls.get(appClass)).add(new Pair(method, s));
+								List otherClassList = ((List) classToExtCalls.get(ie.getMethodRef().resolve().getDeclaringClass()));
+								if(otherClassList == null)
+								{
+									otherClassList = new ArrayList();
+									classToExtCalls.put(ie.getMethodRef().resolve().getDeclaringClass(), otherClassList);
+								}
+								otherClassList.add(new Pair(method, s));
 							}
 						}
 					}

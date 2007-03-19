@@ -189,9 +189,10 @@ public class ClassLocalObjectsAnalysis
 			}
 		}
 		
-/*		// DEBUG: Print out the resulting list!
-		G.v().out.println("Found local/shared fields for " + sootClass.toString());
-		G.v().out.println("    Local fields: ");
+///*
+		// DEBUG: Print out the resulting list!
+		G.v().out.println("        Found local/shared fields for " + sootClass.toString());
+		G.v().out.println("          Local fields: ");
 		Iterator localsToPrintIt = localFields.iterator();
 		while(localsToPrintIt.hasNext())
 		{
@@ -199,7 +200,7 @@ public class ClassLocalObjectsAnalysis
 			if(localToPrint.getDeclaringClass().isApplicationClass())
 				G.v().out.println("                  " + localToPrint);
 		}
-		G.v().out.println("    Shared fields: ");
+		G.v().out.println("          Shared fields: ");
 		Iterator sharedsToPrintIt = sharedFields.iterator();
 		while(sharedsToPrintIt.hasNext())
 		{
@@ -207,7 +208,7 @@ public class ClassLocalObjectsAnalysis
 			if(sharedToPrint.getDeclaringClass().isApplicationClass())
 				G.v().out.println("                  " + sharedToPrint);
 		}
-*/
+//*/
 				
 /*		Done on demand now
 		// Analyze each method: determine which Locals are local and which are shared
@@ -232,7 +233,7 @@ public class ClassLocalObjectsAnalysis
 			return false;
 		}
 		
-//		G.v().out.println("CLOA testing if " + localOrRef + " is local in " + sm);
+		G.v().out.println("      CLOA testing if " + localOrRef + " is local in " + sm);
 
 		SmartMethodLocalObjectsAnalysis smloa = getMethodLocalObjectsAnalysis(sm);
 		if(localOrRef instanceof InstanceFieldRef)
@@ -245,13 +246,27 @@ public class ClassLocalObjectsAnalysis
 				// if referred object is local, then find out if field is local in that object
 				if(isObjectLocal(ifr.getBase(), sm))
 				{
-					return loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
+					boolean retval = loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
+					G.v().out.println("      " + (retval ? "local" : "shared"));
+					return retval;
 				}
 				else
+				{
+					G.v().out.println("      shared");
 					return false;
+				}
 			}
 		}
 		// TODO Prepare a CallLocalityContext!
+		CallLocalityContext context = getContextFor(sm);
+		
+		boolean retval = smloa.isObjectLocal(localOrRef, context);
+		G.v().out.println("      " + (retval ? "local" : "shared"));
+		return retval;
+	}
+	
+	public CallLocalityContext getContextFor(SootMethod sm)
+	{
 		CallLocalityContext context = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
 		// Set context for every parameter that is shared
 		for(int i = 0; i < sm.getParameterCount(); i++) // no need to worry about return value... 
@@ -282,8 +297,7 @@ public class ClassLocalObjectsAnalysis
 			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
 			context.setFieldShared(fieldRefEqVal);
 		}
-		
-		return smloa.isObjectLocal(localOrRef, context);
+		return context;
 	}
 	
 	public SmartMethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
@@ -367,7 +381,17 @@ public class ClassLocalObjectsAnalysis
 	
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
 	{
-		List extClassCalls = uf.getExtCalls(sootClass); // returns all external accesses
+		G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
+		// Check if param is primitive or ref type
+		ParameterRef param = (ParameterRef) parameterRef.getValue();
+		if( !(param.getType() instanceof RefLikeType) )
+		{
+			G.v().out.println("          PARAM is local (primitive)");
+			return true; // primitive params are always considered local
+		}
+		
+		// Check if method is externally called
+		List extClassCalls = uf.getExtCalls(sootClass);
 		Iterator extClassCallsIt = extClassCalls.iterator();
 		while(extClassCallsIt.hasNext())
 		{
@@ -375,12 +399,14 @@ public class ClassLocalObjectsAnalysis
 			Stmt s = (Stmt) extCall.getO2();
 			if(s.getInvokeExpr().getMethodRef().resolve() == method)
 			{
-				return false;
+				G.v().out.println("          PARAM is shared (external access)");
+				return false; // If so, assume it's params are shared
 			}
 		}
 		
+		// For each internal call, check if arg is local or shared
 		List intClassCalls = uf.getIntCalls(sootClass);
-		Iterator intClassCallsIt = intClassCalls.iterator(); // returns all external accesses
+		Iterator intClassCallsIt = intClassCalls.iterator(); // returns all internal accesses
 		while(intClassCallsIt.hasNext())
 		{
 			Pair intCall = (Pair) intClassCallsIt.next();
@@ -390,12 +416,17 @@ public class ClassLocalObjectsAnalysis
 			if(ie.getMethodRef().resolve() == method)
 			{
 				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod )) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
-					return false;
+				{
+					G.v().out.println("          PARAM is shared (internal propagation)");
+					return false; // if arg is shared for any internal call, then param is shared
+				}
 			}
 		}
-		return true;
+		G.v().out.println("          PARAM is local SO FAR (internal propagation)");
+		return true; // if argument is always local, then parameter is local
 	}
 	
+	// TODO: SOUND/UNSOUND???
 	protected boolean thisIsLocal(SootMethod method, EquivalentValue thisRef)
 	{
 		return true;
