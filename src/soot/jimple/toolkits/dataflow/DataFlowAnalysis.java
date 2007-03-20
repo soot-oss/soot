@@ -17,11 +17,19 @@ import soot.jimple.*;
 
 public class DataFlowAnalysis
 {
+	boolean includePrimitiveDataFlow;
+
 	Map classToClassDataFlowAnalysis;
 	
-	public DataFlowAnalysis()
+	public DataFlowAnalysis(boolean includePrimitiveDataFlow)
 	{
-		 classToClassDataFlowAnalysis = new HashMap();
+		this.includePrimitiveDataFlow = includePrimitiveDataFlow;
+		classToClassDataFlowAnalysis = new HashMap();
+	}
+	
+	public boolean includesPrimitiveDataFlow()
+	{
+		return includePrimitiveDataFlow;
 	}
 	
 /*

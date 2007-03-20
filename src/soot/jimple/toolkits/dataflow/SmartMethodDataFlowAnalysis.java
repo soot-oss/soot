@@ -30,9 +30,9 @@ public class SmartMethodDataFlowAnalysis
 	
 	public static int counter = 0;
 	
-	public SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
+	public SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa)
 	{
-		this(g, dfa, ignoreNonRefTypeFlow, true);
+		this(g, dfa, true);
 		
 		counter++;
 		
@@ -117,7 +117,7 @@ public class SmartMethodDataFlowAnalysis
 	}
 	
 	/** A constructor that doesn't run the analysis */
-	protected SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
+	protected SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean dummyDontRunAnalysisYet)
 	{
 		graph = g;
 		this.sm = g.getBody().getMethod();
@@ -126,7 +126,7 @@ public class SmartMethodDataFlowAnalysis
 		else
 			this.thisLocal = g.getBody().getThisLocal();
 		this.dfa = dfa;
-		this.refOnly = ignoreNonRefTypeFlow;
+		this.refOnly = !dfa.includesPrimitiveDataFlow();
 		
 		this.abbreviatedDataFlowGraph = new MemoryEfficientGraph();
 		this.dataFlowSummary = new MemoryEfficientGraph();

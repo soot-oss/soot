@@ -101,12 +101,11 @@ public class TransactionTransformer extends SceneTransformer
 
 
 		// *** Find Thread-Local Objects ***
-   		DataFlowAnalysis dfa = new DataFlowAnalysis(); // generates a data flow summary for a given method on-demand
 		ThreadLocalObjectsAnalysis tlo = null;
     	if(optionDoTLO && mhp != null)
     	{
 	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
-    		tlo = new ThreadLocalObjectsAnalysis(dfa, mhp); // can tell only that a field/local is local to the object it's being accessed in
+    		tlo = new ThreadLocalObjectsAnalysis(mhp); // can tell only that a field/local is local to the object it's being accessed in
     	}
 
 

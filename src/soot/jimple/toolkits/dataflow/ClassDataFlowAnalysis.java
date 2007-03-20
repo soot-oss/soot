@@ -53,7 +53,7 @@ public class ClassDataFlowAnalysis
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
+				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa);
 
 				methodToDataFlowAnalysis.put(method, smdfa);
 				methodToDataFlowGraph.remove(method);
@@ -84,7 +84,7 @@ public class ClassDataFlowAnalysis
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
+				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa);
 
 				methodToDataFlowAnalysis.put(method, smdfa);
 				methodToDataFlowGraph.remove(method);
@@ -284,7 +284,7 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefLikeType) )
+			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow())
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
@@ -298,7 +298,7 @@ public class ClassDataFlowAnalysis
 				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType))
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveDataFlow()))
 				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
 		}
 		
@@ -382,7 +382,7 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefLikeType) )
+			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow() )
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
@@ -396,7 +396,7 @@ public class ClassDataFlowAnalysis
 				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType) )
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveDataFlow()) )
 				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
 		}
 		

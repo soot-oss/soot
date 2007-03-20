@@ -381,12 +381,14 @@ public class ClassLocalObjectsAnalysis
 	
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
 	{
-		G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
+		if(method.getDeclaringClass().isApplicationClass())
+			G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
 		// Check if param is primitive or ref type
 		ParameterRef param = (ParameterRef) parameterRef.getValue();
-		if( !(param.getType() instanceof RefLikeType) )
+		if( !(param.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow() )
 		{
-			G.v().out.println("          PARAM is local (primitive)");
+			if(method.getDeclaringClass().isApplicationClass())
+				G.v().out.println("          PARAM is local (primitive)");
 			return true; // primitive params are always considered local
 		}
 		
@@ -399,7 +401,8 @@ public class ClassLocalObjectsAnalysis
 			Stmt s = (Stmt) extCall.getO2();
 			if(s.getInvokeExpr().getMethodRef().resolve() == method)
 			{
-				G.v().out.println("          PARAM is shared (external access)");
+				if(method.getDeclaringClass().isApplicationClass())
+					G.v().out.println("          PARAM is shared (external access)");
 				return false; // If so, assume it's params are shared
 			}
 		}
@@ -417,12 +420,14 @@ public class ClassLocalObjectsAnalysis
 			{
 				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod )) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
 				{
-					G.v().out.println("          PARAM is shared (internal propagation)");
+					if(method.getDeclaringClass().isApplicationClass())
+						G.v().out.println("          PARAM is shared (internal propagation)");
 					return false; // if arg is shared for any internal call, then param is shared
 				}
 			}
 		}
-		G.v().out.println("          PARAM is local SO FAR (internal propagation)");
+		if(method.getDeclaringClass().isApplicationClass())
+			G.v().out.println("          PARAM is local SO FAR (internal propagation)");
 		return true; // if argument is always local, then parameter is local
 	}
 	

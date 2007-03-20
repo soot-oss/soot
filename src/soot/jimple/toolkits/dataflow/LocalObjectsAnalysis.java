@@ -398,7 +398,8 @@ public class LocalObjectsAnalysis
 		}
 //		G.v().out.print("(" + paths.size() + ")");
 //		if(paths.size() < 100)
-		callChainsCache.put(cacheKey, null);
+		if(previouslyFound.size() == 0)
+			callChainsCache.put(cacheKey, null);
 //		G.v().out.print("|");
 		return null;
 	}
