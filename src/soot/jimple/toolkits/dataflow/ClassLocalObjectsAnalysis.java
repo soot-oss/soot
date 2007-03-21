@@ -15,6 +15,7 @@ public class ClassLocalObjectsAnalysis
 {
 	LocalObjectsAnalysis loa;
 	DataFlowAnalysis dfa;
+	DataFlowAnalysis primitiveDfa;
 	UseFinder uf;
 	SootClass sootClass;
 	
@@ -28,6 +29,23 @@ public class ClassLocalObjectsAnalysis
 	{
 		 this.loa = loa;
 		 this.dfa = dfa;
+		 this.primitiveDfa = null;
+		 this.uf = uf;
+		 this.sootClass = sootClass;
+		 
+		 methodToMethodLocalObjectsAnalysis = new HashMap();
+		 
+		 localFields = new ArrayList();
+		 sharedFields = new ArrayList();
+		 
+		 doAnalysis();
+	}
+	
+	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, DataFlowAnalysis primitiveDfa, UseFinder uf, SootClass sootClass)
+	{
+		 this.loa = loa;
+		 this.dfa = dfa;
+		 this.primitiveDfa = primitiveDfa;
 		 this.uf = uf;
 		 this.sootClass = sootClass;
 		 
@@ -125,7 +143,12 @@ public class ClassLocalObjectsAnalysis
 					SootField localField = (SootField) localFieldsIt.next();
 					List sourcesAndSinks = new ArrayList();
 
-					MutableDirectedGraph dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+					MutableDirectedGraph dataFlowSummary;
+					if(primitiveDfa != null)
+						dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+					else
+						dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+					
 					EquivalentValue node = dfa.getEquivalentValueFieldRef(method, localField);
 					if(dataFlowSummary.containsNode(node))
 					{
@@ -151,7 +174,7 @@ public class ClassLocalObjectsAnalysis
 						boolean fieldBecomesShared = false;
 						if(sourceOrSinkRef instanceof ParameterRef) // or return ref
 						{
-							fieldBecomesShared = !parameterIsLocal(method, sourceOrSink);
+							fieldBecomesShared = !parameterIsLocal(method, sourceOrSink, true);
 						}
 						else if(sourceOrSinkRef instanceof ThisRef) // or return ref
 						{
@@ -226,7 +249,8 @@ public class ClassLocalObjectsAnalysis
 */
 	}
 
-	public boolean isObjectLocal(Value localOrRef, SootMethod sm)
+	public boolean isObjectLocal(Value localOrRef, SootMethod sm) { return isObjectLocal(localOrRef, sm, false); }	
+	private boolean isObjectLocal(Value localOrRef, SootMethod sm, boolean includePrimitiveDataFlowIfAvailable)
 	{
 		if(localOrRef instanceof StaticFieldRef)
 		{
@@ -235,7 +259,7 @@ public class ClassLocalObjectsAnalysis
 		
 		G.v().out.println("      CLOA testing if " + localOrRef + " is local in " + sm);
 
-		SmartMethodLocalObjectsAnalysis smloa = getMethodLocalObjectsAnalysis(sm);
+		SmartMethodLocalObjectsAnalysis smloa = getMethodLocalObjectsAnalysis(sm, includePrimitiveDataFlowIfAvailable);
 		if(localOrRef instanceof InstanceFieldRef)
 		{
 			InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
@@ -244,7 +268,7 @@ public class ClassLocalObjectsAnalysis
 			else
 			{
 				// if referred object is local, then find out if field is local in that object
-				if(isObjectLocal(ifr.getBase(), sm))
+				if(isObjectLocal(ifr.getBase(), sm, includePrimitiveDataFlowIfAvailable))
 				{
 					boolean retval = loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
 					G.v().out.println("      " + (retval ? "local" : "shared"));
@@ -265,14 +289,20 @@ public class ClassLocalObjectsAnalysis
 		return retval;
 	}
 	
-	public CallLocalityContext getContextFor(SootMethod sm)
+	public CallLocalityContext getContextFor(SootMethod sm) { return getContextFor(sm, false); }
+	private CallLocalityContext getContextFor(SootMethod sm, boolean includePrimitiveDataFlowIfAvailable)
 	{
-		CallLocalityContext context = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
+		CallLocalityContext context;
+		if(includePrimitiveDataFlowIfAvailable)
+			context = new CallLocalityContext(primitiveDfa.getMethodDataFlowGraph(sm).getNodes());
+		else
+			context = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
+		
 		// Set context for every parameter that is shared
 		for(int i = 0; i < sm.getParameterCount(); i++) // no need to worry about return value... 
 		{
 			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(sm, i);
-			if(parameterIsLocal(sm, paramEqVal))
+			if(parameterIsLocal(sm, paramEqVal, includePrimitiveDataFlowIfAvailable))
 			{
 				context.setParamLocal(i);
 			}
@@ -300,9 +330,16 @@ public class ClassLocalObjectsAnalysis
 		return context;
 	}
 	
-	public SmartMethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm)
+	public SmartMethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm) { return getMethodLocalObjectsAnalysis(sm, false); }
+	private SmartMethodLocalObjectsAnalysis getMethodLocalObjectsAnalysis(SootMethod sm, boolean includePrimitiveDataFlowIfAvailable)
 	{
-		if(!methodToMethodLocalObjectsAnalysis.containsKey(sm))
+		if(includePrimitiveDataFlowIfAvailable && primitiveDfa != null)
+		{
+			Body b = sm.retrieveActiveBody();
+			UnitGraph g = new ExceptionalUnitGraph(b);
+			return new SmartMethodLocalObjectsAnalysis(g, primitiveDfa);
+		}
+		else if(!methodToMethodLocalObjectsAnalysis.containsKey(sm))
 		{
 			// Analyze this method
 			Body b = sm.retrieveActiveBody();
@@ -379,13 +416,15 @@ public class ClassLocalObjectsAnalysis
 		return localFields.contains( ((SootFieldRef) fieldRef.getValue()).resolve() );
 	}	
 	
-	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef)
+	public boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef) { return parameterIsLocal(method, parameterRef, false); }
+	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef, boolean includePrimitiveDataFlowIfAvailable)
 	{
 		if(method.getDeclaringClass().isApplicationClass())
 			G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
+			
 		// Check if param is primitive or ref type
 		ParameterRef param = (ParameterRef) parameterRef.getValue();
-		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveDataFlow() || method.getName().equals("<init>")) )
+		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveDataFlow() || method.getName().equals("<init>")) ) // TODO fix
 		{
 			if(method.getDeclaringClass().isApplicationClass())
 				G.v().out.println("          PARAM is local (primitive)");
@@ -418,7 +457,7 @@ public class ClassLocalObjectsAnalysis
 			InvokeExpr ie = s.getInvokeExpr();
 			if(ie.getMethodRef().resolve() == method)
 			{
-				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
 				{
 					if(method.getDeclaringClass().isApplicationClass())
 						G.v().out.println("          PARAM is shared (internal propagation)");

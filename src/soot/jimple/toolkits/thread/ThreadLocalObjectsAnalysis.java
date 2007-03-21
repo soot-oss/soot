@@ -15,6 +15,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 {
 	MhpTester mhp;
 	List threads;
+	DataFlowAnalysis primitiveDfa;
 	
 	Map valueCache;
 	Map fieldCache;
@@ -22,15 +23,22 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new DataFlowAnalysis(true)); // use a data flow analysis that includes primitive data flow
+		super(new DataFlowAnalysis(false));
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
+		this.primitiveDfa = new DataFlowAnalysis(true);
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
 		invokeCache = new HashMap();
 	}
 
+	// override
+	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sc)
+	{
+		return new ClassLocalObjectsAnalysis(loa, dfa, primitiveDfa, uf, sc);
+	}
+	
 	// Determines if a RefType Local or a FieldRef is Thread-Local
 	public boolean isObjectThreadLocal(Value localOrRef, SootMethod sm)
 	{
