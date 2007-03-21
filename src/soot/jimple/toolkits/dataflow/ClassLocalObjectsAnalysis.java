@@ -225,7 +225,7 @@ public class ClassLocalObjectsAnalysis
 		}
 */
 	}
-	
+
 	public boolean isObjectLocal(Value localOrRef, SootMethod sm)
 	{
 		if(localOrRef instanceof StaticFieldRef)
@@ -385,7 +385,7 @@ public class ClassLocalObjectsAnalysis
 			G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
 		// Check if param is primitive or ref type
 		ParameterRef param = (ParameterRef) parameterRef.getValue();
-		if( !(param.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow() )
+		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveDataFlow() || method.getName().equals("<init>")) )
 		{
 			if(method.getDeclaringClass().isApplicationClass())
 				G.v().out.println("          PARAM is local (primitive)");
@@ -418,7 +418,7 @@ public class ClassLocalObjectsAnalysis
 			InvokeExpr ie = s.getInvokeExpr();
 			if(ie.getMethodRef().resolve() == method)
 			{
-				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod )) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
 				{
 					if(method.getDeclaringClass().isApplicationClass())
 						G.v().out.println("          PARAM is shared (internal propagation)");

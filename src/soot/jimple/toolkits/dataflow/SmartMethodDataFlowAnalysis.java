@@ -155,17 +155,13 @@ public class SmartMethodDataFlowAnalysis
 		while(nodeIt.hasNext())
 		{
 			EquivalentValue node = (EquivalentValue) nodeIt.next();
-			List sources = sourcesOf(node, new HashSet(), new HashSet());
-//			G.v().out.print("| ");
+			List sources = sourcesOf(node);
 			Iterator sourcesIt = sources.iterator();
 			while(sourcesIt.hasNext())
 			{
 				EquivalentValue source = (EquivalentValue) sourcesIt.next();
 				if(source.getValue() instanceof Ref)
 				{
-//					SHOULD be handled during compressedDFG generation
-//					if(!dataFlowSummary.containsNode(source))
-//						dataFlowSummary.addNode(source);
 					dataFlowSummary.addEdge(source, node);
 				}
 			}
@@ -214,7 +210,7 @@ public class SmartMethodDataFlowAnalysis
 	}
 	
 	public List sinksOf(EquivalentValue node) { return sinksOf(node, new HashSet(), new HashSet()); }
-	public List sinksOf(EquivalentValue node, Set visitedSources, Set visitedSinks)
+	private List sinksOf(EquivalentValue node, Set visitedSources, Set visitedSinks)
 	{
 		List ret = new LinkedList();
 

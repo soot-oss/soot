@@ -237,9 +237,9 @@ public class LocalObjectsAnalysis
 		boolean isLocal = mloa.isObjectLocal(localOrRef, mergedContext);
 		
 		if(isLocal)
-			G.v().out.println("      LOCAL  (Local" + localOrRef + ")");
+			G.v().out.println("      LOCAL  (Local " + localOrRef + ")");
 		else
-			G.v().out.println("      SHARED (Local" + localOrRef + ")");
+			G.v().out.println("      SHARED (Local " + localOrRef + ")");
 		return isLocal;
 	}
 
@@ -737,29 +737,6 @@ public class LocalObjectsAnalysis
 		return callingContext;
 	}
 	
-/*
-	private boolean areCallChainsEqual(List cc1, List cc2)
-	{
-		if(cc1.size() != cc2.size())
-			return false;
-		Iterator cc1It = cc1.iterator();
-		Iterator cc2It = cc2.iterator();
-		while(cc1It.hasNext())
-		{
-			Pair cc1call = (Pair) cc1It.next();
-			Pair cc2call = (Pair) cc2It.next();
-			InvokeExpr cc1ie = (InvokeExpr) cc1call.getO1();
-			SootMethod cc1method = (SootMethod) cc1call.getO2();
-			InvokeExpr cc2ie = (InvokeExpr) cc2call.getO1();
-			SootMethod cc2method = (SootMethod) cc2call.getO2();
-
-			if(cc1ie != cc2ie) return false;
-			if(cc1method != cc2method) return false;
-		}
-		return true;
-	}
-*/
-	
 	private CallLocalityContext getContextViaCallChain(SootMethod startingMethod, List callChain) // destroys callChain
 	{
 		// SHOULD PERFORM CACHING, since it's likely that we'll ask about several values in the same method
@@ -776,65 +753,6 @@ public class LocalObjectsAnalysis
 		CallLocalityContext endContext = getContextAtEndOfCallChain(callContext, callMethod, callChain);
 		return endContext;
 	}
-	
-	public boolean isObjectLocalToContextViaCallChain(Value localOrRef, SootMethod sm, SootClass context, SootMethod startingMethod, List callChain) // can be partial call chain... just calls isObjectLocalToContext on top of chain
-	{
-		// Filter out illegal inputs
-		if(!sm.isConcrete())
-			return false; // no way to tell... and how do we have access to a Local anyways???
-			
-		// check if call chain reaches sm... if not then gripe
-		if( sm != (SootMethod) ((Pair) callChain.get(callChain.size() - 1)).getO2() )
-			throw new RuntimeException("Cannot determine if a Local is local via a call chain that does not end in the Local's containing method");
-
-		// Handle obvious case
-		if( localOrRef instanceof StaticFieldRef )
-			return false;
-
-		// get the local/shared info for sm given callChain from context, startingMethod
-		CallLocalityContext smContext = getContextViaCallChain(startingMethod, callChain);
-		
-		//
-		Body b = sm.retrieveActiveBody();
-
-		// localOrRef can actually be a field ref
-		if( localOrRef instanceof InstanceFieldRef )
-		{
-			InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
-			if(ifr.getBase() == b.getThisLocal())
-				return smContext.isFieldLocal(new EquivalentValue(localOrRef));
-			
-			localOrRef = ifr.getBase(); // search for the ref through which the field is accessed
-		}
-		
-		// Check if localOrRef is Local in smContext
-		UnitGraph g = new ExceptionalUnitGraph(b);
-		MethodLocalObjectsAnalysis mloa = new MethodLocalObjectsAnalysis(g, smContext, dfa);
-		return mloa.isObjectLocal(localOrRef);
-	}
-
-/*
-	// BROKEN
-	// It's not recommended to use this... sf must be a field of sm.getDeclaringClass()
-	public boolean isFieldLocalToContextViaCallChain(SootField sf, SootMethod sm, SootClass context, SootMethod startingMethod, List callChain) // can be partial call chain... just calls isObjectLocalToContext on top of chain
-	{
-		// Filter out illegal inputs
-		if(sf.getDeclaringClass() != sm.getDeclaringClass())
-			throw new RuntimeException("Misuse of isFieldLocalToContextViaCallChain(): field in question must be a field of the containing method's declaring class.");
-		
-		if(!sm.isConcrete())
-			return false; // no way to tell... and how do we have access to a Local anyways???
-			
-		// check if call chain reaches sm... if not then gripe
-		if( sm != (SootMethod) ((Pair) callChain.get(callChain.size() - 1)).getO2() )
-			throw new RuntimeException("Cannot determine if a Local is local via a call chain that does not end in the Local's containing method");
-
-		// get the local/shared info for sm given callChain from context, startingMethod
-		CallLocalityContext smContext = getContextViaCallChain(startingMethod, callChain);
-		G.v().out.print(smContext.toString());
-		return smContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, sf));
-	}
-*/
 	
 	// returns a list of all methods that can be invoked on an object of type sc
 	public List getAllMethodsForClass(SootClass sootClass)
