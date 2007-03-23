@@ -17,10 +17,6 @@ public class CallLocalityContext
 
 	public CallLocalityContext(List nodes)
 	{
-//		if(nodes == null)
-//			throw new RuntimeException("Cannot create CallLocalityContext with null nodes list... it's illogical.");
-//		if(nodes.size() == 0)
-//			throw new RuntimeException("Cannot create CallLocalityContext with empty nodes list... it's illogical.");
 		this.nodes = new ArrayList();
 		this.nodes.addAll(nodes);
 
@@ -239,14 +235,20 @@ public class CallLocalityContext
 		return false;
 	}
 	
-	public void merge(CallLocalityContext other)
+	// merges two contexts into one... shared fields in either context are shared in the merged context
+	// return true if merge causes this context to change
+	public boolean merge(CallLocalityContext other)
 	{
+		boolean isChanged = false;
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			Boolean temp = new Boolean(((Boolean) isNodeLocal.get(i)).booleanValue() && ((Boolean) other.isNodeLocal.get(i)).booleanValue());
+			if( !temp.equals((Boolean) isNodeLocal.get(i)) )
+				isChanged = true;
 			isNodeLocal.remove(i);
 			isNodeLocal.add(i, temp);
 		}
+		return isChanged;
 	}
 	
 	public boolean equals(Object o)

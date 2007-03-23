@@ -12,18 +12,23 @@ import soot.jimple.*;
 public class SmartMethodLocalObjectsAnalysis
 {
 	public static int counter = 0;
+	static boolean printMessages;
 	
 	SootMethod method;
 	SmartMethodDataFlowAnalysis smdfa;
-	boolean printMessages;
 
+	public SmartMethodLocalObjectsAnalysis(SootMethod method, DataFlowAnalysis dfa)
+	{
+		this.method = method;
+		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
+		
+		printMessages = false;
+		counter++;
+	}
+	
 	public SmartMethodLocalObjectsAnalysis(UnitGraph g, DataFlowAnalysis dfa)
 	{
-		this.method = g.getBody().getMethod();
-		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
-		this.printMessages = false;
-		
-		counter++;
+		this(g.getBody().getMethod(), dfa);
 	}
 	
 	public Value getThisLocal()
@@ -34,6 +39,30 @@ public class SmartMethodLocalObjectsAnalysis
 	// 
 	public boolean isObjectLocal(Value local, CallLocalityContext context) // to this analysis of this method (which depends on context)
 	{
+		List sources = smdfa.sourcesOf(new EquivalentValue(local));
+		Iterator sourcesIt = sources.iterator();
+		while(sourcesIt.hasNext())
+		{
+			EquivalentValue source = (EquivalentValue) sourcesIt.next();
+			if(source.getValue() instanceof Ref)
+			{
+				if(!context.isFieldLocal(source))
+				{
+					if(printMessages)
+						G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+					return false;
+				}
+			}
+		}
+		if(printMessages)
+			G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+		return true;
+	}
+	
+	public static boolean isObjectLocal(DataFlowAnalysis dfa, SootMethod method, CallLocalityContext context, Value local)
+	{
+		SmartMethodDataFlowAnalysis smdfa = dfa.getMethodDataFlowAnalysis(method);
+		
 		List sources = smdfa.sourcesOf(new EquivalentValue(local));
 		Iterator sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())

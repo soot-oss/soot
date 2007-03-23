@@ -36,7 +36,22 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	// override
 	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sc)
 	{
-		return new ClassLocalObjectsAnalysis(loa, dfa, primitiveDfa, uf, sc);
+		// find the right run methods to use for threads of type sc
+		List runMethods = new ArrayList();
+		Iterator threadsIt = threads.iterator();
+		while(threadsIt.hasNext())
+		{
+			AbstractRuntimeThread thread = (AbstractRuntimeThread) threadsIt.next();
+			Iterator runMethodsIt = thread.getRunMethods().iterator();
+			while(runMethodsIt.hasNext())
+			{
+				SootMethod runMethod = (SootMethod) runMethodsIt.next();
+				if( runMethod.getDeclaringClass() == sc )
+					runMethods.add(runMethod);
+			}
+		}
+		
+		return new ClassLocalObjectsAnalysis(loa, dfa, primitiveDfa, uf, sc, runMethods);
 	}
 	
 	// Determines if a RefType Local or a FieldRef is Thread-Local

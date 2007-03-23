@@ -75,12 +75,43 @@ public class UseFinder
 		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
 	
-	public void redoAnalysis(ReachableMethods rm)
+	// This is an incredibly stupid way to do this... we should just use the call graph for faster/better info!
+	public List getExtMethods(SootClass sc)
 	{
-		this.rm = rm;
-		doAnalysis();
+		if(classToExtCalls.containsKey(sc))
+		{
+			List extCalls = (List) classToExtCalls.get(sc);
+			List extMethods = new ArrayList();
+			for(Iterator callIt = extCalls.iterator(); callIt.hasNext(); )
+			{
+				Pair call = (Pair) callIt.next();
+				SootMethod calledMethod = ((Stmt) call.getO2()).getInvokeExpr().getMethod();
+				if(!extMethods.contains(calledMethod))
+					extMethods.add(calledMethod);
+			}
+			return extMethods;
+		}
+		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
 	}
-
+	
+	public List getExtFields(SootClass sc)
+	{
+		if(classToExtFieldAccesses.containsKey(sc))
+		{
+			List extAccesses = (List) classToExtFieldAccesses.get(sc);
+			List extFields = new ArrayList();
+			for(Iterator accessIt = extAccesses.iterator(); accessIt.hasNext(); )
+			{
+				Pair access = (Pair) accessIt.next();
+				SootField accessedField = ((Stmt) access.getO2()).getFieldRef().getField();
+				if(!extFields.contains(accessedField))
+					extFields.add(accessedField);
+			}
+			return extFields;
+		}
+		throw new RuntimeException("UseFinder does not search non-application classes: " + sc);
+	}
+	
 	private void doAnalysis()
 	{
 		Chain appClasses = Scene.v().getApplicationClasses();

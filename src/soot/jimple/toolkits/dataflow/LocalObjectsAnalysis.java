@@ -122,6 +122,7 @@ public class LocalObjectsAnalysis
 			mloaCache.put(sm, mloa);
 		}
 
+/*
 		CallLocalityContext mergedContext = null;
 		if( mergedContextsCache.containsKey(new Pair(sm, context)) )
 		{
@@ -174,7 +175,7 @@ public class LocalObjectsAnalysis
 					
 					Local thisLocal = null;
 					try{ thisLocal = b.getThisLocal(); }
-					catch(RuntimeException re) { /* Couldn't get thisLocal */ }
+					catch(RuntimeException re) { /* Couldn't get thisLocal  }
 					
 					if(ifr.getBase() == thisLocal)
 					{
@@ -205,6 +206,14 @@ public class LocalObjectsAnalysis
 			}
 			// if we actually go through all call chains without finding it to be shared
 			mergedContextsCache.put(new Pair(sm, context), mergedContext);
+		}
+//*/
+
+		CallLocalityContext mergedContext = getClassLocalObjectsAnalysis(context.getDeclaringClass()).getMergedContext(sm);
+		if(mergedContext == null)
+		{
+			G.v().out.println("      Unreachable: treat as local.");
+			return true; // it's not non-local...
 		}
 
 		// with the completed mergedContext...
