@@ -18,18 +18,25 @@ import soot.jimple.*;
 public class DataFlowAnalysis
 {
 	boolean includePrimitiveDataFlow;
+	boolean includeInnerFields;
 
 	Map classToClassDataFlowAnalysis;
 	
-	public DataFlowAnalysis(boolean includePrimitiveDataFlow)
+	public DataFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields)
 	{
 		this.includePrimitiveDataFlow = includePrimitiveDataFlow;
+		this.includeInnerFields = includeInnerFields;
 		classToClassDataFlowAnalysis = new HashMap();
 	}
 	
 	public boolean includesPrimitiveDataFlow()
 	{
 		return includePrimitiveDataFlow;
+	}
+	
+	public boolean includesInnerFields()
+	{
+		return includeInnerFields;
 	}
 	
 /*
@@ -118,6 +125,8 @@ public class DataFlowAnalysis
 */	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
+	static Map classToFakethis = new HashMap();
+	
 	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
 	{
 		if(sf.isStatic())
@@ -127,7 +136,7 @@ public class DataFlowAnalysis
 		else
 		{
 			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
-			if(sm.isConcrete() && !sm.isStatic())
+			if(false)// sm.isConcrete() && !sm.isStatic() && sm.getDeclaringClass() == sf.getDeclaringClass() )
 			{
 				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
 					sm.retrieveActiveBody().getThisLocal(),
@@ -135,11 +144,20 @@ public class DataFlowAnalysis
 			}
 			else
 			{
-				// Pretends to be a this.<somefield> ref for a method without a body
-				// or for a static method
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
-					new JimpleLocal("DummyThis", sm.getDeclaringClass().getType()),
-					sf.makeRef()) );
+				// Pretends to be a this.<somefield> ref for a method without a body,
+				// for a static method, or for an inner field
+				JimpleLocal fakethis;
+				if(classToFakethis.containsKey(sf.getDeclaringClass()))
+				{
+					fakethis = (FakeJimpleLocal) classToFakethis.get(sf.getDeclaringClass());
+				}
+				else
+				{
+					fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType());
+//					classToFakethis.put(sf.getDeclaringClass(), fakethis);
+				}
+				
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
 			}
 		}
 	}

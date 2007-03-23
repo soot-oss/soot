@@ -132,7 +132,7 @@ public class ClassDataFlowAnalysis
 			}
 		}
 	}
-*/	
+//*/	
 /*
 	private void doSimpleConservativeDataFlowAnalysis()
 	{
@@ -151,7 +151,7 @@ public class ClassDataFlowAnalysis
 //			printDataFlowGraph(dataFlowGraph);
 		}
 	}
-*/	
+//*/	
 	/** Does not require any fixed point calculation */
 	private MutableDirectedGraph simpleConservativeDataFlowAnalysis(SootMethod sm)
 	{

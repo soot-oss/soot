@@ -228,7 +228,7 @@ public class LocalObjectsAnalysis
 			
 			if(ifr.getBase() == thisLocal)
 			{
-				boolean isLocal = mergedContext.isFieldLocal(new EquivalentValue(localOrRef));
+				boolean isLocal = mergedContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
 				if(isLocal)
 				{
 					G.v().out.println("      LOCAL  (InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");

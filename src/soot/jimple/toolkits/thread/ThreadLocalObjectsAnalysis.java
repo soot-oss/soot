@@ -23,10 +23,10 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new DataFlowAnalysis(false));
+		super(new DataFlowAnalysis(false, true)); // ref-only, with inner fields
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
-		this.primitiveDfa = new DataFlowAnalysis(true);
+		this.primitiveDfa = new DataFlowAnalysis(true, true); // ref+primitive, with inner fields
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
@@ -59,11 +59,11 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	{
 		if(threads.size() <= 1)
 			return true;
-		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
-		if(valueCache.containsKey(cacheKey))
-		{
-			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
-		}
+//		Pair cacheKey = new Pair(new EquivalentValue(localOrRef), sm);
+//		if(valueCache.containsKey(cacheKey))
+//		{
+//			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
+//		}
 			
 		G.v().out.println("- " + localOrRef + " in " + sm + " is...");
 		Iterator threadsIt = threads.iterator();
@@ -80,7 +80,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 					G.v().out.println("  THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
 													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
 													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
-					valueCache.put(cacheKey, Boolean.FALSE);
+//					valueCache.put(cacheKey, Boolean.FALSE);
 					return false;
 				}
 			}
@@ -88,7 +88,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 		G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
 						 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
 						 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
-		valueCache.put(cacheKey, Boolean.TRUE);
+//		valueCache.put(cacheKey, Boolean.TRUE);
 		return true;
 	}
 

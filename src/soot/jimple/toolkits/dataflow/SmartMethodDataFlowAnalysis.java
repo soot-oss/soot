@@ -20,7 +20,8 @@ public class SmartMethodDataFlowAnalysis
 	SootMethod sm;
 	Value thisLocal;
 	DataFlowAnalysis dfa;
-	boolean refOnly;
+	boolean refOnly; // determines if primitive type data flow is included
+	boolean includeInnerFields; // determines if flow to a field of an object (other than this) is treated like flow to that object
 	
 	MutableDirectedGraph abbreviatedDataFlowGraph;
 	MutableDirectedGraph dataFlowSummary;
@@ -32,7 +33,25 @@ public class SmartMethodDataFlowAnalysis
 	
 	public SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa)
 	{
-		this(g, dfa, true);
+		graph = g;
+		this.sm = g.getBody().getMethod();
+		if(sm.isStatic())
+			this.thisLocal = null;
+		else
+			this.thisLocal = g.getBody().getThisLocal();
+		this.dfa = dfa;
+		this.refOnly = !dfa.includesPrimitiveDataFlow();
+		this.includeInnerFields = dfa.includesInnerFields();
+		
+		this.abbreviatedDataFlowGraph = new MemoryEfficientGraph();
+		this.dataFlowSummary = new MemoryEfficientGraph();
+		
+		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
+		
+//		this.entrySet = new ArraySparseSet();
+//		this.emptySet = new ArraySparseSet();
+		
+		printMessages = false;
 		
 		counter++;
 		
@@ -114,29 +133,6 @@ public class SmartMethodDataFlowAnalysis
 			G.v().out.println("  DataFlowSummary:");
 			DataFlowAnalysis.printDataFlowGraph(dataFlowSummary);
 		}
-	}
-	
-	/** A constructor that doesn't run the analysis */
-	protected SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean dummyDontRunAnalysisYet)
-	{
-		graph = g;
-		this.sm = g.getBody().getMethod();
-		if(sm.isStatic())
-			this.thisLocal = null;
-		else
-			this.thisLocal = g.getBody().getThisLocal();
-		this.dfa = dfa;
-		this.refOnly = !dfa.includesPrimitiveDataFlow();
-		
-		this.abbreviatedDataFlowGraph = new MemoryEfficientGraph();
-		this.dataFlowSummary = new MemoryEfficientGraph();
-		
-		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
-		
-//		this.entrySet = new ArraySparseSet();
-//		this.emptySet = new ArraySparseSet();
-		
-		printMessages = false;
 	}
 	
 	public void generateAbbreviatedDataFlowGraph()
@@ -272,8 +268,18 @@ public class SmartMethodDataFlowAnalysis
 	// For when data flows to a local
 	protected void handleFlowsToValue(Value sink, Value source)
 	{
-		EquivalentValue sinkEqVal = new EquivalentValue(sink);
-		EquivalentValue sourceEqVal = new EquivalentValue(source);
+		EquivalentValue sinkEqVal;
+		EquivalentValue sourceEqVal;
+		
+		if(sink instanceof InstanceFieldRef)
+			sinkEqVal = dfa.getEquivalentValueFieldRef(sm, ((FieldRef) sink).getField()); // deals with inner fields
+		else
+			sinkEqVal = new EquivalentValue(sink);
+			
+		if(source instanceof InstanceFieldRef)
+			sourceEqVal = dfa.getEquivalentValueFieldRef(sm, ((FieldRef) source).getField()); // deals with inner fields
+		else
+			sourceEqVal = new EquivalentValue(source);
 		
 		if( source instanceof Ref && !dataFlowSummary.containsNode(sourceEqVal))
 			dataFlowSummary.addNode(sourceEqVal);
@@ -293,7 +299,12 @@ public class SmartMethodDataFlowAnalysis
 	{
 		EquivalentValue sourcesOfBaseEqVal = new EquivalentValue(new AbstractDataSource(base));
 		EquivalentValue baseEqVal = new EquivalentValue(base);
-		EquivalentValue sourceEqVal = new EquivalentValue(source);
+
+		EquivalentValue sourceEqVal;
+		if(source instanceof InstanceFieldRef)
+			sourceEqVal = dfa.getEquivalentValueFieldRef(sm, ((FieldRef) source).getField()); // deals with inner fields
+		else
+			sourceEqVal = new EquivalentValue(source);
 		
 		if( source instanceof Ref && !dataFlowSummary.containsNode(sourceEqVal))
 			dataFlowSummary.addNode(sourceEqVal);
@@ -365,15 +376,19 @@ public class SmartMethodDataFlowAnalysis
 			{
 				source = node; // StaticFieldRef
 			}
-			else if(ie instanceof InstanceInvokeExpr && node instanceof InstanceFieldRef)
+			else if(node instanceof InstanceFieldRef && ie instanceof InstanceInvokeExpr)
 			{
 				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-				if(iie.getBase() == thisLocal)
+				if(iie.getBase() == thisLocal || includeInnerFields)
 					source = node;
 				else
 					source = iie.getBase(); // Local
 			}
-			else if(ie instanceof InstanceInvokeExpr && node instanceof ThisRef)
+			else if(node instanceof InstanceFieldRef && includeInnerFields)
+			{
+				source = node;
+			}
+			else if(node instanceof ThisRef && ie instanceof InstanceInvokeExpr)
 			{
 				InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
 				source = iie.getBase(); // Local
@@ -404,13 +419,17 @@ public class SmartMethodDataFlowAnalysis
 				{
 					handleFlowsToValue(sink, source);
 				}
-				else if(ie instanceof InstanceInvokeExpr && sink instanceof InstanceFieldRef)
+				else if(sink instanceof InstanceFieldRef && ie instanceof InstanceInvokeExpr)
 				{
 					InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
-					if(iie.getBase() == thisLocal)
+					if(iie.getBase() == thisLocal || includeInnerFields)
 						handleFlowsToValue(sink, source);
 					else
 						handleFlowsToDataStructure(iie.getBase(), source);
+				}
+				else if(sink instanceof InstanceFieldRef && includeInnerFields)
+				{
+					handleFlowsToValue(sink, source);
 				}
 			}
 		}
@@ -490,7 +509,7 @@ public class SmartMethodDataFlowAnalysis
 			else if(lv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) lv;
-				if( ifr.getBase() == thisLocal ) // data flows into the field ref
+				if( ifr.getBase() == thisLocal || includeInnerFields ) // data flows into the field ref
 				{
 					sink = lv;
 				}
@@ -528,7 +547,7 @@ public class SmartMethodDataFlowAnalysis
 			else if(rv instanceof InstanceFieldRef)
 			{
 				InstanceFieldRef ifr = (InstanceFieldRef) rv;
-				if( ifr.getBase() == thisLocal ) // data flows from the field ref
+				if( ifr.getBase() == thisLocal || includeInnerFields ) // data flows from the field ref
 				{
 					sources.add(rv);
 					interestingFlow = !ignoreThisDataType(rv.getType());

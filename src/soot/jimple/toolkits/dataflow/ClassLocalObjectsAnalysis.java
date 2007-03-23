@@ -37,6 +37,8 @@ public class ClassLocalObjectsAnalysis
 	
 	ArrayList localFields;
 	ArrayList sharedFields;
+	ArrayList localInnerFields;
+	ArrayList sharedInnerFields;
 	
 	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sootClass)
 	{
@@ -65,6 +67,8 @@ public class ClassLocalObjectsAnalysis
 		
 		this.localFields = null;
 		this.sharedFields = null;
+		this.localInnerFields = null;
+		this.sharedInnerFields = null;
 		
 		prepare();
 		doAnalysis();
@@ -196,7 +200,7 @@ public class ClassLocalObjectsAnalysis
 		// Methods are iterated over, moving fields to shared if shared data flows to them.
 		// This is repeated until no fields move for a complete iteration.
 		
-		// Populate localFields and sharedFields with SootFields
+		// Populate localFields and sharedFields with fields of this class
 		localFields = new ArrayList();
 		sharedFields = new ArrayList();
 		Iterator fieldsIt = allFields.iterator();
@@ -209,19 +213,53 @@ public class ClassLocalObjectsAnalysis
 				sharedFields.add(field);
 		}
 		
+		// Add inner fields to localFields and sharedFields, if present
+		localInnerFields = new ArrayList();
+		sharedInnerFields = new ArrayList();
+		Iterator methodsIt = allMethods.iterator();
+		while(methodsIt.hasNext())
+		{
+			SootMethod method = (SootMethod) methodsIt.next();
+			
+			// Get data flow summary
+			MutableDirectedGraph dataFlowSummary;
+			if(primitiveDfa != null)
+				dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+			else
+				dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+				
+			// Iterate through nodes
+			Iterator nodesIt = dataFlowSummary.getNodes().iterator();
+			while(nodesIt.hasNext())
+			{
+				EquivalentValue node = (EquivalentValue) nodesIt.next();
+				if(node.getValue() instanceof InstanceFieldRef)
+				{
+					InstanceFieldRef ifr = (InstanceFieldRef) node.getValue();
+					if( !localFields.contains(ifr.getField()) && !sharedFields.contains(ifr.getField()) &&
+						!localInnerFields.contains(ifr.getField()) ) // && !sharedInnerFields.contains(ifr.getField()))
+					{
+						// this field is read or written, but is not in the lists of fields!
+						localInnerFields.add(ifr.getField());
+					}
+				}
+			}
+		}
+		
 		// Propagate (aka iterate iterate iterate iterate! hope it's not too slow)
 		boolean changed = true;
 		while(changed)
 		{
 			changed = false;
 //			G.v().out.println("Starting iteration:");
-			Iterator methodsIt = allMethods.iterator();
+			methodsIt = allMethods.iterator();
 			while(methodsIt.hasNext())
 			{
 				SootMethod method = (SootMethod) methodsIt.next();
 				// we can't learn anything from non-concrete methods, and statics can't write non-static fields
 				if(method.isStatic() || !method.isConcrete())
 					continue;
+				
 				ListIterator localFieldsIt = ((List) localFields).listIterator();
 				boolean printedMethodHeading = false;
 				while(localFieldsIt.hasNext())
@@ -268,7 +306,7 @@ public class ClassLocalObjectsAnalysis
 						}
 						else if(sourceOrSinkRef instanceof InstanceFieldRef)
 						{
-							fieldBecomesShared = sharedFields.contains(sourceOrSink);
+							fieldBecomesShared = sharedFields.contains( ((FieldRef)sourceOrSinkRef).getField() ) || sharedInnerFields.contains( ((FieldRef)sourceOrSinkRef).getField() );
 						}
 						else if(sourceOrSinkRef instanceof StaticFieldRef)
 						{
@@ -295,6 +333,81 @@ public class ClassLocalObjectsAnalysis
 						}
 					}
 				}
+
+
+				ListIterator localInnerFieldsIt = ((List) localInnerFields).listIterator();
+//				boolean printedMethodHeading = false;
+				while(!changed && localInnerFieldsIt.hasNext())
+				{
+					SootField localInnerField = (SootField) localInnerFieldsIt.next();
+					List sourcesAndSinks = new ArrayList();
+
+					MutableDirectedGraph dataFlowSummary;
+					if(primitiveDfa != null)
+						dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+					else
+						dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+					
+					EquivalentValue node = dfa.getEquivalentValueFieldRef(method, localInnerField);
+					if(dataFlowSummary.containsNode(node))
+					{
+						sourcesAndSinks.addAll(dataFlowSummary.getSuccsOf(node));
+						sourcesAndSinks.addAll(dataFlowSummary.getPredsOf(node));
+					}
+
+					Iterator sourcesAndSinksIt = sourcesAndSinks.iterator();
+					if(localInnerField.getDeclaringClass().isApplicationClass() &&
+					   sourcesAndSinksIt.hasNext())
+					{
+//						if(!printedMethodHeading)
+//						{
+//							G.v().out.println("    Method: " + method.toString());
+//							printedMethodHeading = true;
+//						}
+//						G.v().out.println("        Field: " + localField.toString());
+					}
+					while(sourcesAndSinksIt.hasNext())
+					{
+						EquivalentValue sourceOrSink = (EquivalentValue) sourcesAndSinksIt.next();
+						Ref sourceOrSinkRef = (Ref) sourceOrSink.getValue();
+						boolean fieldBecomesShared = false;
+						if(sourceOrSinkRef instanceof ParameterRef) // or return ref
+						{
+							fieldBecomesShared = !parameterIsLocal(method, sourceOrSink, true);
+						}
+						else if(sourceOrSinkRef instanceof ThisRef) // or return ref
+						{
+							fieldBecomesShared = !thisIsLocal(method, sourceOrSink);
+						}
+						else if(sourceOrSinkRef instanceof InstanceFieldRef)
+						{
+							fieldBecomesShared = sharedFields.contains( ((FieldRef)sourceOrSinkRef).getField() ) || sharedInnerFields.contains( ((FieldRef)sourceOrSinkRef).getField() );
+						}
+						else if(sourceOrSinkRef instanceof StaticFieldRef)
+						{
+							fieldBecomesShared = true;
+						}
+						else
+						{
+							throw new RuntimeException("Unknown type of Ref in Data Flow Graph:");
+						}
+						
+						if(fieldBecomesShared)
+						{
+//							if(localField.getDeclaringClass().isApplicationClass())
+//								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
+							localInnerFieldsIt.remove();
+							sharedInnerFields.add(localInnerField);
+							changed = true;
+							break; // other sources don't matter now... it only takes one to taint the field
+						}
+						else
+						{
+//							if(localField.getDeclaringClass().isApplicationClass())
+//								G.v().out.println("            Source: " + sourceRef.toString() + " is local");
+						}
+					}
+				}
 			}
 		}
 		
@@ -311,6 +424,22 @@ public class ClassLocalObjectsAnalysis
 		}
 		G.v().out.println("          Shared fields: ");
 		Iterator sharedsToPrintIt = sharedFields.iterator();
+		while(sharedsToPrintIt.hasNext())
+		{
+			SootField sharedToPrint = (SootField) sharedsToPrintIt.next();
+			if(sharedToPrint.getDeclaringClass().isApplicationClass())
+				G.v().out.println("                  " + sharedToPrint);
+		}
+		G.v().out.println("          Local inner fields: ");
+		localsToPrintIt = localInnerFields.iterator();
+		while(localsToPrintIt.hasNext())
+		{
+			SootField localToPrint = (SootField) localsToPrintIt.next();
+			if(localToPrint.getDeclaringClass().isApplicationClass())
+				G.v().out.println("                  " + localToPrint);
+		}
+		G.v().out.println("          Shared inner fields: ");
+		sharedsToPrintIt = sharedInnerFields.iterator();
 		while(sharedsToPrintIt.hasNext())
 		{
 			SootField sharedToPrint = (SootField) sharedsToPrintIt.next();

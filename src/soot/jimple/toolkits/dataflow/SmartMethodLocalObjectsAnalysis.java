@@ -15,11 +15,13 @@ public class SmartMethodLocalObjectsAnalysis
 	static boolean printMessages;
 	
 	SootMethod method;
+	DataFlowAnalysis dfa;
 	SmartMethodDataFlowAnalysis smdfa;
 
 	public SmartMethodLocalObjectsAnalysis(SootMethod method, DataFlowAnalysis dfa)
 	{
 		this.method = method;
+		this.dfa = dfa;
 		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
 		
 		printMessages = false;
@@ -39,7 +41,13 @@ public class SmartMethodLocalObjectsAnalysis
 	// 
 	public boolean isObjectLocal(Value local, CallLocalityContext context) // to this analysis of this method (which depends on context)
 	{
-		List sources = smdfa.sourcesOf(new EquivalentValue(local));
+		EquivalentValue localEqVal;
+		if(local instanceof InstanceFieldRef)
+			localEqVal = dfa.getEquivalentValueFieldRef(method, ((FieldRef) local).getField());
+		else
+			localEqVal = new EquivalentValue(local);
+			
+		List sources = smdfa.sourcesOf(localEqVal);
 		Iterator sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
@@ -62,8 +70,14 @@ public class SmartMethodLocalObjectsAnalysis
 	public static boolean isObjectLocal(DataFlowAnalysis dfa, SootMethod method, CallLocalityContext context, Value local)
 	{
 		SmartMethodDataFlowAnalysis smdfa = dfa.getMethodDataFlowAnalysis(method);
-		
-		List sources = smdfa.sourcesOf(new EquivalentValue(local));
+
+		EquivalentValue localEqVal;
+		if(local instanceof InstanceFieldRef)
+			localEqVal = dfa.getEquivalentValueFieldRef(method, ((FieldRef) local).getField());
+		else
+			localEqVal = new EquivalentValue(local);
+			
+		List sources = smdfa.sourcesOf(localEqVal);
 		Iterator sourcesIt = sources.iterator();
 		while(sourcesIt.hasNext())
 		{
