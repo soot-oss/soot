@@ -67,7 +67,8 @@ public class ClassDataFlowAnalysis
 		return (SmartMethodDataFlowAnalysis) methodToDataFlowAnalysis.get(method);
 	}
 	
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method)
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method) { return getMethodDataFlowGraph(method, true); }
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method, boolean doFullAnalysis)
 	{
 		if(!methodToDataFlowGraph.containsKey(method))
 		{
@@ -80,7 +81,7 @@ public class ClassDataFlowAnalysis
 			methodToDataFlowGraph.put(method, dataFlowGraph);
 			
 			// Then do smart version that does follow invoke expressions, if possible
-			if(method.isConcrete() && method.getDeclaringClass().isApplicationClass())
+			if(method.isConcrete())// && doFullAnalysis)// && method.getDeclaringClass().isApplicationClass())
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
@@ -204,7 +205,7 @@ public class ClassDataFlowAnalysis
 					Value base = ifr.getBase();
 					if(base instanceof Local)
 					{
-						if( (!sm.isStatic()) && base.equivTo(g.getBody().getThisLocal()) )
+						if( dfa.includesInnerFields() || ((!sm.isStatic()) && base.equivTo(b.getThisLocal())) )
 							fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
 		            }
 				}
@@ -295,6 +296,8 @@ public class ClassDataFlowAnalysis
 					; // don't add this edge
 				else if( sRef instanceof ThisRef && rRef instanceof InstanceFieldRef )
 					; // don't add this edge
+				else if( sRef instanceof ParameterRef && dfa.includesInnerFields())
+					; // don't add edges to parameters if we are including inner fields
 				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}

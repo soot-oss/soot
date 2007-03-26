@@ -77,36 +77,36 @@ public class LocalObjectsAnalysis
 	}
 	
 	public boolean isObjectLocalToContext(Value localOrRef, SootMethod sm, SootMethod context)
-	{
-		G.v().out.println("    Checking if " + localOrRef + " in " + sm + " is local to " + context + ": ");
-		
+	{		
 		// Handle special case
 		if(sm == context)
 		{
-			G.v().out.println("      Directly Reachable: ");
+//			G.v().out.println("      Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
-			G.v().out.println("    " + (isLocal ? "LOCAL" : "SHARED"));
+			G.v().out.println("    " + (isLocal ? 
+				"LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")" :
+				"SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
 			return isLocal;
 		}
 	
 		// Handle obvious case
 		if( localOrRef instanceof StaticFieldRef )
 		{
-			G.v().out.println("    SHARED");
+			G.v().out.println("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return false;
 		}
 
 		// Handle uncheckable case
 		if(!sm.isConcrete())
 		{
-			G.v().out.println("    SHARED");
-			return false; // no way to tell... and how do we have access to a Local anyways???
+			// no way to tell... and how do we have access to a Local anyways???
+			throw new RuntimeException("Attempted to check if a local variable in a non-concrete method is shared/local.");
 		}
 
 		// For Resulting Merged Context, check if localOrRef is local
 		Body b = sm.retrieveActiveBody(); // sm is guaranteed concrete (see above)
 		// Check if localOrRef is Local in smContext
-		SmartMethodLocalObjectsAnalysis mloa = null;
+/*		SmartMethodLocalObjectsAnalysis mloa = null;
 //		Pair mloaKey = new Pair(sm, mergedContext);
 		if( mloaCache.containsKey(sm) )
 		{
@@ -121,98 +121,12 @@ public class LocalObjectsAnalysis
 //				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
 			mloaCache.put(sm, mloa);
 		}
-
-/*
-		CallLocalityContext mergedContext = null;
-		if( mergedContextsCache.containsKey(new Pair(sm, context)) )
-		{
-			mergedContext = (CallLocalityContext) mergedContextsCache.get(new Pair(sm, context));
-//			G.v().out.println("      Retrieved mergedContext From Cache: ");
-		}
-		else
-		{
-	
-			// The rest of the time, we must find all call chains from context to sm
-			// if it's local on all of them, then return true.
-			
-			// Find Call Chains (separate chains for separate possible virtual call targets)
-			// TODO right now we discard reentrant call chains... but this is UNSAFE
-			// TODO right now we are stupid about virtual calls... but this is UNSAFE
-			
-			// for each method in the context class (OR JUST FROM THE RUN METHOD IF IT'S A THREAD?)
-			List previousChains = new ArrayList();
-//			List startingMethods = new ArrayList();
-			mergedContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
-
-			while(true)
-			{
-				G.v().out.println("      Getting next call chain...");
-				CallChain nextCallChain = getNextCallChainBetween(context, sm, previousChains);
-				if(nextCallChain == null)
-				{
-					// No Chains Left
-					
-					if(previousChains.size() == 0) // no chains at all
-					{
-						G.v().out.println("      Unreachable: treat as local.");
-						return true; // it's not non-local...
-					}
-					break;
-				}
-				List callChainAsList = nextCallChain.getEdges();
-//				G.v().out.println(callChain);
-				if(previousChains.size() == 0)
-					mergedContext = getContextViaCallChain(context, callChainAsList);
-				else
-					mergedContext.merge(getContextViaCallChain(context, callChainAsList));
-
-				previousChains.add(nextCallChain);
-				
-				// localOrRef can actually be a field ref
-				if( localOrRef instanceof InstanceFieldRef )
-				{
-					InstanceFieldRef ifr = (InstanceFieldRef) localOrRef;
-					
-					Local thisLocal = null;
-					try{ thisLocal = b.getThisLocal(); }
-					catch(RuntimeException re) { /* Couldn't get thisLocal  }
-					
-					if(ifr.getBase() == thisLocal)
-					{
-						boolean isLocal = mergedContext.isFieldLocal(new EquivalentValue(localOrRef));
-						if(!isLocal)
-						{
-							G.v().out.println("      SHARED (early - InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");
-							return isLocal;
-						}
-					}
-					else
-					{
-						localOrRef = ifr.getBase(); // search for the ref through which the field is accessed
-					}
-				}
-				
-				if( !(localOrRef instanceof InstanceFieldRef) )
-				{
-					
-					boolean isLocal = mloa.isObjectLocal(localOrRef, mergedContext);
-					
-					if(!isLocal)
-					{
-						G.v().out.println("      SHARED (early - Local " + localOrRef + ")");
-						return isLocal;
-					}
-				}
-			}
-			// if we actually go through all call chains without finding it to be shared
-			mergedContextsCache.put(new Pair(sm, context), mergedContext);
-		}
 //*/
 
 		CallLocalityContext mergedContext = getClassLocalObjectsAnalysis(context.getDeclaringClass()).getMergedContext(sm);
 		if(mergedContext == null)
 		{
-			G.v().out.println("      Unreachable: treat as local.");
+			G.v().out.println("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return true; // it's not non-local...
 		}
 
@@ -231,27 +145,54 @@ public class LocalObjectsAnalysis
 				boolean isLocal = mergedContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
 				if(isLocal)
 				{
-					G.v().out.println("      LOCAL  (InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");
+					G.v().out.println("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
+																			   + context.getName() + ")");
 				}
 				else
 				{
-					G.v().out.println("      SHARED (InstanceFieldRef " + localOrRef + " in " + mergedContext.toShortString() + ")");
+					G.v().out.println("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
+																			   + context.getName() + ")");
 				}
 				return isLocal;
 			}
-
-			localOrRef = ifr.getBase(); // search for the ref through which the field is accessed
+			else
+			{
+				boolean isLocal = SmartMethodLocalObjectsAnalysis.isObjectLocal(dfa, sm, mergedContext, ifr.getBase());
+				if(isLocal)
+				{
+					ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(context.getDeclaringClass());
+					isLocal = !cloa.getInnerSharedFields().contains(ifr.getField());
+					if(isLocal)
+					{
+						G.v().out.println("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
+																				   + context.getName() + ")");
+					}
+					else
+					{
+						G.v().out.println("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
+																				   + context.getName() + ")");
+					}
+					return isLocal;
+				}
+				else
+				{
+					G.v().out.println("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
+																			   + context.getName() + ")");
+					return isLocal;
+				}
+			}
 		}
 
-		boolean isLocal = mloa.isObjectLocal(localOrRef, mergedContext);
-
+		boolean isLocal = SmartMethodLocalObjectsAnalysis.isObjectLocal(dfa, sm, mergedContext, localOrRef);
 		if(isLocal)
 		{	
-			G.v().out.println("      LOCAL  (Local " + localOrRef + ")");
+			G.v().out.println("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
+																	   + context.getName() + ")");
 		}
 		else
 		{
-			G.v().out.println("      SHARED (Local " + localOrRef + ")");
+			G.v().out.println("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
+																	   + context.getName() + ")");
 		}
 		return isLocal;
 	}

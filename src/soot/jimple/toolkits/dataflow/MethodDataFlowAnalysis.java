@@ -313,7 +313,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	protected List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getInvokeDataFlowGraph(ie); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph dataFlowGraph = dfa.getInvokeDataFlowGraph(ie, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
 //			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE dataFlowGraph: ");

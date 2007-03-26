@@ -23,7 +23,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new DataFlowAnalysis(false, true)); // ref-only, with inner fields
+		super(new DataFlowAnalysis(false, true)); // ref-only, without inner fields
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
 		this.primitiveDfa = new DataFlowAnalysis(true, true); // ref+primitive, with inner fields

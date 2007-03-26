@@ -1,7 +1,9 @@
 package soot.jimple.toolkits.dataflow;
 
-import soot.*;
 import java.util.*;
+
+import soot.*;
+import soot.util.dot.*;
 import soot.toolkits.graph.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
@@ -89,10 +91,11 @@ public class DataFlowAnalysis
 	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
 	  * wrapped Refs. It's perfectly safe to modify this graph, just so long as 
 	  * new nodes are EquivalentValue wrapped Refs. */
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm)
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm) { return getMethodDataFlowGraph(sm, true); }
+	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm, boolean doFullAnalysis)
 	{
 		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		return cdfa.getMethodDataFlowGraph(sm);
+		return cdfa.getMethodDataFlowGraph(sm, doFullAnalysis);
 	}
 	
 	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that source
@@ -125,9 +128,8 @@ public class DataFlowAnalysis
 */	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	static Map classToFakethis = new HashMap();
-	
-	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf)
+	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf) { return getEquivalentValueFieldRef(sm, sf, null); }
+	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf, Local realLocal)
 	{
 		if(sf.isStatic())
 		{
@@ -136,26 +138,17 @@ public class DataFlowAnalysis
 		else
 		{
 			// Jimple.v().newThisRef(sf.getDeclaringClass().getType())
-			if(false)// sm.isConcrete() && !sm.isStatic() && sm.getDeclaringClass() == sf.getDeclaringClass() )
+			if(sm.isConcrete() && !sm.isStatic() && sm.getDeclaringClass() == sf.getDeclaringClass() && realLocal == null)
 			{
-				return new EquivalentValue( Jimple.v().newInstanceFieldRef(
-					sm.retrieveActiveBody().getThisLocal(),
-					sf.makeRef()) );
+				JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), sm.retrieveActiveBody().getThisLocal());
+				
+				return new EquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
 			}
 			else
 			{
 				// Pretends to be a this.<somefield> ref for a method without a body,
 				// for a static method, or for an inner field
-				JimpleLocal fakethis;
-				if(classToFakethis.containsKey(sf.getDeclaringClass()))
-				{
-					fakethis = (FakeJimpleLocal) classToFakethis.get(sf.getDeclaringClass());
-				}
-				else
-				{
-					fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType());
-//					classToFakethis.put(sf.getDeclaringClass(), fakethis);
-				}
+				JimpleLocal fakethis = new FakeJimpleLocal("fakethis", sf.getDeclaringClass().getType(), realLocal);
 				
 				return new EquivalentValue( Jimple.v().newInstanceFieldRef(fakethis, sf.makeRef()) ); // fake thisLocal
 			}
@@ -183,12 +176,12 @@ public class DataFlowAnalysis
 		return new EquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
-	protected MutableDirectedGraph getInvokeDataFlowGraph(InvokeExpr ie)
+	protected MutableDirectedGraph getInvokeDataFlowGraph(InvokeExpr ie, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
 		SootMethodRef methodRef = ie.getMethodRef();
-		return getMethodDataFlowGraph(methodRef.resolve());
+		return getMethodDataFlowGraph(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
 	}
 	
 	public static void printDataFlowGraph(DirectedGraph g)
@@ -241,6 +234,63 @@ public class DataFlowAnalysis
 				G.v().out.print(" ");
 			G.v().out.println(" ] --> " + node.toString());
 		}
+	}
+		
+	public static void printGraphToDotFile(String filename, DirectedGraph graph, String graphname, boolean onePage)
+	{
+		int sequence=0;
+		
+		// this makes the node name unique
+		nodecount = 0; // reset node counter first.
+		Hashtable nodeindex = new Hashtable(graph.size());
+		
+		// file name is the method name + .dot
+		DotGraph canvas = new DotGraph(filename);
+		if (!onePage) {
+			canvas.setPageSize(8.5, 11.0);
+		}
+		
+		canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
+		canvas.setGraphLabel(graphname);
+		
+		Iterator nodesIt = graph.iterator();
+		while (nodesIt.hasNext())
+		{
+			Object node = nodesIt.next();
+			String nodeName = getNodeName(node);
+			canvas.drawNode(nodeName);
+			canvas.getNode(nodeName).setLabel(getNodeLabel(node));
+			Iterator succsIt = graph.getSuccsOf(node).iterator();
+			
+			while (succsIt.hasNext())
+			{
+				Object s= succsIt.next();
+				canvas.drawEdge(nodeName, getNodeName(s));
+			}
+		}
+		
+		canvas.plot(filename + ".dot");
+	}
+
+	static int nodecount = 0;
+	static Map nodeToNodeName = new HashMap();
+	public static String getNodeName(Object o)
+	{
+		if(!nodeToNodeName.containsKey(o))
+			nodeToNodeName.put(o, "N" + (nodecount++));
+			
+		return (String) nodeToNodeName.get(o);
+	}
+	
+	public static String getNodeLabel(Object o)
+	{
+		Value node = ((EquivalentValue) o).getValue();
+		if(node instanceof FieldRef)
+		{
+			FieldRef fr = (FieldRef) node;
+			return fr.getField().getDeclaringClass().getShortName() + "." + fr.getFieldRef().name();
+		}
+		return node.toString();
 	}
 }
 

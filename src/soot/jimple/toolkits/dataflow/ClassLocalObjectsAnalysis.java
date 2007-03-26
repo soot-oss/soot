@@ -13,6 +13,8 @@ import soot.jimple.*;
 
 public class ClassLocalObjectsAnalysis
 {
+	static boolean printdfgs = true;
+
 	LocalObjectsAnalysis loa;
 	DataFlowAnalysis dfa;
 	DataFlowAnalysis primitiveDfa;
@@ -224,9 +226,31 @@ public class ClassLocalObjectsAnalysis
 			// Get data flow summary
 			MutableDirectedGraph dataFlowSummary;
 			if(primitiveDfa != null)
+			{
 				dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+				
+				if(printdfgs && method.getDeclaringClass().isApplicationClass())
+				{
+					DirectedGraph primitiveGraph = primitiveDfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
+					DataFlowAnalysis.printGraphToDotFile(method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
+						primitiveGraph, method.getName() + "_primitive", false);
+
+					DirectedGraph nonPrimitiveGraph = dfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
+					DataFlowAnalysis.printGraphToDotFile(method.getDeclaringClass().getShortName() + "_" + method.getName(),
+						nonPrimitiveGraph, method.getName(), false);
+				}
+			}
 			else
+			{
 				dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+				
+				if(printdfgs && method.getDeclaringClass().isApplicationClass())
+				{
+					DirectedGraph nonPrimitiveGraph = dfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
+					DataFlowAnalysis.printGraphToDotFile(method.getDeclaringClass().getShortName() + "_" + method.getName(),
+						nonPrimitiveGraph, method.getName(), false);
+				}
+			}
 				
 			// Iterate through nodes
 			Iterator nodesIt = dataFlowSummary.getNodes().iterator();
@@ -742,6 +766,11 @@ public class ClassLocalObjectsAnalysis
 		return (List) localFields.clone();
 	}
 	
+	public List getInnerSharedFields()
+	{
+		return sharedInnerFields;
+	}
+	
 	protected boolean isFieldLocal(SootField field)
 	{
 		return localFields.contains(field);
@@ -793,11 +822,27 @@ public class ClassLocalObjectsAnalysis
 			InvokeExpr ie = s.getInvokeExpr();
 			if(ie.getMethodRef().resolve() == method)
 			{
-				if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+				if(((ParameterRef) parameterRef.getValue()).getIndex() >= 0)
 				{
-					if(method.getDeclaringClass().isApplicationClass())
-						G.v().out.println("          PARAM is shared (internal propagation)");
-					return false; // if arg is shared for any internal call, then param is shared
+					if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+					{
+						if(method.getDeclaringClass().isApplicationClass())
+							G.v().out.println("          PARAM is shared (internal propagation)");
+						return false; // if arg is shared for any internal call, then param is shared
+					}
+				}
+				else
+				{
+					if(s instanceof DefinitionStmt)
+					{
+						Value obj = ((DefinitionStmt) s).getLeftOp();
+						if(!isObjectLocal( obj, containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
+						{
+							if(method.getDeclaringClass().isApplicationClass())
+								G.v().out.println("          PARAM is shared (internal propagation)");
+							return false; // if arg is shared for any internal call, then param is shared
+						}
+					}
 				}
 			}
 		}

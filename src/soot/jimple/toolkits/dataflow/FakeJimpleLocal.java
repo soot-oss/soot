@@ -10,14 +10,10 @@ import java.util.*;
 
 public class FakeJimpleLocal extends JimpleLocal
 {
-//    String name;
-//    Type type;
-
-//    int fixedHashCode;
-//    boolean isHashCodeChosen;
-
+	Local realLocal;
+	
     /** Constructs a FakeJimpleLocal of the given name and type. */
-    public FakeJimpleLocal(String name, Type t)
+    public FakeJimpleLocal(String name, Type t, Local realLocal)
     {
     	super(name, t);
     }
@@ -49,7 +45,12 @@ public class FakeJimpleLocal extends JimpleLocal
     /** Returns a clone of the current JimpleLocal. */
     public Object clone()
     {
-        return new FakeJimpleLocal(getName(), getType());
+        return new FakeJimpleLocal(getName(), getType(), realLocal);
+    }
+    
+    public Local getRealLocal()
+    {
+    	return realLocal;
     }
 }
 
