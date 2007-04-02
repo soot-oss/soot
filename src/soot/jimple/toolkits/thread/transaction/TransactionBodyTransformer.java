@@ -31,23 +31,12 @@ public class TransactionBodyTransformer extends BodyTransformer
     protected void internalTransform(Body b, String phase, Map opts)
 	{
 		// 
+		JimpleBody j = (JimpleBody) b;
 		SootMethod thisMethod = b.getMethod();
     	Chain units = b.getUnits();
 		Iterator unitIt = units.iterator();
-		Unit firstUnit = (Unit) units.getFirst();
+		Unit firstUnit = (Unit) j.getFirstNonIdentityStmt();
 		Unit lastUnit = (Unit) units.getLast();
-		
-		// FIND THE FIRST AND LAST UNITS
-		// skip firstUnit past all the identity refs at the beginning
-		while(firstUnit instanceof IdentityStmt)
-		{
-			firstUnit = (Unit) units.getSuccOf(firstUnit);
-		}
-		// skip lastUnit to before the final return statement
-		if(lastUnit instanceof RetStmt || lastUnit instanceof ReturnStmt || lastUnit instanceof ReturnVoidStmt)
-			lastUnit = (Unit) units.getPredOf(lastUnit);
-		else
-			units.insertAfter(Jimple.v().newNopStmt(), lastUnit); // needs to have something after it
 		
 		// Objects of synchronization, plus book keeping
 		Local[] lockObj = new Local[maxLockObjs]; 			
@@ -261,7 +250,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					
 				Stmt newBegin = Jimple.v().newEnterMonitorStmt(currentLockObject);
 				units.insertBefore(newBegin, tn.begin);
-//				tn.begin.redirectJumpsToThisTo(newBegin);
+				redirectTraps(b, tn.begin, newBegin);
 				units.remove(tn.begin);
 				
 				Iterator endsIt = tn.ends.iterator();
@@ -270,7 +259,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					Stmt sEnd = (Stmt) endsIt.next();
 					Stmt newEnd = Jimple.v().newExitMonitorStmt(currentLockObject);
 					units.insertBefore(newEnd, sEnd);
-//					sEnd.redirectJumpsToThisTo(newEnd);
+					redirectTraps(b, sEnd, newEnd);
 					units.remove(sEnd);
 				}
 			}
@@ -288,7 +277,7 @@ public class TransactionBodyTransformer extends BodyTransformer
        						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
        						Collections.EMPTY_LIST));
 	            units.insertBefore(newNotify, sNotify);
-//				sNotify.redirectJumpsToThisTo(newNotify);
+				redirectTraps(b, sNotify, newNotify);
 				units.remove(sNotify);
 			}
 
@@ -304,7 +293,7 @@ public class TransactionBodyTransformer extends BodyTransformer
        						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
        						Collections.EMPTY_LIST));
 	            units.insertBefore(newWait, sWait);
-//				sWait.redirectJumpsToThisTo(newWait);
+				redirectTraps(b, sWait, newWait);
 				units.remove(sWait);
 			}
 		}
@@ -332,7 +321,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Unit labelExitMonitorStmt = (Unit) Jimple.v().newExitMonitorStmt(lockObj);
 		units.insertBefore(labelExitMonitorStmt, end); // steal jumps to end, send them to monitorexit
 //		end = (Stmt) units.getSuccOf(end);
-		Unit label1Unit = (Unit) Jimple.v().newGotoStmt((Stmt) units.getSuccOf(end));
+		Unit label1Unit = (Unit) Jimple.v().newGotoStmt(end);
 		units.insertBefore(label1Unit, end);
 //		end = (Stmt) units.getSuccOf(end);
 		
@@ -347,26 +336,28 @@ public class TransactionBodyTransformer extends BodyTransformer
 		units.insertBefore(label4Unit, end);
 //		end = (Stmt) units.getSuccOf(end);
 		
-		// <existing return statement>
+		// <existing end statement>
 		
 		// add exception routing table
 		SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label0Unit, label1Unit, label2Unit));
 		b.getTraps().addLast(Jimple.v().newTrap(throwableClass, label3Unit, label4Unit, label2Unit));
 
-/*
-		// search body for jumps to existing return stmt, and redirect to new monitor exit stmt
-		Iterator unitIt = units.iterator();
-		while(unitIt.hasNext())
+	}
+	
+	public void redirectTraps(Body b, Unit oldUnit, Unit newUnit)
+	{
+		Chain traps = b.getTraps();
+		Iterator trapsIt = traps.iterator();
+		while(trapsIt.hasNext())
 		{
-			Stmt stmt = (Stmt) unitIt.next();
-			if(stmt instanceof GotoStmt)
-			{
-				GotoStmt gotoStmt = (GotoStmt) stmt;
-				if(gotoStmt != label1Unit && gotoStmt.getTarget() == units.getSuccOf(end))
-					gotoStmt.setTarget(labelExitMonitorStmt);
-			}
+			AbstractTrap trap = (AbstractTrap) trapsIt.next();
+			if(trap.getHandlerUnit() == oldUnit)
+				trap.setHandlerUnit(newUnit);
+			if(trap.getBeginUnit() == oldUnit)
+				trap.setBeginUnit(newUnit);
+			if(trap.getEndUnit() == oldUnit)
+				trap.setEndUnit(newUnit);
 		}
-*/
 	}
 }

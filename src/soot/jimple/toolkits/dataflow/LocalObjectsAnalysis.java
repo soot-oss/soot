@@ -83,16 +83,18 @@ public class LocalObjectsAnalysis
 		{
 //			G.v().out.println("      Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
-			G.v().out.println("    " + (isLocal ? 
-				"LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")" :
-				"SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
+			if(dfa.printDebug())
+				G.v().out.println("    " + (isLocal ? 
+					"LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")" :
+					"SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
 			return isLocal;
 		}
 	
 		// Handle obvious case
 		if( localOrRef instanceof StaticFieldRef )
 		{
-			G.v().out.println("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+			if(dfa.printDebug())
+				G.v().out.println("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return false;
 		}
 
@@ -126,7 +128,8 @@ public class LocalObjectsAnalysis
 		CallLocalityContext mergedContext = getClassLocalObjectsAnalysis(context.getDeclaringClass()).getMergedContext(sm);
 		if(mergedContext == null)
 		{
-			G.v().out.println("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+			if(dfa.printDebug())
+				G.v().out.println("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return true; // it's not non-local...
 		}
 
@@ -143,15 +146,18 @@ public class LocalObjectsAnalysis
 			if(ifr.getBase() == thisLocal)
 			{
 				boolean isLocal = mergedContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
-				if(isLocal)
+				if(dfa.printDebug())
 				{
-					G.v().out.println("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
-																			   + context.getName() + ")");
-				}
-				else
-				{
-					G.v().out.println("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
-																			   + context.getName() + ")");
+					if(isLocal)
+					{
+						G.v().out.println("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
+																				   + context.getName() + ")");
+					}
+					else
+					{
+						G.v().out.println("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
+																				   + context.getName() + ")");
+					}
 				}
 				return isLocal;
 			}
@@ -162,21 +168,25 @@ public class LocalObjectsAnalysis
 				{
 					ClassLocalObjectsAnalysis cloa = getClassLocalObjectsAnalysis(context.getDeclaringClass());
 					isLocal = !cloa.getInnerSharedFields().contains(ifr.getField());
-					if(isLocal)
+					if(dfa.printDebug())
 					{
-						G.v().out.println("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
-																				   + context.getName() + ")");
-					}
-					else
-					{
-						G.v().out.println("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
-																				   + context.getName() + ")");
+						if(isLocal)
+						{
+							G.v().out.println("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
+																					   + context.getName() + ")");
+						}
+						else
+						{
+							G.v().out.println("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
+																					   + context.getName() + ")");
+						}
 					}
 					return isLocal;
 				}
 				else
 				{
-					G.v().out.println("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
+					if(dfa.printDebug())
+						G.v().out.println("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
 																			   + context.getName() + ")");
 					return isLocal;
 				}
@@ -184,15 +194,18 @@ public class LocalObjectsAnalysis
 		}
 
 		boolean isLocal = SmartMethodLocalObjectsAnalysis.isObjectLocal(dfa, sm, mergedContext, localOrRef);
-		if(isLocal)
-		{	
-			G.v().out.println("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
-																	   + context.getName() + ")");
-		}
-		else
+		if(dfa.printDebug())
 		{
-			G.v().out.println("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
-																	   + context.getName() + ")");
+			if(isLocal)
+			{	
+				G.v().out.println("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
+																		   + context.getName() + ")");
+			}
+			else
+			{
+				G.v().out.println("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
+																		   + context.getName() + ")");
+			}
 		}
 		return isLocal;
 	}
@@ -622,7 +635,8 @@ public class LocalObjectsAnalysis
 				callingContext.setThisShared();				
 				callingContext.setAllParamsShared();
 			}
-			G.v().out.println("      " + callingMethod.getName() + " " + callingContext.toShortString());
+			if(dfa.printDebug())
+				G.v().out.println("      " + callingMethod.getName() + " " + callingContext.toShortString());
 		}
 		return callingContext;
 	}
@@ -700,7 +714,8 @@ public class LocalObjectsAnalysis
 		Edge e = (Edge) callChain.get(0);
 		CallLocalityContext callContext = getInitialContext(startingMethod, e); // gets calllocalitycontext of first call
 		SootMethod callMethod = e.tgt();
-		G.v().out.println("      " + callMethod.getName() + " " + callContext.toShortString());
+		if(dfa.printDebug())
+			G.v().out.println("      " + callMethod.getName() + " " + callContext.toShortString());
 		
 		// Remove the first call, and get context at end of chain (method is sm)
 		callChain.remove(0);

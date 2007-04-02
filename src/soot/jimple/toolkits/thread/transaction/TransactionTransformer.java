@@ -34,9 +34,9 @@ public class TransactionTransformer extends SceneTransformer
 	boolean optionLeaveOriginalLocks = false;
 	boolean optionIncludeEmptyPossibleEdges = false;
 	
-	boolean optionDoMHP = true;
+	boolean optionDoMHP = false;
 	boolean optionPrintMhpSummary = true; // not a CLI option yet
-	boolean optionDoTLO = true;
+	boolean optionDoTLO = false;
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;

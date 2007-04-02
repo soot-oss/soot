@@ -81,7 +81,7 @@ public class ClassDataFlowAnalysis
 			methodToDataFlowGraph.put(method, dataFlowGraph);
 			
 			// Then do smart version that does follow invoke expressions, if possible
-			if(method.isConcrete())// && doFullAnalysis)// && method.getDeclaringClass().isApplicationClass())
+			if(method.isConcrete() && doFullAnalysis)// && method.getDeclaringClass().isApplicationClass())
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);

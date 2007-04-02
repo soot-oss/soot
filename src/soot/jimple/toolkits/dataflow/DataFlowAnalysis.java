@@ -21,13 +21,20 @@ public class DataFlowAnalysis
 {
 	boolean includePrimitiveDataFlow;
 	boolean includeInnerFields;
+	boolean printDebug;
 
 	Map classToClassDataFlowAnalysis;
 	
 	public DataFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields)
 	{
+		this(includePrimitiveDataFlow, includeInnerFields, false);	
+	}
+	
+	public DataFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields, boolean printDebug)
+	{
 		this.includePrimitiveDataFlow = includePrimitiveDataFlow;
 		this.includeInnerFields = includeInnerFields;
+		this.printDebug = printDebug;
 		classToClassDataFlowAnalysis = new HashMap();
 	}
 	
@@ -39,6 +46,11 @@ public class DataFlowAnalysis
 	public boolean includesInnerFields()
 	{
 		return includeInnerFields;
+	}
+	
+	public boolean printDebug()
+	{
+		return printDebug;
 	}
 	
 /*

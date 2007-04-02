@@ -16,6 +16,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	MhpTester mhp;
 	List threads;
 	DataFlowAnalysis primitiveDfa;
+	static boolean printDebug = false;
 	
 	Map valueCache;
 	Map fieldCache;
@@ -23,10 +24,10 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new DataFlowAnalysis(false, true)); // ref-only, without inner fields
+		super(new DataFlowAnalysis(false, true, printDebug)); // ref-only, without inner fields
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
-		this.primitiveDfa = new DataFlowAnalysis(true, true); // ref+primitive, with inner fields
+		this.primitiveDfa = new DataFlowAnalysis(true, true, printDebug); // ref+primitive, with inner fields
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
@@ -64,8 +65,9 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 //		{
 //			return ((Boolean) valueCache.get(cacheKey)).booleanValue();
 //		}
-			
-		G.v().out.println("- " + localOrRef + " in " + sm + " is...");
+		
+		if(printDebug)
+			G.v().out.println("- " + localOrRef + " in " + sm + " is...");
 		Iterator threadsIt = threads.iterator();
 		while(threadsIt.hasNext())
 		{
@@ -77,17 +79,19 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 				if( runMethod.getDeclaringClass().isApplicationClass() &&
 					!isObjectLocalToContext(localOrRef, sm, runMethod))
 				{
-					G.v().out.println("  THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
-													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
+					if(printDebug)
+						G.v().out.println("  THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+														" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+														" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 //					valueCache.put(cacheKey, Boolean.FALSE);
 					return false;
 				}
 			}
 		}
-		G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-						 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
-						 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
+		if(printDebug)
+			G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
+							 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+							 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
 //		valueCache.put(cacheKey, Boolean.TRUE);
 		return true;
 	}

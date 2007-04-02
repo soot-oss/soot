@@ -24,7 +24,7 @@ public class SmartMethodLocalObjectsAnalysis
 		this.dfa = dfa;
 		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
 		
-		printMessages = false;
+		printMessages = dfa.printDebug();
 		counter++;
 	}
 	
