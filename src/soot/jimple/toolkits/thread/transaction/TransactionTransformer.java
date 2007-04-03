@@ -866,8 +866,11 @@ public class TransactionTransformer extends SceneTransformer
 	    	    	
 	    		    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
 	    	    	
-	   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
-	   	    			TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
+	    	    		if(fs != null) // any new method that is added after the transaction analysis will have a null
+	    	    		{
+		   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
+		   	    			TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
+		   	    		}
 					}
 	    	    }
 	    	}
