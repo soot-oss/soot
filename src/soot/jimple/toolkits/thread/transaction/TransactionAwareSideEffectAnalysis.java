@@ -53,6 +53,14 @@ class WholeObject
 		return "Whole Object" + (type == null ? "" : " (" + type + ")");
 	}
 	
+	public int hashCode()
+	{
+		if(type == null)
+			return 1;
+		return type.hashCode();
+	}
+	
+/*
 	public boolean equals(Object o)
 	{
 		if(o instanceof WholeObject)
@@ -77,8 +85,9 @@ class WholeObject
 		}
 		return tempequals(o);
 	}
+//*/
 	
-	public boolean tempequals(Object o)
+	public boolean equals(Object o)
 	{
 		if(type == null)
 			return true;
@@ -365,10 +374,17 @@ public class TransactionAwareSideEffectAnalysis {
 		            		if(rDef instanceof DefinitionStmt)
 		            		{
 		            			Value r = ((DefinitionStmt) rDef).getRightOp();
+		            			Value l = ((DefinitionStmt) rDef).getLeftOp();
+
+		            			// If the rvalue is a local, we can find THAT local's defs
 		            			if(r instanceof Local)
 			            			rDefs.addAll(sld.getDefsOfAt( (Local) r , (Unit) rDef ));
-			            		else
+			            		// If the rvalue is a field ref, add it to the read set
+			            		else if(r instanceof FieldRef)
 			            			ret.union(approximatedReadSet(method, stmt, r));
+			            		// If the rvalue is something else, add the lvalue to the read set
+			            		else
+			            			ret.union(approximatedReadSet(method, stmt, l));
 		            		}
 		            	}
 //		            	while (rDefsIt.hasNext())
@@ -541,10 +557,17 @@ public class TransactionAwareSideEffectAnalysis {
 		            		if(rDef instanceof DefinitionStmt)
 		            		{
 		            			Value r = ((DefinitionStmt) rDef).getRightOp();
+		            			Value l = ((DefinitionStmt) rDef).getLeftOp();
+		            			
+		            			// If the rvalue is a local, we can find THAT local's defs
 		            			if(r instanceof Local)
 			            			rDefs.addAll(sld.getDefsOfAt( (Local)r , (Unit) rDef ));
-			            		else
+			            		// If the rvalue is a field ref, add it to the write set
+			            		else if(r instanceof FieldRef)
 			            			ret.union(approximatedWriteSet(method, stmt, r));
+			            		// If the rvalue is something else, add the lvalue to the write set
+			            		else
+			            			ret.union(approximatedWriteSet(method, stmt, l));
 		            		}
 		            	}
 //		            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();

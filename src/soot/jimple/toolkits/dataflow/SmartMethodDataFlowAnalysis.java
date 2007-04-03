@@ -51,7 +51,7 @@ public class SmartMethodDataFlowAnalysis
 //		this.entrySet = new ArraySparseSet();
 //		this.emptySet = new ArraySparseSet();
 		
-		printMessages = dfa.printDebug();
+		printMessages = false; //dfa.printDebug();
 		
 		counter++;
 		

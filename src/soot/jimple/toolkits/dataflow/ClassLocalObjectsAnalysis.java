@@ -511,7 +511,7 @@ public class ClassLocalObjectsAnalysis
 				for(Iterator edgesIt = Scene.v().getCallGraph().edgesOutOf(containingMethod); edgesIt.hasNext(); )
 				{
 					Edge e = (Edge) edgesIt.next();
-					if( !e.tgt().getDeclaringClass().isApplicationClass() || e.srcStmt() == null )
+					if( !e.src().getDeclaringClass().isApplicationClass() || e.srcStmt() == null )
 						continue;
 					CallLocalityContext invokeContext;
 					if( !invokeToContext.containsKey(e.srcStmt()) )
