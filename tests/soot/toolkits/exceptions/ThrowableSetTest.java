@@ -10,6 +10,10 @@ import junit.extensions.TestSetup;
 import soot.toolkits.exceptions.ExceptionTestUtility.*;
 
 public class ThrowableSetTest extends TestCase {
+	
+	static {
+		Scene.v().loadBasicClasses();
+	}
 
     final static boolean DUMP_INTERNALS = false;
     final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();

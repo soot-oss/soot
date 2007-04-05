@@ -16,7 +16,11 @@ import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 
 public class UnitThrowAnalysisTest extends TestCase {
 
-    class ImmaculateInvokeUnitThrowAnalysis extends UnitThrowAnalysis {
+    static {
+    	Scene.v().loadBasicClasses();
+    }
+	
+	class ImmaculateInvokeUnitThrowAnalysis extends UnitThrowAnalysis {
 	// A variant of UnitThrowAnalysis which assumes that invoked
 	// methods will never throw any exceptions, rather than that
 	// they might throw anything Throwable.  This allows us to
