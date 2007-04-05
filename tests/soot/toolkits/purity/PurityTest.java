@@ -1,3 +1,5 @@
+package soot.toolkits.purity;
+
 /**
  * This example is from the article "A Combined Pointer and Purity Analysis for
  * Java Programs" by Alexandru Salcianu and Martin Rinard.
