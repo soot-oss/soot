@@ -1,0 +1,103 @@
+Phase cg.paddle:
+
+Paddle is a BDD-based interprocedural analysis framework. It 
+includes points-to analysis, call graph construction, and 
+various client analyses.
+
+Recognized options (with default values):
+ enabled (false)               
+ verbose (false)               Print detailed information about the execution 
+                               of Paddle 
+ conf                          Select Paddle configuration 
+    ofcg (default)               On-the fly call graph 
+    cha                          CHA only 
+    cha-aot                      CHA ahead-of-time callgraph 
+    ofcg-aot                     OFCG-AOT callgraph 
+    cha-context-aot              CHA-Context-AOT callgraph 
+    ofcg-context-aot             OFCG-Context-AOT callgraph 
+    cha-context                  CHA-Context callgraph 
+    ofcg-context                 OFCG-Context callgraph 
+ bdd (false)                   Use BDD version of Paddle 
+ order (32)                    
+ dynamic-order                 
+ profile (false)               Profile BDDs using JeddProfiler 
+ q                             Select queue implementation 
+    auto (default)               Select queue implementation based on bdd 
+                                 option 
+    trad                         Normal worklist queue implementation 
+    bdd                          BDD-based queue implementation 
+    debug                        Debugging queue implementation 
+    trace                        Tracing queue implementation 
+    numtrace                     Number-tracing queue implementation 
+ backend                       Select BDD backend 
+    buddy (default)              BuDDy backend 
+    cudd                         CUDD backend 
+    sable                        SableJBDD backend 
+    javabdd                      JavaBDD backend 
+    none                         No BDDs 
+ ignore-types (false)          Make Paddle completely ignore declared types of 
+                               variables 
+ pre-jimplify (false)          Jimplify all methods before starting Paddle 
+ context                       Select context-sensitivity level 
+    insens (default)             Builds a context-insensitive call graph 
+    1cfa                         Builds a 1-CFA call graph 
+    kcfa                         Builds a k-CFA call graph 
+    objsens                      Builds an object-sensitive call graph 
+    kobjsens                     Builds a k-object-sensitive call graph 
+    uniqkobjsens                 Builds a unique-k-object-sensitive call graph 
+ k (2)                         
+ context-heap (false)          Treat allocation sites context-sensitively 
+ rta (false)                   Emulate Rapid Type Analysis 
+ field-based (false)           Use a field-based rather than field-sensitive 
+                               representation 
+ types-for-sites (false)       Represent objects by their actual type rather 
+                               than allocation site 
+ merge-stringbuffer (true)     Represent all StringBuffers as one object 
+ string-constants (false)      Propagate all string constants, not just class 
+                               names 
+ simulate-natives (true)       Simulate effects of native methods in standard 
+                               class library 
+ global-nodes-in-natives (false)
+                               Use global node to model variables in 
+                               simulations of native methods 
+ simple-edges-bidirectional (false)
+                               Equality-based analysis between variable nodes 
+ this-edges (false)            Use pointer assignment edges to model this 
+                               parameters 
+ precise-newinstance (true)    Make newInstance only allocate objects of 
+                               dynamic classes 
+ propagator                    Select propagation algorithm 
+    auto (default)               Select propagation algorithm based on bdd 
+                                 option 
+    iter                         Simple iterative algorithm 
+    worklist                     Fast, worklist-based algorithm 
+    alias                        Alias-edge based algorithm 
+    bdd                          BDD-based propagator 
+    incbdd                       Incrementalized BDD-based propagator 
+ set-impl                      Select points-to set implementation 
+    hash                         Use Java HashSet 
+    bit                          Bit vector 
+    hybrid                       Hybrid representation using bit vector for 
+                                 large sets 
+    array                        Sorted array representation 
+    double (default)             Double set representation for incremental 
+                                 propagation 
+ double-set-old                Select implementation of points-to set for old 
+                               part of double set 
+    hash                         Use Java HashSet 
+    bit                          Bit vector 
+    hybrid (default)             Hybrid representation using bit vector for 
+                                 large sets 
+    array                        Sorted array representation 
+ double-set-new                Select implementation of points-to set for new 
+                               part of double set 
+    hash                         Use Java HashSet 
+    bit                          Bit vector 
+    hybrid (default)             Hybrid representation using bit vector for 
+                                 large sets 
+    array                        Sorted array representation 
+ context-counts (false)        Print number of contexts for each method 
+ total-context-counts (false)  Print total number of contexts 
+ set-mass (false)              Calculate statistics about points-to set sizes 
+ number-nodes (true)           Print node numbers in dumps 
+
