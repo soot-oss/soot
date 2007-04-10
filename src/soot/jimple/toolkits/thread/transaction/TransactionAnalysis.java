@@ -202,14 +202,15 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 	            		if(optionPrintDebug)
 	            			G.v().out.print("{x,x} ");
 	            	}
-	            	else if(InvokeSig.equals("void wait()"))
+	            	else if(InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)"))
             		{
 				        if(!tn.waits.contains(unit))
 		            		tn.waits.add(unit);
 	            		if(optionPrintDebug)
 	            			G.v().out.print("{x,x} ");
 	            	}
-	            	else if(!tn.invokes.contains(unit))
+	            	
+	            	if(!tn.invokes.contains(unit))
 	            	{
 	            		// Mark this unit for later read/write set calculation (must be deferred until all tns have been found)
 		            	tn.invokes.add(unit);

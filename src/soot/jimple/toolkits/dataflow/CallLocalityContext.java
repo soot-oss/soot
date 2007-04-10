@@ -240,7 +240,16 @@ public class CallLocalityContext
 	public boolean merge(CallLocalityContext other)
 	{
 		boolean isChanged = false;
-		for(int i = 0; i < nodes.size(); i++)
+		if(other.nodes.size() > nodes.size())
+		{
+			isChanged = true;
+			for(int i = nodes.size(); i < other.nodes.size(); i++)
+			{
+				nodes.add(other.nodes.get(i));
+				isNodeLocal.add(other.isNodeLocal.get(i));
+			}
+		}
+		for(int i = 0; i < other.nodes.size(); i++)
 		{
 			Boolean temp = new Boolean(((Boolean) isNodeLocal.get(i)).booleanValue() && ((Boolean) other.isNodeLocal.get(i)).booleanValue());
 			if( !temp.equals((Boolean) isNodeLocal.get(i)) )

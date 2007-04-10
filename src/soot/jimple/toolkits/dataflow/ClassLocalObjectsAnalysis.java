@@ -531,7 +531,8 @@ public class ClassLocalObjectsAnalysis
 					}
 					else
 					{
-						boolean causedChange = ((CallLocalityContext) methodToContext.get(e.tgt())).merge(invokeContext);
+//						G.v().out.println("        Merging Contexts for " + e.tgt());
+						boolean causedChange = ((CallLocalityContext) methodToContext.get(e.tgt())).merge(invokeContext); // The contexts being merged could be from different DFAs.  If so, primitive version might be bigger.
 						if( causedChange )
 							newWorklist.add(e.tgt());
 					}
