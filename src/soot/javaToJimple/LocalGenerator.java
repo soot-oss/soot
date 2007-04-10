@@ -29,12 +29,18 @@ public class LocalGenerator{
           body = b;
     }
     
+    private transient Set localNames = null; 
+    
     private boolean bodyContainsLocal(String name){
+        return localNames.contains(name);       
+    }
+    
+    private void initLocalNames() {
+    	localNames = new HashSet();
         Iterator it = body.getLocals().iterator();
         while (it.hasNext()){
-            if (((soot.Local)it.next()).getName().equals(name)) return true;
-        }
-        return false;
+            localNames.add(((soot.Local)it.next()).getName());
+        }    	
     }
     
     /**
@@ -42,6 +48,9 @@ public class LocalGenerator{
      */
     public soot.Local generateLocal(soot.Type type){
         
+    	//store local names for enhanced performance
+    	initLocalNames();
+    	
 		String name = "v";
 		if (type instanceof soot.IntType) {
             while (true){
@@ -105,9 +114,11 @@ public class LocalGenerator{
             }
         }
         else {
+        	localNames = null;
             throw new RuntimeException("Unhandled Type of Local variable to Generate - Not Implemented");
         }
 		
+    	localNames = null;
 		return createLocal(name, type);
 		
 	}
