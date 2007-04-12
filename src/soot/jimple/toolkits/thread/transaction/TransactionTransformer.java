@@ -29,14 +29,22 @@ public class TransactionTransformer extends SceneTransformer
 		return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();
 	}
 	
+	// Lock options
 	boolean optionOneGlobalLock = false;
 	boolean optionStaticLocks = false;
 	boolean optionLeaveOriginalLocks = false;
 	boolean optionIncludeEmptyPossibleEdges = false;
 	
+	// Semantic options
+	boolean optionAvoidDeadlock = true;
+	boolean optionOpenNesting = true;	
+	
+	// Analysis options
 	boolean optionDoMHP = false;
-	boolean optionPrintMhpSummary = true; // not a CLI option yet
 	boolean optionDoTLO = false;
+	
+	// Output options
+	boolean optionPrintMhpSummary = true; // not a CLI option yet
 	boolean optionPrintGraph = false;
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;
@@ -73,6 +81,9 @@ public class TransactionTransformer extends SceneTransformer
 			optionLeaveOriginalLocks = true;
 			optionIncludeEmptyPossibleEdges = false;
 		}
+		
+		optionAvoidDeadlock = PhaseOptions.getBoolean( options, "avoid-deadlock" );
+		optionOpenNesting = PhaseOptions.getBoolean( options, "open-nesting" );
 
 		optionDoMHP = PhaseOptions.getBoolean( options, "do-mhp" );
 		optionDoTLO = PhaseOptions.getBoolean( options, "do-tlo" );
@@ -102,10 +113,13 @@ public class TransactionTransformer extends SceneTransformer
 
 		// *** Find Thread-Local Objects ***
 		ThreadLocalObjectsAnalysis tlo = null;
-    	if(optionDoTLO && mhp != null)
+    	if(optionDoTLO)
     	{
 	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
-    		tlo = new ThreadLocalObjectsAnalysis(mhp); // can tell only that a field/local is local to the object it's being accessed in
+	    	if(mhp != null)
+	    		tlo = new ThreadLocalObjectsAnalysis(mhp); // can tell only that a field/local is local to the object it's being accessed in
+			else
+	    		tlo = new ThreadLocalObjectsAnalysis(new UnsynchronizedMhpAnalysis()); // can tell only that a field/local is local to the object it's being accessed in
     	}
 
 
@@ -173,10 +187,19 @@ public class TransactionTransformer extends SceneTransformer
     	// meaning of synchronized regions, so is definitely OK if using that keyword
     	G.v().out.println("[wjtp.tn] *** Find Transitive Read/Write Sets *** " + (new Date()));
     	PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
-    	TransactionAwareSideEffectAnalysis tasea = 
-    		new TransactionAwareSideEffectAnalysis(
-    				pta, 
-    				Scene.v().getCallGraph(), AllTransactions, tlo);
+    	TransactionAwareSideEffectAnalysis tasea = null;
+    	if(optionOpenNesting)
+    	{
+    		tasea = new TransactionAwareSideEffectAnalysis(
+    					pta, 
+    					Scene.v().getCallGraph(), AllTransactions, tlo);
+    	}
+    	else
+    	{
+    		tasea = new TransactionAwareSideEffectAnalysis(
+    					pta, 
+    					Scene.v().getCallGraph(), null, tlo);
+    	}
     	Iterator tnIt = AllTransactions.iterator();
     	while(tnIt.hasNext())
     	{
@@ -245,15 +268,19 @@ public class TransactionTransformer extends SceneTransformer
     	// Search for data dependencies between transactions, and split them into disjoint sets
     	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
     	int nextGroup = 1;
+    	List groups = new ArrayList();
+    	groups.add(new Object()); // dummy group
     	if(optionOneGlobalLock) // use one group for all transactions
     	{
+    		TransactionGroup onlyGroup = new TransactionGroup(nextGroup);
 	    	Iterator tnIt1 = AllTransactions.iterator();
 	    	while(tnIt1.hasNext())
 	    	{
 	    		Transaction tn1 = (Transaction) tnIt1.next();
-	    		tn1.setNumber = 1;
+	    		onlyGroup.add(tn1);
     		}
     		nextGroup++;
+    		groups.add(onlyGroup);
     	}
     	else // calculate separate groups for transactions
     	{
@@ -384,13 +411,19 @@ public class TransactionTransformer extends SceneTransformer
 			    					// if tn2 is NOT already in a group
 			    					if(tn2.setNumber == 0)
 			    					{
-			    						tn2.setNumber = tn1.setNumber;
+			    						TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
+			    						tn1Group.add(tn2);
+//			    						tn2.setNumber = tn1.setNumber;
 			    					}
 			    					// if tn2 is already in a group
 			    					else if(tn2.setNumber > 0)
 			    					{
-			    						if(tn1 != tn2) // if they are equal, then they are already in the same group!
+			    						if(tn1.setNumber != tn2.setNumber) // if they are equal, then they are already in the same group!
 			    						{
+			    							TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
+			    							TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
+			    							tn1Group.mergeGroups(tn2Group);
+/*
 					    					int setToDelete = tn2.setNumber;
 					    					int setToExpand = tn1.setNumber;
 						    	        	Iterator tnIt3 = AllTransactions.iterator();
@@ -402,6 +435,7 @@ public class TransactionTransformer extends SceneTransformer
 						    	    				tn3.setNumber = setToExpand;
 						    	    			}
 						    	    		}
+*/
 						    	    	}
 			    					}
 			    				}
@@ -411,13 +445,19 @@ public class TransactionTransformer extends SceneTransformer
 			    					// if tn2 is NOT already in a group
 			    					if(tn2.setNumber == 0)
 		 		    				{
-				    					tn1.setNumber = tn2.setNumber = nextGroup;
+		 		    					TransactionGroup newGroup = new TransactionGroup(nextGroup);
+										newGroup.add(tn1);
+										newGroup.add(tn2);
+										groups.add(newGroup);
+//				    					tn1.setNumber = tn2.setNumber = nextGroup;
 				    					nextGroup++;
 				    				}
 			    					// if tn2 is already in a group
 			    					else if(tn2.setNumber > 0)
 			    					{
-			    						tn1.setNumber = tn2.setNumber;
+			    						TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
+			    						tn2Group.add(tn1);
+//			    						tn1.setNumber = tn2.setNumber;
 			    					}
 			    				}
 			    			}
@@ -439,6 +479,119 @@ public class TransactionTransformer extends SceneTransformer
 	    		}
 	    	}
     	}
+    	
+    	
+    	
+		// *** Detect the Possibility of Deadlock ***
+		MutableDirectedGraph lockOrder;
+		TransitiveTargets tt = new TransitiveTargets(Scene.v().getCallGraph(), new Filter(new TransactionVisibleEdgesPred(null)));
+		boolean foundDeadlock;
+		do
+		{
+			G.v().out.println("[wjtp.tn] *** Detect the Possibility of Deadlock *** " + (new Date()));
+			foundDeadlock = false;
+	    	lockOrder = new HashMutableDirectedGraph(); // start each iteration with a fresh graph
+			
+			// Assemble the partial ordering of locks
+	    	Iterator deadlockIt1 = AllTransactions.iterator();
+	    	while(deadlockIt1.hasNext() && !foundDeadlock)
+	    	{
+	    		Transaction tn1 = (Transaction) deadlockIt1.next();
+	    		
+	    		// skip if unlocked
+	    		if( tn1.setNumber <= 0 )
+	    			continue;
+	    			
+	    		// add a node for this set
+	    		if( !lockOrder.containsNode(groups.get(tn1.setNumber)) )
+	    		{
+	    			lockOrder.addNode(groups.get(tn1.setNumber));
+	    		}
+	    			
+	    		// Get list of tn1's target methods
+	    		if(tn1.transitiveTargets == null)
+	    		{
+		    		tn1.transitiveTargets = new HashSet();
+		    		Iterator tn1InvokeIt = tn1.invokes.iterator();
+		    		while(tn1InvokeIt.hasNext())
+		    		{
+		    			Unit tn1Invoke = (Unit) tn1InvokeIt.next();
+		    			Iterator targetIt = tt.iterator(tn1Invoke);
+		    			while(targetIt.hasNext())
+		    				tn1.transitiveTargets.add(targetIt.next());
+		    		}
+		    	}
+	    		
+	    		// compare to each other tn
+	    		Iterator deadlockIt2 = AllTransactions.iterator();
+	    		while(deadlockIt2.hasNext() && !foundDeadlock)
+	    		{
+	    			Transaction tn2 = (Transaction) deadlockIt2.next();
+	    			
+	    			// skip if unlocked or in same set as tn1
+	    			if( tn2.setNumber <= 0 || tn2.setNumber == tn1.setNumber )
+	    				continue;
+	    				
+	    			// add a node for this set
+		    		if( !lockOrder.containsNode(groups.get(tn2.setNumber)) )
+		    		{
+		    			lockOrder.addNode(groups.get(tn2.setNumber));
+		    		}	
+		    			
+		    		if( tn1.transitiveTargets.contains(tn2.method) && !foundDeadlock )
+		    		{
+		    			// This implies the partial ordering tn1lock before tn2lock
+		    			if(optionPrintDebug)
+		    			{
+			    			G.v().out.println("group" + (tn1.setNumber) + " before group" + (tn2.setNumber) + ": " +
+			    				"outer: " + tn1.name + " inner: " + tn2.name);
+			    		}
+		    			
+		    			// Check if tn2lock before tn1lock is in our lock order
+		    			List afterTn2 = new ArrayList();
+		    			afterTn2.addAll( lockOrder.getSuccsOf(groups.get(tn2.setNumber)) );
+		    			for( int i = 0; i < afterTn2.size(); i++ )
+		    				afterTn2.addAll( lockOrder.getSuccsOf(afterTn2.get(i)) );
+		    				
+		    			if( afterTn2.contains(groups.get(tn1.setNumber)) )
+		    			{
+		    				if(!optionAvoidDeadlock)
+		    				{
+			    				G.v().out.println("[wjtp.tn] DEADLOCK HAS BEEN DETECTED: not correcting");
+								foundDeadlock = true;
+			    			}
+			    			else
+			    			{
+			    				G.v().out.println("[wjtp.tn] DEADLOCK HAS BEEN DETECTED: merging group" +
+			    					(tn1.setNumber) + " and group" + (tn2.setNumber) +
+			    					" and restarting deadlock detection");
+    					
+								TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
+								TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
+								if(optionPrintDebug)
+								{
+									G.v().out.println("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
+									G.v().out.println("tn1Group.size was " + tn1Group.transactions.size() +
+										" and tn2Group.size was " + tn2Group.transactions.size());
+									G.v().out.println("tn1Group.num was  " + tn1Group.num() + " and tn2Group.num was  " + tn2Group.num());
+								}
+								tn1Group.mergeGroups(tn2Group);
+								if(optionPrintDebug)
+								{
+									G.v().out.println("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
+									G.v().out.println("tn1Group.size is  " + tn1Group.transactions.size() +
+										" and tn2Group.size is  " + tn2Group.transactions.size());
+								}
+								
+								foundDeadlock = true;
+			    			}
+		    			}
+		    			
+		    			lockOrder.addEdge(groups.get(tn1.setNumber), groups.get(tn2.setNumber));
+		    		}
+	    		}
+	    	}
+		} while(foundDeadlock && optionAvoidDeadlock);
 
 
 		// *** Calculate Locking Objects ***
@@ -820,6 +973,7 @@ public class TransactionTransformer extends SceneTransformer
 				}
 			}
 		}
+		
 		
 		
 		// *** Print Output and Transform Program ***

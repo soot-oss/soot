@@ -1483,6 +1483,18 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
+          public void setavoid_deadlock(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("avoid-deadlock:"+(arg?"true":"false"));
+          }
+      
+          public void setopen_nesting(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.tn");
+            addArg("open-nesting:"+(arg?"true":"false"));
+          }
+      
           public void setdo_mhp(boolean arg) {
             addArg("-p");
             addArg("wjtp.tn");

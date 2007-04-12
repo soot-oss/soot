@@ -2993,6 +2993,25 @@ program and one of the generated locking schemes.
 						</value>
 					</multiopt>
 					<boolopt>
+						<name>Perform Deadlock Avoidance</name>
+						<alias>avoid-deadlock</alias>
+						<default>true</default>
+						<short_desc>Perform Deadlock Avoidance</short_desc>
+<long_desc>
+Perform Deadlock Avoidance by enforcing a lock ordering where necessary.
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Use Open Nesting</name>
+						<alias>open-nesting</alias>
+						<default>true</default>
+						<short_desc>Use an open nesting model</short_desc>
+<long_desc>
+Use an open nesting model, where inner transactions are allowed to commit
+independently of any outer transaction.
+</long_desc>
+					</boolopt>
+					<boolopt>
 						<name>Perform May-Happen-in-Parallel Analysis</name>
 						<alias>do-mhp</alias>
 						<default>true</default>

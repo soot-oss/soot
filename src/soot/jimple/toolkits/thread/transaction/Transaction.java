@@ -3,9 +3,7 @@ package soot.jimple.toolkits.thread.transaction;
 import soot.Local;
 import soot.jimple.Stmt;
 import soot.jimple.EnterMonitorStmt;
-import java.util.Vector;
-import java.util.HashSet;
-import java.util.HashMap;
+import java.util.*;
 import soot.jimple.toolkits.dataflow.AbstractDataSource;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.SootMethod;
@@ -35,6 +33,7 @@ class Transaction
 	public HashSet edges;
 	public HashSet waits;
 	public HashSet notifys;
+	public HashSet transitiveTargets;
 	
 	// Locking Information
 	public Value lockObject;
@@ -73,6 +72,7 @@ class Transaction
 		this.edges = new HashSet();
 		this.waits = new HashSet();
 		this.notifys = new HashSet();
+		this.transitiveTargets = null;
 	    this.lockObject = null;
 	    this.lockObjectArrayIndex = null;
 	}
@@ -96,6 +96,7 @@ class Transaction
 		this.edges = (HashSet) tn.edges.clone();
 		this.waits = (HashSet) tn.waits.clone();
 		this.notifys = (HashSet) tn.notifys.clone();
+		this.transitiveTargets = (HashSet) (tn.transitiveTargets == null ? null : tn.transitiveTargets.clone());
 	    this.lockObject = tn.lockObject;
 	    this.lockObjectArrayIndex = tn.lockObjectArrayIndex;
 	}

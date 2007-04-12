@@ -1745,6 +1745,8 @@ public class Options extends OptionsBase {
                 
                 +padVal( "leave-original", "Analyse the existing lock structure without making changes" )
                 
+                +padOpt( "avoid-deadlock (true)", "Perform Deadlock Avoidance" )
+                +padOpt( "open-nesting (true)", "Use an open nesting model" )
                 +padOpt( "do-mhp (true)", "Perform a May-Happen-in-Parallel analysis" )
                 +padOpt( "do-tlo (true)", "Perform a Local-Objects analysis" )
                 +padOpt( "print-graph (false)", "Print topological graph of transactions" )
@@ -2463,6 +2465,8 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"locking-scheme "
+                +"avoid-deadlock "
+                +"open-nesting "
                 +"do-mhp "
                 +"do-tlo "
                 +"print-graph "
@@ -3024,6 +3028,8 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:false "
               +"locking-scheme:medium-grained "
+              +"avoid-deadlock:true "
+              +"open-nesting:true "
               +"do-mhp:true "
               +"do-tlo:true "
               +"print-graph:false "
