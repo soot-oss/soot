@@ -1,7 +1,11 @@
 Improvements in version 2.2.4 (To Come)
 
 1. Soot is now able to infer a main-class if no main-class attribute is given.
-2. Added experimental lock allocation code, may-happen-in-parallel analysis, and intraprocedural information flow analysis.
+2. Added EXPERIMENTAL transactions/lock allocation code, including
+	- may-happen-in-parallel analysis
+	- interprocedural information flow analysis
+	- thread-local objects analysis
+	- thread-based side effect analysis
 
 Improvements in version 2.2.3 (Sat, Mar 18, 2006)
 
