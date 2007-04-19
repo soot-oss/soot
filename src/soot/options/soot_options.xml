@@ -2959,9 +2959,8 @@ both optimistic and pessimistic JVMs.
 							<long_desc>
 Try to identify transactional regions that can employ fine-grained locking to
 increase parallelism.  All side effects must be protected by a single object.
-This locking scheme aims to achieve simple fine-grained locking.
+This locking scheme aims to achieve simple fine-grained locking. 
 </long_desc>
-							<default/>
 						</value>
 						<value>
 							<name>Medium Grained</name>

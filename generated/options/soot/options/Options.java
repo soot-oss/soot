@@ -1737,7 +1737,9 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "locking-scheme", "Selects the granularity of the generated lock allocation" )
-                +padVal( "medium-grained (default)", "Try to use runtime objects for synchronization" )
+                +padVal( "fine-grained", "Use multiple runtime objects for synchronization" )
+                
+                +padVal( "medium-grained (default)", "Use a runtime object for synchronization where possible" )
                 
                 +padVal( "coarse-grained", "Use static objects for synchronization" )
                 
