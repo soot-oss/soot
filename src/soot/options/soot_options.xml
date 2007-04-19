@@ -2953,11 +2953,22 @@ both optimistic and pessimistic JVMs.
 						<short_desc>Selects the granularity of the generated lock allocation</short_desc>
 						<long_desc>Selects the granularity of the generated lock allocation</long_desc>
 						<value>
-							<name>Medium Grained</name>
-							<alias>medium-grained</alias>
-							<short_desc>Try to use runtime objects for synchronization</short_desc>
+							<name>Fine Grained</name>
+							<alias>fine-grained</alias>
+							<short_desc>Use multiple runtime objects for synchronization</short_desc>
 							<long_desc>
 Try to identify transactional regions that can employ fine-grained locking to
+increase parallelism.  All side effects must be protected by a single object.
+This locking scheme aims to achieve simple fine-grained locking.
+</long_desc>
+							<default/>
+						</value>
+						<value>
+							<name>Medium Grained</name>
+							<alias>medium-grained</alias>
+							<short_desc>Use a runtime object for synchronization where possible</short_desc>
+							<long_desc>
+Try to identify transactional regions that can employ a dynamic lock to
 increase parallelism.  All side effects must be protected by a single object.
 This locking scheme aims to approximate typical Java Monitor usage.
 </long_desc>
@@ -2968,8 +2979,9 @@ This locking scheme aims to approximate typical Java Monitor usage.
 							<alias>coarse-grained</alias>
 							<short_desc>Use static objects for synchronization</short_desc>
 							<long_desc>
-Insert static objects into the program for synchronization.  This locking scheme
-aims to approximate the use of Critical Sections.
+Insert static objects into the program for synchronization.  One object will be
+used for each group of conflicting synchronized regions.  This locking scheme
+achieves code-level locking.
 </long_desc>
 						</value>
 						<value>

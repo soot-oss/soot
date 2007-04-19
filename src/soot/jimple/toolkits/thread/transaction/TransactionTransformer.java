@@ -32,6 +32,7 @@ public class TransactionTransformer extends SceneTransformer
 	// Lock options
 	boolean optionOneGlobalLock = false;
 	boolean optionStaticLocks = false;
+	boolean optionUseLocksets = false;
 	boolean optionLeaveOriginalLocks = false;
 	boolean optionIncludeEmptyPossibleEdges = false;
 	
@@ -56,16 +57,32 @@ public class TransactionTransformer extends SceneTransformer
 		// Get phase options
 
 		String lockingScheme = PhaseOptions.getString( options, "locking-scheme" );
-		if(lockingScheme.equals("medium-grained"))
+		if(lockingScheme.equals("fine-grained"))
 		{
 			optionOneGlobalLock = false;
 			optionStaticLocks = false;
+			optionUseLocksets = true;
 			optionLeaveOriginalLocks = false;
 		}
-		if(lockingScheme.equals("coarse-grained"))
+//		if(lockingScheme.equals("fine-static"))
+//		{
+//			optionOneGlobalLock = false;
+//			optionStaticLocks = true;
+//			optionUseLocksets = true;
+//			optionLeaveOriginalLocks = false;
+//		}
+		if(lockingScheme.equals("medium-grained")) // rename to coarse-grained
+		{
+			optionOneGlobalLock = false;
+			optionStaticLocks = false;
+			optionUseLocksets = false;
+			optionLeaveOriginalLocks = false;
+		}
+		if(lockingScheme.equals("coarse-grained")) // rename to coarse-static
 		{
 			optionOneGlobalLock = false;
 			optionStaticLocks = true;
+			optionUseLocksets = false;
 			optionLeaveOriginalLocks = false;
 		}
 		if(lockingScheme.equals("single-static"))
@@ -703,13 +720,13 @@ public class TransactionTransformer extends SceneTransformer
 				mayBeFieldsOfSameObject[group] = true;
 				lockObject[group] = null;
 				
-				if(rws[group].size() <= 0) // WHAT DOES IT MEAN FOR THIS TO BE 0???
+				if(rws[group].size() <= 0) // There are no transactions in this group
 				{
 					mayBeFieldsOfSameObject[group] = false;
 					continue;
 				}
 
-				if(rws[group].getGlobals().size() > 0)
+				if(rws[group].getGlobals().size() > 0) // There is some global field in this group
 				{
 					mayBeFieldsOfSameObject[group] = false;
 					continue;
