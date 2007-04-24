@@ -712,6 +712,18 @@ public class TransactionTransformer extends SceneTransformer
 				}
 	    	}
 		}
+//		else if(optionUseLocksets)
+//		{
+//			// initialize all groups to static
+//			for(int group = 0; group < nextGroup - 1; group++)
+//			{
+//				mayBeFieldsOfSameObject[group] = false;
+//				mustBeFieldsOfSameObjectForAllTns[group] = false;
+//				lockObject[group] = null;
+//			}
+//			
+//			
+//		}
 		else // Find local locks when possible
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
@@ -720,18 +732,21 @@ public class TransactionTransformer extends SceneTransformer
 				mayBeFieldsOfSameObject[group] = true;
 				lockObject[group] = null;
 				
+				// empty groups don't get locks
 				if(rws[group].size() <= 0) // There are no transactions in this group
 				{
 					mayBeFieldsOfSameObject[group] = false;
 					continue;
 				}
-
-				if(rws[group].getGlobals().size() > 0) // There is some global field in this group
+				
+				// groups with globals get a static lock, or a lockset
+				if(rws[group].getGlobals().size() > 0 && !optionUseLocksets) // There is some global field in this group
 				{
 					mayBeFieldsOfSameObject[group] = false;
 					continue;
 				}
 				
+				// groups with contributing reads/writes from more than one type of object get a static lock, or a lockset
 				Iterator grwsIt1 = rws[group].getFields().iterator();
 				while(grwsIt1.hasNext() && mayBeFieldsOfSameObject[group])
 				{
@@ -740,7 +755,7 @@ public class TransactionTransformer extends SceneTransformer
 					while(grwsIt2.hasNext() && mayBeFieldsOfSameObject[group])
 					{
 						Object field2 = (Object) grwsIt2.next();
-						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
+						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)) && !optionUseLocksets)
 						{
 							mayBeFieldsOfSameObject[group] = false;
 						}
@@ -775,7 +790,8 @@ public class TransactionTransformer extends SceneTransformer
 						
 				if(mustBeFieldsOfSameObjectForAllTns[group]) // if still might be true, then inspect for this Transaction
 				{
-					// Get a list of units that read/write to any of the dependencies.
+					// Get a list of contributing reads/writes: 
+					// units that read/write to any of the dependences.
 					Map unitToLocal = new HashMap();
 					Map unitToArrayIndex = new HashMap(); // if all relevant R/Ws are via array references, we need to track the indexes as well.
 					boolean allRefsAreArrayRefs = true;
@@ -880,108 +896,119 @@ public class TransactionTransformer extends SceneTransformer
 	//				G.v().out.print("Transaction " + tn.name + " in " + tn.method + " ");
 	//				UnitGraph g = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
 					UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
-					EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
-					Vector barriers = (Vector) tn.ends.clone();
-					barriers.add(tn.begin);
-					if( lif.areEqualUses(unitToLocal, barriers) ) // runs the analysis
+
+					if(optionUseLocksets) // multiple locks per region
 					{
-						Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
-						NullnessAnalysis na = new NullnessAnalysis(g);
-						NullnessAssumptionAnalysis naa = new NullnessAssumptionAnalysis(g);
-						CommonPrecedingEqualValueAnalysis cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
-						Iterator ancestorsIt = ancestors.iterator();
-						while(ancestorsIt.hasNext())
+						Vector barriers = (Vector) tn.ends.clone();
+						barriers.add(tn.begin);
+//						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()), unitToLocal, barriers);
+//						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
+					}
+					else // one lock per region
+					{
+						EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
+						Vector barriers = (Vector) tn.ends.clone();
+						barriers.add(tn.begin);
+						if( lif.areEqualUses(unitToLocal, barriers) ) // runs the analysis
 						{
-							Object o = ancestorsIt.next();
-							Value v = null;
-							if(o instanceof EquivalentValue)
+							Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
+							NullnessAnalysis na = new NullnessAnalysis(g);
+							NullnessAssumptionAnalysis naa = new NullnessAssumptionAnalysis(g);
+							CommonPrecedingEqualValueAnalysis cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+							List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
+							Iterator ancestorsIt = ancestors.iterator();
+							while(ancestorsIt.hasNext())
 							{
-								v = ((EquivalentValue) o).getValue();
-							}
-							else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
-							{
-								v = (Value) o;
-							}
-							else
-							{
-	//							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
-							}
-							
-							if(v != null)
-							{
-								if(v instanceof Ref || 
-									(v instanceof Local && 
-										(na.isAlwaysNonNullBefore(tn.begin, (Local) v) ||
-										 naa.isAssumedNonNullBefore(tn.begin, (Local) v))) )
+								Object o = ancestorsIt.next();
+								Value v = null;
+								if(o instanceof EquivalentValue)
 								{
-									if(lockObject[group] == null || v instanceof Ref)
-										lockObject[group] = v;
-									if( tn.lockObject == null || v instanceof Ref )
-										tn.lockObject = v;
+									v = ((EquivalentValue) o).getValue();
+								}
+								else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
+								{
+									v = (Value) o;
 								}
 								else
 								{
-	//								G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
+		//							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
 								}
-							}
-							else
-							{
-	//							G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
-							}
-						}
-						
-						if(tn.lockObject == null)
-						{
-	//						G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
-							mustBeFieldsOfSameObjectForAllTns[group] = false;
-							lockObject[group] = null;
-							continue; // move on to next transaction
-						}
-						
-						if(false) // allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
-														   // null elements in the array.  You cannot lock a null object.
-														   // We need a won't-introduce-a-new-null-object-error analysis!
-						{
-							G.v().out.println("checking for equivalence of these array indices" + unitToArrayIndex.values());
-							if( lif.areEqualUses(unitToArrayIndex, barriers) )
-							{
-								G.v().out.println("array indices are equivalent... finding ancestor value at " + tn.begin);
-								firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
-								cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-								ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
-								ancestorsIt = ancestors.iterator();
-								while(ancestorsIt.hasNext())
+								
+								if(v != null)
 								{
-									Object o = ancestorsIt.next();
-									Value v = null;
-									if(o instanceof EquivalentValue)
+									if(v instanceof Ref || 
+										(v instanceof Local && 
+											(na.isAlwaysNonNullBefore(tn.begin, (Local) v) ||
+											 naa.isAssumedNonNullBefore(tn.begin, (Local) v))) )
 									{
-										v = ((EquivalentValue) o).getValue();
-									}
-									else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
-									{
-										v = (Value) o;
+										if(lockObject[group] == null || v instanceof Ref)
+											lockObject[group] = v;
+										if( tn.lockObject == null || v instanceof Ref )
+											tn.lockObject = v;
 									}
 									else
 									{
-										G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
-									}
-									if(v != null)
-									{
-										if( tn.lockObjectArrayIndex == null || v instanceof Local )
-											tn.lockObjectArrayIndex = v;
+		//								G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
 									}
 								}
-								G.v().out.println("array index ancestor is: " + tn.lockObjectArrayIndex);
+								else
+								{
+		//							G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
+								}
+							}
+							
+							if(tn.lockObject == null)
+							{
+		//						G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
+								mustBeFieldsOfSameObjectForAllTns[group] = false;
+								lockObject[group] = null;
+								continue; // move on to next transaction
+							}
+							
+							if(false) // allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
+															   // null elements in the array.  You cannot lock a null object.
+															   // We need a won't-introduce-a-new-null-object-error analysis!
+							{
+								G.v().out.println("checking for equivalence of these array indices" + unitToArrayIndex.values());
+								if( lif.areEqualUses(unitToArrayIndex, barriers) )
+								{
+									G.v().out.println("array indices are equivalent... finding ancestor value at " + tn.begin);
+									firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
+									cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+									ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
+									ancestorsIt = ancestors.iterator();
+									while(ancestorsIt.hasNext())
+									{
+										Object o = ancestorsIt.next();
+										Value v = null;
+										if(o instanceof EquivalentValue)
+										{
+											v = ((EquivalentValue) o).getValue();
+										}
+										else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
+										{
+											v = (Value) o;
+										}
+										else
+										{
+											G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
+										}
+										if(v != null)
+										{
+											if( tn.lockObjectArrayIndex == null || v instanceof Local )
+												tn.lockObjectArrayIndex = v;
+										}
+									}
+									G.v().out.println("array index ancestor is: " + tn.lockObjectArrayIndex);
+								}
 							}
 						}
-					}
-					else
-					{
-	//					G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
-						mustBeFieldsOfSameObjectForAllTns[group] = false;
-						lockObject[group] = null;
+						else
+						{
+		//					G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
+							mustBeFieldsOfSameObjectForAllTns[group] = false;
+							lockObject[group] = null;
+						}
 					}
 				}
 				else
