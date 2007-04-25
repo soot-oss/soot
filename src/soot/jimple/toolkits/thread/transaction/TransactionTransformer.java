@@ -899,9 +899,17 @@ public class TransactionTransformer extends SceneTransformer
 
 					if(optionUseLocksets) // multiple locks per region
 					{
-						Vector barriers = (Vector) tn.ends.clone();
-						barriers.add(tn.begin);
-//						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()), unitToLocal, barriers);
+						Map unitToLocals = new HashMap();
+						for(Iterator utlIt = unitToLocal.entrySet().iterator(); utlIt.hasNext(); )
+						{
+							Map.Entry entry = (Map.Entry) utlIt.next();
+							List valueList = new ArrayList();
+							valueList.add(entry.getValue());
+							unitToLocals.put(entry.getKey(), valueList);
+						}
+						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+						la.getLocksetOf(unitToLocals, tn.begin);
+						
 //						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
 					}
 					else // one lock per region
