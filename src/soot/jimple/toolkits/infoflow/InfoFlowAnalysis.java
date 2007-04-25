@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import java.util.*;
 
@@ -8,7 +8,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
 
-// DataFlowAnalysis written by Richard L. Halpert, 2007-02-24
+// InfoFlowAnalysis written by Richard L. Halpert, 2007-02-24
 // Constructs data flow tables for each method of every application class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
@@ -17,30 +17,30 @@ import soot.jimple.*;
 // the parameter's one node in the data flow graph.
 // Provides a high level interface to access the data flow information.
 
-public class DataFlowAnalysis
+public class InfoFlowAnalysis
 {
-	boolean includePrimitiveDataFlow;
+	boolean includePrimitiveInfoFlow;
 	boolean includeInnerFields;
 	boolean printDebug;
 
-	Map classToClassDataFlowAnalysis;
+	Map classToClassInfoFlowAnalysis;
 	
-	public DataFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields)
+	public InfoFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields)
 	{
 		this(includePrimitiveDataFlow, includeInnerFields, false);	
 	}
 	
-	public DataFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields, boolean printDebug)
+	public InfoFlowAnalysis(boolean includePrimitiveDataFlow, boolean includeInnerFields, boolean printDebug)
 	{
-		this.includePrimitiveDataFlow = includePrimitiveDataFlow;
+		this.includePrimitiveInfoFlow = includePrimitiveDataFlow;
 		this.includeInnerFields = includeInnerFields;
 		this.printDebug = printDebug;
-		classToClassDataFlowAnalysis = new HashMap();
+		classToClassInfoFlowAnalysis = new HashMap();
 	}
 	
-	public boolean includesPrimitiveDataFlow()
+	public boolean includesPrimitiveInfoFlow()
 	{
-		return includePrimitiveDataFlow;
+		return includePrimitiveInfoFlow;
 	}
 	
 	public boolean includesInnerFields()
@@ -62,13 +62,13 @@ public class DataFlowAnalysis
     	    SootClass appClass = (SootClass) appClassesIt.next();
 
 			// Create the needed flow analysis object
-			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(appClass, this);
+			ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(appClass, this);
 			
 			// Put the preliminary flow-insensitive results here in case they
 			// are needed by the flow-sensitive version.  This method will be
 			// reentrant if any method we are analyzing is reentrant, so we
 			// must do this to prevent an infinite recursive loop.
-			classToClassDataFlowAnalysis.put(appClass, cdfa);
+			classToClassInfoFlowAnalysis.put(appClass, cdfa);
 		}
 		
     	Iterator appClassesIt2 = Scene.v().getApplicationClasses().iterator();
@@ -78,43 +78,43 @@ public class DataFlowAnalysis
 			// Now calculate the flow-sensitive version.  If this classes methods
 			// are reentrant, it will call this method and receive the flow
 			// insensitive version that is already cached.
-			ClassDataFlowAnalysis cdfa = (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(appClass);
+			ClassInfoFlowAnalysis cdfa = (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(appClass);
 			cdfa.doFixedPointDataFlowAnalysis();
 		}
 	}
 */		
 
-	private ClassDataFlowAnalysis getClassDataFlowAnalysis(SootClass sc)
+	private ClassInfoFlowAnalysis getClassInfoFlowAnalysis(SootClass sc)
 	{
-		if(!classToClassDataFlowAnalysis.containsKey(sc))
+		if(!classToClassInfoFlowAnalysis.containsKey(sc))
 		{
-			ClassDataFlowAnalysis cdfa = new ClassDataFlowAnalysis(sc, this);
-			classToClassDataFlowAnalysis.put(sc, cdfa);
+			ClassInfoFlowAnalysis cdfa = new ClassInfoFlowAnalysis(sc, this);
+			classToClassInfoFlowAnalysis.put(sc, cdfa);
 		}
-		return (ClassDataFlowAnalysis) classToClassDataFlowAnalysis.get(sc);
+		return (ClassInfoFlowAnalysis) classToClassInfoFlowAnalysis.get(sc);
 	}
 	
-	public SmartMethodDataFlowAnalysis getMethodDataFlowAnalysis(SootMethod sm)
+	public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod sm)
 	{
-		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		return cdfa.getMethodDataFlowAnalysis(sm);
+		ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
+		return cdfa.getMethodInfoFlowAnalysis(sm);
 	}
 	
 	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
 	  * wrapped Refs. It's perfectly safe to modify this graph, just so long as 
 	  * new nodes are EquivalentValue wrapped Refs. */
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm) { return getMethodDataFlowGraph(sm, true); }
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod sm, boolean doFullAnalysis)
+	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm) { return getMethodInfoFlowSummary(sm, true); }
+	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis)
 	{
-		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
-		return cdfa.getMethodDataFlowGraph(sm, doFullAnalysis);
+		ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
+		return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
 	}
 	
 	/** Returns an unmodifiable list of EquivalentValue wrapped Refs that source
 	  * flows to when method sm is called. */
 /*	public List getSinksOf(SootMethod sm, EquivalentValue source)
 	{
-		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
 		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
 		List sinks = null;
 		if(g.containsNode(source))
@@ -128,7 +128,7 @@ public class DataFlowAnalysis
 	  * flows from when method sm is called. */
 /*	public List getSourcesOf(SootMethod sm, EquivalentValue sink)
 	{
-		ClassDataFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
+		ClassInfoFlowAnalysis cdfa = getClassDataFlowAnalysis(sm.getDeclaringClass());
 		MutableDirectedGraph g = cdfa.getMethodDataFlowGraph(sm);
 		List sources = null;
 		if(g.containsNode(sink))
@@ -140,8 +140,8 @@ public class DataFlowAnalysis
 */	
 	// Returns an EquivalentValue wrapped Ref based on sfr
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf) { return getEquivalentValueFieldRef(sm, sf, null); }
-	public static EquivalentValue getEquivalentValueFieldRef(SootMethod sm, SootField sf, Local realLocal)
+	public static EquivalentValue getNodeForFieldRef(SootMethod sm, SootField sf) { return getNodeForFieldRef(sm, sf, null); }
+	public static EquivalentValue getNodeForFieldRef(SootMethod sm, SootField sf, Local realLocal)
 	{
 		if(sf.isStatic())
 		{
@@ -169,34 +169,34 @@ public class DataFlowAnalysis
 	
 	// Returns an EquivalentValue wrapped Ref for @parameter i
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public static EquivalentValue getEquivalentValueParameterRef(SootMethod sm, int i)
+	public static EquivalentValue getNodeForParameterRef(SootMethod sm, int i)
 	{
 		return new EquivalentValue(new ParameterRef(sm.getParameterType(i), i));
 	}
 	
 	// Returns an EquivalentValue wrapped Ref for the return value
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public static EquivalentValue getEquivalentValueReturnRef(SootMethod sm)
+	public static EquivalentValue getNodeForReturnRef(SootMethod sm)
 	{
 		return new EquivalentValue(new ParameterRef(sm.getReturnType(), -1));
 	}
 	
 	// Returns an EquivalentValue wrapped ThisRef
 	// that is suitable for comparison to the nodes of a Data Flow Graph
-	public static EquivalentValue getEquivalentValueThisRef(SootMethod sm)
+	public static EquivalentValue getNodeForThisRef(SootMethod sm)
 	{
 		return new EquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
-	protected MutableDirectedGraph getInvokeDataFlowGraph(InvokeExpr ie, SootMethod context)
+	protected MutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
 		SootMethodRef methodRef = ie.getMethodRef();
-		return getMethodDataFlowGraph(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
+		return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
 	}
 	
-	public static void printDataFlowGraph(DirectedGraph g)
+	public static void printInfoFlowSummary(DirectedGraph g)
 	{
 		Iterator nodeIt = g.iterator();
 		if(!nodeIt.hasNext())

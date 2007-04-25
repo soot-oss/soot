@@ -1,20 +1,20 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 
-// MethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
+// SimpleMethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
 // Finds objects that are local to the scope of the LocalObjectsScopeAnalysis
 // that is provided.
-// This is a specialized version of MethodDataFlowAnalysis, in which the data
+// This is a specialized version of SimpleMethodInfoFlowAnalysis, in which the data
 // source is the abstract "shared" data source.
 
-public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
+public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalysis
 {
 	public static int mlocounter = 0;
 
-	public MethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, DataFlowAnalysis dfa)
+	public SimpleMethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, InfoFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
 		
@@ -29,7 +29,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 		// Add a source for every parameter that is shared
 		for(int i = 0; i < method.getParameterCount(); i++) // no need to worry about return value... 
 		{
-			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(method, i);
+			EquivalentValue paramEqVal = dfa.getNodeForParameterRef(method, i);
 			if(!cloa.parameterIsLocal(method, paramEqVal))
 			{
 				addToEntryInitialFlow(sharedDataSource, paramEqVal.getValue());
@@ -41,7 +41,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 		for(Iterator it = cloa.getSharedFields().iterator(); it.hasNext();)
 		{
 			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(method, sf);
+			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(method, sf);
 			addToEntryInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 			addToNewInitialFlow(sharedDataSource, fieldRefEqVal.getValue());
 		}
@@ -53,7 +53,7 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 			G.v().out.println("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
-	public MethodLocalObjectsAnalysis(UnitGraph g, CallLocalityContext context, DataFlowAnalysis dfa)
+	public SimpleMethodLocalObjectsAnalysis(UnitGraph g, CallLocalityContext context, InfoFlowAnalysis dfa)
 	{
 		super(g, dfa, true, true); // special version doesn't run analysis yet
 		
@@ -101,9 +101,9 @@ public class MethodLocalObjectsAnalysis extends MethodDataFlowAnalysis
 	public boolean isObjectLocal(Value local) // to this analysis of this method (which depends on context)
 	{
 		EquivalentValue source = new EquivalentValue(new AbstractDataSource(new String("SHARED")));
-		if(dataFlowGraph.containsNode(source))
+		if(infoFlowGraph.containsNode(source))
 		{
-			List sinks = dataFlowGraph.getSuccsOf(source);
+			List sinks = infoFlowGraph.getSuccsOf(source);
 			if(printMessages)
 				G.v().out.println("      Requested value " + local + " is " + ( !sinks.contains(new EquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
 			return !sinks.contains(new EquivalentValue(local));

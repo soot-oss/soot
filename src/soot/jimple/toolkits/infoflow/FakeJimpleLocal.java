@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.tagkit.*;
 import soot.*;

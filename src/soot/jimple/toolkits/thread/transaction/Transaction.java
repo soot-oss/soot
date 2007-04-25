@@ -4,7 +4,8 @@ import soot.Local;
 import soot.jimple.Stmt;
 import soot.jimple.EnterMonitorStmt;
 import java.util.*;
-import soot.jimple.toolkits.dataflow.AbstractDataSource;
+
+import soot.jimple.toolkits.infoflow.AbstractDataSource;
 import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.SootMethod;
 import soot.Value;

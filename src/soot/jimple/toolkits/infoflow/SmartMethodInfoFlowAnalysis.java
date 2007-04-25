@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
@@ -6,7 +6,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
 
-// MethodDataFlowAnalysis written by Richard L. Halpert, 2007-02-25
+// SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
@@ -14,24 +14,24 @@ import soot.jimple.*;
 // large data structure, but that entire structure will be represented only by
 // the parameter's one node in the data flow graph.
 
-public class SmartMethodDataFlowAnalysis
+public class SmartMethodInfoFlowAnalysis
 {
 	UnitGraph graph;
 	SootMethod sm;
 	Value thisLocal;
-	DataFlowAnalysis dfa;
+	InfoFlowAnalysis dfa;
 	boolean refOnly; // determines if primitive type data flow is included
 	boolean includeInnerFields; // determines if flow to a field of an object (other than this) is treated like flow to that object
 	
-	MutableDirectedGraph abbreviatedDataFlowGraph;
-	MutableDirectedGraph dataFlowSummary;
+	MutableDirectedGraph abbreviatedInfoFlowGraph;
+	MutableDirectedGraph infoFlowSummary;
 	Ref returnRef;
 	
 	boolean printMessages;
 	
 	public static int counter = 0;
 	
-	public SmartMethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa)
+	public SmartMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa)
 	{
 		graph = g;
 		this.sm = g.getBody().getMethod();
@@ -40,11 +40,11 @@ public class SmartMethodDataFlowAnalysis
 		else
 			this.thisLocal = g.getBody().getThisLocal();
 		this.dfa = dfa;
-		this.refOnly = !dfa.includesPrimitiveDataFlow();
+		this.refOnly = !dfa.includesPrimitiveInfoFlow();
 		this.includeInnerFields = dfa.includesInnerFields();
 		
-		this.abbreviatedDataFlowGraph = new MemoryEfficientGraph();
-		this.dataFlowSummary = new MemoryEfficientGraph();
+		this.abbreviatedInfoFlowGraph = new MemoryEfficientGraph();
+		this.infoFlowSummary = new MemoryEfficientGraph();
 		
 		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 		
@@ -60,9 +60,9 @@ public class SmartMethodDataFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
-			if(!dataFlowSummary.containsNode(parameterRefEqVal))
-				dataFlowSummary.addNode(parameterRefEqVal);
+			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
+			if(!infoFlowSummary.containsNode(parameterRefEqVal))
+				infoFlowSummary.addNode(parameterRefEqVal);
 		}
 		
 		// Add every relevant field of this class (static methods don't get non-static fields)
@@ -73,12 +73,12 @@ public class SmartMethodDataFlowAnalysis
 			{
 				EquivalentValue fieldRefEqVal;
 				if(!sm.isStatic())
-					fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf, sm.retrieveActiveBody().getThisLocal());
+					fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf, sm.retrieveActiveBody().getThisLocal());
 				else
-					fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+					fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
 					
-				if(!dataFlowSummary.containsNode(fieldRefEqVal))
-					dataFlowSummary.addNode(fieldRefEqVal);
+				if(!infoFlowSummary.containsNode(fieldRefEqVal))
+					infoFlowSummary.addNode(fieldRefEqVal);
 			}
 		}
 		
@@ -96,11 +96,11 @@ public class SmartMethodDataFlowAnalysis
 				{
 					EquivalentValue fieldRefEqVal;
 					if(!sm.isStatic())
-						fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField, sm.retrieveActiveBody().getThisLocal());
+						fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField, sm.retrieveActiveBody().getThisLocal());
 					else
-						fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
-					if(!dataFlowSummary.containsNode(fieldRefEqVal))
-						dataFlowSummary.addNode(fieldRefEqVal);
+						fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
+					if(!infoFlowSummary.containsNode(fieldRefEqVal))
+						infoFlowSummary.addNode(fieldRefEqVal);
 				}
 	        }
 			superclass = superclass.getSuperclass();
@@ -109,15 +109,15 @@ public class SmartMethodDataFlowAnalysis
 		// Add thisref of this class
 		if(!sm.isStatic())
 		{
-			EquivalentValue thisRefEqVal = dfa.getEquivalentValueThisRef(sm);
-			if(!dataFlowSummary.containsNode(thisRefEqVal))
-				dataFlowSummary.addNode(thisRefEqVal);
+			EquivalentValue thisRefEqVal = dfa.getNodeForThisRef(sm);
+			if(!infoFlowSummary.containsNode(thisRefEqVal))
+				infoFlowSummary.addNode(thisRefEqVal);
 		}
 		
 		// Add returnref of this method
 		EquivalentValue returnRefEqVal = new EquivalentValue(returnRef);
-		if(returnRef.getType() != VoidType.v() && !dataFlowSummary.containsNode(returnRefEqVal))
-			dataFlowSummary.addNode(returnRefEqVal);
+		if(returnRef.getType() != VoidType.v() && !infoFlowSummary.containsNode(returnRefEqVal))
+			infoFlowSummary.addNode(returnRefEqVal);
 		
 		// Do the analysis
 		Date start = new Date();
@@ -127,9 +127,9 @@ public class SmartMethodDataFlowAnalysis
 		
 		// S=#Statements, R=#Refs, L=#Locals, where generally (S ~= L), (L >> R)
 		// Generates a data flow graph of refs and locals where "flows to data structure" is represented in a single node
-		generateAbbreviatedDataFlowGraph(); // O(S)
+		generateAbbreviatedInfoFlowGraph(); // O(S)
 		// Generates a data flow graph of refs where "flows to data structure" has been resolved
-		generateDataFlowSummary(); // O( R*(L+R) )
+		generateInfoFlowSummary(); // O( R*(L+R) )
 		
 		if(printMessages)
 		{
@@ -138,13 +138,13 @@ public class SmartMethodDataFlowAnalysis
 			G.v().out.println("ENDING   SMART ANALYSIS FOR " + g.getBody().getMethod() + " ----- " + 
 								(counter - counterSoFar + 1) + " analyses took: " + time + "s");
 			G.v().out.println("  AbbreviatedDataFlowGraph:");
-			DataFlowAnalysis.printDataFlowGraph(abbreviatedDataFlowGraph);
+			InfoFlowAnalysis.printInfoFlowSummary(abbreviatedInfoFlowGraph);
 			G.v().out.println("  DataFlowSummary:");
-			DataFlowAnalysis.printDataFlowGraph(dataFlowSummary);
+			InfoFlowAnalysis.printInfoFlowSummary(infoFlowSummary);
 		}
 	}
 	
-	public void generateAbbreviatedDataFlowGraph()
+	public void generateAbbreviatedInfoFlowGraph()
 	{
 		Iterator stmtIt = graph.iterator();
 		while(stmtIt.hasNext())
@@ -154,9 +154,9 @@ public class SmartMethodDataFlowAnalysis
 		}
 	}
 	
-	public void generateDataFlowSummary()
+	public void generateInfoFlowSummary()
 	{
-		Iterator nodeIt = dataFlowSummary.iterator();
+		Iterator nodeIt = infoFlowSummary.iterator();
 		while(nodeIt.hasNext())
 		{
 			EquivalentValue node = (EquivalentValue) nodeIt.next();
@@ -167,7 +167,7 @@ public class SmartMethodDataFlowAnalysis
 				EquivalentValue source = (EquivalentValue) sourcesIt.next();
 				if(source.getValue() instanceof Ref)
 				{
-					dataFlowSummary.addEdge(source, node);
+					infoFlowSummary.addEdge(source, node);
 				}
 			}
 		}
@@ -179,11 +179,11 @@ public class SmartMethodDataFlowAnalysis
 		visitedSources.add(node);
 		
 		List ret = new LinkedList();
-		if(!abbreviatedDataFlowGraph.containsNode(node))
+		if(!abbreviatedInfoFlowGraph.containsNode(node))
 			return ret;
 
 		// get direct sources
-		List preds = abbreviatedDataFlowGraph.getPredsOf(node);
+		List preds = abbreviatedInfoFlowGraph.getPredsOf(node);
 		Iterator predsIt = preds.iterator();
 		while(predsIt.hasNext())
 		{
@@ -205,7 +205,7 @@ public class SmartMethodDataFlowAnalysis
 			{
 				EquivalentValue flowsToSourcesOf = new EquivalentValue(new AbstractDataSource(sink.getValue()));
 				
-				if( abbreviatedDataFlowGraph.getPredsOf(sink).contains(flowsToSourcesOf) )
+				if( abbreviatedInfoFlowGraph.getPredsOf(sink).contains(flowsToSourcesOf) )
 				{
 					ret.addAll(sourcesOf(flowsToSourcesOf, visitedSources, visitedSinks));
 				}
@@ -224,11 +224,11 @@ public class SmartMethodDataFlowAnalysis
 
 		visitedSinks.add(node);
 		
-		if(!abbreviatedDataFlowGraph.containsNode(node))
+		if(!abbreviatedInfoFlowGraph.containsNode(node))
 			return ret;
 
 		// get direct sinks
-		List succs = abbreviatedDataFlowGraph.getSuccsOf(node);
+		List succs = abbreviatedInfoFlowGraph.getSuccsOf(node);
 		Iterator succsIt = succs.iterator();
 		while(succsIt.hasNext())
 		{
@@ -248,7 +248,7 @@ public class SmartMethodDataFlowAnalysis
 			if(succ.getValue() instanceof AbstractDataSource)
 			{
 				// It will have ONE successor, who will be the value whose sources it represents
-				List vHolder = abbreviatedDataFlowGraph.getSuccsOf(succ);
+				List vHolder = abbreviatedInfoFlowGraph.getSuccsOf(succ);
 				EquivalentValue v = (EquivalentValue) vHolder.get(0); // get the one and only
 				if(!visitedSinks.contains(v))
 				{
@@ -259,14 +259,14 @@ public class SmartMethodDataFlowAnalysis
 		return ret;
 	}
 	
-	public MutableDirectedGraph getMethodDataFlowSummary()
+	public MutableDirectedGraph getMethodInfoFlowSummary()
 	{
-		return dataFlowSummary;
+		return infoFlowSummary;
 	}
 	
-	public MutableDirectedGraph getMethodAbbreviatedDataFlowGraph()
+	public MutableDirectedGraph getMethodAbbreviatedInfoFlowGraph()
 	{
-		return abbreviatedDataFlowGraph;
+		return abbreviatedInfoFlowGraph;
 	}
 
 	protected boolean isNonRefType(Type type)
@@ -288,7 +288,7 @@ public class SmartMethodDataFlowAnalysis
 		if(sink instanceof InstanceFieldRef)
 		{
 			InstanceFieldRef ifr = (InstanceFieldRef) sink;
-			sinkEqVal = dfa.getEquivalentValueFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
+			sinkEqVal = dfa.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
 			sinkEqVal = new EquivalentValue(sink);
@@ -296,22 +296,22 @@ public class SmartMethodDataFlowAnalysis
 		if(source instanceof InstanceFieldRef)
 		{
 			InstanceFieldRef ifr = (InstanceFieldRef) source;
-			sourceEqVal = dfa.getEquivalentValueFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
+			sourceEqVal = dfa.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
 			sourceEqVal = new EquivalentValue(source);
 		
-		if( source instanceof Ref && !dataFlowSummary.containsNode(sourceEqVal))
-			dataFlowSummary.addNode(sourceEqVal);
-		if( sink instanceof Ref && !dataFlowSummary.containsNode(sinkEqVal))
-			dataFlowSummary.addNode(sinkEqVal);
+		if( source instanceof Ref && !infoFlowSummary.containsNode(sourceEqVal))
+			infoFlowSummary.addNode(sourceEqVal);
+		if( sink instanceof Ref && !infoFlowSummary.containsNode(sinkEqVal))
+			infoFlowSummary.addNode(sinkEqVal);
 		
-		if(!abbreviatedDataFlowGraph.containsNode(sinkEqVal))
-			abbreviatedDataFlowGraph.addNode(sinkEqVal);
-		if(!abbreviatedDataFlowGraph.containsNode(sourceEqVal))
-			abbreviatedDataFlowGraph.addNode(sourceEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(sinkEqVal))
+			abbreviatedInfoFlowGraph.addNode(sinkEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(sourceEqVal))
+			abbreviatedInfoFlowGraph.addNode(sourceEqVal);
 		
-		abbreviatedDataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
+		abbreviatedInfoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 	}
 	
 	// for when data flows to the data structure pointed to by a local
@@ -326,23 +326,23 @@ public class SmartMethodDataFlowAnalysis
 		if(source instanceof InstanceFieldRef)
 		{
 			InstanceFieldRef ifr = (InstanceFieldRef) source;
-			sourceEqVal = dfa.getEquivalentValueFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
+			sourceEqVal = dfa.getNodeForFieldRef(sm, ifr.getField(), (Local) ifr.getBase()); // deals with inner fields
 		}
 		else
 			sourceEqVal = new EquivalentValue(source);
 		
-		if( source instanceof Ref && !dataFlowSummary.containsNode(sourceEqVal))
-			dataFlowSummary.addNode(sourceEqVal);
+		if( source instanceof Ref && !infoFlowSummary.containsNode(sourceEqVal))
+			infoFlowSummary.addNode(sourceEqVal);
 		
-		if(!abbreviatedDataFlowGraph.containsNode(baseEqVal))
-			abbreviatedDataFlowGraph.addNode(baseEqVal);
-		if(!abbreviatedDataFlowGraph.containsNode(sourceEqVal))
-			abbreviatedDataFlowGraph.addNode(sourceEqVal);
-		if(!abbreviatedDataFlowGraph.containsNode(sourcesOfBaseEqVal))
-			abbreviatedDataFlowGraph.addNode(sourcesOfBaseEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(baseEqVal))
+			abbreviatedInfoFlowGraph.addNode(baseEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(sourceEqVal))
+			abbreviatedInfoFlowGraph.addNode(sourceEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(sourcesOfBaseEqVal))
+			abbreviatedInfoFlowGraph.addNode(sourcesOfBaseEqVal);
 
-		abbreviatedDataFlowGraph.addEdge(sourceEqVal, sourcesOfBaseEqVal);
-		abbreviatedDataFlowGraph.addEdge(sourcesOfBaseEqVal, baseEqVal); // for convenience
+		abbreviatedInfoFlowGraph.addEdge(sourceEqVal, sourcesOfBaseEqVal);
+		abbreviatedInfoFlowGraph.addEdge(sourcesOfBaseEqVal, baseEqVal); // for convenience
 	}
 	
 	// For inner fields... we have base flow to field as a service specifically
@@ -355,12 +355,12 @@ public class SmartMethodDataFlowAnalysis
 		EquivalentValue baseEqVal = new EquivalentValue(ifr.getBase());
 		EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, ifr.getField()); // deals with inner fields
 		
-		if(!abbreviatedDataFlowGraph.containsNode(baseEqVal))
-			abbreviatedDataFlowGraph.addNode(baseEqVal);
-		if(!abbreviatedDataFlowGraph.containsNode(fieldRefEqVal))
-			abbreviatedDataFlowGraph.addNode(fieldRefEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(baseEqVal))
+			abbreviatedInfoFlowGraph.addNode(baseEqVal);
+		if(!abbreviatedInfoFlowGraph.containsNode(fieldRefEqVal))
+			abbreviatedInfoFlowGraph.addNode(fieldRefEqVal);
 			
-		abbreviatedDataFlowGraph.addEdge(baseEqVal, fieldRefEqVal);
+		abbreviatedInfoFlowGraph.addEdge(baseEqVal, fieldRefEqVal);
 */
 	}
 	
@@ -388,11 +388,11 @@ public class SmartMethodDataFlowAnalysis
 	protected List handleInvokeExpr(InvokeExpr ie)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowSummary = dfa.getInvokeDataFlowGraph(ie, sm); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph dataFlowSummary = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
-//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE dataFlowSummary: ");
-//			ClassDataFlowAnalysis.printDataFlowGraph(dataFlowSummary);
+//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowSummary: ");
+//			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowSummary);
 //		}
 		
 		List returnValueSources = new ArrayList();

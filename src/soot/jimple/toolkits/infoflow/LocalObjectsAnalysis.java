@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
@@ -20,7 +20,7 @@ import soot.jimple.*;
 
 public class LocalObjectsAnalysis
 {
-	DataFlowAnalysis dfa;
+	InfoFlowAnalysis dfa;
 	UseFinder uf;
 	CallGraph cg;
 
@@ -29,7 +29,7 @@ public class LocalObjectsAnalysis
 	Map mergedContextsCache;
 	Map mloaCache;
 	
-	public LocalObjectsAnalysis(DataFlowAnalysis dfa)
+	public LocalObjectsAnalysis(InfoFlowAnalysis dfa)
 	{
 		this.dfa = dfa;
 		this.uf = new UseFinder();
@@ -51,7 +51,7 @@ public class LocalObjectsAnalysis
 	}
 	
 	// meant to be overridden by specialty local objects analyses
-	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sc)
+	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc)
 	{
 		return new ClassLocalObjectsAnalysis(loa, dfa, uf, sc);
 	}
@@ -119,7 +119,7 @@ public class LocalObjectsAnalysis
 		{
 			UnitGraph g = new ExceptionalUnitGraph(b);
 			mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-//			G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
+//			G.v().out.println("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
 //				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
 			mloaCache.put(sm, mloa);
 		}
@@ -145,7 +145,7 @@ public class LocalObjectsAnalysis
 			
 			if(ifr.getBase() == thisLocal)
 			{
-				boolean isLocal = mergedContext.isFieldLocal(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
+				boolean isLocal = mergedContext.isFieldLocal(dfa.getNodeForFieldRef(sm, ifr.getField()));
 				if(dfa.printDebug())
 				{
 					if(isLocal)
@@ -555,7 +555,7 @@ public class LocalObjectsAnalysis
 			Edge e = (Edge) callIt.next();
 			InvokeExpr ie = e.srcStmt().getInvokeExpr();
 			callingMethod = e.tgt();
-			callingContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
+			callingContext = new CallLocalityContext(dfa.getMethodInfoFlowSummary(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
 			
 			// We will use the containing context that we have to determine if base/args are local
 			if(callingMethod.isConcrete())
@@ -573,7 +573,7 @@ public class LocalObjectsAnalysis
 				{		
 					UnitGraph g = new ExceptionalUnitGraph(b);
 					mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-//					G.v().out.println("        Caching mloa (smdfa " + SmartMethodDataFlowAnalysis.counter + 
+//					G.v().out.println("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
 //						" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + containingMethod.getName() + " on Call Chain:");
 					mloaCache.put(containingMethod, mloa);
 				}
@@ -592,7 +592,7 @@ public class LocalObjectsAnalysis
 							Ref r = (Ref) rEqVal.getValue();
 							if(r instanceof InstanceFieldRef)
 							{
-								EquivalentValue newRefEqVal = dfa.getEquivalentValueFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
+								EquivalentValue newRefEqVal = dfa.getNodeForFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
 								if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
 									callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
 							}
@@ -650,7 +650,7 @@ public class LocalObjectsAnalysis
 //			throw new RuntimeException("Data Flow Graph not found for " + callingMethod);
 //		if(dfa.getMethodDataFlowGraph(callingMethod).getNodes().size() == 0)
 //			throw new RuntimeException("Data Flow Graph with no nodes found for " + callingMethod);
-		CallLocalityContext callingContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
+		CallLocalityContext callingContext = new CallLocalityContext(dfa.getMethodInfoFlowSummary(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
 		
 		// check base
 		if(ie instanceof InstanceInvokeExpr)
@@ -669,7 +669,7 @@ public class LocalObjectsAnalysis
 					Ref r = (Ref) rEqVal.getValue();
 					if(r instanceof InstanceFieldRef)
 					{
-						EquivalentValue newRefEqVal = dfa.getEquivalentValueFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
+						EquivalentValue newRefEqVal = dfa.getNodeForFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
 						if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
 							callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
 					}
@@ -761,7 +761,7 @@ public class LocalObjectsAnalysis
 	public boolean hasNonLocalEffects(SootMethod containingMethod, InvokeExpr ie, SootMethod context)
 	{
 		SootMethod target = ie.getMethodRef().resolve();
-		MutableDirectedGraph dataFlowGraph = dfa.getMethodDataFlowGraph(target); // TODO actually we want a graph that is sensitive to scalar data, too
+		MutableDirectedGraph dataFlowGraph = dfa.getMethodInfoFlowSummary(target); // TODO actually we want a graph that is sensitive to scalar data, too
 		
 		// For a static invoke, check if any fields or any shared params are read/written
 		if(ie instanceof StaticInvokeExpr)

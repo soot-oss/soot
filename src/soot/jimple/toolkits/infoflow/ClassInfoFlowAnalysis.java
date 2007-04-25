@@ -1,11 +1,11 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
 
-// ClassDataFlowAnalysis written by Richard L. Halpert, 2007-02-22
+// ClassInfoFlowAnalysis written by Richard L. Halpert, 2007-02-22
 // Constructs data flow tables for each method of a class.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
@@ -13,39 +13,39 @@ import soot.jimple.*;
 // large data structure, but that entire structure will be represented only by
 // the parameter's one node in the data flow graph.
 
-public class ClassDataFlowAnalysis
+public class ClassInfoFlowAnalysis
 {
 	SootClass sootClass;
-	DataFlowAnalysis dfa; // used to access the data flow analyses of other classes
+	InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
 	
-	Map methodToDataFlowAnalysis;
-	Map methodToDataFlowGraph;
+	Map methodToInfoFlowAnalysis;
+	Map methodToInfoFlowSummary;
 	
 	public static int methodCount = 0;
 	
-	public ClassDataFlowAnalysis(SootClass sootClass, DataFlowAnalysis dfa)
+	public ClassInfoFlowAnalysis(SootClass sootClass, InfoFlowAnalysis dfa)
 	{
 		 this.sootClass = sootClass;
 		 this.dfa = dfa;
-		 methodToDataFlowAnalysis = new HashMap();
-		 methodToDataFlowGraph = new HashMap();
+		 methodToInfoFlowAnalysis = new HashMap();
+		 methodToInfoFlowSummary = new HashMap();
 		 
 //		 doSimpleConservativeDataFlowAnalysis();
 	}
 	
-	public SmartMethodDataFlowAnalysis getMethodDataFlowAnalysis(SootMethod method)
+	public SmartMethodInfoFlowAnalysis getMethodInfoFlowAnalysis(SootMethod method)
 	{
-		if(!methodToDataFlowAnalysis.containsKey(method))
+		if(!methodToInfoFlowAnalysis.containsKey(method))
 		{
 			methodCount++;
 
 			// First do simple version that doesn't follow invoke expressions
 			// The "smart" version will be computed later, but since it may
 			// request its own DataFlowGraph, we need this simple version first.
-			if(!methodToDataFlowGraph.containsKey(method))
+			if(!methodToInfoFlowSummary.containsKey(method))
 			{
-				MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
-				methodToDataFlowGraph.put(method, dataFlowGraph);
+				MutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
+				methodToInfoFlowSummary.put(method, dataFlowGraph);
 			}
 			
 			// Then do smart version that does follow invoke expressions, if possible
@@ -53,50 +53,50 @@ public class ClassDataFlowAnalysis
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa);
+				SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa);
 
-				methodToDataFlowAnalysis.put(method, smdfa);
-				methodToDataFlowGraph.remove(method);
-				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
+				methodToInfoFlowAnalysis.put(method, smdfa);
+				methodToInfoFlowSummary.remove(method);
+				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 
-//				G.v().out.println(method + " has SMART dataFlowGraph: ");
+//				G.v().out.println(method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
 
-		return (SmartMethodDataFlowAnalysis) methodToDataFlowAnalysis.get(method);
+		return (SmartMethodInfoFlowAnalysis) methodToInfoFlowAnalysis.get(method);
 	}
 	
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method) { return getMethodDataFlowGraph(method, true); }
-	public MutableDirectedGraph getMethodDataFlowGraph(SootMethod method, boolean doFullAnalysis)
+	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod method) { return getMethodInfoFlowSummary(method, true); }
+	public MutableDirectedGraph getMethodInfoFlowSummary(SootMethod method, boolean doFullAnalysis)
 	{
-		if(!methodToDataFlowGraph.containsKey(method))
+		if(!methodToInfoFlowSummary.containsKey(method))
 		{
 			methodCount++;
 
 			// First do simple version that doesn't follow invoke expressions
 			// The "smart" version will be computed later, but since it may
 			// request its own DataFlowGraph, we need this simple version first.
-			MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
-			methodToDataFlowGraph.put(method, dataFlowGraph);
+			MutableDirectedGraph dataFlowGraph = simpleConservativeInfoFlowAnalysis(method);
+			methodToInfoFlowSummary.put(method, dataFlowGraph);
 			
 			// Then do smart version that does follow invoke expressions, if possible
 			if(method.isConcrete() && doFullAnalysis)// && method.getDeclaringClass().isApplicationClass())
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa);
+				SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa);
 
-				methodToDataFlowAnalysis.put(method, smdfa);
-				methodToDataFlowGraph.remove(method);
-				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
+				methodToInfoFlowAnalysis.put(method, smdfa);
+				methodToInfoFlowSummary.remove(method);
+				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 
-//				G.v().out.println(method + " has SMART dataFlowGraph: ");
+//				G.v().out.println(method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
 
-		return (MutableDirectedGraph) methodToDataFlowGraph.get(method);
+		return (MutableDirectedGraph) methodToInfoFlowSummary.get(method);
 	}
 	
 /*	public void doFixedPointDataFlowAnalysis()
@@ -110,26 +110,26 @@ public class ClassDataFlowAnalysis
 			{
 				Body b = method.retrieveActiveBody();
 				UnitGraph g = new ExceptionalUnitGraph(b);
-				SmartMethodDataFlowAnalysis smdfa = new SmartMethodDataFlowAnalysis(g, dfa, true);
-				if(methodToDataFlowGraph.containsKey(method))
-					methodToDataFlowGraph.remove(method);
+				SmartMethodInfoFlowAnalysis smdfa = new SmartMethodInfoFlowAnalysis(g, dfa, true);
+				if(methodToInfoFlowSummary.containsKey(method))
+					methodToInfoFlowSummary.remove(method);
 				else
 					methodCount++;
-				methodToDataFlowGraph.put(method, smdfa.getMethodDataFlowSummary());
+				methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
 
-//				G.v().out.println(method + " has FLOW SENSITIVE dataFlowGraph: ");
+//				G.v().out.println(method + " has FLOW SENSITIVE infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 			else
 			{
-				if(methodToDataFlowGraph.containsKey(method))
-					methodToDataFlowGraph.remove(method);
+				if(methodToInfoFlowSummary.containsKey(method))
+					methodToInfoFlowSummary.remove(method);
 				else
 					methodCount++;
-				methodToDataFlowGraph.put(method, triviallyConservativeDataFlowAnalysis(method));
+				methodToInfoFlowSummary.put(method, triviallyConservativeDataFlowAnalysis(method));
 
-//				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE dataFlowGraph: ");
-//				printDataFlowGraph((MutableDirectedGraph) methodToDataFlowGraph.get(method));
+//				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: ");
+//				printDataFlowGraph((MutableDirectedGraph) methodToInfoFlowSummary.get(method));
 			}
 		}
 	}
@@ -141,20 +141,20 @@ public class ClassDataFlowAnalysis
 		while(it.hasNext())
 		{
 			SootMethod method = (SootMethod) it.next();
-			MutableDirectedGraph dataFlowGraph = simpleConservativeDataFlowAnalysis(method);
-			if(methodToDataFlowGraph.containsKey(method))
-				methodToDataFlowGraph.remove(method);
+			MutableDirectedGraph infoFlowGraph = simpleConservativeDataFlowAnalysis(method);
+			if(methodToInfoFlowSummary.containsKey(method))
+				methodToInfoFlowSummary.remove(method);
 			else
 				methodCount++;
-			methodToDataFlowGraph.put(method, dataFlowGraph);
+			methodToInfoFlowSummary.put(method, infoFlowGraph);
 
-//			G.v().out.println(method + " has dataFlowGraph: ");
-//			printDataFlowGraph(dataFlowGraph);
+//			G.v().out.println(method + " has infoFlowGraph: ");
+//			printDataFlowGraph(infoFlowGraph);
 		}
 	}
 //*/	
 	/** Does not require any fixed point calculation */
-	private MutableDirectedGraph simpleConservativeDataFlowAnalysis(SootMethod sm)
+	private MutableDirectedGraph simpleConservativeInfoFlowAnalysis(SootMethod sm)
 	{
 		// Constructs a graph representing the data flow between fields, parameters, and the
 		// return value of this method.  The graph nodes are EquivalentValue wrapped Refs.
@@ -166,7 +166,7 @@ public class ClassDataFlowAnalysis
 		
 		// If this method cannot have a body, then we can't analyze it... 
 		if(!sm.isConcrete())
-			return triviallyConservativeDataFlowAnalysis(sm);
+			return triviallyConservativeInfoFlowAnalysis(sm);
 			
 		Body b = sm.retrieveActiveBody();
 		UnitGraph g = new ExceptionalUnitGraph(b);
@@ -184,7 +184,7 @@ public class ClassDataFlowAnalysis
 				if( ir instanceof ParameterRef )
 				{
 					ParameterRef pr = (ParameterRef) ir;
-					fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueParameterRef(sm, pr.getIndex()));
+					fieldsStaticsParamsAccessed.add(dfa.getNodeForParameterRef(sm, pr.getIndex()));
 				}
 			}
 			if(s.containsFieldRef())
@@ -195,7 +195,7 @@ public class ClassDataFlowAnalysis
 					// This should be added to the list of fields accessed
 					// static fields "belong to everyone"
 					StaticFieldRef sfr = (StaticFieldRef) ref;
-					fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, sfr.getField()));
+					fieldsStaticsParamsAccessed.add(dfa.getNodeForFieldRef(sm, sfr.getField()));
 				}
 				else if( ref instanceof InstanceFieldRef )
 				{
@@ -206,7 +206,7 @@ public class ClassDataFlowAnalysis
 					if(base instanceof Local)
 					{
 						if( dfa.includesInnerFields() || ((!sm.isStatic()) && base.equivTo(b.getThisLocal())) )
-							fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueFieldRef(sm, ifr.getField()));
+							fieldsStaticsParamsAccessed.add(dfa.getNodeForFieldRef(sm, ifr.getField()));
 		            }
 				}
 			}
@@ -225,7 +225,7 @@ public class ClassDataFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
 			if(!dataFlowGraph.containsNode(parameterRefEqVal))
 				dataFlowGraph.addNode(parameterRefEqVal);
 		}
@@ -236,7 +236,7 @@ public class ClassDataFlowAnalysis
 			SootField sf = (SootField) it.next();
 			if(sf.isStatic() || !sm.isStatic())
 			{
-				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
 				if(!dataFlowGraph.containsNode(fieldRefEqVal))
 					dataFlowGraph.addNode(fieldRefEqVal);
 			}
@@ -254,7 +254,7 @@ public class ClassDataFlowAnalysis
 				SootField scField = (SootField) scFieldsIt.next();
 				if(scField.isStatic() || !sm.isStatic())
 				{
-					EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
+					EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
 					if(!dataFlowGraph.containsNode(fieldRefEqVal))
 						dataFlowGraph.addNode(fieldRefEqVal);
 				}
@@ -267,15 +267,15 @@ public class ClassDataFlowAnalysis
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(dfa.getEquivalentValueReturnRef(sm));
+			dataFlowGraph.addNode(dfa.getNodeForReturnRef(sm));
 		}
 		
 //		ThisRef thisRef = null;
 		if(!sm.isStatic())
 		{
 //			thisRef = new ThisRef(sootClass.getType());
-			dataFlowGraph.addNode(dfa.getEquivalentValueThisRef(sm));
-			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueThisRef(sm));
+			dataFlowGraph.addNode(dfa.getNodeForThisRef(sm));
+			fieldsStaticsParamsAccessed.add(dfa.getNodeForThisRef(sm));
 		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
@@ -285,7 +285,7 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow())
+			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow())
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
@@ -301,15 +301,15 @@ public class ClassDataFlowAnalysis
 				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveDataFlow()))
-				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()))
+				dataFlowGraph.addEdge(r, dfa.getNodeForReturnRef(sm));
 		}
 		
 		return dataFlowGraph;
 	}
 	
 	/** Does not require the method to have a body */
-	public MutableDirectedGraph triviallyConservativeDataFlowAnalysis(SootMethod sm)
+	public MutableDirectedGraph triviallyConservativeInfoFlowAnalysis(SootMethod sm)
 	{
 		HashSet fieldsStaticsParamsAccessed = new HashSet();
 		
@@ -317,7 +317,7 @@ public class ClassDataFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
 			fieldsStaticsParamsAccessed.add(parameterRefEqVal);
 		}
 		
@@ -327,7 +327,7 @@ public class ClassDataFlowAnalysis
 			SootField sf = (SootField) it.next();
 			if(sf.isStatic() || !sm.isStatic())
 			{
-				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
 				fieldsStaticsParamsAccessed.add(fieldRefEqVal);
 			}
 		}
@@ -344,7 +344,7 @@ public class ClassDataFlowAnalysis
 				SootField scField = (SootField) scFieldsIt.next();
 				if(scField.isStatic() || !sm.isStatic())
 				{
-					EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
+					EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
 					fieldsStaticsParamsAccessed.add(fieldRefEqVal);
 				}
 	        }
@@ -367,15 +367,15 @@ public class ClassDataFlowAnalysis
 		if(sm.getReturnType() != VoidType.v())
 		{
 			returnValueRef = new ParameterRef(sm.getReturnType(), -1);
-			dataFlowGraph.addNode(dfa.getEquivalentValueReturnRef(sm));
+			dataFlowGraph.addNode(dfa.getNodeForReturnRef(sm));
 		}
 		
 		ThisRef thisRef = null;
 		if(!sm.isStatic())
 		{
 			thisRef = new ThisRef(sootClass.getType());
-			dataFlowGraph.addNode(dfa.getEquivalentValueThisRef(sm));
-			fieldsStaticsParamsAccessed.add(dfa.getEquivalentValueThisRef(sm));
+			dataFlowGraph.addNode(dfa.getNodeForThisRef(sm));
+			fieldsStaticsParamsAccessed.add(dfa.getNodeForThisRef(sm));
 		}
 		
 		// Create an edge from each node (except the return value) to every other node (including the return value)
@@ -385,7 +385,7 @@ public class ClassDataFlowAnalysis
 		{
 			Object r = accessedIt1.next();
 			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
-			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveDataFlow() )
+			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow() )
 				continue;
 			Iterator accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
@@ -399,8 +399,8 @@ public class ClassDataFlowAnalysis
 				else if( sRef.getType() instanceof RefLikeType )
 					dataFlowGraph.addEdge(r, s);
 			}
-			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveDataFlow()) )
-				dataFlowGraph.addEdge(r, dfa.getEquivalentValueReturnRef(sm));
+			if( returnValueRef != null && (returnValueRef.getType() instanceof RefLikeType || dfa.includesPrimitiveInfoFlow()) )
+				dataFlowGraph.addEdge(r, dfa.getNodeForReturnRef(sm));
 		}
 		
 		return dataFlowGraph;

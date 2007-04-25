@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
@@ -16,8 +16,8 @@ public class ClassLocalObjectsAnalysis
 	boolean printdfgs = false;
 
 	LocalObjectsAnalysis loa;
-	DataFlowAnalysis dfa;
-	DataFlowAnalysis primitiveDfa;
+	InfoFlowAnalysis dfa;
+	InfoFlowAnalysis primitiveDfa;
 	UseFinder uf;
 	SootClass sootClass;
 	
@@ -42,12 +42,12 @@ public class ClassLocalObjectsAnalysis
 	ArrayList localInnerFields;
 	ArrayList sharedInnerFields;
 	
-	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sootClass)
+	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sootClass)
 	{
 		this(loa, dfa, null, uf, sootClass, null);
 	}
 	
-	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, DataFlowAnalysis primitiveDfa, UseFinder uf, SootClass sootClass, List entryMethods)
+	public ClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, InfoFlowAnalysis primitiveDfa, UseFinder uf, SootClass sootClass, List entryMethods)
 	{
 		printdfgs = dfa.printDebug();
 		this.loa = loa;
@@ -228,27 +228,27 @@ public class ClassLocalObjectsAnalysis
 			MutableDirectedGraph dataFlowSummary;
 			if(primitiveDfa != null)
 			{
-				dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+				dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					DirectedGraph primitiveGraph = primitiveDfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
-					DataFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
+					DirectedGraph primitiveGraph = primitiveDfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
+					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
 						primitiveGraph, method.getName() + "_primitive", false);
 
-					DirectedGraph nonPrimitiveGraph = dfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
-					DataFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
+					DirectedGraph nonPrimitiveGraph = dfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
+					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
 						nonPrimitiveGraph, method.getName(), false);
 				}
 			}
 			else
 			{
-				dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+				dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					DirectedGraph nonPrimitiveGraph = dfa.getMethodDataFlowAnalysis(method).getMethodAbbreviatedDataFlowGraph();
-					DataFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
+					DirectedGraph nonPrimitiveGraph = dfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
+					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
 						nonPrimitiveGraph, method.getName(), false);
 				}
 			}
@@ -294,11 +294,11 @@ public class ClassLocalObjectsAnalysis
 
 					MutableDirectedGraph dataFlowSummary;
 					if(primitiveDfa != null)
-						dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+						dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
 					else
-						dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+						dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
 					
-					EquivalentValue node = dfa.getEquivalentValueFieldRef(method, localField);
+					EquivalentValue node = dfa.getNodeForFieldRef(method, localField);
 					if(dataFlowSummary.containsNode(node))
 					{
 						sourcesAndSinks.addAll(dataFlowSummary.getSuccsOf(node));
@@ -369,11 +369,11 @@ public class ClassLocalObjectsAnalysis
 
 					MutableDirectedGraph dataFlowSummary;
 					if(primitiveDfa != null)
-						dataFlowSummary = primitiveDfa.getMethodDataFlowGraph(method);
+						dataFlowSummary = primitiveDfa.getMethodInfoFlowSummary(method);
 					else
-						dataFlowSummary = dfa.getMethodDataFlowGraph(method);
+						dataFlowSummary = dfa.getMethodInfoFlowSummary(method);
 					
-					EquivalentValue node = dfa.getEquivalentValueFieldRef(method, localInnerField);
+					EquivalentValue node = dfa.getNodeForFieldRef(method, localInnerField);
 					if(dataFlowSummary.containsNode(node))
 					{
 						sourcesAndSinks.addAll(dataFlowSummary.getSuccsOf(node));
@@ -564,7 +564,7 @@ public class ClassLocalObjectsAnalysis
 			ie = null;
 			
 		SootMethod callingMethod = e.tgt();
-		CallLocalityContext callingContext = new CallLocalityContext(dfa.getMethodDataFlowGraph(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
+		CallLocalityContext callingContext = new CallLocalityContext(dfa.getMethodInfoFlowSummary(callingMethod).getNodes()); // just keeps a map from NODE to SHARED/LOCAL
 		
 		// We will use the containing context that we have to determine if base/args are local
 		if(callingMethod.isConcrete())
@@ -585,7 +585,7 @@ public class ClassLocalObjectsAnalysis
 						Ref r = (Ref) rEqVal.getValue();
 						if(r instanceof InstanceFieldRef)
 						{
-							EquivalentValue newRefEqVal = dfa.getEquivalentValueFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
+							EquivalentValue newRefEqVal = dfa.getNodeForFieldRef(callingMethod, ((FieldRef) r).getFieldRef().resolve());
 							if(callingContext.containsField(newRefEqVal)) // if not, then we're probably calling a parent class's method, so some fields are missing
 								callingContext.setFieldLocal(newRefEqVal); // must make a new eqval for the method getting called
 						}
@@ -641,14 +641,14 @@ public class ClassLocalObjectsAnalysis
 	{
 		CallLocalityContext context;
 		if(includePrimitiveDataFlowIfAvailable)
-			context = new CallLocalityContext(primitiveDfa.getMethodDataFlowGraph(sm).getNodes());
+			context = new CallLocalityContext(primitiveDfa.getMethodInfoFlowSummary(sm).getNodes());
 		else
-			context = new CallLocalityContext(dfa.getMethodDataFlowGraph(sm).getNodes());
+			context = new CallLocalityContext(dfa.getMethodInfoFlowSummary(sm).getNodes());
 		
 		// Set context for every parameter that is shared
 		for(int i = 0; i < sm.getParameterCount(); i++) // no need to worry about return value... 
 		{
-			EquivalentValue paramEqVal = dfa.getEquivalentValueParameterRef(sm, i);
+			EquivalentValue paramEqVal = dfa.getNodeForParameterRef(sm, i);
 			if(parameterIsLocal(sm, paramEqVal, includePrimitiveDataFlowIfAvailable))
 			{
 				context.setParamLocal(i);
@@ -663,7 +663,7 @@ public class ClassLocalObjectsAnalysis
 		for(Iterator it = getLocalFields().iterator(); it.hasNext();)
 		{
 			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
 			context.setFieldLocal(fieldRefEqVal);
 		}
 		
@@ -671,7 +671,7 @@ public class ClassLocalObjectsAnalysis
 		for(Iterator it = getSharedFields().iterator(); it.hasNext();)
 		{
 			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
+			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
 			context.setFieldShared(fieldRefEqVal);
 		}
 		return context;
@@ -799,7 +799,7 @@ public class ClassLocalObjectsAnalysis
 			
 		// Check if param is primitive or ref type
 		ParameterRef param = (ParameterRef) parameterRef.getValue();
-		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveDataFlow() || method.getName().equals("<init>")) ) // TODO fix
+		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveInfoFlow() || method.getName().equals("<init>")) ) // TODO fix
 		{
 			if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
 				G.v().out.println("          PARAM is local (primitive)");

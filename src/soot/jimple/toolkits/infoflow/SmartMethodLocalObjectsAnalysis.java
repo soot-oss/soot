@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
@@ -6,7 +6,7 @@ import soot.toolkits.graph.*;
 import soot.jimple.*;
 
 // SmartMethodLocalObjectsAnalysis written by Richard L. Halpert, 2007-02-23
-// Uses a SmartMethodDataFlowAnalysis to determine if a Local or FieldRef is
+// Uses a SmartMethodInfoFlowAnalysis to determine if a Local or FieldRef is
 // LOCAL or SHARED in the given method.
 
 public class SmartMethodLocalObjectsAnalysis
@@ -15,20 +15,20 @@ public class SmartMethodLocalObjectsAnalysis
 	static boolean printMessages;
 	
 	SootMethod method;
-	DataFlowAnalysis dfa;
-	SmartMethodDataFlowAnalysis smdfa;
+	InfoFlowAnalysis dfa;
+	SmartMethodInfoFlowAnalysis smdfa;
 
-	public SmartMethodLocalObjectsAnalysis(SootMethod method, DataFlowAnalysis dfa)
+	public SmartMethodLocalObjectsAnalysis(SootMethod method, InfoFlowAnalysis dfa)
 	{
 		this.method = method;
 		this.dfa = dfa;
-		this.smdfa = dfa.getMethodDataFlowAnalysis(method);
+		this.smdfa = dfa.getMethodInfoFlowAnalysis(method);
 		
 		printMessages = dfa.printDebug();
 		counter++;
 	}
 	
-	public SmartMethodLocalObjectsAnalysis(UnitGraph g, DataFlowAnalysis dfa)
+	public SmartMethodLocalObjectsAnalysis(UnitGraph g, InfoFlowAnalysis dfa)
 	{
 		this(g.getBody().getMethod(), dfa);
 	}
@@ -43,7 +43,7 @@ public class SmartMethodLocalObjectsAnalysis
 	{
 		EquivalentValue localEqVal;
 		if(local instanceof InstanceFieldRef)
-			localEqVal = dfa.getEquivalentValueFieldRef(method, ((FieldRef) local).getField());
+			localEqVal = dfa.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
 			localEqVal = new EquivalentValue(local);
 			
@@ -67,13 +67,13 @@ public class SmartMethodLocalObjectsAnalysis
 		return true;
 	}
 	
-	public static boolean isObjectLocal(DataFlowAnalysis dfa, SootMethod method, CallLocalityContext context, Value local)
+	public static boolean isObjectLocal(InfoFlowAnalysis dfa, SootMethod method, CallLocalityContext context, Value local)
 	{
-		SmartMethodDataFlowAnalysis smdfa = dfa.getMethodDataFlowAnalysis(method);
+		SmartMethodInfoFlowAnalysis smdfa = dfa.getMethodInfoFlowAnalysis(method);
 
 		EquivalentValue localEqVal;
 		if(local instanceof InstanceFieldRef)
-			localEqVal = dfa.getEquivalentValueFieldRef(method, ((FieldRef) local).getField());
+			localEqVal = dfa.getNodeForFieldRef(method, ((FieldRef) local).getField());
 		else
 			localEqVal = new EquivalentValue(local);
 			

@@ -11,10 +11,10 @@ import soot.jimple.toolkits.scalar.EqualUsesAnalysis;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
 import soot.jimple.toolkits.thread.mhp.UnsynchronizedMhpAnalysis;
 import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.dataflow.ClassDataFlowAnalysis;
-import soot.jimple.toolkits.dataflow.DataFlowAnalysis;
-import soot.jimple.toolkits.dataflow.SmartMethodDataFlowAnalysis;
-import soot.jimple.toolkits.dataflow.SmartMethodLocalObjectsAnalysis;
+import soot.jimple.toolkits.infoflow.ClassInfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.InfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.SmartMethodInfoFlowAnalysis;
+import soot.jimple.toolkits.infoflow.SmartMethodLocalObjectsAnalysis;
 import soot.jimple.spark.pag.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -191,8 +191,8 @@ public class TransactionTransformer extends SceneTransformer
 		// Assign Names To Transactions
 		assignNamesToTransactions(AllTransactions);
 
-    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassDataFlowAnalysis.methodCount);
-    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodDataFlowAnalysis.counter);
+    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassInfoFlowAnalysis.methodCount);
+    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodInfoFlowAnalysis.counter);
     	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + SmartMethodLocalObjectsAnalysis.counter);
 
     	
@@ -242,8 +242,8 @@ public class TransactionTransformer extends SceneTransformer
     	long longTime = ((new Date()).getTime() - start.getTime()) / 100;
     	float time = ((float) longTime) / 10.0f;
 		G.v().out.println("[wjtp.tn] Total Time for TLO Steps: " + time + "s");
-    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassDataFlowAnalysis.methodCount);
-    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodDataFlowAnalysis.counter);
+    	G.v().out.println("[wjtp.tn] Total Simple Method Data Flow Analyses: " + ClassInfoFlowAnalysis.methodCount);
+    	G.v().out.println("[wjtp.tn] Total Smart Method Data Flow Analyses: " + SmartMethodInfoFlowAnalysis.counter);
     	G.v().out.println("[wjtp.tn] Total Method Local Objects Analyses: " + SmartMethodLocalObjectsAnalysis.counter);
 
 

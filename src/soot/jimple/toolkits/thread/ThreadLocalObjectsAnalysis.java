@@ -3,7 +3,7 @@ package soot.jimple.toolkits.thread;
 import soot.*;
 import java.util.*;
 import soot.toolkits.scalar.*;
-import soot.jimple.toolkits.dataflow.*;
+import soot.jimple.toolkits.infoflow.*;
 import soot.jimple.toolkits.thread.mhp.*;
 import soot.jimple.*;
 
@@ -15,7 +15,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 {
 	MhpTester mhp;
 	List threads;
-	DataFlowAnalysis primitiveDfa;
+	InfoFlowAnalysis primitiveDfa;
 	static boolean printDebug = false;
 	
 	Map valueCache;
@@ -24,10 +24,10 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	
 	public ThreadLocalObjectsAnalysis(MhpTester mhp) // must include main class
 	{
-		super(new DataFlowAnalysis(false, true, printDebug)); // ref-only, without inner fields
+		super(new InfoFlowAnalysis(false, true, printDebug)); // ref-only, without inner fields
 		this.mhp = mhp;
 		this.threads = mhp.getThreads();
-		this.primitiveDfa = new DataFlowAnalysis(true, true, printDebug); // ref+primitive, with inner fields
+		this.primitiveDfa = new InfoFlowAnalysis(true, true, printDebug); // ref+primitive, with inner fields
 
 		valueCache = new HashMap();
 		fieldCache = new HashMap();
@@ -35,7 +35,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 	}
 
 	// override
-	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, DataFlowAnalysis dfa, UseFinder uf, SootClass sc)
+	protected ClassLocalObjectsAnalysis newClassLocalObjectsAnalysis(LocalObjectsAnalysis loa, InfoFlowAnalysis dfa, UseFinder uf, SootClass sc)
 	{
 		// find the right run methods to use for threads of type sc
 		List runMethods = new ArrayList();
@@ -80,8 +80,8 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 					!isObjectLocalToContext(localOrRef, sm, runMethod))
 				{
 					if(printDebug)
-						G.v().out.println("  THREAD-SHARED (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-														" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+						G.v().out.println("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+														" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 														" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 //					valueCache.put(cacheKey, Boolean.FALSE);
 					return false;
@@ -89,8 +89,8 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 			}
 		}
 		if(printDebug)
-			G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-							 " smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+			G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+							 " smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 							 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
 //		valueCache.put(cacheKey, Boolean.TRUE);
 		return true;
@@ -139,16 +139,16 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis
 				if( runMethod.getDeclaringClass().isApplicationClass() &&
 					hasNonLocalEffects(containingMethod, ie, runMethod))
 				{
-					G.v().out.println("THREAD-VISIBLE (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-													" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+					G.v().out.println("THREAD-VISIBLE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+													" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 					invokeCache.put(cacheKey, Boolean.TRUE);
 					return true;
 				}
 			}
 		}
-		G.v().out.println("THREAD-PRIVATE (simpledfa " + ClassDataFlowAnalysis.methodCount + 
-												" smartdfa " + SmartMethodDataFlowAnalysis.counter + 
+		G.v().out.println("THREAD-PRIVATE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+												" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 												" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 		invokeCache.put(cacheKey, Boolean.FALSE);
 		return false;

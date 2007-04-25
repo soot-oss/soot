@@ -1,4 +1,4 @@
-package soot.jimple.toolkits.dataflow;
+package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import java.util.*;
@@ -7,7 +7,7 @@ import soot.toolkits.scalar.*;
 import soot.jimple.internal.*;
 import soot.jimple.*;
 
-// MethodDataFlowAnalysis written by Richard L. Halpert, 2007-02-25
+// SimpleMethodInfoFlowAnalysis written by Richard L. Halpert, 2007-02-25
 // Constructs a data flow table for the given method.  Ignores indirect flow.
 // These tables conservatively approximate how data flows from parameters,
 // fields, and globals to parameters, fields, globals, and the return value.
@@ -15,14 +15,14 @@ import soot.jimple.*;
 // large data structure, but that entire structure will be represented only by
 // the parameter's one node in the data flow graph.
 
-public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
+public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 {
 	SootMethod sm;
 	Value thisLocal;
-	DataFlowAnalysis dfa;
+	InfoFlowAnalysis dfa;
 	boolean refOnly;
 	
-	MutableDirectedGraph dataFlowGraph;
+	MutableDirectedGraph infoFlowGraph;
 	Ref returnRef;
 	
 	FlowSet entrySet;
@@ -32,7 +32,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	
 	public static int counter = 0;
 	
-	public MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
+	public SimpleMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa, boolean ignoreNonRefTypeFlow)
 	{
 		this(g, dfa, ignoreNonRefTypeFlow, true);
 		
@@ -43,18 +43,18 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		// Add every parameter of this method
 		for(int i = 0; i < sm.getParameterCount(); i++)
 		{
-			EquivalentValue parameterRefEqVal = dfa.getEquivalentValueParameterRef(sm, i);
-			if(!dataFlowGraph.containsNode(parameterRefEqVal))
-				dataFlowGraph.addNode(parameterRefEqVal);
+			EquivalentValue parameterRefEqVal = dfa.getNodeForParameterRef(sm, i);
+			if(!infoFlowGraph.containsNode(parameterRefEqVal))
+				infoFlowGraph.addNode(parameterRefEqVal);
 		}
 		
 		// Add every field of this class
 		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
 		{
 			SootField sf = (SootField) it.next();
-			EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, sf);
-			if(!dataFlowGraph.containsNode(fieldRefEqVal))
-				dataFlowGraph.addNode(fieldRefEqVal);
+			EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, sf);
+			if(!infoFlowGraph.containsNode(fieldRefEqVal))
+				infoFlowGraph.addNode(fieldRefEqVal);
 		}
 		
 		// Add every field of this class's superclasses
@@ -67,22 +67,22 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	        while(scFieldsIt.hasNext())
 	        {
 				SootField scField = (SootField) scFieldsIt.next();
-				EquivalentValue fieldRefEqVal = dfa.getEquivalentValueFieldRef(sm, scField);
-				if(!dataFlowGraph.containsNode(fieldRefEqVal))
-					dataFlowGraph.addNode(fieldRefEqVal);
+				EquivalentValue fieldRefEqVal = dfa.getNodeForFieldRef(sm, scField);
+				if(!infoFlowGraph.containsNode(fieldRefEqVal))
+					infoFlowGraph.addNode(fieldRefEqVal);
 	        }
 			superclass = superclass.getSuperclass();
 		}
 		
 		// Add thisref of this class
-		EquivalentValue thisRefEqVal = dfa.getEquivalentValueThisRef(sm);
-		if(!dataFlowGraph.containsNode(thisRefEqVal))
-			dataFlowGraph.addNode(thisRefEqVal);
+		EquivalentValue thisRefEqVal = dfa.getNodeForThisRef(sm);
+		if(!infoFlowGraph.containsNode(thisRefEqVal))
+			infoFlowGraph.addNode(thisRefEqVal);
 		
 		// Add returnref of this method
 		EquivalentValue returnRefEqVal = new EquivalentValue(returnRef);
-		if(!dataFlowGraph.containsNode(returnRefEqVal))
-			dataFlowGraph.addNode(returnRefEqVal);
+		if(!infoFlowGraph.containsNode(returnRefEqVal))
+			infoFlowGraph.addNode(returnRefEqVal);
 		
 		if(printMessages)
 			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
@@ -92,7 +92,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	}
 	
 	/** A constructor that doesn't run the analysis */
-	protected MethodDataFlowAnalysis(UnitGraph g, DataFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
+	protected SimpleMethodInfoFlowAnalysis(UnitGraph g, InfoFlowAnalysis dfa, boolean ignoreNonRefTypeFlow, boolean dummyDontRunAnalysisYet)
 	{
 		super(g);
 		this.sm = g.getBody().getMethod();
@@ -103,7 +103,7 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		this.dfa = dfa;
 		this.refOnly = ignoreNonRefTypeFlow;
 		
-		this.dataFlowGraph = new MemoryEfficientGraph();
+		this.infoFlowGraph = new MemoryEfficientGraph();
 		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 		
 		this.entrySet = new ArraySparseSet();
@@ -132,9 +132,9 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 		}
 	}
 
-	public MutableDirectedGraph getMethodDataFlowGraph()
+	public MutableDirectedGraph getMethodInfoFlowSummary()
 	{
-		return dataFlowGraph;
+		return infoFlowGraph;
 	}
 
 	protected void merge(Object in1, Object in2, Object out)
@@ -235,11 +235,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 				fs.add(pair);
 				if(isInterestingSource(source) && isInterestingSink(sink))
 				{
-					if(!dataFlowGraph.containsNode(sinkEqVal))
-						dataFlowGraph.addNode(sinkEqVal);
-					if(!dataFlowGraph.containsNode(sourceEqVal))
-						dataFlowGraph.addNode(sourceEqVal);
-					dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
+					if(!infoFlowGraph.containsNode(sinkEqVal))
+						infoFlowGraph.addNode(sinkEqVal);
+					if(!infoFlowGraph.containsNode(sourceEqVal))
+						infoFlowGraph.addNode(sourceEqVal);
+					infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 					if(printMessages)
 						G.v().out.println("      Found " + source + " flows to " + sink);
 				}
@@ -276,11 +276,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 					fs.add(pair);
 					if(isInterestingSource(source) && isInterestingSink(sink))
 					{
-						if(!dataFlowGraph.containsNode(sinkEqVal))
-							dataFlowGraph.addNode(sinkEqVal);
-						if(!dataFlowGraph.containsNode(sourceEqVal))
-							dataFlowGraph.addNode(sourceEqVal);
-						dataFlowGraph.addEdge(sourceEqVal, sinkEqVal);
+						if(!infoFlowGraph.containsNode(sinkEqVal))
+							infoFlowGraph.addNode(sinkEqVal);
+						if(!infoFlowGraph.containsNode(sourceEqVal))
+							infoFlowGraph.addNode(sourceEqVal);
+						infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 						if(printMessages)
 							G.v().out.println("      Found " + source + " flows to " + sink);
 					}
@@ -313,11 +313,11 @@ public class MethodDataFlowAnalysis extends ForwardFlowAnalysis
 	protected List handleInvokeExpr(InvokeExpr ie, FlowSet fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getInvokeDataFlowGraph(ie, sm); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
-//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE dataFlowGraph: ");
-//			ClassDataFlowAnalysis.printDataFlowGraph(dataFlowGraph);
+//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
+//			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowGraph);
 //		}
 		
 		List returnValueSources = new ArrayList();
