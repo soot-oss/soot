@@ -813,8 +813,25 @@ public class TransactionTransformer extends SceneTransformer
 							// sure it doesn't R/W to another object of the same type.
 							value = null;
 							index = null;
-							if(!s.containsInvokeExpr())
+							if(!s.containsInvokeExpr() && (s.containsFieldRef() || s.containsArrayRef()))
 							{
+								if(s.containsFieldRef())
+								{
+									FieldRef fr = s.getFieldRef();
+									if(fr instanceof InstanceFieldRef)
+									{
+										value = ((InstanceFieldRef) fr).getBase();
+									}
+									else
+									{
+										value = s.getFieldRef(); // actually, should use the class itself, not the field
+									}
+								}
+								else
+								{
+									value = s.getArrayRef().getBase();
+								}
+								/*
 								if( s instanceof AssignStmt ) {
 									AssignStmt a = (AssignStmt) s;
 									Value r = a.getRightOp();
@@ -868,6 +885,7 @@ public class TransactionTransformer extends SceneTransformer
 										}
 									}
 								}
+								*/
 							}
 
 	//						G.v().out.println("LOCAL OBJ REF for " + s + 
@@ -875,8 +893,11 @@ public class TransactionTransformer extends SceneTransformer
 
 							if(value == null)
 							{
-								mustBeFieldsOfSameObjectForAllTns[group] = false;
-								lockObject[group] = null;
+								if(!optionUseLocksets)
+								{
+									mustBeFieldsOfSameObjectForAllTns[group] = false;
+									lockObject[group] = null;
+								}
 								break; // move on to next transaction
 							}
 							unitToLocal.put(u, value);
@@ -907,8 +928,13 @@ public class TransactionTransformer extends SceneTransformer
 							valueList.add(entry.getValue());
 							unitToLocals.put(entry.getKey(), valueList);
 						}
+						
+						G.v().out.println("lockset for " + tn.name + " is:");
+								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						la.getLocksetOf(unitToLocals, tn.begin);
+						tn.lockSet = la.getLocksetOf(unitToLocals, tn.begin);
+						
+						G.v().out.println("  " + tn.lockSet);
 						
 //						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
 					}
@@ -1172,7 +1198,7 @@ public class TransactionTransformer extends SceneTransformer
 				{
 					if(!printedHeading)
 					{
-						if(localLock[group])
+						if(localLock[group] && lockObject[group] != null)
 						{
 							String typeString = "";
 							if(lockObject[group].getType() instanceof RefType)
@@ -1277,7 +1303,10 @@ public class TransactionTransformer extends SceneTransformer
 			Iterator tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
 				G.v().out.print(((TransactionDataDependency)tnedgeit.next()).other.name + " ");
-			G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
+			if(tn.lockSet != null)
+				G.v().out.println("\n[transaction-table] Locks: " + tn.lockSet);
+			else
+				G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
 			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
 		}
 	}
@@ -1288,7 +1317,7 @@ public class TransactionTransformer extends SceneTransformer
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
     			G.v().out.print("Group " + (group + 1) + " ");
-				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (lockObject[group] == null? "null" : lockObject[group].toString()) );
+				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (lockObject[group] == null ? "null" : lockObject[group].toString()) );
 				G.v().out.print("\n[transaction-groups]      : ");
 				Iterator tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())

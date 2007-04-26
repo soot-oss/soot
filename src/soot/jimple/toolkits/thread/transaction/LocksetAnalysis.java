@@ -41,14 +41,15 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		this.begin = begin;
 		lostObjects = false;
 
-		G.v().out.println("lockset for " + ((UnitGraph) graph).getBody().getMethod() + " is:");
-
 		doAnalysis();
 		
-		HashMap lockset = (HashMap) getFlowAfter(begin);
-		G.v().out.println("  FINAL:" + lockset);
+		HashMap results = (HashMap) getFlowAfter(begin);
+		List lockset = new ArrayList();
+		
+		for(Iterator resultsIt = results.keySet().iterator(); resultsIt.hasNext(); ) 
+			lockset.add(resultsIt.next());
 
-		return null;
+		return lockset;
 	}
 
 	protected void merge(Object in1, Object in2, Object out)
@@ -113,7 +114,6 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		
 //		out.clear();
 //		out.putAll(in);
-		G.v().out.println("  " + in);
 		merge(in, (Map) ((HashMap) out).clone(), out);
 		
 		// If this statement contains a use
@@ -124,7 +124,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			Iterator usesIt = uses.iterator();
 			while(usesIt.hasNext())
 			{
-				Local use = (Local) usesIt.next();
+				Value use = (Value) usesIt.next();
 				// if present, ok, if not, add as new group
 				if(!out.containsKey(use))
 				{
@@ -132,7 +132,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				}
 			}
 		}
-		
+
 		if( stmt == begin )
 			out.clear();
 
@@ -163,7 +163,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				}
 				else
 				{
-					if(rvalue.getValue() instanceof Local || rvalue.getValue() instanceof FieldRef)
+					if(rvalue.getValue() instanceof Local || rvalue.getValue() instanceof FieldRef || rvalue.getValue() instanceof ArrayRef)
 						out.put(rvalue, lvaluevalue);
 					else
 						lostObjects = true;
@@ -171,6 +171,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 				out.remove(lvalue);
 			}
 		}
+//		if(!out.isEmpty())
+//			G.v().out.println("  " + out);		
 	}
 	
 	protected void copy(Object source, Object dest)

@@ -289,6 +289,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 					bothRW.union(stmtRead);
 					bothRW.union(stmtWrite);
         			tn.unitToRWSet.put(unit, bothRW);
+//        			if(bothRW.size() > 0)
+//        				tn.unitToUse.put(
         		}
 			}
         }
