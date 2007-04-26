@@ -956,12 +956,14 @@ public class TransactionTransformer extends SceneTransformer
 //							unitToLocals.put(entry.getKey(), valueList);
 //						}
 						
-						G.v().out.println("lockset for " + tn.name + "w/" + unitToUses + " is:");
+						G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						tn.lockSet = la.getLocksetOf(unitToUses, tn.begin);
-						
-						G.v().out.println("  " + tn.lockSet);
+						tn.lockset = la.getLocksetOf(unitToUses, tn.begin);
+						if(la.lostObjects())
+							G.v().out.println("  FAILURE: " + tn.lockset);
+						else
+							G.v().out.println("  " + tn.lockset);
 						
 //						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
 					}
@@ -1330,8 +1332,8 @@ public class TransactionTransformer extends SceneTransformer
 			Iterator tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
 				G.v().out.print(((TransactionDataDependency)tnedgeit.next()).other.name + " ");
-			if(tn.lockSet != null)
-				G.v().out.println("\n[transaction-table] Locks: " + tn.lockSet);
+			if(tn.lockset != null)
+				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
 			else
 				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
 			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");

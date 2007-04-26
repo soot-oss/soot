@@ -281,6 +281,7 @@ public class TransactionAwareSideEffectAnalysis {
 			}
 		}
 
+		boolean inaccessibleUses = false;
 		RWSet ret = null;
 		tve.setExemptTransaction(tn);
 		Iterator targets = tt.iterator( stmt );
@@ -298,14 +299,23 @@ public class TransactionAwareSideEffectAnalysis {
 				// Special treatment for java.util and java.lang... their children are filtered out by the ThreadVisibleEdges filter
 				// An approximation of their behavior must be performed here
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
-					target.getDeclaringClass().toString().startsWith("java.lang") ) // WHAT ABOUT ARGUMENTS???
+					target.getDeclaringClass().toString().startsWith("java.lang") )
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
 						Local base = (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase();
 
 						// Add base object to set of possibly contributing uses at this stmt
-						uses.add(base);
+						if(!inaccessibleUses)
+						{
+							uses.add(base);
+							int argCount = stmt.getInvokeExpr().getArgCount();
+							for(int i = 0; i < argCount; i++)
+							{
+								if(addValue( stmt.getInvokeExpr().getArg(i), method, stmt ) != null)
+									uses.add(stmt.getInvokeExpr().getArg(i));
+							}
+						}
 						
 						// Add base object to read set
 						ret = new SiteRWSet();
@@ -368,7 +378,8 @@ public class TransactionAwareSideEffectAnalysis {
 //						}
 //						else
 //						{
-							tn.inaccessibleUses = true; // THIS IS WHERE WE CAN IMPROVE LOCKSET DISCOVERY (perhaps by using InfoFlow?)
+							uses.clear();
+							inaccessibleUses = true; // can we improve lockset discovery? perhaps by using InfoFlow?
 //						}
 						if( ret == null ) ret = new SiteRWSet();
 						ret.union( ntr );
@@ -378,7 +389,7 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 		RWSet ntr = ntReadSet( method, stmt );
 		
-		if( ntr != null && stmt instanceof AssignStmt ) {
+		if( inaccessibleUses == false && ntr != null && stmt instanceof AssignStmt ) {
 			AssignStmt a = (AssignStmt) stmt;
 			Value r = a.getRightOp();
 			if(r instanceof InstanceFieldRef)
@@ -461,6 +472,7 @@ public class TransactionAwareSideEffectAnalysis {
 			}
 		}
 
+		boolean inaccessibleUses = false;
 		RWSet ret = null;
 		tve.setExemptTransaction(tn);
 		Iterator targets = tt.iterator( stmt );
@@ -473,14 +485,15 @@ public class TransactionAwareSideEffectAnalysis {
 			if( target.isConcrete() )
 			{
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
-					target.getDeclaringClass().toString().startsWith("java.lang") ) // WHAT ABOUT ARGUMENTS???
+					target.getDeclaringClass().toString().startsWith("java.lang") )
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
 						Local base = (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase();
 						
 						// Add base object to set of possibly contributing uses at this stmt
-						uses.add(base);
+						if(!inaccessibleUses)
+							uses.add(base);
 						
 						// Add base object to write set
 						ret = new SiteRWSet();
@@ -539,7 +552,8 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					RWSet ntw = nonTransitiveWriteSet(target);
 					if( ntw != null ) {
-						tn.inaccessibleUses = true;
+						uses.clear();
+						inaccessibleUses = true;
 						if( ret == null ) ret = new SiteRWSet();
 						ret.union( ntw );
 					}
@@ -548,7 +562,7 @@ public class TransactionAwareSideEffectAnalysis {
 		}
 
 		RWSet ntw = ntWriteSet( method, stmt );
-		if( ntw != null && stmt instanceof AssignStmt ) {
+		if( !inaccessibleUses && ntw != null && stmt instanceof AssignStmt ) {
 			AssignStmt a = (AssignStmt) stmt;
 			Value l = a.getLeftOp();
 			if(l instanceof InstanceFieldRef)
@@ -572,10 +586,29 @@ public class TransactionAwareSideEffectAnalysis {
 	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
 		RWSet ret = null;
 		
-		if(tlo != null && 
-			(( v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(((InstanceFieldRef)v).getBase(), m) ) ||
-			 ( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )))
-			return null;
+		if(tlo != null)
+		{
+			// fields/elements of local objects may be read/written w/o visible
+			// side effects if the base object is local, or if the base is "this"
+			// and the field itself is local (since "this" is always assumed shared)
+			if( v instanceof InstanceFieldRef )
+			{
+				InstanceFieldRef ifr = (InstanceFieldRef) v;
+				if( m.isConcrete() && !m.isStatic() && 
+					m.retrieveActiveBody().getThisLocal().equivTo(ifr.getBase()) && 
+					tlo.isObjectThreadLocal(ifr, m) )
+					return null;
+				else if( tlo.isObjectThreadLocal(ifr.getBase(), m) )
+					return null;
+			}
+			else if( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )
+				return null;
+		}
+		
+//		if(tlo != null && 
+//			(( v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(((InstanceFieldRef)v).getBase(), m) ) ||
+//			 ( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )))
+//			return null;
 		
 		if( v instanceof InstanceFieldRef ) {
 			InstanceFieldRef ifr = (InstanceFieldRef) v;

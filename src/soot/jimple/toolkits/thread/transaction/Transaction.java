@@ -26,7 +26,6 @@ class Transaction
 	public HashSet units;
 	public HashMap unitToRWSet;
 	public HashMap unitToUses; // For lockset analysis
-	public boolean inaccessibleUses;
 	public Stmt prepStmt;
 	public boolean wholeMethod;
 	
@@ -41,7 +40,7 @@ class Transaction
 	// Locking Information
 	public Value lockObject;
 	public Value lockObjectArrayIndex;
-	public List lockSet;
+	public List lockset;
 	
 	Transaction(Stmt begin, boolean wholeMethod, SootMethod method, int nestLevel)
 	{
@@ -70,7 +69,6 @@ class Transaction
 		this.units = new HashSet();
 		this.unitToRWSet = new HashMap();
 		this.unitToUses = new HashMap();
-		this.inaccessibleUses = false;
 		this.prepStmt = null;
 		this.wholeMethod = wholeMethod;
 		this.method = method;
@@ -81,7 +79,7 @@ class Transaction
 		this.transitiveTargets = null;
 	    this.lockObject = null;
 	    this.lockObjectArrayIndex = null;
-	    this.lockSet = null;
+	    this.lockset = null;
 	}
 	
 	Transaction(Transaction tn)
@@ -97,7 +95,6 @@ class Transaction
 		this.units = (HashSet) tn.units.clone();
 		this.unitToRWSet = (HashMap) tn.unitToRWSet.clone();
 		this.unitToUses = (HashMap) tn.unitToUses.clone();
-		this.inaccessibleUses = tn.inaccessibleUses;
 		this.prepStmt = tn.prepStmt;
 		this.wholeMethod = tn.wholeMethod;
 		this.method = tn.method;
@@ -108,7 +105,7 @@ class Transaction
 		this.transitiveTargets = (HashSet) (tn.transitiveTargets == null ? null : tn.transitiveTargets.clone());
 	    this.lockObject = tn.lockObject;
 	    this.lockObjectArrayIndex = tn.lockObjectArrayIndex;
-	    this.lockSet = tn.lockSet;
+	    this.lockset = tn.lockset;
 	}
 
 	protected Object clone()

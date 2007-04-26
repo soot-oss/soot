@@ -252,8 +252,6 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	}
 				else
             	{
-            		
-            		
             		// Add this unit's read and write sets to this transactional region
             		HashSet uses = new HashSet();
 	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld, uses );

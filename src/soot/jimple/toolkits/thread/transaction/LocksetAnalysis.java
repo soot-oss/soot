@@ -52,12 +52,10 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		return lockset;
 	}
 	
-/*	
-	public boolean wereObjectsLost()
+	public boolean lostObjects()
 	{
 		return lostObjects;
 	}
-*/
 
 	protected void merge(Object in1, Object in2, Object out)
 	{
@@ -129,6 +127,10 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			// For each use, either add it to an existing lock, or add a new lock
 			List uses = (List) unitToUses.get(stmt);
 			Iterator usesIt = uses.iterator();
+			if(!usesIt.hasNext()) // an empty set of uses indicates that some uses are inaccessible
+			{
+				lostObjects = true;
+			}
 			while(usesIt.hasNext())
 			{
 				Value use = (Value) usesIt.next();
