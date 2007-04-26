@@ -25,7 +25,8 @@ class Transaction
 	public HashSet invokes;
 	public HashSet units;
 	public HashMap unitToRWSet;
-	public HashMap unitToUse; // For lockset analysis
+	public HashMap unitToUses; // For lockset analysis
+	public boolean inaccessibleUses;
 	public Stmt prepStmt;
 	public boolean wholeMethod;
 	
@@ -68,7 +69,8 @@ class Transaction
 		this.invokes = new HashSet();
 		this.units = new HashSet();
 		this.unitToRWSet = new HashMap();
-		this.unitToUse = new HashMap();
+		this.unitToUses = new HashMap();
+		this.inaccessibleUses = false;
 		this.prepStmt = null;
 		this.wholeMethod = wholeMethod;
 		this.method = method;
@@ -94,7 +96,8 @@ class Transaction
 		this.invokes = (HashSet) tn.invokes.clone();
 		this.units = (HashSet) tn.units.clone();
 		this.unitToRWSet = (HashMap) tn.unitToRWSet.clone();
-		this.unitToUse = (HashMap) tn.unitToUse.clone();
+		this.unitToUses = (HashMap) tn.unitToUses.clone();
+		this.inaccessibleUses = tn.inaccessibleUses;
 		this.prepStmt = tn.prepStmt;
 		this.wholeMethod = tn.wholeMethod;
 		this.method = tn.method;

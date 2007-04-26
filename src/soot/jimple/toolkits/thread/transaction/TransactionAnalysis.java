@@ -218,8 +218,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							stmtRead = tasea.transactionalReadSet(tn.method, (Stmt) unit, tn, sld);
-							stmtWrite = tasea.transactionalWriteSet(tn.method, (Stmt) unit, tn, sld);
+							stmtRead = tasea.readSet(tn.method, (Stmt) unit, tn, sld, new HashSet());
+							stmtWrite = tasea.writeSet(tn.method, (Stmt) unit, tn, sld, new HashSet());
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -255,8 +255,9 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             		
             		
             		// Add this unit's read and write sets to this transactional region
-	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld );
-		           	stmtWrite = tasea.writeSet( method, (Stmt) unit, tn, sld );
+            		HashSet uses = new HashSet();
+	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld, uses );
+		           	stmtWrite = tasea.writeSet( method, (Stmt) unit, tn, sld, uses );
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
@@ -289,8 +290,23 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 					bothRW.union(stmtRead);
 					bothRW.union(stmtWrite);
         			tn.unitToRWSet.put(unit, bothRW);
-//        			if(bothRW.size() > 0)
-//        				tn.unitToUse.put(
+	
+					List usesList;
+					if(tn.unitToUses.containsKey(unit))
+						usesList = (List) tn.unitToUses.get(unit);
+					else
+					{
+						usesList = new ArrayList();
+						tn.unitToUses.put(unit, usesList);
+					}
+
+					for(Iterator usesIt = uses.iterator(); usesIt.hasNext(); )
+					{
+						Object use = usesIt.next();
+						if(!usesList.contains(use))
+							usesList.add(use);
+					}
+
         		}
 			}
         }

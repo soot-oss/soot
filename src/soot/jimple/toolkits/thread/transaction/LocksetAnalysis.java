@@ -51,6 +51,13 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 
 		return lockset;
 	}
+	
+/*	
+	public boolean wereObjectsLost()
+	{
+		return lostObjects;
+	}
+*/
 
 	protected void merge(Object in1, Object in2, Object out)
 	{

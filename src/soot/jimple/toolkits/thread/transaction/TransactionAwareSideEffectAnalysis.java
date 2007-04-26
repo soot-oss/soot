@@ -50,7 +50,7 @@ class WholeObject
 
 	public String toString()
 	{
-		return "Whole Object" + (type == null ? "" : " (" + type + ")");
+		return "All Fields" + (type == null ? "" : " (" + type + ")");
 	}
 	
 	public int hashCode()
@@ -59,33 +59,6 @@ class WholeObject
 			return 1;
 		return type.hashCode();
 	}
-	
-/*
-	public boolean equals(Object o)
-	{
-		if(o instanceof WholeObject)
-		{
-			G.v().out.println("Comparing " + toString() + " to " + ((WholeObject) o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
-		}
-		else if(o instanceof FieldRef)
-		{
-			G.v().out.println("Comparing " + toString() + " to " + ((FieldRef)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
-		}
-		else if(o instanceof SootFieldRef)
-		{
-			G.v().out.println("Comparing " + toString() + " to " + ((SootFieldRef)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
-		}
-		else if(o instanceof SootField)
-		{
-			G.v().out.println("Comparing " + toString() + " to " + ((SootField)o).toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
-		}
-		else
-		{
-			G.v().out.println("Comparing " + toString() + " to " + o.toString() + ": " + (tempequals(o) ? "equal" : "not equal"));
-		}
-		return tempequals(o);
-	}
-//*/
 	
 	public boolean equals(Object o)
 	{
@@ -282,43 +255,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet transactionalReadSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
-	{
-		RWSet stmtRead = null;
-		
-/*		if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-		{
-			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-			{
-            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ).iterator();
-            	while (rDefsIt.hasNext())
-            	{
-                	Stmt next = (Stmt) rDefsIt.next();
-                	if(next instanceof DefinitionStmt)
-					{
-    					stmtRead = approximatedReadSet(method, stmt, ((DefinitionStmt) next).getRightOp() ); // IS THIS RIGHT?  SHOULD WE BE USING REACHING OBJECTS INSTEAD???
-					}
-				}
-			}
-			else
-			{
-				stmtRead = approximatedReadSet(method, stmt, null);
-			}
-		}
-		else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-			     (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-		{
-			stmtRead = approximatedReadSet(method, stmt, null);
-		}
-		else
-		{
-*/
-    		stmtRead = readSet( method, stmt, tn, sld );
-//		}
-		return stmtRead;
-	}
-	
-	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
+	public RWSet readSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld, HashSet uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -359,16 +296,22 @@ public class TransactionAwareSideEffectAnalysis {
 				// TODO: FIX THIS!!!  What if the declaration is in a parent class of the actual object.
 				
 				// Special treatment for java.util and java.lang... their children are filtered out by the ThreadVisibleEdges filter
-				// Any approximation of their behavior must be performed here
+				// An approximation of their behavior must be performed here
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
-					target.getDeclaringClass().toString().startsWith("java.lang") )
+					target.getDeclaringClass().toString().startsWith("java.lang") ) // WHAT ABOUT ARGUMENTS???
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
+						Local base = (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase();
+
+						// Add base object to set of possibly contributing uses at this stmt
+						uses.add(base);
+						
+						// Add base object to read set
 						ret = new SiteRWSet();
 		            	List rDefs = new ArrayList();
-		            	rDefs.addAll( sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , (Unit) stmt ));
-		            	for(int i = 0; i < rDefs.size(); i++)
+		            	rDefs.addAll( sld.getDefsOfAt( base , (Unit) stmt ));
+		            	for(int i = 0; i < rDefs.size(); i++) // TODO: is it possible that there's an infinite loop here?
 		            	{
 		            		Stmt rDef = (Stmt) rDefs.get(i);
 		            		if(rDef instanceof DefinitionStmt)
@@ -418,14 +361,42 @@ public class TransactionAwareSideEffectAnalysis {
 //	            	G.v().out.println("Target   : " + target.toString());
 					RWSet ntr = nonTransitiveReadSet(target);
 					if( ntr != null ) {
+//						if(ntr.getFields().size() == 0)
+//						{
+							// if this read set consists only of globals, just add them to the uses for this stmt
+//							uses.addAll(ntr.getGlobals()); // these are static SootFields, not StaticFieldRefs!!!
+//						}
+//						else
+//						{
+							tn.inaccessibleUses = true; // THIS IS WHERE WE CAN IMPROVE LOCKSET DISCOVERY (perhaps by using InfoFlow?)
+//						}
 						if( ret == null ) ret = new SiteRWSet();
 						ret.union( ntr );
 					}
 				}
 			}
 		}
-		if( ret == null ) return ntReadSet( method, stmt );
-		ret.union( ntReadSet( method, stmt ) );
+		RWSet ntr = ntReadSet( method, stmt );
+		
+		if( ntr != null && stmt instanceof AssignStmt ) {
+			AssignStmt a = (AssignStmt) stmt;
+			Value r = a.getRightOp();
+			if(r instanceof InstanceFieldRef)
+			{
+				uses.add( ((InstanceFieldRef)r).getBase() );
+			}
+			else if(r instanceof StaticFieldRef)
+			{
+				uses.add( r );
+			}
+			else if(r instanceof ArrayRef)
+			{
+				uses.add( ((ArrayRef)r).getBase() );
+			}
+		}
+		
+		if( ret == null ) return ntr;
+		ret.union( ntr );
 		return ret;
 	}
 	
@@ -451,7 +422,7 @@ public class TransactionAwareSideEffectAnalysis {
 				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate not a specific field, but the whole object
 				ret.union(sSet);
 			}
-			else if( v instanceof FieldRef)
+			else if( v instanceof FieldRef) // does this ever happen?
 			{
 				ret.union(addValue(v, method, stmt));
 			}
@@ -464,49 +435,7 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet transactionalWriteSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
-	{
-		RWSet stmtWrite = null;
-		
-/*
-		if( sigWriteGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-		{
-			if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
-			{
-            	Iterator rDefsIt = sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt).iterator();
-            	while (rDefsIt.hasNext())
-            	{
-                	Stmt next = (Stmt) rDefsIt.next();
-                	if(next instanceof DefinitionStmt)
-					{
-    					stmtWrite = approximatedWriteSet(method, stmt, ((DefinitionStmt) next).getRightOp() );
-					}
-				}
-			}
-			else
-			{
-				stmtWrite = approximatedWriteSet(method, stmt, null);
-			}
-		}
-		else if( sigReadGraylist.contains(stmt.getInvokeExpr().getMethod().getSignature()) )
-		{
-			stmtWrite = approximatedWriteSet(method, stmt, null);
-		}
-		// add else ifs for every special case (specifically functions that write to args)
-		else if( (sigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSignature())) ||
-				 (subSigBlacklist.contains(stmt.getInvokeExpr().getMethod().getSubSignature())) )
-		{
-			stmtWrite = approximatedWriteSet(method, stmt, null);
-		}
-		else
-		{
-*/
-        	stmtWrite = writeSet( method, stmt, tn, sld );
-//		}
-		return stmtWrite;
-	}
-	
-	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld )
+	public RWSet writeSet( SootMethod method, Stmt stmt, Transaction tn, LocalDefs sld, Set uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())
@@ -544,13 +473,19 @@ public class TransactionAwareSideEffectAnalysis {
 			if( target.isConcrete() )
 			{
 				if( target.getDeclaringClass().toString().startsWith("java.util") ||
-					target.getDeclaringClass().toString().startsWith("java.lang") )
+					target.getDeclaringClass().toString().startsWith("java.lang") ) // WHAT ABOUT ARGUMENTS???
 				{
 					if(stmt.getInvokeExpr() instanceof InstanceInvokeExpr)
 					{
+						Local base = (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase();
+						
+						// Add base object to set of possibly contributing uses at this stmt
+						uses.add(base);
+						
+						// Add base object to write set
 						ret = new SiteRWSet();
 		            	List rDefs = new ArrayList();
-		            	rDefs.addAll( sld.getDefsOfAt( (Local)((InstanceInvokeExpr)stmt.getInvokeExpr()).getBase() , stmt ));
+		            	rDefs.addAll( sld.getDefsOfAt( base , stmt ));
 		            	for(int i = 0; i < rDefs.size(); i++)
 		            	{
 		            		Stmt rDef = (Stmt) rDefs.get(i);
@@ -604,21 +539,42 @@ public class TransactionAwareSideEffectAnalysis {
 				{
 					RWSet ntw = nonTransitiveWriteSet(target);
 					if( ntw != null ) {
+						tn.inaccessibleUses = true;
 						if( ret == null ) ret = new SiteRWSet();
 						ret.union( ntw );
 					}
 				}
 			}
 		}
-		if( ret == null ) return ntWriteSet( method, stmt );
-		ret.union( ntWriteSet( method, stmt ) );
+
+		RWSet ntw = ntWriteSet( method, stmt );
+		if( ntw != null && stmt instanceof AssignStmt ) {
+			AssignStmt a = (AssignStmt) stmt;
+			Value l = a.getLeftOp();
+			if(l instanceof InstanceFieldRef)
+			{
+				uses.add( ((InstanceFieldRef)l).getBase() );
+			}
+			else if(l instanceof StaticFieldRef)
+			{
+				uses.add( l );
+			}
+			else if(l instanceof ArrayRef)
+			{
+				uses.add( ((ArrayRef)l).getBase() );
+			}
+		}
+		if( ret == null ) return ntw;
+		ret.union( ntw );
 		return ret;
 	}
 	
 	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
 		RWSet ret = null;
 		
-		if(tlo != null && v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(v, m))
+		if(tlo != null && 
+			(( v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(((InstanceFieldRef)v).getBase(), m) ) ||
+			 ( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )))
 			return null;
 		
 		if( v instanceof InstanceFieldRef ) {

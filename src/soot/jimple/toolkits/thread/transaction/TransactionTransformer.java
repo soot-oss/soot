@@ -200,12 +200,10 @@ public class TransactionTransformer extends SceneTransformer
     	// *** Find Transitive Read/Write Sets ***
     	// Finds the transitive read/write set for each transaction using a given
     	// nesting model.
-    	// Note: currently, open-nesting is run by default. This is the implied
-    	// meaning of synchronized regions, so is definitely OK if using that keyword
     	G.v().out.println("[wjtp.tn] *** Find Transitive Read/Write Sets *** " + (new Date()));
     	PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
     	TransactionAwareSideEffectAnalysis tasea = null;
-    	if(optionOpenNesting)
+    	if(optionOpenNesting) // TODO: NOT COMPLETE.  Must have open/closed switch in TransactionAnalysis as well.
     	{
     		tasea = new TransactionAwareSideEffectAnalysis(
     					pta, 
@@ -230,13 +228,36 @@ public class TransactionTransformer extends SceneTransformer
     		{
     			Stmt stmt = (Stmt) invokeIt.next();
     			
-    			RWSet stmtRead = tasea.transactionalReadSet(tn.method, stmt, tn, sld);
+    			HashSet uses = new HashSet();
+    			RWSet stmtRead = tasea.readSet(tn.method, stmt, tn, sld, uses);
     			if(stmtRead != null)
 	    			tn.read.union(stmtRead);
     			
-    			RWSet stmtWrite = tasea.transactionalWriteSet(tn.method, stmt, tn, sld);
+    			RWSet stmtWrite = tasea.writeSet(tn.method, stmt, tn, sld, uses);
 				if(stmtWrite != null)
 					tn.write.union(stmtWrite);
+					
+				// memory hog???
+				CodeBlockRWSet bothRW = new CodeBlockRWSet();
+				bothRW.union(stmtRead);
+				bothRW.union(stmtWrite);
+       			tn.unitToRWSet.put(stmt, bothRW);
+
+				List usesList;
+				if(tn.unitToUses.containsKey(stmt))
+					usesList = (List) tn.unitToUses.get(stmt);
+				else
+				{
+					usesList = new ArrayList();
+					tn.unitToUses.put(stmt, usesList);
+				}
+
+				for(Iterator usesIt = uses.iterator(); usesIt.hasNext(); )
+				{
+					Object use = usesIt.next();
+					if(!usesList.contains(use))
+						usesList.add(use);
+				}
 			}
     	}
     	long longTime = ((new Date()).getTime() - start.getTime()) / 100;
@@ -793,6 +814,7 @@ public class TransactionTransformer extends SceneTransformer
 					// Get a list of contributing reads/writes: 
 					// units that read/write to any of the dependences.
 					Map unitToLocal = new HashMap();
+					Map unitToUses = new HashMap();
 					Map unitToArrayIndex = new HashMap(); // if all relevant R/Ws are via array references, we need to track the indexes as well.
 					boolean allRefsAreArrayRefs = true;
 					Value value = null;
@@ -804,10 +826,15 @@ public class TransactionTransformer extends SceneTransformer
 						RWSet rw = (RWSet) e.getValue();
 						if(rw.hasNonEmptyIntersection(rws[group]))
 						{
-							// This statement contributes to one of the RW dependencies
+							// This statement contributes to one or more RW dependencies
 							Unit u = (Unit) e.getKey();
 							Stmt s = (Stmt) u;
-
+							
+							if(optionUseLocksets)
+							{
+								unitToUses.put(s, tn.unitToUses.get(s));
+							}
+							
 							// Get the base object of the field reference at this
 							// statement. If there's an invoke expression, we can't be
 							// sure it doesn't R/W to another object of the same type.
@@ -920,19 +947,19 @@ public class TransactionTransformer extends SceneTransformer
 
 					if(optionUseLocksets) // multiple locks per region
 					{
-						Map unitToLocals = new HashMap();
-						for(Iterator utlIt = unitToLocal.entrySet().iterator(); utlIt.hasNext(); )
-						{
-							Map.Entry entry = (Map.Entry) utlIt.next();
-							List valueList = new ArrayList();
-							valueList.add(entry.getValue());
-							unitToLocals.put(entry.getKey(), valueList);
-						}
+//						Map unitToLocals = new HashMap();
+//						for(Iterator utlIt = unitToLocal.entrySet().iterator(); utlIt.hasNext(); )
+//						{
+//							Map.Entry entry = (Map.Entry) utlIt.next();
+//							List valueList = new ArrayList();
+//							valueList.add(entry.getValue());
+//							unitToLocals.put(entry.getKey(), valueList);
+//						}
 						
-						G.v().out.println("lockset for " + tn.name + " is:");
+						G.v().out.println("lockset for " + tn.name + "w/" + unitToUses + " is:");
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						tn.lockSet = la.getLocksetOf(unitToLocals, tn.begin);
+						tn.lockSet = la.getLocksetOf(unitToUses, tn.begin);
 						
 						G.v().out.println("  " + tn.lockSet);
 						
@@ -1306,7 +1333,7 @@ public class TransactionTransformer extends SceneTransformer
 			if(tn.lockSet != null)
 				G.v().out.println("\n[transaction-table] Locks: " + tn.lockSet);
 			else
-				G.v().out.println("\n[transaction-table] Lock : " + (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) ));
+				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
 			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
 		}
 	}
@@ -1317,7 +1344,7 @@ public class TransactionTransformer extends SceneTransformer
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
     			G.v().out.print("Group " + (group + 1) + " ");
-				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (lockObject[group] == null ? "null" : lockObject[group].toString()) );
+				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (optionUseLocksets ? "locksets" : (lockObject[group] == null ? "null" : lockObject[group].toString())) );
 				G.v().out.print("\n[transaction-groups]      : ");
 				Iterator tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())
