@@ -1,7 +1,9 @@
-Improvements in version 2.2.4 (To Come)
+Improvements and API changes in version 2.2.4 (To Come)
 
 1. Soot is now able to infer a main-class if no main-class attribute is given.
-2. Added EXPERIMENTAL transactions/lock allocation code, including
+2. soot.jimple.toolkits.annotation.nullcheck.BranchedRefVarsAnalysis has been deprecated
+   and replaced by soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis.
+3. Added EXPERIMENTAL transactions/lock allocation code, including
 	- may-happen-in-parallel analysis
 	- interprocedural information flow analysis
 	- thread-local objects analysis
