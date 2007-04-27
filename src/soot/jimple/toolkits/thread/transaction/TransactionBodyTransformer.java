@@ -14,22 +14,27 @@ public class TransactionBodyTransformer extends BodyTransformer
 
     public static TransactionBodyTransformer v() { return instance; }
 
-    private FlowSet fs;
-    private int maxLockObjs;
-    private boolean[] useGlobalLock;
+//    private FlowSet fs;
+//    private int maxLockObjs;
+//    private boolean[] useGlobalLock;
     
-    public void setDetails(FlowSet fs, int maxLockObjs, boolean[] useGlobalLock)
-    {
-    	this.fs = fs;
-    	this.maxLockObjs = maxLockObjs;
-    	this.useGlobalLock = useGlobalLock;
-    }
+//    public void setDetails(FlowSet fs, int maxLockObjs, boolean[] useGlobalLock)
+//    {
+//    	this.fs = fs;
+//    	this.maxLockObjs = maxLockObjs;
+//    	this.useGlobalLock = useGlobalLock;
+//    }
     
     public static boolean[] addedGlobalLockObj = null;
     private static boolean addedGlobalLockDefs = false;
 	private static int throwableNum = 0; // doesn't matter if not reinitialized to 0
     
     protected void internalTransform(Body b, String phase, Map opts)
+    {
+    	throw new RuntimeException("Not Supported");
+    }
+    
+    protected void internalTransform(Body b, FlowSet fs, List groups)
 	{
 		// 
 		JimpleBody j = (JimpleBody) b;
@@ -40,10 +45,10 @@ public class TransactionBodyTransformer extends BodyTransformer
 		Unit lastUnit = (Unit) units.getLast();
 		
 		// Objects of synchronization, plus book keeping
-		Local[] lockObj = new Local[maxLockObjs]; 			
-		boolean[] addedLocalLockObj = new boolean[maxLockObjs];
-		SootField[] globalLockObj = new SootField[maxLockObjs];
-		for(int i = 1; i < maxLockObjs; i++)
+		Local[] lockObj = new Local[groups.size()];
+		boolean[] addedLocalLockObj = new boolean[groups.size()];
+		SootField[] globalLockObj = new SootField[groups.size()];
+		for(int i = 1; i < groups.size(); i++)
 		{
 			lockObj[i] = Jimple.v().newLocal("lockObj" + i, RefType.v("java.lang.Object"));
 			addedLocalLockObj[i] = false;
@@ -56,9 +61,11 @@ public class TransactionBodyTransformer extends BodyTransformer
         
         // Add all global lock objects to the main class if not yet added.
         // Get references to them if they do already exist.
-  		for(int i = 1; i < maxLockObjs; i++)
+  		for(int i = 1; i < groups.size(); i++)
    		{
-   			if( useGlobalLock[i - 1] )
+   			TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+// 			if( useGlobalLock[i - 1] )
+			if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
    			{
 	   			if( !addedGlobalLockObj[i] )
 	            {
@@ -113,9 +120,11 @@ public class TransactionBodyTransformer extends BodyTransformer
         	}
         	PatchingChain clinitUnits = clinitBody.getUnits();
         	
-    		for(int i = 1; i < maxLockObjs; i++)
+    		for(int i = 1; i < groups.size(); i++)
     		{
-    			if( useGlobalLock[i - 1] )
+    			TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+//    			if( useGlobalLock[i - 1] )
+				if( !tnGroup.useDynamicLock && !tnGroup.useLocksets )
     			{
 					// add local lock obj
 //	    			addedLocalLockObj[i] = true;
@@ -164,22 +173,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 			if(tn.setNumber == -1)
 				continue; // this tn should be deleted... for now just skip it!
 
+			Local currentLockObject;
+
 			// If this method does not yet have a reference to the lock object
 			// needed for this transaction, then create one.
-			Stmt assignLocalLockStmt = null;
-			if( useGlobalLock[tn.setNumber - 1] )
-			{
-				if(!addedLocalLockObj[tn.setNumber])
-					b.getLocals().add(lockObj[tn.setNumber]);
-				addedLocalLockObj[tn.setNumber] = true;
-				assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
-								Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
-				if(tn.wholeMethod)
-					units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
-				else
-					units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-			}
-			else
+			if( tn.group.useDynamicLock )
 			{
 				if(!addedLocalLockObj[tn.setNumber])
 				{
@@ -188,66 +186,59 @@ public class TransactionBodyTransformer extends BodyTransformer
 				}
 				if(tn.lockObject instanceof Ref)
 				{
-					if(tn.lockObjectArrayIndex != null)
-					{
-						Local temp = Jimple.v().newLocal("lockObjTemp" + tempNum, ((Ref) tn.lockObject).getType());
-						tempNum++;
-						if(!b.getLocals().contains(temp))
-							b.getLocals().add(temp);
-						if(tn.wholeMethod)
-						{
-							units.insertBeforeNoRedirect(
-								Jimple.v().newAssignStmt(
-										temp,
-										tn.lockObject),
-								(Stmt) firstUnit);
-							units.insertBeforeNoRedirect(
-								Jimple.v().newAssignStmt(
-										lockObj[tn.setNumber],
-										Jimple.v().newArrayRef(temp, tn.lockObjectArrayIndex)),
-								(Stmt) firstUnit);
-						}
-						else
-						{
-							units.insertBefore(
-								Jimple.v().newAssignStmt(
-										temp,
-										tn.lockObject),
-								(Stmt) tn.begin);
-							units.insertBefore(
-								Jimple.v().newAssignStmt(
-										lockObj[tn.setNumber],
-										Jimple.v().newArrayRef(temp, tn.lockObjectArrayIndex)),
-								(Stmt) tn.begin);
-						}
-					}
+					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], tn.lockObject);
+					if(tn.wholeMethod)
+						units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
 					else
-					{	
-						assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], tn.lockObject);
-						if(tn.wholeMethod)
-							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
-						else
-							units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-					}
+						units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
+					currentLockObject = lockObj[tn.setNumber];
 				}
+				else if(tn.lockObject instanceof Local)
+					currentLockObject = (Local) tn.lockObject;
+				else
+					throw new RuntimeException("Unknown type of lock (" + tn.lockObject + "): expected Ref or Local");
+			}
+			else if( tn.group.useLocksets )
+			{
+				Value lock = (Value) tn.lockset.get(0);
+				if(!addedLocalLockObj[tn.setNumber])
+				{
+					b.getLocals().add(lockObj[tn.setNumber]);
+					addedLocalLockObj[tn.setNumber] = true;
+				}
+				if(lock instanceof Ref)
+				{
+					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
+					if(tn.wholeMethod)
+						units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
+					else
+						units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
+					currentLockObject = lockObj[tn.setNumber];
+				}
+				else if(lock instanceof Local)
+					currentLockObject = (Local) lock;
+				else
+					throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
+			}
+			else // global lock
+			{
+				if(!addedLocalLockObj[tn.setNumber])
+					b.getLocals().add(lockObj[tn.setNumber]);
+				addedLocalLockObj[tn.setNumber] = true;
+				Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
+								Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
+				if(tn.wholeMethod)
+					units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
+				else
+					units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
+				currentLockObject = lockObj[tn.setNumber];
 			}
 			
 			// Add synchronization code
 			// For transactions from synchronized methods, use synchronizeSingleEntrySingleExitBlock()
 			// to add all necessary code (including ugly exception handling)
 			// For transactions from synchronized blocks, simply replace the
-			// monitorenter/monitorexit statements with new ones
-			
-			Value currentLockObject;				
-			if( useGlobalLock[tn.setNumber - 1] || tn.lockObject instanceof Ref)	
-			{
-				currentLockObject = lockObj[tn.setNumber];
-			}
-			else
-			{
-				currentLockObject = tn.lockObject;
-			}
-
+			// monitorenter/monitorexit statements with new ones			
 			if(tn.wholeMethod)
 			{
 				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
@@ -276,38 +267,39 @@ public class TransactionBodyTransformer extends BodyTransformer
 			
 			// Replace calls to notify() with calls to notifyAll()
 			// Replace base object with appropriate lockobj
-			Iterator notifysIt = tn.notifys.iterator();
-			while(notifysIt.hasNext())
+			if( !tn.group.useLocksets )
 			{
-				Stmt sNotify = (Stmt) notifysIt.next();
-				Stmt newNotify = 
-					Jimple.v().newInvokeStmt(
-           				Jimple.v().newVirtualInvokeExpr(
-       						(Local) currentLockObject,
-       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
-       						Collections.EMPTY_LIST));
-	            units.insertBefore(newNotify, sNotify);
-				redirectTraps(b, sNotify, newNotify);
-				units.remove(sNotify);
-//				units.insertBefore(assignLocalLockStmt.clone(), newNotify);
-			}
+				Iterator notifysIt = tn.notifys.iterator();
+				while(notifysIt.hasNext())
+				{
+					Stmt sNotify = (Stmt) notifysIt.next();
+					Stmt newNotify = 
+						Jimple.v().newInvokeStmt(
+	           				Jimple.v().newVirtualInvokeExpr(
+	       						(Local) currentLockObject,
+	       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
+	       						Collections.EMPTY_LIST));
+		            units.insertBefore(newNotify, sNotify);
+					redirectTraps(b, sNotify, newNotify);
+					units.remove(sNotify);
+				}
 
-			// Replace base object of calls to wait with appropriate lockobj
-			Iterator waitsIt = tn.waits.iterator();
-			while(waitsIt.hasNext())
-			{
-				Stmt sWait = (Stmt) waitsIt.next();
-				((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(currentLockObject); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
-//				Stmt newWait = 
-//					Jimple.v().newInvokeStmt(
-//         				Jimple.v().newVirtualInvokeExpr(
-//       						(Local) currentLockObject,
-//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
-//       						Collections.EMPTY_LIST));
-//	            units.insertBefore(newWait, sWait);
-//				redirectTraps(b, sWait, newWait);
-//				units.remove(sWait);
-//				units.insertBefore(assignLocalLockStmt.clone(), sWait);
+				// Replace base object of calls to wait with appropriate lockobj
+				Iterator waitsIt = tn.waits.iterator();
+				while(waitsIt.hasNext())
+				{
+					Stmt sWait = (Stmt) waitsIt.next();
+					((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(currentLockObject); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
+	//				Stmt newWait = 
+	//					Jimple.v().newInvokeStmt(
+	//         				Jimple.v().newVirtualInvokeExpr(
+	//       						(Local) currentLockObject,
+	//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
+	//       						Collections.EMPTY_LIST));
+	//	            units.insertBefore(newWait, sWait);
+	//				redirectTraps(b, sWait, newWait);
+	//				units.remove(sWait);
+				}
 			}
 		}
 	}

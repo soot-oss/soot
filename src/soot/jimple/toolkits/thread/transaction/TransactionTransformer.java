@@ -307,7 +307,7 @@ public class TransactionTransformer extends SceneTransformer
     	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
     	int nextGroup = 1;
     	List groups = new ArrayList();
-    	groups.add(new Object()); // dummy group
+    	groups.add(new TransactionGroup(0)); // dummy group
     	if(optionOneGlobalLock) // use one group for all transactions
     	{
     		TransactionGroup onlyGroup = new TransactionGroup(nextGroup);
@@ -627,17 +627,15 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Inspect each group's RW dependencies to determine if there's a possibility
 		// of a shared lock object (if all dependencies are fields/localobjs of the same object)
-		boolean mayBeFieldsOfSameObject[] = new boolean[nextGroup - 1];
-		boolean mustBeFieldsOfSameObjectForAllTns[] = new boolean[nextGroup - 1];
 //		boolean mustBeSameArrayElementForAllTns[] = new boolean[nextGroup - 1];
-		Value lockObject[] = new Value[nextGroup - 1];
 		if(optionStaticLocks)
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				mayBeFieldsOfSameObject[group] = false;
-				mustBeFieldsOfSameObjectForAllTns[group] = false;
-				lockObject[group] = null;
+				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+				tnGroup.accessesOnlyOneType = false; // actually, unknown, so not necessary to set it
+				tnGroup.useDynamicLock = false; 
+				tnGroup.lockObject = null;
 			}
 		}
 		else if(optionLeaveOriginalLocks)
@@ -646,9 +644,10 @@ public class TransactionTransformer extends SceneTransformer
 			// initialize all groups to static
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
-				mayBeFieldsOfSameObject[group] = false;
-				mustBeFieldsOfSameObjectForAllTns[group] = false;
-				lockObject[group] = null;
+				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+				tnGroup.accessesOnlyOneType = false; // actually, unknown, so not necessary to set it
+				tnGroup.useDynamicLock = false;
+				tnGroup.lockObject = null;
 			}
 			
 			// for each transaction, check every def of the lock
@@ -678,95 +677,92 @@ public class TransactionTransformer extends SceneTransformer
 							if(((FieldRef) rightOp).getField().isStatic())
 							{
 								// lock may be static
-								lockObject[group] = rightOp;
+								tn.group.lockObject = rightOp;
 							}
 							else
 							{
-								mayBeFieldsOfSameObject[group] = true;
-								mustBeFieldsOfSameObjectForAllTns[group] = true;
-								lockObject[group] = tn.origLock;
+								// this lock must be dynamic
+								tn.group.accessesOnlyOneType = true;
+								tn.group.useDynamicLock = true;
+								tn.group.lockObject = tn.origLock;
 							}
 						}
 						else
 						{
-							mayBeFieldsOfSameObject[group] = true;
-							mustBeFieldsOfSameObjectForAllTns[group] = true;
-							lockObject[group] = tn.origLock;
+							// this lock is probably dynamic (but it's hard to tell for sure)
+							tn.group.accessesOnlyOneType = true;
+							tn.group.useDynamicLock = true;
+							tn.group.lockObject = tn.origLock;
 						}
 					}
 					else
 					{
-						mayBeFieldsOfSameObject[group] = true;
-						mustBeFieldsOfSameObjectForAllTns[group] = true;
-						lockObject[group] = tn.origLock;
+						// this lock is probably dynamic (but it's hard to tell for sure)
+						tn.group.accessesOnlyOneType = true;
+						tn.group.useDynamicLock = true;
+						tn.group.lockObject = tn.origLock;
 					}
 				}
 	    	}
 		}
-//		else if(optionUseLocksets)
-//		{
-//			// initialize all groups to static
-//			for(int group = 0; group < nextGroup - 1; group++)
-//			{
-//				mayBeFieldsOfSameObject[group] = false;
-//				mustBeFieldsOfSameObjectForAllTns[group] = false;
-//				lockObject[group] = null;
-//			}
-//			
-//			
-//		}
+		else if(optionUseLocksets)
+		{
+			for(int group = 0; group < nextGroup - 1; group++)
+			{
+				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+
+				tnGroup.useLocksets = true; // initially, guess that this is true
+
+				// empty groups don't get locks
+				if(rws[group].size() <= 0) // There are no transactions in this group
+				{
+					tnGroup.useLocksets = false;
+					continue;
+				}
+			}
+		}
 		else // Find local locks when possible
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
+				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
+
 				// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
-				mayBeFieldsOfSameObject[group] = true;
-				lockObject[group] = null;
-				TransactionGroup tGroup = (TransactionGroup) groups.get(group);
-				if(optionUseLocksets)
-					tGroup.useLocksets = true; // will be set to false if locksets fail.
-				
+				tnGroup.accessesOnlyOneType = true; // initially, guess that this is true
+				tnGroup.lockObject = null;
+
 				// empty groups don't get locks
 				if(rws[group].size() <= 0) // There are no transactions in this group
 				{
-					mayBeFieldsOfSameObject[group] = false;
-					tGroup.useLocksets = false;
+					tnGroup.accessesOnlyOneType = false;
 					continue;
 				}
 				
-				// groups with globals get a static lock, or a lockset
-				if(rws[group].getGlobals().size() > 0 && !optionUseLocksets) // There is some global field in this group
+				// groups with globals get a static lock
+				if(rws[group].getGlobals().size() > 0) // There is some global field in this group
 				{
-					mayBeFieldsOfSameObject[group] = false;
+					tnGroup.accessesOnlyOneType = false;
 					continue;
 				}
 				
 				// groups with contributing reads/writes from more than one type of object get a static lock, or a lockset
 				Iterator grwsIt1 = rws[group].getFields().iterator();
-				while(grwsIt1.hasNext() && mayBeFieldsOfSameObject[group])
+				while(grwsIt1.hasNext() && tnGroup.accessesOnlyOneType)
 				{
 					Object field1 = (Object) grwsIt1.next();
 					Iterator grwsIt2 = rws[group].getFields().iterator();
-					while(grwsIt2.hasNext() && mayBeFieldsOfSameObject[group])
+					while(grwsIt2.hasNext() && tnGroup.accessesOnlyOneType)
 					{
 						Object field2 = (Object) grwsIt2.next();
-						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)) && !optionUseLocksets)
+						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
 						{
-							mayBeFieldsOfSameObject[group] = false;
+							// These two accessed fields are from two disjoint sets of objects
+							tnGroup.accessesOnlyOneType = false;
 						}
 					}
 				}
 
-				if(rws[group].size() > 0 && mayBeFieldsOfSameObject[group])
-				{
-					mustBeFieldsOfSameObjectForAllTns[group] = true; // might be true
-	//				mustBeSameArrayElementForAllTns[group] = true;
-				}
-				else
-				{
-					mustBeFieldsOfSameObjectForAllTns[group] = false; // can't be true
-	//				mustBeSameArrayElementForAllTns[group] = true;
-				}
+				tnGroup.useDynamicLock = tnGroup.accessesOnlyOneType; // attempt to use a dynamic lock if we access only one type
 			}
 		}
 		
@@ -783,7 +779,7 @@ public class TransactionTransformer extends SceneTransformer
 				if(group < 0)
 					continue;
 						
-				if(mustBeFieldsOfSameObjectForAllTns[group]) // if still might be true, then inspect for this Transaction
+				if(tn.group.useDynamicLock || tn.group.useLocksets) // if attempting to use a dynamic lock or locksets
 				{
 					// Get a list of contributing reads/writes: 
 					// units that read/write to any of the dependences.
@@ -896,8 +892,10 @@ public class TransactionTransformer extends SceneTransformer
 							{
 								if(!optionUseLocksets)
 								{
-									mustBeFieldsOfSameObjectForAllTns[group] = false;
-									lockObject[group] = null;
+									tn.group.useDynamicLock = false; // failed to use a dynamic lock
+//									mustBeFieldsOfSameObjectForAllTns[group] = false;
+									tn.group.lockObject = null;
+//									lockObject[group] = null;
 								}
 								break; // move on to next transaction
 							}
@@ -920,16 +918,7 @@ public class TransactionTransformer extends SceneTransformer
 					UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
 
 					if(optionUseLocksets) // multiple locks per region
-					{
-//						Map unitToLocals = new HashMap();
-//						for(Iterator utlIt = unitToLocal.entrySet().iterator(); utlIt.hasNext(); )
-//						{
-//							Map.Entry entry = (Map.Entry) utlIt.next();
-//							List valueList = new ArrayList();
-//							valueList.add(entry.getValue());
-//							unitToLocals.put(entry.getKey(), valueList);
-//						}
-						
+					{						
 						G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
@@ -979,27 +968,27 @@ public class TransactionTransformer extends SceneTransformer
 											(na.isAlwaysNonNullBefore(tn.begin, (Local) v) ||
 											 naa.isAssumedNonNullBefore(tn.begin, (Local) v))) )
 									{
-										if(lockObject[group] == null || v instanceof Ref)
-											lockObject[group] = v;
+										if(tn.group.lockObject == null || v instanceof Ref)
+											tn.group.lockObject = v;
 										if( tn.lockObject == null || v instanceof Ref )
 											tn.lockObject = v;
 									}
 									else
 									{
-		//								G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
+//										G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
 									}
 								}
 								else
 								{
-		//							G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
+//									G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
 								}
 							}
 							
 							if(tn.lockObject == null)
 							{
-		//						G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
-								mustBeFieldsOfSameObjectForAllTns[group] = false;
-								lockObject[group] = null;
+//								G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
+								tn.group.useDynamicLock = false; // failed to use a dynamic lock
+								tn.group.lockObject = null;
 								continue; // move on to next transaction
 							}
 							
@@ -1045,15 +1034,15 @@ public class TransactionTransformer extends SceneTransformer
 						}
 						else
 						{
-		//					G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
-							mustBeFieldsOfSameObjectForAllTns[group] = false;
-							lockObject[group] = null;
+//							G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
+							tn.group.useDynamicLock = false; // failed to use a dynamic lock
+							tn.group.lockObject = null;
 						}
 					}
 				}
 				else
 				{
-	//				G.v().out.println("No value was found for a lock object in " + tn.name + " (transactions in group access multiple objects of different types)");
+//					G.v().out.println("No value was found for a lock object in " + tn.name + " (transactions in group access multiple objects of different types)");
 				}
 			}
 		}
@@ -1066,14 +1055,14 @@ public class TransactionTransformer extends SceneTransformer
 		// Print topological graph in graphviz format
 		if(optionPrintGraph)
 		{
-			printGraph(AllTransactions, mustBeFieldsOfSameObjectForAllTns, lockObject);
+			printGraph(AllTransactions, groups);
 		}
 
 		// Print table of transaction information
 		if(optionPrintTable)
 		{
 			printTable(AllTransactions);			
-			printGroups(AllTransactions, nextGroup, mayBeFieldsOfSameObject, mustBeFieldsOfSameObjectForAllTns, lockObject, rws);
+			printGroups(AllTransactions, nextGroup, groups, rws);
 		}
 
     	// For all methods, run the transformer (Pessimistic Transaction Tranformation)
@@ -1085,8 +1074,9 @@ public class TransactionTransformer extends SceneTransformer
 			boolean useGlobalLock[] = new boolean[nextGroup - 1];
 			for(int i = 1; i < nextGroup; i++)
 			{
-				TransactionBodyTransformer.addedGlobalLockObj[i] = (!optionOneGlobalLock) && mustBeFieldsOfSameObjectForAllTns[i - 1];
-				useGlobalLock[i - 1] = !mustBeFieldsOfSameObjectForAllTns[i - 1];
+				TransactionGroup tnGroup = (TransactionGroup) groups.get(i);
+				TransactionBodyTransformer.addedGlobalLockObj[i] = (!optionOneGlobalLock) && (tnGroup.useDynamicLock || tnGroup.useLocksets);
+				useGlobalLock[i - 1] = !tnGroup.useDynamicLock && !tnGroup.useLocksets;
 			}
 			// END UGLINESS
 			
@@ -1106,8 +1096,8 @@ public class TransactionTransformer extends SceneTransformer
 	    	    	
 	    	    		if(fs != null) // any new method that is added after the transaction analysis will have a null
 	    	    		{
-		   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
-		   	    			TransactionBodyTransformer.v().internalTransform(b,phaseName, options); 
+//		   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
+		   	    			TransactionBodyTransformer.v().internalTransform(b, fs, groups); 
 		   	    		}
 					}
 	    	    }
@@ -1189,11 +1179,11 @@ public class TransactionTransformer extends SceneTransformer
     	}
 	}	
 
-	public void printGraph(Collection AllTransactions, boolean localLock[], Value lockObject[])
+	public void printGraph(Collection AllTransactions, List groups)
 	{
 		G.v().out.println("[transaction-graph] strict graph transactions {\n[transaction-graph] start=1;");
 
-		for(int group = 0; group < localLock.length; group++)
+		for(int group = 0; group < groups.size(); group++)
 		{
 			boolean printedHeading = false;
 			Iterator tnIt = AllTransactions.iterator();
@@ -1204,29 +1194,38 @@ public class TransactionTransformer extends SceneTransformer
 				{
 					if(!printedHeading)
 					{
-						if(localLock[group] && lockObject[group] != null)
+//						if(localLock[group] && lockObject[group] != null)
+						if(tn.group.useDynamicLock && tn.group.lockObject != null)
 						{
 							String typeString = "";
-							if(lockObject[group].getType() instanceof RefType)
-								typeString = ((RefType) lockObject[group].getType()).getSootClass().getShortName();
+//							if(lockObject[group].getType() instanceof RefType)
+//								typeString = ((RefType) lockObject[group].getType()).getSootClass().getShortName();
+//							else
+//								typeString = lockObject[group].getType().toString();
+							if(tn.group.lockObject.getType() instanceof RefType)
+								typeString = ((RefType) tn.group.lockObject.getType()).getSootClass().getShortName();
 							else
-								typeString = lockObject[group].getType().toString();
+								typeString = tn.group.lockObject.getType().toString();
 							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: a \\n" + typeString + " object\";");
 						}
 						else
 						{
 							String objString = "";
-							if(lockObject[group] == null)
+//							if(lockObject[group] == null)
+							if(tn.group.lockObject == null)
 							{
 								objString = "lockObj" + (group + 1);
 							}
-							else if(lockObject[group] instanceof FieldRef)
+//							else if(lockObject[group] instanceof FieldRef)
+							else if(tn.group.lockObject instanceof FieldRef)
 							{
-								SootField field = ((FieldRef) lockObject[group]).getField();
+//								SootField field = ((FieldRef) lockObject[group]).getField();
+								SootField field = ((FieldRef) tn.group.lockObject).getField();
 								objString = field.getDeclaringClass().getShortName() + "." + field.getName();
 							}
 							else
-								objString = lockObject[group].toString();
+								objString = tn.group.lockObject.toString();
+//								objString = lockObject[group].toString();
 							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: \\n" + objString + "\";");
 						}
 						printedHeading = true;
@@ -1242,7 +1241,7 @@ public class TransactionTransformer extends SceneTransformer
 						TransactionDataDependency edge = (TransactionDataDependency) tnedgeit.next();
 						Transaction tnedge = edge.other;
 						if(tnedge.setNumber == group + 1)
-							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && localLock[tn.setNumber - 1] ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
+							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
 					}
 				}
 				
@@ -1270,7 +1269,7 @@ public class TransactionTransformer extends SceneTransformer
 						TransactionDataDependency edge = (TransactionDataDependency) tnedgeit.next();
 						Transaction tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
-							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && localLock[tn.setNumber - 1] ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
+							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + "];");
 					}
 				}
 			}
@@ -1317,13 +1316,14 @@ public class TransactionTransformer extends SceneTransformer
 		}
 	}
 	
-	public void printGroups(Collection AllTransactions, int nextGroup, boolean mayBeFieldsOfSameObject[], boolean mustBeFieldsOfSameObjectForAllTns[], Value lockObject[], RWSet rws[])
+	public void printGroups(Collection AllTransactions, int nextGroup, List groups, RWSet rws[])
 	{
 			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < nextGroup - 1; group++)
     		{
+    			TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
     			G.v().out.print("Group " + (group + 1) + " ");
-				G.v().out.print("Locking: " + (mayBeFieldsOfSameObject[group] && mustBeFieldsOfSameObjectForAllTns[group] ? "Dynamic" : "Static") + " on " + (optionUseLocksets ? "locksets" : (lockObject[group] == null ? "null" : lockObject[group].toString())) );
+				G.v().out.print("Locking: " + (tnGroup.accessesOnlyOneType && tnGroup.useDynamicLock ? "Dynamic" : "Static") + " on " + (optionUseLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
 				G.v().out.print("\n[transaction-groups]      : ");
 				Iterator tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())
@@ -1332,8 +1332,6 @@ public class TransactionTransformer extends SceneTransformer
 					if(tn.setNumber == group + 1)
 						G.v().out.print(tn.name + " ");
 				}
-//								" mayBeFieldsOfSameObject=" + mayBeFieldsOfSameObject[group] +
-//								" mustBeFieldsOfSameObjectForAllTns=" + mustBeFieldsOfSameObjectForAllTns[group] + 
 				G.v().out.print("\n[transaction-groups] " + 
     							rws[group].toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-groups] ") + 
 								(rws[group].size() == 0 ? "\n[transaction-groups] " : ""));

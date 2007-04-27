@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.thread.transaction;
 
 import java.util.*;
+import soot.*;
 
 class TransactionGroup
 {
@@ -10,14 +11,19 @@ class TransactionGroup
 	List transactions;
 
 	// Information about the selected lock(s)
-//	boolean useDynamicLock;
-	boolean useLocksets;
+	public boolean accessesOnlyOneType; // one dynamic lock per tn is only possible if this is true
+	public boolean useDynamicLock; // use one dynamic lock per tn
+	public Value lockObject; // this is one of the dynamic locks
+	public boolean useLocksets;
 	
 	public TransactionGroup(int groupNum)
 	{
 		this.groupNum = groupNum;
 		this.transactions = new ArrayList();
-//		this.useDynamicLock = false;
+		
+		this.accessesOnlyOneType = false;
+		this.useDynamicLock = false;
+		this.lockObject = null;
 		this.useLocksets = false;
 	}
 	
