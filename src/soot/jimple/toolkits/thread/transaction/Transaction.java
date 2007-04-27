@@ -32,6 +32,7 @@ class Transaction
 	// Information for analyzing conflicts with other transactions
 	public SootMethod method;
 	public int setNumber; // used for breaking the list of transactions into sets
+	public TransactionGroup group;
 	public HashSet edges;
 	public HashSet waits;
 	public HashSet notifys;
@@ -73,6 +74,7 @@ class Transaction
 		this.wholeMethod = wholeMethod;
 		this.method = method;
 		this.setNumber = 0; // 0 = no group, -1 = DELETE
+		this.group = null;
 		this.edges = new HashSet();
 		this.waits = new HashSet();
 		this.notifys = new HashSet();
@@ -99,6 +101,7 @@ class Transaction
 		this.wholeMethod = tn.wholeMethod;
 		this.method = tn.method;
 		this.setNumber = tn.setNumber;
+		this.group = tn.group;
 		this.edges = (HashSet) tn.edges.clone();
 		this.waits = (HashSet) tn.waits.clone();
 		this.notifys = (HashSet) tn.notifys.clone();

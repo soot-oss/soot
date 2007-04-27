@@ -43,6 +43,9 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 
 		doAnalysis();
 		
+		if(lostObjects)
+			return null;
+		
 		HashMap results = (HashMap) getFlowAfter(begin);
 		List lockset = new ArrayList();
 		
@@ -52,11 +55,6 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		return lockset;
 	}
 	
-	public boolean lostObjects()
-	{
-		return lostObjects;
-	}
-
 	protected void merge(Object in1, Object in2, Object out)
 	{
 		Map inMap1 = (Map) in1;

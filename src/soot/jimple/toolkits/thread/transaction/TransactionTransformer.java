@@ -439,7 +439,7 @@ public class TransactionTransformer extends SceneTransformer
 		    				
 		    				// Record this 
 		    				tn1.edges.add(new TransactionDataDependency(tn2, size, rw));
-	//	    				tn2.edges.add(new TransactionDataDependency(tn1, size, rw)); // will be added in opposite direction later
+	                        // Don't add opposite... all n^2 pairs will be visited separately
 		    				
 		    				if(size > 0)
 		    				{
@@ -449,31 +449,14 @@ public class TransactionTransformer extends SceneTransformer
 			    					// if tn2 is NOT already in a group
 			    					if(tn2.setNumber == 0)
 			    					{
-			    						TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
-			    						tn1Group.add(tn2);
-//			    						tn2.setNumber = tn1.setNumber;
+			    						tn1.group.add(tn2);
 			    					}
 			    					// if tn2 is already in a group
 			    					else if(tn2.setNumber > 0)
 			    					{
 			    						if(tn1.setNumber != tn2.setNumber) // if they are equal, then they are already in the same group!
 			    						{
-			    							TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
-			    							TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
-			    							tn1Group.mergeGroups(tn2Group);
-/*
-					    					int setToDelete = tn2.setNumber;
-					    					int setToExpand = tn1.setNumber;
-						    	        	Iterator tnIt3 = AllTransactions.iterator();
-						    	    		while(tnIt3.hasNext())
-						    	    		{
-						    	    			Transaction tn3 = (Transaction) tnIt3.next();
-						    	    			if(tn3.setNumber == setToDelete)
-						    	    			{
-						    	    				tn3.setNumber = setToExpand;
-						    	    			}
-						    	    		}
-*/
+			    							tn1.group.mergeGroups(tn2.group);
 						    	    	}
 			    					}
 			    				}
@@ -487,15 +470,12 @@ public class TransactionTransformer extends SceneTransformer
 										newGroup.add(tn1);
 										newGroup.add(tn2);
 										groups.add(newGroup);
-//				    					tn1.setNumber = tn2.setNumber = nextGroup;
 				    					nextGroup++;
 				    				}
 			    					// if tn2 is already in a group
 			    					else if(tn2.setNumber > 0)
 			    					{
-			    						TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
-			    						tn2Group.add(tn1);
-//			    						tn1.setNumber = tn2.setNumber;
+			    						tn2.group.add(tn1);
 			    					}
 			    				}
 			    			}
@@ -504,15 +484,7 @@ public class TransactionTransformer extends SceneTransformer
 		    		// If, after comparing to all other transactions, we have no group:
 		    		if(tn1.setNumber == 0)
 		    		{
-	//	    			if(mayHappenInParallel(tn1, tn1)) // we compare to ourselves already
-	//	    			{
-	//	    				tn1.setNumber = nextGroup;
-	//	    				nextGroup++;
-	//	    			}
-	//	    			else
-	//	    			{
-		    				tn1.setNumber = -1; // delete transactional region
-	//	    			}
+	    				tn1.setNumber = -1; // delete transactional region
 		    		}	    			
 	    		}
 	    	}
@@ -541,9 +513,9 @@ public class TransactionTransformer extends SceneTransformer
 	    			continue;
 	    			
 	    		// add a node for this set
-	    		if( !lockOrder.containsNode(groups.get(tn1.setNumber)) )
+	    		if( !lockOrder.containsNode(tn1.group) )
 	    		{
-	    			lockOrder.addNode(groups.get(tn1.setNumber));
+	    			lockOrder.addNode(tn1.group);
 	    		}
 	    			
 	    		// Get list of tn1's target methods
@@ -571,9 +543,9 @@ public class TransactionTransformer extends SceneTransformer
 	    				continue;
 	    				
 	    			// add a node for this set
-		    		if( !lockOrder.containsNode(groups.get(tn2.setNumber)) )
+		    		if( !lockOrder.containsNode(tn2.group) )
 		    		{
-		    			lockOrder.addNode(groups.get(tn2.setNumber));
+		    			lockOrder.addNode(tn2.group);
 		    		}	
 		    			
 		    		if( tn1.transitiveTargets.contains(tn2.method) && !foundDeadlock )
@@ -587,11 +559,11 @@ public class TransactionTransformer extends SceneTransformer
 		    			
 		    			// Check if tn2lock before tn1lock is in our lock order
 		    			List afterTn2 = new ArrayList();
-		    			afterTn2.addAll( lockOrder.getSuccsOf(groups.get(tn2.setNumber)) );
+		    			afterTn2.addAll( lockOrder.getSuccsOf(tn2.group) );
 		    			for( int i = 0; i < afterTn2.size(); i++ )
 		    				afterTn2.addAll( lockOrder.getSuccsOf(afterTn2.get(i)) );
 		    				
-		    			if( afterTn2.contains(groups.get(tn1.setNumber)) )
+		    			if( afterTn2.contains(tn1.group) )
 		    			{
 		    				if(!optionAvoidDeadlock)
 		    				{
@@ -604,28 +576,26 @@ public class TransactionTransformer extends SceneTransformer
 			    					(tn1.setNumber) + " and group" + (tn2.setNumber) +
 			    					" and restarting deadlock detection");
     					
-								TransactionGroup tn1Group = (TransactionGroup) groups.get(tn1.setNumber);
-								TransactionGroup tn2Group = (TransactionGroup) groups.get(tn2.setNumber);
 								if(optionPrintDebug)
 								{
 									G.v().out.println("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
-									G.v().out.println("tn1Group.size was " + tn1Group.transactions.size() +
-										" and tn2Group.size was " + tn2Group.transactions.size());
-									G.v().out.println("tn1Group.num was  " + tn1Group.num() + " and tn2Group.num was  " + tn2Group.num());
+									G.v().out.println("tn1.group.size was " + tn1.group.transactions.size() +
+										" and tn2.group.size was " + tn2.group.transactions.size());
+									G.v().out.println("tn1.group.num was  " + tn1.group.num() + " and tn2.group.num was  " + tn2.group.num());
 								}
-								tn1Group.mergeGroups(tn2Group);
+								tn1.group.mergeGroups(tn2.group);
 								if(optionPrintDebug)
 								{
 									G.v().out.println("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
-									G.v().out.println("tn1Group.size is  " + tn1Group.transactions.size() +
-										" and tn2Group.size is  " + tn2Group.transactions.size());
+									G.v().out.println("tn1.group.size is  " + tn1.group.transactions.size() +
+										" and tn2.group.size is  " + tn2.group.transactions.size());
 								}
 								
 								foundDeadlock = true;
 			    			}
 		    			}
 		    			
-		    			lockOrder.addEdge(groups.get(tn1.setNumber), groups.get(tn2.setNumber));
+		    			lockOrder.addEdge(tn1.group, tn2.group);
 		    		}
 	    		}
 	    	}
@@ -752,11 +722,15 @@ public class TransactionTransformer extends SceneTransformer
 				// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
 				mayBeFieldsOfSameObject[group] = true;
 				lockObject[group] = null;
+				TransactionGroup tGroup = (TransactionGroup) groups.get(group);
+				if(optionUseLocksets)
+					tGroup.useLocksets = true; // will be set to false if locksets fail.
 				
 				// empty groups don't get locks
 				if(rws[group].size() <= 0) // There are no transactions in this group
 				{
 					mayBeFieldsOfSameObject[group] = false;
+					tGroup.useLocksets = false;
 					continue;
 				}
 				
@@ -960,10 +934,11 @@ public class TransactionTransformer extends SceneTransformer
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 						tn.lockset = la.getLocksetOf(unitToUses, tn.begin);
-						if(la.lostObjects())
-							G.v().out.println("  FAILURE: " + tn.lockset);
-						else
-							G.v().out.println("  " + tn.lockset);
+						
+						if(tn.lockset == null)
+							tn.group.useLocksets = false;
+							
+						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
 						
 //						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
 					}
@@ -1028,7 +1003,8 @@ public class TransactionTransformer extends SceneTransformer
 								continue; // move on to next transaction
 							}
 							
-							if(false) // allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
+/*
+							if( allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
 															   // null elements in the array.  You cannot lock a null object.
 															   // We need a won't-introduce-a-new-null-object-error analysis!
 							{
@@ -1065,6 +1041,7 @@ public class TransactionTransformer extends SceneTransformer
 									G.v().out.println("array index ancestor is: " + tn.lockObjectArrayIndex);
 								}
 							}
+*/
 						}
 						else
 						{
@@ -1086,7 +1063,7 @@ public class TransactionTransformer extends SceneTransformer
 		// *** Print Output and Transform Program ***
     	G.v().out.println("[wjtp.tn] *** Print Output and Transform Program *** " + (new Date()));
 
-		// Print topological graph in format of graphviz package
+		// Print topological graph in graphviz format
 		if(optionPrintGraph)
 		{
 			printGraph(AllTransactions, mustBeFieldsOfSameObjectForAllTns, lockObject);

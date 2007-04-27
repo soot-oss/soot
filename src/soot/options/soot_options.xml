@@ -2952,7 +2952,7 @@ both optimistic and pessimistic JVMs.
 						<set_arg_label>granularity</set_arg_label>
 						<short_desc>Selects the granularity of the generated lock allocation</short_desc>
 						<long_desc>Selects the granularity of the generated lock allocation</long_desc>
-						<value>
+<!--						<value>
 							<name>Fine Grained</name>
 							<alias>fine-grained</alias>
 							<short_desc>Use multiple runtime objects for synchronization</short_desc>
@@ -2961,7 +2961,7 @@ Try to identify transactional regions that can employ fine-grained locking to
 increase parallelism.  All side effects must be protected by a single object.
 This locking scheme aims to achieve simple fine-grained locking. 
 </long_desc>
-						</value>
+						</value> -->
 						<value>
 							<name>Medium Grained</name>
 							<alias>medium-grained</alias>

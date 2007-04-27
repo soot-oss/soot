@@ -10,13 +10,15 @@ class TransactionGroup
 	List transactions;
 
 	// Information about the selected lock(s)
-//	boolean staticLock;
+//	boolean useDynamicLock;
+	boolean useLocksets;
 	
 	public TransactionGroup(int groupNum)
 	{
 		this.groupNum = groupNum;
 		this.transactions = new ArrayList();
-//		this.staticLock = true;
+//		this.useDynamicLock = false;
+		this.useLocksets = false;
 	}
 	
 	public int num()
@@ -27,6 +29,7 @@ class TransactionGroup
 	public void add(Transaction tn)
 	{
 		tn.setNumber = groupNum;
+		tn.group = this;
 		if(!transactions.contains(tn))
 			transactions.add(tn);
 	}
@@ -50,9 +53,10 @@ class TransactionGroup
 		while(tnIt.hasNext())
 		{
 			Transaction tn = (Transaction) tnIt.next();
-			tn.setNumber = groupNum;
-			this.transactions.add(tn);
-//			other.transactions.remove(tn);
+			add(tn);
+//			tn.setNumber = groupNum;
+//			tn.group = this;
+//			this.transactions.add(tn);
 		}
 		other.transactions.clear();
 	}
