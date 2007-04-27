@@ -917,10 +917,10 @@ public class ThrowableSetTest extends TestCase {
 		Arrays.asList(new RefLikeType[] 
 		    {AnySubType.v(util.ERROR)}));
 	Set expectedUncaughtExcluded = expectedCaughtIncluded;
-	assertTrue(util.sameMembers(expectedCaughtIncluded, 
+	assertTrue(ExceptionTestUtility.sameMembers(expectedCaughtIncluded, 
 				    expectedCaughtExcluded,
 				   catchableAs.getCaught()));
-	assertTrue(util.sameMembers(expectedUncaughtIncluded, 
+	assertTrue(ExceptionTestUtility.sameMembers(expectedUncaughtIncluded, 
 				    expectedUncaughtExcluded,
 				    catchableAs.getUncaught()));
 	assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
@@ -1020,10 +1020,10 @@ public class ThrowableSetTest extends TestCase {
 		Arrays.asList(new RefLikeType[] 
 		    {AnySubType.v(util.ERROR)}));
 	expectedUncaughtExcluded = expectedCaughtIncluded;
-	assertTrue(util.sameMembers(expectedCaughtIncluded, 
+	assertTrue(ExceptionTestUtility.sameMembers(expectedCaughtIncluded, 
 				    expectedCaughtExcluded,
 				    catchableAs.getCaught()));
-	assertTrue(util.sameMembers(expectedUncaughtIncluded, 
+	assertTrue(ExceptionTestUtility.sameMembers(expectedUncaughtIncluded, 
 				    expectedUncaughtExcluded,
 				    catchableAs.getUncaught()));
 	assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
@@ -1407,6 +1407,11 @@ public class ThrowableSetTest extends TestCase {
 	TestSuite suite = new TestSuite(ThrowableSetTest.class);
 	TestSetup setup = new ThrowableSetTestSetup(suite);
 	return setup;
+    }
+    
+    public static Test suite() {
+    	Scene.v().loadBasicClasses();
+    	return reflectionSuite();
     }
 
     public static void main(String arg[]) {
