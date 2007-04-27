@@ -1,22 +1,23 @@
 Dear Soot Users,
 
-We are pleased to announce that Soot version 2.2.3 is now available at:
+We are pleased to announce that Soot version 2.2.4 is now available at:
 http://www.sable.mcgill.ca/soot/
 
 This release contains:
 
 1. Dava:
-    - Handling invocation of parent constructor and other constructors within
-    a constructor
-    - DeInlining final static fields.
-    - Ensuring initialization of all final fields
-    - Using copy propagation to remove un-necessary copy stmts
-    
-2. many bug fixes and improvements for Dava
+   - general improvements in source code quality
+   - many bug fixes
+ 
+2. Added *experimental* transactions/lock allocation code, including
+        - may-happen-in-parallel analysis
+        - interprocedural information flow analysis
+        - thread-local objects analysis
+        - thread-based side effect analysis
 
-3. many bug fixes and improvements for Java To Jimple 
+3. several bugfixes in Soot in general
 
-As of version 2.2.0 the Soot bugzilla is avaiable at:
+As of version 2.2.0 the Soot bugzilla is available at:
 http://svn.sable.mcgill.ca/bugzilla/. We encourage you to add any Soot
 bugs there.
 
@@ -27,6 +28,6 @@ like to know what's going on look there.
 
 Regards,
 
-Jennifer Lhotak 
+Eric Bodden
 Sable Research Group, McGill University
                                                                                                                
