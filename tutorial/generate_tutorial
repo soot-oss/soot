@@ -12,8 +12,10 @@ function process_file
 	dvips -o $1.ps $1
 	latex2html $1 -split 0 -nonavigation -dir ./
 	rm -f $1.aux
-	pdflatex $1
-	pdflatex $1
+	latex $1
+	latex $1
+        dvips $1
+        ps2pdf $1.ps
 }
 
 if [ $# == 0 ] ; then
