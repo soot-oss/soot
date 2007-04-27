@@ -1776,7 +1776,7 @@ an algorithm based on the merge step from merge sort.
 								<alias>heintze</alias>
 								<short_desc>Heintze's shared bit-vector and overflow list representation</short_desc>
 								<long_desc>Heintze's representation has elements represented by a bit-vector + a small
-									"overflow" list of some maximum number of elements.  The bit-vectors can be shared
+									'overflow' list of some maximum number of elements.  The bit-vectors can be shared
 									by multiple points-to sets, while the overflow lists are not.
 								</long_desc>
 							</value>
