@@ -12117,7 +12117,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									"overflow" list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -12171,7 +12171,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									"overflow" list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -13155,7 +13155,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									"overflow" list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -13209,7 +13209,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									"overflow" list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
@@ -13257,7 +13257,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									"overflow" list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
 		
 		false),
 		
