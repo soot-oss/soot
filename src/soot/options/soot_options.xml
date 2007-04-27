@@ -5023,7 +5023,7 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 				<boolopt>
 					<name>Source</name>
 
-					<alias>source\_is\_javac</alias>
+					<alias>source-is-javac</alias>
                     <default>true</default>
 					<short_desc/>
 					<long_desc>
