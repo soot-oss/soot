@@ -1,9 +1,10 @@
 \documentclass{article}
 
 \usepackage{fullpage}
-\usepackage{html}
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{hyperref}
 \usepackage{fancyvrb}
-\usepackage{pst-node}
 
 
 \begin{document}
@@ -72,23 +73,25 @@ Phase Options document.
 The figure below gives an overview of the relative precision of the 
 variations, with precision increasing from bottom to top.
 
-\begin{figure}[htbp]
-\centering
-\newcommand{\variation}[2]{\Rnode{#1}{{\sf #1}}}
-\newcommand{\varar}[2]{\ncline{->}{#1}{#2}}
-\begin{psmatrix}[colsep=.5,rowsep=.1]
-&\variation{otf-fs}{abcde}\\
-\variation{otf-fb}{abcd}&&\variation{aot-fs}{abce}\\
-&\variation{aot-fb}{abc}\\
-&\variation{CHA}{ab}\\
-&\variation{none}{a}\\
-\varar{none}{CHA}
-\varar{CHA}{aot-fb}
-\varar{aot-fb}{otf-fb}
-\varar{aot-fb}{aot-fs}
-\varar{otf-fb}{otf-fs}
-\varar{aot-fs}{otf-fs}
-\end{psmatrix}
+\begin{figure}[htb]
+  \begin{center}
+    \begin{tikzpicture}
+      \node (otffs) at (0, 0) {otf-fs};
+      \node (otffb) at (-1, -1) {otf-fb};
+      \node (aotfs) at (1, -1) {aot-fs};
+      \node (aotfb) at (0, -2) {aot-fb};
+      \node (cha) at (0, -3) {CHA};
+      \node (none) at (0, -4) {none};
+
+      \draw[->] (none)  -- (cha) {};
+      \draw[->] (cha)   -- (aotfb) {};
+      \draw[->] (aotfb) -- (otffb) {};
+      \draw[->] (aotfb) -- (aotfs) {};
+      \draw[->] (otffb) -- (otffs) {};
+      \draw[->] (aotfs) -- (otffs) {};
+    \end{tikzpicture}
+  \end{center}
+
 \caption{Relative Precision of Analysis Variations\label{FIG:LATTICE}}
 \end{figure}
 
