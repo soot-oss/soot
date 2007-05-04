@@ -28,7 +28,6 @@ import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
-import soot.dava.internal.AST.*;
 
 public class SynchronizedBlockFinder implements FactFinder
 {
@@ -160,7 +159,13 @@ public class SynchronizedBlockFinder implements FactFinder
 			}
 		    }
 		    if(!done)
-			throw new RuntimeException("Could not verify approximated Synchronized body");
+			throw new RuntimeException("Could not verify approximated Synchronized body!\n" +
+					"Method:\n" +
+					body.getMethod() +
+					"Body:\n" +
+					"===============================================================\n" +
+					body.getUnits() +
+					"===============================================================\n");
 		}//non null synch set for this enter monitor stmt
 	    }//if the augmented stmt was a enter monitor stmt
 	    previousStmt=as;
@@ -677,8 +682,6 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	    //tempas contains the last augmentedStmt
 	    if(tempas!=null){
-		Stmt temps = tempas.get_Stmt();
-		//System.out.println("last stmt in try body:"+((Unit)temps).toString());
 		
 		//retrieving successors
 		Iterator sit = tempas.bsuccs.iterator();

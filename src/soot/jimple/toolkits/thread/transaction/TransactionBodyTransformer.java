@@ -174,132 +174,148 @@ public class TransactionBodyTransformer extends BodyTransformer
 				continue; // this tn should be deleted... for now just skip it!
 
 			Local currentLockObject;
-
-			// If this method does not yet have a reference to the lock object
-			// needed for this transaction, then create one.
-			if( tn.group.useDynamicLock )
+			boolean moreLocks = true;
+			int lockNum = 0;			
+			while(moreLocks)
 			{
-				if(!addedLocalLockObj[tn.setNumber])
+				// If this method does not yet have a reference to the lock object
+				// needed for this transaction, then create one.
+				if( tn.group.useDynamicLock )
 				{
-					b.getLocals().add(lockObj[tn.setNumber]);
-					addedLocalLockObj[tn.setNumber] = true;
+					if(!addedLocalLockObj[tn.setNumber])
+					{
+						b.getLocals().add(lockObj[tn.setNumber]);
+						addedLocalLockObj[tn.setNumber] = true;
+					}
+					if(tn.lockObject instanceof Ref)
+					{
+						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], tn.lockObject);
+						if(tn.wholeMethod)
+							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
+						else
+							units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
+						currentLockObject = lockObj[tn.setNumber];
+					}
+					else if(tn.lockObject instanceof Local)
+						currentLockObject = (Local) tn.lockObject;
+					else
+						throw new RuntimeException("Unknown type of lock (" + tn.lockObject + "): expected Ref or Local");
+					moreLocks = false;
 				}
-				if(tn.lockObject instanceof Ref)
+				else if( tn.group.useLocksets )
 				{
-					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], tn.lockObject);
+					Value lock = (Value) tn.lockset.get(lockNum);
+					if(!addedLocalLockObj[tn.setNumber])
+					{
+						b.getLocals().add(lockObj[tn.setNumber]);
+						addedLocalLockObj[tn.setNumber] = true;
+					}
+					if(lock instanceof Ref)
+					{
+						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
+						if(tn.wholeMethod)
+							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
+						else
+							units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
+						currentLockObject = lockObj[tn.setNumber];
+					}
+					else if(lock instanceof Local)
+						currentLockObject = (Local) lock;
+					else
+						throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
+					if(lockNum + 1 >= tn.lockset.size())
+						moreLocks = false;
+					else
+						moreLocks = true;
+				}
+				else // global lock
+				{
+					if(!addedLocalLockObj[tn.setNumber])
+						b.getLocals().add(lockObj[tn.setNumber]);
+					addedLocalLockObj[tn.setNumber] = true;
+					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
+									Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
 					if(tn.wholeMethod)
-						units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
+						units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
 					else
 						units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
 					currentLockObject = lockObj[tn.setNumber];
+					moreLocks = false;
 				}
-				else if(tn.lockObject instanceof Local)
-					currentLockObject = (Local) tn.lockObject;
-				else
-					throw new RuntimeException("Unknown type of lock (" + tn.lockObject + "): expected Ref or Local");
-			}
-			else if( tn.group.useLocksets )
-			{
-				Value lock = (Value) tn.lockset.get(0);
-				if(!addedLocalLockObj[tn.setNumber])
-				{
-					b.getLocals().add(lockObj[tn.setNumber]);
-					addedLocalLockObj[tn.setNumber] = true;
-				}
-				if(lock instanceof Ref)
-				{
-					Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
-					if(tn.wholeMethod)
-						units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
-					else
-						units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-					currentLockObject = lockObj[tn.setNumber];
-				}
-				else if(lock instanceof Local)
-					currentLockObject = (Local) lock;
-				else
-					throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
-			}
-			else // global lock
-			{
-				if(!addedLocalLockObj[tn.setNumber])
-					b.getLocals().add(lockObj[tn.setNumber]);
-				addedLocalLockObj[tn.setNumber] = true;
-				Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber],
-								Jimple.v().newStaticFieldRef(globalLockObj[tn.setNumber].makeRef()));
-				if(tn.wholeMethod)
-					units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
-				else
-					units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-				currentLockObject = lockObj[tn.setNumber];
-			}
-			
-			// Add synchronization code
-			// For transactions from synchronized methods, use synchronizeSingleEntrySingleExitBlock()
-			// to add all necessary code (including ugly exception handling)
-			// For transactions from synchronized blocks, simply replace the
-			// monitorenter/monitorexit statements with new ones			
-			if(tn.wholeMethod)
-			{
-				thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
-				synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) currentLockObject);
-			}
-			else
-			{
-				if(tn.begin == null) 
-					G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
-					
-				Stmt newBegin = Jimple.v().newEnterMonitorStmt(currentLockObject);
-				units.insertBefore(newBegin, tn.begin);
-				redirectTraps(b, tn.begin, newBegin);
-				units.remove(tn.begin);
 				
-				Iterator endsIt = tn.ends.iterator();
-				while(endsIt.hasNext())
+				// Add synchronization code
+				// For transactions from synchronized methods, use synchronizeSingleEntrySingleExitBlock()
+				// to add all necessary code (including ugly exception handling)
+				// For transactions from synchronized blocks, simply replace the
+				// monitorenter/monitorexit statements with new ones			
+				if(tn.wholeMethod)
 				{
-					Stmt sEnd = (Stmt) endsIt.next();
-					Stmt newEnd = Jimple.v().newExitMonitorStmt(currentLockObject);
-					units.insertBefore(newEnd, sEnd);
-					redirectTraps(b, sEnd, newEnd);
-					units.remove(sEnd);
+					thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
+					synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) currentLockObject);
 				}
-			}
-			
-			// Replace calls to notify() with calls to notifyAll()
-			// Replace base object with appropriate lockobj
-			if( !tn.group.useLocksets )
-			{
-				Iterator notifysIt = tn.notifys.iterator();
-				while(notifysIt.hasNext())
+				else if(lockNum > 0)
 				{
-					Stmt sNotify = (Stmt) notifysIt.next();
-					Stmt newNotify = 
-						Jimple.v().newInvokeStmt(
-	           				Jimple.v().newVirtualInvokeExpr(
-	       						(Local) currentLockObject,
-	       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
-	       						Collections.EMPTY_LIST));
-		            units.insertBefore(newNotify, sNotify);
-					redirectTraps(b, sNotify, newNotify);
-					units.remove(sNotify);
+					// don't have all the info to do this right yet
+//					synchronizeSingleEntrySingleExitBlock(b, (Stmt) tnbodystart, (Stmt) tnbodyend, (Local) currentLockObject);
 				}
+				else
+				{
+					if(tn.begin == null) 
+						G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
+						
+					Stmt newBegin = Jimple.v().newEnterMonitorStmt(currentLockObject);
+					units.insertBefore(newBegin, tn.begin);
+					redirectTraps(b, tn.begin, newBegin);
+					units.remove(tn.begin);
+					
+					Iterator endsIt = tn.ends.iterator();
+					while(endsIt.hasNext())
+					{
+						Stmt sEnd = (Stmt) endsIt.next();
+						Stmt newEnd = Jimple.v().newExitMonitorStmt(currentLockObject);
+						units.insertBefore(newEnd, sEnd);
+						redirectTraps(b, sEnd, newEnd);
+						units.remove(sEnd);
+					}
+				}
+				
+				// Replace calls to notify() with calls to notifyAll()
+				// Replace base object with appropriate lockobj
+				if( !tn.group.useLocksets )
+				{
+					Iterator notifysIt = tn.notifys.iterator();
+					while(notifysIt.hasNext())
+					{
+						Stmt sNotify = (Stmt) notifysIt.next();
+						Stmt newNotify = 
+							Jimple.v().newInvokeStmt(
+		           				Jimple.v().newVirtualInvokeExpr(
+		       						(Local) currentLockObject,
+		       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
+		       						Collections.EMPTY_LIST));
+			            units.insertBefore(newNotify, sNotify);
+						redirectTraps(b, sNotify, newNotify);
+						units.remove(sNotify);
+					}
 
-				// Replace base object of calls to wait with appropriate lockobj
-				Iterator waitsIt = tn.waits.iterator();
-				while(waitsIt.hasNext())
-				{
-					Stmt sWait = (Stmt) waitsIt.next();
-					((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(currentLockObject); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
-	//				Stmt newWait = 
-	//					Jimple.v().newInvokeStmt(
-	//         				Jimple.v().newVirtualInvokeExpr(
-	//       						(Local) currentLockObject,
-	//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
-	//       						Collections.EMPTY_LIST));
-	//	            units.insertBefore(newWait, sWait);
-	//				redirectTraps(b, sWait, newWait);
-	//				units.remove(sWait);
+					// Replace base object of calls to wait with appropriate lockobj
+					Iterator waitsIt = tn.waits.iterator();
+					while(waitsIt.hasNext())
+					{
+						Stmt sWait = (Stmt) waitsIt.next();
+						((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(currentLockObject); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
+		//				Stmt newWait = 
+		//					Jimple.v().newInvokeStmt(
+		//         				Jimple.v().newVirtualInvokeExpr(
+		//       						(Local) currentLockObject,
+		//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
+		//       						Collections.EMPTY_LIST));
+		//	            units.insertBefore(newWait, sWait);
+		//				redirectTraps(b, sWait, newWait);
+		//				units.remove(sWait);
+					}
 				}
+				lockNum++;
 			}
 		}
 	}

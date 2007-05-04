@@ -30,10 +30,8 @@
 package soot;
 
 import soot.tagkit.*;
-import soot.baf.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
-import soot.*;
 import soot.util.*;
 import java.util.*;
 import java.io.*;
@@ -326,7 +324,7 @@ public abstract class Body extends AbstractHost implements Serializable
 
         while (unitsIt.hasNext())
         {
-            Stmt s = (Stmt)unitsIt.next();
+            Unit s = (Unit)unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ThisRef)
                 return (Local)(((IdentityStmt)s).getLeftOp());
@@ -341,7 +339,7 @@ public abstract class Body extends AbstractHost implements Serializable
         Iterator unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())
         {
-            Stmt s = (Stmt)unitsIt.next();
+            Unit s = (Unit)unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
             {
@@ -569,7 +567,7 @@ public abstract class Body extends AbstractHost implements Serializable
 
 	Iterator it=units.iterator();
 	while(it.hasNext()) {
-	    Stmt stmt=(Stmt) (it.next());
+	    Unit stmt=(Unit) (it.next());
 	    InvokeExpr iexpr=null;
 
 	    String errorSuffix=" at "+stmt+" in "+getMethod();
@@ -665,7 +663,7 @@ public abstract class Body extends AbstractHost implements Serializable
         InitAnalysis analysis=new InitAnalysis(g);
 	Iterator it=units.iterator();
 	while(it.hasNext()) {
-	    Stmt s=(Stmt) (it.next());
+	    Unit s=(Unit) (it.next());
 	    FlowSet init=(FlowSet) analysis.getFlowBefore(s);
 	    List uses=s.getUseBoxes();
 	    Iterator usesIt=uses.iterator();

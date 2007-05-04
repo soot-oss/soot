@@ -26,7 +26,7 @@ public class TransactionTransformer extends SceneTransformer
     public TransactionTransformer(Singletons.Global g){}
     public static TransactionTransformer v() 
 	{ 
-		return G.v().soot_jimple_toolkits_transaction_TransactionTransformer();
+		return G.v().soot_jimple_toolkits_thread_transaction_TransactionTransformer();
 	}
 	
 	// Lock options
@@ -802,7 +802,16 @@ public class TransactionTransformer extends SceneTransformer
 							
 							if(optionUseLocksets)
 							{
-								unitToUses.put(s, tn.unitToUses.get(s));
+								List allUses = (List) tn.unitToUses.get(s);
+//								List contributingUses = new ArrayList();
+//								for(Iterator usesIt = uses.iterator(); usesIt.hasNext(); )
+//								{
+//									Value v = (Value) usesIt.next();
+//									if(tasea.valueRWSet(v, tn.method, s).hasNonEmptyIntersection(rws[group]))
+//										contributingUses.add(v);
+//								}
+//								unitToUses.put(s, contributingUses);
+								unitToUses.put(s, allUses);
 							}
 							
 							// Get the base object of the field reference at this

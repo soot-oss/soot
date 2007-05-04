@@ -2809,7 +2809,7 @@ public class AntTask extends MatchingTask {
           public void setsource_is_javac(boolean arg) {
             addArg("-p");
             addArg("db");
-            addArg("source_is_javac:"+(arg?"true":"false"));
+            addArg("source-is-javac:"+(arg?"true":"false"));
           }
       
         }

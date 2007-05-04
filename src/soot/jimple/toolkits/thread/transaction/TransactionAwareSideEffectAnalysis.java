@@ -583,7 +583,13 @@ public class TransactionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	protected RWSet addValue( Value v, SootMethod m, Stmt s ) {
+	public RWSet valueRWSet( Value v, SootMethod m, Stmt s )
+	{
+		return addValue(v, m, s);
+	}
+	
+	protected RWSet addValue( Value v, SootMethod m, Stmt s )
+	{
 		RWSet ret = null;
 		
 		if(tlo != null)

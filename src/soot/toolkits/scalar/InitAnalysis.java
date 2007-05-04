@@ -57,7 +57,7 @@ public class InitAnalysis extends ForwardFlowAnalysis {
     protected void flowThrough(Object in,Object unit,Object out) {
 	FlowSet inSet=(FlowSet) in;
 	FlowSet outSet=(FlowSet) out;
-	Stmt s=(Stmt) unit;
+	Unit s=(Unit) unit;
 
 	inSet.copy(outSet);
 

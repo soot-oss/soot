@@ -43,6 +43,11 @@ public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
         super(Jimple.v().newLocalBox(base), methodRef,
              new ValueBox[args.size()]);
 
+        if(!methodRef.declaringClass().isInterface()) {
+        	throw new RuntimeException("Trying to create interface invoke expression for non-interface type. " +
+        			"Use JVirtualInvokeExpr or JSpecialInvokeExpr instead!");
+        }
+
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
     }
