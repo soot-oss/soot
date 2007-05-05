@@ -173,7 +173,8 @@ public class TransactionBodyTransformer extends BodyTransformer
 			if(tn.setNumber == -1)
 				continue; // this tn should be deleted... for now just skip it!
 
-			Local currentLockObject;
+			Local clo;
+			LockRegion clr; // current lock region
 			boolean moreLocks = true;
 			int lockNum = 0;			
 			while(moreLocks)
@@ -193,13 +194,14 @@ public class TransactionBodyTransformer extends BodyTransformer
 						if(tn.wholeMethod)
 							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
 						else
-							units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-						currentLockObject = lockObj[tn.setNumber];
+							units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+						clo = lockObj[tn.setNumber];
 					}
 					else if(tn.lockObject instanceof Local)
-						currentLockObject = (Local) tn.lockObject;
+						clo = (Local) tn.lockObject;
 					else
 						throw new RuntimeException("Unknown type of lock (" + tn.lockObject + "): expected Ref or Local");
+					clr = tn;
 					moreLocks = false;
 				}
 				else if( tn.group.useLocksets )
@@ -216,17 +218,22 @@ public class TransactionBodyTransformer extends BodyTransformer
 						if(tn.wholeMethod)
 							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
 						else
-							units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-						currentLockObject = lockObj[tn.setNumber];
+							units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+						clo = lockObj[tn.setNumber];
 					}
 					else if(lock instanceof Local)
-						currentLockObject = (Local) lock;
+						clo = (Local) lock;
 					else
 						throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
-					if(lockNum + 1 >= tn.lockset.size())
+
+//					if(lockNum + 1 >= tn.lockset.size())
 						moreLocks = false;
-					else
-						moreLocks = true;
+//					else
+//						moreLocks = true;
+
+//					LockRegion newLockRegion = new LockRegion();
+					clr = tn;
+//					
 				}
 				else // global lock
 				{
@@ -238,8 +245,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 					if(tn.wholeMethod)
 						units.insertBeforeNoRedirect(assignLocalLockStmt, firstUnit);
 					else
-						units.insertBefore(assignLocalLockStmt, (Stmt) tn.begin);
-					currentLockObject = lockObj[tn.setNumber];
+						units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
+					clo = lockObj[tn.setNumber];
+					clr = tn;
 					moreLocks = false;
 				}
 				
@@ -247,36 +255,163 @@ public class TransactionBodyTransformer extends BodyTransformer
 				// For transactions from synchronized methods, use synchronizeSingleEntrySingleExitBlock()
 				// to add all necessary code (including ugly exception handling)
 				// For transactions from synchronized blocks, simply replace the
-				// monitorenter/monitorexit statements with new ones			
-				if(tn.wholeMethod)
+				// monitorenter/monitorexit statements with new ones		
+				if(true)
+				{
+					// Remove old prep stmt
+					if( clr.prepStmt != null )
+					{
+						units.remove(clr.prepStmt);
+					}
+					
+					// Reuse old entermonitor or insert new one, and insert prep
+					Stmt newEntermonitor = Jimple.v().newEnterMonitorStmt(clo);
+					if( clr.entermonitor != null )
+					{
+						units.insertBefore(newEntermonitor, clr.entermonitor);
+						// redirectTraps(b, clr.entermonitor, newEntermonitor); // EXPERIMENTAL
+						units.remove(clr.entermonitor);
+
+						// units.insertBefore(newEntermonitor, newPrep);
+					}
+					else
+					{
+						units.insertBeforeNoRedirect(newEntermonitor, clr.beginning);
+						
+						// units.insertBefore(newEntermonitor, newPrep);
+					}
+					
+					// For each early end, reuse or insert exitmonitor stmt
+					for(Iterator earlyEndsIt = clr.earlyEnds.iterator(); earlyEndsIt.hasNext(); )
+					{
+						Pair end = (Pair) earlyEndsIt.next();
+						Stmt earlyEnd = (Stmt) end.getO1();
+						Stmt exitmonitor = (Stmt) end.getO2();
+						
+						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
+						if( exitmonitor != null )
+						{
+							units.insertBefore(newExitmonitor, exitmonitor);
+							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
+							units.remove(exitmonitor);
+						}
+						else
+						{
+							units.insertBefore(newExitmonitor, earlyEnd);
+						}
+					}
+					
+					// If fallthrough end, reuse or insert goto and exit
+					if( clr.after != null )
+					{
+						Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
+						if( clr.end != null )
+						{
+							Stmt exitmonitor = (Stmt) clr.end.getO2();
+
+							units.insertBefore(newExitmonitor, exitmonitor);
+							// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
+							units.remove(exitmonitor);							
+						}
+						else
+						{
+							units.insertBefore(newExitmonitor, clr.after); // steal jumps to end, send them to monitorexit
+							Stmt newGotoStmt = Jimple.v().newGotoStmt(clr.after);
+							units.insertBeforeNoRedirect(newGotoStmt, clr.after);
+						}
+					}
+					
+					// If exceptional end, reuse it, else insert it and traps
+					Stmt newExitmonitor = Jimple.v().newExitMonitorStmt(clo);
+					if( clr.exceptionalEnd != null )
+					{
+						Stmt exitmonitor = (Stmt) clr.exceptionalEnd.getO2();
+						
+						units.insertBefore(newExitmonitor, exitmonitor);
+						// redirectTraps(b, exitmonitor, newExitmonitor); // EXPERIMENTAL
+						units.remove(exitmonitor);
+					}
+					else
+					{
+						// insert after the last end
+						Stmt lastEnd = null;
+						if( clr.end != null )
+						{
+							lastEnd = (Stmt) clr.end.getO1();
+						}
+						else
+						{
+							for(Iterator earlyEndsIt = clr.earlyEnds.iterator(); earlyEndsIt.hasNext(); )
+							{
+								Pair earlyEnd = (Pair) earlyEndsIt.next();
+								Stmt end = (Stmt) earlyEnd.getO1();
+								if( lastEnd == null || units.follows(end, lastEnd) )
+									lastEnd = end;
+							}
+						}
+						if(lastEnd == null)
+							throw new RuntimeException("Lock Region has no ends!  Where should we put the exception handling???");
+
+						// Add throwable
+						Local throwableLocal = Jimple.v().newLocal("throwableLocal" + (throwableNum++), RefType.v("java.lang.Throwable"));
+						b.getLocals().add(throwableLocal);
+						// Add stmts
+						Stmt newCatch = Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
+						units.insertAfter(newCatch, lastEnd);
+						units.insertAfter(newExitmonitor, newCatch);
+						Stmt newThrow = Jimple.v().newThrowStmt(throwableLocal);
+						units.insertAfter(newThrow, newExitmonitor);
+						// Add traps
+						SootClass throwableClass = Scene.v().loadClassAndSupport("java.lang.Throwable");
+						b.getTraps().addLast(Jimple.v().newTrap(throwableClass, clr.beginning, lastEnd, newCatch));
+						b.getTraps().addLast(Jimple.v().newTrap(throwableClass, newExitmonitor, newThrow, newCatch));
+					}
+				}
+				else if(tn.wholeMethod)
 				{
 					thisMethod.setModifiers( thisMethod.getModifiers() & ~ (Modifier.SYNCHRONIZED) ); // remove synchronized modifier for this method
-					synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) currentLockObject);
+					synchronizeSingleEntrySingleExitBlock(b, (Stmt) firstUnit, (Stmt) lastUnit, (Local) clo);
 				}
 				else if(lockNum > 0)
 				{
 					// don't have all the info to do this right yet
-//					synchronizeSingleEntrySingleExitBlock(b, (Stmt) tnbodystart, (Stmt) tnbodyend, (Local) currentLockObject);
+//					synchronizeSingleEntrySingleExitBlock(b, (Stmt) tnbodystart, (Stmt) tnbodyend, (Local) clo);
 				}
 				else
 				{
-					if(tn.begin == null) 
+					if(tn.entermonitor == null) 
 						G.v().out.println("ERROR: Transaction has no beginning statement: " + tn.method.toString());
 						
-					Stmt newBegin = Jimple.v().newEnterMonitorStmt(currentLockObject);
-					units.insertBefore(newBegin, tn.begin);
-					redirectTraps(b, tn.begin, newBegin);
-					units.remove(tn.begin);
+					// Deal with entermonitor
+					Stmt newBegin = Jimple.v().newEnterMonitorStmt(clo);
+					units.insertBefore(newBegin, tn.entermonitor);
+					redirectTraps(b, tn.entermonitor, newBegin);
+					units.remove(tn.entermonitor);
 					
-					Iterator endsIt = tn.ends.iterator();
+					// Deal with exitmonitors
+					// early
+					Iterator endsIt = tn.earlyEnds.iterator();
 					while(endsIt.hasNext())
 					{
-						Stmt sEnd = (Stmt) endsIt.next();
-						Stmt newEnd = Jimple.v().newExitMonitorStmt(currentLockObject);
+						Pair end = (Pair) endsIt.next();
+						Stmt sEnd = (Stmt) end.getO2();
+						Stmt newEnd = Jimple.v().newExitMonitorStmt(clo);
 						units.insertBefore(newEnd, sEnd);
 						redirectTraps(b, sEnd, newEnd);
 						units.remove(sEnd);
 					}
+					// exceptional
+					Stmt sEnd = (Stmt) tn.exceptionalEnd.getO2();
+					Stmt newEnd = Jimple.v().newExitMonitorStmt(clo);
+					units.insertBefore(newEnd, sEnd);
+					redirectTraps(b, sEnd, newEnd);
+					units.remove(sEnd);
+					// fallthrough
+					sEnd = (Stmt) tn.end.getO2();
+					newEnd = Jimple.v().newExitMonitorStmt(clo);
+					units.insertBefore(newEnd, sEnd);
+					redirectTraps(b, sEnd, newEnd);
+					units.remove(sEnd);
 				}
 				
 				// Replace calls to notify() with calls to notifyAll()
@@ -290,7 +425,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						Stmt newNotify = 
 							Jimple.v().newInvokeStmt(
 		           				Jimple.v().newVirtualInvokeExpr(
-		       						(Local) currentLockObject,
+		       						(Local) clo,
 		       						sNotify.getInvokeExpr().getMethodRef().declaringClass().getMethod("void notifyAll()").makeRef(), 
 		       						Collections.EMPTY_LIST));
 			            units.insertBefore(newNotify, sNotify);
@@ -303,11 +438,11 @@ public class TransactionBodyTransformer extends BodyTransformer
 					while(waitsIt.hasNext())
 					{
 						Stmt sWait = (Stmt) waitsIt.next();
-						((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(currentLockObject); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
+						((InstanceInvokeExpr) sWait.getInvokeExpr()).setBase(clo); // WHAT IF THIS IS THE WRONG LOCK IN A PAIR OF NESTED LOCKS???
 		//				Stmt newWait = 
 		//					Jimple.v().newInvokeStmt(
 		//         				Jimple.v().newVirtualInvokeExpr(
-		//       						(Local) currentLockObject,
+		//       						(Local) clo,
 		//       						sWait.getInvokeExpr().getMethodRef().declaringClass().getMethod("void wait()").makeRef(), 
 		//       						Collections.EMPTY_LIST));
 		//	            units.insertBefore(newWait, sWait);

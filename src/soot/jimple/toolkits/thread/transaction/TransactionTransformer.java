@@ -662,7 +662,7 @@ public class TransactionTransformer extends SceneTransformer
 	    		SmartLocalDefs sld = new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph));
 	    		if(tn.origLock == null || !(tn.origLock instanceof Local)) // || tn.begin == null)
 	    			continue;
-	    		List rDefs = sld.getDefsOfAt( (Local) tn.origLock , tn.begin );
+	    		List rDefs = sld.getDefsOfAt( (Local) tn.origLock , tn.entermonitor );
 	    		if(rDefs == null)
 	    			continue;
             	Iterator rDefsIt = rDefs.iterator();
@@ -931,7 +931,7 @@ public class TransactionTransformer extends SceneTransformer
 						G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						tn.lockset = la.getLocksetOf(unitToUses, tn.begin);
+						tn.lockset = la.getLocksetOf(unitToUses, tn.entermonitor);
 						
 						if(tn.lockset == null)
 							tn.group.useLocksets = false;
@@ -943,15 +943,24 @@ public class TransactionTransformer extends SceneTransformer
 					else // one lock per region
 					{
 						EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
-						Vector barriers = (Vector) tn.ends.clone();
-						barriers.add(tn.begin);
+						Vector barriers = new Vector();
+						for(Iterator earlyEndIt = tn.earlyEnds.iterator(); earlyEndIt.hasNext(); )
+						{
+							Pair earlyEnd = (Pair) earlyEndIt.next();
+							barriers.add(earlyEnd.getO2());
+						}
+						if(tn.exceptionalEnd != null && tn.exceptionalEnd.getO2() != null)
+							barriers.add(tn.exceptionalEnd.getO2());
+						if(tn.end != null && tn.end.getO2() != null)
+							barriers.add(tn.end.getO2());
+						barriers.add(tn.entermonitor);
 						if( lif.areEqualUses(unitToLocal, barriers) ) // runs the analysis
 						{
 							Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
 							NullnessAnalysis na = new NullnessAnalysis(g);
 							NullnessAssumptionAnalysis naa = new NullnessAssumptionAnalysis(g);
 							CommonPrecedingEqualValueAnalysis cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-							List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
+							List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.entermonitor);
 							Iterator ancestorsIt = ancestors.iterator();
 							while(ancestorsIt.hasNext())
 							{
@@ -974,8 +983,8 @@ public class TransactionTransformer extends SceneTransformer
 								{
 									if(v instanceof Ref || 
 										(v instanceof Local && 
-											(na.isAlwaysNonNullBefore(tn.begin, (Local) v) ||
-											 naa.isAssumedNonNullBefore(tn.begin, (Local) v))) )
+											(na.isAlwaysNonNullBefore(tn.entermonitor, (Local) v) ||
+											 naa.isAssumedNonNullBefore(tn.entermonitor, (Local) v))) )
 									{
 										if(tn.group.lockObject == null || v instanceof Ref)
 											tn.group.lockObject = v;
@@ -1298,8 +1307,8 @@ public class TransactionTransformer extends SceneTransformer
 			G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
 			G.v().out.println("[transaction-table] Orig : " + tn.origLock);
 			G.v().out.println("[transaction-table] Prep : " + (tn.prepStmt == null ? "none" : tn.prepStmt.toString()));
-			G.v().out.println("[transaction-table] Begin: " + tn.begin.toString());
-			G.v().out.print("[transaction-table] End  : " + tn.ends.toString() + " \n");
+			G.v().out.println("[transaction-table] Begin: " + tn.entermonitor.toString());
+			G.v().out.print("[transaction-table] End  : " + tn.earlyEnds.toString() + " " + tn.exceptionalEnd.toString() + " " + tn.end.toString() + " \n");
 			G.v().out.println("[transaction-table] Size : " + tn.units.size());
 			if(tn.read.size() < 100)
 				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 

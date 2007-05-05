@@ -83,8 +83,8 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
         in.copy(out);
     	if(addSelf.booleanValue())
     	{
-    		Transaction tn = new Transaction((Stmt) unit, false, body.getMethod(), 0);
-    		tn.begin = (Stmt) unit;
+    		Transaction tn = new Transaction(false, body.getMethod(), 0);
+    		tn.entermonitor = (Stmt) unit;
     		tn.units.add((Stmt) unit);
     		tn.read.union(stmtRead);
     		tn.write.union(stmtWrite);
@@ -101,13 +101,14 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
             inSet1 = (FlowSet) ((FlowSet) in1).clone(),
             inSet2 = (FlowSet) ((FlowSet) in2).clone(),
             outSet = (FlowSet) out;
+/*
         boolean hasANull1 = false;
         Transaction tn1 = null;
         Iterator inIt1 = inSet1.iterator();
         while(inIt1.hasNext())
         {
             tn1 = (Transaction) inIt1.next();
-            if(tn1.begin == null)
+            if(tn1.entermonitor == null)
             {
             	hasANull1 = true;
             	break;
@@ -120,7 +121,7 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
         while(inIt2.hasNext())
         {
             tn2 = (Transaction) inIt2.next();
-            if(tn2.begin == null)
+            if(tn2.entermonitor == null)
             {
             	hasANull2 = true;
             	break;
@@ -129,16 +130,17 @@ public class TransactionExternalRWAnalysis extends BackwardFlowAnalysis
         if(hasANull1 && hasANull2)
         {
         	inSet1.remove(tn1);
-        	Iterator itends = tn1.ends.iterator();
+        	Iterator itends = tn1.exitmonitors.iterator();
         	while(itends.hasNext())
         	{
         		Stmt stmt = (Stmt) itends.next();
-        		if(!tn2.ends.contains(stmt))
-        			tn2.ends.add(stmt);
+        		if(!tn2.exitmonitors.contains(stmt))
+        			tn2.exitmonitors.add(stmt);
         	}
         	tn2.read.union(tn1.read);
         	tn2.write.union(tn1.write);
         }
+*/
         inSet1.union(inSet2, outSet);
     }
 

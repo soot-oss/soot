@@ -4,6 +4,7 @@ package soot.jimple.toolkits.thread.transaction;
 import java.util.*;
 
 import soot.*;
+import soot.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.thread.ThreadLocalObjectsAnalysis;
@@ -17,6 +18,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
     Map unitToGenerateSet;
 
     Body body;
+    Chain units;
 	SootMethod method;
 	ExceptionalUnitGraph egraph;
 	LocalDefs sld;
@@ -37,6 +39,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		this.optionPrintDebug = optionPrintDebug;
 
 		body = b;
+		units = b.getUnits();
 		method = body.getMethod();
 
 		if(graph instanceof ExceptionalUnitGraph)
@@ -64,17 +67,17 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		if(method.isSynchronized())
 		{
 			// Entire method is transactional
-			methodTn = new Transaction((Stmt) body.getUnits().iterator().next(), true, method, 1);
-			// note that the precise location of the begin stmt doesn't matter... the
-			// whole method will be transformed correctly regardless of the value.
+			methodTn = new Transaction(true, method, 1);
+			methodTn.beginning = ((JimpleBody) body).getFirstNonIdentityStmt();
 		}
         doAnalysis();
 		if(method.isSynchronized() && methodTn != null)
 		{
-			// TODO: Check if totally safe
-			methodTn.ends.addAll(graph.getTails());
-			// note that the precise locations of the end stmts don't matter... the
-			// whole method will be transformed correctly regardless of the values.
+			for(Iterator tailIt = graph.getTails().iterator(); tailIt.hasNext(); )
+			{
+				Stmt tail = (Stmt) tailIt.next();
+				methodTn.earlyEnds.add(new Pair(tail, null)); // has no exitmonitor stmt yet
+			}
 		}
 	}
     	
@@ -112,6 +115,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         FlowSet
             in = (FlowSet) inValue,
             out = (FlowSet) outValue;
+
+		Stmt stmt = (Stmt) unit;
 
        	copy(in, out);
        	
@@ -172,13 +177,24 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             Transaction tn = tfp.tn;
             
             // Check if we are revisting the start of this existing transaction
-            if(tn.begin == (Stmt) unit)
+            if(tn.entermonitor == stmt)
             {
             	tfp.inside = true;
             	addSelf = false; // this transaction already exists...
             }
             
             // Check if the statement is within this transaction
+           	// If this statement is within a nested transaction, within this transaction
+//			if(tfp.inside == true && tn.nestLevel < nestLevel)
+//			{
+//				// if this statement is an early exit
+//				if(stmt instanceof ReturnStmt ||
+//					stmt instanceof ReturnVoidStmt)
+//				{
+//					tn.earlyEnds.add(stmt);
+//				}
+//			}
+            // if this is the immediately enclosing transaction
         	if(tfp.inside == true && tn.nestLevel == nestLevel)
         	{
         		printed = true; // for debugging purposes, indicated that we'll print a debug output for this statement
@@ -191,10 +207,10 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         		// If it contains an invoke, save it for later processing as part of this transaction
         		// If it is a monitorexit, mark that it's the end of the transaction
         		// Otherwise, add it's read/write sets to the transaction's read/write sets
-            	if(((Stmt) unit).containsInvokeExpr())
+            	if(stmt.containsInvokeExpr())
             	{
             		// Note if this unit is a call to wait() or notify()/notifyAll()
-            		String InvokeSig = ((Stmt)unit).getInvokeExpr().getMethod().getSubSignature();
+            		String InvokeSig = stmt.getInvokeExpr().getMethod().getSubSignature();
             		if(InvokeSig.equals("void notify()") || InvokeSig.equals("void notifyAll()"))
             		{
 				        if(!tn.notifys.contains(unit))
@@ -218,8 +234,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							stmtRead = tasea.readSet(tn.method, (Stmt) unit, tn, sld, new HashSet());
-							stmtWrite = tasea.writeSet(tn.method, (Stmt) unit, tn, sld, new HashSet());
+							stmtRead = tasea.readSet(tn.method, stmt, tn, sld, new HashSet());
+							stmtWrite = tasea.writeSet(tn.method, stmt, tn, sld, new HashSet());
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -244,9 +260,32 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	else if(unit instanceof ExitMonitorStmt)
             	{
             		// Mark this as end of this tn
-            		if(!tn.ends.contains(unit))
-            			tn.ends.add(unit);
             		tfp.inside = false;
+            		
+            		// THIS SHOULD BE REMOVED
+//            		if(!tn.exitmonitors.contains(unit))
+//            			tn.exitmonitors.add(unit);
+            			
+            		// Check if this is an early end or fallthrough end
+            		Stmt nextUnit = (Stmt) units.getSuccOf(stmt);
+            		if( nextUnit instanceof ReturnStmt ||
+            			nextUnit instanceof ReturnVoidStmt ||
+            			nextUnit instanceof ExitMonitorStmt )
+            		{
+            			tn.earlyEnds.add(new Pair(nextUnit, stmt)); // <early end stmt, exitmonitor stmt>
+            		}
+            		else if( nextUnit instanceof GotoStmt )
+            		{
+            			tn.end = new Pair(nextUnit, stmt); // <end stmt, exitmonitor stmt>
+            			tn.after = (Stmt) ((GotoStmt) nextUnit).getTarget();
+            		}
+            		else if( nextUnit instanceof ThrowStmt )
+            		{
+            			tn.exceptionalEnd = new Pair(nextUnit, stmt);
+            		}
+            		else
+            			throw new RuntimeException("Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
+
 	            	if(optionPrintDebug)
             			G.v().out.print("[0,0] ");
             	}
@@ -254,8 +293,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
             	{
             		// Add this unit's read and write sets to this transactional region
             		HashSet uses = new HashSet();
-	               	stmtRead = tasea.readSet( method, (Stmt) unit, tn, sld, uses );
-		           	stmtWrite = tasea.writeSet( method, (Stmt) unit, tn, sld, uses );
+	               	stmtRead = tasea.readSet( method, stmt, tn, sld, uses );
+		           	stmtWrite = tasea.writeSet( method, stmt, tn, sld, uses );
 
     		   		tn.read.union(stmtRead);
         			tn.write.union(stmtWrite);
@@ -263,8 +302,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
-//						tasea.readSet(tn.method, (Stmt) unit, tn, sld);
-//						tasea.writeSet(tn.method, (Stmt) unit, tn, sld);
+//						tasea.readSet(tn.method, stmt, tn, sld);
+//						tasea.writeSet(tn.method, stmt, tn, sld);
 
 			           	G.v().out.print("[");
 			           	if(stmtRead != null)
@@ -319,8 +358,8 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 			G.v().out.println(unit.toString());
 			
 			// If this unit is an invoke statement calling a library function and the R/W sets are huge, print out the targets
-			if(((Stmt) unit).containsInvokeExpr() && 
-				((Stmt) unit).getInvokeExpr().getMethod().getDeclaringClass().toString().startsWith("java.") &&
+			if(stmt.containsInvokeExpr() && 
+				stmt.getInvokeExpr().getMethod().getDeclaringClass().toString().startsWith("java.") &&
 				stmtRead != null && stmtWrite != null)
 				{
 					if(stmtRead.size() < 25 && stmtWrite.size() < 25)
@@ -336,10 +375,31 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
 		// create one.
         if(addSelf)
         {
-        	Transaction newTn = new Transaction((Stmt) unit, false, method, nestLevel + 1);
+        	Transaction newTn = new Transaction(false, method, nestLevel + 1);
+			newTn.entermonitor = stmt;
+			if(stmt instanceof EnterMonitorStmt)
+				newTn.origLock = (Local) ((EnterMonitorStmt) stmt).getOp();
+				
+/*			// 
+			else
+			{
+				if(wholeMethod)
+				{
+					if(method.isStatic())
+						this.origLock = new AbstractDataSource( method.getDeclaringClass().getName() + ".class" ); // a dummy type meant for display
+					else
+						this.origLock = method.retrieveActiveBody().getThisLocal();
+				}
+				else
+					this.origLock = null;
+			}
+*/
+
         	if(optionPrintDebug)
         		G.v().out.println("Transaction found in method: " + newTn.method.toString());
 			out.add(new TransactionFlowPair(newTn, true));
+			
+			// This is a really stupid way to find out which prep applies to this txn.
 			Iterator prepUnitsIt = prepUnits.iterator();
 			while(prepUnitsIt.hasNext())
 			{
