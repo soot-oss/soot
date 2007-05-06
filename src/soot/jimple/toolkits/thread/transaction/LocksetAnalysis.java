@@ -20,6 +20,7 @@ import soot.toolkits.scalar.*;
 
 public class LocksetAnalysis extends BackwardFlowAnalysis
 {
+	UnitGraph graph;
 	Map unitToUses;
 	Stmt begin;
 	boolean lostObjects;
@@ -28,6 +29,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 	{
 		super(g);
 		
+		graph = g;
 		unitToUses = null;
 		begin = null;
 		lostObjects = false;
@@ -45,10 +47,11 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		
 		if(lostObjects)
 			return null;
-		
-		HashMap results = (HashMap) getFlowAfter(begin);
+				
 		List lockset = new ArrayList();
-		
+		HashMap results = (HashMap) getFlowBefore(begin);
+		if(results == null)
+			throw new RuntimeException("Why is getFlowAfter null???");
 		for(Iterator resultsIt = results.keySet().iterator(); resultsIt.hasNext(); ) 
 			lockset.add(resultsIt.next());
 
@@ -127,7 +130,8 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			Iterator usesIt = uses.iterator();
 			if(!usesIt.hasNext()) // an empty set of uses indicates that some uses are inaccessible
 			{
-				lostObjects = true;
+				throw new RuntimeException("Lost Object (empty use list) at " + stmt + " in " + out.toString());
+//				lostObjects = true;
 			}
 			while(usesIt.hasNext())
 			{
@@ -140,7 +144,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			}
 		}
 
-		if( stmt == begin )
+		if( graph.getBody().getUnits().getSuccOf(stmt) == begin )
 			out.clear();
 
 		// if lvalue is in a group:
@@ -150,7 +154,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		//       if rvalue is an instance field ref, DO SOMETHING WITH IT?
 		//       if rvalue is anything else, set "lost objects" flag
 		//   lvalue gets removed from group
-		if( !out.isEmpty() && stmt instanceof DefinitionStmt )
+		if( !out.isEmpty() && stmt instanceof DefinitionStmt && !(stmt instanceof IdentityStmt) )
 		{
 			DefinitionStmt ds = (DefinitionStmt) stmt;
 			EquivalentValue lvalue = new EquivalentValue(ds.getLeftOp());
@@ -158,24 +162,28 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			if(out.containsKey(lvalue))
 			{
 				Object lvaluevalue = out.get(lvalue);
-				if(out.containsKey(rvalue))
+				if( !(lvalue.getValue() instanceof StaticFieldRef && !(lvalue.getValue().getType() instanceof RefLikeType)) )
 				{
-					Object rvaluevalue = out.get(rvalue);
-					for(Iterator outEntryIt = out.entrySet().iterator(); outEntryIt.hasNext(); )
+					if(out.containsKey(rvalue))
 					{
-						Map.Entry entry = (Map.Entry) outEntryIt.next();
-						if(entry.getValue() == lvaluevalue)
-							entry.setValue(rvaluevalue);
+						Object rvaluevalue = out.get(rvalue);
+						for(Iterator outEntryIt = out.entrySet().iterator(); outEntryIt.hasNext(); )
+						{
+							Map.Entry entry = (Map.Entry) outEntryIt.next();
+							if(entry.getValue() == lvaluevalue)
+								entry.setValue(rvaluevalue);
+						}
 					}
-				}
-				else
-				{
-					if(rvalue.getValue() instanceof Local || rvalue.getValue() instanceof FieldRef || rvalue.getValue() instanceof ArrayRef)
-						out.put(rvalue, lvaluevalue);
 					else
-						lostObjects = true;
+					{
+						if(rvalue.getValue() instanceof Local || rvalue.getValue() instanceof FieldRef || rvalue.getValue() instanceof ArrayRef)
+							out.put(rvalue, lvaluevalue);
+						else
+							throw new RuntimeException("Lost Object (assigned unacceptable value) at " + stmt + " in " + out.toString());
+	//						lostObjects = true;
+					}
+					out.remove(lvalue);
 				}
-				out.remove(lvalue);
 			}
 		}
 //		if(!out.isEmpty())

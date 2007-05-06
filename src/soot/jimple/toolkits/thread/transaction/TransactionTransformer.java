@@ -785,6 +785,7 @@ public class TransactionTransformer extends SceneTransformer
 					// units that read/write to any of the dependences.
 					Map unitToLocal = new HashMap();
 					Map unitToUses = new HashMap();
+					List staticFieldRefs = new ArrayList();
 					Map unitToArrayIndex = new HashMap(); // if all relevant R/Ws are via array references, we need to track the indexes as well.
 					boolean allRefsAreArrayRefs = true;
 					Value value = null;
@@ -803,15 +804,17 @@ public class TransactionTransformer extends SceneTransformer
 							if(optionUseLocksets)
 							{
 								List allUses = (List) tn.unitToUses.get(s);
-//								List contributingUses = new ArrayList();
-//								for(Iterator usesIt = uses.iterator(); usesIt.hasNext(); )
-//								{
-//									Value v = (Value) usesIt.next();
-//									if(tasea.valueRWSet(v, tn.method, s).hasNonEmptyIntersection(rws[group]))
-//										contributingUses.add(v);
-//								}
-//								unitToUses.put(s, contributingUses);
-								unitToUses.put(s, allUses);
+								List contributingUses = new ArrayList();
+								for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
+								{
+									Value v = (Value) usesIt.next();
+//									if(	tasea.valueRWSet(v, tn.method, s).hasNonEmptyIntersection(rws[group]) )
+//									{
+										contributingUses.add(v);
+//									}
+								}
+								unitToUses.put(s, contributingUses);
+//								unitToUses.put(s, allUses);
 							}
 							
 							// Get the base object of the field reference at this
@@ -931,7 +934,7 @@ public class TransactionTransformer extends SceneTransformer
 						G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
 								
 						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						tn.lockset = la.getLocksetOf(unitToUses, tn.entermonitor);
+						tn.lockset = la.getLocksetOf(unitToUses, tn.beginning);
 						
 						if(tn.lockset == null)
 							tn.group.useLocksets = false;
@@ -1306,9 +1309,9 @@ public class TransactionTransformer extends SceneTransformer
 			G.v().out.println("[transaction-table] Transaction " + tn.name);
 			G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
 			G.v().out.println("[transaction-table] Orig : " + tn.origLock);
-			G.v().out.println("[transaction-table] Prep : " + (tn.prepStmt == null ? "none" : tn.prepStmt.toString()));
-			G.v().out.println("[transaction-table] Begin: " + tn.entermonitor.toString());
-			G.v().out.print("[transaction-table] End  : " + tn.earlyEnds.toString() + " " + tn.exceptionalEnd.toString() + " " + tn.end.toString() + " \n");
+			G.v().out.println("[transaction-table] Prep : " + tn.prepStmt);
+			G.v().out.println("[transaction-table] Begin: " + tn.entermonitor);
+			G.v().out.print("[transaction-table] End  : early:" + tn.earlyEnds.toString() + " exc:" + tn.exceptionalEnd + " through:" + tn.end + " \n");
 			G.v().out.println("[transaction-table] Size : " + tn.units.size());
 			if(tn.read.size() < 100)
 				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 
@@ -1326,7 +1329,7 @@ public class TransactionTransformer extends SceneTransformer
 			Iterator tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
 				G.v().out.print(((TransactionDataDependency)tnedgeit.next()).other.name + " ");
-			if(tn.lockset != null)
+			if(tn.group.useLocksets)
 				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
 			else
 				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
@@ -1341,7 +1344,7 @@ public class TransactionTransformer extends SceneTransformer
     		{
     			TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
     			G.v().out.print("Group " + (group + 1) + " ");
-				G.v().out.print("Locking: " + (tnGroup.accessesOnlyOneType && tnGroup.useDynamicLock ? "Dynamic" : "Static") + " on " + (optionUseLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
+				G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.accessesOnlyOneType && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
 				G.v().out.print("\n[transaction-groups]      : ");
 				Iterator tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())

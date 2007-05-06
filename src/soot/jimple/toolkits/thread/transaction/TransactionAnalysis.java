@@ -377,6 +377,7 @@ public class TransactionAnalysis extends ForwardFlowAnalysis
         {
         	Transaction newTn = new Transaction(false, method, nestLevel + 1);
 			newTn.entermonitor = stmt;
+			newTn.beginning = (Stmt) units.getSuccOf(stmt);
 			if(stmt instanceof EnterMonitorStmt)
 				newTn.origLock = (Local) ((EnterMonitorStmt) stmt).getOp();
 				
