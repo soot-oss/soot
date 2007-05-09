@@ -13,17 +13,6 @@ public class TransactionBodyTransformer extends BodyTransformer
     private TransactionBodyTransformer() {}
 
     public static TransactionBodyTransformer v() { return instance; }
-
-//    private FlowSet fs;
-//    private int maxLockObjs;
-//    private boolean[] useGlobalLock;
-    
-//    public void setDetails(FlowSet fs, int maxLockObjs, boolean[] useGlobalLock)
-//    {
-//    	this.fs = fs;
-//    	this.maxLockObjs = maxLockObjs;
-//    	this.useGlobalLock = useGlobalLock;
-//    }
     
     public static boolean[] addedGlobalLockObj = null;
     private static boolean addedGlobalLockDefs = false;
@@ -183,24 +172,23 @@ public class TransactionBodyTransformer extends BodyTransformer
 				// needed for this transaction, then create one.
 				if( tn.group.useDynamicLock )
 				{
-					if(!addedLocalLockObj[tn.setNumber])
+					Value lock = getLockFor((EquivalentValue) tn.lockObject); // adds local vars and global objects if needed
+					if(lock instanceof Ref)
 					{
-						b.getLocals().add(lockObj[tn.setNumber]);
-						addedLocalLockObj[tn.setNumber] = true;
-					}
-					if(tn.lockObject instanceof Ref)
-					{
-						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], tn.lockObject);
+						if(!b.getLocals().contains(lockObj[tn.setNumber]))
+							b.getLocals().add(lockObj[tn.setNumber]);
+						
+						Stmt assignLocalLockStmt = Jimple.v().newAssignStmt(lockObj[tn.setNumber], lock);
 						if(tn.wholeMethod)
 							units.insertBeforeNoRedirect(assignLocalLockStmt, (Stmt) firstUnit);
 						else
 							units.insertBefore(assignLocalLockStmt, (Stmt) tn.entermonitor);
 						clo = lockObj[tn.setNumber];
 					}
-					else if(tn.lockObject instanceof Local)
-						clo = (Local) tn.lockObject;
+					else if(lock instanceof Local)
+						clo = (Local) lock;
 					else
-						throw new RuntimeException("Unknown type of lock (" + tn.lockObject + "): expected Ref or Local");
+						throw new RuntimeException("Unknown type of lock (" + lock + "): expected Ref or Local");
 					clr = tn;
 					moreLocks = false;
 				}
@@ -245,6 +233,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 							Stmt earlyExitmonitor = (Stmt) earlyEnd.getO2();
 							nlr.earlyEnds.add(new Pair(earlyExitmonitor, null)); // <early exitmonitor, null>
 						}
+						nlr.last = clr.last; // last stmt before exception handling
 						if(clr.end != null)
 						{
 							Stmt endExitmonitor = (Stmt) clr.end.getO2();
@@ -366,7 +355,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 					else
 					{
 						// insert after the last end
-						Stmt lastEnd = null;
+						Stmt lastEnd = null; // last end stmt (not same as last stmt)
 						if( clr.end != null )
 						{
 							lastEnd = (Stmt) clr.end.getO1();
@@ -381,7 +370,9 @@ public class TransactionBodyTransformer extends BodyTransformer
 									lastEnd = end;
 							}
 						}
-						if(lastEnd == null)
+						if(clr.last == null)
+							clr.last = lastEnd; // last stmt and last end are the same
+						if( lastEnd == null )
 							throw new RuntimeException("Lock Region has no ends!  Where should we put the exception handling???");
 
 						// Add throwable
@@ -389,7 +380,7 @@ public class TransactionBodyTransformer extends BodyTransformer
 						b.getLocals().add(throwableLocal);
 						// Add stmts
 						Stmt newCatch = Jimple.v().newIdentityStmt(throwableLocal, Jimple.v().newCaughtExceptionRef());
-						units.insertAfter(newCatch, lastEnd);
+						units.insertAfter(newCatch, clr.last);
 						units.insertAfter(newExitmonitor, newCatch);
 						Stmt newThrow = Jimple.v().newThrowStmt(throwableLocal);
 						units.insertAfter(newThrow, newExitmonitor);

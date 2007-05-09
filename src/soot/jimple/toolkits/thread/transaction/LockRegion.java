@@ -14,6 +14,7 @@ public class LockRegion
 	public List earlyEnds; // list of <return/branch stmt, exitmonitor> pairs
 	public Pair exceptionalEnd; // <throw stmt, exitmonitor> pair
 	public Pair end; // <goto stmt, exitmonitor> pair
+	public Stmt last; // the last stmt before exception handling (usually a goto, return, or branch stmt from one of the ends)
 	public Stmt after;
 
 	public LockRegion()
@@ -25,6 +26,7 @@ public class LockRegion
 		this.earlyEnds = new ArrayList();
 		this.exceptionalEnd = null;
 		this.end = null;
+		this.last = null;
 		this.after = null;
 	}
 	
@@ -38,6 +40,7 @@ public class LockRegion
 		this.earlyEnds.addAll(lr.earlyEnds);
 		this.exceptionalEnd = null;
 		this.end = lr.end;
+		this.last = lr.last;
 		this.after = lr.after;
 	}
 

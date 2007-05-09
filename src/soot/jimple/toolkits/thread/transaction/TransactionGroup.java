@@ -11,9 +11,9 @@ class TransactionGroup
 	List transactions;
 
 	// Information about the selected lock(s)
-	public boolean accessesOnlyOneType; // one dynamic lock per tn is only possible if this is true
+	public boolean isDynamicLock; // is lockObject actually dynamic? or is it a static ref?
 	public boolean useDynamicLock; // use one dynamic lock per tn
-	public Value lockObject; // this is one of the dynamic locks
+	public Value lockObject;
 	public boolean useLocksets;
 	
 	public TransactionGroup(int groupNum)
@@ -21,7 +21,7 @@ class TransactionGroup
 		this.groupNum = groupNum;
 		this.transactions = new ArrayList();
 		
-		this.accessesOnlyOneType = false;
+		this.isDynamicLock = false;
 		this.useDynamicLock = false;
 		this.lockObject = null;
 		this.useLocksets = false;
@@ -60,9 +60,6 @@ class TransactionGroup
 		{
 			Transaction tn = (Transaction) tnIt.next();
 			add(tn);
-//			tn.setNumber = groupNum;
-//			tn.group = this;
-//			this.transactions.add(tn);
 		}
 		other.transactions.clear();
 	}

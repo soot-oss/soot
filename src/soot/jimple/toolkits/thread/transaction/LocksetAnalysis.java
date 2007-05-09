@@ -51,7 +51,7 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 		List lockset = new ArrayList();
 		HashMap results = (HashMap) getFlowBefore(begin);
 		if(results == null)
-			throw new RuntimeException("Why is getFlowAfter null???");
+			throw new RuntimeException("Why is getFlowBefore null???");
 		for(Iterator resultsIt = results.keySet().iterator(); resultsIt.hasNext(); ) 
 			lockset.add(resultsIt.next());
 

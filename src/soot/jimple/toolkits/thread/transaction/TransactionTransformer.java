@@ -627,13 +627,12 @@ public class TransactionTransformer extends SceneTransformer
 
 		// Inspect each group's RW dependencies to determine if there's a possibility
 		// of a shared lock object (if all dependencies are fields/localobjs of the same object)
-//		boolean mustBeSameArrayElementForAllTns[] = new boolean[nextGroup - 1];
 		if(optionStaticLocks)
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
-				tnGroup.accessesOnlyOneType = false; // actually, unknown, so not necessary to set it
+				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
 				tnGroup.useDynamicLock = false; 
 				tnGroup.lockObject = null;
 			}
@@ -645,7 +644,7 @@ public class TransactionTransformer extends SceneTransformer
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
-				tnGroup.accessesOnlyOneType = false; // actually, unknown, so not necessary to set it
+				tnGroup.isDynamicLock = false; // actually, unknown, so not necessary to set it
 				tnGroup.useDynamicLock = false;
 				tnGroup.lockObject = null;
 			}
@@ -682,7 +681,7 @@ public class TransactionTransformer extends SceneTransformer
 							else
 							{
 								// this lock must be dynamic
-								tn.group.accessesOnlyOneType = true;
+								tn.group.isDynamicLock = true;
 								tn.group.useDynamicLock = true;
 								tn.group.lockObject = tn.origLock;
 							}
@@ -690,7 +689,7 @@ public class TransactionTransformer extends SceneTransformer
 						else
 						{
 							// this lock is probably dynamic (but it's hard to tell for sure)
-							tn.group.accessesOnlyOneType = true;
+							tn.group.isDynamicLock = true;
 							tn.group.useDynamicLock = true;
 							tn.group.lockObject = tn.origLock;
 						}
@@ -698,74 +697,47 @@ public class TransactionTransformer extends SceneTransformer
 					else
 					{
 						// this lock is probably dynamic (but it's hard to tell for sure)
-						tn.group.accessesOnlyOneType = true;
+						tn.group.isDynamicLock = true;
 						tn.group.useDynamicLock = true;
 						tn.group.lockObject = tn.origLock;
 					}
 				}
 	    	}
 		}
-		else if(optionUseLocksets)
+		else // for locksets and dynamic locks
 		{
 			for(int group = 0; group < nextGroup - 1; group++)
 			{
 				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
 
-				tnGroup.useLocksets = true; // initially, guess that this is true
+				if(optionUseLocksets)
+				{
+					tnGroup.useLocksets = true; // initially, guess that this is true
+				}
+				else
+				{
+					tnGroup.isDynamicLock = (rws[group].getGlobals().size() == 0);
+					tnGroup.useDynamicLock = true;
+					tnGroup.lockObject = null;
+				}
 
 				// empty groups don't get locks
 				if(rws[group].size() <= 0) // There are no transactions in this group
 				{
-					tnGroup.useLocksets = false;
-					continue;
-				}
-			}
-		}
-		else // Find local locks when possible
-		{
-			for(int group = 0; group < nextGroup - 1; group++)
-			{
-				TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
-
-				// For this group, find out if all RW Dependencies are possibly fields of the same object (object points-tos overlap)
-				tnGroup.accessesOnlyOneType = true; // initially, guess that this is true
-				tnGroup.lockObject = null;
-
-				// empty groups don't get locks
-				if(rws[group].size() <= 0) // There are no transactions in this group
-				{
-					tnGroup.accessesOnlyOneType = false;
-					continue;
-				}
-				
-				// groups with globals get a static lock
-				if(rws[group].getGlobals().size() > 0) // There is some global field in this group
-				{
-					tnGroup.accessesOnlyOneType = false;
-					continue;
-				}
-				
-				// groups with contributing reads/writes from more than one type of object get a static lock, or a lockset
-				Iterator grwsIt1 = rws[group].getFields().iterator();
-				while(grwsIt1.hasNext() && tnGroup.accessesOnlyOneType)
-				{
-					Object field1 = (Object) grwsIt1.next();
-					Iterator grwsIt2 = rws[group].getFields().iterator();
-					while(grwsIt2.hasNext() && tnGroup.accessesOnlyOneType)
+					if(optionUseLocksets)
 					{
-						Object field2 = (Object) grwsIt2.next();
-						if(!rws[group].getBaseForField(field1).hasNonEmptyIntersection(rws[group].getBaseForField(field2)))
-						{
-							// These two accessed fields are from two disjoint sets of objects
-							tnGroup.accessesOnlyOneType = false;
-						}
+						tnGroup.useLocksets = false;
 					}
+					else
+					{
+						tnGroup.isDynamicLock = false;
+						tnGroup.useDynamicLock = false;
+					}
+					continue;
 				}
-
-				tnGroup.useDynamicLock = tnGroup.accessesOnlyOneType; // attempt to use a dynamic lock if we access only one type
 			}
 		}
-		
+
 		// For each transaction, if the group's R/Ws may be fields of the same object, 
 		// then check for the transaction if they must be fields of the same RUNTIME OBJECT
 		if(!optionLeaveOriginalLocks)
@@ -781,15 +753,8 @@ public class TransactionTransformer extends SceneTransformer
 						
 				if(tn.group.useDynamicLock || tn.group.useLocksets) // if attempting to use a dynamic lock or locksets
 				{
-					// Get a list of contributing reads/writes: 
-					// units that read/write to any of the dependences.
-					Map unitToLocal = new HashMap();
+					// Get a list of contributing uses
 					Map unitToUses = new HashMap();
-					List staticFieldRefs = new ArrayList();
-					Map unitToArrayIndex = new HashMap(); // if all relevant R/Ws are via array references, we need to track the indexes as well.
-					boolean allRefsAreArrayRefs = true;
-					Value value = null;
-					Value index = null; // array index if there is one
 					Iterator entryIt = tn.unitToRWSet.entrySet().iterator();
 					while(entryIt.hasNext())
 					{
@@ -801,263 +766,47 @@ public class TransactionTransformer extends SceneTransformer
 							Unit u = (Unit) e.getKey();
 							Stmt s = (Stmt) u;
 							
-							if(optionUseLocksets)
+							List allUses = (List) tn.unitToUses.get(s);
+							List contributingUses = new ArrayList();
+							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
 							{
-								List allUses = (List) tn.unitToUses.get(s);
-								List contributingUses = new ArrayList();
-								for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
-								{
-									Value v = (Value) usesIt.next();
-//									if(	tasea.valueRWSet(v, tn.method, s).hasNonEmptyIntersection(rws[group]) )
-//									{
-										contributingUses.add(v);
-//									}
-								}
-								unitToUses.put(s, contributingUses);
-//								unitToUses.put(s, allUses);
+								Value v = (Value) usesIt.next();
+//								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
+//								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
+//								{
+									contributingUses.add(v);
+//								}
 							}
-							
-							// Get the base object of the field reference at this
-							// statement. If there's an invoke expression, we can't be
-							// sure it doesn't R/W to another object of the same type.
-							value = null;
-							index = null;
-							if(!s.containsInvokeExpr() && (s.containsFieldRef() || s.containsArrayRef()))
-							{
-								if(s.containsFieldRef())
-								{
-									FieldRef fr = s.getFieldRef();
-									if(fr instanceof InstanceFieldRef)
-									{
-										value = ((InstanceFieldRef) fr).getBase();
-									}
-									else
-									{
-										value = s.getFieldRef(); // actually, should use the class itself, not the field
-									}
-								}
-								else
-								{
-									value = s.getArrayRef().getBase();
-								}
-								/*
-								if( s instanceof AssignStmt ) {
-									AssignStmt a = (AssignStmt) s;
-									Value r = a.getRightOp();
-									Value l = a.getLeftOp();
-									
-									// which one should we use???
-									RWSet lSet = new StmtRWSet();
-									Local lBase = null;
-									Value lIndex = null;
-									if( l instanceof InstanceFieldRef ) {
-										InstanceFieldRef ifr = (InstanceFieldRef) l;
-										lBase = (Local) ifr.getBase();
-										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
-										lSet.addFieldRef( base, ifr.getField() );
-									} else if( l instanceof ArrayRef ) {
-										ArrayRef ar = (ArrayRef) l;
-										lBase = (Local) ar.getBase();
-										lIndex = ar.getIndex();
-										PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( lBase );
-										lSet.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
-									}
-									if(lSet.hasNonEmptyIntersection(rws[group]))
-									{
-										value = lBase; // if the lvalue's write set contributes, use it
-										index = lIndex;
-									}
-									else // otherwise it must be the rvalue!
-									{
-										RWSet rSet = new StmtRWSet();
-										Local rBase = null;
-										Value rIndex = null;
-										if( r instanceof InstanceFieldRef ) 
-										{
-											InstanceFieldRef ifr = (InstanceFieldRef) r;
-											rBase = (Local) ifr.getBase();
-											PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( rBase );
-											rSet.addFieldRef( base, ifr.getField() );
-										}
-										else if( r instanceof ArrayRef )
-										{
-											ArrayRef ar = (ArrayRef) r;
-											rBase = (Local) ar.getBase();
-											rIndex = ar.getIndex();
-											PointsToSet base = Scene.v().getPointsToAnalysis().reachingObjects( rBase );
-											rSet.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
-										}
-										if(rSet.hasNonEmptyIntersection(rws[group]))
-										{
-											value = rBase; // if the lvalue's write set contributes, use it
-											index = rIndex;
-										}
-									}
-								}
-								*/
-							}
-
-	//						G.v().out.println("LOCAL OBJ REF for " + s + 
-	//							" value:" + value + " index:" + index);
-
-							if(value == null)
-							{
-								if(!optionUseLocksets)
-								{
-									tn.group.useDynamicLock = false; // failed to use a dynamic lock
-//									mustBeFieldsOfSameObjectForAllTns[group] = false;
-									tn.group.lockObject = null;
-//									lockObject[group] = null;
-								}
-								break; // move on to next transaction
-							}
-							unitToLocal.put(u, value);
-							
-							if(index == null)
-							{
-								allRefsAreArrayRefs = false;
-							}
-							
-							if(allRefsAreArrayRefs)
-								unitToArrayIndex.put(u, index);
-							
+							unitToUses.put(s, contributingUses);							
 						}
 					}
 					
-					// Use EqualUsesAnalysis to determine if all contributing units must be accessing fields of the same RUNTIME OBJECT
-	//				G.v().out.print("Transaction " + tn.name + " in " + tn.method + " ");
-	//				UnitGraph g = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
-					UnitGraph g = (UnitGraph) methodToExcUnitGraph.get(tn.method);
-
-					if(optionUseLocksets) // multiple locks per region
-					{						
-						G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
-								
-						LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-						tn.lockset = la.getLocksetOf(unitToUses, tn.beginning);
-						
+					// Get list of objects (FieldRef or Local) to be locked (lockset analysis)
+					if(optionUseLocksets) G.v().out.println("lockset for " + tn.name + " w/ " + unitToUses + " is:");
+					LocksetAnalysis la = new LocksetAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
+					tn.lockset = la.getLocksetOf(unitToUses, tn.beginning);
+					
+					// Determine if list is suitable for the selected locking scheme
+					// TODO check for nullness
+					if(optionUseLocksets)
+					{
+						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
 						if(tn.lockset == null)
 							tn.group.useLocksets = false;
-							
-						G.v().out.println("  " + (tn.lockset == null ? "FAILURE" : tn.lockset.toString()));
-						
-//						G.v().out.println("Group " + group + " has lockset " + la.getLockset());
 					}
-					else // one lock per region
+					else
 					{
-						EqualUsesAnalysis lif = new EqualUsesAnalysis(g);
-						Vector barriers = new Vector();
-						for(Iterator earlyEndIt = tn.earlyEnds.iterator(); earlyEndIt.hasNext(); )
+						if(tn.lockset == null || tn.lockset.size() != 1)
 						{
-							Pair earlyEnd = (Pair) earlyEndIt.next();
-							barriers.add(earlyEnd.getO2());
-						}
-						if(tn.exceptionalEnd != null && tn.exceptionalEnd.getO2() != null)
-							barriers.add(tn.exceptionalEnd.getO2());
-						if(tn.end != null && tn.end.getO2() != null)
-							barriers.add(tn.end.getO2());
-						barriers.add(tn.entermonitor);
-						if( lif.areEqualUses(unitToLocal, barriers) ) // runs the analysis
-						{
-							Map firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
-							NullnessAnalysis na = new NullnessAnalysis(g);
-							NullnessAssumptionAnalysis naa = new NullnessAssumptionAnalysis(g);
-							CommonPrecedingEqualValueAnalysis cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-							List ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.entermonitor);
-							Iterator ancestorsIt = ancestors.iterator();
-							while(ancestorsIt.hasNext())
-							{
-								Object o = ancestorsIt.next();
-								Value v = null;
-								if(o instanceof EquivalentValue)
-								{
-									v = ((EquivalentValue) o).getValue();
-								}
-								else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
-								{
-									v = (Value) o;
-								}
-								else
-								{
-		//							G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
-								}
-								
-								if(v != null)
-								{
-									if(v instanceof Ref || 
-										(v instanceof Local && 
-											(na.isAlwaysNonNullBefore(tn.entermonitor, (Local) v) ||
-											 naa.isAssumedNonNullBefore(tn.entermonitor, (Local) v))) )
-									{
-										if(tn.group.lockObject == null || v instanceof Ref)
-											tn.group.lockObject = v;
-										if( tn.lockObject == null || v instanceof Ref )
-											tn.lockObject = v;
-									}
-									else
-									{
-//										G.v().out.println("Value " + v + " was rejected as a lock object because it could be null in " + tn.name);
-									}
-								}
-								else
-								{
-//									G.v().out.println("Ancestor " + o + " was rejected as a lock object because it is null in " + tn.name);
-								}
-							}
-							
-							if(tn.lockObject == null)
-							{
-//								G.v().out.println("No value was found for a lock object in " + tn.name + " (no ancestor value found)");
-								tn.group.useDynamicLock = false; // failed to use a dynamic lock
-								tn.group.lockObject = null;
-								continue; // move on to next transaction
-							}
-							
-/*
-							if( allRefsAreArrayRefs ) // NOTE: This is disabled because there is a possibility of
-															   // null elements in the array.  You cannot lock a null object.
-															   // We need a won't-introduce-a-new-null-object-error analysis!
-							{
-								G.v().out.println("checking for equivalence of these array indices" + unitToArrayIndex.values());
-								if( lif.areEqualUses(unitToArrayIndex, barriers) )
-								{
-									G.v().out.println("array indices are equivalent... finding ancestor value at " + tn.begin);
-									firstUseToAliasSet = lif.getFirstUseToAliasSet(); // get first uses for this transaction					
-									cav = new CommonPrecedingEqualValueAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
-									ancestors = cav.getCommonAncestorValuesOf(firstUseToAliasSet, tn.begin);
-									ancestorsIt = ancestors.iterator();
-									while(ancestorsIt.hasNext())
-									{
-										Object o = ancestorsIt.next();
-										Value v = null;
-										if(o instanceof EquivalentValue)
-										{
-											v = ((EquivalentValue) o).getValue();
-										}
-										else if (o instanceof Value) // This isn't supposed to happen, but it does.  Damn.
-										{
-											v = (Value) o;
-										}
-										else
-										{
-											G.v().out.println("THIS SHOULD BE AN EQVALUE BUT ISN'T: " + o + " is of type " + o.getClass());
-										}
-										if(v != null)
-										{
-											if( tn.lockObjectArrayIndex == null || v instanceof Local )
-												tn.lockObjectArrayIndex = v;
-										}
-									}
-									G.v().out.println("array index ancestor is: " + tn.lockObjectArrayIndex);
-								}
-							}
-*/
+							tn.lockObject = null;
+							tn.group.useDynamicLock = false;
+							tn.group.lockObject = null;
 						}
 						else
 						{
-//							G.v().out.println("No value was found for a lock object in " + tn.name + " (transaction accesses multiple objects of same type)");
-							tn.group.useDynamicLock = false; // failed to use a dynamic lock
-							tn.group.lockObject = null;
+							tn.lockObject = (Value) tn.lockset.get(0);
+							if(tn.group.lockObject == null || tn.lockObject instanceof Ref)
+								tn.group.lockObject = tn.lockObject; // just for display
 						}
 					}
 				}
@@ -1115,11 +864,10 @@ public class TransactionTransformer extends SceneTransformer
 	    	    	
 	    		    	FlowSet fs = (FlowSet) methodToFlowSet.get(method);
 	    	    	
-	    	    		if(fs != null) // any new method that is added after the transaction analysis will have a null
-	    	    		{
-//		   	    			TransactionBodyTransformer.v().setDetails(fs, nextGroup, useGlobalLock);
-		   	    			TransactionBodyTransformer.v().internalTransform(b, fs, groups); 
-		   	    		}
+	    	    		if(fs == null) // newly added methods have no flowset
+	    	    			continue;
+
+	   	    			TransactionBodyTransformer.v().internalTransform(b, fs, groups); 
 					}
 	    	    }
 	    	}
@@ -1329,7 +1077,7 @@ public class TransactionTransformer extends SceneTransformer
 			Iterator tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
 				G.v().out.print(((TransactionDataDependency)tnedgeit.next()).other.name + " ");
-			if(tn.group.useLocksets)
+			if(tn.group != null && tn.group.useLocksets)
 				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
 			else
 				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
@@ -1344,7 +1092,7 @@ public class TransactionTransformer extends SceneTransformer
     		{
     			TransactionGroup tnGroup = (TransactionGroup) groups.get(group + 1);
     			G.v().out.print("Group " + (group + 1) + " ");
-				G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.accessesOnlyOneType && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
+				G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.isDynamicLock && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
 				G.v().out.print("\n[transaction-groups]      : ");
 				Iterator tnIt = AllTransactions.iterator();
 				while(tnIt.hasNext())
