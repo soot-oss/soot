@@ -738,10 +738,16 @@ public class TransactionTransformer extends SceneTransformer
 			}
 		}
 
-		// For each transaction, if the group's R/Ws may be fields of the same object, 
-		// then check for the transaction if they must be fields of the same RUNTIME OBJECT
+		// Find runtime lock objects (if using dynamic locks or locksets)
 		if(!optionLeaveOriginalLocks)
 		{
+			// For locksets, each entry is the RWSet of "one lock"
+			// If a pair of locks have intersecting RWSets, then they are considered to be the "same lock"
+			List lockRWSets = new ArrayList();
+			Map useToLockNum = new HashMap();
+
+			// For each transaction, if the group's R/Ws may be fields of the same object, 
+			// then check for the transaction if they must be fields of the same RUNTIME OBJECT
 	    	Iterator tnIt9 = AllTransactions.iterator();
 	    	while(tnIt9.hasNext())
 	    	{
@@ -762,22 +768,55 @@ public class TransactionTransformer extends SceneTransformer
 						RWSet rw = (RWSet) e.getValue();
 						if(rw.hasNonEmptyIntersection(rws[group]))
 						{
-							// This statement contributes to one or more RW dependencies
+							// this is a contributing unit
 							Unit u = (Unit) e.getKey();
 							Stmt s = (Stmt) u;
+														
+							// figure out which "lock number" it is
+							// this really ought to be done on a per-use basis, not per-unit
 							
+							// Get list of contributing uses from this unit
 							List allUses = (List) tn.unitToUses.get(s);
 							List contributingUses = new ArrayList();
+							if(s.containsFieldRef())
+								G.v().out.println("fieldRefRW: " + tasea.valueRWSet(s.getFieldRef(), tn.method, s));
 							for(Iterator usesIt = allUses.iterator(); usesIt.hasNext(); )
 							{
 								Value v = (Value) usesIt.next();
-//								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
-//								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
-//								{
+								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
+								G.v().out.println("v: " + v);
+								G.v().out.println(" RW: " + valRW + "groupRW: " + rws[group] + "\n");
+								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
+								{
 									contributingUses.add(v);
-//								}
+									
+									// figure out which "lock" this use belongs to
+									boolean foundLock = false;
+									for(int i = 0; i < lockRWSets.size(); i++)
+									{
+										RWSet lockRWSet = (RWSet) lockRWSets.get(i);
+										if(valRW.hasNonEmptyIntersection(lockRWSet))
+										{
+											useToLockNum.put(v, new Integer(i));
+											lockRWSet.union(valRW);
+											foundLock = true;
+											break;
+										}
+									}
+									if(!foundLock)
+									{
+										useToLockNum.put(v, new Integer(lockRWSets.size()));
+										RWSet lockRWSet = new CodeBlockRWSet();
+										lockRWSets.add(lockRWSet);
+										lockRWSet.union(valRW);
+									}
+								}
 							}
-							unitToUses.put(s, contributingUses);							
+							if(contributingUses.size() == 0)
+							{
+								
+							}
+							unitToUses.put(s, contributingUses);
 						}
 					}
 					

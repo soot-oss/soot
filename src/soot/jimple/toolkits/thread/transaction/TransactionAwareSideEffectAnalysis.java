@@ -430,10 +430,13 @@ public class TransactionAwareSideEffectAnalysis {
 				Local vLocal = (Local) v;
 				PointsToSet base = pa.reachingObjects( vLocal );
 				StmtRWSet sSet = new StmtRWSet();
+				// Should actually get a list of fields of this object that are read/written
+				// make fake RW set of <base, all fields> (use a special class)
+				// intersect with the REAL RW set of this stmt
 				sSet.addFieldRef( base, new WholeObject(vLocal.getType()) ); // we approximate not a specific field, but the whole object
 				ret.union(sSet);
 			}
-			else if( v instanceof FieldRef) // does this ever happen?
+			else if( v instanceof FieldRef)
 			{
 				ret.union(addValue(v, method, stmt));
 			}
@@ -585,7 +588,58 @@ public class TransactionAwareSideEffectAnalysis {
 	
 	public RWSet valueRWSet( Value v, SootMethod m, Stmt s )
 	{
-		return addValue(v, m, s);
+		RWSet ret = null;
+		
+		if(tlo != null)
+		{
+			// fields/elements of local objects may be read/written w/o visible
+			// side effects if the base object is local, or if the base is "this"
+			// and the field itself is local (since "this" is always assumed shared)
+			if( v instanceof InstanceFieldRef )
+			{
+				InstanceFieldRef ifr = (InstanceFieldRef) v;
+				if( m.isConcrete() && !m.isStatic() && 
+					m.retrieveActiveBody().getThisLocal().equivTo(ifr.getBase()) && 
+					tlo.isObjectThreadLocal(ifr, m) )
+					return null;
+				else if( tlo.isObjectThreadLocal(ifr.getBase(), m) )
+					return null;
+			}
+			else if( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )
+				return null;
+		}
+		
+//		if(tlo != null && 
+//			(( v instanceof InstanceFieldRef && tlo.isObjectThreadLocal(((InstanceFieldRef)v).getBase(), m) ) ||
+//			 ( v instanceof ArrayRef && tlo.isObjectThreadLocal(((ArrayRef)v).getBase(), m) )))
+//			return null;
+		
+		if( v instanceof InstanceFieldRef ) {
+			InstanceFieldRef ifr = (InstanceFieldRef) v;
+			PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
+			ret = new StmtRWSet();
+			ret.addFieldRef( base, ifr.getField() );
+		}
+		else if( v instanceof StaticFieldRef )
+		{
+			StaticFieldRef sfr = (StaticFieldRef) v;
+			ret = new StmtRWSet();
+			ret.addGlobal( sfr.getField() );
+		} 
+		else if( v instanceof ArrayRef )
+		{
+			ArrayRef ar = (ArrayRef) v;
+			PointsToSet base = pa.reachingObjects( (Local) ar.getBase() );
+			ret = new StmtRWSet();
+			ret.addFieldRef( base, PointsToAnalysis.ARRAY_ELEMENTS_NODE );
+		}
+		else if( v instanceof Local )
+		{
+			PointsToSet base = pa.reachingObjects( (Local) v );
+			ret = new StmtRWSet();
+			ret.addFieldRef( base, new WholeObject(((Local) v).getType()) );
+		}
+		return ret;
 	}
 	
 	protected RWSet addValue( Value v, SootMethod m, Stmt s )
@@ -621,11 +675,15 @@ public class TransactionAwareSideEffectAnalysis {
 			PointsToSet base = pa.reachingObjects( (Local) ifr.getBase() );
 			ret = new StmtRWSet();
 			ret.addFieldRef( base, ifr.getField() );
-		} else if( v instanceof StaticFieldRef ) {
+		}
+		else if( v instanceof StaticFieldRef )
+		{
 			StaticFieldRef sfr = (StaticFieldRef) v;
 			ret = new StmtRWSet();
 			ret.addGlobal( sfr.getField() );
-		} else if( v instanceof ArrayRef ) {
+		} 
+		else if( v instanceof ArrayRef )
+		{
 			ArrayRef ar = (ArrayRef) v;
 			PointsToSet base = pa.reachingObjects( (Local) ar.getBase() );
 			ret = new StmtRWSet();

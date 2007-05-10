@@ -136,26 +136,26 @@ public class CodeBlockRWSet extends MethodRWSet
 			    	if( Union.hasNonEmptyIntersection(pts1, pts2) )
 					{
 						if(pts1 instanceof FullObjectSet)
-							ret.addFieldRef(pts1, field);
-						else if(pts2 instanceof FullObjectSet)
 							ret.addFieldRef(pts2, field);
+						else if(pts2 instanceof FullObjectSet)
+							ret.addFieldRef(pts1, field);
 						else if((pts1 instanceof PointsToSetInternal) && (pts2 instanceof PointsToSetInternal))
 						{
 							final PointsToSetInternal pti1 = (PointsToSetInternal) pts1;
 							final PointsToSetInternal pti2 = (PointsToSetInternal) pts2;
-							final BitPointsToSet bpts = new BitPointsToSet(pti1.getType(), (PAG) Scene.v().getPointsToAnalysis());
+							final PointsToSetInternal newpti = new HashPointsToSet(pti1.getType(), (PAG) Scene.v().getPointsToAnalysis());
 
 							pti1.forall( 
 								new P2SetVisitor() 
 								{
     	        					public void visit( Node n )
     	        					{
-    	            					if( pti2.contains( n ) ) bpts.add(n);
+    	            					if( pti2.contains( n ) ) newpti.add(n);
     	        					}
     	    					}
     	    				);
     	    				
-							ret.addFieldRef(bpts,field);
+							ret.addFieldRef(newpti, field);
     	    			}
 			    	}
 				}
