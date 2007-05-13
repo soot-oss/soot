@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.pointer;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.*;
 
 import soot.PointsToSet;
 import soot.SootField;
@@ -32,6 +31,43 @@ public class CodeBlockRWSet extends MethodRWSet
 		}
 	}
 	
+    public String toString()
+    {
+		boolean empty = true;
+		final StringBuffer ret = new StringBuffer();
+		if( fields != null )
+		{
+			for( Iterator fieldIt = fields.keySet().iterator(); fieldIt.hasNext(); )
+			{
+				final Object field = (Object) fieldIt.next();
+				ret.append( "[Field: "+field+" ");
+				PointsToSetInternal base = (PointsToSetInternal) fields.get(field);
+				base.forall( 
+					new P2SetVisitor() 
+					{
+    					public void visit( Node n )
+    					{
+        					ret.append(n.getNumber() + " ");
+    					}
+					}
+				);
+				ret.append("]\n");
+				empty = false;
+			}
+		}
+		if( globals != null )
+		{
+			for( Iterator globalIt = globals.iterator(); globalIt.hasNext(); )
+			{
+				final Object global = (Object) globalIt.next();
+				ret.append( "[Global: "+global+"]\n" );
+				empty = false;
+			}
+		}
+		if(empty) ret.append("empty\n");
+		return ret.toString();
+    }
+
     /** Adds the RWSet other into this set. */
     public boolean union( RWSet other )
     {
@@ -133,7 +169,7 @@ public class CodeBlockRWSet extends MethodRWSet
 				{
 					PointsToSet pts1 = (PointsToSet) getBaseForField( field );
 					PointsToSet pts2 = (PointsToSet) other.getBaseForField( field );
-			    	if( Union.hasNonEmptyIntersection(pts1, pts2) )
+			    	if( pts1.hasNonEmptyIntersection(pts2) )
 					{
 						if(pts1 instanceof FullObjectSet)
 							ret.addFieldRef(pts2, field);
@@ -164,5 +200,58 @@ public class CodeBlockRWSet extends MethodRWSet
 		return ret;
     }
 
-
+	public boolean addFieldRef( PointsToSet otherBase, Object field )
+	{
+		boolean ret = false;
+		if( fields == null )
+			fields = new HashMap();
+		
+		// Get our points-to set, merge with other
+		PointsToSet base = getBaseForField( field );
+		if( base instanceof FullObjectSet )
+			return false;
+		if( otherBase instanceof FullObjectSet )
+		{
+			fields.put( field, otherBase );
+			return true;
+		}
+		if( otherBase.equals( base ) )
+			return false;
+		Union u;
+		if( base == null )
+		{			
+//			final PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
+//			otherBase.forall(
+//				new P2SetVisitor() 
+//				{
+//					public void visit( Node n )
+//					{
+//						newpti.add(n);
+//					}
+//				}
+//			);
+			PointsToSetInternal newpti = new HashPointsToSet(((PointsToSetInternal)otherBase).getType(), (PAG) Scene.v().getPointsToAnalysis());
+			base = newpti;
+			fields.put( field, base );
+/*			u = G.v().Union_factory.newUnion();
+			if( base != null)
+				u.addAll( base );
+			fields.put( field, u );
+			if( base == null )
+				addedField( fields.size() );
+			ret = true;
+			if( fields.keySet().size() > MAX_SIZE )
+			{
+				fields = null;
+				isFull = true;
+				if( true )    
+					throw new RuntimeException( "attempt to add more than "+MAX_SIZE+" fields into "+this );
+				return true;
+			}
+*/
+		} 
+		
+		ret = ((PointsToSetInternal)base).addAll((PointsToSetInternal) otherBase, null) | ret;
+		return ret;
+	}
 }

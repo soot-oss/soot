@@ -130,8 +130,9 @@ public class LocksetAnalysis extends BackwardFlowAnalysis
 			Iterator usesIt = uses.iterator();
 			if(!usesIt.hasNext()) // an empty set of uses indicates that some uses are inaccessible
 			{
-				throw new RuntimeException("Lost Object (empty use list) at " + stmt + " in " + out.toString());
-//				lostObjects = true;
+//				throw new RuntimeException("Lost Object (empty use list) at " + stmt + " in " + out.toString());
+				G.v().out.println("Lost Object (empty use list) at " + stmt + " in " + out.toString());
+				lostObjects = true;
 			}
 			while(usesIt.hasNext())
 			{

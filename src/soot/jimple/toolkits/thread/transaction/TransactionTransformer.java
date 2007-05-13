@@ -785,9 +785,10 @@ public class TransactionTransformer extends SceneTransformer
 								Value v = (Value) usesIt.next();
 								RWSet valRW = tasea.valueRWSet(v, tn.method, s);
 								G.v().out.println("v: " + v);
-								G.v().out.println(" RW: " + valRW + "groupRW: " + rws[group] + "\n");
+								G.v().out.println("RW: " + valRW + "groupRW: " + rws[group]);
 								if(	valRW != null && valRW.hasNonEmptyIntersection(rws[group]) )
 								{
+									G.v().out.print("CONTRIBUTES! num=");
 									contributingUses.add(v);
 									
 									// figure out which "lock" this use belongs to
@@ -797,6 +798,7 @@ public class TransactionTransformer extends SceneTransformer
 										RWSet lockRWSet = (RWSet) lockRWSets.get(i);
 										if(valRW.hasNonEmptyIntersection(lockRWSet))
 										{
+											G.v().out.println("" + i + "\n\n");
 											useToLockNum.put(v, new Integer(i));
 											lockRWSet.union(valRW);
 											foundLock = true;
@@ -805,12 +807,15 @@ public class TransactionTransformer extends SceneTransformer
 									}
 									if(!foundLock)
 									{
+										G.v().out.println("" + lockRWSets.size() + "\n\n");
 										useToLockNum.put(v, new Integer(lockRWSets.size()));
 										RWSet lockRWSet = new CodeBlockRWSet();
 										lockRWSets.add(lockRWSet);
 										lockRWSet.union(valRW);
 									}
 								}
+								else
+									G.v().out.println("DOESN'T contribute!\n\n");
 							}
 							if(contributingUses.size() == 0)
 							{
